@@ -1,0 +1,14 @@
+{
+    "en": {
+        "orders-filter.search_placeholder":
+            "Search by number, client, master, phone, auto..."
+    },
+    "ru": {
+        "orders-filter.search_placeholder":
+            "Поиск по номеру, клиенту, мастеру, телефону, авто..."
+    },
+    "uk": {
+        "orders-filter.search_placeholder":
+            "Шукати по номеру, клієнту, майстру, телефону, авто..."
+    }
+}

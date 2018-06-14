@@ -1,0 +1,5 @@
+.funel {
+    background: lightgreen;
+    display: flex;
+    justify-content: space-between;
+}

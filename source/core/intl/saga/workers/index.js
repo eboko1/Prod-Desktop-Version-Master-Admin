@@ -1,0 +1,1 @@
+export { updateIntlWorker } from './updateIntlWorker';

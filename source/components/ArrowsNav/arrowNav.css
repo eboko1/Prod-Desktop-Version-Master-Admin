@@ -1,0 +1,23 @@
+/* hide steps binding line between main part and cancel part */
+/* .ant-steps-item-wait:nth-last-child(2)
+> .ant-steps-item-content
+> .ant-steps-item-title:after {
+    display: none;
+}
+
+.ant-steps-item-finish:nth-last-child(2)
+> .ant-steps-item-content
+> .ant-steps-item-title:after {
+    display: none;
+}
+
+.ant-steps-item-process:nth-last-child(2)
+> .ant-steps-item-content
+> .ant-steps-item-title:after {
+    display: none;
+} */
+/* --- */
+
+/* .steps.ant-steps {
+    width: 70%;
+} */

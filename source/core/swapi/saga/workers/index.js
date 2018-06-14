@@ -1,0 +1,1 @@
+export { fetchSwapiWorker } from './fetchSwapiWorker';

@@ -1,0 +1,27 @@
+/* .steps {
+    &:global(.ant-steps) {
+        width: 70%;
+    }
+} */
+
+.step {
+    cursor: pointer;
+}
+
+:global(.ant-steps-item-wait:nth-last-child(2)
+> .ant-steps-item-content
+> .ant-steps-item-title:after) {
+    display: none;
+}
+
+:global(.ant-steps-item-finish:nth-last-child(2)
+> .ant-steps-item-content
+> .ant-steps-item-title:after) {
+    display: none;
+}
+
+:global(.ant-steps-item-process:nth-last-child(2)
+> .ant-steps-item-content
+> .ant-steps-item-title:after) {
+    display: none;
+}

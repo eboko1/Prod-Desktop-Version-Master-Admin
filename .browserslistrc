@@ -1,0 +1,13 @@
+[production]
+Edge 14
+Firefox 45
+Chrome 49
+Safari 10
+iOS 10.2
+
+[development]
+last 1 Edge version
+last 1 Firefox version
+last 1 Chrome version
+last 1 Safari version
+last 1 iOS version

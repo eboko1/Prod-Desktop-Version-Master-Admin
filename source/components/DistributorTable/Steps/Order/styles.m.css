@@ -1,0 +1,17 @@
+.tabIcon {
+    position: absolute;
+    right: -50%;
+    top: 17px;
+    color: var(--primary);
+}
+
+.editIcon {
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.cartIcon {
+    /* composes: editIcon; */
+    font-size: 20px;
+    cursor: pointer;
+}

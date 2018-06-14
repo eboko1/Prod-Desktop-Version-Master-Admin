@@ -1,0 +1,33 @@
+:root {
+    --paletteColor1: #000;
+    --paletteColor2: #fff;
+    --paletteColor3: #090c14;
+    --paletteColor4: #52b3ff;
+    --paletteColor5: #2b2e3f;
+    --paletteColor6: #151723;
+    --paletteColor7: #474b68;
+    --lightGray: #e8e8e8;
+
+    --rgbaColor1: rgba(0, 0, 0, 0.9);
+    --rgbaColor2: rgba(0, 0, 0, 0.25);
+
+    --layout: rgba(0, 21, 41, 1);
+
+    --primary: #9b59b6;
+    --secondary: #4cc969;
+    --blocks: rgba(0, 22, 40, 1);
+    --moduleHeader: rgba(247, 247, 247, 1);
+    --link: #52b3ff;
+    --errorBG: rgba(236, 16, 28, 0.2);
+    --text: #001529;
+    --text2: rgba(0, 0, 0, 0.45);
+    --text3: rgba(67, 78, 89, 1);
+    --text4: rgba(0, 0, 0, 0.35);
+
+    --not_complete: rgb(255, 126, 126);
+    --reserve: rgb(107, 99, 153);
+    --approve: rgb(251, 158, 62);
+    --progress: rgb(62, 186, 162);
+    --success: rgb(26, 156, 234);
+    --cancel: rgb(198, 198, 198);
+}

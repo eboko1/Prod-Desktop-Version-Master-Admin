@@ -1,0 +1,46 @@
+.clientBlock {
+    background: var(--moduleHeader);
+    display: flex;
+    justify-content: space-between;
+}
+
+.clientCol,
+.autoCol {
+    flex: 0 1 45%;
+}
+
+.client,
+.auto {
+    border-bottom: 1px solid black;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    height: 64px;
+}
+
+.client :global(.ant-row) {
+    display: flex;
+    margin: 0;
+}
+
+.client :global(.ant-form-item-control-wrapper) {
+    flex: 1;
+}
+
+.client :global(.ant-input) {
+    width: auto;
+}
+
+.addClientIcon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--primary);
+}
+
+.totalBlock {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--moduleHeader);
+    margin: 14px 0;
+}

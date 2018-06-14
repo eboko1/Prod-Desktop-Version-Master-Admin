@@ -1,0 +1,19 @@
+{
+    "en": {
+        "profile-form.please_select_a_language": "Please select a language",
+        "profile-form.please_enter_your_first_name":
+            "Please enter your first name",
+        "profile-form.firstnName_validation": "validate"
+    },
+    "ru": {
+        "profile-form.please_select_a_language": "Пожалуйста выберете язык",
+        "profile-form.please_enter_your_first_name":
+            "Пожалуйста введите Ваше имя",
+        "profile-form.firstnName_validation": "валидация йо"
+    },
+    "uk": {
+        "profile-form.please_select_a_language": "Будь ласка оберіть мову",
+        "profile-form.please_enter_your_first_name":
+            "Будь ласка введіть Ваше ім'я"
+    }
+}

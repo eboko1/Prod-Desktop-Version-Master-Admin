@@ -1,0 +1,23 @@
+{
+    "en": {
+        "calculationReport": "Calculation",
+        "businessOrderReport": "businessOrderReport",
+        "clientOrderReport": "clientOrderReport",
+        "diagnosticsActReport": "diagnosticsActReport",
+        "actOfAcceptanceReport": "actOfAcceptanceReport"
+    },
+    "ru": {
+        "calculationReport": "Calculation",
+        "businessOrderReport": "businessOrderReport",
+        "clientOrderReport": "clientOrderReport",
+        "diagnosticsActReport": "diagnosticsActReport",
+        "actOfAcceptanceReport": "actOfAcceptanceReport"
+    },
+    "uk": {
+        "calculationReport": "Calculation",
+        "businessOrderReport": "businessOrderReport",
+        "clientOrderReport": "clientOrderReport",
+        "diagnosticsActReport": "diagnosticsActReport",
+        "actOfAcceptanceReport": "actOfAcceptanceReport"
+    }
+}

@@ -1,0 +1,23 @@
+.card {
+    width: 600px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.tabs {
+    height: 240px;
+}
+
+.tabs > div {
+    width: 160px;
+}
+
+.tab {
+    color: #ddd;
+}
+
+.card:global(.ant-tabs-ink-bar.ant-tabs-ink-bar-animated) {
+    height: 37px;
+}

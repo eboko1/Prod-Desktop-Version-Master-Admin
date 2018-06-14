@@ -1,0 +1,36 @@
+* {
+    box-sizing: border-box;
+    outline: 0;
+}
+
+body {
+    font-family: "TTCommons", system-ui;
+    background-color: var(--paletteColor2);
+    color: var(--text);
+    *//* Зачаровать шрифты */
+    font-smoothing: antialiased;
+    font-variant-ligatures: none;
+
+    /* Фикс для мобильного сафари, чтобы при поторотах он не склеивал, не терял контент.
+    ** Префиксы установлены вручную, так как на момент 13.03.2018 autoprefixer этого не делал автоматически.
+    */
+    -moz-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+
+    -webkit-tap-highlight-color: var(--primary);
+}
+
+a {
+    color: var(--text);
+    text-decoration: none;
+}
+
+.content {
+    max-width: 900px;
+}
+
+.ant-modal-wrap,
+.ant-modal-mask {
+    z-index: 2000;
+}

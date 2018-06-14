@@ -1,0 +1,15 @@
+/* .BBBB {
+    & .ant-tabs-tab {
+        background: red;
+    }
+} */
+
+/* .tabs {
+    background: red;
+} */
+
+/* .ant-tabs.BBBB {
+    .ant-tabs-tab {
+        background: red !important;
+    }
+} */

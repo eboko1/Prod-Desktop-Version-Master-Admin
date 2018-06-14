@@ -1,0 +1,14 @@
+[ignore]
+node_modules/
+
+[include]
+source/
+webpack/
+
+[libs]
+
+[lints]
+
+[options]
+
+[strict]

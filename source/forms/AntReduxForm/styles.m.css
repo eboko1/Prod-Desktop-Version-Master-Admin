@@ -1,0 +1,7 @@
+.form {
+    width: 368px;
+    
+    & button {
+        width: 122px;
+    }
+}

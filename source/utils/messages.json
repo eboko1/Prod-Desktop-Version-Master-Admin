@@ -1,0 +1,44 @@
+{
+    "en": {
+        "appointments": "Appointments",
+        "records": "Approves",
+        "repairs": "Repairs",
+        "done": "Done",
+        "reviews": "Reviews",
+        "invitations": "Invitations",
+        "cancels": "Cancels",
+        "all": "All",
+        "not_complete": "New",
+        "required": "Required",
+        "reserve": "Reserve",
+        "call": "Call"
+    },
+    "ru": {
+        "appointments": "Обращения",
+        "records": "Записи",
+        "repairs": "Ремонты",
+        "done": "Выполненные",
+        "reviews": "Отзывы",
+        "invitations": "Приглашения",
+        "cancels": "Отказы",
+        "all": "Все",
+        "not_complete": "Новый",
+        "required": "Под вопросом",
+        "reserve": "Резерв",
+        "call": "Звонок"
+    },
+    "uk": {
+        "appointments": "Звернення",
+        "approves": "Записи",
+        "repairs": "Ремонти",
+        "done": "Виконанні",
+        "reviews": "Відгуки",
+        "invitations": "Запрошення",
+        "cancels": "Відмови",
+        "all": "Всі",
+        "not_complete": "Новий",
+        "required": "Під питанням",
+        "reserve": "Резерв",
+        "call": "Дзвінок"
+    }
+}
