@@ -8,6 +8,9 @@ import { DefinePlugin, ContextReplacementPlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import HtmlWebpackTemplate from 'html-webpack-template';
 
+// own
+import { getApiUrl } from './apiUtils';
+
 // antd
 import { join } from 'path';
 import fs from 'fs';
@@ -20,16 +23,7 @@ const antdVariables = lessToJs(
 export const generateCommonConfiguration = () => {
     const BUILD_ENV = process.env.BUILD_ENV;
 
-    let __API_URL__ = null;
-
-    switch (BUILD_ENV) {
-        case 'production':
-            __API_URL__ = JSON.stringify('https://dev-api.carbook.pro');
-            break;
-
-        default:
-            __API_URL__ = JSON.stringify('https://dev-api.carbook.pro');
-    }
+    const __API_URL__ = getApiUrl(BUILD_ENV);
 
     return {
         entry: {

@@ -6,6 +6,7 @@
         "start": "nodemon",
         "build:config": "webpack --config=./webpack/webpack.config.babel.js --env production --display-reasons",
         "build:dev": "cross-env-shell NODE_ENV=production BUILD_ENV=development yarn build:config",
+        "build:stage": "cross-env-shell NODE_ENV=production BUILD_ENV=stage yarn build:config",
         "build:prod": "cross-env-shell NODE_ENV=production BUILD_ENV=production yarn build:config",
         "build:analyze": "run-s build:prod analyze",
         "analyze": "webpack-bundle-analyzer build/build-stats.json build",
