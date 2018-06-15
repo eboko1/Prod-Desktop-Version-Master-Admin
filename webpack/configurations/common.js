@@ -106,11 +106,11 @@ export const generateCommonConfiguration = () => {
             }),
             new ContextReplacementPlugin(/moment\/locale$/, /ru/),
             new DefinePlugin({
-                __ENV__:   JSON.stringify(BUILD_ENV),
-                __DEV__:   BUILD_ENV === 'development',
-                __STAGE__: BUILD_ENV === 'stage',
-                __PROD__:  BUILD_ENV === 'production',
-                __API_URL__,
+                __ENV__:     JSON.stringify(BUILD_ENV),
+                __DEV__:     BUILD_ENV === 'development',
+                __STAGE__:   BUILD_ENV === 'stage',
+                __PROD__:    BUILD_ENV === 'production',
+                __API_URL__: JSON.stringify(__API_URL__),
             }),
         ],
     };
