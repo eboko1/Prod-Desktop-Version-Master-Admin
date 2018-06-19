@@ -43,7 +43,10 @@
         "orders.search.placeholder":
             "Search by number, client, master, phone, auto...",
         "orders.filter.show_filter": "show filter",
-        "orders.filter.hide_filter": "hide filter"
+        "orders.filter.hide_filter": "hide filter",
+        "orders.manager": "Manager",
+        "orders.call": "Call",
+        "orders.carbook": "Carbook"
     },
     "ru": {
         "currency": "грн.",
@@ -84,7 +87,10 @@
         "orders.search.placeholder":
             "Поиск по номеру, клиенту, мастеру, телефону, авто...",
         "orders.filter.show_filter": "показать фильтр",
-        "orders.filter.hide_filter": "спрятать фильтр"
+        "orders.filter.hide_filter": "спрятать фильтр",
+        "orders.manager": "Manager",
+        "orders.call": "Call",
+        "orders.carbook": "Carbook"
     },
     "uk": {
         "currency": "грн.",
@@ -125,6 +131,9 @@
         "orders.search.placeholder":
             "Шукати по номеру, клієнту, майстру, телефону, авто...",
         "orders.filter.show_filter": "показати фільтр",
-        "orders.filter.hide_filter": "сховати фільтр"
+        "orders.filter.hide_filter": "сховати фільтр",
+        "orders.manager": "Manager",
+        "orders.call": "Call",
+        "orders.carbook": "Carbook"
     }
 }

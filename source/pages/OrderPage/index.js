@@ -113,6 +113,7 @@ class OrderPage extends Component {
                         <FormattedMessage
                             id={ `order-status.${status || 'order'}` }
                         />
+                        {console.log('num', num)}
                         {` ${num}`}
                     </>
                 }

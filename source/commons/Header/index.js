@@ -34,7 +34,7 @@ class Header extends Component {
                     <div className={ Styles.headerPanel }>
                         <Link className={ Styles.user } to={ book.profile }>
                             <Button icon='user' className={ Styles.userButton } />
-                            <div>UserName</div>
+                            <div>СТО Партнер</div>
                         </Link>
                         <Icon
                             className={ Styles.logout }

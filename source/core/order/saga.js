@@ -16,12 +16,7 @@ import {
 export function* fetchOrderSaga({ payload: id }) {
     try {
         yield nprogress.start();
-        const response = yield call(fetchAPI, 'GET', `orders/${id}`);
-
-        const data = yield call([ response, response.json ]);
-        if (response.status !== 200) {
-            throw new Error(response.message);
-        }
+        const data = yield call(fetchAPI, 'GET', `orders/${id}`);
 
         yield put(fetchOrderSuccess(data));
     } catch (error) {

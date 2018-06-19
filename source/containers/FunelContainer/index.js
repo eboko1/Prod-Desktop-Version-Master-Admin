@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+import { FormattedMessage } from 'react-intl';
+import { withRouter } from 'react-router';
 
 // proj
 import { fetchOrdersStats } from 'core/orders/duck';
@@ -28,6 +30,7 @@ const mapDispatchToProps = (dispatch, props) => {
     };
 };
 
+@withRouter
 @connect(mapStateToProps, mapDispatchToProps)
 class FunelContainer extends Component {
     componentDidMount() {
@@ -39,30 +42,58 @@ class FunelContainer extends Component {
 
         return (
             <div className={ Styles.funel }>
-                <Link to={ `${book.orders}/appointments` }>
-                    appointments ({ stats.not_complete +
+                <NavLink
+                    exact
+                    to={ `${book.orders}/appointments` }
+                    activeClassName={ Styles.active }
+                >
+                    <FormattedMessage id='funel.appointments' /> ({ stats.not_complete +
                         stats.call +
                         stats.reserve +
                         stats.required })
-                </Link>
-                <Link to={ `${book.orders}/approved` }>
-                    approves ({ stats.approve })
-                </Link>
-                <Link to={ `${book.orders}/in-progress` }>
-                    in progress ({ stats.progress })
-                </Link>
-                <Link to={ `${book.orders}/success` }>
-                    success ({ stats.success })
-                </Link>
-                <Link to={ `${book.orders}/reviews` }>
-                    reviews ({ stats.review })
-                </Link>
-                <Link to={ `${book.orders}/invitations` }>
-                    invitations ({ stats.invite })
-                </Link>
-                <Link to={ `${book.orders}/canceled` }>
-                    cancels ({ stats.cancel })
-                </Link>
+                </NavLink>
+                <NavLink
+                    exact
+                    to={ `${book.orders}/approved` }
+                    activeClassName={ Styles.active }
+                >
+                    <FormattedMessage id='funel.record' /> ({ stats.approve })
+                </NavLink>
+                <NavLink
+                    exact
+                    to={ `${book.orders}/in-progress` }
+                    activeClassName={ Styles.active }
+                >
+                    <FormattedMessage id='funel.repair' /> ({ stats.progress })
+                </NavLink>
+                <NavLink
+                    exact
+                    to={ `${book.orders}/success` }
+                    activeClassName={ Styles.active }
+                >
+                    <FormattedMessage id='funel.done' /> ({ stats.success })
+                </NavLink>
+                <NavLink
+                    exact
+                    to={ `${book.orders}/reviews` }
+                    activeClassName={ Styles.active }
+                >
+                    <FormattedMessage id='funel.review' /> ({ stats.review })
+                </NavLink>
+                <NavLink
+                    exact
+                    to={ `${book.orders}/invitations` }
+                    activeClassName={ Styles.active }
+                >
+                    <FormattedMessage id='funel.invitation' /> ({ stats.invite })
+                </NavLink>
+                <NavLink
+                    exact
+                    to={ `${book.orders}/canceled` }
+                    activeClassName={ Styles.active }
+                >
+                    <FormattedMessage id='funel.cancel' /> ({ stats.cancel })
+                </NavLink>
             </div>
         );
     }

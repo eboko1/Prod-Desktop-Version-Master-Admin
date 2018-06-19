@@ -164,6 +164,9 @@ export function columnsConfig(activeRoute) {
         dataIndex: 'changeReason',
         key:       'changeReason',
         width:     120,
+        render:    (_, order) => {
+            <FormattedMessage id={ `order.${order.changeReason}` } />;
+        },
     };
 
     const tasksCol = {
