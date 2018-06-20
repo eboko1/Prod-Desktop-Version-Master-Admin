@@ -43,8 +43,8 @@ export default function reducer(state = ReducerState, action) {
 
     switch (type) {
         case FETCH_ORDERS:
-        console.log('→ state.filter', state.filter);
-        console.log('→ action.payload', payload);
+            // console.log('→ state.filter', state.filter);
+            // console.log('→ action.payload', payload);
 
             return {
                 ...state,

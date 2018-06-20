@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 import {
     Table,
     InputNumber,
@@ -23,14 +24,18 @@ class ServicesTable extends Component {
         super(props);
         this.columns = [
             {
-                title:     'service',
+                title:     <FormattedMessage id='order_form_table.service' />,
                 dataIndex: 'service',
                 width:     '30%',
                 render:    (text, record) => (
                     <Select
                         style={ { width: 220 } }
-                        onChange={ value => this.handleChange(value) }
-                        placeholder='Select service'
+                        onChange={ value =>
+                            this.handleServiceSelect(record.key, value)
+                        }
+                        placeholder={
+                            <FormattedMessage id='order_form_table.service.placeholder' />
+                        }
                     >
                         <Option value='jack'>Jack</Option>
                         <Option value='lucy'>Lucy</Option>
@@ -42,7 +47,7 @@ class ServicesTable extends Component {
                 ),
             },
             {
-                title:     'price',
+                title:     <FormattedMessage id='order_form_table.price' />,
                 dataIndex: 'price',
                 render:    (text, record) => (
                     <InputNumber
@@ -55,7 +60,7 @@ class ServicesTable extends Component {
                 ),
             },
             {
-                title:     'count',
+                title:     <FormattedMessage id='order_form_table.count' />,
                 dataIndex: 'count',
                 render:    (text, record) => (
                     <InputNumber
@@ -69,7 +74,7 @@ class ServicesTable extends Component {
                 ),
             },
             {
-                title:     'sum',
+                title:     <FormattedMessage id='order_form_table.sum' />,
                 dataIndex: 'sum',
                 render:    (text, record) => {
                     const value = record.price * record.count;
@@ -88,17 +93,10 @@ class ServicesTable extends Component {
                 title:     '',
                 dataIndex: 'delete',
                 render:    (text, record) => {
-                    // return this.state.dataSource.length > 1 ? (
-                    console.log('→ record', record);
-                    console.log(
-                        '→ this.state.dataSource.length',
-                        this.state.dataSource.length,
-                    );
                     const { dataSource } = this.state;
 
                     return dataSource.length > 1 &&
                         dataSource.length - 1 !== dataSource.indexOf(record) ? (
-                        // record.key !== this.state.dataSource.length ? (
                             <Popconfirm
                                 title='Sure to delete?'
                                 onConfirm={ () => this.onDelete(record.key) }
@@ -121,13 +119,20 @@ class ServicesTable extends Component {
                     delete:  '',
                 },
             ],
-            // count: 1,
         };
     }
 
-    // TODO: get back
-    handleChange = value => {
-        this.handleAdd();
+    handleServiceSelect = (key, value) => {
+        const dataSource = [ ...this.state.dataSource ];
+
+        const target = dataSource.find(item => item.key === key);
+        if (target) {
+            if (target.service === '') {
+                this.handleAdd();
+            }
+            target.service = value;
+            this.setState({ ...dataSource });
+        }
     };
 
     onDelete = key => {
@@ -138,20 +143,16 @@ class ServicesTable extends Component {
     };
 
     handleAdd = () => {
-        const { count, dataSource } = this.state;
+        const { dataSource } = this.state;
         const newData = {
             key:     v4(),
-            // key:     count,
             service: '',
             price:   0,
             count:   1,
             sum:     0,
             delete:  '',
         };
-        this.setState({
-            dataSource: [ ...dataSource, newData ],
-            // count:      count + 1,
-        });
+        this.setState({ dataSource: [ ...dataSource, newData ] });
     };
 
     onCellChange = (key, value, dataIndex) => {
@@ -163,19 +164,14 @@ class ServicesTable extends Component {
         }
     };
 
+    handleChange = value => console.log('→ value', value);
+
     render() {
         const { dataSource } = this.state;
         const columns = this.columns;
 
         return (
             <Catcher>
-                <Button
-                    onClick={ () => this.handleAdd() }
-                    type='primary'
-                    style={ { marginBottom: 16 } }
-                >
-                    Add a row
-                </Button>
                 <Table
                     dataSource={ dataSource }
                     columns={ columns }
