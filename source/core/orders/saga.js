@@ -19,40 +19,30 @@ import {
 } from './duck';
 
 import * as ducks from './duck';
-console.log('DUCKS', ducks);
+// console.log('DUCKS', ducks);
 export function* fetchOrdersSaga({ payload: { ...filter } }) {
-    // try {
+// export function* fetchOrdersSaga(filter) {
     yield nprogress.start();
     yield put(uiActions.setOrdersFetchingState(true));
-    const data = yield call(fetchAPI, 'GET', 'orders', {
-        page:   filter.page,
-        status: filter.status,
-    });
+    // console.log('SAGA_payload', {...filter});
+    // console.log('SAGA_payload', filter);
+    const data = yield call(fetchAPI, 'GET', 'orders', {...filter});
 
-    console.log('data', data);
+    // console.log('data', data);
 
     yield put(fetchOrdersSuccess(data));
-    // } catch (error) {
-    // yield put(fetchOrdersFail(error), 'fetch orders saga');
-    // } finally {
     yield put(uiActions.setOrdersFetchingState(false));
     yield nprogress.done();
-    // }
 }
 
 export function* fetchOrdersStatsSaga() {
-    // try {
     yield nprogress.start();
     const data = yield call(fetchAPI, 'GET', 'orders/stats');
 
     // const data = yield apply( response, response.json );
 
     yield put(fetchOrdersStatsSuccess(data));
-    // } catch (error) {
-    // yield put(fetchOrdersStatsFail(error));
-    // } finally {
     yield nprogress.done();
-    // }
 }
 
 export function* fetchOrdersFiltersSaga() {
@@ -63,11 +53,7 @@ export function* fetchOrdersFiltersSaga() {
     // const data = yield apply(response, response.json);
 
     yield put(fetchOrdersStatsSuccess(data));
-    // } catch (error) {
-    //     yield put(fetchOrdersStatsFail(error));
-    // } finally {
     yield nprogress.done();
-    // }
 }
 
 export function* ordersSearchSaga({ payload: search }) {

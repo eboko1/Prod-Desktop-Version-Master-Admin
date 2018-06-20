@@ -1,19 +1,21 @@
+// vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter, Switch, Route, Redirect } from 'react-router';
 import { hot } from 'react-hot-loader';
+
 // proj
 import { authActions } from 'core/auth/actions';
 import { uiActions } from 'core/ui/actions';
+import { getToken } from 'utils';
 
 import { Spinner, Catcher } from 'commons';
 import { Exception } from 'containers';
+
 // own
 import book from './book';
 import Private from './Private';
 import Public from './Public';
-
-import { getToken } from 'utils';
 
 @withRouter
 @hot(module)

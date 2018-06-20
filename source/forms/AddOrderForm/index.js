@@ -16,6 +16,12 @@ import moment from 'moment';
 
 //proj
 import { antdReduxFormActions } from 'core/forms/antdReduxForm/actions';
+
+import {
+    DetailsTable,
+    ServicesTable,
+    DiscountPanel,
+} from 'components/OrderFormTables';
 import { withReduxForm } from 'utils';
 
 // own
@@ -66,7 +72,7 @@ export class AddOrderForm extends Component {
                 { /* <FormItem { ...formItemLayout } label='Plain Text'>
                     <span className='ant-form-text'>China</span>
                 </FormItem> */ }
-
+                { /* 
                 <FormItem { ...formItemLayout } label='Radio.Button'>
                     { getFieldDecorator('status')(
                         <RadioGroup>
@@ -78,7 +84,7 @@ export class AddOrderForm extends Component {
                             <RadioButton value='approved'>Approved</RadioButton>
                         </RadioGroup>,
                     ) }
-                </FormItem>
+                </FormItem> */ }
 
                 <div>
                     <FormItem label='Select Date' hasFeedback>
@@ -185,24 +191,30 @@ export class AddOrderForm extends Component {
                 <div className={ Styles.totalBlock }>
                     <FormItem label='способ оплыты'>
                         <Select>
-                            <Option value='cash'>Нал</Option>
-                            <Option value='card'>Безнал</Option>
+                            <Option value='cash'>
+                                <Icon type='wallet' />Нал
+                            </Option>
+                            <Option value='card'>
+                                <Icon type='credit-card' />Безнал
+                            </Option>
                         </Select>
                     </FormItem>
                     <div>TOTAL 0uah.</div>
                 </div>
-                <FormItem wrapperCol={ { span: 12, offset: 6 } }>
+                { /* <FormItem wrapperCol={ { span: 12, offset: 6 } }>
                     <Button type='primary' htmlType='submit'>
                         Submit
                     </Button>
-                </FormItem>
+                </FormItem> */ }
                 { /* FORMS TABS */ }
                 <Tabs onChange={ () => this.callback() } type='card'>
                     <TabPane tab='Services' key='1'>
-                        Работы
+                        <ServicesTable />
+                        <DiscountPanel />
                     </TabPane>
                     <TabPane tab='Details' key='2'>
-                        Запчасти
+                        <DetailsTable />
+                        <DiscountPanel />
                     </TabPane>
                     <TabPane tab='Comments' key='3'>
                         <FormItem { ...formItemLayout } label='Client Comments'>

@@ -1,0 +1,16 @@
+.sum :global(.ant-input-number-input[disabled]) {
+    color: rgba(0, 0, 0, 1);
+}
+
+.deleteIcon {
+    font-size: 18px;
+
+    &:hover {
+        color: var(--not_complete);
+    }
+}
+
+.durationPanel {
+    display: flex;
+    margin: 24px 0;
+}

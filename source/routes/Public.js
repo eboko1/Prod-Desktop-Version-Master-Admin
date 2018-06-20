@@ -1,17 +1,19 @@
+// vendor
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router';
 
-import book from './book';
+// proj
+import { Login } from 'containers';
 
-import { Home, Login } from 'containers';
+import book from './book';
 
 export default class Public extends Component {
     render() {
         return (
             <Switch>
                 <Route exact component={ Login } path={ book.login } />
-                <Route exact component={ Home } path={ book.home } />
-                <Redirect to={ book.home } />
+                { /* <Route exact component={ Home } path={ book.home } /> */ }
+                <Redirect to={ book.login } />
             </Switch>
         );
     }

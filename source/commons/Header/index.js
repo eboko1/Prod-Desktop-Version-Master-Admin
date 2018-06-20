@@ -1,6 +1,6 @@
 // core
 import React, { Component } from 'react';
-import { Button, Icon } from 'antd';
+import { Button, Icon, Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
@@ -33,7 +33,7 @@ class Header extends Component {
                     </div>
                     <div className={ Styles.headerPanel }>
                         <Link className={ Styles.user } to={ book.profile }>
-                            <Button icon='user' className={ Styles.userButton } />
+                            <Avatar className={ Styles.avatar } icon='user' />
                             <div>СТО Партнер</div>
                         </Link>
                         <Icon

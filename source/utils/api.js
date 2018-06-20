@@ -57,7 +57,7 @@ export default async function fetchAPI(method, endpoint, query, body) {
         const status = response.status;
         const { dispatch } = store;
 
-        console.log("status", status);
+        // console.log("status", status);
 
         // checkStatus(status)
 

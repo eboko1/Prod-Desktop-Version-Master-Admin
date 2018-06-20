@@ -25,10 +25,12 @@
 .headerInfo {
     display: flex;
     flex-direction: column;
+    margin-right: 16px;
 }
 
 .title {
     font-size: 24px;
+    white-space: nowrap;
 }
 
 .description {
@@ -37,4 +39,6 @@
 
 .headerContorls {
     display: flex;
+    /* flex: 1 1 auto;
+    justify-content: space-between; */
 }

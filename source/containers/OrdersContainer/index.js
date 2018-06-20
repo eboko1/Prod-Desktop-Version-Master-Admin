@@ -18,12 +18,7 @@ import { Catcher, Spinner } from 'commons';
 import { OrdersTable } from 'components';
 
 // own
-import {
-    columnsConfig,
-    rowsConfig,
-    paginationConfig,
-    scrollConfig,
-} from './ordersTableConfig';
+import { columnsConfig, rowsConfig, scrollConfig } from './ordersTableConfig';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => {

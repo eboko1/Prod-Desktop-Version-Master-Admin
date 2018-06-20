@@ -1,10 +1,9 @@
+// vendor
 import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router';
 
-import book from './book';
-
+// proj
 import { DistributorDash, Request, SwapiBox } from 'containers';
-
 import {
     OrdersPage,
     OrderPage,
@@ -12,6 +11,8 @@ import {
     ProfilePage,
     ExceptionPage,
 } from 'pages';
+
+import book from './book';
 
 export default class Private extends Component {
     render() {

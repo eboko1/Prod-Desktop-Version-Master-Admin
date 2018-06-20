@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
-import { Button } from 'antd';
+import { Button, Radio } from 'antd';
 
 // proj
 import { Layout } from 'commons';
@@ -18,9 +18,15 @@ import book from 'routes/book';
 // own
 import Styles from './styles.m.css';
 const ButtonGroup = Button.Group;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @withRouter
 class OrdersPage extends Component {
+    state = {
+        radioDateRange: 'all',
+    };
+
     getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
         switch (status) {
@@ -44,6 +50,10 @@ class OrdersPage extends Component {
         }
     }
 
+    handleRadioDateRange(ev) {
+        this.setState({ handleRadioDateRange: ev.target.value });
+    }
+
     render() {
         const status = this.props.match.params.ordersStatuses;
 
@@ -54,23 +64,27 @@ class OrdersPage extends Component {
                 description={ <FormattedMessage id='orders-page.description' /> }
                 controls={
                     <div className={ Styles.controls }>
-                        <ButtonGroup className={ Styles.filters }>
-                            <Button>
+                        <RadioGroup
+                            defaultValue={ this.state.radioDateRange }
+                            onChange={ ev => this.handleRadioDateRange(ev) }
+                            className={ Styles.filters }
+                        >
+                            <RadioButton value='all'>
                                 <FormattedMessage id='orders-page.all' />
-                            </Button>
-                            <Button>
+                            </RadioButton>
+                            <RadioButton value='today'>
                                 <FormattedMessage id='orders-page.today' />
-                            </Button>
-                            <Button>
+                            </RadioButton>
+                            <RadioButton value='tomorrow'>
                                 <FormattedMessage id='orders-page.tomorrow' />
-                            </Button>
-                            <Button>
+                            </RadioButton>
+                            <RadioButton value='week'>
                                 <FormattedMessage id='orders-page.week' />
-                            </Button>
-                            <Button>
+                            </RadioButton>
+                            <RadioButton value='month'>
                                 <FormattedMessage id='orders-page.month' />
-                            </Button>
-                        </ButtonGroup>
+                            </RadioButton>
+                        </RadioGroup>
                         <div className={ Styles.buttonGroup }>
                             { (status === 'canceled' ||
                                 status === 'success') && (

@@ -1,29 +1,46 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Input } from 'antd';
+import { Button, Input, Radio, Icon } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Catcher } from 'commons';
 import Styles from './styles.m.css';
 //proj
-import { ordersSearch } from 'core/orders/duck';
+import { ordersSearch, fetchOrders } from 'core/orders/duck';
 
 const Search = Input.Search;
 const ButtonGroup = Button.Group;
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 const mapStateToProps = (state, props) => {
     return {
-        stats: state.orders.stats,
+        stats:  state.orders.stats,
+        filter: state.orders.filter,
     };
 };
 
 @injectIntl
-@connect(mapStateToProps, { ordersSearch })
+@connect(mapStateToProps, { ordersSearch, fetchOrders })
 export default class OrdersFilterContainer extends Component {
-    _applyFilterMessage = event => {
-        console.log('event', event.target.value);
-        this.props.ordersSearch(event.target.value);
+    state = {
+        selectedStatus: 'not_complete,required,reserve,call',
     };
+
+    handleOrdersSearch(value) {
+        // handleOrdersSearch = event => {
+        console.log('event', value);
+        this.props.fetchOrders({ query: value, ...this.props.filter });
+        // this.props.ordersSearch(value);
+    }
+
+    selectStatus(ev) {
+        const status = ev.target.value;
+        this.setState({ selectedStatus: status });
+        console.log('status', status);
+        this.props.fetchOrders({ status: status, ...this.props.filter });
+    }
+
     render() {
         const { status, stats, intl } = this.props;
 
@@ -39,37 +56,42 @@ export default class OrdersFilterContainer extends Component {
                         //     <FormattedMessage id='orders-filter.search.search_placeholder' />
                         // }
                         // eslint-disable-next-line
-                        onSearch={value => this._applyFilterMessage(value)}
-                        onChange={ this._applyFilterMessage }
-                        enterButton
+                        onSearch={value => this.handleOrdersSearch(value)}
+                        // onChange={ this.handleOrdersSearch }
+                        // enterButton
+                        // enterButton={ <Icon type='close' /> }
                     />
                     { status === 'appointments' && (
-                        <ButtonGroup className={ Styles.buttonGroup }>
-                            <Button>
+                        <RadioGroup
+                            onChange={ ev => this.selectStatus(ev) }
+                            className={ Styles.buttonGroup }
+                            defaultValue={ this.state.selectedStatus }
+                        >
+                            <RadioButton value='not_complete,required,reserve,call'>
                                 <FormattedMessage id='all' /> ({ stats.not_complete +
                                     stats.required +
                                     stats.reserve +
                                     stats.call })
-                            </Button>
-                            <Button>
+                            </RadioButton>
+                            <RadioButton value='not_complete'>
                                 <FormattedMessage id='not_complete' /> ({
                                     stats.not_complete
                                 })
-                            </Button>
-                            <Button>
+                            </RadioButton>
+                            <RadioButton value='required'>
                                 <FormattedMessage id='required' /> ({
                                     stats.required
                                 })
-                            </Button>
-                            <Button>
+                            </RadioButton>
+                            <RadioButton value='reserve'>
                                 <FormattedMessage id='reserve' /> ({
                                     stats.reserve
                                 })
-                            </Button>
-                            <Button>
+                            </RadioButton>
+                            <RadioButton value='call'>
                                 <FormattedMessage id='call' /> ({ stats.call })
-                            </Button>
-                        </ButtonGroup>
+                            </RadioButton>
+                        </RadioGroup>
                     ) }
                 </div>
             </Catcher>

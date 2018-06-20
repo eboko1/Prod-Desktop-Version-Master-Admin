@@ -34,7 +34,6 @@ const ReducerState = {
     stats:  {},
     count:  '',
     data:   [],
-    search: '',
     filter: {},
 };
 
@@ -43,16 +42,16 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
+        case FETCH_ORDERS:
+        console.log('→ state.filter', state.filter);
+        console.log('→ action.payload', payload);
+
+            return {
+                ...state,
+                filter: { ...state.filter, ...payload },
+            };
+
         case FETCH_ORDERS_SUCCESS:
-            // console.group('orders reducer');
-            // console.log('state', state.orders);
-            // console.log('payload', payload);
-            // console.log('return', state.set('orders', payload.orders));
-            // console.groupEnd();
-
-            // return state.orders.set(0, payload);
-            // return state.set('orders', payload);
-
             return {
                 ...state,
                 count: payload.count,
