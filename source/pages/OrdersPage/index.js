@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
@@ -14,6 +15,7 @@ import {
     UniversalFilters,
 } from 'containers';
 import book from 'routes/book';
+import { setOrdersDaterangeFilter } from 'core/orders/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -21,12 +23,19 @@ const ButtonGroup = Button.Group;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-@withRouter
-class OrdersPage extends Component {
-    state = {
-        radioDateRange: 'all',
+const mapState = state => {
+    return {
+        ordersDaterangeFilter: state.orders.filter.daterange,
     };
+};
 
+const mapDispatch = {
+    setOrdersDaterangeFilter,
+};
+
+@withRouter
+@connect(mapState, mapDispatch)
+class OrdersPage extends Component {
     getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
         switch (status) {
@@ -50,12 +59,15 @@ class OrdersPage extends Component {
         }
     }
 
-    handleRadioDateRange(ev) {
-        this.setState({ handleRadioDateRange: ev.target.value });
-    }
+    _handleRadioDateRange = event => {
+        this.props.setOrdersDaterangeFilter(event.target.value);
+    };
 
     render() {
+        const { ordersDaterangeFilter } = this.props;
         const status = this.props.match.params.ordersStatuses;
+
+        console.log('ordersDaterangeFilter', ordersDaterangeFilter);
 
         return (
             <Layout
@@ -65,8 +77,8 @@ class OrdersPage extends Component {
                 controls={
                     <div className={ Styles.controls }>
                         <RadioGroup
-                            defaultValue={ this.state.radioDateRange }
-                            onChange={ ev => this.handleRadioDateRange(ev) }
+                            defaultValue={ ordersDaterangeFilter }
+                            onChange={ this._handleRadioDateRange }
                             className={ Styles.filters }
                         >
                             <RadioButton value='all'>

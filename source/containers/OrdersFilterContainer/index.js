@@ -6,7 +6,11 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Catcher } from 'commons';
 import Styles from './styles.m.css';
 //proj
-import { ordersSearch, fetchOrders } from 'core/orders/duck';
+import {
+    ordersSearch,
+    fetchOrders,
+    setOrdersStatusFilter,
+} from 'core/orders/duck';
 
 const Search = Input.Search;
 const ButtonGroup = Button.Group;
@@ -21,28 +25,26 @@ const mapStateToProps = (state, props) => {
 };
 
 @injectIntl
-@connect(mapStateToProps, { ordersSearch, fetchOrders })
+@connect(mapStateToProps, { ordersSearch, fetchOrders, setOrdersStatusFilter })
 export default class OrdersFilterContainer extends Component {
-    state = {
-        selectedStatus: 'not_complete,required,reserve,call',
-    };
-
     handleOrdersSearch(value) {
-        // handleOrdersSearch = event => {
         console.log('event', value);
         this.props.fetchOrders({ query: value, ...this.props.filter });
         // this.props.ordersSearch(value);
     }
 
     selectStatus(ev) {
-        const status = ev.target.value;
-        this.setState({ selectedStatus: status });
-        console.log('status', status);
+        const { setOrdersStatusFilter } = this.props;
+
+        setOrdersStatusFilter(ev.target.value);
+
         this.props.fetchOrders({ status: status, ...this.props.filter });
     }
 
     render() {
-        const { status, stats, intl } = this.props;
+        const { status, stats, intl, filter } = this.props;
+
+        console.log('filter', filter);
 
         return (
             <Catcher>
@@ -65,7 +67,7 @@ export default class OrdersFilterContainer extends Component {
                         <RadioGroup
                             onChange={ ev => this.selectStatus(ev) }
                             className={ Styles.buttonGroup }
-                            defaultValue={ this.state.selectedStatus }
+                            defaultValue={ filter.status }
                         >
                             <RadioButton value='not_complete,required,reserve,call'>
                                 <FormattedMessage id='all' /> ({ stats.not_complete +

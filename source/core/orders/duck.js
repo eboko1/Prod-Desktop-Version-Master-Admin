@@ -23,6 +23,9 @@ export const FETCH_ORDERS_FILTERS_FAIL = `${prefix}/FETCH_ORDERS__FILTERS_FAIL`;
 export const ORDERS_SEARCH = `${prefix}/ORDERS_SEARCH`;
 export const ORDERS_SEARCH_SUCCESS = `${prefix}/ORDERS_SEARCH_SUCCESS`;
 
+export const SET_ORDERS_DATERANGE_FILTER = `${prefix}/SET_ORDERS_DATERANGE_FILTER`;
+export const SET_ORDERS_STATUS_FILTER = `${prefix}/SET_ORDERS_STATUS_FILTER`;
+
 /**
  * Reducer
  * */
@@ -34,7 +37,11 @@ const ReducerState = {
     stats:  {},
     count:  '',
     data:   [],
-    filter: {},
+    filter: {
+        page:      1,
+        status:    'not_complete,required,reserve,call',
+        daterange: 'all',
+    },
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -42,15 +49,6 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case FETCH_ORDERS:
-            // console.log('→ state.filter', state.filter);
-            // console.log('→ action.payload', payload);
-
-            return {
-                ...state,
-                filter: { ...state.filter, ...payload },
-            };
-
         case FETCH_ORDERS_SUCCESS:
             return {
                 ...state,
@@ -65,16 +63,34 @@ export default function reducer(state = ReducerState, action) {
                 stats: payload,
             };
 
-        case FETCH_ORDERS_FILTERS_SUCCESS:
+        // case FETCH_ORDERS_FILTERS_SUCCESS:
+        //     return {
+        //         ...state,
+        //         filter: payload,
+        //     };
+        //
+        // case ORDERS_SEARCH:
+        //     return {
+        //         ...state,
+        //         search: payload,
+        //     };
+
+        case SET_ORDERS_DATERANGE_FILTER:
             return {
                 ...state,
-                filter: payload,
+                filter: {
+                    ...state.filter,
+                    daterange: payload,
+                },
             };
 
-        case ORDERS_SEARCH:
+        case SET_ORDERS_STATUS_FILTER:
             return {
                 ...state,
-                search: payload,
+                filter: {
+                    ...state.filter,
+                    status: payload,
+                },
             };
 
         default:
@@ -87,6 +103,7 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
+// export const selectFilter = state => state.orders.filter;
 // export const ordersSelector = createSelector(stateSelector, state => {
 //     // console.log('ordersSelector', state.orders);
 //
@@ -141,38 +158,13 @@ export function fetchOrdersStatsFail(error) {
     };
 }
 
-export function ordersSearch(search) {
-    return {
-        type:    ORDERS_SEARCH,
-        payload: search,
-    };
-}
+// Filter
+export const setOrdersDaterangeFilter = datarangeFilter => ({
+    type:    SET_ORDERS_DATERANGE_FILTER,
+    payload: datarangeFilter,
+});
 
-export function ordersSearchSuccess(search) {
-    return {
-        type:    ORDERS_SEARCH_SUCCESS,
-        payload: search,
-    };
-}
-
-export function ordersFilter({ filter }) {
-    return {
-        type:    FETCH_ORDERS_FILTERS,
-        payload: filter,
-    };
-}
-
-export function ordersFilterSuccess({ filter }) {
-    return {
-        type:    FETCH_ORDERS_FILTERS_SUCCESS,
-        payload: filter,
-    };
-}
-
-export function fetchFilterFail(error) {
-    return {
-        type:    FETCH_ORDERS_STATS_FAIL,
-        payload: error,
-        error:   true,
-    };
-}
+export const setOrdersStatusFilter = statusFilter => ({
+    type:    SET_ORDERS_STATUS_FILTER,
+    payload: statusFilter,
+});

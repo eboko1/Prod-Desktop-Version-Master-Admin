@@ -1,5 +1,13 @@
 // vendor
-import { call, put, takeEvery, all, apply } from 'redux-saga/effects';
+import {
+    call,
+    put,
+    takeEvery,
+    all,
+    apply,
+    take,
+    select,
+} from 'redux-saga/effects';
 import nprogress from 'nprogress';
 
 //proj
@@ -19,27 +27,44 @@ import {
 } from './duck';
 
 import * as ducks from './duck';
-// console.log('DUCKS', ducks);
-export function* fetchOrdersSaga({ payload: { ...filter } }) {
-// export function* fetchOrdersSaga(filter) {
-    yield nprogress.start();
-    yield put(uiActions.setOrdersFetchingState(true));
-    // console.log('SAGA_payload', {...filter});
-    // console.log('SAGA_payload', filter);
-    const data = yield call(fetchAPI, 'GET', 'orders', {...filter});
+//
+// export function* fetchOrdersSaga(action) { // сейчас не работает, только для примера
+//     yield nprogress.start();
+//     yield put(uiActions.setOrdersFetchingState(true));
+//
+//     const data = yield call(fetchAPI, "GET", "orders", action.payload);
+//
+//     yield put(fetchOrdersSuccess(data));
+//     yield put(uiActions.setOrdersFetchingState(false));
+//     yield nprogress.done();
+// }
 
-    // console.log('data', data);
+const selectFilter = state => state.orders.filter;
 
-    yield put(fetchOrdersSuccess(data));
-    yield put(uiActions.setOrdersFetchingState(false));
-    yield nprogress.done();
+export function* fetchOrdersSagaTake() {
+    // сейчас работает (подключена в рут саге)
+    while (true) {
+        const action = yield take(FETCH_ORDERS); // Блочится на этом месте (можешь доставать экшн)
+
+        const filters = yield select(selectFilter);
+
+        delete filters.daterange; // пока API не работает
+
+        yield nprogress.start();
+        yield put(uiActions.setOrdersFetchingState(true));
+
+        const data = yield call(fetchAPI, 'GET', 'orders', filters);
+
+        // yield put(fetchOrdersSuccess(data));
+
+        yield put(uiActions.setOrdersFetchingState(false));
+        yield nprogress.done();
+    }
 }
 
 export function* fetchOrdersStatsSaga() {
     yield nprogress.start();
     const data = yield call(fetchAPI, 'GET', 'orders/stats');
-
-    // const data = yield apply( response, response.json );
 
     yield put(fetchOrdersStatsSuccess(data));
     yield nprogress.done();
@@ -66,5 +91,5 @@ export function* ordersSearchSaga({ payload: search }) {
 }
 
 export function* saga() {
-    yield all([ takeEvery(FETCH_ORDERS, fetchOrdersSaga), takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga), takeEvery(FETCH_ORDERS_FILTERS, fetchOrdersFiltersSaga), takeEvery(ducks.ORDERS_SEARCH, ordersSearchSaga) ]);
+    yield all([ call(fetchOrdersSagaTake), takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga), takeEvery(FETCH_ORDERS_FILTERS, fetchOrdersFiltersSaga), takeEvery(ducks.ORDERS_SEARCH, ordersSearchSaga) ]);
 }

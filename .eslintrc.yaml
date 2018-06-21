@@ -24,6 +24,7 @@ globals:
     __ENV__: false
 
     # Global environments, defined by webpack
+    __LOCAL__: false
     __DEV__: false
     __PROD__: false
     __API_URL__: false
