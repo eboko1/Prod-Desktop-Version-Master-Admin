@@ -44,3 +44,6 @@ export const withReduxForm = ({ name, fields, actions }) => Enhanceable => {
 
     return ConnectedForm;
 };
+
+export const hasErrors = fieldsError =>
+    Object.keys(fieldsError).some(field => fieldsError[ field ]);

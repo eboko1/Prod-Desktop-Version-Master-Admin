@@ -22,7 +22,7 @@ import {
     ServicesTable,
     DiscountPanel,
 } from 'components/OrderFormTables';
-import { withReduxForm } from 'utils';
+import { withReduxForm, hasErrors } from 'utils';
 
 // own
 import { DecoratedInput } from './DecoratedInput';
@@ -58,7 +58,7 @@ export class AddOrderForm extends Component {
         console.log(`selected ${value}`);
     }
     render() {
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldsError } = this.props.form;
         const formItemLayout = {
             labelCol:   { span: 6 },
             wrapperCol: { span: 14 },
@@ -67,12 +67,21 @@ export class AddOrderForm extends Component {
         const dateFormat = 'YYYY/MM/DD';
         const hourFormat = 'HH:mm';
 
+        const buttonDisabled = hasErrors(getFieldsError());
+
         return (
             <Form onSubmit={ this.handleSubmit } layout='horizontal'>
+                <Button
+                    type='dashed'
+                    htmlType='submit'
+                    disabled={ buttonDisabled }
+                >
+                    inner submit (test validation)
+                </Button>
                 { /* <FormItem { ...formItemLayout } label='Plain Text'>
                     <span className='ant-form-text'>China</span>
                 </FormItem> */ }
-                { /* 
+                { /*
                 <FormItem { ...formItemLayout } label='Radio.Button'>
                     { getFieldDecorator('status')(
                         <RadioGroup>

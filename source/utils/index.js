@@ -8,4 +8,4 @@ export * from './tools';
 export { default as images } from './images';
 export { default as fetchAPI } from './api';
 export { ConnectedIntlProvider } from './ConnectedIntlProvider';
-export { withReduxForm } from './withReduxForm';
+export { withReduxForm, hasErrors } from './withReduxForm';
