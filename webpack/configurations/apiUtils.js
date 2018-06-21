@@ -1,4 +1,4 @@
-export const getApiUrl = (BUILD_ENV) => {
+export const getApiUrl = BUILD_ENV => {
     let __API_URL__ = null;
 
     switch (BUILD_ENV) {
@@ -11,8 +11,11 @@ export const getApiUrl = (BUILD_ENV) => {
         case 'development':
             __API_URL__ = JSON.stringify('https://dev-api.carbook.pro');
             break;
-        default:
+        case 'local':
             __API_URL__ = JSON.stringify('https://dev-api.carbook.pro');
+            break;
+        default:
+            __API_URL__ = JSON.stringify('https://api.carbook.pro');
             break;
     }
 

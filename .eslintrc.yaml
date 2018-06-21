@@ -26,6 +26,7 @@ globals:
     # Global environments, defined by webpack
     __DEV__: false
     __PROD__: false
+    __API_URL__: false
 
     # Globals for test environment
     React: false

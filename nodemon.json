@@ -6,7 +6,7 @@
     "watch": ["./webpack", "package.json", ".babelrc"],
     "env": {
         "NODE_ENV": "development",
-        "BUILD_ENV": "development"
+        "BUILD_ENV": "local"
     },
     "exec":
         "webpack-dev-server --config='./webpack/webpack.config.babel.js' --env development",
