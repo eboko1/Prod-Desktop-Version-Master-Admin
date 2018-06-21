@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 import { Button, Input, Radio, Icon } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Catcher } from 'commons';
@@ -10,6 +11,7 @@ import {
     ordersSearch,
     fetchOrders,
     setOrdersStatusFilter,
+    setOrdersSearchFilter,
 } from 'core/orders/duck';
 
 const Search = Input.Search;
@@ -17,34 +19,43 @@ const ButtonGroup = Button.Group;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = state => {
     return {
         stats:  state.orders.stats,
         filter: state.orders.filter,
     };
 };
 
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            ordersSearch,
+            fetchOrders,
+            setOrdersStatusFilter,
+            setOrdersSearchFilter,
+        },
+        dispatch,
+    );
+};
+
 @injectIntl
-@connect(mapStateToProps, { ordersSearch, fetchOrders, setOrdersStatusFilter })
+@connect(mapStateToProps, mapDispatchToProps)
 export default class OrdersFilterContainer extends Component {
     handleOrdersSearch(value) {
-        console.log('event', value);
-        this.props.fetchOrders({ query: value, ...this.props.filter });
-        // this.props.ordersSearch(value);
+        const { setOrdersSearchFilter, fetchOrders, filter } = this.props;
+        setOrdersSearchFilter(value);
+        fetchOrders({ page: 1, ...filter });
     }
 
     selectStatus(ev) {
-        const { setOrdersStatusFilter } = this.props;
+        const { setOrdersStatusFilter, fetchOrders, filter } = this.props;
 
         setOrdersStatusFilter(ev.target.value);
-
-        this.props.fetchOrders({ status: status, ...this.props.filter });
+        fetchOrders({ page: 1, ...filter });
     }
 
     render() {
         const { status, stats, intl, filter } = this.props;
-
-        console.log('filter', filter);
 
         return (
             <Catcher>

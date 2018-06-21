@@ -7,15 +7,17 @@ import { Link } from 'react-router-dom';
 import { Button, Radio } from 'antd';
 
 // proj
-import { Layout } from 'commons';
+import { setOrdersDaterangeFilter } from 'core/orders/duck';
 import {
     OrdersContainer,
     FunelContainer,
     OrdersFilterContainer,
     UniversalFilters,
 } from 'containers';
+
+import { Layout } from 'commons';
 import book from 'routes/book';
-import { setOrdersDaterangeFilter } from 'core/orders/duck';
+import { getDaterangeDates } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -59,7 +61,12 @@ class OrdersPage extends Component {
         }
     }
 
-    _handleRadioDateRange = event => {
+    _handleRadioDaterange = event => {
+        console.log(
+            '→ getDaterangeDates',
+            getDaterangeDates(event.target.value),
+        );
+        console.log('→ HDATERANGE', event.target.value);
         this.props.setOrdersDaterangeFilter(event.target.value);
     };
 
@@ -67,7 +74,7 @@ class OrdersPage extends Component {
         const { ordersDaterangeFilter } = this.props;
         const status = this.props.match.params.ordersStatuses;
 
-        console.log('ordersDaterangeFilter', ordersDaterangeFilter);
+        // console.log('ordersDaterangeFilter', ordersDaterangeFilter);
 
         return (
             <Layout
@@ -78,10 +85,10 @@ class OrdersPage extends Component {
                     <div className={ Styles.controls }>
                         <RadioGroup
                             defaultValue={ ordersDaterangeFilter }
-                            onChange={ this._handleRadioDateRange }
+                            onChange={ this._handleRadioDaterange }
                             className={ Styles.filters }
                         >
-                            <RadioButton value='all'>
+                            <RadioButton value=''>
                                 <FormattedMessage id='orders-page.all' />
                             </RadioButton>
                             <RadioButton value='today'>

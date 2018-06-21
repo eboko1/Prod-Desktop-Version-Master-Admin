@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 
 // proj
-import { fetchOrdersStats } from 'core/orders/duck';
+import { fetchOrdersStats, setOrdersStatusFilter } from 'core/orders/duck';
 import book from 'routes/book';
 
 // own
@@ -18,24 +18,18 @@ const mapStateToProps = (state, props) => {
         stats: state.orders.stats,
     };
 };
-// eslint-disable-next-line
-const mapDispatchToProps = (dispatch, props) => {
-    return {
-        actions: bindActionCreators(
-            {
-                fetchOrdersStats: fetchOrdersStats,
-            },
-            dispatch,
-        ),
-    };
-};
 
 @withRouter
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(mapStateToProps, { fetchOrdersStats, setOrdersStatusFilter })
 class FunelContainer extends Component {
     componentDidMount() {
-        this.props.actions.fetchOrdersStats();
+        this.props.fetchOrdersStats();
     }
+
+    setStatus = status => {
+        console.log('→ status', status);
+        this.props.setOrdersStatusFilter(status);
+    };
 
     render() {
         const { stats } = this.props;
@@ -46,6 +40,9 @@ class FunelContainer extends Component {
                     exact
                     to={ `${book.orders}/appointments` }
                     activeClassName={ Styles.active }
+                    onClick={ () =>
+                        this.setStatus('not_complete,required,reserve,call')
+                    }
                 >
                     <FormattedMessage id='funel.appointments' /> ({ stats.not_complete +
                         stats.call +
@@ -56,6 +53,7 @@ class FunelContainer extends Component {
                     exact
                     to={ `${book.orders}/approved` }
                     activeClassName={ Styles.active }
+                    onClick={ () => this.setStatus('approve') }
                 >
                     <FormattedMessage id='funel.record' /> ({ stats.approve })
                 </NavLink>
@@ -63,6 +61,7 @@ class FunelContainer extends Component {
                     exact
                     to={ `${book.orders}/in-progress` }
                     activeClassName={ Styles.active }
+                    onClick={ () => this.setStatus('progress') }
                 >
                     <FormattedMessage id='funel.repair' /> ({ stats.progress })
                 </NavLink>
@@ -70,6 +69,7 @@ class FunelContainer extends Component {
                     exact
                     to={ `${book.orders}/success` }
                     activeClassName={ Styles.active }
+                    onClick={ () => this.setStatus('success') }
                 >
                     <FormattedMessage id='funel.done' /> ({ stats.success })
                 </NavLink>
@@ -77,6 +77,7 @@ class FunelContainer extends Component {
                     exact
                     to={ `${book.orders}/reviews` }
                     activeClassName={ Styles.active }
+                    onClick={ () => this.setStatus('success') }
                 >
                     <FormattedMessage id='funel.review' /> ({ stats.review })
                 </NavLink>
@@ -84,6 +85,7 @@ class FunelContainer extends Component {
                     exact
                     to={ `${book.orders}/invitations` }
                     activeClassName={ Styles.active }
+                    onClick={ () => this.setStatus('invite') }
                 >
                     <FormattedMessage id='funel.invitation' /> ({ stats.invite })
                 </NavLink>
@@ -91,6 +93,7 @@ class FunelContainer extends Component {
                     exact
                     to={ `${book.orders}/canceled` }
                     activeClassName={ Styles.active }
+                    onClick={ () => this.setStatus('cancel') }
                 >
                     <FormattedMessage id='funel.cancel' /> ({ stats.cancel })
                 </NavLink>

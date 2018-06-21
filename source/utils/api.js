@@ -6,6 +6,7 @@ import store from 'store/store';
 import book from 'routes/book';
 import { getToken } from 'utils';
 
+// export const API = __API_URL__;
 export const API = __DEV__
     ? 'https://dev-api.carbook.pro'
     : 'https://dev-api.carbook.pro';
@@ -18,10 +19,12 @@ export default async function fetchAPI(method, endpoint, query, body) {
         const endpointC = trim(endpoint, "/"); // trim all spaces and '/'
         const handler = endpointC ? `/${endpointC}` : ""; // be sure that after api will be only one /
         const methodU = toUpper(method);
-
-        const queryObj = _.toPairs(query).map(
-            ([key, value]) => `${key}=${value}`,
-        );
+        const queryObj = _.toPairs(query)
+            .filter(
+                ([key, value]) =>
+                    _.isString(value) ? !_.isEmpty(value) : true,
+            )
+            .map(([key, value]) => `${key}=${value}`);
 
         const request = {
             method: methodU,
@@ -56,10 +59,6 @@ export default async function fetchAPI(method, endpoint, query, body) {
 
         const status = response.status;
         const { dispatch } = store;
-
-        // console.log("status", status);
-
-        // checkStatus(status)
 
         switch (true) {
             case status >= 200 && status < 300:

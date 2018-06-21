@@ -23,7 +23,7 @@ import {
     ordersSearch,
     FETCH_ORDERS,
     FETCH_ORDERS_STATS,
-    FETCH_ORDERS_FILTERS,
+    SET_ORDERS_STATUS_FILTER,
 } from './duck';
 
 import * as ducks from './duck';
@@ -44,18 +44,18 @@ const selectFilter = state => state.orders.filter;
 export function* fetchOrdersSagaTake() {
     // сейчас работает (подключена в рут саге)
     while (true) {
-        const action = yield take(FETCH_ORDERS); // Блочится на этом месте (можешь доставать экшн)
-
+        // const action = yield take(FETCH_ORDERS); // Блочится на этом месте (можешь доставать экшн)
+        yield take(FETCH_ORDERS);
         const filters = yield select(selectFilter);
 
         delete filters.daterange; // пока API не работает
-
+        console.log('→ filters', filters);
         yield nprogress.start();
         yield put(uiActions.setOrdersFetchingState(true));
-
+        // console.log('→ fetchOrdersSagaTake: filters', filters);
         const data = yield call(fetchAPI, 'GET', 'orders', filters);
 
-        // yield put(fetchOrdersSuccess(data));
+        yield put(fetchOrdersSuccess(data));
 
         yield put(uiActions.setOrdersFetchingState(false));
         yield nprogress.done();
@@ -70,26 +70,6 @@ export function* fetchOrdersStatsSaga() {
     yield nprogress.done();
 }
 
-export function* fetchOrdersFiltersSaga() {
-    // try {
-    yield nprogress.start();
-    const data = yield call(fetchAPI, 'GET', 'orders/filter');
-
-    // const data = yield apply(response, response.json);
-
-    yield put(fetchOrdersStatsSuccess(data));
-    yield nprogress.done();
-}
-
-export function* ordersSearchSaga({ payload: search }) {
-    console.log('AHFHFD');
-    const data = yield call(fetchAPI, 'GET', 'orders', { search });
-    console.log(data);
-    yield nprogress.start();
-    yield put(ducks.ordersSearchSuccess(data));
-    yield nprogress.done();
-}
-
 export function* saga() {
-    yield all([ call(fetchOrdersSagaTake), takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga), takeEvery(FETCH_ORDERS_FILTERS, fetchOrdersFiltersSaga), takeEvery(ducks.ORDERS_SEARCH, ordersSearchSaga) ]);
+    yield all([ call(fetchOrdersSagaTake), takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga) ]);
 }

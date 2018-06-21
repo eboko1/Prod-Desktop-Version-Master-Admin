@@ -12,7 +12,13 @@ import { Table, Button, Icon, Tooltip, Spin, Modal } from 'antd';
 import _ from 'lodash';
 
 // proj
-import { fetchOrders, ordersSelector, stateSelector } from 'core/orders/duck';
+import {
+    fetchOrders,
+    setOrdersPageFilter,
+    setOrdersStatusFilter,
+    ordersSelector,
+    stateSelector,
+} from 'core/orders/duck';
 
 import { Catcher, Spinner } from 'commons';
 import { OrdersTable } from 'components';
@@ -23,22 +29,22 @@ import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
-        // orders:         ordersSelector(state),
         count:          state.orders.count,
         orders:         state.orders.data,
+        filter:         state.orders.filter,
         ordersFetching: state.ui.get('ordersFetching'),
     };
 };
 
 const mapDispatchToProps = dispatch => {
-    return {
-        actions: bindActionCreators(
-            {
-                fetchOrders: fetchOrders,
-            },
-            dispatch,
-        ),
-    };
+    return bindActionCreators(
+        {
+            fetchOrders,
+            setOrdersStatusFilter,
+            setOrdersPageFilter,
+        },
+        dispatch,
+    );
 };
 
 @withRouter
@@ -47,10 +53,11 @@ class OrdersContainer extends Component {
     constructor(props) {
         super(props);
         const status = OrdersContainer.getStatuses(props);
+
         this.state = {
             activeRoute:              props.location.pathname,
             status:                   status,
-            loadign:                  false,
+            loading:                  false,
             selectedRowKeys:          [],
             cancelReasonModalVisible: false,
         };
@@ -93,21 +100,16 @@ class OrdersContainer extends Component {
     }
 
     componentDidMount() {
-        // It's preferable in most cases to wait until after mounting to load data.
-        const filter = {
-            page:   1,
-            status: this.state.status,
-        };
-        this.props.actions.fetchOrders(filter);
+        this.props.setOrdersStatusFilter(this.state.status);
+        this.props.fetchOrders(this.props.filter);
     }
-    //
+
     componentDidUpdate(prevProps, prevState) {
         if (prevState.activeRoute !== this.state.activeRoute) {
-            const filter = {
-                page:   1,
+            this.props.fetchOrders({
+                ...this.props.filter,
                 status: this.state.status,
-            };
-            this.props.actions.fetchOrders(filter);
+            });
             // this.columnsConfig(status);
         }
         // if (this.state.ordersOrError === null) {
@@ -140,12 +142,11 @@ class OrdersContainer extends Component {
         const pagination = {
             pageSize:         25,
             total:            Math.ceil(this.props.count / 25) * 25,
-            hideOnSinglePage: false,
+            hideOnSinglePage: true,
+            current:          this.props.filter.page,
             onChange:         page => {
-                this.props.actions.fetchOrders({
-                    page,
-                    status,
-                });
+                this.props.setOrdersPageFilter(page);
+                this.props.fetchOrders(this.props.filter);
             },
         };
 
@@ -176,7 +177,6 @@ class OrdersContainer extends Component {
                         columns={ columns }
                         rowSelection={ rows }
                         dataSource={ orders }
-                        // scroll={ { x: 1640 } }
                         scroll={ scrollConfig(activeRoute) }
                         loading={ this.props.ordersFetching }
                         locale={ {
@@ -204,8 +204,7 @@ class OrdersContainer extends Component {
                         </Button>,
                     ] }
                 >
-                    <p>Status...</p>
-                    <p>Manual...</p>
+                    <p>cancel reason</p>
                 </Modal>
             </Catcher>
         );

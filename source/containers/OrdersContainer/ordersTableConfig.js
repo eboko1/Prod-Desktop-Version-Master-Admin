@@ -14,6 +14,17 @@ import book from 'routes/book';
 // own
 import Styles from './styles.m.css';
 
+// /// /// //
+// if class in construc
+// const TableMagic = (props) => {
+// columnConfig(activeRo){}
+//   return (
+//     <orderTab props={columnConfig}
+//   );
+// };
+// withRouter(TableMagic)
+// // //
+
 export function columnsConfig(activeRoute) {
     const indexCol = {
         title:     '№',
@@ -29,7 +40,7 @@ export function columnsConfig(activeRoute) {
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) => 
+        render:    (_, order) =>
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -164,9 +175,9 @@ export function columnsConfig(activeRoute) {
         dataIndex: 'changeReason',
         key:       'changeReason',
         width:     120,
-        render:    (_, order) => {
-            <FormattedMessage id={ `order.${order.changeReason}` } />;
-        },
+        render:    (_, order) => (
+            <FormattedMessage id={ `orders.${order.changeReason}` } />
+        ),
     };
 
     const tasksCol = {

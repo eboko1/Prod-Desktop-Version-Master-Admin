@@ -88,8 +88,8 @@
             "Поиск по номеру, клиенту, мастеру, телефону, авто...",
         "orders.filter.show_filter": "показать фильтр",
         "orders.filter.hide_filter": "спрятать фильтр",
-        "orders.manager": "Manager",
-        "orders.call": "Call",
+        "orders.manager": "Менеджер",
+        "orders.call": "Звонок",
         "orders.carbook": "Carbook"
     },
     "uk": {
@@ -132,8 +132,8 @@
             "Шукати по номеру, клієнту, майстру, телефону, авто...",
         "orders.filter.show_filter": "показати фільтр",
         "orders.filter.hide_filter": "сховати фільтр",
-        "orders.manager": "Manager",
-        "orders.call": "Call",
+        "orders.manager": "Менеджер",
+        "orders.call": "Звонок",
         "orders.carbook": "Carbook"
     }
 }
