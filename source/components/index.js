@@ -6,6 +6,7 @@ import OrdersTable from './OrdersTable';
 import OrderStatusIcon from './OrderStatusIcon';
 import Numeral from './Numeral';
 import ReportsDropdown from './ReportsDropdown';
+import StatsCountsPanel from './StatsCountsPanel';
 
 export {
     DistributorTable,
@@ -16,4 +17,5 @@ export {
     OrderStatusIcon,
     Numeral,
     ReportsDropdown,
+    StatsCountsPanel,
 };

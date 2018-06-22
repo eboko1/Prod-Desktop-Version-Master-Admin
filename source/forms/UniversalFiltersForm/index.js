@@ -11,7 +11,7 @@ import {
     TimePicker,
     Icon,
 } from 'antd';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 
 //proj
@@ -34,7 +34,6 @@ const RadioGroup = Radio.Group;
 const TabPane = Tabs.TabPane;
 const { TextArea } = Input;
 
-@injectIntl
 @withReduxForm({
     name:    'order',
     fields:  [ 'status' ],
@@ -97,12 +96,7 @@ export class AddOrderForm extends Component {
                 </FormItem> */ }
 
                 <div>
-                    <FormItem
-                        label={
-                            <FormattedMessage id='add_order_form.enrollment_date' />
-                        }
-                        hasFeedback
-                    >
+                    <FormItem label='Select Date' hasFeedback>
                         <DatePicker
                             defaultValue={ moment('2015/01/01', dateFormat) }
                             format={ dateFormat }
@@ -112,9 +106,7 @@ export class AddOrderForm extends Component {
                             format={ hourFormat }
                         />
                     </FormItem>
-                    <FormItem
-                        label={ <FormattedMessage id='add_order_form.post' /> }
-                    >
+                    <FormItem label='пост'>
                         <Select>
                             <Option value='jack'>Нулевой Пост</Option>
                             <Option value='lucy'>Пост - 1</Option>
@@ -140,28 +132,15 @@ export class AddOrderForm extends Component {
                 <div className={ Styles.clientBlock }>
                     <div className={ Styles.clientCol }>
                         <div className={ Styles.client }>
-                            <FormItem
-                                label={
-                                    <FormattedMessage id='add_order_form.client' />
-                                }
-                            >
-                                <Input
-                                    placeholder={ this.props.intl.formatMessage({
-                                        id:             'add_order_form.client.placeholder',
-                                        defaultMessage: 'search client',
-                                    }) }
-                                />
+                            <FormItem label='Client'>
+                                <Input placeholder='find client' />
                                 <Icon
                                     type='plus'
                                     className={ Styles.addClientIcon }
                                 />
                             </FormItem>
                         </div>
-                        <FormItem
-                            label={
-                                <FormattedMessage id='add_order_form.name' />
-                            }
-                        >
+                        <FormItem label='ПИБ'>
                             <Select
                                 showSearch
                                 style={ { width: 200 } }
@@ -181,11 +160,7 @@ export class AddOrderForm extends Component {
                                 <Option value='tom'>Tom</Option>
                             </Select>
                         </FormItem>
-                        <FormItem
-                            label={
-                                <FormattedMessage id='add_order_form.phone' />
-                            }
-                        >
+                        <FormItem label='Phone'>
                             <Select
                             // defaultValue='lucy'
                             // style={ { width: 120 } }
@@ -195,11 +170,7 @@ export class AddOrderForm extends Component {
                                 <Option value='lucy'>Lucy</Option>
                             </Select>
                         </FormItem>
-                        <FormItem
-                            label={
-                                <FormattedMessage id='add_order_form.email' />
-                            }
-                        >
+                        <FormItem label='Email'>
                             <Select>
                                 <Option value='jack'>Bob</Option>
                                 <Option value='lucy'>Elf</Option>
@@ -207,35 +178,21 @@ export class AddOrderForm extends Component {
                         </FormItem>
                     </div>
                     <div className={ Styles.autoCol }>
-                        <div className={ Styles.auto }>
-                            <FormattedMessage id='add_order_form.car' />
-                        </div>
-                        <FormItem
-                            label={ <FormattedMessage id='add_order_form.car' /> }
-                        >
+                        <div className={ Styles.auto }>Auto</div>
+                        <FormItem label='Auto'>
                             <Select>
                                 <Option value='jack'>Jack</Option>
                                 <Option value='lucy'>Lucy</Option>
                             </Select>
                         </FormItem>
-                        <FormItem
-                            label={
-                                <FormattedMessage id='add_order_form.car_number' />
-                            }
-                        >
-                            <Input placeholder='car license number' />
+                        <FormItem label='Гос номер'>
+                            <Input placeholder='find client' />
                         </FormItem>
-                        <FormItem
-                            label={
-                                <FormattedMessage id='add_order_form.odometr' />
-                            }
-                        >
-                            <Input placeholder='odometr' />
+                        <FormItem label='Пробег'>
+                            <Input placeholder='find client' />
                         </FormItem>
-                        <FormItem
-                            label={ <FormattedMessage id='add_order_form.vin' /> }
-                        >
-                            <Input placeholder='vin-code' />
+                        <FormItem label='VIN-code'>
+                            <Input placeholder='find client' />
                         </FormItem>
                     </div>
                 </div>
@@ -251,9 +208,7 @@ export class AddOrderForm extends Component {
                             </Option>
                         </Select>
                     </FormItem>
-                    <div>
-                        <FormattedMessage id='add_order_form.total' /> 0<FormattedMessage id='currency' />
-                    </div>
+                    <div>TOTAL 0uah.</div>
                 </div>
                 { /* <FormItem wrapperCol={ { span: 12, offset: 6 } }>
                     <Button type='primary' htmlType='submit'>
@@ -262,30 +217,16 @@ export class AddOrderForm extends Component {
                 </FormItem> */ }
                 { /* FORMS TABS */ }
                 <Tabs onChange={ () => this.callback() } type='card'>
-                    <TabPane
-                        tab={ <FormattedMessage id='add_order_form.services' /> }
-                        key='1'
-                    >
+                    <TabPane tab='Services' key='1'>
                         <ServicesTable />
                         <DiscountPanel />
                     </TabPane>
-                    <TabPane
-                        tab={ <FormattedMessage id='add_order_form.details' /> }
-                        key='2'
-                    >
+                    <TabPane tab='Details' key='2'>
                         <DetailsTable />
                         <DiscountPanel />
                     </TabPane>
-                    <TabPane
-                        tab={ <FormattedMessage id='add_order_form.comments' /> }
-                        key='3'
-                    >
-                        <FormItem
-                            { ...formItemLayout }
-                            label={
-                                <FormattedMessage id='add_order_form.client_comments' />
-                            }
-                        >
+                    <TabPane tab='Comments' key='3'>
+                        <FormItem { ...formItemLayout } label='Client Comments'>
                             { getFieldDecorator('comment', {
                                 rules: [
                                     {
@@ -302,9 +243,7 @@ export class AddOrderForm extends Component {
                         </FormItem>
                         <FormItem
                             { ...formItemLayout }
-                            label={
-                                <FormattedMessage id='add_order_form.service_recommendations' />
-                            }
+                            label='Services recommendation'
                         >
                             { getFieldDecorator('recommendation', {
                                 rules: [

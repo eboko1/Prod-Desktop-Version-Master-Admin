@@ -1,0 +1,14 @@
+.stats {
+    display: flex;
+    justify-content: space-between;
+}
+
+.count {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--primary);
+    text-align: center;
+    padding: 16px;
+    /* TODO */
+    flex: 0 0 18%;
+}

@@ -1,14 +1,24 @@
 // vendor
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
 
 // proj
+import { fetchStatsCounts } from 'core/orders/duck';
+
 import { Catcher } from 'commons';
 import { UniversalFiltersModal } from 'modals';
 
 // own
 import Styles from './styles.m.css';
 
+const mapStateToProps = state => {
+    return {
+        stats: state.orders.statsCountsPanel.stats.stats,
+    };
+};
+
+@connect(mapStateToProps, { fetchStatsCounts })
 export default class UniversalFilters extends Component {
     state = {
         visible: false,
@@ -16,6 +26,8 @@ export default class UniversalFilters extends Component {
 
     setUniversalFiltersReasonModal = visible => {
         this.setState({ visible });
+        // TODO: R&D
+        this.props.fetchStatsCounts(); // Triggers on Modal close
     };
 
     render() {
@@ -34,6 +46,7 @@ export default class UniversalFilters extends Component {
                 <UniversalFiltersModal
                     visible={ this.state.visible }
                     show={ this.setUniversalFiltersReasonModal }
+                    stats={ this.props.stats }
                 />
             </Catcher>
         );

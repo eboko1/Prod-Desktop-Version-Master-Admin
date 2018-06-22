@@ -4,10 +4,20 @@ import { Modal, Button } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { Select } from 'antd';
 
+// proj
+import { StatsCountsPanel } from 'components';
+
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
 
+// const mapStateToProps = (state, props) => {
+//     return {
+//         stats: state.
+//     }
+// }
+//
+// @connect(mapStateToProps, { })
 export default class UniversalFiltersModal extends Component {
     state = {
         // Whether to apply loading visual effect for OK button or not
@@ -18,6 +28,14 @@ export default class UniversalFiltersModal extends Component {
 
     render() {
         const { show, visible } = this.props;
+
+        // Parent Node which the selector should be rendered to.
+        // Default to body. When position issues happen,
+        // try to modify it into scrollable content and position it relative.
+        // Example:
+        // offical doc: https://codesandbox.io/s/4j168r7jw0
+        // git issue: https://github.com/ant-design/ant-design/issues/8461
+        let modalContentDivWrapper = null;
 
         return (
             <Modal
@@ -31,36 +49,59 @@ export default class UniversalFiltersModal extends Component {
                 onOk={ () => show(false) }
                 onCancel={ () => show(false) }
             >
-                { /* <Select
-                    showSearch
-                    style={ { width: 200 } }
-                    placeholder='Select a person'
-                    optionFilterProp='children'
-                    onChange={ value => this.handleChange(value) }
-                    // onFocus={ handleFocus }
-                    // onBlur={ handleBlur }
-                    filterOption={ (input, option) =>
-                        option.props.children
-                            .toLowerCase()
-                            .indexOf(input.toLowerCase()) >= 0
-                    }
+                <div
+                    style={ { height: 600 } }
+                    ref={ modal => {
+                        modalContentDivWrapper = modal;
+                    } }
                 >
-                    <Option value='jack'>Jack</Option>
-                    <Option value='lucy'>Lucy</Option>
-                    <Option value='tom'>Tom</Option>
-                </Select> */ }
-                <Select
-                    defaultValue='lucy'
-                    style={ { width: 120 } }
-                    onChange={ value => this.handleChange(value) }
-                >
-                    <Option value='jack'>Jack</Option>
-                    <Option value='lucy'>Lucy</Option>
-                    <Option value='disabled' disabled>
-                        Disabled
-                    </Option>
-                    <Option value='Yiminghe'>yiminghe</Option>
-                </Select>
+                    <StatsCountsPanel stats={ this.props.stats } />
+                    <div>
+                        <div>daterange row</div>
+                        <div>
+                            <Select
+                                showSearch
+                                style={ { width: 200 } }
+                                placeholder='Select a person'
+                                optionFilterProp='children'
+                                onChange={ value => this.handleChange(value) }
+                                getPopupContainer={ () => modalContentDivWrapper }
+                                // onFocus={ handleFocus }
+                                // onBlur={ handleBlur }
+                                filterOption={ (input, option) =>
+                                    option.props.children
+                                        .toLowerCase()
+                                        .indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value='jack'>Jack</Option>
+                                <Option value='lucy'>Lucy</Option>
+                                <Option value='tom'>Tom</Option>
+                            </Select>
+                        </div>
+                        <div>
+                            <Select
+                                showSearch
+                                style={ { width: 200 } }
+                                placeholder='Select a service'
+                                optionFilterProp='children'
+                                onChange={ value => this.handleChange(value) }
+                                getPopupContainer={ () => modalContentDivWrapper }
+                                // onFocus={ handleFocus }
+                                // onBlur={ handleBlur }
+                                filterOption={ (input, option) =>
+                                    option.props.children
+                                        .toLowerCase()
+                                        .indexOf(input.toLowerCase()) >= 0
+                                }
+                            >
+                                <Option value='jack'>Jack</Option>
+                                <Option value='lucy'>Lucy</Option>
+                                <Option value='tom'>Tom</Option>
+                            </Select>
+                        </div>
+                    </div>
+                </div>
             </Modal>
         );
     }

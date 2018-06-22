@@ -156,16 +156,16 @@ class OrdersContainer extends Component {
             <Catcher>
                 { /* <div className={ Styles.ordersTableWrapper }> */ }
                 <div className={ Styles.paper }>
-                    <Button onClick={ () => this.setCancelReasonModal(true) }>
+                    { /* <Button onClick={ () => this.setCancelReasonModal(true) }>
                         set cancel reason modal
-                    </Button>
+                    </Button> */ }
                     <Button
                         type='primary'
                         onClick={ this.start }
                         disabled={ !hasSelected }
                         loading={ loading }
                     >
-                        Reload
+                        Reload Checkboxes
                     </Button>
                     <span style={ { marginLeft: 8 } }>
                         { hasSelected
@@ -185,7 +185,7 @@ class OrdersContainer extends Component {
                         pagination={ pagination }
                     />
                 </div>
-                <Modal
+                { /* <Modal
                     title={
                         <FormattedMessage id='cancel_reson_modal.cancel_reason' />
                     }
@@ -205,7 +205,7 @@ class OrdersContainer extends Component {
                     ] }
                 >
                     <p>cancel reason</p>
-                </Modal>
+                </Modal> */ }
             </Catcher>
         );
     }

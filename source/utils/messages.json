@@ -1,5 +1,6 @@
 {
     "en": {
+        "currency": "eur.",
         "appointments": "Appointments",
         "records": "Approves",
         "repairs": "Repairs",
@@ -14,6 +15,7 @@
         "call": "Call"
     },
     "ru": {
+        "currency": "грн.",
         "appointments": "Обращения",
         "records": "Записи",
         "repairs": "Ремонты",
@@ -28,6 +30,7 @@
         "call": "Звонок"
     },
     "uk": {
+        "currency": "грн.",
         "appointments": "Звернення",
         "approves": "Записи",
         "repairs": "Ремонти",

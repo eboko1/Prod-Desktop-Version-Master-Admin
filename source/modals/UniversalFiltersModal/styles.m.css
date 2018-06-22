@@ -1,3 +1,7 @@
 .universalFiltersModal :global(.ant-modal-body) {
     height: 60vh;
 }
+
+.universalFiltersModal :global(.ant-modal-footer) {
+    text-align: center;
+}

@@ -1,0 +1,61 @@
+{
+    "en": {
+        "add_order_form.enrollment_date": "Enrollment date",
+        "add_order_form.post": "Post",
+        "add_order_form.client": "Client",
+        "add_order_form.client.placeholder": "Enrollment date",
+        "add_order_form.name": "Name",
+        "add_order_form.phone": "Phone",
+        "add_order_form.email": "Email",
+        "add_order_form.car": "Car",
+        "add_order_form.car_number": "Car goverment number",
+        "add_order_form.odometr": "Odometr",
+        "add_order_form.vin": "Enrollment date",
+        "add_order_form.total": "Total",
+        "add_order_form.services": "Services",
+        "add_order_form.details": "Details",
+        "add_order_form.comments": "Comments",
+        "add_order_form.client_comments": "Client comments",
+        "add_order_form.service_recommendations": "Service recommendations"
+    },
+    "ru": {
+        "add_order_form.enrollment_date": "Дата записи",
+        "add_order_form.post": "Пост",
+        "add_order_form.client": "Клиент",
+        "add_order_form.client.placeholder":
+            "Поиск по ФИО, авто, телефону, VIN...",
+        "add_order_form.name": "ФИО",
+        "add_order_form.phone": "Телефон",
+        "add_order_form.email": "Email",
+        "add_order_form.car": "Автомобиль",
+        "add_order_form.car_number": "Гос. номер авто",
+        "add_order_form.odometr": "Пробег",
+        "add_order_form.vin": "VIN-код",
+        "add_order_form.total": "Итого",
+        "add_order_form.services": "Услуги",
+        "add_order_form.details": "Детали",
+        "add_order_form.comments": "Комментарии",
+        "add_order_form.client_comments": "Комментарии клиента",
+        "add_order_form.service_recommendations": "Рекомендации СТО"
+    },
+    "uk": {
+        "add_order_form.enrollment_date": "Дата запису",
+        "add_order_form.post": "Пост",
+        "add_order_form.client": "Клієнт",
+        "add_order_form.client.placeholder":
+            "Пошук по ПІБ, авто, телефону, VIN...",
+        "add_order_form.name": "ПІБ",
+        "add_order_form.phone": "Телефон",
+        "add_order_form.email": "Email",
+        "add_order_form.car": "Автомобіль",
+        "add_order_form.car_number": "Держ. номер авто",
+        "add_order_form.odometr": "Пробіг",
+        "add_order_form.vin": "VIN-код",
+        "add_order_form.total": "Всього",
+        "add_order_form.services": "Послуги",
+        "add_order_form.details": "Деталі",
+        "add_order_form.comments": "Коментарі",
+        "add_order_form.client_comments": "Коментарі клієнта",
+        "add_order_form.service_recommendations": "Рекомендації СТО"
+    }
+}

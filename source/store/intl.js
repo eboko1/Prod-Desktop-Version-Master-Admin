@@ -31,14 +31,17 @@ import FunelContainer from 'containers/FunelContainer/messages';
 import OrdersContainer from 'containers/OrdersContainer/messages';
 // forms
 import ProfileForm from 'forms/ProfileForm/messages';
+import AddOrderForm from 'forms/AddOrderForm/messages';
+import UniversalFiltersForm from 'forms/UniversalFiltersForm/messages';
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
 // components
 import OrdersTable from 'components/OrdersTable/messages';
 import OrderStatusIcon from 'components/OrderStatusIcon/messages';
 import OrderFormTables from 'components/OrderFormTables/messages';
+import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 
-const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, OrderStatusIcon, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal ]);
+const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, OrderStatusIcon, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, AddOrderForm ]);
 
 // Intl
 const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';

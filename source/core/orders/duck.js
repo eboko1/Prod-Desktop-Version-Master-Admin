@@ -20,6 +20,9 @@ export const SET_ORDERS_PAGE_FILTER = `${prefix}/SET_ORDERS_PAGE_FILTER`;
 export const SET_ORDERS_DATERANGE_FILTER = `${prefix}/SET_ORDERS_DATERANGE_FILTER`;
 export const SET_ORDERS_STATUS_FILTER = `${prefix}/SET_ORDERS_STATUS_FILTER`;
 export const SET_ORDERS_SEARCH_FILTER = `${prefix}/SET_ORDERS_SEARCH_FILTER`;
+// universal UniversalFilters
+export const FETCH_STATS_COUNTS_PANEL = `${prefix}/FETCH_STATS_COUNTS_PANEL`;
+export const FETCH_STATS_COUNTS_PANEL_SUCCESS = `${prefix}/FETCH_STATS_COUNTS_PANEL_SUCCESS`;
 
 /**
  * Reducer
@@ -37,6 +40,9 @@ const ReducerState = {
         status:    'not_complete,required,reserve,call',
         query:     '',
         daterange: {},
+    },
+    statsCountsPanel: {
+        stats: {},
     },
 };
 
@@ -93,6 +99,14 @@ export default function reducer(state = ReducerState, action) {
                 filter: {
                     ...state.filter,
                     query: payload,
+                },
+            };
+
+        case FETCH_STATS_COUNTS_PANEL_SUCCESS:
+            return {
+                ...state,
+                statsCountsPanel: {
+                    stats: payload,
                 },
             };
 
@@ -181,3 +195,15 @@ export const setOrdersSearchFilter = searchFilter => ({
     type:    SET_ORDERS_SEARCH_FILTER,
     payload: searchFilter,
 });
+
+// StatsCountsPanel
+export const fetchStatsCounts = () => ({
+    type: FETCH_STATS_COUNTS_PANEL,
+});
+
+export function fetchStatsCountsSuccess(stats) {
+    return {
+        type:    FETCH_STATS_COUNTS_PANEL_SUCCESS,
+        payload: stats,
+    };
+}
