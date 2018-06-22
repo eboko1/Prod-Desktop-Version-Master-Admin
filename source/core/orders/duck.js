@@ -36,12 +36,11 @@ const ReducerState = {
         page:      1,
         status:    'not_complete,required,reserve,call',
         query:     '',
-        daterange: '',
+        daterange: {},
     },
 };
 
 export default function reducer(state = ReducerState, action) {
-    // export default function reducer(state = new ReducerState(), action) {
     const { type, payload } = action;
 
     switch (type) {

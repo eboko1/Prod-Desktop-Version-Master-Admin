@@ -1,6 +1,5 @@
 // vendor
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
@@ -27,7 +26,6 @@ class FunelContainer extends Component {
     }
 
     setStatus = status => {
-        console.log('→ status', status);
         this.props.setOrdersStatusFilter(status);
     };
 

@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import { Button, Radio } from 'antd';
 
 // proj
-import { setOrdersDaterangeFilter } from 'core/orders/duck';
+import { fetchOrders, setOrdersDaterangeFilter } from 'core/orders/duck';
 import {
     OrdersContainer,
     FunelContainer,
@@ -17,7 +17,7 @@ import {
 
 import { Layout } from 'commons';
 import book from 'routes/book';
-import { getDaterangeDates } from 'utils';
+import { getDaterange } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -28,10 +28,12 @@ const RadioGroup = Radio.Group;
 const mapState = state => {
     return {
         ordersDaterangeFilter: state.orders.filter.daterange,
+        filter:                state.orders.filter,
     };
 };
 
 const mapDispatch = {
+    fetchOrders,
     setOrdersDaterangeFilter,
 };
 
@@ -62,19 +64,21 @@ class OrdersPage extends Component {
     }
 
     _handleRadioDaterange = event => {
-        console.log(
-            '→ getDaterangeDates',
-            getDaterangeDates(event.target.value),
-        );
-        console.log('→ HDATERANGE', event.target.value);
-        this.props.setOrdersDaterangeFilter(event.target.value);
+        const daterange = event.target.value;
+
+        if (daterange === 'all') {
+            this.props.setOrdersDaterangeFilter({});
+        } else if (daterange !== 'all') {
+            const daterangeFilter = getDaterange(daterange, 'iso');
+            this.props.setOrdersDaterangeFilter({ ...daterangeFilter });
+        }
+
+        this.props.fetchOrders(this.props.filter);
     };
 
     render() {
-        const { ordersDaterangeFilter } = this.props;
+        // const { ordersDaterangeFilter } = this.props;
         const status = this.props.match.params.ordersStatuses;
-
-        // console.log('ordersDaterangeFilter', ordersDaterangeFilter);
 
         return (
             <Layout
@@ -84,11 +88,12 @@ class OrdersPage extends Component {
                 controls={
                     <div className={ Styles.controls }>
                         <RadioGroup
-                            defaultValue={ ordersDaterangeFilter }
+                            defaultValue='all'
+                            // defaultValue={ ordersDaterangeFilter }
                             onChange={ this._handleRadioDaterange }
                             className={ Styles.filters }
                         >
-                            <RadioButton value=''>
+                            <RadioButton value='all'>
                                 <FormattedMessage id='orders-page.all' />
                             </RadioButton>
                             <RadioButton value='today'>
@@ -97,10 +102,10 @@ class OrdersPage extends Component {
                             <RadioButton value='tomorrow'>
                                 <FormattedMessage id='orders-page.tomorrow' />
                             </RadioButton>
-                            <RadioButton value='week'>
+                            <RadioButton value='nextWeek'>
                                 <FormattedMessage id='orders-page.week' />
                             </RadioButton>
-                            <RadioButton value='month'>
+                            <RadioButton value='nextMonth'>
                                 <FormattedMessage id='orders-page.month' />
                             </RadioButton>
                         </RadioGroup>

@@ -9,6 +9,8 @@ import {
     select,
 } from 'redux-saga/effects';
 import nprogress from 'nprogress';
+import { spreadProp } from 'ramda-adjunct';
+// import * as RA from 'ramda-adjunct';
 
 //proj
 import { uiActions } from 'core/ui/actions';
@@ -26,7 +28,7 @@ import {
     SET_ORDERS_STATUS_FILTER,
 } from './duck';
 
-import * as ducks from './duck';
+// import * as ducks from './duck';
 //
 // export function* fetchOrdersSaga(action) { // сейчас не работает, только для примера
 //     yield nprogress.start();
@@ -44,15 +46,13 @@ const selectFilter = state => state.orders.filter;
 export function* fetchOrdersSagaTake() {
     // сейчас работает (подключена в рут саге)
     while (true) {
-        // const action = yield take(FETCH_ORDERS); // Блочится на этом месте (можешь доставать экшн)
+        // const action = yield take(FETCH_ORDERS); // Блочится на этом месте (можно доставать экшн)
         yield take(FETCH_ORDERS);
-        const filters = yield select(selectFilter);
-
-        delete filters.daterange; // пока API не работает
-        console.log('→ filters', filters);
+        const filter = yield select(selectFilter);
+        const filters = spreadProp('daterange', filter);
+        // console.log('→ saga filters', filters);
         yield nprogress.start();
         yield put(uiActions.setOrdersFetchingState(true));
-        // console.log('→ fetchOrdersSagaTake: filters', filters);
         const data = yield call(fetchAPI, 'GET', 'orders', filters);
 
         yield put(fetchOrdersSuccess(data));

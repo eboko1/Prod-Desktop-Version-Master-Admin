@@ -40,7 +40,7 @@ export function columnsConfig(activeRoute) {
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) =>
+        render:    (_, order) => 
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -175,9 +175,12 @@ export function columnsConfig(activeRoute) {
         dataIndex: 'changeReason',
         key:       'changeReason',
         width:     120,
-        render:    (_, order) => (
-            <FormattedMessage id={ `orders.${order.changeReason}` } />
-        ),
+        render:    (_, order) =>
+            order.changeReason ? (
+                <FormattedMessage id={ `orders.${order.changeReason}` } />
+            ) : (
+                <FormattedMessage id='orders.not_provided' />
+            ),
     };
 
     const tasksCol = {
