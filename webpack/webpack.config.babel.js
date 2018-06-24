@@ -7,7 +7,7 @@ import {
 // Instruments
 import openBrowser from 'react-dev-utils/openBrowser';
 
-export default env => {
+export default (env = process.env.NODE_ENV) => {
     const dev = env === 'development';
 
     if (dev) {
