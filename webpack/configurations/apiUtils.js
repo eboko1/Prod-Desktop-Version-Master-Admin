@@ -1,5 +1,5 @@
 export const getApiUrl = (BUILD_ENV) => {
-    const __API_URL__ = null;
+    let __API_URL__ = null;
 
     switch (BUILD_ENV) {
         case 'production':
