@@ -36,3 +36,7 @@
     width: calc(100% - 256px);
     /* width: calc(100% - 310px); */
 }
+
+.funelWithFiltersCollapsed {
+    width: calc(100% - 80px);
+}

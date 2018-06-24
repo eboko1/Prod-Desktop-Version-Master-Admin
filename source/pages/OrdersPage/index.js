@@ -17,7 +17,7 @@ import {
 
 import { Layout } from 'commons';
 import book from 'routes/book';
-import { getDaterange } from 'utils';
+import { getDaterange, getCollapsedState } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -29,6 +29,7 @@ const mapState = state => {
     return {
         ordersDaterangeFilter: state.orders.filter.daterange,
         filter:                state.orders.filter,
+        collapsed:             state.ui.get('collapsed'),
     };
 };
 
@@ -78,6 +79,8 @@ class OrdersPage extends Component {
 
     render() {
         // const { ordersDaterangeFilter } = this.props;
+        const { collapsed } = this.props;
+
         const status = this.props.match.params.ordersStatuses;
 
         return (
@@ -125,7 +128,10 @@ class OrdersPage extends Component {
                     </div>
                 }
             >
-                <section className={ Styles.funelWithFilters }>
+                <section
+                    className={ `${Styles.funelWithFilters} ${collapsed &&
+                        Styles.funelWithFiltersCollapsed}` }
+                >
                     <FunelContainer />
                     <OrdersFilterContainer status={ status } />
                 </section>
