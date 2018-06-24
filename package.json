@@ -5,7 +5,7 @@
     "scripts": {
         "start": "nodemon",
         "build:config":
-            "webpack --config=./webpack/webpack.config.babel.js --env development --display-reasons",
+            "webpack --config=./webpack/webpack.config.babel.js --display-reasons",
         "build:dev":
             "cross-env-shell NODE_ENV=development BUILD_ENV=development yarn build:config",
         "build:stage":
