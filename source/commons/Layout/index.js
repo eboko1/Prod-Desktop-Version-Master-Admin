@@ -70,6 +70,7 @@ export class LayoutComponent extends Component {
                 <Layout className={ Styles.layout }>
                     <Layout.Header className={ Styles.header }>
                         <Header
+                            className={ Styles.testStyles}
                             collapsed={ collapsed }
                             toggleNavigation={ this.toggleNavigation }
                             logout={ this.logout }

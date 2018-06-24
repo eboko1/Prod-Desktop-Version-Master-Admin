@@ -1,5 +1,3 @@
-/* @flow */
-
 // Presets
 import {
     generateDevelopmentConfiguration,
@@ -9,7 +7,7 @@ import {
 // Instruments
 import openBrowser from 'react-dev-utils/openBrowser';
 
-export default (env: string) => {
+export default env => {
     const dev = env === 'development';
 
     if (dev) {

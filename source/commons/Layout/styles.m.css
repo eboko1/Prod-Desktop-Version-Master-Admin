@@ -30,6 +30,10 @@
     z-index: 100;
 }
 
+.testStyles {
+    background: tomato;
+}
+
 .pure {
     margin: 0 0 24px 0;
 }

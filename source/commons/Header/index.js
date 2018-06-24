@@ -12,11 +12,11 @@ import Styles from './styles.m.css';
 
 class Header extends Component {
     render() {
-        const { collapsed, toggleNavigation, logout } = this.props;
+        const { className, collapsed, toggleNavigation, logout } = this.props;
 
         return (
             <header
-                className={ `${Styles.header} ${collapsed &&
+                className={ `${Styles.header} ${className} ${collapsed &&
                     Styles.headerCollapsed}` }
             >
                 <div className={ Styles.headerWrapper }>
