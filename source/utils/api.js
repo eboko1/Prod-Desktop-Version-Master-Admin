@@ -6,13 +6,13 @@ import store from 'store/store';
 import book from 'routes/book';
 import { getToken } from 'utils';
 
-// export const API = __API_URL__;
 export const API = __DEV__
     ? 'https://dev-api.carbook.pro'
     : 'https://dev-api.carbook.pro';
 // export const API = __DEV__ ? 'http://127.0.0.1:14281' : 'dev-api.carbook.pro';
 
 const apiC = trim(API, '/');
+// const apiC = trim(__API_URL__, '/');
 /* eslint-disable */
 export default async function fetchAPI(method, endpoint, query, body) {
     try {

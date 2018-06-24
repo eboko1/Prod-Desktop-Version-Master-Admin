@@ -12,7 +12,7 @@ export const getApiUrl = BUILD_ENV => {
             __API_URL__ = JSON.stringify('https://dev-api.carbook.pro');
             break;
         case 'local':
-            __API_URL__ = JSON.stringify('https://dev-api.carbook.pro');
+            __API_URL__ = JSON.stringify('http://127.0.0.1:14281');
             break;
         default:
             __API_URL__ = JSON.stringify('https://api.carbook.pro');

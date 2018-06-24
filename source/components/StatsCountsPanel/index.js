@@ -13,6 +13,7 @@ class StatsCountsPanel extends Component {
     render() {
         const { stats } = this.props;
 
+        // return <div>StatsCountsPanel</div>;
         return stats ? (
             <Catcher>
                 <div className={ Styles.stats }>

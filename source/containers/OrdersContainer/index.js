@@ -138,7 +138,7 @@ class OrdersContainer extends Component {
             selectedRowKeys,
             this.onSelectChange,
         );
-
+        console.log('→ pagination count', this.props.count);
         const pagination = {
             pageSize:         25,
             total:            Math.ceil(this.props.count / 25) * 25,
@@ -180,7 +180,7 @@ class OrdersContainer extends Component {
                         scroll={ scrollConfig(activeRoute) }
                         loading={ this.props.ordersFetching }
                         locale={ {
-                            emptyText: <FormattedMessage id='orders.no_data' />,
+                            emptyText: <FormattedMessage id='no_data' />,
                         } }
                         pagination={ pagination }
                     />

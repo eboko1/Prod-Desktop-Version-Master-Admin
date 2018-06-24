@@ -6,8 +6,8 @@ import { ConnectedRouter as Router } from 'react-router-redux';
 
 // Instruments
 import { ConnectedIntlProvider as IntlProvider } from 'utils';
-import './theme/antd/antd.less';
 import('./theme/init.css'); // only chunk (split-point)
+import './theme/antd/antd.less';
 import './store/nprogress'; // whole file
 import store, { history } from './store/store';
 import Routes from './routes/Main';

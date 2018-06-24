@@ -1,6 +1,7 @@
 {
     "en": {
         "currency": "eur.",
+        "no_data": "No Data",
         "appointments": "Appointments",
         "records": "Approves",
         "repairs": "Repairs",
@@ -16,6 +17,7 @@
     },
     "ru": {
         "currency": "грн.",
+        "no_data": "Нет Данных",
         "appointments": "Обращения",
         "records": "Записи",
         "repairs": "Ремонты",
@@ -31,6 +33,7 @@
     },
     "uk": {
         "currency": "грн.",
+        "no_data": "Вiдсутнi Данi",
         "appointments": "Звернення",
         "approves": "Записи",
         "repairs": "Ремонти",

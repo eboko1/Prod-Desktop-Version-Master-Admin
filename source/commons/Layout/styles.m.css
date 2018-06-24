@@ -16,7 +16,14 @@
     margin-top: 128px;
 }
 
-.header:global(.ant-layout-header) {
+/* .header:global(.ant-layout-header) {
+    padding: 0;
+    width: 100%;
+    position: fixed;
+    z-index: 100;
+} */
+
+.header {
     padding: 0;
     width: 100%;
     position: fixed;
