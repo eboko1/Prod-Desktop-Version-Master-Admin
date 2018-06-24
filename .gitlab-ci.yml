@@ -26,7 +26,7 @@ deploy_test:
   script:
     - apt-get update && apt-get install --yes sshpass
     - yarn install --unsafe-perm
-    - NODE_ENV=development yarn run build:dev -- --development
+    - NODE_ENV=development yarn run build:dev
     - export SSHPASS=$DEPLOY_PASS
     - tar czf - build configs | sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_DEV_HOST "mkdir -p $DEPLOY_PATH && cd $DEPLOY_PATH && tar xzf -"
 
