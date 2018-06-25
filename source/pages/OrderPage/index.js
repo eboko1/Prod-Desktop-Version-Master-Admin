@@ -125,7 +125,7 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
-                        <ReportsDropdown reports={ reports } />
+                        <ReportsDropdown orderId = { id } reports={ reports } />
                         <Icon
                             style={ { fontSize: 24, cursor: 'pointer' } }
                             type='close'
