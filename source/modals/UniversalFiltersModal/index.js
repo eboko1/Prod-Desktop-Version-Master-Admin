@@ -5,7 +5,11 @@ import { FormattedMessage } from 'react-intl';
 import { Select } from 'antd';
 
 // proj
+import { universalFiltersModalActions } from 'core/forms/antdReduxForm/actions';
+
 import { StatsCountsPanel } from 'components';
+// import { UniversalFiltersForm } from 'forms';
+import { withReduxForm } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -18,6 +22,11 @@ const Option = Select.Option;
 // }
 //
 // @connect(mapStateToProps, { })
+// @withReduxForm({
+//     name:    'universalFilters',
+//     fields:  [ 'make' ],
+//     actions: { change: universalFiltersModalActions.change },
+// })
 export default class UniversalFiltersModal extends Component {
     state = {
         // Whether to apply loading visual effect for OK button or not
@@ -58,8 +67,10 @@ export default class UniversalFiltersModal extends Component {
                     <StatsCountsPanel stats={ this.props.stats } />
                     <div>
                         <div>daterange row</div>
-                        <div>
-                            <Select
+                        { /* <div> */ }
+
+                        { /* <UniversalFiltersForm /> */ }
+                        { /* <Select
                                 showSearch
                                 style={ { width: 200 } }
                                 placeholder='Select a person'
@@ -78,7 +89,7 @@ export default class UniversalFiltersModal extends Component {
                                 <Option value='lucy'>Lucy</Option>
                                 <Option value='tom'>Tom</Option>
                             </Select>
-                        </div>
+                        </div> */ }
                         <div>
                             <Select
                                 showSearch
@@ -87,6 +98,7 @@ export default class UniversalFiltersModal extends Component {
                                 optionFilterProp='children'
                                 onChange={ value => this.handleChange(value) }
                                 getPopupContainer={ () => modalContentDivWrapper }
+                                // getPopupContainer={ () => modalContentDivWrapper }
                                 // onFocus={ handleFocus }
                                 // onBlur={ handleBlur }
                                 filterOption={ (input, option) =>

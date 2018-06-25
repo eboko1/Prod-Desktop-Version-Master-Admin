@@ -14,6 +14,9 @@ import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import addOrderReducer, {
     moduleName as addOrderModule,
 } from 'core/orderAdd/duck';
+import universalFiltersReducer, {
+    moduleName as universalFilters,
+} from 'core/forms/universalFiltersForm/duck';
 
 const rootReducer = combineReducers({
     intl,
@@ -22,9 +25,10 @@ const rootReducer = combineReducers({
     router,
     swapi,
     ui,
-    [ ordersModule ]:   ordersReducer,
-    [ orderModule ]:    orderReducer,
-    [ addOrderModule ]: addOrderReducer,
+    [ ordersModule ]:     ordersReducer,
+    [ orderModule ]:      orderReducer,
+    [ addOrderModule ]:   addOrderReducer,
+    [ universalFilters ]: universalFiltersReducer,
 });
 
 export default rootReducer;

@@ -32,7 +32,7 @@ class FunelContainer extends Component {
     render() {
         const { stats } = this.props;
 
-        return (
+        return stats ? (
             <div className={ Styles.funel }>
                 <NavLink
                     exact
@@ -96,6 +96,8 @@ class FunelContainer extends Component {
                     <FormattedMessage id='funel.cancel' /> ({ stats.cancel })
                 </NavLink>
             </div>
+        ) : (
+            <div>...loading</div>
         );
     }
 }

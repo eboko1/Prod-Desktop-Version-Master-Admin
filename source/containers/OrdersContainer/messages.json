@@ -44,9 +44,12 @@
             "Search by number, client, master, phone, auto...",
         "orders.filter.show_filter": "show filter",
         "orders.filter.hide_filter": "hide filter",
+        "orders.administrator": "Administrator",
         "orders.manager": "Manager",
         "orders.call": "Call",
         "orders.carbook": "Carbook",
+        "orders.cb24": "CB24",
+        "orders.business_1s": "1C",
         "orders.not_provided": "Not Provided"
     },
     "ru": {
@@ -89,9 +92,12 @@
             "Поиск по номеру, клиенту, мастеру, телефону, авто...",
         "orders.filter.show_filter": "показать фильтр",
         "orders.filter.hide_filter": "спрятать фильтр",
+        "orders.administrator": "Администратор",
         "orders.manager": "Менеджер",
         "orders.call": "Звонок",
         "orders.carbook": "Carbook",
+        "orders.business_1s": "1C",
+        "orders.cb24": "CB24",
         "orders.not_provided": "Не указан"
     },
     "uk": {
@@ -134,9 +140,12 @@
             "Шукати по номеру, клієнту, майстру, телефону, авто...",
         "orders.filter.show_filter": "показати фільтр",
         "orders.filter.hide_filter": "сховати фільтр",
+        "orders.administrator": "Адміністратор",
         "orders.manager": "Менеджер",
-        "orders.call": "Звонок",
+        "orders.call": "Дзвінок",
         "orders.carbook": "Carbook",
+        "orders.business_1s": "1C",
+        "orders.cb24": "CB24",
         "orders.not_provided": "Не вказанний"
     }
 }

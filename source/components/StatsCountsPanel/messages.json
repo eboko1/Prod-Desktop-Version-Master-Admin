@@ -1,23 +1,26 @@
 {
     "en": {
-        "stats_counts_panel.countOrders": "Count Orders",
-        "stats_counts_panel.countClients": "Count Clients",
-        "stats_counts_panel.countVehicles": "Count Vehicles",
-        "stats_counts_panel.servicesSum": "Services Sum",
-        "stats_counts_panel.detailsSum": "Details Sum"
+        "stats_counts_panel.countOrders": "Count orders",
+        "stats_counts_panel.countClients": "Count clients",
+        "stats_counts_panel.countVehicles": "Count vehicles",
+        "stats_counts_panel.servicesSum": "Services sum",
+        "stats_counts_panel.detailsSum": "Details sum",
+        "stats_counts_panel.totalSum": "Orders sum"
     },
     "ru": {
         "stats_counts_panel.countOrders": "Кол-во ремонтов",
         "stats_counts_panel.countClients": "Кол-во клиентов",
         "stats_counts_panel.countVehicles": "Кол-во авто",
         "stats_counts_panel.servicesSum": "Сума работ",
-        "stats_counts_panel.detailsSum": "Сума деталей"
+        "stats_counts_panel.detailsSum": "Сума деталей",
+        "stats_counts_panel.totalSum": "Сума заказов"
     },
     "uk": {
         "stats_counts_panel.countOrders": "Кіл-ть ремонтів",
         "stats_counts_panel.countClients": "Клі-ть клієнтів",
         "stats_counts_panel.countVehicles": "Кіл-ть авто",
         "stats_counts_panel.servicesSum": "Сума робіт",
-        "stats_counts_panel.detailsSum": "Сума деталей"
+        "stats_counts_panel.detailsSum": "Сума деталей",
+        "stats_counts_panel.totalSum": "Сума заказів"
     }
 }
