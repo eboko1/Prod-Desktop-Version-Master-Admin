@@ -70,7 +70,7 @@ class OrdersPage extends Component {
         if (daterange === 'all') {
             this.props.setOrdersDaterangeFilter({});
         } else if (daterange !== 'all') {
-            const daterangeFilter = getDaterange(daterange, 'iso');
+            const daterangeFilter = getDaterange(daterange);
             this.props.setOrdersDaterangeFilter({ ...daterangeFilter });
         }
 
