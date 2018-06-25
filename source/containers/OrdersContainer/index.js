@@ -3,12 +3,8 @@ import React, { Component } from 'react';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-// import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Table, Button, Icon, Tooltip, Spin, Modal } from 'antd';
-// import { isImmutable, List } from 'immutable';
-// import moment from 'moment';
-// import { v4 as uid } from 'uuid';
 import _ from 'lodash';
 
 // proj
@@ -154,11 +150,7 @@ class OrdersContainer extends Component {
 
         return (
             <Catcher>
-                { /* <div className={ Styles.ordersTableWrapper }> */ }
                 <div className={ Styles.paper }>
-                    { /* <Button onClick={ () => this.setCancelReasonModal(true) }>
-                        set cancel reason modal
-                    </Button> */ }
                     <Button
                         type='primary'
                         onClick={ this.start }
@@ -185,38 +177,9 @@ class OrdersContainer extends Component {
                         pagination={ pagination }
                     />
                 </div>
-                { /* <Modal
-                    title={
-                        <FormattedMessage id='cancel_reson_modal.cancel_reason' />
-                    }
-                    cancelText=''
-                    wrapClassName={ Styles.verticalCenterModal }
-                    visible={ this.state.cancelReasonModalVisible }
-                    onOk={ () => this.setCancelReasonModal(false) }
-                    onCancel={ () => this.setCancelReasonModal(false) }
-                    footer={ [
-                        <Button
-                            key='close'
-                            type='primary'
-                            onClick={ () => this.setCancelReasonModal(false) }
-                        >
-                            <FormattedMessage id='cancel_reason_modal.close' />
-                        </Button>,
-                    ] }
-                >
-                    <p>cancel reason</p>
-                </Modal> */ }
             </Catcher>
         );
     }
 }
 
 export default OrdersContainer;
-
-/* <OrdersTable
-    columns={ columns }
-    data={ orders }
-    loading={ this.props.ordersFetching }
-    pagination={ pagination }
-    rowSelection={ rowSelection }
-/> */

@@ -17,7 +17,7 @@ import {
 
 import { Layout } from 'commons';
 import book from 'routes/book';
-import { getDaterange, getCollapsedState } from 'utils';
+import { getDaterange } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -136,7 +136,12 @@ class OrdersPage extends Component {
                     <OrdersFilterContainer status={ status } />
                 </section>
                 { (status === 'success' || status === 'canceled') && (
-                    <UniversalFilters />
+                    <section
+                        className={ `${Styles.universalFilters} ${collapsed &&
+                            Styles.universalFiltersCollapsed}` }
+                    >
+                        <UniversalFilters />
+                    </section>
                 ) }
                 <section className={ Styles.ordersWrrapper }>
                     <OrdersContainer />
