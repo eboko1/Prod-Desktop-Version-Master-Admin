@@ -67,7 +67,7 @@ class OrdersContainer extends Component {
             { route: /orders\/approved/, statuses: 'approve' },
             { route: /orders\/in-progress/, statuses: 'progress' },
             { route: /orders\/success/, statuses: 'success' },
-            { route: /orders\/reviews/, statuses: 'success' },
+            { route: /orders\/reviews/, statuses: 'review' },
             { route: /orders\/invitations/, statuses: 'invite' },
             { route: /orders\/canceled/, statuses: 'cancel' },
         ];

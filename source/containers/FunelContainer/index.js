@@ -75,7 +75,7 @@ class FunelContainer extends Component {
                     exact
                     to={ `${book.orders}/reviews` }
                     activeClassName={ Styles.active }
-                    onClick={ () => this.setStatus('success') }
+                    onClick={ () => this.setStatus('review') }
                 >
                     <FormattedMessage id='funel.review' /> ({ stats.review })
                 </NavLink>
