@@ -34,74 +34,16 @@ class OrderPage extends Component {
         this.props.fetchOrder(this.props.match.params.id);
     }
 
+    getOrderReports() {
+        const { status }  = this.props.order;
+        const { id } = this.props.match.params;
+    }
+
     render() {
         // destruct order
         const { num, status, datetime } = this.props.order;
-
-        const id = this.props.match.params.id;
-        //
-        // const printAct = (name, reportType) => ({
-        //     name: name,
-        //     link: `${book.reports}${reportType}/${id}`,
-        // });
-        // const printAct = (name, reportType) => ({
-        //     name: name,
-        //     link: `${book.reports}${reportType}/${id}`,
-        // });
-        const reports = [];
-
-        const calculationReport = {
-            name: 'calculationReport',
-            link: `${book.reports}/calculationReport/${id}`,
-        };
-        const businessOrderReport = {
-            name: 'businessOrderReport',
-            link: `${book.reports}/businessOrderReport/${id}`,
-        };
-        const clientOrderReport = {
-            name: 'clientOrderReport',
-            link: `${book.reports}/clientOrderReport/${id}`,
-        };
-        const diagnosticsActReport = {
-            name: 'clientOrderReport',
-            link: () => this.props.fetchReport('diagnosticsActReport', id),
-            // link: `${book.reports}/diagnosticsActReport/${id}`,
-        };
-        const actOfAcceptanceReport = {
-            name: 'actOfAcceptanceReport',
-            // link: this.props.fetchReport(
-            //     `${book.reports}/actOfAcceptanceReport/${id}`,
-            // ),
-            link: () => {
-                console.log('AAA', id);
-                this.props.fetchReport({
-                    reportType: 'actOfAcceptanceReport',
-                    id,
-                });
-            },
-            // link: `${book.reports}/actOfAcceptanceReport/${id}`,
-        };
-
-        switch (status) {
-            case 'approve':
-                reports.push(actOfAcceptanceReport, diagnosticsActReport);
-                break;
-            case 'success':
-                break;
-            default:
-                reports.push(clientOrderReport);
-                break;
-        }
-
-        // calculationReport - калькуляция
-        //
-        // businessOrderReport -> наряд заказ в цех
-        //
-        // clientOrderReport -> наряд заказ
-        //
-        // diagnosticsActReport -> акт диагностики
-        //
-        // actOfAcceptanceReport -> акт приема работ
+        const { id } = this.props.match.params;
+        const orderReports = this.getOrderReports();
 
         return (
             <Layout
@@ -110,7 +52,6 @@ class OrderPage extends Component {
                         ''
                         :
                         <>
-                            {console.log('→ ORDERPAGE_status', status)}
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
@@ -126,7 +67,7 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
-                        <ReportsDropdown orderId={ id } reports={ reports } />
+                        <ReportsDropdown orderId = { id } orderStatus = { status } />
                         <Icon
                             style={ { fontSize: 24, cursor: 'pointer' } }
                             type='close'
