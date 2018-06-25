@@ -98,6 +98,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 filter: {
                     ...state.filter,
+                    page:  1,
                     query: payload,
                 },
             };

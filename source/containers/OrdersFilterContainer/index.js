@@ -6,7 +6,8 @@ import { Button, Input, Radio, Icon } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Catcher } from 'commons';
 import Styles from './styles.m.css';
-//proj
+
+// proj
 import {
     ordersSearch,
     fetchOrders,
@@ -14,6 +15,7 @@ import {
     setOrdersSearchFilter,
 } from 'core/orders/duck';
 
+// own
 const Search = Input.Search;
 const ButtonGroup = Button.Group;
 const RadioButton = Radio.Button;
