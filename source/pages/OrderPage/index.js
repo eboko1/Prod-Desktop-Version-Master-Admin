@@ -48,8 +48,6 @@ class OrderPage extends Component {
         //     name: name,
         //     link: `${book.reports}${reportType}/${id}`,
         // });
-        console.log('orderId', typeof id);
-
         const reports = [];
 
         const calculationReport = {
@@ -84,7 +82,6 @@ class OrderPage extends Component {
             // link: `${book.reports}/actOfAcceptanceReport/${id}`,
         };
 
-        console.log('PRINTstatus', status);
         switch (status) {
             case 'approve':
                 reports.push(actOfAcceptanceReport, diagnosticsActReport);
@@ -109,13 +106,16 @@ class OrderPage extends Component {
         return (
             <Layout
                 title={
-                    <>
-                        <FormattedMessage
-                            id={ `order-status.${status || 'order'}` }
-                        />
-                        {console.log('num', num)}
-                        {` ${num}`}
-                    </>
+                    !status || !num ? 
+                        ''
+                        : 
+                        <>
+                            <FormattedMessage
+                                id={ `order-status.${status || 'order'}` }
+                            />
+                            {` ${num}`}
+                        </>
+                    
                 }
                 description={
                     <>
@@ -125,7 +125,7 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
-                        <ReportsDropdown orderId = { id } reports={ reports } />
+                        <ReportsDropdown orderId={ id } reports={ reports } />
                         <Icon
                             style={ { fontSize: 24, cursor: 'pointer' } }
                             type='close'

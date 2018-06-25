@@ -17,7 +17,6 @@ import {
 } from 'core/orders/duck';
 
 import { Catcher, Spinner } from 'commons';
-import { OrdersTable } from 'components';
 
 // own
 import { columnsConfig, rowsConfig, scrollConfig } from './ordersTableConfig';
@@ -134,7 +133,7 @@ class OrdersContainer extends Component {
             selectedRowKeys,
             this.onSelectChange,
         );
-        console.log('→ pagination count', this.props.count);
+
         const pagination = {
             pageSize:         25,
             total:            Math.ceil(this.props.count / 25) * 25,

@@ -45,12 +45,13 @@ const selectFilter = state => state.orders.filter;
 export function* fetchOrdersSagaTake() {
     // сейчас работает (подключена в рут саге)
     while (true) {
-        // const action = yield take(FETCH_ORDERS); // Блочится на этом месте (можно доставать экшн)
+        // const action = yield take(FETCH_ORDERS); // Блочится на этом месте (можно доставать action)
         yield take(FETCH_ORDERS);
+        yield nprogress.start();
+
         const filter = yield select(selectFilter);
         const filters = spreadProp('daterange', filter);
-        // console.log('→ saga filters', filters);
-        yield nprogress.start();
+
         yield put(uiActions.setOrdersFetchingState(true));
         const data = yield call(fetchAPI, 'GET', 'orders', filters);
 
