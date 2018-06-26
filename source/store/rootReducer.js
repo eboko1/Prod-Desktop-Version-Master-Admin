@@ -13,7 +13,7 @@ import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import addOrderReducer, {
     moduleName as addOrderModule,
-} from 'core/orderAdd/duck';
+} from 'core/addOrder/duck';
 import universalFiltersReducer, {
     moduleName as universalFilters,
 } from 'core/forms/universalFiltersForm/duck';

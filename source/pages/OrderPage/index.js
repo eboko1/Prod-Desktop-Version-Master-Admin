@@ -73,7 +73,6 @@ class OrderPage extends Component {
             //     `${book.reports}/actOfAcceptanceReport/${id}`,
             // ),
             link: () => {
-                console.log('AAA', id);
                 this.props.fetchReport({
                     reportType: 'actOfAcceptanceReport',
                     id,
@@ -93,30 +92,19 @@ class OrderPage extends Component {
                 break;
         }
 
-        // calculationReport - калькуляция
-        //
-        // businessOrderReport -> наряд заказ в цех
-        //
-        // clientOrderReport -> наряд заказ
-        //
-        // diagnosticsActReport -> акт диагностики
-        //
-        // actOfAcceptanceReport -> акт приема работ
-
         return (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
-                            {console.log('→ ORDERPAGE_status', status)}
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>

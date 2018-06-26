@@ -50,7 +50,7 @@ class OrdersContainer extends Component {
         const status = OrdersContainer.getStatuses(props);
 
         this.state = {
-            activeRoute:              props.location.pathname,
+            // activeRoute:              props.location.pathname,
             status:                   status,
             loading:                  false,
             selectedRowKeys:          [],
@@ -125,6 +125,7 @@ class OrdersContainer extends Component {
     render() {
         const { orders } = this.props;
         const { status, loading, activeRoute, selectedRowKeys } = this.state;
+        // const { status, loading, selectedRowKeys } = this.state;
 
         const columns = columnsConfig(activeRoute);
 
@@ -163,6 +164,7 @@ class OrdersContainer extends Component {
                             ? `Selected ${selectedRowKeys.length} items`
                             : '' }
                     </span>
+                    { console.log('→ activeRo', activeRoute) }
                     <Table
                         className={ Styles.ordersTable }
                         columns={ columns }

@@ -6,7 +6,7 @@ import { withRouter } from 'react-router';
 import { Icon, Button, Radio } from 'antd';
 
 // proj
-import { fetchAddOrder } from 'core/orderAdd/duck';
+import { fetchAddOrder } from 'core/addOrder/duck';
 import { Layout } from 'commons';
 import { AddOrderForm } from 'forms';
 

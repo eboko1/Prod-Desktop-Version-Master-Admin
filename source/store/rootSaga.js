@@ -7,7 +7,7 @@ import ui from 'core/ui/saga';
 
 import { saga as ordersSaga } from 'core/orders/saga';
 import { saga as orderSaga } from 'core/order/saga';
-import { saga as addOrderSaga } from 'core/orderAdd/saga';
+import { saga as addOrderSaga } from 'core/addOrder/saga';
 
 import { saga as universalFiltersSaga } from 'core/forms/universalFiltersForm/saga';
 
