@@ -6,7 +6,7 @@ import { withRouter } from 'react-router';
 import { Icon, Button, Radio } from 'antd';
 
 // proj
-import { fetchAddOrder } from 'core/addOrder/duck';
+import { fetchAddOrderForm } from 'core/forms/addOrderForm/duck';
 import { Layout } from 'commons';
 import { AddOrderForm } from 'forms';
 
@@ -25,10 +25,10 @@ const RadioGroup = Radio.Group;
 // };
 //
 @withRouter
-@connect(null, { fetchAddOrder })
+@connect(null, { fetchAddOrderForm })
 class AddOrderPage extends Component {
     componentDidMount() {
-        this.props.fetchAddOrder();
+        this.props.fetchAddOrderForm();
     }
     render() {
         return (

@@ -7,20 +7,17 @@ import { call, put, all, take } from 'redux-saga/effects';
 import { fetchAPI } from 'utils';
 
 // own
-import {
-    fetchUniversalFiltersFormSuccess,
-    FETCH_UNIVERSAL_FILTERS_FORM,
-} from './duck';
+import { fetchProfileFormSuccess, FETCH_PROFILE_FORM } from './duck';
 
-export function* fetchUniversalFiltersFormSaga() {
+export function* fetchProfileFormSaga() {
     while (true) {
-        yield take(FETCH_UNIVERSAL_FILTERS_FORM);
+        yield take(FETCH_PROFILE_FORM);
         const data = yield call(fetchAPI, 'GET', 'orders/filter');
 
-        yield put(fetchUniversalFiltersFormSuccess(data));
+        yield put(fetchProfileFormSuccess(data));
     }
 }
 
 export function* saga() {
-    yield all([ call(fetchUniversalFiltersFormSaga) ]);
+    yield all([ call(fetchProfileFormSaga) ]);
 }

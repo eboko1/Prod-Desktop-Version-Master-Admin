@@ -164,7 +164,6 @@ class OrdersContainer extends Component {
                             ? `Selected ${selectedRowKeys.length} items`
                             : '' }
                     </span>
-                    { console.log('→ activeRo', activeRoute) }
                     <Table
                         className={ Styles.ordersTable }
                         columns={ columns }

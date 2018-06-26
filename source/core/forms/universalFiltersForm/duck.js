@@ -1,17 +1,38 @@
 /**
  * Constants
  * */
-export const moduleName = 'universalFilters';
+export const moduleName = 'universalFiltersForm';
 const prefix = `cpb/${moduleName}`;
 
-export const FETCH_UNIVERSAL_FILTERS = `${prefix}/FETCH_UNIVERSAL_FILTERS`;
-export const FETCH_UNIVERSAL_FILTERS_SUCCESS = `${prefix}/FETCH_UNIVERSAL_FILTERS_SUCCESS`;
+export const FETCH_UNIVERSAL_FILTERS_FORM = `${prefix}/FETCH_UNIVERSAL_FILTERS_FORM`;
+export const FETCH_UNIVERSAL_FILTERS_FORM_SUCCESS = `${prefix}/FETCH_UNIVERSAL_FILTERS_FORM_SUCCESS`;
+
+export const ON_CHANGE_UNIVERSAL_FILTERS_FORM = `${prefix}/ON_CHANGE_UNIVERSAL_FILTERS_FORM`;
 
 /**
  * Reducer
  * */
+//
 
 const ReducerState = {
+    fields: {
+        vehicleMakes: {
+            errors:     void 0,
+            name:       'vehicleMakes',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
+        vehicleModels: {
+            errors:     void 0,
+            name:       'vehicleModels',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
+    },
     orderComments:    [],
     services:         [],
     managers:         [],
@@ -22,13 +43,21 @@ const ReducerState = {
 };
 
 export default function reducer(state = ReducerState, action) {
-    const { type, payload } = action;
+    const { type, payload, meta } = action;
 
     switch (type) {
-        case FETCH_UNIVERSAL_FILTERS_SUCCESS:
+        case FETCH_UNIVERSAL_FILTERS_FORM_SUCCESS:
             return {
                 ...state,
                 ...payload,
+            };
+
+        case ON_CHANGE_UNIVERSAL_FILTERS_FORM:
+            return {
+                ...state,
+                fields: {
+                    [ meta.field ]: { ...payload[ meta.field ] },
+                },
             };
 
         default:
@@ -41,24 +70,22 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
-// export const ordersSelector = createSelector(stateSelector, state => {
-//     // console.log('ordersSelector', state.orders);
-//
-//     // return state.orders.valueSeq().toArray();
-//     return state.data.orders;
-// });
 
 /**
  * Action Creators
  * */
 
-export const fetchUniversalFilters = () => ({
-    type: FETCH_UNIVERSAL_FILTERS,
+export const fetchUniversalFiltersForm = () => ({
+    type: FETCH_UNIVERSAL_FILTERS_FORM,
 });
 
-export function fetchUniversalFiltersSuccess(filters) {
-    return {
-        type:    FETCH_UNIVERSAL_FILTERS_SUCCESS,
-        payload: filters,
-    };
-}
+export const fetchUniversalFiltersFormSuccess = filters => ({
+    type:    FETCH_UNIVERSAL_FILTERS_FORM_SUCCESS,
+    payload: filters,
+});
+
+export const onChangeUniversalFiltersForm = (fields, { form, field }) => ({
+    type:    ON_CHANGE_UNIVERSAL_FILTERS_FORM,
+    payload: fields,
+    meta:    { form, field },
+});

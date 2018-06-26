@@ -36,8 +36,7 @@ const { TextArea } = Input;
 
 @injectIntl
 @withReduxForm({
-    name:    'order',
-    fields:  [ 'status' ],
+    name:    'addOrderForm',
     actions: { change: antdReduxFormActions.change },
 })
 export class AddOrderForm extends Component {

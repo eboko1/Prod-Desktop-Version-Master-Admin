@@ -7,16 +7,8 @@ import _ from 'lodash';
 // proj
 import { getDisplayName } from 'utils';
 
-export const withReduxForm = ({ name, fields, actions }) => Enhanceable => {
-    const mapStateToProps = state => {
-        const formState = { fields: {} };
-        fields.forEach(field => {
-            formState.fields[ field ] = state.forms.order[ field ];
-        });
-
-        return formState;
-    };
-    @connect(mapStateToProps, { ...actions })
+export const withReduxForm = ({ name, actions }) => Enhanceable => {
+    @connect(state => ({ ...state.forms[ name ] }), { ...actions })
     @Form.create({
         mapPropsToFields(props) {
             const { fields } = props;

@@ -15,7 +15,8 @@ import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 
 //proj
-import { antdReduxFormActions } from 'core/forms/antdReduxForm/actions';
+// import { antdReduxFormActions } from 'core/forms/antdReduxForm/actions';
+import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
 import { withReduxForm, hasErrors } from 'utils';
 
@@ -30,9 +31,9 @@ const TabPane = Tabs.TabPane;
 const { TextArea } = Input;
 
 @withReduxForm({
-    name:    'order',
-    fields:  [ 'status' ],
-    actions: { change: antdReduxFormActions.change },
+    name:    'universalFilters',
+    fields:  [ 'vehicleMakes' ],
+    actions: { change: onChangeUniversalFiltersForm },
 })
 export class UniversalFiltersForm extends Component {
     handleSubmit = e => {
@@ -52,6 +53,11 @@ export class UniversalFiltersForm extends Component {
     handleChangeSearchSelect(value) {
         console.log(`selected ${value}`);
     }
+
+    handleChange(value) {
+        console.log('→ value', value);
+    }
+
     render() {
         const { modalContentDivWrapper } = this.props;
         const { getFieldDecorator, getFieldsError } = this.props.form;
@@ -83,12 +89,12 @@ export class UniversalFiltersForm extends Component {
                         <Option value='lucy'>Пост - 1</Option>
                     </Select>
                 </FormItem>
-                <FormItem label='Ответственный' hasFeedback>
-                    { getFieldDecorator('select', {
+                <FormItem label='Vehicle Makes'>
+                    { getFieldDecorator('vehicleMakes', {
                         rules: [
                             {
                                 required: true,
-                                message:  'Please select your country!',
+                                message:  'vehicleMakes is required!',
                             },
                         ],
                     })(
@@ -98,6 +104,7 @@ export class UniversalFiltersForm extends Component {
                             placeholder='Select a service'
                             optionFilterProp='children'
                             onChange={ value => this.handleChange(value) }
+                            // getPopupContainer={ () => modalContentDivWrapper }
                             // getPopupContainer={ () => modalContentDivWrapper }
                             // onFocus={ handleFocus }
                             // onBlur={ handleBlur }

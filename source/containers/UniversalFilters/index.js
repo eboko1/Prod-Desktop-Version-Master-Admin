@@ -5,7 +5,7 @@ import { Button, Modal } from 'antd';
 
 // proj
 import { fetchStatsCounts } from 'core/orders/duck';
-import { fetchUniversalFilters } from 'core/forms/universalFiltersForm/duck';
+import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
 import { Catcher } from 'commons';
 import { UniversalFiltersModal } from 'modals';
@@ -19,7 +19,7 @@ const mapStateToProps = state => {
     };
 };
 
-@connect(mapStateToProps, { fetchStatsCounts, fetchUniversalFilters })
+@connect(mapStateToProps, { fetchStatsCounts, fetchUniversalFiltersForm })
 export default class UniversalFilters extends Component {
     state = {
         visible: false,
@@ -29,7 +29,7 @@ export default class UniversalFilters extends Component {
         this.setState({ visible });
         // TODO: R&D
         this.props.fetchStatsCounts(); // Triggers on Modal close
-        this.props.fetchUniversalFilters();
+        this.props.fetchUniversalFiltersForm();
     };
 
     render() {
