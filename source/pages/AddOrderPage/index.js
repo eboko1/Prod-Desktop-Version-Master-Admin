@@ -6,14 +6,14 @@ import { withRouter } from 'react-router';
 import { Icon, Button, Radio } from 'antd';
 
 // proj
-import { fetchAddOrder } from 'core/orderAdd/duck';
+import { fetchAddOrderForm } from 'core/forms/addOrderForm/duck';
 import { Layout } from 'commons';
 import { AddOrderForm } from 'forms';
 
 //  own
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
-// import Styles from './styles.m.css';
+import Styles from './styles.m.css';
 
 // const mapStateToProps = (state, props) => {
 //     return {
@@ -25,10 +25,10 @@ const RadioGroup = Radio.Group;
 // };
 //
 @withRouter
-@connect(null, { fetchAddOrder })
+@connect(null, { fetchAddOrderForm })
 class AddOrderPage extends Component {
     componentDidMount() {
-        this.props.fetchAddOrder();
+        this.props.fetchAddOrderForm();
     }
     render() {
         return (
@@ -39,18 +39,22 @@ class AddOrderPage extends Component {
                         <div>
                             <RadioGroup>
                                 <RadioButton value='reserve'>
-                                    Reserve
+                                    Резерв
                                 </RadioButton>
-                                <RadioButton value='new'>New</RadioButton>
+                                <RadioButton value='new'>Новый</RadioButton>
                                 <RadioButton value='questionable'>
-                                    Questionable
+                                    Под Вопросом
                                 </RadioButton>
                                 <RadioButton value='approved'>
-                                    Approved
+                                    Запись
                                 </RadioButton>
-                            </RadioGroup>,
-                            <Button type='primary' htmlType='submit'>
-                                Submit
+                            </RadioGroup>
+                            <Button
+                                type='primary'
+                                htmlType='submit'
+                                className={ Styles.submit }
+                            >
+                                Добавить
                             </Button>
                         </div>
                         <Icon

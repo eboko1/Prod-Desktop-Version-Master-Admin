@@ -12,7 +12,7 @@ import { withReduxForm } from 'utils';
 import { DecoratedInput } from './DecoratedInput';
 
 @withReduxForm
-export default class LoginForm extends Component {
+export default class AntReduxForm extends Component {
     static defaultProps = {
         test: true,
     };

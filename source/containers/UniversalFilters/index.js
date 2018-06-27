@@ -4,51 +4,65 @@ import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
 
 // proj
-import { fetchStatsCounts } from 'core/orders/duck';
-import { fetchUniversalFilters } from 'core/forms/universalFiltersForm/duck';
+import { fetchOrders, fetchStatsCounts } from 'core/orders/duck';
+import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
 import { Catcher } from 'commons';
 import { UniversalFiltersModal } from 'modals';
+import { UniversalFiltersTags } from 'components';
 
 // own
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
-        stats: state.orders.statsCountsPanel.stats.stats,
+        stats:  state.orders.statsCountsPanel.stats.stats,
+        filter: state.orders.filter,
     };
 };
 
-@connect(mapStateToProps, { fetchStatsCounts, fetchUniversalFilters })
+const mapDispatchToProps = {
+    fetchOrders,
+    fetchStatsCounts,
+    fetchUniversalFiltersForm,
+};
+
+@connect(mapStateToProps, mapDispatchToProps)
 export default class UniversalFilters extends Component {
     state = {
         visible: false,
     };
 
-    setUniversalFiltersReasonModal = visible => {
-        this.setState({ visible });
-        // TODO: R&D
-        this.props.fetchStatsCounts(); // Triggers on Modal close
-        this.props.fetchUniversalFilters();
+    setUniversalFiltersModal = visible => {
+        this.setState(state => {
+            if (!state.visible) {
+                this.props.fetchStatsCounts();
+                this.props.fetchUniversalFiltersForm();
+            }
+
+            return { visible };
+        });
     };
 
     render() {
         return (
             <Catcher>
                 <section className={ Styles.filters }>
-                    UniversalFilters:
                     <Button
-                        onClick={ () =>
-                            this.setUniversalFiltersReasonModal(true)
-                        }
+                        type='primary'
+                        onClick={ () => this.setUniversalFiltersModal(true) }
                     >
-                        UF modal
+                        Фильтр
                     </Button>
+                    <UniversalFiltersTags />
                 </section>
                 <UniversalFiltersModal
                     visible={ this.state.visible }
-                    show={ this.setUniversalFiltersReasonModal }
+                    show={ this.setUniversalFiltersModal }
                     stats={ this.props.stats }
+                    filter={ this.props.filter }
+                    // onSubmit={}
+                    // onClose={}
                 />
             </Catcher>
         );

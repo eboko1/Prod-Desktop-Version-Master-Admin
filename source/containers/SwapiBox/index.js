@@ -10,7 +10,9 @@ import { swapiActions } from 'core/swapi/actions';
 // Components
 import { Layout, Spinner, Catcher } from 'commons';
 // import { , LanguagePad } from 'components';
-import { AntReduxForm } from 'forms';
+// import { AntReduxForm } from 'forms';
+
+import { UniversalFiltersForm } from 'forms';
 
 const mapStateToProps = state => {
     return {
@@ -46,13 +48,14 @@ class SwapiBox extends Component {
                 { /* <Spinner spin={ swapiFetching } /> */ }
                 <Catcher>
                     { /* <LanguagePad /> */ }
-                    <Button type='primary' onClick={ () => this._getData() }>
+                    { /* <Button type='primary' onClick={ () => this._getData() }>
                         get data
-                    </Button>
+                    </Button> */ }
                     { /* <pre className='language-bash'>
                         { JSON.stringify(swapi, null, 2) }
                     </pre> */ }
-                    <AntReduxForm />
+                    { /* <AntReduxForm /> */ }
+                    <UniversalFiltersForm />
                 </Catcher>
             </Layout>
         );

@@ -34,30 +34,24 @@ class OrderPage extends Component {
         this.props.fetchOrder(this.props.match.params.id);
     }
 
-    getOrderReports() {
-        const { status }  = this.props.order;
-        const { id } = this.props.match.params;
-    }
-
     render() {
         // destruct order
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
-        const orderReports = this.getOrderReports();
 
         return (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
@@ -67,7 +61,7 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
-                        <ReportsDropdown orderId = { id } orderStatus = { status } />
+                        <ReportsDropdown orderId={ id } orderStatus={ status } />
                         <Icon
                             style={ { fontSize: 24, cursor: 'pointer' } }
                             type='close'

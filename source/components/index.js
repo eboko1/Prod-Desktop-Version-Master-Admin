@@ -7,6 +7,7 @@ import OrderStatusIcon from './OrderStatusIcon';
 import Numeral from './Numeral';
 import ReportsDropdown from './ReportsDropdown';
 import StatsCountsPanel from './StatsCountsPanel';
+import UniversalFiltersTags from './UniversalFiltersTags';
 
 export {
     DistributorTable,
@@ -18,4 +19,5 @@ export {
     Numeral,
     ReportsDropdown,
     StatsCountsPanel,
+    UniversalFiltersTags,
 };

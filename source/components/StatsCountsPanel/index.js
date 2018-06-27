@@ -13,11 +13,9 @@ class StatsCountsPanel extends Component {
     render() {
         const { stats } = this.props;
 
-        // return <div>StatsCountsPanel</div>;
         return stats ? (
             <Catcher>
                 <div className={ Styles.stats }>
-                    { console.log('→ stats', stats) }
                     { Object.keys(stats).map(key => (
                         <div className={ Styles.count } key={ v4() }>
                             <FormattedMessage

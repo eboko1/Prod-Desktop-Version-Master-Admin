@@ -1,53 +1,69 @@
 // vendor
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
-import { Form } from 'antd';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { withRouter } from 'react-router';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { Icon, Tooltip, Button } from 'antd';
+import classNames from 'classnames';
+import moment from 'moment';
+import _ from 'lodash';
 
-import { authActions } from 'core/auth/actions';
-import { antdReduxFormActions } from 'core/forms/antdReduxForm/actions';
-import { selectLoginForm } from 'core/forms/antdReduxForm/reducer';
-
+// proj
+import { OrderStatusIcon, Numeral } from 'components';
+import book from 'routes/book';
 import { getDisplayName } from 'utils';
 
-const mapStateToProps = state => ({
-    // authenticationFetching: selectAuthenticationFetching(state),
-    ...selectLoginForm(state),
-});
+// own
+import { columnsConfig, rowsConfig, scrollConfig } from './ordersTableConfig';
+import Styles from './styles.m.css';
 
-const mapDispatchToProps = (dispatch, props) => {
-    return {
-        actions: bindActionCreators(
-            {
-                fetchOrders: antdReduxFormActions.change,
-            },
-            dispatch,
-        ),
-    };
-};
+// /// /// //
+// if class in construc
+// const TableMagic = (props) => {
+// columnConfig(activeRo){}
+//   return (
+//     <orderTab props={columnConfig}
+//   );
+// };
+// withRouter(TableMagic)
+// // //
 
-export const ordersTableHoc = Enhanceable => {
-    @connect(mapStateToProps, mapDispatchToProps)
-    @Form.create({
-        mapPropsToFields(props) {
-            return {
-                email: Form.createFormField({
-                    ...props.email,
-                    value: props.email.value,
-                }),
-                password: Form.createFormField({
-                    ...props.password,
-                    value: props.password.value,
-                }),
-            };
-        },
-        onFieldsChange(props, fields) {
-            props.actions.change('login', fields);
-        },
-    })
+// const mapStateToProps = state => {
+//     return {
+//         count:          state.orders.count,
+//         orders:         state.orders.data,
+//         filter:         state.orders.filter,
+//         ordersFetching: state.ui.get('ordersFetching'),
+//     };
+// };
+//
+// const mapDispatchToProps = dispatch => {
+//     return bindActionCreators(
+//         {
+//             fetchOrders,
+//             setOrdersStatusFilter,
+//             setOrdersPageFilter,
+//         },
+//         dispatch,
+//     );
+// };
+
+export const ordersTableHOC = Enhanceable => {
+    // @connect(mapStateToProps, mapDispatchToProps)
     class CostumizedOrdersTable extends Component {
         render() {
-            return <Enhanceable { ...this.props } />;
+            // columnsConfig()
+            // rowsConfig()
+            // scrollConfig()
+
+            return (
+                <Enhanceable
+                    columnsConfig={ () => this.columnsConfig }
+                    { ...this.props }
+                />
+            );
         }
     }
 

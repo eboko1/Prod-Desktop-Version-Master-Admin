@@ -1,0 +1,3 @@
+.tagTooltip:global(.ant-tooltip.ant-tooltip-placement-top) {
+    z-index: 1200 !important;
+}
