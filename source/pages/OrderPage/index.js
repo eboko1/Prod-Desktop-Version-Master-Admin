@@ -7,7 +7,7 @@ import moment from 'moment';
 import { Button, Icon } from 'antd';
 
 // proj
-import { fetchOrder, fetchReport } from 'core/order/duck';
+import { fetchOrder, fetchReport, getReport } from 'core/order/duck';
 import { Layout } from 'commons';
 import { OrderForm } from 'forms';
 import { ReportsDropdown } from 'components';
@@ -28,7 +28,7 @@ const mapStateToProps = (state, props) => {
 };
 
 @withRouter
-@connect(mapStateToProps, { fetchOrder, fetchReport })
+@connect(mapStateToProps, { fetchOrder, fetchReport, getReport })
 class OrderPage extends Component {
     componentDidMount() {
         this.props.fetchOrder(this.props.match.params.id);
@@ -61,7 +61,11 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
-                        <ReportsDropdown orderId={ id } orderStatus={ status } />
+                        <ReportsDropdown
+                            orderId={ id }
+                            orderStatus={ status }
+                            download={ this.props.getReport }
+                        />
                         <Icon
                             style={ { fontSize: 24, cursor: 'pointer' } }
                             type='close'

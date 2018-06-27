@@ -1,33 +1,35 @@
 // vendor
 import React from 'react';
-import {FormattedMessage} from 'react-intl';
-import {Menu, Dropdown, Icon, message} from 'antd';
-import {saveAs} from 'file-saver'
+import { FormattedMessage } from 'react-intl';
+import { Menu, Dropdown, Icon, message } from 'antd';
 
 // proj
 import book from 'routes/book';
-import {fetchAPI} from 'utils';
+import { fetchAPI } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
 class ReportsDropdown extends React.Component {
-
     constructor(props) {
         super(props);
         this.reports = ReportsDropdown.getReports(props);
     }
 
-    async downloadReport(item) {
-        const response = await fetchAPI('GET', item.link, null, null, true);
-        const reportFile = await response.blob();
-        const contentDispositionHeader = response.headers.get('content-disposition');
-        const fileName = contentDispositionHeader.match(/^attachment; filename="(.*)"/)[ 1 ];
-        saveAs(reportFile, fileName);
-    }
+    // async downloadReport(item) {
+    //     const response = await fetchAPI('GET', item.link, null, null, true);
+    //     const reportFile = await response.blob();
+    //     const contentDispositionHeader = response.headers.get(
+    //         'content-disposition',
+    //     );
+    //     const fileName = contentDispositionHeader.match(
+    //         /^attachment; filename="(.*)"/,
+    //     )[ 1 ];
+    //     saveAs(reportFile, fileName);
+    // }
 
     static getReports(props) {
-        const {orderId, orderStatus} = props
+        const { orderId, orderStatus } = props;
         if (!orderStatus) {
             return [];
         }
@@ -38,7 +40,7 @@ class ReportsDropdown extends React.Component {
         // diagnosticsActReport -> акт диагностики
         // actOfAcceptanceReport -> акт приема работ
         const statusToReportsMap = {
-            not_complete: [ 'calculationReport' ],
+            not_complete: ["calculationReport"], // eslint-disable-line
             required:     [ 'calculationReport' ],
             reserve:      [ 'calculationReport' ],
             call:         [ 'calculationReport' ],
@@ -49,7 +51,7 @@ class ReportsDropdown extends React.Component {
             invite:       [ 'calculationReport' ],
             cancel:       [ 'calculationReport' ],
         };
-        const reports = statusToReportsMap[ orderStatus ].map((name) => {
+        const reports = statusToReportsMap[ orderStatus ].map(name => {
             return {
                 name,
                 link: `${book.reports}/${name}/${orderId}`,
@@ -62,16 +64,17 @@ class ReportsDropdown extends React.Component {
     render() {
         const menu = (
             <Menu>
-                { this.reports.map((item, i) => (
-                    <Menu.Item key={ `${i}-${item.name}` }
+                { this.reports.map((item, index) => (
+                    <Menu.Item
+                        key={ `${index}-${item.name}` }
                         className={ `${item.disabled && Styles.itemDisabled}` }
-                        onClick={ async () => {
-                            await this.downloadReport(item)
-                        } }>
-                        { item.icon && <Icon type={ item.icon }/> }
-                        <FormattedMessage
-                            id={ item.name }
-                        />
+                        onClick={ () => this.props.download(item) }
+                        // onClick={ async () => {
+                        //     await this.downloadReport(item);
+                        // } }
+                    >
+                        { item.icon && <Icon type={ item.icon } /> }
+                        <FormattedMessage id={ item.name } />
                     </Menu.Item>
                 )) }
             </Menu>
@@ -79,7 +82,7 @@ class ReportsDropdown extends React.Component {
 
         return (
             <Dropdown overlay={ menu }>
-                <Icon type='printer'/>
+                <Icon type='printer' />
             </Dropdown>
         );
     }
