@@ -6,8 +6,8 @@ import { Select } from 'antd';
 import { v4 } from 'uuid';
 
 // proj
-// import { universalFiltersModalActions } from 'core/forms/antdReduxForm/actions';
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
+import { fetchOrders } from 'core/orders/duck';
 
 import { StatsCountsPanel } from 'components';
 // import { UniversalFiltersForm } from 'forms';
@@ -18,17 +18,9 @@ import Styles from './styles.m.css';
 const Option = Select.Option;
 const FormItem = Form.Item;
 
-// const mapStateToProps = (state, props) => {
-//     return {
-//         stats: state.
-//     }
-// }
-//
-// @connect(mapStateToProps, { })
 @withReduxForm({
     name:    'universalFiltersForm',
-    // fields:  [ 'vehicleMakes' ],
-    actions: { change: onChangeUniversalFiltersForm },
+    actions: { change: onChangeUniversalFiltersForm, fetchOrders },
 })
 export default class UniversalFiltersModal extends Component {
     state = {
@@ -37,6 +29,21 @@ export default class UniversalFiltersModal extends Component {
     };
 
     handleChange = value => console.log('→ Select value', value);
+
+    handleSubmit = e => {
+        console.log('→ this.props.form', this.props.form);
+        e.preventDefault();
+        this.props.show(false);
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                console.log(
+                    'Received values of UniversalFiltersForm: ',
+                    values,
+                );
+                this.props.fetchOrders({ ...this.props.filter, ...values });
+            }
+        });
+    };
 
     render() {
         const { show, visible, vehicleMakes, vehicleModels } = this.props;
@@ -69,7 +76,7 @@ export default class UniversalFiltersModal extends Component {
                     } }
                 >
                     <StatsCountsPanel stats={ this.props.stats } />
-                    <Form layout='vertical' onSubmit={ this._handleSubmit }>
+                    <Form layout='vertical' onSubmit={ this.handleSubmit }>
                         <FormItem label='vehicleMakes'>
                             { /* { getFieldDecorator('vehicleMakes', {
                                 rules: [
@@ -85,24 +92,23 @@ export default class UniversalFiltersModal extends Component {
                                     style={ { width: 200 } }
                                     placeholder='Select vehicle model'
                                     optionFilterProp='children'
-                                    onSelect={ value => this.handleChange(value) }
-                                    // onChange={ value => this.handleChange(value) }
+                                    // key={ v4() }
+                                    // onSelect={ value => this.handleChange(value) }
+                                    onChange={ value => this.handleChange(value) }
                                     getPopupContainer={ () =>
                                         modalContentDivWrapper
                                     }
-                                    filterOption={ (input, option) =>
-                                        option.props.children
-                                            .toLowerCase()
-                                            .indexOf(input.toLowerCase()) >= 0
-                                    }
+                                    // filterOption={ (input, option) =>
+                                    //     option.props.children
+                                    //         .toLowerCase()
+                                    //         .indexOf(input.toLowerCase()) >= 0
+                                    // }
                                 >
-                                    { vehicleMakes.map(make => {
-                                        return (
-                                            <Option value={ make.id } key={ v4() }>
-                                                { make.makeName }
-                                            </Option>
-                                        );
-                                    }) }
+                                    { vehicleMakes.map(make => (
+                                        <Option value={ make.makeId } key={ v4() }>
+                                            { make.makeName }
+                                        </Option>
+                                    )) }
 
                                     { /* { vehicleMakes.map(make => (
                                         <Option value={ make.id } key={ v4() }>
