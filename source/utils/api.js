@@ -7,14 +7,20 @@ import book from 'routes/book';
 import { getToken } from 'utils';
 
 export const API = __LOCAL__
-    ? 'http://localhost:14281'
+    ? 'https://dev-api.carbook.pro'
     : 'https://dev-api.carbook.pro';
 // export const API = __DEV__ ? 'http://127.0.0.1:14281' : 'dev-api.carbook.pro';
 
 const apiC = trim(API, '/');
 // const apiC = trim(__API_URL__, '/');
 /* eslint-disable */
-export default async function fetchAPI(method, endpoint, query, body, rawResponse) {
+export default async function fetchAPI(
+    method,
+    endpoint,
+    query,
+    body,
+    rawResponse,
+) {
     try {
         const endpointC = trim(endpoint, "/"); // trim all spaces and '/'
         const handler = endpointC ? `/${endpointC}` : ""; // be sure that after api will be only one /

@@ -10,9 +10,13 @@ import {
     DatePicker,
     TimePicker,
     Icon,
+    Spin,
 } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import moment from 'moment';
+import { v4 } from 'uuid';
+import _ from 'lodash';
+import debounce from 'lodash/debounce';
 
 //proj
 import {
@@ -60,7 +64,24 @@ export class AddOrderForm extends Component {
     handleChangeSearchSelect(value) {
         console.log(`selected ${value}`);
     }
+
+    fetchClientSearch(client) {
+        debounce(this.props.fetchClientsSearch, 800);
+    }
+
     render() {
+        const {
+            allServices,
+            allDetails,
+            managers,
+            employees,
+            vehicles,
+            stations,
+        } = this.props;
+        const {
+            clients: { clients = [] },
+        } = this.props;
+
         const { getFieldDecorator, getFieldsError } = this.props.form;
         const formItemLayout = {
             labelCol:   { span: 6 },
@@ -118,12 +139,15 @@ export class AddOrderForm extends Component {
                         label={ <FormattedMessage id='add_order_form.post' /> }
                     >
                         <Select>
-                            <Option value='jack'>Нулевой Пост</Option>
-                            <Option value='lucy'>Пост - 1</Option>
+                            { stations.map(station => (
+                                <Option value={ station.num } key={ v4() }>
+                                    { station.name }
+                                </Option>
+                            )) }
                         </Select>
                     </FormItem>
                     <FormItem label='Ответственный' hasFeedback>
-                        { getFieldDecorator('select', {
+                        { getFieldDecorator('managers', {
                             rules: [
                                 {
                                     required: true,
@@ -132,8 +156,13 @@ export class AddOrderForm extends Component {
                             ],
                         })(
                             <Select placeholder='Выберете менеджера'>
-                                <Option value='vasya'>Vasya</Option>
-                                <Option value='vanya'>Vanya</Option>
+                                { managers.map(manager => (
+                                    <Option value={ manager.id } key={ v4() }>
+                                        { `${manager.managerName} ${
+                                            manager.managerSurname
+                                        }` }
+                                    </Option>
+                                )) }
                             </Select>,
                         ) }
                     </FormItem>
@@ -148,6 +177,7 @@ export class AddOrderForm extends Component {
                                 }
                             >
                                 <Input
+                                    // onChange={ () => console.log('→ ', )}
                                     placeholder={ this.props.intl.formatMessage({
                                         id:             'add_order_form.client.placeholder',
                                         defaultMessage: 'search client',
@@ -190,13 +220,22 @@ export class AddOrderForm extends Component {
                                 <FormattedMessage id='add_order_form.phone' />
                             }
                         >
-                            <Select
-                            // defaultValue='lucy'
-                            // style={ { width: 120 } }
-                            // onChange={ handleChange }
-                            >
-                                <Option value='jack'>Jack</Option>
-                                <Option value='lucy'>Lucy</Option>
+                            <Select>
+                                { _.flatten(
+                                    clients.map(
+                                        client =>
+                                            !client.phones
+                                                ? []
+                                                : client.phones.map(phone => (
+                                                    <Option
+                                                        value={ phone }
+                                                        key={ v4() }
+                                                    >
+                                                        { phone }
+                                                    </Option>
+                                                )),
+                                    ),
+                                ) }
                             </Select>
                         </FormItem>
                         <FormItem
