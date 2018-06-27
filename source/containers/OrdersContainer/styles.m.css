@@ -129,3 +129,12 @@
 .verticalCenterModal :global(.ant-modal-footer) {
     text-align: center;
 }
+
+.inviteLink {
+    font-size: 16px;
+    color: #52b3ff;
+
+    &:hover {
+        color: #9b59b6;
+    }
+}

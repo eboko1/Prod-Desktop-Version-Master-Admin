@@ -246,19 +246,28 @@ export function columnsConfig(
         dataIndex: 'invite',
         key:       'invite',
         width:     150,
-        render:    (_void, order) => (
-            <Button
-                type='primary'
-                onClick={ () => action([ order ]) }
-                disabled={ isInviteButtonDisabled(order) }
-            >
-                { order.vehicleInviteExists ? 
-                    order.vehicleInviteExists
-                    : (
+        render:    (_void, order) => {
+            if (!order.vehicleInviteExists) {
+                return (
+                    <Button
+                        type='primary'
+                        onClick={ () => action([ order ]) }
+                        disabled={ isInviteButtonDisabled(order) }
+                    >
                         <FormattedMessage id='orders.invite' />
-                    ) }
-            </Button>
-        ),
+                    </Button>
+                );
+            }
+
+            return (
+                <Link
+                    className={ Styles.inviteLink }
+                    to={ `${book.order}/${order.vehicleInviteExists}` }
+                >
+                    { order.vehicleInviteExists }
+                </Link>
+            );
+        },
     };
 
     // const reasonCol = {

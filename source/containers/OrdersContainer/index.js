@@ -129,13 +129,15 @@ class OrdersContainer extends Component {
         //     this.props.actions.fetchOrders(1);
         // }
     }
-
+    // достаем ключ из ордеров и проверяем есть ли ключ в стейте
+    // которая сохраняет ключивы выбраных рядов таблицы
     inviteSelected() {
         const inviteOrders = this.props.orders.filter(({ key }) =>
             this.state.selectedRowKeys.includes(key));
+        // создаем приглашение на основании ключей из state
         this.invite(inviteOrders);
     }
-
+    // можно ли вообще создать приглашение
     isOrderInvitable(order) {
         return !!(
             order.clientPhone &&
@@ -144,23 +146,26 @@ class OrdersContainer extends Component {
             !order.vehicleInviteExists
         );
     }
-
+    // генерируем массив из ордеров, который можно использовать для создания приглашений
     getAvailableOrdersForInvite(orders) {
         const inviteCandidates = orders
             .filter(this.isOrderInvitable)
             .filter(order => !this.isAlreadyInvited(order))
             .map(order => _.pick(order, [ 'clientId', 'vehicleId' ]));
 
+        // проверка на унивальность добавленных в массив объектов по value
         return _.uniqWith(inviteCandidates, _.isEqual);
     }
-
+    // создать приглашение
     invite(requestedInviteOrders) {
         const { orders, filters } = this.props;
+        // осталяем только валидные ордера с уникальными clientId & vehicleId
         const omittedRequestedInviteOrders = this.getAvailableOrdersForInvite(
             requestedInviteOrders,
         );
+        // массив из тех, кого пригласили
         const invited = [ ...this.state.invited, ...omittedRequestedInviteOrders ];
-
+        // конвертация clientId, vehicleId в полноценную entitny для создания приглашения
         const createInviteOrderPayload = requestedInviteOrder => {
             const { clientId, vehicleId } = requestedInviteOrder;
             const order = _(orders)
@@ -182,6 +187,7 @@ class OrdersContainer extends Component {
                 status:          'invite',
             };
         };
+        // создаем entity для создания приглашений
         const invites = omittedRequestedInviteOrders.map(
             createInviteOrderPayload,
         );
@@ -241,10 +247,6 @@ class OrdersContainer extends Component {
             disabled:     missingRequiredFields || invited,
         };
     };
-
-    setCancelReasonModal(cancelReasonModalVisible) {
-        this.setState({ cancelReasonModalVisible });
-    }
 
     render() {
         const { orders } = this.props;
