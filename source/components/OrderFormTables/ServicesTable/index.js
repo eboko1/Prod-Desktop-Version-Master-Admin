@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import {
     Table,
+    Form,
     InputNumber,
     // Input,
     Icon,
@@ -18,6 +19,7 @@ import { Catcher } from 'commons';
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 class ServicesTable extends Component {
     constructor(props) {
@@ -178,30 +180,34 @@ class ServicesTable extends Component {
                     pagination={ false }
                 />
                 <div className={ Styles.durationPanel }>
-                    <Select
-                        defaultValue='lucy'
-                        style={ { width: 120 } }
-                        onChange={ value => this.handleChange(value) }
-                    >
-                        <Option value='jack'>Jack</Option>
-                        <Option value='lucy'>Lucy</Option>
-                        <Option value='disabled' disabled>
-                            Disabled
-                        </Option>
-                        <Option value='Yiminghe'>yiminghe</Option>
-                    </Select>
-                    <Select
-                        defaultValue='lucy'
-                        style={ { width: 120 } }
-                        onChange={ value => this.handleChange(value) }
-                    >
-                        <Option value='jack'>Jack</Option>
-                        <Option value='lucy'>Lucy</Option>
-                        <Option value='disabled' disabled>
-                            Disabled
-                        </Option>
-                        <Option value='Yiminghe'>yiminghe</Option>
-                    </Select>
+                    <FormItem label='Duration'>
+                        <Select
+                            defaultValue='lucy'
+                            style={ { width: 120 } }
+                            onChange={ value => this.handleChange(value) }
+                        >
+                            <Option value='jack'>Jack</Option>
+                            <Option value='lucy'>Lucy</Option>
+                            <Option value='disabled' disabled>
+                                Disabled
+                            </Option>
+                            <Option value='Yiminghe'>yiminghe</Option>
+                        </Select>
+                    </FormItem>
+                    <FormItem label='Master'>
+                        <Select
+                            defaultValue='lucy'
+                            style={ { width: 120 } }
+                            onChange={ value => this.handleChange(value) }
+                        >
+                            <Option value='jack'>Jack</Option>
+                            <Option value='lucy'>Lucy</Option>
+                            <Option value='disabled' disabled>
+                                Disabled
+                            </Option>
+                            <Option value='Yiminghe'>yiminghe</Option>
+                        </Select>
+                    </FormItem>
                 </div>
             </Catcher>
         );

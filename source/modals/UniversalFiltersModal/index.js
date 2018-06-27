@@ -7,7 +7,7 @@ import { v4 } from 'uuid';
 
 // proj
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
-import { fetchOrders } from 'core/orders/duck';
+import { fetchOrders, setUniversalFilters } from 'core/orders/duck';
 
 import { StatsCountsPanel } from 'components';
 // import { UniversalFiltersForm } from 'forms';
@@ -20,7 +20,11 @@ const FormItem = Form.Item;
 
 @withReduxForm({
     name:    'universalFiltersForm',
-    actions: { change: onChangeUniversalFiltersForm, fetchOrders },
+    actions: {
+        change: onChangeUniversalFiltersForm,
+        fetchOrders,
+        setUniversalFilters,
+    },
 })
 export default class UniversalFiltersModal extends Component {
     state = {
@@ -31,7 +35,6 @@ export default class UniversalFiltersModal extends Component {
     handleChange = value => console.log('→ Select value', value);
 
     handleSubmit = e => {
-        console.log('→ this.props.form', this.props.form);
         e.preventDefault();
         this.props.show(false);
         this.props.form.validateFields((err, values) => {
@@ -40,7 +43,8 @@ export default class UniversalFiltersModal extends Component {
                     'Received values of UniversalFiltersForm: ',
                     values,
                 );
-                this.props.fetchOrders({ ...this.props.filter, ...values });
+                this.props.setUniversalFilters({ ...values });
+                this.props.fetchOrders(this.props.filter);
             }
         });
     };
@@ -77,7 +81,7 @@ export default class UniversalFiltersModal extends Component {
                 >
                     <StatsCountsPanel stats={ this.props.stats } />
                     <Form layout='vertical' onSubmit={ this.handleSubmit }>
-                        <FormItem label='vehicleMakes'>
+                        <FormItem label='make'>
                             { /* { getFieldDecorator('vehicleMakes', {
                                 rules: [
                                     {
@@ -86,7 +90,7 @@ export default class UniversalFiltersModal extends Component {
                                     },
                                 ],
                             })( */ }
-                            { getFieldDecorator('vehicleMakes')(
+                            { getFieldDecorator('make')(
                                 <Select
                                     showSearch
                                     style={ { width: 200 } }
@@ -98,23 +102,17 @@ export default class UniversalFiltersModal extends Component {
                                     getPopupContainer={ () =>
                                         modalContentDivWrapper
                                     }
-                                    // filterOption={ (input, option) =>
-                                    //     option.props.children
-                                    //         .toLowerCase()
-                                    //         .indexOf(input.toLowerCase()) >= 0
-                                    // }
+                                    filterOption={ (input, option) =>
+                                        option.props.children
+                                            .toLowerCase()
+                                            .indexOf(input.toLowerCase()) >= 0
+                                    }
                                 >
                                     { vehicleMakes.map(make => (
                                         <Option value={ make.makeId } key={ v4() }>
                                             { make.makeName }
                                         </Option>
                                     )) }
-
-                                    { /* { vehicleMakes.map(make => (
-                                        <Option value={ make.id } key={ v4() }>
-                                            { make.makeName }
-                                        </Option>
-                                    )) } */ }
                                 </Select>,
                             ) }
                         </FormItem>
@@ -129,24 +127,3 @@ export default class UniversalFiltersModal extends Component {
         );
     }
 }
-
-// {/* <FormItem>
-//     <DecoratedInput
-//         icon
-//         iconType='user'
-//         type='email'
-//         placeholder='Почта'
-//         getFieldDecorator={ getFieldDecorator }
-//         disabled={ authenticationFetching }
-//         rules={ [
-//             {
-//                 required: true,
-//                 message:  'Нужно ввести почту.',
-//             },
-//         ] }
-//     />
-// </FormItem> */}
-
-// getPopupContainer={ () => modalContentDivWrapper }
-// onFocus={ handleFocus }
-// onBlur={ handleBlur }

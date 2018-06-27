@@ -16,17 +16,17 @@ export const ON_CHANGE_UNIVERSAL_FILTERS_FORM = `${prefix}/ON_CHANGE_UNIVERSAL_F
 
 const ReducerState = {
     fields: {
-        vehicleMakes: {
+        make: {
             errors:     void 0,
-            name:       'vehicleMakes',
+            name:       'make',
             touched:    true,
             validating: false,
             value:      void 0,
             dirty:      false,
         },
-        vehicleModels: {
+        models: {
             errors:     void 0,
-            name:       'vehicleModels',
+            name:       'models',
             touched:    true,
             validating: false,
             value:      void 0,
