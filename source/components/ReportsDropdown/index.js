@@ -1,11 +1,10 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Menu, Dropdown, Icon, message } from 'antd';
+import { Menu, Dropdown, Icon } from 'antd';
 
 // proj
 import book from 'routes/book';
-import { fetchAPI } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -15,18 +14,6 @@ class ReportsDropdown extends React.Component {
         super(props);
         this.reports = ReportsDropdown.getReports(props);
     }
-
-    // async downloadReport(item) {
-    //     const response = await fetchAPI('GET', item.link, null, null, true);
-    //     const reportFile = await response.blob();
-    //     const contentDispositionHeader = response.headers.get(
-    //         'content-disposition',
-    //     );
-    //     const fileName = contentDispositionHeader.match(
-    //         /^attachment; filename="(.*)"/,
-    //     )[ 1 ];
-    //     saveAs(reportFile, fileName);
-    // }
 
     static getReports(props) {
         const { orderId, orderStatus } = props;
@@ -69,9 +56,6 @@ class ReportsDropdown extends React.Component {
                         key={ `${index}-${item.name}` }
                         className={ `${item.disabled && Styles.itemDisabled}` }
                         onClick={ () => this.props.download(item) }
-                        // onClick={ async () => {
-                        //     await this.downloadReport(item);
-                        // } }
                     >
                         { item.icon && <Icon type={ item.icon } /> }
                         <FormattedMessage id={ item.name } />
