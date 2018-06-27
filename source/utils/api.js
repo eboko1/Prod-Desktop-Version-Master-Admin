@@ -6,8 +6,8 @@ import store from 'store/store';
 import book from 'routes/book';
 import { getToken } from 'utils';
 
-export const API = __DEV__
-    ? 'https://dev-api.carbook.pro'
+export const API = __LOCAL__
+    ? 'http://localhost:14281'
     : 'https://dev-api.carbook.pro';
 // export const API = __DEV__ ? 'http://127.0.0.1:14281' : 'dev-api.carbook.pro';
 

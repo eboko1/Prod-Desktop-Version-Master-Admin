@@ -25,7 +25,13 @@ import Styles from './styles.m.css';
 // withRouter(TableMagic)
 // // //
 
-export function columnsConfig(activeRoute) {
+export function columnsConfig(
+    invited,
+    action,
+    isOrderInvitable,
+    isAlreadyInvited,
+    activeRoute,
+) {
     const indexCol = {
         title:     '№',
         width:     80,
@@ -228,14 +234,29 @@ export function columnsConfig(activeRoute) {
         },
     };
 
+    const isInviteButtonDisabled = order => {
+        const missingRequiredField = !isOrderInvitable(order);
+        const alreadyInvited = isAlreadyInvited(order);
+
+        return !!(missingRequiredField || alreadyInvited);
+    };
+
     const invitationCol = {
         title:     <FormattedMessage id='orders.invitation' />,
         dataIndex: 'invite',
         key:       'invite',
         width:     150,
-        render:    () => (
-            <Button type='primary'>
-                <FormattedMessage id='orders.invite' />
+        render:    (_void, order) => (
+            <Button
+                type='primary'
+                onClick={ () => action([ order ]) }
+                disabled={ isInviteButtonDisabled(order) }
+            >
+                { order.vehicleInviteExists ? 
+                    order.vehicleInviteExists
+                    : (
+                        <FormattedMessage id='orders.invite' />
+                    ) }
             </Button>
         ),
     };
@@ -334,7 +355,12 @@ export function columnsConfig(activeRoute) {
     }
 }
 
-export function rowsConfig(activeRoute, selectedRowKeys, onChange) {
+export function rowsConfig(
+    activeRoute,
+    selectedRowKeys,
+    onChange,
+    getCheckboxProps,
+) {
     if (
         activeRoute === '/orders/success' ||
         activeRoute === '/orders/canceled'
@@ -342,6 +368,7 @@ export function rowsConfig(activeRoute, selectedRowKeys, onChange) {
         return {
             selectedRowKeys,
             onChange,
+            getCheckboxProps,
         };
     }
 
