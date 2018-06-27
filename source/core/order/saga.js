@@ -1,6 +1,7 @@
 // vendor
 import { call, put, takeEvery, all } from 'redux-saga/effects';
 import nprogress from 'nprogress';
+import { saveAs } from 'file-saver';
 
 //proj
 import { fetchAPI } from 'utils';
@@ -11,6 +12,7 @@ import {
     fetchOrderFail,
     FETCH_ORDER,
     FETCH_REPORT,
+    GET_REPORT,
 } from './duck';
 
 export function* fetchOrderSaga({ payload: id }) {
@@ -51,6 +53,24 @@ export function* fetchReportSaga({ payload: { reportType, id } }) {
     }
 }
 
+// report
+export function* getReportSaga({ payload: report }) {
+    yield nprogress.start();
+
+    const response = yield call(fetchAPI, 'GET', report.link, null, null, true);
+    const reportFile = yield response.blob();
+
+    const contentDispositionHeader = response.headers.get(
+        'content-disposition',
+    );
+    const fileName = contentDispositionHeader.match(
+        /^attachment; filename="(.*)"/,
+    )[ 1 ];
+    yield saveAs(reportFile, fileName);
+
+    yield nprogress.done();
+}
+
 export function* saga() {
-    yield all([ takeEvery(FETCH_ORDER, fetchOrderSaga), takeEvery(FETCH_REPORT, fetchReportSaga) ]);
+    yield all([ takeEvery(FETCH_ORDER, fetchOrderSaga), takeEvery(FETCH_REPORT, fetchReportSaga), takeEvery(GET_REPORT, getReportSaga) ]);
 }

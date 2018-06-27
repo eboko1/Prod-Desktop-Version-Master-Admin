@@ -1,5 +1,5 @@
-import { Record, List } from 'immutable';
-import { createSelector } from 'reselect';
+// import { Record, List } from 'immutable';
+// import { createSelector } from 'reselect';
 import { v4 as uid } from 'uuid';
 
 /**
@@ -23,6 +23,7 @@ export const SET_ORDERS_SEARCH_FILTER = `${prefix}/SET_ORDERS_SEARCH_FILTER`;
 // universal UniversalFilters
 export const FETCH_STATS_COUNTS_PANEL = `${prefix}/FETCH_STATS_COUNTS_PANEL`;
 export const FETCH_STATS_COUNTS_PANEL_SUCCESS = `${prefix}/FETCH_STATS_COUNTS_PANEL_SUCCESS`;
+export const SET_UNIVERSAL_FILTERS = `${prefix}/SET_UNIVERSAL_FILTERS`;
 
 export const CREATE_INVITE_ORDERS = `${prefix}/CREATE_INVITE_ORDERS`;
 export const CREATE_INVITE_ORDERS_SUCCESS = `${prefix}/CREATE_INVITE_ORDERS_SUCCESS`;
@@ -103,6 +104,16 @@ export default function reducer(state = ReducerState, action) {
                     ...state.filter,
                     page:  1,
                     query: payload,
+                },
+            };
+
+        case SET_UNIVERSAL_FILTERS:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    page: 1,
+                    ...payload,
                 },
             };
 
@@ -203,6 +214,12 @@ export const setOrdersStatusFilter = statusFilter => ({
 export const setOrdersSearchFilter = searchFilter => ({
     type:    SET_ORDERS_SEARCH_FILTER,
     payload: searchFilter,
+});
+
+// Universal Filters
+export const setUniversalFilters = universalFilters => ({
+    type:    SET_UNIVERSAL_FILTERS,
+    payload: universalFilters,
 });
 
 // StatsCountsPanel

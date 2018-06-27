@@ -9,9 +9,3 @@
         color: var(--not_complete);
     }
 }
-
-.durationPanel {
-    display: flex;
-    justify-content: space-between;
-    margin: 24px 0;
-}

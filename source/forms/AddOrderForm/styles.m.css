@@ -1,4 +1,5 @@
-.clientBlock {
+.clientBlock,
+.dateBlock {
     background: var(--moduleHeader);
     display: flex;
     justify-content: space-between;

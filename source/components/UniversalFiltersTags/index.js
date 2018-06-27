@@ -25,6 +25,7 @@ class UniversalFiltersTags extends Component {
                     const isLongTag = tag.length > 20;
                     const tagElem = (
                         <Tag
+                            color='#9b59b6'
                             key={ tag }
                             closable
                             afterClose={ () => this.handleClose(tag) }

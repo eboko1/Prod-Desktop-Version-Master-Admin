@@ -15,7 +15,10 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import moment from 'moment';
 
 //proj
-import { antdReduxFormActions } from 'core/forms/antdReduxForm/actions';
+import {
+    fetchAddOrderForm,
+    onChangeAddOrderForm,
+} from 'core/forms/addOrderForm/duck';
 
 import {
     DetailsTable,
@@ -25,7 +28,7 @@ import {
 import { withReduxForm, hasErrors } from 'utils';
 
 // own
-import { DecoratedInput } from './DecoratedInput';
+// import { DecoratedInput } from './DecoratedInput';
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -37,7 +40,7 @@ const { TextArea } = Input;
 @injectIntl
 @withReduxForm({
     name:    'addOrderForm',
-    actions: { change: antdReduxFormActions.change },
+    actions: { change: onChangeAddOrderForm, fetchAddOrderForm },
 })
 export class AddOrderForm extends Component {
     handleSubmit = e => {
@@ -79,7 +82,7 @@ export class AddOrderForm extends Component {
                     inner submit (test validation)
                 </Button>
                 { /* <FormItem { ...formItemLayout } label='Plain Text'>
-                    <span className='ant-form-text'>China</span>
+                    <span className='ant-form-text'>readonlytext</span>
                 </FormItem> */ }
                 { /*
                 <FormItem { ...formItemLayout } label='Radio.Button'>
@@ -95,7 +98,7 @@ export class AddOrderForm extends Component {
                     ) }
                 </FormItem> */ }
 
-                <div>
+                <div className={ Styles.dateBlock }>
                     <FormItem
                         label={
                             <FormattedMessage id='add_order_form.enrollment_date' />
@@ -157,6 +160,7 @@ export class AddOrderForm extends Component {
                             </FormItem>
                         </div>
                         <FormItem
+                            { ...formItemLayout }
                             label={
                                 <FormattedMessage id='add_order_form.name' />
                             }
@@ -181,6 +185,7 @@ export class AddOrderForm extends Component {
                             </Select>
                         </FormItem>
                         <FormItem
+                            { ...formItemLayout }
                             label={
                                 <FormattedMessage id='add_order_form.phone' />
                             }
@@ -195,6 +200,7 @@ export class AddOrderForm extends Component {
                             </Select>
                         </FormItem>
                         <FormItem
+                            { ...formItemLayout }
                             label={
                                 <FormattedMessage id='add_order_form.email' />
                             }
@@ -254,11 +260,6 @@ export class AddOrderForm extends Component {
                         <FormattedMessage id='add_order_form.total' /> 0<FormattedMessage id='currency' />
                     </div>
                 </div>
-                { /* <FormItem wrapperCol={ { span: 12, offset: 6 } }>
-                    <Button type='primary' htmlType='submit'>
-                        Submit
-                    </Button>
-                </FormItem> */ }
                 { /* FORMS TABS */ }
                 <Tabs onChange={ () => this.callback() } type='card'>
                     <TabPane
