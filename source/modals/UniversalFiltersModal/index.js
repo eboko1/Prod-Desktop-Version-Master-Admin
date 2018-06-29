@@ -4,6 +4,7 @@ import { Modal, Button, Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { Select } from 'antd';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // proj
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
@@ -43,14 +44,36 @@ export default class UniversalFiltersModal extends Component {
                     'Received values of UniversalFiltersForm: ',
                     values,
                 );
-                this.props.setUniversalFilters({ ...values });
+                const modelsTransformQuery = values.models
+                    ? {
+                        models: _(values.models)
+                            .map(model => model.split(','))
+                            .flatten()
+                            .value(),
+                    }
+                    : {};
+
+                this.props.setUniversalFilters({
+                    ...values,
+                    ...modelsTransformQuery,
+                });
                 this.props.fetchOrders(this.props.filter);
             }
         });
     };
 
     render() {
-        const { show, visible, vehicleMakes, vehicleModels } = this.props;
+        const {
+            show,
+            visible,
+            vehicleMakes,
+            vehicleModels,
+            managers,
+            employees,
+            creationReasons,
+            orderComments,
+            services,
+        } = this.props;
         const { getFieldDecorator, getFieldsError } = this.props.form;
         // console.log('→ getFieldDecorator', getFieldDecorator);
         // Parent Node which the selector should be rendered to.
@@ -61,11 +84,98 @@ export default class UniversalFiltersModal extends Component {
         // git issue: https://github.com/ant-design/ant-design/issues/8461
         let modalContentDivWrapper = null;
 
+        const createSelect = (
+            name,
+            placeholder,
+            options,
+            multiple = 'default',
+        ) => {
+            return (
+                <Select
+                    showSearch
+                    mode={ multiple }
+                    style={ { width: 200 } }
+                    placeholder={ placeholder }
+                    // optionFilterProp='children'
+                    getPopupContainer={ () => modalContentDivWrapper }
+                    filterOption={ (input, option) =>
+                        option.props.children
+                            .toLowerCase()
+                            .indexOf(input.toLowerCase()) >= 0
+                    }
+                >
+                    { options }
+                </Select>
+            );
+        };
+
+        const createDecoratedSelectField = (
+            name,
+            placeholder,
+            options,
+            multiple,
+        ) => (
+            <FormItem>
+                { getFieldDecorator(name)(
+                    createSelect(name, placeholder, options, multiple),
+                ) }
+            </FormItem>
+        );
+
+        const makesOptions = vehicleMakes.map(make => (
+            <Option value={ make.makeId } key={ v4() }>
+                { make.makeName }
+            </Option>
+        ));
+
+        const modelsOptions = vehicleModels.map(model => (
+            <Option value={ model.id } key={ v4() }>
+                { model.name }
+            </Option>
+        ));
+
+        const managersOptions = managers.map(manager => (
+            <Option value={ manager.id } key={ v4() }>
+                { `${manager.managerSurname} ${manager.managerName}` }
+            </Option>
+        ));
+
+        const employeesOptions = employees.map(employee => (
+            <Option value={ employee.id } key={ v4() }>
+                { `${employee.employeeSurname} ${employee.employeeName}` }
+            </Option>
+        ));
+
+        const creationReasonsOptions = creationReasons.map(creationReason => (
+            <Option value={ creationReason } key={ v4() }>
+                { creationReason }
+            </Option>
+        ));
+
+        const orderCommentsOptions = orderComments
+            .map(
+                ({ status, id, comment }) =>
+                    status === 'cancel' ? (
+                        <Option value={ id } key={ v4() }>
+                            { comment }
+                        </Option>
+                    ) : 
+                        false
+                ,
+            )
+            .filter(Boolean);
+
+        const servicesOptions = services.map(({ id, serviceName }) => (
+            <Option value={ id } key={ v4() }>
+                { serviceName }
+            </Option>
+        ));
+
         return (
             <Modal
                 className={ Styles.universalFiltersModal }
                 width={ '80%' }
-                title=<FormattedMessage id='universal_filters' />
+                title={ <FormattedMessage id='universal_filters' /> }
                 cancelText={ <FormattedMessage id='universal_filters.cancel' /> }
                 okText={ <FormattedMessage id='universal_filters.submit' /> }
                 wrapClassName={ Styles.ufmoldal }
@@ -81,41 +191,45 @@ export default class UniversalFiltersModal extends Component {
                 >
                     <StatsCountsPanel stats={ this.props.stats } />
                     <Form layout='vertical' onSubmit={ this.handleSubmit }>
-                        <FormItem label='make'>
-                            { /* { getFieldDecorator('vehicleMakes', {
-                                rules: [
-                                    {
-                                        required: true,
-                                        message:  'vehicleMakes is required!',
-                                    },
-                                ],
-                            })( */ }
-                            { getFieldDecorator('make')(
-                                <Select
-                                    showSearch
-                                    style={ { width: 200 } }
-                                    placeholder='Select vehicle model'
-                                    optionFilterProp='children'
-                                    // key={ v4() }
-                                    // onSelect={ value => this.handleChange(value) }
-                                    onChange={ value => this.handleChange(value) }
-                                    getPopupContainer={ () =>
-                                        modalContentDivWrapper
-                                    }
-                                    filterOption={ (input, option) =>
-                                        option.props.children
-                                            .toLowerCase()
-                                            .indexOf(input.toLowerCase()) >= 0
-                                    }
-                                >
-                                    { vehicleMakes.map(make => (
-                                        <Option value={ make.makeId } key={ v4() }>
-                                            { make.makeName }
-                                        </Option>
-                                    )) }
-                                </Select>,
-                            ) }
-                        </FormItem>
+                        { createDecoratedSelectField(
+                            'make',
+                            'select make',
+                            makesOptions,
+                        ) }
+                        { createDecoratedSelectField(
+                            'models',
+                            'select models',
+                            modelsOptions,
+                            'multiple',
+                        ) }
+                        { createDecoratedSelectField(
+                            'managers',
+                            'select managers',
+                            managersOptions,
+                            'multiple',
+                        ) }
+                        { createDecoratedSelectField(
+                            'employee',
+                            'select employee',
+                            employeesOptions,
+                        ) }
+                        { createDecoratedSelectField(
+                            'creationReasons',
+                            'select creationReasons',
+                            creationReasonsOptions,
+                            'multiple',
+                        ) }
+                        { createDecoratedSelectField(
+                            'cancelReasons',
+                            'select cancelReasons',
+                            orderCommentsOptions,
+                            'multiple',
+                        ) }
+                        { createDecoratedSelectField(
+                            'service',
+                            'select service',
+                            servicesOptions,
+                        ) }
                         <FormItem>
                             <Button type='primary' htmlType='submit'>
                                 Submit

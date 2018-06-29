@@ -19,12 +19,22 @@ export default async function fetchAPI(method, endpoint, query, body, asBlob) {
         const endpointC = trim(endpoint, "/"); // trim all spaces and '/'
         const handler = endpointC ? `/${endpointC}` : ""; // be sure that after api will be only one /
         const methodU = toUpper(method);
-        const queryObj = _.toPairs(query)
+        const queryObj = _(query)
+            .toPairs()
             .filter(
                 ([key, value]) =>
-                    _.isString(value) ? !_.isEmpty(value) : true,
+                    _.isString(value) ? !_.isEmpty(value) : !_.isNil(value),
             )
-            .map(([key, value]) => `${key}=${value}`);
+            .map(([key, value]) => ({ key, value }))
+            .map(
+                ({ key, value }) =>
+                    _.isArray(value)
+                        ? value.map(subValue => ({ key, value: subValue }))
+                        : { key, value },
+            )
+            .flatten()
+            .map(({ key, value }) => `${key}=${value}`)
+            .value();
 
         const request = {
             method: methodU,

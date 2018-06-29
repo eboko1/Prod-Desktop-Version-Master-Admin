@@ -39,7 +39,7 @@ const ReducerState = {
     employees:        [],
     vehicleModels:    [],
     vehicleMakes:     [],
-    creationsReasons: [],
+    creationReasons: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -56,6 +56,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 fields: {
+                    ...state.fields,
                     [ meta.field ]: { ...payload[ meta.field ] },
                 },
             };
