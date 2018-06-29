@@ -93,6 +93,7 @@ export default class UniversalFiltersModal extends Component {
                             { getFieldDecorator('make')(
                                 <Select
                                     showSearch
+                                    allowClear
                                     style={ { width: 200 } }
                                     placeholder='Select vehicle model'
                                     optionFilterProp='children'

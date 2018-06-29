@@ -12,9 +12,11 @@ import {
     Select,
 } from 'antd';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
+import { DecoratedSelect } from 'forms/DecoratedFields';
 
 // own
 import Styles from './styles.m.css';
@@ -29,30 +31,41 @@ class ServicesTable extends Component {
                 title:     <FormattedMessage id='order_form_table.service' />,
                 dataIndex: 'service',
                 width:     '30%',
-                render:    (text, record) => (
-                    <Select
-                        style={ { width: 220 } }
-                        onChange={ value =>
-                            this.handleServiceSelect(record.key, value)
-                        }
-                        placeholder={
-                            <FormattedMessage id='order_form_table.service.placeholder' />
-                        }
-                    >
-                        <Option value='jack'>Jack</Option>
-                        <Option value='lucy'>Lucy</Option>
-                        <Option value='disabled' disabled>
-                            Disabled
-                        </Option>
-                        <Option value='Yiminghe'>yiminghe</Option>
-                    </Select>
-                ),
+                render:    (text, record) => {
+                    console.log('→ record', record);
+
+                    return (
+                        <DecoratedSelect
+                            field={ `services.${record.key}` }
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                            // key={ record.key }
+                            // value={ value }
+                            showSearch
+                            allowClear
+                            cnStyles={ Styles.serviceSelect }
+                            onChange={ value =>
+                                this.handleServiceSelect(record.key, value)
+                            }
+                            placeholder={
+                                <FormattedMessage id='order_form_table.service.placeholder' />
+                            }
+                            dropdownMatchSelectWidth={ false }
+                            dropdownStyle={ { width: '70%' } }
+                            options={ this.props.allServices }
+                            optionValue='serviceId'
+                            optionLabel='serviceName'
+                        />
+                    );
+                },
             },
             {
                 title:     <FormattedMessage id='order_form_table.price' />,
                 dataIndex: 'price',
                 render:    (text, record) => (
                     <InputNumber
+                        disabled={ record.service ? false : true }
                         min={ 0 }
                         defaultValue={ record.price }
                         onChange={ value =>
@@ -66,6 +79,7 @@ class ServicesTable extends Component {
                 dataIndex: 'count',
                 render:    (text, record) => (
                     <InputNumber
+                        disabled={ record.service ? false : true }
                         min={ 0.1 }
                         step={ 0.1 }
                         defaultValue={ record.count }
@@ -169,6 +183,7 @@ class ServicesTable extends Component {
     handleChange = value => console.log('→ value', value);
 
     render() {
+        const { allServices, employees } = this.props;
         const { dataSource } = this.state;
         const columns = this.columns;
 
@@ -183,7 +198,7 @@ class ServicesTable extends Component {
                     <FormItem label='Duration'>
                         <Select
                             defaultValue='lucy'
-                            style={ { width: 120 } }
+                            style={ { width: 200 } }
                             onChange={ value => this.handleChange(value) }
                         >
                             <Option value='jack'>Jack</Option>
@@ -194,18 +209,26 @@ class ServicesTable extends Component {
                             <Option value='Yiminghe'>yiminghe</Option>
                         </Select>
                     </FormItem>
-                    <FormItem label='Master'>
+                    <FormItem
+                        label={
+                            <FormattedMessage id='order_form_table.master' />
+                        }
+                    >
                         <Select
-                            defaultValue='lucy'
-                            style={ { width: 120 } }
+                            style={ { width: 200 } }
                             onChange={ value => this.handleChange(value) }
                         >
-                            <Option value='jack'>Jack</Option>
-                            <Option value='lucy'>Lucy</Option>
-                            <Option value='disabled' disabled>
-                                Disabled
-                            </Option>
-                            <Option value='Yiminghe'>yiminghe</Option>
+                            { employees.map(employee => (
+                                <Option
+                                    value={ employee.id }
+                                    key={ v4() }
+                                    disabled={ employee.disabled }
+                                >
+                                    { `${employee.employeeName} ${
+                                        employee.employeeSurname
+                                    }` }
+                                </Option>
+                            )) }
                         </Select>
                     </FormItem>
                 </div>
@@ -215,3 +238,31 @@ class ServicesTable extends Component {
 }
 
 export default ServicesTable;
+
+/* <Select
+    showSearch
+    allowClear
+    style={ { width: 220 } }
+    onChange={ value =>
+        this.handleServiceSelect(record.key, value)
+    }
+    placeholder={
+        <FormattedMessage id='order_form_table.service.placeholder' />
+    }
+    dropdownMatchSelectWidth={ false }
+    dropdownStyle={ { width: '70%' } }
+    optionFilterProp='children'
+    filterOption={ (input, option) =>
+        option.props.children
+            ? option.props.children
+                .toLowerCase()
+                .indexOf(input.toLowerCase()) >= 0
+            : null
+    }
+>
+    { this.props.allServices.map(service => (
+        <Option value={ service.serviceId } key={ v4() }>
+            { service.serviceName }
+        </Option>
+    )) }
+</Select> */

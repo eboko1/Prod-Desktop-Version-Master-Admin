@@ -30,20 +30,35 @@ class DetailsTable extends Component {
                 width:     '30%',
                 render:    (text, record) => (
                     <Select
+                        // notFoundContent={
+                        //     fetching ? <Spin size='small' /> : null
+                        // }
+
+                        showSearch
+                        allowClear
                         style={ { width: 220 } }
                         onChange={ value =>
-                            this.handleServiceSelect(record.key, value)
+                            this.handleDetailSelect(record.key, value)
                         }
                         placeholder={
-                            <FormattedMessage id='order_form_table.service.placeholder' />
+                            <FormattedMessage id='order_form_table.detail.placeholder' />
+                        }
+                        dropdownMatchSelectWidth={ false }
+                        dropdownStyle={ { width: '70%' } }
+                        optionFilterProp='children'
+                        filterOption={ (input, option) =>
+                            option.props.children
+                                ? option.props.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                : null
                         }
                     >
-                        <Option value='jack'>Jack</Option>
-                        <Option value='lucy'>Lucy</Option>
-                        <Option value='disabled' disabled>
-                            Disabled
-                        </Option>
-                        <Option value='Yiminghe'>yiminghe</Option>
+                        { this.props.allDetails.details.map(detail => (
+                            <Option value={ detail.detailId } key={ v4() }>
+                                { detail.detailName }
+                            </Option>
+                        )) }
                     </Select>
                 ),
             },
@@ -51,12 +66,38 @@ class DetailsTable extends Component {
                 title:     <FormattedMessage id='order_form_table.brand' />,
                 dataIndex: 'brand',
                 render:    (text, record) => (
-                    <Input
+                    <Select
+                        // notFoundContent={
+                        //     fetching ? <Spin size='small' /> : null
+                        // }
+                        showSearch
+                        allowClear
+                        style={ { width: 100 } }
+                        disabled={ record.detailName ? false : true }
                         defaultValue={ record.brand }
                         onChange={ value =>
                             this.onCellChange(record.key, value, 'brand')
                         }
-                    />
+                        placeholder={
+                            <FormattedMessage id='order_form_table.detail.placeholder' />
+                        }
+                        dropdownMatchSelectWidth={ false }
+                        dropdownStyle={ { width: '35%' } }
+                        optionFilterProp='children'
+                        filterOption={ (input, option) =>
+                            option.props.children
+                                ? option.props.children
+                                    .toLowerCase()
+                                    .indexOf(input.toLowerCase()) >= 0
+                                : null
+                        }
+                    >
+                        { this.props.allDetails.brands.map(brand => (
+                            <Option value={ brand.brandId } key={ v4() }>
+                                { brand.brandName }
+                            </Option>
+                        )) }
+                    </Select>
                 ),
             },
             {
@@ -64,6 +105,7 @@ class DetailsTable extends Component {
                 dataIndex: 'detailCode',
                 render:    (text, record) => (
                     <Input
+                        disabled={ record.detailName ? false : true }
                         defaultValue={ record.detailCode }
                         onChange={ value =>
                             this.onCellChange(record.key, value, 'detailCode')
@@ -76,6 +118,7 @@ class DetailsTable extends Component {
                 dataIndex: 'price',
                 render:    (text, record) => (
                     <InputNumber
+                        disabled={ record.detailName ? false : true }
                         min={ 0 }
                         defaultValue={ record.price }
                         onChange={ value =>
@@ -89,6 +132,7 @@ class DetailsTable extends Component {
                 dataIndex: 'count',
                 render:    (text, record) => (
                     <InputNumber
+                        disabled={ record.detailName ? false : true }
                         min={ 0.1 }
                         step={ 0.1 }
                         defaultValue={ record.count }
@@ -100,7 +144,7 @@ class DetailsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.sum' />,
-                dataIndex: 'sum',
+                dataIndex: 'detailsSum',
                 render:    (text, record) => {
                     const value = record.price * record.count;
 
@@ -142,14 +186,14 @@ class DetailsTable extends Component {
                     detailCode: '',
                     price:      0,
                     count:      1,
-                    sum:        0,
+                    detailsSum: 0,
                     delete:     '',
                 },
             ],
         };
     }
 
-    handleServiceSelect = (key, value) => {
+    handleDetailSelect = (key, value) => {
         const dataSource = [ ...this.state.dataSource ];
 
         const target = dataSource.find(item => item.key === key);
@@ -178,7 +222,7 @@ class DetailsTable extends Component {
             detailCode: '',
             price:      0,
             count:      1,
-            sum:        0,
+            detailsSum: 0,
             delete:     '',
         };
         this.setState({ dataSource: [ ...dataSource, newData ] });

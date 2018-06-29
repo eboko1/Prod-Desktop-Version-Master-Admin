@@ -1,6 +1,7 @@
 {
     "en": {
         "order_form_table.service.placeholder": "Select service",
+        "order_form_table.detail.placeholder": "Select detail",
         "order_form_table.duration": "Duration",
         "order_form_table.master": "Master",
         "order_form_table.discount": "Discount",
@@ -17,6 +18,7 @@
     },
     "ru": {
         "order_form_table.service.placeholder": "Выберете услугу",
+        "order_form_table.detail.placeholder": "Выберете деталь",
         "order_form_table.duration": "Продолжительность",
         "order_form_table.master": "Мастер",
         "order_form_table.discount": "Скидка",
@@ -33,6 +35,7 @@
     },
     "uk": {
         "order_form_table.service.placeholder": "Виберіть послугу",
+        "order_form_table.detail.placeholder": "Виберіть деталь",
         "order_form_table.duration": "Тривалість",
         "order_form_table.master": "Майстер",
         "order_form_table.discount": "Знижка",

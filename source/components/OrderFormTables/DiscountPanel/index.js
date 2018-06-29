@@ -39,6 +39,7 @@ class DiscountPanel extends Component {
                         }
                     >
                         <InputNumber
+                            disabled
                             defaultValue={ 0 }
                             min={ 0 }
                             formatter={ value =>
@@ -57,6 +58,7 @@ class DiscountPanel extends Component {
                         }
                     >
                         <InputNumber
+                            disabled
                             defaultValue={ 0 }
                             min={ 0 }
                             formatter={ value =>
@@ -66,7 +68,7 @@ class DiscountPanel extends Component {
                                 )
                             }
                             parser={ value => value.replace(/\$\s?|(,*)/g, '') }
-                            onChange={ value => this.onChange(value) }
+                            // onChange={ value => this.onChange(value) }
                         />
                     </FormItem>
                 </div>

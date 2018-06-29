@@ -288,10 +288,13 @@ export class AddOrderForm extends Component {
                     <FormItem label='способ оплыты'>
                         <Select>
                             <Option value='cash'>
-                                <Icon type='wallet' />Нал
+                                <Icon type='wallet' /> Нал
                             </Option>
                             <Option value='card'>
-                                <Icon type='credit-card' />Безнал
+                                <Icon type='credit-card' /> Безнал
+                            </Option>
+                            <Option value='visa'>
+                                <Icon type='credit-card' /> Visa
                             </Option>
                         </Select>
                     </FormItem>
@@ -302,18 +305,24 @@ export class AddOrderForm extends Component {
                 { /* FORMS TABS */ }
                 <Tabs onChange={ () => this.callback() } type='card'>
                     <TabPane
-                        tab={ <FormattedMessage id='add_order_form.services' /> }
+                        tab={ `${this.props.intl.formatMessage({
+                            id:             'add_order_form.services',
+                            defaultMessage: 'Services',
+                        })} ()` }
                         key='1'
                     >
-                        <ServicesTable />
-                        <DiscountPanel />
+                        <ServicesTable { ...this.props } />
+                        <DiscountPanel { ...this.props } />
                     </TabPane>
                     <TabPane
-                        tab={ <FormattedMessage id='add_order_form.details' /> }
+                        tab={ `${this.props.intl.formatMessage({
+                            id:             'add_order_form.details',
+                            defaultMessage: 'Details',
+                        })} ()` }
                         key='2'
                     >
-                        <DetailsTable />
-                        <DiscountPanel />
+                        <DetailsTable { ...this.props } />
+                        <DiscountPanel { ...this.props } />
                     </TabPane>
                     <TabPane
                         tab={ <FormattedMessage id='add_order_form.comments' /> }

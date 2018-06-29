@@ -100,9 +100,21 @@ export default function reducer(state = ReducerState, action) {
             };
 
         case ON_CHANGE_ADD_ORDER_FORM:
+            console.group('→ REDUX');
+            console.log('@@payload', payload);
+            console.log('@@ meta field', meta.field);
+            console.log('@@ return', {
+                ...state,
+                fields: {
+                    [ meta.field ]: { ...payload[ meta.field ] },
+                },
+            });
+            console.groupEnd();
+
             return {
                 ...state,
                 fields: {
+                    ...state.fields,
                     [ meta.field ]: { ...payload[ meta.field ] },
                 },
             };
