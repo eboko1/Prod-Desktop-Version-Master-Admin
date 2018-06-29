@@ -32,6 +32,12 @@ const mapDispatchToProps = {
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class UniversalFilters extends Component {
+    constructor(props) {
+        super(props);
+
+        this.clearUniversalFilter = this.clearUniversalFilter.bind(this);
+    }
+
     state = {
         visible: false,
     };
@@ -47,6 +53,15 @@ export default class UniversalFilters extends Component {
         });
     };
 
+    clearUniversalFilter = filterName => {
+        this.props.onChangeUniversalFiltersForm(
+            { [ filterName ]: void 0 },
+            { form: 'universalFiltersForm', field: filterName },
+        );
+        this.props.setUniversalFilters({ [ filterName ]: void 0 });
+        this.props.fetchOrders();
+    };
+
     render() {
         return (
             <Catcher>
@@ -57,7 +72,7 @@ export default class UniversalFilters extends Component {
                     >
                         Фильтр
                     </Button>
-                    <UniversalFiltersTags filter={ this.props.filter } fetchOrders={ this.props.fetchOrders } onChangeUniversalFiltersForm={ this.props.onChangeUniversalFiltersForm } setUniversalFilters={ this.props.setUniversalFilters }/>
+                    <UniversalFiltersTags filter={ this.props.filter } clearUniversalFilter={ this.clearUniversalFilter } />
                 </section>
                 <UniversalFiltersModal
                     visible={ this.state.visible }
