@@ -33,13 +33,13 @@ const ReducerState = {
             dirty:      false,
         },
     },
-    orderComments:    [],
-    services:         [],
-    managers:         [],
-    employees:        [],
-    vehicleModels:    [],
-    vehicleMakes:     [],
-    creationsReasons: [],
+    orderComments:   [],
+    services:        [],
+    managers:        [],
+    employees:       [],
+    vehicleModels:   [],
+    vehicleMakes:    [],
+    creationReasons: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -56,6 +56,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 fields: {
+                    ...state.fields,
                     [ meta.field ]: { ...payload[ meta.field ] },
                 },
             };

@@ -1,32 +1,46 @@
 // vendor
 import React, { Component } from 'react';
 import { Tag, Tooltip } from 'antd';
+import _ from 'lodash';
+import { v4 } from 'uuid';
 
 // own
 import Styles from './styles.m.css';
 
 class UniversalFiltersTags extends Component {
     state = {
-        tags: [ 'Filter 1', 'Filter 2', 'Filter 3' ],
+        tags: [],
     };
 
-    log = e => console.log(e);
+    filterTagsFields = [ 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons' ];
 
-    handleClose = removedTag => {
-        const tags = this.state.tags.filter(tag => tag !== removedTag);
-        console.log(tags);
-        this.setState({ tags });
-    };
+    handleClose = removedTag => this.props.clearUniversalFilter(removedTag);
 
     render() {
+        const filter = this.props.filter || {};
+
+        // TODO refactro lodash chain
+        const tagsFilter = _(filter)
+            .pick(this.filterTagsFields)
+            .toPairs()
+            .filter(
+                ([ key, value ]) =>
+                    !_.isNil(value) && !(_.isString(value) && _.isEmpty(value)),
+            )
+            .map(([ key ]) => key)
+            .value();
+
         return (
             <div>
-                { this.state.tags.map((tag, index) => {
+                { tagsFilter.map(tag => {
                     const isLongTag = tag.length > 20;
                     const tagElem = (
                         <Tag
                             color='#9b59b6'
-                            key={ tag }
+                            name={ tag }
+                            // after rm tag ant persist local state of Component
+                            // v4 generate uniq component with new state
+                            key={ v4() } // TODO hidden tags will block new tags
                             closable
                             afterClose={ () => this.handleClose(tag) }
                         >
@@ -42,7 +56,6 @@ class UniversalFiltersTags extends Component {
                             className={ Styles.tagTooltip }
                         >
                             { tagElem }
-                            { console.log('→ tag', tag) }
                         </Tooltip>
                     ) :
                         tagElem
