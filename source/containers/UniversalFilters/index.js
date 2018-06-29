@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
 
 // proj
-import { fetchOrders, fetchStatsCounts } from 'core/orders/duck';
+import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
+import { fetchOrders, fetchStatsCounts, setUniversalFilters } from 'core/orders/duck';
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
 import { Catcher } from 'commons';
@@ -25,6 +26,8 @@ const mapDispatchToProps = {
     fetchOrders,
     fetchStatsCounts,
     fetchUniversalFiltersForm,
+    setUniversalFilters,
+    onChangeUniversalFiltersForm,
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -54,7 +57,7 @@ export default class UniversalFilters extends Component {
                     >
                         Фильтр
                     </Button>
-                    <UniversalFiltersTags />
+                    <UniversalFiltersTags filter={ this.props.filter } fetchOrders={ this.props.fetchOrders } onChangeUniversalFiltersForm={ this.props.onChangeUniversalFiltersForm } setUniversalFilters={ this.props.setUniversalFilters }/>
                 </section>
                 <UniversalFiltersModal
                     visible={ this.state.visible }

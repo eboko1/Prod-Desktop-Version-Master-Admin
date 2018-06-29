@@ -1,32 +1,61 @@
 // vendor
 import React, { Component } from 'react';
 import { Tag, Tooltip } from 'antd';
+import _ from 'lodash';
+import { v4 } from 'uuid';
 
 // own
 import Styles from './styles.m.css';
 
 class UniversalFiltersTags extends Component {
     state = {
-        tags: [ 'Filter 1', 'Filter 2', 'Filter 3' ],
+        tags: [],
     };
 
     log = e => console.log(e);
 
     handleClose = removedTag => {
-        const tags = this.state.tags.filter(tag => tag !== removedTag);
-        console.log(tags);
-        this.setState({ tags });
+        this.props.onChangeUniversalFiltersForm({[removedTag]: void 0}, {form: 'universalFiltersForm', field: removedTag});
+        this.props.setUniversalFilters({[removedTag]: void 0});
+        this.props.fetchOrders();
+        // const tags = this.state.tags.filter(tag => tag !== removedTag);
+        // console.log(tags);
+        // this.setState({ tags });
     };
 
     render() {
+        console.log(this.state);
+        console.log(this.props);
+        const filter = this.props.filter || {};
+        const tagsFilter = _(filter)
+            .pick(
+                'managers',
+                'employee',
+                'service',
+                'models',
+                'makes',
+                'creationReasons',
+                'cancelReasons',
+            )
+            .toPairs()
+            .filter(
+                ([ key, value ]) =>
+                    !_.isNil(value) && !(_.isString(value) && _.isEmpty(value)),
+            )
+            .map(([ key ]) => key)
+            .value();
+
+        console.log('az-kek-4eburek', tagsFilter);
+
         return (
             <div>
-                { this.state.tags.map((tag, index) => {
+                { tagsFilter.map((tag, index) => {
                     const isLongTag = tag.length > 20;
                     const tagElem = (
                         <Tag
                             color='#9b59b6'
-                            key={ tag }
+                            name={ tag }
+                            key={ v4() }
                             closable
                             afterClose={ () => this.handleClose(tag) }
                         >
@@ -44,7 +73,7 @@ class UniversalFiltersTags extends Component {
                             { tagElem }
                             { console.log('→ tag', tag) }
                         </Tooltip>
-                    ) :
+                    ) : 
                         tagElem
                     ;
                 }) }
