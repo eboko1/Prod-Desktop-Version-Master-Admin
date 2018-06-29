@@ -15,17 +15,20 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import Styles from './styles.m.css';
 
-// const mapStateToProps = (state, props) => {
-//     return {
-//         posts:
-//         managers:
-//         clients:
-//         paymentMethod:
-//     };
-// };
-//
+const mapStateToProps = state => {
+    return {
+        stations:    state.forms.addOrderForm.stations,
+        vehicles:    state.forms.addOrderForm.vehicles,
+        employees:   state.forms.addOrderForm.employees,
+        managers:    state.forms.addOrderForm.managers,
+        clients:     state.forms.addOrderForm.clients.clients,
+        allDetails:  state.forms.addOrderForm.allDetails,
+        allServices: state.forms.addOrderForm.allServices,
+    };
+};
+
 @withRouter
-@connect(null, { fetchAddOrderForm })
+@connect(mapStateToProps, { fetchAddOrderForm })
 class AddOrderPage extends Component {
     componentDidMount() {
         this.props.fetchAddOrderForm();
@@ -39,14 +42,16 @@ class AddOrderPage extends Component {
                         <div>
                             <RadioGroup>
                                 <RadioButton value='reserve'>
-                                    Резерв
+                                    <FormattedMessage id='reserve' />
                                 </RadioButton>
-                                <RadioButton value='new'>Новый</RadioButton>
+                                <RadioButton value='new'>
+                                    <FormattedMessage id='not_complete' />
+                                </RadioButton>
                                 <RadioButton value='questionable'>
-                                    Под Вопросом
+                                    <FormattedMessage id='required' />
                                 </RadioButton>
                                 <RadioButton value='approved'>
-                                    Запись
+                                    <FormattedMessage id='approve' />
                                 </RadioButton>
                             </RadioGroup>
                             <Button
@@ -54,7 +59,7 @@ class AddOrderPage extends Component {
                                 htmlType='submit'
                                 className={ Styles.submit }
                             >
-                                Добавить
+                                <FormattedMessage id='add' />
                             </Button>
                         </div>
                         <Icon

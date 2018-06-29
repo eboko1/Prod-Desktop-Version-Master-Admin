@@ -6,7 +6,7 @@ import store from 'store/store';
 import book from 'routes/book';
 import { getToken } from 'utils';
 
-export const API = __DEV__
+export const API = __LOCAL__
     ? 'https://dev-api.carbook.pro'
     : 'https://dev-api.carbook.pro';
 // export const API = __DEV__ ? 'http://127.0.0.1:14281' : 'dev-api.carbook.pro';
@@ -14,7 +14,13 @@ export const API = __DEV__
 const apiC = trim(API, '/');
 // const apiC = trim(__API_URL__, '/');
 /* eslint-disable */
-export default async function fetchAPI(method, endpoint, query, body, asBlob) {
+export default async function fetchAPI(
+    method,
+    endpoint,
+    query,
+    body,
+    rawResponse,
+) {
     try {
         const endpointC = trim(endpoint, "/"); // trim all spaces and '/'
         const handler = endpointC ? `/${endpointC}` : ""; // be sure that after api will be only one /
@@ -72,7 +78,7 @@ export default async function fetchAPI(method, endpoint, query, body, asBlob) {
 
         switch (true) {
             case status >= 200 && status < 300:
-                return asBlob ? await response.blob() : await response.json();
+                return rawResponse ? await response : await response.json();
             case status === 400:
                 return dispatch(replace(`${book.exception}/400`));
             case status === 401:

@@ -25,6 +25,9 @@ export const FETCH_STATS_COUNTS_PANEL = `${prefix}/FETCH_STATS_COUNTS_PANEL`;
 export const FETCH_STATS_COUNTS_PANEL_SUCCESS = `${prefix}/FETCH_STATS_COUNTS_PANEL_SUCCESS`;
 export const SET_UNIVERSAL_FILTERS = `${prefix}/SET_UNIVERSAL_FILTERS`;
 
+export const CREATE_INVITE_ORDERS = `${prefix}/CREATE_INVITE_ORDERS`;
+export const CREATE_INVITE_ORDERS_SUCCESS = `${prefix}/CREATE_INVITE_ORDERS_SUCCESS`;
+export const CREATE_INVITE_ORDERS_FAIL = `${prefix}/CREATE_INVITE_ORDERS_FAIL`;
 /**
  * Reducer
  * */
@@ -124,6 +127,11 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case CREATE_INVITE_ORDERS_SUCCESS:
+            return {
+                ...state,
+            };
+
         default:
             return state;
     }
@@ -221,7 +229,31 @@ export const fetchStatsCounts = () => ({
     type: FETCH_STATS_COUNTS_PANEL,
 });
 
-export const fetchStatsCountsSuccess = stats => ({
-    type:    FETCH_STATS_COUNTS_PANEL_SUCCESS,
-    payload: stats,
-});
+export function fetchStatsCountsSuccess(stats) {
+    return {
+        type:    FETCH_STATS_COUNTS_PANEL_SUCCESS,
+        payload: stats,
+    };
+}
+
+export function createInviteOrders(inviteOrdersPayload) {
+    return {
+        type:    CREATE_INVITE_ORDERS,
+        payload: inviteOrdersPayload,
+    };
+}
+
+export function createInviteOrdersSuccess(response) {
+    return {
+        type:    CREATE_INVITE_ORDERS_SUCCESS,
+        payload: response,
+    };
+}
+
+export function createInviteOrdersFail(error) {
+    return {
+        type:    CREATE_INVITE_ORDERS_FAIL,
+        payload: error,
+        error:   true,
+    };
+}

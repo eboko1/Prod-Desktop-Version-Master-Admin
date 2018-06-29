@@ -14,6 +14,7 @@ import {
     setOrdersStatusFilter,
     ordersSelector,
     stateSelector,
+    createInviteOrders,
 } from 'core/orders/duck';
 
 import { Catcher, Spinner } from 'commons';
@@ -37,6 +38,7 @@ const mapDispatchToProps = dispatch => {
             fetchOrders,
             setOrdersStatusFilter,
             setOrdersPageFilter,
+            createInviteOrders,
         },
         dispatch,
     );
@@ -55,7 +57,13 @@ class OrdersContainer extends Component {
             loading:                  false,
             selectedRowKeys:          [],
             cancelReasonModalVisible: false,
+            invited:                  [],
         };
+
+        this.invite = this.invite.bind(this);
+        this.isOrderInvitable = this.isOrderInvitable.bind(this);
+        this.isAlreadyInvited = this.isAlreadyInvited.bind(this);
+        this.inviteSelected = this.inviteSelected.bind(this);
     }
 
     static getStatuses(properties) {
@@ -85,8 +93,10 @@ class OrdersContainer extends Component {
             const status = OrdersContainer.getStatuses(nextProps);
 
             return {
-                status:      status,
-                activeRoute: nextProps.location.pathname,
+                status:          status,
+                activeRoute:     nextProps.location.pathname,
+                selectedRowKeys: [],
+                invited:         [],
             };
         }
 
@@ -107,32 +117,155 @@ class OrdersContainer extends Component {
             });
             // this.columnsConfig(status);
         }
+
+        if (prevProps.orders !== this.props.orders) {
+            return this.setState({
+                selectedRowKeys: [],
+                invited:         [],
+            });
+        }
         // if (this.state.ordersOrError === null) {
         //     // At this point, we're in the "commit" phase, so it's safe to load the new data.
         //     this.props.actions.fetchOrders(1);
         // }
     }
+    // достаем ключ из ордеров и проверяем есть ли ключ в стейте
+    // которая сохраняет ключивы выбраных рядов таблицы
+    inviteSelected() {
+        const inviteOrders = this.props.orders.filter(({ key }) =>
+            this.state.selectedRowKeys.includes(key));
+        // создаем приглашение на основании ключей из state
+        this.invite(inviteOrders);
+    }
+    // можно ли вообще создать приглашение
+    isOrderInvitable(order) {
+        return !!(
+            order.clientPhone &&
+            order.clientId &&
+            order.vehicleId &&
+            !order.vehicleInviteExists
+        );
+    }
+    // генерируем массив из ордеров, который можно использовать для создания приглашений
+    getAvailableOrdersForInvite(orders) {
+        const inviteCandidates = orders
+            .filter(this.isOrderInvitable)
+            .filter(order => !this.isAlreadyInvited(order))
+            .map(order => _.pick(order, [ 'clientId', 'vehicleId' ]));
 
-    onSelectChange = selectedRowKeys => {
-        // console.log('selectedRowKeys changed: ', selectedRowKeys);
-        this.setState({ selectedRowKeys });
+        // проверка на унивальность добавленных в массив объектов по value
+        return _.uniqWith(inviteCandidates, _.isEqual);
+    }
+    // создать приглашение
+    invite(requestedInviteOrders) {
+        const { orders, filters } = this.props;
+        // осталяем только валидные ордера с уникальными clientId & vehicleId
+        const omittedRequestedInviteOrders = this.getAvailableOrdersForInvite(
+            requestedInviteOrders,
+        );
+        // массив из тех, кого пригласили
+        const invited = [ ...this.state.invited, ...omittedRequestedInviteOrders ];
+        // конвертация clientId, vehicleId в полноценную entitny для создания приглашения
+        const createInviteOrderPayload = requestedInviteOrder => {
+            const { clientId, vehicleId } = requestedInviteOrder;
+            const order = _(orders)
+                .filter(requestedInviteOrder)
+                .sort(
+                    (
+                        { datetime: firstDatetime },
+                        { datetime: secondDatetime },
+                    ) => secondDatetime.localeCompare(firstDatetime),
+                )
+                .filter(({ clientPhone }) => clientPhone)
+                .first();
+
+            return {
+                clientId,
+                clientPhone:     (order || {}).clientPhone,
+                clientVehicleId: vehicleId,
+                managerId:       720, // TODO use real manager id
+                status:          'invite',
+            };
+        };
+        // создаем entity для создания приглашений
+        const invites = omittedRequestedInviteOrders.map(
+            createInviteOrderPayload,
+        );
+        this.setState(() => {
+            this.props.createInviteOrders({ invites, filters });
+
+            return { selectedRowKeys: [], invited };
+        });
+    }
+
+    onSelectChange = (selectedRowKeys, selectedOrders) => {
+        const removedKeys = _.difference(
+            this.state.selectedRowKeys,
+            selectedRowKeys,
+        );
+        const removedOrders = _.filter(this.props.orders, ({ key }) =>
+            removedKeys.includes(key)).map(order => _.pick(order, [ 'clientId', 'vehicleId' ]));
+
+        // Filter invited orders
+        const availableSelectedOrders = this.getAvailableOrdersForInvite(
+            selectedOrders,
+        );
+        // Filter duplicate orders
+        const availableOrders = _.differenceWith(
+            availableSelectedOrders,
+            removedOrders,
+            _.isEqual,
+        );
+
+        // ~ -1 == false
+        // ~ (>=0) == true
+        const allOrders = this.props.orders.filter(
+            ({ clientId, vehicleId }) =>
+                ~_.findIndex(availableOrders, { clientId, vehicleId }),
+        );
+        const selectedKeys = _.map(allOrders, 'key');
+
+        this.setState({ selectedRowKeys: selectedKeys });
     };
 
-    setCancelReasonModal(cancelReasonModalVisible) {
-        this.setState({ cancelReasonModalVisible });
+    isAlreadyInvited({ clientId, vehicleId } = {}) {
+        return !!(
+            clientId &&
+            vehicleId &&
+            ~_.findIndex(this.state.invited, { clientId, vehicleId })
+        );
     }
+
+    getOrderCheckboxProps = order => {
+        // Checkbox is disabled if clientId or vehicleId is missing
+        // Checkbox is disabled if clientVehicleId is already invited
+        const missingRequiredFields = !this.isOrderInvitable(order);
+        const invited = this.isAlreadyInvited(order);
+
+        return {
+            defaultValue: false,
+            disabled:     missingRequiredFields || invited,
+        };
+    };
 
     render() {
         const { orders } = this.props;
         const { status, loading, activeRoute, selectedRowKeys } = this.state;
         // const { status, loading, selectedRowKeys } = this.state;
 
-        const columns = columnsConfig(activeRoute);
+        const columns = columnsConfig(
+            this.state.invited,
+            this.invite,
+            this.isOrderInvitable,
+            this.isAlreadyInvited,
+            activeRoute,
+        );
 
         const rows = rowsConfig(
             activeRoute,
             selectedRowKeys,
             this.onSelectChange,
+            this.getOrderCheckboxProps,
         );
 
         const pagination = {
@@ -153,7 +286,7 @@ class OrdersContainer extends Component {
                 <div className={ Styles.paper }>
                     <Button
                         type='primary'
-                        onClick={ this.start }
+                        onClick={ this.inviteSelected }
                         disabled={ !hasSelected }
                         loading={ loading }
                     >

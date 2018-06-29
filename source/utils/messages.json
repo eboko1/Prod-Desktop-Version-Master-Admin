@@ -1,6 +1,7 @@
 {
     "en": {
         "currency": "eur.",
+        "add": "Add",
         "no_data": "No Data",
         "appointments": "Appointments",
         "records": "Approves",
@@ -13,10 +14,12 @@
         "not_complete": "New",
         "required": "Required",
         "reserve": "Reserve",
-        "call": "Call"
+        "call": "Call",
+        "approve": "Approve"
     },
     "ru": {
         "currency": "грн.",
+        "add": "Добавить",
         "no_data": "Нет Данных",
         "appointments": "Обращения",
         "records": "Записи",
@@ -29,10 +32,12 @@
         "not_complete": "Новый",
         "required": "Под вопросом",
         "reserve": "Резерв",
-        "call": "Звонок"
+        "call": "Звонок",
+        "approve": "Запись"
     },
     "uk": {
         "currency": "грн.",
+        "add": "Додати",
         "no_data": "Вiдсутнi Данi",
         "appointments": "Звернення",
         "approves": "Записи",
@@ -45,6 +50,7 @@
         "not_complete": "Новий",
         "required": "Під питанням",
         "reserve": "Резерв",
-        "call": "Дзвінок"
+        "call": "Дзвінок",
+        "approve": "Запис"
     }
 }

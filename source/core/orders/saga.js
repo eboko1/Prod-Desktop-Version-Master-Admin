@@ -19,11 +19,14 @@ import { fetchAPI } from 'utils';
 // own
 import {
     fetchOrdersSuccess,
+    fetchOrders,
     fetchOrdersStatsSuccess,
     fetchStatsCountsSuccess,
+    createInviteOrdersSuccess,
     FETCH_ORDERS,
     FETCH_ORDERS_STATS,
     FETCH_STATS_COUNTS_PANEL,
+    CREATE_INVITE_ORDERS,
     // SET_ORDERS_STATUS_FILTER,
 } from './duck';
 
@@ -70,6 +73,16 @@ export function* fetchOrdersStatsSaga() {
     yield nprogress.done();
 }
 
+export function* createInviteOrders({ payload: { invites, filters } }) {
+    yield nprogress.start();
+    const data = yield call(fetchAPI, 'POST', 'orders', null, invites);
+
+    yield put(createInviteOrdersSuccess(data));
+    yield nprogress.done();
+
+    yield put(fetchOrders(filters));
+}
+
 export function* fetchStatsCountsSaga() {
     yield nprogress.start();
     const data = yield call(fetchAPI, 'GET', 'orders');
@@ -79,5 +92,5 @@ export function* fetchStatsCountsSaga() {
 }
 
 export function* saga() {
-    yield all([ call(fetchOrdersSagaTake), takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga), takeEvery(FETCH_STATS_COUNTS_PANEL, fetchStatsCountsSaga) ]);
+    yield all([ call(fetchOrdersSagaTake), takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga), takeEvery(FETCH_STATS_COUNTS_PANEL, fetchStatsCountsSaga), takeEvery(CREATE_INVITE_ORDERS, createInviteOrders) ]);
 }
