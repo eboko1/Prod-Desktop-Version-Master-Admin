@@ -33,12 +33,12 @@ const ReducerState = {
             dirty:      false,
         },
     },
-    orderComments:    [],
-    services:         [],
-    managers:         [],
-    employees:        [],
-    vehicleModels:    [],
-    vehicleMakes:     [],
+    orderComments:   [],
+    services:        [],
+    managers:        [],
+    employees:       [],
+    vehicleModels:   [],
+    vehicleMakes:    [],
     creationReasons: [],
 };
 

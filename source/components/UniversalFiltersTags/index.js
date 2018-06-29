@@ -12,14 +12,14 @@ class UniversalFiltersTags extends Component {
         tags: [],
     };
 
-    log = e => console.log(e);
-
     filterTagsFields = [ 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons' ];
 
     handleClose = removedTag => this.props.clearUniversalFilter(removedTag);
 
     render() {
         const filter = this.props.filter || {};
+
+        // TODO refactro lodash chain
         const tagsFilter = _(filter)
             .pick(this.filterTagsFields)
             .toPairs()
@@ -38,6 +38,8 @@ class UniversalFiltersTags extends Component {
                         <Tag
                             color='#9b59b6'
                             name={ tag }
+                            // after rm tag ant persist local state of Component
+                            // v4 generate uniq component with new state
                             key={ v4() } // TODO hidden tags will block new tags
                             closable
                             afterClose={ () => this.handleClose(tag) }
@@ -54,9 +56,8 @@ class UniversalFiltersTags extends Component {
                             className={ Styles.tagTooltip }
                         >
                             { tagElem }
-                            { console.log('→ tag', tag) }
                         </Tooltip>
-                    ) : 
+                    ) :
                         tagElem
                     ;
                 }) }
