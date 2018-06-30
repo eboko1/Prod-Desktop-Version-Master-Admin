@@ -2,6 +2,7 @@
     "en": {
         "currency": "eur.",
         "add": "Add",
+        "cancel": "Cancel",
         "no_data": "No Data",
         "appointments": "Appointments",
         "records": "Approves",
@@ -20,6 +21,7 @@
     "ru": {
         "currency": "грн.",
         "add": "Добавить",
+        "cancel": "Отменить",
         "no_data": "Нет Данных",
         "appointments": "Обращения",
         "records": "Записи",
@@ -38,6 +40,7 @@
     "uk": {
         "currency": "грн.",
         "add": "Додати",
+        "cancel": "Відмінити",
         "no_data": "Вiдсутнi Данi",
         "appointments": "Звернення",
         "approves": "Записи",

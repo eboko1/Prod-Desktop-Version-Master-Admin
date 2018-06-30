@@ -190,6 +190,9 @@ export class AddOrderForm extends Component {
                                 <Icon
                                     type='plus'
                                     className={ Styles.addClientIcon }
+                                    onClick={ () =>
+                                        this.props.setAddClientModal(true)
+                                    }
                                 />
                             </FormItem>
                         </div>
