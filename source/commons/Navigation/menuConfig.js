@@ -2,10 +2,9 @@
 import book from 'routes/book';
 
 //__OLD_UI_URL__ will be replaced by webpack build
-const OLD_UI_URL = __OLD_UI_URL__; // eslint-disable-line no-undef
+const OLD_UI_URL = __OLD_UI_URL__;
 
 export default {
-
     sections: [
         /*  Operations submenu*/
         {
@@ -28,7 +27,6 @@ export default {
                     link: `${OLD_UI_URL}/tasks`,
                     name: 'navigation.tasks',
                 },
-
             ],
         },
         /* Catalog submenu */
@@ -157,26 +155,28 @@ export default {
         for (let section of this.sections) {
             if (section.items) {
                 for (let item of section.items) {
-                    if (currentPath.startsWith(item.key)
-                        && item.key.length > result.itemKey.length) {
+                    if (
+                        currentPath.startsWith(item.key) &&
+                        item.key.length > result.itemKey.length
+                    ) {
                         Object.assign(result, {
                             sectionKey: section.key,
                             itemKey:    item.key,
                         });
                     }
-                }  
+                }
             } else {
-                if (currentPath.startsWith(section.key)
-                    && section.key.length > result.itemKey.length) {
+                if (
+                    currentPath.startsWith(section.key) &&
+                    section.key.length > result.itemKey.length
+                ) {
                     Object.assign(result, {
                         itemKey: section.key,
                     });
                 }
             }
-            
         }
 
         return result;
     },
-
 };
