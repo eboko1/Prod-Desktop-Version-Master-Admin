@@ -35,6 +35,7 @@ import { withReduxForm, hasErrors } from 'utils';
 // own
 // import { DecoratedInput } from './DecoratedInput';
 import Styles from './styles.m.css';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioButton = Radio.Button;
@@ -89,10 +90,57 @@ export class AddOrderForm extends Component {
             wrapperCol: { span: 14 },
         };
 
-        const dateFormat = 'YYYY/MM/DD';
-        const hourFormat = 'HH:mm';
-
         const buttonDisabled = hasErrors(getFieldsError());
+        const beginDatetime = (this.props.fields.beginDatetime || {}).value; // Get value from props
+        const dayConfig = beginDatetime
+            ? _.first(
+                this.props.schedule.filter(
+                    config =>
+                        config.days.includes(beginDatetime.day() || 7) &&
+                          config.beginTime,
+                ),
+            ) || { beginTime: '08:00', endTime: '23:00' }
+            : { beginTime: '08:00', endTime: '23:00' };
+
+        const availableHours = Array(24)
+            .fill(0)
+            .map((val, inx) => inx);
+        const availableMinutes = Array(60)
+            .fill(0)
+            .map((val, inx) => inx);
+
+        const [ beginHour, beginTime ] = dayConfig.beginTime
+            .split(':')
+            .map(Number);
+        const [ endHour, endTime ] = dayConfig.endTime.split(':').map(Number);
+
+        const disabledDate = momentDate => {
+            return (
+                momentDate &&
+                !_.first(
+                    this.props.schedule.filter(
+                        config =>
+                            config.days.includes(momentDate.day() || 7) &&
+                            config.beginTime,
+                    ),
+                )
+            );
+        };
+
+        const disabledHours = () =>
+            availableHours.filter(hour => hour < beginHour || hour > endHour);
+
+        const disabledMinutes = hour => {
+            if (hour > beginHour && hour < endHour) {
+                return [];
+            } else if (hour === beginHour) {
+                return availableMinutes.filter(minute => minute < beginTime);
+            } else if (hour === endHour) {
+                return availableMinutes.filter(minute => minute > endTime);
+            }
+
+            return availableMinutes;
+        };
 
         return (
             <Form
@@ -130,14 +178,17 @@ export class AddOrderForm extends Component {
                         }
                         hasFeedback
                     >
-                        <DatePicker
-                            defaultValue={ moment('2015/01/01', dateFormat) }
-                            format={ dateFormat }
-                        />
-                        <TimePicker
-                            defaultValue={ moment('12:08', hourFormat) }
-                            format={ hourFormat }
-                        />
+                        { getFieldDecorator('beginDatetime')(
+                            <DatePicker
+                                disabledDate={ disabledDate }
+                                format={ 'YYYY-MM-DD HH:mm' }
+                                showTime={ {
+                                    disabledHours,
+                                    disabledMinutes,
+                                    format: 'HH:mm',
+                                } }
+                            />,
+                        ) }
                     </FormItem>
                     <FormItem
                         label={ <FormattedMessage id='add_order_form.post' /> }
