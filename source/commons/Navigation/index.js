@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
+import Link from './link';
 import { Layout, Menu, Icon } from 'antd';
 import _ from 'lodash';
 
@@ -86,7 +86,7 @@ export default class Navigation extends Component {
                                             const { key, link, name } = item;
 
                                             return (<Menu.Item key={ key }>
-                                                <Link to={ link }>
+                                                <Link to={ link } >
                                                     <FormattedMessage id={ name } />
                                                 </Link>
                                             </Menu.Item>);
@@ -94,14 +94,15 @@ export default class Navigation extends Component {
                                     }
                                 </Menu.SubMenu>
                                 );
-                            } else {
-                                return (<Menu.Item key={ key }>
-                                    <Link to={ link }>
-                                        <Icon type={ iconType } />
-                                        <FormattedMessage id={ name } />
-                                    </Link>
-                                </Menu.Item>);
                             }
+ 
+                            return (<Menu.Item key={ key }>
+                                <Link to={ link }>
+                                    <Icon type={ iconType } />
+                                    <FormattedMessage id={ name } />
+                                </Link>
+                            </Menu.Item>);
+                            
 
                         })
                     }
