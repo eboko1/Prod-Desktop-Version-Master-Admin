@@ -1,3 +1,4 @@
 import UniversalFiltersModal from './UniversalFiltersModal';
+import AddClientModal from './AddClientModal';
 
-export { UniversalFiltersModal };
+export { UniversalFiltersModal, AddClientModal };
