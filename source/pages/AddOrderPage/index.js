@@ -55,17 +55,17 @@ class AddOrderPage extends Component {
                 controls={
                     <>
                         <div>
-                            <RadioGroup>
+                            <RadioGroup defaultValue='not_complete'>
                                 <RadioButton value='reserve'>
                                     <FormattedMessage id='reserve' />
                                 </RadioButton>
-                                <RadioButton value='new'>
+                                <RadioButton value='not_complete'>
                                     <FormattedMessage id='not_complete' />
                                 </RadioButton>
-                                <RadioButton value='questionable'>
+                                <RadioButton value='required'>
                                     <FormattedMessage id='required' />
                                 </RadioButton>
-                                <RadioButton value='approved'>
+                                <RadioButton value='approve'>
                                     <FormattedMessage id='approve' />
                                 </RadioButton>
                             </RadioGroup>

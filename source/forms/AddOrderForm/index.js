@@ -24,7 +24,7 @@ import {
     onChangeAddOrderForm,
 } from 'core/forms/addOrderForm/duck';
 
-import { DecoratedTextArea } from 'forms/DecoratedFields';
+import { DecoratedTextArea, DecoratedSelect } from 'forms/DecoratedFields';
 import {
     DetailsTable,
     ServicesTable,
@@ -48,15 +48,15 @@ const { TextArea } = Input;
     actions: { change: onChangeAddOrderForm, fetchAddOrderForm },
 })
 export class AddOrderForm extends Component {
-    handleSubmit = e => {
-        e.preventDefault();
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                // eslint-disable-next-line
-                console.log("Received values of form: ", values);
-            }
-        });
-    };
+    // handleSubmit = e => {
+    //     e.preventDefault();
+    //     this.props.form.validateFields((err, values) => {
+    //         if (!err) {
+    //             // eslint-disable-next-line
+    //             console.log("Received values of form: ", values);
+    //         }
+    //     });
+    // };
 
     callback(key) {
         console.log(key);
@@ -290,7 +290,20 @@ export class AddOrderForm extends Component {
 
                 <div className={ Styles.totalBlock }>
                     <FormItem label='способ оплыты'>
-                        <Select>
+                        { getFieldDecorator('paymentMethod')(
+                            <Select>
+                                <Option value='cash'>
+                                    <Icon type='wallet' /> Нал
+                                </Option>
+                                <Option value='card'>
+                                    <Icon type='credit-card' /> Безнал
+                                </Option>
+                                <Option value='visa'>
+                                    <Icon type='credit-card' /> Visa
+                                </Option>
+                            </Select>,
+                        ) }
+                        { /* <Select>
                             <Option value='cash'>
                                 <Icon type='wallet' /> Нал
                             </Option>
@@ -300,11 +313,22 @@ export class AddOrderForm extends Component {
                             <Option value='visa'>
                                 <Icon type='credit-card' /> Visa
                             </Option>
-                        </Select>
+                        </Select> */ }
                     </FormItem>
-                    <div>
-                        <FormattedMessage id='add_order_form.total' /> 0<FormattedMessage id='currency' />
-                    </div>
+                    { /* <FormItem label='CTO requisites'>
+                        <DecoratedSelect />
+                    </FormItem>
+                    <FormItem label='Client requisites'>
+                        <DecoratedSelect />
+                    </FormItem> */ }
+                    <FormItem>
+                        <div className={ Styles.total }>
+                            <FormattedMessage id='add_order_form.total' />
+                            <span className={ Styles.totalSum }>
+                                0<FormattedMessage id='currency' />
+                            </span>
+                        </div>
+                    </FormItem>
                 </div>
                 { /* FORMS TABS */ }
                 <Tabs onChange={ () => this.callback() } type='card'>
