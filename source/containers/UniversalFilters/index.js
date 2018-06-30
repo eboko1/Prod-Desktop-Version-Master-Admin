@@ -64,7 +64,7 @@ export default class UniversalFilters extends Component {
             { [ filterName ]: void 0 },
             { form: 'universalFiltersForm', field: filterName },
         );
-        this.props.setUniversalFilters({ [ filterName ]: void 0 });
+        this.props.setUniversalFilters({ ...this.props.filter, [ filterName ]: void 0 });
         this.props.fetchOrders();
     };
 
@@ -100,7 +100,7 @@ export default class UniversalFilters extends Component {
                     ...modelsTransformQuery,
                     ...momentFields,
                 });
-                this.props.fetchOrders(this.props.filter);
+                this.props.fetchOrders();
             }
         });
     };
