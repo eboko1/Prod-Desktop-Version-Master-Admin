@@ -20,6 +20,7 @@ export const DecoratedSelect = props => {
         placeholder,
 
         onChange,
+        // onSelect,
         options,
         optionValue,
         optionLabel,
@@ -42,6 +43,7 @@ export const DecoratedSelect = props => {
             className={ cnStyles }
             // onChange={ value => this.handleServiceSelect(record.key, value) }
             onChange={ onChange }
+            // onSelect={ onSelect }
             placeholder={ placeholder }
             dropdownMatchSelectWidth={ dropdownMatchSelectWidth }
             dropdownStyle={ dropdownStyle }

@@ -5,7 +5,11 @@ import { Button, Modal } from 'antd';
 
 // proj
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
-import { fetchOrders, fetchStatsCounts, setUniversalFilters } from 'core/orders/duck';
+import {
+    fetchOrders,
+    fetchStatsCounts,
+    setUniversalFilters,
+} from 'core/orders/duck';
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
 import { Catcher } from 'commons';
@@ -62,6 +66,37 @@ export default class UniversalFilters extends Component {
         this.props.fetchOrders();
     };
 
+    saveFormRef = formRef => {
+        this.formRef = formRef;
+    };
+
+    handleUniversalFiltersModalSubmit = () => {
+        const form = this.formRef.props.form;
+        this.setUniversalFiltersModal(false);
+        form.validateFields((err, values) => {
+            if (!err) {
+                console.log(
+                    'Received values of UniversalFiltersForm: ',
+                    values,
+                );
+                const modelsTransformQuery = values.models
+                    ? {
+                        models: _(values.models)
+                            .map(model => model.split(','))
+                            .flatten()
+                            .value(),
+                    }
+                    : {};
+
+                this.props.setUniversalFilters({
+                    ...values,
+                    ...modelsTransformQuery,
+                });
+                this.props.fetchOrders(this.props.filter);
+            }
+        });
+    };
+
     render() {
         return (
             <Catcher>
@@ -72,13 +107,21 @@ export default class UniversalFilters extends Component {
                     >
                         Фильтр
                     </Button>
-                    <UniversalFiltersTags filter={ this.props.filter } clearUniversalFilter={ this.clearUniversalFilter } />
+                    <UniversalFiltersTags
+                        filter={ this.props.filter }
+                        clearUniversalFilter={ this.clearUniversalFilter }
+                    />
                 </section>
                 <UniversalFiltersModal
+                    wrappedComponentRef={ this.saveFormRef }
                     visible={ this.state.visible }
                     show={ this.setUniversalFiltersModal }
                     stats={ this.props.stats }
                     filter={ this.props.filter }
+                    handleUniversalFiltersModalSubmit={
+                        this.handleUniversalFiltersModalSubmit
+                    }
+                    setUniversalFiltersModal={ this.setUniversalFiltersModal }
                     // onSubmit={}
                     // onClose={}
                 />

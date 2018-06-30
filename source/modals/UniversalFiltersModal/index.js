@@ -35,33 +35,6 @@ export default class UniversalFiltersModal extends Component {
 
     handleChange = value => console.log('→ Select value', value);
 
-    handleSubmit = e => {
-        e.preventDefault();
-        this.props.show(false);
-        this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log(
-                    'Received values of UniversalFiltersForm: ',
-                    values,
-                );
-                const modelsTransformQuery = values.models
-                    ? {
-                        models: _(values.models)
-                            .map(model => model.split(','))
-                            .flatten()
-                            .value(),
-                    }
-                    : {};
-
-                this.props.setUniversalFilters({
-                    ...values,
-                    ...modelsTransformQuery,
-                });
-                this.props.fetchOrders(this.props.filter);
-            }
-        });
-    };
-
     render() {
         const {
             show,
@@ -73,9 +46,11 @@ export default class UniversalFiltersModal extends Component {
             creationReasons,
             orderComments,
             services,
+            handleUniversalFiltersModalSubmit,
+            setUniversalFiltersModal,
         } = this.props;
         const { getFieldDecorator, getFieldsError } = this.props.form;
-        // console.log('→ getFieldDecorator', getFieldDecorator);
+
         // Parent Node which the selector should be rendered to.
         // Default to body. When position issues happen,
         // try to modify it into scrollable content and position it relative.
@@ -180,8 +155,8 @@ export default class UniversalFiltersModal extends Component {
                 okText={ <FormattedMessage id='universal_filters.submit' /> }
                 wrapClassName={ Styles.ufmoldal }
                 visible={ visible }
-                onOk={ () => show(false) }
-                onCancel={ () => show(false) }
+                onOk={ () => handleUniversalFiltersModalSubmit() }
+                onCancel={ () => setUniversalFiltersModal(false) }
             >
                 <div
                     style={ { height: 600 } }
@@ -190,7 +165,10 @@ export default class UniversalFiltersModal extends Component {
                     } }
                 >
                     <StatsCountsPanel stats={ this.props.stats } />
-                    <Form layout='vertical' onSubmit={ this.handleSubmit }>
+                    <Form
+                        layout='vertical'
+                        // onSubmit={ this.handleSubmit }
+                    >
                         { createDecoratedSelectField(
                             'make',
                             'select make',
@@ -230,11 +208,6 @@ export default class UniversalFiltersModal extends Component {
                             'select service',
                             servicesOptions,
                         ) }
-                        <FormItem>
-                            <Button type='primary' htmlType='submit'>
-                                Submit
-                            </Button>
-                        </FormItem>
                     </Form>
                 </div>
             </Modal>

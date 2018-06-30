@@ -24,6 +24,7 @@ import {
     onChangeAddOrderForm,
 } from 'core/forms/addOrderForm/duck';
 
+import { DecoratedTextArea } from 'forms/DecoratedFields';
 import {
     DetailsTable,
     ServicesTable,
@@ -94,7 +95,10 @@ export class AddOrderForm extends Component {
         const buttonDisabled = hasErrors(getFieldsError());
 
         return (
-            <Form onSubmit={ this.handleSubmit } layout='horizontal'>
+            <Form
+                // onSubmit={ this.handleSubmit }
+                layout='horizontal'
+            >
                 <Button
                     type='dashed'
                     htmlType='submit'
@@ -334,19 +338,18 @@ export class AddOrderForm extends Component {
                                 <FormattedMessage id='add_order_form.client_comments' />
                             }
                         >
-                            { getFieldDecorator('comment', {
-                                rules: [
+                            <DecoratedTextArea
+                                getFieldDecorator={ getFieldDecorator }
+                                field='comment'
+                                rules={ [
                                     {
                                         max:     2000,
                                         message: 'Too much',
                                     },
-                                ],
-                            })(
-                                <TextArea
-                                    placeholder='Autosize height min/max'
-                                    autosize={ { minRows: 2, maxRows: 6 } }
-                                />,
-                            ) }
+                                ] }
+                                placeholder='comment'
+                                autosize={ { minRows: 2, maxRows: 6 } }
+                            />
                         </FormItem>
                         <FormItem
                             { ...formItemLayout }
@@ -354,19 +357,18 @@ export class AddOrderForm extends Component {
                                 <FormattedMessage id='add_order_form.service_recommendations' />
                             }
                         >
-                            { getFieldDecorator('recommendation', {
-                                rules: [
+                            <DecoratedTextArea
+                                getFieldDecorator={ getFieldDecorator }
+                                field='recommendation'
+                                rules={ [
                                     {
                                         max:     2000,
                                         message: 'Too much',
                                     },
-                                ],
-                            })(
-                                <TextArea
-                                    placeholder='Autosize height min/max'
-                                    autosize={ { minRows: 2, maxRows: 6 } }
-                                />,
-                            ) }
+                                ] }
+                                placeholder='Autosize height min/max'
+                                autosize={ { minRows: 2, maxRows: 6 } }
+                            />
                         </FormItem>
                     </TabPane>
                 </Tabs>

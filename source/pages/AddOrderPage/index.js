@@ -33,6 +33,21 @@ class AddOrderPage extends Component {
     componentDidMount() {
         this.props.fetchAddOrderForm();
     }
+
+    saveFormRef = formRef => {
+        this.formRef = formRef;
+    };
+
+    onSubmit = () => {
+        const form = this.formRef.props.form;
+        form.validateFields((err, values) => {
+            if (!err) {
+                // eslint-disable-next-line
+                console.log("Received values of form: ", values);
+            }
+        });
+    };
+
     render() {
         return (
             <Layout
@@ -58,6 +73,7 @@ class AddOrderPage extends Component {
                                 type='primary'
                                 htmlType='submit'
                                 className={ Styles.submit }
+                                onClick={ this.onSubmit }
                             >
                                 <FormattedMessage id='add' />
                             </Button>
@@ -70,7 +86,8 @@ class AddOrderPage extends Component {
                     </>
                 }
             >
-                <AddOrderForm />
+                { /* eslint-disable-next-line */ }
+                <AddOrderForm wrappedComponentRef={this.saveFormRef} />
             </Layout>
         );
     }

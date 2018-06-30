@@ -9,6 +9,9 @@ export const FETCH_ADD_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ADD_ORDER_FORM_SUCC
 
 export const ON_CHANGE_ADD_ORDER_FORM = `${prefix}/ON_CHANGE_ADD_ORDER_FORM`;
 
+export const SUBMIT_ADD_ORDER_FORM = `${prefix}/SUBMIT_ADD_ORDER_FORM`;
+export const SUBMIT_ADD_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ADD_ORDER_FORM_SUCCESS`;
+
 /**
  * Reducer
  * */
@@ -100,22 +103,31 @@ export default function reducer(state = ReducerState, action) {
             };
 
         case ON_CHANGE_ADD_ORDER_FORM:
-            console.group('→ REDUX');
-            console.log('@@payload', payload);
-            console.log('@@ meta field', meta.field);
-            console.log('@@ return', {
-                ...state,
-                fields: {
-                    [ meta.field ]: { ...payload[ meta.field ] },
-                },
-            });
-            console.groupEnd();
+            // console.group('→ REDUX');
+            // console.log('@@payload', payload);
+            // console.log('@@ meta field', meta.field);
+            // console.log('@@ return', {
+            //     ...state,
+            //     fields: {
+            //         [ meta.field ]: { ...payload[ meta.field ] },
+            //     },
+            // });
+            // console.groupEnd();
 
             return {
                 ...state,
                 fields: {
                     ...state.fields,
                     [ meta.field ]: { ...payload[ meta.field ] },
+                },
+            };
+
+        case SUBMIT_ADD_ORDER_FORM:
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    ...payload,
                 },
             };
 
@@ -155,6 +167,15 @@ export const onChangeAddOrderForm = (fields, { form, field }) => ({
     type:    ON_CHANGE_ADD_ORDER_FORM,
     payload: fields,
     meta:    { form, field },
+});
+
+export const submitAddOrderForm = addOrderForm => ({
+    type:    SUBMIT_ADD_ORDER_FORM,
+    payload: addOrderForm,
+});
+
+export const submitAddOrderFormSuccess = () => ({
+    type: SUBMIT_ADD_ORDER_FORM_SUCCESS,
 });
 
 // // Core

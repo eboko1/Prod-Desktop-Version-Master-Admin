@@ -108,8 +108,6 @@ export default function reducer(state = ReducerState, action) {
             };
 
         case SET_UNIVERSAL_FILTERS:
-            console.log(payload);
-            console.log(state.filter);
             return {
                 ...state,
                 filter: {

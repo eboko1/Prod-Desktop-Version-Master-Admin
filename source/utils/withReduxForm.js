@@ -20,6 +20,7 @@ export const withReduxForm = ({ name, actions }) => Enhanceable => {
             return createFields;
         },
         onFieldsChange(props, fields) {
+            console.log('→ fields', fields);
             props.change(fields, {
                 form:  name,
                 field: Object.keys(fields).toString(),

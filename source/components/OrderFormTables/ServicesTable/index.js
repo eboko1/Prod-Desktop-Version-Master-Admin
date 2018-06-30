@@ -32,11 +32,9 @@ class ServicesTable extends Component {
                 dataIndex: 'service',
                 width:     '30%',
                 render:    (text, record) => {
-                    console.log('→ record', record);
-
                     return (
                         <DecoratedSelect
-                            field={ `services.${record.key}` }
+                            field={ `services/${record.key}` }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
@@ -45,6 +43,9 @@ class ServicesTable extends Component {
                             showSearch
                             allowClear
                             cnStyles={ Styles.serviceSelect }
+                            // onSelect={ value =>
+                            //     this.handleServiceSelect(record.key, value)
+                            // }
                             onChange={ value =>
                                 this.handleServiceSelect(record.key, value)
                             }
@@ -173,7 +174,9 @@ class ServicesTable extends Component {
 
     onCellChange = (key, value, dataIndex) => {
         const dataSource = [ ...this.state.dataSource ];
+        console.log('→ dataSource', dataSource);
         const target = dataSource.find(item => item.key === key);
+        console.log('→ target', target);
         if (target) {
             target[ dataIndex ] = value;
             this.setState({ dataSource });
