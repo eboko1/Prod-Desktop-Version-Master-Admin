@@ -6,15 +6,15 @@ const DEFAULT_CONSTANTS = {
 const BUILD_ENV_TO_CONSTANTS = {
     production: {
         __API_URL__:    'https://api.carbook.pro',
-        __OLD_UI_URL__: 'https://cb24.eu',
+        __OLD_UI_URL__: 'https://my.cb24.eu',
     },
     stage: {
         __API_URL__:    'https://test-api.carbook.pro',
-        __OLD_UI_URL__: 'https://test.cb24.eu',
+        __OLD_UI_URL__: 'https://test-my.cb24.eu',
     },
     development: {
         __API_URL:      'https://dev-api.carbook.pro',
-        __OLD_UI_URL__: 'https://dev.cb24.eu',
+        __OLD_UI_URL__: 'https://dev-my.cb24.eu',
     },
     local: {
         __API_URL__:    'https://dev-api.carbook.pro',
