@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, Modal } from 'antd';
+import _ from 'lodash';
+import moment from 'moment';
 
 // proj
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
@@ -88,9 +90,15 @@ export default class UniversalFilters extends Component {
                     }
                     : {};
 
+                const momentFields = _(values)
+                    .pickBy(moment.isMoment)
+                    .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
+                    .value();
+
                 this.props.setUniversalFilters({
                     ...values,
                     ...modelsTransformQuery,
+                    ...momentFields,
                 });
                 this.props.fetchOrders(this.props.filter);
             }
