@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Modal, Button, Form } from 'antd';
+import { Modal, Button, Form, DatePicker } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { Select } from 'antd';
 import { v4 } from 'uuid';
@@ -18,6 +18,8 @@ import { withReduxForm } from 'utils';
 import Styles from './styles.m.css';
 const Option = Select.Option;
 const FormItem = Form.Item;
+
+const dateFormat = 'YYYY-MM-DD';
 
 @withReduxForm({
     name:    'universalFiltersForm',
@@ -134,7 +136,7 @@ export default class UniversalFiltersModal extends Component {
                         <Option value={ id } key={ v4() }>
                             { comment }
                         </Option>
-                    ) :
+                    ) : 
                         false
                 ,
             )
@@ -145,6 +147,15 @@ export default class UniversalFiltersModal extends Component {
                 { serviceName }
             </Option>
         ));
+
+        const createDatePicker = (name, placeholder) => getFieldDecorator(name)(
+            <DatePicker
+                placeholder={ placeholder }
+                getPopupContainer={ () => modalContentDivWrapper }
+                getCalendarContainer={ () => modalContentDivWrapper }
+                format={ dateFormat }
+            />,
+        );
 
         return (
             <Modal
@@ -208,6 +219,11 @@ export default class UniversalFiltersModal extends Component {
                             'select service',
                             servicesOptions,
                         ) }
+
+                        { createDatePicker('startDate', 'select start date') }
+                        { createDatePicker('endDate', 'select end date') }
+                        { createDatePicker('createStartDate', 'select create start date') }
+                        { createDatePicker('createEndDate', 'select create end date') }
                     </Form>
                 </div>
             </Modal>

@@ -11,3 +11,4 @@ export { ConnectedIntlProvider } from './ConnectedIntlProvider';
 export { ContextProvider } from './ContextProvider';
 export { withReduxForm, hasErrors } from './withReduxForm';
 export { getDaterange } from './getDaterange';
+export { getDateTimeConfig } from './getDateTimeConfig';

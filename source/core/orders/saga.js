@@ -10,6 +10,7 @@ import {
 } from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import { spreadProp } from 'ramda-adjunct';
+import _ from 'lodash';
 // import * as RA from 'ramda-adjunct';
 
 //proj
@@ -20,6 +21,7 @@ import { fetchAPI } from 'utils';
 import {
     fetchOrdersSuccess,
     fetchOrders,
+    fetchOrdersStats,
     fetchOrdersStatsSuccess,
     fetchStatsCountsSuccess,
     createInviteOrdersSuccess,
@@ -61,13 +63,15 @@ export function* fetchOrdersSagaTake() {
         yield put(fetchOrdersSuccess(data));
 
         yield put(uiActions.setOrdersFetchingState(false));
+        yield put(fetchOrdersStats(_.omit(filters, [ 'page', 'status' ])));
         yield nprogress.done();
     }
 }
 
-export function* fetchOrdersStatsSaga() {
+export function* fetchOrdersStatsSaga({ payload: filters = {} }) {
     yield nprogress.start();
-    const data = yield call(fetchAPI, 'GET', 'orders/stats');
+    const statsFilters = _.omit(spreadProp('daterange', filters), [ 'page', 'status' ]);
+    const data = yield call(fetchAPI, 'GET', 'orders/stats', statsFilters);
 
     yield put(fetchOrdersStatsSuccess(data));
     yield nprogress.done();

@@ -30,11 +30,12 @@ import {
     ServicesTable,
     DiscountPanel,
 } from 'components/OrderFormTables';
-import { withReduxForm, hasErrors } from 'utils';
+import { withReduxForm, hasErrors, getDateTimeConfig } from 'utils';
 
 // own
 // import { DecoratedInput } from './DecoratedInput';
 import Styles from './styles.m.css';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 const RadioButton = Radio.Button;
@@ -89,10 +90,16 @@ export class AddOrderForm extends Component {
             wrapperCol: { span: 14 },
         };
 
-        const dateFormat = 'YYYY/MM/DD';
-        const hourFormat = 'HH:mm';
-
         const buttonDisabled = hasErrors(getFieldsError());
+        const beginDatetime = (this.props.fields.beginDatetime || {}).value;
+
+        const {
+            disabledDate,
+            disabledHours,
+            disabledMinutes,
+            disabledSeconds,
+            disabledTime,
+        } = getDateTimeConfig(beginDatetime, this.props.schedule);
 
         return (
             <Form
@@ -130,14 +137,20 @@ export class AddOrderForm extends Component {
                         }
                         hasFeedback
                     >
-                        <DatePicker
-                            defaultValue={ moment('2015/01/01', dateFormat) }
-                            format={ dateFormat }
-                        />
-                        <TimePicker
-                            defaultValue={ moment('12:08', hourFormat) }
-                            format={ hourFormat }
-                        />
+                        { getFieldDecorator('beginDatetime')(
+                            // TODO fix possible timezone problems
+                            <DatePicker
+                                disabledDate={ disabledDate }
+                                disabledTime={ disabledTime }
+                                format={ 'YYYY-MM-DD HH:mm' }
+                                showTime={ {
+                                    disabledHours,
+                                    disabledMinutes,
+                                    disabledSeconds,
+                                    format: 'HH:mm',
+                                } }
+                            />,
+                        ) }
                     </FormItem>
                     <FormItem
                         label={ <FormattedMessage id='add_order_form.post' /> }
