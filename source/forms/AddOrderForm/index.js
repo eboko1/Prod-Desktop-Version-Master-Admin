@@ -138,6 +138,7 @@ export class AddOrderForm extends Component {
                         hasFeedback
                     >
                         { getFieldDecorator('beginDatetime')(
+                            // TODO fix possible timezone problems
                             <DatePicker
                                 disabledDate={ disabledDate }
                                 disabledTime={ disabledTime }
