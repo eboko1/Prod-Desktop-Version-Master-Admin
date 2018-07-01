@@ -2,16 +2,37 @@
     "en": {
         "universal_filters": "Universal filters",
         "universal_filters.submit": "Submit filters",
-        "universal_filters.cancel": "Cancel"
+        "universal_filters.cancel": "Cancel",
+        "universal_filters.all": "All",
+        "universal_filters.make": "Make",
+        "universal_filters.model": "Model",
+        "universal_filters.manager": "Manger",
+        "universal_filters.service": "Service",
+        "universal_filters.master": "Master",
+        "universal_filters.employee": "Employee"
     },
     "ru": {
         "universal_filters": "Универсальные фильтры",
         "universal_filters.submit": "Применить фильтры",
-        "universal_filters.cancel": "Отменить"
+        "universal_filters.cancel": "Отменить",
+        "universal_filters.all": "Все",
+        "universal_filters.make": "Марка",
+        "universal_filters.model": "Модель",
+        "universal_filters.manager": "Ответственный",
+        "universal_filters.service": "Услуга",
+        "universal_filters.master": "Обсулуживал мастер",
+        "universal_filters.employee": "Сотрудник"
     },
     "uk": {
         "universal_filters": "Універсальні фільтри",
         "universal_filters.submit": "Застосуватт фільтри",
-        "universal_filters.cancel": "Відмінити"
+        "universal_filters.cancel": "Відмінити",
+        "universal_filters.all": "Всі",
+        "universal_filters.make": "Модель",
+        "universal_filters.model": "Марка",
+        "universal_filters.manager": "Відповідальний",
+        "universal_filters.service": "Послуга",
+        "universal_filters.master": "Обслуговував майстер",
+        "universal_filters.employee": "Працівник"
     }
 }

@@ -41,6 +41,10 @@ const mapDispatch = {
 @withRouter
 @connect(mapState, mapDispatch)
 class OrdersPage extends Component {
+    state = {
+        inviteModalVisible: false,
+    };
+
     getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
         switch (status) {
@@ -76,6 +80,9 @@ class OrdersPage extends Component {
 
         this.props.fetchOrders(this.props.filter);
     };
+
+    inviteModalVisible = () =>
+        this.setState({ inviteModalVisible: !inviteModalVisible });
 
     render() {
         // const { ordersDaterangeFilter } = this.props;
@@ -117,7 +124,10 @@ class OrdersPage extends Component {
                         <div className={ Styles.buttonGroup }>
                             { (status === 'canceled' ||
                                 status === 'success') && (
-                                <Button type='primary'>
+                                <Button
+                                    type='primary'
+                                    // onClick={() => }
+                                >
                                     <FormattedMessage id='orders-page.invite_to_service' />
                                 </Button>
                             ) }
