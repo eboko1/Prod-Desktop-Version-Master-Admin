@@ -36,6 +36,7 @@ import UniversalFiltersForm from 'forms/UniversalFiltersForm/messages';
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
 import AddClientModal from 'modals/AddClientModal/messages';
+import InviteModal from 'modals/InviteModal/messages';
 // components
 import OrdersTable from 'components/OrdersTable/messages';
 import OrderStatusIcon from 'components/OrderStatusIcon/messages';
@@ -43,7 +44,7 @@ import OrderFormTables from 'components/OrderFormTables/messages';
 import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
 
-const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, OrderStatusIcon, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, AddOrderForm, ReportsDropdown, AddClientModal ]);
+const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, OrderStatusIcon, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, AddOrderForm, ReportsDropdown, AddClientModal, InviteModal ]);
 
 // Intl
 const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';

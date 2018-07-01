@@ -4,7 +4,7 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { FormattedMessage } from 'react-intl';
-import { Table, Button, Icon, Tooltip, Spin, Modal } from 'antd';
+import { Table } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -12,12 +12,12 @@ import {
     fetchOrders,
     setOrdersPageFilter,
     setOrdersStatusFilter,
-    ordersSelector,
-    stateSelector,
     createInviteOrders,
 } from 'core/orders/duck';
+import { resetModal, MODALS } from 'core/modals/duck';
 
 import { Catcher, Spinner } from 'commons';
+import { InviteModal } from 'modals';
 
 // own
 import { columnsConfig, rowsConfig, scrollConfig } from './ordersTableConfig';
@@ -28,6 +28,7 @@ const mapStateToProps = state => {
         count:          state.orders.count,
         orders:         state.orders.data,
         filter:         state.orders.filter,
+        inviteModal:    state.modals.modal === MODALS.INVITE,
         ordersFetching: state.ui.get('ordersFetching'),
     };
 };
@@ -39,6 +40,7 @@ const mapDispatchToProps = dispatch => {
             setOrdersStatusFilter,
             setOrdersPageFilter,
             createInviteOrders,
+            resetModal,
         },
         dispatch,
     );
@@ -136,6 +138,7 @@ class OrdersContainer extends Component {
             this.state.selectedRowKeys.includes(key));
         // создаем приглашение на основании ключей из state
         this.invite(inviteOrders);
+        this.props.resetModal();
     }
     // можно ли вообще создать приглашение
     isOrderInvitable(order) {
@@ -284,19 +287,6 @@ class OrdersContainer extends Component {
         return (
             <Catcher>
                 <div className={ Styles.paper }>
-                    <Button
-                        type='primary'
-                        onClick={ this.inviteSelected }
-                        disabled={ !hasSelected }
-                        loading={ loading }
-                    >
-                        Reload Checkboxes
-                    </Button>
-                    <span style={ { marginLeft: 8 } }>
-                        { hasSelected
-                            ? `Selected ${selectedRowKeys.length} items`
-                            : '' }
-                    </span>
                     <Table
                         className={ Styles.ordersTable }
                         columns={ columns }
@@ -310,6 +300,13 @@ class OrdersContainer extends Component {
                         pagination={ pagination }
                     />
                 </div>
+                <InviteModal
+                    // wrappedComponentRef={ this.saveFormRef }
+                    visible={ this.props.inviteModal }
+                    count={ selectedRowKeys.length }
+                    confirmInviteModal={ this.inviteSelected }
+                    resetModal={ this.props.resetModal }
+                />
             </Catcher>
         );
     }

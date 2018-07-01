@@ -8,20 +8,20 @@ import { Button, Radio } from 'antd';
 
 // proj
 import { fetchOrders, setOrdersDaterangeFilter } from 'core/orders/duck';
+import { setModal, MODALS } from 'core/modals/duck';
+
+import { Layout } from 'commons';
 import {
     OrdersContainer,
     FunelContainer,
     OrdersFilterContainer,
     UniversalFilters,
 } from 'containers';
-
-import { Layout } from 'commons';
 import book from 'routes/book';
 import { getDaterange } from 'utils';
 
 // own
 import Styles from './styles.m.css';
-const ButtonGroup = Button.Group;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -36,15 +36,12 @@ const mapState = state => {
 const mapDispatch = {
     fetchOrders,
     setOrdersDaterangeFilter,
+    setModal,
 };
 
 @withRouter
 @connect(mapState, mapDispatch)
 class OrdersPage extends Component {
-    state = {
-        inviteModalVisible: false,
-    };
-
     getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
         switch (status) {
@@ -81,11 +78,7 @@ class OrdersPage extends Component {
         this.props.fetchOrders(this.props.filter);
     };
 
-    inviteModalVisible = () =>
-        this.setState({ inviteModalVisible: !inviteModalVisible });
-
     render() {
-        // const { ordersDaterangeFilter } = this.props;
         const { collapsed } = this.props;
 
         const status = this.props.match.params.ordersStatuses;
@@ -126,7 +119,9 @@ class OrdersPage extends Component {
                                 status === 'success') && (
                                 <Button
                                     type='primary'
-                                    // onClick={() => }
+                                    onClick={ () =>
+                                        this.props.setModal(MODALS.INVITE)
+                                    }
                                 >
                                     <FormattedMessage id='orders-page.invite_to_service' />
                                 </Button>
