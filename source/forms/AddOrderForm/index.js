@@ -30,7 +30,7 @@ import {
     ServicesTable,
     DiscountPanel,
 } from 'components/OrderFormTables';
-import { withReduxForm, hasErrors } from 'utils';
+import { withReduxForm, hasErrors, getDateTimeConfig } from 'utils';
 
 // own
 // import { DecoratedInput } from './DecoratedInput';
@@ -91,56 +91,15 @@ export class AddOrderForm extends Component {
         };
 
         const buttonDisabled = hasErrors(getFieldsError());
-        const beginDatetime = (this.props.fields.beginDatetime || {}).value; // Get value from props
-        const dayConfig = beginDatetime
-            ? _.first(
-                this.props.schedule.filter(
-                    config =>
-                        config.days.includes(beginDatetime.day() || 7) &&
-                          config.beginTime,
-                ),
-            ) || { beginTime: '08:00', endTime: '23:00' }
-            : { beginTime: '08:00', endTime: '23:00' };
+        const beginDatetime = (this.props.fields.beginDatetime || {}).value;
 
-        const availableHours = Array(24)
-            .fill(0)
-            .map((val, inx) => inx);
-        const availableMinutes = Array(60)
-            .fill(0)
-            .map((val, inx) => inx);
-
-        const [ beginHour, beginTime ] = dayConfig.beginTime
-            .split(':')
-            .map(Number);
-        const [ endHour, endTime ] = dayConfig.endTime.split(':').map(Number);
-
-        const disabledDate = momentDate => {
-            return (
-                momentDate &&
-                !_.first(
-                    this.props.schedule.filter(
-                        config =>
-                            config.days.includes(momentDate.day() || 7) &&
-                            config.beginTime,
-                    ),
-                )
-            );
-        };
-
-        const disabledHours = () =>
-            availableHours.filter(hour => hour < beginHour || hour > endHour);
-
-        const disabledMinutes = hour => {
-            if (hour > beginHour && hour < endHour) {
-                return [];
-            } else if (hour === beginHour) {
-                return availableMinutes.filter(minute => minute < beginTime);
-            } else if (hour === endHour) {
-                return availableMinutes.filter(minute => minute > endTime);
-            }
-
-            return availableMinutes;
-        };
+        const {
+            disabledDate,
+            disabledHours,
+            disabledMinutes,
+            disabledSeconds,
+            disabledTime,
+        } = getDateTimeConfig(beginDatetime, this.props.schedule);
 
         return (
             <Form
@@ -181,10 +140,12 @@ export class AddOrderForm extends Component {
                         { getFieldDecorator('beginDatetime')(
                             <DatePicker
                                 disabledDate={ disabledDate }
+                                disabledTime={ disabledTime }
                                 format={ 'YYYY-MM-DD HH:mm' }
                                 showTime={ {
                                     disabledHours,
                                     disabledMinutes,
+                                    disabledSeconds,
                                     format: 'HH:mm',
                                 } }
                             />,

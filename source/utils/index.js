@@ -10,3 +10,4 @@ export { default as fetchAPI } from './api';
 export { ConnectedIntlProvider } from './ConnectedIntlProvider';
 export { withReduxForm, hasErrors } from './withReduxForm';
 export { getDaterange } from './getDaterange';
+export { getDateTimeConfig } from './disabledDateTimeConfig';
