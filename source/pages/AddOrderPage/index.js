@@ -25,6 +25,7 @@ const mapStateToProps = state => {
         clients:     state.forms.addOrderForm.clients.clients,
         allDetails:  state.forms.addOrderForm.allDetails,
         allServices: state.forms.addOrderForm.allServices,
+        requisites:  state.forms.addOrderForm.requisites,
     };
 };
 

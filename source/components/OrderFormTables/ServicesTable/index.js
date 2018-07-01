@@ -198,29 +198,28 @@ class ServicesTable extends Component {
                     pagination={ false }
                 />
                 <div className={ Styles.durationPanel }>
-                    <FormItem label='Duration'>
+                    <FormItem
+                        label={
+                            <FormattedMessage id='add_order_form.duration' />
+                        }
+                        className={ Styles.durationPanelItem }
+                    >
                         <Select
-                            defaultValue='lucy'
-                            style={ { width: 200 } }
+                            defaultValue='15'
                             onChange={ value => this.handleChange(value) }
                         >
-                            <Option value='jack'>Jack</Option>
-                            <Option value='lucy'>Lucy</Option>
-                            <Option value='disabled' disabled>
-                                Disabled
-                            </Option>
-                            <Option value='Yiminghe'>yiminghe</Option>
+                            <Option value='15'>15</Option>
+                            <Option value='30'>30</Option>
+                            <Option value='45'>45</Option>
                         </Select>
                     </FormItem>
                     <FormItem
                         label={
                             <FormattedMessage id='order_form_table.master' />
                         }
+                        className={ Styles.durationPanelItem }
                     >
-                        <Select
-                            style={ { width: 200 } }
-                            onChange={ value => this.handleChange(value) }
-                        >
+                        <Select onChange={ value => this.handleChange(value) }>
                             { employees.map(employee => (
                                 <Option
                                     value={ employee.id }

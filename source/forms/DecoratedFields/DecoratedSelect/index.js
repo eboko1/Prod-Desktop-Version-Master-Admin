@@ -24,6 +24,7 @@ export const DecoratedSelect = props => {
         options,
         optionValue,
         optionLabel,
+        optionDisabled,
         filterOption,
         optionFilterProp,
 
@@ -60,7 +61,11 @@ export const DecoratedSelect = props => {
             }
         >
             { options.map(option => (
-                <Option value={ option[ optionValue ] } key={ v4() }>
+                <Option
+                    value={ option[ optionValue ] }
+                    key={ v4() }
+                    disabled={ option[ optionDisabled ] }
+                >
                     { option[ optionLabel ] }
                 </Option>
             )) }

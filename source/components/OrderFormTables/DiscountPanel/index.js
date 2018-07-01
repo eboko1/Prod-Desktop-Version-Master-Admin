@@ -23,6 +23,8 @@ class DiscountPanel extends Component {
                         label={
                             <FormattedMessage id='order_form_table.discount' />
                         }
+                        colon={ false }
+                        className={ Styles.formItem }
                     >
                         <InputNumber
                             defaultValue={ 0 }
@@ -37,6 +39,8 @@ class DiscountPanel extends Component {
                         label={
                             <FormattedMessage id='order_form_table.sum_without_discount' />
                         }
+                        colon={ false }
+                        className={ Styles.formItem }
                     >
                         <InputNumber
                             disabled
@@ -56,6 +60,8 @@ class DiscountPanel extends Component {
                         label={
                             <FormattedMessage id='order_form_table.total_sum' />
                         }
+                        colon={ false }
+                        className={ Styles.formItem }
                     >
                         <InputNumber
                             disabled

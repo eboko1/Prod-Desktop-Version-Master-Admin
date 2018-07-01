@@ -66,14 +66,14 @@ const ReducerState = {
             value:      void 0,
             dirty:      false,
         },
-        paymentMethod: {
-            errors:     void 0,
-            name:       'paymentMethod',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
+        // paymentMethod: {
+        //     errors:     void 0,
+        //     name:       'paymentMethod',
+        //     touched:    true,
+        //     validating: false,
+        //     value:      void 0,
+        //     dirty:      false,
+        // },
         service: {
             errors:     void 0,
             name:       'service',
@@ -90,6 +90,7 @@ const ReducerState = {
     vehicles:    [],
     stations:    [],
     allDetails:  {},
+    requisites:  [],
 };
 
 export default function reducer(state = ReducerState, action) {
