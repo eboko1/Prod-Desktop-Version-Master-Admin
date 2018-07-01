@@ -18,6 +18,7 @@ export const FETCH_ORDERS_STATS_FAIL = `${prefix}/FETCH_ORDERS_STATS_FAIL`;
 // filters
 export const SET_ORDERS_PAGE_FILTER = `${prefix}/SET_ORDERS_PAGE_FILTER`;
 export const SET_ORDERS_DATERANGE_FILTER = `${prefix}/SET_ORDERS_DATERANGE_FILTER`;
+export const RESET_ORDERS_DATERANGE_FILTER = `${prefix}/RESET_ORDERS_DATERANGE_FILTER`;
 export const SET_ORDERS_STATUS_FILTER = `${prefix}/SET_ORDERS_STATUS_FILTER`;
 export const SET_ORDERS_SEARCH_FILTER = `${prefix}/SET_ORDERS_SEARCH_FILTER`;
 // universal UniversalFilters
@@ -49,7 +50,7 @@ const ReducerState = {
         stats: {},
     },
 };
-
+// eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
@@ -84,6 +85,15 @@ export default function reducer(state = ReducerState, action) {
                     ...state.filter,
                     page:      1,
                     daterange: payload,
+                },
+            };
+
+        case RESET_ORDERS_DATERANGE_FILTER:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    daterange: {},
                 },
             };
 
@@ -204,6 +214,10 @@ export const setOrdersPageFilter = pageFilter => ({
 export const setOrdersDaterangeFilter = datarangeFilter => ({
     type:    SET_ORDERS_DATERANGE_FILTER,
     payload: datarangeFilter,
+});
+
+export const resetOrdersDaterangeFilter = () => ({
+    type: RESET_ORDERS_DATERANGE_FILTER,
 });
 
 export const setOrdersStatusFilter = statusFilter => ({

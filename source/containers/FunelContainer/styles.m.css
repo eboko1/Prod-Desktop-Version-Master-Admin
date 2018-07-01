@@ -1,6 +1,35 @@
-.funel {
+/* .funel {
     display: flex;
     justify-content: space-between;
+} */
+
+.funel {
+    display: grid;
+    grid-template-columns: 20% 20% 20% 20% 20%;
+    grid-template-rows: 80px 80px;
+    margin-bottom: 16px;
+}
+
+.link {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+}
+
+.reviews {
+    grid-column: 3 / 3;
+    grid-row: 2;
+}
+
+.invitations {
+    grid-column: 2 / 2;
+    grid-row: 2;
+}
+
+.canceled {
+    grid-column: 5 / 5;
+    grid-row: 1 / span 2;
 }
 
 .active {

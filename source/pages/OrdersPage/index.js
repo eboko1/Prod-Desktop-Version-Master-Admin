@@ -90,28 +90,30 @@ class OrdersPage extends Component {
                 description={ <FormattedMessage id='orders-page.description' /> }
                 controls={
                     <div className={ Styles.controls }>
-                        <RadioGroup
-                            defaultValue='all'
-                            // defaultValue={ ordersDaterangeFilter }
-                            onChange={ this._handleRadioDaterange }
-                            className={ Styles.filters }
-                        >
-                            <RadioButton value='all'>
-                                <FormattedMessage id='orders-page.all' />
-                            </RadioButton>
-                            <RadioButton value='today'>
-                                <FormattedMessage id='orders-page.today' />
-                            </RadioButton>
-                            <RadioButton value='tomorrow'>
-                                <FormattedMessage id='orders-page.tomorrow' />
-                            </RadioButton>
-                            <RadioButton value='nextWeek'>
-                                <FormattedMessage id='orders-page.week' />
-                            </RadioButton>
-                            <RadioButton value='nextMonth'>
-                                <FormattedMessage id='orders-page.month' />
-                            </RadioButton>
-                        </RadioGroup>
+                        { [ 'success', 'canceled' ].indexOf(status) < 0 && (
+                            <RadioGroup
+                                defaultValue='all'
+                                // defaultValue={ ordersDaterangeFilter }
+                                onChange={ this._handleRadioDaterange }
+                                className={ Styles.filters }
+                            >
+                                <RadioButton value='all'>
+                                    <FormattedMessage id='orders-page.all' />
+                                </RadioButton>
+                                <RadioButton value='today'>
+                                    <FormattedMessage id='orders-page.today' />
+                                </RadioButton>
+                                <RadioButton value='tomorrow'>
+                                    <FormattedMessage id='orders-page.tomorrow' />
+                                </RadioButton>
+                                <RadioButton value='nextWeek'>
+                                    <FormattedMessage id='orders-page.week' />
+                                </RadioButton>
+                                <RadioButton value='nextMonth'>
+                                    <FormattedMessage id='orders-page.month' />
+                                </RadioButton>
+                            </RadioGroup>
+                        ) }
                         <div className={ Styles.buttonGroup }>
                             { (status === 'canceled' ||
                                 status === 'success') && (
@@ -143,7 +145,15 @@ class OrdersPage extends Component {
                         <UniversalFilters />
                     </section>
                 ) }
-                <section className={ Styles.ordersWrrapper }>
+                <section
+                    className={
+                        [ 'success', 'canceled' ].indexOf(status) > -1
+                            ? `${Styles.ordersWrrapper} ${
+                                Styles.ordersWrrapperUF
+                            }`
+                            : Styles.ordersWrrapper
+                    }
+                >
                     <OrdersContainer />
                 </section>
             </Layout>
