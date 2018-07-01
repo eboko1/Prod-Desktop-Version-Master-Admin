@@ -45,3 +45,12 @@
     background: var(--moduleHeader);
     margin: 14px 0;
 }
+
+.total {
+    font-size: 20px;
+}
+
+.totalSum {
+    color: var(--paletteColor1);
+    margin-left: 10px;
+}

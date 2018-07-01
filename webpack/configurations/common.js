@@ -9,7 +9,7 @@ import HtmlWebpackPlugin from 'html-webpack-plugin';
 import HtmlWebpackTemplate from 'html-webpack-template';
 
 // own
-import { getApiUrl } from './apiUtils';
+import { getConstants } from './envUtils';
 
 // antd
 import { join } from 'path';
@@ -23,7 +23,7 @@ const antdVariables = lessToJs(
 export const generateCommonConfiguration = () => {
     const BUILD_ENV = process.env.BUILD_ENV;
 
-    const __API_URL__ = getApiUrl(BUILD_ENV);
+    const { __API_URL__, __OLD_UI_URL__ } =  getConstants(BUILD_ENV);
 
     return {
         entry: {
@@ -106,12 +106,13 @@ export const generateCommonConfiguration = () => {
             }),
             new ContextReplacementPlugin(/moment\/locale$/, /ru/),
             new DefinePlugin({
-                __ENV__:     JSON.stringify(BUILD_ENV),
-                __LOCAL__:   BUILD_ENV === 'local',
-                __DEV__:     BUILD_ENV === 'development',
-                __STAGE__:   BUILD_ENV === 'stage',
-                __PROD__:    BUILD_ENV === 'production',
-                __API_URL__: JSON.stringify(__API_URL__),
+                __ENV__:        JSON.stringify(BUILD_ENV),
+                __LOCAL__:      BUILD_ENV === 'local',
+                __DEV__:        BUILD_ENV === 'development',
+                __STAGE__:      BUILD_ENV === 'stage',
+                __PROD__:       BUILD_ENV === 'production',
+                __API_URL__:    JSON.stringify(__API_URL__),
+                __OLD_UI_URL__: JSON.stringify(__OLD_UI_URL__),
             }),
         ],
     };

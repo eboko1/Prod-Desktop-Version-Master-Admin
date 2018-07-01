@@ -1,0 +1,11 @@
+{
+    "en": {
+        "add-client-form.add_client": "Add Client"
+    },
+    "ru": {
+        "add-client-form.add_client": "Добавить Клиента"
+    },
+    "uk": {
+        "add-client-form.add_client": "Додати Клієнта"
+    }
+}

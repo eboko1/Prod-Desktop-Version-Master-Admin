@@ -9,6 +9,7 @@ import { Icon, Button, Radio } from 'antd';
 import { fetchAddOrderForm } from 'core/forms/addOrderForm/duck';
 import { Layout } from 'commons';
 import { AddOrderForm } from 'forms';
+import { AddClientModal } from 'modals';
 
 //  own
 const RadioButton = Radio.Button;
@@ -30,9 +31,23 @@ const mapStateToProps = state => {
 @withRouter
 @connect(mapStateToProps, { fetchAddOrderForm })
 class AddOrderPage extends Component {
+    state = {
+        visible: false,
+    };
+
     componentDidMount() {
         this.props.fetchAddOrderForm();
     }
+
+    setAddClientModal = visible => {
+        this.setState(state => {
+            // if (!state.visible) {
+            //     this.props.fetchAddClientForm();
+            // }
+
+            return { visible };
+        });
+    };
 
     saveFormRef = formRef => {
         this.formRef = formRef;
@@ -48,6 +63,16 @@ class AddOrderPage extends Component {
         });
     };
 
+    handleAddClientModalSubmit = () => {
+        const form = this.formRef.props.form;
+        this.setAddClientModal(false);
+        form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of AddClientForm: ', values);
+            }
+        });
+    };
+
     render() {
         return (
             <Layout
@@ -55,17 +80,17 @@ class AddOrderPage extends Component {
                 controls={
                     <>
                         <div>
-                            <RadioGroup>
+                            <RadioGroup defaultValue='not_complete'>
                                 <RadioButton value='reserve'>
                                     <FormattedMessage id='reserve' />
                                 </RadioButton>
-                                <RadioButton value='new'>
+                                <RadioButton value='not_complete'>
                                     <FormattedMessage id='not_complete' />
                                 </RadioButton>
-                                <RadioButton value='questionable'>
+                                <RadioButton value='required'>
                                     <FormattedMessage id='required' />
                                 </RadioButton>
-                                <RadioButton value='approved'>
+                                <RadioButton value='approve'>
                                     <FormattedMessage id='approve' />
                                 </RadioButton>
                             </RadioGroup>
@@ -87,7 +112,16 @@ class AddOrderPage extends Component {
                 }
             >
                 { /* eslint-disable-next-line */ }
-                <AddOrderForm wrappedComponentRef={this.saveFormRef} />
+                <AddOrderForm
+                    wrappedComponentRef={ this.saveFormRef }
+                    setAddClientModal={ this.setAddClientModal }
+                />
+                <AddClientModal
+                    wrappedComponentRef={ this.saveFormRef }
+                    visible={ this.state.visible }
+                    handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
+                    setAddClientModal={ this.setAddClientModal }
+                />
             </Layout>
         );
     }

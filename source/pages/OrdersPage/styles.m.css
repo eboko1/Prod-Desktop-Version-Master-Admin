@@ -17,6 +17,10 @@
     margin: 0 16px;
 }
 
+.ordersWrrapperUF {
+    padding: 325px 0 0 0;
+}
+
 .funelWithFilters {
     display: flex;
     position: fixed;
@@ -42,11 +46,10 @@
 }
 
 .universalFilters {
-    background: lightgreen;
     position: fixed;
     width: calc(100% - 256px);
     z-index: 1100;
-    margin: 160px 0 0 0;
+    margin: 240px 0 0 0;
     display: flex;
     position: fixed;
     flex-direction: column;

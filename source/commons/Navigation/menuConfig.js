@@ -1,8 +1,10 @@
 // proj
 import book from 'routes/book';
 
-export default {
+//__OLD_UI_URL__ will be replaced by webpack build
+const OLD_UI_URL = __OLD_UI_URL__;
 
+export default {
     sections: [
         /*  Operations submenu*/
         {
@@ -12,7 +14,7 @@ export default {
             items:    [
                 {
                     key:  '/dashboard',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/dashboard`,
                     name: 'navigation.scheduler',
                 },
                 {
@@ -22,10 +24,9 @@ export default {
                 },
                 {
                     key:  '/tasks',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/tasks`,
                     name: 'navigation.tasks',
                 },
-
             ],
         },
         /* Catalog submenu */
@@ -36,12 +37,12 @@ export default {
             items:    [
                 {
                     key:  '/clients',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/clients`,
                     name: 'navigation.clients',
                 },
                 {
                     key:  '/employees',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/employees`,
                     name: 'navigation.employees',
                 },
             ],
@@ -54,27 +55,32 @@ export default {
             items:    [
                 {
                     key:  '/control-panel',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/control-panel`,
                     name: 'navigation.control_panel',
                 },
                 {
                     key:  '/indicators',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/universal-chart`,
                     name: 'navigation.service_indicators',
                 },
                 {
                     key:  '/funel',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/funel`,
                     name: 'navigation.funel',
                 },
                 {
+                    key:  '/reviews',
+                    link: `${OLD_UI_URL}/reviews`,
+                    name: 'navigation.reviews',
+                },
+                {
                     key:  '/statistics',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/statistics`,
                     name: 'navigation.general_statistics',
                 },
                 {
                     key:  '/statistics/calls',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/statistics/calls`,
                     name: 'navigation.calls_statistics',
                 },
             ],
@@ -87,47 +93,47 @@ export default {
             items:    [
                 {
                     key:  '/settings',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/settings`,
                     name: 'navigation.main',
                 },
                 {
                     key:  '/prices',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/settings/specialization`,
                     name: 'navigation.specialization_and_prices',
                 },
                 {
                     key:  '/services',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/settings/services`,
                     name: 'navigation.services',
                 },
                 {
                     key:  '/stocks',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/settings/offers`,
                     name: 'navigation.stocks',
                 },
                 {
                     key:  '/news',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/settings/news`,
                     name: 'navigation.news',
                 },
                 {
                     key:  '/articles',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/settings/articles`,
                     name: 'navigation.articles',
                 },
                 {
                     key:  '/media',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/settings/gallery`,
                     name: 'navigation.media_files',
                 },
                 {
                     key:  '/managers',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/settings/managers`,
                     name: 'navigation.system_managers',
                 },
                 {
                     key:  '/notice',
-                    link: book.ordersByStatuses,
+                    link: `${OLD_UI_URL}/settings/notifications`,
                     name: 'navigation.notice',
                 },
             ],
@@ -135,7 +141,7 @@ export default {
         {
             key:      '/suggest-idea',
             iconType: 'bulb',
-            link:     book.ordersByStatuses,
+            link:     `${OLD_UI_URL}/feedback`,
             name:     'navigation.suggest_idea',
         },
     ],
@@ -149,26 +155,28 @@ export default {
         for (let section of this.sections) {
             if (section.items) {
                 for (let item of section.items) {
-                    if (currentPath.startsWith(item.key)
-                        && item.key.length > result.itemKey.length) {
+                    if (
+                        currentPath.startsWith(item.key) &&
+                        item.key.length > result.itemKey.length
+                    ) {
                         Object.assign(result, {
                             sectionKey: section.key,
                             itemKey:    item.key,
                         });
                     }
-                }  
+                }
             } else {
-                if (currentPath.startsWith(section.key)
-                    && section.key.length > result.itemKey.length) {
+                if (
+                    currentPath.startsWith(section.key) &&
+                    section.key.length > result.itemKey.length
+                ) {
                     Object.assign(result, {
                         itemKey: section.key,
                     });
                 }
             }
-            
         }
 
         return result;
     },
-
 };
