@@ -1,6 +1,10 @@
+.form {
+    padding: 14px;
+}
+
 .clientBlock,
 .datePanel {
-    background: var(--moduleHeader);
+    /* background: var(--moduleHeader); */
     display: flex;
     justify-content: space-between;
 }
@@ -82,7 +86,7 @@
 .totalBlock {
     display: flex;
     justify-content: space-between;
-    background: var(--moduleHeader);
+    /* background: var(--moduleHeader); */
     margin: 14px 0;
 }
 

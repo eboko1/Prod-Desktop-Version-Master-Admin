@@ -135,16 +135,17 @@ export class AddOrderForm extends Component {
 
         return (
             <Form
+                className={ Styles.form }
                 // onSubmit={ this.handleSubmit }
                 layout='horizontal'
             >
-                <Button
+                { /* <Button
                     type='dashed'
                     htmlType='submit'
                     disabled={ buttonDisabled }
                 >
                     inner submit (test validation)
-                </Button>
+                </Button> */ }
                 { /* <FormItem { ...formItemLayout } label='Plain Text'>
                     <span className='ant-form-text'>readonlytext</span>
                 </FormItem> */ }
