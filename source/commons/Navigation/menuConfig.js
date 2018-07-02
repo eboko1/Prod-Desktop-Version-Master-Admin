@@ -19,7 +19,7 @@ export default {
                 },
                 {
                     key:  '/orders',
-                    link: book.ordersByStatuses,
+                    link: book.ordersAppointments,
                     name: 'navigation.appointments',
                 },
                 {
