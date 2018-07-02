@@ -5,7 +5,7 @@ import { DatePicker } from 'antd';
 // own
 const { RangePicker } = DatePicker;
 
-export const DecoratedTextArea = props => {
+export const DecoratedDatePicker = props => {
     const {
         ranges,
         getFieldDecorator,

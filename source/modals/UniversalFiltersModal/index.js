@@ -5,12 +5,13 @@ import { FormattedMessage } from 'react-intl';
 import { Select } from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
+import moment from 'moment';
 
 // proj
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { fetchOrders, setUniversalFilters } from 'core/orders/duck';
 
-import { DecoratedSelect } from 'forms/DecoratedFields';
+import { DecoratedSelect, DecoratedDatePicker } from 'forms/DecoratedFields';
 import { StatsCountsPanel } from 'components';
 // import { UniversalFiltersForm } from 'forms';
 import { withReduxForm } from 'utils';
@@ -20,7 +21,7 @@ import Styles from './styles.m.css';
 const Option = Select.Option;
 const FormItem = Form.Item;
 
-const dateFormat = 'YYYY-MM-DD';
+// const dateFormat = 'YYYY-MM-DD';
 
 @withReduxForm({
     name:    'universalFiltersForm',
@@ -86,60 +87,6 @@ export default class UniversalFiltersModal extends Component {
                 </Select>
             );
         };
-
-        // const createDecoratedSelectField = (
-        //     name,
-        //     placeholder,
-        //     options,
-        //     multiple,
-        // ) => (
-        //     <FormItem>
-        //         { getFieldDecorator(name)(
-        //             createSelect(name, placeholder, options, multiple),
-        //         ) }
-        //     </FormItem>
-        // );
-
-        // const managersOptions = managers.map(manager => (
-        //     <Option value={ manager.id } key={ v4() }>
-        //         { `${manager.managerSurname} ${manager.managerName}` }
-        //     </Option>
-        // ));
-
-        // const employeesOptions = employees.map(employee => (
-        //     <Option value={ employee.id } key={ v4() }>
-        //         { `${employee.employeeSurname} ${employee.employeeName}` }
-        //     </Option>
-        // ));
-
-        // const creationReasonsOptions = creationReasons.map(creationReason => (
-        //     <Option value={ creationReason } key={ v4() }>
-        //         { creationReason }
-        //     </Option>
-        // ));
-
-        // const orderCommentsOptions = orderComments
-        //     .map(
-        //         ({ status, id, comment }) =>
-        //             status === 'cancel' ? (
-        //                 <Option value={ id } key={ v4() }>
-        //                     { comment }
-        //                 </Option>
-        //             ) :
-        //                 false
-        //         ,
-        //     )
-        //     .filter(Boolean);
-
-        const createDatePicker = (name, placeholder) =>
-            getFieldDecorator(name)(
-                <DatePicker
-                    placeholder={ placeholder }
-                    getPopupContainer={ () => modalContentDivWrapper }
-                    getCalendarContainer={ () => modalContentDivWrapper }
-                    format={ dateFormat }
-                />,
-            );
 
         return (
             <Modal
@@ -255,7 +202,6 @@ export default class UniversalFiltersModal extends Component {
                                 mode='multiple'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
-                                // style={ { width: 200 } }
                                 placeholder={
                                     <FormattedMessage id='universal_filters.creationReason' />
                                 }
@@ -322,16 +268,38 @@ export default class UniversalFiltersModal extends Component {
                             />
                         </FormItem>
 
-                        { createDatePicker('startDate', 'select start date') }
-                        { createDatePicker('endDate', 'select end date') }
-                        { createDatePicker(
-                            'createStartDate',
-                            'select create start date',
-                        ) }
-                        { createDatePicker(
-                            'createEndDate',
-                            'select create end date',
-                        ) }
+                        <FormItem label='startDate'>
+                            <DecoratedDatePicker
+                                field='startDate'
+                                getFieldDecorator={ getFieldDecorator }
+                                placeholder='boob date'
+                                getCalendarContainer={ () =>
+                                    modalContentDivWrapper
+                                }
+                                ranges={ {
+                                    Today:        [ moment(), moment() ],
+                                    'This Month': [ moment(), moment().endOf('month') ],
+                                } }
+                                showTime
+                                format='YYYY-MM-DD HH:mm:ss'
+                            />
+                        </FormItem>
+                        <FormItem label='createDate'>
+                            <DecoratedDatePicker
+                                field='createDate'
+                                getFieldDecorator={ getFieldDecorator }
+                                placeholder='bamboozed date'
+                                getCalendarContainer={ () =>
+                                    modalContentDivWrapper
+                                }
+                                ranges={ {
+                                    Today:        [ moment(), moment() ],
+                                    'This Month': [ moment(), moment().endOf('month') ],
+                                } }
+                                showTime
+                                format='YYYY-MM-DD HH:mm:ss'
+                            />
+                        </FormItem>
                     </Form>
                 </div>
             </Modal>
