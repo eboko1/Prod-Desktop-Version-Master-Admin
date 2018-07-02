@@ -301,21 +301,27 @@ export class AddOrderForm extends Component {
                             { ...formItemLayout }
                         >
                             <Select>
-                                { _.flatten(
-                                    clients.map(
-                                        client =>
-                                            !client.phones
-                                                ? []
-                                                : client.phones.map(phone => (
-                                                    <Option
-                                                        value={ phone }
-                                                        key={ v4() }
-                                                    >
-                                                        { phone }
-                                                    </Option>
-                                                )),
-                                    ),
-                                ) }
+                                { clients.length === 0
+                                    ? _.flatten(
+                                        clients.map(
+                                            client =>
+                                                !client.phones
+                                                    ? []
+                                                    : client.phones.map(
+                                                        phone => (
+                                                            <Option
+                                                                value={
+                                                                    phone
+                                                                }
+                                                                key={ v4() }
+                                                            >
+                                                                { phone }
+                                                            </Option>
+                                                        ),
+                                                    ),
+                                        ),
+                                    )
+                                    : [] }
                             </Select>
                         </FormItem>
                         <FormItem
