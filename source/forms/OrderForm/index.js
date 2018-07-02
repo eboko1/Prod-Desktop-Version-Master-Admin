@@ -19,9 +19,7 @@ import _ from 'lodash';
 import debounce from 'lodash/debounce';
 
 //proj
-import {
-    fetchOrderForm,
-} from 'core/forms/orderForm/duck';
+import { onChangeOrderForm } from 'core/forms/orderForm/duck';
 
 import { DecoratedTextArea, DecoratedSelect } from 'forms/DecoratedFields';
 import {
@@ -45,7 +43,7 @@ const { TextArea } = Input;
 @injectIntl
 @withReduxForm({
     name:    'orderForm',
-    actions: { change: fetchOrderForm },
+    actions: { change: onChangeOrderForm },
 })
 export class OrderForm extends Component {
     // handleSubmit = e => {
@@ -83,6 +81,8 @@ export class OrderForm extends Component {
             clients: { clients = [] },
         } = this.props;
 
+        console.log('searchClientsResult', this.props.searchClientsResult);
+        const {searchClientsResult = []} = this.props;
         const { getFieldDecorator, getFieldsError } = this.props.form;
 
         const buttonDisabled = hasErrors(getFieldsError());
@@ -251,13 +251,19 @@ export class OrderForm extends Component {
                                 }
                                 colon={ false }
                             >
-                                <Input
-                                    // onChange={ () => console.log('→ ', )}
-                                    placeholder={ this.props.intl.formatMessage({
-                                        id:             'add_order_form.client.placeholder',
-                                        defaultMessage: 'search client',
-                                    }) }
-                                />
+                                { getFieldDecorator('searchClientQuery', {})(
+                                    <Input
+                                        // onChange={ () => console.log('→ ', )}
+                                        placeholder={ this.props.intl.formatMessage(
+                                            {
+                                                id:
+                                                    'add_order_form.client.placeholder',
+                                                defaultMessage: 'search client',
+                                            },
+                                        ) }
+                                    />,
+                                ) }
+                                { (searchClientsResult.clients || []).map((el) => (<div><br/>{el.name} {el.surname}</div>)) }
                                 <Icon
                                     type='plus'
                                     className={ Styles.addClientIcon }

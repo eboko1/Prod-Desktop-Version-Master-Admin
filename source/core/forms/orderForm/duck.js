@@ -8,6 +8,9 @@ export const FETCH_ORDER_FORM = `${prefix}/FETCH_ORDER_FORM`;
 export const FETCH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ORDER_FORM_SUCCESS`;
 
 export const ON_CHANGE_ORDER_FORM = `${prefix}/ON_CHANGE_ORDER_FORM`;
+export const ON_CHANGE_CLIENT_SEARCH_QUERY = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY`;
+
+export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS`;
 
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
@@ -132,6 +135,11 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS:
+            return {
+                ...state,
+                searchClientsResult: payload,
+            };
         default:
             return state;
     }
@@ -164,6 +172,16 @@ export function fetchOrderFormSuccess(data) {
         payload: data,
     };
 }
+
+export const onChangeClientSearchQuery = searchQuery => ({
+    type:    ON_CHANGE_CLIENT_SEARCH_QUERY,
+    payload: searchQuery,
+});
+
+export const onChangeClientSearchQuerySuccess = data => ({
+    type:    ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS,
+    payload: data,
+});
 
 export const onChangeOrderForm = (fields, { form, field }) => ({
     type:    ON_CHANGE_ORDER_FORM,
