@@ -7,12 +7,12 @@ import { call, put, all, take } from 'redux-saga/effects';
 import { fetchAPI } from 'utils';
 
 // own
-import { fetchOrderFormSuccess, FETCH_ADD_ORDER_FORM } from './duck';
+import { fetchOrderFormSuccess, FETCH_ORDER_FORM } from './duck';
 
-export function* fetchOrderFormSaga({ payload: id }) {
+export function* fetchOrderFormSaga() {
     while (true) {
-        yield take(FETCH_ADD_ORDER_FORM);
-        const data = yield call(fetchAPI, 'GET', `order/${id}`);
+        const { payload: id } = yield take(FETCH_ORDER_FORM);
+        const data = yield call(fetchAPI, 'GET', `orders/${id}`);
 
         yield put(fetchOrderFormSuccess(data));
     }

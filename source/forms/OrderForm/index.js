@@ -20,9 +20,8 @@ import debounce from 'lodash/debounce';
 
 //proj
 import {
-    fetchAddOrderForm,
-    onChangeAddOrderForm,
-} from 'core/forms/addOrderForm/duck';
+    fetchOrderForm,
+} from 'core/forms/orderForm/duck';
 
 import { DecoratedTextArea, DecoratedSelect } from 'forms/DecoratedFields';
 import {
@@ -45,8 +44,8 @@ const { TextArea } = Input;
 
 @injectIntl
 @withReduxForm({
-    name:    'OrderForm',
-    actions: { change: onChangeAddOrderForm, fetchAddOrderForm },
+    name:    'orderForm',
+    actions: { change: fetchOrderForm },
 })
 export class OrderForm extends Component {
     // handleSubmit = e => {
@@ -66,10 +65,10 @@ export class OrderForm extends Component {
     handleChangeSearchSelect(value) {
         console.log(`selected ${value}`);
     }
-
-    fetchClientSearch(client) {
-        debounce(this.props.fetchClientsSearch, 800);
-    }
+    //
+    // fetchClientSearch(client) {
+    //     debounce(this.props.fetchClientsSearch, 800);
+    // }
 
     render() {
         const {

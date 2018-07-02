@@ -11,10 +11,11 @@ import { saga as addOrderSaga } from 'core/addOrder/saga';
 
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
 import { saga as addOrderFormSaga } from 'core/forms/addOrderForm/saga';
+import { saga as orderFormSaga } from 'core/forms/orderForm/saga';
 
 // import formikForm from 'core/forms/formikForm/saga/watchers';
 
 export default function* rootSaga() {
-    yield all([ auth.loginWatcher(), auth.logoutWatcher(), swapi.fetchSwapiWatcher(), intl.updateIntlWatcher(), ui.layoutCollapsedWatcher(), ordersSaga(), orderSaga(), addOrderSaga(), universalFiltersFormSaga(), addOrderFormSaga() ]);
+    yield all([ auth.loginWatcher(), auth.logoutWatcher(), swapi.fetchSwapiWatcher(), intl.updateIntlWatcher(), ui.layoutCollapsedWatcher(), ordersSaga(), orderSaga(), addOrderSaga(), universalFiltersFormSaga(), addOrderFormSaga(), orderFormSaga() ]);
 }
 // formikForm.formikFormWatcher()

@@ -7,7 +7,8 @@ import moment from 'moment';
 import { Button, Icon } from 'antd';
 
 // proj
-import { fetchOrder, fetchReport, getReport } from 'core/order/duck';
+import { fetchOrderForm } from 'core/forms/orderForm/duck';
+import { getReport, fetchReport } from 'core/order/duck';
 import { Layout } from 'commons';
 import { OrderForm } from 'forms';
 import { ReportsDropdown } from 'components';
@@ -16,22 +17,35 @@ import book from 'routes/book';
 // own
 import Styles from './styles.m.css';
 
-const mapStateToProps = (state, props) => {
+const mapStateToProps = state => {
     return {
+        stations:    state.forms.orderForm.stations,
+        vehicles:    state.forms.orderForm.vehicles,
+        employees:   state.forms.orderForm.employees,
+        managers:    state.forms.orderForm.managers,
+        clients:     state.forms.orderForm.clients,
+        allDetails:  state.forms.orderForm.allDetails,
+        allServices: state.forms.orderForm.allServices,
+        requisites:  state.forms.orderForm.requisites,
         order: {
-            status:   state.order.order.status,
-            num:      state.order.order.num,
-            datetime: state.order.order.datetime,
+            status:   state.forms.orderForm.status,
+            num:      state.forms.orderForm.num,
+            datetime: state.forms.orderForm.datetime,
             // id:       state.order.order.id,
         },
     };
 };
 
 @withRouter
-@connect(mapStateToProps, { fetchOrder, fetchReport, getReport })
+@connect(mapStateToProps, { fetchOrderForm, getReport, fetchReport })
 class OrderPage extends Component {
+
+    saveFormRef = formRef => {
+        this.formRef = formRef;
+    };
+
     componentDidMount() {
-        this.props.fetchOrder(this.props.match.params.id);
+        this.props.fetchOrderForm(this.props.match.params.id);
     }
 
     render() {
@@ -75,7 +89,7 @@ class OrderPage extends Component {
                 }
             >
                 <div>Order Form: { id }</div>
-                <OrderForm />
+                <OrderForm wrappedComponentRef={ this.saveFormRef } />
             </Layout>
         );
     }
