@@ -16,17 +16,21 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import { v4 } from 'uuid';
 import _ from 'lodash';
-import debounce from 'lodash/debounce';
 
 //proj
-import { onChangeOrderForm } from 'core/forms/orderForm/duck';
+import {
+    onChangeOrderForm,
+    setClientSelection,
+} from 'core/forms/orderForm/duck';
 
 import { DecoratedTextArea, DecoratedSelect } from 'forms/DecoratedFields';
 import {
     DetailsTable,
     ServicesTable,
     DiscountPanel,
+    ClientsSearchTable,
 } from 'components/OrderFormTables';
+
 import { withReduxForm, hasErrors, getDateTimeConfig, images } from 'utils';
 
 // own
@@ -43,7 +47,7 @@ const { TextArea } = Input;
 @injectIntl
 @withReduxForm({
     name:    'orderForm',
-    actions: { change: onChangeOrderForm },
+    actions: { change: onChangeOrderForm, setClientSelection },
 })
 export class OrderForm extends Component {
     // handleSubmit = e => {
@@ -81,9 +85,10 @@ export class OrderForm extends Component {
             clients: { clients = [] },
         } = this.props;
 
-        console.log('searchClientsResult', this.props.searchClientsResult);
-        const {searchClientsResult = []} = this.props;
+        const { searchClientsResult, selectedClient } = this.props;
         const { getFieldDecorator, getFieldsError } = this.props.form;
+
+        console.log('selectedClient', this.props.selectedClient);
 
         const buttonDisabled = hasErrors(getFieldsError());
         const beginDatetime = (this.props.fields.beginDatetime || {}).value;
@@ -242,6 +247,11 @@ export class OrderForm extends Component {
                     </FormItem>
                 </div>
 
+                <ClientsSearchTable
+                    setClientSelection={ this.props.setClientSelection }
+                    visible={ !!this.props.fields.searchClientQuery.value }
+                    clients={ searchClientsResult.clients }
+                />
                 <div className={ Styles.clientBlock }>
                     <div className={ Styles.clientCol }>
                         <div className={ Styles.client }>
@@ -263,7 +273,6 @@ export class OrderForm extends Component {
                                         ) }
                                     />,
                                 ) }
-                                { (searchClientsResult.clients || []).map((el) => (<div><br/>{el.name} {el.surname}</div>)) }
                                 <Icon
                                     type='plus'
                                     className={ Styles.addClientIcon }
@@ -279,25 +288,17 @@ export class OrderForm extends Component {
                             }
                             { ...formItemLayout }
                         >
-                            <Select
-                                showSearch
+                            <Input
                                 placeholder={
                                     <FormattedMessage id='add_order_form.select_name' />
                                 }
-                                optionFilterProp='children'
-                                onChange={ this.handleChangeSearchSelect }
-                                // onFocus={ handleFocus }
-                                // onBlur={ handleBlur }
-                                filterOption={ (input, option) =>
-                                    option.props.children
-                                        .toLowerCase()
-                                        .indexOf(input.toLowerCase()) >= 0
+                                disabled
+                                value={
+                                    (selectedClient.name || selectedClient.surname)
+                                        ? (selectedClient.surname ? selectedClient.surname + ' ': '') + `${selectedClient.name}`
+                                        : void 0
                                 }
-                            >
-                                <Option value='jack'>Jack</Option>
-                                <Option value='lucy'>Lucy</Option>
-                                <Option value='tom'>Tom</Option>
-                            </Select>
+                            />
                         </FormItem>
                         <FormItem
                             label={
@@ -306,21 +307,11 @@ export class OrderForm extends Component {
                             { ...formItemLayout }
                         >
                             <Select>
-                                { _.flatten(
-                                    clients.map(
-                                        client =>
-                                            !client.phones
-                                                ? []
-                                                : client.phones.map(phone => (
-                                                    <Option
-                                                        value={ phone }
-                                                        key={ v4() }
-                                                    >
-                                                        { phone }
-                                                    </Option>
-                                                )),
-                                    ),
-                                ) }
+                                { selectedClient.phones.map(phone => (
+                                    <Option value={ phone } key={ v4() }>
+                                        { phone }
+                                    </Option>
+                                )) }
                             </Select>
                         </FormItem>
                         <FormItem

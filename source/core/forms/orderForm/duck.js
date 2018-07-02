@@ -12,6 +12,8 @@ export const ON_CHANGE_CLIENT_SEARCH_QUERY = `${prefix}/ON_CHANGE_CLIENT_SEARCH_
 
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS`;
 
+export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
+
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
@@ -61,6 +63,14 @@ const ReducerState = {
             value:      void 0,
             dirty:      false,
         },
+        searchClientQuery: {
+            errors:     void 0,
+            name:       'searchClientQuery',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
         email: {
             errors:     void 0,
             name:       'email',
@@ -86,14 +96,22 @@ const ReducerState = {
             dirty:      false,
         },
     },
-    allServices: [],
-    clients:     [],
-    managers:    [],
-    employees:   [],
-    vehicles:    [],
-    stations:    [],
-    allDetails:  {},
-    requisites:  [],
+    allServices:         [],
+    clients:             [],
+    managers:            [],
+    employees:           [],
+    vehicles:            [],
+    stations:            [],
+    allDetails:          {},
+    requisites:          [],
+    searchClientsResult: {
+        clients: [],
+    },
+    selectedClient: {
+        requisites: [],
+        phones:     [],
+        emails:     [],
+    },
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -132,6 +150,24 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     ...payload,
+                },
+            };
+
+        case ON_CLIENT_SELECT:
+            return {
+                ...state,
+                selectedClient: payload,
+                searchClientsResult: [],
+                fields:         {
+                    ...state.fields,
+                    searchClientQuery: {
+                        errors:     void 0,
+                        name:       'searchClientQuery',
+                        touched:    true,
+                        validating: false,
+                        value:      void 0,
+                        dirty:      false,
+                    },
                 },
             };
 
@@ -176,6 +212,11 @@ export function fetchOrderFormSuccess(data) {
 export const onChangeClientSearchQuery = searchQuery => ({
     type:    ON_CHANGE_CLIENT_SEARCH_QUERY,
     payload: searchQuery,
+});
+
+export const setClientSelection = client => ({
+    type:    ON_CLIENT_SELECT,
+    payload: client,
 });
 
 export const onChangeClientSearchQuerySuccess = data => ({

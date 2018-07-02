@@ -1,5 +1,5 @@
 // vendor
-import { call, put, all, take, takeLatest, delay } from 'redux-saga/effects';
+import {call, put, all, take, takeLatest, delay, takeEvery} from 'redux-saga/effects';
 // import nprogress from 'nprogress';
 
 //proj
@@ -14,7 +14,9 @@ import {
     FETCH_ORDER_FORM,
     ON_CHANGE_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
+    ON_CLIENT_SELECT,
 } from './duck';
+import {FETCH_ORDER} from "../../order/duck";
 
 export function* fetchOrderFormSaga() {
     while (true) {
@@ -40,8 +42,12 @@ export function* onChangeOrderFormSaga() {
 function* handleInput({payload}) {
     yield delay(3000);
 
-    const data = yield call(fetchAPI, 'GET', 'clients', {query: payload});
-    yield put(onChangeClientSearchQuerySuccess(data));
+    if (payload.length > 2) {
+        const data = yield call(fetchAPI, 'GET', 'clients', {query: payload});
+        yield put(onChangeClientSearchQuerySuccess(data));
+    } else {
+        yield put(onChangeClientSearchQuerySuccess([]));
+    }
 }
 
 function* watchInput() {
