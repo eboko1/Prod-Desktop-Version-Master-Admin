@@ -9,7 +9,9 @@
         "universal_filters.manager": "Manger",
         "universal_filters.service": "Service",
         "universal_filters.master": "Master",
-        "universal_filters.employee": "Employee"
+        "universal_filters.employee": "Employee",
+        "universal_filters.creationReason": "creationReason",
+        "universal_filters.cancelReason": "cancelReason"
     },
     "ru": {
         "universal_filters": "Универсальные фильтры",
@@ -21,7 +23,9 @@
         "universal_filters.manager": "Ответственный",
         "universal_filters.service": "Услуга",
         "universal_filters.master": "Обсулуживал мастер",
-        "universal_filters.employee": "Сотрудник"
+        "universal_filters.employee": "Сотрудник",
+        "universal_filters.creationReason": "creationReason",
+        "universal_filters.cancelReason": "cancelReason"
     },
     "uk": {
         "universal_filters": "Універсальні фільтри",
@@ -33,6 +37,8 @@
         "universal_filters.manager": "Відповідальний",
         "universal_filters.service": "Послуга",
         "universal_filters.master": "Обслуговував майстер",
-        "universal_filters.employee": "Працівник"
+        "universal_filters.employee": "Працівник",
+        "universal_filters.creationReason": "creationReason",
+        "universal_filters.cancelReason": "cancelReason"
     }
 }
