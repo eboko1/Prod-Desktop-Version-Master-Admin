@@ -7,7 +7,6 @@ import {
     InputNumber,
     // Input,
     Icon,
-    Button,
     Popconfirm,
     Select,
 } from 'antd';
@@ -46,11 +45,10 @@ class ServicesTable extends Component {
                             // onSelect={ value =>
                             //     this.handleServiceSelect(record.key, value)
                             // }
-                            onChange={ value => {
-                                console.log('onChange', this.props);
-                                this.handleServiceSelect(record.key, value)
-                            }
-                            }
+                            // onChange={ value => {
+                            //     console.log('onChange', this.props);
+                            //     this.handleServiceSelect(record.key, value);
+                            // } }
                             placeholder={
                                 <FormattedMessage id='order_form_table.service.placeholder' />
                             }
@@ -69,15 +67,13 @@ class ServicesTable extends Component {
                 render:    (text, record) => (
                     <DecoratedInputNumber
                         field={ `services[${record.key}][servicePrice]` }
-                        getFieldDecorator={
-                            this.props.form.getFieldDecorator
-                        }
-                        disabled={ record.service ? false : true }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        disabled={ !this.props.services[ record.key ].serviceName.value }
                         min={ 0 }
-                        defaultValue={ record.price }
-                        onChange={ value =>
-                            this.onCellChange(record.key, value, 'price')
-                        }
+                        // defaultValue={ record.price }
+                        // onChange={ value =>
+                        //     this.onCellChange(record.key, value, 'price')
+                        // }
                     />
                 ),
             },
@@ -87,16 +83,14 @@ class ServicesTable extends Component {
                 render:    (text, record) => (
                     <DecoratedInputNumber
                         field={ `services[${record.key}][serviceCount]` }
-                        getFieldDecorator={
-                            this.props.form.getFieldDecorator
-                        }
-                        disabled={ record.service ? false : true }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        disabled={ !this.props.services[ record.key ].serviceName.value }
                         min={ 0.1 }
                         step={ 0.1 }
-                        defaultValue={ record.count }
-                        onChange={ value =>
-                            this.onCellChange(record.key, value, 'count')
-                        }
+                        // defaultValue={ record.count }
+                        // onChange={ value =>
+                        //     this.onCellChange(record.key, value, 'count')
+                        // }
                     />
                 ),
             },
@@ -104,7 +98,8 @@ class ServicesTable extends Component {
                 title:     <FormattedMessage id='order_form_table.sum' />,
                 dataIndex: 'sum',
                 render:    (text, record) => {
-                    const value = record.price * record.count;
+                    const service = this.props.services[ record.key ];
+                    const value = service.servicePrice.value * service.serviceCount.value;
 
                     return (
                         <InputNumber
@@ -120,7 +115,10 @@ class ServicesTable extends Component {
                 title:     '',
                 dataIndex: 'delete',
                 render:    (text, record) => {
-                    const { dataSource } = this.state;
+                    const dataSource = _(this.props.services)
+                        .toPairs()
+                        .map(([ key, value ]) => ({ ...value, key }))
+                        .value();
 
                     return dataSource.length > 1 &&
                         dataSource.length - 1 !== dataSource.indexOf(record) ? (
@@ -134,70 +132,87 @@ class ServicesTable extends Component {
                 },
             },
         ];
-
-        this.state = {
-            dataSource: [
-                {
-                    key:     v4(),
-                    service: '',
-                    price:   0,
-                    count:   1,
-                    sum:     0,
-                    delete:  '',
-                },
-            ],
-        };
     }
 
-    handleServiceSelect = (key, value) => {
-        const dataSource = [ ...this.state.dataSource ];
+    handleServiceSelect = key => {
+        const dataSource = { ...this.props.services };
 
-        const target = dataSource.find(item => item.key === key);
-        if (target) {
-            if (target.service === '') {
-                this.handleAdd();
-            }
-            target.service = value;
-            this.setState({ ...dataSource });
+        const emptyFields = _(dataSource)
+            .values()
+            .map('serviceName')
+            .map('value')
+            .filter(value => !value)
+            .value().length;
+
+        if (
+            !emptyFields ||
+            emptyFields === 1 && !dataSource[ key ].serviceName.value
+        ) {
+            this.handleAdd();
         }
     };
 
     onDelete = key => {
-        const dataSource = [ ...this.state.dataSource ];
-        this.setState({
-            dataSource: dataSource.filter(item => item.key !== key),
-        });
+        const dataSource = { ...this.props.services };
+        const clearedDataSource = _.pickBy(
+            dataSource,
+            (value, name) => name !== key,
+        );
+        this.props.onChangeOrderServices(clearedDataSource);
     };
 
     handleAdd = () => {
-        const { dataSource } = this.state;
         const newData = {
-            key:     v4(),
-            service: '',
-            price:   0,
-            count:   1,
-            sum:     0,
-            delete:  '',
+            serviceName: {
+                errors:     void 0,
+                name:       'serviceName',
+                touched:    true,
+                validating: false,
+                value:      void 0,
+                dirty:      false,
+            },
+            serviceCount: {
+                errors:     void 0,
+                name:       'serviceCount',
+                touched:    true,
+                validating: false,
+                value:      void 0,
+                dirty:      false,
+            },
+            servicePrice: {
+                errors:     void 0,
+                name:       'servicePrice',
+                touched:    true,
+                validating: false,
+                value:      void 0,
+                dirty:      false,
+            },
         };
-        this.setState({ dataSource: [ ...dataSource, newData ] });
+
+        this.props.onChangeOrderServices({
+            ...this.props.services,
+            ...{ [ v4() ]: newData },
+        });
     };
 
-    onCellChange = (key, value, dataIndex) => {
-        const dataSource = [ ...this.state.dataSource ];
-        console.log('→ dataSource', dataSource);
-        const target = dataSource.find(item => item.key === key);
-        console.log('→ target', target);
-        if (target) {
-            target[ dataIndex ] = value;
-            this.setState({ dataSource });
-        }
-    };
-
-    handleChange = value => console.log('→ value', value);
+    // onCellChange = (key, value, dataIndex) => {
+    //     const dataSource = [ ...this.state.dataSource ];
+    //     console.log('→ dataSource', dataSource);
+    //     const target = dataSource.find(item => item.key === key);
+    //     console.log('→ target', target);
+    //     if (target) {
+    //         target[ dataIndex ] = value;
+    //         this.setState({ dataSource });
+    //     }
+    // };
 
     render() {
-        const { allServices, employees } = this.props;
-        const { dataSource } = this.state;
+        const { employees } = this.props;
+        const dataSource = _(this.props.services)
+            .toPairs()
+            .map(([ key, value ]) => ({ ...value, key }))
+            .value();
+
         const columns = this.columns;
 
         return (

@@ -21,6 +21,7 @@ import _ from 'lodash';
 import {
     onChangeOrderForm,
     setClientSelection,
+    onChangeOrderServices,
 } from 'core/forms/orderForm/duck';
 
 import { DecoratedTextArea, DecoratedSelect } from 'forms/DecoratedFields';
@@ -47,7 +48,7 @@ const { TextArea } = Input;
 @injectIntl
 @withReduxForm({
     name:    'orderForm',
-    actions: { change: onChangeOrderForm, setClientSelection },
+    actions: { change: onChangeOrderForm, setClientSelection, onChangeOrderServices },
 })
 export class OrderForm extends Component {
     // handleSubmit = e => {
@@ -520,7 +521,7 @@ export class OrderForm extends Component {
                         })} ()` }
                         key='1'
                     >
-                        <ServicesTable { ...this.props } />
+                        <ServicesTable { ...this.props } services={ this.props.fields.services } />
                         <DiscountPanel { ...this.props } />
                     </TabPane>
                     <TabPane

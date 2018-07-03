@@ -15,6 +15,8 @@ export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT
 
 export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 
+export const ON_CHANGE_ORDER_SERVICES = `${prefix}/ON_CHANGE_ORDER_SERVICES`;
+
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
@@ -129,6 +131,34 @@ const ReducerState = {
             value:      void 0,
             dirty:      false,
         },
+        services: {
+            fdsbd3434b: {
+                serviceName: {
+                    errors:     void 0,
+                    name:       'serviceName',
+                    touched:    true,
+                    validating: false,
+                    value:      void 0,
+                    dirty:      false,
+                },
+                serviceCount: {
+                    errors:     void 0,
+                    name:       'serviceCount',
+                    touched:    true,
+                    validating: false,
+                    value:      void 0,
+                    dirty:      false,
+                },
+                servicePrice: {
+                    errors:     void 0,
+                    name:       'servicePrice',
+                    touched:    true,
+                    validating: false,
+                    value:      void 0,
+                    dirty:      false,
+                },
+            },
+        },
     },
     allServices:         [],
     clients:             [],
@@ -183,6 +213,15 @@ export default function reducer(state = ReducerState, action) {
                             payload.services || {},
                         ),
                     },
+                },
+            };
+
+        case ON_CHANGE_ORDER_SERVICES:
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    services: payload,
                 },
             };
 
@@ -267,6 +306,11 @@ export const onChangeClientSearchQuery = searchQuery => ({
 export const setClientSelection = client => ({
     type:    ON_CLIENT_SELECT,
     payload: client,
+});
+
+export const onChangeOrderServices = data => ({
+    type:    ON_CHANGE_ORDER_SERVICES,
+    payload: data,
 });
 
 export const onChangeClientSearchQuerySuccess = data => ({
