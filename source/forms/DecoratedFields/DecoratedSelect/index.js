@@ -21,6 +21,7 @@ export const DecoratedSelect = props => {
         allowClear,
         placeholder,
 
+        onSearch,
         onChange,
         // onSelect,
         options,
@@ -46,6 +47,7 @@ export const DecoratedSelect = props => {
             className={ cnStyles }
             // onChange={ value => this.handleServiceSelect(record.key, value) }
             onChange={ onChange }
+            onSearch={ onSearch }
             // onSelect={ onSelect }
             placeholder={ placeholder }
             getPopupContainer={ getPopupContainer }

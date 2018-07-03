@@ -37,18 +37,11 @@ class ServicesTable extends Component {
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
-                            // key={ record.key }
-                            // value={ value }
                             showSearch
                             allowClear
                             cnStyles={ Styles.serviceSelect }
-                            // onSelect={ value =>
-                            //     this.handleServiceSelect(record.key, value)
-                            // }
-                            // onChange={ value => {
-                            //     console.log('onChange', this.props);
-                            //     this.handleServiceSelect(record.key, value);
-                            // } }
+                            onChange={ value => this.handleServiceSelect(record.key, value) }
+                            onSearch={ value => this.props.onServiceSearch(value) }
                             placeholder={
                                 <FormattedMessage id='order_form_table.service.placeholder' />
                             }

@@ -22,6 +22,7 @@ import {
     onChangeOrderForm,
     setClientSelection,
     onChangeOrderServices,
+    onServiceSearch,
 } from 'core/forms/orderForm/duck';
 
 import { DecoratedTextArea, DecoratedSelect } from 'forms/DecoratedFields';
@@ -48,7 +49,7 @@ const { TextArea } = Input;
 @injectIntl
 @withReduxForm({
     name:    'orderForm',
-    actions: { change: onChangeOrderForm, setClientSelection, onChangeOrderServices },
+    actions: { change: onChangeOrderForm, setClientSelection, onChangeOrderServices, onServiceSearch },
 })
 export class OrderForm extends Component {
     // handleSubmit = e => {
@@ -521,7 +522,7 @@ export class OrderForm extends Component {
                         })} ()` }
                         key='1'
                     >
-                        <ServicesTable { ...this.props } services={ this.props.fields.services } />
+                        <ServicesTable { ...this.props } onServiceSearch={ this.props.onServiceSearch } services={ this.props.fields.services } />
                         <DiscountPanel { ...this.props } />
                     </TabPane>
                     <TabPane

@@ -20,9 +20,11 @@ import {
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
+    onHandleCustomService,
     FETCH_ORDER_FORM,
     ON_CHANGE_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
+    ON_SERVICE_SEARCH,
 } from './duck';
 
 export function* fetchOrderFormSaga() {
@@ -58,6 +60,11 @@ function* handleClientSearchSaga({ payload }) {
     }
 }
 
+function* handleServiceSearch({ payload }) {
+    yield delay(1000);
+    yield put(onHandleCustomService(payload));
+}
+
 export function* saga() {
-    yield all([ call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
+    yield all([ call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
 }
