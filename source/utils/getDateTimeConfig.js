@@ -5,6 +5,11 @@ const defaultDateTimeConfig = {
     endTime:   '23:00',
 };
 
+const defaultNullDateTimeConfig = {
+    beginTime: '-1:00',
+    endTime:   '-1:00',
+};
+
 export const getDateTimeConfig = (datetime, availableDateTimeConfigs) => {
     // TODO validate availableDateTimeConfigs
 
@@ -16,7 +21,7 @@ export const getDateTimeConfig = (datetime, availableDateTimeConfigs) => {
                 config.days.includes(datetime.day() || 7) &&
                   (config.beginTime && config.endTime || config.h24),
         )
-        : null;
+        : defaultNullDateTimeConfig;
 
     const dateTimeConfig = providedDateTimeConfig || defaultDateTimeConfig;
 
