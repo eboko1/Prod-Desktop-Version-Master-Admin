@@ -8,10 +8,17 @@ export const FETCH_ORDER_FORM = `${prefix}/FETCH_ORDER_FORM`;
 export const FETCH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ORDER_FORM_SUCCESS`;
 
 export const ON_CHANGE_ORDER_FORM = `${prefix}/ON_CHANGE_ORDER_FORM`;
+export const ON_CHANGE_CLIENT_SEARCH_QUERY = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY`;
+
+export const ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST`;
+export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS`;
+
+export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
+import _ from 'lodash';
 /**
  * Reducer
  * */
@@ -58,6 +65,14 @@ const ReducerState = {
             value:      void 0,
             dirty:      false,
         },
+        searchClientQuery: {
+            errors:     void 0,
+            name:       'searchClientQuery',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
         email: {
             errors:     void 0,
             name:       'email',
@@ -82,15 +97,57 @@ const ReducerState = {
             value:      void 0,
             dirty:      false,
         },
+        clientPhone: {
+            errors:     void 0,
+            name:       'clientPhone',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
+        clientEmail: {
+            errors:     void 0,
+            name:       'clientEmail',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
+        clientVehicle: {
+            errors:     void 0,
+            name:       'clientVehicle',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
+        clientRequisite: {
+            errors:     void 0,
+            name:       'clientRequisite',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
     },
-    allServices: [],
-    clients:     [],
-    managers:    [],
-    employees:   [],
-    vehicles:    [],
-    stations:    [],
-    allDetails:  {},
-    requisites:  [],
+    allServices:         [],
+    clients:             [],
+    managers:            [],
+    employees:           [],
+    vehicles:            [],
+    stations:            [],
+    allDetails:          {},
+    requisites:          [],
+    searchClientsResult: {
+        searching: true,
+        clients:   [],
+    },
+    selectedClient: {
+        requisites: [],
+        phones:     [],
+        emails:     [],
+        vehicles:   [],
+    },
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -132,6 +189,37 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case ON_CLIENT_SELECT:
+            return {
+                ...state,
+                selectedClient:      payload,
+                searchClientsResult: {
+                    clients:   [],
+                    searching: true,
+                },
+                fields: {
+                    ...state.fields,
+                    ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery' ]),
+                },
+            };
+
+        case ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST:
+            return {
+                ...state,
+                searchClientsResult: {
+                    clients:   [],
+                    searching: true,
+                },
+            };
+
+        case ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS:
+            return {
+                ...state,
+                searchClientsResult: {
+                    clients:   payload.clients,
+                    searching: false,
+                },
+            };
         default:
             return state;
     }
@@ -164,6 +252,25 @@ export function fetchOrderFormSuccess(data) {
         payload: data,
     };
 }
+
+export const onChangeClientSearchQuery = searchQuery => ({
+    type:    ON_CHANGE_CLIENT_SEARCH_QUERY,
+    payload: searchQuery,
+});
+
+export const setClientSelection = client => ({
+    type:    ON_CLIENT_SELECT,
+    payload: client,
+});
+
+export const onChangeClientSearchQuerySuccess = data => ({
+    type:    ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS,
+    payload: data,
+});
+
+export const onChangeClientSearchQueryRequest = () => ({
+    type: ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST,
+});
 
 export const onChangeOrderForm = (fields, { form, field }) => ({
     type:    ON_CHANGE_ORDER_FORM,
