@@ -9,7 +9,9 @@ const Option = Select.Option;
 
 export const DecoratedSelect = props => {
     const {
+        children,
         getFieldDecorator,
+        getPopupContainer,
         field,
         rules,
         mode,
@@ -46,6 +48,7 @@ export const DecoratedSelect = props => {
             onChange={ onChange }
             // onSelect={ onSelect }
             placeholder={ placeholder }
+            getPopupContainer={ getPopupContainer }
             dropdownMatchSelectWidth={ dropdownMatchSelectWidth }
             dropdownStyle={ dropdownStyle }
             optionFilterProp={ optionFilterProp ? optionFilterProp : 'children' }
@@ -60,15 +63,17 @@ export const DecoratedSelect = props => {
                             : null
             }
         >
-            { options.map(option => (
-                <Option
-                    value={ option[ optionValue ] }
-                    key={ v4() }
-                    disabled={ option[ optionDisabled ] }
-                >
-                    { option[ optionLabel ] }
-                </Option>
-            )) }
+            { children
+                ? children
+                : options.map(option => (
+                    <Option
+                        value={ option[ optionValue ] }
+                        key={ v4() }
+                        disabled={ option[ optionDisabled ] }
+                    >
+                        { option[ optionLabel ] }
+                    </Option>
+                )) }
         </Select>,
     );
 };

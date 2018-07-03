@@ -35,7 +35,7 @@ class DetailsTable extends Component {
     }
 
     render() {
-        const { clients, visible, setClientSelection } = this.props;
+        const { clients, visible, setClientSelection, clientsSearching } = this.props;
         const columns = this.columns;
 
         return (
@@ -49,6 +49,7 @@ class DetailsTable extends Component {
                     }
                     columns={ columns }
                     pagination={ false }
+                    loading={ clientsSearching }
                     onRow={ (record) => {
                         return {
                             onClick: () => {

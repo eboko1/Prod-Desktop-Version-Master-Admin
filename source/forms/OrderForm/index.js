@@ -81,11 +81,12 @@ export class OrderForm extends Component {
             vehicles,
             stations,
         } = this.props;
-        const {
-            clients: { clients = [] },
-        } = this.props;
 
-        const { searchClientsResult, selectedClient } = this.props;
+        const { searchClientsResult } = this.props;
+        const {
+            searchClientsResult: { searching: clientsSearching },
+            selectedClient,
+        } = this.props;
         const { getFieldDecorator, getFieldsError } = this.props.form;
 
         console.log('selectedClient', this.props.selectedClient);
@@ -248,6 +249,7 @@ export class OrderForm extends Component {
                 </div>
 
                 <ClientsSearchTable
+                    clientsSearching={ clientsSearching }
                     setClientSelection={ this.props.setClientSelection }
                     visible={ !!this.props.fields.searchClientQuery.value }
                     clients={ searchClientsResult.clients }
@@ -290,12 +292,18 @@ export class OrderForm extends Component {
                         >
                             <Input
                                 placeholder={
-                                    <FormattedMessage id='add_order_form.select_name' />
+                                    this.props.intl.formatMessage({
+                                        id:             'add_order_form.select_name',
+                                        defaultMessage: 'Select client',
+                                    })
                                 }
                                 disabled
                                 value={
-                                    (selectedClient.name || selectedClient.surname)
-                                        ? (selectedClient.surname ? selectedClient.surname + ' ': '') + `${selectedClient.name}`
+                                    selectedClient.name ||
+                                    selectedClient.surname
+                                        ? (selectedClient.surname
+                                            ? selectedClient.surname + ' '
+                                            : '') + `${selectedClient.name}`
                                         : void 0
                                 }
                             />
@@ -306,13 +314,22 @@ export class OrderForm extends Component {
                             }
                             { ...formItemLayout }
                         >
-                            <Select>
-                                { selectedClient.phones.map(phone => (
-                                    <Option value={ phone } key={ v4() }>
-                                        { phone }
-                                    </Option>
-                                )) }
-                            </Select>
+                            <DecoratedSelect
+                                field='clientPhone'
+                                getFieldDecorator={
+                                    this.props.form.getFieldDecorator
+                                }
+                                placeholder={ 'Choose selected client phone' }
+                                optionDisabled='enabled'
+                            >
+                                { selectedClient.phones
+                                    .filter(Boolean)
+                                    .map(phone => (
+                                        <Option value={ phone } key={ v4() }>
+                                            { phone }
+                                        </Option>
+                                    )) }
+                            </DecoratedSelect>
                         </FormItem>
                         <FormItem
                             label={
@@ -320,10 +337,22 @@ export class OrderForm extends Component {
                             }
                             { ...formItemLayout }
                         >
-                            <Select>
-                                <Option value='jack'>Bob</Option>
-                                <Option value='lucy'>Elf</Option>
-                            </Select>
+                            <DecoratedSelect
+                                field='clientEmail'
+                                getFieldDecorator={
+                                    this.props.form.getFieldDecorator
+                                }
+                                placeholder={ 'Choose selected client email' }
+                                optionDisabled='enabled'
+                            >
+                                { selectedClient.emails
+                                    .filter(Boolean)
+                                    .map(email => (
+                                        <Option value={ email } key={ v4() }>
+                                            { email }
+                                        </Option>
+                                    )) }
+                            </DecoratedSelect>
                         </FormItem>
                     </div>
                     <div className={ Styles.autoCol }>
@@ -335,10 +364,24 @@ export class OrderForm extends Component {
                             { ...formItemLayout }
                             colon={ false }
                         >
-                            <Select>
-                                <Option value='jack'>Jack</Option>
-                                <Option value='lucy'>Lucy</Option>
-                            </Select>
+                            <DecoratedSelect
+                                field='clientVehicle'
+                                getFieldDecorator={
+                                    this.props.form.getFieldDecorator
+                                }
+                                placeholder={ 'Choose selected client vehicle' }
+                                optionDisabled='enabled'
+                            >
+                                { selectedClient.vehicles.map(vehicle => (
+                                    <Option value={ vehicle.id } key={ v4() }>
+                                        { `${vehicle.make} ${
+                                            vehicle.model
+                                        } ${vehicle.number ||
+                                            vehicle.vin ||
+                                            ''}` }
+                                    </Option>
+                                )) }
+                            </DecoratedSelect>
                         </FormItem>
                         <div className={ Styles.ecatBlock }>
                             <FormItem
@@ -416,19 +459,16 @@ export class OrderForm extends Component {
                             { ...formItemTotalLayout }
                         >
                             <DecoratedSelect
-                                field='clientRequisites'
+                                field='clientRequisite'
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
                                 }
-                                // onChange={ value =>
-                                //     this.handleServiceSelect(record.key, value)
-                                // }
                                 placeholder={
                                     <FormattedMessage id='add_order_form.select_requisites' />
                                 }
                                 // dropdownMatchSelectWidth={ false }
                                 // dropdownStyle={ { width: '70%' } }
-                                options={ this.props.requisites }
+                                options={ selectedClient.requisites }
                                 optionValue='id'
                                 optionLabel='name'
                                 optionDisabled='enabled'

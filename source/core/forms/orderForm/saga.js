@@ -10,13 +10,12 @@ import { fetchAPI } from 'utils';
 import {
     fetchOrderFormSuccess,
     onChangeClientSearchQuery,
+    onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
     FETCH_ORDER_FORM,
     ON_CHANGE_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
-    ON_CLIENT_SELECT,
 } from './duck';
-import {FETCH_ORDER} from "../../order/duck";
 
 export function* fetchOrderFormSaga() {
     while (true) {
@@ -40,7 +39,8 @@ export function* onChangeOrderFormSaga() {
 }
 
 function* handleInput({payload}) {
-    yield delay(3000);
+    yield put(onChangeClientSearchQueryRequest());
+    yield delay(1500);
 
     if (payload.length > 2) {
         const data = yield call(fetchAPI, 'GET', 'clients', {query: payload});
