@@ -49,6 +49,20 @@ const customFieldValue = (name, value) => ({
     dirty:      false,
 });
 
+const customServices = services =>
+    _.fromPairs(
+        services.map(({ serviceId, type, count, price, serviceName }) => [
+            `${type}|${serviceId}`,
+            {
+                serviceName:  customFieldValue(`services[${type}|${serviceId}][serviceName]`, serviceName),
+                serviceCount: customFieldValue(`services[${type}|${serviceId}][serviceCount]`, count),
+                servicePrice: customFieldValue(`services[${type}|${serviceId}][servicePrice]`, price),
+            },
+        ]),
+    );
+
+const serviceDefaultName = v4();
+
 const ReducerState = {
     fields: {
         beginDatetime:     defaultFieldValue('beginDatetime'),
@@ -64,10 +78,10 @@ const ReducerState = {
         requisite:         defaultFieldValue('requisite'),
         paymentMethod:     defaultFieldValue('paymentMethod'),
         services:          {
-            [ v4() ]: {
-                serviceName:  defaultFieldValue('serviceName'),
-                serviceCount: defaultFieldValue('serviceCount'),
-                servicePrice: defaultFieldValue('servicePrice'),
+            serviceDefaultName: {
+                serviceName:  defaultFieldValue(`services[${serviceDefaultName}][serviceName]`),
+                serviceCount: defaultFieldValue(`services[${serviceDefaultName}][serviceCount]`),
+                servicePrice: defaultFieldValue(`services[${serviceDefaultName}][servicePrice]`),
             },
         },
     },
@@ -137,6 +151,10 @@ export default function reducer(state = ReducerState, action) {
                         'paymentMethod',
                         payload.order.paymentMethod,
                     ),
+                    services: {
+                        ...customServices(payload.orderServices),
+                        ...state.fields.services,
+                    },
                 },
                 selectedClient: payload.client || state.selectedClient,
             };

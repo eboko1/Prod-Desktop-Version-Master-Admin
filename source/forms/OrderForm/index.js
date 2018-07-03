@@ -49,7 +49,12 @@ const { TextArea } = Input;
 @injectIntl
 @withReduxForm({
     name:    'orderForm',
-    actions: { change: onChangeOrderForm, setClientSelection, onChangeOrderServices, onServiceSearch },
+    actions: {
+        change: onChangeOrderForm,
+        setClientSelection,
+        onChangeOrderServices,
+        onServiceSearch,
+    },
 })
 export class OrderForm extends Component {
     // handleSubmit = e => {
@@ -239,7 +244,7 @@ export class OrderForm extends Component {
                         })(
                             <Select placeholder='Выберете менеджера'>
                                 { managers.map(manager => (
-                                    <Option value={ manager.id } key={ v4() }>
+                                    <Option disabled={ manager.disabled } value={ manager.id } key={ v4() }>
                                         { `${manager.managerName} ${
                                             manager.managerSurname
                                         }` }
@@ -293,12 +298,10 @@ export class OrderForm extends Component {
                             { ...formItemLayout }
                         >
                             <Input
-                                placeholder={
-                                    this.props.intl.formatMessage({
-                                        id:             'add_order_form.select_name',
-                                        defaultMessage: 'Select client',
-                                    })
-                                }
+                                placeholder={ this.props.intl.formatMessage({
+                                    id:             'add_order_form.select_name',
+                                    defaultMessage: 'Select client',
+                                }) }
                                 disabled
                                 value={
                                     selectedClient.name ||
@@ -503,6 +506,25 @@ export class OrderForm extends Component {
                                 </Select>,
                             ) }
                         </FormItem>
+                        <FormItem
+                            label={
+                                'Работник'
+                            }
+                            colon={ false }
+                            { ...formItemTotalLayout }
+                        >
+                            { getFieldDecorator('employee')(
+                                <Select placeholder='Выберете работника'>
+                                    { employees.map(employee => (
+                                        <Option disabled={ employee.disabled } value={ employee.id } key={ v4() }>
+                                            { `${employee.employeeName} ${
+                                                employee.employeeName
+                                                }` }
+                                        </Option>
+                                    )) }
+                                </Select>,
+                            ) }
+                        </FormItem>
                         <FormItem>
                             <div className={ Styles.total }>
                                 <FormattedMessage id='add_order_form.total' />
@@ -522,7 +544,11 @@ export class OrderForm extends Component {
                         })} ()` }
                         key='1'
                     >
-                        <ServicesTable { ...this.props } onServiceSearch={ this.props.onServiceSearch } services={ this.props.fields.services } />
+                        <ServicesTable
+                            { ...this.props }
+                            onServiceSearch={ this.props.onServiceSearch }
+                            services={ this.props.fields.services }
+                        />
                         <DiscountPanel { ...this.props } />
                     </TabPane>
                     <TabPane

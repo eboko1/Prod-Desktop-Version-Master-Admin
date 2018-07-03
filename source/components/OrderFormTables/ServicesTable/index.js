@@ -40,17 +40,26 @@ class ServicesTable extends Component {
                             showSearch
                             allowClear
                             cnStyles={ Styles.serviceSelect }
-                            onChange={ value => this.handleServiceSelect(record.key, value) }
-                            onSearch={ value => this.props.onServiceSearch(value) }
+                            onChange={ value =>
+                                this.handleServiceSelect(record.key, value)
+                            }
+                            onSearch={ value =>
+                                this.props.onServiceSearch(value)
+                            }
                             placeholder={
                                 <FormattedMessage id='order_form_table.service.placeholder' />
                             }
                             dropdownMatchSelectWidth={ false }
                             dropdownStyle={ { width: '70%' } }
-                            options={ this.props.allServices }
-                            optionValue='serviceId'
-                            optionLabel='serviceName'
-                        />
+                        >
+                            { this.props.allServices.map(
+                                ({ id, type, serviceName }) => (
+                                    <Option value={ `${type}|${id}` } key={ v4() }>
+                                        { serviceName }
+                                    </Option>
+                                ),
+                            ) }
+                        </DecoratedSelect>
                     );
                 },
             },
@@ -61,7 +70,9 @@ class ServicesTable extends Component {
                     <DecoratedInputNumber
                         field={ `services[${record.key}][servicePrice]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
-                        disabled={ !this.props.services[ record.key ].serviceName.value }
+                        disabled={
+                            !this.props.services[ record.key ].serviceName.value
+                        }
                         min={ 0 }
                         // defaultValue={ record.price }
                         // onChange={ value =>
@@ -77,7 +88,9 @@ class ServicesTable extends Component {
                     <DecoratedInputNumber
                         field={ `services[${record.key}][serviceCount]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
-                        disabled={ !this.props.services[ record.key ].serviceName.value }
+                        disabled={
+                            !this.props.services[ record.key ].serviceName.value
+                        }
                         min={ 0.1 }
                         step={ 0.1 }
                         // defaultValue={ record.count }
@@ -92,7 +105,8 @@ class ServicesTable extends Component {
                 dataIndex: 'sum',
                 render:    (text, record) => {
                     const service = this.props.services[ record.key ];
-                    const value = service.servicePrice.value * service.serviceCount.value;
+                    const value =
+                        service.servicePrice.value * service.serviceCount.value;
 
                     return (
                         <InputNumber
