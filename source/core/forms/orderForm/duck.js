@@ -54,9 +54,18 @@ const customServices = services =>
         services.map(({ serviceId, type, count, price, serviceName }) => [
             `${type}|${serviceId}`,
             {
-                serviceName:  customFieldValue(`services[${type}|${serviceId}][serviceName]`, serviceName),
-                serviceCount: customFieldValue(`services[${type}|${serviceId}][serviceCount]`, count),
-                servicePrice: customFieldValue(`services[${type}|${serviceId}][servicePrice]`, price),
+                serviceName: customFieldValue(
+                    `services[${type}|${serviceId}][serviceName]`,
+                    serviceName,
+                ),
+                serviceCount: customFieldValue(
+                    `services[${type}|${serviceId}][serviceCount]`,
+                    count,
+                ),
+                servicePrice: customFieldValue(
+                    `services[${type}|${serviceId}][servicePrice]`,
+                    price,
+                ),
             },
         ]),
     );
@@ -78,10 +87,16 @@ const ReducerState = {
         requisite:         defaultFieldValue('requisite'),
         paymentMethod:     defaultFieldValue('paymentMethod'),
         services:          {
-            serviceDefaultName: {
-                serviceName:  defaultFieldValue(`services[${serviceDefaultName}][serviceName]`),
-                serviceCount: defaultFieldValue(`services[${serviceDefaultName}][serviceCount]`),
-                servicePrice: defaultFieldValue(`services[${serviceDefaultName}][servicePrice]`),
+            [ serviceDefaultName ]: {
+                serviceName: defaultFieldValue(
+                    `services[${serviceDefaultName}][serviceName]`,
+                ),
+                serviceCount: defaultFieldValue(
+                    `services[${serviceDefaultName}][serviceCount]`,
+                ),
+                servicePrice: defaultFieldValue(
+                    `services[${serviceDefaultName}][servicePrice]`,
+                ),
             },
         },
     },
