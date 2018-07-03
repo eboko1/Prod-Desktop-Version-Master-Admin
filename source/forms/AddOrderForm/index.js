@@ -24,7 +24,11 @@ import {
     onChangeAddOrderForm,
 } from 'core/forms/addOrderForm/duck';
 
-import { DecoratedTextArea, DecoratedSelect } from 'forms/DecoratedFields';
+import {
+    DecoratedTextArea,
+    DecoratedSelect,
+    DecoratedDatePicker,
+} from 'forms/DecoratedFields';
 import {
     DetailsTable,
     ServicesTable,
@@ -83,6 +87,7 @@ export class AddOrderForm extends Component {
         const {
             clients: { clients = [] },
         } = this.props;
+        const { formatMessage } = this.props.intl;
 
         const { getFieldDecorator, getFieldsError } = this.props.form;
 
@@ -172,14 +177,28 @@ export class AddOrderForm extends Component {
                         colon={ false }
                         className={ Styles.datePanelItem }
                     >
-                        { getFieldDecorator('beginDatetime')(
+                        <DecoratedDatePicker
+                            field='beginDatetime'
+                            getFieldDecorator={ getFieldDecorator }
+                            formatMessage={ formatMessage }
+                            disabledDate={ disabledDate }
+                            disabledTime={ disabledTime }
+                            format={ 'YYYY-MM-DD HH:mm' }
+                            showTime={ {
+                                disabledHours,
+                                disabledMinutes,
+                                disabledSeconds,
+                                format: 'HH:mm',
+                            } }
+                        />
+                        { /* { getFieldDecorator('beginDatetime')(
                             // TODO fix possible timezone problems
                             // TODO provide locale https://github.com/ant-design/ant-design/blob/master/components/date-picker/locale/example.json
                             <DatePicker
-                                placeholder={ this.props.intl.formatMessage({
-                                    id:             'add_order_form.select_date',
-                                    defaultMessage: 'Provide date',
-                                }) }
+                                // placeholder={ this.props.intl.formatMessage({
+                                //     id:             'add_order_form.select_date',
+                                //     defaultMessage: 'Provide date',
+                                // }) }
                                 disabledDate={ disabledDate }
                                 disabledTime={ disabledTime }
                                 format={ 'YYYY-MM-DD HH:mm' }
@@ -190,7 +209,7 @@ export class AddOrderForm extends Component {
                                     format: 'HH:mm',
                                 } }
                             />,
-                        ) }
+                        ) } */ }
                     </FormItem>
                     <FormItem
                         label={ <FormattedMessage id='add_order_form.station' /> }
