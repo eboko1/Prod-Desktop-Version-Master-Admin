@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { v4 } from 'uuid';
+import moment from 'moment';
 /**
  * Constants
  * */
@@ -30,138 +31,41 @@ export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
  * Reducer
  * */
 
+const defaultFieldValue = name => ({
+    errors:     void 0,
+    name:       name,
+    touched:    true,
+    validating: false,
+    value:      void 0,
+    dirty:      false,
+});
+
+const customFieldValue = (name, value) => ({
+    errors:     void 0,
+    name:       name,
+    touched:    true,
+    validating: false,
+    value:      value,
+    dirty:      false,
+});
+
 const ReducerState = {
     fields: {
-        status: {
-            errors:     void 0,
-            name:       'status',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        date: {
-            errors:     void 0,
-            name:       'date',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        post: {
-            errors:     void 0,
-            name:       'post',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        client: {
-            errors:     void 0,
-            name:       'client',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        phone: {
-            errors:     void 0,
-            name:       'phone',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        searchClientQuery: {
-            errors:     void 0,
-            name:       'searchClientQuery',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        email: {
-            errors:     void 0,
-            name:       'email',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        // paymentMethod: {
-        //     errors:     void 0,
-        //     name:       'paymentMethod',
-        //     touched:    true,
-        //     validating: false,
-        //     value:      void 0,
-        //     dirty:      false,
-        // },
-        service: {
-            errors:     void 0,
-            name:       'service',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        clientPhone: {
-            errors:     void 0,
-            name:       'clientPhone',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        clientEmail: {
-            errors:     void 0,
-            name:       'clientEmail',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        clientVehicle: {
-            errors:     void 0,
-            name:       'clientVehicle',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        clientRequisite: {
-            errors:     void 0,
-            name:       'clientRequisite',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        services: {
-            fdsbd3434b: {
-                serviceName: {
-                    errors:     void 0,
-                    name:       'serviceName',
-                    touched:    true,
-                    validating: false,
-                    value:      void 0,
-                    dirty:      false,
-                },
-                serviceCount: {
-                    errors:     void 0,
-                    name:       'serviceCount',
-                    touched:    true,
-                    validating: false,
-                    value:      void 0,
-                    dirty:      false,
-                },
-                servicePrice: {
-                    errors:     void 0,
-                    name:       'servicePrice',
-                    touched:    true,
-                    validating: false,
-                    value:      void 0,
-                    dirty:      false,
-                },
+        beginDatetime:     defaultFieldValue('beginDatetime'),
+        status:            defaultFieldValue('status'),
+        date:              defaultFieldValue('date'),
+        post:              defaultFieldValue('post'),
+        manager:           defaultFieldValue('manager'),
+        searchClientQuery: defaultFieldValue('searchClientQuery'),
+        clientPhone:       defaultFieldValue('clientPhone'),
+        clientEmail:       defaultFieldValue('clientEmail'),
+        clientVehicle:     defaultFieldValue('clientVehicle'),
+        clientRequisite:   defaultFieldValue('clientRequisite'),
+        services:          {
+            [ v4() ]: {
+                serviceName:  defaultFieldValue('serviceName'),
+                serviceCount: defaultFieldValue('serviceCount'),
+                servicePrice: defaultFieldValue('servicePrice'),
             },
         },
     },
@@ -193,6 +97,31 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 ...payload,
+                fields: {
+                    ...state.fields,
+                    clientPhone: customFieldValue(
+                        'clientPhone',
+                        payload.order.clientPhone,
+                    ),
+                    clientEmail: customFieldValue(
+                        'clientEmail',
+                        payload.order.clientEmail,
+                    ),
+                    clientVehicle: customFieldValue(
+                        'clientVehicle',
+                        payload.order.clientVehicleId,
+                    ),
+                    post:    customFieldValue('post', payload.order.stationNum),
+                    manager: customFieldValue(
+                        'manager',
+                        payload.order.managerId,
+                    ),
+                    beginDatetime: customFieldValue(
+                        'beginDatetime',
+                        moment(payload.order.beginDatetime),
+                    ),
+                },
+                selectedClient: payload.client || state.selectedClient,
             };
 
         case ON_CHANGE_ORDER_FORM:

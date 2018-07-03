@@ -229,7 +229,7 @@ export class OrderForm extends Component {
                         colon={ false }
                         className={ Styles.datePanelItem }
                     >
-                        { getFieldDecorator('managers', {
+                        { getFieldDecorator('manager', {
                             rules: [
                                 {
                                     required: true,
