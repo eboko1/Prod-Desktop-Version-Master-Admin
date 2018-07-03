@@ -33,6 +33,7 @@ module.exports = {
                 "revert",
                 "merge",
                 "rebase",
+                "review",
             ],
         ],
         "type-case": [2, "always", "kebab-case"],

@@ -1,5 +1,13 @@
 // vendor
-import {call, put, all, take, takeLatest, delay, takeEvery} from 'redux-saga/effects';
+import {
+    call,
+    put,
+    all,
+    take,
+    takeLatest,
+    delay,
+    takeEvery,
+} from 'redux-saga/effects';
 // import nprogress from 'nprogress';
 
 //proj
@@ -38,23 +46,18 @@ export function* onChangeOrderFormSaga() {
     }
 }
 
-function* handleInput({payload}) {
+function* handleClientSearchSaga({ payload }) {
     yield put(onChangeClientSearchQueryRequest());
-    yield delay(1500);
+    yield delay(1000);
 
     if (payload.length > 2) {
-        const data = yield call(fetchAPI, 'GET', 'clients', {query: payload});
+        const data = yield call(fetchAPI, 'GET', 'clients', { query: payload });
         yield put(onChangeClientSearchQuerySuccess(data));
     } else {
         yield put(onChangeClientSearchQuerySuccess([]));
     }
 }
 
-function* watchInput() {
-    // will cancel current running handleInput task
-    yield takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleInput);
-}
-
 export function* saga() {
-    yield all([ call(fetchOrderFormSaga), call(watchInput), call(onChangeOrderFormSaga) ]);
+    yield all([ call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
 }

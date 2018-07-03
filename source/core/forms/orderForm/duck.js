@@ -1,3 +1,4 @@
+import _ from 'lodash';
 /**
  * Constants
  * */
@@ -10,6 +11,7 @@ export const FETCH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ORDER_FORM_SUCCESS`;
 export const ON_CHANGE_ORDER_FORM = `${prefix}/ON_CHANGE_ORDER_FORM`;
 export const ON_CHANGE_CLIENT_SEARCH_QUERY = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY`;
 
+// TODO ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST mv to ui (spin load state in table)
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST`;
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS`;
 
@@ -20,7 +22,6 @@ export const ON_CHANGE_ORDER_SERVICES = `${prefix}/ON_CHANGE_ORDER_SERVICES`;
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
-import _ from 'lodash';
 /**
  * Reducer
  * */
@@ -208,6 +209,7 @@ export default function reducer(state = ReducerState, action) {
                     ...state.fields,
                     [ meta.field ]: { ...payload[ meta.field ] },
                     services:       {
+                        // if merge with empty object old state stayed
                         ..._.merge(
                             state.fields.services,
                             payload.services || {},
@@ -244,10 +246,11 @@ export default function reducer(state = ReducerState, action) {
                 },
                 fields: {
                     ...state.fields,
+                    // clearing provided fields with default values
                     ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery' ]),
                 },
             };
-
+        // TODO think about spinners
         case ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST:
             return {
                 ...state,

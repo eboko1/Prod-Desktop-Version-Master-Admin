@@ -7,18 +7,16 @@ import _ from 'lodash';
 // proj
 import { getDisplayName } from 'utils';
 
-function isFieldConfig(value) {
-    return (
-        value.hasOwnProperty('dirty') && value.name && !_.isObject(value.name)
-    );
-}
+const isField = value =>
+    value.hasOwnProperty('dirty') && value.name && !_.isObject(value.name);
 
-function extractFieldsConfigs(config) {
+const extractFieldsConfigs = config => {
+    // TODO lodash
     return _(config)
         .values()
         .filter(Boolean)
         .map(value => {
-            if (isFieldConfig(value)) {
+            if (isField(value)) {
                 return [ value ];
             } else if (_.isObject(value)) {
                 return _.values(extractFieldsConfigs(value));
@@ -30,7 +28,7 @@ function extractFieldsConfigs(config) {
         .map(value => [ value.name, value ])
         .fromPairs()
         .value();
-}
+};
 
 export const withReduxForm = ({ name, actions }) => Enhanceable => {
     @connect(state => ({ ...state.forms[ name ] }), { ...actions })
@@ -47,7 +45,6 @@ export const withReduxForm = ({ name, actions }) => Enhanceable => {
             return createFields;
         },
         onFieldsChange(props, fields) {
-            console.log('→ fields', fields);
             props.change(fields, {
                 form:  name,
                 field: Object.keys(fields).toString(),
