@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
-import { Modal, Button, Form, DatePicker } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { Modal, Form } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Select } from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
@@ -23,6 +23,7 @@ const FormItem = Form.Item;
 
 // const dateFormat = 'YYYY-MM-DD';
 
+@injectIntl
 @withReduxForm({
     name:    'universalFiltersForm',
     actions: {
@@ -54,6 +55,7 @@ export default class UniversalFiltersModal extends Component {
             setUniversalFiltersModal,
         } = this.props;
         const { getFieldDecorator, getFieldsError } = this.props.form;
+        const { formatMessage } = this.props.intl;
 
         // Parent Node which the selector should be rendered to.
         // Default to body. When position issues happen,
@@ -272,6 +274,7 @@ export default class UniversalFiltersModal extends Component {
                             <DecoratedDatePicker
                                 field='startDate'
                                 getFieldDecorator={ getFieldDecorator }
+                                formatMessage={ formatMessage }
                                 placeholder='boob date'
                                 getCalendarContainer={ () =>
                                     modalContentDivWrapper
@@ -288,7 +291,7 @@ export default class UniversalFiltersModal extends Component {
                             <DecoratedDatePicker
                                 field='createDate'
                                 getFieldDecorator={ getFieldDecorator }
-                                placeholder='bamboozed date'
+                                formatMessage={ formatMessage }
                                 getCalendarContainer={ () =>
                                     modalContentDivWrapper
                                 }
