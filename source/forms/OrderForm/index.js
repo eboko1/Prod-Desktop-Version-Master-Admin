@@ -206,7 +206,7 @@ export class OrderForm extends Component {
                         className={ Styles.datePanelItem }
                     >
                         <DecoratedSelect
-                            field='stations'
+                            field='station'
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }

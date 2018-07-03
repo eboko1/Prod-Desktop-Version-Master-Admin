@@ -54,7 +54,7 @@ const ReducerState = {
         beginDatetime:     defaultFieldValue('beginDatetime'),
         status:            defaultFieldValue('status'),
         date:              defaultFieldValue('date'),
-        post:              defaultFieldValue('post'),
+        station:           defaultFieldValue('station'),
         manager:           defaultFieldValue('manager'),
         searchClientQuery: defaultFieldValue('searchClientQuery'),
         clientPhone:       defaultFieldValue('clientPhone'),
@@ -111,7 +111,10 @@ export default function reducer(state = ReducerState, action) {
                         'clientVehicle',
                         payload.order.clientVehicleId,
                     ),
-                    post:    customFieldValue('post', payload.order.stationNum),
+                    station: customFieldValue(
+                        'station',
+                        payload.order.stationNum,
+                    ),
                     manager: customFieldValue(
                         'manager',
                         payload.order.managerId,
