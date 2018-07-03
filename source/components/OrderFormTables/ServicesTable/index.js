@@ -251,7 +251,12 @@ class ServicesTable extends Component {
                         }
                         className={ Styles.durationPanelItem }
                     >
-                        <Select onChange={ value => this.handleChange(value) }>
+                        <DecoratedSelect
+                            field={ 'employee' }
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                        >
                             { employees.map(employee => (
                                 <Option
                                     value={ employee.id }
@@ -263,7 +268,7 @@ class ServicesTable extends Component {
                                     }` }
                                 </Option>
                             )) }
-                        </Select>
+                        </DecoratedSelect>
                     </FormItem>
                 </div>
             </Catcher>

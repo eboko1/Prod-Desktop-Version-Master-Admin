@@ -506,25 +506,6 @@ export class OrderForm extends Component {
                                 </Select>,
                             ) }
                         </FormItem>
-                        <FormItem
-                            label={
-                                'Работник'
-                            }
-                            colon={ false }
-                            { ...formItemTotalLayout }
-                        >
-                            { getFieldDecorator('employee')(
-                                <Select placeholder='Выберете работника'>
-                                    { employees.map(employee => (
-                                        <Option disabled={ employee.disabled } value={ employee.id } key={ v4() }>
-                                            { `${employee.employeeName} ${
-                                                employee.employeeName
-                                                }` }
-                                        </Option>
-                                    )) }
-                                </Select>,
-                            ) }
-                        </FormItem>
                         <FormItem>
                             <div className={ Styles.total }>
                                 <FormattedMessage id='add_order_form.total' />
