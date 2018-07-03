@@ -7,13 +7,40 @@ import _ from 'lodash';
 // proj
 import { getDisplayName } from 'utils';
 
+function isFieldConfig(value) {
+    return (
+        value.hasOwnProperty('dirty') && value.name && !_.isObject(value.name)
+    );
+}
+
+function extractFieldsConfigs(config) {
+    return _(config)
+        .values()
+        .filter(Boolean)
+        .map(value => {
+            if (isFieldConfig(value)) {
+                return [ value ];
+            } else if (_.isObject(value)) {
+                return _.values(extractFieldsConfigs(value));
+            }
+
+            return [];
+        })
+        .flatten()
+        .map(value => [ value.name, value ])
+        .fromPairs()
+        .value();
+}
+
 export const withReduxForm = ({ name, actions }) => Enhanceable => {
     @connect(state => ({ ...state.forms[ name ] }), { ...actions })
     @Form.create({
         mapPropsToFields(props) {
             const { fields } = props;
+            const flattenFields = extractFieldsConfigs(fields);
+
             const createFields = {};
-            _.forOwn(fields, (value, key) => {
+            _.forOwn(flattenFields, (value, key) => {
                 createFields[ key ] = Form.createFormField(value);
             });
 

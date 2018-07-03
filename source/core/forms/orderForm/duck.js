@@ -177,6 +177,12 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     [ meta.field ]: { ...payload[ meta.field ] },
+                    services:       {
+                        ..._.merge(
+                            state.fields.services,
+                            payload.services || {},
+                        ),
+                    },
                 },
             };
 

@@ -16,7 +16,7 @@ import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { DecoratedSelect } from 'forms/DecoratedFields';
+import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
 
 // own
 import Styles from './styles.m.css';
@@ -34,7 +34,7 @@ class ServicesTable extends Component {
                 render:    (text, record) => {
                     return (
                         <DecoratedSelect
-                            field={ `services/${record.key}` }
+                            field={ `services[${record.key}][serviceName]` }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
@@ -46,8 +46,10 @@ class ServicesTable extends Component {
                             // onSelect={ value =>
                             //     this.handleServiceSelect(record.key, value)
                             // }
-                            onChange={ value =>
+                            onChange={ value => {
+                                console.log('onChange', this.props);
                                 this.handleServiceSelect(record.key, value)
+                            }
                             }
                             placeholder={
                                 <FormattedMessage id='order_form_table.service.placeholder' />
@@ -65,7 +67,11 @@ class ServicesTable extends Component {
                 title:     <FormattedMessage id='order_form_table.price' />,
                 dataIndex: 'price',
                 render:    (text, record) => (
-                    <InputNumber
+                    <DecoratedInputNumber
+                        field={ `services[${record.key}][servicePrice]` }
+                        getFieldDecorator={
+                            this.props.form.getFieldDecorator
+                        }
                         disabled={ record.service ? false : true }
                         min={ 0 }
                         defaultValue={ record.price }
@@ -79,7 +85,11 @@ class ServicesTable extends Component {
                 title:     <FormattedMessage id='order_form_table.count' />,
                 dataIndex: 'count',
                 render:    (text, record) => (
-                    <InputNumber
+                    <DecoratedInputNumber
+                        field={ `services[${record.key}][serviceCount]` }
+                        getFieldDecorator={
+                            this.props.form.getFieldDecorator
+                        }
                         disabled={ record.service ? false : true }
                         min={ 0.1 }
                         step={ 0.1 }
