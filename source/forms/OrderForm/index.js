@@ -233,7 +233,7 @@ export class OrderForm extends Component {
                             rules: [
                                 {
                                     required: true,
-                                    message:  'Please select your country!',
+                                    message:  'Please select your manager!',
                                 },
                             ],
                         })(
@@ -436,7 +436,7 @@ export class OrderForm extends Component {
                             { ...formItemTotalLayout }
                         >
                             <DecoratedSelect
-                                field='requisites'
+                                field='requisite'
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
                                 }

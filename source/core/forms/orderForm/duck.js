@@ -61,6 +61,8 @@ const ReducerState = {
         clientEmail:       defaultFieldValue('clientEmail'),
         clientVehicle:     defaultFieldValue('clientVehicle'),
         clientRequisite:   defaultFieldValue('clientRequisite'),
+        requisite:         defaultFieldValue('requisite'),
+        paymentMethod:     defaultFieldValue('paymentMethod'),
         services:          {
             [ v4() ]: {
                 serviceName:  defaultFieldValue('serviceName'),
@@ -122,6 +124,18 @@ export default function reducer(state = ReducerState, action) {
                     beginDatetime: customFieldValue(
                         'beginDatetime',
                         moment(payload.order.beginDatetime),
+                    ),
+                    requisite: customFieldValue(
+                        'requisite',
+                        payload.order.businessRequisiteId,
+                    ),
+                    clientRequisite: customFieldValue(
+                        'clientRequisite',
+                        payload.order.clientRequisiteId,
+                    ),
+                    paymentMethod: customFieldValue(
+                        'paymentMethod',
+                        payload.order.paymentMethod,
                     ),
                 },
                 selectedClient: payload.client || state.selectedClient,
@@ -200,7 +214,7 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     // clearing provided fields with default values
-                    ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery' ]),
+                    ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery', 'clientRequisite' ]),
                 },
             };
         // TODO think about spinners
