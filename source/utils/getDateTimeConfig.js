@@ -5,6 +5,7 @@ const defaultDateTimeConfig = {
     endTime:   '23:00',
 };
 
+// to disable all hours, when date is not selected
 const defaultNullDateTimeConfig = {
     beginTime: '-1:00',
     endTime:   '-1:00',
