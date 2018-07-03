@@ -64,7 +64,10 @@ export default class UniversalFilters extends Component {
             { [ filterName ]: void 0 },
             { form: 'universalFiltersForm', field: filterName },
         );
-        this.props.setUniversalFilters({ ...this.props.filter, [ filterName ]: void 0 });
+        this.props.setUniversalFilters({
+            ...this.props.filter,
+            [ filterName ]: void 0,
+        });
         this.props.fetchOrders();
     };
 
@@ -90,7 +93,16 @@ export default class UniversalFilters extends Component {
                     }
                     : {};
 
-                const momentFields = _(values)
+                const [ startDate, endDate ] = values.startDate || [];
+                const [ createStartDate, createEndDate ] =
+                    values.createDate || [];
+
+                const momentFields = _({
+                    startDate,
+                    endDate,
+                    createEndDate,
+                    createStartDate,
+                })
                     .pickBy(moment.isMoment)
                     .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
                     .value();

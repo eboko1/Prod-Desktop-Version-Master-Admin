@@ -14,7 +14,7 @@ import { fetchOrders, setUniversalFilters } from 'core/orders/duck';
 import { DecoratedSelect, DecoratedDatePicker } from 'forms/DecoratedFields';
 import { StatsCountsPanel } from 'components';
 // import { UniversalFiltersForm } from 'forms';
-import { withReduxForm } from 'utils';
+import { withReduxForm, getDaterange } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -239,7 +239,7 @@ export default class UniversalFiltersModal extends Component {
                                                 <Option value={ id } key={ v4() }>
                                                     { comment }
                                                 </Option>
-                                            ) :
+                                            ) : 
                                                 false
                                         ,
                                     )
@@ -293,8 +293,11 @@ export default class UniversalFiltersModal extends Component {
                                     modalContentDivWrapper
                                 }
                                 ranges={ {
-                                    Today:        [ moment(), moment() ],
-                                    'This Month': [ moment(), moment().endOf('month') ],
+                                    Today:        getDaterange('today', 'ant'),
+                                    'This Month': getDaterange(
+                                        'prevMonth',
+                                        'ant',
+                                    ),
                                 } }
                                 showTime
                                 format='YYYY-MM-DD HH:mm:ss'

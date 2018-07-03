@@ -32,8 +32,6 @@ export default class InviteModal extends Component {
     render() {
         const { visible, confirmInviteModal, resetModal, count } = this.props;
 
-        console.log('→ visible', visible);
-
         return (
             <Modal
                 // className={ Styles.addClientModal }

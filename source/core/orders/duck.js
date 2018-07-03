@@ -186,7 +186,7 @@ export function fetchOrdersFail(error) {
 
 export function fetchOrdersStats(filters = {}) {
     return {
-        type: FETCH_ORDERS_STATS,
+        type:    FETCH_ORDERS_STATS,
         payload: filters,
     };
 }

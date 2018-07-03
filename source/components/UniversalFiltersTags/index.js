@@ -12,7 +12,7 @@ class UniversalFiltersTags extends Component {
         tags: [],
     };
 
-    filterTagsFields = [ 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'startDate', 'endDate', 'createStartDate', 'createEndDate' ];
+    filterTagsFields = [ 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'startDate', 'createDate' ];
 
     handleClose = removedTag => this.props.clearUniversalFilter(removedTag);
 
@@ -57,7 +57,7 @@ class UniversalFiltersTags extends Component {
                         >
                             { tagElem }
                         </Tooltip>
-                    ) : 
+                    ) :
                         tagElem
                     ;
                 }) }

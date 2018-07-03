@@ -1,6 +1,6 @@
 import moment from 'moment';
 
-export const getDaterange = (daterange, iso = null) => {
+export const getDaterange = (daterange, format = null) => {
     const setDaterangeDate = {
         yesterday:   { start: -1, end: -1 },
         today:       { start: 0, end: 0 },
@@ -19,13 +19,22 @@ export const getDaterange = (daterange, iso = null) => {
     const startDate = moment().add(start, 'day');
     const endDate = moment().add(end, 'day');
 
-    return iso
-        ? {
+    if (format === 'iso') {
+        return {
             startDate: startDate.startOf('day').toISOString(),
             endDate:   endDate.endOf('day').toISOString(),
-        }
-        : {
-            startDate: startDate.format('YYYY-MM-DD'),
-            endDate:   endDate.format('YYYY-MM-DD'),
         };
+    } else if (format === 'moment') {
+        return {
+            startDate,
+            endDate,
+        };
+    } else if (format === 'ant') {
+        return [ startDate, endDate ];
+    }
+
+    return {
+        startDate: startDate.format('YYYY-MM-DD'),
+        endDate:   endDate.format('YYYY-MM-DD'),
+    };
 };
