@@ -22,7 +22,11 @@ import {
     onChangeOrderForm,
     setClientSelection,
     onChangeOrderServices,
+    onChangeOrderDetails,
     onServiceSearch,
+    defaultDetail,
+    onDetailSearch,
+    onBrandSearch,
 } from 'core/forms/orderForm/duck';
 
 import { DecoratedTextArea, DecoratedSelect } from 'forms/DecoratedFields';
@@ -53,7 +57,10 @@ const { TextArea } = Input;
         change: onChangeOrderForm,
         setClientSelection,
         onChangeOrderServices,
+        onChangeOrderDetails,
         onServiceSearch,
+        onDetailSearch,
+        onBrandSearch,
     },
 })
 export class OrderForm extends Component {
@@ -112,6 +119,7 @@ export class OrderForm extends Component {
 
         const buttonDisabled = hasErrors(getFieldsError());
         const countServices = _.values(this.props.fields.services).length - 1;
+        const countDetails = _.values(this.props.fields.details).length - 1;
         const beginDatetime = (this.props.fields.beginDatetime || {}).value;
 
         const {
@@ -564,10 +572,16 @@ export class OrderForm extends Component {
                         tab={ `${this.props.intl.formatMessage({
                             id:             'add_order_form.details',
                             defaultMessage: 'Details',
-                        })} ()` }
+                        })} (${countDetails})` }
                         key='2'
                     >
-                        <DetailsTable { ...this.props } />
+                        <DetailsTable
+                            { ...this.props }
+                            details={ this.props.fields.details }
+                            onDetailSearch={ this.props.onDetailSearch }
+                            onBrandSearch={ this.props.onBrandSearch }
+                            defaultDetail={ defaultDetail }
+                        />
                         <DiscountPanel { ...this.props } />
                     </TabPane>
                     <TabPane

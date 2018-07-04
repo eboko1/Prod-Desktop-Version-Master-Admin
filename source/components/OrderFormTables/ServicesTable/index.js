@@ -38,7 +38,6 @@ class ServicesTable extends Component {
                                 this.props.form.getFieldDecorator
                             }
                             showSearch
-                            allowClear
                             cnStyles={ Styles.serviceSelect }
                             onChange={ value =>
                                 this.handleServiceSelect(record.key, value)

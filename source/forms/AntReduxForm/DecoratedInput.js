@@ -11,12 +11,13 @@ export const DecoratedInput = props => {
         placeholder,
         icon,
         iconType,
+        field,
     } = props;
 
     console.log('rules', rules);
     console.log('type', type);
 
-    return getFieldDecorator(type, {
+    return getFieldDecorator(type || field, {
         rules,
     })(
         <Input

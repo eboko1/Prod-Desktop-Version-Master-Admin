@@ -1,4 +1,5 @@
 // vendor
+import _ from 'lodash';
 import React, { Component } from 'react';
 import {
     Table,
@@ -10,6 +11,7 @@ import {
     Select,
 } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import { DecoratedSelect, DecoratedInput, DecoratedInputNumber } from 'forms/DecoratedFields';
 import { v4 } from 'uuid';
 
 // proj
@@ -27,88 +29,75 @@ class DetailsTable extends Component {
             {
                 title:     <FormattedMessage id='order_form_table.detail_name' />,
                 dataIndex: 'detailName',
-                width:     '30%',
+                width:     '25%',
                 render:    (text, record) => (
-                    <Select
-                        // notFoundContent={
-                        //     fetching ? <Spin size='small' /> : null
-                        // }
-
+                    <DecoratedSelect
+                        field={ `details[${record.key}][detailName]` }
+                        getFieldDecorator={
+                            this.props.form.getFieldDecorator
+                        }
                         showSearch
-                        allowClear
-                        style={ { width: 220 } }
                         onChange={ value =>
                             this.handleDetailSelect(record.key, value)
+                        }
+                        onSearch={ value =>
+                            this.props.onDetailSearch(value)
                         }
                         placeholder={
                             <FormattedMessage id='order_form_table.detail.placeholder' />
                         }
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '70%' } }
-                        optionFilterProp='children'
-                        filterOption={ (input, option) =>
-                            option.props.children
-                                ? option.props.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                : null
-                        }
                     >
-                        { this.props.allDetails.details.map(detail => (
-                            <Option value={ detail.detailId } key={ v4() }>
-                                { detail.detailName }
-                            </Option>
-                        )) }
-                    </Select>
+                        { this.props.allDetails.details.map(
+                            ({ detailId, detailName }) => (
+                                <Option value={ detailId } key={ v4() }>
+                                    { detailName }
+                                </Option>
+                            ),
+                        ) }
+                    </DecoratedSelect>
                 ),
             },
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
                 dataIndex: 'brand',
+                width:     '20%',
                 render:    (text, record) => (
-                    <Select
-                        // notFoundContent={
-                        //     fetching ? <Spin size='small' /> : null
-                        // }
-                        showSearch
-                        allowClear
-                        style={ { width: 100 } }
-                        disabled={ record.detailName ? false : true }
-                        defaultValue={ record.brand }
-                        onChange={ value =>
-                            this.onCellChange(record.key, value, 'brand')
+                    <DecoratedSelect
+                        field={ `details[${record.key}][detailBrandName]` }
+                        getFieldDecorator={
+                            this.props.form.getFieldDecorator
                         }
+                        showSearch
                         placeholder={
                             <FormattedMessage id='order_form_table.detail.placeholder' />
                         }
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '35%' } }
-                        optionFilterProp='children'
-                        filterOption={ (input, option) =>
-                            option.props.children
-                                ? option.props.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase()) >= 0
-                                : null
+                        onSearch={ value =>
+                            this.props.onBrandSearch(value)
                         }
                     >
-                        { this.props.allDetails.brands.map(brand => (
-                            <Option value={ brand.brandId } key={ v4() }>
-                                { brand.brandName }
-                            </Option>
-                        )) }
-                    </Select>
+                        { this.props.allDetails.brands.map(
+                            ({ brandId, brandName}) => (
+                                <Option value={ brandId } key={ v4() }>
+                                    { brandName }
+                                </Option>
+                            ),
+                        ) }
+                    </DecoratedSelect>
                 ),
             },
             {
                 title:     <FormattedMessage id='order_form_table.detail_code' />,
                 dataIndex: 'detailCode',
+                width:     '20%',
                 render:    (text, record) => (
-                    <Input
-                        disabled={ record.detailName ? false : true }
-                        defaultValue={ record.detailCode }
-                        onChange={ value =>
-                            this.onCellChange(record.key, value, 'detailCode')
+                    <DecoratedInput
+                        field={ `details[${record.key}][detailCode]` }
+                        getFieldDecorator={
+                            this.props.form.getFieldDecorator
                         }
                     />
                 ),
@@ -116,37 +105,42 @@ class DetailsTable extends Component {
             {
                 title:     <FormattedMessage id='order_form_table.price' />,
                 dataIndex: 'price',
+                width:     '10%',
                 render:    (text, record) => (
-                    <InputNumber
-                        disabled={ record.detailName ? false : true }
-                        min={ 0 }
-                        defaultValue={ record.price }
-                        onChange={ value =>
-                            this.onCellChange(record.key, value, 'price')
+                    <DecoratedInputNumber
+                        field={ `details[${record.key}][detailPrice]` }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        disabled={
+                            !this.props.details[ record.key ].detailName.value
                         }
+                        min={ 0 }
                     />
                 ),
             },
             {
                 title:     <FormattedMessage id='order_form_table.count' />,
                 dataIndex: 'count',
+                width:     '10%',
                 render:    (text, record) => (
-                    <InputNumber
-                        disabled={ record.detailName ? false : true }
+                    <DecoratedInputNumber
+                        field={ `details[${record.key}][detailCount]` }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        disabled={
+                            !this.props.details[ record.key ].detailName.value
+                        }
                         min={ 0.1 }
                         step={ 0.1 }
-                        defaultValue={ record.count }
-                        onChange={ value =>
-                            this.onCellChange(record.key, value, 'count')
-                        }
                     />
                 ),
             },
             {
                 title:     <FormattedMessage id='order_form_table.sum' />,
                 dataIndex: 'detailsSum',
+                width:     '15%',
                 render:    (text, record) => {
-                    const value = record.price * record.count;
+                    const detail = this.props.details[ record.key ];
+                    const value =
+                        detail.detailPrice.value * detail.detailCount.value;
 
                     return (
                         <InputNumber
@@ -162,85 +156,64 @@ class DetailsTable extends Component {
                 title:     '',
                 dataIndex: 'delete',
                 render:    (text, record) => {
-                    const { dataSource } = this.state;
+                    const dataSource = this.props.details;
 
-                    return dataSource.length > 1 &&
-                        dataSource.length - 1 !== dataSource.indexOf(record) ? (
-                            <Popconfirm
-                                title='Sure to delete?'
-                                onConfirm={ () => this.onDelete(record.key) }
-                            >
-                                <Icon type='delete' className={ Styles.deleteIcon } />
-                            </Popconfirm>
-                        ) : null;
+                    return dataSource[ record.key ].detailName.value ? (
+                        <Popconfirm
+                            title='Sure to delete?'
+                            onConfirm={ () => this.onDelete(record.key) }
+                        >
+                            <Icon type='delete' className={ Styles.deleteIcon } />
+                        </Popconfirm>
+                    ) : null;
                 },
             },
         ];
 
-        this.state = {
-            dataSource: [
-                {
-                    key:        v4(),
-                    detailName: '',
-                    brand:      '',
-                    detailCode: '',
-                    price:      0,
-                    count:      1,
-                    detailsSum: 0,
-                    delete:     '',
-                },
-            ],
-        };
     }
 
-    handleDetailSelect = (key, value) => {
-        const dataSource = [ ...this.state.dataSource ];
+    handleDetailSelect = key => {
+        const dataSource = { ...this.props.details };
 
-        const target = dataSource.find(item => item.key === key);
-        if (target) {
-            if (target.detailName === '') {
-                this.handleAdd();
-            }
-            target.detailName = value;
-            this.setState({ ...dataSource });
+        const emptyFields = _(dataSource)
+            .values()
+            .map('detailName')
+            .map('value')
+            .filter(value => !value)
+            .value().length;
+
+        if (
+            !emptyFields ||
+            emptyFields === 1 && !dataSource[ key ].detailName.value
+        ) {
+            this.handleAdd();
         }
     };
 
     onDelete = key => {
-        const dataSource = [ ...this.state.dataSource ];
-        this.setState({
-            dataSource: dataSource.filter(item => item.key !== key),
-        });
+        const dataSource = { ...this.props.details };
+        const clearedDataSource = _.pickBy(
+            dataSource,
+            (value, name) => name !== key,
+        );
+        this.props.onChangeOrderDetails(clearedDataSource);
     };
 
     handleAdd = () => {
-        const { dataSource } = this.state;
-        const newData = {
-            key:        v4(),
-            detailName: '',
-            brand:      '',
-            detailCode: '',
-            price:      0,
-            count:      1,
-            detailsSum: 0,
-            delete:     '',
-        };
-        this.setState({ dataSource: [ ...dataSource, newData ] });
-    };
+        const newData = this.props.defaultDetail();
 
-    onCellChange = (key, value, dataIndex) => {
-        const dataSource = [ ...this.state.dataSource ];
-        const target = dataSource.find(item => item.key === key);
-        if (target) {
-            target[ dataIndex ] = value;
-            this.setState({ dataSource });
-        }
+        this.props.onChangeOrderDetails({
+            ...this.props.details,
+            ...newData,
+        });
     };
-
-    handleChange = value => console.log('→ value', value);
 
     render() {
-        const { dataSource } = this.state;
+        const dataSource = _(this.props.details)
+            .toPairs()
+            .map(([ key, value ]) => ({ ...value, key }))
+            .value();
+
         const columns = this.columns;
 
         return (

@@ -20,9 +20,15 @@ export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT
 export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 
 export const ON_SERVICE_SEARCH = `${prefix}/ON_SERVICE_SEARCH`;
+export const ON_DETAIL_SEARCH = `${prefix}/ON_DETAIL_SEARCH`;
+export const ON_BRAND_SEARCH = `${prefix}/ON_BRAND_SEARCH`;
+
 export const ON_HANDLE_CUSTOM_SERVICE = `${prefix}/ON_HANDLE_CUSTOM_SERVICE`;
+export const ON_HANDLE_CUSTOM_DETAIL = `${prefix}/ON_HANDLE_CUSTOM_DETAIL`;
+export const ON_HANDLE_CUSTOM_BRAND = `${prefix}/ON_HANDLE_CUSTOM_BRAND`;
 
 export const ON_CHANGE_ORDER_SERVICES = `${prefix}/ON_CHANGE_ORDER_SERVICES`;
+export const ON_CHANGE_ORDER_DETAILS = `${prefix}/ON_CHANGE_ORDER_DETAILS`;
 
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
@@ -67,6 +73,30 @@ const defaultService = () => {
     };
 };
 
+export const defaultDetail = () => {
+    const detailDefaultName = v4();
+
+    return {
+        [ detailDefaultName ]: {
+            detailName: defaultFieldValue(
+                `details[${detailDefaultName}][detailName]`,
+            ),
+            detailBrandName: defaultFieldValue(
+                `details[${detailDefaultName}][detailBrandName]`,
+            ),
+            detailCode: defaultFieldValue(
+                `details[${detailDefaultName}][detailCode]`,
+            ),
+            detailCount: defaultFieldValue(
+                `details[${detailDefaultName}][detailCount]`,
+            ),
+            detailPrice: defaultFieldValue(
+                `details[${detailDefaultName}][detailPrice]`,
+            ),
+        },
+    };
+};
+
 const customServices = services =>
     _.fromPairs(
         services.map(({ serviceId, type, count, price, serviceName }) => [
@@ -88,6 +118,35 @@ const customServices = services =>
         ]),
     );
 
+const customDetails = details =>
+    _.fromPairs(
+        details.map(({ id, detailId, brandId, code, price, count }) => [
+            [ id ],
+            {
+                detailName: customFieldValue(
+                    `details[${id}][detailName]`,
+                    detailId || `custom|${id}`,
+                ),
+                detailBrandName: defaultFieldValue(
+                    `details[${id}][detailBrandName]`,
+                    brandId || `custom|${id}`,
+                ),
+                detailCode: defaultFieldValue(
+                    `details[${id}][detailCode]`,
+                    code,
+                ),
+                detailCount: defaultFieldValue(
+                    `details[${id}][detailCount]`,
+                    count,
+                ),
+                detailPrice: defaultFieldValue(
+                    `details[${id}][detailPrice]`,
+                    price,
+                ),
+            },
+        ]),
+    );
+
 const ReducerState = {
     fields: {
         beginDatetime:     defaultFieldValue('beginDatetime'),
@@ -103,12 +162,18 @@ const ReducerState = {
         requisite:         defaultFieldValue('requisite'),
         paymentMethod:     defaultFieldValue('paymentMethod'),
         services:          defaultService(),
+        details:           defaultDetail(),
     },
-    allServices:         [],
-    managers:            [],
-    employees:           [],
-    stations:            [],
-    allDetails:          {},
+    allServices:   [],
+    managers:      [],
+    employees:     [],
+    stations:      [],
+    orderServices: [],
+    orderDetails:  [],
+    allDetails:    {
+        details: [],
+        brands:  [],
+    },
     requisites:          [],
     searchClientsResult: {
         searching: true,
@@ -122,6 +187,50 @@ const ReducerState = {
     },
     order: {},
 };
+
+function calculateAllDetails(allDetails, selectedDetails) {
+    const selectedValues = _(selectedDetails)
+        .values()
+        .map('detailName')
+        .map('value')
+        .value();
+
+    const manuallyInsertedDetails = allDetails.filter(
+        detail => detail.manuallyInserted,
+    );
+
+    const redundantManuallyInsertedDetails = manuallyInsertedDetails.filter(
+        ({ detailId }) => !selectedValues.includes(detailId),
+    );
+
+    return _.differenceWith(
+        allDetails,
+        redundantManuallyInsertedDetails,
+        _.isEqual,
+    );
+}
+
+function calculateAllBrands(allBrands, selectedBrands) {
+    const selectedValues = _(selectedBrands)
+        .values()
+        .map('detailBrandName')
+        .map('value')
+        .value();
+
+    const manuallyInsertedBrands = allBrands.filter(
+        brand => brand.manuallyInserted,
+    );
+
+    const redundantManuallyInsertedBrands = manuallyInsertedBrands.filter(
+        ({ brandId }) => !selectedValues.includes(brandId),
+    );
+
+    return _.differenceWith(
+        allBrands,
+        redundantManuallyInsertedBrands,
+        _.isEqual,
+    );
+}
 
 function calculateAllServices(allServices, selectedServices) {
     const selectedValues = _(selectedServices)
@@ -143,6 +252,29 @@ function calculateAllServices(allServices, selectedServices) {
         redundantManuallyInsertedServices,
         _.isEqual,
     );
+}
+
+function mergeAllDetailsOrderDetails(allDetails, orderDetails) {
+    const requiredOrderDetails = orderDetails
+        .filter(({ detailId }) => !detailId)
+        .map(({ detailName, id }) => ({
+            detailId: `custom|${id}`,
+            detailName,
+        }));
+
+    return [ ...allDetails, ...requiredOrderDetails ];
+}
+
+function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
+    const requiredOrderBrands = orderDetails
+        .filter(({ brandId }) => !brandId)
+        .map(({ brandName }) => ({
+            brandId: `custom|${v4()}`,
+            brandName,
+        }));
+    console.log(requiredOrderBrands);
+
+    return [ ...allBrands, ...requiredOrderBrands ];
 }
 
 function mergeAllServicesOrderServices(allServices, orderServices) {
@@ -179,6 +311,17 @@ export default function reducer(state = ReducerState, action) {
                     payload.allServices,
                     payload.orderServices,
                 ),
+                allDetails: {
+                    ...state.allDetails,
+                    details: mergeAllDetailsOrderDetails(
+                        payload.allDetails.details,
+                        payload.orderDetails,
+                    ),
+                    brands: mergeAllDetailsOrderBrands(
+                        payload.allDetails.brands,
+                        payload.orderDetails,
+                    ),
+                },
                 fields: {
                     ...state.fields,
                     clientPhone: customFieldValue(
@@ -223,6 +366,10 @@ export default function reducer(state = ReducerState, action) {
                         ...customServices(payload.orderServices),
                         ...defaultService(),
                     },
+                    details: {
+                        ...customDetails(payload.orderDetails),
+                        ...defaultDetail(),
+                    },
                 },
                 selectedClient: payload.client || state.selectedClient,
             };
@@ -251,6 +398,9 @@ export default function reducer(state = ReducerState, action) {
                             payload.services || {},
                         ),
                     },
+                    details: {
+                        ..._.merge(state.fields.details, payload.details || {}),
+                    },
                 },
             };
 
@@ -260,6 +410,15 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     services: payload,
+                },
+            };
+
+        case ON_CHANGE_ORDER_DETAILS:
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    details: payload,
                 },
             };
 
@@ -291,6 +450,44 @@ export default function reducer(state = ReducerState, action) {
                         manuallyInserted: true,
                     },
                 ],
+            };
+
+        case ON_HANDLE_CUSTOM_DETAIL:
+            return {
+                ...state,
+                allDetails: {
+                    ...state.allDetails,
+                    details: [
+                        ...calculateAllDetails(
+                            state.allDetails.details,
+                            state.fields.details,
+                        ),
+                        {
+                            detailId:         `custom|${v4()}`,
+                            detailName:       payload,
+                            manuallyInserted: true,
+                        },
+                    ],
+                },
+            };
+
+        case ON_HANDLE_CUSTOM_BRAND:
+            return {
+                ...state,
+                allDetails: {
+                    ...state.allDetails,
+                    brands: [
+                        ...calculateAllBrands(
+                            state.allDetails.brands,
+                            state.fields.details,
+                        ),
+                        {
+                            brandId:          `custom|${v4()}`,
+                            brandName:        payload,
+                            manuallyInserted: true,
+                        },
+                    ],
+                },
             };
 
         case ON_CLIENT_SELECT:
@@ -363,6 +560,16 @@ export const onHandleCustomService = searchService => ({
     payload: searchService,
 });
 
+export const onHandleCustomDetail = name => ({
+    type:    ON_HANDLE_CUSTOM_DETAIL,
+    payload: name,
+});
+
+export const onHandleCustomBrand = name => ({
+    type:    ON_HANDLE_CUSTOM_BRAND,
+    payload: name,
+});
+
 export const onChangeClientSearchQuery = searchQuery => ({
     type:    ON_CHANGE_CLIENT_SEARCH_QUERY,
     payload: searchQuery,
@@ -371,6 +578,11 @@ export const onChangeClientSearchQuery = searchQuery => ({
 export const setClientSelection = client => ({
     type:    ON_CLIENT_SELECT,
     payload: client,
+});
+
+export const onChangeOrderDetails = data => ({
+    type:    ON_CHANGE_ORDER_DETAILS,
+    payload: data,
 });
 
 export const onChangeOrderServices = data => ({
@@ -404,5 +616,15 @@ export const submitOrderFormSuccess = () => ({
 
 export const onServiceSearch = search => ({
     type:    ON_SERVICE_SEARCH,
+    payload: search,
+});
+
+export const onBrandSearch = search => ({
+    type:    ON_BRAND_SEARCH,
+    payload: search,
+});
+
+export const onDetailSearch = search => ({
+    type:    ON_DETAIL_SEARCH,
     payload: search,
 });
