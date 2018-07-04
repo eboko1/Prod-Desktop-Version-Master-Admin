@@ -72,9 +72,9 @@ class OrdersContainer extends Component {
         const statusesMap = [
             {
                 route:    /orders\/appointments/,
-                statuses: 'not_complete,required,reserve,call',
+                statuses: 'not_complete,required,call',
             },
-            { route: /orders\/approved/, statuses: 'approve' },
+            { route: /orders\/approve/, statuses: 'approve,reserve' },
             { route: /orders\/in-progress/, statuses: 'progress' },
             { route: /orders\/success/, statuses: 'success' },
             { route: /orders\/reviews/, statuses: 'review' },
@@ -288,6 +288,7 @@ class OrdersContainer extends Component {
             <Catcher>
                 <div className={ Styles.paper }>
                     <Table
+                        size='small'
                         className={ Styles.ordersTable }
                         columns={ columns }
                         rowSelection={ rows }

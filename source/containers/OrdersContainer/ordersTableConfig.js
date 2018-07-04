@@ -46,7 +46,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) => 
+        render:    (_, order) =>
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -124,7 +124,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.client' />,
         dataIndex: 'clientFullName',
         key:       'clientFullName',
-        width:     300,
+        width:     220,
         render:    (_, order) => (
             <div className={ Styles.client }>
                 <span className={ Styles.clientFullname }>
@@ -180,7 +180,7 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.source' />,
         dataIndex: 'changeReason',
         key:       'changeReason',
-        width:     120,
+        width:     125,
         render:    (_, order) =>
             order.changeReason ? (
                 <FormattedMessage id={ `orders.${order.changeReason}` } />
@@ -343,14 +343,14 @@ export function columnsConfig(
         case '/orders/appointments':
             return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, tasksCol, editCol ];
 
-        case '/orders/approved':
+        case '/orders/approve':
         case '/orders/in-progress':
             return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
 
         case '/orders/success':
             return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, reviewCol, invitationCol, editCol ];
 
-        case '/orders/canceled':
+        case '/orders/cancel':
             return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, invitationCol, editCol ];
 
         case '/orders/reviews':
@@ -370,10 +370,7 @@ export function rowsConfig(
     onChange,
     getCheckboxProps,
 ) {
-    if (
-        activeRoute === '/orders/success' ||
-        activeRoute === '/orders/canceled'
-    ) {
+    if (activeRoute === '/orders/success' || activeRoute === '/orders/cancel') {
         return {
             selectedRowKeys,
             onChange,
@@ -387,19 +384,20 @@ export function rowsConfig(
 export function scrollConfig(activeRoute) {
     switch (activeRoute) {
         case '/orders/appointments':
-            return { x: 1600 };
-        case '/orders/in-progress':
+            return { x: 1500 }; //1600 - 80 -
         case '/orders/approve':
-            return { x: 1440 };
+            return { x: 1340 };
+        case '/orders/in-progress':
+            return { x: 1340 }; //1440 - 80 - 20
         case '/orders/success':
-            return { x: 1820 };
+            return { x: 1720 }; //1820
         case '/orders/reviews':
-            return { x: 1620 };
+            return { x: 1520 }; //1620
         case '/orders/invitations':
-            return { x: 1400 };
-        case 'orders/canceled':
-            return { x: 1640 };
+            return { x: 1260 }; //1400
+        case 'orders/cancel':
+            return { x: 1560 }; //1640
         default:
-            return { x: 1640 };
+            return { x: 1540 }; //1640
     }
 }

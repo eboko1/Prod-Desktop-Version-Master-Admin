@@ -31,7 +31,6 @@ const mapState = state => {
         ordersDaterangeFilter: state.orders.filter.daterange,
         filter:                state.orders.filter,
         collapsed:             state.ui.get('collapsed'),
-        // orderComments:         state.forms.universalFiltersForm.orderComments,
     };
 };
 
@@ -45,38 +44,12 @@ const mapDispatch = {
 @withRouter
 @connect(mapState, mapDispatch)
 class OrdersPage extends Component {
-    // componentDidMount() {
-    //     const status = this.props.match.params.ordersStatuses;
-    //     const { fetchUniversalFiltersForm } = this.props;
-    //
-    //     if (status === 'cancel') {
-    //         fetchUniversalFiltersForm();
-    //     }
-    // }
-    //
-    // componentDidUpdate(prevProps) {
-    //     const status = this.props.match.params.ordersStatuses;
-    //     const { orderComments, fetchUniversalFiltersForm } = this.props;
-    //
-    //     if (status === 'cancel') {
-    //         console.log('→ UPDATE');
-    //         console.log('→ prevProps.orderComments', prevProps.orderComments);
-    //         console.log('→ orderComments', orderComments);
-    //         if (!orderComments) {
-    //             console.log('→ UPDATE 2');
-    //             fetchUniversalFiltersForm();
-    //         } else if (prevProps.orderComments === orderComments) {
-    //             console.log('→ UPDATE 3');
-    //         }
-    //     }
-    // }
-
     getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
         switch (status) {
             case 'appointments':
                 return <FormattedMessage id='appointments' />;
-            case 'approved':
+            case 'approve':
                 return <FormattedMessage id='records' />;
             case 'in-progress':
                 return <FormattedMessage id='repairs' />;
@@ -106,7 +79,7 @@ class OrdersPage extends Component {
 
         this.props.fetchOrders(this.props.filter);
     };
-
+    // eslint-disable-next-line
     render() {
         const { collapsed } = this.props;
 
@@ -165,13 +138,10 @@ class OrdersPage extends Component {
             >
                 <section
                     className={ `${Styles.funelWithFilters} ${collapsed &&
-                        Styles.funelWithFiltersCollapsed}` }
+                        Styles.funelWithFiltersCollapsed} ${[ 'success', 'cancel' ].indexOf(status) < 0 && Styles.funelWithFiltersShadow}` }
                 >
                     <FunelContainer />
-                    <OrdersFilterContainer
-                        status={ status }
-                        orderComments={ this.props.orderComments }
-                    />
+                    <OrdersFilterContainer status={ status } />
                 </section>
                 { (status === 'success' || status === 'cancel') && (
                     <section

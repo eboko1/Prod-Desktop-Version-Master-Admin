@@ -16,6 +16,7 @@ import {
     setOrdersStatusFilter,
     setOrdersSearchFilter,
     setOrdersNPSFilter,
+    setOrdersCancelReasonFilter,
 } from 'core/orders/duck';
 
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
@@ -44,6 +45,7 @@ const mapDispatchToProps = dispatch => {
             setOrdersSearchFilter,
             setOrdersNPSFilter,
             fetchUniversalFiltersForm,
+            setOrdersCancelReasonFilter,
         },
         dispatch,
     );
@@ -92,6 +94,13 @@ export default class OrdersFilterContainer extends Component {
         setOrdersNPSFilter({ minNps: value[ 0 ], maxNps: value[ 1 ] });
         fetchOrders({ page: 1, ...filter });
         // console.log('→ slidervalue', value);
+    };
+
+    handleCancelReasonSelect = value => {
+        const { setOrdersCancelReasonFilter, fetchOrders, filter } = this.props;
+
+        setOrdersCancelReasonFilter(value);
+        fetchOrders({ page: 1, ...filter });
     };
 
     render() {
@@ -193,10 +202,9 @@ export default class OrdersFilterContainer extends Component {
                             className={ Styles.buttonGroup }
                             defaultValue={ filter.status }
                         >
-                            <RadioButton value='not_complete,required,reserve,call'>
+                            <RadioButton value='not_complete,required,call'>
                                 <FormattedMessage id='all' /> ({ stats.not_complete +
                                     stats.required +
-                                    stats.reserve +
                                     stats.call })
                             </RadioButton>
                             <RadioButton value='not_complete'>
@@ -209,13 +217,30 @@ export default class OrdersFilterContainer extends Component {
                                     stats.required
                                 })
                             </RadioButton>
+                            <RadioButton value='call'>
+                                <FormattedMessage id='call' /> ({ stats.call })
+                            </RadioButton>
+                        </RadioGroup>
+                    ) }
+                    { status === 'approve' && (
+                        <RadioGroup
+                            onChange={ ev => this.selectStatus(ev) }
+                            className={ Styles.buttonGroup }
+                            defaultValue={ filter.status }
+                        >
+                            <RadioButton value='not_complete,required,call'>
+                                <FormattedMessage id='all' /> ({ stats.approve +
+                                    stats.reserve })
+                            </RadioButton>
+                            <RadioButton value='approve'>
+                                <FormattedMessage id='approve' /> ({
+                                    stats.approve
+                                })
+                            </RadioButton>
                             <RadioButton value='reserve'>
                                 <FormattedMessage id='reserve' /> ({
                                     stats.reserve
                                 })
-                            </RadioButton>
-                            <RadioButton value='call'>
-                                <FormattedMessage id='call' /> ({ stats.call })
                             </RadioButton>
                         </RadioGroup>
                     ) }
@@ -240,10 +265,16 @@ export default class OrdersFilterContainer extends Component {
                     { status === 'cancel' &&
                         orderComments && (
                         <Select
-                            width={ 200 }
-                            mode='multiple'
+                            className={ Styles.cancelReasonSelect }
+                            getPopupContainer={ trigger =>
+                                trigger.parentNode
+                            }
+                            // mode='multiple'
                             placeholder={
-                                <FormattedMessage id='universal_filters.cancelReason' />
+                                <FormattedMessage id='orders-filter.filter_by_cancel_reason' />
+                            }
+                            onChange={ value =>
+                                this.handleCancelReasonSelect(value)
                             }
                         >
                             { orderComments

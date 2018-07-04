@@ -14,6 +14,7 @@ export default class OrderStatusIcon extends Component {
                     <Tooltip
                         placement='top'
                         title={ <FormattedMessage id='order_status_icon.new' /> }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon
                             type='plus-square-o'
@@ -28,6 +29,7 @@ export default class OrderStatusIcon extends Component {
                         title={
                             <FormattedMessage id='order_status_icon.a_call' />
                         }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon
                             type='phone'
@@ -42,6 +44,7 @@ export default class OrderStatusIcon extends Component {
                         title={
                             <FormattedMessage id='order_status_icon.questionable' />
                         }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon
                             type='question-circle-o'
@@ -57,6 +60,7 @@ export default class OrderStatusIcon extends Component {
                         title={
                             <FormattedMessage id='order_status_icon.repair' />
                         }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon
                             type='car'
@@ -71,6 +75,7 @@ export default class OrderStatusIcon extends Component {
                         title={
                             <FormattedMessage id='order_status_icon.record' />
                         }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon
                             type='safety'
@@ -85,6 +90,7 @@ export default class OrderStatusIcon extends Component {
                         title={
                             <FormattedMessage id='order_status_icon.reserve' />
                         }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon
                             type='lock'
@@ -97,6 +103,7 @@ export default class OrderStatusIcon extends Component {
                     <Tooltip
                         placement='top'
                         title={ <FormattedMessage id='order_status_icon.done' /> }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon
                             type='check'
@@ -111,6 +118,7 @@ export default class OrderStatusIcon extends Component {
                         title={
                             <FormattedMessage id='order_status_icon.invitation' />
                         }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon
                             type='wechat'
@@ -125,6 +133,7 @@ export default class OrderStatusIcon extends Component {
                         title={
                             <FormattedMessage id='order_status_icon.cancel' />
                         }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon
                             type='close-circle'
@@ -139,6 +148,7 @@ export default class OrderStatusIcon extends Component {
                         title={
                             <FormattedMessage id='order_status_icon.order' />
                         }
+                        overlayStyle={ { zIndex: 110 } }
                     >
                         <Icon type='question' />
                     </Tooltip>

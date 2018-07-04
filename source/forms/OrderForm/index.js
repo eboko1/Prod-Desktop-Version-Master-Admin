@@ -183,7 +183,7 @@ export class OrderForm extends Component {
                             <RadioButton value='questionable'>
                                 Questionable
                             </RadioButton>
-                            <RadioButton value='approved'>Approved</RadioButton>
+                            <RadioButton value='approve'>Approved</RadioButton>
                         </RadioGroup>,
                     ) }
                 </FormItem> */ }

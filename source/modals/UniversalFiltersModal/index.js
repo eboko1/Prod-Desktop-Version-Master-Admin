@@ -65,31 +65,6 @@ export default class UniversalFiltersModal extends Component {
         // git issue: https://github.com/ant-design/ant-design/issues/8461
         let modalContentDivWrapper = null;
 
-        const createSelect = (
-            name,
-            placeholder,
-            options,
-            multiple = 'default',
-        ) => {
-            return (
-                <Select
-                    showSearch
-                    mode={ multiple }
-                    style={ { width: 200 } }
-                    placeholder={ placeholder }
-                    // optionFilterProp='children'
-                    getPopupContainer={ () => modalContentDivWrapper }
-                    filterOption={ (input, option) =>
-                        option.props.children
-                            .toLowerCase()
-                            .indexOf(input.toLowerCase()) >= 0
-                    }
-                >
-                    { options }
-                </Select>
-            );
-        };
-
         return (
             <Modal
                 className={ Styles.universalFiltersModal }

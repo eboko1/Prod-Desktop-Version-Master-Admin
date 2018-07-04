@@ -53,28 +53,23 @@ class FunelContainer extends Component {
                     to={ `${book.orders}/appointments` }
                     activeClassName={ Styles.active }
                     className={ Styles.link }
-                    onClick={ () =>
-                        this.setStatus('not_complete,required,reserve,call')
-                    }
+                    onClick={ () => this.setStatus('not_complete,required,call') }
                 >
                     <FormattedMessage id='funel.appointments' />
                     <div>
-                        ({ stats.not_complete +
-                            stats.call +
-                            stats.reserve +
-                            stats.required })
+                        ({ stats.not_complete + stats.call + stats.required })
                     </div>
                     <img src={ images.funelTopLeft } />
                 </NavLink>
                 <NavLink
                     exact
-                    to={ `${book.orders}/approved` }
+                    to={ `${book.orders}/approve` }
                     className={ Styles.link }
                     activeClassName={ Styles.active }
-                    onClick={ () => this.setStatus('approve') }
+                    onClick={ () => this.setStatus('approve,reserve') }
                 >
                     <FormattedMessage id='funel.record' />
-                    <div>({ stats.approve })</div>
+                    <div>({ stats.approve + stats.reserve })</div>
                     <img src={ images.funelRight } />
                 </NavLink>
                 <NavLink

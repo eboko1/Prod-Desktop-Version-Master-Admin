@@ -26,15 +26,11 @@ a {
     text-decoration: none;
 }
 
-.content {
+/* .content {
     max-width: 900px;
-}
+} */
 
 .ant-modal-wrap,
 .ant-modal-mask {
     z-index: 2000;
 }
-
-/* .ant-tooltip {
-    z-index: 50;
-} */
