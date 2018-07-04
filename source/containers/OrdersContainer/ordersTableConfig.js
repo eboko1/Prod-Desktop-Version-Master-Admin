@@ -1,14 +1,14 @@
 // vendor
 import React from 'react';
-import { Link } from 'react-router-dom';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { Icon, Tooltip, Button } from 'antd';
+import {Link} from 'react-router-dom';
+import {injectIntl, FormattedMessage} from 'react-intl';
+import {Icon, Tooltip, Button} from 'antd';
 import classNames from 'classnames';
 import moment from 'moment';
 import _ from 'lodash';
 
 // proj
-import { OrderStatusIcon, Numeral } from 'components';
+import {OrderStatusIcon, Numeral} from 'components';
 import book from 'routes/book';
 
 // own
@@ -25,13 +25,11 @@ import Styles from './styles.m.css';
 // withRouter(TableMagic)
 // // //
 
-export function columnsConfig(
-    invited,
+export function columnsConfig(invited,
     action,
     isOrderInvitable,
     isAlreadyInvited,
-    activeRoute,
-) {
+    activeRoute) {
     const indexCol = {
         title:     '№',
         width:     80,
@@ -41,12 +39,12 @@ export function columnsConfig(
     };
 
     const orderCol = {
-        title:     <FormattedMessage id='orders.order' />,
+        title:     <FormattedMessage id='orders.order'/>,
         width:     220,
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) => 
+        render:    (_, order) =>
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -54,7 +52,7 @@ export function columnsConfig(
                 >
                     { order.num }
                 </Link>
-                <OrderStatusIcon status={ order.status } />
+                <OrderStatusIcon status={ order.status }/>
                 {order.serviceNames && (
                     <div className={ Styles.serviceNames }>
                         { [ ...new Set(order.serviceNames) ].join(', ') }
@@ -66,8 +64,8 @@ export function columnsConfig(
                     </div>
                 )}
                 {(order.cancelReason ||
-                    order.cancelStatusReason ||
-                    order.cancelStatusOwnReason) && (
+                order.cancelStatusReason ||
+                order.cancelStatusOwnReason) && (
                     <div className={ Styles.cancelReason }>
                         { /* <div>{ order.cancelReason }</div> */ }
                         <div>{ order.cancelStatusReason }</div>
@@ -79,7 +77,7 @@ export function columnsConfig(
     };
 
     const datetimeCol = {
-        title:     <FormattedMessage id='orders.creation_date' />,
+        title:     <FormattedMessage id='orders.creation_date'/>,
         dataIndex: 'datetime',
         key:       'datetime',
         width:     160,
@@ -93,7 +91,7 @@ export function columnsConfig(
     };
 
     const beginDatetimeCol = {
-        title:     <FormattedMessage id='orders.begin_date' />,
+        title:     <FormattedMessage id='orders.begin_date'/>,
         dataIndex: 'beginDatetime',
         key:       'beginDatetime',
         width:     160,
@@ -107,7 +105,7 @@ export function columnsConfig(
     };
 
     const successDatetimeCol = {
-        title:     <FormattedMessage id='orders.success_date' />,
+        title:     <FormattedMessage id='orders.success_date'/>,
         dataIndex: 'successDatetime',
         key:       'successDatetime',
         width:     160,
@@ -121,7 +119,7 @@ export function columnsConfig(
     };
 
     const clientCol = {
-        title:     <FormattedMessage id='orders.client' />,
+        title:     <FormattedMessage id='orders.client'/>,
         dataIndex: 'clientFullName',
         key:       'clientFullName',
         width:     300,
@@ -132,8 +130,8 @@ export function columnsConfig(
                 </span>
                 <span className={ Styles.clientVehicle }>
                     { `${order.vehicleMakeName ||
-                        '-'} ${order.vehicleModelName ||
-                        '-'} ${order.vehicleYear || '-'}` }
+                    '-'} ${order.vehicleModelName ||
+                    '-'} ${order.vehicleYear || '-'}` }
                 </span>
                 <a
                     className={ Styles.clientPhone }
@@ -146,7 +144,7 @@ export function columnsConfig(
     };
 
     const sumCol = {
-        title:     <FormattedMessage id='orders.sum' />,
+        title:     <FormattedMessage id='orders.sum'/>,
         dataIndex: 'servicesTotalSum',
         key:       'servicesTotalSum',
         width:     140,
@@ -162,35 +160,35 @@ export function columnsConfig(
     };
 
     const responsibleCol = {
-        title:     <FormattedMessage id='orders.responsible' />,
+        title:     <FormattedMessage id='orders.responsible'/>,
         dataIndex: 'managerName',
         key:       'managerName',
         width:     190,
         render:    (_, order) => {
             if (order.managerName) {
                 return `${order.managerName} ${order.managerSurname &&
-                    order.managerSurname}`;
+                order.managerSurname}`;
             }
 
-            return <FormattedMessage id='orders.not_assigned' />;
+            return <FormattedMessage id='orders.not_assigned'/>;
         },
     };
 
     const sourceCol = {
-        title:     <FormattedMessage id='orders.source' />,
+        title:     <FormattedMessage id='orders.source'/>,
         dataIndex: 'changeReason',
         key:       'changeReason',
         width:     120,
         render:    (_, order) =>
             order.changeReason ? (
-                <FormattedMessage id={ `orders.${order.changeReason}` } />
+                <FormattedMessage id={ `orders.${order.changeReason}` }/>
             ) : (
-                <FormattedMessage id='orders.not_provided' />
+                <FormattedMessage id='orders.not_provided'/>
             ),
     };
 
     const tasksCol = {
-        title:     <FormattedMessage id='orders.tasks' />,
+        title:     <FormattedMessage id='orders.tasks'/>,
         dataIndex: 'activeTasks',
         key:       'activeTasks',
         width:     150,
@@ -203,32 +201,34 @@ export function columnsConfig(
                 );
             }
 
-            return <FormattedMessage id='orders.no_tasks' />;
+            return <FormattedMessage id='orders.no_tasks'/>;
         },
     };
 
     const reviewCol = {
-        title:     <FormattedMessage id='orders.review' />,
+        title:     <FormattedMessage id='orders.review'/>,
         dataIndex: 'review',
         key:       'review',
         width:     175,
         render:    (_, order) => {
             if (order.nps) {
                 return (
-                    <div
-                        className={ classNames(Styles.nps, {
-                            [ Styles.npsMid ]: order.nps === 7 || order.nps === 8,
-                            [ Styles.npsLow ]: order.nps <= 6,
-                        }) }
-                    >
-                        { order.nps }
-                    </div>
+                    <a href={ `${book.oldApp.reviews}/${order.reviewIds[ 0 ]}` }>
+                        <div
+                            className={ classNames(Styles.nps, {
+                                [ Styles.npsMid ]: order.nps === 7 || order.nps === 8,
+                                [ Styles.npsLow ]: order.nps <= 6,
+                            }) }
+                        >
+                            { order.nps }
+                        </div>
+                    </a>
                 );
             }
 
             return (
                 <Button>
-                    <FormattedMessage id='orders.add_review' />
+                    <FormattedMessage id='orders.add_review'/>
                 </Button>
             );
         },
@@ -242,7 +242,7 @@ export function columnsConfig(
     };
 
     const invitationCol = {
-        title:     <FormattedMessage id='orders.invitation' />,
+        title:     <FormattedMessage id='orders.invitation'/>,
         dataIndex: 'invite',
         key:       'invite',
         width:     150,
@@ -254,7 +254,7 @@ export function columnsConfig(
                         onClick={ () => action([ order ]) }
                         disabled={ isInviteButtonDisabled(order) }
                     >
-                        <FormattedMessage id='orders.invite' />
+                        <FormattedMessage id='orders.invite'/>
                     </Button>
                 );
             }
@@ -293,7 +293,7 @@ export function columnsConfig(
     // };
 
     const actionCol = {
-        title:     <FormattedMessage id='orders.actions' />,
+        title:     <FormattedMessage id='orders.actions'/>,
         dataIndex: 'actions',
         key:       'actions',
         width:     180,
@@ -301,27 +301,27 @@ export function columnsConfig(
             <div className={ Styles.inviteActions }>
                 <Tooltip
                     placement='bottom'
-                    title={ <FormattedMessage id='orders.send_sms' /> }
+                    title={ <FormattedMessage id='orders.send_sms'/> }
                 >
                     <Icon
                         type='message'
-                        style={ { fontSize: 24, color: '#08c' } }
+                        style={ {fontSize: 24, color: '#08c'} }
                     />
                 </Tooltip>
                 <Tooltip
                     placement='bottom'
-                    title={ <FormattedMessage id='orders.call' /> }
+                    title={ <FormattedMessage id='orders.call'/> }
                 >
                     <Icon
                         type='phone'
-                        style={ { fontSize: 24, color: '#08c' } }
+                        style={ {fontSize: 24, color: '#08c'} }
                     />
                 </Tooltip>
                 <Tooltip
                     placement='bottom'
-                    title={ <FormattedMessage id='orders.send_email' /> }
+                    title={ <FormattedMessage id='orders.send_email'/> }
                 >
-                    <Icon type='mail' style={ { fontSize: 24, color: '#08c' } } />
+                    <Icon type='mail' style={ {fontSize: 24, color: '#08c'} }/>
                 </Tooltip>
             </div>
         ),
@@ -334,7 +334,7 @@ export function columnsConfig(
         width:  'auto',
         render: (_, order) => (
             <Link to={ `${book.order}/${order.id}` }>
-                <Icon className={ Styles.editOrderIcon } type='edit' />
+                <Icon className={ Styles.editOrderIcon } type='edit'/>
             </Link>
         ),
     };
@@ -364,12 +364,10 @@ export function columnsConfig(
     }
 }
 
-export function rowsConfig(
-    activeRoute,
+export function rowsConfig(activeRoute,
     selectedRowKeys,
     onChange,
-    getCheckboxProps,
-) {
+    getCheckboxProps) {
     if (
         activeRoute === '/orders/success' ||
         activeRoute === '/orders/canceled'
@@ -387,19 +385,19 @@ export function rowsConfig(
 export function scrollConfig(activeRoute) {
     switch (activeRoute) {
         case '/orders/appointments':
-            return { x: 1600 };
+            return {x: 1600};
         case '/orders/in-progress':
         case '/orders/approve':
-            return { x: 1440 };
+            return {x: 1440};
         case '/orders/success':
-            return { x: 1820 };
+            return {x: 1820};
         case '/orders/reviews':
-            return { x: 1620 };
+            return {x: 1620};
         case '/orders/invitations':
-            return { x: 1400 };
+            return {x: 1400};
         case 'orders/canceled':
-            return { x: 1640 };
+            return {x: 1640};
         default:
-            return { x: 1640 };
+            return {x: 1640};
     }
 }
