@@ -12,9 +12,19 @@ class UniversalFiltersTags extends Component {
         tags: [],
     };
 
-    filterTagsFields = [ 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'startDate', 'createDate' ];
+    // To deals with dateranges, one daterange == two date pickers, which we need to clear
+    tagsToUniversalFilterFields = {
+        beginDate:  [ 'startDate', 'endDate' ],
+        createDate: [ 'createStartDate', 'createEndDate' ],
+    };
 
-    handleClose = removedTag => this.props.clearUniversalFilter(removedTag);
+    // Bind tags to filters keys
+    filterTagsFields = [ 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'beginDate', 'createDate' ];
+
+    // Clear tags using tagsToUniversalFilterFields
+    handleClose = removedTag => {
+        this.props.clearUniversalFilters([ ...this.tagsToUniversalFilterFields[ removedTag ] || [], removedTag ]);
+    };
 
     render() {
         const filter = this.props.filter || {};
@@ -57,7 +67,7 @@ class UniversalFiltersTags extends Component {
                         >
                             { tagElem }
                         </Tooltip>
-                    ) :
+                    ) : 
                         tagElem
                     ;
                 }) }

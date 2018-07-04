@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 /**
  * Constants
  * */
@@ -57,7 +58,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 fields: {
                     ...state.fields,
-                    [ meta.field ]: { ...payload[ meta.field ] },
+                    ...payload,
                 },
             };
 
@@ -85,8 +86,7 @@ export const fetchUniversalFiltersFormSuccess = filters => ({
     payload: filters,
 });
 
-export const onChangeUniversalFiltersForm = (fields, { form, field }) => ({
+export const onChangeUniversalFiltersForm = update => ({
     type:    ON_CHANGE_UNIVERSAL_FILTERS_FORM,
-    payload: fields,
-    meta:    { form, field },
+    payload: update,
 });

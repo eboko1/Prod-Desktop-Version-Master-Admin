@@ -55,7 +55,7 @@ export function* fetchOrdersSagaTake() {
         yield nprogress.start();
 
         const filter = yield select(selectFilter);
-        const filters = spreadProp('daterange', filter);
+        const filters = _.omit(spreadProp('daterange', filter), [ 'beginDate', 'createDate' ]);
 
         yield put(uiActions.setOrdersFetchingState(true));
         const data = yield call(fetchAPI, 'GET', 'orders', filters);

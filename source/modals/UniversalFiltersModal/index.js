@@ -270,9 +270,9 @@ export default class UniversalFiltersModal extends Component {
                             />
                         </FormItem>
 
-                        <FormItem label='startDate'>
+                        <FormItem label='beginDate'>
                             <DecoratedDatePicker
-                                field='startDate'
+                                field='beginDate'
                                 getFieldDecorator={ getFieldDecorator }
                                 formatMessage={ formatMessage }
                                 placeholder='boob date'

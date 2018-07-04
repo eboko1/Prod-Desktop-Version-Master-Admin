@@ -41,7 +41,7 @@ export default class UniversalFilters extends Component {
     constructor(props) {
         super(props);
 
-        this.clearUniversalFilter = this.clearUniversalFilter.bind(this);
+        this.clearUniversalFilters = this.clearUniversalFilters.bind(this);
     }
 
     state = {
@@ -59,14 +59,14 @@ export default class UniversalFilters extends Component {
         });
     };
 
-    clearUniversalFilter = filterName => {
-        this.props.onChangeUniversalFiltersForm(
-            { [ filterName ]: void 0 },
-            { form: 'universalFiltersForm', field: filterName },
+    clearUniversalFilters = filterNames => {
+        const updateFilters = _.fromPairs(
+            filterNames.map(filterName => [ filterName, void 0 ]),
         );
+        this.props.onChangeUniversalFiltersForm(updateFilters);
         this.props.setUniversalFilters({
             ...this.props.filter,
-            [ filterName ]: void 0,
+            ...updateFilters,
         });
         this.props.fetchOrders();
     };
@@ -93,7 +93,7 @@ export default class UniversalFilters extends Component {
                     }
                     : {};
 
-                const [ startDate, endDate ] = values.startDate || [];
+                const [ startDate, endDate ] = values.beginDate || [];
                 const [ createStartDate, createEndDate ] =
                     values.createDate || [];
 
@@ -106,6 +106,7 @@ export default class UniversalFilters extends Component {
                     .pickBy(moment.isMoment)
                     .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
                     .value();
+
 
                 this.props.setUniversalFilters({
                     ...values,
@@ -129,7 +130,7 @@ export default class UniversalFilters extends Component {
                     </Button>
                     <UniversalFiltersTags
                         filter={ this.props.filter }
-                        clearUniversalFilter={ this.clearUniversalFilter }
+                        clearUniversalFilters={ this.clearUniversalFilters }
                     />
                 </section>
                 <UniversalFiltersModal
