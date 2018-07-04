@@ -85,7 +85,6 @@ export class OrderForm extends Component {
             allDetails,
             managers,
             employees,
-            vehicles,
             stations,
         } = this.props;
 
@@ -99,6 +98,7 @@ export class OrderForm extends Component {
         console.log('selectedClient', this.props.selectedClient);
 
         const buttonDisabled = hasErrors(getFieldsError());
+        const countServices = _.values(this.props.fields.services).length - 1;
         const beginDatetime = (this.props.fields.beginDatetime || {}).value;
 
         const {
@@ -522,7 +522,7 @@ export class OrderForm extends Component {
                         tab={ `${this.props.intl.formatMessage({
                             id:             'add_order_form.services',
                             defaultMessage: 'Services',
-                        })} ()` }
+                        })} (${ countServices })` }
                         key='1'
                     >
                         <ServicesTable
