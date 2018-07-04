@@ -27,19 +27,13 @@ const mapStateToProps = state => {
         allDetails:  state.forms.orderForm.allDetails,
         allServices: state.forms.orderForm.allServices,
         requisites:  state.forms.orderForm.requisites,
-        order: {
-            status:   state.forms.orderForm.status,
-            num:      state.forms.orderForm.num,
-            datetime: state.forms.orderForm.datetime,
-            // id:       state.order.order.id,
-        },
+        order:       state.forms.orderForm.order,
     };
 };
 
 @withRouter
 @connect(mapStateToProps, { fetchOrderForm, getReport, fetchReport })
 class OrderPage extends Component {
-
     saveFormRef = formRef => {
         this.formRef = formRef;
     };
@@ -51,6 +45,7 @@ class OrderPage extends Component {
     render() {
         // destruct order
         const { num, status, datetime } = this.props.order;
+        console.log(this.props.order);
         const { id } = this.props.match.params;
 
         return (
