@@ -122,6 +122,28 @@ const ReducerState = {
     },
 };
 
+function calculateAllServices(allServices, selectedServices) {
+    const selectedValues = _(selectedServices)
+        .values()
+        .map('serviceName')
+        .map('value')
+        .value();
+
+    const manuallyInsertedServices = allServices.filter(
+        service => service.manuallyInserted,
+    );
+
+    const redundantManuallyInsertedServices = manuallyInsertedServices.filter(
+        ({ id }) => !selectedValues.includes(`custom|${id}`),
+    );
+
+    return _.differenceWith(
+        allServices,
+        redundantManuallyInsertedServices,
+        _.isEqual,
+    );
+}
+
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
 
@@ -227,15 +249,19 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 allServices: [
-                    ...state.allServices,
+                    ...calculateAllServices(
+                        state.allServices,
+                        state.fields.services,
+                    ),
                     {
-                        id:           v4(),
-                        servicePrice: null,
-                        serviceHours: null,
-                        description:  '',
-                        serviceName:  payload,
-                        serviceId:    v4(),
-                        type:         'custom',
+                        id:               v4(),
+                        servicePrice:     null,
+                        serviceHours:     null,
+                        description:      '',
+                        serviceName:      payload,
+                        serviceId:        v4(),
+                        type:             'custom',
+                        manuallyInserted: true,
                     },
                 ],
             };

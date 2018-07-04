@@ -165,10 +165,12 @@ class ServicesTable extends Component {
     };
 
     handleAdd = () => {
+        const id = v4();
+        // TODO move to saga
         const newData = {
             serviceName: {
                 errors:     void 0,
-                name:       'serviceName',
+                name:       `services[${id}][serviceName]`,
                 touched:    true,
                 validating: false,
                 value:      void 0,
@@ -176,7 +178,7 @@ class ServicesTable extends Component {
             },
             serviceCount: {
                 errors:     void 0,
-                name:       'serviceCount',
+                name:       `services[${id}][serviceCount]`,
                 touched:    true,
                 validating: false,
                 value:      void 0,
@@ -184,7 +186,7 @@ class ServicesTable extends Component {
             },
             servicePrice: {
                 errors:     void 0,
-                name:       'servicePrice',
+                name:       `services[${id}][servicePrice]`,
                 touched:    true,
                 validating: false,
                 value:      void 0,
