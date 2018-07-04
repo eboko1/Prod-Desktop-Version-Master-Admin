@@ -49,10 +49,28 @@ const customFieldValue = (name, value) => ({
     dirty:      false,
 });
 
+const defaultService = () => {
+    const serviceDefaultName = v4();
+
+    return {
+        [ serviceDefaultName ]: {
+            serviceName: defaultFieldValue(
+                `services[${serviceDefaultName}][serviceName]`,
+            ),
+            serviceCount: defaultFieldValue(
+                `services[${serviceDefaultName}][serviceCount]`,
+            ),
+            servicePrice: defaultFieldValue(
+                `services[${serviceDefaultName}][servicePrice]`,
+            ),
+        },
+    };
+};
+
 const customServices = services =>
     _.fromPairs(
         services.map(({ serviceId, type, count, price, serviceName }) => [
-            `${type}|${serviceId}`,
+            `${v4()}`,
             {
                 serviceName: customFieldValue(
                     `services[${type}|${serviceId}][serviceName]`,
@@ -70,8 +88,6 @@ const customServices = services =>
         ]),
     );
 
-const serviceDefaultName = v4();
-
 const ReducerState = {
     fields: {
         beginDatetime:     defaultFieldValue('beginDatetime'),
@@ -86,19 +102,7 @@ const ReducerState = {
         clientRequisite:   defaultFieldValue('clientRequisite'),
         requisite:         defaultFieldValue('requisite'),
         paymentMethod:     defaultFieldValue('paymentMethod'),
-        services:          {
-            [ serviceDefaultName ]: {
-                serviceName: defaultFieldValue(
-                    `services[${serviceDefaultName}][serviceName]`,
-                ),
-                serviceCount: defaultFieldValue(
-                    `services[${serviceDefaultName}][serviceCount]`,
-                ),
-                servicePrice: defaultFieldValue(
-                    `services[${serviceDefaultName}][servicePrice]`,
-                ),
-            },
-        },
+        services:          defaultService(),
     },
     allServices:         [],
     clients:             [],
@@ -152,7 +156,9 @@ export default function reducer(state = ReducerState, action) {
                     ),
                     beginDatetime: customFieldValue(
                         'beginDatetime',
-                        moment(payload.order.beginDatetime),
+                        payload.order.beginDatetime
+                            ? moment(payload.order.beginDatetime)
+                            : void 0,
                     ),
                     requisite: customFieldValue(
                         'requisite',
@@ -168,7 +174,7 @@ export default function reducer(state = ReducerState, action) {
                     ),
                     services: {
                         ...customServices(payload.orderServices),
-                        ...state.fields.services,
+                        ...defaultService(),
                     },
                 },
                 selectedClient: payload.client || state.selectedClient,

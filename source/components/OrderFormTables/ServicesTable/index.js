@@ -122,20 +122,16 @@ class ServicesTable extends Component {
                 title:     '',
                 dataIndex: 'delete',
                 render:    (text, record) => {
-                    const dataSource = _(this.props.services)
-                        .toPairs()
-                        .map(([ key, value ]) => ({ ...value, key }))
-                        .value();
+                    const dataSource = this.props.services;
 
-                    return dataSource.length > 1 &&
-                        dataSource.length - 1 !== dataSource.indexOf(record) ? (
-                            <Popconfirm
-                                title='Sure to delete?'
-                                onConfirm={ () => this.onDelete(record.key) }
-                            >
-                                <Icon type='delete' className={ Styles.deleteIcon } />
-                            </Popconfirm>
-                        ) : null;
+                    return dataSource[ record.key ].serviceName.value ? (
+                        <Popconfirm
+                            title='Sure to delete?'
+                            onConfirm={ () => this.onDelete(record.key) }
+                        >
+                            <Icon type='delete' className={ Styles.deleteIcon } />
+                        </Popconfirm>
+                    ) : null;
                 },
             },
         ];
