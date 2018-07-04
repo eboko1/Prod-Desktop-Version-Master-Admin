@@ -13,7 +13,7 @@ import {
 } from '../modules';
 
 // Plugins
-import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+// import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
 
 export const generateProductionConfiguration = () =>
@@ -73,7 +73,12 @@ export const generateProductionConfiguration = () =>
                         test:    /\.css$/,
                         include: [ source, /node_modules/ ],
                         use:     [
-                            MiniCssExtractPlugin.loader,
+                            {
+                                loader:  'style-loader',
+                                options: {
+                                    sourceMap: true,
+                                },
+                            },
                             {
                                 loader:  'css-loader',
                                 options: {
@@ -82,13 +87,23 @@ export const generateProductionConfiguration = () =>
                             },
                             loadPostCSS(),
                         ],
+                        // use:     [
+                        //     MiniCssExtractPlugin.loader,
+                        //     {
+                        //         loader:  'css-loader',
+                        //         options: {
+                        //             sourceMap: true,
+                        //         },
+                        //     },
+                        //     loadPostCSS(),
+                        // ],
                     },
                 ],
             },
             plugins: [
                 new MiniCssExtractPlugin({
-                    filename:      'css/[contenthash].[hash:5].css',
-                    chunkFilename: 'css/[contenthash].[hash:5].css',
+                    // filename:      'css/[contenthash].[hash:5].css',
+                    // chunkFilename: 'css/[contenthash].[hash:5].css',
                 }),
                 new CleanWebpackPlugin(build, {
                     allowExternal: true,
