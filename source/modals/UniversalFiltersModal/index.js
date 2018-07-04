@@ -216,40 +216,6 @@ export default class UniversalFiltersModal extends Component {
                         </FormItem>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters.cancelReason' />
-                            }
-                        >
-                            <DecoratedSelect
-                                field='cancelReason'
-                                mode='multiple'
-                                showSearch
-                                getFieldDecorator={ getFieldDecorator }
-                                // style={ { width: 200 } }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters.cancelReason' />
-                                }
-                                // optionFilterProp='children'
-                                getPopupContainer={ () => modalContentDivWrapper }
-                                // options={ creationReasons }
-                                // optionValue='creationReason'
-                                // optionLabel='creationReason'
-                            >
-                                { orderComments
-                                    .map(
-                                        ({ status, id, comment }) =>
-                                            status === 'cancel' ? (
-                                                <Option value={ id } key={ v4() }>
-                                                    { comment }
-                                                </Option>
-                                            ) : 
-                                                false
-                                        ,
-                                    )
-                                    .filter(Boolean) }
-                            </DecoratedSelect>
-                        </FormItem>
-                        <FormItem
-                            label={
                                 <FormattedMessage id='universal_filters.service' />
                             }
                         >

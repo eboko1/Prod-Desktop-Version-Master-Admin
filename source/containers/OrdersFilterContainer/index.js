@@ -2,10 +2,12 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Button, Input, Radio, Icon, Slider } from 'antd';
+import { withRouter } from 'react-router';
+import { Button, Input, Radio, Icon, Slider, Select } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Catcher } from 'commons';
 import Styles from './styles.m.css';
+import { v4 } from 'uuid';
 
 // proj
 import {
@@ -16,16 +18,20 @@ import {
     setOrdersNPSFilter,
 } from 'core/orders/duck';
 
+import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
+
 // own
 const Search = Input.Search;
+const Option = Select.Option;
 const ButtonGroup = Button.Group;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 const mapStateToProps = state => {
     return {
-        stats:  state.orders.stats,
-        filter: state.orders.filter,
+        stats:         state.orders.stats,
+        filter:        state.orders.filter,
+        orderComments: state.forms.universalFiltersForm.orderComments,
     };
 };
 
@@ -37,18 +43,35 @@ const mapDispatchToProps = dispatch => {
             setOrdersStatusFilter,
             setOrdersSearchFilter,
             setOrdersNPSFilter,
+            fetchUniversalFiltersForm,
         },
         dispatch,
     );
 };
 
+@withRouter
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class OrdersFilterContainer extends Component {
-    static defaultProps = {
-        min: 0,
-        max: 10,
-    };
+    componentDidMount() {
+        const status = this.props.match.params.ordersStatuses;
+        const { fetchUniversalFiltersForm } = this.props;
+
+        if (status === 'cancel') {
+            fetchUniversalFiltersForm();
+        }
+    }
+
+    componentDidUpdate() {
+        const status = this.props.match.params.ordersStatuses;
+        const { orderComments, fetchUniversalFiltersForm } = this.props;
+        // TODO check []
+        if (status === 'cancel') {
+            if (!orderComments) {
+                fetchUniversalFiltersForm();
+            }
+        }
+    }
 
     handleOrdersSearch(value) {
         const { setOrdersSearchFilter, fetchOrders, filter } = this.props;
@@ -72,7 +95,7 @@ export default class OrdersFilterContainer extends Component {
     };
 
     render() {
-        const { status, stats, intl, filter, min, max } = this.props;
+        const { status, stats, intl, filter, orderComments } = this.props;
 
         // const mid = ((max - min) / 2).toFixed(5);
         // const preColor = value >= mid ? '' : 'rgba(0, 0, 0, .45)';
@@ -213,6 +236,29 @@ export default class OrdersFilterContainer extends Component {
                             />
                             { /* <Icon style={ { color: nextColor } } type='smile-o' /> */ }
                         </div>
+                    ) }
+                    { status === 'cancel' &&
+                        orderComments && (
+                        <Select
+                            width={ 200 }
+                            mode='multiple'
+                            placeholder={
+                                <FormattedMessage id='universal_filters.cancelReason' />
+                            }
+                        >
+                            { orderComments
+                                .map(
+                                    ({ status, id, comment }) =>
+                                        status === 'cancel' ? (
+                                            <Option value={ id } key={ v4() }>
+                                                { comment }
+                                            </Option>
+                                        ) : 
+                                            false
+                                    ,
+                                )
+                                .filter(Boolean) }
+                        </Select>
                     ) }
                 </div>
             </Catcher>

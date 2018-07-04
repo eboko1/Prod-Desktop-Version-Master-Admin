@@ -34,7 +34,7 @@ const ReducerState = {
             dirty:      false,
         },
     },
-    orderComments:   [],
+    orderComments:   void 0, // []
     services:        [],
     managers:        [],
     employees:       [],

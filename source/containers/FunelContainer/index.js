@@ -11,6 +11,7 @@ import {
     setOrdersStatusFilter,
     resetOrdersDaterangeFilter,
 } from 'core/orders/duck';
+
 import { images } from 'utils';
 import book from 'routes/book';
 
@@ -35,7 +36,7 @@ class FunelContainer extends Component {
     }
 
     setStatus = status => {
-        if (status === 'success' || status === 'canceled') {
+        if (status === 'success' || status === 'cancel') {
             this.props.resetOrdersDaterangeFilter();
         }
 
@@ -128,7 +129,7 @@ class FunelContainer extends Component {
                 </div>
                 <NavLink
                     exact
-                    to={ `${book.orders}/canceled` }
+                    to={ `${book.orders}/cancel` }
                     className={ `${Styles.link} ${Styles.canceled}` }
                     activeClassName={ Styles.active }
                     onClick={ () => this.setStatus('cancel') }

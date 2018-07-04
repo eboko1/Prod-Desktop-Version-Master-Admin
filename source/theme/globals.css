@@ -34,3 +34,7 @@ a {
 .ant-modal-mask {
     z-index: 2000;
 }
+
+/* .ant-tooltip {
+    z-index: 50;
+} */

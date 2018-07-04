@@ -79,7 +79,7 @@ class OrdersContainer extends Component {
             { route: /orders\/success/, statuses: 'success' },
             { route: /orders\/reviews/, statuses: 'review' },
             { route: /orders\/invitations/, statuses: 'invite' },
-            { route: /orders\/canceled/, statuses: 'cancel' },
+            { route: /orders\/cancel/, statuses: 'cancel' },
         ];
         const matchedRoutes = statusesMap.filter(statusConfig =>
             properties.location.pathname.match(statusConfig.route));

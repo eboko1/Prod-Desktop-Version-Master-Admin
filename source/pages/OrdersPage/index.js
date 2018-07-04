@@ -8,6 +8,7 @@ import { Button, Radio } from 'antd';
 
 // proj
 import { fetchOrders, setOrdersDaterangeFilter } from 'core/orders/duck';
+import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { setModal, MODALS } from 'core/modals/duck';
 
 import { Layout } from 'commons';
@@ -30,6 +31,7 @@ const mapState = state => {
         ordersDaterangeFilter: state.orders.filter.daterange,
         filter:                state.orders.filter,
         collapsed:             state.ui.get('collapsed'),
+        // orderComments:         state.forms.universalFiltersForm.orderComments,
     };
 };
 
@@ -37,11 +39,38 @@ const mapDispatch = {
     fetchOrders,
     setOrdersDaterangeFilter,
     setModal,
+    fetchUniversalFiltersForm,
 };
 
 @withRouter
 @connect(mapState, mapDispatch)
 class OrdersPage extends Component {
+    // componentDidMount() {
+    //     const status = this.props.match.params.ordersStatuses;
+    //     const { fetchUniversalFiltersForm } = this.props;
+    //
+    //     if (status === 'cancel') {
+    //         fetchUniversalFiltersForm();
+    //     }
+    // }
+    //
+    // componentDidUpdate(prevProps) {
+    //     const status = this.props.match.params.ordersStatuses;
+    //     const { orderComments, fetchUniversalFiltersForm } = this.props;
+    //
+    //     if (status === 'cancel') {
+    //         console.log('→ UPDATE');
+    //         console.log('→ prevProps.orderComments', prevProps.orderComments);
+    //         console.log('→ orderComments', orderComments);
+    //         if (!orderComments) {
+    //             console.log('→ UPDATE 2');
+    //             fetchUniversalFiltersForm();
+    //         } else if (prevProps.orderComments === orderComments) {
+    //             console.log('→ UPDATE 3');
+    //         }
+    //     }
+    // }
+
     getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
         switch (status) {
@@ -57,7 +86,7 @@ class OrdersPage extends Component {
                 return <FormattedMessage id='reviews' />;
             case 'invitations':
                 return <FormattedMessage id='invitations' />;
-            case 'canceled':
+            case 'cancel':
                 return <FormattedMessage id='cancels' />;
 
             default:
@@ -90,7 +119,7 @@ class OrdersPage extends Component {
                 description={ <FormattedMessage id='orders-page.description' /> }
                 controls={
                     <div className={ Styles.controls }>
-                        { [ 'success', 'canceled' ].indexOf(status) < 0 && (
+                        { [ 'success', 'cancel' ].indexOf(status) < 0 && (
                             <RadioGroup
                                 defaultValue='all'
                                 // defaultValue={ ordersDaterangeFilter }
@@ -115,8 +144,7 @@ class OrdersPage extends Component {
                             </RadioGroup>
                         ) }
                         <div className={ Styles.buttonGroup }>
-                            { (status === 'canceled' ||
-                                status === 'success') && (
+                            { (status === 'cancel' || status === 'success') && (
                                 <Button
                                     type='primary'
                                     onClick={ () =>
@@ -140,9 +168,12 @@ class OrdersPage extends Component {
                         Styles.funelWithFiltersCollapsed}` }
                 >
                     <FunelContainer />
-                    <OrdersFilterContainer status={ status } />
+                    <OrdersFilterContainer
+                        status={ status }
+                        orderComments={ this.props.orderComments }
+                    />
                 </section>
-                { (status === 'success' || status === 'canceled') && (
+                { (status === 'success' || status === 'cancel') && (
                     <section
                         className={ `${Styles.universalFilters} ${collapsed &&
                             Styles.universalFiltersCollapsed}` }
@@ -152,7 +183,7 @@ class OrdersPage extends Component {
                 ) }
                 <section
                     className={
-                        [ 'success', 'canceled' ].indexOf(status) > -1
+                        [ 'success', 'cancel' ].indexOf(status) > -1
                             ? `${Styles.ordersWrrapper} ${
                                 Styles.ordersWrrapperUF
                             }`

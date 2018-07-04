@@ -22,6 +22,7 @@ export const RESET_ORDERS_DATERANGE_FILTER = `${prefix}/RESET_ORDERS_DATERANGE_F
 export const SET_ORDERS_STATUS_FILTER = `${prefix}/SET_ORDERS_STATUS_FILTER`;
 export const SET_ORDERS_SEARCH_FILTER = `${prefix}/SET_ORDERS_SEARCH_FILTER`;
 export const SET_ORDERS_NPS_FILTER = `${prefix}/SET_ORDERS_NPS_FILTER`;
+export const FETCH_ORDERS_CANCEL_REASON_FILTER = `${prefix}/FETCH_CANCEL_REASON_FILTER`;
 // universal UniversalFilters
 export const FETCH_STATS_COUNTS_PANEL = `${prefix}/FETCH_STATS_COUNTS_PANEL`;
 export const FETCH_STATS_COUNTS_PANEL_SUCCESS = `${prefix}/FETCH_STATS_COUNTS_PANEL_SUCCESS`;
@@ -42,12 +43,13 @@ const ReducerState = {
     count:  0,
     data:   [],
     filter: {
-        page:      1,
-        status:    'not_complete,required,reserve,call',
-        query:     '',
-        daterange: {},
-        minNps:    void 0,
-        maxNps:    void 0,
+        page:          1,
+        status:        'not_complete,required,reserve,call',
+        query:         '',
+        daterange:     {},
+        minNps:        void 0,
+        maxNps:        void 0,
+        orderComments: void 0,
     },
     statsCountsPanel: {
         stats: {},
