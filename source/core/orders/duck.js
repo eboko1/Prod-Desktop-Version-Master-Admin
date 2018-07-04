@@ -21,6 +21,7 @@ export const SET_ORDERS_DATERANGE_FILTER = `${prefix}/SET_ORDERS_DATERANGE_FILTE
 export const RESET_ORDERS_DATERANGE_FILTER = `${prefix}/RESET_ORDERS_DATERANGE_FILTER`;
 export const SET_ORDERS_STATUS_FILTER = `${prefix}/SET_ORDERS_STATUS_FILTER`;
 export const SET_ORDERS_SEARCH_FILTER = `${prefix}/SET_ORDERS_SEARCH_FILTER`;
+export const SET_ORDERS_NPS_FILTER = `${prefix}/SET_ORDERS_NPS_FILTER`;
 // universal UniversalFilters
 export const FETCH_STATS_COUNTS_PANEL = `${prefix}/FETCH_STATS_COUNTS_PANEL`;
 export const FETCH_STATS_COUNTS_PANEL_SUCCESS = `${prefix}/FETCH_STATS_COUNTS_PANEL_SUCCESS`;
@@ -45,6 +46,8 @@ const ReducerState = {
         status:    'not_complete,required,reserve,call',
         query:     '',
         daterange: {},
+        minNps:    void 0,
+        maxNps:    void 0,
     },
     statsCountsPanel: {
         stats: {},
@@ -114,6 +117,17 @@ export default function reducer(state = ReducerState, action) {
                     ...state.filter,
                     page:  1,
                     query: payload,
+                },
+            };
+
+        case SET_ORDERS_NPS_FILTER:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    page:   1,
+                    minNps: payload.minNps,
+                    maxNps: payload.maxNps,
                 },
             };
 
@@ -229,6 +243,11 @@ export const setOrdersStatusFilter = statusFilter => ({
 export const setOrdersSearchFilter = searchFilter => ({
     type:    SET_ORDERS_SEARCH_FILTER,
     payload: searchFilter,
+});
+
+export const setOrdersNPSFilter = nps => ({
+    type:    SET_ORDERS_NPS_FILTER,
+    payload: nps,
 });
 
 // Universal Filters
