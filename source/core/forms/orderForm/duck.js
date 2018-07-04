@@ -120,6 +120,9 @@ const ReducerState = {
         emails:     [],
         vehicles:   [],
     },
+    order: {
+
+    },
 };
 
 function calculateAllServices(allServices, selectedServices) {
