@@ -46,7 +46,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) =>
+        render:    (_, order) => 
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -215,14 +215,17 @@ export function columnsConfig(
         render:    (_, order) => {
             if (order.nps) {
                 return (
-                    <div
-                        className={ classNames(Styles.nps, {
-                            [ Styles.npsMid ]: order.nps === 7 || order.nps === 8,
-                            [ Styles.npsLow ]: order.nps <= 6,
-                        }) }
-                    >
-                        { order.nps }
-                    </div>
+                    <a href={ `${book.oldApp.reviews}/${order.reviewIds[ 0 ]}` }>
+                        <div
+                            className={ classNames(Styles.nps, {
+                                [ Styles.npsMid ]:
+                                    order.nps === 7 || order.nps === 8,
+                                [ Styles.npsLow ]: order.nps <= 6,
+                            }) }
+                        >
+                            { order.nps }
+                        </div>
+                    </a>
                 );
             }
 
