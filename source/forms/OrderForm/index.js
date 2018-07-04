@@ -94,6 +94,19 @@ export class OrderForm extends Component {
             selectedClient,
         } = this.props;
         const { getFieldDecorator, getFieldsError } = this.props.form;
+        const {
+            fields: {
+                clientVehicle: { value: selectedVehicleId },
+            },
+        } = this.props;
+        const selectedVehicle =
+            this.props.selectedClient &&
+            selectedVehicleId &&
+            _.first(
+                this.props.selectedClient.vehicles.filter(
+                    ({ id }) => id === selectedVehicleId,
+                ),
+            );
 
         console.log('selectedClient', this.props.selectedClient);
 
@@ -244,7 +257,11 @@ export class OrderForm extends Component {
                         })(
                             <Select placeholder='Выберете менеджера'>
                                 { managers.map(manager => (
-                                    <Option disabled={ manager.disabled } value={ manager.id } key={ v4() }>
+                                    <Option
+                                        disabled={ manager.disabled }
+                                        value={ manager.id }
+                                        key={ v4() }
+                                    >
                                         { `${manager.managerName} ${
                                             manager.managerSurname
                                         }` }
@@ -396,7 +413,13 @@ export class OrderForm extends Component {
                                 { ...formItemAutoColLayout }
                                 colon={ false }
                             >
-                                <Input />
+                                <Input
+                                    disabled
+                                    value={
+                                        selectedVehicle &&
+                                        selectedVehicle.number
+                                    }
+                                />
                             </FormItem>
                             <FormItem
                                 label={
@@ -414,7 +437,12 @@ export class OrderForm extends Component {
                                 }
                                 colon={ false }
                             >
-                                <Input />
+                                <Input
+                                    disabled
+                                    value={
+                                        selectedVehicle && selectedVehicle.vin
+                                    }
+                                />
                             </FormItem>
                             <FormItem { ...formItemAutoColLayout }>
                                 <a
@@ -522,7 +550,7 @@ export class OrderForm extends Component {
                         tab={ `${this.props.intl.formatMessage({
                             id:             'add_order_form.services',
                             defaultMessage: 'Services',
-                        })} (${ countServices })` }
+                        })} (${countServices})` }
                         key='1'
                     >
                         <ServicesTable
