@@ -60,6 +60,7 @@ export default class UniversalFilters extends Component {
     };
 
     clearUniversalFilters = filterNames => {
+        console.log('→ filterNames', filterNames);
         const updateFilters = _.fromPairs(
             filterNames.map(filterName => [ filterName, void 0 ]),
         );
@@ -106,7 +107,6 @@ export default class UniversalFilters extends Component {
                     .pickBy(moment.isMoment)
                     .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
                     .value();
-
 
                 this.props.setUniversalFilters({
                     ...values,
