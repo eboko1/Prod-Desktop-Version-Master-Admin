@@ -13,7 +13,7 @@ import {
 } from '../modules';
 
 // Plugins
-// import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import CleanWebpackPlugin from 'clean-webpack-plugin';
 
 export const generateProductionConfiguration = () =>

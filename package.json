@@ -101,6 +101,7 @@
         "jest-runner-stylelint": "~1.0.0",
         "less-loader": "^4.1.0",
         "less-vars-to-js": "^1.2.1",
+        "mini-css-extract-plugin": "0.4.1",
         "nodemon": "~1.17.1",
         "npm-run-all": "~4.1.2",
         "postcss-cssnext": "~3.1.0",
