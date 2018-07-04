@@ -120,9 +120,7 @@ const ReducerState = {
         emails:     [],
         vehicles:   [],
     },
-    order: {
-
-    },
+    order: {},
 };
 
 function calculateAllServices(allServices, selectedServices) {
@@ -147,6 +145,28 @@ function calculateAllServices(allServices, selectedServices) {
     );
 }
 
+function mergeAllServicesOrderServices(allServices, orderServices) {
+    const allServicesKeys = allServices.map(
+        ({ serviceId, type }) => `${type}|${serviceId}`,
+    );
+    const requiredOrderServices = orderServices
+        .filter(
+            ({ serviceId, type }) =>
+                !allServicesKeys.includes(`${type}|${serviceId}`),
+        )
+        .map(({ id, serviceName, type }) => ({
+            id,
+            serviceName,
+            servicePrice: null,
+            serviceHours: null,
+            description:  '',
+            serviceId:    id,
+            type:         `custom|${type}`,
+        }));
+
+    return [ ...allServices, ...requiredOrderServices ];
+}
+
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
 
@@ -155,6 +175,10 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 ...payload,
+                allServices: mergeAllServicesOrderServices(
+                    payload.allServices,
+                    payload.orderServices,
+                ),
                 fields: {
                     ...state.fields,
                     clientPhone: customFieldValue(
