@@ -70,7 +70,7 @@ const defaultService = () => {
 const customServices = services =>
     _.fromPairs(
         services.map(({ serviceId, type, count, price, serviceName }) => [
-            `${v4()}`,
+            `${type}|${serviceId}`,
             {
                 serviceName: customFieldValue(
                     `services[${type}|${serviceId}][serviceName]`,
