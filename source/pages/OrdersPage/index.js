@@ -8,6 +8,7 @@ import { Button, Radio } from 'antd';
 
 // proj
 import { fetchOrders, setOrdersDaterangeFilter } from 'core/orders/duck';
+import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { setModal, MODALS } from 'core/modals/duck';
 
 import { Layout } from 'commons';
@@ -37,6 +38,7 @@ const mapDispatch = {
     fetchOrders,
     setOrdersDaterangeFilter,
     setModal,
+    fetchUniversalFiltersForm,
 };
 
 @withRouter
@@ -47,7 +49,7 @@ class OrdersPage extends Component {
         switch (status) {
             case 'appointments':
                 return <FormattedMessage id='appointments' />;
-            case 'approved':
+            case 'approve':
                 return <FormattedMessage id='records' />;
             case 'in-progress':
                 return <FormattedMessage id='repairs' />;
@@ -57,7 +59,7 @@ class OrdersPage extends Component {
                 return <FormattedMessage id='reviews' />;
             case 'invitations':
                 return <FormattedMessage id='invitations' />;
-            case 'canceled':
+            case 'cancel':
                 return <FormattedMessage id='cancels' />;
 
             default:
@@ -77,7 +79,7 @@ class OrdersPage extends Component {
 
         this.props.fetchOrders(this.props.filter);
     };
-
+    // eslint-disable-next-line
     render() {
         const { collapsed } = this.props;
 
@@ -90,7 +92,7 @@ class OrdersPage extends Component {
                 description={ <FormattedMessage id='orders-page.description' /> }
                 controls={
                     <div className={ Styles.controls }>
-                        { [ 'success', 'canceled' ].indexOf(status) < 0 && (
+                        { [ 'success', 'cancel' ].indexOf(status) < 0 && (
                             <RadioGroup
                                 defaultValue='all'
                                 // defaultValue={ ordersDaterangeFilter }
@@ -115,8 +117,7 @@ class OrdersPage extends Component {
                             </RadioGroup>
                         ) }
                         <div className={ Styles.buttonGroup }>
-                            { (status === 'canceled' ||
-                                status === 'success') && (
+                            { (status === 'cancel' || status === 'success') && (
                                 <Button
                                     type='primary'
                                     onClick={ () =>
@@ -137,12 +138,12 @@ class OrdersPage extends Component {
             >
                 <section
                     className={ `${Styles.funelWithFilters} ${collapsed &&
-                        Styles.funelWithFiltersCollapsed}` }
+                        Styles.funelWithFiltersCollapsed} ${[ 'success', 'cancel' ].indexOf(status) < 0 && Styles.funelWithFiltersShadow}` }
                 >
                     <FunelContainer />
                     <OrdersFilterContainer status={ status } />
                 </section>
-                { (status === 'success' || status === 'canceled') && (
+                { (status === 'success' || status === 'cancel') && (
                     <section
                         className={ `${Styles.universalFilters} ${collapsed &&
                             Styles.universalFiltersCollapsed}` }
@@ -152,7 +153,7 @@ class OrdersPage extends Component {
                 ) }
                 <section
                     className={
-                        [ 'success', 'canceled' ].indexOf(status) > -1
+                        [ 'success', 'cancel' ].indexOf(status) > -1
                             ? `${Styles.ordersWrrapper} ${
                                 Styles.ordersWrrapperUF
                             }`

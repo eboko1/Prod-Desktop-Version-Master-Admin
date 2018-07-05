@@ -11,6 +11,7 @@ import {
     setOrdersStatusFilter,
     resetOrdersDaterangeFilter,
 } from 'core/orders/duck';
+
 import { images } from 'utils';
 import book from 'routes/book';
 
@@ -35,7 +36,7 @@ class FunelContainer extends Component {
     }
 
     setStatus = status => {
-        if (status === 'success' || status === 'canceled') {
+        if (status === 'success' || status === 'cancel') {
             this.props.resetOrdersDaterangeFilter();
         }
 
@@ -52,28 +53,23 @@ class FunelContainer extends Component {
                     to={ `${book.orders}/appointments` }
                     activeClassName={ Styles.active }
                     className={ Styles.link }
-                    onClick={ () =>
-                        this.setStatus('not_complete,required,reserve,call')
-                    }
+                    onClick={ () => this.setStatus('not_complete,required,call') }
                 >
                     <FormattedMessage id='funel.appointments' />
                     <div>
-                        ({ stats.not_complete +
-                            stats.call +
-                            stats.reserve +
-                            stats.required })
+                        ({ stats.not_complete + stats.call + stats.required })
                     </div>
                     <img src={ images.funelTopLeft } />
                 </NavLink>
                 <NavLink
                     exact
-                    to={ `${book.orders}/approved` }
+                    to={ `${book.orders}/approve` }
                     className={ Styles.link }
                     activeClassName={ Styles.active }
-                    onClick={ () => this.setStatus('approve') }
+                    onClick={ () => this.setStatus('approve,reserve') }
                 >
                     <FormattedMessage id='funel.record' />
-                    <div>({ stats.approve })</div>
+                    <div>({ stats.approve + stats.reserve })</div>
                     <img src={ images.funelRight } />
                 </NavLink>
                 <NavLink
@@ -128,7 +124,7 @@ class FunelContainer extends Component {
                 </div>
                 <NavLink
                     exact
-                    to={ `${book.orders}/canceled` }
+                    to={ `${book.orders}/cancel` }
                     className={ `${Styles.link} ${Styles.canceled}` }
                     activeClassName={ Styles.active }
                     onClick={ () => this.setStatus('cancel') }

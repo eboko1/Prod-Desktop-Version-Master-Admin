@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
 
@@ -13,6 +13,7 @@ import {
     setUniversalFilters,
 } from 'core/orders/duck';
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Catcher } from 'commons';
 import { UniversalFiltersModal } from 'modals';
@@ -23,8 +24,9 @@ import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
-        stats:  state.orders.statsCountsPanel.stats.stats,
-        filter: state.orders.filter,
+        stats:                state.orders.statsCountsPanel.stats.stats,
+        filter:               state.orders.filter,
+        universaFiltersModal: state.modals.modal,
     };
 };
 
@@ -34,29 +36,16 @@ const mapDispatchToProps = {
     fetchUniversalFiltersForm,
     setUniversalFilters,
     onChangeUniversalFiltersForm,
+    setModal,
+    resetModal,
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
 export default class UniversalFilters extends Component {
-    constructor(props) {
-        super(props);
-
-        this.clearUniversalFilters = this.clearUniversalFilters.bind(this);
-    }
-
-    state = {
-        visible: false,
-    };
-
-    setUniversalFiltersModal = visible => {
-        this.setState(state => {
-            if (!state.visible) {
-                this.props.fetchStatsCounts();
-                this.props.fetchUniversalFiltersForm();
-            }
-
-            return { visible };
-        });
+    setUniversalFiltersModal = () => {
+        this.props.setModal(MODALS.UNIVERSAL_FILTERS);
+        this.props.fetchStatsCounts();
+        this.props.fetchUniversalFiltersForm();
     };
 
     clearUniversalFilters = filterNames => {
@@ -77,7 +66,7 @@ export default class UniversalFilters extends Component {
 
     handleUniversalFiltersModalSubmit = () => {
         const form = this.formRef.props.form;
-        this.setUniversalFiltersModal(false);
+        this.props.resetModal();
         form.validateFields((err, values) => {
             if (!err) {
                 console.log(
@@ -107,7 +96,6 @@ export default class UniversalFilters extends Component {
                     .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
                     .value();
 
-
                 this.props.setUniversalFilters({
                     ...values,
                     ...modelsTransformQuery,
@@ -119,32 +107,33 @@ export default class UniversalFilters extends Component {
     };
 
     render() {
+        const { resetModal, universaFiltersModal, stats, filter } = this.props;
+
         return (
             <Catcher>
                 <section className={ Styles.filters }>
                     <Button
                         type='primary'
-                        onClick={ () => this.setUniversalFiltersModal(true) }
+                        onClick={ () => this.setUniversalFiltersModal() }
                     >
                         Фильтр
                     </Button>
                     <UniversalFiltersTags
-                        filter={ this.props.filter }
-                        clearUniversalFilters={ this.clearUniversalFilters }
+                        filter={ filter }
+                        clearUniversalFilters={ this.clearUniversalFilters.bind(
+                            this,
+                        ) }
                     />
                 </section>
                 <UniversalFiltersModal
                     wrappedComponentRef={ this.saveFormRef }
-                    visible={ this.state.visible }
-                    show={ this.setUniversalFiltersModal }
-                    stats={ this.props.stats }
-                    filter={ this.props.filter }
+                    visible={ universaFiltersModal }
+                    stats={ stats }
+                    filter={ filter }
                     handleUniversalFiltersModalSubmit={
                         this.handleUniversalFiltersModalSubmit
                     }
-                    setUniversalFiltersModal={ this.setUniversalFiltersModal }
-                    // onSubmit={}
-                    // onClose={}
+                    resetModal={ () => resetModal() }
                 />
             </Catcher>
         );

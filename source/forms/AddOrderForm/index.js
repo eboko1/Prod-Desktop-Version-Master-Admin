@@ -23,6 +23,8 @@ import {
     fetchAddOrderForm,
     onChangeAddOrderForm,
 } from 'core/forms/addOrderForm/duck';
+// import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
+// import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import {
     DecoratedTextArea,
@@ -163,7 +165,7 @@ export class AddOrderForm extends Component {
                             <RadioButton value='questionable'>
                                 Questionable
                             </RadioButton>
-                            <RadioButton value='approved'>Approved</RadioButton>
+                            <RadioButton value='approve'>Approved</RadioButton>
                         </RadioGroup>,
                     ) }
                 </FormItem> */ }
@@ -282,7 +284,7 @@ export class AddOrderForm extends Component {
                                     type='plus'
                                     className={ Styles.addClientIcon }
                                     onClick={ () =>
-                                        this.props.setAddClientModal(true)
+                                        this.props.setAddClientModal()
                                     }
                                 />
                             </FormItem>

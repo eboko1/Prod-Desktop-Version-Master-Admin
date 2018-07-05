@@ -52,8 +52,9 @@ const { TextArea } = Input;
 
 @injectIntl
 @withReduxForm({
-    name:    'orderForm',
-    actions: {
+    name:            'orderForm',
+    debouncedFields: [ 'comment', 'recommendation' ],
+    actions:         {
         change: onChangeOrderForm,
         setClientSelection,
         onChangeOrderServices,
@@ -191,7 +192,7 @@ export class OrderForm extends Component {
                             <RadioButton value='questionable'>
                                 Questionable
                             </RadioButton>
-                            <RadioButton value='approved'>Approved</RadioButton>
+                            <RadioButton value='approve'>Approved</RadioButton>
                         </RadioGroup>,
                     ) }
                 </FormItem> */ }

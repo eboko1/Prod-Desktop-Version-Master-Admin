@@ -1,9 +1,6 @@
 // proj
 import book from 'routes/book';
 
-//__OLD_UI_URL__ will be replaced by webpack build
-const OLD_UI_URL = __OLD_UI_URL__;
-
 export default {
     sections: [
         /*  Operations submenu*/
@@ -14,7 +11,7 @@ export default {
             items:    [
                 {
                     key:  '/dashboard',
-                    link: `${OLD_UI_URL}/dashboard`,
+                    link: book.oldApp.dashboard,
                     name: 'navigation.scheduler',
                 },
                 {
@@ -24,7 +21,7 @@ export default {
                 },
                 {
                     key:  '/tasks',
-                    link: `${OLD_UI_URL}/tasks`,
+                    link: book.oldApp.tasks,
                     name: 'navigation.tasks',
                 },
             ],
@@ -37,12 +34,12 @@ export default {
             items:    [
                 {
                     key:  '/clients',
-                    link: `${OLD_UI_URL}/clients`,
+                    link: book.oldApp.clients,
                     name: 'navigation.clients',
                 },
                 {
                     key:  '/employees',
-                    link: `${OLD_UI_URL}/employees`,
+                    link: book.oldApp.employees,
                     name: 'navigation.employees',
                 },
             ],
@@ -55,32 +52,32 @@ export default {
             items:    [
                 {
                     key:  '/control-panel',
-                    link: `${OLD_UI_URL}/control-panel`,
+                    link: book.oldApp.controlPanel,
                     name: 'navigation.control_panel',
                 },
                 {
                     key:  '/indicators',
-                    link: `${OLD_UI_URL}/universal-chart`,
+                    link: book.oldApp.indicators,
                     name: 'navigation.service_indicators',
                 },
                 {
                     key:  '/funel',
-                    link: `${OLD_UI_URL}/funel`,
+                    link: book.oldApp.funel,
                     name: 'navigation.funel',
                 },
                 {
                     key:  '/reviews',
-                    link: `${OLD_UI_URL}/reviews`,
+                    link: book.oldApp.reviews,
                     name: 'navigation.reviews',
                 },
                 {
                     key:  '/statistics',
-                    link: `${OLD_UI_URL}/statistics`,
+                    link: book.oldApp.statistics,
                     name: 'navigation.general_statistics',
                 },
                 {
                     key:  '/statistics/calls',
-                    link: `${OLD_UI_URL}/statistics/calls`,
+                    link: book.oldApp.statisticsCalls,
                     name: 'navigation.calls_statistics',
                 },
             ],
@@ -93,47 +90,47 @@ export default {
             items:    [
                 {
                     key:  '/settings',
-                    link: `${OLD_UI_URL}/settings`,
+                    link: book.oldApp.settings,
                     name: 'navigation.main',
                 },
                 {
                     key:  '/prices',
-                    link: `${OLD_UI_URL}/settings/specialization`,
+                    link: book.oldApp.settingsSpecialization,
                     name: 'navigation.specialization_and_prices',
                 },
                 {
                     key:  '/services',
-                    link: `${OLD_UI_URL}/settings/services`,
+                    link: book.oldApp.settingsServices,
                     name: 'navigation.services',
                 },
                 {
                     key:  '/stocks',
-                    link: `${OLD_UI_URL}/settings/offers`,
+                    link: book.oldApp.settingsOffers,
                     name: 'navigation.stocks',
                 },
                 {
                     key:  '/news',
-                    link: `${OLD_UI_URL}/settings/news`,
+                    link: book.oldApp.settingsNews,
                     name: 'navigation.news',
                 },
                 {
                     key:  '/articles',
-                    link: `${OLD_UI_URL}/settings/articles`,
+                    link: book.oldApp.settingsArticles,
                     name: 'navigation.articles',
                 },
                 {
                     key:  '/media',
-                    link: `${OLD_UI_URL}/settings/gallery`,
+                    link: book.oldApp.settingsGallery,
                     name: 'navigation.media_files',
                 },
                 {
                     key:  '/managers',
-                    link: `${OLD_UI_URL}/settings/managers`,
+                    link: book.oldApp.settingsManagers,
                     name: 'navigation.system_managers',
                 },
                 {
                     key:  '/notice',
-                    link: `${OLD_UI_URL}/settings/notifications`,
+                    link: book.oldApp.settingsNotifications,
                     name: 'navigation.notice',
                 },
             ],
@@ -141,7 +138,7 @@ export default {
         {
             key:      '/suggest-idea',
             iconType: 'bulb',
-            link:     `${OLD_UI_URL}/feedback`,
+            link:     book.oldApp.feedback,
             name:     'navigation.suggest_idea',
         },
     ],

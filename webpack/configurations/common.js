@@ -23,7 +23,7 @@ const antdVariables = lessToJs(
 export const generateCommonConfiguration = () => {
     const BUILD_ENV = process.env.BUILD_ENV;
 
-    const { __API_URL__, __OLD_UI_URL__ } =  getConstants(BUILD_ENV);
+    const { __API_URL__, __OLD_APP_URL__ } =  getConstants(BUILD_ENV);
 
     return {
         entry: {
@@ -112,7 +112,7 @@ export const generateCommonConfiguration = () => {
                 __STAGE__:      BUILD_ENV === 'stage',
                 __PROD__:       BUILD_ENV === 'production',
                 __API_URL__:    JSON.stringify(__API_URL__),
-                __OLD_UI_URL__: JSON.stringify(__OLD_UI_URL__),
+                __OLD_APP_URL__: JSON.stringify(__OLD_APP_URL__),
             }),
         ],
     };

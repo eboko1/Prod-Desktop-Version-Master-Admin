@@ -9,8 +9,8 @@ deploy_dev:
     - dev
   script:
     - apt-get update && apt-get install --yes sshpass
-    - yarn install --unsafe-perm
-    - NODE_ENV=development yarn run build:dev
+    - yarn
+    - NODE_ENV=development yarn build:dev
     - export SSHPASS=$DEPLOY_PASS
     - tar czf - build | sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_DEV_HOST "mkdir -p $DEPLOY_PATH && cd $DEPLOY_PATH && tar xzf -"
 
@@ -25,8 +25,8 @@ deploy_test:
     - feature/docker
   script:
     - apt-get update && apt-get install --yes sshpass
-    - yarn install --unsafe-perm
-    - NODE_ENV=production yarn run build:stage
+    - yarn
+    - NODE_ENV=production yarn build:stage
     - export SSHPASS=$DEPLOY_PASS
     - tar czf - build configs | sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_TEST_HOST "mkdir -p $DEPLOY_PATH && cd $DEPLOY_PATH && tar xzf -"
 
@@ -41,8 +41,8 @@ deploy_stage:
     - stage
   script:
     - apt-get update && apt-get install --yes sshpass
-    - yarn install --unsafe-perm
-    - NODE_ENV=production yarn run build:stage
+    - yarn
+    - NODE_ENV=production yarn build:stage
     - export SSHPASS=$DEPLOY_PASS
     - tar czf - build configs | sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_TEST_HOST "mkdir -p $DEPLOY_PATH && cd $DEPLOY_PATH && tar xzf -"
 
@@ -60,8 +60,8 @@ deploy_prod:
     NODE_ENV: production
   script:
     - apt-get update && apt-get install --yes sshpass
-    - yarn install --unsafe-perm
-    - NODE_ENV=production yarn run build:prod
+    - yarn
+    - NODE_ENV=production yarn build:prod
     - export SSHPASS=$DEPLOY_PASS
     - tar czf - build configs | sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_PROD_HOST "mkdir -p $DEPLOY_PATH && cd $DEPLOY_PATH && tar xzf -"
 

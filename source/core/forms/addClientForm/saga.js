@@ -7,18 +7,18 @@ import { call, put, all, take } from 'redux-saga/effects';
 import { fetchAPI } from 'utils';
 
 // own
-import { fetchAddOrderFormSuccess, FETCH_ADD_CLIENT_FORM } from './duck';
+import { fetchAddClientFormSuccess, FETCH_ADD_CLIENT_FORM } from './duck';
 
-export function* fetchAddOrderFormSaga() {
+export function* fetchAddClientFormSaga() {
     while (true) {
         yield take(FETCH_ADD_CLIENT_FORM);
-        // TODO: change endpoint
-        const data = yield call(fetchAPI, 'GET', 'orders/clientForm');
 
-        yield put(fetchAddOrderFormSuccess(data));
+        const data = yield call(fetchAPI, 'GET', 'vehicles_info');
+
+        yield put(fetchAddClientFormSuccess(data));
     }
 }
 
 export function* saga() {
-    yield all([ call(fetchAddOrderFormSaga) ]);
+    yield all([ call(fetchAddClientFormSaga) ]);
 }

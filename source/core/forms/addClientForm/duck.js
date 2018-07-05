@@ -18,6 +18,14 @@ export const SUBMIT_ADD_CLIENT_FORM_SUCCESS = `${prefix}/SUBMIT_ADD_CLIENT_FORM_
 
 const ReducerState = {
     fields: {
+        year: {
+            errors:     void 0,
+            name:       'year',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
         name: {
             errors:     void 0,
             name:       'name',
@@ -67,18 +75,37 @@ const ReducerState = {
             dirty:      false,
         },
     },
+    data: {},
 };
 
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
 
     switch (type) {
+        // case ON_CHANGE_ADD_CLIENT_FORM:
+        //     return {
+        //         ...state,
+        //         fields: {
+        //             ...state.fields,
+        //             [ meta.field ]: { ...payload[ meta.field ] },
+        //         },
+        //     };
+
+        case FETCH_ADD_CLIENT_FORM_SUCCESS:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    ...payload,
+                },
+            };
+
         case ON_CHANGE_ADD_CLIENT_FORM:
             return {
                 ...state,
                 fields: {
                     ...state.fields,
-                    [ meta.field ]: { ...payload[ meta.field ] },
+                    ...payload,
                 },
             };
 
@@ -112,28 +139,28 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export const fetchAddOrderForm = () => ({
+export const fetchAddClientForm = () => ({
     type: FETCH_ADD_CLIENT_FORM,
 });
 
-export function fetchAddOrderFormSuccess(data) {
+export function fetchAddClientFormSuccess(data) {
     return {
         type:    FETCH_ADD_CLIENT_FORM_SUCCESS,
         payload: data,
     };
 }
 
-export const onChangeAddOrderForm = (fields, { form, field }) => ({
+export const onChangeAddClientForm = (fields, { form, field }) => ({
     type:    ON_CHANGE_ADD_CLIENT_FORM,
     payload: fields,
     meta:    { form, field },
 });
 
-export const submitAddOrderForm = addOrderForm => ({
+export const submitAddClientForm = addClientForm => ({
     type:    SUBMIT_ADD_CLIENT_FORM,
-    payload: addOrderForm,
+    payload: addClientForm,
 });
 
-export const submitAddOrderFormSuccess = () => ({
+export const submitAddClientFormSuccess = () => ({
     type: SUBMIT_ADD_CLIENT_FORM_SUCCESS,
 });

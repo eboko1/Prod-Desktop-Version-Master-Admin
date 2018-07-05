@@ -28,7 +28,7 @@ globals:
     __DEV__: false
     __PROD__: false
     __API_URL__: false
-    __OLD_UI_URL__: false
+    __OLD_APP_URL__: false
 
     # Globals for test environment
     React: false

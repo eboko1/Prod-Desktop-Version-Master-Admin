@@ -6,10 +6,14 @@ import orderReducer, { moduleName as order } from './orderForm/duck';
 import universalFiltersReducer, {
     moduleName as universalFilters,
 } from './universalFiltersForm/duck';
+import addClientReducer, {
+    moduleName as addClient,
+} from './addClientForm/duck';
 
 export const formsReducer = combineReducers({
     [ addOrder ]:         addOrderReducer,
     [ order ]:            orderReducer,
+    [ addClient ]:        addClientReducer,
     [ universalFilters ]: universalFiltersReducer,
 });
 
