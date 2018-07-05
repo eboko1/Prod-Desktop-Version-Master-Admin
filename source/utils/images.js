@@ -6,12 +6,8 @@ import exception500 from 'theme/images/exceptions/500.svg';
 import carbookLogo from 'theme/images/carbookLogo.png';
 import ecatLogo from 'theme/images/logos/ecatLogo.png';
 // Funel
-import funelTopLeft from 'theme/images/funel/funel_top-left.svg';
-import funelRight from 'theme/images/funel/funel_right.svg';
-import funelTopRight from 'theme/images/funel/funel_top-right.svg';
-import funelBottomLeft from 'theme/images/funel/funel_bottom-left.svg';
-import funelLeft from 'theme/images/funel/funel_left.svg';
-import funelBottomRight from 'theme/images/funel/funel_bottom-right.svg';
+import funelArrowCurvedLeft from 'theme/images/funel/funel_arrow-curved-left.svg';
+import funelArrowCurvedRight from 'theme/images/funel/funel_arrow-curved-right.svg';
 
 export default {
     // Exceptions
@@ -22,10 +18,6 @@ export default {
     carbookLogo,
     ecatLogo,
     // Funel
-    funelTopLeft,
-    funelLeft,
-    funelRight,
-    funelTopRight,
-    funelBottomLeft,
-    funelBottomRight,
+    funelArrowCurvedLeft,
+    funelArrowCurvedRight,
 };
