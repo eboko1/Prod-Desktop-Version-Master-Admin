@@ -15,8 +15,8 @@ export const servicesStats = (selectedServices, allServices) => {
         .values()
         .filter(service => _.get(service, 'serviceName.value'))
         .map(service => ({
-            price: ~~_.get(service, 'servicePrice.value'),
-            count: ~~_.get(service, 'serviceCount.value'),
+            price: Number(_.get(service, 'servicePrice.value')) || 0,
+            count: Number(_.get(service, 'serviceCount.value')) || 0,
             id:    _.get(service, 'serviceName.value'),
         }))
         .value();
@@ -27,7 +27,7 @@ export const servicesStats = (selectedServices, allServices) => {
         .value();
 
     const totalHours = selectedSimpleServices.reduce(
-        (prev, { id, count }) => prev + ~~allServicesHours[ id ] * count,
+        (prev, { id, count }) => prev + (Number(allServicesHours[ id ]) || 0) * count,
         15,
     );
 
@@ -39,8 +39,8 @@ export const detailsStats = (selectedDetails) => {
         .values()
         .filter(detail => _.get(detail, 'detailName.value'))
         .map(service => ({
-            price: ~~_.get(service, 'detailPrice.value'),
-            count: ~~_.get(service, 'detailCount.value'),
+            price: Number(_.get(service, 'detailPrice.value')) || 0,
+            count: Number(_.get(service, 'detailCount.value')) || 0,
             id:    _.get(service, 'detailName.value'),
         }))
         .value();
