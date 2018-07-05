@@ -268,11 +268,10 @@ function mergeAllDetailsOrderDetails(allDetails, orderDetails) {
 function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
     const requiredOrderBrands = orderDetails
         .filter(({ brandId }) => !brandId)
-        .map(({ brandName }) => ({
-            brandId: `custom|${v4()}`,
+        .map(({ brandName, id }) => ({
+            brandId: `custom|${id}`,
             brandName,
         }));
-    console.log(requiredOrderBrands);
 
     return [ ...allBrands, ...requiredOrderBrands ];
 }
