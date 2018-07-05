@@ -44,15 +44,6 @@ export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
  * Reducer
  * */
 
-const defaultFieldValue = name => ({
-    errors:     void 0,
-    name:       name,
-    touched:    true,
-    validating: false,
-    value:      void 0,
-    dirty:      false,
-});
-
 const customFieldValue = (name, value) => ({
     errors:     void 0,
     name:       name,
@@ -62,46 +53,33 @@ const customFieldValue = (name, value) => ({
     dirty:      false,
 });
 
-const defaultService = () => {
-    const serviceDefaultName = v4();
+const defaultFieldValue = name => customFieldValue(name, void 0);
+
+const generateNestedObject = (fields, fieldNameGenerator) => {
+    const randomName = v4();
+    const pairs = fields.map(name => [ name, defaultFieldValue(fieldNameGenerator(randomName, name)) ]);
 
     return {
-        [ serviceDefaultName ]: {
-            serviceName: defaultFieldValue(
-                `services[${serviceDefaultName}][serviceName]`,
-            ),
-            serviceCount: defaultFieldValue(
-                `services[${serviceDefaultName}][serviceCount]`,
-            ),
-            servicePrice: defaultFieldValue(
-                `services[${serviceDefaultName}][servicePrice]`,
-            ),
-        },
+        [ randomName ]: _.fromPairs(pairs),
     };
 };
 
-export const defaultDetail = () => {
-    const detailDefaultName = v4();
+const defaultService = () => {
+    const fields = [ 'serviceName', 'serviceCount', 'servicePrice' ];
 
-    return {
-        [ detailDefaultName ]: {
-            detailName: defaultFieldValue(
-                `details[${detailDefaultName}][detailName]`,
-            ),
-            detailBrandName: defaultFieldValue(
-                `details[${detailDefaultName}][detailBrandName]`,
-            ),
-            detailCode: defaultFieldValue(
-                `details[${detailDefaultName}][detailCode]`,
-            ),
-            detailCount: defaultFieldValue(
-                `details[${detailDefaultName}][detailCount]`,
-            ),
-            detailPrice: defaultFieldValue(
-                `details[${detailDefaultName}][detailPrice]`,
-            ),
-        },
-    };
+    return generateNestedObject(
+        fields,
+        (randomName, name) => `services[${randomName}][${name}]`,
+    );
+};
+
+export const defaultDetail = () => {
+    const fields = [ 'detailName', 'detailBrandName', 'detailCode', 'detailCount', 'detailPrice' ];
+
+    return generateNestedObject(
+        fields,
+        (randomName, name) => `details[${randomName}][${name}]`,
+    );
 };
 
 const customServices = services =>
@@ -181,6 +159,9 @@ const createDefaultState = () => ({
         clientRequisite:   defaultFieldValue('clientRequisite'),
         requisite:         defaultFieldValue('requisite'),
         paymentMethod:     defaultFieldValue('paymentMethod'),
+        odometerValue:     defaultFieldValue('odometerValue'),
+        recommendation:    defaultFieldValue('recommendation'),
+        comment:           defaultFieldValue('comment'),
         servicesDiscount:  customFieldValue('servicesDiscount', 0),
         detailsDiscount:   customFieldValue('detailsDiscount', 0),
         services:          defaultService(),
@@ -395,6 +376,23 @@ export default function reducer(state = ReducerState, action) {
                     paymentMethod: customFieldValue(
                         'paymentMethod',
                         payload.order.paymentMethod,
+                    ),
+                    odometerValue: customFieldValue(
+                        'odometerValue',
+                        payload.order.odometerValue,
+                    ),
+                    recommendation: customFieldValue(
+                        'recommendation',
+                        payload.order.recommendation,
+                    ),
+                    comment:          customFieldValue('comment', payload.order.comment),
+                    servicesDiscount: customFieldValue(
+                        'servicesDiscount',
+                        payload.order.servicesDiscount,
+                    ),
+                    detailsDiscount: customFieldValue(
+                        'detailsDiscount',
+                        payload.order.detailsDiscount,
                     ),
                     services: {
                         ...customServices(payload.orderServices),
@@ -684,7 +682,6 @@ export const createOrder = entity => ({
 export const createOrderSuccess = () => ({
     type: CREATE_ORDER_SUCCESS,
 });
-
 
 export const submitOrderForm = addOrderForm => ({
     type:    SUBMIT_ORDER_FORM,

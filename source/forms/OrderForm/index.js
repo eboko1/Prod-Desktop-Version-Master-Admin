@@ -17,7 +17,11 @@ import {
     onBrandSearch,
 } from 'core/forms/orderForm/duck';
 
-import { DecoratedTextArea, DecoratedSelect } from 'forms/DecoratedFields';
+import {
+    DecoratedTextArea,
+    DecoratedSelect,
+    DecoratedInputNumber,
+} from 'forms/DecoratedFields';
 import {
     DetailsTable,
     ServicesTable,
@@ -87,10 +91,11 @@ export class OrderForm extends Component {
         const { count: countDetails, price: priceDetails } = detailsStats(
             this.props.fields.details,
         );
-        const { count: countServices, price: priceServices, totalHours } = servicesStats(
-            this.props.fields.services,
-            this.props.allServices,
-        );
+        const {
+            count: countServices,
+            price: priceServices,
+            totalHours,
+        } = servicesStats(this.props.fields.services, this.props.allServices);
 
         // TODO deal with total hours
         console.log(totalHours);
@@ -386,7 +391,13 @@ export class OrderForm extends Component {
                                 { ...formItemAutoColLayout }
                                 colon={ false }
                             >
-                                <Input />
+                                <DecoratedInputNumber
+                                    field={ 'odometerValue' }
+                                    getFieldDecorator={
+                                        this.props.form.getFieldDecorator
+                                    }
+                                    min={ 0 }
+                                />
                             </FormItem>
                             <FormItem
                                 { ...formItemAutoColLayout }
