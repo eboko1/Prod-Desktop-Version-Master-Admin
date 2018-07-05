@@ -48,8 +48,9 @@ const { TextArea } = Input;
 
 @injectIntl
 @withReduxForm({
-    name:    'orderForm',
-    actions: {
+    name:            'orderForm',
+    debouncedFields: [ 'comment', 'recommendation' ],
+    actions:         {
         change: onChangeOrderForm,
         setClientSelection,
         onChangeOrderServices,

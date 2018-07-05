@@ -30,7 +30,16 @@ const extractFieldsConfigs = config => {
         .value();
 };
 
-export const withReduxForm = ({ name, actions }) => Enhanceable => {
+const change = (props, fields) => {
+    props.change(fields, {
+        form:  name,
+        field: Object.keys(fields).toString(),
+    });
+};
+
+export const withReduxForm = ({ name, actions, debouncedFields = [] }) => Enhanceable => {
+    const debouncedFunctions = {};
+
     @connect(state => ({ ...state.forms[ name ] }), { ...actions })
     @Form.create({
         mapPropsToFields(props) {
@@ -45,10 +54,17 @@ export const withReduxForm = ({ name, actions }) => Enhanceable => {
             return createFields;
         },
         onFieldsChange(props, fields) {
-            props.change(fields, {
-                form:  name,
-                field: Object.keys(fields).toString(),
-            });
+            const debouncedKey = Object.keys(fields).toString();
+            if (!debouncedFields.includes(debouncedKey)) {
+                return change(props, fields);
+            }
+            if (!debouncedFunctions[ debouncedKey ]) {
+                debouncedFunctions[ debouncedKey ] = _.debounce(
+                    change,
+                    1000,
+                );
+            }
+            debouncedFunctions[ debouncedKey ](props, fields);
         },
     })
     class ConnectedForm extends Component {
