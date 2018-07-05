@@ -7,32 +7,45 @@ import moment from 'moment';
 import { Button, Icon } from 'antd';
 
 // proj
-import { fetchOrderForm } from 'core/forms/orderForm/duck';
+import { fetchOrderForm, updateOrder } from 'core/forms/orderForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { Layout } from 'commons';
 import { OrderForm } from 'forms';
 import { ReportsDropdown, ChangeStatusDropdown } from 'components';
 import book from 'routes/book';
 
+import { convertFieldsValuesToDbEntity } from './../AddOrderPage/extractOrderEntity';
+
 // own
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
-        stations:    state.forms.orderForm.stations,
-        vehicles:    state.forms.orderForm.vehicles,
-        employees:   state.forms.orderForm.employees,
-        managers:    state.forms.orderForm.managers,
-        clients:     state.forms.orderForm.clients,
-        allDetails:  state.forms.orderForm.allDetails,
-        allServices: state.forms.orderForm.allServices,
-        requisites:  state.forms.orderForm.requisites,
-        order:       state.forms.orderForm.order,
+        stations:          state.forms.orderForm.stations,
+        vehicles:          state.forms.orderForm.vehicles,
+        employees:         state.forms.orderForm.employees,
+        managers:          state.forms.orderForm.managers,
+        clients:           state.forms.orderForm.clients,
+        allDetails:        state.forms.orderForm.allDetails,
+        allServices:       state.forms.orderForm.allServices,
+        requisites:        state.forms.addOrderForm.requisites,
+        addClientModal:    state.modals.modal,
+        addClientFormData: state.forms.addClientForm.data,
+        order:             state.forms.orderForm.order,
+        orderEntity:       {
+            ...state.forms.orderForm.fields,
+            selectedClient: state.forms.orderForm.selectedClient,
+        },
     };
 };
 
 @withRouter
-@connect(mapStateToProps, { fetchOrderForm, getReport, fetchReport })
+@connect(mapStateToProps, {
+    fetchOrderForm,
+    getReport,
+    fetchReport,
+    updateOrder,
+})
 class OrderPage extends Component {
     saveFormRef = formRef => {
         this.formRef = formRef;
@@ -42,7 +55,19 @@ class OrderPage extends Component {
         this.props.fetchOrderForm(this.props.match.params.id);
     }
 
-    onStatusChange = status => console.log('→ status', status);
+    onStatusChange(status) {
+        console.log(status);
+        const { id } = this.props.match.params;
+        this.props.updateOrder({
+            id,
+            order: convertFieldsValuesToDbEntity(
+                this.props.orderEntity,
+                this.props.allServices,
+                this.props.allDetails,
+                status,
+            ),
+        });
+    }
 
     render() {
         // destruct order
@@ -74,7 +99,7 @@ class OrderPage extends Component {
                     <>
                         <ChangeStatusDropdown
                             orderStatus={ status }
-                            onStatusChange={ () => this.onStatusChange() }
+                            onStatusChange={ this.onStatusChange.bind(this) }
                         />
                         <ReportsDropdown
                             orderId={ id }

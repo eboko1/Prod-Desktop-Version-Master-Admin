@@ -20,7 +20,7 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import Styles from './styles.m.css';
 
-import { convertFieldsValuesToDbEntity } from './extractAddOrderEntity';
+import { convertFieldsValuesToDbEntity } from './extractOrderEntity';
 
 const mapStateToProps = state => {
     return {

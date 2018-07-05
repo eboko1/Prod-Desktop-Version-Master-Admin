@@ -27,6 +27,7 @@ import {
     onHandleCustomBrand,
 
     createOrderSuccess,
+    updateOrderSuccess,
 
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
@@ -36,6 +37,7 @@ import {
     ON_DETAIL_SEARCH,
     ON_BRAND_SEARCH,
     CREATE_ORDER,
+    UPDATE_ORDER,
 } from './duck';
 
 export function* fetchOrderFormSaga() {
@@ -52,6 +54,14 @@ export function* createOrderSaga() {
         const {payload: entity} = yield take(CREATE_ORDER);
         yield call(fetchAPI, 'POST', 'orders', {}, entity);
         yield put(createOrderSuccess());
+    }
+}
+
+export function* updateOrderSaga() {
+    while (true) {
+        const {payload: { order, id }} = yield take(UPDATE_ORDER);
+        yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
+        yield put(updateOrderSuccess());
     }
 }
 
@@ -104,5 +114,5 @@ export function* fetchAddOrderFormSaga() {
 }
 
 export function* saga() {
-    yield all([ call(createOrderSaga), call(fetchAddOrderFormSaga), call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
+    yield all([ call(updateOrderSaga), call(createOrderSaga), call(fetchAddOrderFormSaga), call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
 }

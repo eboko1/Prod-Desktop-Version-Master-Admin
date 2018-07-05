@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-export function convertFieldsValuesToDbEntity(orderFields, allServices, allDetails) {
+export function convertFieldsValuesToDbEntity(orderFields, allServices, allDetails, status = 'not_complete') {
     const services = _(orderFields.services)
         .values()
         .filter(service => _.get(service, 'serviceName.value'))
@@ -62,7 +62,7 @@ export function convertFieldsValuesToDbEntity(orderFields, allServices, allDetai
 
     const order = {
         clientId:            _.get(orderFields, 'selectedClient.clientId'),
-        status:              'not_complete',
+        status,
         clientVehicleId:     _.get(orderFields, 'clientVehicle.value'),
         businessRequisiteId: _.get(orderFields, 'requisite.value'),
         managerId:           _.get(orderFields, 'manager.value'),

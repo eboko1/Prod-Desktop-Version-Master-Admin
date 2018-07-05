@@ -11,6 +11,9 @@ const prefix = `cpb/${moduleName}`;
 export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
 export const CREATE_ORDER_SUCCESS = `${prefix}/CREATE_ORDER_SUCCESS`;
 
+export const UPDATE_ORDER = `${prefix}/UPDATE_ORDER`;
+export const UPDATE_ORDER_SUCCESS = `${prefix}/UPDATE_ORDER_SUCCESS`;
+
 export const FETCH_ORDER_FORM = `${prefix}/FETCH_ORDER_FORM`;
 export const FETCH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ORDER_FORM_SUCCESS`;
 
@@ -84,12 +87,12 @@ export const defaultDetail = () => {
 
 const customServices = services =>
     _.fromPairs(
-        services.map(({ serviceId, type, count, price, serviceName }) => [
+        services.map(({ serviceId, type, count, price }) => [
             `${type}|${serviceId}`,
             {
                 serviceName: customFieldValue(
                     `services[${type}|${serviceId}][serviceName]`,
-                    serviceName,
+                    `${type}|${serviceId}`,
                 ),
                 serviceCount: customFieldValue(
                     `services[${type}|${serviceId}][serviceCount]`,
@@ -683,6 +686,15 @@ export const createOrder = entity => ({
 
 export const createOrderSuccess = () => ({
     type: CREATE_ORDER_SUCCESS,
+});
+
+export const updateOrder = entity => ({
+    type:    UPDATE_ORDER,
+    payload: entity,
+});
+
+export const updateOrderSuccess = () => ({
+    type: UPDATE_ORDER_SUCCESS,
 });
 
 export const submitOrderForm = addOrderForm => ({

@@ -83,9 +83,10 @@ class ChangeStatusDropdown extends React.Component {
 
             const menuItems = statuses
                 .filter(({ status }) => allStatuses.includes(status))
-                .map(({ name, icon }) => ({
+                .map(({ name, icon, action }) => ({
                     name,
                     icon,
+                    action,
                 }));
 
             return menuItems;
