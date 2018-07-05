@@ -120,7 +120,7 @@ const customServices = services =>
 
 const customDetails = details =>
     _.fromPairs(
-        details.map(({ id, detailId, detailName, brandId, brandName, code, price, count }) => [
+        details.map(({ id, detailId, detailName, brandId, brandName, detailCode, price, count }) => [
             [ id ],
             {
                 detailName: customFieldValue(
@@ -133,7 +133,7 @@ const customDetails = details =>
                 ),
                 detailCode: customFieldValue(
                     `details[${id}][detailCode]`,
-                    code,
+                    detailCode,
                 ),
                 detailCount: customFieldValue(
                     `details[${id}][detailCount]`,
