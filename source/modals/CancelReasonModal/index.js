@@ -25,7 +25,7 @@ export default class CancelResonModal extends Component {
             >
                 Отказаться от закказа?
                 <Button onClick={ () => console.log('→ YES') }>Да</Button>
-                <Button onClick={ () => console.log('→ NO') }>Нет</Button>
+                <Button onClick={ () => resetModal() }>Нет</Button>
                 { /* TODO fetch CancelReasons*/ }
                 <Select>
                     <Option value='1'>REASON 1</Option>

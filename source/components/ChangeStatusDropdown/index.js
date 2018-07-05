@@ -102,7 +102,15 @@ class ChangeStatusDropdown extends React.Component {
                         disabled={ item.disabled }
                         onClick={ () => item.action() }
                     >
-                        { item.icon && <Icon type={ item.icon } /> }
+                        { item.icon && (
+                            <Icon
+                                type={ item.icon }
+                                style={ {
+                                    fontSize: 18,
+                                    margin:   '0 10px 0 0',
+                                } }
+                            />
+                        ) }
                         <FormattedMessage id={ item.name } />
                     </Item>
                 )) }
@@ -111,7 +119,20 @@ class ChangeStatusDropdown extends React.Component {
 
         return menuItems.length ? (
             <Dropdown overlay={ menu }>
-                <Icon type='swap' />
+                <div
+                    style={ {
+                        cursor: 'pointer',
+                        margin: '0 10px',
+                    } }
+                >
+                    <Icon
+                        type='swap'
+                        style={ {
+                            fontSize: 24,
+                        } }
+                    />
+                    Перевести в статус
+                </div>
             </Dropdown>
         ) : null;
     }

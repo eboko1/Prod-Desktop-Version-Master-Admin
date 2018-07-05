@@ -9,7 +9,7 @@ import { MODALS } from 'core/modals/duck';
 // own
 // import Styles from './styles.m.css';
 
-export default class CancelResonModal extends Component {
+export default class ToSuccessModal extends Component {
     onChange(e) {
         console.log(`checked = ${e.target.checked}`);
     }
@@ -24,19 +24,15 @@ export default class CancelResonModal extends Component {
                 onOk={ () => confirmToSuccessModal() }
                 onCancel={ () => resetModal() }
             >
-                Хотите отправить SMS клиенту о выполнении заказе?
+                Закрыть наряд заказ?
                 <Button onClick={ () => console.log('→ YES') }>Да</Button>
-                <Button onClick={ () => console.log('→ NO') }>Нет</Button>
+                <Button onClick={ () => resetModal() }>Нет</Button>
                 <div>
-                    <Checkbox onChange={ e => this.onChange(e) }>
-                        Checkbox
-                    </Checkbox>
+                    <Checkbox onChange={ e => this.onChange(e) } />
                     <span>Создать обращение с напоминанием о новом заезде</span>
                 </div>
                 <div>
-                    <Checkbox onChange={ e => this.onChange(e) }>
-                        Checkbox
-                    </Checkbox>
+                    <Checkbox onChange={ e => this.onChange(e) } />
                     <span>Создать обращение с напоминанием о новом заезде</span>
                 </div>
             </Modal>

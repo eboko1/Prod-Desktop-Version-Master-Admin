@@ -66,7 +66,14 @@ class ReportsDropdown extends React.Component {
 
         return (
             <Dropdown overlay={ menu }>
-                <Icon type='printer' />
+                <Icon
+                    type='printer'
+                    style={ {
+                        fontSize: 24,
+                        cursor:   'pointer',
+                        margin:   '0 10px',
+                    } }
+                />
             </Dropdown>
         );
     }

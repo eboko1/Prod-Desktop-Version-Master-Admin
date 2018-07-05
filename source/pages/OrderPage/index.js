@@ -9,9 +9,12 @@ import { Button, Icon } from 'antd';
 // proj
 import { fetchOrderForm, updateOrder } from 'core/forms/orderForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
+
 import { Layout } from 'commons';
 import { OrderForm } from 'forms';
 import { ReportsDropdown, ChangeStatusDropdown } from 'components';
+import { CancelReasonModal, ToSuccessModal } from 'modals';
 import book from 'routes/book';
 
 import { convertFieldsValuesToDbEntity } from './../AddOrderPage/extractOrderEntity';
@@ -36,6 +39,7 @@ const mapStateToProps = state => {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
+        modal: state.modals.modal,
     };
 };
 
@@ -45,6 +49,8 @@ const mapStateToProps = state => {
     getReport,
     fetchReport,
     updateOrder,
+    setModal,
+    resetModal,
 })
 class OrderPage extends Component {
     saveFormRef = formRef => {
@@ -70,24 +76,23 @@ class OrderPage extends Component {
     }
 
     render() {
-        // destruct order
+        const { setModal, resetModal } = this.props;
         const { num, status, datetime } = this.props.order;
-        console.log(this.props.order);
         const { id } = this.props.match.params;
 
         return (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>
@@ -107,6 +112,23 @@ class OrderPage extends Component {
                             download={ this.props.getReport }
                         />
                         <Icon
+                            type='save'
+                            style={ {
+                                fontSize: 24,
+                                cursor:   'pointer',
+                                margin:   '0 10px',
+                            } }
+                        />
+                        <Icon
+                            type='delete'
+                            style={ {
+                                fontSize: 24,
+                                cursor:   'pointer',
+                                margin:   '0 10px',
+                            } }
+                            onClick={ () => setModal(MODALS.CANCEL_REASON) }
+                        />
+                        <Icon
                             style={ { fontSize: 24, cursor: 'pointer' } }
                             type='close'
                             onClick={ () => this.props.history.goBack() }
@@ -115,6 +137,20 @@ class OrderPage extends Component {
                 }
             >
                 <OrderForm wrappedComponentRef={ this.saveFormRef } />
+                <CancelReasonModal
+                    wrappedComponentRef={ this.saveFormRef }
+                    visible={ this.props.modal }
+                    confirmCancelResonModalConfirm={
+                        this.confirmCancelResonModalConfirm
+                    }
+                    resetModal={ () => resetModal() }
+                />
+                <ToSuccessModal
+                    wrappedComponentRef={ this.saveFormRef }
+                    visible={ this.props.modal }
+                    onToSuccessModalConfirm={ this.onToSuccessConfirm }
+                    resetModal={ () => resetModal() }
+                />
             </Layout>
         );
     }
