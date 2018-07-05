@@ -13,7 +13,7 @@ export function* loginWorker({ payload: credentials }) {
         yield setToken(data.token);
 
         yield put(authActions.loginSuccess());
-        yield put(replace('/profile'));
+        yield put(replace('/orders/appointments'));
     } catch (error) {
         yield put(authActions.loginFail(error));
     } finally {

@@ -18,14 +18,13 @@ export default class Private extends Component {
     render() {
         return (
             <Switch>
-                <Route exact component={ ProfilePage } path={ book.profile } />
-                <Route exact component={ SwapiBox } path={ book.swapi } />
-                <Route
+                { /* <Route exact component={ SwapiBox } path={ book.swapi } /> */ }
+                { /* <Route
                     exact
                     component={ DistributorDash }
                     path={ book.distributorDash }
-                />
-                <Route exact component={ Request } path={ book.request } />
+                /> */ }
+                { /* <Route exact component={ Request } path={ book.request } /> */ }
                 { /* <Switch>
 
                     <Redirect
@@ -40,6 +39,7 @@ export default class Private extends Component {
                 />
                 <Route exact component={ OrderPage } path={ book.orderId } />
                 <Route exact component={ AddOrderPage } path={ book.addOrder } />
+                <Route exact component={ ProfilePage } path={ book.profile } />
                 <Route
                     component={ ExceptionPage }
                     path={ book.exceptionStatusCode }

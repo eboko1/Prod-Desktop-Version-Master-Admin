@@ -109,6 +109,8 @@ export default function reducer(state = ReducerState, action) {
                 filter: {
                     ...state.filter,
                     page:   1,
+                    minNps: void 0,
+                    maxNps: void 0,
                     status: payload,
                 },
             };

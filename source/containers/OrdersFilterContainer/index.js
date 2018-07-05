@@ -55,6 +55,28 @@ const mapDispatchToProps = dispatch => {
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class OrdersFilterContainer extends Component {
+    // state = {};
+    // state = {
+    //     filterStatus: '',
+    // };
+    //
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     // Store prev activeRoute in state so we can compare when props change.
+    //     // Clear out any previously-loaded user data (so we don't render stale stuff).
+    //     console.log(
+    //         '→ gds',
+    //         nextProps.filter.status !== prevState.filterStatus,
+    //     );
+    //     if (nextProps.filter.status !== prevState.filterStatus) {
+    //         return {
+    //             filterStatus: nextProps.filter.status,
+    //         };
+    //     }
+    //
+    //     // No state update necessary
+    //     return null;
+    // }
+
     componentDidMount() {
         const status = this.props.match.params.ordersStatuses;
         const { fetchUniversalFiltersForm } = this.props;
@@ -73,6 +95,11 @@ export default class OrdersFilterContainer extends Component {
                 fetchUniversalFiltersForm();
             }
         }
+
+        // if (prevProps.filter.status !== this.props.filter.status) {
+        //     console.log('→ DUP', this.props.filter.status);
+        //     this.setState(this.state);
+        // }
     }
 
     handleOrdersSearch(value) {
@@ -226,9 +253,9 @@ export default class OrdersFilterContainer extends Component {
                         <RadioGroup
                             onChange={ ev => this.selectStatus(ev) }
                             className={ Styles.buttonGroup }
-                            defaultValue={ filter.status }
+                            defaultValue={ 'approve,reserve' } // filter.status
                         >
-                            <RadioButton value='not_complete,required,call'>
+                            <RadioButton value='approve,reserve'>
                                 <FormattedMessage id='all' /> ({ stats.approve +
                                     stats.reserve })
                             </RadioButton>

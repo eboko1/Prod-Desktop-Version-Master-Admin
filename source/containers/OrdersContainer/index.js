@@ -273,6 +273,7 @@ class OrdersContainer extends Component {
 
         const pagination = {
             pageSize:         25,
+            size:             'large',
             total:            Math.ceil(this.props.count / 25) * 25,
             hideOnSinglePage: true,
             current:          this.props.filter.page,

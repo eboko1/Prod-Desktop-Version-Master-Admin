@@ -48,7 +48,7 @@ class Exception extends Component {
                         <span className={ Styles.errorDesc }>
                             error description
                         </span>
-                        <Link to={ book.profile }>
+                        <Link to={ book.ordersAppointments }>
                             <Button type='primary'>
                                 <FormattedMessage id='exception-page.back_to_main' />
                             </Button>
