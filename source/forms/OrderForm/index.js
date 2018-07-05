@@ -65,34 +65,10 @@ const { TextArea } = Input;
     },
 })
 export class OrderForm extends Component {
-    // handleSubmit = e => {
-    //     e.preventDefault();
-    //     this.props.form.validateFields((err, values) => {
-    //         if (!err) {
-    //             // eslint-disable-next-line
-    //             console.log("Received values of form: ", values);
-    //         }
-    //     });
-    // };
-
-    callback(key) {
-        console.log(key);
-    }
-
-    handleChangeSearchSelect(value) {
-        console.log(`selected ${value}`);
-    }
-    //
-    // fetchClientSearch(client) {
-    //     debounce(this.props.fetchClientsSearch, 800);
-    // }
 
     render() {
         const {
-            allServices,
-            allDetails,
             managers,
-            employees,
             stations,
         } = this.props;
 

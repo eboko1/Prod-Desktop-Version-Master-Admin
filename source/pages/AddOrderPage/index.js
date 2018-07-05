@@ -6,12 +6,12 @@ import { withRouter } from 'react-router';
 import { Icon, Button, Radio } from 'antd';
 
 // proj
-import { fetchAddOrderForm } from 'core/forms/addOrderForm/duck';
+import { fetchAddOrderForm } from 'core/forms/orderForm/duck';
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout } from 'commons';
-import { AddOrderForm } from 'forms';
+import { OrderForm } from 'forms';
 import { AddClientModal } from 'modals';
 
 //  own
@@ -119,7 +119,7 @@ class AddOrderPage extends Component {
                 }
             >
                 { /* eslint-disable-next-line */ }
-                <AddOrderForm
+                <OrderForm
                     wrappedComponentRef={ this.saveFormRef }
                     setAddClientModal={ this.setAddClientModal }
                     addClientModal={ addClientModal }
