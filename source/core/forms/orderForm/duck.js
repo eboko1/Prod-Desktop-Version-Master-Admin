@@ -120,26 +120,26 @@ const customServices = services =>
 
 const customDetails = details =>
     _.fromPairs(
-        details.map(({ id, detailId, brandId, code, price, count }) => [
+        details.map(({ id, detailId, detailName, brandId, brandName, code, price, count }) => [
             [ id ],
             {
                 detailName: customFieldValue(
                     `details[${id}][detailName]`,
-                    detailId || `custom|${id}`,
+                    detailId || detailName ? detailId || `custom|${id}` : null,
                 ),
-                detailBrandName: defaultFieldValue(
+                detailBrandName: customFieldValue(
                     `details[${id}][detailBrandName]`,
-                    brandId || `custom|${id}`,
+                    brandId || brandName ? brandId || `custom|${id}` : null,
                 ),
-                detailCode: defaultFieldValue(
+                detailCode: customFieldValue(
                     `details[${id}][detailCode]`,
                     code,
                 ),
-                detailCount: defaultFieldValue(
+                detailCount: customFieldValue(
                     `details[${id}][detailCount]`,
                     count,
                 ),
-                detailPrice: defaultFieldValue(
+                detailPrice: customFieldValue(
                     `details[${id}][detailPrice]`,
                     price,
                 ),
