@@ -494,7 +494,7 @@ export class OrderForm extends Component {
                                     <Option value='cash'>
                                         <Icon type='wallet' /> Нал
                                     </Option>
-                                    <Option value='card'>
+                                    <Option value='noncash'>
                                         <Icon type='credit-card' /> Безнал
                                     </Option>
                                     <Option value='visa'>
