@@ -83,7 +83,6 @@ class OrderPage extends Component {
                     </>
                 }
             >
-                <div>Order Form: { id }</div>
                 <OrderForm wrappedComponentRef={ this.saveFormRef } />
             </Layout>
         );
