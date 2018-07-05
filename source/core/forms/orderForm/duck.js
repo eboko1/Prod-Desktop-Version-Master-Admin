@@ -152,6 +152,7 @@ const createDefaultState = () => ({
         date:              defaultFieldValue('date'),
         station:           defaultFieldValue('station'),
         manager:           defaultFieldValue('manager'),
+        employee:          defaultFieldValue('employee'),
         searchClientQuery: defaultFieldValue('searchClientQuery'),
         clientPhone:       defaultFieldValue('clientPhone'),
         clientEmail:       defaultFieldValue('clientEmail'),
@@ -386,6 +387,7 @@ export default function reducer(state = ReducerState, action) {
                         payload.order.recommendation,
                     ),
                     comment:          customFieldValue('comment', payload.order.comment),
+                    employee:         customFieldValue('employee', payload.order.employeeId),
                     servicesDiscount: customFieldValue(
                         'servicesDiscount',
                         payload.order.servicesDiscount,
