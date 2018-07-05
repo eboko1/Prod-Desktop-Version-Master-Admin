@@ -8,6 +8,7 @@ import _ from 'lodash';
 
 // proj
 import { onChangeAddClientForm } from 'core/forms/addClientForm/duck';
+import { MODALS } from 'core/modals/duck';
 
 import { AddClientForm } from 'forms';
 import { withReduxForm } from 'utils';
@@ -42,7 +43,7 @@ export default class AddClientModal extends Component {
                 cancelText={ <FormattedMessage id='cancel' /> }
                 okText={ <FormattedMessage id='add' /> }
                 wrapClassName={ Styles.addClientModal }
-                visible={ Boolean(visible) }
+                visible={ visible === MODALS.ADD_CLIENT }
                 onOk={ () => handleAddClientModalSubmit() }
                 onCancel={ () => resetModal() }
             >

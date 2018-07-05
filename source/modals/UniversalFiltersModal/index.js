@@ -10,6 +10,7 @@ import moment from 'moment';
 // proj
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { fetchOrders, setUniversalFilters } from 'core/orders/duck';
+import { MODALS } from 'core/modals/duck';
 
 import { DecoratedSelect, DecoratedDatePicker } from 'forms/DecoratedFields';
 import { StatsCountsPanel } from 'components';
@@ -68,7 +69,7 @@ export default class UniversalFiltersModal extends Component {
                 cancelText={ <FormattedMessage id='universal_filters.cancel' /> }
                 okText={ <FormattedMessage id='universal_filters.submit' /> }
                 wrapClassName={ Styles.ufmoldal }
-                visible={ Boolean(visible) }
+                visible={ visible === MODALS.UNIVERSAL_FILTERS }
                 onOk={ () => handleUniversalFiltersModalSubmit() }
                 onCancel={ () => resetModal() }
             >
