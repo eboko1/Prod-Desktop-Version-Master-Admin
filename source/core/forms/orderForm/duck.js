@@ -8,6 +8,9 @@ import moment from 'moment';
 export const moduleName = 'orderForm';
 const prefix = `cpb/${moduleName}`;
 
+export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
+export const CREATE_ORDER_SUCCESS = `${prefix}/CREATE_ORDER_SUCCESS`;
+
 export const FETCH_ORDER_FORM = `${prefix}/FETCH_ORDER_FORM`;
 export const FETCH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ORDER_FORM_SUCCESS`;
 
@@ -164,7 +167,7 @@ const customDetails = details =>
         ),
     );
 
-const ReducerState = {
+const createDefaultState = () => ({
     fields: {
         beginDatetime:     defaultFieldValue('beginDatetime'),
         status:            defaultFieldValue('status'),
@@ -203,7 +206,9 @@ const ReducerState = {
         vehicles:   [],
     },
     order: {},
-};
+});
+
+const ReducerState = createDefaultState();
 
 export const fetchAddOrderForm = () => ({
     type: FETCH_ADD_ORDER_FORM,
@@ -458,10 +463,10 @@ export default function reducer(state = ReducerState, action) {
             };
 
         case FETCH_ORDER_FORM:
-            return { ...ReducerState };
+            return { ...createDefaultState() };
 
         case FETCH_ADD_ORDER_FORM:
-            return { ...ReducerState };
+            return { ...createDefaultState() };
 
         case SUBMIT_ORDER_FORM:
             return {
@@ -645,6 +650,16 @@ export const onChangeOrderForm = (fields, { form, field }) => ({
     payload: fields,
     meta:    { form, field },
 });
+
+export const createOrder = entity => ({
+    type:    CREATE_ORDER,
+    payload: entity,
+});
+
+export const createOrderSuccess = () => ({
+    type: CREATE_ORDER_SUCCESS,
+});
+
 
 export const submitOrderForm = addOrderForm => ({
     type:    SUBMIT_ORDER_FORM,
