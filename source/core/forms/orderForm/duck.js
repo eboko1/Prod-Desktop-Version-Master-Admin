@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import { v4 } from 'uuid';
 import moment from 'moment';
+
 /**
  * Constants
  * */
@@ -22,6 +23,9 @@ export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 export const ON_SERVICE_SEARCH = `${prefix}/ON_SERVICE_SEARCH`;
 export const ON_DETAIL_SEARCH = `${prefix}/ON_DETAIL_SEARCH`;
 export const ON_BRAND_SEARCH = `${prefix}/ON_BRAND_SEARCH`;
+
+export const FETCH_ADD_ORDER_FORM = `${prefix}/FETCH_ADD_ORDER_FORM`;
+export const FETCH_ADD_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ADD_ORDER_FORM_SUCCESS`;
 
 export const ON_HANDLE_CUSTOM_SERVICE = `${prefix}/ON_HANDLE_CUSTOM_SERVICE`;
 export const ON_HANDLE_CUSTOM_DETAIL = `${prefix}/ON_HANDLE_CUSTOM_DETAIL`;
@@ -120,31 +124,44 @@ const customServices = services =>
 
 const customDetails = details =>
     _.fromPairs(
-        details.map(({ id, detailId, brandId, code, price, count }) => [
-            [ id ],
-            {
-                detailName: customFieldValue(
-                    `details[${id}][detailName]`,
-                    detailId || `custom|${id}`,
-                ),
-                detailBrandName: defaultFieldValue(
-                    `details[${id}][detailBrandName]`,
-                    brandId || `custom|${id}`,
-                ),
-                detailCode: defaultFieldValue(
-                    `details[${id}][detailCode]`,
-                    code,
-                ),
-                detailCount: defaultFieldValue(
-                    `details[${id}][detailCount]`,
-                    count,
-                ),
-                detailPrice: defaultFieldValue(
-                    `details[${id}][detailPrice]`,
-                    price,
-                ),
-            },
-        ]),
+        details.map(
+            ({
+                id,
+                detailId,
+                detailName,
+                brandId,
+                brandName,
+                detailCode,
+                price,
+                count,
+            }) => [
+                [ id ],
+                {
+                    detailName: customFieldValue(
+                        `details[${id}][detailName]`,
+                        detailId || detailName
+                            ? detailId || `custom|${id}`
+                            : null,
+                    ),
+                    detailBrandName: customFieldValue(
+                        `details[${id}][detailBrandName]`,
+                        brandId || brandName ? brandId || `custom|${id}` : null,
+                    ),
+                    detailCode: customFieldValue(
+                        `details[${id}][detailCode]`,
+                        detailCode,
+                    ),
+                    detailCount: customFieldValue(
+                        `details[${id}][detailCount]`,
+                        count,
+                    ),
+                    detailPrice: customFieldValue(
+                        `details[${id}][detailPrice]`,
+                        price,
+                    ),
+                },
+            ],
+        ),
     );
 
 const ReducerState = {
@@ -187,6 +204,17 @@ const ReducerState = {
     },
     order: {},
 };
+
+export const fetchAddOrderForm = () => ({
+    type: FETCH_ADD_ORDER_FORM,
+});
+
+export function fetchAddOrderFormSuccess(data) {
+    return {
+        type:    FETCH_ADD_ORDER_FORM_SUCCESS,
+        payload: data,
+    };
+}
 
 function calculateAllDetails(allDetails, selectedDetails) {
     const selectedValues = _(selectedDetails)
@@ -268,11 +296,10 @@ function mergeAllDetailsOrderDetails(allDetails, orderDetails) {
 function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
     const requiredOrderBrands = orderDetails
         .filter(({ brandId }) => !brandId)
-        .map(({ brandName }) => ({
-            brandId: `custom|${v4()}`,
+        .map(({ brandName, id }) => ({
+            brandId: `custom|${id}`,
             brandName,
         }));
-    console.log(requiredOrderBrands);
 
     return [ ...allBrands, ...requiredOrderBrands ];
 }
@@ -374,6 +401,14 @@ export default function reducer(state = ReducerState, action) {
                 selectedClient: payload.client || state.selectedClient,
             };
 
+        case FETCH_ADD_ORDER_FORM_SUCCESS:
+            return {
+                ...state,
+                ...payload,
+                allServices: payload.allServices,
+                allDetails:  payload.allDetails,
+            };
+
         case ON_CHANGE_ORDER_FORM:
             // console.group('→ REDUX');
             // console.log('@@payload', payload);
@@ -421,6 +456,12 @@ export default function reducer(state = ReducerState, action) {
                     details: payload,
                 },
             };
+
+        case FETCH_ORDER_FORM:
+            return { ...ReducerState };
+
+        case FETCH_ADD_ORDER_FORM:
+            return { ...ReducerState };
 
         case SUBMIT_ORDER_FORM:
             return {

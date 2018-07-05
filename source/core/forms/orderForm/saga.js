@@ -17,6 +17,7 @@ import { fetchAPI } from 'utils';
 // own
 import {
     fetchOrderFormSuccess,
+    fetchAddOrderFormSuccess,
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
@@ -26,6 +27,7 @@ import {
     onHandleCustomBrand,
 
     FETCH_ORDER_FORM,
+    FETCH_ADD_ORDER_FORM,
     ON_CHANGE_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
     ON_SERVICE_SEARCH,
@@ -81,6 +83,15 @@ function* handleBrandSearch({ payload }) {
     yield put(onHandleCustomBrand(payload));
 }
 
+export function* fetchAddOrderFormSaga() {
+    while (true) {
+        yield take(FETCH_ADD_ORDER_FORM);
+        const data = yield call(fetchAPI, 'GET', 'orders/form');
+
+        yield put(fetchAddOrderFormSuccess(data));
+    }
+}
+
 export function* saga() {
-    yield all([ call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
+    yield all([ call(fetchAddOrderFormSaga), call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
 }
