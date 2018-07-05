@@ -11,7 +11,7 @@ import { fetchOrderForm } from 'core/forms/orderForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { Layout } from 'commons';
 import { OrderForm } from 'forms';
-import { ReportsDropdown } from 'components';
+import { ReportsDropdown, ChangeStatusDropdown } from 'components';
 import book from 'routes/book';
 
 // own
@@ -42,6 +42,8 @@ class OrderPage extends Component {
         this.props.fetchOrderForm(this.props.match.params.id);
     }
 
+    onStatusChange = status => console.log('→ status', status);
+
     render() {
         // destruct order
         const { num, status, datetime } = this.props.order;
@@ -70,6 +72,10 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
+                        <ChangeStatusDropdown
+                            orderStatus={ status }
+                            onStatusChange={ () => this.onStatusChange() }
+                        />
                         <ReportsDropdown
                             orderId={ id }
                             orderStatus={ status }
@@ -83,7 +89,6 @@ class OrderPage extends Component {
                     </>
                 }
             >
-                <div>Order Form: { id }</div>
                 <OrderForm wrappedComponentRef={ this.saveFormRef } />
             </Layout>
         );
