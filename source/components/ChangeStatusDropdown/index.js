@@ -108,11 +108,11 @@ class ChangeStatusDropdown extends React.Component {
             </Menu>
         );
 
-        return (
+        return menuItems.length ? (
             <Dropdown overlay={ menu }>
                 <Icon type='swap' />
             </Dropdown>
-        );
+        ) : null;
     }
 }
 
