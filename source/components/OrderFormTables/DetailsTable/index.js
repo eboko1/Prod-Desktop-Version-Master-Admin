@@ -69,9 +69,12 @@ class DetailsTable extends Component {
                         getFieldDecorator={
                             this.props.form.getFieldDecorator
                         }
+                        disabled={
+                            !this.props.details[ record.key ].detailName.value
+                        }
                         showSearch
                         placeholder={
-                            <FormattedMessage id='order_form_table.detail.placeholder' />
+                            <FormattedMessage id='order_form_table.brand.placeholder' />
                         }
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '35%' } }
@@ -96,6 +99,9 @@ class DetailsTable extends Component {
                 render:    (text, record) => (
                     <DecoratedInput
                         field={ `details[${record.key}][detailCode]` }
+                        disabled={
+                            !this.props.details[ record.key ].detailName.value
+                        }
                         getFieldDecorator={
                             this.props.form.getFieldDecorator
                         }

@@ -181,6 +181,8 @@ const createDefaultState = () => ({
         clientRequisite:   defaultFieldValue('clientRequisite'),
         requisite:         defaultFieldValue('requisite'),
         paymentMethod:     defaultFieldValue('paymentMethod'),
+        servicesDiscount:  customFieldValue('servicesDiscount', 0),
+        detailsDiscount:   customFieldValue('detailsDiscount', 0),
         services:          defaultService(),
         details:           defaultDetail(),
     },

@@ -1,19 +1,7 @@
 // vendor
 import React, { Component } from 'react';
-import {
-    Form,
-    Select,
-    Radio,
-    Button,
-    Tabs,
-    Input,
-    DatePicker,
-    TimePicker,
-    Icon,
-    Spin,
-} from 'antd';
+import { Form, Select, Radio, Tabs, Input, DatePicker, Icon } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import moment from 'moment';
 import { v4 } from 'uuid';
 import _ from 'lodash';
 
@@ -38,6 +26,12 @@ import {
 } from 'components/OrderFormTables';
 
 import { withReduxForm, hasErrors, getDateTimeConfig, images } from 'utils';
+import {
+    formItemAutoColLayout,
+    formItemLayout,
+    formItemTotalLayout,
+} from './layouts';
+import { servicesStats, detailsStats } from './stats';
 
 // own
 // import { DecoratedInput } from './DecoratedInput';
@@ -65,67 +59,6 @@ const { TextArea } = Input;
     },
 })
 export class OrderForm extends Component {
-    constructor(props) {
-        super(props);
-
-        this.props.change(
-            {
-                station: {
-                    dirty:   false,
-                    name:    'station',
-                    touched: true,
-                    value:   6,
-                },
-                manager: {
-                    dirty:   false,
-                    name:    'manager',
-                    touched: true,
-                    value:   6643,
-                },
-            },
-            {
-                form:  'orderForm',
-                field: 'station',
-            },
-        );
-    }
-
-    // componentDidUpdate(prevProps) {
-    //     if (prevProps.stations !== this.props.stations) {
-    //         this.props.change(
-    //             {
-    //                 station: {
-    //                     dirty:   false,
-    //                     name:    'station',
-    //                     touched: true,
-    //                     value:   6,
-    //                 },
-    //             },
-    //             {
-    //                 form:  'orderForm',
-    //                 field: 'station',
-    //             },
-    //         );
-    //     }
-    // }
-
-    // setStation() {
-    //     this.props.change(
-    //         {
-    //             station: {
-    //                 dirty:   false,
-    //                 name:    'station',
-    //                 touched: true,
-    //                 value:   6,
-    //             },
-    //         },
-    //         {
-    //             form:  'orderForm',
-    //             field: 'station',
-    //         },
-    //     );
-    // }
-
     render() {
         const { managers, stations } = this.props;
 
@@ -150,8 +83,28 @@ export class OrderForm extends Component {
             );
 
         const buttonDisabled = hasErrors(getFieldsError());
-        const countServices = _.values(this.props.fields.services).length - 1;
-        const countDetails = _.values(this.props.fields.details).length - 1;
+
+        const { count: countDetails, price: priceDetails } = detailsStats(
+            this.props.fields.details,
+        );
+        const { count: countServices, price: priceServices, totalHours } = servicesStats(
+            this.props.fields.services,
+            this.props.allServices,
+        );
+
+        // TODO deal with total hours
+        console.log(totalHours);
+
+        const servicesDiscount = ~~this.props.fields.servicesDiscount.value;
+        const detailsDiscount = ~~this.props.fields.detailsDiscount.value;
+
+        const detailsTotalPrice =
+            priceDetails - priceDetails * (detailsDiscount / 100);
+        const servicesTotalPrice =
+            priceServices - priceServices * (servicesDiscount / 100);
+
+        const totalPrice = detailsTotalPrice + servicesTotalPrice;
+
         const beginDatetime = (this.props.fields.beginDatetime || {}).value;
 
         const {
@@ -161,42 +114,6 @@ export class OrderForm extends Component {
             disabledSeconds,
             disabledTime,
         } = getDateTimeConfig(beginDatetime, this.props.schedule);
-
-        const formItemLayout = {
-            labelCol: {
-                xl:  { span: 24 },
-                xxl: { span: 4 },
-            },
-            wrapperCol: {
-                xl:  { span: 24 },
-                xxl: { span: 20 },
-            },
-            colon: false,
-        };
-
-        const formItemAutoColLayout = {
-            labelCol: {
-                xl:  { span: 24 },
-                xxl: { span: 8 },
-            },
-            wrapperCol: {
-                xl:  { span: 24 },
-                xxl: { span: 12 },
-            },
-            colon: false,
-        };
-
-        const formItemTotalLayout = {
-            labelCol: {
-                xl:  { span: 24 },
-                xxl: { span: 6 },
-            },
-            wrapperCol: {
-                xl:  { span: 24 },
-                xxl: { span: 18 },
-            },
-            colon: false,
-        };
 
         return (
             <Form
@@ -579,14 +496,15 @@ export class OrderForm extends Component {
                             <div className={ Styles.total }>
                                 <FormattedMessage id='add_order_form.total' />
                                 <span className={ Styles.totalSum }>
-                                    0<FormattedMessage id='currency' />
+                                    { totalPrice }
+                                    <FormattedMessage id='currency' />
                                 </span>
                             </div>
                         </FormItem>
                     </div>
                 </div>
                 { /* FORMS TABS */ }
-                <Tabs onChange={ () => this.callback() } type='card'>
+                <Tabs type='card'>
                     <TabPane
                         tab={ `${this.props.intl.formatMessage({
                             id:             'add_order_form.services',
@@ -599,7 +517,11 @@ export class OrderForm extends Component {
                             onServiceSearch={ this.props.onServiceSearch }
                             services={ this.props.fields.services }
                         />
-                        <DiscountPanel { ...this.props } />
+                        <DiscountPanel
+                            price={ priceServices }
+                            discountFieldName={ 'servicesDiscount' }
+                            { ...this.props }
+                        />
                     </TabPane>
                     <TabPane
                         tab={ `${this.props.intl.formatMessage({
@@ -615,7 +537,11 @@ export class OrderForm extends Component {
                             onBrandSearch={ this.props.onBrandSearch }
                             defaultDetail={ defaultDetail }
                         />
-                        <DiscountPanel { ...this.props } />
+                        <DiscountPanel
+                            price={ priceDetails }
+                            discountFieldName={ 'detailsDiscount' }
+                            { ...this.props }
+                        />
                     </TabPane>
                     <TabPane
                         tab={ <FormattedMessage id='add_order_form.comments' /> }

@@ -21,7 +21,6 @@ const RadioGroup = Radio.Group;
 import Styles from './styles.m.css';
 
 function convertFieldsValuesToDbEntity(orderFields, allServices, allDetails) {
-
     const services = _(orderFields.services)
         .values()
         .filter(service => _.get(service, 'serviceName.value'))
@@ -32,7 +31,10 @@ function convertFieldsValuesToDbEntity(orderFields, allServices, allDetails) {
                 serviceCount: { value: count },
             } = service;
             const [ type, serviceId ] = name.split('|');
-            const label = (allServices.find(({id, type}) => `${type}|${id}` === name) || {}).serviceName;
+            const label = (
+                allServices.find(({ id, type }) => `${type}|${id}` === name) ||
+                {}
+            ).serviceName;
 
             const baseService = { price, count, hours: null };
             const serviceType =
@@ -51,19 +53,29 @@ function convertFieldsValuesToDbEntity(orderFields, allServices, allDetails) {
                 detailName: { value: detailId },
                 detailPrice: { value: price },
                 detailCount: { value: count },
+                detailCode: { value: code },
                 detailBrandName: { value: brandId },
             } = detail;
             const [ detailType ] = String(detailId).split('|');
             const [ brandType ] = String(brandId).split('|');
 
-            const detailLabel = (allDetails.details.find(({detailId: id}) => id === detailId) || {}).detailName;
-            const brandLabel = (allDetails.brands.find(({brandId: id}) => id === brandId) || {}).brandName;
+            const detailLabel = (
+                allDetails.details.find(
+                    ({ detailId: id }) => id === detailId,
+                ) || {}
+            ).detailName;
+            const brandLabel = (
+                allDetails.brands.find(({ brandId: id }) => id === brandId) ||
+                {}
+            ).brandName;
 
-            const baseDetail = { price, count, ownDetail: false };
+            const baseDetail = { price, count, ownDetail: false, code };
             const detailCustom =
                 detailType === 'custom' ? { name: detailLabel } : { detailId };
             const brandCustom =
-                brandType === 'custom' ? { brandName: brandLabel } : { brandId };
+                brandType === 'custom'
+                    ? { brandName: brandLabel }
+                    : { brandId };
 
             return { ...baseDetail, ...detailCustom, ...brandCustom };
         });
@@ -81,6 +93,7 @@ function convertFieldsValuesToDbEntity(orderFields, allServices, allDetails) {
         services,
         details,
         employeeId:          _.get(orderFields, 'employee.value'),
+        stationNum:          _.get(orderFields, 'station.value'),
     };
 
     return order;
