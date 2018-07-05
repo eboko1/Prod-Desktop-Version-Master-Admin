@@ -8,8 +8,9 @@ export const SET_MODAL = `${prefix}/SET_MODAL`;
 export const RESET_MODAL = `${prefix}/RESET_MODAL`;
 
 export const MODALS = {
-    ADD_CLIENT: 'ADD_CLIENT',
-    INVITE:     'INVITE',
+    ADD_CLIENT:        'ADD_CLIENT',
+    INVITE:            'INVITE',
+    UNIVERSAL_FILTERS: 'UNIVERSAL_FILTERS',
 };
 
 //

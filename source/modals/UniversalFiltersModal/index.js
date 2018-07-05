@@ -40,8 +40,8 @@ export default class UniversalFiltersModal extends Component {
     render() {
         const {
             visible,
+            resetModal,
             handleUniversalFiltersModalSubmit,
-            setUniversalFiltersModal,
             vehicleMakes,
             vehicleModels,
             stats,
@@ -68,9 +68,9 @@ export default class UniversalFiltersModal extends Component {
                 cancelText={ <FormattedMessage id='universal_filters.cancel' /> }
                 okText={ <FormattedMessage id='universal_filters.submit' /> }
                 wrapClassName={ Styles.ufmoldal }
-                visible={ visible }
+                visible={ Boolean(visible) }
                 onOk={ () => handleUniversalFiltersModalSubmit() }
-                onCancel={ () => setUniversalFiltersModal(false) }
+                onCancel={ () => resetModal() }
             >
                 <StatsCountsPanel stats={ stats } />
                 <UniversalFiltersForm
