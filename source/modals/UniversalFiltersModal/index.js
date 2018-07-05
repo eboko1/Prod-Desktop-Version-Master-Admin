@@ -73,10 +73,6 @@ export default class UniversalFiltersModal extends Component {
                 onCancel={ () => setUniversalFiltersModal(false) }
             >
                 <StatsCountsPanel stats={ stats } />
-                { console.log(
-                    '→ this.props.wrappedComponentRef',
-                    this.props.wrappedComponentRef,
-                ) }
                 <UniversalFiltersForm
                     wrappedComponentRef={ this.props.wrappedComponentRef }
                     vehicleMakes={ vehicleMakes }

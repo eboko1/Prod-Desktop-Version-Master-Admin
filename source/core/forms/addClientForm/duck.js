@@ -18,6 +18,14 @@ export const SUBMIT_ADD_CLIENT_FORM_SUCCESS = `${prefix}/SUBMIT_ADD_CLIENT_FORM_
 
 const ReducerState = {
     fields: {
+        year: {
+            errors:     void 0,
+            name:       'year',
+            touched:    true,
+            validating: false,
+            value:      void 0,
+            dirty:      false,
+        },
         name: {
             errors:     void 0,
             name:       'name',
@@ -67,18 +75,37 @@ const ReducerState = {
             dirty:      false,
         },
     },
+    data: {},
 };
 
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
 
     switch (type) {
+        // case ON_CHANGE_ADD_CLIENT_FORM:
+        //     return {
+        //         ...state,
+        //         fields: {
+        //             ...state.fields,
+        //             [ meta.field ]: { ...payload[ meta.field ] },
+        //         },
+        //     };
+
+        case FETCH_ADD_CLIENT_FORM_SUCCESS:
+            return {
+                ...state,
+                data: {
+                    ...state.data,
+                    ...payload,
+                },
+            };
+
         case ON_CHANGE_ADD_CLIENT_FORM:
             return {
                 ...state,
                 fields: {
                     ...state.fields,
-                    [ meta.field ]: { ...payload[ meta.field ] },
+                    ...payload,
                 },
             };
 

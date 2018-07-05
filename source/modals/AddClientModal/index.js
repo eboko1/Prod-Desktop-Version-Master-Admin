@@ -8,6 +8,8 @@ import _ from 'lodash';
 
 // proj
 import { onChangeAddClientForm } from 'core/forms/addClientForm/duck';
+
+import { AddClientForm } from 'forms';
 import { withReduxForm } from 'utils';
 
 // own
@@ -26,8 +28,10 @@ export default class AddClientModal extends Component {
         const {
             visible,
             handleAddClientModalSubmit,
-            setAddClientModal,
+            resetModal,
+            addClientFormData,
         } = this.props;
+
         const { getFieldDecorator, getFieldsError } = this.props.form;
 
         return (
@@ -38,16 +42,11 @@ export default class AddClientModal extends Component {
                 cancelText={ <FormattedMessage id='cancel' /> }
                 okText={ <FormattedMessage id='add' /> }
                 wrapClassName={ Styles.addClientModal }
-                visible={ visible }
+                visible={ Boolean(visible) }
                 onOk={ () => handleAddClientModalSubmit() }
-                onCancel={ () => setAddClientModal(false) }
+                onCancel={ () => resetModal() }
             >
-                <Form
-                    layout='vertical'
-                    // onSubmit={ this.handleSubmit }
-                >
-                    addClientForm
-                </Form>
+                <AddClientForm addClientFormData={ addClientFormData } />
             </Modal>
         );
     }

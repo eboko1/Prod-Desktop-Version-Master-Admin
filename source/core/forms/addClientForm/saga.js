@@ -12,8 +12,8 @@ import { fetchAddClientFormSuccess, FETCH_ADD_CLIENT_FORM } from './duck';
 export function* fetchAddClientFormSaga() {
     while (true) {
         yield take(FETCH_ADD_CLIENT_FORM);
-        // TODO: change endpoint
-        const data = yield call(fetchAPI, 'GET', 'orders/clientForm');
+
+        const data = yield call(fetchAPI, 'GET', 'vehicles_info');
 
         yield put(fetchAddClientFormSuccess(data));
     }

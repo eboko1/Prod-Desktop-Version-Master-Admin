@@ -7,6 +7,9 @@ import { Icon, Button, Radio } from 'antd';
 
 // proj
 import { fetchAddOrderForm } from 'core/forms/addOrderForm/duck';
+import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
+
 import { Layout } from 'commons';
 import { AddOrderForm } from 'forms';
 import { AddClientModal } from 'modals';
@@ -18,37 +21,32 @@ import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
-        stations:    state.forms.addOrderForm.stations,
-        vehicles:    state.forms.addOrderForm.vehicles,
-        employees:   state.forms.addOrderForm.employees,
-        managers:    state.forms.addOrderForm.managers,
-        clients:     state.forms.addOrderForm.clients.clients,
-        allDetails:  state.forms.addOrderForm.allDetails,
-        allServices: state.forms.addOrderForm.allServices,
-        requisites:  state.forms.addOrderForm.requisites,
+        stations:          state.forms.addOrderForm.stations,
+        vehicles:          state.forms.addOrderForm.vehicles,
+        employees:         state.forms.addOrderForm.employees,
+        managers:          state.forms.addOrderForm.managers,
+        clients:           state.forms.addOrderForm.clients.clients,
+        allDetails:        state.forms.addOrderForm.allDetails,
+        allServices:       state.forms.addOrderForm.allServices,
+        requisites:        state.forms.addOrderForm.requisites,
+        addClientModal:    state.modals.modal,
+        addClientFormData: state.forms.addClientForm.data,
     };
 };
 
-@withRouter
-@connect(mapStateToProps, { fetchAddOrderForm })
-class AddOrderPage extends Component {
-    state = {
-        visible: false,
-    };
+const mapDispatch = {
+    fetchAddOrderForm,
+    fetchAddClientForm,
+    setModal,
+    resetModal,
+};
 
+@withRouter
+@connect(mapStateToProps, mapDispatch)
+class AddOrderPage extends Component {
     componentDidMount() {
         this.props.fetchAddOrderForm();
     }
-
-    setAddClientModal = visible => {
-        this.setState(state => {
-            // if (!state.visible) {
-            //     this.props.fetchAddClientForm();
-            // }
-
-            return { visible };
-        });
-    };
 
     saveFormRef = formRef => {
         this.formRef = formRef;
@@ -66,15 +64,23 @@ class AddOrderPage extends Component {
 
     handleAddClientModalSubmit = () => {
         const form = this.formRef.props.form;
-        this.setAddClientModal(false);
+        this.setAddClientModal();
         form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of AddClientForm: ', values);
             }
         });
+        this.props.resetModal();
+    };
+
+    setAddClientModal = () => {
+        this.props.fetchAddClientForm();
+        this.props.setModal(MODALS.ADD_CLIENT);
     };
 
     render() {
+        const { addClientModal, resetModal, addClientFormData } = this.props;
+
         return (
             <Layout
                 title={ <FormattedMessage id='add-order-page.add_order' /> }
@@ -116,12 +122,14 @@ class AddOrderPage extends Component {
                 <AddOrderForm
                     wrappedComponentRef={ this.saveFormRef }
                     setAddClientModal={ this.setAddClientModal }
+                    addClientModal={ addClientModal }
                 />
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
-                    visible={ this.state.visible }
+                    visible={ addClientModal }
                     handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
-                    setAddClientModal={ this.setAddClientModal }
+                    resetModal={ resetModal }
+                    addClientFormData={ addClientFormData }
                 />
             </Layout>
         );
