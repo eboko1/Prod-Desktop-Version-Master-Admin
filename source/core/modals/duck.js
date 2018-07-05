@@ -11,6 +11,8 @@ export const MODALS = {
     ADD_CLIENT:        'ADD_CLIENT',
     INVITE:            'INVITE',
     UNIVERSAL_FILTERS: 'UNIVERSAL_FILTERS',
+    CANCEL_REASON:     'CANCEL_REASON',
+    TO_SUCCESS:        'TO_SUCCESS',
 };
 
 //
