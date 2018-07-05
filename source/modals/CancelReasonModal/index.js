@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Modal, Button, Input, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import { v4 } from 'uuid';
 
 // proj
 import { MODALS } from 'core/modals/duck';
@@ -13,24 +14,48 @@ const { Option } = Select;
 
 export default class CancelResonModal extends Component {
     render() {
-        const { visible, confirmCancelResonModal, resetModal } = this.props;
+        const {
+            visible,
+            confirmCancelResonModal,
+            resetModal,
+            orderComments,
+        } = this.props;
 
         return (
             <Modal
                 cancelText={ <FormattedMessage id='cancel' /> }
-                okText={ <FormattedMessage id='invite-modal.invite' /> }
                 visible={ visible === MODALS.CANCEL_REASON }
-                onOk={ () => confirmCancelResonModal() }
                 onCancel={ () => resetModal() }
+                footer={ null }
             >
-                Отказаться от закказа?
-                <Button onClick={ () => console.log('→ YES') }>Да</Button>
-                <Button onClick={ () => resetModal() }>Нет</Button>
-                { /* TODO fetch CancelReasons*/ }
-                <Select>
-                    <Option value='1'>REASON 1</Option>
-                    <Option value='1'>REASON 2</Option>
-                </Select>
+                <div>Отказаться от закказа?</div>
+                <div>
+                    <Button onClick={ () => confirmCancelResonModal() }>
+                        Да
+                    </Button>
+                    <Button onClick={ () => resetModal() }>Нет</Button>
+                </div>
+                { /* TODO submit*/ }
+                { orderComments && (
+                    <Select getPopupContainer={ trigger => trigger.parentNode }>
+                        { orderComments
+                            .map(
+                                ({ status, id, comment }) =>
+                                    status === 'cancel' ? (
+                                        <Option
+                                            value={ id }
+                                            key={ v4() }
+                                            styles={ { width: '220px' } }
+                                        >
+                                            { comment }
+                                        </Option>
+                                    ) : 
+                                        false
+                                ,
+                            )
+                            .filter(Boolean) }
+                    </Select>
+                ) }
                 <TextArea rows={ 4 } autosize={ { minRows: 2, maxRows: 6 } } />
             </Modal>
         );

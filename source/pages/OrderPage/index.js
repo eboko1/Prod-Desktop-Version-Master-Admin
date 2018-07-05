@@ -34,6 +34,7 @@ const mapStateToProps = state => {
         requisites:        state.forms.addOrderForm.requisites,
         addClientModal:    state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
+        orderComments:     state.forms.orderForm.orderComments,
         order:             state.forms.orderForm.order,
         orderEntity:       {
             ...state.forms.orderForm.fields,
@@ -83,16 +84,16 @@ class OrderPage extends Component {
         return (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
@@ -143,6 +144,7 @@ class OrderPage extends Component {
                     confirmCancelResonModalConfirm={
                         this.confirmCancelResonModalConfirm
                     }
+                    orderComments={ this.props.orderComments }
                     resetModal={ () => resetModal() }
                 />
                 <ToSuccessModal
