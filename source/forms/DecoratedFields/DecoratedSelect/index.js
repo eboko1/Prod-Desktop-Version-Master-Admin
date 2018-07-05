@@ -1,7 +1,7 @@
 // Core
 import React from 'react';
 import { Select } from 'antd';
-// import { FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
 
 // own
@@ -20,6 +20,7 @@ export const DecoratedSelect = props => {
         showSearch,
         allowClear,
         placeholder,
+        notFoundContent,
 
         onSearch,
         onChange,
@@ -50,6 +51,13 @@ export const DecoratedSelect = props => {
             onSearch={ onSearch }
             // onSelect={ onSelect }
             placeholder={ placeholder }
+            notFoundContent={
+                notFoundContent ?
+                    notFoundContent
+                    : (
+                        <FormattedMessage id='no_data' />
+                    )
+            }
             getPopupContainer={ getPopupContainer }
             dropdownMatchSelectWidth={ dropdownMatchSelectWidth }
             dropdownStyle={ dropdownStyle }

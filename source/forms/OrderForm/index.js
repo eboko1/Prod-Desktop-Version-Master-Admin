@@ -65,12 +65,69 @@ const { TextArea } = Input;
     },
 })
 export class OrderForm extends Component {
+    constructor(props) {
+        super(props);
+
+        this.props.change(
+            {
+                station: {
+                    dirty:   false,
+                    name:    'station',
+                    touched: true,
+                    value:   6,
+                },
+                manager: {
+                    dirty:   false,
+                    name:    'manager',
+                    touched: true,
+                    value:   6643,
+                },
+            },
+            {
+                form:  'orderForm',
+                field: 'station',
+            },
+        );
+    }
+
+    // componentDidUpdate(prevProps) {
+    //     if (prevProps.stations !== this.props.stations) {
+    //         this.props.change(
+    //             {
+    //                 station: {
+    //                     dirty:   false,
+    //                     name:    'station',
+    //                     touched: true,
+    //                     value:   6,
+    //                 },
+    //             },
+    //             {
+    //                 form:  'orderForm',
+    //                 field: 'station',
+    //             },
+    //         );
+    //     }
+    // }
+
+    // setStation() {
+    //     this.props.change(
+    //         {
+    //             station: {
+    //                 dirty:   false,
+    //                 name:    'station',
+    //                 touched: true,
+    //                 value:   6,
+    //             },
+    //         },
+    //         {
+    //             form:  'orderForm',
+    //             field: 'station',
+    //         },
+    //     );
+    // }
 
     render() {
-        const {
-            managers,
-            stations,
-        } = this.props;
+        const { managers, stations } = this.props;
 
         const { searchClientsResult } = this.props;
         const {
@@ -91,8 +148,6 @@ export class OrderForm extends Component {
                     ({ id }) => id === selectedVehicleId,
                 ),
             );
-
-        console.log('selectedClient', this.props.selectedClient);
 
         const buttonDisabled = hasErrors(getFieldsError());
         const countServices = _.values(this.props.fields.services).length - 1;
@@ -219,6 +274,7 @@ export class OrderForm extends Component {
                             placeholder={
                                 <FormattedMessage id='add_order_form.select_station' />
                             }
+                            // setFieldsValue={ setStation() }
                             // dropdownMatchSelectWidth={ false }
                             // dropdownStyle={ { width: '70%' } }
                             options={ stations }

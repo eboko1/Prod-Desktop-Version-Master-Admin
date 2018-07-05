@@ -330,7 +330,7 @@ function mergeAllServicesOrderServices(allServices, orderServices) {
 
     return [ ...allServices, ...requiredOrderServices ];
 }
-
+// eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
 
@@ -412,6 +412,17 @@ export default function reducer(state = ReducerState, action) {
                 ...payload,
                 allServices: payload.allServices,
                 allDetails:  payload.allDetails,
+                fields:      {
+                    ...state.fields,
+                    station: customFieldValue(
+                        'station',
+                        payload.stations[ 0 ].num,
+                    ),
+                    manager: customFieldValue(
+                        'manager',
+                        payload.managers[ 0 ].id,
+                    ),
+                },
             };
 
         case ON_CHANGE_ORDER_FORM:
@@ -548,6 +559,18 @@ export default function reducer(state = ReducerState, action) {
                     ...state.fields,
                     // clearing provided fields with default values
                     ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery', 'clientRequisite' ]),
+                    clientPhone: customFieldValue(
+                        'clientPhone',
+                        _.get(payload, 'phones[0]'),
+                    ),
+                    clientEmail: customFieldValue(
+                        'clientEmail',
+                        _.get(payload, 'emails[0]'),
+                    ),
+                    clientVehicle: customFieldValue(
+                        'clientVehicle',
+                        _.get(payload, 'vehicles[0].id'),
+                    ),
                 },
             };
         // TODO think about spinners
