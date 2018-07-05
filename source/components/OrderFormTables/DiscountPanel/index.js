@@ -5,17 +5,21 @@ import { FormattedMessage } from 'react-intl';
 
 // proj
 import { Catcher } from 'commons';
+import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
 
 // own
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
 
 class DiscountPanel extends Component {
-    onChange(value) {
-        console.log('changed', value);
-    }
 
     render() {
+        const discountFieldName = this.props.discountFieldName;
+
+        const discount = ~~this.props.fields[discountFieldName].value;
+        const price = this.props.price;
+
+        const total = price - price * (discount / 100);
         return (
             <Catcher>
                 <div className={ Styles.discountPanel }>
@@ -26,13 +30,14 @@ class DiscountPanel extends Component {
                         colon={ false }
                         className={ Styles.formItem }
                     >
-                        <InputNumber
+                        <DecoratedInputNumber
+                            field={ discountFieldName }
+                            getFieldDecorator={ this.props.form.getFieldDecorator }
                             defaultValue={ 0 }
                             min={ 0 }
                             max={ 100 }
                             formatter={ value => `${value}%` }
                             parser={ value => value.replace('%', '') }
-                            onChange={ value => this.onChange(value) }
                         />
                     </FormItem>
                     <FormItem
@@ -44,7 +49,7 @@ class DiscountPanel extends Component {
                     >
                         <InputNumber
                             disabled
-                            defaultValue={ 0 }
+                            value={ this.props.price }
                             min={ 0 }
                             formatter={ value =>
                                 `$ ${value}`.replace(
@@ -53,7 +58,6 @@ class DiscountPanel extends Component {
                                 )
                             }
                             parser={ value => value.replace(/\$\s?|(,*)/g, '') }
-                            onChange={ value => this.onChange(value) }
                         />
                     </FormItem>
                     <FormItem
@@ -65,7 +69,7 @@ class DiscountPanel extends Component {
                     >
                         <InputNumber
                             disabled
-                            defaultValue={ 0 }
+                            value={ total }
                             min={ 0 }
                             formatter={ value =>
                                 `$ ${value}`.replace(

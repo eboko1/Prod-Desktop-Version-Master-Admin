@@ -19,6 +19,7 @@ import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
 
 // own
 import Styles from './styles.m.css';
+import {servicesStats} from "../../../forms/OrderForm/stats";
 const Option = Select.Option;
 const FormItem = Form.Item;
 

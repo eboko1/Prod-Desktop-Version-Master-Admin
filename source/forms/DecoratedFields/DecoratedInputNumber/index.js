@@ -9,6 +9,7 @@ export const DecoratedInputNumber = props => {
         rules,
         field,
         min,
+        max,
         // TODO
         // defaultValue,
         initValue,
@@ -26,6 +27,7 @@ export const DecoratedInputNumber = props => {
         <InputNumber
             disabled={ disabled }
             min={ min }
+            max={ max }
             // defaultValue={ defaultValue }
             onChange={ onChange }
             // onChange={ value =>
