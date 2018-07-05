@@ -166,6 +166,7 @@ const createDefaultState = () => ({
         odometerValue:     defaultFieldValue('odometerValue'),
         recommendation:    defaultFieldValue('recommendation'),
         comment:           defaultFieldValue('comment'),
+        createOrderStatus: customFieldValue('createOrderStatus', 'not_complete'),
         servicesDiscount:  customFieldValue('servicesDiscount', 0),
         detailsDiscount:   customFieldValue('detailsDiscount', 0),
         services:          defaultService(),

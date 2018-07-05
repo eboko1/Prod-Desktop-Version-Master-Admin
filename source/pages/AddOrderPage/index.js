@@ -34,6 +34,7 @@ const mapStateToProps = state => {
         requisites:        state.forms.addOrderForm.requisites,
         addClientModal:    state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
+        createOrderStatus: state.forms.orderForm.fields.createOrderStatus.value,
         orderEntity:       {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
@@ -60,6 +61,10 @@ class AddOrderPage extends Component {
         this.formRef = formRef;
     };
 
+    saveOrderFormRef = formRef => {
+        this.orderFormRef = formRef;
+    };
+
     onSubmit = () => {
         const form = this.formRef.props.form;
         form.validateFields((err, values) => {
@@ -69,6 +74,7 @@ class AddOrderPage extends Component {
                         this.props.orderEntity,
                         this.props.allServices,
                         this.props.allDetails,
+                        this.props.createOrderStatus,
                     ),
                 );
                 // eslint-disable-next-line
@@ -95,6 +101,7 @@ class AddOrderPage extends Component {
 
     render() {
         const { addClientModal, resetModal, addClientFormData } = this.props;
+        const form = this.orderFormRef;
 
         return (
             <Layout
@@ -102,20 +109,35 @@ class AddOrderPage extends Component {
                 controls={
                     <>
                         <div>
-                            <RadioGroup defaultValue='not_complete'>
-                                <RadioButton value='reserve'>
-                                    <FormattedMessage id='reserve' />
-                                </RadioButton>
-                                <RadioButton value='not_complete'>
-                                    <FormattedMessage id='not_complete' />
-                                </RadioButton>
-                                <RadioButton value='required'>
-                                    <FormattedMessage id='required' />
-                                </RadioButton>
-                                <RadioButton value='approve'>
-                                    <FormattedMessage id='approve' />
-                                </RadioButton>
-                            </RadioGroup>
+                            { !form
+                                ? null
+                                : form.props.form.getFieldDecorator(
+                                    'createOrderStatus',
+                                    {
+                                        rules: [
+                                            {
+                                                required: true,
+                                                message:
+                                                      'Status is required!',
+                                            },
+                                        ],
+                                    },
+                                )(
+                                    <RadioGroup defaultValue='not_complete'>
+                                        <RadioButton value='reserve'>
+                                            <FormattedMessage id='reserve' />
+                                        </RadioButton>
+                                        <RadioButton value='not_complete'>
+                                            <FormattedMessage id='not_complete' />
+                                        </RadioButton>
+                                        <RadioButton value='required'>
+                                            <FormattedMessage id='required' />
+                                        </RadioButton>
+                                        <RadioButton value='approve'>
+                                            <FormattedMessage id='approve' />
+                                        </RadioButton>
+                                    </RadioGroup>,
+                                ) }
                             <Button
                                 type='primary'
                                 htmlType='submit'
@@ -135,7 +157,7 @@ class AddOrderPage extends Component {
             >
                 { /* eslint-disable-next-line */ }
                 <OrderForm
-                    wrappedComponentRef={ this.saveFormRef }
+                    wrappedComponentRef={ this.saveOrderFormRef }
                     setAddClientModal={ this.setAddClientModal }
                     addClientModal={ addClientModal }
                 />
