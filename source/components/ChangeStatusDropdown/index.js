@@ -13,17 +13,9 @@ const Item = Menu.Item;
 
 class ChangeStatusDropdown extends React.Component {
     render() {
-        // const { orderStatus } = this.props;
-        const orderStatus = 'progress';
-        console.log('→ ', orderStatus);
-        console.log('→ onStatusChange', this.props.onStatusChange);
+        const { orderStatus: status } = this.props;
 
         const getMenuItems = () => {
-            // const { orderStatus } = props;
-            // if (!orderStatus) {
-            //     return [];
-            // }
-
             const changeToRequired = {
                 status: 'required',
                 name:   'required',
@@ -60,25 +52,23 @@ class ChangeStatusDropdown extends React.Component {
             };
 
             const changeToSuccess = {
-                status: 'success',
                 name:   'success',
+                status: 'success',
                 icon:   'check',
                 action: () => this.props.onStatusChange('success'),
             };
 
-            let statuses = [ changeToReserve, changeToRequired, changeToNotComplete, changeToApprove, changeToProgress, changeToSuccess ];
-
+            const statuses = [ changeToReserve, changeToRequired, changeToNotComplete, changeToApprove, changeToProgress, changeToSuccess ];
             const appointments = [ 'required', 'not_complete' ];
-
-            const approves = [ 'reserve', 'approve' ];
-
+            const approves = [ 'approve', 'reserve' ];
             const statusesChain = [[ 'call', 'invite' ], appointments, approves, 'progress', 'success' ];
+
             const statusIndex = _.findIndex(
                 statusesChain,
                 elem =>
                     _.isArray(elem) ? elem.includes(status) : elem === status,
             );
-            // was 1 ~
+
             const suggestStatus = ~statusIndex
                 ? _.flatten(statusesChain.slice(statusIndex + 1))
                 : [];
@@ -91,25 +81,20 @@ class ChangeStatusDropdown extends React.Component {
 
             const allStatuses = [ ...suggestStatus, ...additionalStatuses ];
 
-            statuses = statuses.map(item =>
-                Object.assign({}, item, {
-                    disabled: !allStatuses.includes(item.status),
+            const menuItems = statuses
+                .filter(({ status }) => allStatuses.includes(status))
+                .map(({ name, icon }) => ({
+                    name,
+                    icon,
                 }));
-            console.log('→ orderStatus', orderStatus);
-            const menuItems = statuses[ orderStatus ].map(({ name, icon }) => ({
-                name,
-                icon,
-            }));
 
             return menuItems;
         };
 
         const menuItems = getMenuItems();
-        console.log('→ menuItems', menuItems);
 
         const menu = (
             <Menu>
-                { console.log('→ this.statuses.map', menuItems.map) }
                 { menuItems.map((item, index) => (
                     <Item
                         key={ `${index}-${item.name}` }
