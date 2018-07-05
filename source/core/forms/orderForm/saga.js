@@ -8,6 +8,7 @@ import {
     delay,
     takeEvery,
 } from 'redux-saga/effects';
+import { replace } from 'react-router-redux';
 // import nprogress from 'nprogress';
 
 //proj
@@ -21,14 +22,11 @@ import {
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
-
     onHandleCustomService,
     onHandleCustomDetail,
     onHandleCustomBrand,
-
     createOrderSuccess,
     updateOrderSuccess,
-
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
     ON_CHANGE_ORDER_FORM,
@@ -51,17 +49,21 @@ export function* fetchOrderFormSaga() {
 
 export function* createOrderSaga() {
     while (true) {
-        const {payload: entity} = yield take(CREATE_ORDER);
+        const { payload: entity } = yield take(CREATE_ORDER);
         yield call(fetchAPI, 'POST', 'orders', {}, entity);
         yield put(createOrderSuccess());
+        yield put(replace('/orders/appointments'));
     }
 }
 
 export function* updateOrderSaga() {
     while (true) {
-        const {payload: { order, id }} = yield take(UPDATE_ORDER);
+        const {
+            payload: { order, id },
+        } = yield take(UPDATE_ORDER);
         yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
         yield put(updateOrderSuccess());
+        // yield put(replace('/orders/appointments'));
     }
 }
 
