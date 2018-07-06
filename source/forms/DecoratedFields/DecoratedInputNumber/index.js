@@ -1,17 +1,28 @@
 // vendor
 import React from 'react';
-import { InputNumber, Icon } from 'antd';
+import { InputNumber, Icon, Form } from 'antd';
+
+// own
+const FormItem = Form.Item;
 
 export const DecoratedInputNumber = props => {
     const {
+        //FormItem
+        formItem,
+        label,
+        colon,
+        className,
+        hasFeedback,
+        formItemLayout,
+
         getFieldDecorator,
         disabled,
         rules,
         field,
         min,
         max,
-        // TODO
         // defaultValue,
+
         initValue,
         onChange,
 
@@ -20,7 +31,7 @@ export const DecoratedInputNumber = props => {
         iconType,
     } = props;
 
-    return getFieldDecorator(field, {
+    const inputNumber = getFieldDecorator(field, {
         rules,
         initValue,
     })(
@@ -30,9 +41,20 @@ export const DecoratedInputNumber = props => {
             max={ max }
             // defaultValue={ defaultValue }
             onChange={ onChange }
-            // onChange={ value =>
-            //     this.onCellChange(record.key, value, 'price')
-            // }
         />,
     );
+
+    return formItem ? (
+        <FormItem
+            label={ label }
+            hasFeedback={ hasFeedback }
+            colon={ colon }
+            className={ className }
+            formItemLayout={ formItemLayout }
+        >
+            { inputNumber }
+        </FormItem>
+    ) :
+        inputNumber
+    ;
 };

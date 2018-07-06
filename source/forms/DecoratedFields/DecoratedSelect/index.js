@@ -1,27 +1,35 @@
 // Core
 import React from 'react';
-import { Select } from 'antd';
+import { Select, Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
 
 // own
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 export const DecoratedSelect = props => {
     const {
+        //FormItem
+        formItem,
+        label,
+        colon,
+        className,
+        hasFeedback,
+        formItemLayout,
+
+        // DecoratedField
         children,
         getFieldDecorator,
         getPopupContainer,
         field,
         rules,
         mode,
-
         disabled,
         showSearch,
         allowClear,
         placeholder,
         notFoundContent,
-
         onSearch,
         onChange,
         // onSelect,
@@ -37,7 +45,7 @@ export const DecoratedSelect = props => {
         dropdownStyle,
     } = props;
 
-    return getFieldDecorator(field, {
+    const select = getFieldDecorator(field, {
         rules,
     })(
         <Select
@@ -52,7 +60,7 @@ export const DecoratedSelect = props => {
             // onSelect={ onSelect }
             placeholder={ placeholder }
             notFoundContent={
-                notFoundContent ?
+                notFoundContent ? 
                     notFoundContent
                     : (
                         <FormattedMessage id='no_data' />
@@ -86,4 +94,18 @@ export const DecoratedSelect = props => {
                 )) }
         </Select>,
     );
+
+    return formItem ? (
+        <FormItem
+            label={ label }
+            hasFeedback={ hasFeedback }
+            colon={ colon }
+            className={ className }
+            formItemLayout={ formItemLayout }
+        >
+            { select }
+        </FormItem>
+    ) : 
+        select
+    ;
 };

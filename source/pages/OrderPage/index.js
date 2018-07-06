@@ -137,7 +137,6 @@ class OrderPage extends Component {
                     </>
                 }
             >
-                <Spinner spin={ spinner } />
                 <OrderForm wrappedComponentRef={ this.saveFormRef } />
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }

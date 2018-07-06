@@ -167,11 +167,14 @@ const createDefaultState = () => ({
         vehicleCondition:  defaultFieldValue('vehicleCondition'),
         businessComment:   defaultFieldValue('businessComment'),
         comment:           defaultFieldValue('comment'),
-        createOrderStatus: customFieldValue('createOrderStatus', 'not_complete'),
-        servicesDiscount:  customFieldValue('servicesDiscount', 0),
-        detailsDiscount:   customFieldValue('detailsDiscount', 0),
-        services:          defaultService(),
-        details:           defaultDetail(),
+        createOrderStatus: customFieldValue(
+            'createOrderStatus',
+            'not_complete',
+        ),
+        servicesDiscount: customFieldValue('servicesDiscount', 0),
+        detailsDiscount:  customFieldValue('detailsDiscount', 0),
+        services:         defaultService(),
+        details:          defaultDetail(),
     },
     allServices:   [],
     managers:      [],
@@ -399,8 +402,11 @@ export default function reducer(state = ReducerState, action) {
                         'vehicleCondition',
                         payload.order.vehicleCondition,
                     ),
-                    comment:          customFieldValue('comment', payload.order.comment),
-                    employee:         customFieldValue('employee', payload.order.employeeId),
+                    comment:  customFieldValue('comment', payload.order.comment),
+                    employee: customFieldValue(
+                        'employee',
+                        payload.order.employeeId,
+                    ),
                     servicesDiscount: customFieldValue(
                         'servicesDiscount',
                         payload.order.servicesDiscount,
@@ -457,7 +463,7 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     ...payload,
-                    services:       {
+                    services: {
                         // if merge with empty object old state stayed
                         ..._.merge(
                             state.fields.services,

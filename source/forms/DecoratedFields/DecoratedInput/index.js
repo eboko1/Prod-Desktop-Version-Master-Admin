@@ -1,9 +1,20 @@
 // vendor
 import React from 'react';
-import { Input, Icon } from 'antd';
+import { Input, Icon, Form } from 'antd';
+
+// own
+const FormItem = Form.Item;
 
 export const DecoratedInput = props => {
     const {
+        //FormItem
+        formItem,
+        label,
+        colon,
+        className,
+        hasFeedback,
+        formItemLayout,
+
         getFieldDecorator,
         disabled,
         rules,
@@ -14,7 +25,7 @@ export const DecoratedInput = props => {
         field,
     } = props;
 
-    return getFieldDecorator(type || field, {
+    const input = getFieldDecorator(field, {
         rules,
     })(
         <Input
@@ -33,4 +44,18 @@ export const DecoratedInput = props => {
             disabled={ disabled }
         />,
     );
+
+    return formItem ? (
+        <FormItem
+            label={ label }
+            hasFeedback={ hasFeedback }
+            colon={ colon }
+            className={ className }
+            formItemLayout={ formItemLayout }
+        >
+            { input }
+        </FormItem>
+    ) : 
+        input
+    ;
 };

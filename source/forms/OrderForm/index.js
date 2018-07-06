@@ -184,60 +184,61 @@ export class OrderForm extends Component {
                         } }
                     />
                     { /*</FormItem>*/ }
-                    <FormItem
+                    <DecoratedSelect
+                        field='station'
+                        rules={ [
+                            {
+                                required: true,
+                                message:  'provide station',
+                            },
+                        ] }
+                        formItem
                         label={ <FormattedMessage id='add_order_form.station' /> }
-                        hasFeedback
                         colon={ false }
+                        hasFeedback
                         className={ Styles.datePanelItem }
-                    >
-                        <DecoratedSelect
-                            field='station'
-                            getFieldDecorator={
-                                this.props.form.getFieldDecorator
-                            }
-                            // onChange={ value =>
-                            //     this.handleServiceSelect(record.key, value)
-                            // }
-                            placeholder={
-                                <FormattedMessage id='add_order_form.select_station' />
-                            }
-                            // setFieldsValue={ setStation() }
-                            // dropdownMatchSelectWidth={ false }
-                            // dropdownStyle={ { width: '70%' } }
-                            options={ stations }
-                            optionValue='num'
-                            optionLabel='name'
-                        />
-                    </FormItem>
-                    <FormItem
+                        getFieldDecorator={ getFieldDecorator }
+                        // onChange={ value =>
+                        //     this.handleServiceSelect(record.key, value)
+                        // }
+                        placeholder={
+                            <FormattedMessage id='add_order_form.select_station' />
+                        }
+                        // setFieldsValue={ setStation() }
+                        // dropdownMatchSelectWidth={ false }
+                        // dropdownStyle={ { width: '70%' } }
+                        options={ stations }
+                        optionValue='num'
+                        optionLabel='name'
+                    />
+                    <DecoratedSelect
+                        field='manager'
+                        formItem
+                        getFieldDecorator={ getFieldDecorator }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  'Please select your manager!',
+                            },
+                        ] }
                         label={ <FormattedMessage id='add_order_form.manager' /> }
                         hasFeedback
                         colon={ false }
                         className={ Styles.datePanelItem }
+                        placeholder='Выберете менеджера'
                     >
-                        { getFieldDecorator('manager', {
-                            rules: [
-                                {
-                                    required: true,
-                                    message:  'Please select your manager!',
-                                },
-                            ],
-                        })(
-                            <Select placeholder='Выберете менеджера'>
-                                { managers.map(manager => (
-                                    <Option
-                                        disabled={ manager.disabled }
-                                        value={ manager.id }
-                                        key={ v4() }
-                                    >
-                                        { `${manager.managerName} ${
-                                            manager.managerSurname
-                                        }` }
-                                    </Option>
-                                )) }
-                            </Select>,
-                        ) }
-                    </FormItem>
+                        { managers.map(manager => (
+                            <Option
+                                disabled={ manager.disabled }
+                                value={ manager.id }
+                                key={ v4() }
+                            >
+                                { `${manager.managerName} ${
+                                    manager.managerSurname
+                                }` }
+                            </Option>
+                        )) }
+                    </DecoratedSelect>
                 </div>
 
                 <ClientsSearchTable
