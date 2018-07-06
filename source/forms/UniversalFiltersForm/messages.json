@@ -1,11 +1,34 @@
 {
     "en": {
-        "universal_filters_form.countOrders": "Count Orders"
+        "universal_filters_form.countOrders": "Count Orders",
+        "universal_filters_form.enrollment_date": "Enrollment Date",
+        "universal_filters_form.create_date": "Create Date",
+        "universal_filters_form.make": "Make",
+        "universal_filters_form.model": "Model",
+        "universal_filters_form.year": "Year",
+        "universal_filters_form.mileage_from": "Mileage from",
+        "universal_filters_form.mileage_to": "Mileage to"
+
+
     },
     "ru": {
-        "universal_filters_form.countOrders": "Count Orders"
+        "universal_filters_form.countOrders": "Count Orders",
+        "universal_filters_form.enrollment_date": "Дата записи",
+        "universal_filters_form.create_date": "Дата Создания",
+        "universal_filters_form.make": "Марка",
+        "universal_filters_form.model": "Модель",
+        "universal_filters_form.year": "Год",
+        "universal_filters_form.mileage_from": "Пробег от",
+        "universal_filters_form.mileage_to": "Пробег до"
     },
     "uk": {
-        "universal_filters_form.countOrders": "Count Orders"
+        "universal_filters_form.countOrders": "Count Orders",
+        "universal_filters_form.enrollment_date": "Дата запису",
+        "universal_filters_form.create_date": "Дата Створення",
+        "universal_filters_form.make": "Марка",
+        "universal_filters_form.model": "Модель",
+        "universal_filters_form.year": "Рік",
+        "universal_filters_form.mileage_from": "Пробіг від",
+        "universal_filters_form.mileage_to": "Пробіг до"
     }
 }

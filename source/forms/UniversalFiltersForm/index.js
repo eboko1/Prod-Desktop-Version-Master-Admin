@@ -1,8 +1,9 @@
 // vendor
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Form, Row, Col } from 'antd';
+import { Form, Row, Col, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { v4 } from 'uuid';
 
 // proj
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
@@ -15,6 +16,7 @@ import { withReduxForm, getDaterange } from 'utils';
 // own
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 @injectIntl
 @withReduxForm({
@@ -42,6 +44,11 @@ export class UniversalFiltersForm extends Component {
         const { formatMessage } = this.props.intl;
 
         const makeId = _.get(this.props, 'fields.make.value');
+        const vehiclesYears = [];
+        const range = new Array(200);
+        for (let i = 0; i < range.length; i++) {
+            vehiclesYears.push(1900 + i);
+        }
 
         return (
             <Form
@@ -50,7 +57,7 @@ export class UniversalFiltersForm extends Component {
             >
                 <Row gutter={ 8 }>
                     <Col span={ 12 }>
-                        <FormItem label='beginDate'>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.enrollment_date'/> }>
                             <DecoratedDatePicker
                                 field='beginDate'
                                 getFieldDecorator={ getFieldDecorator }
@@ -81,7 +88,7 @@ export class UniversalFiltersForm extends Component {
                         </FormItem>
                     </Col>
                     <Col span={ 12 }>
-                        <FormItem label='createDate'>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.create_date'/> }>
                             <DecoratedDatePicker
                                 field='createDate'
                                 getFieldDecorator={ getFieldDecorator }
@@ -129,7 +136,7 @@ export class UniversalFiltersForm extends Component {
                     <Col span={ 6 }>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters.make' />
+                                <FormattedMessage id='universal_filters_form.make' />
                             }
                         >
                             <DecoratedSelect
@@ -138,7 +145,7 @@ export class UniversalFiltersForm extends Component {
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.make' />
+                                    <FormattedMessage id='universal_filters_form.make' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
@@ -153,7 +160,7 @@ export class UniversalFiltersForm extends Component {
                     <Col span={ 6 }>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters.model' />
+                                <FormattedMessage id='universal_filters_form.model' />
                             }
                         >
                             <DecoratedSelect
@@ -163,7 +170,7 @@ export class UniversalFiltersForm extends Component {
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.model' />
+                                    <FormattedMessage id='universal_filters_form.model' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
@@ -183,24 +190,27 @@ export class UniversalFiltersForm extends Component {
                         </FormItem>
                     </Col>
                     <Col span={ 6 }>
-                        <FormItem label={ 'TODO: YEAR' }>
+                        <FormItem label={  <FormattedMessage id='universal_filters_form.year' /> }>
                             <DecoratedSelect
-                                field='models'
-                                mode='multiple'
+                                field='year'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.model' />
+                                    <FormattedMessage id='universal_filters_form.year' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
-                                options={ vehicleModels }
-                                optionValue='id'
-                                optionLabel='name'
-                            />
+                            >
+                                { vehiclesYears.map((vehiclesYear) => (
+                                    <Option value={ vehiclesYear } key={ v4() }>
+                                        { vehiclesYear }
+                                    </Option>))
+                                }
+
+                            </DecoratedSelect>
                         </FormItem>
                     </Col>
                     <Col span={ 6 }>
