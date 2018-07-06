@@ -271,7 +271,7 @@ export default class OrdersFilterContainer extends Component {
                             </RadioButton>
                         </RadioGroup>
                     ) }
-                    { (status === 'success' || status === 'reviews') && (
+                    { status === 'reviews' && (
                         <div className={ Styles.review }>
                             { /* <Icon style={ { color: preColor } } type='frown-o' /> */ }
                             { /* <div>NPS:</div> */ }
