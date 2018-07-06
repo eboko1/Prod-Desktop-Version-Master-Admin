@@ -1,4 +1,5 @@
 // vendor
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { Form, Row, Col } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -39,6 +40,8 @@ export class UniversalFiltersForm extends Component {
         } = this.props;
         const { getFieldDecorator, getFieldsError } = this.props.form;
         const { formatMessage } = this.props.intl;
+
+        const makeId = _.get(this.props, 'fields.make.value');
 
         return (
             <Form
@@ -166,7 +169,14 @@ export class UniversalFiltersForm extends Component {
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
-                                options={ vehicleModels }
+                                options={
+                                    makeId
+                                        ? vehicleModels.filter(
+                                            ({ makeId: modelMakeId }) =>
+                                                makeId === modelMakeId,
+                                        )
+                                        : vehicleModels
+                                }
                                 optionValue='id'
                                 optionLabel='name'
                             />
