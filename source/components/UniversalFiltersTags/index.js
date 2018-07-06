@@ -65,6 +65,7 @@ class UniversalFiltersTags extends Component {
                             key={ tag }
                             className={ Styles.tagTooltip }
                         >
+                            { /* <FormattedMessage id={ `tags.${tagElem.props.name}` } /> */ }
                             { tagElem }
                         </Tooltip>
                     ) : 

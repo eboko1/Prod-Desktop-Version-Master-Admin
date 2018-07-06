@@ -124,7 +124,7 @@ class AddOrderPage extends Component {
                                         ],
                                     },
                                 )(
-                                    <RadioGroup defaultValue='not_complete'>
+                                    <RadioGroup>
                                         <RadioButton value='reserve'>
                                             <FormattedMessage id='reserve' />
                                         </RadioButton>

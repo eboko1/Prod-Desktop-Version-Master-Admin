@@ -56,7 +56,7 @@ export class UniversalFiltersForm extends Component {
                                 getFieldDecorator={ getFieldDecorator }
                                 formatMessage={ formatMessage }
                                 placeholder='boob date'
-                                getPopupContainer={ trigger =>
+                                getCalendarContainer={ trigger =>
                                     trigger.parentNode
                                 }
                                 ranges={ {
@@ -86,7 +86,7 @@ export class UniversalFiltersForm extends Component {
                                 field='createDate'
                                 getFieldDecorator={ getFieldDecorator }
                                 formatMessage={ formatMessage }
-                                getPopupContainer={ trigger =>
+                                getCalendarContainer={ trigger =>
                                     trigger.parentNode
                                 }
                                 ranges={ {

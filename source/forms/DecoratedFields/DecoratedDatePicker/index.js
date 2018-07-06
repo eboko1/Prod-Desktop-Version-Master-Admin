@@ -9,6 +9,14 @@ const { RangePicker } = DatePicker;
 
 export const DecoratedDatePicker = props => {
     const {
+        //formItem
+        formItem,
+        label,
+        colon,
+        className,
+        hasFeedback,
+        formItemLayout,
+
         formatMessage,
         ranges,
         getFieldDecorator,
@@ -65,39 +73,44 @@ export const DecoratedDatePicker = props => {
         },
     };
 
-    return (
-        <FormItem
-            label={ props.label }
-            hasFeedback
-            colon={ props.colon }
-            className={ props.className }
-        >
-            { getFieldDecorator(field, {
-                rules,
-            })(
-                ranges ? (
-                    <RangePicker
-                        // ranges={ {
-                        //     Today:        [ moment(), moment() ],
-                        //     'This Month': [ moment(), moment().endOf('month') ],
-                        // } }
-                        locale={ locale }
-                        ranges={ ranges }
-                        showTime={ showTime }
-                        format={ format }
-                        getCalendarContainer={ getCalendarContainer }
-                    />
-                ) : (
-                    <DatePicker
-                        getCalendarContainer={ getCalendarContainer }
-                        format={ format }
-                        disabled={ disabled }
-                        disabledDate={ disabledDate }
-                        disabledTime={ disabledTime }
-                        locale={ locale }
-                    />
-                ),
-            ) }
-        </FormItem>
+    const datePicker = getFieldDecorator(field, {
+        rules,
+    })(
+        ranges ? (
+            <RangePicker
+                // ranges={ {
+                //     Today:        [ moment(), moment() ],
+                //     'This Month': [ moment(), moment().endOf('month') ],
+                // } }
+                locale={ locale }
+                ranges={ ranges }
+                showTime={ showTime }
+                format={ format }
+                getCalendarContainer={ getCalendarContainer }
+            />
+        ) : (
+            <DatePicker
+                getCalendarContainer={ getCalendarContainer }
+                format={ format }
+                disabled={ disabled }
+                disabledDate={ disabledDate }
+                disabledTime={ disabledTime }
+                locale={ locale }
+            />
+        ),
     );
+
+    return formItem ? (
+        <FormItem
+            label={ label }
+            hasFeedback={ hasFeedback }
+            colon={ colon }
+            className={ className }
+            formItemLayout={ formItemLayout }
+        >
+            { datePicker }
+        </FormItem>
+    ) : 
+        datePicker
+    ;
 };
