@@ -12,7 +12,7 @@ import { replace } from 'react-router-redux';
 // import nprogress from 'nprogress';
 
 //proj
-// import { uiActions } from 'core/ui/actions';
+import { uiActions } from 'core/ui/actions';
 import { fetchAPI } from 'utils';
 
 // own
@@ -42,9 +42,11 @@ import {
 export function* fetchOrderFormSaga() {
     while (true) {
         const { payload: id } = yield take(FETCH_ORDER_FORM);
+        yield put(uiActions.setOrderFetchingState(true));
         const data = yield call(fetchAPI, 'GET', `orders/${id}`);
 
         yield put(fetchOrderFormSuccess(data));
+        yield put(uiActions.setOrderFetchingState(false));
     }
 }
 

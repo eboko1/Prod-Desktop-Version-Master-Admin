@@ -23,6 +23,10 @@ export const uiActions = Object.freeze({
         type:    types.SET_ORDERS_FETCHING_STATE,
         payload: state,
     }),
+    setOrderFetchingState: state => ({
+        type:    types.SET_ORDER_FETCHING_STATE,
+        payload: state,
+    }),
     setCollapsedState: state => ({
         type:    types.SET_COLLAPSED_STATE,
         payload: state,

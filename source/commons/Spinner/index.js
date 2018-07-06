@@ -11,6 +11,13 @@ const portal = document.getElementById('spinner');
 // const portal = spinner.getElementById('id', 'spinner');
 
 const Spinner = ({ spin }) =>
-    spin ? createPortal(<section className={ Styles.spinner } />, portal) : null;
+    spin
+        ? createPortal(
+            <section className={ Styles.spinner }>
+                <div className={ Styles.animation } />
+            </section>,
+            portal,
+        )
+        : null;
 
 export default Spinner;

@@ -11,7 +11,7 @@ import { fetchOrderForm, updateOrder } from 'core/forms/orderForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Layout } from 'commons';
+import { Layout, Spinner } from 'commons';
 import { OrderForm } from 'forms';
 import { ReportsDropdown, ChangeStatusDropdown } from 'components';
 import { CancelReasonModal, ToSuccessModal } from 'modals';
@@ -40,7 +40,8 @@ const mapStateToProps = state => {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
-        modal: state.modals.modal,
+        modal:   state.modals.modal,
+        spinner: state.ui.get('orderFetching'),
     };
 };
 
@@ -63,7 +64,6 @@ class OrderPage extends Component {
     }
 
     onStatusChange(status) {
-        console.log(status);
         const { id } = this.props.match.params;
         this.props.updateOrder({
             id,
@@ -77,23 +77,23 @@ class OrderPage extends Component {
     }
 
     render() {
-        const { setModal, resetModal } = this.props;
+        const { setModal, resetModal, spinner } = this.props;
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
 
-        return (
+        return !spinner ? (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>
@@ -137,6 +137,7 @@ class OrderPage extends Component {
                     </>
                 }
             >
+                <Spinner spin={ spinner } />
                 <OrderForm wrappedComponentRef={ this.saveFormRef } />
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
@@ -154,6 +155,8 @@ class OrderPage extends Component {
                     resetModal={ () => resetModal() }
                 />
             </Layout>
+        ) : (
+            <Spinner spin={ spinner } />
         );
     }
 }

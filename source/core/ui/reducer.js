@@ -7,6 +7,7 @@ const initialState = Map({
     // online:        false,
     authFetching:   false,
     ordersFetching: false,
+    orderFetching:  false,
     collapsed:      false,
     error:          null,
 });
@@ -27,6 +28,9 @@ export default (state = initialState, action) => {
 
         case types.SET_ORDERS_FETCHING_STATE:
             return state.set('ordersFetching', action.payload);
+
+        case types.SET_ORDER_FETCHING_STATE:
+            return state.set('orderFetching', action.payload);
 
         case types.SET_COLLAPSED_STATE:
             return state.set('collapsed', action.payload);
