@@ -130,6 +130,7 @@ class OrderPage extends Component {
                                 cursor:   'pointer',
                                 margin:   '0 10px',
                             } }
+                            onClick={ () => this.onStatusChange(status) }
                         />
                         <Icon
                             type='delete'
