@@ -13,12 +13,12 @@
 }
 
 .ordersWrrapper {
-    padding: 280px 0 0 0;
+    padding: 205px 0 0 0;
     margin: 0 16px;
 }
 
 .ordersWrrapperUF {
-    padding: 335px 0 0 0;
+    padding: 255px 0 0 0;
 }
 
 .funelWithFilters {
@@ -53,7 +53,7 @@
     position: fixed;
     width: calc(100% - 256px);
     z-index: 200;
-    margin: 240px 0 0 0;
+    margin: 165px 0 0 0;
     display: flex;
     position: fixed;
     flex-direction: column;
