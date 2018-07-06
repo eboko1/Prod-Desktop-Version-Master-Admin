@@ -19,6 +19,7 @@ import { fetchAPI } from 'utils';
 import {
     fetchOrderFormSuccess,
     fetchAddOrderFormSuccess,
+    fetchOrderForm,
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
@@ -63,6 +64,7 @@ export function* updateOrderSaga() {
         } = yield take(UPDATE_ORDER);
         yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
         yield put(updateOrderSuccess());
+        yield put(fetchOrderForm(id));
         // yield put(replace('/orders/appointments'));
     }
 }
