@@ -157,6 +157,8 @@ export class OrderForm extends Component {
                     <DecoratedDatePicker
                         getFieldDecorator={ getFieldDecorator }
                         field='beginDatetime'
+                        hasFeedback
+                        formItem
                         formatMessage={ this.props.intl.formatMessage }
                         label={
                             <FormattedMessage id='add_order_form.enrollment_date' />
@@ -299,29 +301,36 @@ export class OrderForm extends Component {
                                 }
                             />
                         </FormItem>
-                        <FormItem
+                        <DecoratedSelect
+                            { ...formItemLayout }
                             label={
                                 <FormattedMessage id='add_order_form.phone' />
                             }
-                            { ...formItemLayout }
+                            field='clientPhone'
+                            formItem
+                            hasFeedback
+                            className={ Styles.clientCol }
+                            colon={ false }
+                            rules={ [
+                                {
+                                    required: true,
+                                    message:  '',
+                                },
+                            ] }
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                            placeholder={ 'Choose selected client phone' }
+                            optionDisabled='enabled'
                         >
-                            <DecoratedSelect
-                                field='clientPhone'
-                                getFieldDecorator={
-                                    this.props.form.getFieldDecorator
-                                }
-                                placeholder={ 'Choose selected client phone' }
-                                optionDisabled='enabled'
-                            >
-                                { selectedClient.phones
-                                    .filter(Boolean)
-                                    .map(phone => (
-                                        <Option value={ phone } key={ v4() }>
-                                            { phone }
-                                        </Option>
-                                    )) }
-                            </DecoratedSelect>
-                        </FormItem>
+                            { selectedClient.phones
+                                .filter(Boolean)
+                                .map(phone => (
+                                    <Option value={ phone } key={ v4() }>
+                                        { phone }
+                                    </Option>
+                                )) }
+                        </DecoratedSelect>
                         <FormItem
                             label={
                                 <FormattedMessage id='add_order_form.email' />
@@ -350,36 +359,34 @@ export class OrderForm extends Component {
                         <div className={ Styles.auto }>
                             <FormattedMessage id='add_order_form.car' />
                         </div>
-                        <FormItem
+                        <DecoratedSelect
+                            field='clientVehicle'
+                            formItem
+                            hasFeedback
                             label={ <FormattedMessage id='add_order_form.car' /> }
                             { ...formItemLayout }
                             colon={ false }
+                            className={ Styles.clientCol }
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                            rules={ [
+                                {
+                                    required: true,
+                                    message:  '',
+                                },
+                            ] }
+                            placeholder={ 'Choose selected client vehicle' }
+                            optionDisabled='enabled'
                         >
-                            <DecoratedSelect
-                                field='clientVehicle'
-                                getFieldDecorator={
-                                    this.props.form.getFieldDecorator
-                                }
-                                rules={ [
-                                    {
-                                        required: true,
-                                        message:  '',
-                                    },
-                                ] }
-                                placeholder={ 'Choose selected client vehicle' }
-                                optionDisabled='enabled'
-                            >
-                                { selectedClient.vehicles.map(vehicle => (
-                                    <Option value={ vehicle.id } key={ v4() }>
-                                        { `${vehicle.make} ${
-                                            vehicle.model
-                                        } ${vehicle.number ||
-                                            vehicle.vin ||
-                                            ''}` }
-                                    </Option>
-                                )) }
-                            </DecoratedSelect>
-                        </FormItem>
+                            { selectedClient.vehicles.map(vehicle => (
+                                <Option value={ vehicle.id } key={ v4() }>
+                                    { `${vehicle.make} ${
+                                        vehicle.model
+                                    } ${vehicle.number || vehicle.vin || ''}` }
+                                </Option>
+                            )) }
+                        </DecoratedSelect>
                         <div className={ Styles.ecatBlock }>
                             <FormItem
                                 label={

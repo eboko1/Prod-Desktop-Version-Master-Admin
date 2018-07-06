@@ -17,7 +17,7 @@ import { ReportsDropdown, ChangeStatusDropdown } from 'components';
 import { CancelReasonModal, ToSuccessModal } from 'modals';
 import book from 'routes/book';
 
-import { convertFieldsValuesToDbEntity } from './../AddOrderPage/extractOrderEntity';
+import { convertFieldsValuesToDbEntity, requiredFieldsOnStatuses } from './../AddOrderPage/extractOrderEntity';
 
 // own
 import Styles from './styles.m.css';
@@ -59,20 +59,31 @@ class OrderPage extends Component {
         this.formRef = formRef;
     };
 
+    saveOrderFormRef = formRef => {
+        this.orderFormRef = formRef;
+    };
+
     componentDidMount() {
         this.props.fetchOrderForm(this.props.match.params.id);
     }
 
     onStatusChange(status) {
         const { id } = this.props.match.params;
-        this.props.updateOrder({
-            id,
-            order: convertFieldsValuesToDbEntity(
-                this.props.orderEntity,
-                this.props.allServices,
-                this.props.allDetails,
-                status,
-            ),
+        const requiredFields = requiredFieldsOnStatuses[ status ];
+        const form = this.orderFormRef.props.form;
+
+        form.validateFields(requiredFields, (err) => {
+            if (!err) {
+                this.props.updateOrder({
+                    id,
+                    order: convertFieldsValuesToDbEntity(
+                        this.props.orderEntity,
+                        this.props.allServices,
+                        this.props.allDetails,
+                        status,
+                    ),
+                });
+            }
         });
     }
 
@@ -137,7 +148,7 @@ class OrderPage extends Component {
                     </>
                 }
             >
-                <OrderForm wrappedComponentRef={ this.saveFormRef } />
+                <OrderForm wrappedComponentRef={ this.saveOrderFormRef } />
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ this.props.modal }

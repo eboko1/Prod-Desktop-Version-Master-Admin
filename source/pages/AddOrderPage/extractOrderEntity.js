@@ -85,3 +85,21 @@ export function convertFieldsValuesToDbEntity(orderFields, allServices, allDetai
 
     return order;
 };
+
+export const requiredFieldsOnStatuses = {
+    invite: [ 'clientVehicle', 'manager', 'clientPhone' ],
+    call:   [ 'clientPhone', 'manager' ],
+
+    not_complete: [ 'manager' ],
+    required:     [ 'manager' ],
+
+    reserve: [ 'beginDatetime', 'manager' ],
+    approve: [ 'beginDatetime', 'manager', 'clientPhone' ],
+
+    redundant: [],
+    cancel:    [],
+
+    progress: [ 'beginDatetime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+
+    success: [ 'beginDatetime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+};
