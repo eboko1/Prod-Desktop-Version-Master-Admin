@@ -1,4 +1,5 @@
 // vendor
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -77,6 +78,15 @@ export default class OrdersFilterContainer extends Component {
     //     return null;
     // }
 
+    constructor(props) {
+        super(props);
+        this.handleOrdersSearch = _.debounce((value) => {
+            const { setOrdersSearchFilter, fetchOrders, filter } = this.props;
+            setOrdersSearchFilter(value);
+            fetchOrders({ page: 1, ...filter });
+        }, 1000);
+    }
+
     componentDidMount() {
         const status = this.props.match.params.ordersStatuses;
         const { fetchUniversalFiltersForm } = this.props;
@@ -100,12 +110,6 @@ export default class OrdersFilterContainer extends Component {
         //     console.log('→ DUP', this.props.filter.status);
         //     this.setState(this.state);
         // }
-    }
-
-    handleOrdersSearch(value) {
-        const { setOrdersSearchFilter, fetchOrders, filter } = this.props;
-        setOrdersSearchFilter(value);
-        fetchOrders({ page: 1, ...filter });
     }
 
     selectStatus(ev) {
@@ -218,7 +222,7 @@ export default class OrdersFilterContainer extends Component {
                         //     <FormattedMessage id='orders-filter.search.search_placeholder' />
                         // }
                         // eslint-disable-next-line
-                        onSearch={value => this.handleOrdersSearch(value)}
+                        onChange={({target: {value}}) => this.handleOrdersSearch(value)}
                         // onChange={ this.handleOrdersSearch }
                         // enterButton
                         // enterButton={ <Icon type='close' /> }
