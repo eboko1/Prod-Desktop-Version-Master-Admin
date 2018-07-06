@@ -58,9 +58,19 @@ const customFieldValue = (name, value) => ({
 
 const defaultFieldValue = name => customFieldValue(name, void 0);
 
-const generateNestedObject = (fields, fieldNameGenerator) => {
+const generateNestedObject = (
+    fields,
+    fieldNameGenerator,
+    defaultValues = {},
+) => {
     const randomName = v4();
-    const pairs = fields.map(name => [ name, defaultFieldValue(fieldNameGenerator(randomName, name)) ]);
+    const pairs = fields.map(name => [
+        name,
+        customFieldValue(
+            fieldNameGenerator(randomName, name),
+            defaultValues[ name ],
+        ),
+    ]);
 
     return {
         [ randomName ]: _.fromPairs(pairs),
@@ -68,20 +78,24 @@ const generateNestedObject = (fields, fieldNameGenerator) => {
 };
 
 const defaultService = () => {
+    const defaultValues = { serviceCount: 1, servicePrice: 0 };
     const fields = [ 'serviceName', 'serviceCount', 'servicePrice' ];
 
     return generateNestedObject(
         fields,
         (randomName, name) => `services[${randomName}][${name}]`,
+        defaultValues,
     );
 };
 
 export const defaultDetail = () => {
+    const defaultValues = { detailCount: 1, detailPrice: 0 };
     const fields = [ 'detailName', 'detailBrandName', 'detailCode', 'detailCount', 'detailPrice' ];
 
     return generateNestedObject(
         fields,
         (randomName, name) => `details[${randomName}][${name}]`,
+        defaultValues,
     );
 };
 
@@ -96,11 +110,11 @@ const customServices = services =>
                 ),
                 serviceCount: customFieldValue(
                     `services[${type}|${serviceId}][serviceCount]`,
-                    count,
+                    Number(count) || 0,
                 ),
                 servicePrice: customFieldValue(
                     `services[${type}|${serviceId}][servicePrice]`,
-                    price,
+                    Number(price) || 0,
                 ),
             },
         ]),
@@ -137,11 +151,11 @@ const customDetails = details =>
                     ),
                     detailCount: customFieldValue(
                         `details[${id}][detailCount]`,
-                        count,
+                        Number(count) || 0,
                     ),
                     detailPrice: customFieldValue(
                         `details[${id}][detailPrice]`,
-                        price,
+                        Number(price) || 0,
                     ),
                 },
             ],
