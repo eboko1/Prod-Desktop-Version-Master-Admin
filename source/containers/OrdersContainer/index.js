@@ -14,7 +14,7 @@ import {
     setOrdersStatusFilter,
     createInviteOrders,
 } from 'core/orders/duck';
-import { resetModal, MODALS } from 'core/modals/duck';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Catcher, Spinner } from 'commons';
 import { InviteModal } from 'modals';
@@ -28,7 +28,7 @@ const mapStateToProps = state => {
         count:          state.orders.count,
         orders:         state.orders.data,
         filter:         state.orders.filter,
-        inviteModal:    state.modals.modal === MODALS.INVITE,
+        modal:          state.modals.modal,
         ordersFetching: state.ui.get('ordersFetching'),
     };
 };
@@ -251,6 +251,8 @@ class OrdersContainer extends Component {
         };
     };
 
+    setIniviteModal = () => this.props.setModal(MODALS.INVITE);
+
     render() {
         const { orders } = this.props;
         const { status, loading, activeRoute, selectedRowKeys } = this.state;
@@ -304,7 +306,7 @@ class OrdersContainer extends Component {
                 </div>
                 <InviteModal
                     // wrappedComponentRef={ this.saveFormRef }
-                    visible={ this.props.inviteModal }
+                    visible={ this.props.modal }
                     count={ selectedRowKeys.length }
                     confirmInviteModal={ this.inviteSelected }
                     resetModal={ this.props.resetModal }
