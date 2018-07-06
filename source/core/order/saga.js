@@ -32,14 +32,10 @@ export function* fetchOrderSaga({ payload: id }) {
 export function* fetchReportSaga({ payload: { reportType, id } }) {
     try {
         yield nprogress.start();
-        // console.log('payload', payload);
-        console.log('reportType', reportType);
-        console.log('id', id);
         const response = yield call(
             fetchAPI,
             'GET',
             `orders/reports/${reportType}/${id}`,
-            // report,
         );
 
         // const data = yield call([ response, response.json ]);

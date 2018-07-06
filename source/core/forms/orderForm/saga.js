@@ -113,9 +113,11 @@ function* handleBrandSearch({ payload }) {
 export function* fetchAddOrderFormSaga() {
     while (true) {
         yield take(FETCH_ADD_ORDER_FORM);
+        yield put(uiActions.setOrderFetchingState(true));
         const data = yield call(fetchAPI, 'GET', 'orders/form');
 
         yield put(fetchAddOrderFormSuccess(data));
+        yield put(uiActions.setOrderFetchingState(false));
     }
 }
 

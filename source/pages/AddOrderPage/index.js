@@ -11,7 +11,7 @@ import { fetchAddOrderForm, createOrder } from 'core/forms/orderForm/duck';
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Layout } from 'commons';
+import { Layout, Spinner } from 'commons';
 import { OrderForm } from 'forms';
 import { AddClientModal } from 'modals';
 
@@ -39,6 +39,7 @@ const mapStateToProps = state => {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
+        spinner: state.ui.get('orderFetching'),
     };
 };
 
@@ -101,10 +102,15 @@ class AddOrderPage extends Component {
     };
 
     render() {
-        const { addClientModal, resetModal, addClientFormData } = this.props;
+        const {
+            addClientModal,
+            resetModal,
+            addClientFormData,
+            spinner,
+        } = this.props;
         const form = this.orderFormRef;
 
-        return (
+        return !spinner ? (
             <Layout
                 title={ <FormattedMessage id='add-order-page.add_order' /> }
                 controls={
@@ -170,6 +176,8 @@ class AddOrderPage extends Component {
                     addClientFormData={ addClientFormData }
                 />
             </Layout>
+        ) : (
+            <Spinner spin={ spinner } />
         );
     }
 }
