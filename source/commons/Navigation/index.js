@@ -95,14 +95,13 @@ export default class Navigation extends Component {
                                 </Menu.SubMenu>
                                 );
                             }
- 
+
                             return (<Menu.Item key={ key }>
                                 <Link to={ link }>
                                     <Icon type={ iconType } />
                                     <FormattedMessage id={ name } />
                                 </Link>
                             </Menu.Item>);
-                            
 
                         })
                     }

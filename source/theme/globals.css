@@ -21,6 +21,14 @@ body {
     -webkit-tap-highlight-color: var(--primary);
 }
 
+body::-webkit-scrollbar {
+    width: 5px;
+}
+
+body::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+}
+
 a {
     color: var(--text);
     text-decoration: none;
