@@ -120,6 +120,20 @@ export function columnsConfig(
         ),
     };
 
+    const createDatetimeCol = {
+        title:     <FormattedMessage id='orders.creation_date' />,
+        dataIndex: 'datetime',
+        key:       'datetime',
+        width:     160,
+        render:    (_, order) => (
+            <div className={ Styles.datetime }>
+                { order.datetime
+                    ? moment(order.datetime).format('DD.MM.YYYY HH:mm')
+                    : '-' }
+            </div>
+        ),
+    };
+
     const clientCol = {
         title:     <FormattedMessage id='orders.client' />,
         dataIndex: 'clientFullName',
@@ -360,7 +374,7 @@ export function columnsConfig(
             return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, reviewCol, editCol ];
 
         case '/orders/invitations':
-            return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, actionCol, responsibleCol, editCol ];
+            return [ indexCol, orderCol, createDatetimeCol, beginDatetimeCol, clientCol, actionCol, responsibleCol, editCol ];
 
         default:
             return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, tasksCol, editCol ];
