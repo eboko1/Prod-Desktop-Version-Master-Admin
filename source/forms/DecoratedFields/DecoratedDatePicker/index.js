@@ -1,7 +1,9 @@
 // vendor
 import React from 'react';
 import { DatePicker } from 'antd';
+import { Form } from 'antd';
 
+const FormItem = Form.Item;
 // own
 const { RangePicker } = DatePicker;
 
@@ -63,30 +65,39 @@ export const DecoratedDatePicker = props => {
         },
     };
 
-    return getFieldDecorator(field, {
-        rules,
-    })(
-        ranges ? (
-            <RangePicker
-                // ranges={ {
-                //     Today:        [ moment(), moment() ],
-                //     'This Month': [ moment(), moment().endOf('month') ],
-                // } }
-                locale={ locale }
-                ranges={ ranges }
-                showTime={ showTime }
-                format={ format }
-                getCalendarContainer={ getCalendarContainer }
-            />
-        ) : (
-            <DatePicker
-                getCalendarContainer={ getCalendarContainer }
-                format={ format }
-                disabled={ disabled }
-                disabledDate={ disabledDate }
-                disabledTime={ disabledTime }
-                locale={ locale }
-            />
-        ),
+    return (
+        <FormItem
+            label={ props.label }
+            hasFeedback
+            colon={ props.colon }
+            className={ props.className }
+        >
+            { getFieldDecorator(field, {
+                rules,
+            })(
+                ranges ? (
+                    <RangePicker
+                        // ranges={ {
+                        //     Today:        [ moment(), moment() ],
+                        //     'This Month': [ moment(), moment().endOf('month') ],
+                        // } }
+                        locale={ locale }
+                        ranges={ ranges }
+                        showTime={ showTime }
+                        format={ format }
+                        getCalendarContainer={ getCalendarContainer }
+                    />
+                ) : (
+                    <DatePicker
+                        getCalendarContainer={ getCalendarContainer }
+                        format={ format }
+                        disabled={ disabled }
+                        disabledDate={ disabledDate }
+                        disabledTime={ disabledTime }
+                        locale={ locale }
+                    />
+                ),
+            ) }
+        </FormItem>
     );
 };

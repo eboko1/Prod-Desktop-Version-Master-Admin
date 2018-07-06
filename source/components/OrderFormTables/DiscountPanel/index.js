@@ -33,7 +33,6 @@ class DiscountPanel extends Component {
                         <DecoratedInputNumber
                             field={ discountFieldName }
                             getFieldDecorator={ this.props.form.getFieldDecorator }
-                            defaultValue={ 0 }
                             min={ 0 }
                             max={ 100 }
                             formatter={ value => `${value}%` }

@@ -66,8 +66,9 @@ class AddOrderPage extends Component {
     };
 
     onSubmit = () => {
-        const form = this.formRef.props.form;
-        form.validateFields((err, values) => {
+        const form = this.orderFormRef.props.form;
+        // TODO validate fields based on desired order status
+        form.validateFields([ 'beginDatetime' ], (err, values) => {
             if (!err) {
                 this.props.createOrder(
                     convertFieldsValuesToDbEntity(

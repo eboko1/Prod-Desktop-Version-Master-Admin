@@ -21,6 +21,7 @@ import {
     DecoratedTextArea,
     DecoratedSelect,
     DecoratedInputNumber,
+    DecoratedDatePicker,
 } from 'forms/DecoratedFields';
 import {
     DetailsTable,
@@ -120,6 +121,8 @@ export class OrderForm extends Component {
             disabledTime,
         } = getDateTimeConfig(beginDatetime, this.props.schedule);
 
+        console.log('form', this.props.form);
+
         return (
             <Form
                 className={ Styles.form }
@@ -151,34 +154,36 @@ export class OrderForm extends Component {
                 </FormItem> */ }
 
                 <div className={ Styles.datePanel }>
-                    <FormItem
+                    <DecoratedDatePicker
+                        getFieldDecorator={ getFieldDecorator }
+                        field='beginDatetime'
+                        formatMessage={ this.props.intl.formatMessage }
                         label={
                             <FormattedMessage id='add_order_form.enrollment_date' />
                         }
-                        hasFeedback
                         colon={ false }
                         className={ Styles.datePanelItem }
-                    >
-                        { getFieldDecorator('beginDatetime')(
-                            // TODO fix possible timezone problems
-                            // TODO provide locale https://github.com/ant-design/ant-design/blob/master/components/date-picker/locale/example.json
-                            <DatePicker
-                                placeholder={ this.props.intl.formatMessage({
-                                    id:             'add_order_form.select_date',
-                                    defaultMessage: 'Provide date',
-                                }) }
-                                disabledDate={ disabledDate }
-                                disabledTime={ disabledTime }
-                                format={ 'YYYY-MM-DD HH:mm' }
-                                showTime={ {
-                                    disabledHours,
-                                    disabledMinutes,
-                                    disabledSeconds,
-                                    format: 'HH:mm',
-                                } }
-                            />,
-                        ) }
-                    </FormItem>
+                        rules={ [
+                            {
+                                required: true,
+                                message:  '',
+                            },
+                        ] }
+                        placeholder={ this.props.intl.formatMessage({
+                            id:             'add_order_form.select_date',
+                            defaultMessage: 'Provide date',
+                        }) }
+                        disabledDate={ disabledDate }
+                        disabledTime={ disabledTime }
+                        format={ 'YYYY-MM-DD HH:mm' }
+                        showTime={ {
+                            disabledHours,
+                            disabledMinutes,
+                            disabledSeconds,
+                            format: 'HH:mm',
+                        } }
+                    />
+                    { /*</FormItem>*/ }
                     <FormItem
                         label={ <FormattedMessage id='add_order_form.station' /> }
                         hasFeedback
@@ -354,6 +359,12 @@ export class OrderForm extends Component {
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
                                 }
+                                rules={ [
+                                    {
+                                        required: true,
+                                        message:  '',
+                                    },
+                                ] }
                                 placeholder={ 'Choose selected client vehicle' }
                                 optionDisabled='enabled'
                             >
@@ -396,7 +407,14 @@ export class OrderForm extends Component {
                                     getFieldDecorator={
                                         this.props.form.getFieldDecorator
                                     }
-                                    min={ 0 }
+                                    rules={ [
+                                        {
+                                            required: true,
+                                            type:     'number',
+                                            message:  '',
+                                        },
+                                    ] }
+                                    //min={ 0 }
                                 />
                             </FormItem>
                             <FormItem
@@ -616,8 +634,7 @@ export class OrderForm extends Component {
                                     },
                                 ] }
                                 placeholder={ this.props.intl.formatMessage({
-                                    id:
-                                        'add_order_form.vehicle_condition',
+                                    id:             'add_order_form.vehicle_condition',
                                     defaultMessage: 'Vehicle condition',
                                 }) }
                                 autosize={ { minRows: 2, maxRows: 6 } }
@@ -638,8 +655,7 @@ export class OrderForm extends Component {
                                     },
                                 ] }
                                 placeholder={ this.props.intl.formatMessage({
-                                    id:
-                                        'add_order_form.business_comment',
+                                    id:             'add_order_form.business_comment',
                                     defaultMessage: 'Business comment',
                                 }) }
                                 autosize={ { minRows: 2, maxRows: 6 } }

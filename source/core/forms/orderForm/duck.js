@@ -53,7 +53,7 @@ const customFieldValue = (name, value) => ({
     touched:    true,
     validating: false,
     value:      value,
-    dirty:      false,
+    dirty:      true,
 });
 
 const defaultFieldValue = name => customFieldValue(name, void 0);
@@ -456,7 +456,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 fields: {
                     ...state.fields,
-                    [ meta.field ]: { ...payload[ meta.field ] },
+                    ...payload,
                     services:       {
                         // if merge with empty object old state stayed
                         ..._.merge(
