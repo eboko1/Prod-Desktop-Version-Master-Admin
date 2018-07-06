@@ -78,6 +78,8 @@ export function convertFieldsValuesToDbEntity(orderFields, allServices, allDetai
         servicesDiscount:    _.get(orderFields, 'servicesDiscount.value'),
         odometerValue:       _.get(orderFields, 'odometerValue.value'),
         recommendation:      _.get(orderFields, 'recommendation.value'),
+        vehicleCondition:    _.get(orderFields, 'vehicleCondition.value'),
+        businessComment:     _.get(orderFields, 'businessComment.value'),
         comment:             _.get(orderFields, 'comment.value'),
     };
 

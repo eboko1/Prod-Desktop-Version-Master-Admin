@@ -164,7 +164,8 @@ const createDefaultState = () => ({
         requisite:         defaultFieldValue('requisite'),
         paymentMethod:     defaultFieldValue('paymentMethod'),
         odometerValue:     defaultFieldValue('odometerValue'),
-        recommendation:    defaultFieldValue('recommendation'),
+        vehicleCondition:  defaultFieldValue('vehicleCondition'),
+        businessComment:   defaultFieldValue('businessComment'),
         comment:           defaultFieldValue('comment'),
         createOrderStatus: customFieldValue('createOrderStatus', 'not_complete'),
         servicesDiscount:  customFieldValue('servicesDiscount', 0),
@@ -389,6 +390,14 @@ export default function reducer(state = ReducerState, action) {
                     recommendation: customFieldValue(
                         'recommendation',
                         payload.order.recommendation,
+                    ),
+                    businessComment: customFieldValue(
+                        'businessComment',
+                        payload.order.businessComment,
+                    ),
+                    vehicleCondition: customFieldValue(
+                        'vehicleCondition',
+                        payload.order.vehicleCondition,
                     ),
                     comment:          customFieldValue('comment', payload.order.comment),
                     employee:         customFieldValue('employee', payload.order.employeeId),

@@ -51,7 +51,7 @@ const { TextArea } = Input;
 @injectIntl
 @withReduxForm({
     name:            'orderForm',
-    debouncedFields: [ 'comment', 'recommendation' ],
+    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
     actions:         {
         change: onChangeOrderForm,
         setClientSelection,
@@ -597,6 +597,50 @@ export class OrderForm extends Component {
                                     id:
                                         'add_order_form.service_recommendations',
                                     defaultMessage: 'Service recommendations',
+                                }) }
+                                autosize={ { minRows: 2, maxRows: 6 } }
+                            />
+                        </FormItem>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='add_order_form.vehicle_condition' />
+                            }
+                        >
+                            <DecoratedTextArea
+                                getFieldDecorator={ getFieldDecorator }
+                                field='vehicleCondition'
+                                rules={ [
+                                    {
+                                        max:     2000,
+                                        message: 'Too much',
+                                    },
+                                ] }
+                                placeholder={ this.props.intl.formatMessage({
+                                    id:
+                                        'add_order_form.vehicle_condition',
+                                    defaultMessage: 'Vehicle condition',
+                                }) }
+                                autosize={ { minRows: 2, maxRows: 6 } }
+                            />
+                        </FormItem>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='add_order_form.business_comment' />
+                            }
+                        >
+                            <DecoratedTextArea
+                                getFieldDecorator={ getFieldDecorator }
+                                field='businessComment'
+                                rules={ [
+                                    {
+                                        max:     2000,
+                                        message: 'Too much',
+                                    },
+                                ] }
+                                placeholder={ this.props.intl.formatMessage({
+                                    id:
+                                        'add_order_form.business_comment',
+                                    defaultMessage: 'Business comment',
                                 }) }
                                 autosize={ { minRows: 2, maxRows: 6 } }
                             />
