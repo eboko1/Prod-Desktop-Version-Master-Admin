@@ -20,7 +20,7 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import Styles from './styles.m.css';
 
-import { convertFieldsValuesToDbEntity } from './extractOrderEntity';
+import { convertFieldsValuesToDbEntity, requiredFieldsOnStatuses } from './extractOrderEntity';
 
 const mapStateToProps = state => {
     return {
@@ -67,8 +67,9 @@ class AddOrderPage extends Component {
 
     onSubmit = () => {
         const form = this.orderFormRef.props.form;
-        // TODO validate fields based on desired order status
-        form.validateFields([ 'beginDatetime', 'station' ], (err, values) => {
+        const requiredFields = requiredFieldsOnStatuses[this.props.createOrderStatus];
+
+        form.validateFields(requiredFields, (err) => {
             if (!err) {
                 this.props.createOrder(
                     convertFieldsValuesToDbEntity(
@@ -78,8 +79,6 @@ class AddOrderPage extends Component {
                         this.props.createOrderStatus,
                     ),
                 );
-                // eslint-disable-next-line
-                console.log("Received values of form: ", values);
             }
         });
     };
