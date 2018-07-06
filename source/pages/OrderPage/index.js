@@ -17,7 +17,10 @@ import { ReportsDropdown, ChangeStatusDropdown } from 'components';
 import { CancelReasonModal, ToSuccessModal } from 'modals';
 import book from 'routes/book';
 
-import { convertFieldsValuesToDbEntity, requiredFieldsOnStatuses } from './../AddOrderPage/extractOrderEntity';
+import {
+    convertFieldsValuesToDbEntity,
+    requiredFieldsOnStatuses,
+} from './../AddOrderPage/extractOrderEntity';
 
 // own
 import Styles from './styles.m.css';
@@ -72,7 +75,7 @@ class OrderPage extends Component {
         const requiredFields = requiredFieldsOnStatuses[ status ];
         const form = this.orderFormRef.props.form;
 
-        form.validateFields(requiredFields, (err) => {
+        form.validateFields(requiredFields, err => {
             if (!err) {
                 this.props.updateOrder({
                     id,
@@ -95,16 +98,16 @@ class OrderPage extends Component {
         return !spinner ? (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
@@ -153,9 +156,9 @@ class OrderPage extends Component {
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ this.props.modal }
-                    confirmCancelResonModalConfirm={
-                        this.confirmCancelResonModalConfirm
-                    }
+                    handleCancelReasonModalSubmit={ this.onStatusChange.bind(
+                        this,
+                    ) }
                     orderComments={ this.props.orderComments }
                     resetModal={ () => resetModal() }
                 />

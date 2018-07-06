@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Form, Select, Radio, Tabs, Input, DatePicker, Icon } from 'antd';
+import { Form, Select, Radio, Tabs, Input, Icon } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
 import _ from 'lodash';
@@ -120,8 +120,6 @@ export class OrderForm extends Component {
             disabledSeconds,
             disabledTime,
         } = getDateTimeConfig(beginDatetime, this.props.schedule);
-
-        console.log('form', this.props.form);
 
         return (
             <Form

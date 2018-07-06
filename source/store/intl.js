@@ -34,6 +34,7 @@ import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messa
 import ProfileForm from 'forms/ProfileForm/messages';
 import AddOrderForm from 'forms/AddOrderForm/messages';
 import UniversalFiltersForm from 'forms/UniversalFiltersForm/messages';
+import CancelReasonForm from 'forms/CancelReasonForm/messages';
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
 import AddClientModal from 'modals/AddClientModal/messages';
@@ -45,7 +46,7 @@ import OrderFormTables from 'components/OrderFormTables/messages';
 import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
 
-const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, OrderStatusIcon, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, AddOrderForm, ReportsDropdown, AddClientModal, InviteModal, DecoratedDatePicker ]);
+const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, OrderStatusIcon, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, AddOrderForm, ReportsDropdown, AddClientModal, InviteModal, DecoratedDatePicker, CancelReasonForm ]);
 
 // Intl
 const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';

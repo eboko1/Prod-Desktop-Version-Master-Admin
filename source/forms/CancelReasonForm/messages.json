@@ -1,0 +1,11 @@
+{
+    "en": {
+        "cancel_reason.title": "Delete order?"
+    },
+    "ru": {
+        "cancel_reason.title": "Отказаться от закказа?"
+    },
+    "uk": {
+        "cancel_reason.title": "Відмовитися від замовлення?"
+    }
+}

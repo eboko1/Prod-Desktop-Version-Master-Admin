@@ -5,6 +5,7 @@ import { AddOrderForm } from './AddOrderForm';
 import { AddClientForm } from './AddClientForm';
 import { UniversalFiltersForm } from './UniversalFiltersForm';
 import AntReduxForm from './AntReduxForm';
+import { CancelReasonForm } from './CancelReasonForm';
 
 export {
     LoginForm,
@@ -14,4 +15,5 @@ export {
     AddClientForm,
     AntReduxForm,
     UniversalFiltersForm,
+    CancelReasonForm,
 };

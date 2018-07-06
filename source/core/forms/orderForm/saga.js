@@ -7,11 +7,13 @@ import {
     takeLatest,
     delay,
     takeEvery,
+    select,
 } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
 // import nprogress from 'nprogress';
 
 //proj
+import { resetModal, MODALS } from 'core/modals/duck';
 import { uiActions } from 'core/ui/actions';
 import { fetchAPI } from 'utils';
 
@@ -59,6 +61,8 @@ export function* createOrderSaga() {
     }
 }
 
+const selectModal = state => state.modals.modal;
+
 export function* updateOrderSaga() {
     while (true) {
         const {
@@ -67,6 +71,10 @@ export function* updateOrderSaga() {
         yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
         yield put(updateOrderSuccess());
         yield put(fetchOrderForm(id));
+        const modal = yield select(selectModal);
+        if (modal === MODALS.CANCEL_REASON) {
+            yield put(resetModal());
+        }
         // yield put(replace('/orders/appointments'));
     }
 }

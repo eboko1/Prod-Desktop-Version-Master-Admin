@@ -9,12 +9,16 @@ import universalFiltersReducer, {
 import addClientReducer, {
     moduleName as addClient,
 } from './addClientForm/duck';
+import cancelReasonReducer, {
+    moduleName as cancelReason,
+} from './cancelReasonForm/duck';
 
 export const formsReducer = combineReducers({
     [ addOrder ]:         addOrderReducer,
     [ order ]:            orderReducer,
     [ addClient ]:        addClientReducer,
     [ universalFilters ]: universalFiltersReducer,
+    [ cancelReason ]:     cancelReasonReducer,
 });
 
 // export default formsReducer;
