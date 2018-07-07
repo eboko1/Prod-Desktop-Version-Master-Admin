@@ -13,49 +13,54 @@ const Item = Menu.Item;
 
 class ChangeStatusDropdown extends React.Component {
     render() {
-        const { orderStatus: status } = this.props;
+        const {
+            orderStatus: status,
+            onStatusChange,
+            setModal,
+            modals,
+        } = this.props;
 
         const getMenuItems = () => {
             const changeToRequired = {
                 status: 'required',
                 name:   'required',
                 icon:   'question-circle-o',
-                action: () => this.props.onStatusChange('required'),
+                action: () => onStatusChange('required'),
             };
 
             const changeToReserve = {
                 status: 'reserve',
                 name:   'reserve',
                 icon:   'lock',
-                action: () => this.props.onStatusChange('reserve'),
+                action: () => onStatusChange('reserve'),
             };
 
             const changeToNotComplete = {
                 status: 'not_complete',
                 name:   'not_complete',
                 icon:   'plus-square-o',
-                action: () => this.props.onStatusChange('not_complete'),
+                action: () => onStatusChange('not_complete'),
             };
 
             const changeToApprove = {
                 status: 'approve',
                 name:   'approve',
                 icon:   'safety',
-                action: () => this.props.onStatusChange('approve'),
+                action: () => onStatusChange('approve'),
             };
 
             const changeToProgress = {
                 status: 'progress',
                 name:   'progress',
                 icon:   'car',
-                action: () => this.props.onStatusChange('progress'),
+                action: () => onStatusChange('progress'),
             };
 
             const changeToSuccess = {
                 name:   'success',
                 status: 'success',
                 icon:   'check',
-                action: () => this.props.onStatusChange('success'),
+                action: () => setModal(modals.TO_SUCCESS),
             };
 
             const statuses = [ changeToReserve, changeToRequired, changeToNotComplete, changeToApprove, changeToProgress, changeToSuccess ];

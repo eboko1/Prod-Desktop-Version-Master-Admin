@@ -6,35 +6,28 @@ import { FormattedMessage } from 'react-intl';
 // proj
 import { MODALS } from 'core/modals/duck';
 
+import { ToSuccessForm } from 'forms';
+
 // own
 // import Styles from './styles.m.css';
 
 export default class ToSuccessModal extends Component {
-    onChange(e) {
-        console.log(`checked = ${e.target.checked}`);
-    }
     render() {
-        const { visible, confirmToSuccessModal, resetModal } = this.props;
+        const { visible, handleToSuccessModalSubmit, resetModal } = this.props;
 
         return (
             <Modal
                 cancelText={ <FormattedMessage id='cancel' /> }
                 okText={ <FormattedMessage id='invite-modal.invite' /> }
                 visible={ visible === MODALS.TO_SUCCESS }
-                onOk={ () => confirmToSuccessModal() }
+                onOk={ () => handleToSuccessModalSubmit() }
                 onCancel={ () => resetModal() }
+                footer={ null }
             >
-                Закрыть наряд заказ?
-                <Button onClick={ () => console.log('→ YES') }>Да</Button>
-                <Button onClick={ () => resetModal() }>Нет</Button>
-                <div>
-                    <Checkbox onChange={ e => this.onChange(e) } />
-                    <span>Создать обращение с напоминанием о новом заезде</span>
-                </div>
-                <div>
-                    <Checkbox onChange={ e => this.onChange(e) } />
-                    <span>Создать обращение с напоминанием о новом заезде</span>
-                </div>
+                <ToSuccessForm
+                    handleToSuccessModalSubmit={ handleToSuccessModalSubmit }
+                    resetModal={ resetModal }
+                />
             </Modal>
         );
     }

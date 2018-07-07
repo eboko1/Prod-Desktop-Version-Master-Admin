@@ -98,16 +98,16 @@ class OrderPage extends Component {
         return !spinner ? (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>
@@ -120,6 +120,8 @@ class OrderPage extends Component {
                         <ChangeStatusDropdown
                             orderStatus={ status }
                             onStatusChange={ this.onStatusChange.bind(this) }
+                            setModal={ setModal }
+                            modals={ MODALS }
                         />
                         <ReportsDropdown
                             orderId={ id }
@@ -165,7 +167,7 @@ class OrderPage extends Component {
                 <ToSuccessModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ this.props.modal }
-                    onToSuccessModalConfirm={ this.onToSuccessConfirm }
+                    handleToSuccessModalSubmit={ this.onStatusChange.bind(this) }
                     resetModal={ () => resetModal() }
                 />
             </Layout>

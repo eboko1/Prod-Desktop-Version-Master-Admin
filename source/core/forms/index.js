@@ -12,6 +12,9 @@ import addClientReducer, {
 import cancelReasonReducer, {
     moduleName as cancelReason,
 } from './cancelReasonForm/duck';
+import toSuccessReducer, {
+    moduleName as toSuccess,
+} from './toSuccessForm/duck';
 
 export const formsReducer = combineReducers({
     [ addOrder ]:         addOrderReducer,
@@ -19,6 +22,7 @@ export const formsReducer = combineReducers({
     [ addClient ]:        addClientReducer,
     [ universalFilters ]: universalFiltersReducer,
     [ cancelReason ]:     cancelReasonReducer,
+    [ toSuccess ]:        toSuccessReducer,
 });
 
 // export default formsReducer;

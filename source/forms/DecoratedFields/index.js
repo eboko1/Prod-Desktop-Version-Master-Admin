@@ -3,6 +3,7 @@ import { DecoratedInput } from './DecoratedInput';
 import { DecoratedInputNumber } from './DecoratedInputNumber';
 import { DecoratedTextArea } from './DecoratedTextArea';
 import { DecoratedDatePicker } from './DecoratedDatePicker';
+import { DecoratedCheckbox } from './DecoratedCheckbox';
 
 export {
     DecoratedSelect,
@@ -10,4 +11,5 @@ export {
     DecoratedInputNumber,
     DecoratedTextArea,
     DecoratedDatePicker,
+    DecoratedCheckbox,
 };

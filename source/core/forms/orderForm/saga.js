@@ -72,7 +72,7 @@ export function* updateOrderSaga() {
         yield put(updateOrderSuccess());
         yield put(fetchOrderForm(id));
         const modal = yield select(selectModal);
-        if (modal === MODALS.CANCEL_REASON) {
+        if (modal === MODALS.CANCEL_REASON || modal === MODALS.TO_SUCCESS) {
             yield put(resetModal());
         }
         // yield put(replace('/orders/appointments'));

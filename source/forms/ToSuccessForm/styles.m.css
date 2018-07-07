@@ -1,0 +1,17 @@
+.title {
+    text-align: center;
+}
+
+.submit {
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.submitButton {
+    margin: 0 12px;
+}
+
+.checkbox {
+    margin: 12px 0;
+}
