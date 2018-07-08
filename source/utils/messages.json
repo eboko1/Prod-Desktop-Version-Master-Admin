@@ -21,7 +21,13 @@
         "required": "Required",
         "reserve": "Reserve",
         "call": "Call",
-        "approve": "Approve"
+        "approve": "Approve",
+        "order": "Order",
+        "date": "Date",
+        "status": "Status",
+        "name": "Name",
+        "text": "Text",
+        "sum": "Sum"
     },
     "ru": {
         "currency": "грн.",
@@ -45,7 +51,13 @@
         "required": "Под вопросом",
         "reserve": "Резерв",
         "call": "Звонок",
-        "approve": "Запись"
+        "approve": "Запись",
+        "order": "Заказ",
+        "date": "Дата",
+        "status": "Статус",
+        "name": "Имя",
+        "text": "Текст",
+        "sum": "Сумма"
     },
     "uk": {
         "currency": "грн.",
@@ -69,6 +81,12 @@
         "required": "Під питанням",
         "reserve": "Резерв",
         "call": "Дзвінок",
-        "approve": "Запис"
+        "approve": "Запис",
+        "order": "Замовлення",
+        "date": "Дата",
+        "status": "Статус",
+        "name": "Ім'я",
+        "text": "Текст",
+        "sum": "Сума"
     }
 }

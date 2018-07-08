@@ -9,7 +9,9 @@
         "order_status_icon.done": "Done",
         "order_status_icon.invitation": "Invitation",
         "order_status_icon.cancel": "Cancel",
-        "order_status_icon.order": "Order"
+        "order_status_icon.order": "Order",
+        "call_status_icon.call": "Call",
+        "call_status_icon.no_answer": "No answer"
     },
     "ru": {
         "order_status_icon.new": "Новый",
@@ -21,7 +23,9 @@
         "order_status_icon.done": "Выполнено",
         "order_status_icon.invitation": "Приглашение",
         "order_status_icon.cancel": "Отказ",
-        "order_status_icon.order": "Заказ"
+        "order_status_icon.order": "Заказ",
+        "call_status_icon.call": "Звонок",
+        "call_status_icon.no_answer": "Без ответа"
     },
     "uk": {
         "order_status_icon.new": "Новий",
@@ -33,6 +37,8 @@
         "order_status_icon.done": "Виконано",
         "order_status_icon.invitation": "Запрошення",
         "order_status_icon.cancel": "Відмова",
-        "order_status_icon.order": "Замовлення"
+        "order_status_icon.order": "Замовлення",
+        "call_status_icon.call": "Дзвінок",
+        "call_status_icon.no_answer": "Без відповіді"
     }
 }

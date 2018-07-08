@@ -39,6 +39,9 @@ const mapStateToProps = state => {
         addClientFormData: state.forms.addClientForm.data,
         orderComments:     state.forms.orderForm.orderComments,
         order:             state.forms.orderForm.order,
+        orderCalls:        state.forms.orderForm.calls,
+        orderTasks:        state.forms.orderForm.tasks,
+        orderHistory:      state.forms.orderForm.history,
         orderEntity:       {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
@@ -98,16 +101,16 @@ class OrderPage extends Component {
         return !spinner ? (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
@@ -154,7 +157,12 @@ class OrderPage extends Component {
                     </>
                 }
             >
-                <OrderForm wrappedComponentRef={ this.saveOrderFormRef } />
+                <OrderForm
+                    wrappedComponentRef={ this.saveOrderFormRef }
+                    orderTasks={ this.props.orderTasks }
+                    orderHistory={ this.props.orderHistory }
+                    orderCalls={ this.props.orderCalls }
+                />
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ this.props.modal }

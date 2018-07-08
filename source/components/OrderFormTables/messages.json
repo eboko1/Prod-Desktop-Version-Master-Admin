@@ -6,7 +6,8 @@
         "order_form_table.duration": "Duration",
         "order_form_table.master": "Master",
         "order_form_table.discount": "Discount",
-        "order_form_table.sum_without_discount": "Sum without dicount",
+        "order_form_table.sum_without_discount": "Sum without discount",
+        "order_form_table.order_sum": "Order`s sum",
         "order_form_table.total_sum": "Total sum",
         "order_form_table.total": "Total",
         "order_form_table.service": "Service",
@@ -15,7 +16,10 @@
         "order_form_table.sum": "Sum",
         "order_form_table.detail_name": "Service Name",
         "order_form_table.brand": "Brand",
-        "order_form_table.detail_code": "Detail Code"
+        "order_form_table.detail_code": "Detail Code",
+        "order_form_table.vehicle": "Car",
+        "order_form_table.tasks": "Tasks",
+        "order_form_table.history": "History"
     },
     "ru": {
         "order_form_table.service.placeholder": "Выберете услугу",
@@ -25,6 +29,7 @@
         "order_form_table.master": "Мастер",
         "order_form_table.discount": "Скидка",
         "order_form_table.sum_without_discount": "Сумма без скидки",
+        "order_form_table.order_sum": "Сумма заказа",
         "order_form_table.total_sum": "Итоговая сумма",
         "order_form_table.total": "Итого",
         "order_form_table.service": "Услуга",
@@ -33,7 +38,10 @@
         "order_form_table.sum": "Сумма",
         "order_form_table.detail_name": "Наименование",
         "order_form_table.brand": "Бренд",
-        "order_form_table.detail_code": "Код З/Ч"
+        "order_form_table.detail_code": "Код З/Ч",
+        "order_form_table.vehicle": "Автомобиль",
+        "order_form_table.tasks": "Задачи",
+        "order_form_table.history": "История"
     },
     "uk": {
         "order_form_table.service.placeholder": "Виберіть послугу",
@@ -43,6 +51,7 @@
         "order_form_table.master": "Майстер",
         "order_form_table.discount": "Знижка",
         "order_form_table.sum_without_discount": "Сума без знижки",
+        "order_form_table.order_sum": "Сума замовлення",
         "order_form_table.total_sum": "Підсумкова сума",
         "order_form_table.total": "Всього",
         "order_form_table.service": "Послуга",
@@ -51,6 +60,9 @@
         "order_form_table.sum": "Сума",
         "order_form_table.detail_name": "Найменування",
         "order_form_table.brand": "Бренд",
-        "order_form_table.detail_code": "Код З/Ч"
+        "order_form_table.detail_code": "Код З/Ч",
+        "order_form_table.vehicle": "Автомобіль",
+        "order_form_table.tasks": "Задачі",
+        "order_form_table.history": "Історія"
     }
 }

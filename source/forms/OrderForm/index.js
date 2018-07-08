@@ -28,6 +28,9 @@ import {
     ServicesTable,
     DiscountPanel,
     ClientsSearchTable,
+    TasksTable,
+    HistoryTable,
+    CallsTable,
 } from 'components/OrderFormTables';
 
 import { withReduxForm, hasErrors, getDateTimeConfig, images } from 'utils';
@@ -99,7 +102,7 @@ export class OrderForm extends Component {
         } = servicesStats(this.props.fields.services, this.props.allServices);
 
         // TODO deal with total hours
-        console.log(totalHours);
+        // console.log(totalHours);
 
         const servicesDiscount = ~~this.props.fields.servicesDiscount.value;
         const detailsDiscount = ~~this.props.fields.detailsDiscount.value;
@@ -258,7 +261,6 @@ export class OrderForm extends Component {
                             >
                                 { getFieldDecorator('searchClientQuery', {})(
                                     <Input
-                                        // onChange={ () => console.log('→ ', )}
                                         placeholder={ this.props.intl.formatMessage(
                                             {
                                                 id:
@@ -541,11 +543,17 @@ export class OrderForm extends Component {
                 { /* FORMS TABS */ }
                 <Tabs type='card'>
                     <TabPane
+                        tab={ <FormattedMessage id='order_form_table.tasks' /> }
+                        key='1'
+                    >
+                        <TasksTable orderTasks={ this.props.orderTasks } />
+                    </TabPane>
+                    <TabPane
                         tab={ `${this.props.intl.formatMessage({
                             id:             'add_order_form.services',
                             defaultMessage: 'Services',
                         })} (${countServices})` }
-                        key='1'
+                        key='2'
                     >
                         <ServicesTable
                             { ...this.props }
@@ -563,7 +571,7 @@ export class OrderForm extends Component {
                             id:             'add_order_form.details',
                             defaultMessage: 'Details',
                         })} (${countDetails})` }
-                        key='2'
+                        key='3'
                     >
                         <DetailsTable
                             { ...this.props }
@@ -580,7 +588,7 @@ export class OrderForm extends Component {
                     </TabPane>
                     <TabPane
                         tab={ <FormattedMessage id='add_order_form.comments' /> }
-                        key='3'
+                        key='4'
                     >
                         <FormItem
                             label={
@@ -667,6 +675,18 @@ export class OrderForm extends Component {
                                 autosize={ { minRows: 2, maxRows: 6 } }
                             />
                         </FormItem>
+                    </TabPane>
+                    <TabPane
+                        tab={ <FormattedMessage id='order_form_table.history' /> }
+                        key='5'
+                    >
+                        <HistoryTable orderHistory={ this.props.orderHistory } />
+                    </TabPane>
+                    <TabPane
+                        tab={ <FormattedMessage id='order_form_table.calls' /> }
+                        key='6'
+                    >
+                        <CallsTable orderCalls={ this.props.orderCalls } />
                     </TabPane>
                 </Tabs>
             </Form>
