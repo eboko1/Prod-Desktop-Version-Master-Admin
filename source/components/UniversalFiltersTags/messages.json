@@ -1,0 +1,45 @@
+{
+    "en": {
+        "universal_filters_tags.managers": "Managers",
+        "universal_filters_tags.employee": "Employee",
+        "universal_filters_tags.service": "Service",
+        "universal_filters_tags.models": "Models",
+        "universal_filters_tags.make": "Make",
+        "universal_filters_tags.creationReasons": "Creation reasons",
+        "universal_filters_tags.cancelReasons": "Cancel reasons",
+        "universal_filters_tags.beginDate": "Begin date",
+        "universal_filters_tags.createDate": "Create date",
+        "universal_filters_tags.year": "Year",
+        "universal_filters_tags.odometerLower": "Mileage from",
+        "universal_filters_tags.odometerGreater": "Mileage to"
+
+    },
+    "ru": {
+        "universal_filters_tags.managers": "Менеджеры",
+        "universal_filters_tags.employee": "Мастер",
+        "universal_filters_tags.service": "Услуга",
+        "universal_filters_tags.models": "Модели",
+        "universal_filters_tags.make": "Марка",
+        "universal_filters_tags.creationReasons": "Причина создания",
+        "universal_filters_tags.cancelReasons": "Причина отмены",
+        "universal_filters_tags.beginDate": "Дата создания",
+        "universal_filters_tags.createDate": "Дата выполнения",
+        "universal_filters_tags.year": "Год",
+        "universal_filters_tags.odometerLower": "Пробег от",
+        "universal_filters_tags.odometerGreater": "Пробег до"
+    },
+    "uk": {
+        "universal_filters_tags.managers": "Менеджери",
+        "universal_filters_tags.employee": "Майстер",
+        "universal_filters_tags.service": "Послуга",
+        "universal_filters_tags.models": "Моделі",
+        "universal_filters_tags.make": "Марка",
+        "universal_filters_tags.creationReasons": "Причина стоврення",
+        "universal_filters_tags.cancelReasons": "Причина відмови",
+        "universal_filters_tags.beginDate": "Дата створення",
+        "universal_filters_tags.createDate": "Дата Виконання",
+        "universal_filters_tags.year": "Рік",
+        "universal_filters_tags.odometerLower": "Пробіг від",
+        "universal_filters_tags.odometerGreater": "Пробіг до"
+    }
+}

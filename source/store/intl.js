@@ -46,8 +46,9 @@ import OrderStatusIcon from 'components/OrderStatusIcon/messages';
 import OrderFormTables from 'components/OrderFormTables/messages';
 import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
+import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
 
-const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, OrderStatusIcon, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, AddOrderForm, ReportsDropdown, AddClientModal, InviteModal, DecoratedDatePicker, CancelReasonForm, ToSuccessForm ]);
+const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, OrderStatusIcon, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, AddOrderForm, ReportsDropdown, UniversalFiltersTags, AddClientModal, InviteModal, DecoratedDatePicker, CancelReasonForm, ToSuccessForm ]);
 
 // Intl
 const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
