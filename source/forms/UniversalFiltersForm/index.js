@@ -9,7 +9,7 @@ import { v4 } from 'uuid';
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { fetchOrders, setUniversalFilters } from 'core/orders/duck';
 
-import { DecoratedSelect, DecoratedDatePicker } from 'forms/DecoratedFields';
+import { DecoratedSelect, DecoratedDatePicker, DecoratedInputNumber } from 'forms/DecoratedFields';
 
 import { withReduxForm, getDaterange } from 'utils';
 
@@ -62,7 +62,6 @@ export class UniversalFiltersForm extends Component {
                                 field='beginDate'
                                 getFieldDecorator={ getFieldDecorator }
                                 formatMessage={ formatMessage }
-                                placeholder='boob date'
                                 getCalendarContainer={ trigger =>
                                     trigger.parentNode
                                 }
@@ -145,7 +144,7 @@ export class UniversalFiltersForm extends Component {
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters_form.make' />
+                                    <FormattedMessage id='universal_filters_form.all' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
@@ -160,7 +159,7 @@ export class UniversalFiltersForm extends Component {
                     <Col span={ 6 }>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.model' />
+                                <FormattedMessage id='universal_filters_form.models' />
                             }
                         >
                             <DecoratedSelect
@@ -170,7 +169,7 @@ export class UniversalFiltersForm extends Component {
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters_form.model' />
+                                    <FormattedMessage id='universal_filters_form.all' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
@@ -190,10 +189,9 @@ export class UniversalFiltersForm extends Component {
                         </FormItem>
                     </Col>
                     <Col span={ 6 }>
-                        <FormItem label={  <FormattedMessage id='universal_filters_form.year' /> }>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.year' /> }>
                             <DecoratedSelect
                                 field='year'
-                                showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
@@ -205,7 +203,7 @@ export class UniversalFiltersForm extends Component {
                                 }
                             >
                                 { vehiclesYears.map((vehiclesYear) => (
-                                    <Option value={ vehiclesYear } key={ v4() }>
+                                    <Option value={ vehiclesYear } key={ v4() } name={ String(vehiclesYear) }>
                                         { vehiclesYear }
                                     </Option>))
                                 }
@@ -213,15 +211,15 @@ export class UniversalFiltersForm extends Component {
                             </DecoratedSelect>
                         </FormItem>
                     </Col>
-                    <Col span={ 6 }>
-                        <FormItem label={ 'TODO: ODOMETR' }>
-                            <DecoratedSelect
-                                field='services'
+                    <Col span={ 3 }>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.mileage_from' /> }>
+                            <DecoratedInputNumber
+                                field='odometerLower'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.service' />
+                                    <FormattedMessage id='universal_filters_form.mileage_from' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
@@ -233,13 +231,26 @@ export class UniversalFiltersForm extends Component {
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 2 } />
+                    <Col span={ 3 }>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.mileage_to' /> }>
+                            <DecoratedInputNumber
+                                field='odometerGreater'
+                                getFieldDecorator={ getFieldDecorator }
+                                placeholder={
+                                    <FormattedMessage id='universal_filters_form.mileage_to' />
+                                }
+                                getPopupContainer={ trigger =>
+                                    trigger.parentNode
+                                }
+                            />
+                        </FormItem>
+                    </Col>
                 </Row>
                 <Row gutter={ 8 }>
                     <Col span={ 12 }>
                         { /* <FormItem
                             label={
-                                <FormattedMessage id='universal_filters.creationReason' />
+                                <FormattedMessage id='universal_filters_form.creationReason' />
                             }
                         >
                             <DecoratedSelect
@@ -248,7 +259,7 @@ export class UniversalFiltersForm extends Component {
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.creationReason' />
+                                    <FormattedMessage id='universal_filters_form.creationReason' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
@@ -259,14 +270,14 @@ export class UniversalFiltersForm extends Component {
                                 optionLabel='creationReason'
                             />
                         </FormItem> */ }
-                        <FormItem label={ 'ODOMETR' }>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.service' /> }>
                             <DecoratedSelect
-                                field='services'
+                                field='service'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.service' />
+                                    <FormattedMessage id='universal_filters_form.all' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
@@ -281,16 +292,17 @@ export class UniversalFiltersForm extends Component {
                     <Col span={ 6 }>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters.manager' />
+                                <FormattedMessage id='universal_filters_form.managers' />
                             }
                         >
                             <DecoratedSelect
-                                field='manager'
+                                field='managers'
+                                mode='multiple'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.manager' />
+                                    <FormattedMessage id='universal_filters_form.all' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
@@ -305,7 +317,7 @@ export class UniversalFiltersForm extends Component {
                     <Col span={ 6 }>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters.employee' />
+                                <FormattedMessage id='universal_filters_form.served_employee' />
                             }
                         >
                             <DecoratedSelect
@@ -314,7 +326,7 @@ export class UniversalFiltersForm extends Component {
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.employee' />
+                                    <FormattedMessage id='universal_filters_form.all' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
@@ -328,63 +340,77 @@ export class UniversalFiltersForm extends Component {
                     </Col>
                 </Row>
                 <Row gutter={ 8 }>
-                    <Col span={ 12 }>
-                        <FormItem label={ 'TODO: Кол-во Посещений' }>
-                            <DecoratedSelect
+                    <Col span={ 6 }>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.number_of_visits_from'/> }>
+                            <DecoratedInputNumber
+                                field='visitsFrom'
+                                getFieldDecorator={ getFieldDecorator }
+                                // style={ { width: 200 } }
+                                placeholder={
+                                    <FormattedMessage id='universal_filters_form.number_of_visits_from' />
+                                }
+                                // optionFilterProp='children'
+                                getPopupContainer={ trigger =>
+                                    trigger.parentNode
+                                }
+                            />
+                        </FormItem>
+                    </Col>
+                    <Col span={ 6 }>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.number_of_visits_to'/> }>
+
+                            <DecoratedInputNumber
                                 field='manager'
-                                showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.manager' />
+                                    <FormattedMessage id='universal_filters_form.number_of_visits_to' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
-                                options={ managers }
-                                optionValue='id'
-                                optionLabel='managerSurname'
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 6 }>
-                        <FormItem label={ 'TODO: Посещал' }>
+                    <Col span={ 4 }>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.visited'/> }>
                             <DecoratedSelect
-                                field='employee'
+                                field='notVisit'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.employee' />
+                                    <FormattedMessage id='universal_filters_form.not_selected' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
-                                options={ employees }
-                                optionValue='id'
-                                optionLabel='employeeSurname'
-                            />
+                            >
+                                <Option value={ false } key={ v4() } name={ <FormattedMessage id='universal_filters_form.visited'/> }>
+                                    <FormattedMessage id='universal_filters_form.visited'/>
+                                </Option>
+                                <Option value key={ v4() } name={ <FormattedMessage id='universal_filters_form.not_visited'/> }>
+                                    <FormattedMessage id='universal_filters_form.not_visited'/>
+                                </Option>
+                            </DecoratedSelect>
                         </FormItem>
                     </Col>
-                    <Col span={ 6 }>
-                        <FormItem label={ 'TODO: Последние' }>
-                            <DecoratedSelect
-                                field='employee'
+                    <Col span={ 4 }>
+                        <FormItem label={ <FormattedMessage id='universal_filters_form.last' /> } >
+                            <DecoratedInputNumber
+                                field='notVisitDays'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters.employee' />
+                                    <FormattedMessage id='universal_filters_form.last' />
                                 }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
-                                options={ employees }
-                                optionValue='id'
-                                optionLabel='employeeSurname'
                             />
                         </FormItem>
                     </Col>
