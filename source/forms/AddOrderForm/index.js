@@ -437,7 +437,7 @@ export class AddOrderForm extends Component {
                                 options={ this.props.requisites }
                                 optionValue='id'
                                 optionLabel='name'
-                                optionDisabled='enabled'
+                                optionDisabled='disabled'
                             />
                         </FormItem>
                         <FormItem
@@ -462,7 +462,7 @@ export class AddOrderForm extends Component {
                                 options={ this.props.requisites }
                                 optionValue='id'
                                 optionLabel='name'
-                                optionDisabled='enabled'
+                                optionDisabled='disabled'
                             />
                         </FormItem>
                     </div>

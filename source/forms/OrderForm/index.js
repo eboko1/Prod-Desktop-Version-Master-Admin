@@ -321,7 +321,6 @@ export class OrderForm extends Component {
                                 this.props.form.getFieldDecorator
                             }
                             placeholder={ 'Choose selected client phone' }
-                            optionDisabled='enabled'
                         >
                             { selectedClient.phones
                                 .filter(Boolean)
@@ -343,7 +342,6 @@ export class OrderForm extends Component {
                                     this.props.form.getFieldDecorator
                                 }
                                 placeholder={ 'Choose selected client email' }
-                                optionDisabled='enabled'
                             >
                                 { selectedClient.emails
                                     .filter(Boolean)
@@ -477,7 +475,7 @@ export class OrderForm extends Component {
                                 options={ this.props.requisites }
                                 optionValue='id'
                                 optionLabel='name'
-                                optionDisabled='enabled'
+                                optionDisabled='disabled'
                             />
                         </FormItem>
                         <FormItem
@@ -499,7 +497,7 @@ export class OrderForm extends Component {
                                 options={ selectedClient.requisites }
                                 optionValue='id'
                                 optionLabel='name'
-                                optionDisabled='enabled'
+                                optionDisabled='disabled'
                             />
                         </FormItem>
                     </div>
