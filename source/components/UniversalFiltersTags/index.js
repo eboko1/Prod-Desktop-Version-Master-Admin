@@ -24,15 +24,21 @@ class UniversalFiltersTags extends Component {
     filterTagsFields = [ 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'beginDate', 'createDate', 'year', 'odometerLower', 'odometerGreater' ];
 
     // Clear tags using tagsToUniversalFilterFields
-    handleClose = removedTag => {
-        this.props.clearUniversalFilters([ ...this.tagsToUniversalFilterFields[ removedTag ] || [], removedTag ]);
+    handleClose = removedTagId => {
+        this.props.clearUniversalFilters([ ...this.tagsToUniversalFilterFields[ removedTagId ] || [], removedTagId ]);
     };
 
-    localizeTag(tag) {
-        return this.props.intl.formatMessage({
-            id:             `universal_filters_tags.${tag}`,
-            defaultMessage: tag,
+    localizeTag(id) {
+        const name = this.props.intl.formatMessage({
+            id:             `universal_filters_tags.${id}`,
+            defaultMessage: id,
         });
+        const tag = {
+            id,
+            name,
+        };
+
+        return tag;
     }
 
     render() {
@@ -48,31 +54,31 @@ class UniversalFiltersTags extends Component {
             )
             .map(([ key ]) => key)
             .value()
-            .map((tag) => this.localizeTag(tag));
+            .map((tagId) => this.localizeTag(tagId));
 
         return (
             <div>
-                { tagsFilter.map(tag => {
-                    const isLongTag = tag.length > 20;
+                { tagsFilter.map(({id, name}) => {
+                    const isLongTag = name.length > 20;
                     const tagElem = (
                         <Tag
                             color='#9b59b6'
-                            name={ tag }
+                            name={ name }
                             // after rm tag ant persist local state of Component
                             // v4 generate uniq component with new state
                             key={ v4() } // TODO hidden tags will block new tags
                             closable
-                            afterClose={ () => this.handleClose(tag) }
+                            afterClose={ () => this.handleClose(id) }
                         >
-                            { isLongTag ? `${tag.slice(0, 20)}...` : tag }
+                            { isLongTag ? `${name.slice(0, 20)}...` : name }
                         </Tag>
                     );
 
                     // TODO z-index for tooltip
                     return isLongTag ? (
                         <Tooltip
-                            title={ tag }
-                            key={ tag }
+                            title={ name }
+                            key={ id }
                             className={ Styles.tagTooltip }
                         >
                             { tagElem }
