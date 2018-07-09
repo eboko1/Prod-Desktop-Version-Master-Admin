@@ -70,7 +70,7 @@ class DetailsTable extends Component {
                             this.props.form.getFieldDecorator
                         }
                         disabled={
-                            !this.props.details[ record.key ].detailName.value
+                            !_.get(this.props.details[ record.key ], 'detailName.value')
                         }
                         showSearch
                         placeholder={
@@ -100,7 +100,7 @@ class DetailsTable extends Component {
                     <DecoratedInput
                         field={ `details[${record.key}][detailCode]` }
                         disabled={
-                            !this.props.details[ record.key ].detailName.value
+                            !_.get(this.props.details[ record.key ], 'detailName.value')
                         }
                         getFieldDecorator={
                             this.props.form.getFieldDecorator
@@ -117,7 +117,7 @@ class DetailsTable extends Component {
                         field={ `details[${record.key}][detailPrice]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         disabled={
-                            !this.props.details[ record.key ].detailName.value
+                            !_.get(this.props.details[ record.key ], 'detailName.value')
                         }
                         min={ 0 }
                     />
@@ -132,7 +132,7 @@ class DetailsTable extends Component {
                         field={ `details[${record.key}][detailCount]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         disabled={
-                            !this.props.details[ record.key ].detailName.value
+                            !_.get(this.props.details[ record.key ], 'detailName.value')
                         }
                         min={ 0.1 }
                         step={ 0.1 }
@@ -164,7 +164,7 @@ class DetailsTable extends Component {
                 render:    (text, record) => {
                     const dataSource = this.props.details;
 
-                    return dataSource[ record.key ].detailName.value ? (
+                    return _.get(dataSource[ record.key ], 'detailName.value') ? (
                         <Popconfirm
                             title='Sure to delete?'
                             onConfirm={ () => this.onDelete(record.key) }

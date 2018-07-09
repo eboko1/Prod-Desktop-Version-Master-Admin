@@ -134,33 +134,39 @@ const customDetails = details =>
                 detailCode,
                 price,
                 count,
-            }) => [
-                [ id ],
-                {
-                    detailName: customFieldValue(
-                        `details[${id}][detailName]`,
-                        detailId || detailName
-                            ? detailId || `custom|${id}`
-                            : null,
-                    ),
-                    detailBrandName: customFieldValue(
-                        `details[${id}][detailBrandName]`,
-                        brandId || brandName ? brandId || `custom|${id}` : null,
-                    ),
-                    detailCode: customFieldValue(
-                        `details[${id}][detailCode]`,
-                        detailCode,
-                    ),
-                    detailCount: customFieldValue(
-                        `details[${id}][detailCount]`,
-                        Number(count) || 0,
-                    ),
-                    detailPrice: customFieldValue(
-                        `details[${id}][detailPrice]`,
-                        Number(price) || 0,
-                    ),
-                },
-            ],
+            }) => {
+                const uniqueId = v4();
+
+                return [
+                    [ uniqueId ],
+                    {
+                        detailName: customFieldValue(
+                            `details[${uniqueId}][detailName]`,
+                            detailId || detailName
+                                ? detailId || `custom|${id}`
+                                : null,
+                        ),
+                        detailBrandName: customFieldValue(
+                            `details[${uniqueId}][detailBrandName]`,
+                            brandId || brandName
+                                ? brandId || `custom|${id}`
+                                : null,
+                        ),
+                        detailCode: customFieldValue(
+                            `details[${uniqueId}][detailCode]`,
+                            detailCode,
+                        ),
+                        detailCount: customFieldValue(
+                            `details[${uniqueId}][detailCount]`,
+                            Number(count) || 0,
+                        ),
+                        detailPrice: customFieldValue(
+                            `details[${uniqueId}][detailPrice]`,
+                            Number(price) || 0,
+                        ),
+                    },
+                ];
+            },
         ),
     );
 
@@ -305,7 +311,28 @@ function mergeAllDetailsOrderDetails(allDetails, orderDetails) {
             detailName,
         }));
 
-    return [ ...allDetails, ...requiredOrderDetails ];
+    return [ ...requiredOrderDetails, ...allDetails ];
+}
+
+function getInitDetails(allDetails, orderDetails) {
+    const customOrderDetailIds = orderDetails
+        .filter(({ detailId }) => !detailId)
+        .map(({ id }) => `custom|${id}`);
+
+    const orderDetailIds = orderDetails
+        .filter(({ detailId }) => detailId)
+        .map(({ detailId }) => detailId);
+
+    const mergedDetails = mergeAllDetailsOrderDetails(allDetails, orderDetails);
+    const requiredIds = [ ...customOrderDetailIds, ...orderDetailIds ];
+
+    const baseDetails = mergedDetails.filter(({ detailId }) =>
+        requiredIds.includes(detailId));
+
+    return _.uniqWith(
+        [ ...baseDetails, ...mergedDetails.slice(0, 100) ],
+        _.isEqual,
+    );
 }
 
 function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
@@ -316,7 +343,7 @@ function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
             brandName,
         }));
 
-    return [ ...allBrands, ...requiredOrderBrands ];
+    return [ ...requiredOrderBrands, ...allBrands ];
 }
 
 function mergeAllServicesOrderServices(allServices, orderServices) {
@@ -349,8 +376,11 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 ...payload,
-                filteredDetails: payload.allDetails.details.slice(0, 100),
-                allServices:     mergeAllServicesOrderServices(
+                filteredDetails: getInitDetails(
+                    payload.allDetails.details,
+                    payload.orderDetails,
+                ),
+                allServices: mergeAllServicesOrderServices(
                     payload.allServices,
                     payload.orderServices,
                 ),
