@@ -8,6 +8,8 @@ import moment from 'moment';
 export const moduleName = 'orderForm';
 const prefix = `cpb/${moduleName}`;
 
+export const SET_CREATE_STATUS = `${prefix}/SET_CREATE_STATUS`;
+
 export const CREATE_ORDER = `${prefix}/CREATE_ORDER`;
 export const CREATE_ORDER_SUCCESS = `${prefix}/CREATE_ORDER_SUCCESS`;
 
@@ -190,6 +192,7 @@ const createDefaultState = () => ({
         services:         defaultService(),
         details:          defaultDetail(),
     },
+    createStatus:    'not_complete',
     allServices:     [],
     managers:        [],
     employees:       [],
@@ -443,6 +446,12 @@ export default function reducer(state = ReducerState, action) {
                 selectedClient: payload.client || state.selectedClient,
             };
 
+        case SET_CREATE_STATUS:
+            return {
+                ...state,
+                createStatus: payload,
+            };
+
         case FETCH_ADD_ORDER_FORM_SUCCESS:
             return {
                 ...state,
@@ -555,7 +564,8 @@ export default function reducer(state = ReducerState, action) {
             };
 
             const filteredDetails = state.allDetails.details
-                .filter(({ detailName }) => detailName.toLocaleLowerCase().includes(payload))
+                .filter(({ detailName }) =>
+                    detailName.toLocaleLowerCase().includes(payload))
                 .slice(0, 100);
 
             const includesCustomName = filteredDetails.find(
@@ -564,7 +574,7 @@ export default function reducer(state = ReducerState, action) {
 
             return {
                 ...state,
-                filteredDetails: [ ...filteredDetails, ...(includesCustomName ? [] : [ customDetail ]) ],
+                filteredDetails: [ ...filteredDetails, ...includesCustomName ? [] : [ customDetail ] ],
                 allDetails:      {
                     ...state.allDetails,
                     details: [
@@ -572,7 +582,7 @@ export default function reducer(state = ReducerState, action) {
                             state.allDetails.details,
                             state.fields.details,
                         ),
-                        ...(includesCustomName ? [] : [ customDetail ]),
+                        ...includesCustomName ? [] : [ customDetail ],
                     ],
                 },
             };
@@ -739,6 +749,11 @@ export const updateOrder = entity => ({
 
 export const updateOrderSuccess = () => ({
     type: UPDATE_ORDER_SUCCESS,
+});
+
+export const setCreateStatus = status => ({
+    type:    SET_CREATE_STATUS,
+    payload: status,
 });
 
 export const submitOrderForm = addOrderForm => ({

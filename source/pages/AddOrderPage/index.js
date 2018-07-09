@@ -7,7 +7,11 @@ import { withRouter } from 'react-router';
 import { Icon, Button, Radio } from 'antd';
 
 // proj
-import { fetchAddOrderForm, createOrder } from 'core/forms/orderForm/duck';
+import {
+    fetchAddOrderForm,
+    createOrder,
+    setCreateStatus,
+} from 'core/forms/orderForm/duck';
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
@@ -20,7 +24,10 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import Styles from './styles.m.css';
 
-import { convertFieldsValuesToDbEntity, requiredFieldsOnStatuses } from './extractOrderEntity';
+import {
+    convertFieldsValuesToDbEntity,
+    requiredFieldsOnStatuses,
+} from './extractOrderEntity';
 
 const mapStateToProps = state => {
     return {
@@ -39,7 +46,8 @@ const mapStateToProps = state => {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
-        spinner: state.ui.get('orderFetching'),
+        spinner:      state.ui.get('orderFetching'),
+        createStatus: state.forms.orderForm.createStatus,
     };
 };
 
@@ -49,6 +57,7 @@ const mapDispatch = {
     setModal,
     resetModal,
     createOrder,
+    setCreateStatus,
 };
 
 @withRouter
@@ -68,16 +77,17 @@ class AddOrderPage extends Component {
 
     onSubmit = () => {
         const form = this.orderFormRef.props.form;
-        const requiredFields = requiredFieldsOnStatuses[this.props.createOrderStatus];
+        const requiredFields =
+            requiredFieldsOnStatuses[ this.props.createStatus ];
 
-        form.validateFields(requiredFields, (err) => {
+        form.validateFields(requiredFields, err => {
             if (!err) {
                 this.props.createOrder(
                     convertFieldsValuesToDbEntity(
                         this.props.orderEntity,
                         this.props.allServices,
                         this.props.allDetails,
-                        this.props.createOrderStatus,
+                        this.props.createStatus,
                     ),
                 );
             }
@@ -100,6 +110,10 @@ class AddOrderPage extends Component {
         this.props.setModal(MODALS.ADD_CLIENT);
     };
 
+    setCreateStatus = status => {
+        this.props.setCreateStatus(status);
+    };
+
     render() {
         const {
             addClientModal,
@@ -107,7 +121,6 @@ class AddOrderPage extends Component {
             addClientFormData,
             spinner,
         } = this.props;
-        const form = this.orderFormRef;
 
         return !spinner ? (
             <Layout
@@ -115,35 +128,40 @@ class AddOrderPage extends Component {
                 controls={
                     <>
                         <div>
-                            { !form
-                                ? null
-                                : form.props.form.getFieldDecorator(
-                                    'createOrderStatus',
-                                    {
-                                        rules: [
-                                            {
-                                                required: true,
-                                                message:
-                                                      'Status is required!',
-                                            },
-                                        ],
-                                    },
-                                )(
-                                    <RadioGroup>
-                                        <RadioButton value='reserve'>
-                                            <FormattedMessage id='reserve' />
-                                        </RadioButton>
-                                        <RadioButton value='not_complete'>
-                                            <FormattedMessage id='not_complete' />
-                                        </RadioButton>
-                                        <RadioButton value='required'>
-                                            <FormattedMessage id='required' />
-                                        </RadioButton>
-                                        <RadioButton value='approve'>
-                                            <FormattedMessage id='approve' />
-                                        </RadioButton>
-                                    </RadioGroup>,
-                                ) }
+                            <RadioGroup value={ this.props.createStatus }>
+                                <RadioButton
+                                    value='reserve'
+                                    onClick={ () =>
+                                        this.setCreateStatus('reserve')
+                                    }
+                                >
+                                    <FormattedMessage id='reserve' />
+                                </RadioButton>
+                                <RadioButton
+                                    value='not_complete'
+                                    onClick={ () =>
+                                        this.setCreateStatus('not_complete')
+                                    }
+                                >
+                                    <FormattedMessage id='not_complete' />
+                                </RadioButton>
+                                <RadioButton
+                                    value='required'
+                                    onClick={ () =>
+                                        this.setCreateStatus('required')
+                                    }
+                                >
+                                    <FormattedMessage id='required' />
+                                </RadioButton>
+                                <RadioButton
+                                    value='approve'
+                                    onClick={ () =>
+                                        this.setCreateStatus('approve')
+                                    }
+                                >
+                                    <FormattedMessage id='approve' />
+                                </RadioButton>
+                            </RadioGroup>
                             <Button
                                 type='primary'
                                 htmlType='submit'
