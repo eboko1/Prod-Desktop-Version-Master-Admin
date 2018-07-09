@@ -12,10 +12,13 @@ import {
     onChangeOrderServices,
     onChangeOrderDetails,
     onServiceSearch,
-    defaultDetail,
     onDetailSearch,
     onBrandSearch,
 } from 'core/forms/orderForm/duck';
+
+import {
+    defaultDetails,
+} from './../../core/forms/orderForm/helpers/details';
 
 import {
     DecoratedTextArea,
@@ -576,7 +579,7 @@ export class OrderForm extends Component {
                             details={ this.props.fields.details }
                             onDetailSearch={ this.props.onDetailSearch }
                             onBrandSearch={ this.props.onBrandSearch }
-                            defaultDetail={ defaultDetail }
+                            defaultDetail={ defaultDetails }
                         />
                         <DiscountPanel
                             price={ priceDetails }
