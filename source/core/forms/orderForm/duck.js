@@ -45,142 +45,26 @@ export const ON_CHANGE_ORDER_DETAILS = `${prefix}/ON_CHANGE_ORDER_DETAILS`;
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
+import { customFieldValue, defaultFieldValue } from './helpers/utils';
+
+import {
+    generateAllServices,
+    mapOrderServicesToSelectServices,
+    mergeServices,
+    defaultServices,
+} from './helpers/services';
+
+import {
+    generateAllDetails,
+    mapOrderDetailsToSelectDetails,
+    mergeDetails,
+    defaultDetails,
+    getInitDetails,
+} from './helpers/details';
+
 /**
  * Reducer
  * */
-
-const customFieldValue = (name, value) => ({
-    errors:     void 0,
-    name:       name,
-    touched:    true,
-    validating: false,
-    value:      value,
-    dirty:      true,
-});
-
-const defaultFieldValue = name => customFieldValue(name, void 0);
-
-const generateNestedObject = (
-    fields,
-    fieldNameGenerator,
-    defaultValues = {},
-) => {
-    const randomName = v4();
-    const pairs = fields.map(name => [
-        name,
-        customFieldValue(
-            fieldNameGenerator(randomName, name),
-            defaultValues[ name ],
-        ),
-    ]);
-
-    return {
-        [ randomName ]: _.fromPairs(pairs),
-    };
-};
-
-const defaultService = () => {
-    const defaultValues = { serviceCount: 1, servicePrice: 0 };
-    const fields = [ 'serviceName', 'serviceCount', 'servicePrice' ];
-
-    return generateNestedObject(
-        fields,
-        (randomName, name) => `services[${randomName}][${name}]`,
-        defaultValues,
-    );
-};
-
-export const defaultDetail = () => {
-    const defaultValues = { detailCount: 1, detailPrice: 0 };
-    const fields = [ 'detailName', 'detailBrandName', 'detailCode', 'detailCount', 'detailPrice' ];
-
-    return generateNestedObject(
-        fields,
-        (randomName, name) => `details[${randomName}][${name}]`,
-        defaultValues,
-    );
-};
-
-function hasService(allServices, type, serviceId) {
-    const allServicesKeys = allServices.map(
-        ({ serviceId, type }) => `${type}|${serviceId}`,
-    );
-
-    return allServicesKeys.includes(`${type}|${serviceId}`);
-}
-
-const customServices = (services, allServices) =>
-    _.fromPairs(
-        services.map(({ serviceId, type, count, price }) => {
-            const custom = !hasService(allServices, type, serviceId);
-
-            return [
-                `${type}|${serviceId}`,
-                {
-                    serviceName: customFieldValue(
-                        `services[${type}|${serviceId}][serviceName]`,
-                        custom ? `custom|${serviceId}` : `${type}|${serviceId}`,
-                    ),
-                    serviceCount: customFieldValue(
-                        `services[${type}|${serviceId}][serviceCount]`,
-                        Number(count) || 0,
-                    ),
-                    servicePrice: customFieldValue(
-                        `services[${type}|${serviceId}][servicePrice]`,
-                        Number(price) || 0,
-                    ),
-                },
-            ];
-        }),
-    );
-
-const customDetails = details =>
-    _.fromPairs(
-        details.map(
-            ({
-                id,
-                detailId,
-                detailName,
-                brandId,
-                brandName,
-                detailCode,
-                price,
-                count,
-            }) => {
-                const uniqueId = v4();
-
-                return [
-                    [ uniqueId ],
-                    {
-                        detailName: customFieldValue(
-                            `details[${uniqueId}][detailName]`,
-                            detailId || detailName
-                                ? detailId || `custom|${id}`
-                                : null,
-                        ),
-                        detailBrandName: customFieldValue(
-                            `details[${uniqueId}][detailBrandName]`,
-                            brandId || brandName
-                                ? brandId || `custom|${id}`
-                                : null,
-                        ),
-                        detailCode: customFieldValue(
-                            `details[${uniqueId}][detailCode]`,
-                            detailCode,
-                        ),
-                        detailCount: customFieldValue(
-                            `details[${uniqueId}][detailCount]`,
-                            Number(count) || 0,
-                        ),
-                        detailPrice: customFieldValue(
-                            `details[${uniqueId}][detailPrice]`,
-                            Number(price) || 0,
-                        ),
-                    },
-                ];
-            },
-        ),
-    );
 
 const createDefaultState = () => ({
     fields: {
@@ -207,8 +91,8 @@ const createDefaultState = () => ({
         ),
         servicesDiscount: customFieldValue('servicesDiscount', 0),
         detailsDiscount:  customFieldValue('detailsDiscount', 0),
-        services:         defaultService(),
-        details:          defaultDetail(),
+        services:         defaultServices(),
+        details:          defaultDetails(),
     },
     createStatus:    'not_complete',
     allServices:     [],
@@ -249,28 +133,6 @@ export function fetchAddOrderFormSuccess(data) {
     };
 }
 
-function calculateAllDetails(allDetails, selectedDetails) {
-    const selectedValues = _(selectedDetails)
-        .values()
-        .map('detailName')
-        .map('value')
-        .value();
-
-    const manuallyInsertedDetails = allDetails.filter(
-        detail => detail.manuallyInserted,
-    );
-
-    const redundantManuallyInsertedDetails = manuallyInsertedDetails.filter(
-        ({ detailId }) => !selectedValues.includes(detailId),
-    );
-
-    return _.differenceWith(
-        allDetails,
-        redundantManuallyInsertedDetails,
-        _.isEqual,
-    );
-}
-
 function calculateAllBrands(allBrands, selectedBrands) {
     const selectedValues = _(selectedBrands)
         .values()
@@ -293,60 +155,6 @@ function calculateAllBrands(allBrands, selectedBrands) {
     );
 }
 
-function calculateAllServices(allServices, selectedServices) {
-    const selectedValues = _(selectedServices)
-        .values()
-        .map('serviceName')
-        .map('value')
-        .value();
-
-    const manuallyInsertedServices = allServices.filter(
-        service => service.manuallyInserted,
-    );
-
-    const redundantManuallyInsertedServices = manuallyInsertedServices.filter(
-        ({ id }) => !selectedValues.includes(`custom|${id}`),
-    );
-
-    return _.differenceWith(
-        allServices,
-        redundantManuallyInsertedServices,
-        _.isEqual,
-    );
-}
-
-function mergeAllDetailsOrderDetails(allDetails, orderDetails) {
-    const requiredOrderDetails = orderDetails
-        .filter(({ detailId }) => !detailId)
-        .map(({ detailName, id }) => ({
-            detailId: `custom|${id}`,
-            detailName,
-        }));
-
-    return [ ...requiredOrderDetails, ...allDetails ];
-}
-
-function getInitDetails(allDetails, orderDetails) {
-    const customOrderDetailIds = orderDetails
-        .filter(({ detailId }) => !detailId)
-        .map(({ id }) => `custom|${id}`);
-
-    const orderDetailIds = orderDetails
-        .filter(({ detailId }) => detailId)
-        .map(({ detailId }) => detailId);
-
-    const mergedDetails = mergeAllDetailsOrderDetails(allDetails, orderDetails);
-    const requiredIds = [ ...customOrderDetailIds, ...orderDetailIds ];
-
-    const baseDetails = mergedDetails.filter(({ detailId }) =>
-        requiredIds.includes(detailId));
-
-    return _.uniqWith(
-        [ ...baseDetails, ...mergedDetails.slice(0, 100) ],
-        _.isEqual,
-    );
-}
-
 function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
     const requiredOrderBrands = orderDetails
         .filter(({ brandId }) => !brandId)
@@ -358,27 +166,6 @@ function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
     return [ ...requiredOrderBrands, ...allBrands ];
 }
 
-function mergeAllServicesOrderServices(allServices, orderServices) {
-    const allServicesKeys = allServices.map(
-        ({ serviceId, type }) => `${type}|${serviceId}`,
-    );
-    const requiredOrderServices = orderServices
-        .filter(
-            ({ serviceId, type }) =>
-                !allServicesKeys.includes(`${type}|${serviceId}`),
-        )
-        .map(({ serviceId, serviceName }) => ({
-            id:           serviceId,
-            serviceName,
-            servicePrice: null,
-            serviceHours: null,
-            description:  '',
-            serviceId,
-            type:         'custom',
-        }));
-
-    return [ ...allServices, ...requiredOrderServices ];
-}
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
@@ -392,13 +179,13 @@ export default function reducer(state = ReducerState, action) {
                     payload.allDetails.details,
                     payload.orderDetails,
                 ),
-                allServices: mergeAllServicesOrderServices(
+                allServices: mergeServices(
                     payload.allServices,
                     payload.orderServices,
                 ),
                 allDetails: {
                     ...state.allDetails,
-                    details: mergeAllDetailsOrderDetails(
+                    details: mergeDetails(
                         payload.allDetails.details,
                         payload.orderDetails,
                     ),
@@ -477,12 +264,15 @@ export default function reducer(state = ReducerState, action) {
                         payload.order.detailsDiscount,
                     ),
                     services: {
-                        ...customServices(payload.orderServices, payload.allServices),
-                        ...defaultService(),
+                        ...mapOrderServicesToSelectServices(
+                            payload.orderServices,
+                            payload.allServices,
+                        ),
+                        ...defaultServices(),
                     },
                     details: {
-                        ...customDetails(payload.orderDetails),
-                        ...defaultDetail(),
+                        ...mapOrderDetailsToSelectDetails(payload.orderDetails),
+                        ...defaultDetails(),
                     },
                 },
                 selectedClient: payload.client || state.selectedClient,
@@ -581,7 +371,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 allServices: [
-                    ...calculateAllServices(
+                    ...generateAllServices(
                         state.allServices,
                         state.fields.services,
                     ),
@@ -620,7 +410,7 @@ export default function reducer(state = ReducerState, action) {
                 allDetails:      {
                     ...state.allDetails,
                     details: [
-                        ...calculateAllDetails(
+                        ...generateAllDetails(
                             state.allDetails.details,
                             state.fields.details,
                         ),
