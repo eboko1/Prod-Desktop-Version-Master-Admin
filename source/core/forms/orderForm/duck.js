@@ -101,25 +101,37 @@ export const defaultDetail = () => {
     );
 };
 
-const customServices = services =>
+function hasService(allServices, type, serviceId) {
+    const allServicesKeys = allServices.map(
+        ({ serviceId, type }) => `${type}|${serviceId}`,
+    );
+
+    return allServicesKeys.includes(`${type}|${serviceId}`);
+}
+
+const customServices = (services, allServices) =>
     _.fromPairs(
-        services.map(({ serviceId, type, count, price }) => [
-            `${type}|${serviceId}`,
-            {
-                serviceName: customFieldValue(
-                    `services[${type}|${serviceId}][serviceName]`,
-                    `${type}|${serviceId}`,
-                ),
-                serviceCount: customFieldValue(
-                    `services[${type}|${serviceId}][serviceCount]`,
-                    Number(count) || 0,
-                ),
-                servicePrice: customFieldValue(
-                    `services[${type}|${serviceId}][servicePrice]`,
-                    Number(price) || 0,
-                ),
-            },
-        ]),
+        services.map(({ serviceId, type, count, price }) => {
+            const custom = !hasService(allServices, type, serviceId);
+
+            return [
+                `${type}|${serviceId}`,
+                {
+                    serviceName: customFieldValue(
+                        `services[${type}|${serviceId}][serviceName]`,
+                        custom ? `custom|${serviceId}` : `${type}|${serviceId}`,
+                    ),
+                    serviceCount: customFieldValue(
+                        `services[${type}|${serviceId}][serviceCount]`,
+                        Number(count) || 0,
+                    ),
+                    servicePrice: customFieldValue(
+                        `services[${type}|${serviceId}][servicePrice]`,
+                        Number(price) || 0,
+                    ),
+                },
+            ];
+        }),
     );
 
 const customDetails = details =>
@@ -355,14 +367,14 @@ function mergeAllServicesOrderServices(allServices, orderServices) {
             ({ serviceId, type }) =>
                 !allServicesKeys.includes(`${type}|${serviceId}`),
         )
-        .map(({ id, serviceName, type }) => ({
-            id,
+        .map(({ serviceId, serviceName }) => ({
+            id:           serviceId,
             serviceName,
             servicePrice: null,
             serviceHours: null,
             description:  '',
-            serviceId:    id,
-            type:         `custom|${type}`,
+            serviceId,
+            type:         'custom',
         }));
 
     return [ ...allServices, ...requiredOrderServices ];
@@ -465,7 +477,7 @@ export default function reducer(state = ReducerState, action) {
                         payload.order.detailsDiscount,
                     ),
                     services: {
-                        ...customServices(payload.orderServices),
+                        ...customServices(payload.orderServices, payload.allServices),
                         ...defaultService(),
                     },
                     details: {
