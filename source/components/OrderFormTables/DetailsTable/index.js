@@ -49,7 +49,7 @@ class DetailsTable extends Component {
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '70%' } }
                     >
-                        { this.props.allDetails.details.map(
+                        { this.props.filteredDetails.map(
                             ({ detailId, detailName }) => (
                                 <Option value={ detailId } key={ v4() }>
                                     { detailName }

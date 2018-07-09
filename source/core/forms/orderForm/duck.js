@@ -190,13 +190,14 @@ const createDefaultState = () => ({
         services:         defaultService(),
         details:          defaultDetail(),
     },
-    allServices:   [],
-    managers:      [],
-    employees:     [],
-    stations:      [],
-    orderServices: [],
-    orderDetails:  [],
-    allDetails:    {
+    allServices:     [],
+    managers:        [],
+    employees:       [],
+    filteredDetails: [],
+    stations:        [],
+    orderServices:   [],
+    orderDetails:    [],
+    allDetails:      {
         details: [],
         brands:  [],
     },
@@ -345,7 +346,8 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 ...payload,
-                allServices: mergeAllServicesOrderServices(
+                filteredDetails: payload.allDetails.details.slice(0, 100),
+                allServices:     mergeAllServicesOrderServices(
                     payload.allServices,
                     payload.orderServices,
                 ),
@@ -445,9 +447,10 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 ...payload,
-                allServices: payload.allServices,
-                allDetails:  payload.allDetails,
-                fields:      {
+                filteredDetails: payload.allDetails.details.slice(0, 100),
+                allServices:     payload.allServices,
+                allDetails:      payload.allDetails,
+                fields:          {
                     ...state.fields,
                     station: customFieldValue(
                         'station',
@@ -545,20 +548,31 @@ export default function reducer(state = ReducerState, action) {
             };
 
         case ON_HANDLE_CUSTOM_DETAIL:
+            const customDetail = {
+                detailId:         `custom|${v4()}`,
+                detailName:       payload,
+                manuallyInserted: true,
+            };
+
+            const filteredDetails = state.allDetails.details
+                .filter(({ detailName }) => detailName.toLocaleLowerCase().includes(payload))
+                .slice(0, 100);
+
+            const includesCustomName = filteredDetails.find(
+                ({ detailName }) => detailName === payload,
+            );
+
             return {
                 ...state,
-                allDetails: {
+                filteredDetails: [ ...filteredDetails, ...(includesCustomName ? [] : [ customDetail ]) ],
+                allDetails:      {
                     ...state.allDetails,
                     details: [
                         ...calculateAllDetails(
                             state.allDetails.details,
                             state.fields.details,
                         ),
-                        {
-                            detailId:         `custom|${v4()}`,
-                            detailName:       payload,
-                            manuallyInserted: true,
-                        },
+                        ...(includesCustomName ? [] : [ customDetail ]),
                     ],
                 },
             };
