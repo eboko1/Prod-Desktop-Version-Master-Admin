@@ -11,6 +11,9 @@ import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
+import dashboardReducer, {
+    moduleName as dashboardModule,
+} from 'core/dashboard/duck';
 
 const rootReducer = combineReducers({
     intl,
@@ -19,9 +22,10 @@ const rootReducer = combineReducers({
     router,
     swapi,
     ui,
-    [ ordersModule ]: ordersReducer,
-    [ orderModule ]:  orderReducer,
-    [ modalsModule ]: modalsReducer,
+    [ ordersModule ]:    ordersReducer,
+    [ orderModule ]:     orderReducer,
+    [ modalsModule ]:    modalsReducer,
+    [ dashboardModule ]: dashboardReducer,
     // [ addOrderModule ]: addOrderReducer,
     // [ universalFilters ]: universalFiltersReducer,
 });

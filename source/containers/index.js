@@ -7,6 +7,7 @@ import OrdersContainer from './OrdersContainer';
 import FunelContainer from './FunelContainer';
 import OrdersFilterContainer from './OrdersFilterContainer';
 import UniversalFilters from './UniversalFilters';
+import Dashboard from './Dashboard';
 
 export {
     DistributorDash,
@@ -18,4 +19,5 @@ export {
     FunelContainer,
     OrdersFilterContainer,
     UniversalFilters,
+    Dashboard,
 };

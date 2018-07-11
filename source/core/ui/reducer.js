@@ -2,14 +2,15 @@ import types from './types';
 import { Map } from 'immutable';
 
 const initialState = Map({
-    swapiFetching:  false,
-    initialized:    false,
+    swapiFetching:     false,
+    initialized:       false,
     // online:        false,
-    authFetching:   false,
-    ordersFetching: false,
-    orderFetching:  false,
-    collapsed:      false,
-    error:          null,
+    authFetching:      false,
+    ordersFetching:    false,
+    orderFetching:     false,
+    dashboardFetching: false,
+    collapsed:         false,
+    error:             null,
 });
 
 export default (state = initialState, action) => {
@@ -31,6 +32,9 @@ export default (state = initialState, action) => {
 
         case types.SET_ORDER_FETCHING_STATE:
             return state.set('orderFetching', action.payload);
+
+        case types.SET_DASHBOARD_FETCHING_STATE:
+            return state.set('dashboardFetching', action.payload);
 
         case types.SET_COLLAPSED_STATE:
             return state.set('collapsed', action.payload);
