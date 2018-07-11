@@ -1,0 +1,23 @@
+{
+    "en": {
+        "dashboard-page.title": "Calendar of service load",
+        "dashboard-page.description":
+            "Manage your calendar and schedule your service",
+        "dashboard-page.calendar": "Calendar",
+        "dashboard-page.stations_load": "Stations load"
+    },
+    "ru": {
+        "dashboard-page.title": "Календарь загрузки",
+        "dashboard-page.description":
+            "Управление календарем и планирование загрузки вашего автосервиса",
+        "dashboard-page.calendar": "Календарь",
+        "dashboard-page.stations_load": "Загрузка постов"
+    },
+    "uk": {
+        "dashboard-page.title": "Календар завантаження",
+        "dashboard-page.description":
+            "Керування календарем та планування завантаження вашого автосервісу",
+        "dashboard-page.calendar": "Календар",
+        "dashboard-page.stations_load": "Завантаження постів"
+    }
+}

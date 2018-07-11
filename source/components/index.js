@@ -8,6 +8,8 @@ import ReportsDropdown from './ReportsDropdown';
 import StatsCountsPanel from './StatsCountsPanel';
 import UniversalFiltersTags from './UniversalFiltersTags';
 import ChangeStatusDropdown from './ChangeStatusDropdown';
+import ArrowsWeekPicker from './ArrowsWeekPicker';
+import ArrowsDatePicker from './ArrowsDatePicker';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 
 export {
@@ -22,5 +24,7 @@ export {
     ReportsDropdown,
     StatsCountsPanel,
     UniversalFiltersTags,
+    ArrowsWeekPicker,
+    ArrowsDatePicker,
     ChangeStatusDropdown,
 };

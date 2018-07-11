@@ -1,0 +1,19 @@
+.weekPicker {
+    display: flex;
+    align-items: center;
+}
+
+.icon {
+    cursor: pointer;
+    padding: 0 10px;
+
+    &:hover {
+        color: var(--primary);
+    }
+}
+
+.weekDays {
+    /* background: white;
+    border: 1px var(--text3) solid; */
+    margin-left: 10px;
+}

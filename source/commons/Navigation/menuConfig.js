@@ -11,7 +11,7 @@ export default {
             items:    [
                 {
                     key:  '/dashboard',
-                    link: book.oldApp.dashboard,
+                    link: book.dashboard,
                     name: 'navigation.scheduler',
                 },
                 {

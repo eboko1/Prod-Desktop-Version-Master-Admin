@@ -5,6 +5,7 @@ import { Switch, Route, Redirect } from 'react-router';
 // proj
 import { DistributorDash, Request, SwapiBox } from 'containers';
 import {
+    DashboardPage,
     OrdersPage,
     OrderPage,
     AddOrderPage,
@@ -32,6 +33,7 @@ export default class Private extends Component {
                         to={ `${book.orders}/appointments` }
                     />
                 </Switch> */ }
+                <Route exact component={ DashboardPage } path={ book.dashboard } />
                 <Route
                     exact
                     component={ OrdersPage }
@@ -44,7 +46,7 @@ export default class Private extends Component {
                     component={ ExceptionPage }
                     path={ book.exceptionStatusCode }
                 />
-                <Redirect from='/' to={ book.ordersAppointments }/>
+                <Redirect from='/' to={ book.ordersAppointments } />
                 <Redirect to={ `${book.exception}/404` } />
             </Switch>
         );

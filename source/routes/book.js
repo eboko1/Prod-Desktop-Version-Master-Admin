@@ -12,6 +12,7 @@ const book = Object.freeze({
     profile:             '/profile',
     distributorDash:     '/distributor-dash',
     request:             '/request',
+    dashboard:           '/dashboard',
     // Orders
     orders:              '/orders',
     ordersByStatuses:    '/orders/:ordersStatuses',
@@ -27,7 +28,8 @@ const book = Object.freeze({
     exception:           '/exception',
     exceptionStatusCode: '/exception/:statusCode',
 
-    oldApp: { // link to my.cb24.eu
+    oldApp: {
+        // link to my.cb24.eu
         dashboard:              `${OLD_APP_URL}/dashboard`,
         tasks:                  `${OLD_APP_URL}/tasks`,
         clients:                `${OLD_APP_URL}/clients`,

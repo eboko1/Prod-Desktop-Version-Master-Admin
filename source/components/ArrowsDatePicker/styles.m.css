@@ -1,0 +1,21 @@
+.container {
+    display: flex;
+    align-items: center;
+}
+
+.datePicker {
+    width: 200px;
+}
+
+.datePicker input {
+    text-transform: capitalize;
+}
+
+.icon {
+    cursor: pointer;
+    padding: 0 10px;
+
+    &:hover {
+        color: var(--primary);
+    }
+}
