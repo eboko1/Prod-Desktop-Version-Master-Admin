@@ -4,7 +4,9 @@ import { Link } from 'react-router-dom';
 
 // proj
 import { fetchDashboard, fetchPostsLoad } from 'core/dashboard/duck';
+
 import { Catcher } from 'commons';
+import { Dashboard } from 'components';
 
 // own
 
@@ -19,7 +21,7 @@ const mapDispatchToProps = {
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
-class Dashboard extends Component {
+export default class DashboardContainer extends Component {
     componentDidMount() {
         this.props.fetchDashboard();
     }
@@ -30,7 +32,8 @@ class Dashboard extends Component {
 
         return (
             <Catcher>
-                <table>
+                <Dashboard />
+                { /* <table>
                     <thead>
                         <tr>
                             { [ 1, 2, 3, 4, 5, 6, 7 ].map((day, index) => {
@@ -53,10 +56,8 @@ class Dashboard extends Component {
                             }) }
                         </tr>
                     </thead>
-                </table>
+                </table> */ }
             </Catcher>
         );
     }
 }
-
-export default Dashboard;

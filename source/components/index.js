@@ -10,6 +10,7 @@ import UniversalFiltersTags from './UniversalFiltersTags';
 import ChangeStatusDropdown from './ChangeStatusDropdown';
 import ArrowsWeekPicker from './ArrowsWeekPicker';
 import ArrowsDatePicker from './ArrowsDatePicker';
+import Dashboard from './Dashboard';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 
 export {
@@ -27,4 +28,5 @@ export {
     ArrowsWeekPicker,
     ArrowsDatePicker,
     ChangeStatusDropdown,
+    Dashboard,
 };

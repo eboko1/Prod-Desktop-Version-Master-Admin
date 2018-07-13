@@ -5,7 +5,7 @@ import { Tabs } from 'antd';
 
 // proj
 import { Layout } from 'commons';
-import { Dashboard } from 'containers';
+import { DashboardContainer } from 'containers';
 import { ArrowsWeekPicker, ArrowsDatePicker } from 'components';
 
 // own
@@ -46,7 +46,7 @@ class DashboardPage extends Component {
                             }
                             key='calendar'
                         >
-                            <Dashboard />
+                            <DashboardContainer />
                         </TabPane>
                         <TabPane
                             tab={
