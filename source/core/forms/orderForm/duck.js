@@ -101,6 +101,9 @@ const createDefaultState = () => ({
     filteredDetails: [],
     stations:        [],
     orderServices:   [],
+    orderHistory:    [],
+    orderCalls:      [],
+    orderTasks:      [],
     orderDetails:    [],
     allDetails:      {
         details: [],
