@@ -46,7 +46,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) => 
+        render:    (_, order) =>
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -401,20 +401,20 @@ export function rowsConfig(
 export function scrollConfig(activeRoute) {
     switch (activeRoute) {
         case '/orders/appointments':
-            return { x: 1500 }; //1600 - 80 -
+            return { x: 1500, y: '50vh' }; //1600 - 80 -
         case '/orders/approve':
-            return { x: 1340 };
+            return { x: 1340, y: '50vh' };
         case '/orders/in-progress':
-            return { x: 1340 }; //1440 - 80 - 20
+            return { x: 1340, y: '50vh' }; //1440 - 80 - 20
         case '/orders/success':
-            return { x: 1720 }; //1820
+            return { x: 1720, y: '50vh' }; //1820
         case '/orders/reviews':
-            return { x: 1520 }; //1620
+            return { x: 1520, y: '50vh' }; //1620
         case '/orders/invitations':
-            return { x: 1260 }; //1400
+            return { x: 1260, y: '50vh' }; //1400
         case 'orders/cancel':
-            return { x: 1560 }; //1640
+            return { x: 1560, y: '50vh' }; //1640
         default:
-            return { x: 1540 }; //1640
+            return { x: 1540, y: '50vh' }; //1640
     }
 }
