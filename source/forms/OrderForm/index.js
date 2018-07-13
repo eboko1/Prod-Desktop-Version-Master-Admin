@@ -688,7 +688,7 @@ export class OrderForm extends Component {
                                 id: 'order_form_table.history',
                             }) +
                             ' (' +
-                            this.props.orderHistory.length +
+                            this.props.orderHistory.orders.length +
                             ')'
                         }
                         key='5'
