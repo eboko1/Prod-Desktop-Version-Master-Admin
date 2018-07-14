@@ -24,14 +24,20 @@ function collect(connect, monitor) {
 }
 
 @DropTarget(ItemTypes.KNIGHT, squareTarget, collect)
-export default class BoardSquare extends Component {
+export default class DraggableGridItem extends Component {
     static propTypes = {
-        x:                 PropTypes.number.isRequired,
-        y:                 PropTypes.number.isRequired,
-        isOver:            PropTypes.bool.isRequired,
-        canDrop:           PropTypes.bool.isRequired,
-        connectDropTarget: PropTypes.func.isRequired,
+        x:                 PropTypes.number,
+        y:                 PropTypes.number,
+        isOver:            PropTypes.bool,
+        canDrop:           PropTypes.bool,
+        connectDropTarget: PropTypes.func,
         children:          PropTypes.node,
+        // x:                 PropTypes.number.isRequired,
+        // y:                 PropTypes.number.isRequired,
+        // isOver:            PropTypes.bool.isRequired,
+        // canDrop:           PropTypes.bool.isRequired,
+        // connectDropTarget: PropTypes.func.isRequired,
+        // children:          PropTypes.node,
     };
 
     renderOverlay(color) {

@@ -8,42 +8,6 @@ import Styles from './styles.m.css';
 const WeekPicker = DatePicker.WeekPicker;
 
 class ArrowsWeekPicker extends Component {
-    state = {
-        startDate: moment()
-            .startOf('week')
-            .isoWeekday(1),
-        // .format('MM-DD'),
-        endDate: moment()
-            .endOf('week')
-            .isoWeekday(7),
-        // .format('MM-DD'),
-    };
-
-    onChange(date) {
-        this.setState(() => ({
-            startDate: moment(date)
-                .startOf('week')
-                .isoWeekday(1),
-            endDate: moment(date)
-                .endOf('week')
-                .isoWeekday(7),
-        }));
-    }
-
-    prevWeek() {
-        this.setState(prevState => ({
-            startDate: prevState.startDate.subtract(1, 'weeks'),
-            endDate:   prevState.endDate.subtract(1, 'weeks'),
-        }));
-    }
-
-    nextWeek() {
-        this.setState(prevState => ({
-            startDate: prevState.startDate.add(1, 'weeks'),
-            endDate:   prevState.endDate.add(1, 'weeks'),
-        }));
-    }
-
     // formatDate(date) {
     //     const range = {
     //         startDate: moment(date)
@@ -61,20 +25,27 @@ class ArrowsWeekPicker extends Component {
     // }
 
     render() {
-        const { startDate, endDate } = this.state;
+        const {
+            onWeekChange,
+            prevWeek,
+            nextWeek,
+            startDate,
+            endDate,
+        } = this.props;
+        // const { startDate, endDate } = this.state;
 
         return (
             <div className={ Styles.weekPicker }>
                 <Icon
                     type='left'
                     className={ Styles.icon }
-                    onClick={ () => this.prevWeek() }
+                    onClick={ () => prevWeek() }
                 />
                 <WeekPicker
                     // defaultValue={ moment() }
                     value={ moment(startDate) }
                     onChange={ (date, dateString) =>
-                        this.onChange(date, dateString)
+                        onWeekChange(date, dateString)
                     }
                     placeholder='Select Week'
                     // format={ date => this.formatDate(date) }
@@ -87,7 +58,7 @@ class ArrowsWeekPicker extends Component {
                 <Icon
                     type='right'
                     className={ Styles.icon }
-                    onClick={ () => this.nextWeek() }
+                    onClick={ () => nextWeek() }
                 />
             </div>
         );

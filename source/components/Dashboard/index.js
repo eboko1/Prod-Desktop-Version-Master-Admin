@@ -30,20 +30,14 @@ export default class Dashboard extends Component {
         const { knightPosition } = this.state;
 
         return (
-            <div>
-                <a href='https://github.com/react-dnd/react-dnd/tree/master/packages/documentation/examples/00%20ChessDraggableGrid/Tutorial%20App'>
-                    Browse the Source
-                </a>
-
-                <div
-                    style={ {
-                        width:  500,
-                        height: 500,
-                        border: '1px solid gray',
-                    } }
-                >
-                    <DraggableGrid knightPosition={ knightPosition } />
-                </div>
+            <div
+                style={ {
+                    width:  500,
+                    height: 500,
+                    border: '1px solid gray',
+                } }
+            >
+                <DraggableGrid knightPosition={ knightPosition } />
             </div>
         );
     }

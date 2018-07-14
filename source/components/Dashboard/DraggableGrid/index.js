@@ -10,8 +10,8 @@ import Styles from './styles.m.css';
 @DragDropContext(HTML5Backend)
 export default class DraggableGrid extends Component {
     static propTypes = {
-        knightPosition: PropTypes.arrayOf(PropTypes.number.isRequired)
-            .isRequired,
+        knightPosition: PropTypes.arrayOf(PropTypes.number.isRequired),
+        // .isRequired,
     };
 
     renderSquare(i) {

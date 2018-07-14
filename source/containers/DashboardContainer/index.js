@@ -23,12 +23,43 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class DashboardContainer extends Component {
     componentDidMount() {
-        this.props.fetchDashboard();
+        const { beginDate, mode, fetchDashboard } = this.props;
+        console.log('→ DashboardContainer mode', mode);
+        console.log('→ beginDate', beginDate);
+        fetchDashboard({
+            beginDate: beginDate.format('YYYY-MM-DD'),
+            stations:  mode !== 'calendar',
+        });
+    }
+
+    componentDidUpdate(prevProps) {
+        console.log('→ DashboardContainer DidUpdate');
+        const { beginDate, date, mode, fetchDashboard } = this.props;
+
+        if (prevProps.mode !== this.props.mode) {
+            fetchDashboard({
+                beginDate: beginDate.format('YYYY-MM-DD'),
+                stations:  mode !== 'calendar',
+            });
+        }
+        if (prevProps.beginDate !== this.props.beginTime) {
+            fetchDashboard({
+                beginDate: beginDate.format('YYYY-MM-DD'),
+                stations:  mode !== 'calendar',
+            });
+        }
+        if (prevProps.date !== this.props.beginTime) {
+            fetchDashboard({
+                beginDate: date.format('YYYY-MM-DD'),
+                stations:  mode !== 'calendar',
+            });
+        }
     }
 
     render() {
         // const dashDays = _.map(this.props.postsLoad, obj =>
         //     _.assign(obj, _.find(this.props.days, { date: obj.startDate })));
+        console.log('→ DashContainer this.props', this.props);
 
         return (
             <Catcher>

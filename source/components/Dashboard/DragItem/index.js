@@ -21,9 +21,16 @@ function collect(connect, monitor) {
 @DragSource(ItemTypes.KNIGHT, knightSource, collect)
 export default class DragItem extends Component {
     static propTypes = {
-        connectDragSource:  PropTypes.func.isRequired,
-        connectDragPreview: PropTypes.func.isRequired,
-        isDragging:         PropTypes.bool.isRequired,
+        connectDragSource:  PropTypes.func,
+        connectDragPreview: PropTypes.func,
+        isDragging:         PropTypes.bool,
+        // connectDragSource:  PropTypes.func.isRequired,
+        // connectDragPreview: PropTypes.func.isRequired,
+        // isDragging:         PropTypes.bool.isRequired,
+    };
+
+    static defaultProps = {
+        isDragging: false,
     };
 
     componentDidMount() {

@@ -14,9 +14,13 @@ import {
     FETCH_POSTS_LOAD,
 } from './duck';
 
-export function* fetchDashboardSaga() {
+export function* fetchDashboardSaga({ payload: { beginDate, stations } }) {
     yield put(uiActions.setDashboardFetchingState(true));
-    const data = yield call(fetchAPI, 'GET', 'dashboard/orders');
+    console.log('→ *fetchDashboardSaga beginDate', beginDate, stations);
+    const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
+        beginDate,
+        stations,
+    });
 
     yield put(fetchDashboardSuccess(data));
     yield put(uiActions.setDashboardFetchingState(false));

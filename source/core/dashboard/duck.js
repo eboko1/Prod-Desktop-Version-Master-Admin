@@ -67,20 +67,21 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export const fetchDashboard = () => ({
-    type: FETCH_DASHBOARD_SUCCESS,
+export const fetchDashboard = ({ beginDate, stations }) => ({
+    type:    FETCH_DASHBOARD,
+    payload: { beginDate, stations },
 });
 
-export const fetchDashboardSuccess = dashboard => ({
+export const fetchDashboardSuccess = data => ({
     type:    FETCH_DASHBOARD_SUCCESS,
-    payload: dashboard,
+    payload: data,
 });
-
-export const fetchPostsLoad = () => ({
-    type: FETCH_POSTS_LOAD_SUCCESS,
-});
-
-export const fetchPostsLoadSuccess = postsLoad => ({
-    type:    FETCH_POSTS_LOAD_SUCCESS,
-    payload: postsLoad,
-});
+//
+// export const fetchPostsLoad = () => ({
+//     type: FETCH_POSTS_LOAD,
+// });
+//
+// export const fetchPostsLoadSuccess = postsLoad => ({
+//     type:    FETCH_POSTS_LOAD_SUCCESS,
+//     payload: postsLoad,
+// });

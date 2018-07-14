@@ -7,24 +7,6 @@ import moment from 'moment';
 import Styles from './styles.m.css';
 
 class ArrowsDatePicker extends Component {
-    state = {
-        date: moment(),
-    };
-
-    onChange = date => this.setState({ date });
-
-    prevDay() {
-        this.setState(prevState => ({
-            date: prevState.date.subtract(1, 'day'),
-        }));
-    }
-
-    nextDay() {
-        this.setState(prevState => ({
-            date: prevState.date.add(1, 'day'),
-        }));
-    }
-
     // formatDate(date) {
     //     const range = {
     //         startDate: moment(date)
@@ -42,27 +24,27 @@ class ArrowsDatePicker extends Component {
     // }
 
     render() {
-        const { date } = this.state;
+        const { date, nextDay, prevDay, onDayChange } = this.props;
 
         return (
             <div className={ Styles.container }>
                 <Icon
                     type='left'
                     className={ Styles.icon }
-                    onClick={ () => this.prevDay() }
+                    onClick={ () => prevDay() }
                 />
                 <DatePicker
                     // defaultValue={ moment() }
                     className={ Styles.datePicker }
                     value={ date }
-                    onChange={ date => this.onChange(date) }
+                    onChange={ date => onDayChange(date) }
                     placeholder='Select Day'
                     format={ 'dddd, DD MMM YYYY' }
                 />
                 <Icon
                     type='right'
                     className={ Styles.icon }
-                    onClick={ () => this.nextDay() }
+                    onClick={ () => nextDay() }
                 />
             </div>
         );
