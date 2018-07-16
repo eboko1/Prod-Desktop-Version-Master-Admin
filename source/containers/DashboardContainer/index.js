@@ -1,26 +1,12 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 
 // proj
-import { fetchDashboard, fetchPostsLoad } from 'core/dashboard/duck';
 
 import { Catcher } from 'commons';
 import { Dashboard } from 'components';
 
 // own
 
-const mapStateToProps = state => ({
-    orders:    state.dashboard.orders,
-    postsLoad: state.dashboard.postLoad,
-});
-
-const mapDispatchToProps = {
-    fetchDashboard,
-    fetchPostsLoad,
-};
-
-@connect(mapStateToProps, mapDispatchToProps)
 export default class DashboardContainer extends Component {
     componentDidMount() {
         const { beginDate, mode, fetchDashboard } = this.props;
@@ -30,30 +16,6 @@ export default class DashboardContainer extends Component {
             beginDate: beginDate.format('YYYY-MM-DD'),
             stations:  mode !== 'calendar',
         });
-    }
-
-    componentDidUpdate(prevProps) {
-        console.log('→ DashboardContainer DidUpdate');
-        const { beginDate, date, mode, fetchDashboard } = this.props;
-
-        if (prevProps.mode !== this.props.mode) {
-            fetchDashboard({
-                beginDate: beginDate.format('YYYY-MM-DD'),
-                stations:  mode !== 'calendar',
-            });
-        }
-        if (prevProps.beginDate !== this.props.beginTime) {
-            fetchDashboard({
-                beginDate: beginDate.format('YYYY-MM-DD'),
-                stations:  mode !== 'calendar',
-            });
-        }
-        if (prevProps.date !== this.props.beginTime) {
-            fetchDashboard({
-                beginDate: date.format('YYYY-MM-DD'),
-                stations:  mode !== 'calendar',
-            });
-        }
     }
 
     render() {

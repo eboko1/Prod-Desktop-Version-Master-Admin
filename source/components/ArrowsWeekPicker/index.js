@@ -32,7 +32,6 @@ class ArrowsWeekPicker extends Component {
             startDate,
             endDate,
         } = this.props;
-        // const { startDate, endDate } = this.state;
 
         return (
             <div className={ Styles.weekPicker }>
@@ -43,18 +42,16 @@ class ArrowsWeekPicker extends Component {
                 />
                 <WeekPicker
                     // defaultValue={ moment() }
-                    value={ moment(startDate) }
-                    onChange={ (date, dateString) =>
-                        onWeekChange(date, dateString)
-                    }
+                    value={ startDate }
+                    onChange={ value => onWeekChange(value) }
                     placeholder='Select Week'
                     // format={ date => this.formatDate(date) }
                 />
-                <div className={ Styles.weekDays }>
+                { /* <div className={ Styles.weekDays }>
                     ({ `${startDate.format('MM-DD')} ~ ${endDate.format(
                         'MM-DD',
                     )}` })
-                </div>
+                </div> */ }
                 <Icon
                     type='right'
                     className={ Styles.icon }
