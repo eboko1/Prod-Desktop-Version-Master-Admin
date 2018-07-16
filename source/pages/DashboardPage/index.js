@@ -16,6 +16,7 @@ import {
 
 import { Layout, Spinner } from 'commons';
 import { ArrowsWeekPicker, ArrowsDatePicker, Dashboard } from 'components';
+import { DashboardContainer } from 'containers';
 
 // own
 import Styles from './styles.m.css';
@@ -27,6 +28,7 @@ const mapStateToProps = state => ({
     date:      state.dashboard.date,
     startDate: state.dashboard.startDate,
     endDate:   state.dashboard.endDate,
+    schedule:  state.dashboard.schedule,
     spinner:   state.ui.get('dashboardFetching'),
 });
 
@@ -108,7 +110,6 @@ class DashboardPage extends Component {
     }
 
     _prevWeek() {
-        console.log('→ this.props.startDate', this.props.startDate);
         this.props.setDashboardWeekDates({
             startDate: this.props.startDate.subtract(1, 'weeks'),
             endDate:   this.props.endDate.subtract(1, 'weeks'),
@@ -131,7 +132,7 @@ class DashboardPage extends Component {
 
         return !spinner ? (
             <Layout
-                paper={ false }
+                // paper={ false }
                 title={ <FormattedMessage id='dashboard-page.title' /> }
                 description={
                     <FormattedMessage id='dashboard-page.description' />
@@ -167,7 +168,11 @@ class DashboardPage extends Component {
                                 <FormattedMessage id='dashboard-page.calendar' />
                             }
                             key='calendar'
-                        />
+                        >
+                            <DashboardContainer
+                                schedule={ this.props.schedule }
+                            />
+                        </TabPane>
                         <TabPane
                             tab={
                                 <FormattedMessage id='dashboard-page.stations_load' />

@@ -1,0 +1,39 @@
+.grid {
+    display: grid;
+    /* grid-template-columns: repeat(7, 1fr); */
+    grid-template-columns: 60px repeat(7, 1fr);
+    grid-gap: 10px;
+    background: #f7f7f7;
+}
+
+.gridColumn {
+    padding: 10px;
+    background: lightblue;
+    border: 1px solid blue;
+    display: grid;
+}
+
+.gridHead {
+    background: #495674;
+    border: 1px dashed black;
+    padding: 4px;
+    margin: 4px;
+    height: 50px;
+    color: white;
+}
+
+.gridContent {
+    background: purple;
+    border: 1px dot black;
+    padding: 4px;
+    margin: 4px;
+    color: white;
+}
+
+.order {
+    background: darkblue;
+    border: 1px solid lightblue;
+    padding: 4px;
+    margin: 4px;
+    color: white;
+}

@@ -23,6 +23,7 @@ const ReducerState = {
     orders:    [],
     stations:  [],
     mode:      'calendar',
+    schedule:  {},
     beginDate: null, // for fetch
     date:      moment(),
     startDate: moment()
