@@ -14,7 +14,7 @@ import {
     setDashboardMode,
 } from 'core/dashboard/duck';
 
-import { Layout } from 'commons';
+import { Layout, Spinner } from 'commons';
 import { ArrowsWeekPicker, ArrowsDatePicker, Dashboard } from 'components';
 
 // own
@@ -27,6 +27,7 @@ const mapStateToProps = state => ({
     date:      state.dashboard.date,
     startDate: state.dashboard.startDate,
     endDate:   state.dashboard.endDate,
+    spinner:   state.ui.get('dashboardFetching'),
 });
 
 const mapDispatchToProps = {
@@ -85,10 +86,15 @@ class DashboardPage extends Component {
         this.props.setDashboardDate(date);
     }
 
-    _prevDay = () =>
+    _prevDay() {
         this.props.setDashboardDate(this.props.date.subtract(1, 'day'));
+        this.setState({});
+    }
 
-    _nextDay = () => this.props.setDashboardDate(this.props.date.add(1, 'day'));
+    _nextDay() {
+        this.props.setDashboardDate(this.props.date.add(1, 'day'));
+        this.setState({});
+    }
 
     _onWeekChange(date) {
         this.props.setDashboardWeekDates({
@@ -115,15 +121,15 @@ class DashboardPage extends Component {
             startDate: this.props.startDate.add(1, 'weeks'),
             endDate:   this.props.endDate.add(1, 'weeks'),
         });
+        this.setState({});
     }
 
     _setDashboardMode = mode => this.props.setDashboardMode(mode);
 
     render() {
-        const { startDate, endDate, date, mode } = this.props;
-        console.log('→ PROPS mode', mode);
+        const { startDate, endDate, date, mode, spinner } = this.props;
 
-        return (
+        return !spinner ? (
             <Layout
                 paper={ false }
                 title={ <FormattedMessage id='dashboard-page.title' /> }
@@ -132,7 +138,6 @@ class DashboardPage extends Component {
                 }
             >
                 <section className={ Styles.dashboardPage }>
-                    { console.log('→ DASH PAGE startDate', startDate) }
                     <Tabs
                         // type='card'
                         tabBarExtraContent={
@@ -162,20 +167,20 @@ class DashboardPage extends Component {
                                 <FormattedMessage id='dashboard-page.calendar' />
                             }
                             key='calendar'
-                        >
-                            <Dashboard />
-                        </TabPane>
+                        />
                         <TabPane
                             tab={
                                 <FormattedMessage id='dashboard-page.stations_load' />
                             }
                             key='stations'
                         >
-                            stations
+                            <Dashboard />
                         </TabPane>
                     </Tabs>
                 </section>
             </Layout>
+        ) : (
+            <Spinner spin={ spinner } />
         );
     }
 }

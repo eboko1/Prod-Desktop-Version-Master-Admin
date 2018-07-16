@@ -41,17 +41,17 @@ class ArrowsWeekPicker extends Component {
                     onClick={ () => prevWeek() }
                 />
                 <WeekPicker
-                    // defaultValue={ moment() }
+                    allowClear={ false }
                     value={ startDate }
                     onChange={ value => onWeekChange(value) }
                     placeholder='Select Week'
                     // format={ date => this.formatDate(date) }
                 />
-                { /* <div className={ Styles.weekDays }>
+                <div className={ Styles.weekDays }>
                     ({ `${startDate.format('MM-DD')} ~ ${endDate.format(
                         'MM-DD',
                     )}` })
-                </div> */ }
+                </div>
                 <Icon
                     type='right'
                     className={ Styles.icon }

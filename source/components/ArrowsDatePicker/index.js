@@ -68,7 +68,7 @@ class ArrowsDatePicker extends Component {
                     onClick={ () => prevDay() }
                 />
                 <DatePicker
-                    // defaultValue={ moment() }
+                    allowClear={ false }
                     className={ Styles.datePicker }
                     value={ date }
                     // onChange={ ({ target: { value } }) => onDayChange(value) }
