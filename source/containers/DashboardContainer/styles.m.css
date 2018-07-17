@@ -13,8 +13,8 @@
     display: grid;
     /* grid-column-start: auto;
     grid-row-start: auto; */
-    grid-template-rows: repeat(12, 60px);
-    /* grid-template-rows: repeat(12, 30px); */
+    /* grid-template-rows: repeat(12, 60px); */
+    grid-template-rows: repeat(22, 30px);
 }
 
 .gridHead {
