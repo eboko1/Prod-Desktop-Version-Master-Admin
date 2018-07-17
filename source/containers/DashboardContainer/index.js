@@ -9,6 +9,7 @@ import { Catcher } from 'commons';
 
 // own
 import Styles from './styles.m.css';
+import './s.css';
 
 export default class DashboardContainer extends Component {
     render() {
@@ -29,28 +30,124 @@ export default class DashboardContainer extends Component {
         return (
             <Catcher>
                 <div className={ Styles.grid }>
+                    { /* <div></div> */ }
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>time</div>
-                        <div className={ Styles.gridContent }>
-                            { time.map(time => <div key={ v4() }>{ time }</div>) }
-                        </div>
+
+                        { time.map(time => (
+                            <React.Fragment key={ time }>
+                                <div className={ Styles.gridTimeCell }>
+                                    { time }
+                                </div>
+                                <div className={ Styles.gridEmptyCell } />
+                                { /* <div className={ Styles.gridTimeEmptyCell } />
+                                <div className={ Styles.gridTimeEmptyCell } /> */ }
+                            </React.Fragment>
+                        )) }
+                        { /* { time.map(time => (
+                            <div className={ Styles.gridContent } key={ time }>
+                                <div className={ Styles.gridTimeCell }>
+                                    { time }
+                                </div>
+                                <div className={ Styles.gridEmptyCell } />
+
+                            </div>
+                        )) } */ }
                     </div>
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>1</div>
-                        <div className={ Styles.gridContent }>
-                            <div className={ Styles.order }>order 123</div>
-                            <div className={ Styles.order }>order 999</div>
+
+                        <div className='order' style={ { gridRow: 'span 3' } }>
+                            order 322
                         </div>
+                        { /* <div className='order'>order 322</div> */ }
+                        { /* <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } /> */ }
+                        { /*  need remove one for each rowspan  (rs 3 = -2)*/ }
+                        { /* <div className={ Styles.gridEmptyCell } /> */ }
+                        { /* <div className={ Styles.gridEmptyCell } /> */ }
+
+                        <div className='order'>order 228</div>
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        { /* </div> */ }
                     </div>
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>2</div>
-                        <div className={ Styles.gridContent } />
+                        { time.map(() => (
+                            <div key={ v4() } className={ Styles.gridContent }>
+                                <div className={ Styles.gridEmptyCell } />
+                                <div className={ Styles.gridEmptyCell } />
+                            </div>
+                        )) }
                     </div>
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>3</div>
+                        { /* <div className={ Styles.gridContent }> */ }
                         <div className={ Styles.gridContent }>
-                            <div className={ Styles.order }>order 123</div>
+                            <div className='order1'>order 11111</div>
+                            <div className='order2'>order 22222</div>
+                            { /* <div className='order1'>order 123</div> */ }
                         </div>
+                        <div className={ Styles.gridContent }>
+                            <div className='order1'>order 11111</div>
+                            <div className={ Styles.gridEmptyCell } />
+                        </div>
+                        <div className={ Styles.gridContent }>
+                            <div className={ Styles.gridEmptyCell } />
+                            <div className={ Styles.gridEmptyCell } />
+                        </div>
+                        <div className={ Styles.gridContent }>
+                            <div className='order3'>order 33333</div>
+                            { /* <div className={ Styles.gridEmptyCell } /> */ }
+                        </div>
+                        <div className={ Styles.gridContent }>
+                            <div className={ Styles.gridEmptyCell } />
+                            <div className={ Styles.gridEmptyCell } />
+                        </div>
+                        <div className={ Styles.gridContent }>
+                            <div className={ Styles.gridEmptyCell } />
+                            <div className={ Styles.gridEmptyCell } />
+                        </div>
+                        <div className={ Styles.gridContent }>
+                            <div className='order4'>order 44444</div>
+                            <div className={ Styles.gridEmptyCell } />
+                        </div>
+                        <div className={ Styles.gridContent }>
+                            <div className={ Styles.gridEmptyCell } />
+                            <div className={ Styles.gridEmptyCell } />
+                        </div>
+                        <div className={ Styles.gridContent }>
+                            <div className={ Styles.gridEmptyCell } />
+                            <div className={ Styles.gridEmptyCell } />
+                        </div>
+                        <div className={ Styles.gridContent }>
+                            <div className={ Styles.gridEmptyCell } />
+                            <div className={ Styles.gridEmptyCell } />
+                        </div>
+                        <div className={ Styles.gridContent }>
+                            <div className={ Styles.gridEmptyCell } />
+                            <div className={ Styles.gridEmptyCell } />
+                        </div>
+                        { /* </div> */ }
                     </div>
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>4</div>
@@ -63,15 +160,33 @@ export default class DashboardContainer extends Component {
                     </div>
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>5</div>
-                        <div className={ Styles.gridContent } />
+                        { time.map(() => (
+                            <div key={ v4() } className={ Styles.gridContent }>
+                                <div className={ Styles.gridEmptyCell } />
+                                <div className={ Styles.gridEmptyCell } />
+                            </div>
+                        )) }
                     </div>
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>6</div>
-                        <div className={ Styles.gridContent } />
+                        { time.map(() => (
+                            <div key={ v4() } className={ Styles.gridEmptyCell } />
+                        )) }
+                        { /* { time.map(() => (
+                            <div key={ v4() } className={ Styles.gridContent }>
+                                <div className={ Styles.gridEmptyCell } />
+                                <div className={ Styles.gridEmptyCell } />
+                            </div>
+                        )) } */ }
                     </div>
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>7</div>
-                        <div className={ Styles.gridContent } />
+                        { time.map(() => (
+                            <div key={ v4() } className={ Styles.gridContent }>
+                                <div className={ Styles.gridEmptyCell } />
+                                <div className={ Styles.gridEmptyCell } />
+                            </div>
+                        )) }
                     </div>
                 </div>
             </Catcher>
