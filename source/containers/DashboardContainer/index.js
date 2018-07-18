@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
+import styled from 'styled-components';
 import moment from 'moment';
 import { v4 } from 'uuid';
+import {
+    Title,
+    Wrapper,
+    Input,
+    DashboardColumn,
+    DashboardHead,
+    DashboardEmptyCell,
+} from './styled';
 
 // proj
 
@@ -11,9 +20,24 @@ import { Catcher } from 'commons';
 import Styles from './styles.m.css';
 import './s.css';
 
+// const Title = styled.h1`
+//     font-size: 1.5em;
+//     text-align: center;
+//     color: palevioletred;
+// `;
+//
+// const Wrapper = styled.section`
+//     padding: 1em;
+//     background: papayawhip;
+// `;
+
+const mockDash = [{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }];
+
 export default class DashboardContainer extends Component {
     render() {
         const { schedule } = this.props;
+
+        console.log('→ mockDash', mockDash);
 
         // const formatTime = time =>
         //     time < 10 ? `${time.toStirng()}:00` : `0${time.toString()}:00`;
@@ -27,32 +51,35 @@ export default class DashboardContainer extends Component {
             time => time >= 10 ? `${time}:00` : `0${time}:00`,
         );
 
+        const genDashboard = (genScheduler, mockDash) => {
+            console.log('→ genScheduler', genScheduler.length);
+            const rows = genScheduler.length * 2;
+            const columns = Math.max(...mockDash.map(order => order.y));
+            const dashboard = {
+                rows,
+                columns,
+            };
+
+            return dashboard;
+        };
+
         return (
             <Catcher>
+                { /* <Wrapper mockDash={ mockDash }>
+                    <Title>Styled Dash!</Title>
+                    <Input { ...this.props } />
+                </Wrapper> */ }
                 <div className={ Styles.grid }>
-                    { /* <div></div> */ }
                     <div className={ Styles.gridColumn }>
-                        <div className={ Styles.gridHead }>time</div>
-
+                        <DashboardHead>time</DashboardHead>
                         { time.map(time => (
                             <React.Fragment key={ time }>
                                 <div className={ Styles.gridTimeCell }>
                                     { time }
                                 </div>
                                 <div className={ Styles.gridEmptyCell } />
-                                { /* <div className={ Styles.gridTimeEmptyCell } />
-                                <div className={ Styles.gridTimeEmptyCell } /> */ }
                             </React.Fragment>
                         )) }
-                        { /* { time.map(time => (
-                            <div className={ Styles.gridContent } key={ time }>
-                                <div className={ Styles.gridTimeCell }>
-                                    { time }
-                                </div>
-                                <div className={ Styles.gridEmptyCell } />
-
-                            </div>
-                        )) } */ }
                     </div>
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>1</div>
@@ -137,15 +164,80 @@ export default class DashboardContainer extends Component {
                             </div>
                         )) } */ }
                     </div>
-                    <div className={ Styles.gridColumn } />
+                    <DashboardColumn
+                        dashboard={ genDashboard(genScheduler, mockDash) }
+                    >
+                        <DashboardHead
+                            dashboard={ genDashboard(genScheduler, mockDash) }
+                        >
+                            styled
+                        </DashboardHead>
+                        { /* { magic.map(fsdfsdf)} */ }
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                        <DashboardEmptyCell />
+                    </DashboardColumn>
                     <div className={ Styles.gridColumn }>
-                        <div className={ Styles.gridHead }>4</div>
-                        <div className={ Styles.gridContent }>
-                            <div className={ Styles.order }>order 123</div>
-                            <div className={ Styles.order }>order 53</div>
-                            <div className={ Styles.order }>order 777</div>
-                            <div className={ Styles.order }>order 43252456</div>
+                        <div
+                            className={ Styles.gridHead }
+                            // style={ { gridRow: 'span 2' } }
+                        >
+                            pure
                         </div>
+                        <div className='order10'>order 11111</div>
+                        { /* <div className='order1'>order 11111</div> */ }
+                        <div className='order20'>order 22222</div>
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className='order4'>order 11111</div>
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        <div className={ Styles.gridEmptyCell } />
+                        { /* <div className={ Styles.gridEmptyCell } /> */ }
+                        { /* <div className={ Styles.gridEmptyCell } /> */ }
+                        { /* <div className={ Styles.gridEmptyCell } /> */ }
+
+                        { /* { time.map(() => (
+                            <div key={ v4() } className={ Styles.gridContent }>
+                                <div className={ Styles.gridEmptyCell } />
+                                <div className={ Styles.gridEmptyCell } />
+                            </div>
+                        )) } */ }
                     </div>
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>5</div>
@@ -156,6 +248,7 @@ export default class DashboardContainer extends Component {
                             </div>
                         )) }
                     </div>
+                    { /* <DashboardColumn /> */ }
                     <div className={ Styles.gridColumn }>
                         <div className={ Styles.gridHead }>6</div>
                         { time.map(() => (

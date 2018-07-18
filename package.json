@@ -55,6 +55,7 @@
         "redux-thunk": "~2.2.0",
         "reselect": "^3.0.1",
         "reset-css": "~3.0.0",
+        "styled-components": "^3.3.3",
         "uuid": "^3.2.1",
         "warning": "^4.0.1",
         "yup": "^0.25.1"
