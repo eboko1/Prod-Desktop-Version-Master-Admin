@@ -3,12 +3,12 @@ import styled from 'styled-components';
 import moment from 'moment';
 import { v4 } from 'uuid';
 import {
-    Title,
-    Wrapper,
-    Input,
     DashboardColumn,
     DashboardHead,
     DashboardEmptyCell,
+    DashboardAddOrderColumn,
+    DashboardAddOrderCell,
+    DashboardAddOrderLink,
 } from './styled';
 
 // proj
@@ -34,41 +34,90 @@ import './s.css';
 const mockDash = [{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }];
 
 export default class DashboardContainer extends Component {
+    state = {};
+
+    static getDerivedStateFromProps(props, state) {
+        console.log('→ getDerivedStateFromProps');
+
+        const time = Array(props.schedule.endHour)
+            .fill(0)
+            .map((_, index) => index + 1)
+            .slice(props.schedule.beginHour - 1)
+            .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
+
+        const rows = time.length * 2;
+        const columns = Math.max(...mockDash.map(order => order.y)) + 1;
+        const grid = Number(rows);
+        const dashboard = {
+            rows,
+            columns,
+            grid,
+        };
+
+        return { time, dashboard };
+    }
+    // componentDidMount() {}
+
+    // genDashGridCol = () =>
+
+    // genScheduler = () =>
+    //     Array(this.props.schedule.endHour)
+    //         .fill(0)
+    //         .map((e, i) => i + 1)
+    //         .slice(this.props.schedule.beginHour - 1);
+    //
+    // time = () => {
+    //     const time = this.genScheduler.map(
+    //         time => time >= 10 ? `${time}:00` : `0${time}:00`,
+    //     );
+    //     this.setState({ time });
+    // };
+
+    // genDashboard = (genScheduler, mockDash) => {
+    //     const rows = genScheduler.length * 2;
+    //     const columns = Math.max(...mockDash.map(order => order.y));
+    //     const dashboard = {
+    //         rows,
+    //         columns,
+    //     };
+    //
+    //     this.setState({ dashboard });
+    // };
+
     render() {
         const { schedule } = this.props;
+        const { dashboard, time } = this.state;
 
-        console.log('→ mockDash', mockDash);
+        // console.log('→ mockDash', mockDash);
+        // console.log('→ time', time);
 
         // const formatTime = time =>
         //     time < 10 ? `${time.toStirng()}:00` : `0${time.toString()}:00`;
 
-        const genScheduler = Array(schedule.endHour)
-            .fill(0)
-            .map((e, i) => i + 1)
-            .slice(schedule.beginHour - 1);
+        // const genScheduler = Array(schedule.endHour)
+        //     .fill(0)
+        //     .map((e, i) => i + 1)
+        //     .slice(schedule.beginHour - 1);
+        //
+        // const time = genScheduler.map(
+        //     time => time >= 10 ? `${time}:00` : `0${time}:00`,
+        // );
+        //
+        // const genDashboard = (genScheduler, mockDash) => {
+        //     const rows = genScheduler.length * 2;
+        //     const columns = Math.max(...mockDash.map(order => order.y));
+        //     const dashboard = {
+        //         rows,
+        //         columns,
+        //     };
+        //
+        //     return dashboard;
+        // };
 
-        const time = genScheduler.map(
-            time => time >= 10 ? `${time}:00` : `0${time}:00`,
-        );
-
-        const genDashboard = (genScheduler, mockDash) => {
-            console.log('→ genScheduler', genScheduler.length);
-            const rows = genScheduler.length * 2;
-            const columns = Math.max(...mockDash.map(order => order.y));
-            const dashboard = {
-                rows,
-                columns,
-            };
-
-            return dashboard;
-        };
+        // const genDashboardCells = () => {};
 
         return (
             <Catcher>
-                { /* <Wrapper mockDash={ mockDash }>
-                    <Title>Styled Dash!</Title>
-                    <Input { ...this.props } />
-                </Wrapper> */ }
                 <div className={ Styles.grid }>
                     <div className={ Styles.gridColumn }>
                         <DashboardHead>time</DashboardHead>
@@ -164,15 +213,30 @@ export default class DashboardContainer extends Component {
                             </div>
                         )) } */ }
                     </div>
-                    <DashboardColumn
-                        dashboard={ genDashboard(genScheduler, mockDash) }
-                    >
-                        <DashboardHead
-                            dashboard={ genDashboard(genScheduler, mockDash) }
-                        >
+                    <DashboardColumn dashboard={ dashboard }>
+                        <DashboardHead dashboard={ dashboard }>
                             styled
                         </DashboardHead>
-                        { /* { magic.map(fsdfsdf)} */ }
+
+                        { /* <DashboardAddOrderColumn dashboard={ dashboard }>
+                            { Array(dashboard.rows)
+                                .fill(0)
+                                .map(() => <DashboardAddOrderCell />) }
+                        </DashboardAddOrderColumn> */ }
+                        { Array(dashboard.grid)
+                            .fill(0)
+                            .map(() => (
+                                <React.Fragment key={ v4() }>
+                                    <DashboardEmptyCell dashboard={ dashboard } />
+                                    <DashboardAddOrderCell>
+                                        <DashboardAddOrderLink>
+                                            Add Order
+                                        </DashboardAddOrderLink>
+                                    </DashboardAddOrderCell>
+                                </React.Fragment>
+                            )) }
+
+                        { /* <DashboardEmptyCell />
                         <DashboardEmptyCell />
                         <DashboardEmptyCell />
                         <DashboardEmptyCell />
@@ -193,8 +257,7 @@ export default class DashboardContainer extends Component {
                         <DashboardEmptyCell />
                         <DashboardEmptyCell />
                         <DashboardEmptyCell />
-                        <DashboardEmptyCell />
-                        <DashboardEmptyCell />
+                        <DashboardEmptyCell /> */ }
                     </DashboardColumn>
                     <div className={ Styles.gridColumn }>
                         <div

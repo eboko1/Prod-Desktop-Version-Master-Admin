@@ -15,7 +15,12 @@ import {
 } from 'core/dashboard/duck';
 
 import { Layout, Spinner } from 'commons';
-import { ArrowsWeekPicker, ArrowsDatePicker, Dashboard } from 'components';
+import {
+    ArrowsWeekPicker,
+    ArrowsDatePicker,
+    // Dashboard,
+    Board,
+} from 'components';
 import { DashboardContainer } from 'containers';
 
 // own
@@ -179,7 +184,8 @@ class DashboardPage extends Component {
                             }
                             key='stations'
                         >
-                            <Dashboard />
+                            { /* <Dashboard /> */ }
+                            <Board />
                         </TabPane>
                     </Tabs>
                 </section>

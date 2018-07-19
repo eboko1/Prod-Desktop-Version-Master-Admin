@@ -11,6 +11,7 @@ import ChangeStatusDropdown from './ChangeStatusDropdown';
 import ArrowsWeekPicker from './ArrowsWeekPicker';
 import ArrowsDatePicker from './ArrowsDatePicker';
 import Dashboard from './Dashboard';
+import Board from './Board';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 
 export {
@@ -29,4 +30,5 @@ export {
     ArrowsDatePicker,
     ChangeStatusDropdown,
     Dashboard,
+    Board,
 };
