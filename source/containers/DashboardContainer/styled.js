@@ -15,17 +15,17 @@ export const DashboardColumn = styled.div`
     display: grid;
     /* here we use the dynamically computed props */
     grid-template-rows: ${props => `repeat(${props.dashboard.rows}, 1fr)`};
-    grid-template-columns: ${props =>
-        `repeat(${props.dashboard.columns - 1}, 1fr) 10%`};
+    grid-template-columns: ${props => `repeat(${props.column}, 1fr) 10%`};
 `;
 
-export const DashboardHead = styled.div.attrs({
-    // we can define static props
-    // type: 'password',
-
-    // or we can define dynamic ones
-    gridcolumn: props => props.dashboard ? props.dashboard.columns : 1,
-})`
+// export const DashboardHead = styled.div.attrs({
+//     // we can define static props
+//     // type: 'password',
+//
+//     // or we can define dynamic ones
+//     gridcolumn: props => props.dashboard ? props.dashboard.columns : 1,
+// })`
+export const DashboardHead = styled.div`
     background-color: #1eaafc;
     background-image: linear-gradient(160deg, #6c52d9 0%, #9b8ae6 127%);
     border: 1px dashed black;
@@ -34,7 +34,7 @@ export const DashboardHead = styled.div.attrs({
     height: ${ROW_HEIGHT}px;
     color: white;
     text-align: center;
-    grid-column: ${props => `span ${props.gridcolumn}`};
+    grid-column: ${props => `span ${props.column + 1}`};
 `;
 
 export const DashboardEmptyCell = styled.div`
@@ -47,7 +47,7 @@ export const DashboardEmptyCell = styled.div`
         #1eaafc 85%,
         #3edfd7 100%
     );
-    grid-column: ${props => `span ${props.dashboard.columns - 1}`};
+    grid-column: ${props => `span ${props.column}`};
 `;
 
 export const DashboardAddOrderCell = styled.div`
