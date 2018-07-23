@@ -2,65 +2,70 @@
 import React, { Component } from 'react';
 import { v4 } from 'uuid';
 import _ from 'lodash';
-import styled from 'styled-components';
 
 // proj
 import { Catcher } from 'commons';
 
 // own
-// import DashboardEmptyCell from './DashboardEmptyCell';
+import DashboardEmptyCell from './DashboardEmptyCell';
 // import DashboardOrder from './DashboardOrder';
 import {
     DashboardAddOrderCell,
     DashboardAddOrderLink,
 } from './DashboardAddOrderLink';
-import { ROW_HEIGHT } from './dashboardConfig';
-
 import { DashboardGrid, DashboardColumn, DashboardHead } from './styled.js';
-
-const mockDash = [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []];
-
-// Replace with DashboardEmptyCell Component
-const DashboardEmptyCell = styled.div`
-    height: ${ROW_HEIGHT}px;
-    border-bottom: 1px dashed red;
-    background-color: #1eaafc;
-    background-image: linear-gradient(
-        130deg,
-        #6c52d9 0%,
-        #1eaafc 85%,
-        #3edfd7 100%
-    );
-    grid-column: ${props => `span ${props.column}`};
-`;
 
 export default class DashboardContainer extends Component {
     state = {};
 
     static defaultProps = {
-        orders: [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []],
+        /* eslint-disable */
+        orders: [
+            [
+                { x: 0, y: 0, columns: 1, rows: 5, id: 123 },
+                { x: 1, y: 1, columns: 1, rows: 3, id: 456 },
+                { x: 2, y: 2, columns: 1, rows: 4, id: 789 },
+                { x: 4, y: 1, columns: 1, rows: 2, id: 999 },
+                { x: 6, y: 0, columns: 1, rows: 2, id: 888 },
+                { x: 6, y: 1, columns: 1, rows: 2, id: 777 },
+                { x: 6, y: 2, columns: 1, rows: 2, id: 666 },
+                { x: 6, y: 3, columns: 1, rows: 2, id: 555 },
+            ],
+            [
+                { x: 1, y: 0, columns: 1, rows: 2, id: 444 },
+                { x: 1, y: 1, columns: 1, rows: 3, id: 333 },
+                { x: 2, y: 2, columns: 1, rows: 4, id: 222 },
+                { x: 4, y: 1, columns: 1, rows: 2, id: 111 },
+                { x: 7, y: 0, columns: 1, rows: 1, id: 1010 },
+                { x: 6, y: 1, columns: 1, rows: 2, id: 1212 },
+            ],
+            [],
+            [{ x: 2, y: 0, columns: 1, rows: 8, id: 322 }],
+            [
+                { x: 3, y: 0, columns: 1, rows: 3, id: 228 },
+                { x: 5, y: 0, columns: 1, rows: 4, id: 9000 },
+            ],
+            [],
+            [],
+        ],
+        /* eslint-enable */
     };
 
     static getDerivedStateFromProps(props) {
-        // console.log('→ getDerivedStateFromProps');
+        const { schedule, orders } = props;
 
-        const time = Array(props.schedule.endHour)
+        const time = Array(schedule.endHour)
             .fill(0)
             .map((_, index) => index + 1)
-            .slice(props.schedule.beginHour - 1)
+            .slice(schedule.beginHour - 1)
             .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
 
         const rows = time.length * 2;
-        const columns = mockDash
+        const columns = orders
             .map(col => col.map(item => item.y))
             .map(num => Math.max(_.isFinite(...num)) + 1);
         // const columns = Math.max(...mockDash.map(order => order.y)) + 1;
-        const grid = Number(rows);
-        const dashboard = {
-            rows,
-            columns,
-            grid,
-        };
+        const dashboard = { rows, columns };
 
         return { time, dashboard };
     }
@@ -87,7 +92,7 @@ export default class DashboardContainer extends Component {
     // }
 
     render() {
-        // const { schedule } = this.props;
+        const { orders } = this.props;
         const { dashboard, time } = this.state;
 
         return (
@@ -102,7 +107,7 @@ export default class DashboardContainer extends Component {
                             </React.Fragment>
                         )) }
                     </DashboardColumn>
-                    { mockDash.map((column, index) => {
+                    { orders.map((column, index) => {
                         return (
                             <DashboardColumn
                                 dashboard={ dashboard }
@@ -116,7 +121,7 @@ export default class DashboardContainer extends Component {
                                     Column { index + 1 }
                                 </DashboardHead>
                                 { /* <DashboardOrder /> */ }
-                                { Array(dashboard.grid)
+                                { Array(dashboard.rows)
                                     .fill(0)
                                     .map(() => (
                                         <React.Fragment key={ v4() }>
@@ -143,3 +148,5 @@ export default class DashboardContainer extends Component {
 
 // const mockDash = [{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }];
 // import './s.css';
+
+// const mockDash = [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []];
