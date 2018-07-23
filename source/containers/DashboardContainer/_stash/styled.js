@@ -40,18 +40,18 @@ export const DashboardHead = styled.div`
     grid-column: ${props => `span ${props.column + 1}`};
 `;
 
-export const DashboardEmptyCell = styled.div`
-    height: ${ROW_HEIGHT}px;
-    border-bottom: 1px dashed red;
-    background-color: #1eaafc;
-    background-image: linear-gradient(
-        130deg,
-        #6c52d9 0%,
-        #1eaafc 85%,
-        #3edfd7 100%
-    );
-    grid-column: ${props => `span ${props.column}`};
-`;
+// export const DashboardEmptyCell = styled.div`
+//     height: ${ROW_HEIGHT}px;
+//     border-bottom: 1px dashed red;
+//     background-color: #1eaafc;
+//     background-image: linear-gradient(
+//         130deg,
+//         #6c52d9 0%,
+//         #1eaafc 85%,
+//         #3edfd7 100%
+//     );
+//     grid-column: ${props => `span ${props.column}`};
+// `;
 
 export const DashboardAddOrderCell = styled.div`
     background-color: tomato;

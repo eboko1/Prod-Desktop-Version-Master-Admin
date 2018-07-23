@@ -1,34 +1,60 @@
+// vendor
 import React, { Component } from 'react';
 import { v4 } from 'uuid';
 import _ from 'lodash';
+import styled from 'styled-components';
 
 // proj
 import { Catcher } from 'commons';
 
 // own
-import DragItem from './DragItem';
+// import DashboardEmptyCell from './DashboardEmptyCell';
+import DashboardOrder from './DashboardOrder';
 import {
-    DashboardColumn,
-    DashboardHead,
-    DashboardEmptyCell,
-    // DashboardAddOrderColumn,
     DashboardAddOrderCell,
     DashboardAddOrderLink,
-} from './styled';
+} from './DashboardAddOrderLink';
+
+import { ROW_HEIGHT } from './dashboardConfig';
 import Styles from './styles.m.css';
-import './s.css';
 
 const mockDash = [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []];
-// const mockDash = [{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }];
+
+const DashboardColumn = styled.div`
+    padding: 10px;
+    background: lightblue;
+    border: 1px solid blue;
+    display: grid;
+    grid-template-rows: ${props => `repeat(${props.dashboard.rows}, 1fr)`};
+    grid-template-columns: ${props => `repeat(${props.column}, 1fr) 10%`};
+`;
+
+const DashboardHead = styled.div`
+    background-color: #1eaafc;
+    background-image: linear-gradient(160deg, #6c52d9 0%, #9b8ae6 127%);
+    border: 1px dashed black;
+    height: ${ROW_HEIGHT}px;
+    color: white;
+    text-align: center;
+    grid-column: ${props => `span ${props.column + 1}`};
+`;
+
+// Replace with DashboardEmptyCell Component
+const DashboardEmptyCell = styled.div`
+    height: ${ROW_HEIGHT}px;
+    border-bottom: 1px dashed red;
+    background-color: #1eaafc;
+    background-image: linear-gradient(
+        130deg,
+        #6c52d9 0%,
+        #1eaafc 85%,
+        #3edfd7 100%
+    );
+    grid-column: ${props => `span ${props.column}`};
+`;
 
 export default class DashboardContainer extends Component {
     state = {};
-    // constructor(props) {
-    //     super(props);
-    //     this.state = {
-    //         orders: [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []],
-    //     };
-    // }
 
     static defaultProps = {
         orders: [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []],
@@ -80,15 +106,14 @@ export default class DashboardContainer extends Component {
     // }
 
     render() {
-        const { schedule } = this.props;
+        // const { schedule } = this.props;
         const { dashboard, time } = this.state;
-        // console.log('→ dashboard', dashboard);
 
         return (
             <Catcher>
                 <div className={ Styles.grid }>
                     <div className={ Styles.gridColumn }>
-                        <DashboardHead>time</DashboardHead>
+                        <DashboardHead>Time</DashboardHead>
                         { time.map(time => (
                             <React.Fragment key={ time }>
                                 <div className={ Styles.gridTimeCell }>
@@ -109,15 +134,14 @@ export default class DashboardContainer extends Component {
                                     dashboard={ dashboard }
                                     column={ dashboard.columns[ index ] }
                                 >
-                                    styled 2
+                                    Column { index + 1 }
                                 </DashboardHead>
-                                {/* <DragItem /> */}
+                                <DashboardOrder />
                                 { Array(dashboard.grid)
                                     .fill(0)
                                     .map(() => (
                                         <React.Fragment key={ v4() }>
                                             <DashboardEmptyCell
-                                                // dashboard={ dashboard }
                                                 column={
                                                     dashboard.columns[ index ]
                                                 }
@@ -137,3 +161,6 @@ export default class DashboardContainer extends Component {
         );
     }
 }
+
+// const mockDash = [{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }];
+// import './s.css';

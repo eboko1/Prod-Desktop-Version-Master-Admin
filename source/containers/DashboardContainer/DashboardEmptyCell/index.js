@@ -1,13 +1,15 @@
+//vendor
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
+import styled from 'styled-components';
 
-import { canMoveOrder, moveOrder } from '../Game';
-import { DragItemsTypes } from '../dashboardConfig';
+// import { canMoveOrder, moveOrder } from '../Game';
+import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
 
 const dragTarget = {
     canDrop(props) {
-        return canMoveOrder(props.x, props.y);
+        // return canMoveOrder(props.x, props.y);
     },
 
     drop(props, monitor) {
@@ -27,7 +29,7 @@ function collect(connect, monitor) {
     };
 }
 
-export const DashboardEmptyCell = styled.div`
+export const DashboardCell = styled.div`
     height: ${ROW_HEIGHT}px;
     border-bottom: 1px dashed red;
     background-color: #1eaafc;
@@ -40,8 +42,8 @@ export const DashboardEmptyCell = styled.div`
     grid-column: ${props => `span ${props.column}`};
 `;
 
-@DropTarget(DragItemsTypes.ORDER, dragTarget, collect)
-export default class DashboardCell extends Component {
+@DropTarget(DragItemTypes.ORDER, dragTarget, collect)
+export default class DashboardEmptyCell extends Component {
     static propTypes = {
         x:                 PropTypes.number,
         y:                 PropTypes.number,
