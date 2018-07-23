@@ -8,12 +8,13 @@ import { Catcher } from 'commons';
 
 // own
 import DashboardEmptyCell from './DashboardEmptyCell';
-// import DashboardOrder from './DashboardOrder';
+import DashboardOrder from './DashboardOrder';
 import {
     DashboardAddOrderCell,
     DashboardAddOrderLink,
 } from './DashboardAddOrderLink';
 import { DashboardGrid, DashboardColumn, DashboardHead } from './styled.js';
+import { findOrder } from './dashboardConfig';
 
 export default class DashboardContainer extends Component {
     state = {};
@@ -70,27 +71,6 @@ export default class DashboardContainer extends Component {
         return { time, dashboard };
     }
 
-    // moveOrder(id, atIndex) {
-    //     const { order, index } = this.findOrder(id);
-    //     // this.setState(
-    //     //     update(this.state, {
-    //     //         orders: {
-    //     //             $splice: [[ index, 1 ], [ atIndex, 0, order ]],
-    //     //         },
-    //     //     }),
-    //     // );
-    // }
-    //
-    // findOrder(id) {
-    //     const { orders } = this.props;
-    //     const order = orders.filter(order => order.id === id)[ 0 ];
-    //
-    //     return {
-    //         order,
-    //         index: orders.indexOf(order),
-    //     };
-    // }
-
     render() {
         const { orders } = this.props;
         const { dashboard, time } = this.state;
@@ -120,12 +100,26 @@ export default class DashboardContainer extends Component {
                                 >
                                     Column { index + 1 }
                                 </DashboardHead>
-                                { /* <DashboardOrder /> */ }
+                                { column.map(order => (
+                                    // <DashboardEmptyCell
+                                    //     // orders={ orders }
+                                    //     key={ v4() }
+                                    // >
+                                    <DashboardOrder
+                                        key={ order.id }
+                                        id={ order.id }
+                                        order={ order }
+                                        findOrder={ findOrder }
+                                    />
+                                    // </DashboardEmptyCell>
+                                )) }
+
                                 { Array(dashboard.rows)
                                     .fill(0)
                                     .map(() => (
                                         <React.Fragment key={ v4() }>
                                             <DashboardEmptyCell
+                                                // orders={ orders }
                                                 column={
                                                     dashboard.columns[ index ]
                                                 }
@@ -145,6 +139,27 @@ export default class DashboardContainer extends Component {
         );
     }
 }
+
+// moveOrder(id, atIndex) {
+//     const { order, index } = this.findOrder(id);
+//     // this.setState(
+//     //     update(this.state, {
+//     //         orders: {
+//     //             $splice: [[ index, 1 ], [ atIndex, 0, order ]],
+//     //         },
+//     //     }),
+//     // );
+// }
+//
+// findOrder(id) {
+//     const { orders } = this.props;
+//     const order = orders.filter(order => order.id === id)[ 0 ];
+//
+//     return {
+//         order,
+//         index: orders.indexOf(order),
+//     };
+// }
 
 // const mockDash = [{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }];
 // import './s.css';

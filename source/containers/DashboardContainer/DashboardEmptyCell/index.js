@@ -8,28 +8,30 @@ import styled from 'styled-components';
 import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
 
 const dropTarget = {
-    canDrop(props) {
-        // return canMoveOrder(props.x, props.y);
-    },
+    // canDrop(props) {
+    //     // console.log('→ canDrop', props);
+    //     // return canMoveOrder(props.x, props.y);
+    // },
 
     drop(props, monitor) {
         // moveOrder(props.x, props.y);
         console.group('→ drop (dropTarget/DashboardCell)');
+        console.log('props: ', props);
         console.log('monitor: ', monitor);
-        console.log('event: ', 'props.event', monitor.getItem());
+        console.log('getItem: ', monitor.getItem());
         console.groupEnd();
+
+        return {};
     },
 };
 
-function collect(connect, monitor) {
-    return {
-        connectDropTarget: connect.dropTarget(),
-        isOver:            monitor.isOver(),
-        // canDrop:           monitor.canDrop(),
-    };
-}
+const collect = (connect, monitor) => ({
+    connectDropTarget: connect.dropTarget(),
+    // isOver:            monitor.isOver(),
+    // canDrop:           monitor.canDrop(),
+});
 
-@DropTarget(DragItemTypes.ORDER, dropTarget, collect)
+// @DropTarget(DragItemTypes.ORDER, dropTarget, collect)
 class DragTarget extends Component {
     static propTypes = {
         x:                 PropTypes.number,
@@ -65,12 +67,13 @@ class DragTarget extends Component {
             isOver,
             canDrop,
             children,
+            className,
         } = this.props;
 
         // const backgroundColor = 'palevioletred';
 
         return connectDropTarget(
-            <div className={ this.props.className }>
+            <div className={ className }>
                 { children }
                 { /* { isOver && !canDrop && this.renderOverlay('red') }
                 { !isOver && canDrop && this.renderOverlay('yellow') }

@@ -10,24 +10,34 @@ import { DragItemTypes } from '../dashboardConfig';
 
 const orderSource = {
     beginDrag(props) {
-        console.log('→ beginDrag');
+        // const { id, orders, findOrder } = props;
+        console.log('→ aa', props);
 
-        // return {
-        // id: props.id,
-        // originalIndex: props.findOrder(props.id).index,
-        // };
+        // console.log('→ beginDrag', {
+        //     id:            id,
+        //     originalIndex: findOrder(orders, id).index,
+        // });
         return {};
+        // return {
+        //     id:            id,
+        //     originalIndex: findOrder(orders, id).index,
+        // };
     },
 
-    endDrag(props, monitor) {
-        console.log('→ endDrag');
-        // const { id: droppedId, originalIndex } = monitor.getItem();
-        // const didDrop = monitor.didDrop();
-        //
-        // if (!didDrop) {
-        //     props.moveOrder(droppedId, originalIndex);
-        // }
-    },
+    // endDrag(props, monitor) {
+    //     console.log('→ endDrag');
+    //     const { id: droppedId, originalIndex } = monitor.getItem();
+    //     const didDrop = monitor.didDrop();
+    //
+    //     if (didDrop) {
+    //         console.log('→ did dropped', droppedId, originalIndex);
+    //     }
+    //
+    //     if (!didDrop) {
+    //         console.log('→ didn\'t dropped', droppedId, originalIndex);
+    //         // props.moveOrder(droppedId, originalIndex);
+    //     }
+    // },
 };
 
 const orderTarget = {
