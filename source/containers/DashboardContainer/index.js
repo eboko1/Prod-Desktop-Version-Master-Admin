@@ -9,35 +9,16 @@ import { Catcher } from 'commons';
 
 // own
 // import DashboardEmptyCell from './DashboardEmptyCell';
-import DashboardOrder from './DashboardOrder';
+// import DashboardOrder from './DashboardOrder';
 import {
     DashboardAddOrderCell,
     DashboardAddOrderLink,
 } from './DashboardAddOrderLink';
-
 import { ROW_HEIGHT } from './dashboardConfig';
-import Styles from './styles.m.css';
+
+import { DashboardGrid, DashboardColumn, DashboardHead } from './styled.js';
 
 const mockDash = [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []];
-
-const DashboardColumn = styled.div`
-    padding: 10px;
-    background: lightblue;
-    border: 1px solid blue;
-    display: grid;
-    grid-template-rows: ${props => `repeat(${props.dashboard.rows}, 1fr)`};
-    grid-template-columns: ${props => `repeat(${props.column}, 1fr) 10%`};
-`;
-
-const DashboardHead = styled.div`
-    background-color: #1eaafc;
-    background-image: linear-gradient(160deg, #6c52d9 0%, #9b8ae6 127%);
-    border: 1px dashed black;
-    height: ${ROW_HEIGHT}px;
-    color: white;
-    text-align: center;
-    grid-column: ${props => `span ${props.column + 1}`};
-`;
 
 // Replace with DashboardEmptyCell Component
 const DashboardEmptyCell = styled.div`
@@ -111,18 +92,16 @@ export default class DashboardContainer extends Component {
 
         return (
             <Catcher>
-                <div className={ Styles.grid }>
-                    <div className={ Styles.gridColumn }>
-                        <DashboardHead>Time</DashboardHead>
+                <DashboardGrid>
+                    <DashboardColumn dashboard={ dashboard } column={ 1 } time>
+                        <DashboardHead column={ 0 }>Time</DashboardHead>
                         { time.map(time => (
                             <React.Fragment key={ time }>
-                                <div className={ Styles.gridTimeCell }>
-                                    { time }
-                                </div>
-                                <div className={ Styles.gridEmptyCell } />
+                                <DashboardEmptyCell>{ time }</DashboardEmptyCell>
+                                <DashboardEmptyCell />
                             </React.Fragment>
                         )) }
-                    </div>
+                    </DashboardColumn>
                     { mockDash.map((column, index) => {
                         return (
                             <DashboardColumn
@@ -136,7 +115,7 @@ export default class DashboardContainer extends Component {
                                 >
                                     Column { index + 1 }
                                 </DashboardHead>
-                                <DashboardOrder />
+                                { /* <DashboardOrder /> */ }
                                 { Array(dashboard.grid)
                                     .fill(0)
                                     .map(() => (
@@ -156,7 +135,7 @@ export default class DashboardContainer extends Component {
                             </DashboardColumn>
                         );
                     }) }
-                </div>
+                </DashboardGrid>
             </Catcher>
         );
     }

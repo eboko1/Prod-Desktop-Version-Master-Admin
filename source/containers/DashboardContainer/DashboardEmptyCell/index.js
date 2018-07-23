@@ -7,14 +7,14 @@ import styled from 'styled-components';
 // import { canMoveOrder, moveOrder } from '../Game';
 import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
 
-const dragTarget = {
+const dropTarget = {
     canDrop(props) {
         // return canMoveOrder(props.x, props.y);
     },
 
     drop(props, monitor) {
         // moveOrder(props.x, props.y);
-        console.group('→ drop (dragTarget/DashboardCell)');
+        console.group('→ drop (dropTarget/DashboardCell)');
         console.log('monitor: ', monitor);
         console.log('event: ', 'props.event', monitor.getItem());
         console.groupEnd();
@@ -29,7 +29,58 @@ function collect(connect, monitor) {
     };
 }
 
-export const DashboardCell = styled.div`
+@DropTarget(DragItemTypes.ORDER, dropTarget, collect)
+class DragTarget extends Component {
+    static propTypes = {
+        x:                 PropTypes.number,
+        y:                 PropTypes.number,
+        isOver:            PropTypes.bool,
+        canDrop:           PropTypes.bool,
+        connectDropTarget: PropTypes.func,
+        children:          PropTypes.node,
+    };
+
+    // renderOverlay(color) {
+    //     return (
+    //         <div
+    //             style={ {
+    //                 position:        'absolute',
+    //                 top:             0,
+    //                 left:            0,
+    //                 height:          '100%',
+    //                 width:           '100%',
+    //                 zIndex:          1,
+    //                 opacity:         0.5,
+    //                 backgroundColor: color,
+    //             } }
+    //         />
+    //     );
+    // }
+
+    render() {
+        const {
+            x,
+            y,
+            connectDropTarget,
+            isOver,
+            canDrop,
+            children,
+        } = this.props;
+
+        // const backgroundColor = 'palevioletred';
+
+        return connectDropTarget(
+            <div className={ this.props.className }>
+                { children }
+                { /* { isOver && !canDrop && this.renderOverlay('red') }
+                { !isOver && canDrop && this.renderOverlay('yellow') }
+                { isOver && canDrop && this.renderOverlay('green') } */ }
+            </div>,
+        );
+    }
+}
+
+export const DashboardEmptyCell = styled(DragTarget)`
     height: ${ROW_HEIGHT}px;
     border-bottom: 1px dashed red;
     background-color: #1eaafc;
@@ -42,67 +93,6 @@ export const DashboardCell = styled.div`
     grid-column: ${props => `span ${props.column}`};
 `;
 
-@DropTarget(DragItemTypes.ORDER, dragTarget, collect)
-export default class DashboardEmptyCell extends Component {
-    static propTypes = {
-        x:                 PropTypes.number,
-        y:                 PropTypes.number,
-        isOver:            PropTypes.bool,
-        canDrop:           PropTypes.bool,
-        connectDropTarget: PropTypes.func,
-        children:          PropTypes.node,
-    };
-
-    renderOverlay(color) {
-        return (
-            <div
-                style={ {
-                    position:        'absolute',
-                    top:             0,
-                    left:            0,
-                    height:          '100%',
-                    width:           '100%',
-                    zIndex:          1,
-                    opacity:         0.5,
-                    backgroundColor: color,
-                } }
-            />
-        );
-    }
-
-    render() {
-        const {
-            x,
-            y,
-            connectDropTarget,
-            isOver,
-            canDrop,
-            children,
-        } = this.props;
-
-        const backgroundColor = 'palevioletred';
-
-        return connectDropTarget(
-            <div
-                style={ {
-                    position: 'relative',
-                    width:    '100%',
-                    height:   '100%',
-                } }
-            >
-                <div
-                    style={ {
-                        backgroundColor,
-                        width:  '100%',
-                        height: '100%',
-                    } }
-                >
-                    { children }
-                </div>
-                { isOver && !canDrop && this.renderOverlay('red') }
-                { !isOver && canDrop && this.renderOverlay('yellow') }
-                { isOver && canDrop && this.renderOverlay('green') }
-            </div>,
-        );
-    }
-}
+export default DropTarget(DragItemTypes.ORDER, dropTarget, collect)(
+    DashboardEmptyCell,
+);
