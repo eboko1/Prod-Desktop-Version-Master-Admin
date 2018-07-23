@@ -3,15 +3,19 @@ import PropTypes from 'prop-types';
 import { DropTarget } from 'react-dnd';
 
 import { canMoveOrder, moveOrder } from '../Game';
-import DragItemsTypes from '../DragItemsTypes';
+import { DragItemsTypes } from '../dashboardConfig';
 
 const dragTarget = {
     canDrop(props) {
         return canMoveOrder(props.x, props.y);
     },
 
-    drop(props) {
-        moveOrder(props.x, props.y);
+    drop(props, monitor) {
+        // moveOrder(props.x, props.y);
+        console.group('→ drop (dragTarget/DashboardCell)');
+        console.log('monitor: ', monitor);
+        console.log('event: ', 'props.event', monitor.getItem());
+        console.groupEnd();
     },
 };
 
@@ -19,9 +23,22 @@ function collect(connect, monitor) {
     return {
         connectDropTarget: connect.dropTarget(),
         isOver:            monitor.isOver(),
-        canDrop:           monitor.canDrop(),
+        // canDrop:           monitor.canDrop(),
     };
 }
+
+export const DashboardEmptyCell = styled.div`
+    height: ${ROW_HEIGHT}px;
+    border-bottom: 1px dashed red;
+    background-color: #1eaafc;
+    background-image: linear-gradient(
+        130deg,
+        #6c52d9 0%,
+        #1eaafc 85%,
+        #3edfd7 100%
+    );
+    grid-column: ${props => `span ${props.column}`};
+`;
 
 @DropTarget(DragItemsTypes.ORDER, dragTarget, collect)
 export default class DashboardCell extends Component {

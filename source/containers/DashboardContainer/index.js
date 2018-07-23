@@ -23,9 +23,19 @@ const mockDash = [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1
 
 export default class DashboardContainer extends Component {
     state = {};
+    // constructor(props) {
+    //     super(props);
+    //     this.state = {
+    //         orders: [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []],
+    //     };
+    // }
 
-    static getDerivedStateFromProps(props, state) {
-        console.log('→ getDerivedStateFromProps');
+    static defaultProps = {
+        orders: [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []],
+    };
+
+    static getDerivedStateFromProps(props) {
+        // console.log('→ getDerivedStateFromProps');
 
         const time = Array(props.schedule.endHour)
             .fill(0)
@@ -48,10 +58,31 @@ export default class DashboardContainer extends Component {
         return { time, dashboard };
     }
 
+    // moveOrder(id, atIndex) {
+    //     const { order, index } = this.findOrder(id);
+    //     // this.setState(
+    //     //     update(this.state, {
+    //     //         orders: {
+    //     //             $splice: [[ index, 1 ], [ atIndex, 0, order ]],
+    //     //         },
+    //     //     }),
+    //     // );
+    // }
+    //
+    // findOrder(id) {
+    //     const { orders } = this.props;
+    //     const order = orders.filter(order => order.id === id)[ 0 ];
+    //
+    //     return {
+    //         order,
+    //         index: orders.indexOf(order),
+    //     };
+    // }
+
     render() {
         const { schedule } = this.props;
         const { dashboard, time } = this.state;
-        console.log('→ dashboard', dashboard);
+        // console.log('→ dashboard', dashboard);
 
         return (
             <Catcher>
@@ -80,6 +111,7 @@ export default class DashboardContainer extends Component {
                                 >
                                     styled 2
                                 </DashboardHead>
+                                {/* <DragItem /> */}
                                 { Array(dashboard.grid)
                                     .fill(0)
                                     .map(() => (

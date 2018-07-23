@@ -6,7 +6,10 @@ import { Link } from 'react-router-dom';
 // proj
 import book from 'routes/book';
 
-const ROW_HEIGHT = 30;
+// own
+import { ROW_HEIGHT } from './dashboardConfig';
+
+// const ROW_HEIGHT = 30;
 
 export const DashboardColumn = styled.div`
     padding: 10px;
