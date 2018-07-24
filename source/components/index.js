@@ -9,6 +9,7 @@ import StatsCountsPanel from './StatsCountsPanel';
 import UniversalFiltersTags from './UniversalFiltersTags';
 import ChangeStatusDropdown from './ChangeStatusDropdown';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
+import ArrayInput from './ArrayInput';
 
 export {
     DistributorTable,
@@ -23,4 +24,5 @@ export {
     StatsCountsPanel,
     UniversalFiltersTags,
     ChangeStatusDropdown,
+    ArrayInput,
 };

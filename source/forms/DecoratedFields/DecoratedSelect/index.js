@@ -32,7 +32,7 @@ export const DecoratedSelect = props => {
         notFoundContent,
         onSearch,
         onChange,
-        // onSelect,
+        onSelect,
         options,
         optionValue,
         optionLabel,
@@ -57,7 +57,7 @@ export const DecoratedSelect = props => {
             // onChange={ value => this.handleServiceSelect(record.key, value) }
             onChange={ onChange }
             onSearch={ onSearch }
-            // onSelect={ onSelect }
+            onSelect={ onSelect }
             placeholder={ placeholder }
             notFoundContent={
                 notFoundContent ? 

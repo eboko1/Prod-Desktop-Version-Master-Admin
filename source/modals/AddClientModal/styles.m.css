@@ -1,5 +1,6 @@
 .addClientModal :global(.ant-modal-body) {
     height: 60vh;
+    overflow: auto;
 }
 
 .addClientModal :global(.ant-modal-footer) {

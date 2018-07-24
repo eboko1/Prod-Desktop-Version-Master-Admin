@@ -34,6 +34,7 @@ import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messa
 import ProfileForm from 'forms/ProfileForm/messages';
 import AddOrderForm from 'forms/AddOrderForm/messages';
 import UniversalFiltersForm from 'forms/UniversalFiltersForm/messages';
+import AddClientForm from 'forms/AddClientForm/messages';
 import CancelReasonForm from 'forms/CancelReasonForm/messages';
 import ToSuccessForm from 'forms/ToSuccessForm/messages';
 // modals
@@ -49,7 +50,7 @@ import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
 import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
 
-const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, StatusIcons, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, UniversalFiltersTags, AddOrderForm, ReportsDropdown, AddClientModal, InviteModal, DecoratedDatePicker, CancelReasonForm, ToSuccessForm, CallsTable ]);
+const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, StatusIcons, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, UniversalFiltersTags, AddOrderForm, ReportsDropdown, AddClientModal, InviteModal, DecoratedDatePicker, CancelReasonForm, ToSuccessForm, CallsTable, AddClientForm ]);
 
 // Intl
 const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
