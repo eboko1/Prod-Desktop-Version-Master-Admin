@@ -20,7 +20,7 @@ import classNames from 'classnames';
 import Styles from './styles.m.css';
 // eslint-disable-next-line
 const mapStateToProps = state => ({
-    stats: state.orders.stats,
+    stats: state.orders.stats, // ===
 });
 
 const mapDispatchToProps = {
@@ -32,10 +32,6 @@ const mapDispatchToProps = {
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
 class FunelContainer extends Component {
-    componentDidMount() {
-        this.props.fetchOrdersStats();
-    }
-
     setStatus = status => {
         if (status === 'success' || status === 'cancel') {
             this.props.resetOrdersDaterangeFilter();
@@ -51,68 +47,102 @@ class FunelContainer extends Component {
             <div className={ Styles.funel }>
                 <div
                     className={ Styles.funel__turn }
-                    style={ { backgroundImage: `url('${images.funelArrowCurvedLeft}')`, backgroundRepeat: 'no-repeat'} } />
-                <div className={ classNames(
-                    Styles.funel__main,
-                    Styles.funel__wrapper,
-                    Styles[ 'funel__wrapper--column' ],
-                ) }>
-                    <div className={ Styles.funel__wrapper } >
+                    style={ {
+                        backgroundImage: `url('${
+                            images.funelArrowCurvedLeft
+                        }')`,
+                        backgroundRepeat: 'no-repeat',
+                    } }
+                />
+                <div
+                    className={ classNames(
+                        Styles.funel__main,
+                        Styles.funel__wrapper,
+                        Styles[ 'funel__wrapper--column' ],
+                    ) }
+                >
+                    <div className={ Styles.funel__wrapper }>
                         <NavLink
                             exact
                             to={ `${book.orders}/appointments` }
                             className={ Styles.funel__tabs__link }
-                            activeClassName={ Styles[ 'funel__tabs__link--active' ] }
-                            onClick={ () => this.setStatus('not_complete,required,call') }
+                            activeClassName={
+                                Styles[ 'funel__tabs__link--active' ]
+                            }
+                            onClick={ () =>
+                                this.setStatus('not_complete,required,call')
+                            }
                         >
                             <span>
-                                <FormattedMessage id='funel.appointments' /> ({ stats.not_complete + stats.call + stats.required })
+                                <FormattedMessage id='funel.appointments' /> ({ stats.not_complete +
+                                    stats.call +
+                                    stats.required })
                             </span>
                         </NavLink>
                         <NavLink
                             exact
                             to={ `${book.orders}/approve` }
                             className={ Styles.funel__tabs__link }
-                            activeClassName={ Styles[ 'funel__tabs__link--active' ] }
+                            activeClassName={
+                                Styles[ 'funel__tabs__link--active' ]
+                            }
                             onClick={ () => this.setStatus('approve,reserve') }
                         >
                             <span>
-                                <FormattedMessage id='funel.record' /> ({ stats.approve + stats.reserve })
+                                <FormattedMessage id='funel.record' /> ({ stats.approve +
+                                    stats.reserve })
                             </span>
                         </NavLink>
                         <NavLink
                             exact
                             to={ `${book.orders}/in-progress` }
                             className={ Styles.funel__tabs__link }
-                            activeClassName={ Styles[ 'funel__tabs__link--active' ] }
+                            activeClassName={
+                                Styles[ 'funel__tabs__link--active' ]
+                            }
                             onClick={ () => this.setStatus('progress') }
                         >
                             <span>
-                                <FormattedMessage id='funel.repair' /> ({ stats.progress })
+                                <FormattedMessage id='funel.repair' /> ({
+                                    stats.progress
+                                })
                             </span>
                         </NavLink>
                         <NavLink
                             exact
                             to={ `${book.orders}/success` }
                             className={ Styles.funel__tabs__link }
-                            activeClassName={ Styles[ 'funel__tabs__link--active' ] }
+                            activeClassName={
+                                Styles[ 'funel__tabs__link--active' ]
+                            }
                             onClick={ () => this.setStatus('success') }
                         >
                             <span>
-                                <FormattedMessage id='funel.done' /> ({ stats.success })
+                                <FormattedMessage id='funel.done' /> ({
+                                    stats.success
+                                })
                             </span>
                         </NavLink>
                     </div>
-                    <div className={ classNames(Styles.funel__wrapper, Styles[ 'funel__wrapper--bottom' ]) }>
+                    <div
+                        className={ classNames(
+                            Styles.funel__wrapper,
+                            Styles[ 'funel__wrapper--bottom' ],
+                        ) }
+                    >
                         <NavLink
                             exact
                             to={ `${book.orders}/invitations` }
-                            className={ Styles[ 'funel__tabs__link--reverse'] }
-                            activeClassName={ Styles[ 'funel__tabs__link--active--reverse' ] }
+                            className={ Styles[ 'funel__tabs__link--reverse' ] }
+                            activeClassName={
+                                Styles[ 'funel__tabs__link--active--reverse' ]
+                            }
                             onClick={ () => this.setStatus('invite') }
                         >
                             <span>
-                                <FormattedMessage id='funel.invitation' /> ({ stats.invite })
+                                <FormattedMessage id='funel.invitation' /> ({
+                                    stats.invite
+                                })
                             </span>
                             { /* </Link> */ }
                         </NavLink>
@@ -120,23 +150,35 @@ class FunelContainer extends Component {
                             exact
                             to={ `${book.orders}/reviews` }
                             className={ Styles[ 'funel__tabs__link--reverse' ] }
-                            activeClassName={ Styles[ 'funel__tabs__link--active--reverse' ] }
+                            activeClassName={
+                                Styles[ 'funel__tabs__link--active--reverse' ]
+                            }
                             onClick={ () => this.setStatus('review') }
                         >
                             <span>
-                                <FormattedMessage id='funel.review' /> ({ stats.review })
+                                <FormattedMessage id='funel.review' /> ({
+                                    stats.review
+                                })
                             </span>
                         </NavLink>
                     </div>
                 </div>
                 <div
                     className={ Styles[ 'funel__turn--arrow' ] }
-                    style={ { backgroundImage: `url('${images.funelArrowCurvedRight}')`, backgroundRepeat: 'no-repeat'} }/>
-                <div className={ classNames(
-                    Styles.funel__wrapper,
-                    Styles.funel__additional,
-                    Styles[ 'funel__wrapper--column' ],
-                ) }>
+                    style={ {
+                        backgroundImage: `url('${
+                            images.funelArrowCurvedRight
+                        }')`,
+                        backgroundRepeat: 'no-repeat',
+                    } }
+                />
+                <div
+                    className={ classNames(
+                        Styles.funel__wrapper,
+                        Styles.funel__additional,
+                        Styles[ 'funel__wrapper--column' ],
+                    ) }
+                >
                     <NavLink
                         exact
                         to={ `${book.orders}/cancel` }
@@ -145,14 +187,26 @@ class FunelContainer extends Component {
                         onClick={ () => this.setStatus('cancel') }
                     >
                         <span>
-                            <FormattedMessage id='funel.cancel' /> ({ stats.cancel })
+                            <FormattedMessage id='funel.cancel' /> ({
+                                stats.cancel
+                            })
                         </span>
                     </NavLink>
-                    <div className={ `${Styles[ 'funel__tabs__link--reverse' ]} ${Styles[ 'funel__tabs__link--bottom' ]} ` }  />
+                    <div
+                        className={ `${Styles[ 'funel__tabs__link--reverse' ]} ${
+                            Styles[ 'funel__tabs__link--bottom' ]
+                        } ` }
+                    />
                 </div>
                 <div
                     className={ Styles[ 'funel__turn--arrow' ] }
-                    style={ { backgroundImage: `url('${images.funelArrowCurvedRight}')`, backgroundRepeat: 'no-repeat'} }/>
+                    style={ {
+                        backgroundImage: `url('${
+                            images.funelArrowCurvedRight
+                        }')`,
+                        backgroundRepeat: 'no-repeat',
+                    } }
+                />
             </div>
         ) : (
             <div>...loading</div>

@@ -18,6 +18,7 @@ export function* fetchDashboardSaga() {
         const {
             payload: { stations },
         } = yield take(FETCH_DASHBOARD);
+
         yield put(uiActions.setDashboardFetchingState(true));
         const beginDate =
             selectDashboardMode === 'calendar'

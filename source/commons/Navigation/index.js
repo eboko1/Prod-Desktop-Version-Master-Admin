@@ -24,11 +24,15 @@ export default class Navigation extends Component {
     render() {
         const { currentPath, collapsed } = this.props;
 
-        const defaultOpenKeys = collapsed ? [] : [ 'operations', 'catalog', 'reports' ];
+        const defaultOpenKeys = collapsed
+            ? []
+            : [ 'operations', 'catalog', 'reports' ];
         const selected = menuConfig.getSelectedByRoute(currentPath);
-        if (selected.sectionKey
-            && !collapsed
-            && !defaultOpenKeys.includes(selected.sectionKey)) {
+        if (
+            selected.sectionKey &&
+            !collapsed &&
+            !defaultOpenKeys.includes(selected.sectionKey)
+        ) {
             defaultOpenKeys.push(selected.sectionKey);
         }
 
@@ -68,11 +72,11 @@ export default class Navigation extends Component {
                     activeKey={ selected.itemKey }
                     defaultOpenKeys={ defaultOpenKeys }
                 >
-                    {
-                        menuConfig.sections.map((section) => {
-                            const { key, iconType, name, items, link } = section;
-                            if (items) {
-                                return (<Menu.SubMenu
+                    { menuConfig.sections.map(section => {
+                        const { key, iconType, name, items, link } = section;
+                        if (items) {
+                            return (
+                                <Menu.SubMenu
                                     key={ key }
                                     title={
                                         <>
@@ -81,30 +85,32 @@ export default class Navigation extends Component {
                                         </>
                                     }
                                 >
-                                    {
-                                        items.map((item) => {
-                                            const { key, link, name } = item;
+                                    { items.map(item => {
+                                        const { key, link, name } = item;
 
-                                            return (<Menu.Item key={ key }>
-                                                <Link to={ link } >
-                                                    <FormattedMessage id={ name } />
+                                        return (
+                                            <Menu.Item key={ key }>
+                                                <Link to={ link }>
+                                                    <FormattedMessage
+                                                        id={ name }
+                                                    />
                                                 </Link>
-                                            </Menu.Item>);
-                                        })
-                                    }
+                                            </Menu.Item>
+                                        );
+                                    }) }
                                 </Menu.SubMenu>
-                                );
-                            }
+                            );
+                        }
 
-                            return (<Menu.Item key={ key }>
+                        return (
+                            <Menu.Item key={ key }>
                                 <Link to={ link }>
                                     <Icon type={ iconType } />
                                     <FormattedMessage id={ name } />
                                 </Link>
-                            </Menu.Item>);
-
-                        })
-                    }
+                            </Menu.Item>
+                        );
+                    }) }
                 </Menu>
             </Layout.Sider>
         );

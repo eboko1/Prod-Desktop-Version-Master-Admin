@@ -39,16 +39,6 @@ export class LayoutComponent extends Component {
         paper: true,
     };
 
-    // state = {
-    //     collapsed: false,
-    // };
-
-    constructor(props) {
-        super(props);
-        this.toggleNavigation = this.toggleNavigation.bind(this);
-        this.logout = this.logout.bind(this);
-    }
-
     componentDidMount() {
         const collapsed = getCollapsedState();
         this.props.actions.setCollapsedState(collapsed);

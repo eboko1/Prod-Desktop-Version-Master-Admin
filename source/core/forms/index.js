@@ -15,6 +15,7 @@ import cancelReasonReducer, {
 import toSuccessReducer, {
     moduleName as toSuccess,
 } from './toSuccessForm/duck';
+import loginReducer, { moduleName as login } from './loginForm/duck';
 
 export const formsReducer = combineReducers({
     [ addOrder ]:         addOrderReducer,
@@ -23,6 +24,7 @@ export const formsReducer = combineReducers({
     [ universalFilters ]: universalFiltersReducer,
     [ cancelReason ]:     cancelReasonReducer,
     [ toSuccess ]:        toSuccessReducer,
+    [ login ]:            loginReducer,
 });
 
 // export default formsReducer;

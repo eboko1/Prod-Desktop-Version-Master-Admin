@@ -4,6 +4,7 @@ import ProfilePage from './ProfilePage';
 import ExceptionPage from './ExceptionPage';
 import AddOrderPage from './AddOrderPage';
 import DashboardPage from './DashboardPage';
+import LoginPage from './LoginPage';
 
 export {
     DashboardPage,
@@ -12,4 +13,5 @@ export {
     AddOrderPage,
     ProfilePage,
     ExceptionPage,
+    LoginPage,
 };

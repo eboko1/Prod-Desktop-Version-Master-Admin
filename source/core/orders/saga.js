@@ -51,30 +51,39 @@ export function* fetchOrdersSagaTake() {
     // сейчас работает (подключена в рут саге)
     while (true) {
         // const action = yield take(FETCH_ORDERS); // Блочится на этом месте (можно доставать action)
-        yield take(FETCH_ORDERS);
-        yield nprogress.start();
+        try {
+            yield take(FETCH_ORDERS);
+            yield nprogress.start();
 
-        const filter = yield select(selectFilter);
-        const filters = _.omit(spreadProp('daterange', filter), [ 'beginDate', 'createDate' ]);
+            const filter = yield select(selectFilter);
+            const filters = _.omit(spreadProp('daterange', filter), [ 'beginDate', 'createDate' ]);
 
-        yield put(uiActions.setOrdersFetchingState(true));
-        const data = yield call(fetchAPI, 'GET', 'orders', filters);
+            yield put(uiActions.setOrdersFetchingState(true));
+            const data = yield call(fetchAPI, 'GET', 'orders', filters);
 
-        yield put(fetchOrdersSuccess(data));
-
-        yield put(uiActions.setOrdersFetchingState(false));
-        yield put(fetchOrdersStats(_.omit(filters, [ 'page', 'status' ])));
-        yield nprogress.done();
+            yield put(fetchOrdersSuccess(data));
+            yield put(fetchOrdersStats(_.omit(filters, [ 'page', 'status' ])));
+        } catch (error) {
+            yield put(uiActions.emitError(error));
+        } finally {
+            yield put(uiActions.setOrdersFetchingState(false));
+            yield nprogress.done();
+        }
     }
 }
 
 export function* fetchOrdersStatsSaga({ payload: filters = {} }) {
-    yield nprogress.start();
-    const statsFilters = _.omit(spreadProp('daterange', filters), [ 'page', 'status' ]);
-    const data = yield call(fetchAPI, 'GET', 'orders/stats', statsFilters);
+    try {
+        yield nprogress.start();
+        const statsFilters = _.omit(spreadProp('daterange', filters), [ 'page', 'status' ]);
+        const data = yield call(fetchAPI, 'GET', 'orders/stats', statsFilters);
 
-    yield put(fetchOrdersStatsSuccess(data));
-    yield nprogress.done();
+        yield put(fetchOrdersStatsSuccess(data));
+    } catch (error) {
+        yield put(uiActions.emitError(error));
+    } finally {
+        yield nprogress.done();
+    }
 }
 
 export function* createInviteOrders({ payload: { invites, filters } }) {
@@ -88,11 +97,17 @@ export function* createInviteOrders({ payload: { invites, filters } }) {
 }
 
 export function* fetchStatsCountsSaga() {
-    yield nprogress.start();
-    const data = yield call(fetchAPI, 'GET', 'orders');
+    try {
+        yield nprogress.start();
 
-    yield put(fetchStatsCountsSuccess(data));
-    yield nprogress.done();
+        const data = yield call(fetchAPI, 'GET', 'orders');
+
+        yield put(fetchStatsCountsSuccess(data));
+    } catch (error) {
+        yield put(uiActions.emitError(error));
+    } finally {
+        yield nprogress.done();
+    }
 }
 
 export function* saga() {

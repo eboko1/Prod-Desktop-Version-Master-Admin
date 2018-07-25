@@ -82,22 +82,39 @@ export default async function fetchAPI(
             case status >= 200 && status < 300:
                 return rawResponse ? await response : await response.json();
             case status === 400:
-                return dispatch(replace(`${book.exception}/400`));
-            case status === 401:
-                return dispatch(authActions.logout());
-            case status === 403:
-                return dispatch(replace(`${book.exception}/403`));
-            case status >= 404 && status < 422:
-                return dispatch(replace(`${book.exception}/404`));
-            case status >= 500 && status <= 504:
-                return dispatch(replace(`${book.exception}/500`));
-            default:
+                dispatch(replace(`${book.exception}/400`));
                 throw new Error(
-                    `Something went wrong with response validation\n${response}`,
+                    `Something went wrong with response:\n${response}`,
                 );
+                break;
+            case status === 401:
+                dispatch(authActions.logout());
+                throw new Error(
+                    `Something went wrong with response:\n${response}`,
+                );
+                break;
+            case status === 403:
+                dispatch(replace(`${book.exception}/403`));
+                throw new Error(
+                    `Something went wrong with response:\n${response}`,
+                );
+                break;
+            case status >= 404 && status < 422:
+                dispatch(replace(`${book.exception}/404`));
+                throw new Error(
+                    `Something went wrong with response:\n${response}`,
+                );
+                break;
+            case status >= 500 && status <= 504:
+                dispatch(replace(`${book.exception}/500`));
+                throw new Error(
+                    `Something went wrong with response:\n${response}`,
+                );
+                break;
+            default:
+                throw new Error(`Error with response:\n${response}`);
         }
-        // }
     } catch (error) {
-        console.error("ERROR! fetchAPI:", error); // eslint-disable-line
+        throw new Error(error);
     }
 }

@@ -13,11 +13,29 @@ import { saga as ordersSaga } from 'core/orders/saga';
 import { saga as orderSaga } from 'core/order/saga';
 import { saga as addOrderSaga } from 'core/addOrder/saga';
 // forms
+import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
 import { saga as addOrderFormSaga } from 'core/forms/addOrderForm/saga';
 import { saga as orderFormSaga } from 'core/forms/orderForm/saga';
 import { saga as addClientFormSaga } from 'core/forms/addClientForm/saga';
 
+/* eslint-disable array-element-newline */
 export default function* rootSaga() {
-    yield all([ auth.loginWatcher(), auth.logoutWatcher(), swapi.fetchSwapiWatcher(), intl.updateIntlWatcher(), ui.layoutCollapsedWatcher(), ordersSaga(), orderSaga(), addOrderSaga(), universalFiltersFormSaga(), addOrderFormSaga(), orderFormSaga(), addClientFormSaga(), dashboardSaga() ]);
+    yield all([
+        auth.loginWatcher(),
+        auth.logoutWatcher(),
+        swapi.fetchSwapiWatcher(),
+        intl.updateIntlWatcher(),
+        ui.layoutCollapsedWatcher(),
+        ordersSaga(),
+        orderSaga(),
+        addOrderSaga(),
+        universalFiltersFormSaga(),
+        addOrderFormSaga(),
+        orderFormSaga(),
+        addClientFormSaga(),
+        dashboardSaga(),
+        loginFormSaga(),
+    ]);
 }
+/* eslint-enable array-element-newline */

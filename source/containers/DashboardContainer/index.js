@@ -71,22 +71,22 @@ export default class DashboardContainer extends Component {
         return { time, dashboard };
     }
 
+    /* didMount -> time () -> this.setState()
+    // genRows -> function helper
+    // genColumns
+    */
+
     render() {
         const { orders } = this.props;
         const { dashboard, time } = this.state;
 
+        const timeColumn = this._renderTimeColumn();
+
         return (
             <Catcher>
                 <DashboardGrid>
-                    <DashboardColumn dashboard={ dashboard } column={ 1 } time>
-                        <DashboardHead column={ 0 }>Time</DashboardHead>
-                        { time.map(time => (
-                            <React.Fragment key={ time }>
-                                <DashboardEmptyCell>{ time }</DashboardEmptyCell>
-                                <DashboardEmptyCell />
-                            </React.Fragment>
-                        )) }
-                    </DashboardColumn>
+                    { console.log('→ Render mess') }
+                    { timeColumn }
                     { orders.map((column, index) => {
                         return (
                             <DashboardColumn
@@ -138,8 +138,41 @@ export default class DashboardContainer extends Component {
             </Catcher>
         );
     }
+
+    _renderTimeColumn = () => {
+        const { dashboard, time } = this.state;
+
+        return (
+            <DashboardColumn dashboard={ dashboard } column={ 1 } time>
+                <DashboardHead column={ 0 }>Time</DashboardHead>
+                { time.map(time => (
+                    <React.Fragment key={ time }>
+                        <DashboardEmptyCell>{ time }</DashboardEmptyCell>
+                        <DashboardEmptyCell />
+                    </React.Fragment>
+                )) }
+            </DashboardColumn>
+        );
+    };
 }
 
+// _renderTimeColumn = () => {};
+
+// Button={() => this.wololol()}
+//
+// class {
+//     state={ isModal: false}
+//
+//     method(){
+//         this.setState({!isMenuOpen})
+//     }
+// }
+//
+// Modal={this.wololol} findSmth={method}>
+//
+//
+//
+// async fun*
 // moveOrder(id, atIndex) {
 //     const { order, index } = this.findOrder(id);
 //     // this.setState(
