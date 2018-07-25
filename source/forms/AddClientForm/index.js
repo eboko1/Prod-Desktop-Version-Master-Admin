@@ -459,7 +459,6 @@ export class AddClientForm extends Component {
                 <Row gutter={ 8 }>
                     <Col span={ 6 }>
                         <ArrayInput
-                            getPopupContainer={ trigger => trigger.parentNode }
                             onChange={ this.props.updateArrayField }
                             form={ this.props.form }
                             rules={ [
@@ -487,7 +486,6 @@ export class AddClientForm extends Component {
                                     type: 'email',
                                 },
                             ] }
-                            getPopupContainer={ trigger => trigger.parentNode }
                             onChange={ this.props.updateArrayField }
                             form={ this.props.form }
                             fieldName='emails'

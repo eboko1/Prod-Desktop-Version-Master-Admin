@@ -5,7 +5,6 @@ import { Form } from 'antd';
 
 const FormItem = Form.Item;
 import { DecoratedInput } from 'forms/DecoratedFields';
-import { v4 } from 'uuid';
 
 class ArrayInput extends Component {
     remove = key => {
@@ -56,7 +55,7 @@ class ArrayInput extends Component {
 
         const formItems = values.map((value, index) => {
             return (
-                <Row type='flex' align='middle' key={ v4() }>
+                <Row type='flex' align='middle' key={ index }>
                     <Col span={ 20 }>
                         <DecoratedInput
                             hasFeedback
