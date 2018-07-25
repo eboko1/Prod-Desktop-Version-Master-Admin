@@ -33,7 +33,7 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 class FunelContainer extends Component {
     setStatus = status => {
-        if (status === 'success' || status === 'cancel') {
+        if (status === 'success' || status === 'cancel' || status === 'review') {
             this.props.resetOrdersDaterangeFilter();
         }
 

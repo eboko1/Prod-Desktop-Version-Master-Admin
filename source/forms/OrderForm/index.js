@@ -69,19 +69,18 @@ const { TextArea } = Input;
 })
 export class OrderForm extends Component {
     render() {
-        const { managers, stations } = this.props;
-
-        const { searchClientsResult } = this.props;
-        const {
-            searchClientsResult: { searching: clientsSearching },
-            selectedClient,
-        } = this.props;
-        const { getFieldDecorator, getFieldsError } = this.props.form;
         const {
             fields: {
                 clientVehicle: { value: selectedVehicleId },
             },
+            form: { getFieldDecorator },
+            managers,
+            searchClientsResult: { searching: clientsSearching, clients },
+            selectedClient,
+            stations,
+            addOrderForm,
         } = this.props;
+
         const selectedVehicle =
             this.props.selectedClient &&
             selectedVehicleId &&
@@ -90,8 +89,6 @@ export class OrderForm extends Component {
                     ({ id }) => id === selectedVehicleId,
                 ),
             );
-
-        const buttonDisabled = hasErrors(getFieldsError());
 
         const { count: countDetails, price: priceDetails } = detailsStats(
             this.props.fields.details,
@@ -131,30 +128,6 @@ export class OrderForm extends Component {
                 // onSubmit={ this.handleSubmit }
                 layout='horizontal'
             >
-                { /* <Button
-                    type='dashed'
-                    htmlType='submit'
-                    disabled={ buttonDisabled }
-                >
-                    inner submit (test validation)
-                </Button> */ }
-                { /* <FormItem { ...formItemLayout } label='Plain Text'>
-                    <span className='ant-form-text'>readonlytext</span>
-                </FormItem> */ }
-                { /*
-                <FormItem { ...formItemLayout } label='Radio.Button'>
-                    { getFieldDecorator('status')(
-                        <RadioGroup>
-                            <RadioButton value='reserve'>Reserve</RadioButton>
-                            <RadioButton value='new'>New</RadioButton>
-                            <RadioButton value='questionable'>
-                                Questionable
-                            </RadioButton>
-                            <RadioButton value='approve'>Approved</RadioButton>
-                        </RadioGroup>,
-                    ) }
-                </FormItem> */ }
-
                 <div className={ Styles.datePanel }>
                     <DecoratedDatePicker
                         getFieldDecorator={ getFieldDecorator }
@@ -249,7 +222,7 @@ export class OrderForm extends Component {
                     clientsSearching={ clientsSearching }
                     setClientSelection={ this.props.setClientSelection }
                     visible={ !!this.props.fields.searchClientQuery.value }
-                    clients={ searchClientsResult.clients }
+                    clients={ clients }
                 />
                 <div className={ Styles.clientBlock }>
                     <div className={ Styles.clientCol }>
@@ -541,19 +514,21 @@ export class OrderForm extends Component {
                 </div>
                 { /* FORMS TABS */ }
                 <Tabs type='card'>
-                    <TabPane
-                        tab={
-                            this.props.intl.formatMessage({
-                                id: 'order_form_table.tasks',
-                            }) +
-                            ' (' +
-                            this.props.orderTasks.length +
-                            ')'
-                        }
-                        key='1'
-                    >
-                        <TasksTable orderTasks={ this.props.orderTasks } />
-                    </TabPane>
+                    { !addOrderForm && (
+                        <TabPane
+                            tab={
+                                this.props.intl.formatMessage({
+                                    id: 'order_form_table.tasks',
+                                }) +
+                                ' (' +
+                                this.props.orderTasks.length +
+                                ')'
+                            }
+                            key='1'
+                        >
+                            <TasksTable orderTasks={ this.props.orderTasks } />
+                        </TabPane>
+                    ) }
                     <TabPane
                         tab={ `${this.props.intl.formatMessage({
                             id:             'add_order_form.services',
@@ -682,32 +657,38 @@ export class OrderForm extends Component {
                             />
                         </FormItem>
                     </TabPane>
-                    <TabPane
-                        tab={
-                            this.props.intl.formatMessage({
-                                id: 'order_form_table.history',
-                            }) +
-                            ' (' +
-                            this.props.orderHistory.orders.length +
-                            ')'
-                        }
-                        key='5'
-                    >
-                        <HistoryTable orderHistory={ this.props.orderHistory } />
-                    </TabPane>
-                    <TabPane
-                        tab={
-                            this.props.intl.formatMessage({
-                                id: 'order_form_table.calls',
-                            }) +
-                            ' (' +
-                            this.props.orderCalls.length +
-                            ')'
-                        }
-                        key='6'
-                    >
-                        <CallsTable orderCalls={ this.props.orderCalls } />
-                    </TabPane>
+                    { !addOrderForm && (
+                        <TabPane
+                            tab={
+                                this.props.intl.formatMessage({
+                                    id: 'order_form_table.history',
+                                }) +
+                                ' (' +
+                                this.props.orderHistory.orders.length +
+                                ')'
+                            }
+                            key='5'
+                        >
+                            <HistoryTable
+                                orderHistory={ this.props.orderHistory }
+                            />
+                        </TabPane>
+                    ) }
+                    { !addOrderForm && (
+                        <TabPane
+                            tab={
+                                this.props.intl.formatMessage({
+                                    id: 'order_form_table.calls',
+                                }) +
+                                ' (' +
+                                this.props.orderCalls.length +
+                                ')'
+                            }
+                            key='6'
+                        >
+                            <CallsTable orderCalls={ this.props.orderCalls } />
+                        </TabPane>
+                    ) }
                 </Tabs>
             </Form>
         );

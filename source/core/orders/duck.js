@@ -141,7 +141,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 filter: {
                     ...state.filter,
-                    orderComments: payload,
+                    cancelReasons: payload,
                 },
             };
 

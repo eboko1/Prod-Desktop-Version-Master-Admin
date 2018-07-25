@@ -13,18 +13,33 @@ export default class InviteModal extends Component {
     render() {
         const { visible, confirmInviteModal, resetModal, count } = this.props;
 
+        const modalOkOptions = count
+            ? {
+                okText: <FormattedMessage id='invite-modal.invite' />,
+                onOk:   () => confirmInviteModal(),
+            }
+            : { onOk: () => resetModal() };
+
         return (
             <Modal
                 cancelText={ <FormattedMessage id='cancel' /> }
-                okText={ <FormattedMessage id='invite-modal.invite' /> }
                 visible={ visible === MODALS.INVITE }
-                onOk={ () => confirmInviteModal() }
+                { ...modalOkOptions }
                 onCancel={ () => resetModal() }
             >
-                <Icon type='question-circle' className={ Styles.icon } />
-                <FormattedMessage id='invite-modal.text1' />
-                <span className={ Styles.count }>{ count }</span>
-                <FormattedMessage id='invite-modal.text2' />
+                { count ? (
+                    <div>
+                        <Icon type='question-circle' className={ Styles.icon } />
+                        <FormattedMessage id='invite-modal.text1' />
+                        <span className={ Styles.count }>{ count }</span>
+                        <FormattedMessage id='invite-modal.text2' />
+                    </div>
+                ) : (
+                    <div>
+                        <Icon type='question-circle' className={ Styles.icon } />
+                        <FormattedMessage id='invite-modal.select_cars' />
+                    </div>
+                ) }
             </Modal>
         );
     }

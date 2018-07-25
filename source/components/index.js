@@ -13,6 +13,7 @@ import ArrowsDatePicker from './ArrowsDatePicker';
 import Dashboard from './Dashboard';
 import Board from './Board';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
+import ArrayInput from './ArrayInput';
 
 export {
     DistributorTable,
@@ -31,4 +32,5 @@ export {
     ChangeStatusDropdown,
     Dashboard,
     Board,
+    ArrayInput,
 };

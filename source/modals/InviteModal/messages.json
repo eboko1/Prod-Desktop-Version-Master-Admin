@@ -2,16 +2,19 @@
     "en": {
         "invite-modal.invite": "Invite",
         "invite-modal.text1": "Are you sure that you want to invite",
-        "invite-modal.text2": "car(s) to servise?"
+        "invite-modal.text2": "car(s) to servise?",
+        "invite-modal.select_cars": "Select at least one car"
     },
     "ru": {
         "invite-modal.invite": "Пригласить",
         "invite-modal.text1": "Вы уверены, что хотите пригласить",
-        "invite-modal.text2": "авто на СТО?"
+        "invite-modal.text2": "авто на СТО?",
+        "invite-modal.select_cars": "Выберите Авто из списка для приглашения"
     },
     "uk": {
         "invite-modal.invite": "Запросити",
         "invite-modal.text1": "Ви впевнені, що бажаєте запросити",
-        "invite-modal.text2": "авто на СТО?"
+        "invite-modal.text2": "авто на СТО?",
+        "invite-modal.select_cars": "Виберіть Авто зі списку для запрошення"
     }
 }

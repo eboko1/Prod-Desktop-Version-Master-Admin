@@ -42,9 +42,6 @@ const mapStateToProps = state => {
         addClientModal:    state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
         createOrderStatus: state.forms.orderForm.fields.createOrderStatus.value,
-        orderCalls:        state.forms.orderForm.calls,
-        orderTasks:        state.forms.orderForm.tasks,
-        orderHistory:      state.forms.orderForm.history,
         orderEntity:       {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
@@ -187,9 +184,7 @@ class AddOrderPage extends Component {
                     wrappedComponentRef={ this.saveOrderFormRef }
                     setAddClientModal={ this.setAddClientModal }
                     addClientModal={ addClientModal }
-                    orderTasks={ this.props.orderTasks }
-                    orderHistory={ this.props.orderHistory }
-                    orderCalls={ this.props.orderCalls }
+                    addOrderForm
                 />
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
