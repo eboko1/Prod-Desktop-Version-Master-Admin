@@ -16,9 +16,7 @@ import {
     onBrandSearch,
 } from 'core/forms/orderForm/duck';
 
-import {
-    defaultDetails,
-} from './../../core/forms/orderForm/helpers/details';
+import { defaultDetails } from './../../core/forms/orderForm/helpers/details';
 
 import {
     DecoratedTextArea,
@@ -544,7 +542,14 @@ export class OrderForm extends Component {
                 { /* FORMS TABS */ }
                 <Tabs type='card'>
                     <TabPane
-                        tab={ <FormattedMessage id='order_form_table.tasks' /> }
+                        tab={
+                            this.props.intl.formatMessage({
+                                id: 'order_form_table.tasks',
+                            }) +
+                            ' (' +
+                            this.props.orderTasks.length +
+                            ')'
+                        }
                         key='1'
                     >
                         <TasksTable orderTasks={ this.props.orderTasks } />
@@ -678,13 +683,27 @@ export class OrderForm extends Component {
                         </FormItem>
                     </TabPane>
                     <TabPane
-                        tab={ <FormattedMessage id='order_form_table.history' /> }
+                        tab={
+                            this.props.intl.formatMessage({
+                                id: 'order_form_table.history',
+                            }) +
+                            ' (' +
+                            this.props.orderHistory.orders.length +
+                            ')'
+                        }
                         key='5'
                     >
                         <HistoryTable orderHistory={ this.props.orderHistory } />
                     </TabPane>
                     <TabPane
-                        tab={ <FormattedMessage id='order_form_table.calls' /> }
+                        tab={
+                            this.props.intl.formatMessage({
+                                id: 'order_form_table.calls',
+                            }) +
+                            ' (' +
+                            this.props.orderCalls.length +
+                            ')'
+                        }
                         key='6'
                     >
                         <CallsTable orderCalls={ this.props.orderCalls } />
