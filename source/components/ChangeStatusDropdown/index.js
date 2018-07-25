@@ -23,41 +23,41 @@ class ChangeStatusDropdown extends React.Component {
         const getMenuItems = () => {
             const changeToRequired = {
                 status: 'required',
-                name:   'required',
+                name:   'transfer_required',
                 icon:   'question-circle-o',
                 action: () => onStatusChange('required'),
             };
 
             const changeToReserve = {
                 status: 'reserve',
-                name:   'reserve',
+                name:   'transfer_reserve',
                 icon:   'lock',
                 action: () => onStatusChange('reserve'),
             };
 
             const changeToNotComplete = {
                 status: 'not_complete',
-                name:   'not_complete',
+                name:   'transfer_not_complete',
                 icon:   'plus-square-o',
                 action: () => onStatusChange('not_complete'),
             };
 
             const changeToApprove = {
                 status: 'approve',
-                name:   'approve',
+                name:   'transfer_approve',
                 icon:   'safety',
                 action: () => onStatusChange('approve'),
             };
 
             const changeToProgress = {
                 status: 'progress',
-                name:   'progress',
+                name:   'transfer_progress',
                 icon:   'car',
                 action: () => onStatusChange('progress'),
             };
 
             const changeToSuccess = {
-                name:   'success',
+                name:   'transfer_success',
                 status: 'success',
                 icon:   'check',
                 action: () => setModal(modals.TO_SUCCESS),
@@ -82,7 +82,7 @@ class ChangeStatusDropdown extends React.Component {
                 ? appointments.filter(
                     appointmentStatus => appointmentStatus !== status,
                 )
-                : [];
+                : status === 'reserve' ? [ 'approve' ] : [];
 
             const allStatuses = [ ...suggestStatus, ...additionalStatuses ];
 
