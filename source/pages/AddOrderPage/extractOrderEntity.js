@@ -1,6 +1,11 @@
 import _ from 'lodash';
 
-export function convertFieldsValuesToDbEntity(orderFields, allServices, allDetails, status = 'not_complete') {
+export function convertFieldsValuesToDbEntity(
+    orderFields,
+    allServices,
+    allDetails,
+    status = 'not_complete',
+) {
     const services = _(orderFields.services)
         .values()
         .filter(service => _.get(service, 'serviceName.value'))
@@ -35,6 +40,7 @@ export function convertFieldsValuesToDbEntity(orderFields, allServices, allDetai
                 detailCount: { value: count },
                 detailCode: { value: code },
                 detailBrandName: { value: brandId },
+                ownDetail: { value: ownDetail },
             } = detail;
             const [ detailType ] = String(detailId).split('|');
             const [ brandType ] = String(brandId).split('|');
@@ -49,7 +55,7 @@ export function convertFieldsValuesToDbEntity(orderFields, allServices, allDetai
                 {}
             ).brandName;
 
-            const baseDetail = { price, count, ownDetail: false, code };
+            const baseDetail = { price, count, ownDetail, code };
             const detailCustom =
                 detailType === 'custom' ? { name: detailLabel } : { detailId };
             const brandCustom =
@@ -84,7 +90,7 @@ export function convertFieldsValuesToDbEntity(orderFields, allServices, allDetai
     };
 
     return order;
-};
+}
 
 export const requiredFieldsOnStatuses = {
     invite: [ 'clientVehicle', 'manager', 'clientPhone' ],

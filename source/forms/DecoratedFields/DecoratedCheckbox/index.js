@@ -19,11 +19,18 @@ export const DecoratedCheckbox = props => {
         disabled,
         rules,
         field,
+        initValue,
 
         children,
     } = props;
 
     const checkbox = getFieldDecorator(field, {
+        ...initValue
+            ? {
+                initialValue:  true,
+                valuePropName: 'checked',
+            }
+            : {},
         rules,
     })(<Checkbox disabled={ disabled }>{ children }</Checkbox>);
 
