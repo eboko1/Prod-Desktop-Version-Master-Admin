@@ -13,6 +13,7 @@ import {
     setOrdersPageFilter,
     setOrdersStatusFilter,
     createInviteOrders,
+    setOrdersPageSort,
 } from 'core/orders/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
@@ -29,6 +30,7 @@ const mapStateToProps = state => {
         orders:         state.orders.data,
         filter:         state.orders.filter,
         modal:          state.modals.modal,
+        sort:           state.orders.sort,
         ordersFetching: state.ui.get('ordersFetching'),
     };
 };
@@ -41,6 +43,7 @@ const mapDispatchToProps = dispatch => {
             setOrdersPageFilter,
             createInviteOrders,
             resetModal,
+            setOrdersPageSort,
         },
         dispatch,
     );
@@ -264,6 +267,7 @@ class OrdersContainer extends Component {
             this.isOrderInvitable,
             this.isAlreadyInvited,
             activeRoute,
+            this.props.sort,
         );
 
         const rows = rowsConfig(
@@ -272,6 +276,17 @@ class OrdersContainer extends Component {
             this.onSelectChange,
             this.getOrderCheckboxProps,
         );
+
+        const handleTableChange = (pagination, filters, sorter) => {
+            if (!sorter) {
+                return;
+            }
+            const sort = {field: sorter.field, order: sorter.order === 'ascend' ? 'asc' : 'desc'};
+            if (!_.isEqual(sort, this.props.sort)) {
+                this.props.setOrdersPageSort(sort);
+                this.props.fetchOrders();
+            }
+        };
 
         const pagination = {
             pageSize:         25,
@@ -302,6 +317,7 @@ class OrdersContainer extends Component {
                             emptyText: <FormattedMessage id='no_data' />,
                         } }
                         pagination={ pagination }
+                        onChange={ handleTableChange }
                     />
                 </div>
                 <InviteModal

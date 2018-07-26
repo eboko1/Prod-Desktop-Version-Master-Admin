@@ -31,7 +31,12 @@ export function columnsConfig(
     isOrderInvitable,
     isAlreadyInvited,
     activeRoute,
+    sort,
 ) {
+    const sortOptions = {
+        asc:  'ascend',
+        desc: 'descend',
+    };
     const indexCol = {
         title:     '№',
         width:     80,
@@ -46,7 +51,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) =>
+        render:    (_, order) => 
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -82,6 +87,8 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.creation_date' />,
         dataIndex: 'datetime',
         key:       'datetime',
+        sorter:    true,
+        sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
         width:     160,
         render:    (_, order) => (
             <div className={ Styles.datetime }>
@@ -96,8 +103,11 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.begin_date' />,
         dataIndex: 'beginDatetime',
         key:       'beginDatetime',
-        width:     160,
-        render:    (_, order) => (
+        sortOrder:
+            sort.field === 'beginDatetime' ? sortOptions[ sort.order ] : false,
+        sorter: true,
+        width:  160,
+        render: (_, order) => (
             <div className={ Styles.datetime }>
                 { order.beginDatetime
                     ? moment(order.beginDatetime).format('DD.MM.YYYY HH:mm')
@@ -124,6 +134,8 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.creation_date' />,
         dataIndex: 'datetime',
         key:       'datetime',
+        sorter:    true,
+        sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
         width:     160,
         render:    (_, order) => (
             <div className={ Styles.datetime }>
@@ -161,8 +173,10 @@ export function columnsConfig(
 
     const sumCol = {
         title:     <FormattedMessage id='orders.sum' />,
-        dataIndex: 'servicesTotalSum',
-        key:       'servicesTotalSum',
+        dataIndex: 'totalSum',
+        key:       'totalSum',
+        sorter:    true,
+        sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
         width:     140,
         render:    (_, order) => (
             <Numeral
