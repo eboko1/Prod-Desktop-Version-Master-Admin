@@ -13,9 +13,32 @@ export const DashboardColumn = styled.div`
     background: lightblue;
     border: 1px solid blue;
     display: grid;
-    grid-template-rows: ${props => `repeat(${props.dashboard.rows}, 1fr)`};
+    grid-template-rows: ${props =>
+        `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
+    grid-template-columns: ${props => `repeat(${props.column}, 1fr)`};
+`;
+
+export const DashboardBody = styled.div`
+    display: flex;
+`;
+
+export const DashboardContentColumn = styled.div`
+    flex: 0 0 90%;
+    background: yellowgreen;
+`;
+
+export const DashboardContentBox = styled.div`
+    display: grid;
     grid-template-columns: ${props =>
-        `repeat(${props.column}, 1fr) ${!props.time ? '10%' : ''}`};
+        `repeat(${props.dashboard.columns}, 1fr)`};
+    grid-column: ${props => `span ${props.dashboard.columns}`};
+`;
+
+export const DashboardAddOrderColumn = styled.div`
+    flex: 0 0 10%;
+    display: grid;
+    grid-template-rows: ${props =>
+        `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
 `;
 
 export const DashboardHead = styled.div`
@@ -27,3 +50,6 @@ export const DashboardHead = styled.div`
     text-align: center;
     grid-column: ${props => `span ${props.column + 1}`};
 `;
+
+// grid-template-columns: ${props =>
+//     `repeat(${props.column}, 1fr) ${!props.time ? '10%' : ''}`};

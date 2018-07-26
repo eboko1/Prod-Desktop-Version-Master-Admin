@@ -13,7 +13,15 @@ import {
     DashboardAddOrderCell,
     DashboardAddOrderLink,
 } from './DashboardAddOrderLink';
-import { DashboardGrid, DashboardColumn, DashboardHead } from './styled.js';
+import {
+    DashboardGrid,
+    DashboardColumn,
+    DashboardHead,
+    DashboardAddOrderColumn,
+    DashboardBody,
+    DashboardContentColumn,
+    DashboardContentBox,
+} from './styled.js';
 import { findOrder } from './dashboardConfig';
 
 export default class DashboardContainer extends Component {
@@ -24,13 +32,13 @@ export default class DashboardContainer extends Component {
         orders: [
             [
                 { x: 0, y: 0, columns: 1, rows: 5, id: 123 },
-                { x: 1, y: 1, columns: 1, rows: 3, id: 456 },
-                { x: 2, y: 2, columns: 1, rows: 4, id: 789 },
-                { x: 4, y: 1, columns: 1, rows: 2, id: 999 },
-                { x: 6, y: 0, columns: 1, rows: 2, id: 888 },
-                { x: 6, y: 1, columns: 1, rows: 2, id: 777 },
-                { x: 6, y: 2, columns: 1, rows: 2, id: 666 },
-                { x: 6, y: 3, columns: 1, rows: 2, id: 555 },
+                // { x: 1, y: 1, columns: 1, rows: 3, id: 456 },
+                // { x: 2, y: 2, columns: 1, rows: 4, id: 789 },
+                // { x: 4, y: 1, columns: 1, rows: 2, id: 999 },
+                // { x: 6, y: 0, columns: 1, rows: 2, id: 888 },
+                // { x: 6, y: 1, columns: 1, rows: 2, id: 777 },
+                // { x: 6, y: 2, columns: 1, rows: 2, id: 666 },
+                // { x: 6, y: 3, columns: 1, rows: 2, id: 555 },
             ],
             [
                 { x: 1, y: 0, columns: 1, rows: 2, id: 444 },
@@ -63,8 +71,8 @@ export default class DashboardContainer extends Component {
 
         const rows = time.length * 2;
         const columns = orders
-            .map(col => col.map(item => item.y))
-            .map(num => Math.max(_.isFinite(...num)) + 1);
+            .map(col => col.map(item => item.y + item.columns))
+            .map(num => Math.max(...num.filter(_.isFinite)) + 1);
         // const columns = Math.max(...mockDash.map(order => order.y)) + 1;
         const dashboard = { rows, columns };
 
@@ -77,63 +85,14 @@ export default class DashboardContainer extends Component {
     */
 
     render() {
-        const { orders } = this.props;
-        const { dashboard, time } = this.state;
-
         const timeColumn = this._renderTimeColumn();
+        const dashboardColumns = this._rednderDashboardColumns();
 
         return (
             <Catcher>
                 <DashboardGrid>
-                    { console.log('→ Render mess') }
                     { timeColumn }
-                    { orders.map((column, index) => {
-                        return (
-                            <DashboardColumn
-                                dashboard={ dashboard }
-                                column={ dashboard.columns[ index ] }
-                                key={ index }
-                            >
-                                <DashboardHead
-                                    dashboard={ dashboard }
-                                    column={ dashboard.columns[ index ] }
-                                >
-                                    Column { index + 1 }
-                                </DashboardHead>
-                                { column.map(order => (
-                                    // <DashboardEmptyCell
-                                    //     // orders={ orders }
-                                    //     key={ v4() }
-                                    // >
-                                    <DashboardOrder
-                                        key={ order.id }
-                                        id={ order.id }
-                                        order={ order }
-                                        findOrder={ findOrder }
-                                    />
-                                    // </DashboardEmptyCell>
-                                )) }
-
-                                { Array(dashboard.rows)
-                                    .fill(0)
-                                    .map(() => (
-                                        <React.Fragment key={ v4() }>
-                                            <DashboardEmptyCell
-                                                // orders={ orders }
-                                                column={
-                                                    dashboard.columns[ index ]
-                                                }
-                                            />
-                                            <DashboardAddOrderCell>
-                                                <DashboardAddOrderLink>
-                                                    Add Order
-                                                </DashboardAddOrderLink>
-                                            </DashboardAddOrderCell>
-                                        </React.Fragment>
-                                    )) }
-                            </DashboardColumn>
-                        );
-                    }) }
+                    { dashboardColumns }
                 </DashboardGrid>
             </Catcher>
         );
@@ -154,7 +113,141 @@ export default class DashboardContainer extends Component {
             </DashboardColumn>
         );
     };
+
+    _rednderDashboardColumns = () => {
+        const { dashboard } = this.state;
+
+        return (
+            <DashboardColumn dashboard={ dashboard } column={ 1 } key={ 0 }>
+                <DashboardHead
+                    dashboard={ dashboard }
+                    column={ dashboard.columns[ 0 ] }
+                >
+                    Column { 1 }
+                </DashboardHead>
+                <DashboardBody>
+                    <DashboardContentColumn>
+                        <DashboardContentBox dashboard={ dashboard }>
+                            <DashboardEmptyCell column={ dashboard.columns[ 3 ] } />
+                        </DashboardContentBox>
+
+                        <div
+                            className='co-content'
+                            style={ {
+                                display:             'grid',
+                                gridTemplateColumns: 'repeat(3, 1fr)',
+                                gridColumn:          '1 / span 3',
+                            } }
+                        >
+                            <DashboardEmptyCell
+                                column={ 3 }
+                                // column={ this.state.dashboard.columns[ 3 ] }
+                            />
+                            <DashboardEmptyCell column={ 3 } />
+                            <DashboardEmptyCell column={ 3 } />
+                            <DashboardEmptyCell column={ 3 } />
+                        </div>
+
+                        <div
+                            className='co-content'
+                            style={ {
+                                display:             'grid',
+                                gridTemplateColumns: 'repeat(4, 1fr)',
+                                gridColumn:          '1 / span 4',
+                            } }
+                        >
+                            <DashboardEmptyCell
+                                column={ 4 }
+                                // column={ this.state.dashboard.columns[ 3 ] }
+                            />
+                        </div>
+                        <div
+                            className='co-content'
+                            style={ {
+                                display:             'grid',
+                                gridTemplateColumns: 'repeat(1, 1fr)',
+                                gridColumn:          '1 / span 1',
+                            } }
+                        >
+                            <DashboardEmptyCell column={ 2 } />
+                        </div>
+                        <DashboardEmptyCell column={ 4 } />
+                    </DashboardContentColumn>
+                    { this._renderDashboardAddOrderColumn() }
+                </DashboardBody>
+            </DashboardColumn>
+        );
+    };
+
+    _renderDashboardAddOrderColumn = () => {
+        const { dashboard } = this.state;
+
+        return (
+            <DashboardAddOrderColumn dashboard={ dashboard }>
+                { Array(dashboard.rows)
+                    .fill(0)
+                    .map((_, index) => (
+                        <DashboardAddOrderCell key={ index }>
+                            <DashboardAddOrderLink>
+                                Add Order
+                            </DashboardAddOrderLink>
+                        </DashboardAddOrderCell>
+                    )) }
+            </DashboardAddOrderColumn>
+        );
+    };
 }
+
+// _rednderDashboardColumns = () => {
+//     const { orders } = this.props;
+//     const { dashboard } = this.state;
+//
+//     return orders.map((column, index) => {
+//         return (
+//             <DashboardColumn
+//                 dashboard={ dashboard }
+//                 column={ dashboard.columns[ index ] }
+//                 key={ index }
+//             >
+//                 <DashboardHead
+//                     dashboard={ dashboard }
+//                     column={ dashboard.columns[ index ] }
+//                 >
+//                     Column { index + 1 }
+//                 </DashboardHead>
+//                 { column.map(order => (
+//                     <DashboardOrder
+//                         key={ order.id }
+//                         order={ order }
+//                         findOrder={ findOrder }
+//                     />
+//                 )) }
+//
+//                 { Array(dashboard.rows)
+//                     .fill(0)
+//                     .map((_, ind) => (
+//                         <React.Fragment key={ `dashColumn-${ind}` }>
+//                             <DashboardEmptyCell
+//                                 column={ dashboard.columns[ index ] }
+//                             />
+//                             <DashboardAddOrderCell>
+//                                 <DashboardAddOrderLink>
+//                                     Add Order
+//                                 </DashboardAddOrderLink>
+//                             </DashboardAddOrderCell>
+//                         </React.Fragment>
+//                     )) }
+//             </DashboardColumn>
+//         );
+//     });
+// };
+
+//
+// <DashboardAddOrderCell>
+//     <DashboardAddOrderLink>
+//         Add Order
+//     </DashboardAddOrderLink>
+// </DashboardAddOrderCell>
 
 // _renderTimeColumn = () => {};
 

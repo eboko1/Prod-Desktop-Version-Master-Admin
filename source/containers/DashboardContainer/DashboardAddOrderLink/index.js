@@ -16,8 +16,8 @@ const AddOrderLink = ({ className, children }) => (
 );
 
 export const DashboardAddOrderCell = styled.div`
-    background-color: tomato;
-    border: 1px solid red;
+    background-color: papayawhip;
+    border: 1px solid palevioletred;
     height: ${ROW_HEIGHT}px;
 `;
 

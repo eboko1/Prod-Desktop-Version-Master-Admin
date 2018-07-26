@@ -15,10 +15,10 @@ const dropTarget = {
 
     drop(props, monitor) {
         // moveOrder(props.x, props.y);
-        console.group('→ drop (dropTarget/DashboardCell)');
-        console.log('props: ', props);
-        console.log('monitor: ', monitor);
-        console.log('getItem: ', monitor.getItem());
+        console.group('@drop (dropTarget/DashboardCell)');
+        console.log('→ props: ', props);
+        console.log('→ monitor: ', monitor);
+        console.log('→ getItem: ', monitor.getItem().id);
         console.groupEnd();
 
         return {};
@@ -28,7 +28,7 @@ const dropTarget = {
 const collect = (connect, monitor) => ({
     connectDropTarget: connect.dropTarget(),
     // isOver:            monitor.isOver(),
-    // canDrop:           monitor.canDrop(),
+    canDrop:           monitor.canDrop(),
 });
 
 // @DropTarget(DragItemTypes.ORDER, dropTarget, collect)
@@ -41,23 +41,6 @@ class DragTarget extends Component {
         connectDropTarget: PropTypes.func,
         children:          PropTypes.node,
     };
-
-    // renderOverlay(color) {
-    //     return (
-    //         <div
-    //             style={ {
-    //                 position:        'absolute',
-    //                 top:             0,
-    //                 left:            0,
-    //                 height:          '100%',
-    //                 width:           '100%',
-    //                 zIndex:          1,
-    //                 opacity:         0.5,
-    //                 backgroundColor: color,
-    //             } }
-    //         />
-    //     );
-    // }
 
     render() {
         const {
@@ -75,10 +58,27 @@ class DragTarget extends Component {
         return connectDropTarget(
             <div className={ className }>
                 { children }
-                { /* { isOver && !canDrop && this.renderOverlay('red') }
-                { !isOver && canDrop && this.renderOverlay('yellow') }
-                { isOver && canDrop && this.renderOverlay('green') } */ }
+                { isOver && !canDrop && this._renderOverlay('red') }
+                { !isOver && canDrop && this._renderOverlay('yellow') }
+                { isOver && canDrop && this._renderOverlay('green') }
             </div>,
+        );
+    }
+
+    _renderOverlay(color) {
+        return (
+            <div
+                style={ {
+                    position:        'absolute',
+                    top:             0,
+                    left:            0,
+                    height:          '100%',
+                    width:           '100%',
+                    zIndex:          1,
+                    opacity:         0.5,
+                    backgroundColor: color,
+                } }
+            />
         );
     }
 }

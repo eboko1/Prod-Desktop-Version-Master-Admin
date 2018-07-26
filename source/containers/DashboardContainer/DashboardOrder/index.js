@@ -10,34 +10,26 @@ import { DragItemTypes } from '../dashboardConfig';
 
 const orderSource = {
     beginDrag(props) {
-        // const { id, orders, findOrder } = props;
-        console.log('→ aa', props);
+        console.log('^ beginDrag', props);
 
-        // console.log('→ beginDrag', {
-        //     id:            id,
-        //     originalIndex: findOrder(orders, id).index,
-        // });
-        return {};
-        // return {
-        //     id:            id,
-        //     originalIndex: findOrder(orders, id).index,
-        // };
+        return { ...props.order };
     },
 
-    // endDrag(props, monitor) {
-    //     console.log('→ endDrag');
-    //     const { id: droppedId, originalIndex } = monitor.getItem();
-    //     const didDrop = monitor.didDrop();
-    //
-    //     if (didDrop) {
-    //         console.log('→ did dropped', droppedId, originalIndex);
-    //     }
-    //
-    //     if (!didDrop) {
-    //         console.log('→ didn\'t dropped', droppedId, originalIndex);
-    //         // props.moveOrder(droppedId, originalIndex);
-    //     }
-    // },
+    endDrag(props, monitor) {
+        console.log('^^ endDrag props', props);
+        console.log('^^ endDrag monitor', monitor.getItem());
+
+        const { id, x, y, rows, columns } = monitor.getItem();
+        const didDrop = monitor.didDrop();
+
+        if (didDrop) {
+            console.log('→ did dropped', id);
+        }
+
+        if (!didDrop) {
+            console.log('→ didn\'t dropped', id);
+        }
+    },
 };
 
 const orderTarget = {
@@ -98,14 +90,6 @@ function collect(connect, monitor) {
     };
 }
 
-// const DashboardOrder = styled.div`
-//     background-image: linear-gradient(203deg, #3edfd7, #29a49d 90%);
-//     border: 1px solid yellowgreen;
-//     min-height: 30px;
-//     cursor: move;
-//     opacity: ${props => props.isDragging ? 0.5 : 1};
-// `;
-
 // @DropTarget(DragItemTypes.ORDER, orderTarget, connect => ({
 //     connectDropTarget: connect.dropTarget(),
 // }))
@@ -116,7 +100,6 @@ function collect(connect, monitor) {
 class DragItem extends Component {
     static propTypes = {
         connectDragSource:  PropTypes.func,
-        // connectDragSource:  PropTypes.func.isRequired,
         connectDragPreview: PropTypes.func,
         isDragging:         PropTypes.bool,
     };
@@ -126,43 +109,23 @@ class DragItem extends Component {
     };
 
     render() {
-        const { connectDragSource, isDragging } = this.props;
-        // const { connectDragSource, connectDropTarget, isDragging } = this.props;
+        const {
+            connectDragSource,
+            isDragging,
+            className,
+            children,
+            order,
+        } = this.props;
 
         return connectDragSource(
-            // <div className={ this.props.className } isDragging={ isDragging }>
             <div
-                className={ this.props.className }
+                className={ className }
                 isdragging={ isDragging ? 1 : 0 }
+                order={ order }
             >
-                { this.props.children }
+                { children }
             </div>,
         );
-        // return connectDragSource(
-        //     <div>
-        //         <DashboardOrder
-        //             isDragging={ isDragging }
-        //             innerRef={ order => {
-        //                 this.oroder = connectDragSource(order);
-        //             } }
-        //             // innerRef={ order => connectDragSource(order) }
-        //         >
-        //             → order →
-        //         </DashboardOrder>,
-        //     </div>,
-        // );
-        // return connectDragSource(
-        //     connectDropTarget(
-        //         <DashboardOrder
-        //             isDragging={ isDragging }
-        //             innerRef={ order => {
-        //                 connectDragSource(order);
-        //             } }
-        //         >
-        //             → order →
-        //         </DashboardOrder>,
-        //     ),
-        // );
     }
 }
 
@@ -172,10 +135,36 @@ const DashboardOrder = styled(DragItem)`
     min-height: 30px;
     cursor: move;
     opacity: ${props => props.isDragging ? 0.5 : 1};
+    grid-row: ${props => `${props.order.x} / ${props.order.rows}`};
+    grid-column: ${props => `${props.order.y} / span ${props.order.columns}`};
 `;
 
 export default DragSource(DragItemTypes.ORDER, orderSource, collect)(
     DashboardOrder,
 );
 
-// export default DragSource(DragItemTypes.ORDER, orderSource, collect)(DragItem);
+// return connectDragSource(
+//     <div>
+//         <DashboardOrder
+//             isDragging={ isDragging }
+//             innerRef={ order => {
+//                 this.oroder = connectDragSource(order);
+//             } }
+//             // innerRef={ order => connectDragSource(order) }
+//         >
+//             → order →
+//         </DashboardOrder>,
+//     </div>,
+// );
+// return connectDragSource(
+//     connectDropTarget(
+//         <DashboardOrder
+//             isDragging={ isDragging }
+//             innerRef={ order => {
+//                 connectDragSource(order);
+//             } }
+//         >
+//             → order →
+//         </DashboardOrder>,
+//     ),
+// );
