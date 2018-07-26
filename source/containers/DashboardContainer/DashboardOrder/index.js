@@ -114,14 +114,20 @@ class DragItem extends Component {
             isDragging,
             className,
             children,
-            order,
+            x,
+            y,
+            columns,
+            rows,
         } = this.props;
 
         return connectDragSource(
             <div
                 className={ className }
                 isdragging={ isDragging ? 1 : 0 }
-                order={ order }
+                x={ x }
+                y={ y }
+                columns={ columns }
+                rows={ rows }
             >
                 { children }
             </div>,
@@ -135,8 +141,8 @@ const DashboardOrder = styled(DragItem)`
     min-height: 30px;
     cursor: move;
     opacity: ${props => props.isDragging ? 0.5 : 1};
-    grid-row: ${props => `${props.order.x} / ${props.order.rows}`};
-    grid-column: ${props => `${props.order.y} / span ${props.order.columns}`};
+    grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
+    grid-column: ${props => `${props.y + 1} / span ${props.columns}`};
 `;
 
 export default DragSource(DragItemTypes.ORDER, orderSource, collect)(

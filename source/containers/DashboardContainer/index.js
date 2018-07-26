@@ -23,12 +23,14 @@ import {
     DashboardContentBox,
 } from './styled.js';
 import { findOrder } from './dashboardConfig';
+import puzzledData from './dashboardCore/runner';
 
 export default class DashboardContainer extends Component {
     state = {};
 
     static defaultProps = {
         /* eslint-disable */
+        data: puzzledData,
         orders: [
             [
                 { x: 0, y: 0, columns: 1, rows: 5, id: 123 },
@@ -86,7 +88,7 @@ export default class DashboardContainer extends Component {
 
     render() {
         const timeColumn = this._renderTimeColumn();
-        const dashboardColumns = this._rednderDashboardColumns();
+        const dashboardColumns = this._renderDashboardColumns();
 
         return (
             <Catcher>
@@ -103,7 +105,7 @@ export default class DashboardContainer extends Component {
 
         return (
             <DashboardColumn dashboard={ dashboard } column={ 1 } time>
-                <DashboardHead column={ 0 }>Time</DashboardHead>
+                <DashboardHead>Time</DashboardHead>
                 { time.map(time => (
                     <React.Fragment key={ time }>
                         <DashboardEmptyCell>{ time }</DashboardEmptyCell>
@@ -114,7 +116,8 @@ export default class DashboardContainer extends Component {
         );
     };
 
-    _rednderDashboardColumns = () => {
+    _renderDashboardColumns = () => {
+        const { data } = this.props;
         const { dashboard } = this.state;
 
         return (
@@ -123,59 +126,44 @@ export default class DashboardContainer extends Component {
                     dashboard={ dashboard }
                     column={ dashboard.columns[ 0 ] }
                 >
-                    Column { 1 }
+                    Column 1
                 </DashboardHead>
                 <DashboardBody>
-                    <DashboardContentColumn>
-                        <DashboardContentBox dashboard={ dashboard }>
-                            <DashboardEmptyCell column={ dashboard.columns[ 3 ] } />
-                        </DashboardContentBox>
-
-                        <div
-                            className='co-content'
-                            style={ {
-                                display:             'grid',
-                                gridTemplateColumns: 'repeat(3, 1fr)',
-                                gridColumn:          '1 / span 3',
-                            } }
-                        >
-                            <DashboardEmptyCell
-                                column={ 3 }
-                                // column={ this.state.dashboard.columns[ 3 ] }
-                            />
-                            <DashboardEmptyCell column={ 3 } />
-                            <DashboardEmptyCell column={ 3 } />
-                            <DashboardEmptyCell column={ 3 } />
-                        </div>
-
-                        <div
-                            className='co-content'
-                            style={ {
-                                display:             'grid',
-                                gridTemplateColumns: 'repeat(4, 1fr)',
-                                gridColumn:          '1 / span 4',
-                            } }
-                        >
-                            <DashboardEmptyCell
-                                column={ 4 }
-                                // column={ this.state.dashboard.columns[ 3 ] }
-                            />
-                        </div>
-                        <div
-                            className='co-content'
-                            style={ {
-                                display:             'grid',
-                                gridTemplateColumns: 'repeat(1, 1fr)',
-                                gridColumn:          '1 / span 1',
-                            } }
-                        >
-                            <DashboardEmptyCell column={ 2 } />
-                        </div>
-                        <DashboardEmptyCell column={ 4 } />
-                    </DashboardContentColumn>
+                    { console.log('→ data', data) }
+                    { this._renderDashboardContentColumn() }
                     { this._renderDashboardAddOrderColumn() }
                 </DashboardBody>
             </DashboardColumn>
+        );
+    };
+
+    _renderDashboardContentColumn = () => {
+        const { dashboard } = this.state;
+        const { data } = this.props;
+
+        return (
+            <DashboardContentColumn dashboard={ dashboard }>
+                { data.map(({ data: { result, maxRows, maxBlocks } }, index) => (
+                    <DashboardContentBox
+                        key={ index }
+                        dashboard={ dashboard }
+                        rows={ maxRows }
+                        columns={ maxBlocks }
+                    >
+                        { result.map(
+                            (order, index) =>
+                                order.empty ? (
+                                    <DashboardEmptyCell
+                                        key={ index }
+                                        { ...order }
+                                    />
+                                ) : (
+                                    <DashboardOrder key={ index } { ...order } />
+                                ),
+                        ) }
+                    </DashboardContentBox>
+                )) }
+            </DashboardContentColumn>
         );
     };
 

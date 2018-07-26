@@ -12,30 +12,32 @@ export const DashboardColumn = styled.div`
     padding: 10px;
     background: lightblue;
     border: 1px solid blue;
-    display: grid;
+    ${'' /* display: grid;
     grid-template-rows: ${props =>
         `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
-    grid-template-columns: ${props => `repeat(${props.column}, 1fr)`};
+    grid-template-columns: ${props => `repeat(${props.column}, 1fr)`}; */};
 `;
 
 export const DashboardBody = styled.div`
-    display: flex;
+    display: grid;
+    grid-template-columns: 90% 10%;
 `;
 
 export const DashboardContentColumn = styled.div`
-    flex: 0 0 90%;
     background: yellowgreen;
+    display: grid;
+    grid-template-rows: ${props =>
+        `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
 `;
 
 export const DashboardContentBox = styled.div`
     display: grid;
-    grid-template-columns: ${props =>
-        `repeat(${props.dashboard.columns}, 1fr)`};
-    grid-column: ${props => `span ${props.dashboard.columns}`};
+    grid-template-columns: ${props => `repeat(${props.columns}, 1fr)`};
+    grid-template-rows: ${props => `repeat(${props.rows}, ${ROW_HEIGHT}px)`};
+    grid-row: ${props => `span ${props.rows}`};
 `;
 
 export const DashboardAddOrderColumn = styled.div`
-    flex: 0 0 10%;
     display: grid;
     grid-template-rows: ${props =>
         `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
@@ -48,7 +50,6 @@ export const DashboardHead = styled.div`
     height: ${ROW_HEIGHT}px;
     color: white;
     text-align: center;
-    grid-column: ${props => `span ${props.column + 1}`};
 `;
 
 // grid-template-columns: ${props =>
