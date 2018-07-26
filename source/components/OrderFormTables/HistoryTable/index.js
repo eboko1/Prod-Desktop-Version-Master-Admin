@@ -32,7 +32,7 @@ class HistoryTable extends Component {
                 title:     <FormattedMessage id='order' />,
                 dataIndex: 'num',
                 key:       'history-num',
-                width:     '30%',
+                width:     '15%',
                 render:    (text, record) => (
                     <Link to={ `${book.order}/${record.id}` }>
                         { text }
@@ -44,17 +44,39 @@ class HistoryTable extends Component {
                 title:     <FormattedMessage id='order_form_table.vehicle' />,
                 dataIndex: 'vehicleMakeName',
                 key:       'history-vehicle',
-                width:     '30%',
+                width:     '20%',
                 render:    (text, record) => <div>{ text }</div>,
             },
             {
                 title:     <FormattedMessage id='order_form_table.order_sum' />,
                 dataIndex: 'servicesTotalSum',
                 key:       'history-sum',
-                width:     '30%',
+                width:     '15%',
                 render:    (text, record) => (
                     <div>
                         { record.detailsTotalSum + record.servicesTotalSum }
+                    </div>
+                ),
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.recommendation' />,
+                dataIndex: 'servicesTotalSum',
+                key:       'history-recommendation',
+                width:     '20%',
+                render:    (text, record) => (
+                    <div>
+                        { record.recommendation }
+                    </div>
+                ),
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.cancel_reason' />,
+                dataIndex: 'servicesTotalSum',
+                key:       'history-cancel-reason',
+                width:     '20%',
+                render:    (text, record) => (
+                    <div>
+                        { record.cancelStatusReason }
                     </div>
                 ),
             },
