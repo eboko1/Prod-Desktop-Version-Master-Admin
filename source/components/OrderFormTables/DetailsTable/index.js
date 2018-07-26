@@ -11,7 +11,12 @@ import {
     Select,
 } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { DecoratedSelect, DecoratedInput, DecoratedInputNumber } from 'forms/DecoratedFields';
+import {
+    DecoratedSelect,
+    DecoratedInput,
+    DecoratedInputNumber,
+    DecoratedCheckbox,
+} from 'forms/DecoratedFields';
 import { v4 } from 'uuid';
 
 // proj
@@ -33,16 +38,12 @@ class DetailsTable extends Component {
                 render:    (text, record) => (
                     <DecoratedSelect
                         field={ `details[${record.key}][detailName]` }
-                        getFieldDecorator={
-                            this.props.form.getFieldDecorator
-                        }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
                         showSearch
                         onChange={ value =>
                             this.handleDetailSelect(record.key, value)
                         }
-                        onSearch={ value =>
-                            this.props.onDetailSearch(value)
-                        }
+                        onSearch={ value => this.props.onDetailSearch(value) }
                         placeholder={
                             <FormattedMessage id='order_form_table.detail.placeholder' />
                         }
@@ -62,15 +63,16 @@ class DetailsTable extends Component {
             {
                 title:     <FormattedMessage id='order_form_table.brand' />,
                 dataIndex: 'brand',
-                width:     '20%',
+                width:     '15%',
                 render:    (text, record) => (
                     <DecoratedSelect
                         field={ `details[${record.key}][detailBrandName]` }
-                        getFieldDecorator={
-                            this.props.form.getFieldDecorator
-                        }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
                         disabled={
-                            !_.get(this.props.details[ record.key ], 'detailName.value')
+                            !_.get(
+                                this.props.details[ record.key ],
+                                'detailName.value',
+                            )
                         }
                         showSearch
                         placeholder={
@@ -78,12 +80,10 @@ class DetailsTable extends Component {
                         }
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '35%' } }
-                        onSearch={ value =>
-                            this.props.onBrandSearch(value)
-                        }
+                        onSearch={ value => this.props.onBrandSearch(value) }
                     >
                         { this.props.allDetails.brands.map(
-                            ({ brandId, brandName}) => (
+                            ({ brandId, brandName }) => (
                                 <Option value={ brandId } key={ v4() }>
                                     { brandName }
                                 </Option>
@@ -100,11 +100,12 @@ class DetailsTable extends Component {
                     <DecoratedInput
                         field={ `details[${record.key}][detailCode]` }
                         disabled={
-                            !_.get(this.props.details[ record.key ], 'detailName.value')
+                            !_.get(
+                                this.props.details[ record.key ],
+                                'detailName.value',
+                            )
                         }
-                        getFieldDecorator={
-                            this.props.form.getFieldDecorator
-                        }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
                     />
                 ),
             },
@@ -117,7 +118,10 @@ class DetailsTable extends Component {
                         field={ `details[${record.key}][detailPrice]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         disabled={
-                            !_.get(this.props.details[ record.key ], 'detailName.value')
+                            !_.get(
+                                this.props.details[ record.key ],
+                                'detailName.value',
+                            )
                         }
                         min={ 0 }
                     />
@@ -132,7 +136,10 @@ class DetailsTable extends Component {
                         field={ `details[${record.key}][detailCount]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         disabled={
-                            !_.get(this.props.details[ record.key ], 'detailName.value')
+                            !_.get(
+                                this.props.details[ record.key ],
+                                'detailName.value',
+                            )
                         }
                         min={ 0.1 }
                         step={ 0.1 }
@@ -159,6 +166,24 @@ class DetailsTable extends Component {
                 },
             },
             {
+                title:     <FormattedMessage id='order_form_table.own_detail' />,
+                dataIndex: 'ownDetail',
+                width:     '5%',
+                render:    (text, record) => (
+                    <DecoratedCheckbox
+                        field={ `details[${record.key}][ownDetail]` }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        initValue={ record.ownDetail }
+                        disabled={
+                            !_.get(
+                                this.props.details[ record.key ],
+                                'detailName.value',
+                            )
+                        }
+                    />
+                ),
+            },
+            {
                 title:     '',
                 dataIndex: 'delete',
                 render:    (text, record) => {
@@ -175,7 +200,6 @@ class DetailsTable extends Component {
                 },
             },
         ];
-
     }
 
     handleDetailSelect = key => {

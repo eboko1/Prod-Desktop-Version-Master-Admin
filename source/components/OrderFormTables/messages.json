@@ -19,7 +19,10 @@
         "order_form_table.detail_code": "Detail Code",
         "order_form_table.vehicle": "Car",
         "order_form_table.tasks": "Tasks",
-        "order_form_table.history": "History"
+        "order_form_table.history": "History",
+        "order_form_table.own_detail": "Own",
+        "order_form_table.recommendation": "Recommendation",
+        "order_form_table.cancel_reason": "Cancel reason"
     },
     "ru": {
         "order_form_table.service.placeholder": "Выберете услугу",
@@ -41,7 +44,10 @@
         "order_form_table.detail_code": "Код З/Ч",
         "order_form_table.vehicle": "Автомобиль",
         "order_form_table.tasks": "Задачи",
-        "order_form_table.history": "История"
+        "order_form_table.history": "История",
+        "order_form_table.own_detail": "Свои",
+        "order_form_table.recommendation": "Рекомендации",
+        "order_form_table.cancel_reason": "Причина отмены"
     },
     "uk": {
         "order_form_table.service.placeholder": "Виберіть послугу",
@@ -63,6 +69,9 @@
         "order_form_table.detail_code": "Код З/Ч",
         "order_form_table.vehicle": "Автомобіль",
         "order_form_table.tasks": "Задачі",
-        "order_form_table.history": "Історія"
+        "order_form_table.history": "Історія",
+        "order_form_table.own_detail": "Свої",
+        "order_form_table.recommendation": "Рекомендації",
+        "order_form_table.cancel_reason": "Причині відміни"
     }
 }
