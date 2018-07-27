@@ -3,6 +3,7 @@ import AddClientModal from './AddClientModal';
 import InviteModal from './InviteModal';
 import CancelReasonModal from './CancelReasonModal';
 import ToSuccessModal from './ToSuccessModal';
+import ConfirmOrderExitModal from './ConfirmOrderExitModal';
 
 export {
     UniversalFiltersModal,
@@ -10,4 +11,5 @@ export {
     InviteModal,
     CancelReasonModal,
     ToSuccessModal,
+    ConfirmOrderExitModal,
 };

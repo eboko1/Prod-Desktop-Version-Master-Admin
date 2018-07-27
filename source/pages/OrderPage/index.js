@@ -1,4 +1,5 @@
 // vendor
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
@@ -7,14 +8,14 @@ import moment from 'moment';
 import { Button, Icon } from 'antd';
 
 // proj
-import { fetchOrderForm, updateOrder } from 'core/forms/orderForm/duck';
+import { fetchOrderForm, updateOrder, returnToOrdersPage } from 'core/forms/orderForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Spinner } from 'commons';
 import { OrderForm } from 'forms';
 import { ReportsDropdown, ChangeStatusDropdown } from 'components';
-import { CancelReasonModal, ToSuccessModal } from 'modals';
+import { CancelReasonModal, ToSuccessModal, ConfirmOrderExitModal } from 'modals';
 import book from 'routes/book';
 
 import {
@@ -42,6 +43,7 @@ const mapStateToProps = state => {
         orderCalls:        state.forms.orderForm.calls,
         orderTasks:        state.forms.orderForm.tasks,
         orderHistory:      state.forms.orderForm.history,
+        initOrderEntity:   state.forms.orderForm.initOrderEntity,
         orderEntity:       {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
@@ -59,6 +61,7 @@ const mapStateToProps = state => {
     updateOrder,
     setModal,
     resetModal,
+    returnToOrdersPage,
 })
 class OrderPage extends Component {
     saveFormRef = formRef => {
@@ -73,7 +76,7 @@ class OrderPage extends Component {
         this.props.fetchOrderForm(this.props.match.params.id);
     }
 
-    onStatusChange(status) {
+    onStatusChange(status, redirectStatus) {
         const { id } = this.props.match.params;
         const requiredFields = requiredFieldsOnStatuses[ status ];
         const form = this.orderFormRef.props.form;
@@ -88,6 +91,7 @@ class OrderPage extends Component {
                         this.props.allDetails,
                         status,
                     ),
+                    redirectStatus,
                 });
             }
         });
@@ -152,7 +156,24 @@ class OrderPage extends Component {
                         <Icon
                             style={ { fontSize: 24, cursor: 'pointer' } }
                             type='close'
-                            onClick={ () => this.props.history.goBack() }
+                            onClick={ () => {
+                                const newOrder = convertFieldsValuesToDbEntity(
+                                    this.props.orderEntity,
+                                    this.props.allServices,
+                                    this.props.allDetails,
+                                );
+
+                                if (
+                                    _.isEqual(
+                                        newOrder,
+                                        this.props.initOrderEntity,
+                                    )
+                                ) {
+                                    this.props.returnToOrdersPage(status);
+                                } else {
+                                    setModal(MODALS.CONFIRM_EXIT);
+                                }
+                            } }
                         />
                     </>
                 }
@@ -170,6 +191,14 @@ class OrderPage extends Component {
                         this,
                     ) }
                     orderComments={ this.props.orderComments }
+                    resetModal={ () => resetModal() }
+                />
+                <ConfirmOrderExitModal
+                    wrappedComponentRef={ this.saveFormRef }
+                    visible={ this.props.modal }
+                    status={ status }
+                    returnToOrdersPage={ this.props.returnToOrdersPage.bind(this) }
+                    saveOrder={ () => this.onStatusChange(status, status) }
                     resetModal={ () => resetModal() }
                 />
                 <ToSuccessModal
