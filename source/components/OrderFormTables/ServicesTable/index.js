@@ -19,7 +19,6 @@ import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
 
 // own
 import Styles from './styles.m.css';
-import {servicesStats} from "../../../forms/OrderForm/stats";
 const Option = Select.Option;
 const FormItem = Form.Item;
 
@@ -119,6 +118,35 @@ class ServicesTable extends Component {
                 },
             },
             {
+                title:     <FormattedMessage id='order_form_table.employee' />,
+                dataIndex: 'employeeId',
+                render:    (text, record) => {
+                    return (
+                        <DecoratedSelect
+                            field={ `services[${record.key}][employeeId]` }
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                            disabled={
+                                !this.props.services[ record.key ].serviceName.value
+                            }
+                        >
+                            { this.props.employees.map(employee => (
+                                <Option
+                                    value={ employee.id }
+                                    key={ v4() }
+                                    disabled={ employee.disabled }
+                                >
+                                    { `${employee.employeeName} ${
+                                        employee.employeeSurname
+                                    }` }
+                                </Option>
+                            )) }
+                        </DecoratedSelect>
+                    );
+                },
+            },
+            {
                 title:     '',
                 dataIndex: 'delete',
                 render:    (text, record) => {
@@ -184,6 +212,14 @@ class ServicesTable extends Component {
                 value:      void 0,
                 dirty:      false,
             },
+            employeeId: {
+                errors:     void 0,
+                name:       `services[${id}][employeeId]`,
+                touched:    true,
+                validating: false,
+                value:      void 0,
+                dirty:      false,
+            },
             servicePrice: {
                 errors:     void 0,
                 name:       `services[${id}][servicePrice]`,
@@ -196,7 +232,7 @@ class ServicesTable extends Component {
 
         this.props.onChangeOrderServices({
             ...this.props.services,
-            ...{ [ v4() ]: newData },
+            ...{ [ id ]: newData },
         });
     };
 

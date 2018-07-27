@@ -1,5 +1,6 @@
 {
     "en": {
+        "order_form_table.employee": "Employee",
         "order_form_table.service.placeholder": "Select service",
         "order_form_table.detail.placeholder": "Select detail",
         "order_form_table.brand.placeholder": "Select brand",
@@ -25,6 +26,7 @@
         "order_form_table.cancel_reason": "Cancel reason"
     },
     "ru": {
+        "order_form_table.employee": "Сотрудник",
         "order_form_table.service.placeholder": "Выберете услугу",
         "order_form_table.detail.placeholder": "Выберете деталь",
         "order_form_table.brand.placeholder": "Выберете бренд",
@@ -50,6 +52,7 @@
         "order_form_table.cancel_reason": "Причина отмены"
     },
     "uk": {
+        "order_form_table.employee": "Співробітник",
         "order_form_table.service.placeholder": "Виберіть послугу",
         "order_form_table.detail.placeholder": "Виберіть деталь",
         "order_form_table.brand.placeholder": "Виберіть бренд",
