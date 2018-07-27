@@ -45,7 +45,10 @@ import {
 //     yield nprogress.done();
 // }
 
-const selectFilter = state => state.orders.filter;
+const selectFilter = ({ orders: { filter, sort } }) => ({
+    sort,
+    filter,
+});
 
 export function* fetchOrdersSagaTake() {
     // сейчас работает (подключена в рут саге)
@@ -55,8 +58,14 @@ export function* fetchOrdersSagaTake() {
             yield take(FETCH_ORDERS);
             yield nprogress.start();
 
-            const filter = yield select(selectFilter);
-            const filters = _.omit(spreadProp('daterange', filter), [ 'beginDate', 'createDate' ]);
+            const {
+                filter,
+                sort: { field: sortField, order: sortOrder },
+            } = yield select(selectFilter);
+            const filters = _.omit(
+                spreadProp('daterange', { ...filter, sortField, sortOrder }),
+                [ 'beginDate', 'createDate' ],
+            );
 
             yield put(uiActions.setOrdersFetchingState(true));
             const data = yield call(fetchAPI, 'GET', 'orders', filters);

@@ -32,6 +32,8 @@ export const SET_UNIVERSAL_FILTERS = `${prefix}/SET_UNIVERSAL_FILTERS`;
 export const CREATE_INVITE_ORDERS = `${prefix}/CREATE_INVITE_ORDERS`;
 export const CREATE_INVITE_ORDERS_SUCCESS = `${prefix}/CREATE_INVITE_ORDERS_SUCCESS`;
 export const CREATE_INVITE_ORDERS_FAIL = `${prefix}/CREATE_INVITE_ORDERS_FAIL`;
+
+export const SET_ORDERS_PAGE_SORT = `${prefix}/SET_ORDERS_PAGE_SORT`;
 /**
  * Reducer
  * */
@@ -51,6 +53,10 @@ const ReducerState = {
         minNps:        void 0,
         maxNps:        void 0,
         orderComments: void 0,
+    },
+    sort: {
+        field: 'datetime',
+        order: 'descend',
     },
     statsCountsPanel: {
         stats: {},
@@ -103,6 +109,12 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case SET_ORDERS_PAGE_SORT:
+            return {
+                ...state,
+                sort: payload,
+            };
+
         case SET_ORDERS_STATUS_FILTER:
             return {
                 ...state,
@@ -112,6 +124,10 @@ export default function reducer(state = ReducerState, action) {
                     minNps: void 0,
                     maxNps: void 0,
                     status: payload,
+                },
+                sort: {
+                    order: 'desc',
+                    field: 'datetime',
                 },
             };
 
@@ -252,6 +268,11 @@ export const resetOrdersDaterangeFilter = () => ({
 export const setOrdersStatusFilter = statusFilter => ({
     type:    SET_ORDERS_STATUS_FILTER,
     payload: statusFilter,
+});
+
+export const setOrdersPageSort = sort => ({
+    type:    SET_ORDERS_PAGE_SORT,
+    payload: sort,
 });
 
 export const setOrdersSearchFilter = searchFilter => ({
