@@ -16,6 +16,7 @@ import { replace } from 'react-router-redux';
 import { resetModal, MODALS } from 'core/modals/duck';
 import { uiActions } from 'core/ui/actions';
 import { fetchAPI } from 'utils';
+import book from 'routes/book';
 
 // own
 import {
@@ -30,6 +31,8 @@ import {
     onHandleCustomBrand,
     createOrderSuccess,
     updateOrderSuccess,
+    returnToOrdersPage,
+
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
     ON_CHANGE_ORDER_FORM,
@@ -39,6 +42,7 @@ import {
     ON_BRAND_SEARCH,
     CREATE_ORDER,
     UPDATE_ORDER,
+    RETURN_TO_ORDERS_PAGE,
 } from './duck';
 
 export function* fetchOrderFormSaga() {
@@ -66,16 +70,47 @@ const selectModal = state => state.modals.modal;
 export function* updateOrderSaga() {
     while (true) {
         const {
-            payload: { order, id },
+            payload: { order, id, redirectStatus },
         } = yield take(UPDATE_ORDER);
         yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
         yield put(updateOrderSuccess());
-        yield put(fetchOrderForm(id));
+
+        if (!redirectStatus) {
+            yield put(fetchOrderForm(id));
+        }
         const modal = yield select(selectModal);
-        if (modal === MODALS.CANCEL_REASON || modal === MODALS.TO_SUCCESS) {
+        if (
+            modal === MODALS.CANCEL_REASON ||
+            modal === MODALS.TO_SUCCESS ||
+            modal === MODALS.CONFIRM_EXIT
+        ) {
             yield put(resetModal());
         }
-        // yield put(replace('/orders/appointments'));
+        if (redirectStatus) {
+            yield put(returnToOrdersPage(redirectStatus));
+        }
+    }
+}
+
+export function* returnToOrdersPageSaga() {
+    while (true) {
+        const { payload: status } = yield take(RETURN_TO_ORDERS_PAGE);
+        const statusesMap = [
+            {
+                route:    '/orders/appointments',
+                statuses: [ 'not_complete', 'required', 'call' ],
+            },
+            { route: '/orders/approve', statuses: [ 'approve', 'reserve' ] },
+            { route: '/orders/in-progress', statuses: [ 'progress' ] },
+            { route: '/orders/success', statuses: [ 'success' ] },
+            { route: '/orders/reviews', statuses: [ 'review' ] },
+            { route: '/orders/invitations', statuses: [ 'invite' ] },
+            { route: '/orders/cancel', statuses: [ 'cancel' ] },
+        ];
+        const config = statusesMap.find(({ statuses }) =>
+            statuses.includes(status));
+        const { route = '/orders/appointments' } = config || {};
+        yield put(replace(route));
     }
 }
 
@@ -130,5 +165,5 @@ export function* fetchAddOrderFormSaga() {
 }
 
 export function* saga() {
-    yield all([ call(updateOrderSaga), call(createOrderSaga), call(fetchAddOrderFormSaga), call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
+    yield all([ call(returnToOrdersPageSaga), call(updateOrderSaga), call(createOrderSaga), call(fetchAddOrderFormSaga), call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
 }

@@ -45,6 +45,8 @@ export const ON_CHANGE_ORDER_DETAILS = `${prefix}/ON_CHANGE_ORDER_DETAILS`;
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
+export const RETURN_TO_ORDERS_PAGE = `${prefix}/RETURN_TO_ORDERS_PAGE`;
+
 import { customFieldValue, defaultFieldValue } from './helpers/utils';
 
 import {
@@ -53,6 +55,8 @@ import {
     mergeServices,
     defaultServices,
 } from './helpers/services';
+
+import { convertFieldsValuesToDbEntity } from './../../../pages/AddOrderPage/extractOrderEntity';
 
 import {
     generateAllDetails,
@@ -179,7 +183,7 @@ export default function reducer(state = ReducerState, action) {
 
     switch (type) {
         case FETCH_ORDER_FORM_SUCCESS:
-            return {
+            const newState = {
                 ...state,
                 ...payload,
                 filteredDetails: getInitDetails(
@@ -285,6 +289,16 @@ export default function reducer(state = ReducerState, action) {
                 selectedClient: payload.client || state.selectedClient,
             };
 
+            const initOrderEntity = convertFieldsValuesToDbEntity(
+                {
+                    ...newState.fields,
+                    selectedClient: newState.selectedClient,
+                },
+                newState.allServices,
+                newState.allDetails,
+            );
+
+            return { ...newState, initOrderEntity };
         case SET_CREATE_STATUS:
             return {
                 ...state,
@@ -617,4 +631,9 @@ export const onBrandSearch = search => ({
 export const onDetailSearch = search => ({
     type:    ON_DETAIL_SEARCH,
     payload: search,
+});
+
+export const returnToOrdersPage = status => ({
+    type:    RETURN_TO_ORDERS_PAGE,
+    payload: status,
 });

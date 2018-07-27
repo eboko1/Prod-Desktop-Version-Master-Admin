@@ -14,6 +14,7 @@ export function convertFieldsValuesToDbEntity(
                 serviceName: { value: name },
                 servicePrice: { value: price },
                 serviceCount: { value: count },
+                employeeId: { value: employeeId },
             } = service;
             const [ type, serviceId ] = name.split('|');
             const label = (
@@ -21,7 +22,7 @@ export function convertFieldsValuesToDbEntity(
                 {}
             ).serviceName;
 
-            const baseService = { price, count, hours: null };
+            const baseService = { price, count, hours: null, employeeId };
             const serviceType =
                 type === 'custom'
                     ? { type, serviceName: label }

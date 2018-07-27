@@ -13,6 +13,7 @@ export const MODALS = {
     UNIVERSAL_FILTERS: 'UNIVERSAL_FILTERS',
     CANCEL_REASON:     'CANCEL_REASON',
     TO_SUCCESS:        'TO_SUCCESS',
+    CONFIRM_EXIT:      'CONFIRM_EXIT',
 };
 
 //
