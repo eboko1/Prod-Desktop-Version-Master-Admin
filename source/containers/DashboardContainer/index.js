@@ -80,7 +80,6 @@ export default class DashboardContainer extends Component {
         // const columns = Math.max(...mockDash.map(order => order.y)) + 1;
         const dashboard = { rows, columns };
 
-        console.log('→ get DSFP stations', stations);
         const dashboardGridColumns = mode === 'calendar' ? 7 : stations.length;
         // this.setState({ dashboardGridColumns: 7 });
 
@@ -99,21 +98,21 @@ export default class DashboardContainer extends Component {
     // }
 
     render() {
-        const { mode } = this.props;
+        // const { mode } = this.props;
         const { dashboardGridColumns } = this.state;
 
         const timeColumn = this._renderTimeColumn();
-        const dashboardColumns = this._renderDashboardColumns();
+        // const dashboardColumns = this._renderDashboardColumns();
 
         return (
             <Catcher>
                 <Dashboard>
                     { timeColumn }
-                    { console.log('→ mode', mode) }
                     <DashboardGrid columns={ dashboardGridColumns }>
                         { Array(dashboardGridColumns)
                             .fill(0)
-                            .map(() => dashboardColumns) }
+                            .map((_, index) =>
+                                this._renderDashboardColumns(index)) }
                     </DashboardGrid>
                 </Dashboard>
             </Catcher>
@@ -136,12 +135,12 @@ export default class DashboardContainer extends Component {
         );
     };
 
-    _renderDashboardColumns = () => {
+    _renderDashboardColumns = index => {
         const { data } = this.props;
         const { dashboard } = this.state;
 
         return (
-            <DashboardColumn dashboard={ dashboard } column={ 1 } key={ 0 }>
+            <DashboardColumn dashboard={ dashboard } column={ 1 } key={ index }>
                 <DashboardHead
                     dashboard={ dashboard }
                     column={ dashboard.columns[ 0 ] }

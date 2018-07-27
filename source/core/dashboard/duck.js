@@ -5,6 +5,9 @@ import moment from 'moment';
 export const moduleName = 'dashboard';
 const prefix = `cpb/${moduleName}`;
 
+export const INIT_DASHBOARD = `${prefix}/INIT_DASHBOARD`;
+export const INIT_DASHBOARD_SUCCESS = `${prefix}/INIT_DASHBOARD_SUCCESS`;
+
 export const FETCH_DASHBOARD = `${prefix}/FETCH_DASHBOARD`;
 export const FETCH_DASHBOARD_SUCCESS = `${prefix}/FETCH_DASHBOARD_SUCCESS`;
 
@@ -35,14 +38,6 @@ const ReducerState = {
     endDate: moment()
         .endOf('week')
         .isoWeekday(7),
-    // postsLoad: {
-    //     beginDate:       '', // 'YYYY-MM-DD'
-    //     bussinessId:     null, // 0
-    //     countOrders:     null, // 0
-    //     dayName:         '', // monday
-    //     loadCoefficient: null, // 0
-    //     totalDuration:   '', // 00:00:00
-    // },
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -66,6 +61,18 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 startDate: payload.startDate,
                 endDate:   payload.endDate,
+            };
+
+        case INIT_DASHBOARD:
+            return {
+                ...state,
+                beginDate: payload.beginDate,
+            };
+
+        case INIT_DASHBOARD_SUCCESS:
+            return {
+                ...state,
+                ...payload,
             };
 
         case FETCH_DASHBOARD:
@@ -101,6 +108,26 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
+export const initDashboard = ({ stations, beginDate }) => ({
+    type:    INIT_DASHBOARD,
+    payload: { stations, beginDate },
+});
+
+export const initDashboardSuccess = data => ({
+    type:    INIT_DASHBOARD_SUCCESS,
+    payload: data,
+});
+
+export const fetchDashboard = ({ stations, beginDate }) => ({
+    type:    FETCH_DASHBOARD,
+    payload: { stations, beginDate },
+});
+
+export const fetchDashboardSuccess = data => ({
+    type:    FETCH_DASHBOARD_SUCCESS,
+    payload: data,
+});
+
 export const setDashboardMode = mode => ({
     type:    SET_DASHBOARD_MODE,
     payload: mode,
@@ -114,16 +141,6 @@ export const setDashboardDate = date => ({
 export const setDashboardWeekDates = ({ startDate, endDate }) => ({
     type:    SET_DASHBOARD_WEEK_DATES,
     payload: { startDate, endDate },
-});
-
-export const fetchDashboard = ({ stations, beginDate }) => ({
-    type:    FETCH_DASHBOARD,
-    payload: { stations, beginDate },
-});
-
-export const fetchDashboardSuccess = data => ({
-    type:    FETCH_DASHBOARD_SUCCESS,
-    payload: data,
 });
 
 export const dropDashboardOrder = () => ({

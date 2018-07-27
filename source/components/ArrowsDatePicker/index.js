@@ -33,7 +33,6 @@ class ArrowsDatePicker extends Component {
     // }
 
     static getDerivedStateFromProps(props, state) {
-        console.log('→getDerivedStateFromProps props', props);
         if (props.date !== state.date) {
             return {
                 date: props.date,

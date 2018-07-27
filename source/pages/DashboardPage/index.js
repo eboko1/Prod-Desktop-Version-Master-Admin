@@ -7,6 +7,7 @@ import moment from 'moment';
 
 // proj
 import {
+    initDashboard,
     fetchDashboard,
     dropDashboardOrder,
     setDashboardDate,
@@ -34,6 +35,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+    initDashboard,
     fetchDashboard,
     dropDashboardOrder,
     setDashboardDate,
@@ -43,31 +45,9 @@ const mapDispatchToProps = {
 
 @connect(mapStateToProps, mapDispatchToProps)
 class DashboardPage extends Component {
-    constructor(props) {
-        super(props);
-
-        // this.state = {
-        //     date: props.date,
-        // };
-
-        this._prevWeek = this._prevWeek.bind(this);
-        this._onWeekChange = this._onWeekChange.bind(this);
-        this._onDayChange = this._onDayChange.bind(this);
-    }
-
-    // static getDerivedStateFromProps(props, state) {
-    //     console.log('→getDerivedStateFromProps props', props);
-    //     if (props.date !== state.date) {
-    //         return {
-    //             date: props.date,
-    //         };
-    //     }
-    //
-    //     return null;
-    // }
-
     componentDidMount() {
         const {
+            initDashboard,
             fetchDashboard,
             setDashboardDate,
             date,
@@ -76,31 +56,23 @@ class DashboardPage extends Component {
         } = this.props;
 
         const stations = mode !== 'calendar';
-        // const beginDate = stations
-        //     ? date.format('YYYY-MM-DD')
-        //     : startDate.format('YYYY-MM-DD');
-        // const fetchDate = stations
-        //     ? date.format('YYYY-MM-DD')
-        //     : startDate.format('YYYY-MM-DD');
-        fetchDashboard({ stations, startDate });
+
+        initDashboard({ stations, beginDate: startDate });
     }
 
-    // _onDayChange = date => this.props.setDashboardDate(date);
-    _onDayChange(date) {
-        this.props.setDashboardDate(date);
-    }
+    _onDayChange = date => this.props.setDashboardDate(date);
 
-    _prevDay() {
+    _prevDay = () => {
         this.props.setDashboardDate(this.props.date.subtract(1, 'day'));
         this.setState({});
-    }
+    };
 
-    _nextDay() {
+    _nextDay = () => {
         this.props.setDashboardDate(this.props.date.add(1, 'day'));
         this.setState({});
-    }
+    };
 
-    _onWeekChange(date) {
+    _onWeekChange = date =>
         this.props.setDashboardWeekDates({
             startDate: moment(date)
                 .startOf('week')
@@ -109,23 +81,22 @@ class DashboardPage extends Component {
                 .endOf('week')
                 .isoWeekday(7),
         });
-    }
 
-    _prevWeek() {
+    _prevWeek = () => {
         this.props.setDashboardWeekDates({
             startDate: this.props.startDate.subtract(1, 'weeks'),
             endDate:   this.props.endDate.subtract(1, 'weeks'),
         });
         this.setState({});
-    }
+    };
 
-    _nextWeek() {
+    _nextWeek = () => {
         this.props.setDashboardWeekDates({
             startDate: this.props.startDate.add(1, 'weeks'),
             endDate:   this.props.endDate.add(1, 'weeks'),
         });
         this.setState({});
-    }
+    };
 
     _setDashboardMode = mode => this.props.setDashboardMode(mode);
 
@@ -150,24 +121,21 @@ class DashboardPage extends Component {
             >
                 <section className={ Styles.dashboardPage }>
                     <Tabs
-                        // type='card'
                         tabBarExtraContent={
                             mode === 'calendar' ? (
                                 <ArrowsWeekPicker
                                     startDate={ startDate }
                                     endDate={ endDate }
-                                    // onWeekChange={ () => this._onWeekChange() }
                                     onWeekChange={ this._onWeekChange }
                                     prevWeek={ this._prevWeek }
-                                    // prevWeek={ () => this._prevWeek() }
-                                    nextWeek={ () => this._nextWeek() }
+                                    nextWeek={ this._nextWeek }
                                 />
                             ) : (
                                 <ArrowsDatePicker
                                     date={ date }
                                     onDayChange={ this._onDayChange }
-                                    prevDay={ () => this._prevDay() }
-                                    nextDay={ () => this._nextDay() }
+                                    prevDay={ this._prevDay }
+                                    nextDay={ this._nextDay }
                                 />
                             )
                         }
@@ -196,8 +164,6 @@ class DashboardPage extends Component {
                                 mode={ mode }
                                 schedule={ schedule }
                             />
-                            { /* <Dashboard /> */ }
-                            { /* <Board /> */ }
                         </TabPane>
                     </Tabs>
                 </section>
