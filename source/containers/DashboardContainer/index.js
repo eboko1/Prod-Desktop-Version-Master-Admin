@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
-import { v4 } from 'uuid';
+// import { connect } from 'react-redux';
+// import { v4 } from 'uuid';
 import _ from 'lodash';
 
 // proj
@@ -14,6 +15,7 @@ import {
     DashboardAddOrderLink,
 } from './DashboardAddOrderLink';
 import {
+    Dashboard,
     DashboardGrid,
     DashboardColumn,
     DashboardHead,
@@ -22,7 +24,7 @@ import {
     DashboardContentColumn,
     DashboardContentBox,
 } from './styled.js';
-import { findOrder } from './dashboardConfig';
+// import { findOrder } from './dashboardConfig';
 import puzzledData from './dashboardCore/runner';
 
 export default class DashboardContainer extends Component {
@@ -85,17 +87,30 @@ export default class DashboardContainer extends Component {
     // genRows -> function helper
     // genColumns
     */
+    componentDidMount() {
+        const { mode, stations } = this.props;
+        const dashboardGridColumns = mode === 'calendar' ? 7 : stations.length;
+        this.setState({ dashboardGridColumns });
+    }
 
     render() {
+        const { mode } = this.props;
+        const { dashboardGridColumns } = this.state;
+
         const timeColumn = this._renderTimeColumn();
         const dashboardColumns = this._renderDashboardColumns();
 
         return (
             <Catcher>
-                <DashboardGrid>
+                <Dashboard>
                     { timeColumn }
-                    { dashboardColumns }
-                </DashboardGrid>
+                    { console.log('→ mode', mode) }
+                    <DashboardGrid columns={ dashboardGridColumns }>
+                        { Array(dashboardGridColumns)
+                            .fill(0)
+                            .map(() => dashboardColumns) }
+                    </DashboardGrid>
+                </Dashboard>
             </Catcher>
         );
     }
@@ -129,7 +144,6 @@ export default class DashboardContainer extends Component {
                     Column 1
                 </DashboardHead>
                 <DashboardBody>
-                    { console.log('→ data', data) }
                     { this._renderDashboardContentColumn() }
                     { this._renderDashboardAddOrderColumn() }
                 </DashboardBody>

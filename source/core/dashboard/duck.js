@@ -8,6 +8,9 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_DASHBOARD = `${prefix}/FETCH_DASHBOARD`;
 export const FETCH_DASHBOARD_SUCCESS = `${prefix}/FETCH_DASHBOARD_SUCCESS`;
 
+export const DROP_DASHBOARD_ORDER = `${prefix}/DROP_DASHBOARD_ORDER}`;
+export const DROP_DASHBOARD_ORDER_SUCCESS = `${prefix}/DROP_DASHBOARD_ORDER_SUCCESS}`;
+
 export const SET_DASHBOARD_MODE = `${prefix}/SET_DASHBOARD_MODE`;
 export const SET_DASHBOARD_DATE = `${prefix}/SET_DASHBOARD_DATE`;
 export const SET_DASHBOARD_WEEK_DATES = `${prefix}/SET_DASHBOARD_WEEK_DATES`;
@@ -121,4 +124,12 @@ export const fetchDashboard = ({ beginDate, stations }) => ({
 export const fetchDashboardSuccess = data => ({
     type:    FETCH_DASHBOARD_SUCCESS,
     payload: data,
+});
+
+export const dropDashboardOrder = () => ({
+    type: DROP_DASHBOARD_ORDER,
+});
+
+export const dropDashboardOrderSuccess = () => ({
+    type: DROP_DASHBOARD_ORDER_SUCCESS,
 });

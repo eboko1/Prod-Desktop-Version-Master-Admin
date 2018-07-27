@@ -1,11 +1,18 @@
 import styled from 'styled-components';
 import { ROW_HEIGHT } from './dashboardConfig';
 
-export const DashboardGrid = styled.div`
+export const Dashboard = styled.div`
     display: grid;
-    grid-template-columns: 80px repeat(7, 1fr);
+    grid-template-columns: 80px 1fr;
     grid-gap: 10px;
     background: #f7f7f7;
+`;
+
+export const DashboardGrid = styled.div`
+    display: grid;
+    grid-template-columns: ${props => `repeat(${props.columns}, 1fr)`};
+    grid-gap: 10px;
+    background: #ddd;
 `;
 
 export const DashboardColumn = styled.div`

@@ -12,7 +12,7 @@ const orderSource = {
     beginDrag(props) {
         console.log('^ beginDrag', props);
 
-        return { ...props.order };
+        return { ...props };
     },
 
     endDrag(props, monitor) {
@@ -84,9 +84,9 @@ const orderTarget = {
 
 function collect(connect, monitor) {
     return {
-        connectDragSource: connect.dragSource(),
-        // connectDragPreview: connect.dragPreview(),
-        isDragging:        monitor.isDragging(),
+        connectDragSource:  connect.dragSource(),
+        connectDragPreview: connect.dragPreview(),
+        isDragging:         monitor.isDragging(),
     };
 }
 
@@ -140,7 +140,7 @@ const DashboardOrder = styled(DragItem)`
     border: 1px solid yellowgreen;
     min-height: 30px;
     cursor: move;
-    opacity: ${props => props.isDragging ? 0.5 : 1};
+    opacity: ${props => props.isdragging ? 0.5 : 1};
     grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
     grid-column: ${props => `${props.y + 1} / span ${props.columns}`};
 `;

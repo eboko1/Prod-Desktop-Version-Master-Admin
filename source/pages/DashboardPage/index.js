@@ -2,25 +2,20 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { Tabs } from 'antd';
 import moment from 'moment';
 
 // proj
 import {
     fetchDashboard,
+    dropDashboardOrder,
     setDashboardDate,
     setDashboardWeekDates,
     setDashboardMode,
 } from 'core/dashboard/duck';
 
 import { Layout, Spinner } from 'commons';
-import {
-    ArrowsWeekPicker,
-    ArrowsDatePicker,
-    // Dashboard,
-    Board,
-} from 'components';
+import { ArrowsWeekPicker, ArrowsDatePicker, Board } from 'components';
 import { DashboardContainer } from 'containers';
 
 // own
@@ -30,6 +25,7 @@ const TabPane = Tabs.TabPane;
 const mapStateToProps = state => ({
     orders:    state.dashboard.orders,
     mode:      state.dashboard.mode,
+    stations:  state.dashboard.stations,
     date:      state.dashboard.date,
     startDate: state.dashboard.startDate,
     endDate:   state.dashboard.endDate,
@@ -39,6 +35,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     fetchDashboard,
+    dropDashboardOrder,
     setDashboardDate,
     setDashboardWeekDates,
     setDashboardMode,
@@ -133,7 +130,15 @@ class DashboardPage extends Component {
     _setDashboardMode = mode => this.props.setDashboardMode(mode);
 
     render() {
-        const { startDate, endDate, date, mode, spinner } = this.props;
+        const {
+            startDate,
+            endDate,
+            date,
+            mode,
+            stations,
+            schedule,
+            spinner,
+        } = this.props;
 
         return !spinner ? (
             <Layout
@@ -175,6 +180,7 @@ class DashboardPage extends Component {
                             key='calendar'
                         >
                             <DashboardContainer
+                                mode={ this.props.mode }
                                 schedule={ this.props.schedule }
                             />
                         </TabPane>
@@ -184,8 +190,13 @@ class DashboardPage extends Component {
                             }
                             key='stations'
                         >
+                            <DashboardContainer
+                                stations={ stations }
+                                mode={ mode }
+                                schedule={ schedule }
+                            />
                             { /* <Dashboard /> */ }
-                            <Board />
+                            { /* <Board /> */ }
                         </TabPane>
                     </Tabs>
                 </section>

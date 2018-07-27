@@ -1,5 +1,3 @@
-
-
 const _ = require('lodash');
 
 module.exports = (data, maxRow) => {
@@ -66,7 +64,7 @@ module.exports = (data, maxRow) => {
         };
     }
 
-    function getPuzzle(data) {
+    function getPuzzle(data, min) {
         let maxBlocks = 1;
         let maxRows = 1;
         const result = [];
@@ -93,10 +91,11 @@ module.exports = (data, maxRow) => {
                 );
                 if (!overlappingBlocks) {
                     result.push({
-                        x:       position,
-                        y:       i,
-                        columns: 1,
-                        rows:    quantity,
+                        x:              position,
+                        y:              i,
+                        columns:        1,
+                        rows:           quantity,
+                        globalPosition: position + min,
                     });
                     continue outer;
                 }
@@ -104,18 +103,26 @@ module.exports = (data, maxRow) => {
 
             maxBlocks += 1;
             result.push({
-                x:       position,
-                y:       maxBlocks - 1,
-                columns: 1,
-                rows:    quantity,
-                empty:   false,
+                x:              position,
+                y:              maxBlocks - 1,
+                columns:        1,
+                rows:           quantity,
+                empty:          false,
+                globalPosition: position + min,
             });
         }
 
         for (let y = 0; y < maxBlocks; y++) {
             for (let x = 0; x < maxRows; x++) {
                 if (!countOtherBlocks(x, 1, y, result)) {
-                    result.push({ x, y, columns: 1, rows: 1, empty: true });
+                    result.push({
+                        x,
+                        y,
+                        columns:        1,
+                        rows:           1,
+                        empty:          true,
+                        globalPosition: x + min,
+                    });
                 }
             }
         }
@@ -128,5 +135,8 @@ module.exports = (data, maxRow) => {
     const blocks = blocksManagers.getBlocks();
 
     // TODO normalize columns
-    return blocks.map(block => ({ ...block, data: getPuzzle(block.data) }));
+    return blocks.map(block => ({
+        ...block,
+        data: getPuzzle(block.data, block.min),
+    }));
 };
