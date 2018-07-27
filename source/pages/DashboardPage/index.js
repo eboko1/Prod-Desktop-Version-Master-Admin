@@ -75,14 +75,14 @@ class DashboardPage extends Component {
             mode,
         } = this.props;
 
-        const stations = mode === 'calendar';
+        const stations = mode !== 'calendar';
         // const beginDate = stations
         //     ? date.format('YYYY-MM-DD')
         //     : startDate.format('YYYY-MM-DD');
         // const fetchDate = stations
         //     ? date.format('YYYY-MM-DD')
         //     : startDate.format('YYYY-MM-DD');
-        fetchDashboard({ startDate, stations });
+        fetchDashboard({ stations, startDate });
     }
 
     // _onDayChange = date => this.props.setDashboardDate(date);
@@ -180,6 +180,7 @@ class DashboardPage extends Component {
                             key='calendar'
                         >
                             <DashboardContainer
+                                stations={ stations }
                                 mode={ this.props.mode }
                                 schedule={ this.props.schedule }
                             />

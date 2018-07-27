@@ -4,14 +4,17 @@ import { ROW_HEIGHT } from './dashboardConfig';
 export const Dashboard = styled.div`
     display: grid;
     grid-template-columns: 80px 1fr;
-    grid-gap: 10px;
+    grid-gap: 1%;
     background: #f7f7f7;
 `;
 
 export const DashboardGrid = styled.div`
     display: grid;
-    grid-template-columns: ${props => `repeat(${props.columns}, 1fr)`};
-    grid-gap: 10px;
+    grid-template-columns: ${props =>
+        `repeat(${props.columns}, minmax(13%, 1fr))`};
+    grid-gap: 1%;
+    width: auto;
+    overflow-x: scroll;
     background: #ddd;
 `;
 

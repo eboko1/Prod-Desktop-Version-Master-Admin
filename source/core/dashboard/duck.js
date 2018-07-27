@@ -116,9 +116,9 @@ export const setDashboardWeekDates = ({ startDate, endDate }) => ({
     payload: { startDate, endDate },
 });
 
-export const fetchDashboard = ({ beginDate, stations }) => ({
+export const fetchDashboard = ({ stations, beginDate }) => ({
     type:    FETCH_DASHBOARD,
-    payload: { beginDate, stations },
+    payload: { stations, beginDate },
 });
 
 export const fetchDashboardSuccess = data => ({

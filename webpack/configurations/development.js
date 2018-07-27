@@ -56,5 +56,5 @@ export const generateDevelopmentConfiguration = () =>
             },
             plugins: [ new HotModuleReplacementPlugin() ],
         },
-        generateSourceMaps({ devtool: 'cheap-module-eval-source-map' }),
+        generateSourceMaps({ devtool: 'cheap-module-source-map' }),
     );

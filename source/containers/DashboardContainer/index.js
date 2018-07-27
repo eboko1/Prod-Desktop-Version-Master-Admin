@@ -65,7 +65,7 @@ export default class DashboardContainer extends Component {
     };
 
     static getDerivedStateFromProps(props) {
-        const { schedule, orders } = props;
+        const { schedule, orders, mode, stations } = props;
 
         const time = Array(schedule.endHour)
             .fill(0)
@@ -80,18 +80,23 @@ export default class DashboardContainer extends Component {
         // const columns = Math.max(...mockDash.map(order => order.y)) + 1;
         const dashboard = { rows, columns };
 
-        return { time, dashboard };
+        console.log('→ get DSFP stations', stations);
+        const dashboardGridColumns = mode === 'calendar' ? 7 : stations.length;
+        // this.setState({ dashboardGridColumns: 7 });
+
+        return { time, dashboard, dashboardGridColumns };
     }
 
     /* didMount -> time () -> this.setState()
     // genRows -> function helper
     // genColumns
     */
-    componentDidMount() {
-        const { mode, stations } = this.props;
-        const dashboardGridColumns = mode === 'calendar' ? 7 : stations.length;
-        this.setState({ dashboardGridColumns });
-    }
+    // componentDidMount() {
+    //     const { mode, stations } = this.props;
+    //     console.log('→ DMstations', stations);
+    //     // const dashboardGridColumns = mode === 'calendar' ? 7 : stations.length;
+    //     this.setState({ dashboardGridColumns: 7 });
+    // }
 
     render() {
         const { mode } = this.props;

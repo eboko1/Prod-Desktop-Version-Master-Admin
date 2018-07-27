@@ -33,8 +33,8 @@ export function* fetchDashboardSaga() {
                     : yield select(selectDashboardDate);
             console.log(' *stations', stations);
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
-                stations,
                 beginDate: beginDate.format('YYYY-MM-DD'),
+                stations,
             });
 
             yield put(fetchDashboardSuccess(data));
@@ -53,7 +53,7 @@ export function* setDashboardModeSaga() {
             console.log('*mode', mode);
             const stations = mode === 'stations';
             console.log(' *stations', stations);
-            yield put(fetchDashboard(stations));
+            yield put(fetchDashboard({ stations }));
         } catch (error) {
             yield put(uiActions.emitError(error));
         }
