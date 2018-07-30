@@ -30,6 +30,7 @@ const mapStateToProps = state => ({
     startDate: state.dashboard.startDate,
     endDate:   state.dashboard.endDate,
     schedule:  state.dashboard.schedule,
+    days:      state.dashboard.days,
     spinner:   state.ui.get('dashboardFetching'),
 });
 
@@ -98,10 +99,12 @@ class DashboardPage extends Component {
 
     render() {
         const {
+            orders,
             startDate,
             endDate,
             date,
             mode,
+            days,
             stations,
             schedule,
             spinner,
@@ -144,9 +147,10 @@ class DashboardPage extends Component {
                             key='calendar'
                         >
                             <DashboardContainer
-                                stations={ stations }
-                                mode={ this.props.mode }
-                                schedule={ this.props.schedule }
+                                orders={ orders }
+                                days={ days }
+                                mode={ mode }
+                                schedule={ schedule }
                             />
                         </TabPane>
                         <TabPane
@@ -156,6 +160,7 @@ class DashboardPage extends Component {
                             key='stations'
                         >
                             <DashboardContainer
+                                orders={ orders }
                                 stations={ stations }
                                 mode={ mode }
                                 schedule={ schedule }

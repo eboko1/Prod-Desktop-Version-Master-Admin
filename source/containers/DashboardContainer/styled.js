@@ -21,7 +21,10 @@ export const DashboardGrid = styled.div`
 export const DashboardColumn = styled.div`
     padding: 10px;
     background: lightblue;
-    border: 1px solid blue;
+    border: ${props =>
+        `${props.currentDay &&
+            props.currentDay === props.day &&
+            '2px solid var(--secondary)'}`};
     ${'' /* display: grid;
     grid-template-rows: ${props =>
         `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
@@ -60,6 +63,15 @@ export const DashboardHead = styled.div`
     height: ${ROW_HEIGHT}px;
     color: white;
     text-align: center;
+`;
+
+export const DashboardTimeCell = styled.div`
+    height: ${ROW_HEIGHT}px;
+    border-bottom: 1px dashed red;
+    background-color: #1eaafc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 `;
 
 // grid-template-columns: ${props =>

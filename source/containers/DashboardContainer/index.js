@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 // import { connect } from 'react-redux';
 // import { v4 } from 'uuid';
 import _ from 'lodash';
+import moment from 'moment';
 
 // proj
 import { Catcher } from 'commons';
@@ -23,50 +24,23 @@ import {
     DashboardBody,
     DashboardContentColumn,
     DashboardContentBox,
+    DashboardTimeCell,
 } from './styled.js';
 // import { findOrder } from './dashboardConfig';
 import puzzledData from './dashboardCore/runner';
 
 export default class DashboardContainer extends Component {
-    state = {};
+    state = {
+        currentDay: moment().format('YYYY-MM-DD'),
+    };
 
     static defaultProps = {
-        /* eslint-disable */
         data: puzzledData,
-        orders: [
-            [
-                { x: 0, y: 0, columns: 1, rows: 5, id: 123 },
-                // { x: 1, y: 1, columns: 1, rows: 3, id: 456 },
-                // { x: 2, y: 2, columns: 1, rows: 4, id: 789 },
-                // { x: 4, y: 1, columns: 1, rows: 2, id: 999 },
-                // { x: 6, y: 0, columns: 1, rows: 2, id: 888 },
-                // { x: 6, y: 1, columns: 1, rows: 2, id: 777 },
-                // { x: 6, y: 2, columns: 1, rows: 2, id: 666 },
-                // { x: 6, y: 3, columns: 1, rows: 2, id: 555 },
-            ],
-            [
-                { x: 1, y: 0, columns: 1, rows: 2, id: 444 },
-                { x: 1, y: 1, columns: 1, rows: 3, id: 333 },
-                { x: 2, y: 2, columns: 1, rows: 4, id: 222 },
-                { x: 4, y: 1, columns: 1, rows: 2, id: 111 },
-                { x: 7, y: 0, columns: 1, rows: 1, id: 1010 },
-                { x: 6, y: 1, columns: 1, rows: 2, id: 1212 },
-            ],
-            [],
-            [{ x: 2, y: 0, columns: 1, rows: 8, id: 322 }],
-            [
-                { x: 3, y: 0, columns: 1, rows: 3, id: 228 },
-                { x: 5, y: 0, columns: 1, rows: 4, id: 9000 },
-            ],
-            [],
-            [],
-        ],
-        /* eslint-enable */
     };
 
     static getDerivedStateFromProps(props) {
-        const { schedule, orders, mode, stations } = props;
-
+        const { schedule, mode, stations } = props;
+        // get rows
         const time = Array(schedule.endHour)
             .fill(0)
             .map((_, index) => index + 1)
@@ -74,17 +48,21 @@ export default class DashboardContainer extends Component {
             .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
 
         const rows = time.length * 2;
-        const columns = orders
-            .map(col => col.map(item => item.y + item.columns))
-            .map(num => Math.max(...num.filter(_.isFinite)) + 1);
-        // const columns = Math.max(...mockDash.map(order => order.y)) + 1;
-        const dashboard = { rows, columns };
+        // get columns
+        const stationsColumns = stations ? stations.length : 0;
+        const dashboardGridColumns = mode === 'calendar' ? 7 : stationsColumns;
+        const columns = dashboardGridColumns;
 
-        const dashboardGridColumns = mode === 'calendar' ? 7 : stations.length;
-        // this.setState({ dashboardGridColumns: 7 });
+        const dashboard = { rows, columns };
 
         return { time, dashboard, dashboardGridColumns };
     }
+
+    // const columns = orders
+    //     .map(col => col.map(item => item.y + item.columns))
+    //     .map(num => Math.max(...num.filter(_.isFinite)) + 1);
+
+    // const columns = Math.max(...mockDash.map(order => order.y)) + 1;
 
     /* didMount -> time () -> this.setState()
     // genRows -> function helper
@@ -127,8 +105,8 @@ export default class DashboardContainer extends Component {
                 <DashboardHead>Time</DashboardHead>
                 { time.map(time => (
                     <React.Fragment key={ time }>
-                        <DashboardEmptyCell>{ time }</DashboardEmptyCell>
-                        <DashboardEmptyCell />
+                        <DashboardTimeCell>{ time }</DashboardTimeCell>
+                        <DashboardTimeCell />
                     </React.Fragment>
                 )) }
             </DashboardColumn>
@@ -136,16 +114,19 @@ export default class DashboardContainer extends Component {
     };
 
     _renderDashboardColumns = index => {
-        const { data } = this.props;
-        const { dashboard } = this.state;
+        const { days } = this.props;
+        const { dashboard, currentDay } = this.state;
 
         return (
-            <DashboardColumn dashboard={ dashboard } column={ 1 } key={ index }>
-                <DashboardHead
-                    dashboard={ dashboard }
-                    column={ dashboard.columns[ 0 ] }
-                >
-                    Column 1
+            <DashboardColumn
+                dashboard={ dashboard }
+                column={ 1 }
+                key={ index }
+                currentDay={ currentDay }
+                day={ days ? days[ index ] : null }
+            >
+                <DashboardHead dashboard={ dashboard } column={ 1 }>
+                    Column { index + 1 }
                 </DashboardHead>
                 <DashboardBody>
                     { this._renderDashboardContentColumn() }
@@ -297,3 +278,32 @@ export default class DashboardContainer extends Component {
 // import './s.css';
 
 // const mockDash = [[{ x: 0, y: 0, columns: 1, rows: 5 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, rows: 2 }, { x: 6, y: 0, columns: 1, rows: 2 }, { x: 6, y: 1, columns: 1, rows: 2 }, { x: 6, y: 2, columns: 1, rows: 2 }, { x: 6, y: 3, columns: 1, rows: 2 }], [{ x: 1, y: 0, columns: 1, rows: 2 }, { x: 1, y: 1, columns: 1, rows: 3 }, { x: 2, y: 2, columns: 1, rows: 4 }, { x: 4, y: 1, columns: 1, rows: 2 }, { x: 7, y: 0, columns: 1, rows: 1 }, { x: 6, y: 1, columns: 1, rows: 2 }], [], [{ x: 2, y: 0, columns: 1, rows: 8 }], [{ x: 3, y: 0, columns: 1, rows: 3 }, { x: 5, y: 0, columns: 1, rows: 4 }], [], []];
+
+// orders: [
+//     [
+//         { x: 0, y: 0, columns: 1, rows: 5, id: 123 },
+//         // { x: 1, y: 1, columns: 1, rows: 3, id: 456 },
+//         // { x: 2, y: 2, columns: 1, rows: 4, id: 789 },
+//         // { x: 4, y: 1, columns: 1, rows: 2, id: 999 },
+//         // { x: 6, y: 0, columns: 1, rows: 2, id: 888 },
+//         // { x: 6, y: 1, columns: 1, rows: 2, id: 777 },
+//         // { x: 6, y: 2, columns: 1, rows: 2, id: 666 },
+//         // { x: 6, y: 3, columns: 1, rows: 2, id: 555 },
+//     ],
+//     [
+//         { x: 1, y: 0, columns: 1, rows: 2, id: 444 },
+//         { x: 1, y: 1, columns: 1, rows: 3, id: 333 },
+//         { x: 2, y: 2, columns: 1, rows: 4, id: 222 },
+//         { x: 4, y: 1, columns: 1, rows: 2, id: 111 },
+//         { x: 7, y: 0, columns: 1, rows: 1, id: 1010 },
+//         { x: 6, y: 1, columns: 1, rows: 2, id: 1212 },
+//     ],
+//     [],
+//     [{ x: 2, y: 0, columns: 1, rows: 8, id: 322 }],
+//     [
+//         { x: 3, y: 0, columns: 1, rows: 3, id: 228 },
+//         { x: 5, y: 0, columns: 1, rows: 4, id: 9000 },
+//     ],
+//     [],
+//     [],
+// ],
