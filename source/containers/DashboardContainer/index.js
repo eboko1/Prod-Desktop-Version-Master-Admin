@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 // import { connect } from 'react-redux';
 // import { v4 } from 'uuid';
 import _ from 'lodash';
@@ -25,9 +26,13 @@ import {
     DashboardContentColumn,
     DashboardContentBox,
     DashboardTimeCell,
+    DashboardTitle,
+    DashboardLoad,
 } from './styled.js';
 // import { findOrder } from './dashboardConfig';
-import puzzledData from './dashboardCore/runner';
+// import puzzledData from './dashboardCore/runner';
+import mapOrders from './dashboardCore/mapOrders';
+import buildPuzzle from './dashboardCore/build_puzzle';
 
 export default class DashboardContainer extends Component {
     state = {
@@ -35,11 +40,14 @@ export default class DashboardContainer extends Component {
     };
 
     static defaultProps = {
-        data: puzzledData,
+        data: mapOrders(),
     };
 
     static getDerivedStateFromProps(props) {
-        const { schedule, mode, stations } = props;
+        const { schedule, mode, stations, orders } = props;
+
+        // const data = mapOrders(schedule.beginHour, orders);
+
         // get rows
         const time = Array(schedule.endHour)
             .fill(0)
@@ -53,6 +61,9 @@ export default class DashboardContainer extends Component {
         const dashboardGridColumns = mode === 'calendar' ? 7 : stationsColumns;
         const columns = dashboardGridColumns;
 
+        // const ordersData = buildPuzzle(data, rows);
+        // .map(col => col.map(item => item.y + item.columns))
+        // .map(num => Math.max(...num.filter(_.isFinite)) + 1);
         const dashboard = { rows, columns };
 
         return { time, dashboard, dashboardGridColumns };
@@ -76,7 +87,6 @@ export default class DashboardContainer extends Component {
     // }
 
     render() {
-        // const { mode } = this.props;
         const { dashboardGridColumns } = this.state;
 
         const timeColumn = this._renderTimeColumn();
@@ -114,8 +124,12 @@ export default class DashboardContainer extends Component {
     };
 
     _renderDashboardColumns = index => {
-        const { days } = this.props;
+        const { days, stations } = this.props;
+        // const { beginDate, dayName, loadCoefficient } = this.props.load;
         const { dashboard, currentDay } = this.state;
+
+        // console.log('→ this.props.load', this.props.load);
+        // console.log('→ dayName', dayName);
 
         return (
             <DashboardColumn
@@ -126,22 +140,43 @@ export default class DashboardContainer extends Component {
                 day={ days ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    Column { index + 1 }
+                    { /* <DashboardTitle>
+                        <FormattedMessage id={ dayName } />
+                    </DashboardTitle>
+                    <DashboardLoad loadCoefficient={ loadCoefficient }>
+                        { beginDate } - { loadCoefficient }%
+                    </DashboardLoad> */ }
                 </DashboardHead>
                 <DashboardBody>
-                    { this._renderDashboardContentColumn() }
+                    { this._renderDashboardContentColumn(index) }
                     { this._renderDashboardAddOrderColumn() }
                 </DashboardBody>
             </DashboardColumn>
         );
     };
 
-    _renderDashboardContentColumn = () => {
+    _renderDashboardContentColumn = id => {
         const { dashboard } = this.state;
-        const { data } = this.props;
+        const { data, days, mode, stations } = this.props;
+        const dashboardMode = mode === 'calendar';
+        const columnsData = dashboardMode ? days : stations ? stations : null;
+        console.log('→ columnsData', columnsData ? columnsData : '!!!!');
+        // const mapOrders = mapOrders(schedule.beginHour, orders);
+        // const ordersData = buildPuzzle(data, rows);
+        // const columns = dashboardMode ? days : stations;
+        // console.log('→ columns', columns);
 
         return (
-            <DashboardContentColumn dashboard={ dashboard }>
+            <DashboardContentColumn
+                dashboard={ dashboard }
+                // columnId={
+                //     dashboardMode
+                //         ? columnsData[ id ]
+                //         : stations
+                //             ? columnsData[ id ].num
+                //             : null
+                // }
+            >
                 { data.map(({ data: { result, maxRows, maxBlocks } }, index) => (
                     <DashboardContentBox
                         key={ index }

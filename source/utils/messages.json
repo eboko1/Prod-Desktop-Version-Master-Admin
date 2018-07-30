@@ -37,7 +37,14 @@
         "transfer_success": "Success",
         "transfer_cancel": "Cancel",
         "transfer_redundant": "Redundant",
-        "transfer_invite": "Invite"
+        "transfer_invite": "Invite",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday",
+        "sunday": "Sunday"
     },
     "ru": {
         "currency": "грн.",
@@ -77,7 +84,14 @@
         "transfer_success": "Закрыть наряд-заказ",
         "transfer_cancel": "Отменить",
         "transfer_redundant": "В мусорные",
-        "transfer_invite": "В приглашения"
+        "transfer_invite": "В приглашения",
+        "monday": "Понедельник",
+        "tuesday": "Вторник",
+        "wednesday": "Среда",
+        "thursday": "Четверг",
+        "friday": "Пятница",
+        "saturday": "Суббота",
+        "sunday": "Воскресенье"
     },
     "uk": {
         "currency": "грн.",
@@ -117,6 +131,13 @@
         "transfer_success": "Закрити наряд-замовлення",
         "transfer_cancel": "Відмінити",
         "transfer_redundant": "В мусорні",
-        "transfer_invite": "В запрошення"
+        "transfer_invite": "В запрошення",
+        "monday": "Понеділок",
+        "tuesday": "Вівторок",
+        "wednesday": "Середа",
+        "thursday": "Четверг",
+        "friday": "П'ятниця",
+        "saturday": "Суббота",
+        "sunday": "Неділя"
     }
 }

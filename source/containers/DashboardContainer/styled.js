@@ -65,6 +65,14 @@ export const DashboardHead = styled.div`
     text-align: center;
 `;
 
+export const DashboardTitle = styled.div`
+    background-color: var(--not_complete);
+`;
+
+export const DashboardLoad = styled.div`
+    background-color: var(--approve);
+`;
+
 export const DashboardTimeCell = styled.div`
     height: ${ROW_HEIGHT}px;
     border-bottom: 1px dashed red;

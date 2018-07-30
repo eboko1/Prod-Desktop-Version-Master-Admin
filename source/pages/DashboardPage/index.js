@@ -23,7 +23,7 @@ import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
-    orders:    state.dashboard.orders,
+    orders:    state.dashboard.orders.orders,
     mode:      state.dashboard.mode,
     stations:  state.dashboard.stations,
     date:      state.dashboard.date,
@@ -31,6 +31,7 @@ const mapStateToProps = state => ({
     endDate:   state.dashboard.endDate,
     schedule:  state.dashboard.schedule,
     days:      state.dashboard.days,
+    load:      state.dashboard.load,
     spinner:   state.ui.get('dashboardFetching'),
 });
 
@@ -104,13 +105,14 @@ class DashboardPage extends Component {
             endDate,
             date,
             mode,
+            load,
             days,
             stations,
             schedule,
             spinner,
         } = this.props;
 
-        return !spinner ? (
+        return !spinner && load && stations ? (
             <Layout
                 // paper={ false }
                 title={ <FormattedMessage id='dashboard-page.title' /> }
@@ -147,9 +149,11 @@ class DashboardPage extends Component {
                             key='calendar'
                         >
                             <DashboardContainer
+                                spinner={ spinner }
                                 orders={ orders }
                                 days={ days }
                                 mode={ mode }
+                                load={ load }
                                 schedule={ schedule }
                             />
                         </TabPane>
@@ -160,9 +164,11 @@ class DashboardPage extends Component {
                             key='stations'
                         >
                             <DashboardContainer
+                                spinner={ spinner }
                                 orders={ orders }
                                 stations={ stations }
                                 mode={ mode }
+                                load={ load }
                                 schedule={ schedule }
                             />
                         </TabPane>

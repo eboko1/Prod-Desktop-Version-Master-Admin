@@ -1,14 +1,16 @@
 import _ from 'lodash';
 import moment from 'moment-timezone';
 
-const ordersToDashboradItems = (beginHour, orders) =>
+const TIMEZONE = 'Europe/Kiev';
+
+const mapOrders = (beginHour, orders) =>
     _(orders)
         .filter('beginDatetime')
         .map(({ duration, beginDatetime, id }) => {
             const numberOfHalfHours =
                 Math.ceil(moment.duration(duration).asHours() * 2) || 1;
 
-            const momentBeginDatetime = moment(beginDatetime).tz(timezone);
+            const momentBeginDatetime = moment(beginDatetime).tz(TIMEZONE);
 
             const beginHours = momentBeginDatetime.hours();
             const beginMinutes = momentBeginDatetime.minutes();
@@ -40,6 +42,4 @@ const ordersToDashboradItems = (beginHour, orders) =>
         .filter(Boolean)
         .value();
 
-console.log(ordersToDashboradItems(10, orders));
-
-export default ordersToDashboradItems;
+export default mapOrders;
