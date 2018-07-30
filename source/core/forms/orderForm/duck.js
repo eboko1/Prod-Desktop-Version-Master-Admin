@@ -47,6 +47,9 @@ export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
 export const RETURN_TO_ORDERS_PAGE = `${prefix}/RETURN_TO_ORDERS_PAGE`;
 
+export const CREATE_INVITE_ORDER = `${prefix}/CREATE_INVITE_ORDER`;
+export const CREATE_INVITE_ORDER_SUCCESS = `${prefix}/CREATE_INVITE_ORDER_SUCCESS`;
+
 import { customFieldValue, defaultFieldValue } from './helpers/utils';
 
 import {
@@ -128,7 +131,8 @@ const createDefaultState = () => ({
         emails:     [],
         vehicles:   [],
     },
-    order: {},
+    order:   {},
+    invited: false,
 });
 
 const ReducerState = createDefaultState();
@@ -303,6 +307,12 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 createStatus: payload,
+            };
+
+        case CREATE_INVITE_ORDER:
+            return {
+                ...state,
+                invited: true,
             };
 
         case FETCH_ADD_ORDER_FORM_SUCCESS:
@@ -637,3 +647,17 @@ export const returnToOrdersPage = status => ({
     type:    RETURN_TO_ORDERS_PAGE,
     payload: status,
 });
+
+export function createInviteOrder(inviteOrder) {
+    return {
+        type:    CREATE_INVITE_ORDER,
+        payload: inviteOrder,
+    };
+}
+
+export function createInviteOrderSuccess(response) {
+    return {
+        type:    CREATE_INVITE_ORDER_SUCCESS,
+        payload: response,
+    };
+}

@@ -32,7 +32,9 @@ import {
     createOrderSuccess,
     updateOrderSuccess,
     returnToOrdersPage,
+    createInviteOrderSuccess,
 
+    CREATE_INVITE_ORDER,
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
     ON_CHANGE_ORDER_FORM,
@@ -44,6 +46,7 @@ import {
     UPDATE_ORDER,
     RETURN_TO_ORDERS_PAGE,
 } from './duck';
+import nprogress from "nprogress"
 
 export function* fetchOrderFormSaga() {
     while (true) {
@@ -164,6 +167,17 @@ export function* fetchAddOrderFormSaga() {
     }
 }
 
+export function* createInviteOrderSaga({ payload: invite }) {
+    yield nprogress.start();
+    const data = yield call(fetchAPI, 'POST', 'orders', null, invite);
+
+    yield put(createInviteOrderSuccess(data));
+    yield nprogress.done();
+
+    const id = yield select(state => state.forms.orderForm.order.id);
+    yield put(fetchOrderForm(id));
+}
+
 export function* saga() {
-    yield all([ call(returnToOrdersPageSaga), call(updateOrderSaga), call(createOrderSaga), call(fetchAddOrderFormSaga), call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
+    yield all([ takeEvery(CREATE_INVITE_ORDER, createInviteOrderSaga), call(returnToOrdersPageSaga), call(updateOrderSaga), call(createOrderSaga), call(fetchAddOrderFormSaga), call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
 }

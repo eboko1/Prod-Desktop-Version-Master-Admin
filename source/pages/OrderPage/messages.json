@@ -12,7 +12,8 @@
         "order-status.success": "Success",
         "order-status.cancel": "Cancel",
         "order-status.invite": "Invitation",
-        "order-status.order": "Order"
+        "order-status.order": "Order",
+        "order-page.create_invite_order": "Create invitation"
     },
     "ru": {
         "order-page.title": "Заказы",
@@ -27,7 +28,8 @@
         "order-status.success": "Выполненно",
         "order-status.cancel": "Отказ",
         "order-status.invite": "Приглашение",
-        "order-status.order": "Заказ"
+        "order-status.order": "Заказ",
+        "order-page.create_invite_order": "Создать приглашение"
     },
     "uk": {
         "order-page.title": "Транзакции",
@@ -42,6 +44,7 @@
         "order-status.success": "Виконано",
         "order-status.cancel": "Відмова",
         "order-status.invite": "Запрошення",
-        "order-status.order": "Замовлення"
+        "order-status.order": "Замовлення",
+        "order-page.create_invite_order": "Створити запрошення"
     }
 }

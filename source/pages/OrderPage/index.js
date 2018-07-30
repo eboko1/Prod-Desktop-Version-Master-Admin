@@ -2,29 +2,36 @@
 import _ from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import moment from 'moment';
 import { Button, Icon } from 'antd';
 
 // proj
-import { fetchOrderForm, updateOrder, returnToOrdersPage } from 'core/forms/orderForm/duck';
+import {
+    fetchOrderForm,
+    updateOrder,
+    returnToOrdersPage,
+    createInviteOrder,
+} from 'core/forms/orderForm/duck';
+import book from 'routes/book';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Spinner } from 'commons';
 import { OrderForm } from 'forms';
 import { ReportsDropdown, ChangeStatusDropdown } from 'components';
-import { CancelReasonModal, ToSuccessModal, ConfirmOrderExitModal } from 'modals';
-import book from 'routes/book';
+import {
+    CancelReasonModal,
+    ToSuccessModal,
+    ConfirmOrderExitModal,
+} from 'modals';
 
 import {
     convertFieldsValuesToDbEntity,
     requiredFieldsOnStatuses,
 } from './../AddOrderPage/extractOrderEntity';
-
-// own
-import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
@@ -40,10 +47,12 @@ const mapStateToProps = state => {
         addClientFormData: state.forms.addClientForm.data,
         orderComments:     state.forms.orderForm.orderComments,
         order:             state.forms.orderForm.order,
+        inviteOrderId:     state.forms.orderForm.inviteOrderId,
         orderCalls:        state.forms.orderForm.calls,
         orderTasks:        state.forms.orderForm.tasks,
         orderHistory:      state.forms.orderForm.history,
         initOrderEntity:   state.forms.orderForm.initOrderEntity,
+        invited:           state.forms.orderForm.invited,
         orderEntity:       {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
@@ -62,6 +71,7 @@ const mapStateToProps = state => {
     setModal,
     resetModal,
     returnToOrdersPage,
+    createInviteOrder,
 })
 class OrderPage extends Component {
     saveFormRef = formRef => {
@@ -102,6 +112,24 @@ class OrderPage extends Component {
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
 
+        const hasInviteStatus = [ 'success', 'cancel' ].includes(
+            _.get(this.props, 'order.status'),
+        );
+        const isInviteVisible =
+            !this.props.inviteOrderId &&
+            _.get(this.props, 'order.id') &&
+            _.get(this.props, 'order.status') &&
+            hasInviteStatus;
+
+        const isInviteEnabled =
+            _.get(this.props, 'order.id') &&
+            _.get(this.props, 'order.status') &&
+            hasInviteStatus &&
+            _.get(this.props, 'order.clientVehicleId') &&
+            _.get(this.props, 'order.clientId') &&
+            _.get(this.props, 'order.clientPhone') &&
+            !this.props.invited;
+
         return !spinner ? (
             <Layout
                 title={
@@ -124,6 +152,47 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
+                        {hasInviteStatus ? (
+                            <Link
+                                visible={ this.props.inviteOrderId }
+                                to={ `${book.order}/${this.props.inviteOrderId}` }
+                            >
+                                { this.props.inviteOrderId }
+                            </Link>
+                        ) : null}
+
+                        {isInviteVisible ? (
+                            <Button
+                                disabled={ !isInviteEnabled }
+                                onClick={ () => {
+                                    const {
+                                        clientVehicleId,
+                                        clientId,
+                                        status,
+                                        clientPhone,
+                                    } = this.props.order;
+
+                                    if (
+                                        (status === 'success' ||
+                                            status === 'cancel') &&
+                                        clientVehicleId &&
+                                        clientId &&
+                                        clientPhone
+                                    ) {
+                                        this.props.createInviteOrder({
+                                            status:    'invite',
+                                            clientVehicleId,
+                                            clientId,
+                                            clientPhone,
+                                            managerId: 720, // TODO fix stub
+                                        });
+                                    }
+                                } }
+                            >
+                                <FormattedMessage id='order-page.create_invite_order' />
+                            </Button>
+                        ) : null}
+
                         <ChangeStatusDropdown
                             orderStatus={ status }
                             onStatusChange={ this.onStatusChange.bind(this) }
@@ -197,7 +266,9 @@ class OrderPage extends Component {
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ this.props.modal }
                     status={ status }
-                    returnToOrdersPage={ this.props.returnToOrdersPage.bind(this) }
+                    returnToOrdersPage={ this.props.returnToOrdersPage.bind(
+                        this,
+                    ) }
                     saveOrder={ () => this.onStatusChange(status, status) }
                     resetModal={ () => resetModal() }
                 />
