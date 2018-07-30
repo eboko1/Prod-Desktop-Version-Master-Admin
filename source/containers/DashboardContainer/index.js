@@ -39,15 +39,15 @@ export default class DashboardContainer extends Component {
         currentDay: moment().format('YYYY-MM-DD'),
     };
 
-    static defaultProps = {
-        data: mapOrders(),
-    };
+    // static defaultProps = {
+    //     data: mapOrders(),
+    // };
 
     static getDerivedStateFromProps(props) {
         const { schedule, mode, stations, orders } = props;
 
         // const data = mapOrders(schedule.beginHour, orders);
-
+        const dashboardMode = mode === 'calendar';
         // get rows
         const time = Array(schedule.endHour)
             .fill(0)
@@ -60,6 +60,12 @@ export default class DashboardContainer extends Component {
         const stationsColumns = stations ? stations.length : 0;
         const dashboardGridColumns = mode === 'calendar' ? 7 : stationsColumns;
         const columns = dashboardGridColumns;
+
+        console.log('→ orders', orders);
+        // const data = dashboardMode
+        //     ? orders.filter(({ beginDatetime }) =>
+        //         moment(beginDatetime).format('YYYY-MM-DD') === )
+        //     : orders.filter(({ stationNum }) => stationNum === );
 
         // const ordersData = buildPuzzle(data, rows);
         // .map(col => col.map(item => item.y + item.columns))
@@ -157,46 +163,57 @@ export default class DashboardContainer extends Component {
 
     _renderDashboardContentColumn = id => {
         const { dashboard } = this.state;
-        const { data, days, mode, stations } = this.props;
+        const { data, days, mode, stations, orders, schedule } = this.props;
         const dashboardMode = mode === 'calendar';
-        const columnsData = dashboardMode ? days : stations ? stations : null;
-        console.log('→ columnsData', columnsData ? columnsData : '!!!!');
-        // const mapOrders = mapOrders(schedule.beginHour, orders);
-        // const ordersData = buildPuzzle(data, rows);
-        // const columns = dashboardMode ? days : stations;
-        // console.log('→ columns', columns);
+        const columnsData = dashboardMode ? days : stations;
+
+        const columnId = dashboardMode
+            ? columnsData
+                ? columnsData[ id ]
+                : null
+            : columnsData
+                ? columnsData[ id ].num
+                : null;
+
+        const dashboardData = dashboardMode
+            ? orders.filter(
+                ({ beginDatetime }) =>
+                    moment(beginDatetime).format('YYYY-MM-DD') === columnId,
+            )
+            : orders.filter(({ stationNum }) => stationNum === columnId);
+        console.log('→ dashboardData', dashboardData);
+
+        const mappedOrders = mapOrders(schedule.beginHour, dashboardData);
+        console.log('→ mappedOrders', mappedOrders);
+        const puzzle = buildPuzzle(mappedOrders, dashboard.rows);
 
         return (
-            <DashboardContentColumn
-                dashboard={ dashboard }
-                // columnId={
-                //     dashboardMode
-                //         ? columnsData[ id ]
-                //         : stations
-                //             ? columnsData[ id ].num
-                //             : null
-                // }
-            >
-                { data.map(({ data: { result, maxRows, maxBlocks } }, index) => (
-                    <DashboardContentBox
-                        key={ index }
-                        dashboard={ dashboard }
-                        rows={ maxRows }
-                        columns={ maxBlocks }
-                    >
-                        { result.map(
-                            (order, index) =>
-                                order.empty ? (
-                                    <DashboardEmptyCell
-                                        key={ index }
-                                        { ...order }
-                                    />
-                                ) : (
-                                    <DashboardOrder key={ index } { ...order } />
-                                ),
-                        ) }
-                    </DashboardContentBox>
-                )) }
+            <DashboardContentColumn dashboard={ dashboard }>
+                { puzzle.map(
+                    ({ data: { result, maxRows, maxBlocks } }, index) => (
+                        <DashboardContentBox
+                            key={ index }
+                            dashboard={ dashboard }
+                            rows={ maxRows }
+                            columns={ maxBlocks }
+                        >
+                            { result.map(
+                                (order, index) =>
+                                    order.empty ? (
+                                        <DashboardEmptyCell
+                                            key={ index }
+                                            { ...order }
+                                        />
+                                    ) : (
+                                        <DashboardOrder
+                                            key={ index }
+                                            { ...order }
+                                        />
+                                    ),
+                            ) }
+                        </DashboardContentBox>
+                    ),
+                ) }
             </DashboardContentColumn>
         );
     };
