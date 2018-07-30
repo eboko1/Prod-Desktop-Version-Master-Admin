@@ -1,4 +1,5 @@
 import moment from 'moment';
+// import { createSelector } from 'reselect';
 /**
  * Constants
  * */
@@ -10,6 +11,12 @@ export const INIT_DASHBOARD_SUCCESS = `${prefix}/INIT_DASHBOARD_SUCCESS`;
 
 export const FETCH_DASHBOARD = `${prefix}/FETCH_DASHBOARD`;
 export const FETCH_DASHBOARD_SUCCESS = `${prefix}/FETCH_DASHBOARD_SUCCESS`;
+
+export const FETCH_DASHBOARD_CALENDAR = `${prefix}/FETCH_DASHBOARD_CALENDAR`;
+export const FETCH_DASHBOARD_CALENDAR_SUCCESS = `${prefix}/FETCH_DASHBOARD_CALENDAR_SUCCESS`;
+
+export const FETCH_DASHBOARD_STATIONS = `${prefix}/FETCH_DASHBOARD_STATIONS`;
+export const FETCH_DASHBOARD_STATIONS_SUCCESS = `${prefix}/FETCH_DASHBOARD_STATIONS_SUCCESS`;
 
 export const DROP_DASHBOARD_ORDER = `${prefix}/DROP_DASHBOARD_ORDER}`;
 export const DROP_DASHBOARD_ORDER_SUCCESS = `${prefix}/DROP_DASHBOARD_ORDER_SUCCESS}`;
@@ -75,13 +82,19 @@ export default function reducer(state = ReducerState, action) {
                 ...payload,
             };
 
-        case FETCH_DASHBOARD:
+        // case FETCH_DASHBOARD:
+        //     return {
+        //         ...state,
+        //         beginDate: payload.beginDate,
+        //     };
+
+        case FETCH_DASHBOARD_CALENDAR_SUCCESS:
             return {
                 ...state,
-                beginDate: payload.beginDate,
+                ...payload,
             };
 
-        case FETCH_DASHBOARD_SUCCESS:
+        case FETCH_DASHBOARD_STATIONS_SUCCESS:
             return {
                 ...state,
                 ...payload,
@@ -97,6 +110,14 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
+// export const selectDashboardMode = state =>
+//     createSelector(stateSelector, state => {
+//         state.dashboard.mode;
+//     });
+export const selectDashboardMode = state => state.dashboard.mode;
+export const selectDashboardDate = state => state.dashboard.date;
+export const selectDashboardStartDate = state => state.dashboard.startDate;
+export const selectDashboardEndDate = state => state.dashboard.endDate;
 // export const ordersSelector = createSelector(stateSelector, state => {
 //     // console.log('ordersSelector', state.orders);
 //
@@ -118,13 +139,31 @@ export const initDashboardSuccess = data => ({
     payload: data,
 });
 
-export const fetchDashboard = ({ stations, beginDate }) => ({
+export const fetchDashboard = mode => ({
     type:    FETCH_DASHBOARD,
-    payload: { stations, beginDate },
+    payload: mode,
+});
+
+export const fetchDashboardCalendar = () => ({
+    type: FETCH_DASHBOARD_CALENDAR,
+});
+
+export const fetchDashboardStaions = () => ({
+    type: FETCH_DASHBOARD_STATIONS,
 });
 
 export const fetchDashboardSuccess = data => ({
     type:    FETCH_DASHBOARD_SUCCESS,
+    payload: data,
+});
+
+export const fetchDashboardCalendarSuccess = data => ({
+    type:    FETCH_DASHBOARD_CALENDAR_SUCCESS,
+    payload: data,
+});
+
+export const fetchDashboardStationsSuccess = data => ({
+    type:    FETCH_DASHBOARD_STATIONS_SUCCESS,
     payload: data,
 });
 

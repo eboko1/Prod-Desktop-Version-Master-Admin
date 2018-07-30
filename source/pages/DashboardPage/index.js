@@ -8,7 +8,6 @@ import moment from 'moment';
 // proj
 import {
     initDashboard,
-    fetchDashboard,
     dropDashboardOrder,
     setDashboardDate,
     setDashboardWeekDates,
@@ -16,7 +15,7 @@ import {
 } from 'core/dashboard/duck';
 
 import { Layout, Spinner } from 'commons';
-import { ArrowsWeekPicker, ArrowsDatePicker, Board } from 'components';
+import { ArrowsWeekPicker, ArrowsDatePicker } from 'components';
 import { DashboardContainer } from 'containers';
 
 // own
@@ -36,7 +35,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     initDashboard,
-    fetchDashboard,
     dropDashboardOrder,
     setDashboardDate,
     setDashboardWeekDates,
@@ -46,14 +44,7 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 class DashboardPage extends Component {
     componentDidMount() {
-        const {
-            initDashboard,
-            fetchDashboard,
-            setDashboardDate,
-            date,
-            startDate,
-            mode,
-        } = this.props;
+        const { initDashboard, startDate, mode } = this.props;
 
         const stations = mode !== 'calendar';
 
@@ -63,12 +54,14 @@ class DashboardPage extends Component {
     _onDayChange = date => this.props.setDashboardDate(date);
 
     _prevDay = () => {
-        this.props.setDashboardDate(this.props.date.subtract(1, 'day'));
+        const { setDashboardDate, date } = this.props;
+        setDashboardDate(date.subtract(1, 'day'));
         this.setState({});
     };
 
     _nextDay = () => {
-        this.props.setDashboardDate(this.props.date.add(1, 'day'));
+        const { setDashboardDate, date } = this.props;
+        setDashboardDate(date.add(1, 'day'));
         this.setState({});
     };
 
@@ -83,17 +76,20 @@ class DashboardPage extends Component {
         });
 
     _prevWeek = () => {
-        this.props.setDashboardWeekDates({
-            startDate: this.props.startDate.subtract(1, 'weeks'),
-            endDate:   this.props.endDate.subtract(1, 'weeks'),
+        const { setDashboardWeekDates, startDate, endDate } = this.props;
+        setDashboardWeekDates({
+            startDate: startDate.subtract(1, 'weeks'),
+            endDate:   endDate.subtract(1, 'weeks'),
         });
         this.setState({});
     };
 
     _nextWeek = () => {
-        this.props.setDashboardWeekDates({
-            startDate: this.props.startDate.add(1, 'weeks'),
-            endDate:   this.props.endDate.add(1, 'weeks'),
+        const { setDashboardWeekDates, startDate, endDate } = this.props;
+
+        setDashboardWeekDates({
+            startDate: startDate.add(1, 'weeks'),
+            endDate:   endDate.add(1, 'weeks'),
         });
         this.setState({});
     };

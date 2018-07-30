@@ -9,19 +9,19 @@ import { fetchAPI } from 'utils';
 // own
 import {
     initDashboardSuccess,
-    fetchDashboardSuccess,
-    fetchDashboard,
+    fetchDashboardCalendarSuccess,
+    fetchDashboardStationsSuccess,
+    setDashboardWeekDates,
+    setDashboardDate,
     INIT_DASHBOARD,
-    FETCH_DASHBOARD,
     SET_DASHBOARD_MODE,
-    // SET_DASHBOARD_WEEK_DATES,
+    SET_DASHBOARD_WEEK_DATES,
+    SET_DASHBOARD_DATE,
+    selectDashboardMode,
+    selectDashboardDate,
+    selectDashboardStartDate,
+    selectDashboardEndDate,
 } from './duck';
-
-const selectDashboardMode = state => state.dashboard.mode;
-const selectDashboardDate = state => state.dashboard.date;
-const selectDashboardStartDate = state => state.dashboard.startDate;
-
-// const STATIONS = selectDashboardMode === 'calendar';
 
 export function* initDashboardSaga() {
     while (true) {
@@ -56,38 +56,39 @@ export function* setDashboardModeSaga() {
         try {
             const { payload: mode } = yield take(SET_DASHBOARD_MODE);
 
-            const stations = mode === 'stations';
+            // const stations = yield select(selectDashboardMode);
 
-            yield put(fetchDashboard({ stations }));
+            if (mode === 'calendar') {
+                const startDate = yield select(selectDashboardStartDate);
+                const endDate = yield select(selectDashboardEndDate);
+
+                yield put(setDashboardWeekDates({ startDate, endDate }));
+            }
+
+            if (mode === 'stations') {
+                const date = yield select(selectDashboardDate);
+                yield put(setDashboardDate(date));
+            }
         } catch (error) {
             yield put(uiActions.emitError(error));
         }
     }
 }
 
-export function* fetchDashboardSaga() {
+export function* fetchDashboardCalendarSaga() {
     while (true) {
         try {
-            const {
-                payload: { stations },
-            } = yield take(FETCH_DASHBOARD);
-
+            yield take(SET_DASHBOARD_WEEK_DATES);
             yield nprogress.start();
 
-            const beginDate =
-                selectDashboardMode === 'calendar'
-                    ? yield select(selectDashboardStartDate)
-                    : yield select(selectDashboardDate);
-
-            // const mode = yield select(selectDashboardMode);
-            // console.log('* beginDate', beginDate);
+            const beginDate = yield select(selectDashboardStartDate);
 
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
+                stations:  false,
                 beginDate: beginDate.format('YYYY-MM-DD'),
-                stations,
             });
 
-            yield put(fetchDashboardSuccess(data));
+            yield put(fetchDashboardCalendarSuccess(data));
         } catch (error) {
             yield put(uiActions.emitError(error));
         } finally {
@@ -96,21 +97,35 @@ export function* fetchDashboardSaga() {
     }
 }
 
-// export function* setDashboardDateSaga() {
-//     while (true) {
-//         try {
-//             yield take(SET_DASHBOARD_WEEK_DATES);
-//
-//             const weekDates = yield select(selectDashboardStartDate);
-//             console.log('* weekDates', weekDates);
-//         } catch (error) {
-//             yield put(uiActions.emitError(error));
-//         } finally {
-//             yield put(fetchDashboard({ stations: STATIONS }));
-//         }
-//     }
-// }
+export function* fetchDashboardStationsSaga() {
+    while (true) {
+        try {
+            yield take(SET_DASHBOARD_DATE);
 
-export function* saga() {
-    yield all([ call(initDashboardSaga), call(fetchDashboardSaga), call(setDashboardModeSaga) ]);
+            yield nprogress.start();
+            const beginDate = yield select(selectDashboardDate);
+
+            const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
+                stations:  true,
+                beginDate: beginDate.format('YYYY-MM-DD'),
+            });
+
+            yield put(fetchDashboardStationsSuccess(data));
+        } catch (error) {
+            yield put(uiActions.emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
 }
+
+/* eslint-disable array-element-newline */
+export function* saga() {
+    yield all([
+        call(initDashboardSaga),
+        call(fetchDashboardCalendarSaga),
+        call(fetchDashboardStationsSaga),
+        call(setDashboardModeSaga),
+    ]);
+}
+/* eslint-enable array-element-newline */
