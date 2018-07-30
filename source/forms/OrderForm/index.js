@@ -266,12 +266,12 @@ export class OrderForm extends Component {
                                     />
                                 ) }
                                 { hasClient && (
-                                    <Link to={ `${book.oldApp.clients}/${this.props.order.clientId}?ref=/orders/${this.props.order.id}` }>
+                                    <a href={ `${book.oldApp.clients}/${this.props.order.clientId}?ref=/orders/${this.props.order.id}` }>
                                         <Icon
                                             type='edit'
                                             className={ Styles.editClientIcon }
                                         />
-                                    </Link>
+                                    </a>
                                 ) }
                             </FormItem>
                         </div>
