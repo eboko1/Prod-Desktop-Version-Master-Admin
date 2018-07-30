@@ -63,6 +63,14 @@
     margin-left: 10px;
 }
 
+.editClientIcon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: bold;
+    margin-left: 10px;
+}
+
 .ecatBlock {
     display: flex;
     flex-wrap: wrap;

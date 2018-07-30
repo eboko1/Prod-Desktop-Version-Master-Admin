@@ -1,11 +1,13 @@
 // vendor
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import { Form, Select, Radio, Tabs, Input, Icon } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
 import _ from 'lodash';
 
 //proj
+import book from 'routes/book';
 import {
     onChangeOrderForm,
     setClientSelection,
@@ -102,8 +104,10 @@ export class OrderForm extends Component {
         // TODO deal with total hours
         // console.log(totalHours);
 
-        const servicesDiscount = ~~this.props.fields.servicesDiscount.value;
-        const detailsDiscount = ~~this.props.fields.detailsDiscount.value;
+        const servicesDiscount =
+            Number(this.props.fields.servicesDiscount.value) || 0;
+        const detailsDiscount =
+            Number(this.props.fields.detailsDiscount.value) || 0;
 
         const detailsTotalPrice =
             priceDetails - priceDetails * (detailsDiscount / 100);
@@ -121,6 +125,13 @@ export class OrderForm extends Component {
             disabledSeconds,
             disabledTime,
         } = getDateTimeConfig(beginDatetime, this.props.schedule);
+
+        const disabledClientSearch =
+            (!_.get(this.props, 'order.status') ||
+                _.get(this.props, 'order.status') !== 'reserve') &&
+            _.get(this.props, 'order.clientId');
+
+        const hasClient = !!_.get(this.props, 'order.clientId');
 
         return (
             <Form
@@ -235,6 +246,7 @@ export class OrderForm extends Component {
                             >
                                 { getFieldDecorator('searchClientQuery', {})(
                                     <Input
+                                        disabled={ disabledClientSearch }
                                         placeholder={ this.props.intl.formatMessage(
                                             {
                                                 id:
@@ -244,13 +256,23 @@ export class OrderForm extends Component {
                                         ) }
                                     />,
                                 ) }
-                                <Icon
-                                    type='plus'
-                                    className={ Styles.addClientIcon }
-                                    onClick={ () =>
-                                        this.props.setAddClientModal(true)
-                                    }
-                                />
+                                { !disabledClientSearch && (
+                                    <Icon
+                                        type='plus'
+                                        className={ Styles.addClientIcon }
+                                        onClick={ () =>
+                                            this.props.setAddClientModal(true)
+                                        }
+                                    />
+                                ) }
+                                { hasClient && (
+                                    <Link to={ `${book.oldApp.clients}/${this.props.order.clientId}?ref=/orders/${this.props.order.id}` }>
+                                        <Icon
+                                            type='edit'
+                                            className={ Styles.editClientIcon }
+                                        />
+                                    </Link>
+                                ) }
                             </FormItem>
                         </div>
                         <FormItem
