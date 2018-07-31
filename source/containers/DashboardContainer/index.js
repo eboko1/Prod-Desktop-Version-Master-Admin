@@ -183,7 +183,7 @@ export default class DashboardContainer extends Component {
             : orders.filter(({ stationNum }) => stationNum === columnId);
         console.log('→ dashboardData', dashboardData);
 
-        const mappedOrders = mapOrders(schedule.beginHour, dashboardData);
+        const mappedOrders = mapOrders(schedule.beginHour, dashboard.rows, dashboardData);
         console.log('→ mappedOrders', mappedOrders);
         const puzzle = buildPuzzle(mappedOrders, dashboard.rows);
 

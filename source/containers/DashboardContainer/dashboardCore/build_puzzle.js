@@ -48,10 +48,13 @@ module.exports = (data, maxRow) => {
                         : initQuantity;
 
                 const area = blocks.find(
-                    ({ min, max }) => position >= min && position < max,
+                    ({ min, max }) =>
+                        position >= min && position < max ||
+                        min >= position && min < position + quantity,
                 );
                 if (area) {
                     area.max = Math.max(position + quantity, area.max);
+                    area.min = Math.min(position, area.min);
                     area.data.push({ position, quantity });
                 } else {
                     blocks.push({
