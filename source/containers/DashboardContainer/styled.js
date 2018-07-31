@@ -5,7 +5,6 @@ export const Dashboard = styled.div`
     display: grid;
     grid-template-columns: 80px 1fr;
     grid-gap: 1%;
-    background: #f7f7f7;
 `;
 
 export const DashboardGrid = styled.div`
@@ -15,12 +14,10 @@ export const DashboardGrid = styled.div`
     grid-gap: 1%;
     width: auto;
     overflow-x: scroll;
-    background: #ddd;
 `;
 
 export const DashboardColumn = styled.div`
     padding: 2px;
-    background: lightblue;
     border: ${props =>
         `${props.currentDay &&
             props.currentDay === props.day &&
@@ -37,10 +34,10 @@ export const DashboardBody = styled.div`
 `;
 
 export const DashboardContentColumn = styled.div`
-    background: yellowgreen;
     display: grid;
     grid-template-rows: ${props =>
         `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
+    border: 1px solid black;
 `;
 
 export const DashboardContentBox = styled.div`
@@ -57,9 +54,6 @@ export const DashboardAddOrderColumn = styled.div`
 `;
 
 export const DashboardHead = styled.div`
-    background-color: #1eaafc;
-    background-image: linear-gradient(160deg, #6c52d9 0%, #9b8ae6 127%);
-    border: 1px dashed black;
     height: 50px;
     color: white;
     text-align: center;
@@ -98,8 +92,7 @@ export const DashboardLoad = styled.div`
 
 export const DashboardTimeCell = styled.div`
     height: ${ROW_HEIGHT}px;
-    border-bottom: 1px dashed red;
-    background-color: #1eaafc;
+    border-bottom: 1px dashed black;
     display: flex;
     justify-content: center;
     align-items: center;

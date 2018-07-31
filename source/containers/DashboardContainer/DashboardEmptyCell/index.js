@@ -85,14 +85,7 @@ class DragTarget extends Component {
 
 export const DashboardEmptyCell = styled(DragTarget)`
     height: ${ROW_HEIGHT}px;
-    border-bottom: 1px dashed red;
-    background-color: #1eaafc;
-    background-image: linear-gradient(
-        130deg,
-        #6c52d9 0%,
-        #1eaafc 85%,
-        #3edfd7 100%
-    );
+    border-bottom: 1px dashed black;
     grid-column: ${props => `span ${props.column}`};
 `;
 

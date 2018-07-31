@@ -158,7 +158,8 @@ const _ordersStatus = status => {
 
 const DashboardOrder = styled(DragItem)`
     background: ${props => _ordersStatus(props.status)};
-    border: 1px solid yellowgreen;
+    color: white;
+    font-size: 12px;
     min-height: 30px;
     cursor: move;
     opacity: ${props => props.isdragging ? 0.5 : 1};

@@ -16,21 +16,22 @@ const AddOrderLink = ({ className, children }) => (
 );
 
 export const DashboardAddOrderCell = styled.div`
-    background-color: papayawhip;
-    border: 1px solid palevioletred;
+    border-right: 1px solid black;
+    border-bottom: 1px dashed black;
     height: ${ROW_HEIGHT}px;
 `;
 
 export const DashboardAddOrderLink = styled(AddOrderLink)`
     display: none;
-    color: palevioletred;
-    background: papayawhip;
+    background: var(--primary);
+    color: white;
     height: ${ROW_HEIGHT}px;
-    width: 10%;
+    width: 12%;
     position: absolute;
     transform: translate(-90%);
 
     ${DashboardAddOrderCell}:hover & {
+        color: white;
         display: flex;
         justify-content: center;
         align-items: center;

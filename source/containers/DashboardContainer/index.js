@@ -200,7 +200,7 @@ export default class DashboardContainer extends Component {
 
         return (
             <DashboardContentColumn dashboard={ dashboard }>
-                { /* { console.log('→ puzzle', puzzle) } */ }
+                { console.log('→ puzzle', puzzle) }
                 { puzzle.map(
                     ({ data: { result, maxRows, maxBlocks } }, index) => (
                         <DashboardContentBox
@@ -219,8 +219,13 @@ export default class DashboardContainer extends Component {
                                     ) : (
                                         <DashboardOrder
                                             key={ index }
+                                            status={
+                                                result[ index ].options.status
+                                            }
                                             { ...order }
-                                        />
+                                        >
+                                            { result[ index ].options.num }
+                                        </DashboardOrder>
                                     ),
                             ) }
                         </DashboardContentBox>
