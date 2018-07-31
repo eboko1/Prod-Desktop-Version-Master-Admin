@@ -261,7 +261,7 @@ export class OrderForm extends Component {
                                         type='plus'
                                         className={ Styles.addClientIcon }
                                         onClick={ () =>
-                                            this.props.setAddClientModal(true)
+                                            this.props.setAddClientModal()
                                         }
                                     />
                                 ) }

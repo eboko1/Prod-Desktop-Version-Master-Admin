@@ -15,9 +15,11 @@ import {
     returnToOrdersPage,
     createInviteOrder,
 } from 'core/forms/orderForm/duck';
+import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import book from 'routes/book';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { AddClientModal } from 'modals';
 
 import { Layout, Spinner } from 'commons';
 import { OrderForm } from 'forms';
@@ -72,6 +74,7 @@ const mapStateToProps = state => {
     resetModal,
     returnToOrdersPage,
     createInviteOrder,
+    fetchAddClientForm,
 })
 class OrderPage extends Component {
     saveFormRef = formRef => {
@@ -80,6 +83,22 @@ class OrderPage extends Component {
 
     saveOrderFormRef = formRef => {
         this.orderFormRef = formRef;
+    };
+
+    handleAddClientModalSubmit = () => {
+        const form = this.formRef.props.form;
+        this.setAddClientModal();
+        form.validateFields((err, values) => {
+            if (!err) {
+                console.log('Received values of AddClientForm: ', values);
+            }
+        });
+        this.props.resetModal();
+    };
+
+    setAddClientModal = () => {
+        this.props.fetchAddClientForm();
+        this.props.setModal(MODALS.ADD_CLIENT);
     };
 
     componentDidMount() {
@@ -108,7 +127,7 @@ class OrderPage extends Component {
     }
 
     render() {
-        const { setModal, resetModal, spinner } = this.props;
+        const { setModal, resetModal, spinner, addClientModal, addClientFormData} = this.props;
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
 
@@ -251,7 +270,16 @@ class OrderPage extends Component {
                     wrappedComponentRef={ this.saveOrderFormRef }
                     orderTasks={ this.props.orderTasks }
                     orderHistory={ this.props.orderHistory }
+                    setAddClientModal={ this.setAddClientModal }
+                    addClientModal={ addClientModal }
                     orderCalls={ this.props.orderCalls }
+                />
+                <AddClientModal
+                    wrappedComponentRef={ this.saveFormRef }
+                    visible={ addClientModal }
+                    handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
+                    resetModal={ resetModal }
+                    addClientFormData={ addClientFormData }
                 />
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
