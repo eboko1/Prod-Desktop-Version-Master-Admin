@@ -61,7 +61,7 @@ export default class DashboardContainer extends Component {
         const dashboardGridColumns = mode === 'calendar' ? 7 : stationsColumns;
         const columns = dashboardGridColumns;
 
-        console.log('→ orders', orders);
+        // console.log('→ orders', orders);
         // const data = dashboardMode
         //     ? orders.filter(({ beginDatetime }) =>
         //         moment(beginDatetime).format('YYYY-MM-DD') === )
@@ -118,7 +118,7 @@ export default class DashboardContainer extends Component {
 
         return (
             <DashboardColumn dashboard={ dashboard } column={ 1 } time>
-                <DashboardHead>Time</DashboardHead>
+                <DashboardHead />
                 { time.map(time => (
                     <React.Fragment key={ time }>
                         <DashboardTimeCell>{ time }</DashboardTimeCell>
@@ -130,7 +130,7 @@ export default class DashboardContainer extends Component {
     };
 
     _renderDashboardColumns = index => {
-        const { days, stations } = this.props;
+        const { days, stations, load } = this.props;
         // const { beginDate, dayName, loadCoefficient } = this.props.load;
         const { dashboard, currentDay } = this.state;
 
@@ -146,12 +146,19 @@ export default class DashboardContainer extends Component {
                 day={ days ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { /* <DashboardTitle>
-                        <FormattedMessage id={ dayName } />
-                    </DashboardTitle>
-                    <DashboardLoad loadCoefficient={ loadCoefficient }>
-                        { beginDate } - { loadCoefficient }%
-                    </DashboardLoad> */ }
+                    { load && 
+                        <>
+                            <DashboardTitle>
+                                <FormattedMessage id={ load[ index ].dayName } />
+                            </DashboardTitle>
+                            <DashboardLoad
+                                loadCoefficient={ load[ index ].loadCoefficient }
+                            >
+                                { moment(load[ index ].beginDate).format('DD MMM') }{ ' ' }
+                                - { load[ index ].loadCoefficient }%
+                            </DashboardLoad>
+                        </>
+                    }
                 </DashboardHead>
                 <DashboardBody>
                     { this._renderDashboardContentColumn(index) }
@@ -181,14 +188,19 @@ export default class DashboardContainer extends Component {
                     moment(beginDatetime).format('YYYY-MM-DD') === columnId,
             )
             : orders.filter(({ stationNum }) => stationNum === columnId);
-        console.log('→ dashboardData', dashboardData);
+        // console.log('→ dashboardData', dashboardData);
 
-        const mappedOrders = mapOrders(schedule.beginHour, dashboard.rows, dashboardData);
-        console.log('→ mappedOrders', mappedOrders);
+        const mappedOrders = mapOrders(
+            schedule.beginHour,
+            dashboard.rows,
+            dashboardData,
+        );
+        // console.log('→ mappedOrders', mappedOrders);
         const puzzle = buildPuzzle(mappedOrders, dashboard.rows);
 
         return (
             <DashboardContentColumn dashboard={ dashboard }>
+                { /* { console.log('→ puzzle', puzzle) } */ }
                 { puzzle.map(
                     ({ data: { result, maxRows, maxBlocks } }, index) => (
                         <DashboardContentBox

@@ -135,8 +135,29 @@ class DragItem extends Component {
     }
 }
 
+const _ordersStatus = status => {
+    switch (status) {
+        case 'reserve':
+            return 'var(--reserve)';
+        case 'not_complete':
+            return 'var(--approve)';
+        case 'required':
+            return 'var(--required)';
+        case 'approve':
+            return 'var(--approve)';
+        case 'progress':
+            return 'var(--progress)';
+        case 'success':
+            return 'var(--success)';
+        case 'cancel':
+            return 'var(--cancel)';
+        default:
+            return '#ddd';
+    }
+};
+
 const DashboardOrder = styled(DragItem)`
-    background-image: linear-gradient(203deg, #3edfd7, #29a49d 90%);
+    background: ${props => _ordersStatus(props.status)};
     border: 1px solid yellowgreen;
     min-height: 30px;
     cursor: move;

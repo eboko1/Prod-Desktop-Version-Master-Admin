@@ -19,7 +19,7 @@ export const DashboardGrid = styled.div`
 `;
 
 export const DashboardColumn = styled.div`
-    padding: 10px;
+    padding: 2px;
     background: lightblue;
     border: ${props =>
         `${props.currentDay &&
@@ -60,17 +60,40 @@ export const DashboardHead = styled.div`
     background-color: #1eaafc;
     background-image: linear-gradient(160deg, #6c52d9 0%, #9b8ae6 127%);
     border: 1px dashed black;
-    height: ${ROW_HEIGHT}px;
+    height: 50px;
     color: white;
     text-align: center;
 `;
 
 export const DashboardTitle = styled.div`
-    background-color: var(--not_complete);
+    background-color: white;
+    color: var(--primary);
+    font-weight: bold;
+    font-size: 12px;
 `;
 
+const _loadStatus = load => {
+    switch (true) {
+        case load >= 80:
+            return 'var(--not_complete)';
+        case load >= 40 && load < 80:
+            return 'var(--approve)';
+        case load < 40:
+            return 'var(--secondary)';
+        default:
+            return 'var(--secondary)';
+    }
+};
+
 export const DashboardLoad = styled.div`
-    background-color: var(--approve);
+    background-color: ${props => _loadStatus(props.loadCoefficient)};
+    text-transform: capitalize;
+    text-decoration: underline;
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 4px 0;
 `;
 
 export const DashboardTimeCell = styled.div`
