@@ -222,6 +222,7 @@ export default class DashboardContainer extends Component {
                                             status={
                                                 result[ index ].options.status
                                             }
+                                            id={ result[ index ].options.id }
                                             { ...order }
                                         >
                                             { result[ index ].options.num }

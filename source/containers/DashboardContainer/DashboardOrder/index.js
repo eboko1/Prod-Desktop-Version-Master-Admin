@@ -3,8 +3,11 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
-import { Link } from 'react-router-dom';
+import { withRouter } from 'react-router';
 import { DragSource, DropTarget } from 'react-dnd';
+
+// proj
+import book from 'routes/book';
 
 // own
 import { DragItemTypes } from '../dashboardConfig';
@@ -98,6 +101,7 @@ function collect(connect, monitor) {
 //     connectDragSource: connect.dragSource(),
 //     isDragging:        monitor.isDragging(),
 // }))
+@withRouter
 class DragItem extends Component {
     static propTypes = {
         connectDragSource:  PropTypes.func,
@@ -119,6 +123,7 @@ class DragItem extends Component {
             y,
             columns,
             rows,
+            id,
         } = this.props;
 
         return connectDragSource(
@@ -129,6 +134,7 @@ class DragItem extends Component {
                 y={ y }
                 columns={ columns }
                 rows={ rows }
+                onClick={ () => this.props.history.push(`${book.order}/${id}`) }
             >
                 { children }
             </div>,
