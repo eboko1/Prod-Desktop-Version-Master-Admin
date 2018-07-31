@@ -1,8 +1,9 @@
+const {v4} = require('uuid');
 const _ = require('lodash');
 
 module.exports = (data, maxRow) => {
     function divideBoard(maxRow) {
-        const blocks = []; // Local variable that stores puzzle configs
+        let blocks = []; // Local variable that stores puzzle configs
 
         return {
             getBlocks: () => {
@@ -47,17 +48,26 @@ module.exports = (data, maxRow) => {
                         ? maxRow - position
                         : initQuantity;
 
-                const area = blocks.find(
+                const areas = blocks.filter(
                     ({ min, max }) =>
-                        position >= min && position < max ||
-                        min >= position && min < position + quantity,
+                        ( position >= min & position < max ) ||
+                        ( min >= position & min < position + quantity ),
                 );
-                if (area) {
-                    area.max = Math.max(position + quantity, area.max);
-                    area.min = Math.min(position, area.min);
+
+                if (areas.length) {
+                    const area = {};
+                    area.max = Math.max(..._.map(areas, 'max'), position + quantity);
+                    area.min = Math.min(..._.map(areas, 'min'), position);
+                    area.data = [];
+                    area.id = v4();
+                    area.data.push(..._.flatten(_.map(areas, 'data')));
                     area.data.push({ position, quantity });
+
+                    blocks.push(area);
+                    blocks = blocks.filter(({id}) => !_.map(areas, 'id').includes(id));
                 } else {
                     blocks.push({
+                        id:   v4(),
                         min:  position,
                         max:  position + quantity,
                         data: [{ position, quantity }],
