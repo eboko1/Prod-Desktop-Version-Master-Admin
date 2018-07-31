@@ -3,7 +3,7 @@ import moment from 'moment-timezone';
 
 const TIMEZONE = 'Europe/Kiev';
 
-const mapOrders = (beginHour, orders) =>
+const mapOrders = (beginHour, maxRows, orders) =>
     _(orders)
         .filter('beginDatetime')
         .map(({ duration, beginDatetime, id }) => {
@@ -25,19 +25,27 @@ const mapOrders = (beginHour, orders) =>
                 orderBeginHalfHoursQuantity - openHalfHoursQuantity,
             );
 
+            let quantity = numberOfHalfHours;
+            let position = startHalfHour;
+
             if (startHalfHour < 0) {
                 if (startHalfHour + numberOfHalfHours < 1) {
                     return null;
                 }
 
-                return {
-                    position: 0,
-                    quantity: startHalfHour + numberOfHalfHours,
-                    id,
-                };
+                position = 0;
+                quantity = startHalfHour + numberOfHalfHours;
             }
 
-            return { position: startHalfHour, quantity: numberOfHalfHours, id };
+            if (startHalfHour + numberOfHalfHours >= maxRows) {
+                if (startHalfHour >= maxRows) {
+                    return null;
+                }
+
+                quantity = maxRows - startHalfHour;
+            }
+
+            return { position, quantity, id };
         })
         .filter(Boolean)
         .value();
