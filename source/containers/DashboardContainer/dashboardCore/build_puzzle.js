@@ -93,7 +93,7 @@ module.exports = (data, maxRow) => {
 
         const sortedInputData = _.sortBy(data, [ 'position', 'quantity' ]);
         outer: for (const input of sortedInputData) {
-            const { position, quantity } = input;
+            const { position, quantity, options } = input;
             maxRows = Math.max(maxRows, position + quantity);
             for (let i = 0; i < maxBlocks; i++) {
                 const overlappingBlocks = countOtherBlocks(
@@ -109,6 +109,7 @@ module.exports = (data, maxRow) => {
                         columns:        1,
                         rows:           quantity,
                         globalPosition: position + min,
+                        options,
                     });
                     continue outer;
                 }
@@ -122,6 +123,7 @@ module.exports = (data, maxRow) => {
                 rows:           quantity,
                 empty:          false,
                 globalPosition: position + min,
+                options,
             });
         }
 
