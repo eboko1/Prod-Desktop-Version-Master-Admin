@@ -165,13 +165,14 @@ const _ordersStatus = status => {
 
 const DashboardOrder = styled(DragItem)`
     background: ${props => _ordersStatus(props.status)};
-    border: 1px solid black;
+    margin: 1px;
+    padding: 1px;
     color: white;
     font-size: 12px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 30px;
+    min-height: 28px;
     cursor: move;
     opacity: ${props => props.isdragging ? 0.5 : 1};
     grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
