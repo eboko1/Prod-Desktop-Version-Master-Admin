@@ -146,7 +146,6 @@ class DashboardPage extends Component {
                             }
                             key='calendar'
                         >
-                            { console.log('→ orders', orders) }
                             <DashboardContainer
                                 spinner={ spinner }
                                 orders={ orders || [] }

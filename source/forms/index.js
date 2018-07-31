@@ -6,7 +6,6 @@ import { AddClientForm } from './AddClientForm';
 import { UniversalFiltersForm } from './UniversalFiltersForm';
 import { CancelReasonForm } from './CancelReasonForm';
 import { ToSuccessForm } from './ToSuccessForm';
-import AntReduxForm from './AntReduxForm';
 
 export {
     LoginForm,
@@ -14,7 +13,6 @@ export {
     OrderForm,
     AddOrderForm,
     AddClientForm,
-    AntReduxForm,
     UniversalFiltersForm,
     CancelReasonForm,
     ToSuccessForm,

@@ -1,10 +1,12 @@
 // vendor
 import React, { Component } from 'react';
-import { Icon, Button, Row, Col } from 'antd';
-import { Form } from 'antd';
+import { Icon, Button, Row, Col, Form } from 'antd';
 
-const FormItem = Form.Item;
+// proj
 import { DecoratedInput } from 'forms/DecoratedFields';
+
+// own
+const FormItem = Form.Item;
 
 class ArrayInput extends Component {
     remove = key => {

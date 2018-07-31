@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router';
 
 // proj
-import { DistributorDash, Request, SwapiBox } from 'containers';
 import {
     DashboardPage,
     OrdersPage,
@@ -12,27 +11,12 @@ import {
     ProfilePage,
     ExceptionPage,
 } from 'pages';
-
 import book from './book';
 
 export default class Private extends Component {
     render() {
         return (
             <Switch>
-                { /* <Route exact component={ SwapiBox } path={ book.swapi } /> */ }
-                { /* <Route
-                    exact
-                    component={ DistributorDash }
-                    path={ book.distributorDash }
-                /> */ }
-                { /* <Route exact component={ Request } path={ book.request } /> */ }
-                { /* <Switch>
-
-                    <Redirect
-                        from={ book.orders }
-                        to={ `${book.orders}/appointments` }
-                    />
-                </Switch> */ }
                 <Route exact component={ DashboardPage } path={ book.dashboard } />
                 <Route
                     exact

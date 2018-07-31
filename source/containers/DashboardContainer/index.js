@@ -1,9 +1,6 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-// import { connect } from 'react-redux';
-// import { v4 } from 'uuid';
-// import _ from 'lodash';
 import moment from 'moment';
 
 // proj
@@ -29,10 +26,9 @@ import {
     DashboardTitle,
     DashboardLoad,
 } from './styled.js';
-// import { findOrder } from './dashboardConfig';
-// import puzzledData from './dashboardCore/runner';
+
 import mapOrders from './dashboardCore/mapOrders';
-import buildPuzzle from './dashboardCore/build_puzzle';
+import ordersPuzzle from './dashboardCore/ordersPuzzle';
 
 export default class DashboardContainer extends Component {
     state = {
@@ -63,7 +59,7 @@ export default class DashboardContainer extends Component {
         //         moment(beginDatetime).format('YYYY-MM-DD') === )
         //     : orders.filter(({ stationNum }) => stationNum === );
 
-        // const ordersData = buildPuzzle(data, rows);
+        // const ordersData = ordersPuzzle(data, rows);
         // .map(col => col.map(item => item.y + item.columns))
         // .map(num => Math.max(...num.filter(_.isFinite)) + 1);
         const dashboard = { rows, columns };
@@ -81,18 +77,11 @@ export default class DashboardContainer extends Component {
     // genRows -> function helper
     // genColumns
     */
-    // componentDidMount() {
-    //     const { mode, stations } = this.props;
-    //     console.log('→ DMstations', stations);
-    //     // const dashboardGridColumns = mode === 'calendar' ? 7 : stations.length;
-    //     this.setState({ dashboardGridColumns: 7 });
-    // }
 
     render() {
         const { dashboardGridColumns } = this.state;
 
         const timeColumn = this._renderTimeColumn();
-        // const dashboardColumns = this._renderDashboardColumns();
 
         return (
             <Catcher>
@@ -141,6 +130,7 @@ export default class DashboardContainer extends Component {
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
                     { load &&
                         <>
+                            {/* TODO: stations load */}
                             {/* {console.log('→ load.length', load.length)}
                             {console.log('→ load.[index]', load[ index ])} */}
                             <DashboardTitle>
@@ -196,7 +186,7 @@ export default class DashboardContainer extends Component {
             dashboardData,
         );
 
-        const puzzle = buildPuzzle(mappedOrders, dashboard.rows);
+        const puzzle = ordersPuzzle(mappedOrders, dashboard.rows);
 
         return (
             <DashboardContentColumn dashboard={ dashboard }>

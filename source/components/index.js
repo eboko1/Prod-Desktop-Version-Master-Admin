@@ -1,5 +1,4 @@
 import DistributorTable from './DistributorTable';
-import Result from './Result';
 import LanguagePad from './LanguagePad';
 import ArrowsNav from './ArrowsNav';
 import OrdersTable from './OrdersTable';
@@ -11,13 +10,11 @@ import ChangeStatusDropdown from './ChangeStatusDropdown';
 import ArrowsWeekPicker from './ArrowsWeekPicker';
 import ArrowsDatePicker from './ArrowsDatePicker';
 import Dashboard from './Dashboard';
-import Board from './Board';
-import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 import ArrayInput from './ArrayInput';
+import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 
 export {
     DistributorTable,
-    Result,
     LanguagePad,
     ArrowsNav,
     OrdersTable,
@@ -31,6 +28,5 @@ export {
     ArrowsDatePicker,
     ChangeStatusDropdown,
     Dashboard,
-    Board,
     ArrayInput,
 };

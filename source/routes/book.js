@@ -6,12 +6,8 @@ const OLD_APP_URL = __OLD_APP_URL__;
 const book = Object.freeze({
     // Public
     login:               '/login',
-    home:                '/home',
-    swapi:               '/swapi',
     // Private
     profile:             '/profile',
-    distributorDash:     '/distributor-dash',
-    request:             '/request',
     dashboard:           '/dashboard',
     // Orders
     orders:              '/orders',

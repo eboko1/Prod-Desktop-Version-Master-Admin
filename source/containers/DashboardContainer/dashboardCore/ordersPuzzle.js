@@ -1,7 +1,8 @@
-const {v4} = require('uuid');
-const _ = require('lodash');
+// vendor
+import { v4 } from 'uuid';
+import _ from 'lodash';
 
-module.exports = (data, maxRow) => {
+const ordersPuzzle = (data, maxRow) => {
     function divideBoard(maxRow) {
         let blocks = []; // Local variable that stores puzzle configs
 
@@ -50,13 +51,16 @@ module.exports = (data, maxRow) => {
 
                 const areas = blocks.filter(
                     ({ min, max }) =>
-                        ( position >= min & position < max ) ||
-                        ( min >= position & min < position + quantity ),
+                        position >= min & position < max ||
+                        min >= position & min < position + quantity,
                 );
 
                 if (areas.length) {
                     const area = {};
-                    area.max = Math.max(..._.map(areas, 'max'), position + quantity);
+                    area.max = Math.max(
+                        ..._.map(areas, 'max'),
+                        position + quantity,
+                    );
                     area.min = Math.min(..._.map(areas, 'min'), position);
                     area.data = [];
                     area.id = v4();
@@ -64,7 +68,9 @@ module.exports = (data, maxRow) => {
                     area.data.push({ position, quantity, options });
 
                     blocks.push(area);
-                    blocks = blocks.filter(({id}) => !_.map(areas, 'id').includes(id));
+                    blocks = blocks.filter(
+                        ({ id }) => !_.map(areas, 'id').includes(id),
+                    );
                 } else {
                     blocks.push({
                         id:   v4(),
@@ -90,7 +96,7 @@ module.exports = (data, maxRow) => {
                     !(position + quantity <= x),
             ).length;
         };
-
+        /* eslint-disable no-labels*/
         const sortedInputData = _.sortBy(data, [ 'position', 'quantity' ]);
         outer: for (const input of sortedInputData) {
             const { position, quantity, options } = input;
@@ -155,3 +161,5 @@ module.exports = (data, maxRow) => {
         data: getPuzzle(block.data, block.min),
     }));
 };
+
+export default ordersPuzzle;

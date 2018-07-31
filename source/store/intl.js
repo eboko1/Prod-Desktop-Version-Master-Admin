@@ -51,7 +51,46 @@ import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
 import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
 
-const messages = merge.all([ global, Navigation, LanguagePad, ProfilePage, ProfileForm, OrdersContainer, OrdersPage, OrderPage, ExceptionPage, OrdersTable, StatusIcons, OrdersFilterContainer, FunelContainer, Header, AddOrderPage, OrderFormTables, UniversalFiltersModal, StatsCountsPanel, UniversalFiltersForm, UniversalFiltersTags, AddOrderForm, ReportsDropdown, AddClientModal, InviteModal, DecoratedDatePicker, CancelReasonForm, ToSuccessForm, CallsTable, DashboardPage, AddClientForm ]);
+/* eslint-disable array-element-newline */
+const messages = merge.all([
+    global,
+    // commons
+    Navigation,
+    Header,
+    LanguagePad,
+    // pages
+    ProfilePage,
+    OrdersPage,
+    OrderPage,
+    ExceptionPage,
+    AddOrderPage,
+    DashboardPage,
+    // containers
+    OrdersContainer,
+    OrdersFilterContainer,
+    FunelContainer,
+    // forms
+    ProfileForm,
+    UniversalFiltersForm,
+    AddOrderForm,
+    CancelReasonForm,
+    ToSuccessForm,
+    AddClientForm,
+    // modals
+    UniversalFiltersModal,
+    AddClientModal,
+    InviteModal,
+    // components
+    OrdersTable,
+    StatusIcons,
+    OrderFormTables,
+    StatsCountsPanel,
+    UniversalFiltersTags,
+    ReportsDropdown,
+    DecoratedDatePicker,
+    CallsTable,
+]);
+/* eslint-enable array-element-newline */
 
 // Intl
 const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
@@ -64,7 +103,7 @@ const intl = {
 };
 
 // Numeral
-// TODO: provide locale dynamic
+// TODO: provide locale dynamic for numeral register
 numeral.register('locale', 'ru', {
     delimiters: {
         thousands: ' ',

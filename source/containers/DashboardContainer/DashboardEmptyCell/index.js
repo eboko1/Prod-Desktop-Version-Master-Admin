@@ -1,8 +1,8 @@
 //vendor
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { DropTarget } from 'react-dnd';
 import styled from 'styled-components';
+import { DropTarget } from 'react-dnd';
 
 // import { canMoveOrder, moveOrder } from '../Game';
 import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
