@@ -159,6 +159,7 @@ const _ordersStatus = status => {
 
 const DashboardOrder = styled(DragItem)`
     background: ${props => _ordersStatus(props.status)};
+    border: 1px solid black;
     color: white;
     font-size: 12px;
     white-space: nowrap;
