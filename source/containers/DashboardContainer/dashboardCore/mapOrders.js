@@ -6,7 +6,8 @@ const TIMEZONE = 'Europe/Kiev';
 const mapOrders = (beginHour, maxRows, orders) =>
     _(orders)
         .filter('beginDatetime')
-        .map(({ duration, beginDatetime, id }) => {
+        .map((order) => {
+            const { duration, beginDatetime } = order;
             const numberOfHalfHours =
                 Math.ceil(moment.duration(duration).asHours() * 2) || 1;
 
@@ -45,7 +46,7 @@ const mapOrders = (beginHour, maxRows, orders) =>
                 quantity = maxRows - startHalfHour;
             }
 
-            return { position, quantity, id };
+            return { position, quantity, options: order };
         })
         .filter(Boolean)
         .value();

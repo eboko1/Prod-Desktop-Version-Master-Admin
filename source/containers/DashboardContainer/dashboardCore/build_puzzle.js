@@ -39,7 +39,7 @@ module.exports = (data, maxRow) => {
 
                 return newBlocks;
             },
-            pushItem: ({ position, quantity: initQuantity }) => {
+            pushItem: ({ position, quantity: initQuantity, options }) => {
                 if (position >= maxRow) {
                     return;
                 }
@@ -61,7 +61,7 @@ module.exports = (data, maxRow) => {
                     area.data = [];
                     area.id = v4();
                     area.data.push(..._.flatten(_.map(areas, 'data')));
-                    area.data.push({ position, quantity });
+                    area.data.push({ position, quantity, options });
 
                     blocks.push(area);
                     blocks = blocks.filter(({id}) => !_.map(areas, 'id').includes(id));
@@ -70,7 +70,7 @@ module.exports = (data, maxRow) => {
                         id:   v4(),
                         min:  position,
                         max:  position + quantity,
-                        data: [{ position, quantity }],
+                        data: [{ position, quantity, options }],
                     });
                 }
             },
