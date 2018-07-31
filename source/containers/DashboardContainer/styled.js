@@ -1,6 +1,21 @@
 import styled from 'styled-components';
 import { ROW_HEIGHT } from './dashboardConfig';
 
+// helpers
+const _loadStatus = load => {
+    switch (true) {
+        case load >= 80:
+            return 'var(--not_complete)';
+        case load >= 40 && load < 80:
+            return 'var(--approve)';
+        case load < 40:
+            return 'var(--secondary)';
+        default:
+            return 'var(--secondary)';
+    }
+};
+
+// styled-components
 export const Dashboard = styled.div`
     display: grid;
     grid-template-columns: 80px 1fr;
@@ -51,6 +66,9 @@ export const DashboardAddOrderColumn = styled.div`
     display: grid;
     grid-template-rows: ${props =>
         `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
 `;
 
 export const DashboardHead = styled.div`
@@ -65,19 +83,6 @@ export const DashboardTitle = styled.div`
     font-weight: bold;
     font-size: 12px;
 `;
-
-const _loadStatus = load => {
-    switch (true) {
-        case load >= 80:
-            return 'var(--not_complete)';
-        case load >= 40 && load < 80:
-            return 'var(--approve)';
-        case load < 40:
-            return 'var(--secondary)';
-        default:
-            return 'var(--secondary)';
-    }
-};
 
 export const DashboardLoad = styled.div`
     background-color: ${props => _loadStatus(props.loadCoefficient)};
@@ -97,6 +102,3 @@ export const DashboardTimeCell = styled.div`
     justify-content: center;
     align-items: center;
 `;
-
-// grid-template-columns: ${props =>
-//     `repeat(${props.column}, 1fr) ${!props.time ? '10%' : ''}`};

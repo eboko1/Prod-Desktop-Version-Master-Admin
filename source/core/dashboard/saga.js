@@ -17,7 +17,7 @@ import {
     SET_DASHBOARD_MODE,
     SET_DASHBOARD_WEEK_DATES,
     SET_DASHBOARD_DATE,
-    selectDashboardMode,
+    // selectDashboardMode,
     selectDashboardDate,
     selectDashboardStartDate,
     selectDashboardEndDate,
@@ -26,20 +26,13 @@ import {
 export function* initDashboardSaga() {
     while (true) {
         try {
-            const {
-                payload: { stations },
-            } = yield take(INIT_DASHBOARD);
-
+            yield take(INIT_DASHBOARD);
             yield put(uiActions.setDashboardFetchingState(true));
-
-            const beginDate =
-                selectDashboardMode === 'calendar'
-                    ? yield select(selectDashboardStartDate)
-                    : yield select(selectDashboardDate);
+            const beginDate = yield select(selectDashboardStartDate);
 
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
                 beginDate: beginDate.format('YYYY-MM-DD'),
-                stations,
+                stations:  false,
             });
 
             yield put(initDashboardSuccess(data));
@@ -55,8 +48,6 @@ export function* setDashboardModeSaga() {
     while (true) {
         try {
             const { payload: mode } = yield take(SET_DASHBOARD_MODE);
-
-            // const stations = yield select(selectDashboardMode);
 
             if (mode === 'calendar') {
                 const startDate = yield select(selectDashboardStartDate);
@@ -80,7 +71,6 @@ export function* fetchDashboardCalendarSaga() {
         try {
             yield take(SET_DASHBOARD_WEEK_DATES);
             yield nprogress.start();
-
             const beginDate = yield select(selectDashboardStartDate);
 
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
@@ -101,7 +91,6 @@ export function* fetchDashboardStationsSaga() {
     while (true) {
         try {
             yield take(SET_DASHBOARD_DATE);
-
             yield nprogress.start();
             const beginDate = yield select(selectDashboardDate);
 

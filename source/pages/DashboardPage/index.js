@@ -46,11 +46,9 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 class DashboardPage extends Component {
     componentDidMount() {
-        const { initDashboard, startDate, mode } = this.props;
+        const { initDashboard } = this.props;
 
-        const stations = mode !== 'calendar';
-
-        initDashboard({ stations, beginDate: startDate });
+        initDashboard();
     }
 
     _onDayChange = date => this.props.setDashboardDate(date);
@@ -112,7 +110,7 @@ class DashboardPage extends Component {
             spinner,
         } = this.props;
 
-        return !spinner && load && stations ? (
+        return !spinner ? (
             <Layout
                 // paper={ false }
                 title={ <FormattedMessage id='dashboard-page.title' /> }
@@ -148,9 +146,11 @@ class DashboardPage extends Component {
                             }
                             key='calendar'
                         >
+                            { console.log('→ orders', orders) }
                             <DashboardContainer
                                 spinner={ spinner }
-                                orders={ orders }
+                                orders={ orders || [] }
+                                stations={ stations }
                                 days={ days }
                                 mode={ mode }
                                 load={ load }
@@ -165,8 +165,9 @@ class DashboardPage extends Component {
                         >
                             <DashboardContainer
                                 spinner={ spinner }
-                                orders={ orders }
+                                orders={ orders || [] }
                                 stations={ stations }
+                                days={ days }
                                 mode={ mode }
                                 load={ load }
                                 schedule={ schedule }

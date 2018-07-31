@@ -37,7 +37,6 @@ const ReducerState = {
     stations:  [],
     mode:      'calendar',
     schedule:  {},
-    beginDate: null, // for fetch
     date:      moment(),
     startDate: moment()
         .startOf('week')
@@ -70,23 +69,11 @@ export default function reducer(state = ReducerState, action) {
                 endDate:   payload.endDate,
             };
 
-        case INIT_DASHBOARD:
-            return {
-                ...state,
-                beginDate: payload.beginDate,
-            };
-
         case INIT_DASHBOARD_SUCCESS:
             return {
                 ...state,
                 ...payload,
             };
-
-        // case FETCH_DASHBOARD:
-        //     return {
-        //         ...state,
-        //         beginDate: payload.beginDate,
-        //     };
 
         case FETCH_DASHBOARD_CALENDAR_SUCCESS:
             return {
@@ -110,28 +97,18 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
-// export const selectDashboardMode = state =>
-//     createSelector(stateSelector, state => {
-//         state.dashboard.mode;
-//     });
+
 export const selectDashboardMode = state => state.dashboard.mode;
 export const selectDashboardDate = state => state.dashboard.date;
 export const selectDashboardStartDate = state => state.dashboard.startDate;
 export const selectDashboardEndDate = state => state.dashboard.endDate;
-// export const ordersSelector = createSelector(stateSelector, state => {
-//     // console.log('ordersSelector', state.orders);
-//
-//     // return state.orders.valueSeq().toArray();
-//     return state.data.orders;
-// });
 
 /**
  * Action Creators
  * */
 
-export const initDashboard = ({ stations, beginDate }) => ({
-    type:    INIT_DASHBOARD,
-    payload: { stations, beginDate },
+export const initDashboard = () => ({
+    type: INIT_DASHBOARD,
 });
 
 export const initDashboardSuccess = data => ({
