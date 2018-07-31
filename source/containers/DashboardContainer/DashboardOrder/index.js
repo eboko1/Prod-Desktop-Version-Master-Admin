@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 import { DragSource, DropTarget } from 'react-dnd';
 
 // own
@@ -160,6 +161,9 @@ const DashboardOrder = styled(DragItem)`
     background: ${props => _ordersStatus(props.status)};
     color: white;
     font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     min-height: 30px;
     cursor: move;
     opacity: ${props => props.isdragging ? 0.5 : 1};
