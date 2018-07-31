@@ -130,7 +130,7 @@ export default class DashboardContainer extends Component {
     };
 
     _renderDashboardColumns = index => {
-        const { days, stations, load } = this.props;
+        const { days, stations, load, mode } = this.props;
         // const { beginDate, dayName, loadCoefficient } = this.props.load;
         const { dashboard, currentDay } = this.state;
 
@@ -146,10 +146,16 @@ export default class DashboardContainer extends Component {
                 day={ days ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load && 
+                    { load &&
                         <>
                             <DashboardTitle>
-                                <FormattedMessage id={ load[ index ].dayName } />
+                                { mode === 'calendar' ? (
+                                    <FormattedMessage
+                                        id={ load[ index ].dayName }
+                                    />
+                                ) : (
+                                    <div>{ index }</div>
+                                ) }
                             </DashboardTitle>
                             <DashboardLoad
                                 loadCoefficient={ load[ index ].loadCoefficient }
