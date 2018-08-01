@@ -70,6 +70,7 @@ const { TextArea } = Input;
     },
 })
 export class OrderForm extends Component {
+    /* eslint-disable complexity */
     render() {
         const {
             fields: {
@@ -266,7 +267,11 @@ export class OrderForm extends Component {
                                     />
                                 ) }
                                 { hasClient && (
-                                    <a href={ `${book.oldApp.clients}/${this.props.order.clientId}?ref=/orders/${this.props.order.id}` }>
+                                    <a
+                                        href={ `${book.oldApp.clients}/${
+                                            this.props.order.clientId
+                                        }?ref=/orders/${this.props.order.id}` }
+                                    >
                                         <Icon
                                             type='edit'
                                             className={ Styles.editClientIcon }
