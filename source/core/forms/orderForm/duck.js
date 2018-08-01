@@ -73,6 +73,8 @@ import {
  * Reducer
  * */
 
+const appendKey = (arr) => arr.map((item) => ({...item, key: v4()}));
+
 const createDefaultState = () => ({
     fields: {
         beginDatetime:     defaultFieldValue('beginDatetime'),
@@ -194,10 +196,10 @@ export default function reducer(state = ReducerState, action) {
                     payload.allDetails.details,
                     payload.orderDetails,
                 ),
-                allServices: mergeServices(
+                allServices: appendKey(mergeServices(
                     payload.allServices,
                     payload.orderServices,
-                ),
+                )),
                 allDetails: {
                     ...state.allDetails,
                     details: mergeDetails(
@@ -320,7 +322,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 ...payload,
                 filteredDetails: payload.allDetails.details.slice(0, 100),
-                allServices:     payload.allServices,
+                allServices:     appendKey(payload.allServices),
                 allDetails:      payload.allDetails,
                 fields:          {
                     ...state.fields,
@@ -402,10 +404,10 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 allServices: [
-                    ...generateAllServices(
+                    ...appendKey(generateAllServices(
                         state.allServices,
                         state.fields.services,
-                    ),
+                    )),
                     {
                         id:               v4(),
                         servicePrice:     null,

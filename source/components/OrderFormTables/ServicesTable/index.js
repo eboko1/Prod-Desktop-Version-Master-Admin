@@ -52,8 +52,8 @@ class ServicesTable extends Component {
                             dropdownStyle={ { width: '70%' } }
                         >
                             { this.props.allServices.map(
-                                ({ id, type, serviceName }) => (
-                                    <Option value={ `${type}|${id}` } key={ v4() }>
+                                ({ id, type, serviceName, key }) => (
+                                    <Option value={ `${type}|${id}` } key={ key }>
                                         { serviceName }
                                     </Option>
                                 ),
@@ -165,8 +165,19 @@ class ServicesTable extends Component {
         ];
     }
 
-    handleServiceSelect = key => {
+    handleServiceSelect = (key, value) => {
         const dataSource = { ...this.props.services };
+        const { servicePrice } =
+            _.find(
+                this.props.allServices,
+                ({ id, type }) => value === `${type}|${id}`,
+            ) || {};
+
+        if (servicePrice) {
+            this.props.form.setFieldsValue({
+                [ `services[${key}][servicePrice]` ]: servicePrice,
+            });
+        }
 
         const emptyFields = _(dataSource)
             .values()
@@ -209,7 +220,7 @@ class ServicesTable extends Component {
                 name:       `services[${id}][serviceCount]`,
                 touched:    true,
                 validating: false,
-                value:      void 0,
+                value:      1,
                 dirty:      false,
             },
             employeeId: {
