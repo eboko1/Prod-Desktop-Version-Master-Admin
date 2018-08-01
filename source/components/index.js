@@ -1,4 +1,3 @@
-import DistributorTable from './DistributorTable';
 import LanguagePad from './LanguagePad';
 import ArrowsNav from './ArrowsNav';
 import OrdersTable from './OrdersTable';
@@ -14,7 +13,6 @@ import ArrayInput from './ArrayInput';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 
 export {
-    DistributorTable,
     LanguagePad,
     ArrowsNav,
     OrdersTable,
