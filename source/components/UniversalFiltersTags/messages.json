@@ -11,8 +11,10 @@
         "universal_filters_tags.createDate": "Create date",
         "universal_filters_tags.year": "Year",
         "universal_filters_tags.odometerLower": "Mileage from",
-        "universal_filters_tags.odometerGreater": "Mileage to"
-
+        "universal_filters_tags.odometerGreater": "Mileage to",
+        "universal_filters_tags.ordersLower": "Orders to",
+        "universal_filters_tags.ordersGreater": "Orders from",
+        "universal_filters_tags.notVisitRange": "Visit filter"
     },
     "ru": {
         "universal_filters_tags.managers": "Менеджеры",
@@ -26,7 +28,10 @@
         "universal_filters_tags.createDate": "Дата выполнения",
         "universal_filters_tags.year": "Год",
         "universal_filters_tags.odometerLower": "Пробег от",
-        "universal_filters_tags.odometerGreater": "Пробег до"
+        "universal_filters_tags.odometerGreater": "Пробег до",
+        "universal_filters_tags.ordersLower": "Заказов до",
+        "universal_filters_tags.ordersGreater": "Заказов от",
+        "universal_filters_tags.notVisitRange": "Фильтр посещений"
     },
     "uk": {
         "universal_filters_tags.managers": "Менеджери",
@@ -40,6 +45,9 @@
         "universal_filters_tags.createDate": "Дата Виконання",
         "universal_filters_tags.year": "Рік",
         "universal_filters_tags.odometerLower": "Пробіг від",
-        "universal_filters_tags.odometerGreater": "Пробіг до"
+        "universal_filters_tags.odometerGreater": "Пробіг до",
+        "universal_filters_tags.ordersLower": "Замовлень до",
+        "universal_filters_tags.ordersGreater": "Замовлень від",
+        "universal_filters_tags.notVisitRange": "Фільтр відвідувань"
     }
 }
