@@ -12,6 +12,7 @@ import {
     setDashboardDate,
     setDashboardWeekDates,
     setDashboardMode,
+    selectDasboardData,
 } from 'core/dashboard/duck';
 
 import { Layout, Spinner } from 'commons';
@@ -21,30 +22,6 @@ import { DashboardContainer } from 'containers';
 // own
 import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
-
-const selectDasboardData = ({
-    dashboard: { schedule, mode, stations, days },
-}) => {
-    const time = [ ...Array(schedule.endHour).keys() ]
-        .map((_, index) => index + 1)
-        .slice(schedule.beginHour - 1)
-        .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
-
-    const rows = time.length * 2;
-    const dashboardGridColumns =
-        mode === 'calendar' ? days.length : stations.length;
-
-    const columns = dashboardGridColumns;
-
-    const dashboard = { rows, columns };
-
-    return {
-        time,
-        dashboard,
-        dashboardGridColumns,
-        mode,
-    };
-};
 
 const mapStateToProps = state => ({
     orders:    state.dashboard.orders.orders,
