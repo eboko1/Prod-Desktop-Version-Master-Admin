@@ -1,6 +1,7 @@
 // vendor
 import { take, select, call, put, all } from 'redux-saga/effects';
 import nprogress from 'nprogress';
+import moment from 'moment';
 
 //proj
 import { uiActions } from 'core/ui/actions';
@@ -13,10 +14,12 @@ import {
     fetchDashboardStationsSuccess,
     setDashboardWeekDates,
     setDashboardDate,
+    setDashboardMode,
     INIT_DASHBOARD,
     SET_DASHBOARD_MODE,
     SET_DASHBOARD_WEEK_DATES,
     SET_DASHBOARD_DATE,
+    LINK_TO_DASHBOARD_STATIONS,
     // selectDashboardMode,
     selectDashboardDate,
     selectDashboardStartDate,
@@ -93,7 +96,6 @@ export function* fetchDashboardStationsSaga() {
             yield take(SET_DASHBOARD_DATE);
             yield nprogress.start();
             const beginDate = yield select(selectDashboardDate);
-
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
                 stations:  true,
                 beginDate: beginDate.format('YYYY-MM-DD'),
@@ -108,6 +110,18 @@ export function* fetchDashboardStationsSaga() {
     }
 }
 
+export function* linkToDashboardStationsSaga() {
+    while (true) {
+        try {
+            const { payload: day } = yield take(LINK_TO_DASHBOARD_STATIONS);
+            yield put(setDashboardDate(moment(day)));
+            yield put(setDashboardMode('stations'));
+        } catch (error) {
+            yield put(uiActions.emitError(error));
+        }
+    }
+}
+
 /* eslint-disable array-element-newline */
 export function* saga() {
     yield all([
@@ -115,6 +129,7 @@ export function* saga() {
         call(fetchDashboardCalendarSaga),
         call(fetchDashboardStationsSaga),
         call(setDashboardModeSaga),
+        call(linkToDashboardStationsSaga),
     ]);
 }
 /* eslint-enable array-element-newline */

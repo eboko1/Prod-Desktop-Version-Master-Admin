@@ -9,6 +9,7 @@ import moment from 'moment';
 import {
     initDashboard,
     dropDashboardOrder,
+    linkToDashboardStations,
     setDashboardDate,
     setDashboardWeekDates,
     setDashboardMode,
@@ -36,12 +37,6 @@ const mapStateToProps = state => ({
     spinner:   state.ui.get('dashboardFetching'),
 
     ...selectDasboardData(state),
-    // currentDay: moment().format('YYYY-MM-DD'),
-    // time:       [],
-    // dashboard:  {
-    //     rows:    2,
-    //     columns: 4,
-    // },
 });
 
 const mapDispatchToProps = {
@@ -50,6 +45,7 @@ const mapDispatchToProps = {
     setDashboardDate,
     setDashboardWeekDates,
     setDashboardMode,
+    linkToDashboardStations,
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -117,7 +113,7 @@ class DashboardPage extends Component {
             spinner,
             time,
             dashboard,
-            dashboardGridColumns,
+            linkToDashboardStations,
         } = this.props;
 
         return !spinner ? (
@@ -130,6 +126,7 @@ class DashboardPage extends Component {
             >
                 <section className={ Styles.dashboardPage }>
                     <Tabs
+                        activeKey={ mode }
                         tabBarExtraContent={
                             mode === 'calendar' ? (
                                 <ArrowsWeekPicker
@@ -166,7 +163,9 @@ class DashboardPage extends Component {
                                 schedule={ schedule }
                                 time={ time }
                                 dashboard={ dashboard }
-                                dashboardGridColumns={ dashboardGridColumns }
+                                linkToDashboardStations={
+                                    linkToDashboardStations
+                                }
                             />
                         </TabPane>
                         <TabPane
@@ -185,7 +184,9 @@ class DashboardPage extends Component {
                                 schedule={ schedule }
                                 time={ time }
                                 dashboard={ dashboard }
-                                dashboardGridColumns={ dashboardGridColumns }
+                                linkToDashboardStations={
+                                    linkToDashboardStations
+                                }
                             />
                         </TabPane>
                     </Tabs>

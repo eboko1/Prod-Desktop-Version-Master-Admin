@@ -25,6 +25,8 @@ export const SET_DASHBOARD_MODE = `${prefix}/SET_DASHBOARD_MODE`;
 export const SET_DASHBOARD_DATE = `${prefix}/SET_DASHBOARD_DATE`;
 export const SET_DASHBOARD_WEEK_DATES = `${prefix}/SET_DASHBOARD_WEEK_DATES`;
 
+export const LINK_TO_DASHBOARD_STATIONS = `${prefix}/LINK_TO_DASHBOARD_STATIONS`;
+
 /**
  * Reducer
  * */
@@ -118,18 +120,14 @@ export const selectDasboardData = createSelector(
             .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
 
         const rows = time.length * 2;
-        const dashboardGridColumns =
-            mode === 'calendar' ? days.length : stations.length;
-
-        const columns = dashboardGridColumns;
+        const columns = mode === 'calendar' ? days.length : stations.length;
 
         const dashboard = { rows, columns };
 
         return {
             time,
-            dashboard,
-            dashboardGridColumns,
             mode,
+            dashboard,
         };
     },
 );
@@ -196,4 +194,9 @@ export const dropDashboardOrder = () => ({
 
 export const dropDashboardOrderSuccess = () => ({
     type: DROP_DASHBOARD_ORDER_SUCCESS,
+});
+
+export const linkToDashboardStations = day => ({
+    type:    LINK_TO_DASHBOARD_STATIONS,
+    payload: day,
 });

@@ -32,21 +32,31 @@ import ordersPuzzle from './dashboardCore/ordersPuzzle';
 
 export default class DashboardContainer extends Component {
     render() {
-        const { dashboardGridColumns } = this.props;
+        const { dashboard } = this.props;
 
         const timeColumn = this._renderTimeColumn();
+        const dashboardColumns = this._renderDashboardColumns();
 
         return (
             <Catcher>
                 <Dashboard>
                     { timeColumn }
-                    <DashboardGrid columns={ dashboardGridColumns }>
-                        { this._renderDashboardColumns() }
+                    <DashboardGrid columns={ dashboard.columns }>
+                        { dashboardColumns }
                     </DashboardGrid>
                 </Dashboard>
             </Catcher>
         );
     }
+
+    _linkToStations = day => this.props.linkToDashboardStations(day);
+    //     console.log('→ day', day);
+    //     console.log(
+    //         '→ this.props.linkToDashboardStations',
+    //         this.props.linkToDashboardStations(day),
+    //     );
+    //
+    // };
 
     _renderTimeColumn = () => {
         const { dashboard, time } = this.props;
@@ -65,56 +75,71 @@ export default class DashboardContainer extends Component {
     };
 
     _renderDashboardColumns = () => {
-        const { days, stations, load, mode } = this.props;
-        const { dashboard, currentDay, dashboardGridColumns } = this.props;
+        const {
+            dashboard,
+            currentDay,
+            days,
+            stations,
+            load,
+            mode,
+        } = this.props;
 
-        return Array(dashboardGridColumns)
-            .fill(0)
-            .map((_, index) => (
-                <DashboardColumn
-                    dashboard={ dashboard }
-                    column={ 1 }
-                    key={ index }
-                    currentDay={ currentDay }
-                    day={ days ? days[ index ] : null }
-                    station={ stations ? stations[ index ] : null }
-                >
-                    <DashboardHead dashboard={ dashboard } column={ 1 }>
-                        { load.length &&
-                            <>
-                                <DashboardTitle>
-                                    { mode === 'calendar' ? (
-                                        <FormattedMessage
-                                            id={ load[ index ].dayName }
-                                        />
-                                    ) :
-                                        stations[ index ].name
-                                    }
-                                </DashboardTitle>
-                                <DashboardLoad
-                                    loadCoefficient={
-                                        load[ index ].loadCoefficient
-                                    }
-                                >
-                                    { moment(load[ index ].beginDate).format(
+        return [ ...Array(dashboard.columns).keys() ].map((_, index) => (
+            <DashboardColumn
+                dashboard={ dashboard }
+                column={ 1 }
+                key={ index }
+                currentDay={ currentDay }
+                day={ days ? days[ index ] : null }
+                station={ stations ? stations[ index ] : null }
+            >
+                <DashboardHead dashboard={ dashboard } column={ 1 }>
+                    { load.length && 
+                        <>
+                            <DashboardTitle>
+                                { mode === 'calendar' ? (
+                                    <FormattedMessage
+                                        id={ load[ index ].dayName }
+                                    />
+                                ) : 
+                                    load[ index ].stationNum
+                                }
+                            </DashboardTitle>
+                            <DashboardLoad
+                                loadCoefficient={ load[ index ].loadCoefficient }
+                                link={ mode === 'calendar' }
+                                onClick={ () =>
+                                    this._linkToStations(days[ index ])
+                                }
+                            >
+                                { mode === 'calendar'
+                                    ? `${moment(load[ index ].beginDate).format(
                                         'DD MMM',
-                                    ) }{ ' ' }
-                                    - { load[ index ].loadCoefficient }%
-                                </DashboardLoad>
-                            </>
-                        }
-                    </DashboardHead>
-                    <DashboardBody>
-                        { this._renderDashboardContentColumn(index) }
-                        { this._renderDashboardAddOrderColumn() }
-                    </DashboardBody>
-                </DashboardColumn>
-            ));
+                                    )} -`
+                                    : stations[ index ].name &&
+                                      `${stations[ index ].name} - ` }
+                                { load[ index ].loadCoefficient }%
+                            </DashboardLoad>
+                        </>
+                    }
+                </DashboardHead>
+                <DashboardBody>
+                    { this._renderDashboardContentColumn(index) }
+                    { this._renderDashboardAddOrderColumn() }
+                </DashboardBody>
+            </DashboardColumn>
+        ));
     };
 
     _renderDashboardContentColumn = id => {
-        const { dashboard } = this.props;
-        const { days, mode, stations, orders, schedule } = this.props;
+        const {
+            dashboard,
+            days,
+            mode,
+            stations,
+            orders,
+            schedule,
+        } = this.props;
         const dashboardMode = mode === 'calendar';
         const columnsData = dashboardMode ? days : stations;
 
@@ -183,13 +208,11 @@ export default class DashboardContainer extends Component {
 
         return (
             <DashboardAddOrderColumn dashboard={ dashboard }>
-                { Array(dashboard.rows)
-                    .fill(0)
-                    .map((_, index) => (
-                        <DashboardAddOrderCell key={ index }>
-                            <DashboardAddOrderLink />
-                        </DashboardAddOrderCell>
-                    )) }
+                { [ ...Array(dashboard.rows).keys() ].map((_, index) => (
+                    <DashboardAddOrderCell key={ index }>
+                        <DashboardAddOrderLink />
+                    </DashboardAddOrderCell>
+                )) }
             </DashboardAddOrderColumn>
         );
     };
