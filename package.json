@@ -47,6 +47,7 @@
         "react-intl": "^2.4.0",
         "react-redux": "~5.0.7",
         "react-redux-form": "^1.16.8",
+        "react-responsive": "^5.0.0",
         "react-router-dom": "~4.2.2",
         "react-router-redux": "~5.0.0-alpha.9",
         "react-transition-group": "~2.3.1",
