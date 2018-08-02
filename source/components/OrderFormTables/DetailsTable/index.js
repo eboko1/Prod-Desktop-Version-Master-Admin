@@ -166,24 +166,6 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.own_detail' />,
-                dataIndex: 'ownDetail',
-                width:     '5%',
-                render:    (text, record) => (
-                    <DecoratedCheckbox
-                        field={ `details[${record.key}][ownDetail]` }
-                        getFieldDecorator={ this.props.form.getFieldDecorator }
-                        initValue={ record.ownDetail }
-                        disabled={
-                            !_.get(
-                                this.props.details[ record.key ],
-                                'detailName.value',
-                            )
-                        }
-                    />
-                ),
-            },
-            {
                 title:     '',
                 dataIndex: 'delete',
                 render:    (text, record) => {

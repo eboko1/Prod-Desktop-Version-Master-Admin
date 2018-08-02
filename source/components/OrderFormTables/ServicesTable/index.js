@@ -15,10 +15,15 @@ import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
+import {
+    DecoratedSelect,
+    DecoratedInputNumber,
+    DecoratedCheckbox,
+} from 'forms/DecoratedFields';
 
 // own
 import Styles from './styles.m.css';
+
 const Option = Select.Option;
 const FormItem = Form.Item;
 
@@ -128,7 +133,8 @@ class ServicesTable extends Component {
                                 this.props.form.getFieldDecorator
                             }
                             disabled={
-                                !this.props.services[ record.key ].serviceName.value
+                                !this.props.services[ record.key ].serviceName
+                                    .value
                             }
                         >
                             { this.props.employees.map(employee => (
@@ -143,6 +149,30 @@ class ServicesTable extends Component {
                                 </Option>
                             )) }
                         </DecoratedSelect>
+                    );
+                },
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.own_detail' />,
+                dataIndex: 'ownDetail',
+                render:    (text, record) => {
+                    const services = _.get(this.props, 'fetchedOrder.orderServices');
+                    const orderService = (services || []).find(({serviceId, type}) => `${type}|${serviceId}` === record.key);
+
+                    return (
+                        <DecoratedCheckbox
+                            field={ `services[${record.key}][ownDetail]` }
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                            initValue={orderService && orderService.ownDetail}
+                            disabled={
+                                !_.get(
+                                    this.props.services[ record.key ],
+                                    'serviceName.value',
+                                )
+                            }
+                        />
                     );
                 },
             },
@@ -173,11 +203,9 @@ class ServicesTable extends Component {
                 ({ id, type }) => value === `${type}|${id}`,
             ) || {};
 
-        if (servicePrice) {
-            this.props.form.setFieldsValue({
-                [ `services[${key}][servicePrice]` ]: servicePrice,
-            });
-        }
+        this.props.form.setFieldsValue({
+            [ `services[${key}][servicePrice]` ]: servicePrice || 0,
+        });
 
         const emptyFields = _(dataSource)
             .values()
@@ -237,6 +265,14 @@ class ServicesTable extends Component {
                 touched:    true,
                 validating: false,
                 value:      void 0,
+                dirty:      false,
+            },
+            ownDetail: {
+                errors:     void 0,
+                name:       `services[${id}][ownDetail]`,
+                touched:    true,
+                validating: false,
+                value:      false,
                 dirty:      false,
             },
         };
@@ -301,19 +337,19 @@ class ServicesTable extends Component {
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
-                            onSelect={
-                                (value) => {
-                                    const services = this.props.form.getFieldValue('services');
+                            onSelect={ value => {
+                                const services = this.props.form.getFieldValue(
+                                    'services',
+                                );
 
-                                    const updatedServices = _(services)
-                                        .keys()
-                                        .map((serviceKey) => [ `services[${serviceKey}][employeeId]`, value ])
-                                        .fromPairs()
-                                        .value();
+                                const updatedServices = _(services)
+                                    .keys()
+                                    .map(serviceKey => [ `services[${serviceKey}][employeeId]`, value ])
+                                    .fromPairs()
+                                    .value();
 
-                                    this.props.form.setFieldsValue(updatedServices);
-                                }
-                            }
+                                this.props.form.setFieldsValue(updatedServices);
+                            } }
                         >
                             { employees.map(employee => (
                                 <Option

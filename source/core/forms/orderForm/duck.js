@@ -293,6 +293,8 @@ export default function reducer(state = ReducerState, action) {
                         ...defaultDetails(),
                     },
                 },
+
+                fetchedOrder:   payload,
                 selectedClient: payload.client || state.selectedClient,
             };
 

@@ -11,7 +11,7 @@ function hasService(allServices, serviceId, type) {
 
 export const mapOrderServicesToSelectServices = (orderServices, allServices, globalEmployeeId) =>
     _.fromPairs(
-        orderServices.map(({ serviceId, type, count, price, employeeId }) => {
+        orderServices.map(({ serviceId, type, count, price, employeeId, ownDetail }) => {
             const custom = !hasService(allServices, serviceId, type);
 
             return [
@@ -32,6 +32,11 @@ export const mapOrderServicesToSelectServices = (orderServices, allServices, glo
                     servicePrice: customFieldValue(
                         `services[${type}|${serviceId}][servicePrice]`,
                         Number(price) || 0,
+                    ),
+                    ownDetail: customFieldValue(
+                        `details[${type}|${serviceId}][ownDetail]`,
+                        ownDetail,
+                        { dirty: false },
                     ),
                 },
             ];
@@ -83,8 +88,8 @@ export const mergeServices = (allServices, orderServices) => {
 };
 
 export const defaultServices = (employeeId) => {
-    const defaultValues = { serviceCount: 1, servicePrice: 0, employeeId };
-    const fields = [ 'serviceName', 'serviceCount', 'servicePrice', 'employeeId' ];
+    const defaultValues = { serviceCount: 1, servicePrice: 0, employeeId, ownDetail: false };
+    const fields = [ 'serviceName', 'serviceCount', 'servicePrice', 'employeeId', 'ownDetail' ];
 
     return generateNestedObject(
         fields,

@@ -15,6 +15,7 @@ export function convertFieldsValuesToDbEntity(
                 servicePrice: { value: price },
                 serviceCount: { value: count },
                 employeeId: { value: employeeId },
+                ownDetail: { value: ownDetail },
             } = service;
             const [ type, serviceId ] = name.split('|');
             const label = (
@@ -22,7 +23,7 @@ export function convertFieldsValuesToDbEntity(
                 {}
             ).serviceName;
 
-            const baseService = { price, count, hours: null, employeeId };
+            const baseService = { price, count, hours: null, employeeId, ownDetail };
             const serviceType =
                 type === 'custom'
                     ? { type, serviceName: label }
@@ -41,7 +42,6 @@ export function convertFieldsValuesToDbEntity(
                 detailCount: { value: count },
                 detailCode: { value: code },
                 detailBrandName: { value: brandId },
-                ownDetail: { value: ownDetail },
             } = detail;
             const [ detailType ] = String(detailId).split('|');
             const [ brandType ] = String(brandId).split('|');
@@ -56,7 +56,7 @@ export function convertFieldsValuesToDbEntity(
                 {}
             ).brandName;
 
-            const baseDetail = { price, count, ownDetail, code };
+            const baseDetail = { price, count, code };
             const detailCustom =
                 detailType === 'custom' ? { name: detailLabel } : { detailId };
             const brandCustom =
