@@ -12,6 +12,7 @@ import {
     setDashboardDate,
     setDashboardWeekDates,
     setDashboardMode,
+    selectDasboardData,
 } from 'core/dashboard/duck';
 
 import { Layout, Spinner } from 'commons';
@@ -33,6 +34,14 @@ const mapStateToProps = state => ({
     days:      state.dashboard.days,
     load:      state.dashboard.load,
     spinner:   state.ui.get('dashboardFetching'),
+
+    ...selectDasboardData(state),
+    // currentDay: moment().format('YYYY-MM-DD'),
+    // time:       [],
+    // dashboard:  {
+    //     rows:    2,
+    //     columns: 4,
+    // },
 });
 
 const mapDispatchToProps = {
@@ -81,7 +90,6 @@ class DashboardPage extends Component {
             startDate: startDate.subtract(1, 'weeks'),
             endDate:   endDate.subtract(1, 'weeks'),
         });
-        this.setState({});
     };
 
     _nextWeek = () => {
@@ -91,7 +99,6 @@ class DashboardPage extends Component {
             startDate: startDate.add(1, 'weeks'),
             endDate:   endDate.add(1, 'weeks'),
         });
-        this.setState({});
     };
 
     _setDashboardMode = mode => this.props.setDashboardMode(mode);
@@ -108,6 +115,9 @@ class DashboardPage extends Component {
             stations,
             schedule,
             spinner,
+            time,
+            dashboard,
+            dashboardGridColumns,
         } = this.props;
 
         return !spinner ? (
@@ -148,12 +158,15 @@ class DashboardPage extends Component {
                         >
                             <DashboardContainer
                                 spinner={ spinner }
-                                orders={ orders || [] }
+                                orders={ orders }
                                 stations={ stations }
                                 days={ days }
                                 mode={ mode }
                                 load={ load }
                                 schedule={ schedule }
+                                time={ time }
+                                dashboard={ dashboard }
+                                dashboardGridColumns={ dashboardGridColumns }
                             />
                         </TabPane>
                         <TabPane
@@ -164,12 +177,15 @@ class DashboardPage extends Component {
                         >
                             <DashboardContainer
                                 spinner={ spinner }
-                                orders={ orders || [] }
+                                orders={ orders }
                                 stations={ stations }
                                 days={ days }
                                 mode={ mode }
                                 load={ load }
                                 schedule={ schedule }
+                                time={ time }
+                                dashboard={ dashboard }
+                                dashboardGridColumns={ dashboardGridColumns }
                             />
                         </TabPane>
                     </Tabs>

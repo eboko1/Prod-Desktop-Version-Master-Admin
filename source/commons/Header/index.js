@@ -39,7 +39,7 @@ class Header extends Component {
                         <Icon
                             className={ Styles.logout }
                             type='poweroff'
-                            onClick={ () => logout() }
+                            onClick={ logout }
                         />
                     </div>
                 </div>

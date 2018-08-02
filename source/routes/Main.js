@@ -20,24 +20,6 @@ import Public from './Public';
 @withRouter
 @hot(module)
 export default class Routes extends Component {
-    // state = {token: ''};
-    //
-    // static getDerivedStateFromProps(props) {
-    //     const token = getToken();
-    //     console.log(token);
-    //     if (token) {
-    //         if (props.location.pathname === book.login) {
-    //             props.history.replace(book.distributorDash);
-    //         }
-    //     }
-    //
-    //     return {token};
-    // }
-
-    shouldComponentUpdate(nextProps) {
-        return nextProps.location !== this.props.location;
-    }
-
     render() {
         return (
             <Catcher>

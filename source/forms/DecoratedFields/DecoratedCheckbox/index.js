@@ -7,20 +7,18 @@ const FormItem = Form.Item;
 
 export const DecoratedCheckbox = props => {
     const {
-        //FormItem
+    //FormItem
         formItem,
         label,
         colon,
         className,
         hasFeedback,
         formItemLayout,
-
         getFieldDecorator,
         disabled,
         rules,
         field,
         initValue,
-
         children,
     } = props;
 

@@ -1,5 +1,5 @@
 import moment from 'moment';
-// import { createSelector } from 'reselect';
+import { createSelector } from 'reselect';
 /**
  * Constants
  * */
@@ -33,7 +33,9 @@ const ReducerState = {
     beginTime: null,
     endTime:   null,
     days:      [],
-    orders:    [],
+    orders:    {
+        orders: [],
+    },
     stations:  [],
     mode:      'calendar',
     schedule:  {},
@@ -44,6 +46,7 @@ const ReducerState = {
     endDate: moment()
         .endOf('week')
         .isoWeekday(7),
+    load: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -54,6 +57,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 mode: payload,
+                load: [],
             };
 
         case SET_DASHBOARD_DATE:
@@ -102,6 +106,33 @@ export const selectDashboardMode = state => state.dashboard.mode;
 export const selectDashboardDate = state => state.dashboard.date;
 export const selectDashboardStartDate = state => state.dashboard.startDate;
 export const selectDashboardEndDate = state => state.dashboard.endDate;
+
+// const getDashboard = state => state.dashboard;
+
+export const selectDasboardData = createSelector(
+    [ stateSelector ],
+    ({ schedule, mode, stations, days }) => {
+        const time = [ ...Array(schedule.endHour).keys() ]
+            .map((_, index) => index + 1)
+            .slice(schedule.beginHour - 1)
+            .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
+
+        const rows = time.length * 2;
+        const dashboardGridColumns =
+            mode === 'calendar' ? days.length : stations.length;
+
+        const columns = dashboardGridColumns;
+
+        const dashboard = { rows, columns };
+
+        return {
+            time,
+            dashboard,
+            dashboardGridColumns,
+            mode,
+        };
+    },
+);
 
 /**
  * Action Creators
