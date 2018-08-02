@@ -1,7 +1,7 @@
 /**
  * Constants
  * */
-export const moduleName = 'order';
+export const moduleName = "order";
 const prefix = `cpb/${moduleName}`;
 
 export const FETCH_ORDER = `${prefix}/FETCH_ORDER`;
@@ -21,40 +21,40 @@ export const GET_REPORT_SUCCESS = `${prefix}/GET_REPORT_SUCCESS`;
  * */
 
 const ReducerState = {
-    order:         {},
-    tasks:         [],
-    orderComments: [],
-    allServices:   [],
-    orderServices: [],
-    orderDetails:  [],
-    clients:       [],
-    managers:      [],
-    employees:     [],
-    vehicles:      [],
-    calls:         [],
-    stations:      [],
+  order: {},
+  tasks: [],
+  orderComments: [],
+  allServices: [],
+  orderServices: [],
+  orderDetails: [],
+  clients: [],
+  managers: [],
+  employees: [],
+  vehicles: [],
+  calls: [],
+  stations: []
 };
 
 export default function reducer(state = ReducerState, action) {
-    const { type, payload } = action;
+  const { type, payload } = action;
 
-    switch (type) {
-        case FETCH_ORDER_SUCCESS:
-            return {
-                ...state,
-                ...payload,
-            };
+  switch (type) {
+    case FETCH_ORDER_SUCCESS:
+      return {
+        ...state,
+        ...payload
+      };
 
-        default:
-            return state;
-    }
+    default:
+      return state;
+  }
 }
 
 /**
  * Selectors
  * */
 
-export const stateSelector = state => state[ moduleName ];
+export const stateSelector = state => state[moduleName];
 // export const ordersSelector = createSelector(stateSelector, state => {
 //     // console.log('ordersSelector', state.orders);
 //
@@ -67,54 +67,55 @@ export const stateSelector = state => state[ moduleName ];
  * */
 // order
 export function fetchOrder(id) {
-    return {
-        type:    FETCH_ORDER,
-        payload: id,
-    };
+  return {
+    type: FETCH_ORDER,
+    payload: id
+  };
 }
 
 export function fetchOrderSuccess(order) {
-    return {
-        type:    FETCH_ORDER_SUCCESS,
-        payload: order,
-    };
+  return {
+    type: FETCH_ORDER_SUCCESS,
+    payload: order
+  };
 }
 
 export function fetchOrderFail(error) {
-    return {
-        type:    FETCH_ORDER_FAIL,
-        payload: error,
-        error:   true,
-    };
+  return {
+    type: FETCH_ORDER_FAIL,
+    payload: error,
+    error: true
+  };
 }
+
 // report
 export function fetchReport(report) {
-    return {
-        type:    FETCH_REPORT,
-        payload: report,
-    };
+  return {
+    type: FETCH_REPORT,
+    payload: report
+  };
 }
 
 export function fetchReportSuccess(report) {
-    return {
-        type:    FETCH_ORDER_SUCCESS,
-        payload: report,
-    };
+  return {
+    type: FETCH_ORDER_SUCCESS,
+    payload: report
+  };
 }
 
 export function fetchReportFail(error) {
-    return {
-        type:    FETCH_ORDER_FAIL,
-        payload: error,
-        error:   true,
-    };
+  return {
+    type: FETCH_ORDER_FAIL,
+    payload: error,
+    error: true
+  };
 }
 
 export const getReport = report => ({
-    type:    GET_REPORT,
-    payload: report,
+  type: GET_REPORT,
+  payload: report
 });
 
 export const getReportSuccess = () => ({
-    type: GET_REPORT_SUCCESS,
+  type: GET_REPORT_SUCCESS
 });
