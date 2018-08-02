@@ -3,19 +3,18 @@ import React, { Component } from 'react';
 import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
-
-
+// proj
 import { MODALS } from 'core/modals/duck';
-
-import { withReduxForm } from 'utils';
+// import { OrderTaskForm } from 'forms';
 
 // own
 import Styles from './styles.m.css';
 
-export default class AddClientModal extends Component {
+export default class OrderTaskModal extends Component {
     render() {
         const { visible, resetModal } = this.props;
 
+        // TODO: refactor or remove Styles if needed
 
         return (
             <Modal
@@ -27,13 +26,12 @@ export default class AddClientModal extends Component {
                 wrapClassName={ Styles.addClientModal }
                 visible={ visible === MODALS.ORDER_TASK }
                 onOk={ () => {
-                    
                     resetModal();
-                }
-                }
+                } }
                 onCancel={ () => resetModal() }
             >
-Hello
+                Hello
+                { /* TODO: uncomment and add logic <OrderTaskForm /> */ }
             </Modal>
         );
     }

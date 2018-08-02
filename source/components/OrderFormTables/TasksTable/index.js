@@ -88,6 +88,7 @@ class TasksTable extends Component {
 
         return (
             <Catcher>
+                { /* TODO: add button for OrderTaskModal */ }
                 <Table
                     //   dataSource={orderTasks}
                     size='small'

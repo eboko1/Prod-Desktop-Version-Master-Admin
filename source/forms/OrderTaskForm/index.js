@@ -1,83 +1,33 @@
 // vendor
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Form, Select, Radio, Tabs, Input, Icon, Button } from 'antd';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { v4 } from 'uuid';
-import _ from 'lodash';
+import { Form } from 'antd';
+import { FormattedMessage } from 'react-intl';
 
 //proj
-import {
-    onChangeOrderForm,
-    setClientSelection,
-    onChangeOrderServices,
-    onChangeOrderDetails,
-    onServiceSearch,
-    onDetailSearch,
-    onBrandSearch,
-} from 'core/forms/orderForm/duck';
+import { onChangeOrderForm } from 'core/forms/orderForm/duck';
 
-import { defaultDetails } from './../../core/forms/orderForm/helpers/details';
+// TODO: импортировать все необходимые филды для форы
+// import { } from 'forms/DecoratedFields';
 
-import {
-    DecoratedTextArea,
-    DecoratedSelect,
-    DecoratedInputNumber,
-    DecoratedDatePicker,
-} from 'forms/DecoratedFields';
-import {
-    DetailsTable,
-    ServicesTable,
-    DiscountPanel,
-    ClientsSearchTable,
-    TasksTable,
-    HistoryTable,
-    CallsTable,
-} from 'components/OrderFormTables';
+import { withReduxForm } from 'utils';
 
-import { withReduxForm, hasErrors, getDateTimeConfig, images } from 'utils';
-import {
-    formItemAutoColLayout,
-    formItemLayout,
-    formItemTotalLayout,
-} from './layouts';
-import { servicesStats, detailsStats } from './stats';
+// TODO: опционально, если нужно сложную верстку, можешь создать
+// https://ant.design/components/form/ ищи Layout
+// реф в ../OrderForm
+// import {} from './layouts';
 
 // own
-// import { DecoratedInput } from './DecoratedInput';
-import Styles from './styles.m.css';
+// TODO: если нужно кастомить стилизацию - добавить модуль со стилями
+// import Styles from './styles.m.css';
 
-const FormItem = Form.Item;
-const Option = Select.Option;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
-const TabPane = Tabs.TabPane;
-const { TextArea } = Input;
-
-@injectIntl
 @withReduxForm({
-    name:            'orderForm',
-    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment'  ],
-    actions:         {
+    name:    'orderTaskForm',
+    actions: {
         change: onChangeOrderForm,
-        setClientSelection,
-        onChangeOrderServices,
-        onChangeOrderDetails,
-        onServiceSearch,
-        onDetailSearch,
-        onBrandSearch,
     },
 })
-export class OrderForm extends Component {
+export class OrderTaskForm extends Component {
     render() {
-        return (
-            <Form
-                className={ Styles.form }
-                // onSubmit={ this.handleSubmit }
-                layout='horizontal'
-            >
-        HEllo
-            </Form>
-        );
+        return <Form layout='horizontal'>orderTaskForm</Form>;
     }
 }
