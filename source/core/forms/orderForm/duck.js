@@ -284,8 +284,9 @@ export default function reducer(state = ReducerState, action) {
                         ...mapOrderServicesToSelectServices(
                             payload.orderServices,
                             payload.allServices,
+                            payload.order.employeeId,
                         ),
-                        ...defaultServices(),
+                        ...defaultServices(payload.order.employeeId),
                     },
                     details: {
                         ...mapOrderDetailsToSelectDetails(payload.orderDetails),

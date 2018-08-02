@@ -228,7 +228,7 @@ class ServicesTable extends Component {
                 name:       `services[${id}][employeeId]`,
                 touched:    true,
                 validating: false,
-                value:      void 0,
+                value:      this.props.form.getFieldValue('employee'),
                 dirty:      false,
             },
             servicePrice: {
@@ -300,6 +300,19 @@ class ServicesTable extends Component {
                             field={ 'employee' }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
+                            }
+                            onSelect={
+                                (value) => {
+                                    const services = this.props.form.getFieldValue('services');
+
+                                    const updatedServices = _(services)
+                                        .keys()
+                                        .map((serviceKey) => [ `services[${serviceKey}][employeeId]`, value ])
+                                        .fromPairs()
+                                        .value();
+
+                                    this.props.form.setFieldsValue(updatedServices);
+                                }
                             }
                         >
                             { employees.map(employee => (
