@@ -90,7 +90,6 @@ class DashboardPage extends Component {
             startDate: startDate.subtract(1, 'weeks'),
             endDate:   endDate.subtract(1, 'weeks'),
         });
-        this.setState({});
     };
 
     _nextWeek = () => {
@@ -100,7 +99,6 @@ class DashboardPage extends Component {
             startDate: startDate.add(1, 'weeks'),
             endDate:   endDate.add(1, 'weeks'),
         });
-        this.setState({});
     };
 
     _setDashboardMode = mode => this.props.setDashboardMode(mode);
@@ -169,7 +167,6 @@ class DashboardPage extends Component {
                                 time={ time }
                                 dashboard={ dashboard }
                                 dashboardGridColumns={ dashboardGridColumns }
-                                mode={ mode }
                             />
                         </TabPane>
                         <TabPane
@@ -189,7 +186,6 @@ class DashboardPage extends Component {
                                 time={ time }
                                 dashboard={ dashboard }
                                 dashboardGridColumns={ dashboardGridColumns }
-                                mode={ mode }
                             />
                         </TabPane>
                     </Tabs>

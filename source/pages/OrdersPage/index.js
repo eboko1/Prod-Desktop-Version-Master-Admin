@@ -92,7 +92,8 @@ class OrdersPage extends Component {
                 description={ <FormattedMessage id='orders-page.description' /> }
                 controls={
                     <div className={ Styles.controls }>
-                        { [ 'success', 'cancel', 'reviews' ].indexOf(status) < 0 && (
+                        { [ 'success', 'cancel', 'reviews' ].indexOf(status) <
+                            0 && (
                             <RadioGroup
                                 defaultValue='all'
                                 // defaultValue={ ordersDaterangeFilter }

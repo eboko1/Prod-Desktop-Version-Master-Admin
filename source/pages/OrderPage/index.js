@@ -45,7 +45,6 @@ const mapStateToProps = state => {
         allDetails:        state.forms.orderForm.allDetails,
         allServices:       state.forms.orderForm.allServices,
         requisites:        state.forms.addOrderForm.requisites,
-        addClientModal:    state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
         orderComments:     state.forms.orderForm.orderComments,
         order:             state.forms.orderForm.order,
@@ -59,8 +58,9 @@ const mapStateToProps = state => {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
-        modal:   state.modals.modal,
-        spinner: state.ui.get('orderFetching'),
+        addClientModal: state.modals.modal,
+        modal:          state.modals.modal,
+        spinner:        state.ui.get('orderFetching'),
     };
 };
 
@@ -125,9 +125,15 @@ class OrderPage extends Component {
             }
         });
     }
-
+    /* eslint-disable complexity */
     render() {
-        const { setModal, resetModal, spinner, addClientModal, addClientFormData} = this.props;
+        const {
+            setModal,
+            resetModal,
+            spinner,
+            addClientModal,
+            addClientFormData,
+        } = this.props;
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
 
