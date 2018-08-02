@@ -22,6 +22,30 @@ import { DashboardContainer } from 'containers';
 import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
+const selectDasboardData = ({
+    dashboard: { schedule, mode, stations, days },
+}) => {
+    const time = [ ...Array(schedule.endHour).keys() ]
+        .map((_, index) => index + 1)
+        .slice(schedule.beginHour - 1)
+        .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
+
+    const rows = time.length * 2;
+    const dashboardGridColumns =
+        mode === 'calendar' ? days.length : stations.length;
+
+    const columns = dashboardGridColumns;
+
+    const dashboard = { rows, columns };
+
+    return {
+        time,
+        dashboard,
+        dashboardGridColumns,
+        mode,
+    };
+};
+
 const mapStateToProps = state => ({
     orders:    state.dashboard.orders.orders,
     mode:      state.dashboard.mode,
@@ -33,6 +57,14 @@ const mapStateToProps = state => ({
     days:      state.dashboard.days,
     load:      state.dashboard.load,
     spinner:   state.ui.get('dashboardFetching'),
+
+    ...selectDasboardData(state),
+    // currentDay: moment().format('YYYY-MM-DD'),
+    // time:       [],
+    // dashboard:  {
+    //     rows:    2,
+    //     columns: 4,
+    // },
 });
 
 const mapDispatchToProps = {
@@ -108,6 +140,9 @@ class DashboardPage extends Component {
             stations,
             schedule,
             spinner,
+            time,
+            dashboard,
+            dashboardGridColumns,
         } = this.props;
 
         return !spinner ? (
@@ -148,12 +183,16 @@ class DashboardPage extends Component {
                         >
                             <DashboardContainer
                                 spinner={ spinner }
-                                orders={ orders || [] }
+                                orders={ orders }
                                 stations={ stations }
                                 days={ days }
                                 mode={ mode }
                                 load={ load }
                                 schedule={ schedule }
+                                time={ time }
+                                dashboard={ dashboard }
+                                dashboardGridColumns={ dashboardGridColumns }
+                                mode={ mode }
                             />
                         </TabPane>
                         <TabPane
@@ -164,12 +203,16 @@ class DashboardPage extends Component {
                         >
                             <DashboardContainer
                                 spinner={ spinner }
-                                orders={ orders || [] }
+                                orders={ orders }
                                 stations={ stations }
                                 days={ days }
                                 mode={ mode }
                                 load={ load }
                                 schedule={ schedule }
+                                time={ time }
+                                dashboard={ dashboard }
+                                dashboardGridColumns={ dashboardGridColumns }
+                                mode={ mode }
                             />
                         </TabPane>
                     </Tabs>

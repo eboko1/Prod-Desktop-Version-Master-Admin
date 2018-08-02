@@ -33,7 +33,9 @@ const ReducerState = {
     beginTime: null,
     endTime:   null,
     days:      [],
-    orders:    [],
+    orders:    {
+        orders: [],
+    },
     stations:  [],
     mode:      'calendar',
     schedule:  {},
@@ -44,6 +46,7 @@ const ReducerState = {
     endDate: moment()
         .endOf('week')
         .isoWeekday(7),
+    load: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -54,6 +57,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 mode: payload,
+                load: [],
             };
 
         case SET_DASHBOARD_DATE:

@@ -14,27 +14,27 @@ export default class Catcher extends Component {
         console.log("ERROR:", error.message); // eslint-disable-line
         console.log("STACKTRACE:", stack.componentStack); // eslint-disable-line
 
-        this.setState(() => ({
+        this.setState({
             error: true,
-        }));
+        });
     }
 
     render() {
         const { error } = this.state;
         const { children } = this.props;
 
-        if (error) {
-            return (
-                <section className={ Styles.catcher }>
-                    <span>
-                        Error!
-                        <Icon className={ Styles.catcherIcon } type='frown-o' />
-                    </span>
-                    { /* <span>Props</span>
-                    <pre>{ JSON.stringify(this.props, null, 2) }</pre> */ }
-                </section>
-            );
-        }
+        // if (error) {
+        //     return (
+        //         <section className={ Styles.catcher }>
+        //             <span>
+        //                 Error!
+        //                 <Icon className={ Styles.catcherIcon } type='frown-o' />
+        //             </span>
+        //             { /* <span>Props</span>
+        //             <pre>{ JSON.stringify(this.props, null, 2) }</pre> */ }
+        //         </section>
+        //     );
+        // }
 
         return children;
     }
