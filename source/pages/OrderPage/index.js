@@ -291,6 +291,10 @@ class OrderPage extends Component {
                         setAddClientModal={ this.setAddClientModal }
                         addClientModal={ addClientModal }
                         orderCalls={ this.props.orderCalls }
+                        allService={ this.props.allServices }
+                        allDetails={ this.props.allDetails }
+                        employees={ this.props.employees }
+                        filteredDetails={ this.props.filteredDetails }
                     />
                 </ResponsiveView>
                 <AddClientModal

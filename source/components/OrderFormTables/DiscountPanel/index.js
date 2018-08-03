@@ -12,14 +12,15 @@ import Styles from './styles.m.css';
 const FormItem = Form.Item;
 
 class DiscountPanel extends Component {
-
     render() {
+        const { getFieldDecorator } = this.props;
         const discountFieldName = this.props.discountFieldName;
 
-        const discount = ~~this.props.fields[discountFieldName].value;
+        const discount = ~~this.props.fields[ discountFieldName ].value;
         const price = this.props.price;
 
         const total = price - price * (discount / 100);
+
         return (
             <Catcher>
                 <div className={ Styles.discountPanel }>
@@ -32,7 +33,7 @@ class DiscountPanel extends Component {
                     >
                         <DecoratedInputNumber
                             field={ discountFieldName }
-                            getFieldDecorator={ this.props.form.getFieldDecorator }
+                            getFieldDecorator={ getFieldDecorator }
                             min={ 0 }
                             max={ 100 }
                             formatter={ value => `${value}%` }
