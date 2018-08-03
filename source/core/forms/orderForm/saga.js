@@ -33,7 +33,6 @@ import {
     updateOrderSuccess,
     returnToOrdersPage,
     createInviteOrderSuccess,
-
     CREATE_INVITE_ORDER,
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
@@ -46,7 +45,7 @@ import {
     UPDATE_ORDER,
     RETURN_TO_ORDERS_PAGE,
 } from './duck';
-import nprogress from "nprogress"
+import nprogress from 'nprogress';
 
 export function* fetchOrderFormSaga() {
     while (true) {
@@ -134,7 +133,12 @@ function* handleClientSearchSaga({ payload }) {
     yield delay(1000);
 
     if (payload.length > 2) {
-        const data = yield call(fetchAPI, 'GET', 'clients', { query: payload });
+        const fields = [ 'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites' ];
+        const data = yield call(fetchAPI, 'GET', 'clients', {
+            query:     payload,
+            omitStats: true,
+            fields,
+        });
         yield put(onChangeClientSearchQuerySuccess(data));
     } else {
         yield put(onChangeClientSearchQuerySuccess([]));
