@@ -3,16 +3,35 @@ import React from 'react';
 import MediaQuery from 'react-responsive';
 
 // antd breakpoints
-//
-// xs:  '(min-width: null) and (max-width: 575px)',
-// sm:  '(min-width: 576px) and (max-width: 767px)',
-// md:  '(min-width: 768px) and (max-width: 991px)',
-// lg:  '(min-width: 768px) and (max-width: 991px)',
-// xl:  '(min-width: 992px) and (max-width: 1199px)',
-// xxl: '(min-width: 1600px) and (max-width: null)',
-//
+export const BREAKPOINTS = {
+    xs: {
+        min: null,
+        max: 575,
+    },
+    sm: {
+        min: 576,
+        max: 767,
+    },
+    md: {
+        min: 768,
+        max: 991,
+    },
+    lg: {
+        min: 992,
+        max: 1199,
+    },
+    xl: {
+        min: 1200,
+        max: 1599,
+    },
+    xxl: {
+        min: 1600,
+        max: null,
+    },
+};
 
-const breakpoints = {
+// custom breakpoints
+const _breakpoints = {
     mobile: {
         min: null,
         max: 767,
@@ -27,8 +46,9 @@ const breakpoints = {
     },
 };
 
-const _breakpoint = (view, content, component) => {
-    const breakpoint = breakpoints[ view ] || breakpoints.desktop;
+// <MediaQuery/> factory
+const _breakpoint = (view, children, component) => {
+    const breakpoint = _breakpoints[ view ] || view;
 
     return (
         <MediaQuery
@@ -36,10 +56,14 @@ const _breakpoint = (view, content, component) => {
             maxWidth={ breakpoint.max }
             component={ component }
         >
-            { content }
+            { children }
         </MediaQuery>
     );
 };
+
+// views collection
+export const ResponsiveView = props =>
+    _breakpoint(props.view, props.children, props.component);
 
 export const MobileView = props =>
     _breakpoint('mobile', props.children, props.component);

@@ -21,8 +21,14 @@ import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { AddClientModal } from 'modals';
 
-import { Layout, Spinner } from 'commons';
-import { OrderForm } from 'forms';
+import {
+    Layout,
+    Spinner,
+    MobileView,
+    ResponsiveView,
+    BREAKPOINTS,
+} from 'commons';
+import { OrderForm, MobileRecordForm } from 'forms';
 import { ReportsDropdown, ChangeStatusDropdown } from 'components';
 import {
     CancelReasonModal,
@@ -272,14 +278,21 @@ class OrderPage extends Component {
                     </>
                 }
             >
-                <OrderForm
-                    wrappedComponentRef={ this.saveOrderFormRef }
-                    orderTasks={ this.props.orderTasks }
-                    orderHistory={ this.props.orderHistory }
-                    setAddClientModal={ this.setAddClientModal }
-                    addClientModal={ addClientModal }
-                    orderCalls={ this.props.orderCalls }
-                />
+                <MobileView>
+                    <MobileRecordForm />
+                </MobileView>
+                <ResponsiveView
+                    view={ { min: BREAKPOINTS.md.min, max: BREAKPOINTS.xxl.max } }
+                >
+                    <OrderForm
+                        wrappedComponentRef={ this.saveOrderFormRef }
+                        orderTasks={ this.props.orderTasks }
+                        orderHistory={ this.props.orderHistory }
+                        setAddClientModal={ this.setAddClientModal }
+                        addClientModal={ addClientModal }
+                        orderCalls={ this.props.orderCalls }
+                    />
+                </ResponsiveView>
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ addClientModal }
