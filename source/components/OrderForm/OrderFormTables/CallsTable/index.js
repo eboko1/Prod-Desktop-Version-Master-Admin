@@ -8,9 +8,6 @@ import moment from 'moment';
 import { Catcher } from 'commons';
 import { CallStatusIcon } from 'components';
 
-// own
-// import Styles from './styles.m.css';
-
 class CallsTable extends Component {
     constructor(props) {
         super(props);

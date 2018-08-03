@@ -7,9 +7,6 @@ import moment from 'moment';
 // proj
 import { Catcher } from 'commons';
 
-// own
-// import Styles from './styles.m.css';
-
 class TasksTable extends Component {
     constructor(props) {
         super(props);

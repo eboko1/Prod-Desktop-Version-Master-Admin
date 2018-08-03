@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { v4 } from 'uuid';
 
 // proj
 import { Catcher } from 'commons';

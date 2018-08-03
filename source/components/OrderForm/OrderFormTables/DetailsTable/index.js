@@ -1,30 +1,20 @@
 // vendor
-import _ from 'lodash';
 import React, { Component } from 'react';
-import {
-    Table,
-    Form,
-    Input,
-    InputNumber,
-    Icon,
-    Popconfirm,
-    Select,
-} from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import {
     DecoratedSelect,
     DecoratedInput,
     DecoratedInputNumber,
-    DecoratedCheckbox,
 } from 'forms/DecoratedFields';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
 
 // own
 import Styles from './styles.m.css';
-const FormItem = Form.Item;
 const Option = Select.Option;
 
 class DetailsTable extends Component {

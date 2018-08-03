@@ -14,12 +14,12 @@ import {
     TasksTable,
     HistoryTable,
     CallsTable,
-} from 'components/OrderFormTables';
+} from 'components/OrderForm/OrderFormTables';
 
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 
-class OrderFormTabs extends Component {
+export class OrderFormTabs extends Component {
     render() {
         const {
             addOrderForm,
@@ -221,5 +221,3 @@ class OrderFormTabs extends Component {
         );
     }
 }
-
-export default OrderFormTabs;

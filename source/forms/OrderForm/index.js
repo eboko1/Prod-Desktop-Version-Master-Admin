@@ -26,8 +26,8 @@ import {
     DecoratedDatePicker,
 } from 'forms/DecoratedFields';
 
-import { ClientsSearchTable } from 'components/OrderFormTables';
-import { OrderFormTabs } from 'components';
+import { ClientsSearchTable } from 'components/OrderForm/OrderFormTables';
+import { OrderFormTabs } from 'components/OrderForm/OrderFormTabs';
 
 import { withReduxForm, getDateTimeConfig, images } from 'utils';
 import {
