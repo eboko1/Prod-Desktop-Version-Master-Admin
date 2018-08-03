@@ -321,7 +321,6 @@ export class OrderForm extends Component {
                 clientVehicle: { value: selectedVehicleId },
             },
         } = this.props;
-        const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
         const selectedVehicle =
@@ -391,6 +390,7 @@ export class OrderForm extends Component {
                                 message: '',
                             },
                         ] }
+                        min={ 0 }
                     />
                     <FormItem
                         { ...formItemAutoColLayout }
@@ -530,10 +530,12 @@ export class OrderForm extends Component {
                     { ...this.props }
                     formatMessage={ formatMessage }
                     getFieldDecorator={ getFieldDecorator }
-                    defaultDetails={ defaultDetails }
                     form={ form }
+                    defaultDetails={ defaultDetails }
                     countServices={ countServices }
                     countDetails={ countDetails }
+                    priceServices={ priceServices }
+                    priceDetails={ priceDetails }
                 />
                 {/* fields={fields}
                  priceDetails={priceDetails}
