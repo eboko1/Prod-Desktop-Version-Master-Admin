@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Form, Select, Radio, Tabs, Input, Icon } from 'antd';
+import { Form, Select, Tabs, Input, Icon } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
 import _ from 'lodash';
@@ -18,9 +17,10 @@ import {
     onBrandSearch,
 } from 'core/forms/orderForm/duck';
 
-import { defaultDetails } from './../../core/forms/orderForm/helpers/details';
+import { defaultDetails } from 'core/forms/orderForm/helpers/details';
 
 import {
+    DecoratedInput,
     DecoratedTextArea,
     DecoratedSelect,
     DecoratedInputNumber,
@@ -36,7 +36,7 @@ import {
     CallsTable,
 } from 'components/OrderFormTables';
 
-import { withReduxForm, hasErrors, getDateTimeConfig, images } from 'utils';
+import { withReduxForm, getDateTimeConfig, images } from 'utils';
 import {
     formItemAutoColLayout,
     formItemLayout,
@@ -50,10 +50,7 @@ import Styles from './styles.m.css';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 const TabPane = Tabs.TabPane;
-const { TextArea } = Input;
 
 @injectIntl
 @withReduxForm({
@@ -70,6 +67,7 @@ const { TextArea } = Input;
     },
 })
 export class OrderForm extends Component {
+    /* eslint-disable complexity */
     render() {
         const {
             fields: {
@@ -82,6 +80,8 @@ export class OrderForm extends Component {
             stations,
             addOrderForm,
         } = this.props;
+
+        const { formatMessage } = this.props.intl;
 
         const selectedVehicle =
             this.props.selectedClient &&
@@ -145,7 +145,7 @@ export class OrderForm extends Component {
                         field='beginDatetime'
                         hasFeedback
                         formItem
-                        formatMessage={ this.props.intl.formatMessage }
+                        formatMessage={ formatMessage }
                         label={
                             <FormattedMessage id='add_order_form.enrollment_date' />
                         }
@@ -157,7 +157,7 @@ export class OrderForm extends Component {
                                 message:  '',
                             },
                         ] }
-                        placeholder={ this.props.intl.formatMessage({
+                        placeholder={ formatMessage({
                             id:             'add_order_form.select_date',
                             defaultMessage: 'Provide date',
                         }) }
@@ -186,15 +186,9 @@ export class OrderForm extends Component {
                         hasFeedback
                         className={ Styles.datePanelItem }
                         getFieldDecorator={ getFieldDecorator }
-                        // onChange={ value =>
-                        //     this.handleServiceSelect(record.key, value)
-                        // }
                         placeholder={
                             <FormattedMessage id='add_order_form.select_station' />
                         }
-                        // setFieldsValue={ setStation() }
-                        // dropdownMatchSelectWidth={ false }
-                        // dropdownStyle={ { width: '70%' } }
                         options={ stations }
                         optionValue='num'
                         optionLabel='name'
@@ -244,18 +238,15 @@ export class OrderForm extends Component {
                                 }
                                 colon={ false }
                             >
-                                { getFieldDecorator('searchClientQuery', {})(
-                                    <Input
-                                        disabled={ disabledClientSearch }
-                                        placeholder={ this.props.intl.formatMessage(
-                                            {
-                                                id:
-                                                    'add_order_form.client.placeholder',
-                                                defaultMessage: 'search client',
-                                            },
-                                        ) }
-                                    />,
-                                ) }
+                                <DecoratedInput
+                                    field='searchClientQuery'
+                                    getFieldDecorator={ getFieldDecorator }
+                                    disabled={ disabledClientSearch }
+                                    placeholder={ formatMessage({
+                                        id:             'add_order_form.client.placeholder',
+                                        defaultMessage: 'search client',
+                                    }) }
+                                />
                                 { !disabledClientSearch && (
                                     <Icon
                                         type='plus'
@@ -266,7 +257,11 @@ export class OrderForm extends Component {
                                     />
                                 ) }
                                 { hasClient && (
-                                    <a href={ `${book.oldApp.clients}/${this.props.order.clientId}?ref=/orders/${this.props.order.id}` }>
+                                    <a
+                                        href={ `${book.oldApp.clients}/${
+                                            this.props.order.clientId
+                                        }?ref=/orders/${this.props.order.id}` }
+                                    >
                                         <Icon
                                             type='edit'
                                             className={ Styles.editClientIcon }
@@ -282,7 +277,7 @@ export class OrderForm extends Component {
                             { ...formItemLayout }
                         >
                             <Input
-                                placeholder={ this.props.intl.formatMessage({
+                                placeholder={ formatMessage({
                                     id:             'add_order_form.select_name',
                                     defaultMessage: 'Select client',
                                 }) }
@@ -298,12 +293,12 @@ export class OrderForm extends Component {
                             />
                         </FormItem>
                         <DecoratedSelect
-                            { ...formItemLayout }
                             label={
                                 <FormattedMessage id='add_order_form.phone' />
                             }
                             field='clientPhone'
                             formItem
+                            formItemLayout={ formItemLayout }
                             hasFeedback
                             className={ Styles.clientCol }
                             colon={ false }
@@ -313,9 +308,7 @@ export class OrderForm extends Component {
                                     message:  '',
                                 },
                             ] }
-                            getFieldDecorator={
-                                this.props.form.getFieldDecorator
-                            }
+                            getFieldDecorator={ getFieldDecorator }
                             placeholder={ 'Choose selected client phone' }
                         >
                             { selectedClient.phones
@@ -334,9 +327,7 @@ export class OrderForm extends Component {
                         >
                             <DecoratedSelect
                                 field='clientEmail'
-                                getFieldDecorator={
-                                    this.props.form.getFieldDecorator
-                                }
+                                getFieldDecorator={ getFieldDecorator }
                                 placeholder={ 'Choose selected client email' }
                             >
                                 { selectedClient.emails
@@ -358,12 +349,10 @@ export class OrderForm extends Component {
                             formItem
                             hasFeedback
                             label={ <FormattedMessage id='add_order_form.car' /> }
-                            { ...formItemLayout }
+                            formItemLayout={ formItemAutoColLayout }
                             colon={ false }
                             className={ Styles.clientCol }
-                            getFieldDecorator={
-                                this.props.form.getFieldDecorator
-                            }
+                            getFieldDecorator={ getFieldDecorator }
                             rules={ [
                                 {
                                     required: true,
@@ -397,28 +386,24 @@ export class OrderForm extends Component {
                                     }
                                 />
                             </FormItem>
-                            <FormItem
+
+                            <DecoratedInputNumber
+                                field='odometerValue'
+                                formItem
+                                colon={ false }
                                 label={
                                     <FormattedMessage id='add_order_form.odometr' />
                                 }
-                                { ...formItemAutoColLayout }
-                                colon={ false }
-                            >
-                                <DecoratedInputNumber
-                                    field={ 'odometerValue' }
-                                    getFieldDecorator={
-                                        this.props.form.getFieldDecorator
-                                    }
-                                    rules={ [
-                                        {
-                                            required: true,
-                                            type:     'number',
-                                            message:  '',
-                                        },
-                                    ] }
-                                    //min={ 0 }
-                                />
-                            </FormItem>
+                                formItemLayout={ formItemAutoColLayout }
+                                getFieldDecorator={ getFieldDecorator }
+                                rules={ [
+                                    {
+                                        type:    'number',
+                                        message: '',
+                                    },
+                                ] }
+                                //min={ 0 }
+                            />
                             <FormItem
                                 { ...formItemAutoColLayout }
                                 label={
@@ -449,80 +434,63 @@ export class OrderForm extends Component {
 
                 <div className={ Styles.totalBlock }>
                     <div className={ Styles.totalBlockCol }>
-                        <FormItem
+                        <DecoratedSelect
+                            field='requisite'
+                            formItem
                             label={
                                 <FormattedMessage id='add_order_form.service_requisites' />
                             }
-                            { ...formItemTotalLayout }
-                        >
-                            <DecoratedSelect
-                                field='requisite'
-                                getFieldDecorator={
-                                    this.props.form.getFieldDecorator
-                                }
-                                // onChange={ value =>
-                                //     this.handleServiceSelect(record.key, value)
-                                // }
-                                placeholder={
-                                    <FormattedMessage id='add_order_form.select_requisites' />
-                                }
-                                // dropdownMatchSelectWidth={ false }
-                                // dropdownStyle={ { width: '70%' } }
-                                options={ this.props.requisites }
-                                optionValue='id'
-                                optionLabel='name'
-                                optionDisabled='disabled'
-                            />
-                        </FormItem>
-                        <FormItem
+                            formItemLayout={ formItemTotalLayout }
+                            getFieldDecorator={ getFieldDecorator }
+                            placeholder={
+                                <FormattedMessage id='add_order_form.select_requisites' />
+                            }
+                            options={ this.props.requisites }
+                            optionValue='id'
+                            optionLabel='name'
+                            optionDisabled='disabled'
+                        />
+                        <DecoratedSelect
+                            field='clientRequisite'
+                            formItem
                             label={
                                 <FormattedMessage id='add_order_form.client_requisites' />
                             }
-                            { ...formItemTotalLayout }
-                        >
-                            <DecoratedSelect
-                                field='clientRequisite'
-                                getFieldDecorator={
-                                    this.props.form.getFieldDecorator
-                                }
-                                placeholder={
-                                    <FormattedMessage id='add_order_form.select_requisites' />
-                                }
-                                // dropdownMatchSelectWidth={ false }
-                                // dropdownStyle={ { width: '70%' } }
-                                options={ selectedClient.requisites }
-                                optionValue='id'
-                                optionLabel='name'
-                                optionDisabled='disabled'
-                            />
-                        </FormItem>
+                            formItemLayout={ formItemTotalLayout }
+                            getFieldDecorator={ getFieldDecorator }
+                            placeholder={
+                                <FormattedMessage id='add_order_form.select_requisites' />
+                            }
+                            options={ selectedClient.requisites }
+                            optionValue='id'
+                            optionLabel='name'
+                            optionDisabled='disabled'
+                        />
                     </div>
                     <div className={ Styles.totalBlockCol }>
-                        <FormItem
+                        <DecoratedSelect
+                            field='paymentMethod'
+                            formItem
+                            colon={ false }
+                            getFieldDecorator={ getFieldDecorator }
+                            formItemLayout={ formItemTotalLayout }
                             label={
                                 <FormattedMessage id='add_order_form.payment_method' />
                             }
-                            colon={ false }
-                            { ...formItemTotalLayout }
+                            // placeholder={
+                            //     <FormattedMessage id='add_order_form.select_payment_method' />
+                            // }
                         >
-                            { getFieldDecorator('paymentMethod')(
-                                <Select
-                                    placeholder={
-                                        <FormattedMessage id='add_order_form.select_payment_method' />
-                                    }
-                                >
-                                    <Option value='cash'>
-                                        <Icon type='wallet' /> Нал
-                                    </Option>
-                                    <Option value='noncash'>
-                                        <Icon type='credit-card' /> Безнал
-                                    </Option>
-                                    <Option value='visa'>
-                                        <Icon type='credit-card' /> Visa
-                                    </Option>
-                                </Select>,
-                            ) }
-                        </FormItem>
+                            <Option value='cash'>
+                                <Icon type='wallet' /> Нал
+                            </Option>
+                            <Option value='noncash'>
+                                <Icon type='credit-card' /> Безнал
+                            </Option>
+                            <Option value='visa'>
+                                <Icon type='credit-card' /> Visa
+                            </Option>
+                        </DecoratedSelect>
                         <FormItem>
                             <div className={ Styles.total }>
                                 <FormattedMessage id='add_order_form.total' />
@@ -539,7 +507,7 @@ export class OrderForm extends Component {
                     { !addOrderForm && (
                         <TabPane
                             tab={
-                                this.props.intl.formatMessage({
+                                formatMessage({
                                     id: 'order_form_table.tasks',
                                 }) +
                                 ' (' +
@@ -552,7 +520,7 @@ export class OrderForm extends Component {
                         </TabPane>
                     ) }
                     <TabPane
-                        tab={ `${this.props.intl.formatMessage({
+                        tab={ `${formatMessage({
                             id:             'add_order_form.services',
                             defaultMessage: 'Services',
                         })} (${countServices})` }
@@ -570,7 +538,7 @@ export class OrderForm extends Component {
                         />
                     </TabPane>
                     <TabPane
-                        tab={ `${this.props.intl.formatMessage({
+                        tab={ `${formatMessage({
                             id:             'add_order_form.details',
                             defaultMessage: 'Details',
                         })} (${countDetails})` }
@@ -607,7 +575,7 @@ export class OrderForm extends Component {
                                         message: 'Too much',
                                     },
                                 ] }
-                                placeholder={ this.props.intl.formatMessage({
+                                placeholder={ formatMessage({
                                     id:             'add_order_form.client_comments',
                                     defaultMessage: 'Client_comments',
                                 }) }
@@ -628,7 +596,7 @@ export class OrderForm extends Component {
                                         message: 'Too much',
                                     },
                                 ] }
-                                placeholder={ this.props.intl.formatMessage({
+                                placeholder={ formatMessage({
                                     id:
                                         'add_order_form.service_recommendations',
                                     defaultMessage: 'Service recommendations',
@@ -650,7 +618,7 @@ export class OrderForm extends Component {
                                         message: 'Too much',
                                     },
                                 ] }
-                                placeholder={ this.props.intl.formatMessage({
+                                placeholder={ formatMessage({
                                     id:             'add_order_form.vehicle_condition',
                                     defaultMessage: 'Vehicle condition',
                                 }) }
@@ -671,7 +639,7 @@ export class OrderForm extends Component {
                                         message: 'Too much',
                                     },
                                 ] }
-                                placeholder={ this.props.intl.formatMessage({
+                                placeholder={ formatMessage({
                                     id:             'add_order_form.business_comment',
                                     defaultMessage: 'Business comment',
                                 }) }
@@ -682,7 +650,7 @@ export class OrderForm extends Component {
                     { !addOrderForm && (
                         <TabPane
                             tab={
-                                this.props.intl.formatMessage({
+                                formatMessage({
                                     id: 'order_form_table.history',
                                 }) +
                                 ' (' +
@@ -699,7 +667,7 @@ export class OrderForm extends Component {
                     { !addOrderForm && (
                         <TabPane
                             tab={
-                                this.props.intl.formatMessage({
+                                formatMessage({
                                     id: 'order_form_table.calls',
                                 }) +
                                 ' (' +

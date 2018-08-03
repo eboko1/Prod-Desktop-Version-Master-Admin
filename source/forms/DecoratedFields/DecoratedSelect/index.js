@@ -64,7 +64,7 @@ export const DecoratedSelect = props => {
             onSelect={ onSelect }
             placeholder={ placeholder }
             notFoundContent={
-                notFoundContent ? 
+                notFoundContent ?
                     notFoundContent
                     : (
                         <FormattedMessage id='no_data' />
@@ -105,11 +105,11 @@ export const DecoratedSelect = props => {
             hasFeedback={ hasFeedback }
             colon={ colon }
             className={ className }
-            formItemLayout={ formItemLayout }
+            { ...formItemLayout }
         >
             { select }
         </FormItem>
-    ) : 
+    ) :
         select
     ;
 };
