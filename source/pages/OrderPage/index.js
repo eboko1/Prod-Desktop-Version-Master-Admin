@@ -1,12 +1,12 @@
 // vendor
-import _ from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import moment from 'moment';
 import { Button, Icon } from 'antd';
+import moment from 'moment';
+import _ from 'lodash';
 
 // proj
 import {
@@ -14,13 +14,13 @@ import {
     updateOrder,
     returnToOrdersPage,
     createInviteOrder,
-    fetchOrderTask,
+    // fetchOrderTask,
 } from 'core/forms/orderForm/duck';
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
-import book from 'routes/book';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { AddClientModal } from 'modals';
+import book from 'routes/book';
 
 import {
     Layout,
@@ -62,20 +62,18 @@ const mapStateToProps = state => {
         orderHistory:      state.forms.orderForm.history,
         initOrderEntity:   state.forms.orderForm.initOrderEntity,
         invited:           state.forms.orderForm.invited,
+        modal:             state.modals.modal,
+        spinner:           state.ui.get('orderFetching'),
         orderEntity:       {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
-        addClientModal: state.modals.modal,
-        modal:          state.modals.modal,
-        spinner:        state.ui.get('orderFetching'),
     };
 };
 
-@withRouter
-@connect(mapStateToProps, {
-    fetchOrderTask,
+const mapDispatchToProps = {
     fetchOrderForm,
+    // fetchOrderTask
     getReport,
     fetchReport,
     updateOrder,
@@ -84,11 +82,15 @@ const mapStateToProps = state => {
     returnToOrdersPage,
     createInviteOrder,
     fetchAddClientForm,
-})
+};
+
+@withRouter
+@connect(mapStateToProps, mapDispatchToProps)
 class OrderPage extends Component {
     componentDidMount() {
         this.props.fetchOrderForm(this.props.match.params.id);
-        this.props.fetchOrderTask(this.props.match.params.id);
+        // TBD: @andrey
+        // this.props.fetchOrderTask(this.props.match.params.id);
     }
 
     saveFormRef = formRef => {
@@ -104,7 +106,8 @@ class OrderPage extends Component {
         this.setAddClientModal();
         form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of AddClientForm: ', values);
+                // eslint-disable-next-line
+                console.log("Received values of AddClientForm: ", values);
             }
         });
         this.props.resetModal();
@@ -142,7 +145,7 @@ class OrderPage extends Component {
             setModal,
             resetModal,
             spinner,
-            addClientModal,
+            modal,
             addClientFormData,
         } = this.props;
 
@@ -170,16 +173,16 @@ class OrderPage extends Component {
         return !spinner ? (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
@@ -290,13 +293,12 @@ class OrderPage extends Component {
                 <ResponsiveView
                     view={ { min: BREAKPOINTS.md.min, max: BREAKPOINTS.xxl.max } }
                 >
-                    { console.log('→ orderTasks', this.props.orderTasks) }
                     <OrderForm
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
                         orderHistory={ this.props.orderHistory }
                         setAddClientModal={ this.setAddClientModal }
-                        addClientModal={ addClientModal }
+                        modal={ modal }
                         orderCalls={ this.props.orderCalls }
                         allService={ this.props.allServices }
                         allDetails={ this.props.allDetails }
@@ -307,14 +309,14 @@ class OrderPage extends Component {
                 </ResponsiveView>
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
-                    visible={ addClientModal }
+                    visible={ modal }
                     handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
                     resetModal={ resetModal }
                     addClientFormData={ addClientFormData }
                 />
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
-                    visible={ this.props.modal }
+                    visible={ modal }
                     handleCancelReasonModalSubmit={ this.onStatusChange.bind(
                         this,
                     ) }
@@ -323,7 +325,7 @@ class OrderPage extends Component {
                 />
                 <ConfirmOrderExitModal
                     wrappedComponentRef={ this.saveFormRef }
-                    visible={ this.props.modal }
+                    visible={ modal }
                     status={ status }
                     returnToOrdersPage={ this.props.returnToOrdersPage.bind(
                         this,
@@ -333,13 +335,13 @@ class OrderPage extends Component {
                 />
                 <ToSuccessModal
                     wrappedComponentRef={ this.saveFormRef }
-                    visible={ this.props.modal }
+                    visible={ modal }
                     handleToSuccessModalSubmit={ this.onStatusChange.bind(this) }
                     resetModal={ () => resetModal() }
                 />
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveFormRef }
-                    visible={ this.props.modal }
+                    visible={ modal }
                     resetModal={ () => resetModal() }
                     num={ num }
                 />

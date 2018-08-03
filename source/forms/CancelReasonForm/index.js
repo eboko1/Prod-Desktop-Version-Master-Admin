@@ -10,7 +10,6 @@ import { onChangeCancelReasonForm } from 'core/forms/cancelReasonForm/duck';
 import { DecoratedSelect, DecoratedTextArea } from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 
-
 // own
 import Styles from './styles.m.css';
 const { Option } = Select;
@@ -21,7 +20,6 @@ const { Option } = Select;
         change: onChangeCancelReasonForm,
     },
 })
-
 export class CancelReasonForm extends Component {
     render() {
         const {

@@ -81,8 +81,7 @@ import {
 const appendKey = arr => arr.map(item => ({ ...item, key: v4() }));
 
 const createDefaultState = () => ({
-    orderTasks: [],
-    fields:     {
+    fields: {
         beginDatetime:     defaultFieldValue('beginDatetime'),
         status:            defaultFieldValue('status'),
         date:              defaultFieldValue('date'),
@@ -100,11 +99,14 @@ const createDefaultState = () => ({
         vehicleCondition:  defaultFieldValue('vehicleCondition'),
         businessComment:   defaultFieldValue('businessComment'),
         comment:           defaultFieldValue('comment'),
-        createOrderStatus: customFieldValue('createOrderStatus', 'not_complete'),
-        servicesDiscount:  customFieldValue('servicesDiscount', 0),
-        detailsDiscount:   customFieldValue('detailsDiscount', 0),
-        services:          defaultServices(),
-        details:           defaultDetails(),
+        createOrderStatus: customFieldValue(
+            'createOrderStatus',
+            'not_complete',
+        ),
+        servicesDiscount: customFieldValue('servicesDiscount', 0),
+        detailsDiscount:  customFieldValue('detailsDiscount', 0),
+        services:         defaultServices(),
+        details:          defaultDetails(),
     },
     createStatus:    'not_complete',
     allServices:     [],
@@ -212,7 +214,7 @@ function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
-
+    /* eslint-disable */
     switch (type) {
         case FETCH_ORDER_FORM_SUCCESS:
             const newState = {
@@ -239,61 +241,70 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     clientPhone: customFieldValue(
-                        'clientPhone',
+                        "clientPhone",
                         payload.order.clientPhone,
                     ),
                     clientEmail: customFieldValue(
-                        'clientEmail',
+                        "clientEmail",
                         payload.order.clientEmail,
                     ),
                     clientVehicle: customFieldValue(
-                        'clientVehicle',
+                        "clientVehicle",
                         payload.order.clientVehicleId,
                     ),
-                    station:       customFieldValue('station', payload.order.stationNum),
-                    manager:       customFieldValue('manager', payload.order.managerId),
+                    station: customFieldValue(
+                        "station",
+                        payload.order.stationNum,
+                    ),
+                    manager: customFieldValue(
+                        "manager",
+                        payload.order.managerId,
+                    ),
                     beginDatetime: customFieldValue(
-                        'beginDatetime',
+                        "beginDatetime",
                         payload.order.beginDatetime
                             ? moment(payload.order.beginDatetime)
                             : void 0,
                     ),
                     requisite: customFieldValue(
-                        'requisite',
+                        "requisite",
                         payload.order.businessRequisiteId,
                     ),
                     clientRequisite: customFieldValue(
-                        'clientRequisite',
+                        "clientRequisite",
                         payload.order.clientRequisiteId,
                     ),
                     paymentMethod: customFieldValue(
-                        'paymentMethod',
+                        "paymentMethod",
                         payload.order.paymentMethod,
                     ),
                     odometerValue: customFieldValue(
-                        'odometerValue',
+                        "odometerValue",
                         payload.order.odometerValue,
                     ),
                     recommendation: customFieldValue(
-                        'recommendation',
+                        "recommendation",
                         payload.order.recommendation,
                     ),
                     businessComment: customFieldValue(
-                        'businessComment',
+                        "businessComment",
                         payload.order.businessComment,
                     ),
                     vehicleCondition: customFieldValue(
-                        'vehicleCondition',
+                        "vehicleCondition",
                         payload.order.vehicleCondition,
                     ),
-                    comment:          customFieldValue('comment', payload.order.comment),
-                    employee:         customFieldValue('employee', payload.order.employeeId),
+                    comment: customFieldValue("comment", payload.order.comment),
+                    employee: customFieldValue(
+                        "employee",
+                        payload.order.employeeId,
+                    ),
                     servicesDiscount: customFieldValue(
-                        'servicesDiscount',
+                        "servicesDiscount",
                         payload.order.servicesDiscount,
                     ),
                     detailsDiscount: customFieldValue(
-                        'detailsDiscount',
+                        "detailsDiscount",
                         payload.order.detailsDiscount,
                     ),
                     services: {
@@ -310,7 +321,7 @@ export default function reducer(state = ReducerState, action) {
                     },
                 },
 
-                fetchedOrder:   payload,
+                fetchedOrder: payload,
                 selectedClient: payload.client || state.selectedClient,
             };
 
@@ -323,7 +334,10 @@ export default function reducer(state = ReducerState, action) {
                 newState.allDetails,
             );
 
+            /* eslint-enable */
+
             return { ...newState, initOrderEntity };
+
         case SET_CREATE_STATUS:
             return {
                 ...state,
@@ -345,23 +359,18 @@ export default function reducer(state = ReducerState, action) {
                 allDetails:      payload.allDetails,
                 fields:          {
                     ...state.fields,
-                    station: customFieldValue('station', payload.stations[ 0 ].num),
-                    manager: customFieldValue('manager', payload.managers[ 0 ].id),
+                    station: customFieldValue(
+                        'station',
+                        payload.stations[ 0 ].num,
+                    ),
+                    manager: customFieldValue(
+                        'manager',
+                        payload.managers[ 0 ].id,
+                    ),
                 },
             };
 
         case ON_CHANGE_ORDER_FORM:
-            // console.group('→ REDUX');
-            // console.log('@@payload', payload);
-            // console.log('@@ meta field', meta.field);
-            // console.log('@@ return', {
-            //     ...state,
-            //     fields: {
-            //         [ meta.field ]: { ...payload[ meta.field ] },
-            //     },
-            // });
-            // console.groupEnd();
-
             return {
                 ...state,
                 fields: {
@@ -369,7 +378,10 @@ export default function reducer(state = ReducerState, action) {
                     ...payload,
                     services: {
                         // if merge with empty object old state stayed
-                        ..._.merge(state.fields.services, payload.services || {}),
+                        ..._.merge(
+                            state.fields.services,
+                            payload.services || {},
+                        ),
                     },
                     details: {
                         ..._.merge(state.fields.details, payload.details || {}),
@@ -415,7 +427,10 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 allServices: [
                     ...appendKey(
-                        generateAllServices(state.allServices, state.fields.services),
+                        generateAllServices(
+                            state.allServices,
+                            state.fields.services,
+                        ),
                     ),
                     {
                         id:               v4(),
@@ -439,7 +454,7 @@ export default function reducer(state = ReducerState, action) {
 
             const filteredDetails = state.allDetails.details
                 .filter(({ detailName }) =>
-                    detailName.toLocaleLowerCase().includes(payload) )
+                    detailName.toLocaleLowerCase().includes(payload))
                 .slice(0, 100);
 
             const includesCustomName = filteredDetails.find(
@@ -448,7 +463,7 @@ export default function reducer(state = ReducerState, action) {
 
             return {
                 ...state,
-                filteredDetails: [ ...filteredDetails, ...includesCustomName ? [] : [ customDetail ]  ],
+                filteredDetails: [ ...filteredDetails, ...includesCustomName ? [] : [ customDetail ] ],
                 allDetails:      {
                     ...state.allDetails,
                     details: [
@@ -491,7 +506,7 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     // clearing provided fields with default values
-                    ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery', 'clientRequisite'  ]),
+                    ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery', 'clientRequisite' ]),
                     clientPhone: customFieldValue(
                         'clientPhone',
                         _.get(payload, 'phones[0]'),
@@ -506,7 +521,7 @@ export default function reducer(state = ReducerState, action) {
                     ),
                 },
             };
-            // TODO think about spinners
+        // TODO think about loader state for client search table
         case ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST:
             return {
                 ...state,
@@ -555,12 +570,10 @@ export const fetchOrderForm = id => ({
     payload: id,
 });
 
-export function fetchOrderFormSuccess(data) {
-    return {
-        type:    FETCH_ORDER_FORM_SUCCESS,
-        payload: data,
-    };
-}
+export const fetchOrderFormSuccess = data => ({
+    type:    FETCH_ORDER_FORM_SUCCESS,
+    payload: data,
+});
 
 export const onHandleCustomService = searchService => ({
     type:    ON_HANDLE_CUSTOM_SERVICE,
@@ -664,16 +677,12 @@ export const returnToOrdersPage = status => ({
     payload: status,
 });
 
-export function createInviteOrder(inviteOrder) {
-    return {
-        type:    CREATE_INVITE_ORDER,
-        payload: inviteOrder,
-    };
-}
+export const createInviteOrder = inviteOrder => ({
+    type:    CREATE_INVITE_ORDER,
+    payload: inviteOrder,
+});
 
-export function createInviteOrderSuccess(response) {
-    return {
-        type:    CREATE_INVITE_ORDER_SUCCESS,
-        payload: response,
-    };
-}
+export const createInviteOrderSuccess = response => ({
+    type:    CREATE_INVITE_ORDER_SUCCESS,
+    payload: response,
+});

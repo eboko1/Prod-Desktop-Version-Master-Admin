@@ -12,10 +12,11 @@ import {
 import { replace } from 'react-router-redux';
 import nprogress from 'nprogress';
 
-//proj
+// proj
 import { resetModal, MODALS } from 'core/modals/duck';
 import { uiActions } from 'core/ui/actions';
 import { fetchAPI } from 'utils';
+import book from 'routes/book';
 
 // own
 import {
@@ -74,7 +75,7 @@ export function* createOrderSaga() {
         const { payload: entity } = yield take(CREATE_ORDER);
         yield call(fetchAPI, 'POST', 'orders', {}, entity);
         yield put(createOrderSuccess());
-        yield put(replace('/orders/appointments'));
+        yield put(replace(book.ordersAppointments));
     }
 }
 
@@ -193,6 +194,21 @@ export function* createInviteOrderSaga({ payload: invite }) {
     yield put(fetchOrderForm(id));
 }
 
+/* eslint-disable array-element-newline */
 export function* saga() {
-    yield all([ takeEvery(CREATE_INVITE_ORDER, createInviteOrderSaga), call(fetchOrderTaskSaga), call(returnToOrdersPageSaga), call(updateOrderSaga), call(createOrderSaga), call(fetchAddOrderFormSaga), call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
+    yield all([
+        takeEvery(CREATE_INVITE_ORDER, createInviteOrderSaga),
+        call(fetchOrderTaskSaga),
+        call(returnToOrdersPageSaga),
+        call(updateOrderSaga),
+        call(createOrderSaga),
+        call(fetchAddOrderFormSaga),
+        call(fetchOrderFormSaga),
+        call(onChangeOrderFormSaga),
+        takeLatest(ON_SERVICE_SEARCH, handleServiceSearch),
+        takeLatest(ON_BRAND_SEARCH, handleBrandSearch),
+        takeLatest(ON_DETAIL_SEARCH, handleDetailSearch),
+        takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
+    ]);
 }
+/* eslint-enable array-element-newline */

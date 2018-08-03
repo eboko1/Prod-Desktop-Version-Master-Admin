@@ -7,7 +7,7 @@ const FormItem = Form.Item;
 
 export const DecoratedCheckbox = props => {
     const {
-    //FormItem
+        //FormItem
         formItem,
         label,
         colon,
@@ -42,7 +42,7 @@ export const DecoratedCheckbox = props => {
         >
             { checkbox }
         </FormItem>
-    ) :
+    ) : 
         checkbox
     ;
 };
