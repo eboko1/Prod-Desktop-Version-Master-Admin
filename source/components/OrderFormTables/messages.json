@@ -25,7 +25,18 @@
     "order_form_table.history": "History",
     "order_form_table.own_detail": "Own",
     "order_form_table.recommendation": "Recommendation",
-    "order_form_table.cancel_reason": "Cancel reason"
+    "order_form_table.cancel_reason": "Cancel reason",
+    "urgency": "Urgency",
+    "priority": "Priority",
+    "responsable": "Відповідальний",
+    "position": "Посада",
+    "post": "Пост",
+    "startDate": "Час Початку",
+    "deadlineDate": "Дедлайн",
+    "endDate": "Время Кінця",
+    "comment": "Комментарій",
+    "author": "Автор",
+    "duration": "Duration"
   },
   "ru": {
     "order_form_table.confirm_exit": "Хотите сохранить изменения?",
@@ -56,7 +67,7 @@
     "order_form_table.cancel_reason": "Причина отмены",
     "progressStatus": "Статус ремонта",
     "urgency": "Срочность",
-    "prority": "Приоритет",
+    "priority": "Приоритет",
     "responsable": "Ответственный",
     "position": "Должность",
     "post": "Пост",
@@ -93,6 +104,17 @@
     "order_form_table.history": "Історія",
     "order_form_table.own_detail": "Свої",
     "order_form_table.recommendation": "Рекомендації",
-    "order_form_table.cancel_reason": "Причині відміни"
+    "order_form_table.cancel_reason": "Причині відміни",
+    "urgency": "Терміновість",
+    "priority": "Пріорітет",
+    "responsable": "Відповідальний",
+    "position": "Посада",
+    "post": "Пост",
+    "startDate": "Час Початку",
+    "deadlineDate": "Дедлайн",
+    "endDate": "Время Кінця",
+    "comment": "Комментарій",
+    "author": "Автор",
+    "duration": "Duration"
   }
 }

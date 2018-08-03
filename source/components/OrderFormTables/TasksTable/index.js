@@ -23,8 +23,8 @@ class TasksTable extends Component {
                 ),
             },
             {
-                title:     <FormattedMessage id='prority' />,
-                dataIndex: 'prority',
+                title:     <FormattedMessage id='priority' />,
+                dataIndex: 'priority',
                 width:     '8%',
                 // render:    (text, record) => <div>{}</div>,
             },
@@ -84,7 +84,7 @@ class TasksTable extends Component {
     render() {
         const { orderTasks } = this.props;
         const columns = this.columns;
-        console.log(orderTasks, 'HEllo', columns);
+        // console.log(orderTasks, 'HEllo', columns);
 
         return (
             <Catcher>

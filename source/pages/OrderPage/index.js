@@ -38,6 +38,8 @@ import {
 } from './../AddOrderPage/extractOrderEntity';
 
 const mapStateToProps = state => {
+    console.log(state)
+
     return {
         orderTasks:        state.order.orderTasks,
         stations:          state.forms.orderForm.stations,
@@ -143,7 +145,6 @@ class OrderPage extends Component {
       } = this.props;
       const { num, status, datetime } = this.props.order;
       const { id } = this.props.match.params;
-
       const hasInviteStatus = [ 'success', 'cancel' ].includes(
           _.get(this.props, 'order.status'),
       );
@@ -311,7 +312,7 @@ class OrderPage extends Component {
                   wrappedComponentRef={ this.saveFormRef }
                   visible={ this.props.modal }
                   resetModal={ () => resetModal() }
-
+                  num={ num }
               />
           </Layout>
       ) : (

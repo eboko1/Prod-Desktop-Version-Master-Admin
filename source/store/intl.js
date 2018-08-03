@@ -38,8 +38,11 @@ import UniversalFiltersForm from 'forms/UniversalFiltersForm/messages';
 import AddClientForm from 'forms/AddClientForm/messages';
 import CancelReasonForm from 'forms/CancelReasonForm/messages';
 import ToSuccessForm from 'forms/ToSuccessForm/messages';
+import OrderTaskForm from 'forms/OrderTaskForm/messages';
+
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
+import OrderTaskModal from 'modals/OrderTaskModal/messages';
 import AddClientModal from 'modals/AddClientModal/messages';
 import InviteModal from 'modals/InviteModal/messages';
 // components
@@ -76,10 +79,12 @@ const messages = merge.all([
     CancelReasonForm,
     ToSuccessForm,
     AddClientForm,
+    OrderTaskForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
     InviteModal,
+    OrderTaskModal,
     // components
     OrdersTable,
     StatusIcons,

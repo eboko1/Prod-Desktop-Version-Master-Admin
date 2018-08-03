@@ -501,14 +501,13 @@ export class OrderForm extends Component {
                             }
                             key='1'
                         >
-                            <FormItem>
-                                <Button
-                                    type='primary'
-                                    onClick={ () => this.props.setModal(MODALS.ORDER_TASK) }
-                                >
-                                    <Icon type='plus' />
-                                </Button>
-                            </FormItem>
+                            <Button
+                                className={ Styles.orderTaskModalButton }
+                                type='primary'
+                                onClick={ () => this.props.setModal(MODALS.ORDER_TASK) }
+                            >
+                                <Icon type='plus' />
+                            </Button>
                             <TasksTable orderTasks={ this.props.orderTasks } />
                         </TabPane>
                     ) }

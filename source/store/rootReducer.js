@@ -15,6 +15,7 @@ import dashboardReducer, {
     moduleName as dashboardModule,
 } from 'core/dashboard/duck';
 
+// TODO: import orderTasksFormReducer
 const rootReducer = combineReducers({
     intl,
     auth,

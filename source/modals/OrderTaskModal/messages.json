@@ -1,11 +1,18 @@
 {
     "en": {
-        "add-client-form.add_client": "Add Client"
+        "order-task-modal.order_number": "Order Number",
+        "order-task-modal.transfer_change_task": "Transfer/Change Task",
+        "order-task-modal.change_task": "Change Task"
     },
     "ru": {
-        "add-client-form.add_client": "Добавить Клиента"
+        "order-task-modal.order_number": "Номер Заказа",
+        "order-task-modal.transfer_change_task": "Перевести/Изменить Задачу",
+        "order-task-modal.change_task": "Изменить Задачу",
+        "save":"Сохранить"
     },
     "uk": {
-        "add-client-form.add_client": "Додати Клієнта"
+        "order-task-modal.order_number": "Номер Заказу",
+        "order-task-modal.transfer_change_task": "Перевести/Змінити Задачу",
+        "order-task-modal.change_task": "Змінити Задачу"
     }
 }

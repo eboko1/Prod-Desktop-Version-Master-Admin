@@ -22,6 +22,11 @@ import toSuccessReducer, {
     moduleName as toSuccess,
 } from './toSuccessForm/duck';
 
+import orderTaskReducer, {
+    moduleName as orderTask,
+} from './orderTaskForm/duck';
+
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
     [ addOrder ]:         addOrderReducer,
@@ -31,4 +36,5 @@ export const formsReducer = combineReducers({
     [ cancelReason ]:     cancelReasonReducer,
     [ toSuccess ]:        toSuccessReducer,
     [ login ]:            loginReducer,
+    [ orderTask ]:        orderTaskReducer,
 });
