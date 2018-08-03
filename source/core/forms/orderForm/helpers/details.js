@@ -5,7 +5,7 @@ import { customFieldValue, generateNestedObject } from './utils';
 
 export const defaultDetails = () => {
     const defaultValues = { detailCount: 1, detailPrice: 0 };
-    const fields = [ 'detailName', 'detailBrandName', 'detailCode', 'detailCount', 'detailPrice', 'ownDetail' ];
+    const fields = [ 'detailName', 'detailBrandName', 'detailCode', 'detailCount', 'detailPrice' ];
 
     return generateNestedObject(
         fields,
@@ -26,7 +26,6 @@ export const mapOrderDetailsToSelectDetails = details =>
                 detailCode,
                 price,
                 count,
-                ownDetail,
             }) => {
                 const uniqueId = v4();
 
@@ -42,7 +41,7 @@ export const mapOrderDetailsToSelectDetails = details =>
                         detailBrandName: customFieldValue(
                             `details[${uniqueId}][detailBrandName]`,
                             brandId || brandName
-                                ? brandId || `custom|${id}`
+                                ? (brandId ? String(brandId) : null) || `custom|${id}`
                                 : null,
                         ),
                         detailCode: customFieldValue(
@@ -56,11 +55,6 @@ export const mapOrderDetailsToSelectDetails = details =>
                         detailPrice: customFieldValue(
                             `details[${uniqueId}][detailPrice]`,
                             Number(price) || 0,
-                        ),
-                        ownDetail: customFieldValue(
-                            `details[${uniqueId}][ownDetail]`,
-                            true,
-                            { dirty: false },
                         ),
                     },
                 ];

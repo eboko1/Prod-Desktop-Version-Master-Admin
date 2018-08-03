@@ -51,11 +51,11 @@ export const DecoratedInput = props => {
             hasFeedback={ hasFeedback }
             colon={ colon }
             className={ className }
-            formItemLayout={ formItemLayout }
+            { ...formItemLayout }
         >
             { input }
         </FormItem>
-    ) : 
+    ) :
         input
     ;
 };

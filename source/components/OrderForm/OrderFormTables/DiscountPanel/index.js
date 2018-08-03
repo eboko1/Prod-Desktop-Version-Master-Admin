@@ -5,40 +5,42 @@ import { FormattedMessage } from 'react-intl';
 
 // proj
 import { Catcher } from 'commons';
-import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
+import { DecoratedInputNumber } from 'forms/DecoratedFields';
 
 // own
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
 
 class DiscountPanel extends Component {
-
     render() {
-        const discountFieldName = this.props.discountFieldName;
+        const {
+            getFieldDecorator,
+            price,
+            discountFieldName,
+            fields,
+        } = this.props;
 
-        const discount = ~~this.props.fields[discountFieldName].value;
-        const price = this.props.price;
+        const discount = ~~fields[ discountFieldName ].value;
 
         const total = price - price * (discount / 100);
+
         return (
             <Catcher>
                 <div className={ Styles.discountPanel }>
-                    <FormItem
+                    <DecoratedInputNumber
+                        field={ discountFieldName }
+                        getFieldDecorator={ getFieldDecorator }
+                        formItem
                         label={
                             <FormattedMessage id='order_form_table.discount' />
                         }
                         colon={ false }
                         className={ Styles.formItem }
-                    >
-                        <DecoratedInputNumber
-                            field={ discountFieldName }
-                            getFieldDecorator={ this.props.form.getFieldDecorator }
-                            min={ 0 }
-                            max={ 100 }
-                            formatter={ value => `${value}%` }
-                            parser={ value => value.replace('%', '') }
-                        />
-                    </FormItem>
+                        min={ 0 }
+                        max={ 100 }
+                        formatter={ value => `${value}%` }
+                        parser={ value => value.replace('%', '') }
+                    />
                     <FormItem
                         label={
                             <FormattedMessage id='order_form_table.sum_without_discount' />
@@ -51,7 +53,7 @@ class DiscountPanel extends Component {
                             value={ this.props.price }
                             min={ 0 }
                             formatter={ value =>
-                                `$ ${value}`.replace(
+                                `${value} грн.`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ',',
                                 )
@@ -71,7 +73,7 @@ class DiscountPanel extends Component {
                             value={ total }
                             min={ 0 }
                             formatter={ value =>
-                                `$ ${value}`.replace(
+                                `${value} грн.`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ',',
                                 )

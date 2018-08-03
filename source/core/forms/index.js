@@ -26,7 +26,6 @@ import orderTaskReducer, {
     moduleName as orderTask,
 } from './orderTaskForm/duck';
 
-
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
     [ addOrder ]:         addOrderReducer,

@@ -1,33 +1,25 @@
 // vendor
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { FormattedMessage } from 'react-intl';
 import Link from './link';
 import { Layout, Menu, Icon } from 'antd';
-import _ from 'lodash';
-
-// proj
-import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
 import menuConfig from './menuConfig';
 
-const mapStateToProps = state => {
-    return {
-        currentPath: state.router.location.pathname,
-    };
-};
-
-@connect(mapStateToProps)
+@withRouter
 export default class Navigation extends Component {
     render() {
-        const { currentPath, collapsed } = this.props;
+        const { history, collapsed } = this.props;
 
         const defaultOpenKeys = collapsed
             ? []
             : [ 'operations', 'catalog', 'reports' ];
-        const selected = menuConfig.getSelectedByRoute(currentPath);
+        const selected = menuConfig.getSelectedByRoute(
+            history.location.pathname,
+        );
         if (
             selected.sectionKey &&
             !collapsed &&

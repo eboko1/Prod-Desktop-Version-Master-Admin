@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Modal, Form } from 'antd';
+import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 // proj
@@ -20,7 +20,11 @@ export default class OrderTaskModal extends Component {
             <Modal
                 className={ Styles.orderTaskModal }
                 width={ '80%' }
-                title={ <FormattedMessage id={ 'order-task-modal.transfer_change_task' } /> }
+                title={
+                    <FormattedMessage
+                        id={ 'order-task-modal.transfer_change_task' }
+                    />
+                }
                 cancelText={ <FormattedMessage id='cancel' /> }
                 okText={ <FormattedMessage id='save' /> }
                 wrapClassName={ Styles.orderTaskModal }

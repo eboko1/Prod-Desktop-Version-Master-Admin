@@ -16,12 +16,13 @@ class UniversalFiltersTags extends Component {
 
     // To deals with dateranges, one daterange == two date pickers, which we need to clear
     tagsToUniversalFilterFields = {
-        beginDate:  [ 'startDate', 'endDate' ],
-        createDate: [ 'createStartDate', 'createEndDate' ],
+        beginDate:     [ 'startDate', 'endDate' ],
+        createDate:    [ 'createStartDate', 'createEndDate' ],
+        notVisitRange: [ 'notVisit', 'notVisitDays' ],
     };
 
     // Bind tags to filters keys
-    filterTagsFields = [ 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'beginDate', 'createDate', 'year', 'odometerLower', 'odometerGreater' ];
+    filterTagsFields = [ 'notVisitRange', 'ordersGreater', 'ordersLower', 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'beginDate', 'createDate', 'year', 'odometerLower', 'odometerGreater' ];
 
     // Clear tags using tagsToUniversalFilterFields
     handleClose = removedTagId => {
@@ -42,7 +43,10 @@ class UniversalFiltersTags extends Component {
     }
 
     render() {
-        const filter = this.props.filter || {};
+        let filter = this.props.filter || {};
+        if (filter.notVisitDays) {
+            filter = { ...filter, notVisitRange: true };
+        }
 
         // TODO refactro lodash chain
         const tagsFilter = _(filter)
@@ -54,11 +58,11 @@ class UniversalFiltersTags extends Component {
             )
             .map(([ key ]) => key)
             .value()
-            .map((tagId) => this.localizeTag(tagId));
+            .map(tagId => this.localizeTag(tagId));
 
         return (
             <div>
-                { tagsFilter.map(({id, name}) => {
+                { tagsFilter.map(({ id, name }) => {
                     const isLongTag = name.length > 20;
                     const tagElem = (
                         <Tag

@@ -39,6 +39,8 @@ export const DecoratedSelect = props => {
         optionDisabled,
         filterOption,
         optionFilterProp,
+        labelInValue,
+        optionLabelProp,
 
         cnStyles,
         dropdownMatchSelectWidth,
@@ -54,13 +56,15 @@ export const DecoratedSelect = props => {
             showSearch={ showSearch }
             allowClear={ allowClear }
             className={ cnStyles }
+            labelInValue={ labelInValue }
+            optionLabelProp={ optionLabelProp }
             // onChange={ value => this.handleServiceSelect(record.key, value) }
             onChange={ onChange }
             onSearch={ onSearch }
             onSelect={ onSelect }
             placeholder={ placeholder }
             notFoundContent={
-                notFoundContent ? 
+                notFoundContent ?
                     notFoundContent
                     : (
                         <FormattedMessage id='no_data' />
@@ -101,11 +105,11 @@ export const DecoratedSelect = props => {
             hasFeedback={ hasFeedback }
             colon={ colon }
             className={ className }
-            formItemLayout={ formItemLayout }
+            { ...formItemLayout }
         >
             { select }
         </FormItem>
-    ) : 
+    ) :
         select
     ;
 };

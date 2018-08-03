@@ -1,30 +1,20 @@
 // vendor
-import _ from 'lodash';
 import React, { Component } from 'react';
-import {
-    Table,
-    Form,
-    Input,
-    InputNumber,
-    Icon,
-    Popconfirm,
-    Select,
-} from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import {
     DecoratedSelect,
     DecoratedInput,
     DecoratedInputNumber,
-    DecoratedCheckbox,
 } from 'forms/DecoratedFields';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
 
 // own
 import Styles from './styles.m.css';
-const FormItem = Form.Item;
 const Option = Select.Option;
 
 class DetailsTable extends Component {
@@ -66,6 +56,9 @@ class DetailsTable extends Component {
                 width:     '15%',
                 render:    (text, record) => (
                     <DecoratedSelect
+                        mode={ 'combobox' }
+                        optionLabelProp={ 'children' }
+                        optionFilterProp={ 'children' }
                         field={ `details[${record.key}][detailBrandName]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         disabled={
@@ -84,7 +77,7 @@ class DetailsTable extends Component {
                     >
                         { this.props.allDetails.brands.map(
                             ({ brandId, brandName }) => (
-                                <Option value={ brandId } key={ v4() }>
+                                <Option value={ String(brandId) } key={ v4() }>
                                     { brandName }
                                 </Option>
                             ),
@@ -164,24 +157,6 @@ class DetailsTable extends Component {
                         />
                     );
                 },
-            },
-            {
-                title:     <FormattedMessage id='order_form_table.own_detail' />,
-                dataIndex: 'ownDetail',
-                width:     '5%',
-                render:    (text, record) => (
-                    <DecoratedCheckbox
-                        field={ `details[${record.key}][ownDetail]` }
-                        getFieldDecorator={ this.props.form.getFieldDecorator }
-                        initValue={ record.ownDetail }
-                        disabled={
-                            !_.get(
-                                this.props.details[ record.key ],
-                                'detailName.value',
-                            )
-                        }
-                    />
-                ),
             },
             {
                 title:     '',

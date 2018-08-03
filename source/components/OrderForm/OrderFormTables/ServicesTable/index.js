@@ -15,10 +15,15 @@ import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
+import {
+    DecoratedSelect,
+    DecoratedInputNumber,
+    DecoratedCheckbox,
+} from 'forms/DecoratedFields';
 
 // own
 import Styles from './styles.m.css';
+
 const Option = Select.Option;
 const FormItem = Form.Item;
 
@@ -34,9 +39,10 @@ class ServicesTable extends Component {
                     return (
                         <DecoratedSelect
                             field={ `services[${record.key}][serviceName]` }
-                            getFieldDecorator={
-                                this.props.form.getFieldDecorator
-                            }
+                            getFieldDecorator={ this.props.getFieldDecorator }
+                            mode={ 'combobox' }
+                            optionLabelProp={ 'children' }
+                            optionFilterProp={ 'children' }
                             showSearch
                             cnStyles={ Styles.serviceSelect }
                             onChange={ value =>
@@ -68,15 +74,11 @@ class ServicesTable extends Component {
                 render:    (text, record) => (
                     <DecoratedInputNumber
                         field={ `services[${record.key}][servicePrice]` }
-                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        getFieldDecorator={ this.props.getFieldDecorator }
                         disabled={
                             !this.props.services[ record.key ].serviceName.value
                         }
                         min={ 0 }
-                        // defaultValue={ record.price }
-                        // onChange={ value =>
-                        //     this.onCellChange(record.key, value, 'price')
-                        // }
                     />
                 ),
             },
@@ -86,16 +88,12 @@ class ServicesTable extends Component {
                 render:    (text, record) => (
                     <DecoratedInputNumber
                         field={ `services[${record.key}][serviceCount]` }
-                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        getFieldDecorator={ this.props.getFieldDecorator }
                         disabled={
                             !this.props.services[ record.key ].serviceName.value
                         }
                         min={ 0.1 }
                         step={ 0.1 }
-                        // defaultValue={ record.count }
-                        // onChange={ value =>
-                        //     this.onCellChange(record.key, value, 'count')
-                        // }
                     />
                 ),
             },
@@ -124,11 +122,10 @@ class ServicesTable extends Component {
                     return (
                         <DecoratedSelect
                             field={ `services[${record.key}][employeeId]` }
-                            getFieldDecorator={
-                                this.props.form.getFieldDecorator
-                            }
+                            getFieldDecorator={ this.props.getFieldDecorator }
                             disabled={
-                                !this.props.services[ record.key ].serviceName.value
+                                !this.props.services[ record.key ].serviceName
+                                    .value
                             }
                         >
                             { this.props.employees.map(employee => (
@@ -143,6 +140,34 @@ class ServicesTable extends Component {
                                 </Option>
                             )) }
                         </DecoratedSelect>
+                    );
+                },
+            },
+            {
+                title:     <FormattedMessage id='order_form_table.own_detail' />,
+                dataIndex: 'ownDetail',
+                render:    (text, record) => {
+                    const services = _.get(
+                        this.props,
+                        'fetchedOrder.orderServices',
+                    );
+                    const orderService = (services || []).find(
+                        ({ serviceId, type }) =>
+                            `${type}|${serviceId}` === record.key,
+                    );
+
+                    return (
+                        <DecoratedCheckbox
+                            field={ `services[${record.key}][ownDetail]` }
+                            getFieldDecorator={ this.props.getFieldDecorator }
+                            initValue={ orderService && orderService.ownDetail }
+                            disabled={
+                                !_.get(
+                                    this.props.services[ record.key ],
+                                    'serviceName.value',
+                                )
+                            }
+                        />
                     );
                 },
             },
@@ -173,11 +198,9 @@ class ServicesTable extends Component {
                 ({ id, type }) => value === `${type}|${id}`,
             ) || {};
 
-        if (servicePrice) {
-            this.props.form.setFieldsValue({
-                [ `services[${key}][servicePrice]` ]: servicePrice,
-            });
-        }
+        this.props.form.setFieldsValue({
+            [ `services[${key}][servicePrice]` ]: servicePrice || 0,
+        });
 
         const emptyFields = _(dataSource)
             .values()
@@ -228,7 +251,7 @@ class ServicesTable extends Component {
                 name:       `services[${id}][employeeId]`,
                 touched:    true,
                 validating: false,
-                value:      void 0,
+                value:      this.props.form.getFieldValue('employee'),
                 dirty:      false,
             },
             servicePrice: {
@@ -239,6 +262,14 @@ class ServicesTable extends Component {
                 value:      void 0,
                 dirty:      false,
             },
+            ownDetail: {
+                errors:     void 0,
+                name:       `services[${id}][ownDetail]`,
+                touched:    true,
+                validating: false,
+                value:      false,
+                dirty:      false,
+            },
         };
 
         this.props.onChangeOrderServices({
@@ -247,19 +278,9 @@ class ServicesTable extends Component {
         });
     };
 
-    // onCellChange = (key, value, dataIndex) => {
-    //     const dataSource = [ ...this.state.dataSource ];
-    //     console.log('→ dataSource', dataSource);
-    //     const target = dataSource.find(item => item.key === key);
-    //     console.log('→ target', target);
-    //     if (target) {
-    //         target[ dataIndex ] = value;
-    //         this.setState({ dataSource });
-    //     }
-    // };
-
     render() {
-        const { employees } = this.props;
+        const { employees, getFieldDecorator } = this.props;
+
         const dataSource = _(this.props.services)
             .toPairs()
             .map(([ key, value ]) => ({ ...value, key }))
@@ -297,10 +318,21 @@ class ServicesTable extends Component {
                         className={ Styles.durationPanelItem }
                     >
                         <DecoratedSelect
-                            field={ 'employee' }
-                            getFieldDecorator={
-                                this.props.form.getFieldDecorator
-                            }
+                            field='employee'
+                            getFieldDecorator={ getFieldDecorator }
+                            onSelect={ value => {
+                                const services = this.props.form.getFieldValue(
+                                    'services',
+                                );
+
+                                const updatedServices = _(services)
+                                    .keys()
+                                    .map(serviceKey => [ `services[${serviceKey}][employeeId]`, value ])
+                                    .fromPairs()
+                                    .value();
+
+                                this.props.form.setFieldsValue(updatedServices);
+                            } }
                         >
                             { employees.map(employee => (
                                 <Option
@@ -322,31 +354,3 @@ class ServicesTable extends Component {
 }
 
 export default ServicesTable;
-
-/* <Select
-    showSearch
-    allowClear
-    style={ { width: 220 } }
-    onChange={ value =>
-        this.handleServiceSelect(record.key, value)
-    }
-    placeholder={
-        <FormattedMessage id='order_form_table.service.placeholder' />
-    }
-    dropdownMatchSelectWidth={ false }
-    dropdownStyle={ { width: '70%' } }
-    optionFilterProp='children'
-    filterOption={ (input, option) =>
-        option.props.children
-            ? option.props.children
-                .toLowerCase()
-                .indexOf(input.toLowerCase()) >= 0
-            : null
-    }
->
-    { this.props.allServices.map(service => (
-        <Option value={ service.serviceId } key={ v4() }>
-            { service.serviceName }
-        </Option>
-    )) }
-</Select> */

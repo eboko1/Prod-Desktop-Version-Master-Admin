@@ -10,9 +10,6 @@ import { Catcher } from 'commons';
 import { OrderStatusIcon } from 'components';
 import book from 'routes/book';
 
-// own
-// import Styles from './styles.m.css';
-
 class HistoryTable extends Component {
     constructor(props) {
         super(props);
@@ -59,15 +56,13 @@ class HistoryTable extends Component {
                 ),
             },
             {
-                title:     <FormattedMessage id='order_form_table.recommendation' />,
+                title: (
+                    <FormattedMessage id='order_form_table.recommendation' />
+                ),
                 dataIndex: 'servicesTotalSum',
                 key:       'history-recommendation',
                 width:     '20%',
-                render:    (text, record) => (
-                    <div>
-                        { record.recommendation }
-                    </div>
-                ),
+                render:    (text, record) => <div>{ record.recommendation }</div>,
             },
             {
                 title:     <FormattedMessage id='order_form_table.cancel_reason' />,
@@ -75,9 +70,7 @@ class HistoryTable extends Component {
                 key:       'history-cancel-reason',
                 width:     '20%',
                 render:    (text, record) => (
-                    <div>
-                        { record.cancelStatusReason }
-                    </div>
+                    <div>{ record.cancelStatusReason }</div>
                 ),
             },
         ];

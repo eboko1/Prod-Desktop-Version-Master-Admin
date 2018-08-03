@@ -33,7 +33,7 @@ import OrdersContainer from 'containers/OrdersContainer/messages';
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
 import ProfileForm from 'forms/ProfileForm/messages';
-import AddOrderForm from 'forms/AddOrderForm/messages';
+import OrderForm from 'forms/OrderForm/messages';
 import UniversalFiltersForm from 'forms/UniversalFiltersForm/messages';
 import AddClientForm from 'forms/AddClientForm/messages';
 import CancelReasonForm from 'forms/CancelReasonForm/messages';
@@ -46,10 +46,9 @@ import OrderTaskModal from 'modals/OrderTaskModal/messages';
 import AddClientModal from 'modals/AddClientModal/messages';
 import InviteModal from 'modals/InviteModal/messages';
 // components
-import OrdersTable from 'components/OrdersTable/messages';
 import StatusIcons from 'components/StatusIcons/messages';
-import OrderFormTables from 'components/OrderFormTables/messages';
-import CallsTable from 'components/OrderFormTables/CallsTable/messages';
+import OrderFormTables from 'components/OrderForm/OrderFormTables/messages';
+import CallsTable from 'components/OrderForm/OrderFormTables/CallsTable/messages';
 import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
 import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
@@ -75,7 +74,7 @@ const messages = merge.all([
     // forms
     ProfileForm,
     UniversalFiltersForm,
-    AddOrderForm,
+    OrderForm,
     CancelReasonForm,
     ToSuccessForm,
     AddClientForm,
@@ -86,7 +85,6 @@ const messages = merge.all([
     InviteModal,
     OrderTaskModal,
     // components
-    OrdersTable,
     StatusIcons,
     OrderFormTables,
     StatsCountsPanel,

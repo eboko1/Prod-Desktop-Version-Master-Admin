@@ -38,11 +38,11 @@ export const DecoratedCheckbox = props => {
             hasFeedback={ hasFeedback }
             colon={ colon }
             className={ className }
-            formItemLayout={ formItemLayout }
+            { ...formItemLayout }
         >
             { checkbox }
         </FormItem>
-    ) : 
+    ) :
         checkbox
     ;
 };

@@ -7,9 +7,6 @@ import moment from 'moment';
 // proj
 import { Catcher } from 'commons';
 
-// own
-// import Styles from './styles.m.css';
-
 class TasksTable extends Component {
     constructor(props) {
         super(props);
@@ -84,7 +81,6 @@ class TasksTable extends Component {
     render() {
         const { orderTasks } = this.props;
         const columns = this.columns;
-        // console.log(orderTasks, 'HEllo', columns);
 
         return (
             <Catcher>
