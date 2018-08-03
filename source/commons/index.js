@@ -5,7 +5,13 @@ import ModuleHeader from './ModuleHeader';
 import Navigation from './Navigation';
 import Spinner from './Spinner';
 import Catcher from './Catcher';
-import { MobileView, TabletView, DesktopView } from './ResponsiveViews';
+import {
+    MobileView,
+    TabletView,
+    DesktopView,
+    ResponsiveView,
+    BREAKPOINTS,
+} from './ResponsiveViews';
 
 export {
     Header,
@@ -18,4 +24,6 @@ export {
     MobileView,
     TabletView,
     DesktopView,
+    ResponsiveView,
+    BREAKPOINTS,
 };

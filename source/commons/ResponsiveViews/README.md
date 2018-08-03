@@ -1,5 +1,15 @@
 # Responsive
 
+Collection of MediaQueries depend of your needs.
+
+Use it in your components like this:
+`<DesktopView>...</DesktopView>`
+
+If you need same logic within multiple breakpoints
+you should provide custom prop `view` to `ResponsiveView`
+
+`<ResponsiveView view={ { min: 768, max: 1440 } }>...</ResponsiveView>`
+
 ## BREAKPOINTS
 
 ---

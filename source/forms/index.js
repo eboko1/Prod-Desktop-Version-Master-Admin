@@ -6,6 +6,7 @@ import { AddClientForm } from './AddClientForm';
 import { UniversalFiltersForm } from './UniversalFiltersForm';
 import { CancelReasonForm } from './CancelReasonForm';
 import { ToSuccessForm } from './ToSuccessForm';
+import { MobileRecordForm } from './MobileRecordForm';
 
 export {
     LoginForm,
@@ -16,4 +17,5 @@ export {
     UniversalFiltersForm,
     CancelReasonForm,
     ToSuccessForm,
+    MobileRecordForm,
 };
