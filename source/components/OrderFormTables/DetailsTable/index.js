@@ -66,6 +66,9 @@ class DetailsTable extends Component {
                 width:     '15%',
                 render:    (text, record) => (
                     <DecoratedSelect
+                        mode={ 'combobox' }
+                        optionLabelProp={ 'children' }
+                        optionFilterProp={ 'children' }
                         field={ `details[${record.key}][detailBrandName]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         disabled={
@@ -84,7 +87,7 @@ class DetailsTable extends Component {
                     >
                         { this.props.allDetails.brands.map(
                             ({ brandId, brandName }) => (
-                                <Option value={ brandId } key={ v4() }>
+                                <Option value={ String(brandId) } key={ v4() }>
                                     { brandName }
                                 </Option>
                             ),

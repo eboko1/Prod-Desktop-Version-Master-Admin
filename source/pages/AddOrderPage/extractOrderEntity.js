@@ -52,7 +52,7 @@ export function convertFieldsValuesToDbEntity(
                 ) || {}
             ).detailName;
             const brandLabel = (
-                allDetails.brands.find(({ brandId: id }) => id === brandId) ||
+                allDetails.brands.find(({ brandId: id }) => String(id) === brandId) ||
                 {}
             ).brandName;
 

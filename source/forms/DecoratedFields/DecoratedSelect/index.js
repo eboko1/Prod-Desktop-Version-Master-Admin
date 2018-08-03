@@ -39,6 +39,8 @@ export const DecoratedSelect = props => {
         optionDisabled,
         filterOption,
         optionFilterProp,
+        labelInValue,
+        optionLabelProp,
 
         cnStyles,
         dropdownMatchSelectWidth,
@@ -54,6 +56,8 @@ export const DecoratedSelect = props => {
             showSearch={ showSearch }
             allowClear={ allowClear }
             className={ cnStyles }
+            labelInValue={ labelInValue }
+            optionLabelProp={ optionLabelProp }
             // onChange={ value => this.handleServiceSelect(record.key, value) }
             onChange={ onChange }
             onSearch={ onSearch }

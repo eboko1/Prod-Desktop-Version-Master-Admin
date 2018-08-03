@@ -41,7 +41,7 @@ export const mapOrderDetailsToSelectDetails = details =>
                         detailBrandName: customFieldValue(
                             `details[${uniqueId}][detailBrandName]`,
                             brandId || brandName
-                                ? brandId || `custom|${id}`
+                                ? (brandId ? String(brandId) : null) || `custom|${id}`
                                 : null,
                         ),
                         detailCode: customFieldValue(

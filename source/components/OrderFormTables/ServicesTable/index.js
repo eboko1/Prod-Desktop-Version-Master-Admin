@@ -42,6 +42,9 @@ class ServicesTable extends Component {
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
+                            mode={ 'combobox' }
+                            optionLabelProp={ 'children' }
+                            optionFilterProp={ 'children' }
                             showSearch
                             cnStyles={ Styles.serviceSelect }
                             onChange={ value =>
@@ -156,8 +159,14 @@ class ServicesTable extends Component {
                 title:     <FormattedMessage id='order_form_table.own_detail' />,
                 dataIndex: 'ownDetail',
                 render:    (text, record) => {
-                    const services = _.get(this.props, 'fetchedOrder.orderServices');
-                    const orderService = (services || []).find(({serviceId, type}) => `${type}|${serviceId}` === record.key);
+                    const services = _.get(
+                        this.props,
+                        'fetchedOrder.orderServices',
+                    );
+                    const orderService = (services || []).find(
+                        ({ serviceId, type }) =>
+                            `${type}|${serviceId}` === record.key,
+                    );
 
                     return (
                         <DecoratedCheckbox
@@ -165,7 +174,7 @@ class ServicesTable extends Component {
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
-                            initValue={orderService && orderService.ownDetail}
+                            initValue={ orderService && orderService.ownDetail }
                             disabled={
                                 !_.get(
                                     this.props.services[ record.key ],
