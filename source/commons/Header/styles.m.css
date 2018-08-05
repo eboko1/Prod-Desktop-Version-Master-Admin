@@ -1,5 +1,4 @@
 .header {
-    margin-left: 256px;
     display: flex;
     position: fixed;
     width: calc(100% - 256px);
@@ -10,7 +9,6 @@
 }
 
 .headerCollapsed {
-    margin-left: 80px;
     width: calc(100% - 80px);
 }
 

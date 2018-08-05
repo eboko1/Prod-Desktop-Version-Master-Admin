@@ -1,6 +1,7 @@
 .footer {
-    margin-left: 272px; /* aside */
-    margin-right: 12px;
+    /* margin-left: 272px; /* aside */
+    */margin: 0 12px;
+    /* margin-right: 12px; */
     padding: 12px 0;
     display: flex;
     align-items: center;
@@ -8,9 +9,9 @@
     flex-direction: column;
 }
 
-.footerCollapsed {
+/* .footerCollapsed {
     margin-left: 96px;
-}
+} */
 
 .footer a {
     color: var(--text2);

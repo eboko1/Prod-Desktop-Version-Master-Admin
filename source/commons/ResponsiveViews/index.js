@@ -62,8 +62,10 @@ const _breakpoint = (view, children, component) => {
 };
 
 // views collection
-export const ResponsiveView = props =>
-    _breakpoint(props.view, props.children, props.component);
+export const ResponsiveView = props => {
+    // ? props.view : { min: null, max: null },
+    return _breakpoint(props.view, props.children, props.component);
+};
 
 export const MobileView = props =>
     _breakpoint('mobile', props.children, props.component);

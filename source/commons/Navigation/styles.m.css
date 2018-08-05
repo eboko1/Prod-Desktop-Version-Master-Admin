@@ -1,7 +1,5 @@
 .sider:global(.ant-layout-sider) {
     overflow: auto;
-    height: 100vh;
-    position: fixed;
     z-index: 110;
     left: 0;
     box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
@@ -26,8 +24,4 @@
 
 .logoCollapsed {
     width: 80px;
-}
-
-.navMenu {
-    margin-top: 60px;
 }

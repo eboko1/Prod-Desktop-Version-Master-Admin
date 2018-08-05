@@ -3,14 +3,13 @@
 }
 
 .content {
-    margin-left: 256px; /* aside */
     margin-top: 64px; /* header + moduleHeader */
     height: 100%;
 }
 
-.contentCollapsed {
+/* .contentCollapsed {
     margin-left: 80px;
-}
+} */
 
 .contentModuleHeader {
     margin-top: 128px;
