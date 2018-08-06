@@ -17,6 +17,10 @@
     color: var(--text2);
 }
 
+.contacts {
+    text-align: center;
+}
+
 .logo {
     width: 60px;
 }

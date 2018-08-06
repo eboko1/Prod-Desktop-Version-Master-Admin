@@ -40,9 +40,14 @@ a {
     height: 100%;
 }
 
+/* antd customize */
 .ant-modal-wrap,
 .ant-modal-mask {
     z-index: 2000;
+}
+
+.ant-layout .ant-layout-has-sider {
+    height: 100%;
 }
 
 .drawer.drawer-open .drawer-mask {

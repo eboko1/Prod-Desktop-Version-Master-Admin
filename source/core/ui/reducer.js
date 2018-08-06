@@ -10,6 +10,7 @@ const initialState = Map({
     orderFetching:     false,
     dashboardFetching: false,
     collapsed:         false,
+    isMobile:          void 0,
     error:             null,
 });
 
@@ -38,6 +39,9 @@ export default (state = initialState, action) => {
 
         case types.SET_COLLAPSED_STATE:
             return state.set('collapsed', action.payload);
+
+        case types.SET_LAYOUT_STATE:
+            return state.set('isMobile', action.payload);
 
         case types.EMIT_ERROR:
             return state.set('error', action.payload);

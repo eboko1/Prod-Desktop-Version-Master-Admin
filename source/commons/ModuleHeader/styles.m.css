@@ -20,6 +20,11 @@
     width: calc(100% - 80px);
 }
 
+.headerMobile {
+    margin-top: 0;
+    width: 100%;
+}
+
 .headerInfo {
     display: flex;
     flex-direction: column;

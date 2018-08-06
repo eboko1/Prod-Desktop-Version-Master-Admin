@@ -37,6 +37,11 @@ export const uiActions = Object.freeze({
         payload: state,
     }),
 
+    setLayoutState: state => ({
+        type:    types.SET_LAYOUT_STATE,
+        payload: state,
+    }),
+
     emitError: error => ({
         type:    types.EMIT_ERROR,
         payload: error,

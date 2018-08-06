@@ -5,6 +5,10 @@ import { FormattedMessage } from 'react-intl';
 import Link from './link';
 import { Layout, Menu, Icon } from 'antd';
 
+// proj
+import { MobileView } from 'commons';
+import HeaderMenu from 'commons/Header/HeaderMenu';
+
 // own
 import Styles from './styles.m.css';
 import menuConfig from './menuConfig';
@@ -12,7 +16,7 @@ import menuConfig from './menuConfig';
 @withRouter
 export default class Navigation extends Component {
     render() {
-        const { history, collapsed } = this.props;
+        const { history, collapsed, isMobile } = this.props;
 
         const defaultOpenKeys = collapsed
             ? []
@@ -45,8 +49,10 @@ export default class Navigation extends Component {
                 >
                     { collapsed ? <Icon type='environment-o' /> : 'CARBOOK.PRO' }
                 </div>
+                { isMobile && <HeaderMenu isMobile={ isMobile } /> }
                 <Menu
-                    className={ Styles.navMenu }
+                    className={ `${Styles.navMenu} ${isMobile &&
+                        Styles.navMenuMobile}` }
                     theme='dark'
                     mode='inline'
                     // defaultSelectedKeys={ [ '1' ] }

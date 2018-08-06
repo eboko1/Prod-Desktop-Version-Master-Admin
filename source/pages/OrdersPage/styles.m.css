@@ -49,6 +49,10 @@
     width: calc(100% - 80px);
 }
 
+.funelMobile {
+    width: 100%;
+}
+
 .universalFilters {
     position: fixed;
     width: calc(100% - 256px);

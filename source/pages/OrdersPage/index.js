@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Button, Radio } from 'antd';
+import classNames from 'classnames/bind';
 
 // proj
 import { fetchOrders, setOrdersDaterangeFilter } from 'core/orders/duck';
@@ -26,11 +27,14 @@ import Styles from './styles.m.css';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
+let cx = classNames.bind(Styles);
+
 const mapState = state => {
     return {
         ordersDaterangeFilter: state.orders.filter.daterange,
         filter:                state.orders.filter,
         collapsed:             state.ui.get('collapsed'),
+        isMobile:              state.ui.get('isMobile'),
     };
 };
 
@@ -68,22 +72,30 @@ class OrdersPage extends Component {
     }
 
     _handleRadioDaterange = event => {
+        const { setOrdersDaterangeFilter, fetchOrders } = this.props;
         const daterange = event.target.value;
 
         if (daterange === 'all') {
-            this.props.setOrdersDaterangeFilter({});
+            setOrdersDaterangeFilter({});
         } else if (daterange !== 'all') {
             const daterangeFilter = getDaterange(daterange);
-            this.props.setOrdersDaterangeFilter({ ...daterangeFilter });
+            setOrdersDaterangeFilter({ ...daterangeFilter });
         }
 
-        this.props.fetchOrders(this.props.filter);
+        fetchOrders(this.props.filter);
     };
     // eslint-disable-next-line
     render() {
-        const { collapsed } = this.props;
+        const { collapsed, isMobile } = this.props;
 
         const status = this.props.match.params.ordersStatuses;
+
+        let funelSectionStyles = cx({
+            funelWithFilters:          true,
+            funelWithFiltersCollapsed: collapsed,
+            funelWithFiltersShadow:    [ 'success', 'cancel' ].indexOf(status) < 0,
+            funelMobile:               isMobile,
+        });
 
         return (
             <Layout
@@ -137,10 +149,7 @@ class OrdersPage extends Component {
                     </div>
                 }
             >
-                <section
-                    className={ `${Styles.funelWithFilters} ${collapsed &&
-                        Styles.funelWithFiltersCollapsed} ${[ 'success', 'cancel' ].indexOf(status) < 0 && Styles.funelWithFiltersShadow}` }
-                >
+                <section className={ funelSectionStyles }>
                     <FunelContainer />
                     <OrdersFilterContainer status={ status } />
                 </section>

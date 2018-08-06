@@ -32,6 +32,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     logout:            authActions.logout,
     setCollapsedState: uiActions.setCollapsedState,
+    setLayoutState:    uiActions.setLayoutState,
 };
 
 @withRouter
@@ -53,6 +54,8 @@ export class LayoutComponent extends Component {
                 isMobile: mobile,
             });
         });
+
+        this.props.setLayoutState(isMobile);
         this.props.setCollapsedState(collapsed);
     }
 
@@ -85,26 +88,29 @@ export class LayoutComponent extends Component {
         const { isMobile } = this.state;
 
         const layout = (
-            <Layout>
+            <Layout style={ { height: '100%' } }>
                 <Navigation
                     onCollapse={ this._toggleNavigation }
                     collapsed={ collapsed }
                     isMobile={ isMobile }
                 />
                 <Layout className={ Styles.layout }>
-                    <Layout.Header className={ Styles.header }>
-                        <Header
-                            collapsed={ collapsed }
-                            toggleNavigation={ this._toggleNavigation }
-                            logout={ this._logout }
-                        />
-                    </Layout.Header>
+                    { !isMobile && (
+                        <Layout.Header className={ Styles.header }>
+                            <Header
+                                collapsed={ collapsed }
+                                toggleNavigation={ this._toggleNavigation }
+                                logout={ this._logout }
+                            />
+                        </Layout.Header>
+                    ) }
                     { title && (
                         <ModuleHeader
                             title={ title }
                             description={ description }
                             controls={ controls }
                             collapsed={ collapsed }
+                            isMobile={ isMobile }
                         />
                     ) }
                     <main

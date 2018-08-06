@@ -8,6 +8,12 @@
     padding-right: 24px;
 }
 
+.headerMenu {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+}
+
 .headerCollapsed {
     width: calc(100% - 80px);
 }
@@ -50,6 +56,11 @@
     flex: 1;
     justify-content: flex-end;
     align-items: center;
+}
+
+.headerPanelMobile {
+    margin-top: 60px;
+    justify-content: space-around;
 }
 
 .user {
