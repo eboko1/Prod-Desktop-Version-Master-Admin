@@ -31,12 +31,17 @@ export default class Link extends Component {
     }
 
     render() {
-        const { to, children, ...rest } = this.props;
+        const { to, children, onClick, collapsed, ...rest } = this.props;
+
         const isInternal = this.isInternal(to);
 
         if (isInternal) {
             return (
-                <ReactLink to={ to } { ...rest }>
+                <ReactLink
+                    to={ to }
+                    { ...rest }
+                    onClick={ () => onClick(!collapsed) }
+                >
                     { children }
                 </ReactLink>
             );

@@ -6,7 +6,6 @@ import Link from './link';
 import { Layout, Menu, Icon } from 'antd';
 
 // proj
-import { MobileView } from 'commons';
 import HeaderMenu from 'commons/Header/HeaderMenu';
 
 // own
@@ -16,7 +15,7 @@ import menuConfig from './menuConfig';
 @withRouter
 export default class Navigation extends Component {
     render() {
-        const { history, collapsed, isMobile } = this.props;
+        const { history, collapsed, isMobile, onCollapse } = this.props;
 
         const defaultOpenKeys = collapsed
             ? []
@@ -78,7 +77,11 @@ export default class Navigation extends Component {
 
                                         return (
                                             <Menu.Item key={ key }>
-                                                <Link to={ link }>
+                                                <Link
+                                                    to={ link }
+                                                    onClick={ onCollapse }
+                                                    collapsed={ collapsed }
+                                                >
                                                     <FormattedMessage
                                                         id={ name }
                                                     />
