@@ -8,7 +8,7 @@ import _ from 'lodash';
 // import book from 'routes/book';
 
 // own
-// import Styles from './styles.m.css';
+import Styles from './styles.m.css';
 const Item = Menu.Item;
 
 class ChangeStatusDropdown extends React.Component {
@@ -18,6 +18,7 @@ class ChangeStatusDropdown extends React.Component {
             onStatusChange,
             setModal,
             modals,
+            isMobile,
         } = this.props;
 
         const getMenuItems = () => {
@@ -82,7 +83,9 @@ class ChangeStatusDropdown extends React.Component {
                 ? appointments.filter(
                     appointmentStatus => appointmentStatus !== status,
                 )
-                : status === 'reserve' ? [ 'approve' ] : [];
+                : status === 'reserve'
+                    ? [ 'approve' ]
+                    : [];
 
             const allStatuses = [ ...suggestStatus, ...additionalStatuses ];
 
@@ -107,15 +110,7 @@ class ChangeStatusDropdown extends React.Component {
                         disabled={ item.disabled }
                         onClick={ () => item.action() }
                     >
-                        { item.icon && (
-                            <Icon
-                                type={ item.icon }
-                                style={ {
-                                    fontSize: 18,
-                                    margin:   '0 10px 0 0',
-                                } }
-                            />
-                        ) }
+                        { item.icon && <Icon type={ item.icon } /> }
                         <FormattedMessage id={ item.name } />
                     </Item>
                 )) }
@@ -124,19 +119,9 @@ class ChangeStatusDropdown extends React.Component {
 
         return menuItems.length ? (
             <Dropdown overlay={ menu }>
-                <div
-                    style={ {
-                        cursor: 'pointer',
-                        margin: '0 10px',
-                    } }
-                >
-                    <Icon
-                        type='swap'
-                        style={ {
-                            fontSize: 24,
-                        } }
-                    />
-                    Перевести в статус
+                <div className={ Styles.dropdownTitle }>
+                    <Icon type='swap' className={ Styles.dropdownTitleIcon } />
+                    { !isMobile && <span>Перевести в статус</span> }
                 </div>
             </Dropdown>
         ) : null;

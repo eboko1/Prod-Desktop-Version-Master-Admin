@@ -68,6 +68,7 @@ const mapStateToProps = state => {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
+        isMobile: state.ui.get('isMobile'),
     };
 };
 
@@ -118,7 +119,7 @@ class OrderPage extends Component {
         this.props.setModal(MODALS.ADD_CLIENT);
     };
 
-    onStatusChange(status, redirectStatus) {
+    onStatusChange = (status, redirectStatus) => {
         const { id } = this.props.match.params;
         const requiredFields = requiredFieldsOnStatuses[ status ];
         const form = this.orderFormRef.props.form;
@@ -137,7 +138,7 @@ class OrderPage extends Component {
                 });
             }
         });
-    }
+    };
 
     /* eslint-disable complexity*/
     render() {
@@ -147,6 +148,7 @@ class OrderPage extends Component {
             spinner,
             modal,
             addClientFormData,
+            isMobile,
         } = this.props;
 
         const { num, status, datetime } = this.props.order;
@@ -235,19 +237,21 @@ class OrderPage extends Component {
 
                         <ChangeStatusDropdown
                             orderStatus={ status }
-                            onStatusChange={ this.onStatusChange.bind(this) }
+                            onStatusChange={ this.onStatusChange }
                             setModal={ setModal }
                             modals={ MODALS }
+                            isMobile={ isMobile }
                         />
                         <ReportsDropdown
                             orderId={ id }
                             orderStatus={ status }
                             download={ this.props.getReport }
+                            isMobile={ isMobile }
                         />
                         <Icon
                             type='save'
                             style={ {
-                                fontSize: 24,
+                                fontSize: isMobile ? 12 : 24,
                                 cursor:   'pointer',
                                 margin:   '0 10px',
                             } }
@@ -256,14 +260,17 @@ class OrderPage extends Component {
                         <Icon
                             type='delete'
                             style={ {
-                                fontSize: 24,
+                                fontSize: isMobile ? 12 : 24,
                                 cursor:   'pointer',
                                 margin:   '0 10px',
                             } }
                             onClick={ () => setModal(MODALS.CANCEL_REASON) }
                         />
                         <Icon
-                            style={ { fontSize: 24, cursor: 'pointer' } }
+                            style={ {
+                                fontSize: isMobile ? 12 : 24,
+                                cursor:   'pointer',
+                            } }
                             type='close'
                             onClick={ () => {
                                 const newOrder = convertFieldsValuesToDbEntity(
@@ -288,7 +295,10 @@ class OrderPage extends Component {
                 }
             >
                 <MobileView>
-                    <MobileRecordForm />
+                    <MobileRecordForm
+                        wrappedComponentRef={ this.saveOrderFormRef }
+                        onStatusChange={ this.onStatusChange }
+                    />
                 </MobileView>
                 <ResponsiveView
                     view={ { min: BREAKPOINTS.md.min, max: BREAKPOINTS.xxl.max } }
@@ -317,9 +327,7 @@ class OrderPage extends Component {
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
-                    handleCancelReasonModalSubmit={ this.onStatusChange.bind(
-                        this,
-                    ) }
+                    handleCancelReasonModalSubmit={ this.onStatusChange }
                     orderComments={ this.props.orderComments }
                     resetModal={ () => resetModal() }
                 />
@@ -336,7 +344,7 @@ class OrderPage extends Component {
                 <ToSuccessModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
-                    handleToSuccessModalSubmit={ this.onStatusChange.bind(this) }
+                    handleToSuccessModalSubmit={ this.onStatusChange }
                     resetModal={ () => resetModal() }
                 />
                 <OrderTaskModal

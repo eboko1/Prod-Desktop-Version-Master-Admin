@@ -1,5 +1,7 @@
 {
     "en": {
+        "date": "Date",
+        "time": "Time",
         "datepicker.placeholder": "Select date",
         "datepicker.timepicker.placeholder": "aaSelect time",
         "datepicker.range.start_date": "Start date",
@@ -26,6 +28,8 @@
         "datepicker.nextYear": "Next Year"
     },
     "ru": {
+        "date": "Дата",
+        "time": "Время",
         "datepicker.placeholder": "Укажите дату",
         "datepicker.timepicker.placeholder": "Укажите время",
         "datepicker.range.start_date": "Начальная дата",
@@ -52,6 +56,8 @@
         "datepicker.nextYear": "Следующий Год"
     },
     "uk": {
+        "date": "Дата",
+        "time": "Час",
         "datepicker.placeholder": "Вкажіть дату",
         "datepicker.timepicker.placeholder": "Вкажіть час",
         "datepicker.range.start_date": "Початкова дата",

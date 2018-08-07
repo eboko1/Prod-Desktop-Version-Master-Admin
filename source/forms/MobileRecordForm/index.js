@@ -1,75 +1,158 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Slider } from 'antd';
+import { Form, Button, Slider, Input, Select } from 'antd';
+import { v4 } from 'uuid';
 
 // proj
-import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
+// import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
+import { onChangeOrderForm } from 'core/forms/orderForm/duck';
 
 import {
-    DecoratedInput,
     DecoratedSelect,
     DecoratedTextArea,
     DecoratedDatePicker,
+    DecoratedTimePicker,
 } from 'forms/DecoratedFields';
 
 import { withReduxForm } from 'utils';
 
+// own
+import {
+    formItemAutoColLayout,
+    formItemLayout,
+    // formItemTotalLayout,
+} from '../OrderForm/layouts';
+import Styles from '../OrderForm/styles.m.css';
+
+const FormItem = Form.Item;
+const Option = Select.Option;
+
 @injectIntl
 @withReduxForm({
-    name:    'mobileRecordForm',
-    actions: {
-        change: onChangeMobileRecordForm,
+    name:            'orderForm',
+    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
+    actions:         {
+        change: onChangeOrderForm,
     },
 })
 export class MobileRecordForm extends Component {
     render() {
+        const { selectedClient, stations, onStatusChange } = this.props;
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
         return (
-            <Form>
-                <div>order num</div>
-                <DecoratedInput
-                    field='client'
-                    formItem
-                    label='client'
-                    getFieldDecorator={ getFieldDecorator }
-                />
-                <DecoratedInput
-                    field='phone'
-                    formItem
-                    label='phone'
-                    getFieldDecorator={ getFieldDecorator }
-                />
+            <Form layout='horizontal'>
+                <FormItem
+                    label={ <FormattedMessage id='add_order_form.name' /> }
+                    { ...formItemLayout }
+                >
+                    <Input
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.select_name',
+                            defaultMessage: 'Select client',
+                        }) }
+                        disabled
+                        value={
+                            selectedClient.name || selectedClient.surname
+                                ? (selectedClient.surname
+                                    ? selectedClient.surname + ' '
+                                    : '') + `${selectedClient.name}`
+                                : void 0
+                        }
+                    />
+                </FormItem>
                 <DecoratedSelect
-                    field='vehicle'
+                    label={ <FormattedMessage id='add_order_form.phone' /> }
+                    field='clientPhone'
                     formItem
-                    label='vehicle'
+                    formItemLayout={ formItemLayout }
+                    hasFeedback
+                    className={ Styles.clientCol }
+                    colon={ false }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  '',
+                        },
+                    ] }
                     getFieldDecorator={ getFieldDecorator }
-                    options={ [ 1, 2, 3 ] }
-                />
+                    placeholder={ 'Choose selected client phone' }
+                >
+                    { selectedClient.phones.filter(Boolean).map(phone => (
+                        <Option value={ phone } key={ v4() }>
+                            { phone }
+                        </Option>
+                    )) }
+                </DecoratedSelect>
+                <DecoratedSelect
+                    field='clientVehicle'
+                    formItem
+                    hasFeedback
+                    label={ <FormattedMessage id='add_order_form.car' /> }
+                    formItemLayout={ formItemAutoColLayout }
+                    colon={ false }
+                    className={ Styles.clientCol }
+                    getFieldDecorator={ getFieldDecorator }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  '',
+                        },
+                    ] }
+                    placeholder={ 'Choose selected client vehicle' }
+                    optionDisabled='enabled'
+                >
+                    { selectedClient.vehicles.map(vehicle => (
+                        <Option value={ vehicle.id } key={ v4() }>
+                            { `${vehicle.make} ${
+                                vehicle.model
+                            } ${vehicle.number || vehicle.vin || ''}` }
+                        </Option>
+                    )) }
+                </DecoratedSelect>
                 <hr />
                 <div>Записать на:</div>
                 <DecoratedSelect
                     field='station'
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'provide station',
+                        },
+                    ] }
                     formItem
-                    label='station'
+                    label={ <FormattedMessage id='add_order_form.station' /> }
+                    colon={ false }
+                    hasFeedback
+                    className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
-                    options={ [ 1, 2, 3 ] }
+                    placeholder={
+                        <FormattedMessage id='add_order_form.select_station' />
+                    }
+                    options={ stations }
+                    optionValue='num'
+                    optionLabel='name'
                 />
                 <DecoratedDatePicker
-                    field='date'
                     formItem
+                    field='beginDatetime'
+                    label={ <FormattedMessage id='date' /> }
+                    className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
                     formatMessage={ formatMessage }
+                    { ...formItemLayout }
                 />
-                <DecoratedSelect
-                    field='time'
+                <DecoratedTimePicker
                     formItem
-                    label='time'
+                    field='beginDatetime'
+                    label={ <FormattedMessage id='time' /> }
+                    formatMessage={ formatMessage }
+                    className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
-                    options={ [ 1, 2, 3 ] }
+                    popupClassName='mobileRecordFormTimePicker'
+                    { ...formItemLayout }
                 />
                 <div>
                     <Slider
@@ -82,15 +165,41 @@ export class MobileRecordForm extends Component {
                         }
                     />
                 </div>
+
                 <DecoratedTextArea
                     formItem
-                    field='comment'
-                    lable='comment'
+                    label={
+                        <FormattedMessage id='add_order_form.client_comments' />
+                    }
                     getFieldDecorator={ getFieldDecorator }
+                    field='comment'
+                    rules={ [
+                        {
+                            max:     2000,
+                            message: 'Too much',
+                        },
+                    ] }
+                    placeholder={ formatMessage({
+                        id:             'add_order_form.client_comments',
+                        defaultMessage: 'Client_comments',
+                    }) }
+                    autosize={ { minRows: 2, maxRows: 6 } }
                 />
-                <div>
-                    <Button type='primary'>OK</Button>
-                    <Button>Cancel</Button>
+
+                <div className={ Styles.mobileRecordFormFooter }>
+                    <Button
+                        className={ Styles.mobileRecordSubmitBtn }
+                        type='primary'
+                        onClick={ () => onStatusChange('approve') }
+                    >
+                        Записать
+                    </Button>
+                    <Button
+                        className={ Styles.mobileRecordSubmitBtn }
+                        onClick={ () => onStatusChange('cancel') }
+                    >
+                        Отказать
+                    </Button>
                 </div>
             </Form>
         );
