@@ -124,9 +124,11 @@ export class LayoutComponent extends Component {
                             { this.props.children }
                         </Layout.Content>
                     </main>
-                    <Layout.Footer>
-                        <Footer collapsed={ collapsed } />
-                    </Layout.Footer>
+                    { !isMobile && (
+                        <Layout.Footer>
+                            <Footer collapsed={ collapsed } />
+                        </Layout.Footer>
+                    ) }
                 </Layout>
             </Layout>
         );

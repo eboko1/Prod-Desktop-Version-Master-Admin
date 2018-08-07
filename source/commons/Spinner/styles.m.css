@@ -7,6 +7,7 @@
 .spinner {
     height: 100vh;
     width: 100vw;
+    top: 0;
     display: flex;
     justify-content: center;
     align-items: center;

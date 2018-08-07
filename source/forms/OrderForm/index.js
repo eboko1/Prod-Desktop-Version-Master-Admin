@@ -38,7 +38,6 @@ import {
 import { servicesStats, detailsStats } from './stats';
 
 // own
-// import { DecoratedInput } from './DecoratedInput';
 import Styles from './styles.m.css';
 
 const FormItem = Form.Item;
@@ -226,7 +225,7 @@ export class OrderForm extends Component {
                         <DecoratedInput
                             field='searchClientQuery'
                             getFieldDecorator={ getFieldDecorator }
-                            disabled={ disabledClientSearch }
+                            disabled={ Boolean(disabledClientSearch) }
                             placeholder={ formatMessage({
                                 id:             'add_order_form.client.placeholder',
                                 defaultMessage: 'search client',
