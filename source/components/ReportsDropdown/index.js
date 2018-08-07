@@ -49,6 +49,7 @@ class ReportsDropdown extends React.Component {
     }
 
     render() {
+        const { isMobile } = this.props;
         const menu = (
             <Menu>
                 { this.reports.map((item, index) => (
@@ -69,7 +70,7 @@ class ReportsDropdown extends React.Component {
                 <Icon
                     type='printer'
                     style={ {
-                        fontSize: 24,
+                        fontSize: isMobile ? 12 : 24,
                         cursor:   'pointer',
                         margin:   '0 10px',
                     } }

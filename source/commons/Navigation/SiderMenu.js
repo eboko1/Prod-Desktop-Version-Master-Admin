@@ -33,7 +33,7 @@ export default class Navigation extends Component {
 
         return (
             <Layout.Sider
-                className={ Styles.sider }
+                className={ isMobile ? Styles.siderMobile : Styles.sider }
                 trigger={ null }
                 collapsible
                 collapsed={ collapsed }
@@ -81,6 +81,7 @@ export default class Navigation extends Component {
                                                     to={ link }
                                                     onClick={ onCollapse }
                                                     collapsed={ collapsed }
+                                                    mobile={ isMobile }
                                                 >
                                                     <FormattedMessage
                                                         id={ name }

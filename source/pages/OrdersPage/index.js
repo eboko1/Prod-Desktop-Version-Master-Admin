@@ -88,6 +88,8 @@ class OrdersPage extends Component {
     render() {
         const { collapsed, isMobile } = this.props;
 
+        const headerControls = this._renderHeaderContorls();
+
         const status = this.props.match.params.ordersStatuses;
 
         let funelSectionStyles = cx({
@@ -104,31 +106,10 @@ class OrdersPage extends Component {
                 description={ <FormattedMessage id='orders-page.description' /> }
                 controls={
                     <div className={ Styles.controls }>
-                        { [ 'success', 'cancel', 'reviews' ].indexOf(status) <
-                            0 && (
-                            <RadioGroup
-                                defaultValue='all'
-                                // defaultValue={ ordersDaterangeFilter }
-                                onChange={ this._handleRadioDaterange }
-                                className={ Styles.filters }
-                            >
-                                <RadioButton value='all'>
-                                    <FormattedMessage id='orders-page.all' />
-                                </RadioButton>
-                                <RadioButton value='today'>
-                                    <FormattedMessage id='orders-page.today' />
-                                </RadioButton>
-                                <RadioButton value='tomorrow'>
-                                    <FormattedMessage id='orders-page.tomorrow' />
-                                </RadioButton>
-                                <RadioButton value='nextWeek'>
-                                    <FormattedMessage id='orders-page.week' />
-                                </RadioButton>
-                                <RadioButton value='nextMonth'>
-                                    <FormattedMessage id='orders-page.month' />
-                                </RadioButton>
-                            </RadioGroup>
-                        ) }
+                        { !isMobile &&
+                            ([ 'success', 'cancel', 'reviews' ].indexOf(status) <
+                                0 &&
+                                headerControls) }
                         <div className={ Styles.buttonGroup }>
                             { (status === 'cancel' || status === 'success') && (
                                 <Button
@@ -175,6 +156,33 @@ class OrdersPage extends Component {
             </Layout>
         );
     }
+
+    _renderHeaderContorls = () => {
+        return (
+            <RadioGroup
+                defaultValue='all'
+                // defaultValue={ ordersDaterangeFilter }
+                onChange={ this._handleRadioDaterange }
+                className={ Styles.filters }
+            >
+                <RadioButton value='all'>
+                    <FormattedMessage id='orders-page.all' />
+                </RadioButton>
+                <RadioButton value='today'>
+                    <FormattedMessage id='orders-page.today' />
+                </RadioButton>
+                <RadioButton value='tomorrow'>
+                    <FormattedMessage id='orders-page.tomorrow' />
+                </RadioButton>
+                <RadioButton value='nextWeek'>
+                    <FormattedMessage id='orders-page.week' />
+                </RadioButton>
+                <RadioButton value='nextMonth'>
+                    <FormattedMessage id='orders-page.month' />
+                </RadioButton>
+            </RadioGroup>
+        );
+    };
 }
 
 export default OrdersPage;
