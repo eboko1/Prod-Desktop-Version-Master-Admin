@@ -52,6 +52,7 @@ import CallsTable from 'components/OrderForm/OrderFormTables/CallsTable/messages
 import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
 import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
+import TasksTable from 'components/OrderForm/OrderFormTables/TasksTable/messages';
 
 /* eslint-disable array-element-newline */
 const messages = merge.all([
@@ -89,6 +90,7 @@ const messages = merge.all([
     OrderFormTables,
     StatsCountsPanel,
     UniversalFiltersTags,
+    TasksTable,
     ReportsDropdown,
     DecoratedDatePicker,
     CallsTable,

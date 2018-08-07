@@ -43,6 +43,7 @@ export class OrderFormTabs extends Component {
             filteredDetails,
             setModal,
             initOrderTasksForm,
+            changeModalStatus,
         } = this.props;
 
         return (
@@ -60,16 +61,21 @@ export class OrderFormTabs extends Component {
                         key='1'
                     >
                         { /* { console.log('→ orderTasks', orderTasks) } */ }
-                        <Button
+                        { orderTasks.length<1?<Button
                             className={ Styles.orderTaskModalButton }
                             type='primary'
-                            onClick={ () => setModal(MODALS.ORDER_TASK) }
+                            onClick={ () => {
+                                setModal(MODALS.ORDER_TASK) 
+                                changeModalStatus('adding')
+                            } }
                         >
                             <Icon type='plus' />
-                        </Button>
+                        </Button>:null }
 
                         <TasksTable initOrderTasksForm={ initOrderTasksForm }
-                            setModal={ setModal } orderTasks={ orderTasks } />
+                            setModal={ setModal } 
+                            changeModalStatus={ changeModalStatus }
+                            orderTasks={ orderTasks } />
                     </TabPane>
                 ) }
                 <TabPane

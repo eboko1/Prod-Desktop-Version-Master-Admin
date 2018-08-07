@@ -16,7 +16,7 @@ import {
     createInviteOrder,
     fetchOrderTask,
 } from 'core/forms/orderForm/duck';
-import { resetOrderTasksForm, saveOrderTask } from 'core/forms/orderTaskForm/duck'
+import { resetOrderTasksForm, saveOrderTask, changeModalStatus } from 'core/forms/orderTaskForm/duck'
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -46,27 +46,31 @@ import {
 
 const mapStateToProps = state => {
     return {
-        orderTaskEntity:   state.forms.orderTaskForm.fields,
-        orderTasks:        state.forms.orderForm.tasks,
-        stations:          state.forms.orderForm.stations,
-        vehicles:          state.forms.orderForm.vehicles,
-        employees:         state.forms.orderForm.employees,
-        managers:          state.forms.orderForm.managers,
-        clients:           state.forms.orderForm.clients,
-        allDetails:        state.forms.orderForm.allDetails,
-        allServices:       state.forms.orderForm.allServices,
-        requisites:        state.forms.addOrderForm.requisites,
-        addClientFormData: state.forms.addClientForm.data,
-        orderComments:     state.forms.orderForm.orderComments,
-        order:             state.forms.orderForm.order,
-        inviteOrderId:     state.forms.orderForm.inviteOrderId,
-        orderCalls:        state.forms.orderForm.calls,
-        orderHistory:      state.forms.orderForm.history,
-        initOrderEntity:   state.forms.orderForm.initOrderEntity,
-        invited:           state.forms.orderForm.invited,
-        modal:             state.modals.modal,
-        spinner:           state.ui.get('orderFetching'),
-        orderEntity:       {
+        orderTaskEntity:       state.forms.orderTaskForm.fields,
+        orderTaskModalStatus:  state.forms.orderTaskForm.modalStatus,
+        orderTaskId:           state.forms.orderTaskForm.taskId,
+        priorityOptions:       state.forms.orderTaskForm.priorityOptions,
+        progressStatusOptions: state.forms.orderTaskForm.progressStatusOptions,
+        orderTasks:            state.forms.orderForm.tasks,
+        stations:              state.forms.orderForm.stations,
+        vehicles:              state.forms.orderForm.vehicles,
+        employees:             state.forms.orderForm.employees,
+        managers:              state.forms.orderForm.managers,
+        clients:               state.forms.orderForm.clients,
+        allDetails:            state.forms.orderForm.allDetails,
+        allServices:           state.forms.orderForm.allServices,
+        requisites:            state.forms.addOrderForm.requisites,
+        addClientFormData:     state.forms.addClientForm.data,
+        orderComments:         state.forms.orderForm.orderComments,
+        order:                 state.forms.orderForm.order,
+        inviteOrderId:         state.forms.orderForm.inviteOrderId,
+        orderCalls:            state.forms.orderForm.calls,
+        orderHistory:          state.forms.orderForm.history,
+        initOrderEntity:       state.forms.orderForm.initOrderEntity,
+        invited:               state.forms.orderForm.invited,
+        modal:                 state.modals.modal,
+        spinner:               state.ui.get('orderFetching'),
+        orderEntity:           {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
@@ -87,7 +91,7 @@ const mapDispatchToProps = {
     fetchAddClientForm,
     resetOrderTasksForm,
     saveOrderTask,
-
+    changeModalStatus,
 };
 
 @withRouter
@@ -106,6 +110,10 @@ class OrderPage extends Component {
     saveOrderFormRef = formRef => {
         this.orderFormRef = formRef;
     };
+
+    saveOrderTaskFormRef=formRef=>{
+        this.orderTaskFormRef = formRef;
+    }
 
     handleAddClientModalSubmit = () => {
         const form = this.formRef.props.form;
@@ -144,7 +152,11 @@ class OrderPage extends Component {
             }
         });
     };
-
+    saveOrderTask=(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId)=>{
+        saveOrderTask(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId );
+        resetModal();
+        resetOrderTasksForm();
+    }
     /* eslint-disable complexity*/
     render() {
         const {
@@ -320,6 +332,7 @@ class OrderPage extends Component {
                         employees={ this.props.employees }
                         filteredDetails={ this.props.filteredDetails }
                         setModal={ setModal }
+                        changeModalStatus={ this.props.changeModalStatus }
                     />
                 </ResponsiveView>
                 <AddClientModal
@@ -353,14 +366,20 @@ class OrderPage extends Component {
                     resetModal={ () => resetModal() }
                 />
                 <OrderTaskModal
+                    wrappedComponentRef={ this.saveOrderTaskFormRef }
                     orderTaskEntity={ this.props.orderTaskEntity }
-                    wrappedComponentRef={ this.saveFormRef }
+                    priorityOptions={ this.props.priorityOptions }
+                    progressStatusOptions={ this.props.progressStatusOptions }
                     visible={ modal }
                     resetModal={ () => resetModal() }
                     num={ num }
+                    orderTaskId={ this.props.orderTaskId }
+                    orderTaskModalStatus={ this.props.orderTaskModalStatus }
                     orderId={ this.props.match.params.id }
                     saveOrderTask={ this.props.saveOrderTask }
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
+                    stations={ this.props.stations }
+                    managers={ this.props.managers }
                 />
             </Layout>
         ) : (

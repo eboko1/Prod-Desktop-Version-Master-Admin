@@ -61,10 +61,10 @@ export function* fetchOrderFormSaga() {
 export function* fetchOrderTaskSaga() {
     while (true) {
         const { payload: id } = yield take(FETCH_ORDER_TASK);
-        // yield put(uiActions.setOrderFetchingState(true));
+        yield put(uiActions.setOrderFetchingState(true));
         const data = yield call(fetchAPI, 'GET', `orders/${id}/tasks`);
         yield put(fetchOrderTaskSuccess(data));
-        // yield put(uiActions.setOrderFetchingState(false));
+        yield put(uiActions.setOrderFetchingState(false));
     }
 }
 

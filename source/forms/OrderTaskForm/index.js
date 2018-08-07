@@ -6,6 +6,7 @@ import {
     DecoratedInput,
     DecoratedSelect,
     DecoratedDatePicker,
+    DecoratedTimePicker,
 } from 'forms/DecoratedFields';
 import { v4 } from 'uuid';
 //proj
@@ -18,6 +19,7 @@ const Option = Select.Option;
 // own
 
 import Styles from './styles.m.css';
+import Item from '../../../node_modules/antd/lib/list/Item';
 @injectIntl
 @withReduxForm({
     name:    'orderTaskForm',
@@ -26,12 +28,13 @@ import Styles from './styles.m.css';
     },
 })
 export class OrderTaskForm extends Component {
+    
+    
     render() {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        const { num } = this.props;
-
+        const { num, progressStatusOptions, priorityOptions, stations, managers} = this.props;
         // const {
         //     disabledDate,
         //     disabledHours,
@@ -39,6 +42,7 @@ export class OrderTaskForm extends Component {
         //     disabledSeconds,
         //     disabledTime,
         // } = getDateTimeConfig(beginDatetime, this.props.schedule);
+        console.log(managers)
 
         return (
             <Form layout='horizontal'>
@@ -59,15 +63,21 @@ export class OrderTaskForm extends Component {
                     placeholder={
                         <FormattedMessage id='order_task_modal.progressStatus_placeholder' />
                     }
-                    // optionFilterProp='children'
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'you must add status',
+                        },
+                    ] }
                     getPopupContainer={ trigger => trigger.parentNode }
                 >
-                    <Option value={ 1 } key={ v4() }>
-                        Name2
-                    </Option>
-                    <Option value={ 12 } key={ v4() }>
-                        Name3
-                    </Option>
+                    { progressStatusOptions.map(({id, value})=>{
+                        return <Option value={ id } key={ v4() }>
+                            { value }
+                        </Option>
+                    }) }
+                    
+                    
                 </DecoratedSelect>
                 <DecoratedSelect
                     field={ 'priority' }
@@ -83,12 +93,11 @@ export class OrderTaskForm extends Component {
                     // optionFilterProp='children'
                     getPopupContainer={ trigger => trigger.parentNode }
                 >
-                    <Option value={ 1 } key={ v4() }>
-                        Name2
-                    </Option>
-                    <Option value={ 12 } key={ v4() }>
-                        Name3
-                    </Option>
+                    { priorityOptions.map(({id, value})=>{
+                        return <Option value={ id } key={ v4() }>
+                            { value }
+                        </Option>
+                    }) }
                 </DecoratedSelect>
                 <DecoratedSelect
                     field={ 'stationName' }
@@ -104,12 +113,12 @@ export class OrderTaskForm extends Component {
                     // optionFilterProp='children'
                     getPopupContainer={ trigger => trigger.parentNode }
                 >
-                    <Option value={ 1 } key={ v4() }>
-                        Name2
-                    </Option>
-                    <Option value={ 12 } key={ v4() }>
-                        Name3
-                    </Option>
+                    { stations.map(({name, num})=>{
+                        return <Option value={ num } key={ v4() }>
+                            { name }
+                        </Option>
+                    }) } 
+                    
                 </DecoratedSelect>
                 <DecoratedSelect
                     field={ 'responsible' }
@@ -125,30 +134,47 @@ export class OrderTaskForm extends Component {
                     // optionFilterProp='children'
                     getPopupContainer={ trigger => trigger.parentNode }
                 >
-                    <Option value={ 1 } key={ v4() }>
-                        Name2
-                    </Option>
-                    <Option value={ 12 } key={ v4() }>
-                        Name3
-                    </Option>
+                    { managers.map(({managerName, managerSurname, id})=>{
+
+                        return <Option value={ id } key={ v4() }>
+                            { `${managerName} ${managerSurname}` }
+                        </Option>
+                    }) } 
+                    
                 </DecoratedSelect>
-                <DecoratedDatePicker
-                    field='deadlineDate'
-                    label={ <FormattedMessage id='deadlineDate' /> }
-                    formItem
-                    formatMessage={ formatMessage }
-                    className={ Styles.selectMargin }
-                    getFieldDecorator={ getFieldDecorator }
-                    value={ null }
-                    getCalendarContainer={ trigger => trigger.parentNode }
-                    format={ 'YYYY-MM-DD HH:mm' }
-                    showTime={ {
-                        format: 'HH:mm',
-                    } }
-                    placeholder={
-                        <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
-                    }
-                />
+                <div className={ Styles.dateTimePickers }> 
+                    <DecoratedDatePicker
+                        field='deadlineDate'
+                        label={ <FormattedMessage id='deadlineDate' /> }
+                        formItem
+                        formatMessage={ formatMessage }
+                        className={ Styles.selectMargin }
+                        getFieldDecorator={ getFieldDecorator }
+                        value={ null }
+                        getCalendarContainer={ trigger => trigger.parentNode }
+                        format={ 'YYYY-MM-DD' }
+                        
+                        placeholder={
+                            <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
+                        }
+                    />
+                    <DecoratedTimePicker
+                        field='deadlineTime'
+                        label={ <FormattedMessage id='deadlineTime' /> }
+                        formItem
+                        formatMessage={ formatMessage }
+                        className={ Styles.selectMargin }
+                        getFieldDecorator={ getFieldDecorator }
+                        value={ null }
+                        format={ 'HH:mm' }
+                          
+                        getPopupContainer={ trigger => trigger.parentNode }
+                        placeholder={
+                            formatMessage({
+                                id: 'order_task_modal.deadlineTime_placeholder',
+                            })                           }
+                    />
+                </div>
                 <DecoratedInput
                     field='comment'
                     label={ <FormattedMessage id='comment' /> }

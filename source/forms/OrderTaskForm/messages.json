@@ -5,6 +5,7 @@
         "order_task_modal.post_placeholder": "Select post",
         "order_task_modal.responsible_placeholder": "Select responsible",
         "order_task_modal.deadlineDate_placeholder": "Choose deadline date",
+        "order_task_modal.deadlineTime_placeholder": "Time",
         "order_task_modal.comment_placeholder": "Write comment"
     },
     "ru": {
@@ -13,6 +14,7 @@
         "order_task_modal.post_placeholder": "Выберите пост",
         "order_task_modal.responsible_placeholder": "Выберите ответственного",
         "order_task_modal.deadlineDate_placeholder": "Выберите дедлайн",
+        "order_task_modal.deadlineTime_placeholder": "Время",
         "order_task_modal.comment_placeholder": "Напишите комментарий"
     },
     "uk": {
@@ -21,6 +23,7 @@
         "order_task_modal.post_placeholder": "Виберіть пост",
         "order_task_modal.responsible_placeholder": "Виберіть відповідального",
         "order_task_modal.deadlineDate_placeholder": "Виберіть дедлайн",
+        "order_task_modal.deadlineTime_placeholder": "Час",
         "order_task_modal.comment_placeholder": "Напишіть комментарій"
     }
 }

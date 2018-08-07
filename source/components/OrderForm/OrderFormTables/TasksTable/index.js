@@ -13,7 +13,9 @@ import { MODALS } from 'core/modals/duck';
 class TasksTable extends Component {
     constructor(props) {
         super(props);
-        const { setModal, initOrderTasksForm } = this.props;
+        const { setModal, initOrderTasksForm,
+            changeModalStatus, 
+        } = this.props;
         this.columns = [
             {
                 title:     '',
@@ -26,6 +28,7 @@ class TasksTable extends Component {
                             onClick={ () => {
                                 initOrderTasksForm(record);
                                 setModal(MODALS.ORDER_TASK);
+                                changeModalStatus('editing')
                             } }
                             type='edit'
                         />
@@ -38,19 +41,24 @@ class TasksTable extends Component {
                 dataIndex: 'status',
                 width:     '8%',
                 render:    (text, record) => {
-                    return <div style={ { wordBreak: 'normal' } }>{ text }</div>;
+                    return text?<FormattedMessage id={ text } />:'';
                 },
             },
             {
                 title:     <FormattedMessage id='priority' />,
                 dataIndex: 'priority',
                 width:     '8%',
-                // render:    (text, record) => <div>{}</div>,
+                render:    (text, record) => {
+                    return text?<FormattedMessage id={ text } />:null;
+                },
             },
             {
                 title:     <FormattedMessage id='urgency' />,
                 dataIndex: 'urgency',
                 width:     '8%',
+                render:    (text, record) => {
+                    return text?<FormattedMessage id={ text } />:null;
+                },
             },
             {
                 title:     <FormattedMessage id='responsible' />,

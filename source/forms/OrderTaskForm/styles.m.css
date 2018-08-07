@@ -1,3 +1,7 @@
-.selectMargin{
+.selectMargin {
     margin-bottom: 0px;
+}
+.dateTimePickers {
+    display: flex;
+    flex-direction: row;
 }
