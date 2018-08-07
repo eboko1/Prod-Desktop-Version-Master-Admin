@@ -12,9 +12,9 @@ import Styles from './styles.m.css';
 
 export default class OrderTaskModal extends Component {
     render() {
-        const { visible, resetModal, num } = this.props;
+        const { visible, resetModal, num, resetOrderTasksForm,
+            saveOrderTask, orderId, orderTaskEntity } = this.props;
 
-        // TODO: refactor or remove Styles if needed
 
         return (
             <Modal
@@ -30,9 +30,15 @@ export default class OrderTaskModal extends Component {
                 wrapClassName={ Styles.orderTaskModal }
                 visible={ visible === MODALS.ORDER_TASK }
                 onOk={ () => {
+
+                    saveOrderTask(orderTaskEntity, orderId);
                     resetModal();
+                    resetOrderTasksForm();
                 } }
-                onCancel={ () => resetModal() }
+                onCancel={ () => { 
+                    resetModal()
+                    resetOrderTasksForm()
+                } }
             >
                 <OrderTaskForm num={ num } />
                 { /* TODO: uncomment and add logic <OrderTaskForm /> */ }

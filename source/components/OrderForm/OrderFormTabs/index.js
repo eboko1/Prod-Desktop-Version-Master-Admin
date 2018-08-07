@@ -16,7 +16,7 @@ import {
     HistoryTable,
     CallsTable,
 } from 'components/OrderForm/OrderFormTables';
-
+import Styles from './styles.m.css'
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 
@@ -42,6 +42,7 @@ export class OrderFormTabs extends Component {
             allDetails,
             filteredDetails,
             setModal,
+            initOrderTasksForm,
         } = this.props;
 
         return (
@@ -60,14 +61,15 @@ export class OrderFormTabs extends Component {
                     >
                         { /* { console.log('→ orderTasks', orderTasks) } */ }
                         <Button
-                            // className={ Styles.orderTaskModalButton }
+                            className={ Styles.orderTaskModalButton }
                             type='primary'
                             onClick={ () => setModal(MODALS.ORDER_TASK) }
                         >
                             <Icon type='plus' />
                         </Button>
 
-                        <TasksTable orderTasks={ orderTasks } />
+                        <TasksTable initOrderTasksForm={ initOrderTasksForm }
+                            setModal={ setModal } orderTasks={ orderTasks } />
                     </TabPane>
                 ) }
                 <TabPane

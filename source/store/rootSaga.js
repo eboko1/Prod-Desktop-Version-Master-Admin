@@ -16,6 +16,8 @@ import { saga as addOrderSaga } from 'core/addOrder/saga';
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
 import { saga as addOrderFormSaga } from 'core/forms/addOrderForm/saga';
+import { saga as orderTaskFormSaga } from 'core/forms/orderTaskForm/saga';
+
 import { saga as orderFormSaga } from 'core/forms/orderForm/saga';
 import { saga as addClientFormSaga } from 'core/forms/addClientForm/saga';
 /* eslint-disable array-element-newline */
@@ -35,6 +37,7 @@ export default function* rootSaga() {
         addClientFormSaga(),
         dashboardSaga(),
         loginFormSaga(),
+        orderTaskFormSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

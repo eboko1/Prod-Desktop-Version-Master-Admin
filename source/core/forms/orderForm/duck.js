@@ -138,8 +138,9 @@ const createDefaultState = () => ({
         emails:     [],
         vehicles:   [],
     },
-    order:   {},
-    invited: false,
+    order:      {},
+    invited:    false,
+    orderTasks: [],
 });
 
 const ReducerState = createDefaultState();
@@ -222,116 +223,116 @@ export default function reducer(state = ReducerState, action) {
                 ...payload,
                 filteredDetails: getInitDetails(
                     payload.allDetails.details,
-                    payload.orderDetails,
+                    payload.orderDetails
                 ),
                 allServices: appendKey(
-                    mergeServices(payload.allServices, payload.orderServices),
+                    mergeServices(payload.allServices, payload.orderServices)
                 ),
                 allDetails: {
                     ...state.allDetails,
                     details: mergeDetails(
                         payload.allDetails.details,
-                        payload.orderDetails,
+                        payload.orderDetails
                     ),
                     brands: mergeAllDetailsOrderBrands(
                         payload.allDetails.brands,
-                        payload.orderDetails,
-                    ),
+                        payload.orderDetails
+                    )
                 },
                 fields: {
                     ...state.fields,
                     clientPhone: customFieldValue(
                         "clientPhone",
-                        payload.order.clientPhone,
+                        payload.order.clientPhone
                     ),
                     clientEmail: customFieldValue(
                         "clientEmail",
-                        payload.order.clientEmail,
+                        payload.order.clientEmail
                     ),
                     clientVehicle: customFieldValue(
                         "clientVehicle",
-                        payload.order.clientVehicleId,
+                        payload.order.clientVehicleId
                     ),
                     station: customFieldValue(
                         "station",
-                        payload.order.stationNum,
+                        payload.order.stationNum
                     ),
                     manager: customFieldValue(
                         "manager",
-                        payload.order.managerId,
+                        payload.order.managerId
                     ),
                     beginDatetime: customFieldValue(
                         "beginDatetime",
                         payload.order.beginDatetime
                             ? moment(payload.order.beginDatetime)
-                            : void 0,
+                            : void 0
                     ),
                     requisite: customFieldValue(
                         "requisite",
-                        payload.order.businessRequisiteId,
+                        payload.order.businessRequisiteId
                     ),
                     clientRequisite: customFieldValue(
                         "clientRequisite",
-                        payload.order.clientRequisiteId,
+                        payload.order.clientRequisiteId
                     ),
                     paymentMethod: customFieldValue(
                         "paymentMethod",
-                        payload.order.paymentMethod,
+                        payload.order.paymentMethod
                     ),
                     odometerValue: customFieldValue(
                         "odometerValue",
-                        payload.order.odometerValue,
+                        payload.order.odometerValue
                     ),
                     recommendation: customFieldValue(
                         "recommendation",
-                        payload.order.recommendation,
+                        payload.order.recommendation
                     ),
                     businessComment: customFieldValue(
                         "businessComment",
-                        payload.order.businessComment,
+                        payload.order.businessComment
                     ),
                     vehicleCondition: customFieldValue(
                         "vehicleCondition",
-                        payload.order.vehicleCondition,
+                        payload.order.vehicleCondition
                     ),
                     comment: customFieldValue("comment", payload.order.comment),
                     employee: customFieldValue(
                         "employee",
-                        payload.order.employeeId,
+                        payload.order.employeeId
                     ),
                     servicesDiscount: customFieldValue(
                         "servicesDiscount",
-                        payload.order.servicesDiscount,
+                        payload.order.servicesDiscount
                     ),
                     detailsDiscount: customFieldValue(
                         "detailsDiscount",
-                        payload.order.detailsDiscount,
+                        payload.order.detailsDiscount
                     ),
                     services: {
                         ...mapOrderServicesToSelectServices(
                             payload.orderServices,
                             payload.allServices,
-                            payload.order.employeeId,
+                            payload.order.employeeId
                         ),
-                        ...defaultServices(payload.order.employeeId),
+                        ...defaultServices(payload.order.employeeId)
                     },
                     details: {
                         ...mapOrderDetailsToSelectDetails(payload.orderDetails),
-                        ...defaultDetails(),
-                    },
+                        ...defaultDetails()
+                    }
                 },
 
                 fetchedOrder: payload,
-                selectedClient: payload.client || state.selectedClient,
+                selectedClient: payload.client || state.selectedClient
             };
 
             const initOrderEntity = convertFieldsValuesToDbEntity(
                 {
                     ...newState.fields,
-                    selectedClient: newState.selectedClient,
+                    selectedClient: newState.selectedClient
                 },
                 newState.allServices,
-                newState.allDetails,
+                newState.allDetails
             );
 
             /* eslint-enable */
@@ -363,10 +364,7 @@ export default function reducer(state = ReducerState, action) {
                         'station',
                         payload.stations[ 0 ].num,
                     ),
-                    manager: customFieldValue(
-                        'manager',
-                        payload.managers[ 0 ].id,
-                    ),
+                    manager: customFieldValue('manager', payload.managers[ 0 ].id),
                 },
             };
 
@@ -454,7 +452,7 @@ export default function reducer(state = ReducerState, action) {
 
             const filteredDetails = state.allDetails.details
                 .filter(({ detailName }) =>
-                    detailName.toLocaleLowerCase().includes(payload))
+                    detailName.toLocaleLowerCase().includes(payload) )
                 .slice(0, 100);
 
             const includesCustomName = filteredDetails.find(
@@ -463,7 +461,7 @@ export default function reducer(state = ReducerState, action) {
 
             return {
                 ...state,
-                filteredDetails: [ ...filteredDetails, ...includesCustomName ? [] : [ customDetail ] ],
+                filteredDetails: [ ...filteredDetails, ...includesCustomName ? [] : [ customDetail ]  ],
                 allDetails:      {
                     ...state.allDetails,
                     details: [
@@ -506,7 +504,7 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     // clearing provided fields with default values
-                    ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery', 'clientRequisite' ]),
+                    ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery', 'clientRequisite'  ]),
                     clientPhone: customFieldValue(
                         'clientPhone',
                         _.get(payload, 'phones[0]'),

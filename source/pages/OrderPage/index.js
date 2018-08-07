@@ -14,8 +14,9 @@ import {
     updateOrder,
     returnToOrdersPage,
     createInviteOrder,
-    // fetchOrderTask,
+    fetchOrderTask,
 } from 'core/forms/orderForm/duck';
+import { resetOrderTasksForm, saveOrderTask } from 'core/forms/orderTaskForm/duck'
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -45,6 +46,7 @@ import {
 
 const mapStateToProps = state => {
     return {
+        orderTaskEntity:   state.forms.orderTaskForm.fields,
         orderTasks:        state.forms.orderForm.tasks,
         stations:          state.forms.orderForm.stations,
         vehicles:          state.forms.orderForm.vehicles,
@@ -73,7 +75,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
     fetchOrderForm,
-    // fetchOrderTask
+    fetchOrderTask,
     getReport,
     fetchReport,
     updateOrder,
@@ -82,6 +84,9 @@ const mapDispatchToProps = {
     returnToOrdersPage,
     createInviteOrder,
     fetchAddClientForm,
+    resetOrderTasksForm,
+    saveOrderTask,
+
 };
 
 @withRouter
@@ -90,7 +95,7 @@ class OrderPage extends Component {
     componentDidMount() {
         this.props.fetchOrderForm(this.props.match.params.id);
         // TBD: @andrey
-        // this.props.fetchOrderTask(this.props.match.params.id);
+        this.props.fetchOrderTask(this.props.match.params.id);
     }
 
     saveFormRef = formRef => {
@@ -340,10 +345,14 @@ class OrderPage extends Component {
                     resetModal={ () => resetModal() }
                 />
                 <OrderTaskModal
+                    orderTaskEntity={ this.props.orderTaskEntity }
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
                     resetModal={ () => resetModal() }
                     num={ num }
+                    orderId={ this.props.match.params.id }
+                    saveOrderTask={ this.props.saveOrderTask }
+                    resetOrderTasksForm={ this.props.resetOrderTasksForm }
                 />
             </Layout>
         ) : (

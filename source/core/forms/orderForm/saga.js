@@ -53,7 +53,6 @@ export function* fetchOrderFormSaga() {
         const { payload: id } = yield take(FETCH_ORDER_FORM);
         yield put(uiActions.setOrderFetchingState(true));
         const data = yield call(fetchAPI, 'GET', `orders/${id}`);
-
         yield put(fetchOrderFormSuccess(data));
         yield put(uiActions.setOrderFetchingState(false));
     }
@@ -63,8 +62,7 @@ export function* fetchOrderTaskSaga() {
     while (true) {
         const { payload: id } = yield take(FETCH_ORDER_TASK);
         // yield put(uiActions.setOrderFetchingState(true));
-        const data = yield call(fetchAPI, 'GET', `orders/${id}`);
-
+        const data = yield call(fetchAPI, 'GET', `orders/${id}/tasks`);
         yield put(fetchOrderTaskSuccess(data));
         // yield put(uiActions.setOrderFetchingState(false));
     }
