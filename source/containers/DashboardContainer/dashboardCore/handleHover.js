@@ -20,25 +20,26 @@ const handleHover = (ev, dashboard, hoveredOrder) => {
     // relativePos.bottom = childrenPos.bottom - parentPos.bottom,
     relativePos.left = childrenPos.left - parentPos.left;
 
-    let popupPositionY = relativePos.top - TOOLTIP_MARGIN * 5;
-    let popupPositionX = relativePos.left + ORDER_WIDTH - TOOLTIP_MARGIN * 2;
+    let tooltipPositionY = relativePos.top - TOOLTIP_MARGIN * 5;
+    let tooltipPositionX = relativePos.left + ORDER_WIDTH - TOOLTIP_MARGIN * 2;
 
-    const isTooltipOverflowsX = DASHBOAD_WIDTH - popupPositionX < TOOLTIP_WIDTH;
+    const isTooltipOverflowsX =
+        DASHBOAD_WIDTH - tooltipPositionX < TOOLTIP_WIDTH;
     const isTooltipOverflowsY =
-        DASHBOARD_HEIGHT - popupPositionY < TOOLTIP_HEIGHT;
+        DASHBOARD_HEIGHT - tooltipPositionY < TOOLTIP_HEIGHT;
 
     if (isTooltipOverflowsX) {
-        popupPositionX =
+        tooltipPositionX =
             relativePos.left - (TOOLTIP_WIDTH + TOOLTIP_MARGIN * 7);
     }
 
     if (isTooltipOverflowsY) {
-        popupPositionY = relativePos.top - (TOOLTIP_HEIGHT + TOOLTIP_MARGIN);
+        tooltipPositionY = relativePos.top - (TOOLTIP_HEIGHT + TOOLTIP_MARGIN);
     }
 
     return {
-        hovered:     hoveredOrder,
-        popupStyles: { left: popupPositionX, top: popupPositionY },
+        hovered:       hoveredOrder,
+        tooltipStyles: { left: tooltipPositionX, top: tooltipPositionY },
     };
 };
 

@@ -9,6 +9,7 @@ import { Catcher } from 'commons';
 // own
 import DashboardEmptyCell from './DashboardEmptyCell';
 import DashboardOrder from './DashboardOrder';
+import DashboardTooltip from './DashboardTooltip';
 import {
     DashboardAddOrderCell,
     DashboardAddOrderLink,
@@ -31,6 +32,10 @@ import mapOrders from './dashboardCore/mapOrders';
 import ordersPuzzle from './dashboardCore/ordersPuzzle';
 
 export default class DashboardContainer extends Component {
+    _saveDashboardRef = dashboardRef => {
+        this.dashboardRef = dashboardRef;
+    };
+
     render() {
         const { dashboard } = this.props;
 
@@ -39,7 +44,7 @@ export default class DashboardContainer extends Component {
 
         return (
             <Catcher>
-                <Dashboard>
+                <Dashboard ref={ this._saveDashboardRef }>
                     { timeColumn }
                     <DashboardGrid columns={ dashboard.columns }>
                         { dashboardColumns }
@@ -94,14 +99,14 @@ export default class DashboardContainer extends Component {
                 station={ stations ? stations[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length && 
+                    { load.length &&
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) : 
+                                ) :
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -193,6 +198,11 @@ export default class DashboardContainer extends Component {
                                             { ...order }
                                         >
                                             { result[ index ].options.num }
+
+                                            <DashboardTooltip
+                                                // id={ result[ index ].options.id }
+                                                { ...order.options }
+                                            />
                                         </DashboardOrder>
                                     ),
                             ) }

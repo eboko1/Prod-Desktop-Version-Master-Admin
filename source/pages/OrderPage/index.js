@@ -175,16 +175,16 @@ class OrderPage extends Component {
         return !spinner ? (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>
@@ -300,9 +300,9 @@ class OrderPage extends Component {
                         onStatusChange={ this.onStatusChange }
                     />
                 </MobileView>
-                <ResponsiveView
-                    view={ { min: BREAKPOINTS.md.min, max: BREAKPOINTS.xxl.max } }
-                >
+                { console.log('→ BREAKPOINTS.md.min', BREAKPOINTS.md.min) }
+                { console.log('→ BREAKPOINTS.xxl.max', BREAKPOINTS.xxl.max) }
+                <ResponsiveView view={ { min: 768, max: BREAKPOINTS.xxl.max } }>
                     <OrderForm
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
