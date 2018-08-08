@@ -42,7 +42,6 @@ export class OrderTaskForm extends Component {
         //     disabledSeconds,
         //     disabledTime,
         // } = getDateTimeConfig(beginDatetime, this.props.schedule);
-        console.log(managers)
 
         return (
             <Form layout='horizontal'>
@@ -131,6 +130,12 @@ export class OrderTaskForm extends Component {
                     placeholder={
                         <FormattedMessage id='order_task_modal.responsible_placeholder' />
                     }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'you must add responsible',
+                        },
+                    ] }
                     // optionFilterProp='children'
                     getPopupContainer={ trigger => trigger.parentNode }
                 >
@@ -150,7 +155,7 @@ export class OrderTaskForm extends Component {
                         formatMessage={ formatMessage }
                         className={ Styles.selectMargin }
                         getFieldDecorator={ getFieldDecorator }
-                        value={ null }
+                        // value={ null }
                         getCalendarContainer={ trigger => trigger.parentNode }
                         format={ 'YYYY-MM-DD' }
                         

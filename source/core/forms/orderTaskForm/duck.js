@@ -128,10 +128,10 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     status:       { value: payload.status, name: 'status', dirty: false, touched: true },
                     priority:     { value: payload.priority, name: 'priority', dirty: false, touched: true},
-                    responsible:  { value: payload.responsible, name: 'responsible', dirty: false, touched: true },
+                    responsible:  { value: payload.responsibleId, name: 'responsible', dirty: false, touched: true },
                     stationName:  { value: payload.stationNum, name: 'stationName', dirty: false, touched: true},
-                    deadlineTime: { value: moment(payload.deadlineDate), name: 'deadlineTime', dirty: false, touched: true },
-                    deadlineDate: { value: moment(payload.deadlineDate), name: 'deadlineDate', dirty: false, touched: true},
+                    deadlineTime: { value: payload.deadlineDate?moment(payload.deadlineDate):payload.deadlineDate, name: 'deadlineTime', dirty: false, touched: true },
+                    deadlineDate: { value: payload.deadlineDate?moment(payload.deadlineDate):payload.deadlineDate, name: 'deadlineDate', dirty: false, touched: true},
                     comment:      { value: payload.comment, name: 'comment', dirty: false, touched: true},
                 },
                 taskId: payload.id,

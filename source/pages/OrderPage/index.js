@@ -152,10 +152,17 @@ class OrderPage extends Component {
             }
         });
     };
-    saveOrderTask=(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId)=>{
-        saveOrderTask(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId );
-        resetModal();
-        resetOrderTasksForm();
+    saveNewOrderTask=(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId)=>{
+        const form = this.orderTaskFormRef.props.form;
+        form.validateFields( err => {
+            if(!err){
+                this.props.saveOrderTask(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId );
+                this.props.resetModal();
+                this.props.resetOrderTasksForm();
+            }
+        })
+        
+        
     }
     /* eslint-disable complexity*/
     render() {
@@ -380,6 +387,7 @@ class OrderPage extends Component {
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
                     stations={ this.props.stations }
                     managers={ this.props.managers }
+                    saveNewOrderTask={ this.saveNewOrderTask }
                 />
             </Layout>
         ) : (

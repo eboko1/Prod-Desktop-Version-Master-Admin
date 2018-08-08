@@ -13,7 +13,9 @@ import { MODALS } from 'core/modals/duck';
 class TasksTable extends Component {
     constructor(props) {
         super(props);
-        const { setModal, initOrderTasksForm,
+        const { 
+            setModal,
+            initOrderTasksForm,
             changeModalStatus, 
         } = this.props;
         this.columns = [
@@ -83,16 +85,16 @@ class TasksTable extends Component {
                 dataIndex: 'startDate',
                 width:     '8%',
                 render:    (text, record) => (
-                    <div>{ moment(text).format('DD.MM.YYYY hh:mm') }</div>
+                    <div>{ text?moment(text).format('DD.MM.YYYY hh:mm'):null }</div>
                 ),
             },
             {
                 title:     <FormattedMessage id='deadlineDate' />,
                 dataIndex: 'deadlineDate',
                 width:     '8%',
-                render:    (text, record) => (
-                    <div>{ moment(text).format('DD.MM.YYYY hh:mm') }</div>
-                ),
+                render:    (text, record) => 
+                    <div> { text? moment(text).format('DD.MM.YYYY hh:mm'):null }</div>
+                ,
 
             },
             {

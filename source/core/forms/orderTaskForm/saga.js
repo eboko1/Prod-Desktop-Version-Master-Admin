@@ -14,12 +14,15 @@ export function* saveNewOrderTask() {
     while (true) {
         const { payload, id, status, taskId} = yield take(SAVE_ORDER_TASK);
         let obj={
-            comment:        payload.comment.value,
-            priority:       payload.priority.value,
-            responsibleId:  payload.responsible.value,
-            'status':       payload.status.value,
-            'stationNum':   payload.stationName.value,
-            'deadlineDate': moment(`${moment(payload.deadlineDate.value).format('YYYY-MM-DD')} ${moment(payload.deadlineTime.value).format('HH:mm')}`).format(),
+            comment:       payload.comment.value,
+            priority:      payload.priority.value,
+            responsibleId: payload.responsible.value,
+            'status':      payload.status.value,
+            'stationNum':  payload.stationName.value,
+            
+        }
+        if(payload.deadlineDate.value){
+            obj.deadlineDate=moment(`${moment(payload.deadlineDate.value).format('YYYY-MM-DD')} ${moment(payload.deadlineTime.value).format('HH:mm')}`).format()
         }
         let data
         if(status==='adding'){
@@ -28,7 +31,7 @@ export function* saveNewOrderTask() {
             data = yield call(fetchAPI, 'PUT', `/orders/tasks/${taskId}`, null, obj );
 
         }
-
+        
         yield put(saveOrderTaskSuccess(data));
         yield put(fetchOrderTask(id));
 
