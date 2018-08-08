@@ -3,7 +3,7 @@
  * */
 export const moduleName = 'orderTaskForm';
 const prefix = `cpb/${moduleName}`;
-import moment from 'moment'
+import moment from 'moment';
 export const ON_CHANGE_ORDER_TASKS_FORM = `${prefix}/ON_CHANGE_ORDER_TASKS_FORM`;
 export const INIT_ORDER_TASKS_FORM = `${prefix}/INIT_ORDER_TASKS_FORM`;
 export const RESET_ORDER_TASKS_FORM = `${prefix}/RESET_ORDER_TASKS_FORM`;
@@ -75,7 +75,6 @@ const ReducerState = {
             value: 'Другое',
             id:    'OTHER',
         },
-        	
     ],
     priorityOptions: [
         {
@@ -94,7 +93,6 @@ const ReducerState = {
             value: 'Супер высокий',
             id:    'CRITICAL',
         },
-
     ],
     // responsibleOptions: [],
     // stationNameOptions: [],
@@ -115,29 +113,70 @@ export default function reducer(state = ReducerState, action) {
                     ...payload,
                 },
             };
+
         case CHANGE_MODAL_STATUS:
             return {
                 ...state,
                 modalStatus: action.payload,
-            }
-        case INIT_ORDER_TASKS_FORM:
-            console.log(payload)
+            };
 
+        case INIT_ORDER_TASKS_FORM:
             return {
                 ...state,
                 fields: {
-                    status:       { value: payload.status, name: 'status', dirty: false, touched: true },
-                    priority:     { value: payload.priority, name: 'priority', dirty: false, touched: true},
-                    responsible:  { value: payload.responsibleId, name: 'responsible', dirty: false, touched: true },
-                    stationName:  { value: payload.stationNum, name: 'stationName', dirty: false, touched: true},
-                    deadlineTime: { value: payload.deadlineDate?moment(payload.deadlineDate):payload.deadlineDate, name: 'deadlineTime', dirty: false, touched: true },
-                    deadlineDate: { value: payload.deadlineDate?moment(payload.deadlineDate):payload.deadlineDate, name: 'deadlineDate', dirty: false, touched: true},
-                    comment:      { value: payload.comment, name: 'comment', dirty: false, touched: true},
+                    status: {
+                        value:   payload.status,
+                        name:    'status',
+                        dirty:   false,
+                        touched: true,
+                    },
+                    priority: {
+                        value:   payload.priority,
+                        name:    'priority',
+                        dirty:   false,
+                        touched: true,
+                    },
+                    responsible: {
+                        value:   payload.responsibleId,
+                        name:    'responsible',
+                        dirty:   false,
+                        touched: true,
+                    },
+                    stationName: {
+                        value:   payload.stationNum,
+                        name:    'stationName',
+                        dirty:   false,
+                        touched: true,
+                    },
+                    deadlineTime: {
+                        value: payload.deadlineDate
+                            ? moment(payload.deadlineDate)
+                            : payload.deadlineDate,
+                        name:    'deadlineTime',
+                        dirty:   false,
+                        touched: true,
+                    },
+                    deadlineDate: {
+                        value: payload.deadlineDate
+                            ? moment(payload.deadlineDate)
+                            : payload.deadlineDate,
+                        name:    'deadlineDate',
+                        dirty:   false,
+                        touched: true,
+                    },
+                    comment: {
+                        value:   payload.comment,
+                        name:    'comment',
+                        dirty:   false,
+                        touched: true,
+                    },
                 },
                 taskId: payload.id,
             };
+
         case RESET_ORDER_TASKS_FORM:
-            return ReducerState
+            return ReducerState;
+
         default:
             return state;
     }

@@ -16,7 +16,11 @@ import {
     createInviteOrder,
     fetchOrderTask,
 } from 'core/forms/orderForm/duck';
-import { resetOrderTasksForm, saveOrderTask, changeModalStatus } from 'core/forms/orderTaskForm/duck'
+import {
+    resetOrderTasksForm,
+    saveOrderTask,
+    changeModalStatus,
+} from 'core/forms/orderTaskForm/duck';
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -111,9 +115,9 @@ class OrderPage extends Component {
         this.orderFormRef = formRef;
     };
 
-    saveOrderTaskFormRef=formRef=>{
+    saveOrderTaskFormRef = formRef => {
         this.orderTaskFormRef = formRef;
-    }
+    };
 
     handleAddClientModalSubmit = () => {
         const form = this.formRef.props.form;
@@ -152,18 +156,27 @@ class OrderPage extends Component {
             }
         });
     };
-    saveNewOrderTask=(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId)=>{
+
+    saveNewOrderTask = (
+        orderTaskEntity,
+        orderId,
+        orderTaskModalStatus,
+        orderTaskId,
+    ) => {
         const form = this.orderTaskFormRef.props.form;
-        form.validateFields( err => {
-            if(!err){
-                this.props.saveOrderTask(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId );
+        form.validateFields(err => {
+            if (!err) {
+                this.props.saveOrderTask(
+                    orderTaskEntity,
+                    orderId,
+                    orderTaskModalStatus,
+                    orderTaskId,
+                );
                 this.props.resetModal();
                 this.props.resetOrderTasksForm();
             }
-        })
-        
-        
-    }
+        });
+    };
     /* eslint-disable complexity*/
     render() {
         const {
