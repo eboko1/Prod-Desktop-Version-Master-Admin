@@ -20,17 +20,19 @@ class TasksTable extends Component {
                 dataIndex: 'review',
                 width:     '8%',
                 render:    (text, record) => {
-                    return (
-                        <Icon
-                            className={ Styles.editOrderTaskIcon }
-                            onClick={ () => {
-                                initOrderTasksForm(record);
-                                setModal(MODALS.ORDER_TASK);
-                                changeModalStatus('editing');
-                            } }
-                            type='edit'
-                        />
-                    );
+                    if(record.orderNum){
+                        return (
+                            <Icon
+                                className={ Styles.editOrderTaskIcon }
+                                onClick={ () => {
+                                    initOrderTasksForm(record);
+                                    setModal(MODALS.ORDER_TASK);
+                                    changeModalStatus('editing');
+                                } }
+                                type='edit'
+                            />
+                        );
+                    }
                 },
             },
 
@@ -144,11 +146,24 @@ class TasksTable extends Component {
         return (
             <Catcher>
                 <Table
-                    dataSource={ orderTasks.map((task, index) => ({
-                        ...task,
-                        index,
-                        key: v4(),
-                    })) }
+                    dataSource={ orderTasks.length>0? [ 
+                        ...orderTasks.map((task, index) => ({
+                            ...task,
+                            index,
+                            key: v4(),
+                        })), 
+                        ...orderTasks[ 0 ].history.map((task, index) => ({
+                            ...task,
+                            index,
+                            key: v4(),
+                        })),
+                    ] :[ 
+                        ...orderTasks.map((task, index) => ({
+                            ...task,
+                            index,
+                            key: v4(),
+                        })), 
+                    ] }
                     size='small'
                     scroll={ { x: 2000 } }
                     columns={ columns }
