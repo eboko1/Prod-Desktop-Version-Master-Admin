@@ -5,6 +5,7 @@ import ExceptionPage from './ExceptionPage';
 import AddOrderPage from './AddOrderPage';
 import DashboardPage from './DashboardPage';
 import LoginPage from './LoginPage';
+import MyTasksPage from './MyTasksPage';
 
 export {
     DashboardPage,
@@ -14,4 +15,5 @@ export {
     ProfilePage,
     ExceptionPage,
     LoginPage,
+    MyTasksPage,
 };

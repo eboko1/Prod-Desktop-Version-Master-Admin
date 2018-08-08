@@ -103,81 +103,8 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
-class OrderPage extends Component {
-    componentDidMount() {
-        this.props.fetchOrderForm(this.props.match.params.id);
-        // TBD: @andrey
-        this.props.fetchOrderTask(this.props.match.params.id);
-    }
+class MyTasksPage extends Component {
 
-    saveFormRef = formRef => {
-        this.formRef = formRef;
-    };
-
-    saveOrderFormRef = formRef => {
-        this.orderFormRef = formRef;
-    };
-
-    saveOrderTaskFormRef = formRef => {
-        this.orderTaskFormRef = formRef;
-    };
-
-    handleAddClientModalSubmit = () => {
-        const form = this.formRef.props.form;
-        this.setAddClientModal();
-        form.validateFields((err, values) => {
-            if (!err) {
-                // eslint-disable-next-line
-                console.log("Received values of AddClientForm: ", values);
-            }
-        });
-        this.props.resetModal();
-    };
-
-    setAddClientModal = () => {
-        this.props.fetchAddClientForm();
-        this.props.setModal(MODALS.ADD_CLIENT);
-    };
-
-    onStatusChange = (status, redirectStatus) => {
-        const { id } = this.props.match.params;
-        const requiredFields = requiredFieldsOnStatuses[ status ];
-        const form = this.orderFormRef.props.form;
-
-        form.validateFields(requiredFields, err => {
-            if (!err) {
-                this.props.updateOrder({
-                    id,
-                    order: convertFieldsValuesToDbEntity(
-                        this.props.orderEntity,
-                        this.props.allServices,
-                        this.props.allDetails,
-                        status,
-                    ),
-                    redirectStatus,
-                });
-            }
-        });
-    };
-
-    saveNewOrderTask = (
-       
-    ) => {
-        const{ orderTaskEntity,
-            orderTaskId }=this.props
-        const form = this.orderTaskFormRef.props.form;
-        form.validateFields(err => {
-            if (!err) {
-                this.props.saveOrderTask(
-                    orderTaskEntity,
-                    this.props.match.params.id,
-                    orderTaskId,
-                );
-                this.props.resetModal();
-                this.props.resetOrderTasksForm();
-            }
-        });
-    };
     /* eslint-disable complexity*/
     render() {
         const {
@@ -332,76 +259,7 @@ class OrderPage extends Component {
                     </>
                 }
             >
-                <MobileView>
-                    <MobileRecordForm
-                        wrappedComponentRef={ this.saveOrderFormRef }
-                        onStatusChange={ this.onStatusChange }
-                    />
-                </MobileView>
-                <ResponsiveView
-                    view={ { min: BREAKPOINTS.md.min, max: BREAKPOINTS.xxl.max } }
-                >
-                    <OrderForm
-                        wrappedComponentRef={ this.saveOrderFormRef }
-                        orderTasks={ this.props.orderTasks }
-                        orderHistory={ this.props.orderHistory }
-                        setAddClientModal={ this.setAddClientModal }
-                        modal={ modal }
-                        orderCalls={ this.props.orderCalls }
-                        allService={ this.props.allServices }
-                        allDetails={ this.props.allDetails }
-                        employees={ this.props.employees }
-                        filteredDetails={ this.props.filteredDetails }
-                        setModal={ setModal }
-                        changeModalStatus={ this.props.changeModalStatus }
-                    />
-                </ResponsiveView>
-                <AddClientModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
-                    resetModal={ resetModal }
-                    addClientFormData={ addClientFormData }
-                />
-                <CancelReasonModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    handleCancelReasonModalSubmit={ this.onStatusChange }
-                    orderComments={ this.props.orderComments }
-                    resetModal={ () => resetModal() }
-                />
-                <ConfirmOrderExitModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    status={ status }
-                    returnToOrdersPage={ this.props.returnToOrdersPage.bind(
-                        this,
-                    ) }
-                    saveOrder={ () => this.onStatusChange(status, status) }
-                    resetModal={ () => resetModal() }
-                />
-                <ToSuccessModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    handleToSuccessModalSubmit={ this.onStatusChange }
-                    resetModal={ () => resetModal() }
-                />
-                <OrderTaskModal
-                    wrappedComponentRef={ this.saveOrderTaskFormRef }
-                    orderTaskEntity={ this.props.orderTaskEntity }
-                    priorityOptions={ this.props.priorityOptions }
-                    progressStatusOptions={ this.props.progressStatusOptions }
-                    visible={ modal }
-                    resetModal={ () => resetModal() }
-                    num={ num }
-                    orderTaskId={ this.props.orderTaskId }
-                    orderId={ this.props.match.params.id }
-                    resetOrderTasksForm={ this.props.resetOrderTasksForm }
-                    stations={ this.props.stations }
-                    managers={ this.props.managers }
-                    saveNewOrderTask={ this.saveNewOrderTask }
-                    orderTasks={ this.props.orderTasks }
-                />
+                <h1>Hello</h1>
             </Layout>
         ) : (
             <Spinner spin={ spinner } />
@@ -409,5 +267,4 @@ class OrderPage extends Component {
     }
 }
 
-export default OrderPage;
-// moment(datetime).format('DD MMMM YYYY, HH:mm')
+export default MyTasksPage;

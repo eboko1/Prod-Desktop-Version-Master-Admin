@@ -24,6 +24,11 @@ export default {
                     link: book.oldApp.tasks,
                     name: 'navigation.tasks',
                 },
+                {
+                    key:  '/mytasks',
+                    link: book.myTasksPage,
+                    name: 'navigation.mytasks',
+                },
             ],
         },
         /* Catalog submenu */
