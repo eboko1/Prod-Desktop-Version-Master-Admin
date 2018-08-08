@@ -12,7 +12,7 @@ import { fetchOrderTask } from 'core/forms/orderForm/duck';
 
 export function* saveNewOrderTask() {
     while (true) {
-        const { payload, id, status, taskId } = yield take(SAVE_ORDER_TASK);
+        const { payload, id, taskId } = yield take(SAVE_ORDER_TASK);
         let obj = {
             comment:       payload.comment.value,
             priority:      payload.priority.value,
@@ -29,7 +29,7 @@ export function* saveNewOrderTask() {
         }
 
         let data;
-        if (status === 'adding') {
+        if (!taskId) {
             data = yield call(
                 fetchAPI,
                 'POST',

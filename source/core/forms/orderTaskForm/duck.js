@@ -94,10 +94,10 @@ const ReducerState = {
             id:    'CRITICAL',
         },
     ],
-    // responsibleOptions: [],
-    // stationNameOptions: [],
+
     modalStatus: '',
     taskId:      null,
+    vehicle:     '',
 };
 
 // eslint-disable-next-line
@@ -203,11 +203,10 @@ export const initOrderTasksForm = data => ({
 export const resetOrderTasksForm = () => ({
     type: RESET_ORDER_TASKS_FORM,
 });
-export const saveOrderTask = (data, id, status, taskId) => ({
+export const saveOrderTask = (data, id, taskId) => ({
     type:    SAVE_ORDER_TASK,
     payload: data,
     id:      id,
-    status:  status,
     taskId:  taskId,
 });
 export const saveOrderTaskSuccess = data => ({

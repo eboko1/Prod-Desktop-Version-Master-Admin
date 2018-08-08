@@ -13,11 +13,7 @@ import { MODALS } from 'core/modals/duck';
 class TasksTable extends Component {
     constructor(props) {
         super(props);
-        const { 
-            setModal,
-            initOrderTasksForm,
-            changeModalStatus, 
-        } = this.props;
+        const { setModal, initOrderTasksForm, changeModalStatus } = this.props;
         this.columns = [
             {
                 title:     '',
@@ -30,7 +26,7 @@ class TasksTable extends Component {
                             onClick={ () => {
                                 initOrderTasksForm(record);
                                 setModal(MODALS.ORDER_TASK);
-                                changeModalStatus('editing')
+                                changeModalStatus('editing');
                             } }
                             type='edit'
                         />
@@ -43,7 +39,7 @@ class TasksTable extends Component {
                 dataIndex: 'status',
                 width:     '8%',
                 render:    (text, record) => {
-                    return text?<FormattedMessage id={ text } />:'';
+                    return text ? <FormattedMessage id={ text } /> : '';
                 },
             },
             {
@@ -51,7 +47,7 @@ class TasksTable extends Component {
                 dataIndex: 'priority',
                 width:     '8%',
                 render:    (text, record) => {
-                    return text?<FormattedMessage id={ text } />:null;
+                    return text ? <FormattedMessage id={ text } /> : null;
                 },
             },
             {
@@ -59,7 +55,7 @@ class TasksTable extends Component {
                 dataIndex: 'urgency',
                 width:     '8%',
                 render:    (text, record) => {
-                    return text?<FormattedMessage id={ text } />:null;
+                    return text ? <FormattedMessage id={ text } /> : null;
                 },
             },
             {
@@ -67,7 +63,11 @@ class TasksTable extends Component {
                 dataIndex: 'responsibleName',
                 width:     '8%',
                 render:    (text, record) => {
-                    return <div style={ { wordBreak: 'normal' } }>{ `${text} ${record.responsibleSurname}` }</div>;
+                    return (
+                        <div style={ { wordBreak: 'normal' } }>{ `${text} ${
+                            record.responsibleSurname
+                        }` }</div>
+                    );
                 },
             },
             {
@@ -85,31 +85,44 @@ class TasksTable extends Component {
                 dataIndex: 'startDate',
                 width:     '8%',
                 render:    (text, record) => (
-                    <div>{ text?moment(text).format('DD.MM.YYYY hh:mm'):null }</div>
+                    <div>
+                        { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
+                    </div>
                 ),
             },
             {
                 title:     <FormattedMessage id='deadlineDate' />,
                 dataIndex: 'deadlineDate',
                 width:     '8%',
-                render:    (text, record) => 
-                    <div> { text? moment(text).format('DD.MM.YYYY hh:mm'):null }</div>
-                ,
-
+                render:    (text, record) => (
+                    <div>
+                        { ' ' }
+                        { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
+                    </div>
+                ),
             },
             {
                 title:     <FormattedMessage id='duration' />,
                 dataIndex: 'duration',
                 width:     '8%',
+                render:    (text, record) => {
+                    let durationText= moment.duration(text, 'seconds')
+                    let duration=moment.utc(durationText.asMilliseconds()).format('HH:mm')
+
+                    return  <div>
+                        { text ? duration: null }
+                    </div>
+                },
             },
             {
                 title:     <FormattedMessage id='endDate' />,
                 dataIndex: 'endDate',
                 width:     '8%',
                 render:    (text, record) => (
-                    <div>{ text?moment(text).format('DD.MM.YYYY hh:mm'):null }</div>
+                    <div>
+                        { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
+                    </div>
                 ),
-
             },
             {
                 title:     <FormattedMessage id='comment' />,

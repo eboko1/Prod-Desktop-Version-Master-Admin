@@ -49,13 +49,13 @@ import {
 } from './../AddOrderPage/extractOrderEntity';
 
 const mapStateToProps = state => {
+
     return {
         orderTaskEntity:       state.forms.orderTaskForm.fields,
-        orderTaskModalStatus:  state.forms.orderTaskForm.modalStatus,
         orderTaskId:           state.forms.orderTaskForm.taskId,
         priorityOptions:       state.forms.orderTaskForm.priorityOptions,
         progressStatusOptions: state.forms.orderTaskForm.progressStatusOptions,
-        orderTasks:            state.forms.orderForm.tasks,
+        orderTasks:            state.forms.orderForm.orderTasks,
         stations:              state.forms.orderForm.stations,
         vehicles:              state.forms.orderForm.vehicles,
         employees:             state.forms.orderForm.employees,
@@ -99,7 +99,10 @@ const mapDispatchToProps = {
 };
 
 @withRouter
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 class OrderPage extends Component {
     componentDidMount() {
         this.props.fetchOrderForm(this.props.match.params.id);
@@ -158,18 +161,16 @@ class OrderPage extends Component {
     };
 
     saveNewOrderTask = (
-        orderTaskEntity,
-        orderId,
-        orderTaskModalStatus,
-        orderTaskId,
+       
     ) => {
+        const{ orderTaskEntity,
+            orderTaskId }=this.props
         const form = this.orderTaskFormRef.props.form;
         form.validateFields(err => {
             if (!err) {
                 this.props.saveOrderTask(
                     orderTaskEntity,
-                    orderId,
-                    orderTaskModalStatus,
+                    this.props.match.params.id,
                     orderTaskId,
                 );
                 this.props.resetModal();
@@ -338,7 +339,7 @@ class OrderPage extends Component {
                     />
                 </MobileView>
                 <ResponsiveView
-                    view={ { min: BREAKPOINTS.md.min, max: BREAKPOINTS.xxl.max } }
+                    view={ { min: BREAKPOINTS.sm.min, max: BREAKPOINTS.xxl.max } }
                 >
                     <OrderForm
                         wrappedComponentRef={ this.saveOrderFormRef }
@@ -394,13 +395,12 @@ class OrderPage extends Component {
                     resetModal={ () => resetModal() }
                     num={ num }
                     orderTaskId={ this.props.orderTaskId }
-                    orderTaskModalStatus={ this.props.orderTaskModalStatus }
                     orderId={ this.props.match.params.id }
-                    saveOrderTask={ this.props.saveOrderTask }
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
                     stations={ this.props.stations }
                     managers={ this.props.managers }
                     saveNewOrderTask={ this.saveNewOrderTask }
+                    orderTasks={ this.props.orderTasks }
                 />
             </Layout>
         ) : (

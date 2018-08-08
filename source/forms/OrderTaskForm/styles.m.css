@@ -1,7 +1,17 @@
 .selectMargin {
     margin-bottom: 0px;
+    margin-right: 10px;
 }
-.dateTimePickers {
+.dateTimePickerBlock {
     display: flex;
     flex-direction: row;
+}
+.orderDescription {
+    display: flex;
+    justify-content: space-between;
+}
+@media (max-width: 500px) {
+    .orderDescription {
+        flex-direction: column;
+    }
 }

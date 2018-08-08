@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Form, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import {
-    DecoratedInput,
+    DecoratedTextArea,
     DecoratedSelect,
     DecoratedDatePicker,
     DecoratedTimePicker,
@@ -34,7 +34,7 @@ export class OrderTaskForm extends Component {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        const { num, progressStatusOptions, priorityOptions, stations, managers} = this.props;
+        const { num, progressStatusOptions, priorityOptions, stations, managers, orderTasks} = this.props;
         // const {
         //     disabledDate,
         //     disabledHours,
@@ -45,12 +45,19 @@ export class OrderTaskForm extends Component {
 
         return (
             <Form layout='horizontal'>
-                <div>
-                    { ' ' }
-                    <FormattedMessage id='order-task-modal.order_number' />:{ ' ' }
-                    { num }
+                <div className={ Styles.orderDescription }> 
+                    <div>
+                        { ' ' }
+                        <FormattedMessage id='order-task-modal.order_number' />:{ ' ' }
+                        { num }
+                    </div>
+                    { orderTasks.length>0?
+                        <div>
+                            <FormattedMessage id='order-task-modal.vehicle' />:{ ' ' }
+                            { orderTasks[ 0 ].vehicleMakeName } { orderTasks[ 0 ].vehicleModelName }
+                        </div>
+                        :null }
                 </div>
-
                 <DecoratedSelect
                     field={ 'status' }
                     showSearch
@@ -147,7 +154,7 @@ export class OrderTaskForm extends Component {
                     }) } 
                     
                 </DecoratedSelect>
-                <div className={ Styles.dateTimePickers }> 
+                <div className={ Styles.dateTimePickerBlock }> 
                     <DecoratedDatePicker
                         field='deadlineDate'
                         label={ <FormattedMessage id='deadlineDate' /> }
@@ -155,7 +162,7 @@ export class OrderTaskForm extends Component {
                         formatMessage={ formatMessage }
                         className={ Styles.selectMargin }
                         getFieldDecorator={ getFieldDecorator }
-                        // value={ null }
+                        value={ null }
                         getCalendarContainer={ trigger => trigger.parentNode }
                         format={ 'YYYY-MM-DD' }
                         
@@ -180,7 +187,7 @@ export class OrderTaskForm extends Component {
                             })                           }
                     />
                 </div>
-                <DecoratedInput
+                <DecoratedTextArea
                     field='comment'
                     label={ <FormattedMessage id='comment' /> }
                     placeholder={ formatMessage({

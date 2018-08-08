@@ -12,11 +12,22 @@ import Styles from './styles.m.css';
 
 export default class OrderTaskModal extends Component {
     render() {
-        const { visible, resetModal, num, resetOrderTasksForm,
-            saveOrderTask, orderId, orderTaskEntity,
-            progressStatusOptions, priorityOptions,
-            wrappedComponentRef, orderTaskModalStatus, orderTaskId,
-            stations, managers, saveNewOrderTask} = this.props;
+        const {
+            visible,
+            resetModal,
+            num,
+            resetOrderTasksForm,
+            orderId,
+            orderTaskEntity,
+            progressStatusOptions,
+            priorityOptions,
+            wrappedComponentRef,
+            orderTaskId,
+            stations,
+            managers,
+            saveNewOrderTask,
+            orderTasks,
+        } = this.props;
 
         return (
             <Modal
@@ -32,23 +43,27 @@ export default class OrderTaskModal extends Component {
                 wrapClassName={ Styles.orderTaskModal }
                 visible={ visible === MODALS.ORDER_TASK }
                 onOk={ () => {
-                    // saveOrderTask(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId );
-                    // resetModal();
-                    // resetOrderTasksForm();
-                    saveNewOrderTask(orderTaskEntity, orderId, orderTaskModalStatus, orderTaskId )
+
+                    saveNewOrderTask(
+                        orderTaskEntity,
+                        orderId,
+                        orderTaskId,
+                    );
                 } }
-                onCancel={ () => { 
-                    resetModal()
-                    resetOrderTasksForm()
+                onCancel={ () => {
+                    resetModal();
+                    resetOrderTasksForm();
                 } }
             >
                 <OrderTaskForm
-                    num={ num } 
+                    num={ num }
+                    orderTasks={ orderTasks }
                     stations={ stations }
                     managers={ managers }
                     progressStatusOptions={ progressStatusOptions }
                     priorityOptions={ priorityOptions }
-                    wrappedComponentRef={ wrappedComponentRef }/>
+                    wrappedComponentRef={ wrappedComponentRef }
+                />
             </Modal>
         );
     }
