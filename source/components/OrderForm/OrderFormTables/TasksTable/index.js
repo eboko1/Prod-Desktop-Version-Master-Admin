@@ -18,7 +18,7 @@ class TasksTable extends Component {
             {
                 title:     '',
                 dataIndex: 'review',
-                width:     '8%',
+                width:     '4%',
                 render:    (text, record) => {
                     if(record.orderNum){
                         return (
@@ -106,7 +106,7 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='duration' />,
                 dataIndex: 'duration',
-                width:     '8%',
+                width:     '9%',
                 render:    (text, record) => {
                     let durationText= moment.duration(text, 'seconds')
                     let duration=moment.utc(durationText.asMilliseconds()).format('HH:mm')
@@ -134,7 +134,12 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='author' />,
                 dataIndex: 'author',
-                width:     'auto',
+                width:     '8%',
+                render:    (text, record) => (
+                    <div>
+                        { record.authorName } { record.authorSurname }
+                    </div>
+                ),
             },
         ];
     }

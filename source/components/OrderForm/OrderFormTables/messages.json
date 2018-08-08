@@ -78,7 +78,7 @@
         "endDate": "Время конца",
         "comment": "Комментарий",
         "author": "Автор",
-        "duration": "Duration"
+        "duration": "Продолжительность"
     },
     "uk": {
         "order_form_table.confirm_exit": "Бажаєте зберегти зміни?",
@@ -118,6 +118,6 @@
         "endDate": "Час Кінця",
         "comment": "Комментарій",
         "author": "Автор",
-        "duration": "Duration"
+        "duration": "Тривалість"
     }
 }
