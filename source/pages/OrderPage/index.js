@@ -49,7 +49,6 @@ import {
 } from './../AddOrderPage/extractOrderEntity';
 
 const mapStateToProps = state => {
-
     return {
         orderTaskEntity:       state.forms.orderTaskForm.fields,
         orderTaskId:           state.forms.orderTaskForm.taskId,
@@ -99,10 +98,7 @@ const mapDispatchToProps = {
 };
 
 @withRouter
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 class OrderPage extends Component {
     componentDidMount() {
         this.props.fetchOrderForm(this.props.match.params.id);
@@ -160,11 +156,8 @@ class OrderPage extends Component {
         });
     };
 
-    saveNewOrderTask = (
-       
-    ) => {
-        const{ orderTaskEntity,
-            orderTaskId }=this.props
+    saveNewOrderTask = () => {
+        const { orderTaskEntity, orderTaskId } = this.props;
         const form = this.orderTaskFormRef.props.form;
         form.validateFields(err => {
             if (!err) {
@@ -339,7 +332,7 @@ class OrderPage extends Component {
                     />
                 </MobileView>
                 <ResponsiveView
-                    view={ { min: BREAKPOINTS.sm.min, max: BREAKPOINTS.xxl.max } }
+                    view={ { min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max } }
                 >
                     <OrderForm
                         wrappedComponentRef={ this.saveOrderFormRef }
