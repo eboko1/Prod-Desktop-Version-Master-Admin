@@ -18,7 +18,6 @@ import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersFor
 import { saga as addOrderFormSaga } from 'core/forms/addOrderForm/saga';
 import { saga as orderFormSaga } from 'core/forms/orderForm/saga';
 import { saga as addClientFormSaga } from 'core/forms/addClientForm/saga';
-
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
     yield all([

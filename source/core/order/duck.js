@@ -87,6 +87,7 @@ export function fetchOrderFail(error) {
         error:   true,
     };
 }
+
 // report
 export function fetchReport(report) {
     return {

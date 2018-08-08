@@ -14,13 +14,11 @@ export const DecoratedCheckbox = props => {
         className,
         hasFeedback,
         formItemLayout,
-
         getFieldDecorator,
         disabled,
         rules,
         field,
         initValue,
-
         children,
     } = props;
 
@@ -40,7 +38,7 @@ export const DecoratedCheckbox = props => {
             hasFeedback={ hasFeedback }
             colon={ colon }
             className={ className }
-            formItemLayout={ formItemLayout }
+            { ...formItemLayout }
         >
             { checkbox }
         </FormItem>

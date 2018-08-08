@@ -1,4 +1,7 @@
+// vendor
 import styled from 'styled-components';
+
+// own
 import { ROW_HEIGHT } from './dashboardConfig';
 
 // helpers
@@ -87,12 +90,14 @@ export const DashboardTitle = styled.div`
 export const DashboardLoad = styled.div`
     background-color: ${props => _loadStatus(props.loadCoefficient)};
     text-transform: capitalize;
-    text-decoration: underline;
+    text-decoration: ${props => props.link ? 'underline' : 'none'};
+    cursor: ${props => props.link ? 'pointer' : 'default'};
     font-size: 12px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
     padding: 4px 0;
+    pointer-events: ${props => props.link ? 'auto' : 'none'};
 `;
 
 export const DashboardTimeCell = styled.div`

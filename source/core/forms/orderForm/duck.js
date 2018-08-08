@@ -50,6 +50,11 @@ export const RETURN_TO_ORDERS_PAGE = `${prefix}/RETURN_TO_ORDERS_PAGE`;
 export const CREATE_INVITE_ORDER = `${prefix}/CREATE_INVITE_ORDER`;
 export const CREATE_INVITE_ORDER_SUCCESS = `${prefix}/CREATE_INVITE_ORDER_SUCCESS`;
 
+//orderTasks
+export const FETCH_ORDER_TASK = `${prefix}/FETCH_ORDER_TASK`;
+export const FETCH_ORDER_TASK_SUCCESS = `${prefix}/FETCH_ORDER_TASK_SUCCESS`;
+export const FETCH_ORDER_TASK_FAIL = `${prefix}/FETCH_ORDER_TASK_FAIL`;
+
 import { customFieldValue, defaultFieldValue } from './helpers/utils';
 
 import {
@@ -73,7 +78,7 @@ import {
  * Reducer
  * */
 
-const appendKey = (arr) => arr.map((item) => ({...item, key: v4()}));
+const appendKey = arr => arr.map(item => ({ ...item, key: v4() }));
 
 const createDefaultState = () => ({
     fields: {
@@ -139,6 +144,29 @@ const createDefaultState = () => ({
 
 const ReducerState = createDefaultState();
 
+// orderTasks
+export function fetchOrderTask(id) {
+    return {
+        type:    FETCH_ORDER_TASK,
+        payload: id,
+    };
+}
+
+export function fetchOrderTaskSuccess(data) {
+    return {
+        type:    FETCH_ORDER_TASK_SUCCESS,
+        payload: data,
+    };
+}
+
+export function fetchOrderTaskFail(error) {
+    return {
+        type:    FETCH_ORDER_TASK_FAIL,
+        payload: error,
+        error:   true,
+    };
+}
+
 export const fetchAddOrderForm = () => ({
     type: FETCH_ADD_ORDER_FORM,
 });
@@ -186,7 +214,7 @@ function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
-
+    /* eslint-disable */
     switch (type) {
         case FETCH_ORDER_FORM_SUCCESS:
             const newState = {
@@ -196,10 +224,9 @@ export default function reducer(state = ReducerState, action) {
                     payload.allDetails.details,
                     payload.orderDetails,
                 ),
-                allServices: appendKey(mergeServices(
-                    payload.allServices,
-                    payload.orderServices,
-                )),
+                allServices: appendKey(
+                    mergeServices(payload.allServices, payload.orderServices),
+                ),
                 allDetails: {
                     ...state.allDetails,
                     details: mergeDetails(
@@ -214,84 +241,87 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     clientPhone: customFieldValue(
-                        'clientPhone',
+                        "clientPhone",
                         payload.order.clientPhone,
                     ),
                     clientEmail: customFieldValue(
-                        'clientEmail',
+                        "clientEmail",
                         payload.order.clientEmail,
                     ),
                     clientVehicle: customFieldValue(
-                        'clientVehicle',
+                        "clientVehicle",
                         payload.order.clientVehicleId,
                     ),
                     station: customFieldValue(
-                        'station',
+                        "station",
                         payload.order.stationNum,
                     ),
                     manager: customFieldValue(
-                        'manager',
+                        "manager",
                         payload.order.managerId,
                     ),
                     beginDatetime: customFieldValue(
-                        'beginDatetime',
+                        "beginDatetime",
                         payload.order.beginDatetime
                             ? moment(payload.order.beginDatetime)
                             : void 0,
                     ),
                     requisite: customFieldValue(
-                        'requisite',
+                        "requisite",
                         payload.order.businessRequisiteId,
                     ),
                     clientRequisite: customFieldValue(
-                        'clientRequisite',
+                        "clientRequisite",
                         payload.order.clientRequisiteId,
                     ),
                     paymentMethod: customFieldValue(
-                        'paymentMethod',
+                        "paymentMethod",
                         payload.order.paymentMethod,
                     ),
                     odometerValue: customFieldValue(
-                        'odometerValue',
+                        "odometerValue",
                         payload.order.odometerValue,
                     ),
                     recommendation: customFieldValue(
-                        'recommendation',
+                        "recommendation",
                         payload.order.recommendation,
                     ),
                     businessComment: customFieldValue(
-                        'businessComment',
+                        "businessComment",
                         payload.order.businessComment,
                     ),
                     vehicleCondition: customFieldValue(
-                        'vehicleCondition',
+                        "vehicleCondition",
                         payload.order.vehicleCondition,
                     ),
-                    comment:  customFieldValue('comment', payload.order.comment),
+                    comment: customFieldValue("comment", payload.order.comment),
                     employee: customFieldValue(
-                        'employee',
+                        "employee",
                         payload.order.employeeId,
                     ),
                     servicesDiscount: customFieldValue(
-                        'servicesDiscount',
+                        "servicesDiscount",
                         payload.order.servicesDiscount,
                     ),
                     detailsDiscount: customFieldValue(
-                        'detailsDiscount',
+                        "detailsDiscount",
                         payload.order.detailsDiscount,
                     ),
                     services: {
                         ...mapOrderServicesToSelectServices(
                             payload.orderServices,
                             payload.allServices,
+                            payload.order.employeeId,
                         ),
-                        ...defaultServices(),
+                        ...defaultServices(payload.order.employeeId),
                     },
                     details: {
                         ...mapOrderDetailsToSelectDetails(payload.orderDetails),
                         ...defaultDetails(),
                     },
                 },
+
+                fetchedOrder: payload,
                 selectedClient: payload.client || state.selectedClient,
             };
 
@@ -304,7 +334,10 @@ export default function reducer(state = ReducerState, action) {
                 newState.allDetails,
             );
 
+            /* eslint-enable */
+
             return { ...newState, initOrderEntity };
+
         case SET_CREATE_STATUS:
             return {
                 ...state,
@@ -338,17 +371,6 @@ export default function reducer(state = ReducerState, action) {
             };
 
         case ON_CHANGE_ORDER_FORM:
-            // console.group('→ REDUX');
-            // console.log('@@payload', payload);
-            // console.log('@@ meta field', meta.field);
-            // console.log('@@ return', {
-            //     ...state,
-            //     fields: {
-            //         [ meta.field ]: { ...payload[ meta.field ] },
-            //     },
-            // });
-            // console.groupEnd();
-
             return {
                 ...state,
                 fields: {
@@ -404,10 +426,12 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 allServices: [
-                    ...appendKey(generateAllServices(
-                        state.allServices,
-                        state.fields.services,
-                    )),
+                    ...appendKey(
+                        generateAllServices(
+                            state.allServices,
+                            state.fields.services,
+                        ),
+                    ),
                     {
                         id:               v4(),
                         servicePrice:     null,
@@ -497,7 +521,7 @@ export default function reducer(state = ReducerState, action) {
                     ),
                 },
             };
-        // TODO think about spinners
+        // TODO think about loader state for client search table
         case ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST:
             return {
                 ...state,
@@ -514,6 +538,11 @@ export default function reducer(state = ReducerState, action) {
                     clients:   payload.clients,
                     searching: false,
                 },
+            };
+        case FETCH_ORDER_TASK_SUCCESS:
+            return {
+                ...state,
+                orderTasks: payload,
             };
         default:
             return state;
@@ -541,12 +570,10 @@ export const fetchOrderForm = id => ({
     payload: id,
 });
 
-export function fetchOrderFormSuccess(data) {
-    return {
-        type:    FETCH_ORDER_FORM_SUCCESS,
-        payload: data,
-    };
-}
+export const fetchOrderFormSuccess = data => ({
+    type:    FETCH_ORDER_FORM_SUCCESS,
+    payload: data,
+});
 
 export const onHandleCustomService = searchService => ({
     type:    ON_HANDLE_CUSTOM_SERVICE,
@@ -650,16 +677,12 @@ export const returnToOrdersPage = status => ({
     payload: status,
 });
 
-export function createInviteOrder(inviteOrder) {
-    return {
-        type:    CREATE_INVITE_ORDER,
-        payload: inviteOrder,
-    };
-}
+export const createInviteOrder = inviteOrder => ({
+    type:    CREATE_INVITE_ORDER,
+    payload: inviteOrder,
+});
 
-export function createInviteOrderSuccess(response) {
-    return {
-        type:    CREATE_INVITE_ORDER_SUCCESS,
-        payload: response,
-    };
-}
+export const createInviteOrderSuccess = response => ({
+    type:    CREATE_INVITE_ORDER_SUCCESS,
+    payload: response,
+});

@@ -107,11 +107,11 @@ export const DecoratedDatePicker = props => {
             hasFeedback={ hasFeedback }
             colon={ colon }
             className={ className }
-            formItemLayout={ formItemLayout }
+            { ...formItemLayout }
         >
             { datePicker }
         </FormItem>
-    ) : 
+    ) :
         datePicker
     ;
 };

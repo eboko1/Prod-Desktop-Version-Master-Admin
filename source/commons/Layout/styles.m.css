@@ -1,16 +1,16 @@
 .layout {
     min-height: 100vh;
-}
-
-.content {
-    margin-left: 256px; /* aside */
-    margin-top: 64px; /* header + moduleHeader */
     height: 100%;
 }
 
-.contentCollapsed {
-    margin-left: 80px;
+.content {
+    margin-top: 64px; /* header + moduleHeader */
+    /* height: 100%; */
 }
+
+/* .contentCollapsed {
+    margin-left: 80px;
+} */
 
 .contentModuleHeader {
     margin-top: 128px;

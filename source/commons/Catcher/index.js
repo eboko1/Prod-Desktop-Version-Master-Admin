@@ -7,16 +7,13 @@ import Styles from './styles.m.css';
 
 export default class Catcher extends Component {
     state = {
-        error: false,
+        error:     null,
+        errorInfo: null,
     };
 
-    componentDidCatch(error, stack) {
-        console.log("ERROR:", error.message); // eslint-disable-line
-        console.log("STACKTRACE:", stack.componentStack); // eslint-disable-line
-
-        this.setState(() => ({
-            error: true,
-        }));
+    componentDidCatch(error, errorInfo) {
+        this.setState({ error, errorInfo });
+        console.error("🔥_ERROR_🔥:", error); // eslint-disable-line
     }
 
     render() {
@@ -26,12 +23,8 @@ export default class Catcher extends Component {
         if (error) {
             return (
                 <section className={ Styles.catcher }>
-                    <span>
-                        Error!
-                        <Icon className={ Styles.catcherIcon } type='frown-o' />
-                    </span>
-                    { /* <span>Props</span>
-                    <pre>{ JSON.stringify(this.props, null, 2) }</pre> */ }
+                    Error!
+                    <Icon className={ Styles.catcherIcon } type='frown-o' />
                 </section>
             );
         }

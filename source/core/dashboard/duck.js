@@ -1,5 +1,5 @@
 import moment from 'moment';
-// import { createSelector } from 'reselect';
+import { createSelector } from 'reselect';
 /**
  * Constants
  * */
@@ -25,6 +25,8 @@ export const SET_DASHBOARD_MODE = `${prefix}/SET_DASHBOARD_MODE`;
 export const SET_DASHBOARD_DATE = `${prefix}/SET_DASHBOARD_DATE`;
 export const SET_DASHBOARD_WEEK_DATES = `${prefix}/SET_DASHBOARD_WEEK_DATES`;
 
+export const LINK_TO_DASHBOARD_STATIONS = `${prefix}/LINK_TO_DASHBOARD_STATIONS`;
+
 /**
  * Reducer
  * */
@@ -33,7 +35,9 @@ const ReducerState = {
     beginTime: null,
     endTime:   null,
     days:      [],
-    orders:    [],
+    orders:    {
+        orders: [],
+    },
     stations:  [],
     mode:      'calendar',
     schedule:  {},
@@ -44,6 +48,7 @@ const ReducerState = {
     endDate: moment()
         .endOf('week')
         .isoWeekday(7),
+    load: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -54,6 +59,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 mode: payload,
+                load: [],
             };
 
         case SET_DASHBOARD_DATE:
@@ -102,6 +108,29 @@ export const selectDashboardMode = state => state.dashboard.mode;
 export const selectDashboardDate = state => state.dashboard.date;
 export const selectDashboardStartDate = state => state.dashboard.startDate;
 export const selectDashboardEndDate = state => state.dashboard.endDate;
+
+// const getDashboard = state => state.dashboard;
+
+export const selectDasboardData = createSelector(
+    [ stateSelector ],
+    ({ schedule, mode, stations, days }) => {
+        const time = [ ...Array(schedule.endHour).keys() ]
+            .map((_, index) => index + 1)
+            .slice(schedule.beginHour - 1)
+            .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
+
+        const rows = time.length * 2;
+        const columns = mode === 'calendar' ? days.length : stations.length;
+
+        const dashboard = { rows, columns };
+
+        return {
+            time,
+            mode,
+            dashboard,
+        };
+    },
+);
 
 /**
  * Action Creators
@@ -165,4 +194,9 @@ export const dropDashboardOrder = () => ({
 
 export const dropDashboardOrderSuccess = () => ({
     type: DROP_DASHBOARD_ORDER_SUCCESS,
+});
+
+export const linkToDashboardStations = day => ({
+    type:    LINK_TO_DASHBOARD_STATIONS,
+    payload: day,
 });

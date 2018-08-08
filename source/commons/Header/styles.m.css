@@ -1,5 +1,4 @@
 .header {
-    margin-left: 256px;
     display: flex;
     position: fixed;
     width: calc(100% - 256px);
@@ -9,8 +8,13 @@
     padding-right: 24px;
 }
 
+.headerMenu {
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+}
+
 .headerCollapsed {
-    margin-left: 80px;
     width: calc(100% - 80px);
 }
 
@@ -52,6 +56,11 @@
     flex: 1;
     justify-content: flex-end;
     align-items: center;
+}
+
+.headerPanelMobile {
+    margin-top: 60px;
+    justify-content: space-around;
 }
 
 .user {

@@ -6,12 +6,18 @@ import Styles from './styles.m.css';
 
 export default class ModuleHeader extends Component {
     render() {
-        const { title, description, controls, collapsed } = this.props;
+        const {
+            title,
+            description,
+            controls,
+            collapsed,
+            isMobile,
+        } = this.props;
 
         return (
             <div
                 className={ `${Styles.header} ${collapsed &&
-                    Styles.headerCollapsed}` }
+                    Styles.headerCollapsed} ${isMobile && Styles.headerMobile}` }
             >
                 <div className={ Styles.headerInfo }>
                     <h1 className={ Styles.title }>{ title }</h1>

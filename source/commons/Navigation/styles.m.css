@@ -1,10 +1,15 @@
 .sider:global(.ant-layout-sider) {
     overflow: auto;
-    height: 100vh;
-    position: fixed;
     z-index: 110;
     left: 0;
+    height: 100%;
     box-shadow: 2px 0 6px rgba(0, 21, 41, 0.35);
+}
+
+.siderMobile:global(.ant-layout-sider) {
+    /* overflow: scroll;
+    -webkit-overflow-scrolling: touch; */
+    height: 100%;
 }
 
 .sider::-webkit-scrollbar {
@@ -25,9 +30,14 @@
 }
 
 .logoCollapsed {
+    text-align: center;
     width: 80px;
 }
 
 .navMenu {
-    margin-top: 60px;
+    margin-top: 60px; /* header height - 4px (nav menu item margin)*/
+}
+
+.navMenuMobile {
+    margin-top: 12px;
 }

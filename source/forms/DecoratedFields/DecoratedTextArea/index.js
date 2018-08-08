@@ -1,12 +1,21 @@
 // vendor
 import React from 'react';
-import { Input } from 'antd';
+import { Input, Form } from 'antd';
 
 // own
 const { TextArea } = Input;
+const FormItem = Form.Item;
 
 export const DecoratedTextArea = props => {
     const {
+        //FormItem
+        formItem,
+        label,
+        colon,
+        className,
+        hasFeedback,
+        formItemLayout,
+
         getFieldDecorator,
         rules,
         field,
@@ -15,7 +24,7 @@ export const DecoratedTextArea = props => {
         autosize,
     } = props;
 
-    return getFieldDecorator(field, {
+    const textArea = getFieldDecorator(field, {
         rules,
     })(
         <TextArea
@@ -24,4 +33,18 @@ export const DecoratedTextArea = props => {
             autosize={ autosize } //{ minRows: 2, maxRows: 6 }
         />,
     );
+
+    return formItem ? (
+        <FormItem
+            label={ label }
+            hasFeedback={ hasFeedback }
+            colon={ colon }
+            className={ className }
+            { ...formItemLayout }
+        >
+            { textArea }
+        </FormItem>
+    ) : 
+        textArea
+    ;
 };

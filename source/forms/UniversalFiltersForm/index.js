@@ -343,7 +343,7 @@ export class UniversalFiltersForm extends Component {
                     <Col span={ 6 }>
                         <FormItem label={ <FormattedMessage id='universal_filters_form.number_of_visits_from'/> }>
                             <DecoratedInputNumber
-                                field='visitsFrom'
+                                field='ordersGreater'
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={
@@ -360,7 +360,7 @@ export class UniversalFiltersForm extends Component {
                         <FormItem label={ <FormattedMessage id='universal_filters_form.number_of_visits_to'/> }>
 
                             <DecoratedInputNumber
-                                field='manager'
+                                field='ordersLower'
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
                                 placeholder={

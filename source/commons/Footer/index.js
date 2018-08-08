@@ -22,7 +22,7 @@ class Footer extends Component {
                 className={ `${Styles.footer} ${collapsed &&
                     Styles.footerCollapsed}` }
             >
-                <div>
+                <div className={ Styles.contacts }>
                     Поддержка:&nbsp;
                     <a href='tel:380442994556'>+38(044)299-45-56</a>,&nbsp;
                     <a href='tel:380504216648'>+38(050)421-66-48</a>&nbsp; или

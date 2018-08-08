@@ -7,7 +7,7 @@ body {
     font-family: "TTCommons", system-ui;
     background-color: var(--paletteColor2);
     color: var(--text);
-    *//* Зачаровать шрифты */
+    /* Зачаровать шрифты */
     font-smoothing: antialiased;
     font-variant-ligatures: none;
 
@@ -34,11 +34,22 @@ a {
     text-decoration: none;
 }
 
-/* .content {
-    max-width: 900px;
-} */
+#app {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+}
 
+/* antd customize */
 .ant-modal-wrap,
 .ant-modal-mask {
     z-index: 2000;
+}
+
+.ant-layout .ant-layout-has-sider {
+    height: 100%;
+}
+
+.drawer.drawer-open .drawer-mask {
+    animation: none;
 }

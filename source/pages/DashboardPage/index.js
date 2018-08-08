@@ -9,9 +9,11 @@ import moment from 'moment';
 import {
     initDashboard,
     dropDashboardOrder,
+    linkToDashboardStations,
     setDashboardDate,
     setDashboardWeekDates,
     setDashboardMode,
+    selectDasboardData,
 } from 'core/dashboard/duck';
 
 import { Layout, Spinner } from 'commons';
@@ -33,6 +35,8 @@ const mapStateToProps = state => ({
     days:      state.dashboard.days,
     load:      state.dashboard.load,
     spinner:   state.ui.get('dashboardFetching'),
+
+    ...selectDasboardData(state),
 });
 
 const mapDispatchToProps = {
@@ -41,6 +45,7 @@ const mapDispatchToProps = {
     setDashboardDate,
     setDashboardWeekDates,
     setDashboardMode,
+    linkToDashboardStations,
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -81,7 +86,6 @@ class DashboardPage extends Component {
             startDate: startDate.subtract(1, 'weeks'),
             endDate:   endDate.subtract(1, 'weeks'),
         });
-        this.setState({});
     };
 
     _nextWeek = () => {
@@ -91,7 +95,6 @@ class DashboardPage extends Component {
             startDate: startDate.add(1, 'weeks'),
             endDate:   endDate.add(1, 'weeks'),
         });
-        this.setState({});
     };
 
     _setDashboardMode = mode => this.props.setDashboardMode(mode);
@@ -108,6 +111,9 @@ class DashboardPage extends Component {
             stations,
             schedule,
             spinner,
+            time,
+            dashboard,
+            linkToDashboardStations,
         } = this.props;
 
         return !spinner ? (
@@ -120,6 +126,7 @@ class DashboardPage extends Component {
             >
                 <section className={ Styles.dashboardPage }>
                     <Tabs
+                        activeKey={ mode }
                         tabBarExtraContent={
                             mode === 'calendar' ? (
                                 <ArrowsWeekPicker
@@ -148,12 +155,17 @@ class DashboardPage extends Component {
                         >
                             <DashboardContainer
                                 spinner={ spinner }
-                                orders={ orders || [] }
+                                orders={ orders }
                                 stations={ stations }
                                 days={ days }
                                 mode={ mode }
                                 load={ load }
                                 schedule={ schedule }
+                                time={ time }
+                                dashboard={ dashboard }
+                                linkToDashboardStations={
+                                    linkToDashboardStations
+                                }
                             />
                         </TabPane>
                         <TabPane
@@ -164,12 +176,17 @@ class DashboardPage extends Component {
                         >
                             <DashboardContainer
                                 spinner={ spinner }
-                                orders={ orders || [] }
+                                orders={ orders }
                                 stations={ stations }
                                 days={ days }
                                 mode={ mode }
                                 load={ load }
                                 schedule={ schedule }
+                                time={ time }
+                                dashboard={ dashboard }
+                                linkToDashboardStations={
+                                    linkToDashboardStations
+                                }
                             />
                         </TabPane>
                     </Tabs>

@@ -10,9 +10,9 @@ import {
     select,
 } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
-// import nprogress from 'nprogress';
+import nprogress from 'nprogress';
 
-//proj
+// proj
 import { resetModal, MODALS } from 'core/modals/duck';
 import { uiActions } from 'core/ui/actions';
 import { fetchAPI } from 'utils';
@@ -20,6 +20,7 @@ import book from 'routes/book';
 
 // own
 import {
+    fetchOrderTaskSuccess,
     fetchOrderFormSuccess,
     fetchAddOrderFormSuccess,
     fetchOrderForm,
@@ -33,10 +34,10 @@ import {
     updateOrderSuccess,
     returnToOrdersPage,
     createInviteOrderSuccess,
-
     CREATE_INVITE_ORDER,
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
+    FETCH_ORDER_TASK,
     ON_CHANGE_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
     ON_SERVICE_SEARCH,
@@ -46,7 +47,6 @@ import {
     UPDATE_ORDER,
     RETURN_TO_ORDERS_PAGE,
 } from './duck';
-import nprogress from "nprogress"
 
 export function* fetchOrderFormSaga() {
     while (true) {
@@ -59,12 +59,23 @@ export function* fetchOrderFormSaga() {
     }
 }
 
+export function* fetchOrderTaskSaga() {
+    while (true) {
+        const { payload: id } = yield take(FETCH_ORDER_TASK);
+        // yield put(uiActions.setOrderFetchingState(true));
+        const data = yield call(fetchAPI, 'GET', `orders/${id}`);
+
+        yield put(fetchOrderTaskSuccess(data));
+        // yield put(uiActions.setOrderFetchingState(false));
+    }
+}
+
 export function* createOrderSaga() {
     while (true) {
         const { payload: entity } = yield take(CREATE_ORDER);
         yield call(fetchAPI, 'POST', 'orders', {}, entity);
         yield put(createOrderSuccess());
-        yield put(replace('/orders/appointments'));
+        yield put(replace(book.ordersAppointments));
     }
 }
 
@@ -134,7 +145,12 @@ function* handleClientSearchSaga({ payload }) {
     yield delay(1000);
 
     if (payload.length > 2) {
-        const data = yield call(fetchAPI, 'GET', 'clients', { query: payload });
+        const fields = [ 'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites' ];
+        const data = yield call(fetchAPI, 'GET', 'clients', {
+            query:     payload,
+            omitStats: true,
+            fields,
+        });
         yield put(onChangeClientSearchQuerySuccess(data));
     } else {
         yield put(onChangeClientSearchQuerySuccess([]));
@@ -178,6 +194,21 @@ export function* createInviteOrderSaga({ payload: invite }) {
     yield put(fetchOrderForm(id));
 }
 
+/* eslint-disable array-element-newline */
 export function* saga() {
-    yield all([ takeEvery(CREATE_INVITE_ORDER, createInviteOrderSaga), call(returnToOrdersPageSaga), call(updateOrderSaga), call(createOrderSaga), call(fetchAddOrderFormSaga), call(fetchOrderFormSaga), call(onChangeOrderFormSaga), takeLatest(ON_SERVICE_SEARCH, handleServiceSearch), takeLatest(ON_BRAND_SEARCH, handleBrandSearch), takeLatest(ON_DETAIL_SEARCH, handleDetailSearch), takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga) ]);
+    yield all([
+        takeEvery(CREATE_INVITE_ORDER, createInviteOrderSaga),
+        call(fetchOrderTaskSaga),
+        call(returnToOrdersPageSaga),
+        call(updateOrderSaga),
+        call(createOrderSaga),
+        call(fetchAddOrderFormSaga),
+        call(fetchOrderFormSaga),
+        call(onChangeOrderFormSaga),
+        takeLatest(ON_SERVICE_SEARCH, handleServiceSearch),
+        takeLatest(ON_BRAND_SEARCH, handleBrandSearch),
+        takeLatest(ON_DETAIL_SEARCH, handleDetailSearch),
+        takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
+    ]);
 }
+/* eslint-enable array-element-newline */

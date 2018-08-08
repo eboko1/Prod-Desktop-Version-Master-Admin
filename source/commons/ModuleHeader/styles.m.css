@@ -6,7 +6,6 @@
     margin-top: 64px;
     position: fixed;
     z-index: 120;
-    margin-left: 256px;
     width: calc(100% - 256px);
     padding: 10px 16px;
     justify-content: space-between;
@@ -18,8 +17,12 @@
 }
 
 .headerCollapsed {
-    margin-left: 80px;
     width: calc(100% - 80px);
+}
+
+.headerMobile {
+    margin-top: 0;
+    width: 100%;
 }
 
 .headerInfo {
@@ -42,4 +45,14 @@
     align-items: center;
     /* flex: 1 1 auto;
     justify-content: space-between; */
+}
+
+@media screen and (max-width: 767px) {
+    .title {
+        font-size: 16px;
+    }
+
+    .description {
+        font-size: 12px;
+    }
 }

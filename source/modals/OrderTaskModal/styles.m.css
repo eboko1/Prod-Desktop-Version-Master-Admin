@@ -1,0 +1,8 @@
+.orderTaskModal :global(.ant-modal-body) {
+    height: 60vh;
+    overflow: auto;
+}
+
+.orderTaskModal :global(.ant-modal-footer) {
+    text-align: center;
+}
