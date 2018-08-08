@@ -16,7 +16,7 @@ import {
     onDetailSearch,
     onBrandSearch,
 } from 'core/forms/orderForm/duck';
-
+import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 import { defaultDetails } from 'core/forms/orderForm/helpers/details';
 
 import {
@@ -46,7 +46,7 @@ const Option = Select.Option;
 @injectIntl
 @withReduxForm({
     name:            'orderForm',
-    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
+    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment'  ],
     actions:         {
         change: onChangeOrderForm,
         setClientSelection,
@@ -55,6 +55,7 @@ const Option = Select.Option;
         onServiceSearch,
         onDetailSearch,
         onBrandSearch,
+        initOrderTasksForm,
     },
 })
 export class OrderForm extends Component {
@@ -529,6 +530,8 @@ export class OrderForm extends Component {
                 </div>
                 <OrderFormTabs
                     { ...this.props }
+                    initOrderTasksForm={ this.props.initOrderTasksForm }
+                    // changeModalStatus={ this.props.changeModalStatus }
                     formatMessage={ formatMessage }
                     getFieldDecorator={ getFieldDecorator }
                     form={ form }

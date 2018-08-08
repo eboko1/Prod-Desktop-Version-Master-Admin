@@ -5,21 +5,54 @@ import { call, put, all, take } from 'redux-saga/effects';
 //proj
 // import { uiActions } from 'core/ui/actions';
 import { fetchAPI } from 'utils';
-
+import moment from 'moment';
 // own
-import { fetchProfileFormSuccess, FETCH_PROFILE_FORM } from './duck';
+import { saveOrderTaskSuccess, SAVE_ORDER_TASK } from './duck';
+import { fetchOrderTask } from 'core/forms/orderForm/duck';
 
-export function* fetchProfileFormSaga() {
+export function* saveNewOrderTask() {
     while (true) {
-        yield take(FETCH_PROFILE_FORM);
-        const data = yield call(fetchAPI, 'GET', 'orders/filter');
+        const { payload, id, taskId } = yield take(SAVE_ORDER_TASK);
+        let obj = {
+            comment:       payload.comment.value,
+            priority:      payload.priority.value,
+            responsibleId: payload.responsible.value,
+            status:        payload.status.value,
+            stationNum:    payload.stationName.value,
+        };
+        if (payload.deadlineDate.value) {
+            obj.deadlineDate = moment(
+                `${moment(payload.deadlineDate.value).format(
+                    'YYYY-MM-DD',
+                )} ${moment(payload.deadlineTime.value).format('HH:mm')}`,
+            ).format();
+        }
 
-        yield put(fetchProfileFormSuccess(data));
+        let data;
+        if (!taskId) {
+            data = yield call(
+                fetchAPI,
+                'POST',
+                `orders/${id}/tasks`,
+                null,
+                obj,
+            );
+        } else {
+            data = yield call(
+                fetchAPI,
+                'PUT',
+                `/orders/tasks/${taskId}`,
+                null,
+                obj,
+            );
+        }
+
+        yield put(saveOrderTaskSuccess(data));
+        yield put(fetchOrderTask(id));
     }
 }
-
 export function* saga() {
-    yield all([ call(fetchProfileFormSaga) ]);
+    yield all([ call(saveNewOrderTask) ]);
 }
 // TODO:
 // 1) import orderTasksForm actions and action-types

@@ -14,8 +14,13 @@ import {
     updateOrder,
     returnToOrdersPage,
     createInviteOrder,
-    // fetchOrderTask,
+    fetchOrderTask,
 } from 'core/forms/orderForm/duck';
+import {
+    resetOrderTasksForm,
+    saveOrderTask,
+    changeModalStatus,
+} from 'core/forms/orderTaskForm/duck';
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -45,26 +50,30 @@ import {
 
 const mapStateToProps = state => {
     return {
-        orderTasks:        state.forms.orderForm.tasks,
-        stations:          state.forms.orderForm.stations,
-        vehicles:          state.forms.orderForm.vehicles,
-        employees:         state.forms.orderForm.employees,
-        managers:          state.forms.orderForm.managers,
-        clients:           state.forms.orderForm.clients,
-        allDetails:        state.forms.orderForm.allDetails,
-        allServices:       state.forms.orderForm.allServices,
-        requisites:        state.forms.addOrderForm.requisites,
-        addClientFormData: state.forms.addClientForm.data,
-        orderComments:     state.forms.orderForm.orderComments,
-        order:             state.forms.orderForm.order,
-        inviteOrderId:     state.forms.orderForm.inviteOrderId,
-        orderCalls:        state.forms.orderForm.calls,
-        orderHistory:      state.forms.orderForm.history,
-        initOrderEntity:   state.forms.orderForm.initOrderEntity,
-        invited:           state.forms.orderForm.invited,
-        modal:             state.modals.modal,
-        spinner:           state.ui.get('orderFetching'),
-        orderEntity:       {
+        orderTaskEntity:       state.forms.orderTaskForm.fields,
+        orderTaskId:           state.forms.orderTaskForm.taskId,
+        priorityOptions:       state.forms.orderTaskForm.priorityOptions,
+        progressStatusOptions: state.forms.orderTaskForm.progressStatusOptions,
+        orderTasks:            state.forms.orderForm.orderTasks,
+        stations:              state.forms.orderForm.stations,
+        vehicles:              state.forms.orderForm.vehicles,
+        employees:             state.forms.orderForm.employees,
+        managers:              state.forms.orderForm.managers,
+        clients:               state.forms.orderForm.clients,
+        allDetails:            state.forms.orderForm.allDetails,
+        allServices:           state.forms.orderForm.allServices,
+        requisites:            state.forms.addOrderForm.requisites,
+        addClientFormData:     state.forms.addClientForm.data,
+        orderComments:         state.forms.orderForm.orderComments,
+        order:                 state.forms.orderForm.order,
+        inviteOrderId:         state.forms.orderForm.inviteOrderId,
+        orderCalls:            state.forms.orderForm.calls,
+        orderHistory:          state.forms.orderForm.history,
+        initOrderEntity:       state.forms.orderForm.initOrderEntity,
+        invited:               state.forms.orderForm.invited,
+        modal:                 state.modals.modal,
+        spinner:               state.ui.get('orderFetching'),
+        orderEntity:           {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
@@ -74,7 +83,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
     fetchOrderForm,
-    // fetchOrderTask
+    fetchOrderTask,
     getReport,
     fetchReport,
     updateOrder,
@@ -83,6 +92,9 @@ const mapDispatchToProps = {
     returnToOrdersPage,
     createInviteOrder,
     fetchAddClientForm,
+    resetOrderTasksForm,
+    saveOrderTask,
+    changeModalStatus,
 };
 
 @withRouter
@@ -91,7 +103,7 @@ class OrderPage extends Component {
     componentDidMount() {
         this.props.fetchOrderForm(this.props.match.params.id);
         // TBD: @andrey
-        // this.props.fetchOrderTask(this.props.match.params.id);
+        this.props.fetchOrderTask(this.props.match.params.id);
     }
 
     saveFormRef = formRef => {
@@ -100,6 +112,10 @@ class OrderPage extends Component {
 
     saveOrderFormRef = formRef => {
         this.orderFormRef = formRef;
+    };
+
+    saveOrderTaskFormRef = formRef => {
+        this.orderTaskFormRef = formRef;
     };
 
     handleAddClientModalSubmit = () => {
@@ -140,6 +156,21 @@ class OrderPage extends Component {
         });
     };
 
+    saveNewOrderTask = () => {
+        const { orderTaskEntity, orderTaskId } = this.props;
+        const form = this.orderTaskFormRef.props.form;
+        form.validateFields(err => {
+            if (!err) {
+                this.props.saveOrderTask(
+                    orderTaskEntity,
+                    this.props.match.params.id,
+                    orderTaskId,
+                );
+                this.props.resetModal();
+                this.props.resetOrderTasksForm();
+            }
+        });
+    };
     /* eslint-disable complexity*/
     render() {
         const {
@@ -175,16 +206,16 @@ class OrderPage extends Component {
         return !spinner ? (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
@@ -300,9 +331,9 @@ class OrderPage extends Component {
                         onStatusChange={ this.onStatusChange }
                     />
                 </MobileView>
-                { console.log('→ BREAKPOINTS.md.min', BREAKPOINTS.md.min) }
-                { console.log('→ BREAKPOINTS.xxl.max', BREAKPOINTS.xxl.max) }
-                <ResponsiveView view={ { min: 768, max: BREAKPOINTS.xxl.max } }>
+                <ResponsiveView
+                    view={ { min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max } }
+                >
                     <OrderForm
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
@@ -315,6 +346,7 @@ class OrderPage extends Component {
                         employees={ this.props.employees }
                         filteredDetails={ this.props.filteredDetails }
                         setModal={ setModal }
+                        changeModalStatus={ this.props.changeModalStatus }
                     />
                 </ResponsiveView>
                 <AddClientModal
@@ -348,10 +380,20 @@ class OrderPage extends Component {
                     resetModal={ () => resetModal() }
                 />
                 <OrderTaskModal
-                    wrappedComponentRef={ this.saveFormRef }
+                    wrappedComponentRef={ this.saveOrderTaskFormRef }
+                    orderTaskEntity={ this.props.orderTaskEntity }
+                    priorityOptions={ this.props.priorityOptions }
+                    progressStatusOptions={ this.props.progressStatusOptions }
                     visible={ modal }
                     resetModal={ () => resetModal() }
                     num={ num }
+                    orderTaskId={ this.props.orderTaskId }
+                    orderId={ this.props.match.params.id }
+                    resetOrderTasksForm={ this.props.resetOrderTasksForm }
+                    stations={ this.props.stations }
+                    managers={ this.props.managers }
+                    saveNewOrderTask={ this.saveNewOrderTask }
+                    orderTasks={ this.props.orderTasks }
                 />
             </Layout>
         ) : (

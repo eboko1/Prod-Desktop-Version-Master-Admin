@@ -16,7 +16,7 @@ import {
     HistoryTable,
     CallsTable,
 } from 'components/OrderForm/OrderFormTables';
-
+import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 
@@ -42,6 +42,8 @@ export class OrderFormTabs extends Component {
             allDetails,
             filteredDetails,
             setModal,
+            initOrderTasksForm,
+            changeModalStatus,
         } = this.props;
 
         return (
@@ -58,16 +60,25 @@ export class OrderFormTabs extends Component {
                         }
                         key='1'
                     >
-                        { /* { console.log('→ orderTasks', orderTasks) } */ }
-                        <Button
-                            // className={ Styles.orderTaskModalButton }
-                            type='primary'
-                            onClick={ () => setModal(MODALS.ORDER_TASK) }
-                        >
-                            <Icon type='plus' />
-                        </Button>
+                        { orderTasks.length < 1 ? (
+                            <Button
+                                className={ Styles.orderTaskModalButton }
+                                type='primary'
+                                onClick={ () => {
+                                    setModal(MODALS.ORDER_TASK);
+                                    changeModalStatus('adding');
+                                } }
+                            >
+                                <Icon type='plus' />
+                            </Button>
+                        ) : null }
 
-                        <TasksTable orderTasks={ orderTasks } />
+                        <TasksTable
+                            initOrderTasksForm={ initOrderTasksForm }
+                            setModal={ setModal }
+                            changeModalStatus={ changeModalStatus }
+                            orderTasks={ orderTasks }
+                        />
                     </TabPane>
                 ) }
                 <TabPane

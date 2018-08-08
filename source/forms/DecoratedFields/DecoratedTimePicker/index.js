@@ -16,14 +16,13 @@ export const DecoratedTimePicker = props => {
         className,
         hasFeedback,
         formItemLayout,
-
+        getPopupContainer,
         getFieldDecorator,
         rules,
         field,
         format,
         placeholder,
         disabled,
-
         formatMessage,
         popupClassName,
     } = props;
@@ -37,6 +36,7 @@ export const DecoratedTimePicker = props => {
                 placeholder ||
                 formatMessage({ id: 'datepicker.timepicker.placeholder' })
             }
+            getPopupContainer={ getPopupContainer }
             popupClassName={ popupClassName }
         />,
     );

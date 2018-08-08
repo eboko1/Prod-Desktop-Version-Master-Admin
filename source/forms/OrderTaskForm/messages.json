@@ -1,27 +1,32 @@
 {
     "en": {
-        "order_task_modal.progressStatus_placeholder":"Select progress status",
-        "order_task_modal.priority_placeholder":"Select priority",
-        "order_task_modal.post_placeholder":"Select post",
-        "order_task_modal.responsable_placeholder":"Select responsable",
-        "order_task_modal.deadlineDate_placeholder":"Choose deadline date",
-        "order_task_modal.comment_placeholder":"Write comment"
-
+        "order_task_modal.progressStatus_placeholder": "Select progress status",
+        "order_task_modal.priority_placeholder": "Select priority",
+        "order_task_modal.post_placeholder": "Select post",
+        "order_task_modal.responsible_placeholder": "Select responsible",
+        "order_task_modal.deadlineDate_placeholder": "Choose deadline date",
+        "order_task_modal.deadlineTime_placeholder": "Time",
+        "order_task_modal.comment_placeholder": "Write comment",
+        "order-task-modal.vehicle": "Vehicle"
     },
     "ru": {
-        "order_task_modal.progressStatus_placeholder":"Выберите статус",
-        "order_task_modal.priority_placeholder":"Выберите приоритет",
-        "order_task_modal.post_placeholder":"Выберите пост",
-        "order_task_modal.responsable_placeholder":"Выберите ответственного",
-        "order_task_modal.deadlineDate_placeholder":"Выберите дедлайн",
-        "order_task_modal.comment_placeholder":"Напишите комментарий"
+        "order_task_modal.progressStatus_placeholder": "Выберите статус",
+        "order_task_modal.priority_placeholder": "Выберите приоритет",
+        "order_task_modal.post_placeholder": "Выберите пост",
+        "order_task_modal.responsible_placeholder": "Выберите ответственного",
+        "order_task_modal.deadlineDate_placeholder": "Выберите дедлайн",
+        "order_task_modal.deadlineTime_placeholder": "Время",
+        "order_task_modal.comment_placeholder": "Напишите комментарий",
+        "order-task-modal.vehicle": "Автомобиль"
     },
     "uk": {
-        "order_task_modal.progressStatus_placeholder":"Виберіть статус",
-        "order_task_modal.priority_placeholder":"Виберіть пріорітет",
-        "order_task_modal.post_placeholder":"Виберіть пост",
-        "order_task_modal.responsable_placeholder":"Виберіть відповідального",
-        "order_task_modal.deadlineDate_placeholder":"Виберіть дедлайн",
-        "order_task_modal.comment_placeholder":"Напишіть комментарій"
+        "order_task_modal.progressStatus_placeholder": "Виберіть статус",
+        "order_task_modal.priority_placeholder": "Виберіть пріорітет",
+        "order_task_modal.post_placeholder": "Виберіть пост",
+        "order_task_modal.responsible_placeholder": "Виберіть відповідального",
+        "order_task_modal.deadlineDate_placeholder": "Виберіть дедлайн",
+        "order_task_modal.deadlineTime_placeholder": "Час",
+        "order_task_modal.comment_placeholder": "Напишіть комментарій",
+        "order-task-modal.vehicle": "Автомобіль"
     }
 }

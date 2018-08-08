@@ -12,9 +12,22 @@ import Styles from './styles.m.css';
 
 export default class OrderTaskModal extends Component {
     render() {
-        const { visible, resetModal, num } = this.props;
-
-        // TODO: refactor or remove Styles if needed
+        const {
+            visible,
+            resetModal,
+            num,
+            resetOrderTasksForm,
+            orderId,
+            orderTaskEntity,
+            progressStatusOptions,
+            priorityOptions,
+            wrappedComponentRef,
+            orderTaskId,
+            stations,
+            managers,
+            saveNewOrderTask,
+            orderTasks,
+        } = this.props;
 
         return (
             <Modal
@@ -30,12 +43,27 @@ export default class OrderTaskModal extends Component {
                 wrapClassName={ Styles.orderTaskModal }
                 visible={ visible === MODALS.ORDER_TASK }
                 onOk={ () => {
-                    resetModal();
+
+                    saveNewOrderTask(
+                        orderTaskEntity,
+                        orderId,
+                        orderTaskId,
+                    );
                 } }
-                onCancel={ () => resetModal() }
+                onCancel={ () => {
+                    resetModal();
+                    resetOrderTasksForm();
+                } }
             >
-                <OrderTaskForm num={ num } />
-                { /* TODO: uncomment and add logic <OrderTaskForm /> */ }
+                <OrderTaskForm
+                    num={ num }
+                    orderTasks={ orderTasks }
+                    stations={ stations }
+                    managers={ managers }
+                    progressStatusOptions={ progressStatusOptions }
+                    priorityOptions={ priorityOptions }
+                    wrappedComponentRef={ wrappedComponentRef }
+                />
             </Modal>
         );
     }
