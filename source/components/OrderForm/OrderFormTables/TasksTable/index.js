@@ -148,8 +148,8 @@ class TasksTable extends Component {
         const { orderTasks } = this.props;
         const columns = this.columns;
         const sortHistory=(a, b)=>{
-            if(moment(a.startDate).isAfter(b.startDate)){ return 1 }
-            if(moment(b.startDate).isAfter(a.startDate)){ return -1 }
+            if(moment(a.startDate).isAfter(b.startDate)){ return -1 }
+            if(moment(b.startDate).isAfter(a.startDate)){ return 1 }
 
             return 0
         }
