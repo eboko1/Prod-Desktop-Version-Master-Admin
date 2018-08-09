@@ -10,6 +10,7 @@ import {
     AddOrderPage,
     ProfilePage,
     ExceptionPage,
+    MyTasksPage,
 } from 'pages';
 import book from './book';
 
@@ -30,6 +31,8 @@ export default class Private extends Component {
                 />
                 <Route exact component={ AddOrderPage } path={ book.addOrder } />
                 <Route exact component={ ProfilePage } path={ book.profile } />
+                <Route exact component={ MyTasksPage } path={ book.myTasksPage } />
+
                 <Route
                     component={ ExceptionPage }
                     path={ book.exceptionStatusCode }

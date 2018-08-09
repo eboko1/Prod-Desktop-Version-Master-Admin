@@ -43,12 +43,7 @@ export default class OrderTaskModal extends Component {
                 wrapClassName={ Styles.orderTaskModal }
                 visible={ visible === MODALS.ORDER_TASK }
                 onOk={ () => {
-
-                    saveNewOrderTask(
-                        orderTaskEntity,
-                        orderId,
-                        orderTaskId,
-                    );
+                    saveNewOrderTask();
                 } }
                 onCancel={ () => {
                     resetModal();
