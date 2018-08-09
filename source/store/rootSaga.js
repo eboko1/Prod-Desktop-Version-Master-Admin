@@ -14,7 +14,6 @@ import { saga as addOrderSaga } from 'core/addOrder/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
-import { saga as addOrderFormSaga } from 'core/forms/addOrderForm/saga';
 import { saga as orderTaskFormSaga } from 'core/forms/orderTaskForm/saga';
 
 import { saga as orderFormSaga } from 'core/forms/orderForm/saga';
@@ -30,7 +29,6 @@ export default function* rootSaga() {
         orderSaga(),
         addOrderSaga(),
         universalFiltersFormSaga(),
-        addOrderFormSaga(),
         orderFormSaga(),
         addClientFormSaga(),
         dashboardSaga(),

@@ -50,13 +50,6 @@ export default class DashboardContainer extends Component {
     }
 
     _linkToStations = day => this.props.linkToDashboardStations(day);
-    //     console.log('→ day', day);
-    //     console.log(
-    //         '→ this.props.linkToDashboardStations',
-    //         this.props.linkToDashboardStations(day),
-    //     );
-    //
-    // };
 
     _renderTimeColumn = () => {
         const { dashboard, time } = this.props;
