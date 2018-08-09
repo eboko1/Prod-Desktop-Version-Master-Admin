@@ -1,11 +1,17 @@
 {
     "en": {
-        "CALL": "Звонок"
+        "orderNumber": "Order Number",
+        "filterDate": "Filter Date",
+        "vehicle": "Vehicle"
     },
     "ru": {
-        "CALL": "Звонок"
+        "orderNumber": "Номер Заказа",
+        "filterDate": "Фильтр По Дате",
+        "vehicle": "Авто"
     },
     "uk": {
-        "CALL": "Звонок"
+        "orderNumber": "Номер Заказу",
+        "filterDate": "Фільтр По Даті",
+        "vehicle": "Авто"
     }
 }

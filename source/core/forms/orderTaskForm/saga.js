@@ -9,10 +9,11 @@ import moment from 'moment';
 // own
 import { saveOrderTaskSuccess, SAVE_ORDER_TASK } from './duck';
 import { fetchOrderTask } from 'core/forms/orderForm/duck';
+import { fetchMyTasks } from 'core/myTasks/duck';
 
 export function* saveNewOrderTask() {
     while (true) {
-        const { payload, id, taskId } = yield take(SAVE_ORDER_TASK);
+        const { payload, id, taskId, myTasks} = yield take(SAVE_ORDER_TASK);
         let obj = {
             comment:       payload.comment.value,
             priority:      payload.priority.value,
@@ -27,7 +28,6 @@ export function* saveNewOrderTask() {
                 )} ${moment(payload.deadlineTime.value).format('HH:mm')}`,
             ).format();
         }
-
         let data;
         if (!taskId) {
             data = yield call(
@@ -48,7 +48,11 @@ export function* saveNewOrderTask() {
         }
 
         yield put(saveOrderTaskSuccess(data));
-        yield put(fetchOrderTask(id));
+        if(myTasks){
+            yield put(fetchMyTasks());
+        }else{
+            yield put(fetchOrderTask(id));
+        }
     }
 }
 export function* saga() {

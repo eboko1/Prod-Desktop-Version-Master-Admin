@@ -7,6 +7,7 @@ export const FETCH_MY_TASKS = `${prefix}/FETCH_MY_TASKS`;
 export const FETCH_MY_TASKS_SUCCESS = `${prefix}/FETCH_MY_TASKS_SUCCESS`;
 export const FETCH_MY_TASKS_FAILURE = `${prefix}/FETCH_MY_TASKS_FAILURE`;
 export const ON_CHANGE_MY_TASKS_FORM = `${prefix}/ON_CHANGE_MY_TASKS_FORM`;
+export const GET_ACTIVE_ORDER = `${prefix}/GET_ACTIVE_ORDER`;
 
 
 /**
@@ -15,18 +16,10 @@ export const ON_CHANGE_MY_TASKS_FORM = `${prefix}/ON_CHANGE_MY_TASKS_FORM`;
 
 const ReducerState = {
     fields: {
-        filterDate:   { value: void 0, name: 'filterDate' },
-        priority:     { value: void 0, name: 'priority' },
-        responsible:  { value: void 0, name: 'responsible' },
-        stationName:  { value: void 0, name: 'stationName' },
-        deadlineDate: { value: void 0, name: 'deadlineDate' },
-        deadlineTime: { value: void 0, name: 'deadlineTime' },
-        comment:      { value: void 0, name: 'comment' },
+        filterDate: { value: void 0, name: 'filterDate' },
     },
     myTasks:     null,
-    modalStatus: '',
-    taskId:      null,
-    vehicle:     '',
+    activeOrder: null,
 };
 
 // eslint-disable-next-line
@@ -46,7 +39,15 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 myTasks: payload,
+                
             };
+        case GET_ACTIVE_ORDER:
+            return {
+                ...state,
+                activeOrder: payload,
+                
+            };
+            
 
         default:
             return state;
@@ -70,4 +71,8 @@ export const fetchMyTasksSuccess = data => ({
 export const fetchMyTasksFailure = data => ({
     type:    FETCH_MY_TASKS_FAILURE,
     payload: data,
+});
+export const getActiveOrder = id => ({
+    type:    GET_ACTIVE_ORDER,
+    payload: id,
 });

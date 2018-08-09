@@ -203,11 +203,12 @@ export const initOrderTasksForm = data => ({
 export const resetOrderTasksForm = () => ({
     type: RESET_ORDER_TASKS_FORM,
 });
-export const saveOrderTask = (data, id, taskId) => ({
+export const saveOrderTask = (data, id, taskId, myTasks) => ({
     type:    SAVE_ORDER_TASK,
     payload: data,
     id:      id,
     taskId:  taskId,
+    myTasks: myTasks,
 });
 export const saveOrderTaskSuccess = data => ({
     type:    SAVE_ORDER_TASK_SUCCESS,
