@@ -29,6 +29,7 @@ export const DecoratedDatePicker = props => {
         disabledTime,
         getCalendarContainer,
         placeholder,
+        allowClear,
     } = props;
 
     const locale = {
@@ -87,6 +88,7 @@ export const DecoratedDatePicker = props => {
                 showTime={ showTime }
                 format={ format }
                 getCalendarContainer={ getCalendarContainer }
+                allowClear={ allowClear }
             />
         ) : (
             <DatePicker
@@ -97,6 +99,7 @@ export const DecoratedDatePicker = props => {
                 disabledDate={ disabledDate }
                 disabledTime={ disabledTime }
                 locale={ locale }
+                allowClear={ allowClear }
             />
         ),
     );
@@ -111,7 +114,7 @@ export const DecoratedDatePicker = props => {
         >
             { datePicker }
         </FormItem>
-    ) :
+    ) : 
         datePicker
     ;
 };

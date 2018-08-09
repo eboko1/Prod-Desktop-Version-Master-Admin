@@ -51,9 +51,11 @@ export const RETURN_TO_ORDERS_PAGE = `${prefix}/RETURN_TO_ORDERS_PAGE`;
 export const CREATE_INVITE_ORDER = `${prefix}/CREATE_INVITE_ORDER`;
 export const CREATE_INVITE_ORDER_SUCCESS = `${prefix}/CREATE_INVITE_ORDER_SUCCESS`;
 
-//orderTasks
 export const FETCH_ORDER_TASK = `${prefix}/FETCH_ORDER_TASK`;
 export const FETCH_ORDER_TASK_SUCCESS = `${prefix}/FETCH_ORDER_TASK_SUCCESS`;
+
+export const FETCH_AVAILABLE_HOURS = `${prefix}/FETCH_AVAILABLE_HOURS`;
+export const FETCH_AVAILABLE_HOURS_SUCCESS = `${prefix}/FETCH_AVAILABLE_HOURS_SUCCESS`;
 
 import { customFieldValue, defaultFieldValue } from './helpers/utils';
 
@@ -86,6 +88,7 @@ const createDefaultState = () => ({
         status:            defaultFieldValue('status'),
         date:              defaultFieldValue('date'),
         station:           defaultFieldValue('station'),
+        duration:          defaultFieldValue('duration'),
         manager:           defaultFieldValue('manager'),
         employee:          defaultFieldValue('employee'),
         searchClientQuery: defaultFieldValue('searchClientQuery'),
@@ -689,4 +692,17 @@ export const createInviteOrder = inviteOrder => ({
 export const createInviteOrderSuccess = response => ({
     type:    CREATE_INVITE_ORDER_SUCCESS,
     payload: response,
+});
+
+export const fetchAvailableHours = () => ({
+    type: FETCH_AVAILABLE_HOURS,
+});
+// export const fetchAvailableHours = ({ beginDatetime, station }) => ({
+//     type:    FETCH_AVAILABLE_HOURS,
+//     payload: { stationNum: station, date: beginDatetime },
+// });
+
+export const fetchAvailableHoursSuccess = availableHours => ({
+    type:    FETCH_AVAILABLE_HOURS_SUCCESS,
+    payload: availableHours,
 });

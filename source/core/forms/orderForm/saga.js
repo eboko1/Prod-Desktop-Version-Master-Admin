@@ -23,7 +23,9 @@ import {
     fetchOrderTaskSuccess,
     fetchOrderFormSuccess,
     fetchAddOrderFormSuccess,
+    fetchAvailableHoursSuccess,
     fetchOrderForm,
+    fetchAvailableHours,
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
@@ -46,24 +48,46 @@ import {
     CREATE_ORDER,
     UPDATE_ORDER,
     RETURN_TO_ORDERS_PAGE,
+    FETCH_AVAILABLE_HOURS,
 } from './duck';
+
+const selectBeginDatetime = state =>
+    state.forms.orderForm.fields.beginDatetime.value;
+const selectStation = state => state.forms.orderForm.fields.station.value;
 
 export function* fetchOrderFormSaga() {
     while (true) {
-        const { payload: id } = yield take(FETCH_ORDER_FORM);
-        yield put(uiActions.setOrderFetchingState(true));
-        const data = yield call(fetchAPI, 'GET', `orders/${id}`);
-        yield put(fetchOrderFormSuccess(data));
-        yield put(uiActions.setOrderFetchingState(false));
+        try {
+            const { payload: id } = yield take(FETCH_ORDER_FORM);
+            yield put(uiActions.setOrderFetchingState(true));
+
+            const data = yield call(fetchAPI, 'GET', `orders/${id}`);
+
+            yield put(fetchOrderFormSuccess(data));
+        } catch (error) {
+            yield put(uiActions.emitError(error));
+        } finally {
+            const stationNum = yield select(selectStation);
+            const date = yield select(selectBeginDatetime);
+            if (stationNum && date) {
+                yield put(fetchAvailableHours());
+            }
+
+            yield put(uiActions.setOrderFetchingState(false));
+        }
     }
 }
 
 export function* fetchOrderTaskSaga() {
     while (true) {
         const { payload: id } = yield take(FETCH_ORDER_TASK);
+
         yield put(uiActions.setOrderFetchingState(true));
+
         const data = yield call(fetchAPI, 'GET', `orders/${id}/tasks`);
+
         yield put(fetchOrderTaskSuccess(data));
+
         yield put(uiActions.setOrderFetchingState(false));
     }
 }
@@ -192,6 +216,21 @@ export function* createInviteOrderSaga({ payload: invite }) {
     yield put(fetchOrderForm(id));
 }
 
+export function* fetchAvailableHoursSaga() {
+    while (true) {
+        yield take(FETCH_AVAILABLE_HOURS);
+
+        const stationNum = yield select(selectStation);
+        const date = yield select(selectBeginDatetime);
+
+        const data = yield call(fetchAPI, 'GET', 'dashboard/free_hours', {
+            stationNum: stationNum,
+            date:       date.toISOString(),
+        });
+        yield put(fetchAvailableHoursSuccess(data));
+    }
+}
+
 /* eslint-disable array-element-newline */
 export function* saga() {
     yield all([
@@ -203,6 +242,7 @@ export function* saga() {
         call(fetchAddOrderFormSaga),
         call(fetchOrderFormSaga),
         call(onChangeOrderFormSaga),
+        call(fetchAvailableHoursSaga),
         takeLatest(ON_SERVICE_SEARCH, handleServiceSearch),
         takeLatest(ON_BRAND_SEARCH, handleBrandSearch),
         takeLatest(ON_DETAIL_SEARCH, handleDetailSearch),

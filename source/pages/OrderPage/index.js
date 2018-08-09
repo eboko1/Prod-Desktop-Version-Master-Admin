@@ -80,6 +80,9 @@ const mapStateToProps = state => {
             selectedClient: state.forms.orderForm.selectedClient,
         },
         isMobile: state.ui.get('isMobile'),
+        // stationField: state.forms.orderForm.fields.station.value,
+        // beginDatetimeField: state.forms.orderForm.fields
+
         ...selectInviteData(state),
     };
 };

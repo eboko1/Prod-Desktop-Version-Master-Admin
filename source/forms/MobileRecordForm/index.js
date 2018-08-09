@@ -1,18 +1,23 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Slider, Input, Select } from 'antd';
+import { Form, Button, Input, Select } from 'antd';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // proj
 // import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
-import { onChangeOrderForm } from 'core/forms/orderForm/duck';
+import {
+    onChangeOrderForm,
+    fetchAvailableHours,
+} from 'core/forms/orderForm/duck';
 
 import {
     DecoratedSelect,
     DecoratedTextArea,
     DecoratedDatePicker,
     DecoratedTimePicker,
+    DecoratedSlider,
 } from 'forms/DecoratedFields';
 
 import { withReduxForm } from 'utils';
@@ -37,10 +42,33 @@ const Option = Select.Option;
     },
 })
 export class MobileRecordForm extends Component {
+    // componentDidMount() {
+    //     // const availableHours = this.props.form.getFieldsValue([ 'beginDatetime', 'station' ]);
+    //     // console.log('→ DM availableHours', availableHours);
+    //     this.props.fetchAvailableHours();
+    // }
+    //
+    // componentDidUpdate(prevProps) {
+    //     if (
+    //         prevProps.form.getFieldsValue([ 'beginDatetime', 'station' ]) ===
+    //         this.props.form.getFieldsValue([ 'beginDatetime', 'station' ])
+    //     ) {
+    //         // const availableHours = this.props.form.getFieldsValue([ 'beginDatetime', 'station' ]);
+    //         // console.log('→ DUP availableHours', availableHours);
+    //         this.props.fetchAvailableHours();
+    //     }
+    // }
+
     render() {
         const { selectedClient, stations, onStatusChange } = this.props;
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
+
+        const availableHours = getFieldsValue([ 'beginDatetime', 'station' ]);
+
+        const isDurationDisabled = _.every(
+            getFieldsValue([ 'beginDatetime', 'station' ]),
+        );
 
         return (
             <Form layout='horizontal'>
@@ -142,6 +170,7 @@ export class MobileRecordForm extends Component {
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
                     formatMessage={ formatMessage }
+                    allowClear={ false }
                     { ...formItemLayout }
                 />
                 <DecoratedTimePicker
@@ -154,18 +183,14 @@ export class MobileRecordForm extends Component {
                     popupClassName='mobileRecordFormTimePicker'
                     { ...formItemLayout }
                 />
-                <div>
-                    <Slider
-                        min={ 0.5 }
-                        step={ 0.5 }
-                        max={ 8 }
-                        defaultValue={ 1 }
-                        onChange={ value =>
-                            console.log('→ duration slider value', value)
-                        }
-                    />
-                </div>
-
+                <DecoratedSlider
+                    formItem
+                    label='Продолжительность'
+                    field='duration'
+                    getFieldDecorator={ getFieldDecorator }
+                    disabled={ !isDurationDisabled }
+                    { ...formItemLayout }
+                />
                 <DecoratedTextArea
                     formItem
                     label={
