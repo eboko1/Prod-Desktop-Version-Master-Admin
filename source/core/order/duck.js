@@ -1,4 +1,3 @@
-import { createSelector } from 'reselect';
 /**
  * Constants
  * */
@@ -57,75 +56,42 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state[ moduleName ];
 
-// const getOrder = state => state.order;
-
-// export const selectInviteData = createSelector(stateSelector, order => {
-//     console.log('→ order', order);
-//     const hasInviteStatus = [ 'success', 'cancel' ].includes(order.status);
-//
-//     const isInviteVisible =
-//         !order.inviteOrderId && order.id && order.status && hasInviteStatus;
-//
-//     const isInviteEnabled =
-//         hasInviteStatus &&
-//         order.id &&
-//         order.status &&
-//         order.clientVehicleId &&
-//         order.clientId &&
-//         order.clientPhone &&
-//         !order.invited;
-//
-//     return { hasInviteStatus, isInviteVisible, isInviteEnabled };
-// });
-
 /**
  * Action Creators
  * */
 // order
-export function fetchOrder(id) {
-    return {
-        type:    FETCH_ORDER,
-        payload: id,
-    };
-}
+export const fetchOrder = id => ({
+    type:    FETCH_ORDER,
+    payload: id,
+});
 
-export function fetchOrderSuccess(order) {
-    return {
-        type:    FETCH_ORDER_SUCCESS,
-        payload: order,
-    };
-}
+export const fetchOrderSuccess = order => ({
+    type:    FETCH_ORDER_SUCCESS,
+    payload: order,
+});
 
-export function fetchOrderFail(error) {
-    return {
-        type:    FETCH_ORDER_FAIL,
-        payload: error,
-        error:   true,
-    };
-}
+export const fetchOrderFail = error => ({
+    type:    FETCH_ORDER_FAIL,
+    payload: error,
+    error:   true,
+});
 
 // report
-export function fetchReport(report) {
-    return {
-        type:    FETCH_REPORT,
-        payload: report,
-    };
-}
+export const fetchReport = report => ({
+    type:    FETCH_REPORT,
+    payload: report,
+});
 
-export function fetchReportSuccess(report) {
-    return {
-        type:    FETCH_ORDER_SUCCESS,
-        payload: report,
-    };
-}
+export const fetchReportSuccess = report => ({
+    type:    FETCH_ORDER_SUCCESS,
+    payload: report,
+});
 
-export function fetchReportFail(error) {
-    return {
-        type:    FETCH_ORDER_FAIL,
-        payload: error,
-        error:   true,
-    };
-}
+export const fetchReportFail = error => ({
+    type:    FETCH_ORDER_FAIL,
+    payload: error,
+    error:   true,
+});
 
 export const getReport = report => ({
     type:    GET_REPORT,

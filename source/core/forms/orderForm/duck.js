@@ -17,6 +17,9 @@ export const CREATE_ORDER_SUCCESS = `${prefix}/CREATE_ORDER_SUCCESS`;
 export const UPDATE_ORDER = `${prefix}/UPDATE_ORDER`;
 export const UPDATE_ORDER_SUCCESS = `${prefix}/UPDATE_ORDER_SUCCESS`;
 
+export const FETCH_ADD_ORDER_FORM = `${prefix}/FETCH_ADD_ORDER_FORM`;
+export const FETCH_ADD_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ADD_ORDER_FORM_SUCCESS`;
+
 export const FETCH_ORDER_FORM = `${prefix}/FETCH_ORDER_FORM`;
 export const FETCH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ORDER_FORM_SUCCESS`;
 
@@ -32,9 +35,6 @@ export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 export const ON_SERVICE_SEARCH = `${prefix}/ON_SERVICE_SEARCH`;
 export const ON_DETAIL_SEARCH = `${prefix}/ON_DETAIL_SEARCH`;
 export const ON_BRAND_SEARCH = `${prefix}/ON_BRAND_SEARCH`;
-
-export const FETCH_ADD_ORDER_FORM = `${prefix}/FETCH_ADD_ORDER_FORM`;
-export const FETCH_ADD_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ADD_ORDER_FORM_SUCCESS`;
 
 export const ON_HANDLE_CUSTOM_SERVICE = `${prefix}/ON_HANDLE_CUSTOM_SERVICE`;
 export const ON_HANDLE_CUSTOM_DETAIL = `${prefix}/ON_HANDLE_CUSTOM_DETAIL`;
@@ -54,7 +54,6 @@ export const CREATE_INVITE_ORDER_SUCCESS = `${prefix}/CREATE_INVITE_ORDER_SUCCES
 //orderTasks
 export const FETCH_ORDER_TASK = `${prefix}/FETCH_ORDER_TASK`;
 export const FETCH_ORDER_TASK_SUCCESS = `${prefix}/FETCH_ORDER_TASK_SUCCESS`;
-export const FETCH_ORDER_TASK_FAIL = `${prefix}/FETCH_ORDER_TASK_FAIL`;
 
 import { customFieldValue, defaultFieldValue } from './helpers/utils';
 
@@ -146,40 +145,6 @@ const createDefaultState = () => ({
 
 const ReducerState = createDefaultState();
 
-// orderTasks
-export function fetchOrderTask(id) {
-    return {
-        type:    FETCH_ORDER_TASK,
-        payload: id,
-    };
-}
-
-export function fetchOrderTaskSuccess(data) {
-    return {
-        type:    FETCH_ORDER_TASK_SUCCESS,
-        payload: data,
-    };
-}
-
-export function fetchOrderTaskFail(error) {
-    return {
-        type:    FETCH_ORDER_TASK_FAIL,
-        payload: error,
-        error:   true,
-    };
-}
-
-export const fetchAddOrderForm = () => ({
-    type: FETCH_ADD_ORDER_FORM,
-});
-
-export function fetchAddOrderFormSuccess(data) {
-    return {
-        type:    FETCH_ADD_ORDER_FORM_SUCCESS,
-        payload: data,
-    };
-}
-
 function calculateAllBrands(allBrands, selectedBrands) {
     const selectedValues = _(selectedBrands)
         .values()
@@ -218,6 +183,12 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
     /* eslint-disable */
     switch (type) {
+        case FETCH_ADD_ORDER_FORM_SUCCESS:
+            return {
+                ...state,
+                ...payload,
+            };
+
         case FETCH_ORDER_FORM_SUCCESS:
             const newState = {
                 ...state,
@@ -558,7 +529,6 @@ export default function reducer(state = ReducerState, action) {
 export const orderSelector = state => state.forms[ moduleName ].order;
 
 export const selectInviteData = createSelector(orderSelector, order => {
-    console.log('→ order', order);
     const hasInviteStatus = [ 'success', 'cancel' ].includes(order.status);
 
     const isInviteVisible =
@@ -587,6 +557,25 @@ export const fetchOrderForm = id => ({
 
 export const fetchOrderFormSuccess = data => ({
     type:    FETCH_ORDER_FORM_SUCCESS,
+    payload: data,
+});
+
+export const fetchAddOrderForm = () => ({
+    type: FETCH_ADD_ORDER_FORM,
+});
+
+export const fetchAddOrderFormSuccess = data => ({
+    type:    FETCH_ADD_ORDER_FORM_SUCCESS,
+    payload: data,
+});
+
+export const fetchOrderTask = id => ({
+    type:    FETCH_ORDER_TASK,
+    payload: id,
+});
+
+export const fetchOrderTaskSuccess = data => ({
+    type:    FETCH_ORDER_TASK_SUCCESS,
     payload: data,
 });
 
@@ -663,9 +652,9 @@ export const setCreateStatus = status => ({
     payload: status,
 });
 
-export const submitOrderForm = addOrderForm => ({
+export const submitOrderForm = orderForm => ({
     type:    SUBMIT_ORDER_FORM,
-    payload: addOrderForm,
+    payload: orderForm,
 });
 
 export const submitOrderFormSuccess = () => ({

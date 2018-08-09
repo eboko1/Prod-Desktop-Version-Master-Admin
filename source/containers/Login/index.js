@@ -51,12 +51,9 @@ export default class Login extends Component {
     };
 
     _handleRoleTab = type => {
-        console.log('type', this.state.fields.type);
         const role = this.state.fields.type.value;
-        console.log('role', role);
-        this.setState(prevState => {
-            console.log('prevState', prevState.fields);
 
+        this.setState(prevState => {
             return {
                 fields: {
                     ...prevState.fields,

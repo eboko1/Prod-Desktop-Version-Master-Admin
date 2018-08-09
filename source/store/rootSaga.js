@@ -10,11 +10,9 @@ import ui from 'core/ui/saga';
 import { saga as dashboardSaga } from 'core/dashboard/saga';
 import { saga as ordersSaga } from 'core/orders/saga';
 import { saga as orderSaga } from 'core/order/saga';
-import { saga as addOrderSaga } from 'core/addOrder/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
-import { saga as addOrderFormSaga } from 'core/forms/addOrderForm/saga';
 import { saga as orderTaskFormSaga } from 'core/forms/orderTaskForm/saga';
 
 import { saga as orderFormSaga } from 'core/forms/orderForm/saga';
@@ -30,9 +28,7 @@ export default function* rootSaga() {
         ui.layoutCollapsedWatcher(),
         ordersSaga(),
         orderSaga(),
-        addOrderSaga(),
         universalFiltersFormSaga(),
-        addOrderFormSaga(),
         orderFormSaga(),
         addClientFormSaga(),
         dashboardSaga(),

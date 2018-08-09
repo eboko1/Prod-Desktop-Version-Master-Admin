@@ -64,7 +64,7 @@ const mapStateToProps = state => {
         clients:               state.forms.orderForm.clients,
         allDetails:            state.forms.orderForm.allDetails,
         allServices:           state.forms.orderForm.allServices,
-        requisites:            state.forms.addOrderForm.requisites,
+        requisites:            state.forms.orderForm.requisites,
         addClientFormData:     state.forms.addClientForm.data,
         orderComments:         state.forms.orderForm.orderComments,
         order:                 state.forms.orderForm.order,
@@ -127,7 +127,7 @@ class OrderPage extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 // eslint-disable-next-line
-                console.log("Received values of AddClientForm: ", values);
+                console.info("Received values of AddClientForm: ", values);
             }
         });
         this.props.resetModal();

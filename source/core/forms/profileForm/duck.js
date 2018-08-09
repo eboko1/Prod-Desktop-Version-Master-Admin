@@ -71,8 +71,6 @@ export default function reducer(state = ReducerState, action) {
                 ...action.payload[ action.meta.field ],
             });
 
-            // console.log('→ newState', newState);
-
             return newState;
         }
 
@@ -86,12 +84,6 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
-// export const ordersSelector = createSelector(stateSelector, state => {
-//     // console.log('ordersSelector', state.orders);
-//
-//     // return state.orders.valueSeq().toArray();
-//     return state.data.orders;
-// });
 
 /**
  * Action Creators

@@ -31,14 +31,14 @@ import {
 
 const mapStateToProps = state => {
     return {
-        stations:          state.forms.addOrderForm.stations,
-        vehicles:          state.forms.addOrderForm.vehicles,
-        employees:         state.forms.addOrderForm.employees,
-        managers:          state.forms.addOrderForm.managers,
-        clients:           state.forms.addOrderForm.clients.clients,
+        stations:          state.forms.orderForm.stations,
+        vehicles:          state.forms.orderForm.vehicles,
+        employees:         state.forms.orderForm.employees,
+        managers:          state.forms.orderForm.managers,
+        clients:           state.forms.orderForm.clients.clients,
         allDetails:        state.forms.orderForm.allDetails,
         allServices:       state.forms.orderForm.allServices,
-        requisites:        state.forms.addOrderForm.requisites,
+        requisites:        state.forms.orderForm.requisites,
         addClientModal:    state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
         createOrderStatus: state.forms.orderForm.fields.createOrderStatus.value,
@@ -99,7 +99,8 @@ class AddOrderPage extends Component {
         this.setAddClientModal();
         form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of AddClientForm: ', values);
+                // TBD: @yan
+                // console.log('Received values of AddClientForm: ', values);
             }
         });
         this.props.resetModal();
@@ -184,7 +185,7 @@ class AddOrderPage extends Component {
                     wrappedComponentRef={ this.saveOrderFormRef }
                     setAddClientModal={ this.setAddClientModal }
                     addClientModal={ addClientModal }
-                    addOrderForm
+                    orderForm
                 />
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
