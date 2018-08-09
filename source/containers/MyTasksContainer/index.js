@@ -12,12 +12,14 @@ import {
     DecoratedDatePicker,
     DecoratedTimePicker,
 } from 'forms/DecoratedFields';
+import { v4 } from 'uuid';
+
 // proj
 import { withReduxForm, getDateTimeConfig } from 'utils';
 
 // import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
-import { fetchMyTasks, onChangeMyTasksForm } from 'core/containers/MyTasksContainer/duck';
+import { fetchMyTasks, onChangeMyTasksForm } from 'core/myTasks/duck';
 
 import { Catcher } from 'commons';
 import { OrderTaskModal } from 'modals';
@@ -223,7 +225,11 @@ export default class MyTasksContainer extends Component {
                 </section>
                 <section className={ Styles.filters }>
                     <Table 
-                        dataSource={ myTasks&&myTasks.orderTasks.length>0? myTasks.orderTasks:[] }
+                        dataSource={ myTasks&&myTasks.orderTasks.length>0? myTasks.orderTasks.map((task, index) => ({
+                            ...task,
+                            index,
+                            key: v4(),
+                        })):[] }
                         size='small'
                         scroll={ { x: 2000 } }
                         columns={ columns }

@@ -19,7 +19,7 @@ import { saga as orderTaskFormSaga } from 'core/forms/orderTaskForm/saga';
 
 import { saga as orderFormSaga } from 'core/forms/orderForm/saga';
 import { saga as addClientFormSaga } from 'core/forms/addClientForm/saga';
-import { saga as myTasksContainerSaga } from 'core/containers/MyTasksContainer/saga';
+import { saga as myTasksContainerSaga } from 'core/myTasks/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
