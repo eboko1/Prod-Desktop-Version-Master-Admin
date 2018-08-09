@@ -97,12 +97,12 @@ const mapDispatchToProps = {
     changeModalStatus,
 };
 
-@withRouter
+// @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
 class OrderPage extends Component {
     componentDidMount() {
+        console.log('→ this.props.id', this.props.order.id);
         this.props.fetchOrderForm(this.props.match.params.id);
-        // TBD: @andrey
         this.props.fetchOrderTask(this.props.match.params.id);
     }
 
@@ -171,6 +171,7 @@ class OrderPage extends Component {
             }
         });
     };
+
     /* eslint-disable complexity*/
     render() {
         const {
@@ -188,6 +189,9 @@ class OrderPage extends Component {
         const hasInviteStatus = [ 'success', 'cancel' ].includes(
             _.get(this.props, 'order.status'),
         );
+
+        console.log('render', id);
+
         const isInviteVisible =
             !this.props.inviteOrderId &&
             _.get(this.props, 'order.id') &&
@@ -225,14 +229,24 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
-                        {hasInviteStatus ? (
+                        {hasInviteStatus &&
+                            this.props.inviteOrderId && (
                             <Link
-                                visible={ this.props.inviteOrderId }
-                                to={ `${book.order}/${this.props.inviteOrderId}` }
+                                to={ `${book.order}/${
+                                    this.props.inviteOrderId
+                                }` }
+                                onClick={ () => {
+                                    this.props.fetchOrderForm(
+                                        this.props.match.params.id,
+                                    );
+                                    this.props.fetchOrderTask(
+                                        this.props.match.params.id,
+                                    );
+                                } }
                             >
                                 { this.props.inviteOrderId }
                             </Link>
-                        ) : null}
+                        )}
 
                         {isInviteVisible ? (
                             <Button
