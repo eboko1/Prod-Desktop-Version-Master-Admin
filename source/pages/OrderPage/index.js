@@ -104,9 +104,9 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 class OrderPage extends Component {
     componentDidMount() {
-        console.log('→ this.props.id', this.props.order.id);
-        this.props.fetchOrderForm(this.props.match.params.id);
-        this.props.fetchOrderTask(this.props.match.params.id);
+        const { fetchOrderForm, fetchOrderTask, match } = this.props;
+        fetchOrderForm(match.params.id);
+        fetchOrderTask(match.params.id);
     }
 
     saveFormRef = formRef => {
@@ -184,6 +184,7 @@ class OrderPage extends Component {
             hasInviteStatus,
             isInviteVisible,
             isInviteEnabled,
+            inviteOrderId,
             modal,
             addClientFormData,
             isMobile,
@@ -191,25 +192,6 @@ class OrderPage extends Component {
 
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
-
-        // const hasInviteStatus = [ 'success', 'cancel' ].includes(
-        //     _.get(this.props, 'order.status'),
-        // );
-        //
-        // const isInviteVisible =
-        //     !this.props.inviteOrderId &&
-        //     _.get(this.props, 'order.id') &&
-        //     _.get(this.props, 'order.status') &&
-        //     hasInviteStatus;
-        //
-        // const isInviteEnabled =
-        //     _.get(this.props, 'order.id') &&
-        //     _.get(this.props, 'order.status') &&
-        //     hasInviteStatus &&
-        //     _.get(this.props, 'order.clientVehicleId') &&
-        //     _.get(this.props, 'order.clientId') &&
-        //     _.get(this.props, 'order.clientPhone') &&
-        //     !this.props.invited;
 
         return !spinner ? (
             <Layout
@@ -234,25 +216,22 @@ class OrderPage extends Component {
                 controls={
                     <>
                         {hasInviteStatus &&
-                            this.props.inviteOrderId && (
+                            inviteOrderId && (
                             <Link
-                                to={ `${book.order}/${
-                                    this.props.inviteOrderId
-                                }` }
+                                to={ `${book.order}/${inviteOrderId}` }
                                 onClick={ () => {
                                     this.props.fetchOrderForm(
-                                        this.props.match.params.id,
+                                        inviteOrderId,
                                     );
                                     this.props.fetchOrderTask(
-                                        this.props.match.params.id,
+                                        inviteOrderId,
                                     );
                                 } }
                             >
-                                { this.props.inviteOrderId }
+                                { inviteOrderId }
                             </Link>
                         )}
-                        {console.log('→ isInviteVisible', isInviteVisible)}
-                        {isInviteVisible ? (
+                        {isInviteVisible && !inviteOrderId ? (
                             <Button
                                 disabled={ !isInviteEnabled }
                                 onClick={ () => {
