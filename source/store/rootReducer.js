@@ -4,7 +4,6 @@ import { routerReducer as router } from 'react-router-redux';
 
 // proj
 import intl from 'core/intl/reducer';
-import swapi from 'core/swapi/reducer';
 import ui from 'core/ui/reducer';
 import auth from 'core/auth/reducer';
 import { formsReducer as forms } from 'core/forms';
@@ -23,7 +22,6 @@ const rootReducer = combineReducers({
     auth,
     forms,
     router,
-    swapi,
     ui,
     [ ordersModule ]:    ordersReducer,
     [ orderModule ]:     orderReducer,

@@ -24,7 +24,11 @@ export default class Private extends Component {
                     component={ OrdersPage }
                     path={ book.ordersByStatuses }
                 />
-                <Route exact component={ OrderPage } path={ book.orderId } />
+                <Route
+                    exact
+                    render={ props => <OrderPage { ...props } /> }
+                    path={ book.orderId }
+                />
                 <Route exact component={ AddOrderPage } path={ book.addOrder } />
                 <Route exact component={ ProfilePage } path={ book.profile } />
                 <Route exact component={ MyTasksPage } path={ book.myTasksPage } />

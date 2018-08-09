@@ -75,6 +75,7 @@
         "name": "Имя",
         "text": "Текст",
         "sum": "Сумма",
+        "transfer_not_complete": "Новый",
         "transfer_required": "Отложить",
         "transfer_reserve": "Резерв",
         "transfer_call": "Звонок",

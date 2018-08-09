@@ -3,7 +3,6 @@ import { all } from 'redux-saga/effects';
 
 //own
 // global
-import swapi from 'core/swapi/saga/watchers';
 import auth from 'core/auth/saga/watchers';
 import intl from 'core/intl/saga/watchers';
 import ui from 'core/ui/saga';
@@ -27,7 +26,6 @@ export default function* rootSaga() {
     yield all([
         auth.loginWatcher(),
         auth.logoutWatcher(),
-        swapi.fetchSwapiWatcher(),
         intl.updateIntlWatcher(),
         ui.layoutCollapsedWatcher(),
         ordersSaga(),
