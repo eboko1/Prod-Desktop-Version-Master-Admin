@@ -32,6 +32,10 @@ import mapOrders from './dashboardCore/mapOrders';
 import ordersPuzzle from './dashboardCore/ordersPuzzle';
 
 export default class DashboardContainer extends Component {
+    state = {
+        currentDay: moment().format('YYYY-MM-DD'),
+    };
+
     _saveDashboardRef = dashboardRef => {
         this.dashboardRef = dashboardRef;
     };
@@ -80,14 +84,8 @@ export default class DashboardContainer extends Component {
     };
 
     _renderDashboardColumns = () => {
-        const {
-            dashboard,
-            currentDay,
-            days,
-            stations,
-            load,
-            mode,
-        } = this.props;
+        const { dashboard, days, stations, load, mode } = this.props;
+        const { currentDay } = this.state;
 
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => (
             <DashboardColumn
@@ -99,14 +97,14 @@ export default class DashboardContainer extends Component {
                 station={ stations ? stations[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length &&
+                    { load.length && 
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) :
+                                ) : 
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>

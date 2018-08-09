@@ -3,6 +3,9 @@ import React, { Component } from 'react';
 // import { findDOMNode } from 'react-dom';
 import styled from 'styled-components';
 
+// own
+import DashboardOrder from '../DashboardOrder';
+
 class TooltipBox extends Component {
     render() {
         const {
@@ -34,7 +37,9 @@ class TooltipBox extends Component {
                 </div>
                 { comment && (
                     <div>
-                        Коментарий:
+                        <span style={ { color: 'var(--link)' } }>
+                            Коментарий:
+                        </span>
                         <DashboardTooltipComment>
                             { comment }
                         </DashboardTooltipComment>
@@ -46,7 +51,7 @@ class TooltipBox extends Component {
 }
 
 const DashboardTooltipComment = styled.div`
-    border: 1px #93a5b1 dashed;
+    border: 1px var(--link) solid;
     padding: 2px;
     overflow: hidden;
     display: -webkit-box;
@@ -59,23 +64,21 @@ const DashboardTooltip = styled(TooltipBox)`
     border: 1px solid var(--link);
     box-sizing: border-box;
     color: #fff;
-    display: ${props => props.visible ? 'none' : 'flex'};
-    flex-direction: column;
+    display: none;
+    ${'' /* display: ${props => props.visible ? 'none' : 'flex'}; */} flex-direction: column;
     justify-content: space-around;
     max-height: 200px;
     overflow: hidden;
-    padding: 5px;
+    padding: 5px 5px 10px 5px;
     position: absolute;
-    width: 100%;
+    width: 200px;
     word-break: break-all;
     z-index: 3000;
-    transform: translate(100%, -30%);
+    transform: translate(35%, -30%);
+
+    ${DashboardOrder}:hover & {
+        display: flex;
+    }
 `;
 
 export default DashboardTooltip;
-
-// &__field {
-//
-//   & > span {
-//     word-break: normal;
-//   }
