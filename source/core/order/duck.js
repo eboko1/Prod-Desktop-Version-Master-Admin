@@ -1,3 +1,4 @@
+import { createSelector } from 'reselect';
 /**
  * Constants
  * */
@@ -55,11 +56,26 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
-// export const ordersSelector = createSelector(stateSelector, state => {
-//     // console.log('ordersSelector', state.orders);
+
+// const getOrder = state => state.order;
+
+// export const selectInviteData = createSelector(stateSelector, order => {
+//     console.log('→ order', order);
+//     const hasInviteStatus = [ 'success', 'cancel' ].includes(order.status);
 //
-//     // return state.orders.valueSeq().toArray();
-//     return state.data.orders;
+//     const isInviteVisible =
+//         !order.inviteOrderId && order.id && order.status && hasInviteStatus;
+//
+//     const isInviteEnabled =
+//         hasInviteStatus &&
+//         order.id &&
+//         order.status &&
+//         order.clientVehicleId &&
+//         order.clientId &&
+//         order.clientPhone &&
+//         !order.invited;
+//
+//     return { hasInviteStatus, isInviteVisible, isInviteEnabled };
 // });
 
 /**

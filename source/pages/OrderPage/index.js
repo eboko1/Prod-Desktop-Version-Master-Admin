@@ -9,12 +9,14 @@ import moment from 'moment';
 import _ from 'lodash';
 
 // proj
+// import { selectInviteData } from 'core/order/duck';
 import {
     fetchOrderForm,
     updateOrder,
     returnToOrdersPage,
     createInviteOrder,
     fetchOrderTask,
+    selectInviteData,
 } from 'core/forms/orderForm/duck';
 import {
     resetOrderTasksForm,
@@ -78,6 +80,7 @@ const mapStateToProps = state => {
             selectedClient: state.forms.orderForm.selectedClient,
         },
         isMobile: state.ui.get('isMobile'),
+        ...selectInviteData(state),
     };
 };
 
@@ -178,6 +181,9 @@ class OrderPage extends Component {
             setModal,
             resetModal,
             spinner,
+            hasInviteStatus,
+            isInviteVisible,
+            isInviteEnabled,
             modal,
             addClientFormData,
             isMobile,
@@ -186,26 +192,24 @@ class OrderPage extends Component {
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
 
-        const hasInviteStatus = [ 'success', 'cancel' ].includes(
-            _.get(this.props, 'order.status'),
-        );
-
-        console.log('render', id);
-
-        const isInviteVisible =
-            !this.props.inviteOrderId &&
-            _.get(this.props, 'order.id') &&
-            _.get(this.props, 'order.status') &&
-            hasInviteStatus;
-
-        const isInviteEnabled =
-            _.get(this.props, 'order.id') &&
-            _.get(this.props, 'order.status') &&
-            hasInviteStatus &&
-            _.get(this.props, 'order.clientVehicleId') &&
-            _.get(this.props, 'order.clientId') &&
-            _.get(this.props, 'order.clientPhone') &&
-            !this.props.invited;
+        // const hasInviteStatus = [ 'success', 'cancel' ].includes(
+        //     _.get(this.props, 'order.status'),
+        // );
+        //
+        // const isInviteVisible =
+        //     !this.props.inviteOrderId &&
+        //     _.get(this.props, 'order.id') &&
+        //     _.get(this.props, 'order.status') &&
+        //     hasInviteStatus;
+        //
+        // const isInviteEnabled =
+        //     _.get(this.props, 'order.id') &&
+        //     _.get(this.props, 'order.status') &&
+        //     hasInviteStatus &&
+        //     _.get(this.props, 'order.clientVehicleId') &&
+        //     _.get(this.props, 'order.clientId') &&
+        //     _.get(this.props, 'order.clientPhone') &&
+        //     !this.props.invited;
 
         return !spinner ? (
             <Layout
@@ -247,7 +251,7 @@ class OrderPage extends Component {
                                 { this.props.inviteOrderId }
                             </Link>
                         )}
-
+                        {console.log('→ isInviteVisible', isInviteVisible)}
                         {isInviteVisible ? (
                             <Button
                                 disabled={ !isInviteEnabled }
