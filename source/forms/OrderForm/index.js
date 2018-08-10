@@ -1,12 +1,12 @@
 // vendor
-import React, { Component } from "react";
-import { Form, Select, Input, Icon } from "antd";
-import { injectIntl, FormattedMessage } from "react-intl";
-import { v4 } from "uuid";
-import _ from "lodash";
+import React, { Component } from 'react';
+import { Form, Select, Input, Icon } from 'antd';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { v4 } from 'uuid';
+import _ from 'lodash';
 
 //proj
-import book from "routes/book";
+import book from 'routes/book';
 import {
     onChangeOrderForm,
     setClientSelection,
@@ -14,46 +14,41 @@ import {
     onChangeOrderDetails,
     onServiceSearch,
     onDetailSearch,
-    onBrandSearch
-} from "core/forms/orderForm/duck";
-import { initOrderTasksForm } from "core/forms/orderTaskForm/duck";
-import { defaultDetails } from "core/forms/orderForm/helpers/details";
+    onBrandSearch,
+} from 'core/forms/orderForm/duck';
+import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
+import { defaultDetails } from 'core/forms/orderForm/helpers/details';
 
 import {
     DecoratedInput,
     DecoratedSelect,
     DecoratedInputNumber,
     DecoratedDatePicker,
-    DecoratedTextArea
-} from "forms/DecoratedFields";
+    DecoratedTextArea,
+} from 'forms/DecoratedFields';
 
-import { ClientsSearchTable } from "components/OrderForm/OrderFormTables";
-import { OrderFormTabs } from "components/OrderForm/OrderFormTabs";
+import { ClientsSearchTable } from 'components/OrderForm/OrderFormTables';
+import { OrderFormTabs } from 'components/OrderForm/OrderFormTabs';
 
-import { withReduxForm, getDateTimeConfig, images } from "utils";
+import { withReduxForm, getDateTimeConfig, images } from 'utils';
 import {
     formItemAutoColLayout,
     formItemLayout,
-    formItemTotalLayout
-} from "./layouts";
-import { servicesStats, detailsStats } from "./stats";
+    formItemTotalLayout,
+} from './layouts';
+import { servicesStats, detailsStats } from './stats';
 
 // own
-import Styles from "./styles.m.css";
+import Styles from './styles.m.css';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
 @withReduxForm({
-    name: "orderForm",
-    debouncedFields: [
-        "comment",
-        "recommendation",
-        "vehicleCondition",
-        "businessComment"
-    ],
-    actions: {
+    name:            'orderForm',
+    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
+    actions:         {
         change: onChangeOrderForm,
         setClientSelection,
         onChangeOrderServices,
@@ -61,8 +56,8 @@ const Option = Select.Option;
         onServiceSearch,
         onDetailSearch,
         onBrandSearch,
-        initOrderTasksForm
-    }
+        initOrderTasksForm,
+    },
 })
 export class OrderForm extends Component {
     /* eslint-disable complexity */
@@ -73,11 +68,11 @@ export class OrderForm extends Component {
         const totalBlock = this._renderTotalBlock();
 
         return (
-            <Form className={Styles.form} layout="horizontal">
-                {dateBlock}
-                {clientsSearchTable}
-                {clientBlock}
-                {totalBlock}
+            <Form className={ Styles.form } layout='horizontal'>
+                { dateBlock }
+                { clientsSearchTable }
+                { clientBlock }
+                { totalBlock }
             </Form>
         );
     }
@@ -86,15 +81,15 @@ export class OrderForm extends Component {
         const {
             searchClientsResult: { searching: clientsSearching, clients },
             setClientSelection,
-            fields
+            fields,
         } = this.props;
 
         return (
             <ClientsSearchTable
-                clientsSearching={clientsSearching}
-                setClientSelection={setClientSelection}
-                visible={!!fields.searchClientQuery.value}
-                clients={clients}
+                clientsSearching={ clientsSearching }
+                setClientSelection={ setClientSelection }
+                visible={ !!fields.searchClientQuery.value }
+                clients={ clients }
             />
         );
     };
@@ -111,88 +106,88 @@ export class OrderForm extends Component {
             disabledHours,
             disabledMinutes,
             disabledSeconds,
-            disabledTime
+            disabledTime,
         } = getDateTimeConfig(beginDatetime, this.props.schedule);
 
         return (
-            <div className={Styles.datePanel}>
+            <div className={ Styles.datePanel }>
                 <DecoratedDatePicker
-                    getFieldDecorator={getFieldDecorator}
-                    field="beginDatetime"
+                    getFieldDecorator={ getFieldDecorator }
+                    field='beginDatetime'
                     hasFeedback
                     formItem
-                    formatMessage={formatMessage}
+                    formatMessage={ formatMessage }
                     label={
-                        <FormattedMessage id="add_order_form.enrollment_date" />
+                        <FormattedMessage id='add_order_form.enrollment_date' />
                     }
-                    colon={false}
-                    className={Styles.datePanelItem}
-                    rules={[
+                    colon={ false }
+                    className={ Styles.datePanelItem }
+                    rules={ [
                         {
                             required: true,
-                            message: ""
-                        }
-                    ]}
-                    placeholder={formatMessage({
-                        id: "add_order_form.select_date",
-                        defaultMessage: "Provide date"
-                    })}
-                    disabledDate={disabledDate}
-                    disabledTime={disabledTime}
-                    format={"YYYY-MM-DD HH:mm"}
-                    showTime={{
+                            message:  '',
+                        },
+                    ] }
+                    placeholder={ formatMessage({
+                        id:             'add_order_form.select_date',
+                        defaultMessage: 'Provide date',
+                    }) }
+                    disabledDate={ disabledDate }
+                    disabledTime={ disabledTime }
+                    format={ 'YYYY-MM-DD HH:mm' }
+                    showTime={ {
                         disabledHours,
                         disabledMinutes,
                         disabledSeconds,
-                        format: "HH:mm"
-                    }}
+                        format: 'HH:mm',
+                    } }
                 />
                 <DecoratedSelect
-                    field="station"
-                    rules={[
+                    field='station'
+                    rules={ [
                         {
                             required: true,
-                            message: "provide station"
-                        }
-                    ]}
+                            message:  'provide station',
+                        },
+                    ] }
                     formItem
-                    label={<FormattedMessage id="add_order_form.station" />}
-                    colon={false}
+                    label={ <FormattedMessage id='add_order_form.station' /> }
+                    colon={ false }
                     hasFeedback
-                    className={Styles.datePanelItem}
-                    getFieldDecorator={getFieldDecorator}
+                    className={ Styles.datePanelItem }
+                    getFieldDecorator={ getFieldDecorator }
                     placeholder={
-                        <FormattedMessage id="add_order_form.select_station" />
+                        <FormattedMessage id='add_order_form.select_station' />
                     }
-                    options={stations}
-                    optionValue="num"
-                    optionLabel="name"
+                    options={ stations }
+                    optionValue='num'
+                    optionLabel='name'
                 />
                 <DecoratedSelect
-                    field="manager"
+                    field='manager'
                     formItem
-                    getFieldDecorator={getFieldDecorator}
-                    rules={[
+                    getFieldDecorator={ getFieldDecorator }
+                    rules={ [
                         {
                             required: true,
-                            message: "Please select your manager!"
-                        }
-                    ]}
-                    label={<FormattedMessage id="add_order_form.manager" />}
+                            message:  'Please select your manager!',
+                        },
+                    ] }
+                    label={ <FormattedMessage id='add_order_form.manager' /> }
                     hasFeedback
-                    colon={false}
-                    className={Styles.datePanelItem}
-                    placeholder="Выберете менеджера"
+                    colon={ false }
+                    className={ Styles.datePanelItem }
+                    placeholder='Выберете менеджера'
                 >
-                    {managers.map(manager => (
+                    { managers.map(manager => (
                         <Option
-                            disabled={manager.disabled}
-                            value={manager.id}
-                            key={v4()}
+                            disabled={ manager.disabled }
+                            value={ manager.id }
+                            key={ v4() }
                         >
-                            {`${manager.managerName} ${manager.managerSurname}`}
+                            { `${manager.managerName} ${manager.managerSurname}` }
                         </Option>
-                    ))}
+                    )) }
                 </DecoratedSelect>
             </div>
         );
@@ -203,9 +198,9 @@ export class OrderForm extends Component {
         const vehicleColumn = this._renderVehicleColumn();
 
         return (
-            <div className={Styles.clientBlock}>
-                {clientColumn}
-                {vehicleColumn}
+            <div className={ Styles.clientBlock }>
+                { clientColumn }
+                { vehicleColumn }
             </div>
         );
     };
@@ -216,126 +211,126 @@ export class OrderForm extends Component {
         const { getFieldDecorator } = this.props.form;
 
         const disabledClientSearch =
-            (!_.get(this.props, "order.status") ||
-                _.get(this.props, "order.status") !== "reserve") &&
-            _.get(this.props, "order.clientId");
+            (!_.get(this.props, 'order.status') ||
+                _.get(this.props, 'order.status') !== 'reserve') &&
+            _.get(this.props, 'order.clientId');
 
-        const hasClient = !!_.get(this.props, "order.clientId");
+        const hasClient = !!_.get(this.props, 'order.clientId');
 
         return (
-            <div className={Styles.clientCol}>
-                <div className={Styles.client}>
+            <div className={ Styles.clientCol }>
+                <div className={ Styles.client }>
                     <FormItem
-                        label={<FormattedMessage id="add_order_form.client" />}
-                        colon={false}
+                        label={ <FormattedMessage id='add_order_form.client' /> }
+                        colon={ false }
                     >
                         <DecoratedInput
-                            field="searchClientQuery"
-                            getFieldDecorator={getFieldDecorator}
-                            disabled={Boolean(disabledClientSearch)}
-                            placeholder={formatMessage({
-                                id: "add_order_form.client.placeholder",
-                                defaultMessage: "search client"
-                            })}
+                            field='searchClientQuery'
+                            getFieldDecorator={ getFieldDecorator }
+                            disabled={ Boolean(disabledClientSearch) }
+                            placeholder={ formatMessage({
+                                id:             'add_order_form.client.placeholder',
+                                defaultMessage: 'search client',
+                            }) }
                         />
-                        {!disabledClientSearch && (
+                        { !disabledClientSearch && (
                             <Icon
-                                type="plus"
-                                className={Styles.addClientIcon}
-                                onClick={() => this.props.setAddClientModal()}
+                                type='plus'
+                                className={ Styles.addClientIcon }
+                                onClick={ () => this.props.setAddClientModal() }
                             />
-                        )}
-                        {hasClient && (
+                        ) }
+                        { hasClient && (
                             <a
-                                href={`${book.oldApp.clients}/${
+                                href={ `${book.oldApp.clients}/${
                                     this.props.order.clientId
-                                }?ref=/orders/${this.props.order.id}`}
+                                }?ref=/orders/${this.props.order.id}` }
                             >
                                 <Icon
-                                    type="edit"
-                                    className={Styles.editClientIcon}
+                                    type='edit'
+                                    className={ Styles.editClientIcon }
                                 />
                             </a>
-                        )}
+                        ) }
                     </FormItem>
                 </div>
                 <FormItem
-                    label={<FormattedMessage id="add_order_form.name" />}
-                    {...formItemLayout}
+                    label={ <FormattedMessage id='add_order_form.name' /> }
+                    { ...formItemLayout }
                 >
                     <Input
-                        placeholder={formatMessage({
-                            id: "add_order_form.select_name",
-                            defaultMessage: "Select client"
-                        })}
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.select_name',
+                            defaultMessage: 'Select client',
+                        }) }
                         disabled
                         value={
                             selectedClient.name || selectedClient.surname
                                 ? (selectedClient.surname
-                                      ? selectedClient.surname + " "
-                                      : "") + `${selectedClient.name}`
+                                    ? selectedClient.surname + ' '
+                                    : '') + `${selectedClient.name}`
                                 : void 0
                         }
                     />
                 </FormItem>
                 <DecoratedSelect
-                    label={<FormattedMessage id="add_order_form.phone" />}
-                    field="clientPhone"
+                    label={ <FormattedMessage id='add_order_form.phone' /> }
+                    field='clientPhone'
                     formItem
-                    formItemLayout={formItemLayout}
+                    formItemLayout={ formItemLayout }
                     hasFeedback
-                    className={Styles.clientCol}
-                    colon={false}
-                    rules={[
+                    className={ Styles.clientCol }
+                    colon={ false }
+                    rules={ [
                         {
                             required: true,
-                            message: ""
-                        }
-                    ]}
-                    getFieldDecorator={getFieldDecorator}
-                    placeholder={"Choose selected client phone"}
+                            message:  '',
+                        },
+                    ] }
+                    getFieldDecorator={ getFieldDecorator }
+                    placeholder={ 'Choose selected client phone' }
                 >
-                    {selectedClient.phones.filter(Boolean).map(phone => (
-                        <Option value={phone} key={v4()}>
-                            {phone}
+                    { selectedClient.phones.filter(Boolean).map(phone => (
+                        <Option value={ phone } key={ v4() }>
+                            { phone }
                         </Option>
-                    ))}
+                    )) }
                 </DecoratedSelect>
                 <FormItem
-                    label={<FormattedMessage id="add_order_form.email" />}
-                    {...formItemLayout}
+                    label={ <FormattedMessage id='add_order_form.email' /> }
+                    { ...formItemLayout }
                 >
                     <DecoratedSelect
-                        field="clientEmail"
-                        getFieldDecorator={getFieldDecorator}
-                        placeholder={"Choose selected client email"}
+                        field='clientEmail'
+                        getFieldDecorator={ getFieldDecorator }
+                        placeholder={ 'Choose selected client email' }
                     >
-                        {selectedClient.emails.filter(Boolean).map(email => (
-                            <Option value={email} key={v4()}>
-                                {email}
+                        { selectedClient.emails.filter(Boolean).map(email => (
+                            <Option value={ email } key={ v4() }>
+                                { email }
                             </Option>
-                        ))}
+                        )) }
                     </DecoratedSelect>
                 </FormItem>
                 <FormItem
                     label={
-                        <FormattedMessage id="add_order_form.client_comments" />
+                        <FormattedMessage id='add_order_form.client_comments' />
                     }
                 >
                     <DecoratedTextArea
-                        getFieldDecorator={getFieldDecorator}
-                        field="comment"
-                        rules={[
+                        getFieldDecorator={ getFieldDecorator }
+                        field='comment'
+                        rules={ [
                             {
-                                max: 2000,
-                                message: "Too much"
-                            }
-                        ]}
-                        placeholder={formatMessage({
-                            id: "add_order_form.client_comments",
-                            defaultMessage: "Client_comments"
-                        })}
-                        autosize={{ minRows: 2, maxRows: 6 }}
+                                max:     2000,
+                                message: 'Too much',
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.client_comments',
+                            defaultMessage: 'Client_comments',
+                        }) }
+                        autosize={ { minRows: 2, maxRows: 6 } }
                     />
                 </FormItem>
             </div>
@@ -346,8 +341,8 @@ export class OrderForm extends Component {
         const {
             selectedClient,
             fields: {
-                clientVehicle: { value: selectedVehicleId }
-            }
+                clientVehicle: { value: selectedVehicleId },
+            },
         } = this.props;
         const { getFieldDecorator } = this.props.form;
 
@@ -356,88 +351,88 @@ export class OrderForm extends Component {
             selectedVehicleId &&
             _.first(
                 this.props.selectedClient.vehicles.filter(
-                    ({ id }) => id === selectedVehicleId
-                )
+                    ({ id }) => id === selectedVehicleId,
+                ),
             );
 
         return (
-            <div className={Styles.autoCol}>
-                <div className={Styles.auto}>
-                    <FormattedMessage id="add_order_form.car" />
+            <div className={ Styles.autoCol }>
+                <div className={ Styles.auto }>
+                    <FormattedMessage id='add_order_form.car' />
                 </div>
                 <DecoratedSelect
-                    field="clientVehicle"
+                    field='clientVehicle'
                     formItem
                     hasFeedback
-                    label={<FormattedMessage id="add_order_form.car" />}
-                    formItemLayout={formItemAutoColLayout}
-                    colon={false}
-                    className={Styles.clientCol}
-                    getFieldDecorator={getFieldDecorator}
-                    rules={[
+                    label={ <FormattedMessage id='add_order_form.car' /> }
+                    formItemLayout={ formItemAutoColLayout }
+                    colon={ false }
+                    className={ Styles.clientCol }
+                    getFieldDecorator={ getFieldDecorator }
+                    rules={ [
                         {
                             required: true,
-                            message: ""
-                        }
-                    ]}
-                    placeholder={"Choose selected client vehicle"}
-                    optionDisabled="enabled"
+                            message:  '',
+                        },
+                    ] }
+                    placeholder={ 'Choose selected client vehicle' }
+                    optionDisabled='enabled'
                 >
-                    {selectedClient.vehicles.map(vehicle => (
-                        <Option value={vehicle.id} key={v4()}>
-                            {`${vehicle.make} ${
+                    { selectedClient.vehicles.map(vehicle => (
+                        <Option value={ vehicle.id } key={ v4() }>
+                            { `${vehicle.make} ${
                                 vehicle.model
-                            } ${vehicle.number || vehicle.vin || ""}`}
+                            } ${vehicle.number || vehicle.vin || ''}` }
                         </Option>
-                    ))}
+                    )) }
                 </DecoratedSelect>
-                <div className={Styles.ecatBlock}>
+                <div className={ Styles.ecatBlock }>
                     <FormItem
                         label={
-                            <FormattedMessage id="add_order_form.car_number" />
+                            <FormattedMessage id='add_order_form.car_number' />
                         }
-                        {...formItemAutoColLayout}
-                        colon={false}
+                        { ...formItemAutoColLayout }
+                        colon={ false }
                     >
                         <Input
                             disabled
-                            value={selectedVehicle && selectedVehicle.number}
+                            value={ selectedVehicle && selectedVehicle.number }
                         />
                     </FormItem>
 
                     <DecoratedInputNumber
-                        field="odometerValue"
+                        field='odometerValue'
                         formItem
-                        colon={false}
-                        label={<FormattedMessage id="add_order_form.odometr" />}
-                        formItemLayout={formItemAutoColLayout}
-                        getFieldDecorator={getFieldDecorator}
-                        rules={[
+                        colon={ false }
+                        label={ <FormattedMessage id='add_order_form.odometr' /> }
+                        formItemLayout={ formItemAutoColLayout }
+                        getFieldDecorator={ getFieldDecorator }
+                        rules={ [
                             {
-                                type: "number",
-                                message: ""
-                            }
-                        ]}
-                        min={0}
+                                type:    'number',
+                                message: '',
+                            },
+                        ] }
+                        min={ 0 }
                     />
                     <FormItem
-                        {...formItemAutoColLayout}
-                        label={<FormattedMessage id="add_order_form.vin" />}
-                        colon={false}
+                        { ...formItemAutoColLayout }
+                        label={ <FormattedMessage id='add_order_form.vin' /> }
+                        colon={ false }
                     >
                         <Input
                             disabled
-                            value={selectedVehicle && selectedVehicle.vin}
+                            value={ selectedVehicle && selectedVehicle.vin }
                         />
                     </FormItem>
-                    <FormItem {...formItemAutoColLayout}>
+                    <FormItem { ...formItemAutoColLayout }>
                         <a
-                            className={Styles.ecat}
-                            target="_blank"
-                            rel="noreferrer noopener"
-                            href="https://ecat.ua/OriginalCatalog.aspx"
+                            className={ Styles.ecat }
+                            target='_blank'
+                            rel='noreferrer noopener'
+                            href='https://ecat.ua/OriginalCatalog.aspx'
                         >
-                            <img src={images.ecatLogo} />
+                            <img src={ images.ecatLogo } />
                         </a>
                     </FormItem>
                 </div>
@@ -458,18 +453,26 @@ export class OrderForm extends Component {
             allDetails,
             employees,
             filteredDetails,
-            setModal
+            setModal,
         } = this.props;
+
+        const {
+            comment,
+            businessComment,
+            vehicleCondition,
+            recommendation,
+        } = fields;
+
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
         const { count: countDetails, price: priceDetails } = detailsStats(
-            fields.details
+            fields.details,
         );
 
         const {
             count: countServices,
-            price: priceServices
+            price: priceServices,
             // totalHours,
         } = servicesStats(fields.services, this.props.allServices);
 
@@ -482,111 +485,106 @@ export class OrderForm extends Component {
             priceServices - priceServices * (servicesDiscount / 100);
 
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
-        const commentCount = () => {
-            let count = 0;
-            if (fields.comment && fields.comment.value) {
-                count = count + 1;
-            }
-            if (fields.businessComment && fields.businessComment.value) {
-                count = count + 1;
-            }
-            if (fields.vehicleCondition && fields.vehicleCondition.value) {
-                count = count + 1;
-            }
-            if (fields.recommendation && fields.recommendation.value) {
-                count = count + 1;
-            }
 
-            return count;
-        };
+        let commentsCount = 0;
+        if (comment && businessComment && vehicleCondition && recommendation) {
+            /* eslint-disable array-element-newline */
+            const commentsCollection = [
+                comment,
+                businessComment,
+                vehicleCondition,
+                recommendation,
+            ];
+            commentsCount = commentsCollection.filter(com => com.value).length;
+        }
 
         return (
             <>
-                <div className={Styles.totalBlock}>
-                    <div className={Styles.totalBlockCol}>
+                <div className={ Styles.totalBlock }>
+                    <div className={ Styles.totalBlockCol }>
                         <DecoratedSelect
-                            field="requisite"
+                            field='requisite'
                             formItem
                             label={
-                                <FormattedMessage id="add_order_form.service_requisites" />
+                                <FormattedMessage id='add_order_form.service_requisites' />
                             }
-                            formItemLayout={formItemTotalLayout}
-                            getFieldDecorator={getFieldDecorator}
+                            formItemLayout={ formItemTotalLayout }
+                            getFieldDecorator={ getFieldDecorator }
                             placeholder={
-                                <FormattedMessage id="add_order_form.select_requisites" />
+                                <FormattedMessage id='add_order_form.select_requisites' />
                             }
-                            options={this.props.requisites}
-                            optionValue="id"
-                            optionLabel="name"
-                            optionDisabled="disabled"
+                            options={ this.props.requisites }
+                            optionValue='id'
+                            optionLabel='name'
+                            optionDisabled='disabled'
                         />
                         <DecoratedSelect
-                            field="clientRequisite"
+                            field='clientRequisite'
                             formItem
                             label={
-                                <FormattedMessage id="add_order_form.client_requisites" />
+                                <FormattedMessage id='add_order_form.client_requisites' />
                             }
-                            formItemLayout={formItemTotalLayout}
-                            getFieldDecorator={getFieldDecorator}
+                            formItemLayout={ formItemTotalLayout }
+                            getFieldDecorator={ getFieldDecorator }
                             placeholder={
-                                <FormattedMessage id="add_order_form.select_requisites" />
+                                <FormattedMessage id='add_order_form.select_requisites' />
                             }
-                            options={selectedClient.requisites}
-                            optionValue="id"
-                            optionLabel="name"
-                            optionDisabled="disabled"
+                            options={ selectedClient.requisites }
+                            optionValue='id'
+                            optionLabel='name'
+                            optionDisabled='disabled'
                         />
                     </div>
-                    <div className={Styles.totalBlockCol}>
+                    <div className={ Styles.totalBlockCol }>
                         <DecoratedSelect
-                            field="paymentMethod"
+                            field='paymentMethod'
                             formItem
-                            colon={false}
-                            getFieldDecorator={getFieldDecorator}
-                            formItemLayout={formItemTotalLayout}
+                            colon={ false }
+                            getFieldDecorator={ getFieldDecorator }
+                            formItemLayout={ formItemTotalLayout }
                             label={
-                                <FormattedMessage id="add_order_form.payment_method" />
+                                <FormattedMessage id='add_order_form.payment_method' />
                             }
                             // placeholder={
                             //     <FormattedMessage id='add_order_form.select_payment_method' />
                             // }
                         >
-                            <Option value="cash">
-                                <Icon type="wallet" /> Нал
+                            <Option value='cash'>
+                                <Icon type='wallet' /> Нал
                             </Option>
-                            <Option value="noncash">
-                                <Icon type="credit-card" /> Безнал
+                            <Option value='noncash'>
+                                <Icon type='credit-card' /> Безнал
                             </Option>
-                            <Option value="visa">
-                                <Icon type="credit-card" /> Visa
+                            <Option value='visa'>
+                                <Icon type='credit-card' /> Visa
                             </Option>
                         </DecoratedSelect>
                         <FormItem>
-                            <div className={Styles.total}>
-                                <FormattedMessage id="add_order_form.total" />
-                                <span className={Styles.totalSum}>
-                                    {totalPrice}
-                                    <FormattedMessage id="currency" />
+                            <div className={ Styles.total }>
+                                <FormattedMessage id='add_order_form.total' />
+                                <span className={ Styles.totalSum }>
+                                    { totalPrice }
+                                    <FormattedMessage id='currency' />
                                 </span>
                             </div>
                         </FormItem>
                     </div>
                 </div>
                 <OrderFormTabs
-                    {...this.props}
-                    initOrderTasksForm={this.props.initOrderTasksForm}
+                    { ...this.props }
+                    initOrderTasksForm={ this.props.initOrderTasksForm }
                     // changeModalStatus={ this.props.changeModalStatus }
-                    formatMessage={formatMessage}
-                    getFieldDecorator={getFieldDecorator}
-                    form={form}
-                    defaultDetails={defaultDetails}
-                    countServices={countServices}
-                    countDetails={countDetails}
-                    priceServices={priceServices}
-                    priceDetails={priceDetails}
-                    setModal={setModal}
-                    orderTasks={orderTasks}
-                    commentCount={commentCount()}
+                    formatMessage={ formatMessage }
+                    getFieldDecorator={ getFieldDecorator }
+                    form={ form }
+                    defaultDetails={ defaultDetails }
+                    countServices={ countServices }
+                    countDetails={ countDetails }
+                    priceServices={ priceServices }
+                    priceDetails={ priceDetails }
+                    setModal={ setModal }
+                    orderTasks={ orderTasks }
+                    commentCount={ commentsCount }
                 />
                 {/* fields={fields}
                  priceDetails={priceDetails}
