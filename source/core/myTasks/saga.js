@@ -5,6 +5,7 @@ import { call, put, all, take } from 'redux-saga/effects';
 //proj
 import { uiActions } from 'core/ui/actions';
 import { fetchAPI } from 'utils';
+
 // own
 import { fetchMyTasksSuccess, FETCH_MY_TASKS } from './duck';
 
@@ -21,4 +22,3 @@ export function* fetchMyTasks() {
 export function* saga() {
     yield all([ call(fetchMyTasks) ]);
 }
-
