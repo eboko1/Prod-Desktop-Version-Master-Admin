@@ -24,6 +24,7 @@ import {
     DecoratedSelect,
     DecoratedInputNumber,
     DecoratedDatePicker,
+    DecoratedTextArea,
 } from 'forms/DecoratedFields';
 
 import { ClientsSearchTable } from 'components/OrderForm/OrderFormTables';
@@ -46,8 +47,10 @@ const Option = Select.Option;
 @injectIntl
 @withReduxForm({
     name:            'orderForm',
-    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment'  ],
-    actions:         {
+    debouncedFields: [
+        'comment', 'recommendation', 'vehicleCondition', 'businessComment',
+    ],
+    actions: {
         change: onChangeOrderForm,
         setClientSelection,
         onChangeOrderServices,
@@ -311,6 +314,27 @@ export class OrderForm extends Component {
                         )) }
                     </DecoratedSelect>
                 </FormItem>
+                <FormItem
+                    label={
+                        <FormattedMessage id='add_order_form.client_comments' />
+                    }
+                >
+                    <DecoratedTextArea
+                        getFieldDecorator={ getFieldDecorator }
+                        field='comment'
+                        rules={ [
+                            {
+                                max:     2000,
+                                message: 'Too much',
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.client_comments',
+                            defaultMessage: 'Client_comments',
+                        }) }
+                        autosize={ { minRows: 2, maxRows: 6 } }
+                    />
+                </FormItem>
             </div>
         );
     };
@@ -455,6 +479,32 @@ export class OrderForm extends Component {
             priceServices - priceServices * (servicesDiscount / 100);
 
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
+        const commentCount = () => {
+            let count = 0;
+            if (this.props.fields.comment && this.props.fields.comment.value) {
+                count = count + 1;
+            }
+            if (
+                this.props.fields.businessComment &&
+                this.props.fields.businessComment.value
+            ) {
+                count = count + 1;
+            }
+            if (
+                this.props.fields.vehicleCondition &&
+                this.props.fields.vehicleCondition.value
+            ) {
+                count = count + 1;
+            }
+            if (
+                this.props.fields.recommendation &&
+                this.props.fields.recommendation.value
+            ) {
+                count = count + 1;
+            }
+
+            return count;
+        };
 
         return (
             <>
@@ -542,6 +592,7 @@ export class OrderForm extends Component {
                     priceDetails={ priceDetails }
                     setModal={ setModal }
                     orderTasks={ orderTasks }
+                    commentCount={ commentCount() }
                 />
                 {/* fields={fields}
                  priceDetails={priceDetails}
