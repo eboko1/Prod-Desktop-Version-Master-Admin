@@ -24,6 +24,7 @@ import {
     DecoratedSelect,
     DecoratedInputNumber,
     DecoratedDatePicker,
+    DecoratedTextArea,
 } from 'forms/DecoratedFields';
 
 import { ClientsSearchTable } from 'components/OrderForm/OrderFormTables';
@@ -46,7 +47,7 @@ const Option = Select.Option;
 @injectIntl
 @withReduxForm({
     name:            'orderForm',
-    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment'  ],
+    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
     actions:         {
         change: onChangeOrderForm,
         setClientSelection,
@@ -311,6 +312,27 @@ export class OrderForm extends Component {
                         )) }
                     </DecoratedSelect>
                 </FormItem>
+                <FormItem
+                    label={
+                        <FormattedMessage id='add_order_form.client_comments' />
+                    }
+                >
+                    <DecoratedTextArea
+                        getFieldDecorator={ getFieldDecorator }
+                        field='comment'
+                        rules={ [
+                            {
+                                max:     2000,
+                                message: 'Too much',
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.client_comments',
+                            defaultMessage: 'Client_comments',
+                        }) }
+                        autosize={ { minRows: 2, maxRows: 6 } }
+                    />
+                </FormItem>
             </div>
         );
     };
@@ -433,6 +455,14 @@ export class OrderForm extends Component {
             filteredDetails,
             setModal,
         } = this.props;
+
+        const {
+            comment,
+            businessComment,
+            vehicleCondition,
+            recommendation,
+        } = fields;
+
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -455,6 +485,12 @@ export class OrderForm extends Component {
             priceServices - priceServices * (servicesDiscount / 100);
 
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
+
+        let commentsCount = 0;
+        if (comment && businessComment && vehicleCondition && recommendation) {
+            const commentsCollection = [ comment, businessComment, vehicleCondition, recommendation ];
+            commentsCount = commentsCollection.filter(com => com.value).length;
+        }
 
         return (
             <>
@@ -542,6 +578,7 @@ export class OrderForm extends Component {
                     priceDetails={ priceDetails }
                     setModal={ setModal }
                     orderTasks={ orderTasks }
+                    commentsCount={ commentsCount }
                 />
                 {/* fields={fields}
                  priceDetails={priceDetails}
