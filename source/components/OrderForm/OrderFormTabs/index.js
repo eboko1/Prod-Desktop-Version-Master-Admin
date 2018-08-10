@@ -44,6 +44,7 @@ export class OrderFormTabs extends Component {
             setModal,
             initOrderTasksForm,
             changeModalStatus,
+            commentCount,
         } = this.props;
 
         return (
@@ -120,8 +121,15 @@ export class OrderFormTabs extends Component {
                     />
                 </TabPane>
                 <TabPane
-                    tab={ <FormattedMessage id='add_order_form.comments' /> }
                     key='4'
+                    tab={
+                        formatMessage({
+                            id: 'add_order_form.comments',
+                        }) +
+                        ' (' +
+                        commentCount +
+                        ')'
+                    }
                 >
                     <FormItem
                         label={
@@ -140,27 +148,6 @@ export class OrderFormTabs extends Component {
                             placeholder={ formatMessage({
                                 id:             'add_order_form.client_comments',
                                 defaultMessage: 'Client_comments',
-                            }) }
-                            autosize={ { minRows: 2, maxRows: 6 } }
-                        />
-                    </FormItem>
-                    <FormItem
-                        label={
-                            <FormattedMessage id='add_order_form.service_recommendations' />
-                        }
-                    >
-                        <DecoratedTextArea
-                            getFieldDecorator={ getFieldDecorator }
-                            field='recommendation'
-                            rules={ [
-                                {
-                                    max:     2000,
-                                    message: 'Too much',
-                                },
-                            ] }
-                            placeholder={ formatMessage({
-                                id:             'add_order_form.service_recommendations',
-                                defaultMessage: 'Service recommendations',
                             }) }
                             autosize={ { minRows: 2, maxRows: 6 } }
                         />
@@ -186,6 +173,7 @@ export class OrderFormTabs extends Component {
                             autosize={ { minRows: 2, maxRows: 6 } }
                         />
                     </FormItem>
+
                     <FormItem
                         label={
                             <FormattedMessage id='add_order_form.business_comment' />
@@ -203,6 +191,27 @@ export class OrderFormTabs extends Component {
                             placeholder={ formatMessage({
                                 id:             'add_order_form.business_comment',
                                 defaultMessage: 'Business comment',
+                            }) }
+                            autosize={ { minRows: 2, maxRows: 6 } }
+                        />
+                    </FormItem>
+                    <FormItem
+                        label={
+                            <FormattedMessage id='add_order_form.service_recommendations' />
+                        }
+                    >
+                        <DecoratedTextArea
+                            getFieldDecorator={ getFieldDecorator }
+                            field='recommendation'
+                            rules={ [
+                                {
+                                    max:     2000,
+                                    message: 'Too much',
+                                },
+                            ] }
+                            placeholder={ formatMessage({
+                                id:             'add_order_form.service_recommendations',
+                                defaultMessage: 'Service recommendations',
                             }) }
                             autosize={ { minRows: 2, maxRows: 6 } }
                         />
