@@ -488,13 +488,7 @@ export class OrderForm extends Component {
 
         let commentsCount = 0;
         if (comment && businessComment && vehicleCondition && recommendation) {
-            /* eslint-disable array-element-newline */
-            const commentsCollection = [
-                comment,
-                businessComment,
-                vehicleCondition,
-                recommendation,
-            ];
+            const commentsCollection = [ comment, businessComment, vehicleCondition, recommendation ];
             commentsCount = commentsCollection.filter(com => com.value).length;
         }
 
