@@ -44,7 +44,7 @@ export class OrderFormTabs extends Component {
             setModal,
             initOrderTasksForm,
             changeModalStatus,
-            commentCount,
+            commentsCount,
         } = this.props;
 
         return (
@@ -127,7 +127,7 @@ export class OrderFormTabs extends Component {
                             id: 'add_order_form.comments',
                         }) +
                         ' (' +
-                        commentCount +
+                        commentsCount +
                         ')'
                     }
                 >

@@ -584,7 +584,7 @@ export class OrderForm extends Component {
                     priceDetails={ priceDetails }
                     setModal={ setModal }
                     orderTasks={ orderTasks }
-                    commentCount={ commentsCount }
+                    commentsCount={ commentsCount }
                 />
                 {/* fields={fields}
                  priceDetails={priceDetails}
