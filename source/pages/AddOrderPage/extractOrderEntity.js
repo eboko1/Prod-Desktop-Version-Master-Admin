@@ -23,7 +23,13 @@ export function convertFieldsValuesToDbEntity(
                 {}
             ).serviceName;
 
-            const baseService = { price, count, hours: null, employeeId, ownDetail };
+            const baseService = {
+                price,
+                count,
+                hours: null,
+                employeeId,
+                ownDetail,
+            };
             const serviceType =
                 type === 'custom'
                     ? { type, serviceName: label }
@@ -52,8 +58,9 @@ export function convertFieldsValuesToDbEntity(
                 ) || {}
             ).detailName;
             const brandLabel = (
-                allDetails.brands.find(({ brandId: id }) => String(id) === brandId) ||
-                {}
+                allDetails.brands.find(
+                    ({ brandId: id }) => String(id) === brandId,
+                ) || {}
             ).brandName;
 
             const baseDetail = { price, count, code };
@@ -74,6 +81,7 @@ export function convertFieldsValuesToDbEntity(
         businessRequisiteId: _.get(orderFields, 'requisite.value'),
         managerId:           _.get(orderFields, 'manager.value'),
         beginDatetime:       _.get(orderFields, 'beginDatetime.value'),
+        duration:            _.get(orderFields, 'duration.value'),
         clientPhone:         _.get(orderFields, 'clientPhone.value'),
         paymentMethod:       _.get(orderFields, 'paymentMethod.value'),
         clientRequisiteId:   _.get(orderFields, 'clientRequisite.value'),
