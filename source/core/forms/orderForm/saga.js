@@ -105,25 +105,29 @@ const selectModal = state => state.modals.modal;
 
 export function* updateOrderSaga() {
     while (true) {
-        const {
-            payload: { order, id, redirectStatus },
-        } = yield take(UPDATE_ORDER);
-        yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
-        yield put(updateOrderSuccess());
+        try {
+            const {
+                payload: { order, id, redirectStatus },
+            } = yield take(UPDATE_ORDER);
+            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
+            yield put(updateOrderSuccess());
 
-        if (!redirectStatus) {
-            yield put(fetchOrderForm(id));
-        }
-        const modal = yield select(selectModal);
-        if (
-            modal === MODALS.CANCEL_REASON ||
-            modal === MODALS.TO_SUCCESS ||
-            modal === MODALS.CONFIRM_EXIT
-        ) {
-            yield put(resetModal());
-        }
-        if (redirectStatus) {
-            yield put(returnToOrdersPage(redirectStatus));
+            if (!redirectStatus) {
+                yield put(fetchOrderForm(id));
+            }
+            const modal = yield select(selectModal);
+            if (
+                modal === MODALS.CANCEL_REASON ||
+                modal === MODALS.TO_SUCCESS ||
+                modal === MODALS.CONFIRM_EXIT
+            ) {
+                yield put(resetModal());
+            }
+            if (redirectStatus) {
+                yield put(returnToOrdersPage(redirectStatus));
+            }
+        } catch (error) {
+            yield put(uiActions.emitError(error));
         }
     }
 }
