@@ -48,6 +48,19 @@ export class MobileRecordForm extends Component {
     //     this.props.fetchAvailableHours();
     // }
     //
+    // componentDidMount() {
+    //     console.log(
+    //         this.props.form.setFieldsValue({
+    //             duration: this.props.order.duration,
+    //         }),
+    //     );
+    //     console.log(
+    //         '→ this.props.form.setFieldsValue',
+    //         this.props.form.setFieldsValue,
+    //     );
+    //     this.props.form.setFieldsValue({ duration: this.props.order.duration });
+    // }
+
     // componentDidUpdate(prevProps) {
     //     if (
     //         prevProps.form.getFieldsValue([ 'beginDatetime', 'station' ]) ===
@@ -58,10 +71,27 @@ export class MobileRecordForm extends Component {
     //         this.props.fetchAvailableHours();
     //     }
     // }
+    // componentDidMount() {
+    //     const {
+    //         getFieldDecorator,
+    //         getFieldValue,
+    //         getFieldsValue,
+    //         setFieldsValue,
+    //     } = this.props.form;
+    //     const durationValue = getFieldValue('duration');
+    //     console.log('→ durationValue', durationValue);
+    //
+    //     setFieldsValue({ duration: durationValue || 0.5 });
+    // }
 
     render() {
         const { selectedClient, stations, onStatusChange } = this.props;
-        const { getFieldDecorator, getFieldsValue } = this.props.form;
+        const {
+            getFieldDecorator,
+            getFieldValue,
+            getFieldsValue,
+            setFieldsValue,
+        } = this.props.form;
         const { formatMessage } = this.props.intl;
 
         const availableHours = getFieldsValue([ 'beginDatetime', 'station' ]);
@@ -141,7 +171,36 @@ export class MobileRecordForm extends Component {
                     )) }
                 </DecoratedSelect>
                 <hr />
-                <div>Записать на:</div>
+                <DecoratedSelect
+                    field='manager'
+                    formItem
+                    getFieldDecorator={ getFieldDecorator }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'Please select your manager!',
+                        },
+                    ] }
+                    label={ <FormattedMessage id='add_order_form.manager' /> }
+                    hasFeedback
+                    colon={ false }
+                    className={ Styles.datePanelItem }
+                    placeholder='Выберете менеджера'
+                >
+                    { this.props.managers.map(manager => (
+                        <Option
+                            disabled={ manager.disabled }
+                            value={ manager.id }
+                            key={ v4() }
+                        >
+                            { `${manager.managerName} ${manager.managerSurname}` }
+                        </Option>
+                    )) }
+                </DecoratedSelect>
+                <hr />
+                <div style={ { fontSize: '18px', marginBottom: '10px' } }>
+                    Записать на:
+                </div>
                 <DecoratedSelect
                     field='station'
                     rules={ [
@@ -183,12 +242,18 @@ export class MobileRecordForm extends Component {
                     popupClassName='mobileRecordFormTimePicker'
                     { ...formItemLayout }
                 />
+
                 <DecoratedSlider
                     formItem
                     label='Продолжительность'
                     field='duration'
                     getFieldDecorator={ getFieldDecorator }
+                    // setFieldsValue={ setFieldsValue }
+                    // initialValue={ this.props.order.duration }
                     disabled={ !isDurationDisabled }
+                    min={ 0.5 }
+                    step={ 0.5 }
+                    max={ 8 }
                     { ...formItemLayout }
                 />
                 <DecoratedTextArea

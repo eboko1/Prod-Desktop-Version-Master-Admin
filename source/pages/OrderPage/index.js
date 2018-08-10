@@ -195,6 +195,7 @@ class OrderPage extends Component {
 
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
+        console.log('→ spinner', spinner);
 
         return !spinner ? (
             <Layout

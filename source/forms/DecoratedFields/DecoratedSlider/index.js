@@ -16,20 +16,28 @@ export const DecoratedSlider = props => {
         formItemLayout,
 
         getFieldDecorator,
+        setFieldsValue,
         disabled,
         rules,
         field,
+        initialValue,
+
+        step,
+        min,
+        max,
     } = props;
+    // console.log('→ value', initialValue);
 
     const slider = getFieldDecorator(field, {
+        // initialValue,
         rules,
     })(
         <Slider
             disabled={ disabled }
-            min={ 0.5 }
-            step={ 0.5 }
-            max={ 8 }
-            // defaultValue={ 1 }
+            min={ min }
+            step={ step }
+            max={ max }
+            // value={ initialValue }
             // onChange={ value => console.log('→ duration slider value', value) }
             style={ { width: '100%' } }
         />,
@@ -45,7 +53,7 @@ export const DecoratedSlider = props => {
         >
             { slider }
         </FormItem>
-    ) : 
+    ) :
         slider
     ;
 };
