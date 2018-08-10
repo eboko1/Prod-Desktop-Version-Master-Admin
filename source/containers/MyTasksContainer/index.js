@@ -17,20 +17,21 @@ import { v4 } from 'uuid';
 import { withReduxForm, getDateTimeConfig } from 'utils';
 
 // import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
-import { fetchMyTasks, onChangeMyTasksForm, getActiveOrder } from 'core/myTasks/duck';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import {
+    fetchMyTasks,
+    onChangeMyTasksForm,
+    getActiveOrder,
+} from 'core/myTasks/duck';
+import { setModal, MODALS } from 'core/modals/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 
 import { Catcher } from 'commons';
-import { OrderTaskModal } from 'modals';
 
 // own
 import Styles from './styles.m.css';
 
-
-
 @injectIntl
-@withReduxForm({   
+@withReduxForm({
     name:    'myTasksForm',
     actions: {
         change: onChangeMyTasksForm,
@@ -38,42 +39,41 @@ import Styles from './styles.m.css';
         setModal,
         initOrderTasksForm,
         getActiveOrder,
-    } })
+    },
+})
 export default class MyTasksContainer extends Component {
-
-    constructor(props){
-        super(props)
+    constructor(props) {
+        super(props);
         this.columns = [
             {
                 title:     '',
                 dataIndex: 'review',
                 width:     '4%',
                 render:    (text, record) => {
-                    if(record.orderNum){
-                        if(record.status!=='CLOSED'){
+                    if (record.orderNum) {
+                        if (record.status !== 'CLOSED') {
                             return (
                                 <Icon
                                     className={ Styles.editOrderTaskIcon }
                                     onClick={ () => {
                                         this.props.initOrderTasksForm(record);
                                         this.props.setModal(MODALS.ORDER_TASK);
-                                        this.props.getActiveOrder(record.orderId)
+                                        this.props.getActiveOrder(
+                                            record.orderId,
+                                        );
                                     } }
                                     type='edit'
                                 />
                             );
                         }
-
-                        
                     }
                 },
             },
-            
+
             {
                 title:     <FormattedMessage id='orderNumber' />,
                 dataIndex: 'orderId',
                 width:     '7%',
-                
             },
             {
                 title:     <FormattedMessage id='status' />,
@@ -104,9 +104,11 @@ export default class MyTasksContainer extends Component {
                 dataIndex: 'vehicleMakeName',
                 width:     '7%',
                 render:    (text, record) => {
-                    return record.vehicleMakeName ? <div>
-                        { record.vehicleMakeName } { record.vehicleModelName }
-                    </div>: null;
+                    return record.vehicleMakeName ? (
+                        <div>
+                            { record.vehicleMakeName } { record.vehicleModelName }
+                        </div>
+                    ) : null;
                 },
             },
             {
@@ -157,12 +159,12 @@ export default class MyTasksContainer extends Component {
                 dataIndex: 'duration',
                 width:     '8%',
                 render:    (text, record) => {
-                    let durationText= moment.duration(text, 'seconds')
-                    let duration=moment.utc(durationText.asMilliseconds()).format('HH:mm')
+                    let durationText = moment.duration(text, 'seconds');
+                    let duration = moment
+                        .utc(durationText.asMilliseconds())
+                        .format('HH:mm');
 
-                    return  <div>
-                        { text ? duration: null }
-                    </div>
+                    return <div>{ text ? duration : null }</div>;
                 },
             },
             {
@@ -193,15 +195,13 @@ export default class MyTasksContainer extends Component {
         ];
     }
 
-    componentWillMount(){
-        this.props.fetchMyTasks()
+    componentDidMount() {
+        this.props.fetchMyTasks();
     }
 
     render() {
         const { myTasks } = this.props;
         const columns = this.columns;
-        const { getFieldDecorator } = this.props.form;
-        const { formatMessage } = this.props.intl;
 
         return (
             <Catcher>
@@ -216,18 +216,22 @@ export default class MyTasksContainer extends Component {
                         getFieldDecorator={ getFieldDecorator }
                         value={ null }
                         getCalendarContainer={ trigger => trigger.parentNode }
-                        format={ 'YYYY-MM-DD' } 
+                        format={ 'YYYY-MM-DD' }
                         placeholder={
                             <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
                         }/>
                 </section> */ }
                 <section className={ Styles.filters }>
-                    <Table 
-                        dataSource={ myTasks&&myTasks.orderTasks.length>0? myTasks.orderTasks.map((task, index) => ({
-                            ...task,
-                            index,
-                            key: v4(),
-                        })):[] }
+                    <Table
+                        dataSource={
+                            myTasks && myTasks.orderTasks.length > 0
+                                ? myTasks.orderTasks.map((task, index) => ({
+                                    ...task,
+                                    index,
+                                    key: v4(),
+                                }))
+                                : []
+                        }
                         size='small'
                         scroll={ { x: 2200 } }
                         columns={ columns }
@@ -237,7 +241,6 @@ export default class MyTasksContainer extends Component {
                         } }
                     />
                 </section>
-
             </Catcher>
         );
     }

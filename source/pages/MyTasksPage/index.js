@@ -2,14 +2,17 @@
 import React, { Component } from 'react';
 import MyTasksContainer from 'containers/MyTasksContainer';
 import { connect } from 'react-redux';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
-import { OrderTaskModal } from 'modals';
+import { setModal, resetModal } from 'core/modals/duck';
+
+// proj
 import {
     resetOrderTasksForm,
     saveOrderTask,
     changeModalStatus,
 } from 'core/forms/orderTaskForm/duck';
+import { OrderTaskModal } from 'modals';
 import { Layout, Spinner } from 'commons';
+
 const mapStateToProps = state => {
     return {
         myTasks:         state.myTasksContainer.myTasks,
@@ -28,6 +31,7 @@ const mapDispatchToProps = {
     saveOrderTask,
     changeModalStatus,
 };
+
 @connect(
     mapStateToProps,
     mapDispatchToProps,
@@ -56,7 +60,16 @@ class MyTasksPage extends Component {
     };
     /* eslint-disable complexity*/
     render() {
-        const { myTasks, spinner } = this.props;
+        const {
+            myTasks,
+            resetModal,
+            modal,
+            activeOrder,
+            orderTaskId,
+            orderTaskEntity,
+            progressStatusOptions,
+            priorityOptions,
+        } = this.props;
 
         return !spinner ? (
             <Layout>
@@ -64,28 +77,19 @@ class MyTasksPage extends Component {
 
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }
-                    orderTaskEntity={ this.props.orderTaskEntity }
-                    priorityOptions={ this.props.priorityOptions }
-                    progressStatusOptions={ this.props.progressStatusOptions }
-                    visible={ this.props.modal }
-                    resetModal={ this.props.resetModal }
-                    num={ this.props.activeOrder }
-                    orderTaskId={ this.props.orderTaskId }
-                    orderId={ this.props.activeOrder }
+                    orderTaskEntity={ orderTaskEntity }
+                    priorityOptions={ priorityOptions }
+                    progressStatusOptions={ progressStatusOptions }
+                    visible={ modal }
+                    resetModal={ resetModal }
+                    num={ activeOrder }
+                    orderTaskId={ orderTaskId }
+                    orderId={ activeOrder }
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
-                    stations={
-                        this.props.myTasks && this.props.myTasks.stations ||
-                        []
-                    }
-                    managers={
-                        this.props.myTasks && this.props.myTasks.managers ||
-                        []
-                    }
+                    stations={ myTasks && myTasks.stations || [] }
+                    managers={ myTasks && myTasks.managers || [] }
                     saveNewOrderTask={ this.saveOrderTask }
-                    orderTasks={
-                        this.props.myTasks && this.props.myTasks.orderTasks ||
-                        []
-                    }
+                    orderTasks={ myTasks && myTasks.orderTasks || [] }
                 />
             </Layout>
         ) : (

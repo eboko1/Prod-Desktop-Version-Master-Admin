@@ -9,7 +9,6 @@ export const FETCH_MY_TASKS_FAILURE = `${prefix}/FETCH_MY_TASKS_FAILURE`;
 export const ON_CHANGE_MY_TASKS_FORM = `${prefix}/ON_CHANGE_MY_TASKS_FORM`;
 export const GET_ACTIVE_ORDER = `${prefix}/GET_ACTIVE_ORDER`;
 
-
 /**
  * Reducer
  * */
@@ -39,15 +38,12 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 myTasks: payload,
-                
             };
         case GET_ACTIVE_ORDER:
             return {
                 ...state,
                 activeOrder: payload,
-                
             };
-            
 
         default:
             return state;
@@ -60,18 +56,24 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state[ moduleName ];
 
+/**
+ * Action Creators
+ * */
 
 export const fetchMyTasks = () => ({
     type: FETCH_MY_TASKS,
 });
+
 export const fetchMyTasksSuccess = data => ({
     type:    FETCH_MY_TASKS_SUCCESS,
     payload: data,
 });
+
 export const fetchMyTasksFailure = data => ({
     type:    FETCH_MY_TASKS_FAILURE,
     payload: data,
 });
+
 export const getActiveOrder = id => ({
     type:    GET_ACTIVE_ORDER,
     payload: id,
