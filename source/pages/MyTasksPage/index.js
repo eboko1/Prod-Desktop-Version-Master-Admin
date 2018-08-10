@@ -12,6 +12,7 @@ import {
 } from 'core/forms/orderTaskForm/duck';
 import { OrderTaskModal } from 'modals';
 import { Layout, Spinner } from 'commons';
+import { fetchMyTasks } from 'core/myTasks/duck';
 
 const mapStateToProps = state => {
     return {
@@ -30,6 +31,7 @@ const mapDispatchToProps = {
     resetOrderTasksForm,
     saveOrderTask,
     changeModalStatus,
+    fetchMyTasks,
 };
 
 @connect(
@@ -37,6 +39,9 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 class MyTasksPage extends Component {
+    componentDidMount() {
+        this.props.fetchMyTasks();
+    }
     saveOrderTaskFormRef = formRef => {
         this.orderTaskFormRef = formRef;
     };
@@ -69,6 +74,7 @@ class MyTasksPage extends Component {
             orderTaskEntity,
             progressStatusOptions,
             priorityOptions,
+            spinner,
         } = this.props;
 
         return !spinner ? (
