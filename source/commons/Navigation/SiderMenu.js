@@ -13,7 +13,7 @@ import Styles from './styles.m.css';
 import menuConfig from './menuConfig';
 
 @withRouter
-export default class Navigation extends Component {
+export default class SiderMenu extends Component {
     render() {
         const { history, collapsed, isMobile, onCollapse } = this.props;
 

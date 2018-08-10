@@ -18,7 +18,7 @@ class TasksTable extends Component {
             {
                 title:     '',
                 dataIndex: 'review',
-                width:     '8%',
+                width:     '4%',
                 render:    (text, record) => {
                     if(record.orderNum){
                         return (
@@ -106,7 +106,7 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='duration' />,
                 dataIndex: 'duration',
-                width:     '8%',
+                width:     '9%',
                 render:    (text, record) => {
                     let durationText= moment.duration(text, 'seconds')
                     let duration=moment.utc(durationText.asMilliseconds()).format('HH:mm')
@@ -134,7 +134,12 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='author' />,
                 dataIndex: 'author',
-                width:     'auto',
+                width:     '8%',
+                render:    (text, record) => (
+                    <div>
+                        { record.authorName } { record.authorSurname }
+                    </div>
+                ),
             },
         ];
     }
@@ -142,17 +147,23 @@ class TasksTable extends Component {
     render() {
         const { orderTasks } = this.props;
         const columns = this.columns;
+        const sortHistory=(a, b)=>{
+            if(moment(a.startDate).isAfter(b.startDate)){ return -1 }
+            if(moment(b.startDate).isAfter(a.startDate)){ return 1 }
+
+            return 0
+        }
 
         return (
             <Catcher>
                 <Table
-                    dataSource={ orderTasks.length>0? [ 
+                    dataSource={ orderTasks.length>0&&orderTasks[ 0 ].history.length>0? [ 
                         ...orderTasks.map((task, index) => ({
                             ...task,
                             index,
                             key: v4(),
                         })), 
-                        ...orderTasks[ 0 ].history.map((task, index) => ({
+                        ...orderTasks[ 0 ].history.sort(sortHistory).map((task, index) => ({
                             ...task,
                             index,
                             key: v4(),

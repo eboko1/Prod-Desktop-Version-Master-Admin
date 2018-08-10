@@ -6,7 +6,6 @@ const DragItemTypes = Object.freeze({
 });
 
 const findOrder = (orders, id) => {
-    console.log('→ orders', orders);
     // const order = orders.map(
     //     order => order.filter(order => order.id === id)[ 0 ],
     // );

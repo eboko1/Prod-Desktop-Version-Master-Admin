@@ -56,31 +56,9 @@ const mapDispatchToProps = dispatch => {
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 export default class OrdersFilterContainer extends Component {
-    // state = {};
-    // state = {
-    //     filterStatus: '',
-    // };
-    //
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     // Store prev activeRoute in state so we can compare when props change.
-    //     // Clear out any previously-loaded user data (so we don't render stale stuff).
-    //     console.log(
-    //         '→ gds',
-    //         nextProps.filter.status !== prevState.filterStatus,
-    //     );
-    //     if (nextProps.filter.status !== prevState.filterStatus) {
-    //         return {
-    //             filterStatus: nextProps.filter.status,
-    //         };
-    //     }
-    //
-    //     // No state update necessary
-    //     return null;
-    // }
-
     constructor(props) {
         super(props);
-        this.handleOrdersSearch = _.debounce((value) => {
+        this.handleOrdersSearch = _.debounce(value => {
             const { setOrdersSearchFilter, fetchOrders, filter } = this.props;
             setOrdersSearchFilter(value);
             fetchOrders({ page: 1, ...filter });
@@ -105,11 +83,6 @@ export default class OrdersFilterContainer extends Component {
                 fetchUniversalFiltersForm();
             }
         }
-
-        // if (prevProps.filter.status !== this.props.filter.status) {
-        //     console.log('→ DUP', this.props.filter.status);
-        //     this.setState(this.state);
-        // }
     }
 
     selectStatus(ev) {
@@ -121,10 +94,9 @@ export default class OrdersFilterContainer extends Component {
 
     handleReviewSlider = value => {
         const { setOrdersNPSFilter, fetchOrders, filter } = this.props;
-        //
+
         setOrdersNPSFilter({ minNps: value[ 0 ], maxNps: value[ 1 ] });
         fetchOrders({ page: 1, ...filter });
-        // console.log('→ slidervalue', value);
     };
 
     handleCancelReasonSelect = value => {
@@ -222,7 +194,9 @@ export default class OrdersFilterContainer extends Component {
                         //     <FormattedMessage id='orders-filter.search.search_placeholder' />
                         // }
                         // eslint-disable-next-line
-                        onChange={({target: {value}}) => this.handleOrdersSearch(value)}
+                        onChange={({ target: { value } }) =>
+                            this.handleOrdersSearch(value)
+                        }
                         // onChange={ this.handleOrdersSearch }
                         // enterButton
                         // enterButton={ <Icon type='close' /> }

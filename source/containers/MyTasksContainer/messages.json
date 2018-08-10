@@ -1,0 +1,17 @@
+{
+    "en": {
+        "orderNumber": "Order Number",
+        "filterDate": "Filter Date",
+        "vehicle": "Vehicle"
+    },
+    "ru": {
+        "orderNumber": "Номер Заказа",
+        "filterDate": "Фильтр По Дате",
+        "vehicle": "Авто"
+    },
+    "uk": {
+        "orderNumber": "Номер Заказу",
+        "filterDate": "Фільтр По Даті",
+        "vehicle": "Авто"
+    }
+}

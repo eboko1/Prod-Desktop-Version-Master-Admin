@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withRouter, Switch, Route, Redirect } from 'react-router';
+import { Switch, Route } from 'react-router';
 import { hot } from 'react-hot-loader';
 
 // proj
@@ -17,7 +16,6 @@ import book from './book';
 import Private from './Private';
 import Public from './Public';
 
-@withRouter
 @hot(module)
 export default class Routes extends Component {
     render() {

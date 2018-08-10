@@ -2,7 +2,6 @@
 import { combineReducers } from 'redux';
 
 // own
-import addOrderReducer, { moduleName as addOrder } from './addOrderForm/duck';
 import orderReducer, { moduleName as order } from './orderForm/duck';
 import loginReducer, { moduleName as login } from './loginForm/duck';
 
@@ -28,7 +27,6 @@ import orderTaskReducer, {
 
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
-    [ addOrder ]:         addOrderReducer,
     [ order ]:            orderReducer,
     [ addClient ]:        addClientReducer,
     [ universalFilters ]: universalFiltersReducer,

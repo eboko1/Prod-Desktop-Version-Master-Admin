@@ -12,9 +12,8 @@ export class ProfileForm extends Component {
     handleSubmit = e => {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
-            if (!err) {
-                console.log('Received values of form: ', values);
-            }
+            // if (!err) {
+            // }
         });
     };
 
@@ -25,7 +24,6 @@ export class ProfileForm extends Component {
     };
 
     normFile = e => {
-        console.log('Upload event:', e);
         if (Array.isArray(e)) {
             return e;
         }

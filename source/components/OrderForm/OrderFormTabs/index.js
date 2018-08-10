@@ -66,7 +66,6 @@ export class OrderFormTabs extends Component {
                                 type='primary'
                                 onClick={ () => {
                                     setModal(MODALS.ORDER_TASK);
-                                    changeModalStatus('adding');
                                 } }
                             >
                                 <Icon type='plus' />

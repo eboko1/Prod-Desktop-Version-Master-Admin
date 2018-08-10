@@ -34,6 +34,9 @@ export default (state = initialState, action) => {
         case types.SET_ORDER_FETCHING_STATE:
             return state.set('orderFetching', action.payload);
 
+        case types.SET_MY_TASKS_FETCHING_STATE:
+            return state.set('myTasksFetching', action.payload);
+
         case types.SET_DASHBOARD_FETCHING_STATE:
             return state.set('dashboardFetching', action.payload);
 

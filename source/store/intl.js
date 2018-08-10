@@ -30,6 +30,8 @@ import DashboardPage from 'pages/DashboardPage/messages';
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
 import FunelContainer from 'containers/FunelContainer/messages';
 import OrdersContainer from 'containers/OrdersContainer/messages';
+import MyTasksContainer from 'containers/MyTasksContainer/messages';
+
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
 import ProfileForm from 'forms/ProfileForm/messages';
@@ -72,6 +74,7 @@ const messages = merge.all([
     OrdersContainer,
     OrdersFilterContainer,
     FunelContainer,
+    MyTasksContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,

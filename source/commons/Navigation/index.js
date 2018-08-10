@@ -18,7 +18,7 @@ const Navigation = props => {
             onHandleClick={ () => props.onCollapse(!collapsed) }
             onMaskClick={ () => props.onCollapse(true) }
         >
-            <SiderMenu { ...props } collapsed={ isMobile ? false : collapsed } />
+            <SiderMenu { ...props } />
         </DrawerMenu>
     ) : (
         <SiderMenu { ...props } />

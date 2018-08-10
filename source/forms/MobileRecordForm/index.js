@@ -1,18 +1,23 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Slider, Input, Select } from 'antd';
+import { Form, Button, Input, Select } from 'antd';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // proj
 // import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
-import { onChangeOrderForm } from 'core/forms/orderForm/duck';
+import {
+    onChangeOrderForm,
+    fetchAvailableHours,
+} from 'core/forms/orderForm/duck';
 
 import {
     DecoratedSelect,
     DecoratedTextArea,
     DecoratedDatePicker,
     DecoratedTimePicker,
+    DecoratedSlider,
 } from 'forms/DecoratedFields';
 
 import { withReduxForm } from 'utils';
@@ -37,10 +42,63 @@ const Option = Select.Option;
     },
 })
 export class MobileRecordForm extends Component {
+    // componentDidMount() {
+    //     // const availableHours = this.props.form.getFieldsValue([ 'beginDatetime', 'station' ]);
+    //     // console.log('→ DM availableHours', availableHours);
+    //     this.props.fetchAvailableHours();
+    // }
+    //
+    // componentDidMount() {
+    //     console.log(
+    //         this.props.form.setFieldsValue({
+    //             duration: this.props.order.duration,
+    //         }),
+    //     );
+    //     console.log(
+    //         '→ this.props.form.setFieldsValue',
+    //         this.props.form.setFieldsValue,
+    //     );
+    //     this.props.form.setFieldsValue({ duration: this.props.order.duration });
+    // }
+
+    // componentDidUpdate(prevProps) {
+    //     if (
+    //         prevProps.form.getFieldsValue([ 'beginDatetime', 'station' ]) ===
+    //         this.props.form.getFieldsValue([ 'beginDatetime', 'station' ])
+    //     ) {
+    //         // const availableHours = this.props.form.getFieldsValue([ 'beginDatetime', 'station' ]);
+    //         // console.log('→ DUP availableHours', availableHours);
+    //         this.props.fetchAvailableHours();
+    //     }
+    // }
+    // componentDidMount() {
+    //     const {
+    //         getFieldDecorator,
+    //         getFieldValue,
+    //         getFieldsValue,
+    //         setFieldsValue,
+    //     } = this.props.form;
+    //     const durationValue = getFieldValue('duration');
+    //     console.log('→ durationValue', durationValue);
+    //
+    //     setFieldsValue({ duration: durationValue || 0.5 });
+    // }
+
     render() {
         const { selectedClient, stations, onStatusChange } = this.props;
-        const { getFieldDecorator } = this.props.form;
+        const {
+            getFieldDecorator,
+            getFieldValue,
+            getFieldsValue,
+            setFieldsValue,
+        } = this.props.form;
         const { formatMessage } = this.props.intl;
+
+        const availableHours = getFieldsValue([ 'beginDatetime', 'station' ]);
+
+        const isDurationDisabled = _.every(
+            getFieldsValue([ 'beginDatetime', 'station' ]),
+        );
 
         return (
             <Form layout='horizontal'>
@@ -113,7 +171,36 @@ export class MobileRecordForm extends Component {
                     )) }
                 </DecoratedSelect>
                 <hr />
-                <div>Записать на:</div>
+                <DecoratedSelect
+                    field='manager'
+                    formItem
+                    getFieldDecorator={ getFieldDecorator }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'Please select your manager!',
+                        },
+                    ] }
+                    label={ <FormattedMessage id='add_order_form.manager' /> }
+                    hasFeedback
+                    colon={ false }
+                    className={ Styles.datePanelItem }
+                    placeholder='Выберете менеджера'
+                >
+                    { this.props.managers.map(manager => (
+                        <Option
+                            disabled={ manager.disabled }
+                            value={ manager.id }
+                            key={ v4() }
+                        >
+                            { `${manager.managerName} ${manager.managerSurname}` }
+                        </Option>
+                    )) }
+                </DecoratedSelect>
+                <hr />
+                <div style={ { fontSize: '18px', marginBottom: '10px' } }>
+                    Записать на:
+                </div>
                 <DecoratedSelect
                     field='station'
                     rules={ [
@@ -142,6 +229,7 @@ export class MobileRecordForm extends Component {
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
                     formatMessage={ formatMessage }
+                    allowClear={ false }
                     { ...formItemLayout }
                 />
                 <DecoratedTimePicker
@@ -154,18 +242,20 @@ export class MobileRecordForm extends Component {
                     popupClassName='mobileRecordFormTimePicker'
                     { ...formItemLayout }
                 />
-                <div>
-                    <Slider
-                        min={ 0.5 }
-                        step={ 0.5 }
-                        max={ 8 }
-                        defaultValue={ 1 }
-                        onChange={ value =>
-                            console.log('→ duration slider value', value)
-                        }
-                    />
-                </div>
 
+                <DecoratedSlider
+                    formItem
+                    label='Продолжительность'
+                    field='duration'
+                    getFieldDecorator={ getFieldDecorator }
+                    // setFieldsValue={ setFieldsValue }
+                    // initialValue={ this.props.order.duration }
+                    disabled={ !isDurationDisabled }
+                    min={ 0.5 }
+                    step={ 0.5 }
+                    max={ 8 }
+                    { ...formItemLayout }
+                />
                 <DecoratedTextArea
                     formItem
                     label={
