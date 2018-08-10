@@ -2,6 +2,28 @@
     margin-bottom: 0px;
     margin-right: 10px;
 }
+.statusSelect {
+    margin-bottom: 0px;
+    margin-right: 10px;
+}
+.directory {
+    display: flex;
+    margin-top: 10px;
+}
+.directory i {
+    margin-right: 10px;
+}
+.statusTooltip {
+    cursor: pointer;
+}
+/* .statusSelect label {
+    display: flex;
+    height: 43px;
+    width: 250px;
+}
+.statusSelect .ant-form-item-label {
+    width: 100%;
+} */
 .dateTimePickerBlock {
     display: flex;
     flex-direction: row;
@@ -9,6 +31,14 @@
 .orderDescription {
     display: flex;
     justify-content: space-between;
+}
+.questionIcon {
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.labelTooltip {
+    display: flex;
 }
 @media (max-width: 500px) {
     .orderDescription {
