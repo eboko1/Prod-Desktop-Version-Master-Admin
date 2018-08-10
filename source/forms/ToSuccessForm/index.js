@@ -44,6 +44,9 @@ export class ToSuccessForm extends Component {
                         <FormattedMessage id='no' />
                     </Button>
                 </div>
+                <div>      
+                    <FormattedMessage id='to_success.send_message' />
+                </div>
                 <div>
                     <div className={ Styles.checkbox }>
                         <DecoratedCheckbox
@@ -55,14 +58,14 @@ export class ToSuccessForm extends Component {
                             <FormattedMessage id='to_success.sms2' />
                         </DecoratedCheckbox>
                     </div>
-                    <div className={ Styles.checkbox }>
+                    { /* <div className={ Styles.checkbox }>
                         <DecoratedCheckbox
                             field='sms'
                             getFieldDecorator={ getFieldDecorator }
                         >
                             <FormattedMessage id='to_success.create_new' />
                         </DecoratedCheckbox>
-                    </div>
+                    </div> */ }
                 </div>
             </Form>
         );

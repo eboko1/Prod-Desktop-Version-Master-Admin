@@ -1,20 +1,13 @@
 // vendor
 import React, { Component } from 'react';
-import { Button } from 'antd';
-import _ from 'lodash';
 import moment from 'moment';
 import { Table, Icon } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import {
-    DecoratedTextArea,
-    DecoratedSelect,
-    DecoratedDatePicker,
-    DecoratedTimePicker,
-} from 'forms/DecoratedFields';
+
 import { v4 } from 'uuid';
 
 // proj
-import { withReduxForm, getDateTimeConfig } from 'utils';
+import { withReduxForm } from 'utils';
 
 // import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import {
@@ -44,11 +37,15 @@ import Styles from './styles.m.css';
 export default class MyTasksContainer extends Component {
     constructor(props) {
         super(props);
+        this.state = {
+            sort: {field: 'startDate', order: 'desc'},
+        };
+        const { sortField, sortArrow } = this.state;
         this.columns = [
             {
                 title:     '',
                 dataIndex: 'review',
-                width:     '4%',
+                width:     '2%',
                 render:    (text, record) => {
                     if (record.orderNum) {
                         if (record.status !== 'CLOSED') {
@@ -72,7 +69,7 @@ export default class MyTasksContainer extends Component {
 
             {
                 title:     <FormattedMessage id='orderNumber' />,
-                dataIndex: 'orderId',
+                dataIndex: 'orderNum',
                 width:     '7%',
             },
             {
@@ -90,6 +87,8 @@ export default class MyTasksContainer extends Component {
                 render:    (text, record) => {
                     return text ? <FormattedMessage id={ text } /> : null;
                 },
+                sorter: true,
+
             },
             {
                 title:     <FormattedMessage id='urgency' />,
@@ -142,6 +141,9 @@ export default class MyTasksContainer extends Component {
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
                     </div>
                 ),
+                defaultSortOrder: 'descend',
+                sorter:           (a, b) => moment(a.startDate).isAfter(b.startDate),
+
             },
             {
                 title:     <FormattedMessage id='deadlineDate' />,
@@ -157,15 +159,17 @@ export default class MyTasksContainer extends Component {
             {
                 title:     <FormattedMessage id='duration' />,
                 dataIndex: 'duration',
-                width:     '8%',
+                width:     '9%',
                 render:    (text, record) => {
-                    let durationText = moment.duration(text, 'seconds');
-                    let duration = moment
-                        .utc(durationText.asMilliseconds())
-                        .format('HH:mm');
+                    // let durationText = moment.duration(text, 'seconds');
+                    // let duration = moment
+                    //     .utc(durationText.asMilliseconds())
+                    //     .format('HH:mm');
 
-                    return <div>{ text ? duration : null }</div>;
+                    return <div>{ text ?moment.duration(text, 'milliseconds').humanize(): null }</div>;
                 },
+                sorter: true,
+
             },
             {
                 title:     <FormattedMessage id='endDate' />,
@@ -176,6 +180,8 @@ export default class MyTasksContainer extends Component {
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
                     </div>
                 ),
+                sorter: (a, b) => moment(a.endDate).isAfter(b.endDate),
+
             },
             {
                 title:     <FormattedMessage id='comment' />,
@@ -185,7 +191,7 @@ export default class MyTasksContainer extends Component {
             {
                 title:     <FormattedMessage id='author' />,
                 dataIndex: 'author',
-                width:     '7%',
+                width:     '10%',
                 render:    (text, record) => (
                     <div>
                         { record.authorName } { record.authorSurname }
@@ -198,10 +204,47 @@ export default class MyTasksContainer extends Component {
     componentDidMount() {
         this.props.fetchMyTasks();
     }
+     handleTableChange = (pagination, filters, sorter) => {
+         if (!sorter) {
+             return;
+         }
+         const sort = {field: sorter.field, order: sorter.order === 'ascend' ? 'ascend' : 'descend'};
+         this.setState({sort})     
+     }
 
+    sortTable = (a, b) => {
+        const {sort}=this.state
+        let priorities={
+            'LOW':      1, 
+            'NORMAL':   2,
+            'HIGH':     3,
+            'CRITICAL': 4,
+        }
+        if(sort.field==='priority'&&sort.order==='ascend'){
+            return (priorities[ a.priority ]||0)-(priorities[ b.priority ]||0)
+        }else if(sort.field==='priority'&&sort.order==='descend'){
+            return (priorities[ b.priority ]||0)-(priorities[ a.priority ]||0)
+        }
+        if(sort.field==='duration'&&sort.order==='ascend'){
+            return a.duration-b.duration
+        }else if(sort.field==='duration'&&sort.order==='descend'){
+            return b.duration-a.duration
+        }
+        if(sort.order==='ascend') {
+            if (moment(a[ sort.field ]).isAfter(b[ sort.field ])) {
+                return -1;
+            } 
+        }
+        if (moment(b[ sort.field ]).isAfter(a[ sort.field ])) {
+            return 1;
+        }
+
+        return 0;
+    };
     render() {
         const { myTasks } = this.props;
         const columns = this.columns;
+        const { sortField, sortArrow } = this.state;
 
         return (
             <Catcher>
@@ -225,7 +268,7 @@ export default class MyTasksContainer extends Component {
                     <Table
                         dataSource={
                             myTasks && myTasks.orderTasks.length > 0
-                                ? myTasks.orderTasks.map((task, index) => ({
+                                ? myTasks.orderTasks.sort(this.sortTable).map((task, index) => ({
                                     ...task,
                                     index,
                                     key: v4(),
@@ -239,6 +282,8 @@ export default class MyTasksContainer extends Component {
                         locale={ {
                             emptyText: <FormattedMessage id='no_data' />,
                         } }
+                        onChange={ this.handleTableChange }
+
                     />
                 </section>
             </Catcher>
