@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import  MyTasksContainer from 'containers/MyTasksContainer'
+import MyTasksContainer from 'containers/MyTasksContainer';
 import { connect } from 'react-redux';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { OrderTaskModal } from 'modals';
@@ -9,45 +9,40 @@ import {
     saveOrderTask,
     changeModalStatus,
 } from 'core/forms/orderTaskForm/duck';
-import {
-    Layout,
-    Spinner,
-
-} from 'commons';
+import { Layout, Spinner } from 'commons';
 const mapStateToProps = state => {
-
     return {
         myTasks:         state.myTasksContainer.myTasks,
         modal:           state.modals.modal,
         orderTaskEntity: state.forms.orderTaskForm.fields,
         orderTaskId:     state.forms.orderTaskForm.taskId,
         activeOrder:     state.myTasksContainer.activeOrder,
+        spinner:         state.ui.get('myTasksFetching'),
     };
 };
 
 const mapDispatchToProps = {
-
     setModal,
     resetModal,
     resetOrderTasksForm,
     saveOrderTask,
     changeModalStatus,
 };
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 class MyTasksPage extends Component {
-
     saveOrderTaskFormRef = formRef => {
         this.orderTaskFormRef = formRef;
     };
-    
+
     saveOrderTask = () => {
         const { orderTaskEntity, orderTaskId } = this.props;
         const form = this.orderTaskFormRef.props.form;
-        let myTasks='mytasks'
+        let myTasks = 'mytasks';
         form.validateFields(err => {
-
             if (!err) {
-                console.log
                 this.props.saveOrderTask(
                     orderTaskEntity,
                     this.props.activeOrder,
@@ -61,12 +56,12 @@ class MyTasksPage extends Component {
     };
     /* eslint-disable complexity*/
     render() {
-        const {myTasks}=this.props
+        const { myTasks, spinner } = this.props;
 
-        return (
+        return !spinner ? (
             <Layout>
-                <MyTasksContainer myTasks={ myTasks }/>
-                 
+                <MyTasksContainer myTasks={ myTasks } />
+
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }
                     orderTaskEntity={ this.props.orderTaskEntity }
@@ -78,14 +73,24 @@ class MyTasksPage extends Component {
                     orderTaskId={ this.props.orderTaskId }
                     orderId={ this.props.activeOrder }
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
-                    stations={ this.props.myTasks&&this.props.myTasks.stations||[] }
-                    managers={ this.props.myTasks&&this.props.myTasks.managers||[] }
+                    stations={
+                        this.props.myTasks && this.props.myTasks.stations ||
+                        []
+                    }
+                    managers={
+                        this.props.myTasks && this.props.myTasks.managers ||
+                        []
+                    }
                     saveNewOrderTask={ this.saveOrderTask }
-                    orderTasks={   this.props.myTasks&&this.props.myTasks.orderTasks||[] }
+                    orderTasks={
+                        this.props.myTasks && this.props.myTasks.orderTasks ||
+                        []
+                    }
                 />
-
             </Layout>
-        ) 
+        ) : (
+            <Spinner spin={ spinner } />
+        );
     }
 }
 

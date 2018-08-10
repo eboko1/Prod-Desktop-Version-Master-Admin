@@ -27,6 +27,10 @@ export const uiActions = Object.freeze({
         type:    types.SET_ORDER_FETCHING_STATE,
         payload: state,
     }),
+    setMyTasksFetchingState: state => ({
+        type:    types.SET_MY_TASKS_FETCHING_STATE,
+        payload: state,
+    }),
     setDashboardFetchingState: state => ({
         type:    types.SET_DASHBOARD_FETCHING_STATE,
         payload: state,

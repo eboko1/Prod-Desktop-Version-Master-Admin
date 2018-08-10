@@ -82,13 +82,13 @@ export function* fetchOrderTaskSaga() {
     while (true) {
         const { payload: id } = yield take(FETCH_ORDER_TASK);
 
-        yield put(uiActions.setOrderFetchingState(true));
+        // yield put(uiActions.setOrderFetchingState(true));
 
         const data = yield call(fetchAPI, 'GET', `orders/${id}/tasks`);
 
         yield put(fetchOrderTaskSuccess(data));
 
-        yield put(uiActions.setOrderFetchingState(false));
+        // yield put(uiActions.setOrderFetchingState(false));
     }
 }
 
@@ -144,7 +144,7 @@ export function* returnToOrdersPageSaga() {
             { route: '/orders/cancel', statuses: [ 'cancel' ] },
         ];
         const config = statusesMap.find(({ statuses }) =>
-            statuses.includes(status));
+            statuses.includes(status),);
         const { route = '/orders/appointments' } = config || {};
         yield put(replace(route));
     }
@@ -167,7 +167,9 @@ function* handleClientSearchSaga({ payload }) {
     yield delay(1000);
 
     if (payload.length > 2) {
-        const fields = [ 'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites' ];
+        const fields = [
+            'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites',
+        ];
         const data = yield call(fetchAPI, 'GET', 'clients', {
             query:     payload,
             omitStats: true,
