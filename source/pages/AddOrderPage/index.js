@@ -1,5 +1,4 @@
 // vendor
-import _ from 'lodash';
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
@@ -35,11 +34,10 @@ const mapStateToProps = state => {
         vehicles:          state.forms.orderForm.vehicles,
         employees:         state.forms.orderForm.employees,
         managers:          state.forms.orderForm.managers,
-        clients:           state.forms.orderForm.clients.clients,
         allDetails:        state.forms.orderForm.allDetails,
         allServices:       state.forms.orderForm.allServices,
         requisites:        state.forms.orderForm.requisites,
-        addClientModal:    state.modals.modal,
+        modal:             state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
         createOrderStatus: state.forms.orderForm.fields.createOrderStatus.value,
         orderEntity:       {
@@ -116,12 +114,7 @@ class AddOrderPage extends Component {
     };
 
     render() {
-        const {
-            addClientModal,
-            resetModal,
-            addClientFormData,
-            spinner,
-        } = this.props;
+        const { modal, resetModal, addClientFormData, spinner } = this.props;
 
         return !spinner ? (
             <Layout
@@ -184,12 +177,12 @@ class AddOrderPage extends Component {
                 <OrderForm
                     wrappedComponentRef={ this.saveOrderFormRef }
                     setAddClientModal={ this.setAddClientModal }
-                    addClientModal={ addClientModal }
-                    orderForm
+                    modal={ modal }
+                    addOrderForm
                 />
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
-                    visible={ addClientModal }
+                    visible={ modal }
                     handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
                     resetModal={ resetModal }
                     addClientFormData={ addClientFormData }
