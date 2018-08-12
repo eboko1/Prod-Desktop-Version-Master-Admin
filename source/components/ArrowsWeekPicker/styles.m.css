@@ -6,6 +6,7 @@
 .icon {
     cursor: pointer;
     padding: 0 10px;
+    border: none;
 
     &:hover {
         color: var(--primary);

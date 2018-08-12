@@ -5,6 +5,8 @@ import moment from 'moment';
 
 // proj
 import { Catcher } from 'commons';
+import { Loader } from 'components';
+import withDnDropContext from 'utils/withDnDContext.js';
 
 // own
 import DashboardEmptyCell from './DashboardEmptyCell';
@@ -31,7 +33,7 @@ import {
 import mapOrders from './dashboardCore/mapOrders';
 import ordersPuzzle from './dashboardCore/ordersPuzzle';
 
-export default class DashboardContainer extends Component {
+class DashboardContainer extends Component {
     state = {
         currentDay: moment().format('YYYY-MM-DD'),
     };
@@ -218,3 +220,5 @@ export default class DashboardContainer extends Component {
         );
     };
 }
+
+export default withDnDropContext(DashboardContainer);

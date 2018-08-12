@@ -2,18 +2,20 @@ import types from './types';
 import { Map } from 'immutable';
 
 const initialState = Map({
-    swapiFetching:     false,
-    initialized:       false,
+    swapiFetching:         false,
+    initialized:           false,
     // online:        false,
-    authFetching:      false,
-    ordersFetching:    false,
-    orderFetching:     false,
-    dashboardFetching: false,
-    collapsed:         false,
-    isMobile:          void 0,
-    error:             null,
+    authFetching:          false,
+    ordersFetching:        false,
+    orderFetching:         false,
+    dashboardInitializing: false,
+    dashboardFetching:     false,
+    collapsed:             false,
+    isMobile:              void 0,
+    error:                 null,
 });
 
+/* eslint-disable complexity */
 export default (state = initialState, action) => {
     switch (action.type) {
         case types.SET_SWAPI_FETCHING_STATE:
@@ -36,6 +38,9 @@ export default (state = initialState, action) => {
 
         case types.SET_MY_TASKS_FETCHING_STATE:
             return state.set('myTasksFetching', action.payload);
+
+        case types.SET_DASHBOARD_INITALIZING_STATE:
+            return state.set('dashboardInitializing', action.payload);
 
         case types.SET_DASHBOARD_FETCHING_STATE:
             return state.set('dashboardFetching', action.payload);
