@@ -19,7 +19,6 @@ class TooltipBox extends Component {
             comment,
             className,
         } = this.props;
-        // console.log('→ TooltipBox this.props', this.props);
 
         return (
             <div

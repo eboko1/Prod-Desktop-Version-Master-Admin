@@ -195,9 +195,10 @@ class OrderPage extends Component {
 
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
-        console.log('→ spinner', spinner);
 
-        return !spinner ? (
+        return spinner ? (
+            <Spinner spin={ spinner } />
+        ) : (
             <Layout
                 title={
                     !status || !num ? 
@@ -397,8 +398,6 @@ class OrderPage extends Component {
                     orderTasks={ this.props.orderTasks }
                 />
             </Layout>
-        ) : (
-            <Spinner spin={ spinner } />
         );
     }
 }
