@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { DatePicker, Icon } from 'antd';
-import moment from 'moment';
+import { DatePicker, Button } from 'antd';
 
 // own
 import Styles from './styles.m.css';
@@ -22,14 +21,15 @@ class ArrowsDatePicker extends Component {
     }
 
     render() {
-        const { nextDay, prevDay, onDayChange, date } = this.props;
+        const { nextDay, prevDay, onDayChange, date, loading } = this.props;
 
         return (
             <div className={ Styles.container }>
-                <Icon
-                    type='left'
+                <Button
+                    icon='left'
                     className={ Styles.icon }
                     onClick={ () => prevDay() }
+                    disabled={ loading }
                 />
                 <DatePicker
                     allowClear={ false }
@@ -38,11 +38,13 @@ class ArrowsDatePicker extends Component {
                     onChange={ value => onDayChange(value) }
                     placeholder='Select Day'
                     format={ 'dddd, DD MMM YYYY' }
+                    disabled={ loading }
                 />
-                <Icon
-                    type='right'
+                <Button
+                    icon='right'
                     className={ Styles.icon }
                     onClick={ () => nextDay() }
+                    disabled={ loading }
                 />
             </div>
         );

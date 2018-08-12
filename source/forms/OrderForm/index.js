@@ -24,6 +24,7 @@ import {
     DecoratedSelect,
     DecoratedInputNumber,
     DecoratedDatePicker,
+    DecoratedTimePicker,
     DecoratedTextArea,
 } from 'forms/DecoratedFields';
 
@@ -134,13 +135,23 @@ export class OrderForm extends Component {
                     }) }
                     disabledDate={ disabledDate }
                     disabledTime={ disabledTime }
-                    format={ 'YYYY-MM-DD HH:mm' }
-                    showTime={ {
-                        disabledHours,
-                        disabledMinutes,
-                        disabledSeconds,
-                        format: 'HH:mm',
-                    } }
+                    format={ 'YYYY-MM-DD' } // HH:mm
+                    showTime={ false }
+                    // showTime={ {
+                    //     disabledHours,
+                    //     disabledMinutes,
+                    //     disabledSeconds,
+                    //     format: 'HH:mm',
+                    // } }
+                />
+                <DecoratedTimePicker
+                    formItem
+                    field='beginDatetime'
+                    label={ <FormattedMessage id='time' /> }
+                    formatMessage={ formatMessage }
+                    className={ Styles.datePanelItem }
+                    getFieldDecorator={ getFieldDecorator }
+                    minuteStep={ 30 }
                 />
                 <DecoratedSelect
                     field='station'

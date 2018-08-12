@@ -5,10 +5,13 @@ import moment from 'moment';
 
 // proj
 import { Catcher } from 'commons';
+import { Loader } from 'components';
+import withDnDropContext from 'utils/withDnDContext.js';
 
 // own
 import DashboardEmptyCell from './DashboardEmptyCell';
 import DashboardOrder from './DashboardOrder';
+import DashboardTooltip from './DashboardTooltip';
 import {
     DashboardAddOrderCell,
     DashboardAddOrderLink,
@@ -30,7 +33,15 @@ import {
 import mapOrders from './dashboardCore/mapOrders';
 import ordersPuzzle from './dashboardCore/ordersPuzzle';
 
-export default class DashboardContainer extends Component {
+class DashboardContainer extends Component {
+    state = {
+        currentDay: moment().format('YYYY-MM-DD'),
+    };
+
+    _saveDashboardRef = dashboardRef => {
+        this.dashboardRef = dashboardRef;
+    };
+
     render() {
         const { dashboard } = this.props;
 
@@ -39,7 +50,7 @@ export default class DashboardContainer extends Component {
 
         return (
             <Catcher>
-                <Dashboard>
+                <Dashboard ref={ this._saveDashboardRef }>
                     { timeColumn }
                     <DashboardGrid columns={ dashboard.columns }>
                         { dashboardColumns }
@@ -68,14 +79,8 @@ export default class DashboardContainer extends Component {
     };
 
     _renderDashboardColumns = () => {
-        const {
-            dashboard,
-            currentDay,
-            days,
-            stations,
-            load,
-            mode,
-        } = this.props;
+        const { dashboard, days, stations, load, mode } = this.props;
+        const { currentDay } = this.state;
 
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => (
             <DashboardColumn
@@ -186,6 +191,11 @@ export default class DashboardContainer extends Component {
                                             { ...order }
                                         >
                                             { result[ index ].options.num }
+
+                                            <DashboardTooltip
+                                                // id={ result[ index ].options.id }
+                                                { ...order.options }
+                                            />
                                         </DashboardOrder>
                                     ),
                             ) }
@@ -210,3 +220,5 @@ export default class DashboardContainer extends Component {
         );
     };
 }
+
+export default withDnDropContext(DashboardContainer);

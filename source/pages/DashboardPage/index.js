@@ -17,7 +17,7 @@ import {
 } from 'core/dashboard/duck';
 
 import { Layout, Spinner } from 'commons';
-import { ArrowsWeekPicker, ArrowsDatePicker } from 'components';
+import { ArrowsWeekPicker, ArrowsDatePicker, Loader } from 'components';
 import { DashboardContainer } from 'containers';
 
 // own
@@ -34,7 +34,8 @@ const mapStateToProps = state => ({
     schedule:  state.dashboard.schedule,
     days:      state.dashboard.days,
     load:      state.dashboard.load,
-    spinner:   state.ui.get('dashboardFetching'),
+    spinner:   state.ui.get('dashboardInitializing'),
+    loading:   state.ui.get('dashboardFetching'),
 
     ...selectDasboardData(state),
 });
@@ -100,23 +101,13 @@ class DashboardPage extends Component {
     _setDashboardMode = mode => this.props.setDashboardMode(mode);
 
     render() {
-        const {
-            orders,
-            startDate,
-            endDate,
-            date,
-            mode,
-            load,
-            days,
-            stations,
-            schedule,
-            spinner,
-            time,
-            dashboard,
-            linkToDashboardStations,
-        } = this.props;
+        const { startDate, endDate, date, mode, spinner, loading } = this.props;
 
-        return !spinner ? (
+        const dashboardContainer = this._renderDashboardContainer();
+
+        return spinner ? (
+            <Spinner spin={ spinner } />
+        ) : (
             <Layout
                 // paper={ false }
                 title={ <FormattedMessage id='dashboard-page.title' /> }
@@ -135,6 +126,7 @@ class DashboardPage extends Component {
                                     onWeekChange={ this._onWeekChange }
                                     prevWeek={ this._prevWeek }
                                     nextWeek={ this._nextWeek }
+                                    loading={ loading }
                                 />
                             ) : (
                                 <ArrowsDatePicker
@@ -142,6 +134,7 @@ class DashboardPage extends Component {
                                     onDayChange={ this._onDayChange }
                                     prevDay={ this._prevDay }
                                     nextDay={ this._nextDay }
+                                    loading={ loading }
                                 />
                             )
                         }
@@ -152,50 +145,55 @@ class DashboardPage extends Component {
                                 <FormattedMessage id='dashboard-page.calendar' />
                             }
                             key='calendar'
+                            disabled={ loading }
                         >
-                            <DashboardContainer
-                                spinner={ spinner }
-                                orders={ orders }
-                                stations={ stations }
-                                days={ days }
-                                mode={ mode }
-                                load={ load }
-                                schedule={ schedule }
-                                time={ time }
-                                dashboard={ dashboard }
-                                linkToDashboardStations={
-                                    linkToDashboardStations
-                                }
-                            />
+                            { dashboardContainer }
                         </TabPane>
                         <TabPane
                             tab={
                                 <FormattedMessage id='dashboard-page.stations_load' />
                             }
                             key='stations'
+                            disabled={ loading }
                         >
-                            <DashboardContainer
-                                spinner={ spinner }
-                                orders={ orders }
-                                stations={ stations }
-                                days={ days }
-                                mode={ mode }
-                                load={ load }
-                                schedule={ schedule }
-                                time={ time }
-                                dashboard={ dashboard }
-                                linkToDashboardStations={
-                                    linkToDashboardStations
-                                }
-                            />
+                            { dashboardContainer }
                         </TabPane>
                     </Tabs>
                 </section>
             </Layout>
-        ) : (
-            <Spinner spin={ spinner } />
         );
     }
+
+    _renderDashboardContainer = () => {
+        const {
+            loading,
+            orders,
+            mode,
+            load,
+            days,
+            stations,
+            schedule,
+            time,
+            dashboard,
+            linkToDashboardStations,
+        } = this.props;
+
+        return loading ? (
+            <Loader loading={ loading } />
+        ) : (
+            <DashboardContainer
+                orders={ orders }
+                stations={ stations }
+                days={ days }
+                mode={ mode }
+                load={ load }
+                schedule={ schedule }
+                time={ time }
+                dashboard={ dashboard }
+                linkToDashboardStations={ linkToDashboardStations }
+            />
+        );
+    };
 }
 
 export default DashboardPage;

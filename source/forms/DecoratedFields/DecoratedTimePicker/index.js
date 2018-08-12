@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Form, TimePicker } from 'antd';
+import { Form, TimePicker, Button } from 'antd';
 import { FormattedMessage } from 'react-intl';
 // import moment from 'moment';
 
@@ -25,7 +25,9 @@ export const DecoratedTimePicker = props => {
         disabled,
         formatMessage,
         popupClassName,
+        minuteStep,
     } = props;
+
     const timePicker = getFieldDecorator(field, {
         rules,
     })(
@@ -38,6 +40,7 @@ export const DecoratedTimePicker = props => {
             }
             getPopupContainer={ getPopupContainer }
             popupClassName={ popupClassName }
+            minuteStep={ minuteStep }
         />,
     );
 

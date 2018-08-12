@@ -113,8 +113,14 @@ class DragItem extends Component {
         isDragging: false,
     };
 
+    // constructor(props) {
+    //     super(props);
+    //     this.order = React.createRef();
+    // }
+
     render() {
         const {
+            history,
             connectDragSource,
             isDragging,
             className,
@@ -128,15 +134,34 @@ class DragItem extends Component {
 
         return connectDragSource(
             <div
-                className={ className }
+                style={ { position: 'relative' } }
                 isdragging={ isDragging ? 1 : 0 }
                 x={ x }
                 y={ y }
                 columns={ columns }
                 rows={ rows }
-                onClick={ () => this.props.history.push(`${book.order}/${id}`) }
+                onClick={ () => history.push(`${book.order}/${id}`) }
+                className={ className }
+                // innerRef={ this.order }
             >
-                { children }
+                <div
+                    style={ {
+                        whiteSpace:   'nowrap',
+                        overflow:     'hidden',
+                        textOverflow: 'ellipsis',
+                    } }
+
+                    // data-order={ id }
+                    // onMouseEnter={ (ev, hoveredLink) => {
+                    //     handleHover(
+                    //         ev,
+                    //         ev.target.attributes.getNamedItem('data-order').value,
+                    //     );
+                    // } }
+                    // onMouseLeave={ (ev, hoveredLink) => handleHover(ev, '') }
+                >
+                    { children }
+                </div>
             </div>,
         );
     }
@@ -169,14 +194,14 @@ const DashboardOrder = styled(DragItem)`
     padding: 1px;
     color: white;
     font-size: 12px;
-    white-space: nowrap;
+    ${'' /* white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis;
-    min-height: 28px;
+    text-overflow: ellipsis; */} min-height: 28px;
     cursor: move;
     opacity: ${props => props.isdragging ? 0.5 : 1};
     grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
     grid-column: ${props => `${props.y + 1} / span ${props.columns}`};
+    ${'' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */} min-width: 0;
 `;
 
 export default DragSource(DragItemTypes.ORDER, orderSource, collect)(

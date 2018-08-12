@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { DatePicker, Icon } from 'antd';
+import { DatePicker, Icon, Button } from 'antd';
 import moment from 'moment';
 
 // own
@@ -15,30 +15,34 @@ class ArrowsWeekPicker extends Component {
             nextWeek,
             startDate,
             endDate,
+            loading,
         } = this.props;
 
         return (
             <div className={ Styles.weekPicker }>
-                <Icon
-                    type='left'
+                <Button
+                    icon='left'
                     className={ Styles.icon }
                     onClick={ () => prevWeek() }
+                    disabled={ loading }
                 />
                 <WeekPicker
                     allowClear={ false }
                     value={ startDate }
                     onChange={ value => onWeekChange(value) }
                     placeholder='Select Week'
+                    disabled={ loading }
                 />
                 <div className={ Styles.weekDays }>
                     ({ `${startDate.format('MM-DD')} ~ ${endDate.format(
                         'MM-DD',
                     )}` })
                 </div>
-                <Icon
-                    type='right'
+                <Button
+                    icon='right'
                     className={ Styles.icon }
                     onClick={ () => nextWeek() }
+                    disabled={ loading }
                 />
             </div>
         );

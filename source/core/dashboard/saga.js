@@ -30,7 +30,7 @@ export function* initDashboardSaga() {
     while (true) {
         try {
             yield take(INIT_DASHBOARD);
-            yield put(uiActions.setDashboardFetchingState(true));
+            yield put(uiActions.setDashboardInitializingState(true));
             const beginDate = yield select(selectDashboardStartDate);
 
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
@@ -42,7 +42,7 @@ export function* initDashboardSaga() {
         } catch (error) {
             yield put(uiActions.emitError(error));
         } finally {
-            yield put(uiActions.setDashboardFetchingState(false));
+            yield put(uiActions.setDashboardInitializingState(false));
         }
     }
 }
@@ -74,6 +74,8 @@ export function* fetchDashboardCalendarSaga() {
         try {
             yield take(SET_DASHBOARD_WEEK_DATES);
             yield nprogress.start();
+            yield put(uiActions.setDashboardFetchingState(true));
+
             const beginDate = yield select(selectDashboardStartDate);
 
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
@@ -85,6 +87,7 @@ export function* fetchDashboardCalendarSaga() {
         } catch (error) {
             yield put(uiActions.emitError(error));
         } finally {
+            yield put(uiActions.setDashboardFetchingState(false));
             yield nprogress.done();
         }
     }
@@ -95,6 +98,8 @@ export function* fetchDashboardStationsSaga() {
         try {
             yield take(SET_DASHBOARD_DATE);
             yield nprogress.start();
+            yield put(uiActions.setDashboardFetchingState(true));
+
             const beginDate = yield select(selectDashboardDate);
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
                 stations:  true,
@@ -105,6 +110,7 @@ export function* fetchDashboardStationsSaga() {
         } catch (error) {
             yield put(uiActions.emitError(error));
         } finally {
+            yield put(uiActions.setDashboardFetchingState(false));
             yield nprogress.done();
         }
     }
