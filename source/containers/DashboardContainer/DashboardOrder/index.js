@@ -201,7 +201,7 @@ const DashboardOrder = styled(DragItem)`
     opacity: ${props => props.isdragging ? 0.5 : 1};
     grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
     grid-column: ${props => `${props.y + 1} / span ${props.columns}`};
-    min-width: 0;
+    ${'' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */} min-width: 0;
 `;
 
 export default DragSource(DragItemTypes.ORDER, orderSource, collect)(

@@ -9,7 +9,11 @@ import { v4 } from 'uuid';
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { fetchOrders, setUniversalFilters } from 'core/orders/duck';
 
-import { DecoratedSelect, DecoratedDatePicker, DecoratedInputNumber } from 'forms/DecoratedFields';
+import {
+    DecoratedSelect,
+    DecoratedDatePicker,
+    DecoratedInputNumber,
+} from 'forms/DecoratedFields';
 
 import { withReduxForm, getDaterange } from 'utils';
 
@@ -57,7 +61,11 @@ export class UniversalFiltersForm extends Component {
             >
                 <Row gutter={ 8 }>
                     <Col span={ 12 }>
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.enrollment_date'/> }>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.enrollment_date' />
+                            }
+                        >
                             <DecoratedDatePicker
                                 field='beginDate'
                                 getFieldDecorator={ getFieldDecorator }
@@ -81,13 +89,17 @@ export class UniversalFiltersForm extends Component {
                                         id: 'datepicker.year',
                                     }) ]: getDaterange('prevYear', 'ant'),
                                 } }
-                                showTime
-                                format='YYYY-MM-DD HH:mm:ss'
+                                // showTime
+                                format='YYYY-MM-DD HH:mm'
                             />
                         </FormItem>
                     </Col>
                     <Col span={ 12 }>
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.create_date'/> }>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.create_date' />
+                            }
+                        >
                             <DecoratedDatePicker
                                 field='createDate'
                                 getFieldDecorator={ getFieldDecorator }
@@ -189,7 +201,11 @@ export class UniversalFiltersForm extends Component {
                         </FormItem>
                     </Col>
                     <Col span={ 6 }>
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.year' /> }>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.year' />
+                            }
+                        >
                             <DecoratedSelect
                                 field='year'
                                 getFieldDecorator={ getFieldDecorator }
@@ -202,17 +218,24 @@ export class UniversalFiltersForm extends Component {
                                     trigger.parentNode
                                 }
                             >
-                                { vehiclesYears.map((vehiclesYear) => (
-                                    <Option value={ vehiclesYear } key={ v4() } name={ String(vehiclesYear) }>
+                                { vehiclesYears.map(vehiclesYear => (
+                                    <Option
+                                        value={ vehiclesYear }
+                                        key={ v4() }
+                                        name={ String(vehiclesYear) }
+                                    >
                                         { vehiclesYear }
-                                    </Option>))
-                                }
-
+                                    </Option>
+                                )) }
                             </DecoratedSelect>
                         </FormItem>
                     </Col>
                     <Col span={ 3 }>
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.mileage_from' /> }>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.mileage_from' />
+                            }
+                        >
                             <DecoratedInputNumber
                                 field='odometerLower'
                                 showSearch
@@ -232,7 +255,11 @@ export class UniversalFiltersForm extends Component {
                         </FormItem>
                     </Col>
                     <Col span={ 3 }>
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.mileage_to' /> }>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.mileage_to' />
+                            }
+                        >
                             <DecoratedInputNumber
                                 field='odometerGreater'
                                 getFieldDecorator={ getFieldDecorator }
@@ -270,7 +297,11 @@ export class UniversalFiltersForm extends Component {
                                 optionLabel='creationReason'
                             />
                         </FormItem> */ }
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.service' /> }>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.service' />
+                            }
+                        >
                             <DecoratedSelect
                                 field='service'
                                 showSearch
@@ -341,7 +372,11 @@ export class UniversalFiltersForm extends Component {
                 </Row>
                 <Row gutter={ 8 }>
                     <Col span={ 6 }>
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.number_of_visits_from'/> }>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.number_of_visits_from' />
+                            }
+                        >
                             <DecoratedInputNumber
                                 field='ordersGreater'
                                 getFieldDecorator={ getFieldDecorator }
@@ -357,8 +392,11 @@ export class UniversalFiltersForm extends Component {
                         </FormItem>
                     </Col>
                     <Col span={ 6 }>
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.number_of_visits_to'/> }>
-
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.number_of_visits_to' />
+                            }
+                        >
                             <DecoratedInputNumber
                                 field='ordersLower'
                                 getFieldDecorator={ getFieldDecorator }
@@ -374,7 +412,11 @@ export class UniversalFiltersForm extends Component {
                         </FormItem>
                     </Col>
                     <Col span={ 4 }>
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.visited'/> }>
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.visited' />
+                            }
+                        >
                             <DecoratedSelect
                                 field='notVisit'
                                 showSearch
@@ -388,17 +430,33 @@ export class UniversalFiltersForm extends Component {
                                     trigger.parentNode
                                 }
                             >
-                                <Option value={ false } key={ v4() } name={ <FormattedMessage id='universal_filters_form.visited'/> }>
-                                    <FormattedMessage id='universal_filters_form.visited'/>
+                                <Option
+                                    value={ false }
+                                    key={ v4() }
+                                    name={
+                                        <FormattedMessage id='universal_filters_form.visited' />
+                                    }
+                                >
+                                    <FormattedMessage id='universal_filters_form.visited' />
                                 </Option>
-                                <Option value key={ v4() } name={ <FormattedMessage id='universal_filters_form.not_visited'/> }>
-                                    <FormattedMessage id='universal_filters_form.not_visited'/>
+                                <Option
+                                    value
+                                    key={ v4() }
+                                    name={
+                                        <FormattedMessage id='universal_filters_form.not_visited' />
+                                    }
+                                >
+                                    <FormattedMessage id='universal_filters_form.not_visited' />
                                 </Option>
                             </DecoratedSelect>
                         </FormItem>
                     </Col>
                     <Col span={ 4 }>
-                        <FormItem label={ <FormattedMessage id='universal_filters_form.last' /> } >
+                        <FormItem
+                            label={
+                                <FormattedMessage id='universal_filters_form.last' />
+                            }
+                        >
                             <DecoratedInputNumber
                                 field='notVisitDays'
                                 showSearch
