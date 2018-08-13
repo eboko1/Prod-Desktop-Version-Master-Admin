@@ -19,6 +19,7 @@ import {
     DecoratedSelect,
     DecoratedInputNumber,
     DecoratedCheckbox,
+    DecoratedSlider,
 } from 'forms/DecoratedFields';
 
 // own
@@ -279,7 +280,11 @@ class ServicesTable extends Component {
     };
 
     render() {
-        const { employees, getFieldDecorator } = this.props;
+        const {
+            employees,
+            getFieldDecorator,
+            totalHours,
+        } = this.props;
 
         const dataSource = _(this.props.services)
             .toPairs()
@@ -296,21 +301,17 @@ class ServicesTable extends Component {
                     pagination={ false }
                 />
                 <div className={ Styles.durationPanel }>
-                    <FormItem
-                        label={
-                            <FormattedMessage id='add_order_form.duration' />
-                        }
+                    <DecoratedSlider
                         className={ Styles.durationPanelItem }
-                    >
-                        <Select
-                            defaultValue='15'
-                            onChange={ value => this.handleChange(value) }
-                        >
-                            <Option value='15'>15</Option>
-                            <Option value='30'>30</Option>
-                            <Option value='45'>45</Option>
-                        </Select>
-                    </FormItem>
+                        formItem
+                        initDuration={ totalHours }
+                        label='Продолжительность'
+                        field='duration'
+                        getFieldDecorator={ getFieldDecorator }
+                        min={ 0 }
+                        step={ 0.5 }
+                        max={ 8 }
+                    />
                     <FormItem
                         label={
                             <FormattedMessage id='order_form_table.master' />

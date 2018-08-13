@@ -85,7 +85,7 @@ class AddOrderPage extends Component {
                         this.props.orderEntity,
                         this.props.allServices,
                         this.props.allDetails,
-                        this.props.createStatus,
+                        this.props.createStatus, form,
                     ),
                 );
             }

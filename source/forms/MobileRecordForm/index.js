@@ -251,7 +251,7 @@ export class MobileRecordForm extends Component {
                     // setFieldsValue={ setFieldsValue }
                     // initialValue={ this.props.order.duration }
                     disabled={ !isDurationDisabled }
-                    min={ 0.5 }
+                    min={ 0 }
                     step={ 0.5 }
                     max={ 8 }
                     { ...formItemLayout }

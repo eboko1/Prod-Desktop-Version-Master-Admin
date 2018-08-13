@@ -488,7 +488,7 @@ export class OrderForm extends Component {
         const {
             count: countServices,
             price: priceServices,
-            // totalHours,
+            totalHours,
         } = servicesStats(fields.services, this.props.allServices);
 
         const servicesDiscount = Number(fields.servicesDiscount.value) || 0;
@@ -583,6 +583,7 @@ export class OrderForm extends Component {
                     formatMessage={ formatMessage }
                     getFieldDecorator={ getFieldDecorator }
                     form={ form }
+                    totalHours={ totalHours }
                     defaultDetails={ defaultDetails }
                     countServices={ countServices }
                     countDetails={ countDetails }

@@ -154,7 +154,7 @@ class OrderPage extends Component {
                         this.props.orderEntity,
                         this.props.allServices,
                         this.props.allDetails,
-                        status,
+                        status, form,
                     ),
                     redirectStatus,
                 });
