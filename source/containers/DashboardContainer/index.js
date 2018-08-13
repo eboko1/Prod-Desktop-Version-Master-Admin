@@ -10,6 +10,7 @@ import withDnDropContext from 'utils/withDnDContext.js';
 // own
 import DashboardEmptyCell from './DashboardEmptyCell';
 import DashboardOrder from './DashboardOrder';
+import DashboardTimeline from './DashboardTimeline';
 import {
     DashboardAddOrderCell,
     DashboardAddOrderLink,
@@ -44,7 +45,7 @@ class DashboardContainer extends Component {
     }
 
     render() {
-        const { dashboard } = this.props;
+        const { dashboard, schedule } = this.props;
 
         const timeColumn = this._renderTimeColumn();
         const dashboardColumns = this._renderDashboardColumns();
@@ -52,6 +53,7 @@ class DashboardContainer extends Component {
         return (
             <Catcher>
                 <Dashboard innerRef={ this._dashboardRef }>
+                    <DashboardTimeline schedule={ schedule } />
                     { timeColumn }
                     <DashboardGrid columns={ dashboard.columns }>
                         { dashboardColumns }
