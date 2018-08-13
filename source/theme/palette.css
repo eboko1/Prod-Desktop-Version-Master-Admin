@@ -6,7 +6,7 @@
     --paletteColor5: #2b2e3f;
     --paletteColor6: #151723;
     --paletteColor7: #474b68;
-    --lightGray: #e8e8e8;
+    --lightGray: rgba(214, 215, 218, 0.5);
 
     --rgbaColor1: rgba(0, 0, 0, 0.9);
     --rgbaColor2: rgba(0, 0, 0, 0.25);

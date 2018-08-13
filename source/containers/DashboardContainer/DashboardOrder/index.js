@@ -167,6 +167,7 @@ class DashboardOrder extends Component {
                         dashboardRef,
                     )
                 }
+                onMouseDown={ this._hideDashboardTooltip }
                 onMouseLeave={ this._hideDashboardTooltip }
                 // className={ className }
                 innerRef={ order => this._getOrderRef(order) }

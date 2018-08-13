@@ -32,7 +32,7 @@ const collect = (connect, monitor) => ({
 });
 
 // @DropTarget(DragItemTypes.ORDER, dropTarget, collect)
-class DragTarget extends Component {
+class DashboardEmptyCell extends Component {
     static propTypes = {
         x:                 PropTypes.number,
         y:                 PropTypes.number,
@@ -50,18 +50,21 @@ class DragTarget extends Component {
             isOver,
             canDrop,
             children,
-            className,
+            // className,
         } = this.props;
 
         // const backgroundColor = 'palevioletred';
 
-        return connectDropTarget(
-            <div className={ className }>
+        return (
+            <StyledDashboardEmptyCell
+                // className={ className }
+                innerRef={ cell => connectDropTarget(cell) }
+            >
                 { children }
                 { /* { isOver && !canDrop && this._renderOverlay('red') }
                 { !isOver && canDrop && this._renderOverlay('yellow') }
                 { isOver && canDrop && this._renderOverlay('green') } */ }
-            </div>,
+            </StyledDashboardEmptyCell>
         );
     }
 
@@ -83,9 +86,8 @@ class DragTarget extends Component {
     // }
 }
 
-export const DashboardEmptyCell = styled(DragTarget)`
+export const StyledDashboardEmptyCell = styled.div`
     height: ${ROW_HEIGHT}px;
-    border-bottom: 1px dashed black;
     grid-column: ${props => `span ${props.column}`};
 `;
 

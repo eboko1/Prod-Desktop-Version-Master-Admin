@@ -17,7 +17,6 @@ const AddOrderLink = ({ className }) => (
 );
 
 export const DashboardAddOrderCell = styled.div`
-    border-bottom: 1px dashed black;
     height: ${ROW_HEIGHT}px;
     position: relative;
 `;
