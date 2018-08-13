@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon } from 'antd';
+import { Table, Icon,Tooltip } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import { v4 } from 'uuid';
@@ -130,6 +130,17 @@ class TasksTable extends Component {
                 title:     <FormattedMessage id='comment' />,
                 dataIndex: 'comment',
                 width:     '8%',
+                render:    (text, record) => (
+                    <div >
+                        <Tooltip
+                            placement='bottomLeft'
+                            title={ <span>{ text }</span> }
+                            getPopupContainer={ trigger => trigger.parentNode }
+                        >
+                            <div className={ Styles.commentDiv }>{ text }</div>
+                        </Tooltip>
+                    </div>
+                ),
             },
             {
                 title:     <FormattedMessage id='author' />,

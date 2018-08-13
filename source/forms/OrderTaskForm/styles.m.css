@@ -41,7 +41,26 @@
     display: flex;
 }
 @media (max-width: 500px) {
+    .infoDirectory {
+        display: flex;
+        flex-direction: column;
+    }
+    .infoDirectoryName {
+        width: 100%;
+        font-weight: bold;
+    }
+
     .orderDescription {
         flex-direction: column;
     }
+}
+.infoDirectory {
+    display: flex;
+}
+.infoDirectoryName {
+    width: 20%;
+    font-weight: bold;
+}
+.info{
+    width:100%
 }
