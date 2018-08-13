@@ -69,10 +69,10 @@ export default class UniversalFilters extends Component {
         this.props.resetModal();
         form.validateFields((err, values) => {
             if (!err) {
-                console.log(
-                    'Received values of UniversalFiltersForm: ',
-                    values,
-                );
+                // console.log(
+                //     'Received values of UniversalFiltersForm: ',
+                //     values,
+                // );
                 const modelsTransformQuery = values.models
                     ? {
                         models: _(values.models)

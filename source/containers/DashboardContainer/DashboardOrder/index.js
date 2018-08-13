@@ -11,6 +11,8 @@ import book from 'routes/book';
 
 // own
 import { DragItemTypes } from '../dashboardConfig';
+import DashboardTooltip from '../DashboardTooltip';
+import handleHover from '../dashboardCore/handleHover';
 
 const orderSource = {
     beginDrag(props) {
@@ -101,8 +103,9 @@ function collect(connect, monitor) {
 //     connectDragSource: connect.dragSource(),
 //     isDragging:        monitor.isDragging(),
 // }))
+
 @withRouter
-class DragItem extends Component {
+class DashboardOrder extends Component {
     static propTypes = {
         connectDragSource:  PropTypes.func,
         connectDragPreview: PropTypes.func,
@@ -113,10 +116,21 @@ class DragItem extends Component {
         isDragging: false,
     };
 
-    // constructor(props) {
-    //     super(props);
-    //     this.order = React.createRef();
-    // }
+    state = {
+        tooltipPosition: null,
+    };
+
+    _getOrderRef = order => {
+        this.orderRef = order;
+        this.props.connectDragSource(order);
+    };
+
+    _showDashboardTooltip = (ev, order, dashboard) => {
+        const tooltipPosition = handleHover(ev, order, dashboard);
+        this.setState({ tooltipPosition });
+    };
+
+    _hideDashboardTooltip = () => this.setState({ tooltipPosition: null });
 
     render() {
         const {
@@ -130,19 +144,32 @@ class DragItem extends Component {
             columns,
             rows,
             id,
+            status,
+            dashboardRef,
+            options,
         } = this.props;
 
-        return connectDragSource(
-            <div
-                style={ { position: 'relative' } }
+        const { tooltipPosition } = this.state;
+
+        return (
+            <StyledDashboardOrder
                 isdragging={ isDragging ? 1 : 0 }
+                status={ status }
                 x={ x }
                 y={ y }
                 columns={ columns }
                 rows={ rows }
                 onClick={ () => history.push(`${book.order}/${id}`) }
-                className={ className }
-                // innerRef={ this.order }
+                onMouseEnter={ ev =>
+                    this._showDashboardTooltip(
+                        ev,
+                        this.orderRef.getBoundingClientRect(),
+                        dashboardRef,
+                    )
+                }
+                onMouseLeave={ this._hideDashboardTooltip }
+                // className={ className }
+                innerRef={ order => this._getOrderRef(order) }
             >
                 <div
                     style={ {
@@ -150,19 +177,11 @@ class DragItem extends Component {
                         overflow:     'hidden',
                         textOverflow: 'ellipsis',
                     } }
-
-                    // data-order={ id }
-                    // onMouseEnter={ (ev, hoveredLink) => {
-                    //     handleHover(
-                    //         ev,
-                    //         ev.target.attributes.getNamedItem('data-order').value,
-                    //     );
-                    // } }
-                    // onMouseLeave={ (ev, hoveredLink) => handleHover(ev, '') }
                 >
                     { children }
                 </div>
-            </div>,
+                <DashboardTooltip position={ tooltipPosition } { ...options } />
+            </StyledDashboardOrder>
         );
     }
 }
@@ -188,7 +207,8 @@ const _ordersStatus = status => {
     }
 };
 
-const DashboardOrder = styled(DragItem)`
+const StyledDashboardOrder = styled.div`
+    position: relative;
     background: ${props => _ordersStatus(props.status)};
     margin: 1px;
     padding: 1px;

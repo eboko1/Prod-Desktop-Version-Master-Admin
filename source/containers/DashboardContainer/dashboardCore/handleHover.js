@@ -1,45 +1,42 @@
-const handleHover = (ev, dashboard, hoveredOrder) => {
+const handleHover = (ev, hoveredOrder, dashboard) => {
     ev.preventDefault();
-    const DASHBOAD_OFFSET_TOP = dashboard.offsetTop;
-    const DASHBOAD_OFFSET_LEFT = dashboard.offsetLeft;
-    const DASHBOAD_WIDTH = dashboard.offsetWidth;
-    const DASHBOARD_HEIGHT = dashboard.offsetHeight;
-    const DASHBOAD_MARGIN = 20;
+    const DASHBOAD_WIDTH = dashboard.current.offsetWidth;
+    const DASHBOARD_HEIGHT = dashboard.current.offsetHeight;
 
-    const TOOLTIP_WIDTH = 160;
+    const TOOLTIP_WIDTH = 200;
     const TOOLTIP_HEIGHT = 170;
-    const TOOLTIP_MARGIN = 10;
+    const TOOLTIP_MARGIN = 40;
 
-    const ORDER_WIDTH = ev.target.offsetWidth;
+    const ORDER_WIDTH = hoveredOrder.width;
 
-    let parentPos = dashboard.getBoundingClientRect();
-    let childrenPos = ev.target.getBoundingClientRect();
+    const dashboardPosition = dashboard.current.getBoundingClientRect();
+
     let relativePos = {};
-    relativePos.top = childrenPos.top - parentPos.top;
-    // relativePos.right = childrenPos.right - parentPos.right,
-    // relativePos.bottom = childrenPos.bottom - parentPos.bottom,
-    relativePos.left = childrenPos.left - parentPos.left;
+    relativePos.top = hoveredOrder.top - dashboardPosition.top;
+    relativePos.left = hoveredOrder.left - dashboardPosition.left;
 
-    let tooltipPositionY = relativePos.top - TOOLTIP_MARGIN * 5;
-    let tooltipPositionX = relativePos.left + ORDER_WIDTH - TOOLTIP_MARGIN * 2;
+    let tooltipPositionY = 10;
+
+    let tooltipPositionX = ORDER_WIDTH - TOOLTIP_MARGIN;
 
     const isTooltipOverflowsX =
-        DASHBOAD_WIDTH - tooltipPositionX < TOOLTIP_WIDTH;
+        DASHBOAD_WIDTH - relativePos.left - TOOLTIP_MARGIN - TOOLTIP_MARGIN <
+        TOOLTIP_WIDTH;
+
     const isTooltipOverflowsY =
-        DASHBOARD_HEIGHT - tooltipPositionY < TOOLTIP_HEIGHT;
+        DASHBOARD_HEIGHT - relativePos.top - TOOLTIP_MARGIN < TOOLTIP_HEIGHT;
 
     if (isTooltipOverflowsX) {
-        tooltipPositionX =
-            relativePos.left - (TOOLTIP_WIDTH + TOOLTIP_MARGIN * 7);
+        tooltipPositionX = -Math.abs(ORDER_WIDTH + TOOLTIP_WIDTH);
     }
 
     if (isTooltipOverflowsY) {
-        tooltipPositionY = relativePos.top - (TOOLTIP_HEIGHT + TOOLTIP_MARGIN);
+        tooltipPositionY = -TOOLTIP_HEIGHT / 2;
     }
 
     return {
-        hovered:       hoveredOrder,
-        tooltipStyles: { left: tooltipPositionX, top: tooltipPositionY },
+        left: tooltipPositionX,
+        top:  tooltipPositionY,
     };
 };
 
