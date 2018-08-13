@@ -10,6 +10,7 @@ import {
     select,
 } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
+import moment from 'moment';
 import nprogress from 'nprogress';
 
 // proj
@@ -51,8 +52,32 @@ import {
     FETCH_AVAILABLE_HOURS,
 } from './duck';
 
-const selectBeginDatetime = state =>
-    state.forms.orderForm.fields.beginDatetime.value;
+const selectBeginDatetime = state => {
+    const beginDate = state.forms.orderForm.fields.beginDate.value;
+    const beginTime = state.forms.orderForm.fields.beginTime.value;
+
+    let beginDatetime = null;
+    try {
+        const dayPart = beginDate
+            ? moment(beginDate)
+                .utc()
+                .format('YYYY-MM-DD')
+            : void 0;
+        const hourPart = beginTime
+            ? moment(beginTime)
+                .utc()
+                .format('HH:mm')
+            : void 0;
+
+        beginDatetime =
+            dayPart && hourPart
+                ? moment(`${dayPart}T${hourPart}:00.000Z`)
+                : void 0;
+    } catch (err) {}
+
+    return beginDatetime;
+};
+
 const selectStation = state => state.forms.orderForm.fields.station.value;
 
 export function* fetchOrderFormSaga() {
@@ -148,7 +173,7 @@ export function* returnToOrdersPageSaga() {
             { route: '/orders/cancel', statuses: [ 'cancel' ] },
         ];
         const config = statusesMap.find(({ statuses }) =>
-            statuses.includes(status),);
+            statuses.includes(status));
         const { route = '/orders/appointments' } = config || {};
         yield put(replace(route));
     }
@@ -171,9 +196,7 @@ function* handleClientSearchSaga({ payload }) {
     yield delay(1000);
 
     if (payload.length > 2) {
-        const fields = [
-            'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites',
-        ];
+        const fields = [ 'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites' ];
         const data = yield call(fetchAPI, 'GET', 'clients', {
             query:     payload,
             omitStats: true,

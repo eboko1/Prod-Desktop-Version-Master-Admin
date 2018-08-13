@@ -84,7 +84,8 @@ const appendKey = arr => arr.map(item => ({ ...item, key: v4() }));
 
 const createDefaultState = () => ({
     fields: {
-        beginDatetime:     defaultFieldValue('beginDatetime'),
+        beginDate:         defaultFieldValue('beginDate'),
+        beginTime:         defaultFieldValue('beginTime'),
         status:            defaultFieldValue('status'),
         date:              defaultFieldValue('date'),
         station:           defaultFieldValue('station'),
@@ -236,8 +237,14 @@ export default function reducer(state = ReducerState, action) {
                         "manager",
                         payload.order.managerId,
                     ),
-                    beginDatetime: customFieldValue(
-                        "beginDatetime",
+                    beginDate: customFieldValue(
+                        'beginDate',
+                        payload.order.beginDatetime
+                            ? moment(payload.order.beginDatetime)
+                            : void 0,
+                    ),
+                    beginTime: customFieldValue(
+                        'beginTime',
                         payload.order.beginDatetime
                             ? moment(payload.order.beginDatetime)
                             : void 0,

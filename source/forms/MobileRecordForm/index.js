@@ -94,10 +94,10 @@ export class MobileRecordForm extends Component {
         } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        const availableHours = getFieldsValue([ 'beginDatetime', 'station' ]);
+        const availableHours = getFieldsValue([ 'beginDate', 'beginTime', 'station' ]);
 
         const isDurationDisabled = _.every(
-            getFieldsValue([ 'beginDatetime', 'station' ]),
+            getFieldsValue([ 'beginDate', 'beginTime', 'station' ]),
         );
 
         return (
@@ -224,7 +224,7 @@ export class MobileRecordForm extends Component {
                 />
                 <DecoratedDatePicker
                     formItem
-                    field='beginDatetime'
+                    field='beginDate'
                     label={ <FormattedMessage id='date' /> }
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
@@ -234,7 +234,7 @@ export class MobileRecordForm extends Component {
                 />
                 <DecoratedTimePicker
                     formItem
-                    field='beginDatetime'
+                    field='beginTime'
                     label={ <FormattedMessage id='time' /> }
                     formatMessage={ formatMessage }
                     className={ Styles.datePanelItem }

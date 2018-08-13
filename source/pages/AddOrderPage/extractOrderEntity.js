@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 
 export function convertFieldsValuesToDbEntity(
     orderFields,
@@ -74,17 +75,39 @@ export function convertFieldsValuesToDbEntity(
             return { ...baseDetail, ...detailCustom, ...brandCustom };
         });
 
+    const beginDate = _.get(orderFields, 'beginDate.value');
+    const beginTime = _.get(orderFields, 'beginTime.value');
+
+    let beginDatetime = null;
+    try {
+        const dayPart = beginDate
+            ? moment(beginDate)
+                .utc()
+                .format('YYYY-MM-DD')
+            : void 0;
+        const hourPart = beginTime
+            ? moment(beginTime)
+                .utc()
+                .format('HH:mm')
+            : void 0;
+
+        beginDatetime =
+            dayPart && hourPart
+                ? moment(`${dayPart}T${hourPart}:00.000Z`).toISOString()
+                : void 0;
+    } catch (err) {}
+
     const order = {
         clientId:            _.get(orderFields, 'selectedClient.clientId'),
-        status,
         clientVehicleId:     _.get(orderFields, 'clientVehicle.value'),
         businessRequisiteId: _.get(orderFields, 'requisite.value'),
         managerId:           _.get(orderFields, 'manager.value'),
-        beginDatetime:       _.get(orderFields, 'beginDatetime.value'),
         duration:            _.get(orderFields, 'duration.value'),
         clientPhone:         _.get(orderFields, 'clientPhone.value'),
         paymentMethod:       _.get(orderFields, 'paymentMethod.value'),
         clientRequisiteId:   _.get(orderFields, 'clientRequisite.value'),
+        status,
+        beginDatetime,
         services,
         details,
         employeeId:          _.get(orderFields, 'employee.value'),
@@ -108,13 +131,13 @@ export const requiredFieldsOnStatuses = {
     not_complete: [ 'manager' ],
     required:     [ 'manager' ],
 
-    reserve: [ 'beginDatetime', 'manager' ],
-    approve: [ 'beginDatetime', 'manager', 'clientPhone' ],
+    reserve: [ 'beginDate', 'beginTime', 'manager' ],
+    approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone' ],
 
     redundant: [],
     cancel:    [],
 
-    progress: [ 'beginDatetime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+    progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
 
-    success: [ 'beginDatetime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+    success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
 };

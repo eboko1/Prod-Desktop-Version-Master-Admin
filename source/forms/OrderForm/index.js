@@ -4,6 +4,7 @@ import { Form, Select, Input, Icon } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
 import _ from 'lodash';
+import moment from 'moment';
 
 //proj
 import book from 'routes/book';
@@ -100,21 +101,20 @@ export class OrderForm extends Component {
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
-        const beginDatetime = (this.props.fields.beginDatetime || {}).value;
+        const beginDate = this.props.form.getFieldValue('beginDate');
 
         const {
             disabledDate,
             disabledHours,
             disabledMinutes,
             disabledSeconds,
-            disabledTime,
-        } = getDateTimeConfig(beginDatetime, this.props.schedule);
+        } = getDateTimeConfig(moment(beginDate), this.props.schedule);
 
         return (
             <div className={ Styles.datePanel }>
                 <DecoratedDatePicker
                     getFieldDecorator={ getFieldDecorator }
-                    field='beginDatetime'
+                    field='beginDate'
                     hasFeedback
                     formItem
                     formatMessage={ formatMessage }
@@ -134,7 +134,6 @@ export class OrderForm extends Component {
                         defaultMessage: 'Provide date',
                     }) }
                     disabledDate={ disabledDate }
-                    disabledTime={ disabledTime }
                     format={ 'YYYY-MM-DD' } // HH:mm
                     showTime={ false }
                     // showTime={ {
@@ -146,7 +145,12 @@ export class OrderForm extends Component {
                 />
                 <DecoratedTimePicker
                     formItem
-                    field='beginDatetime'
+                    field='beginTime'
+                    disabled={ !beginDate }
+                    hasFeedback
+                    disabledHours={ disabledHours }
+                    disabledMinutes={ disabledMinutes }
+                    disabledSeconds={ disabledSeconds }
                     label={ <FormattedMessage id='time' /> }
                     formatMessage={ formatMessage }
                     className={ Styles.datePanelItem }

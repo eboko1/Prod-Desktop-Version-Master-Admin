@@ -26,6 +26,9 @@ export const DecoratedTimePicker = props => {
         formatMessage,
         popupClassName,
         minuteStep,
+        disabledHours,
+        disabledMinutes,
+        disabledSeconds,
     } = props;
 
     const timePicker = getFieldDecorator(field, {
@@ -34,6 +37,9 @@ export const DecoratedTimePicker = props => {
         <TimePicker
             format={ format || 'HH:mm' }
             disabled={ disabled }
+            disabledHours={ disabledHours }
+            disabledMinutes={ disabledMinutes }
+            disabledSeconds={ disabledSeconds }
             placeholder={
                 placeholder ||
                 formatMessage({ id: 'datepicker.timepicker.placeholder' })
