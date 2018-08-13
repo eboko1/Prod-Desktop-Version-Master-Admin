@@ -8,8 +8,7 @@ const mapOrders = (beginHour, maxRows, orders) =>
         .filter('beginDatetime')
         .map((order) => {
             const { duration, beginDatetime } = order;
-            const numberOfHalfHours =
-                Math.ceil(moment.duration(duration).asHours() * 2) || 1;
+            const numberOfHalfHours = Math.ceil((duration || 0.5) * 2);
 
             const momentBeginDatetime = moment(beginDatetime).tz(TIMEZONE);
 
