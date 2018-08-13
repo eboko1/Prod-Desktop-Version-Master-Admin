@@ -497,11 +497,8 @@ export class OrderForm extends Component {
 
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
 
-        let commentsCount = 0;
-        if (comment && businessComment && vehicleCondition && recommendation) {
-            const commentsCollection = [ comment, businessComment, vehicleCondition, recommendation ];
-            commentsCount = commentsCollection.filter(com => com.value).length;
-        }
+        const commentsCollection = [ comment, businessComment, vehicleCondition, recommendation ];
+        const commentsCount = commentsCollection.filter(com => _.get(com, 'value')).length;
 
         return (
             <>
