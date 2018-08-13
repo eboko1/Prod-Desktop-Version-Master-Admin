@@ -302,6 +302,13 @@ export class OrderTaskForm extends Component {
                                 id: 'order_task_modal.comment_placeholder',
                             }) }
                             formItem
+                            autosize={ { minRows: 2, maxRows: 6 } }
+                            rules={ [
+                                {
+                                    max:     2000,
+                                    message: 'Too much',
+                                },
+                            ] }                         
                             className={ Styles.selectMargin }
                             getPopupContainer={ trigger => trigger.parentNode }
                             getFieldDecorator={ getFieldDecorator }

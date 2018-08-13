@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import moment from 'moment';
-import { Table, Icon } from 'antd';
+import { Table, Icon, Tooltip } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import { v4 } from 'uuid';
@@ -187,6 +187,17 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='comment' />,
                 dataIndex: 'comment',
                 width:     '7%',
+                render:    (text, record) => (
+                    <div >
+                        <Tooltip
+                            placement='bottomLeft'
+                            title={ <span>{ text }</span> }
+                            getPopupContainer={ trigger => trigger.parentNode }
+                        >
+                            <div className={ Styles.commentDiv }>{ text }</div>
+                        </Tooltip>
+                    </div>
+                ),
             },
             {
                 title:     <FormattedMessage id='author' />,
