@@ -89,7 +89,6 @@ const createDefaultState = () => ({
         status:            defaultFieldValue('status'),
         date:              defaultFieldValue('date'),
         station:           defaultFieldValue('station'),
-        duration:          defaultFieldValue('duration'),
         manager:           defaultFieldValue('manager'),
         employee:          defaultFieldValue('employee'),
         searchClientQuery: defaultFieldValue('searchClientQuery'),
@@ -238,13 +237,13 @@ export default function reducer(state = ReducerState, action) {
                         payload.order.managerId,
                     ),
                     beginDate: customFieldValue(
-                        'beginDate',
+                        "beginDate",
                         payload.order.beginDatetime
                             ? moment(payload.order.beginDatetime)
                             : void 0,
                     ),
                     beginTime: customFieldValue(
-                        'beginTime',
+                        "beginTime",
                         payload.order.beginDatetime
                             ? moment(payload.order.beginDatetime)
                             : void 0,
@@ -278,6 +277,10 @@ export default function reducer(state = ReducerState, action) {
                         payload.order.vehicleCondition,
                     ),
                     comment: customFieldValue("comment", payload.order.comment),
+                    ... payload.order.duration? {duration: customFieldValue(
+                        "duration",
+                        payload.order.duration,
+                    )} : {},
                     employee: customFieldValue(
                         "employee",
                         payload.order.employeeId,

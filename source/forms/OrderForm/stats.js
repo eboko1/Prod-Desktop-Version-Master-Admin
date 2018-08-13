@@ -27,14 +27,18 @@ export const servicesStats = (selectedServices, allServices) => {
         .value();
 
     const totalHours = selectedSimpleServices.reduce(
-        (prev, { id, count }) => prev + (Number(allServicesHours[ id ]) || 0) * count,
+        (prev, { id, count }) =>
+            prev + (Number(allServicesHours[ id ]) || 0) * count,
         15,
     );
 
-    return { ...calculateStats(selectedSimpleServices), totalHours };
+    return {
+        ...calculateStats(selectedSimpleServices),
+        totalHours: (Math.ceil(totalHours / 60 * 2) || 1) / 2,
+    };
 };
 
-export const detailsStats = (selectedDetails) => {
+export const detailsStats = selectedDetails => {
     const selectedSimpleDetails = _(selectedDetails)
         .values()
         .filter(detail => _.get(detail, 'detailName.value'))

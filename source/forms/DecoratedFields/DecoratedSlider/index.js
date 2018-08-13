@@ -21,6 +21,7 @@ export const DecoratedSlider = props => {
         rules,
         field,
         initialValue,
+        initDuration,
 
         step,
         min,
@@ -29,7 +30,7 @@ export const DecoratedSlider = props => {
     // console.log('→ value', initialValue);
 
     const slider = getFieldDecorator(field, {
-        // initialValue,
+        ...initDuration ? { initialValue: initDuration } : {},
         rules,
     })(
         <Slider
@@ -53,7 +54,7 @@ export const DecoratedSlider = props => {
         >
             { slider }
         </FormItem>
-    ) :
+    ) : 
         slider
     ;
 };

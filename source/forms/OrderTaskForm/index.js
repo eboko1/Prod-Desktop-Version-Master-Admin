@@ -55,52 +55,54 @@ export class OrderTaskForm extends Component {
             <div className={ Styles.directory }>
                 <Icon
                     onClick={ () => this.setState({ toogleDirectory: false }) }
-                    type='close-circle-o'
+                    type='close-circle-o '
                 />
-                <div>
-                    <div>
-                        <span>Калькуляция</span>:
-                        <span>М/п готовит калькуляцию</span>
+                <div className={ Styles.info }>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>
+                            Калькуляция:
+                        </div>
+                        <div>М/п готовит калькуляцию</div>
                     </div>
-                    <div>
-                        <span>Согласование</span>:
-                        <span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Согласование:</div>
+                        <div>
                             Коммуникация с клиентом, обычно после Калькуляции
                             или Диагностики
-                        </span>
+                        </div>
                     </div>
-                    <div>
-                        <span>Ожидание заезда</span>:
-                        <span>Все согласовано, ждем заезда</span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Ожидание заезда:</div>
+                        <div>Все согласовано, ждем заезда</div>
                     </div>
-                    <div>
-                        <span>Приемка</span>:<span>М/п принимает авто</span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Приемка:</div><div>М/п принимает авто</div>
                     </div>
-                    <div>
-                        <span>Диагностика</span>:
-                        <span>Проходит диагностика авто</span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Диагностика:</div>
+                        <div>Проходит диагностика авто</div>
                     </div>
-                    <div>
-                        <span>Ожидание ремонта</span>:
-                        <span>Авто ждет ремонта в цеху или на территории </span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Ожидание ремонта:</div>
+                        <div>Авто ждет ремонта в цеху или на территории </div>
                     </div>
-                    <div>
-                        <span>Ожидание з/ч</span>:<span>Авто ожидает з/ч</span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Ожидание з/ч:</div><div>Авто ожидает з/ч</div>
                     </div>
-                    <div>
-                        <span>Ремонт</span>:<span>Идет ремонт</span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Ремонт:</div><div>Идет ремонт</div>
                     </div>
-                    <div>
-                        <span>Выдача</span>:
-                        <span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Выдача:</div>
+                        <div>
                             Ремонт выполнен, ожидание оплаты и возврата авто
-                        </span>
+                        </div>
                     </div>
-                    <div>
-                        <span>Закрыто</span>:<span>Ремонт закрыт</span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Закрыто:</div><div>Ремонт закрыт</div>
                     </div>
-                    <div>
-                        <span>Другое</span>:<span>Кастомные задачи </span>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>Другое:</div><div>Кастомные задачи </div>
                     </div>
                 </div>
             </div>
@@ -308,7 +310,7 @@ export class OrderTaskForm extends Component {
                                     max:     2000,
                                     message: 'Too much',
                                 },
-                            ] }                         
+                            ] }
                             className={ Styles.selectMargin }
                             getPopupContainer={ trigger => trigger.parentNode }
                             getFieldDecorator={ getFieldDecorator }

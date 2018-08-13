@@ -6,6 +6,7 @@ export function convertFieldsValuesToDbEntity(
     allServices,
     allDetails,
     status = 'not_complete',
+    form,
 ) {
     const services = _(orderFields.services)
         .values()
@@ -120,6 +121,10 @@ export function convertFieldsValuesToDbEntity(
         businessComment:     _.get(orderFields, 'businessComment.value'),
         comment:             _.get(orderFields, 'comment.value'),
     };
+
+    if (form) {
+        order.duration = form.getFieldValue('duration');
+    }
 
     return order;
 }
