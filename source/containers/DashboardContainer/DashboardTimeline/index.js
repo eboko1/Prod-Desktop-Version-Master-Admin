@@ -26,7 +26,8 @@ const StyledDashboardTimeline = styled.hr`
     border-bottom: 2px solid #526e82;
     top: ${props =>
         `${(~~moment().format('H') - props.time + moment().format('m') / 60) *
-            60}px`};
+            60 +
+            110}px`};
 `;
 
 export default DashboardTimeline;
