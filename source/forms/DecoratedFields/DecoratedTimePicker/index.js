@@ -29,6 +29,8 @@ export const DecoratedTimePicker = props => {
         disabledHours,
         disabledMinutes,
         disabledSeconds,
+        inputReadOnly,
+        allowEmpty,
     } = props;
 
     const timePicker = getFieldDecorator(field, {
@@ -47,6 +49,8 @@ export const DecoratedTimePicker = props => {
             getPopupContainer={ getPopupContainer }
             popupClassName={ popupClassName }
             minuteStep={ minuteStep }
+            inputReadOnly={ inputReadOnly }
+            allowEmpty={ allowEmpty }
         />,
     );
 
