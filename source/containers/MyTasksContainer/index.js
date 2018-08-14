@@ -12,6 +12,7 @@ import { withReduxForm } from 'utils';
 // import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import {
     fetchMyTasks,
+    setPage,
     onChangeMyTasksForm,
     getActiveOrder,
 } from 'core/myTasks/duck';
@@ -32,13 +33,14 @@ import Styles from './styles.m.css';
         setModal,
         initOrderTasksForm,
         getActiveOrder,
+        setPage,
     },
 })
 export default class MyTasksContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            sort: {field: 'startDate', order: 'desc'},
+            sort: { field: 'startDate', order: 'desc' },
         };
         const { sortField, sortArrow } = this.state;
         this.columns = [
@@ -88,7 +90,6 @@ export default class MyTasksContainer extends Component {
                     return text ? <FormattedMessage id={ text } /> : null;
                 },
                 sorter: true,
-
             },
             {
                 title:     <FormattedMessage id='urgency' />,
@@ -143,7 +144,6 @@ export default class MyTasksContainer extends Component {
                 ),
                 defaultSortOrder: 'descend',
                 sorter:           (a, b) => moment(a.startDate).isAfter(b.startDate),
-
             },
             {
                 title:     <FormattedMessage id='deadlineDate' />,
@@ -166,10 +166,17 @@ export default class MyTasksContainer extends Component {
                     //     .utc(durationText.asMilliseconds())
                     //     .format('HH:mm');
 
-                    return <div>{ text ?moment.duration(text, 'milliseconds').humanize(): null }</div>;
+                    return (
+                        <div>
+                            { text
+                                ? moment
+                                    .duration(text, 'milliseconds')
+                                    .humanize()
+                                : null }
+                        </div>
+                    );
                 },
                 sorter: true,
-
             },
             {
                 title:     <FormattedMessage id='endDate' />,
@@ -181,14 +188,13 @@ export default class MyTasksContainer extends Component {
                     </div>
                 ),
                 sorter: (a, b) => moment(a.endDate).isAfter(b.endDate),
-
             },
             {
                 title:     <FormattedMessage id='comment' />,
                 dataIndex: 'comment',
                 width:     '7%',
                 render:    (text, record) => (
-                    <div >
+                    <div>
                         <Tooltip
                             placement='bottomLeft'
                             title={ <span>{ text }</span> }
@@ -213,38 +219,45 @@ export default class MyTasksContainer extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchMyTasks();
+        this.props.fetchMyTasks(2);
     }
-     handleTableChange = (pagination, filters, sorter) => {
-         if (!sorter) {
-             return;
-         }
-         const sort = {field: sorter.field, order: sorter.order === 'ascend' ? 'ascend' : 'descend'};
-         this.setState({sort})     
-     }
+    handleTableChange = (pagination, filters, sorter) => {
+        if (!sorter) {
+            return;
+        }
+        const sort = {
+            field: sorter.field,
+            order: sorter.order === 'ascend' ? 'ascend' : 'descend',
+        };
+        this.setState({ sort });
+    };
 
     sortTable = (a, b) => {
-        const {sort}=this.state
-        let priorities={
-            'LOW':      1, 
-            'NORMAL':   2,
-            'HIGH':     3,
-            'CRITICAL': 4,
+        const { sort } = this.state;
+        let priorities = {
+            LOW:      1,
+            NORMAL:   2,
+            HIGH:     3,
+            CRITICAL: 4,
+        };
+        if (sort.field === 'priority' && sort.order === 'ascend') {
+            return (
+                (priorities[ a.priority ] || 0) - (priorities[ b.priority ] || 0)
+            );
+        } else if (sort.field === 'priority' && sort.order === 'descend') {
+            return (
+                (priorities[ b.priority ] || 0) - (priorities[ a.priority ] || 0)
+            );
         }
-        if(sort.field==='priority'&&sort.order==='ascend'){
-            return (priorities[ a.priority ]||0)-(priorities[ b.priority ]||0)
-        }else if(sort.field==='priority'&&sort.order==='descend'){
-            return (priorities[ b.priority ]||0)-(priorities[ a.priority ]||0)
+        if (sort.field === 'duration' && sort.order === 'ascend') {
+            return a.duration - b.duration;
+        } else if (sort.field === 'duration' && sort.order === 'descend') {
+            return b.duration - a.duration;
         }
-        if(sort.field==='duration'&&sort.order==='ascend'){
-            return a.duration-b.duration
-        }else if(sort.field==='duration'&&sort.order==='descend'){
-            return b.duration-a.duration
-        }
-        if(sort.order==='ascend') {
+        if (sort.order === 'ascend') {
             if (moment(a[ sort.field ]).isAfter(b[ sort.field ])) {
                 return -1;
-            } 
+            }
         }
         if (moment(b[ sort.field ]).isAfter(a[ sort.field ])) {
             return 1;
@@ -253,9 +266,20 @@ export default class MyTasksContainer extends Component {
         return 0;
     };
     render() {
-        const { myTasks } = this.props;
+        const { myTasks, page } = this.props;
         const columns = this.columns;
-        const { sortField, sortArrow } = this.state;
+        // const { sortField, sortArrow } = this.state;
+        const pagination = {
+            pageSize:         25,
+            size:             'large',
+            total:            myTasks?myTasks.length:25,
+            hideOnSinglePage: true,
+            current:          page,
+            onChange:         page => {
+                this.props.setPage(page);
+                this.props.fetchMyTasks(page);
+            },
+        };
 
         return (
             <Catcher>
@@ -275,26 +299,27 @@ export default class MyTasksContainer extends Component {
                             <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
                         }/>
                 </section> */ }
-                <section className={ Styles.filters }>
+                <section className={ Styles.myTasks }>
                     <Table
                         dataSource={
                             myTasks && myTasks.orderTasks.length > 0
-                                ? myTasks.orderTasks.sort(this.sortTable).map((task, index) => ({
-                                    ...task,
-                                    index,
-                                    key: v4(),
-                                }))
+                                ? myTasks.orderTasks
+                                    .sort(this.sortTable)
+                                    .map((task, index) => ({
+                                        ...task,
+                                        index,
+                                        key: v4(),
+                                    }))
                                 : []
                         }
                         size='small'
-                        scroll={ { x: 2200 } }
+                        scroll={ { x: 2200, y: '50vh' } }
                         columns={ columns }
-                        pagination={ false }
+                        pagination={ pagination }
                         locale={ {
                             emptyText: <FormattedMessage id='no_data' />,
                         } }
                         onChange={ this.handleTableChange }
-
                     />
                 </section>
             </Catcher>

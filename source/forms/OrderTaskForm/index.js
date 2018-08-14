@@ -6,7 +6,7 @@ import { v4 } from 'uuid';
 //proj
 import { onChangeOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 
-import { withReduxForm, getDateTimeConfig } from 'utils';
+import { withReduxForm, getDateTimeConfigs } from 'utils';
 const Option = Select.Option;
 
 // own
@@ -65,32 +65,45 @@ export class OrderTaskForm extends Component {
                         <div>М/п готовит калькуляцию</div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Согласование:</div>
+                        <div className={ Styles.infoDirectoryName }>
+                            Согласование:
+                        </div>
                         <div>
                             Коммуникация с клиентом, обычно после Калькуляции
                             или Диагностики
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Ожидание заезда:</div>
+                        <div className={ Styles.infoDirectoryName }>
+                            Ожидание заезда:
+                        </div>
                         <div>Все согласовано, ждем заезда</div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Приемка:</div><div>М/п принимает авто</div>
+                        <div className={ Styles.infoDirectoryName }>Приемка:</div>
+                        <div>М/п принимает авто</div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Диагностика:</div>
+                        <div className={ Styles.infoDirectoryName }>
+                            Диагностика:
+                        </div>
                         <div>Проходит диагностика авто</div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Ожидание ремонта:</div>
+                        <div className={ Styles.infoDirectoryName }>
+                            Ожидание ремонта:
+                        </div>
                         <div>Авто ждет ремонта в цеху или на территории </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Ожидание з/ч:</div><div>Авто ожидает з/ч</div>
+                        <div className={ Styles.infoDirectoryName }>
+                            Ожидание з/ч:
+                        </div>
+                        <div>Авто ожидает з/ч</div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Ремонт:</div><div>Идет ремонт</div>
+                        <div className={ Styles.infoDirectoryName }>Ремонт:</div>
+                        <div>Идет ремонт</div>
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>Выдача:</div>
@@ -99,10 +112,12 @@ export class OrderTaskForm extends Component {
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Закрыто:</div><div>Ремонт закрыт</div>
+                        <div className={ Styles.infoDirectoryName }>Закрыто:</div>
+                        <div>Ремонт закрыт</div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Другое:</div><div>Кастомные задачи </div>
+                        <div className={ Styles.infoDirectoryName }>Другое:</div>
+                        <div>Кастомные задачи </div>
                     </div>
                 </div>
             </div>

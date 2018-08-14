@@ -18,9 +18,9 @@ import {
 export function* fetchMyTasks() {
     while (true) {
         try {
-            yield take(FETCH_MY_TASKS);
+            const {payload:page}=yield take(FETCH_MY_TASKS);
             yield put(uiActions.setMyTasksFetchingState(true));
-            const data = yield call(fetchAPI, 'GET', 'orders/my-tasks');
+            const data = yield call(fetchAPI, 'GET', `orders/my-tasks?page=${page}`);
             yield put(fetchMyTasksSuccess(data));
             yield put(uiActions.setMyTasksFetchingState(false));
         } catch (error) {

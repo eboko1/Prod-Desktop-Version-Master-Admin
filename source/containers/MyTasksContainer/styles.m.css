@@ -11,3 +11,8 @@
     margin-right: 0;
     padding-right: 0;
 }
+.myTasks :global(.ant-pagination) {
+    float: none;
+    justify-content: center;
+    display: flex;
+}

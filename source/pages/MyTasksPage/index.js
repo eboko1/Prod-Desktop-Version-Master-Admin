@@ -17,6 +17,7 @@ import { fetchMyTasks } from 'core/myTasks/duck';
 const mapStateToProps = state => {
     return {
         myTasks:         state.myTasksContainer.myTasks,
+        page:            state.myTasksContainer.page,
         modal:           state.modals.modal,
         orderTaskEntity: state.forms.orderTaskForm.fields,
         orderTaskId:     state.forms.orderTaskForm.taskId,
@@ -75,11 +76,12 @@ class MyTasksPage extends Component {
             progressStatusOptions,
             priorityOptions,
             spinner,
+            page,
         } = this.props;
 
         return !spinner ? (
             <Layout>
-                <MyTasksContainer myTasks={ myTasks } />
+                <MyTasksContainer myTasks={ myTasks } page={ page } />
 
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }

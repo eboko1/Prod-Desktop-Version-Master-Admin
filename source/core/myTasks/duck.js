@@ -8,7 +8,7 @@ export const FETCH_MY_TASKS_SUCCESS = `${prefix}/FETCH_MY_TASKS_SUCCESS`;
 export const FETCH_MY_TASKS_FAILURE = `${prefix}/FETCH_MY_TASKS_FAILURE`;
 export const ON_CHANGE_MY_TASKS_FORM = `${prefix}/ON_CHANGE_MY_TASKS_FORM`;
 export const GET_ACTIVE_ORDER = `${prefix}/GET_ACTIVE_ORDER`;
-
+export const SET_CURRENT_PAGE = `${prefix}/SET_CURRENT_PAGE`;
 /**
  * Reducer
  * */
@@ -19,6 +19,7 @@ const ReducerState = {
     },
     myTasks:     null,
     activeOrder: null,
+    page:        1,
 };
 
 // eslint-disable-next-line
@@ -44,7 +45,12 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 activeOrder: payload,
             };
-
+        case SET_CURRENT_PAGE:
+            return {
+                ...state,
+                page: payload,
+            };
+            
         default:
             return state;
     }
@@ -60,8 +66,9 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export const fetchMyTasks = () => ({
-    type: FETCH_MY_TASKS,
+export const fetchMyTasks = page => ({
+    type:    FETCH_MY_TASKS,
+    payload: page,
 });
 
 export const fetchMyTasksSuccess = data => ({
@@ -77,4 +84,8 @@ export const fetchMyTasksFailure = data => ({
 export const getActiveOrder = id => ({
     type:    GET_ACTIVE_ORDER,
     payload: id,
+});
+export const setPage = page => ({
+    type:    SET_CURRENT_PAGE,
+    payload: page,
 });
