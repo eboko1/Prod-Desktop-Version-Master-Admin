@@ -10,6 +10,7 @@ import {
     select,
 } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
+import _ from 'lodash';
 import moment from 'moment';
 import nprogress from 'nprogress';
 
@@ -88,6 +89,9 @@ export function* fetchOrderFormSaga() {
 
             const data = yield call(fetchAPI, 'GET', `orders/${id}`);
 
+            if (_.get(data, 'order.beginDatetime') && _.get(data, 'order.stationNum')) {
+                yield put(fetchAvailableHours(data.order.stationNum, moment(data.order.beginDatetime)));
+            }
             yield put(fetchOrderFormSuccess(data));
         } catch (error) {
             yield put(uiActions.emitError(error));
