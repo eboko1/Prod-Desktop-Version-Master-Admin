@@ -6,8 +6,7 @@ import styled from 'styled-components';
 const DashboardTimeline = ({ schedule }) => {
     if (
         ~~moment().format('H') >= schedule.beginHour &&
-        ~~moment().format('H') <= 21
-        // ~~moment().format('H') <= schedule.endHour
+        ~~moment().format('H') <= schedule.endHour
     ) {
         return <StyledDashboardTimeline time={ schedule.beginHour } />;
     }
