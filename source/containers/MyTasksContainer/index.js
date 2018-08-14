@@ -42,7 +42,6 @@ export default class MyTasksContainer extends Component {
         this.state = {
             sort: { field: 'startDate', order: 'desc' },
         };
-        const { sortField, sortArrow } = this.state;
         this.columns = [
             {
                 title:     '',
@@ -143,7 +142,7 @@ export default class MyTasksContainer extends Component {
                     </div>
                 ),
                 defaultSortOrder: 'descend',
-                sorter:           (a, b) => moment(a.startDate).isAfter(b.startDate),
+                sorter:           true,
             },
             {
                 title:     <FormattedMessage id='deadlineDate' />,
@@ -187,7 +186,7 @@ export default class MyTasksContainer extends Component {
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
                     </div>
                 ),
-                sorter: (a, b) => moment(a.endDate).isAfter(b.endDate),
+                sorter: true,
             },
             {
                 title:     <FormattedMessage id='comment' />,
@@ -197,7 +196,12 @@ export default class MyTasksContainer extends Component {
                     <div>
                         <Tooltip
                             placement='bottomLeft'
-                            title={ <span>{ text }</span> }
+                            title={ <div 
+                                // style={ {  
+                                //     whiteSpace: 'nowrap',
+                                //     wordBreak:  'break-all',
+                                //     height:     '100%'} }
+                            >{ text }</div> }
                             getPopupContainer={ trigger => trigger.parentNode }
                         >
                             <div className={ Styles.commentDiv }>{ text }</div>
@@ -233,38 +237,44 @@ export default class MyTasksContainer extends Component {
     };
 
     sortTable = (a, b) => {
-        const { sort } = this.state;
-        let priorities = {
-            LOW:      1,
-            NORMAL:   2,
-            HIGH:     3,
-            CRITICAL: 4,
-        };
-        if (sort.field === 'priority' && sort.order === 'ascend') {
-            return (
-                (priorities[ a.priority ] || 0) - (priorities[ b.priority ] || 0)
-            );
-        } else if (sort.field === 'priority' && sort.order === 'descend') {
-            return (
-                (priorities[ b.priority ] || 0) - (priorities[ a.priority ] || 0)
-            );
+        const {sort}=this.state
+        let priorities={
+            'LOW':      1, 
+            'NORMAL':   2,
+            'HIGH':     3,
+            'CRITICAL': 4,
         }
-        if (sort.field === 'duration' && sort.order === 'ascend') {
-            return a.duration - b.duration;
-        } else if (sort.field === 'duration' && sort.order === 'descend') {
-            return b.duration - a.duration;
+        if(sort.field==='priority'&&sort.order==='ascend'){
+            return (priorities[ a.priority ]||0)-(priorities[ b.priority ]||0)
+        }else if(sort.field==='priority'&&sort.order==='descend'){
+            return (priorities[ b.priority ]||0)-(priorities[ a.priority ]||0)
         }
-        if (sort.order === 'ascend') {
-            if (moment(a[ sort.field ]).isAfter(b[ sort.field ])) {
-                return -1;
-            }
+        if(sort.field==='duration'&&sort.order==='ascend'){
+            return a.duration-b.duration
+        }else if(sort.field==='duration'&&sort.order==='descend'){
+            return b.duration-a.duration
         }
-        if (moment(b[ sort.field ]).isAfter(a[ sort.field ])) {
-            return 1;
+        if(sort.order==='ascend') {
+
+            var c = new Date(a[ sort.field ]);
+            var d = new Date(b[ sort.field ]);
+
+            return c-d;
+            
         }
+        var c = new Date(a[ sort.field ]);
+        var d = new Date(b[ sort.field ]);
+
+        return d-c; 
+        
+
+
+            
+    
 
         return 0;
     };
+
     render() {
         const { myTasks, page } = this.props;
         const columns = this.columns;
@@ -313,7 +323,9 @@ export default class MyTasksContainer extends Component {
                                 : []
                         }
                         size='small'
-                        scroll={ { x: 2200, y: '50vh' } }
+                        scroll={ { x: 2200,
+                            // y: '50vh',
+                        } }
                         columns={ columns }
                         pagination={ pagination }
                         locale={ {
