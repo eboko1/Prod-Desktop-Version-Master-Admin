@@ -277,10 +277,14 @@ export default function reducer(state = ReducerState, action) {
                         payload.order.vehicleCondition,
                     ),
                     comment: customFieldValue("comment", payload.order.comment),
-                    ... payload.order.duration? {duration: customFieldValue(
-                        "duration",
-                        payload.order.duration,
-                    )} : {},
+                    ...(payload.order.duration
+                        ? {
+                              duration: customFieldValue(
+                                  "duration",
+                                  payload.order.duration,
+                              ),
+                          }
+                        : {}),
                     employee: customFieldValue(
                         "employee",
                         payload.order.employeeId,
@@ -530,6 +534,13 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 orderTasks: payload,
             };
+
+        case FETCH_AVAILABLE_HOURS_SUCCESS:
+            return {
+                ...state,
+                availableHours: payload,
+            };
+
         default:
             return state;
     }
@@ -704,8 +715,9 @@ export const createInviteOrderSuccess = response => ({
     payload: response,
 });
 
-export const fetchAvailableHours = () => ({
-    type: FETCH_AVAILABLE_HOURS,
+export const fetchAvailableHours = (station, date) => ({
+    type:    FETCH_AVAILABLE_HOURS,
+    payload: { station, date },
 });
 // export const fetchAvailableHours = ({ beginDatetime, station }) => ({
 //     type:    FETCH_AVAILABLE_HOURS,

@@ -92,12 +92,6 @@ export function* fetchOrderFormSaga() {
         } catch (error) {
             yield put(uiActions.emitError(error));
         } finally {
-            const stationNum = yield select(selectStation);
-            const date = yield select(selectBeginDatetime);
-            if (stationNum && date) {
-                yield put(fetchAvailableHours());
-            }
-
             yield put(uiActions.setOrderFetchingState(false));
         }
     }
@@ -247,13 +241,10 @@ export function* createInviteOrderSaga({ payload: invite }) {
 
 export function* fetchAvailableHoursSaga() {
     while (true) {
-        yield take(FETCH_AVAILABLE_HOURS);
-
-        const stationNum = yield select(selectStation);
-        const date = yield select(selectBeginDatetime);
+        const { payload: {station, date} } = yield take(FETCH_AVAILABLE_HOURS);
 
         const data = yield call(fetchAPI, 'GET', 'dashboard/free_hours', {
-            stationNum: stationNum,
+            stationNum: station,
             date:       date.toISOString(),
         });
         yield put(fetchAvailableHoursSuccess(data));

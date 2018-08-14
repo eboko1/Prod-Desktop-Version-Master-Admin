@@ -4,6 +4,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Button, Input, Select } from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
+import moment from 'moment';
 
 // proj
 // import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
@@ -39,6 +40,7 @@ const Option = Select.Option;
     debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
     actions:         {
         change: onChangeOrderForm,
+        fetchAvailableHours,
     },
 })
 export class MobileRecordForm extends Component {
@@ -84,17 +86,15 @@ export class MobileRecordForm extends Component {
     //     setFieldsValue({ duration: durationValue || 0.5 });
     // }
 
+    fetchAvailableHours(station, date) {
+        this.props.form.resetFields([ 'beginTime' ]); // TODO doesn't work
+        this.props.fetchAvailableHours(station, date);
+    }
+
     render() {
         const { selectedClient, stations, onStatusChange } = this.props;
-        const {
-            getFieldDecorator,
-            getFieldValue,
-            getFieldsValue,
-            setFieldsValue,
-        } = this.props.form;
+        const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
-
-        const availableHours = getFieldsValue([ 'beginDate', 'beginTime', 'station' ]);
 
         const isDurationDisabled = _.every(
             getFieldsValue([ 'beginDate', 'beginTime', 'station' ]),
@@ -219,29 +219,96 @@ export class MobileRecordForm extends Component {
                         <FormattedMessage id='add_order_form.select_station' />
                     }
                     options={ stations }
+                    onSelect={ value => {
+                        const beginDate = this.props.form.getFieldValue(
+                            'beginDate',
+                        );
+                        if (beginDate) {
+                            this.props.fetchAvailableHours(value, beginDate);
+                        }
+                    } }
                     optionValue='num'
                     optionLabel='name'
                 />
                 <DecoratedDatePicker
                     formItem
                     field='beginDate'
+                    hasFeedback
                     label={ <FormattedMessage id='date' /> }
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
                     formatMessage={ formatMessage }
                     allowClear={ false }
+                    onChange={ value => {
+                        const station = this.props.form.getFieldValue(
+                            'station',
+                        );
+                        if (station) {
+                            this.props.fetchAvailableHours(station, value);
+                        }
+                    } }
                     { ...formItemLayout }
                 />
                 <DecoratedTimePicker
-                    formItem
                     field='beginTime'
+                    formItem
+                    hasFeedback
+                    disabled={
+                        !this.props.form.getFieldValue('beginDate') ||
+                        !this.props.form.getFieldValue('station')
+                    }
+                    disabledHours={ () => {
+                        const availableHours = this.props.availableHours || [];
+
+                        return _.difference(
+                            Array(24)
+                                .fill(1)
+                                .map((value, index) => index),
+                            availableHours.map(availableHour =>
+                                Number(moment(availableHour).format('HH'))),
+                        );
+                    } }
+                    disabledMinutes={ hour => {
+                        const availableHours = this.props.availableHours || [];
+
+                        const availableMinutes = availableHours
+                            .map(availableHour => moment(availableHour))
+                            .filter(
+                                availableHour =>
+                                    Number(availableHour.format('HH')) === hour,
+                            )
+                            .map(availableHour =>
+                                Number(availableHour.format('mm')));
+
+                        return _.difference([ 0, 30 ], availableMinutes);
+                    } }
+                    // disabledSeconds={ disabledSeconds }
                     label={ <FormattedMessage id='time' /> }
                     formatMessage={ formatMessage }
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
-                    popupClassName='mobileRecordFormTimePicker'
-                    { ...formItemLayout }
+                    minuteStep={ 30 }
                 />
+                { /*<DecoratedSelect*/ }
+                { /*formItem*/ }
+                { /*hasFeedback*/ }
+                { /*disabled={*/ }
+                { /*!this.props.form.getFieldValue('beginDate') ||*/ }
+                { /*!this.props.form.getFieldValue('station')*/ }
+                { /*}*/ }
+                { /*field='beginTime'*/ }
+                { /*label={ <FormattedMessage id='time' /> }*/ }
+                { /*className={ Styles.datePanelItem }*/ }
+                { /*getFieldDecorator={ getFieldDecorator }*/ }
+                { /*popupClassName='mobileRecordFormTimePicker'*/ }
+                { /*{ ...formItemLayout }*/ }
+                { /*>*/ }
+                { /*{ (this.props.availableHours || []).map(availableHour => (*/ }
+                { /*<Option value={ availableHour } key={ availableHour }>*/ }
+                { /*{ moment(availableHour).format('HH:mm') }*/ }
+                { /*</Option>*/ }
+                { /*)) }*/ }
+                { /*</DecoratedSelect>*/ }
 
                 <DecoratedSlider
                     formItem
