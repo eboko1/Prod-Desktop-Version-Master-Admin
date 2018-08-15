@@ -1,14 +1,11 @@
 // Core
 import { createStore, applyMiddleware } from 'redux';
-import { persistStore, persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
-import userReducer, { moduleName as userModule } from 'core/user/duck';
+import { persistStore } from 'redux-persist';
 
 // Own
 import { middleware, sagaMiddleware } from './middleware';
 import { composeEnhancers } from './enhancers';
 import rootReducer from './rootReducer';
-// import { rootPersistReducer } from './persistor';
 import rootSaga from './rootSaga';
 import { intl } from './intl';
 
@@ -16,24 +13,9 @@ const initialState = {
     intl,
 };
 
-const persistConfig = {
-    key: 'root',
-    storage,
-    // whitelist: [ 'user' ],
-};
-
-// const persistedReducer = { [ userModule ]: userReducer, ...rootReducer };
-
-export const rootPersistReducer = persistReducer(
-    persistConfig,
-    // persistedReducer,
-    rootReducer,
-);
-
 const store = createStore(
     // () => null,
-    // rootReducer,
-    rootPersistReducer,
+    rootReducer,
     initialState,
     composeEnhancers()(applyMiddleware(...middleware)),
 );

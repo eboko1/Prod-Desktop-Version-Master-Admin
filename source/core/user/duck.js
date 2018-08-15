@@ -1,8 +1,10 @@
 /**
  * Constants
  **/
-export const moduleName = 'order';
+export const moduleName = 'user';
 const prefix = `cpb/${moduleName}`;
+
+export const SET_USER = `${prefix}/SET_USER`;
 
 /**
  * Reducer
@@ -38,6 +40,9 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
+        case SET_USER:
+            return { ...state, ...payload };
+
         default:
             return state;
     }
@@ -50,3 +55,8 @@ export default function reducer(state = ReducerState, action) {
 /**
  * Action Creators
  **/
+
+export const setUser = user => ({
+    type:    SET_USER,
+    payload: user,
+});
