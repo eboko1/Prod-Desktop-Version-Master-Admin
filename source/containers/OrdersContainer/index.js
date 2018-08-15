@@ -31,7 +31,8 @@ const mapStateToProps = state => {
         filter:         state.orders.filter,
         modal:          state.modals.modal,
         sort:           state.orders.sort,
-        ordersFetching: state.ui.get('ordersFetching'),
+        ordersFetching: false,
+        // ordersFetching: state.ui.get('ordersFetching'),
     };
 };
 
@@ -281,7 +282,10 @@ class OrdersContainer extends Component {
             if (!sorter) {
                 return;
             }
-            const sort = {field: sorter.field, order: sorter.order === 'ascend' ? 'asc' : 'desc'};
+            const sort = {
+                field: sorter.field,
+                order: sorter.order === 'ascend' ? 'asc' : 'desc',
+            };
             if (!_.isEqual(sort, this.props.sort)) {
                 this.props.setOrdersPageSort(sort);
                 this.props.fetchOrders();

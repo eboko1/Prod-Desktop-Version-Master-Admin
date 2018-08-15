@@ -25,8 +25,10 @@ let isMobile; // eslint-disable-line
 enquireScreen(b => (isMobile = b)); // eslint-disable-line
 
 const mapStateToProps = state => ({
-    authFetching: state.ui.get('authFetching'),
-    collapsed:    state.ui.get('collapsed'),
+    authFetching: false,
+    collapsed:    false,
+    // authFetching: state.ui.get('authFetching'),
+    // collapsed:    state.ui.get('collapsed'),
 });
 
 const mapDispatchToProps = {

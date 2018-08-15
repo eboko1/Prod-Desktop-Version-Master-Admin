@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import { routerReducer as router } from 'react-router-redux';
 
 // proj
+// import { rootPersistReducer } from './persistor';
 import intl from 'core/intl/reducer';
 import ui from 'core/ui/reducer';
 import auth from 'core/auth/reducer';
@@ -11,6 +12,7 @@ import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
+import userReducer, { moduleName as userModule } from 'core/user/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
@@ -22,6 +24,8 @@ const rootReducer = combineReducers({
     forms,
     router,
     ui,
+    // rootPersistReducer,
+    [ userModule ]:      userReducer,
     [ ordersModule ]:    ordersReducer,
     [ orderModule ]:     orderReducer,
     [ modalsModule ]:    modalsReducer,
