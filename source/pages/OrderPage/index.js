@@ -75,7 +75,6 @@ const mapStateToProps = state => {
         invited:               state.forms.orderForm.invited,
         modal:                 state.modals.modal,
         spinner:               state.ui.orderFetching,
-        isMobile:              state.ui.isMobile,
         orderEntity:           {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,

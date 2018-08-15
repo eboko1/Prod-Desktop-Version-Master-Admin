@@ -29,14 +29,12 @@ const RadioGroup = Radio.Group;
 
 let cx = classNames.bind(Styles);
 
-const mapState = state => {
-    return {
-        ordersDaterangeFilter: state.orders.filter.daterange,
-        filter:                state.orders.filter,
-        collapsed:             state.ui.collapsed,
-        isMobile:              state.ui.isMobile,
-    };
-};
+const mapState = state => ({
+    ordersDaterangeFilter: state.orders.filter.daterange,
+    filter:                state.orders.filter,
+    collapsed:             state.ui.collapsed,
+    isMobile:              state.ui.views.isMobile,
+});
 
 const mapDispatch = {
     fetchOrders,
