@@ -5,25 +5,22 @@ import ModuleHeader from './ModuleHeader';
 import Navigation from './Navigation';
 import Spinner from './Spinner';
 import Catcher from './Catcher';
-import {
-    MobileView,
-    TabletView,
-    DesktopView,
-    ResponsiveView,
-    BREAKPOINTS,
-} from './ResponsiveViews';
+// import {
+//     MobileView,
+//     TabletView,
+//     DesktopView,
+//     ResponsiveView,
+//     withResponsive,
+//     BREAKPOINTS,
+//     _breakpoints,
+// } from './Responsive';
 
-export {
-    Header,
-    ModuleHeader,
-    Footer,
-    Layout,
-    Navigation,
-    Spinner,
-    Catcher,
-    MobileView,
-    TabletView,
-    DesktopView,
-    ResponsiveView,
-    BREAKPOINTS,
-};
+export { Header, ModuleHeader, Footer, Layout, Navigation, Spinner, Catcher };
+//
+// MobileView,
+// TabletView,
+// DesktopView,
+// ResponsiveView,
+// withResponsive,
+// BREAKPOINTS,
+// _breakpoints,

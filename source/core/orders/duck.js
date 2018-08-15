@@ -1,5 +1,3 @@
-// import { Record, List } from 'immutable';
-// import { createSelector } from 'reselect';
 import { v4 as uid } from 'uuid';
 
 /**
@@ -37,10 +35,6 @@ export const SET_ORDERS_PAGE_SORT = `${prefix}/SET_ORDERS_PAGE_SORT`;
 /**
  * Reducer
  * */
-// const ReducerState = Record({
-//     orders: new List([]),
-// });
-
 const ReducerState = {
     stats:  {},
     count:  0,

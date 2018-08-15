@@ -5,8 +5,8 @@ import { routerReducer as router } from 'react-router-redux';
 // proj
 // import { rootPersistReducer } from './persistor';
 import intl from 'core/intl/reducer';
-import ui from 'core/ui/reducer';
-import auth from 'core/auth/reducer';
+import uiReducer, { moduleName as uiModule } from 'core/ui/duck';
+import authReducer, { moduleName as authModule } from 'core/auth/duck';
 import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
@@ -19,18 +19,17 @@ import dashboardReducer, {
 } from 'core/dashboard/duck';
 
 const rootReducer = combineReducers({
-    intl,
-    auth,
     forms,
-    router,
-    ui,
-    // rootPersistReducer,
-    [ userModule ]:      userReducer,
     [ ordersModule ]:    ordersReducer,
     [ orderModule ]:     orderReducer,
     [ modalsModule ]:    modalsReducer,
     [ dashboardModule ]: dashboardReducer,
     [ myTasksModule ]:   myTasksReducer,
+    [ userModule ]:      userReducer,
+    [ uiModule ]:        uiReducer,
+    [ authModule ]:      authReducer,
+    intl,
+    router,
     // [ universalFilters ]: universalFiltersReducer,
 });
 

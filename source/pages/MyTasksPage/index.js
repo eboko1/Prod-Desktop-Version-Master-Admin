@@ -22,7 +22,7 @@ const mapStateToProps = state => {
         orderTaskEntity: state.forms.orderTaskForm.fields,
         orderTaskId:     state.forms.orderTaskForm.taskId,
         activeOrder:     state.myTasksContainer.activeOrder,
-        spinner:         state.ui.get('myTasksFetching'),
+        spinner:         state.ui.myTasksFetching,
     };
 };
 
@@ -35,10 +35,7 @@ const mapDispatchToProps = {
     fetchMyTasks,
 };
 
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@connect(mapStateToProps, mapDispatchToProps)
 class MyTasksPage extends Component {
     componentDidMount() {
         this.props.fetchMyTasks();

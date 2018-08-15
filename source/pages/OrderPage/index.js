@@ -74,12 +74,11 @@ const mapStateToProps = state => {
         initOrderEntity:       state.forms.orderForm.initOrderEntity,
         invited:               state.forms.orderForm.invited,
         modal:                 state.modals.modal,
-        spinner:               state.ui.get('orderFetching'),
+        spinner:               state.ui.orderFetching,
         orderEntity:           {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
-        isMobile: state.ui.get('isMobile'),
         // stationField: state.forms.orderForm.fields.station.value,
         // beginDatetimeField: state.forms.orderForm.fields
 
@@ -154,7 +153,8 @@ class OrderPage extends Component {
                         this.props.orderEntity,
                         this.props.allServices,
                         this.props.allDetails,
-                        status, form,
+                        status,
+                        form,
                     ),
                     redirectStatus,
                 });

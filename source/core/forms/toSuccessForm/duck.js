@@ -12,8 +12,7 @@ export const ON_CHANGE_TO_SUCCESS_FORM = `${prefix}/ON_CHANGE_TO_SUCCESS_FORM`;
 
 /**
  * Reducer
- * */
-//
+ **/
 
 const ReducerState = {
     fields: {
@@ -37,7 +36,7 @@ const ReducerState = {
 };
 
 export default function reducer(state = ReducerState, action) {
-    const { type, payload, meta } = action;
+    const { type, payload } = action;
 
     switch (type) {
         // case FETCH_TO_SUCCESS_FORM_SUCCESS:

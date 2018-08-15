@@ -40,12 +40,12 @@ const mapStateToProps = state => {
         modal:             state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
         createOrderStatus: state.forms.orderForm.fields.createOrderStatus.value,
+        spinner:           state.ui.orderFetching,
+        createStatus:      state.forms.orderForm.createStatus,
         orderEntity:       {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
         },
-        spinner:      state.ui.get('orderFetching'),
-        createStatus: state.forms.orderForm.createStatus,
     };
 };
 
@@ -85,7 +85,8 @@ class AddOrderPage extends Component {
                         this.props.orderEntity,
                         this.props.allServices,
                         this.props.allDetails,
-                        this.props.createStatus, form,
+                        this.props.createStatus,
+                        form,
                     ),
                 );
             }

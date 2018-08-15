@@ -3,9 +3,10 @@
  * */
 export const moduleName = 'myTasksContainer';
 const prefix = `cpb/${moduleName}`;
+
 export const FETCH_MY_TASKS = `${prefix}/FETCH_MY_TASKS`;
 export const FETCH_MY_TASKS_SUCCESS = `${prefix}/FETCH_MY_TASKS_SUCCESS`;
-export const FETCH_MY_TASKS_FAILURE = `${prefix}/FETCH_MY_TASKS_FAILURE`;
+
 export const ON_CHANGE_MY_TASKS_FORM = `${prefix}/ON_CHANGE_MY_TASKS_FORM`;
 export const GET_ACTIVE_ORDER = `${prefix}/GET_ACTIVE_ORDER`;
 export const SET_CURRENT_PAGE = `${prefix}/SET_CURRENT_PAGE`;
@@ -50,7 +51,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 page: payload,
             };
-            
+
         default:
             return state;
     }
@@ -73,11 +74,6 @@ export const fetchMyTasks = page => ({
 
 export const fetchMyTasksSuccess = data => ({
     type:    FETCH_MY_TASKS_SUCCESS,
-    payload: data,
-});
-
-export const fetchMyTasksFailure = data => ({
-    type:    FETCH_MY_TASKS_FAILURE,
     payload: data,
 });
 

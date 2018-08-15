@@ -1,19 +1,21 @@
-import { takeEvery } from 'redux-saga/effects';
-
-import types from './types';
-
+//vendor
+import { all, call, take } from 'redux-saga/effects';
+// proj
 import { setCollapsedState } from 'utils';
+// own
+import { SET_COLLAPSED_STATE } from './duck';
 
-export function* layoutCollapsedWorker({ payload: state }) {
-    try {
-        yield setCollapsedState(state);
-    } catch (error) {
-        throw new Error(error);
+export function* layoutSaga() {
+    while (true) {
+        try {
+            const { payload: state } = yield take(SET_COLLAPSED_STATE);
+            yield setCollapsedState(state);
+        } catch (error) {
+            throw new Error(error);
+        }
     }
 }
 
-export default Object.freeze({
-    *layoutCollapsedWatcher() {
-        yield takeEvery(types.SET_COLLAPSED_STATE, layoutCollapsedWorker);
-    },
-});
+export function* saga() {
+    yield all([ call(layoutSaga) ]);
+}

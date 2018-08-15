@@ -4,6 +4,7 @@ import nprogress from 'nprogress';
 import { saveAs } from 'file-saver';
 
 //proj
+import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
@@ -32,18 +33,9 @@ export function* fetchOrderSaga({ payload: id }) {
 export function* fetchReportSaga({ payload: { reportType, id } }) {
     try {
         yield nprogress.start();
-        const response = yield call(
-            fetchAPI,
-            'GET',
-            `orders/reports/${reportType}/${id}`,
-        );
-
-        // const data = yield call([ response, response.json ]);
-        if (response.status !== 200) {
-            throw new Error(response.message);
-        }
+        yield call(fetchAPI, 'GET', `orders/reports/${reportType}/${id}`);
     } catch (error) {
-        yield put(fetchReportSaga(error));
+        yield put(emitError(error));
     } finally {
         yield nprogress.done();
     }
@@ -51,22 +43,38 @@ export function* fetchReportSaga({ payload: { reportType, id } }) {
 
 // report
 export function* getReportSaga({ payload: report }) {
-    yield nprogress.start();
+    try {
+        yield nprogress.start();
 
-    const response = yield call(fetchAPI, 'GET', report.link, null, null, true);
-    const reportFile = yield response.blob();
+        const response = yield call(
+            fetchAPI,
+            'GET',
+            report.link,
+            null,
+            null,
+            true,
+        );
+        const reportFile = yield response.blob();
 
-    const contentDispositionHeader = response.headers.get(
-        'content-disposition',
-    );
-    const fileName = contentDispositionHeader.match(
-        /^attachment; filename="(.*)"/,
-    )[ 1 ];
-    yield saveAs(reportFile, fileName);
-
-    yield nprogress.done();
+        const contentDispositionHeader = response.headers.get(
+            'content-disposition',
+        );
+        const fileName = contentDispositionHeader.match(
+            /^attachment; filename="(.*)"/,
+        )[ 1 ];
+        yield saveAs(reportFile, fileName);
+    } catch (error) {
+        yield put(emitError(error));
+    } finally {
+        yield nprogress.done();
+    }
 }
-
+/* eslint-disable array-element-newline */
 export function* saga() {
-    yield all([ takeEvery(FETCH_ORDER, fetchOrderSaga), takeEvery(FETCH_REPORT, fetchReportSaga), takeEvery(GET_REPORT, getReportSaga) ]);
+    yield all([
+        takeEvery(FETCH_ORDER, fetchOrderSaga),
+        takeEvery(FETCH_REPORT, fetchReportSaga),
+        takeEvery(GET_REPORT, getReportSaga),
+    ]);
 }
+/* eslint-enable array-element-newline */

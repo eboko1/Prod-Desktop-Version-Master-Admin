@@ -75,6 +75,7 @@ const ReducerState = {
     models:        [],
 };
 
+/* eslint-disable complexity */
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
 

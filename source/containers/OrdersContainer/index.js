@@ -31,8 +31,7 @@ const mapStateToProps = state => {
         filter:         state.orders.filter,
         modal:          state.modals.modal,
         sort:           state.orders.sort,
-        ordersFetching: false,
-        // ordersFetching: state.ui.get('ordersFetching'),
+        ordersFetching: state.ui.ordersFetching,
     };
 };
 

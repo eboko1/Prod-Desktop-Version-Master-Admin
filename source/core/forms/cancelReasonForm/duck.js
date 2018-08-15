@@ -1,7 +1,7 @@
 /* eslint-disable comma-dangle */
 /**
  * Constants
- * */
+ **/
 export const moduleName = 'cancelReasonForm';
 const prefix = `cpb/${moduleName}`;
 
@@ -12,9 +12,7 @@ export const ON_CHANGE_CANCEL_REASON_FORM = `${prefix}/ON_CHANGE_CANCEL_REASON_F
 
 /**
  * Reducer
- * */
-//
-
+ **/
 const ReducerState = {
     fields: {
         cancelReason: {
@@ -37,7 +35,7 @@ const ReducerState = {
 };
 
 export default function reducer(state = ReducerState, action) {
-    const { type, payload, meta } = action;
+    const { type, payload } = action;
 
     switch (type) {
         // case FETCH_CANCEL_REASON_FORM_SUCCESS:

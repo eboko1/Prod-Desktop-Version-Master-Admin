@@ -3,7 +3,7 @@ import { call, put, all, take } from 'redux-saga/effects';
 // import nprogress from 'nprogress';
 
 //proj
-// import { uiActions } from 'core/ui/actions';
+import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
@@ -14,10 +14,14 @@ import {
 
 export function* fetchUniversalFiltersFormSaga() {
     while (true) {
-        yield take(FETCH_UNIVERSAL_FILTERS_FORM);
-        const data = yield call(fetchAPI, 'GET', 'orders/filter');
+        try {
+            yield take(FETCH_UNIVERSAL_FILTERS_FORM);
+            const data = yield call(fetchAPI, 'GET', 'orders/filter');
 
-        yield put(fetchUniversalFiltersFormSuccess(data));
+            yield put(fetchUniversalFiltersFormSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        }
     }
 }
 
