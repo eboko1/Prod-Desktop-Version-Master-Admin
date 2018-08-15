@@ -4,7 +4,11 @@ import nprogress from 'nprogress';
 import moment from 'moment';
 
 //proj
-import { uiActions } from 'core/ui/actions';
+import {
+    setDashboardInitializingState,
+    setDashboardFetchingState,
+    emitError,
+} from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
@@ -30,7 +34,7 @@ export function* initDashboardSaga() {
     while (true) {
         try {
             yield take(INIT_DASHBOARD);
-            yield put(uiActions.setDashboardInitializingState(true));
+            yield put(setDashboardInitializingState(true));
             const beginDate = yield select(selectDashboardStartDate);
 
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
@@ -40,9 +44,9 @@ export function* initDashboardSaga() {
 
             yield put(initDashboardSuccess(data));
         } catch (error) {
-            yield put(uiActions.emitError(error));
+            yield put(emitError(error));
         } finally {
-            yield put(uiActions.setDashboardInitializingState(false));
+            yield put(setDashboardInitializingState(false));
         }
     }
 }
@@ -64,7 +68,7 @@ export function* setDashboardModeSaga() {
                 yield put(setDashboardDate(date));
             }
         } catch (error) {
-            yield put(uiActions.emitError(error));
+            yield put(emitError(error));
         }
     }
 }
@@ -74,7 +78,7 @@ export function* fetchDashboardCalendarSaga() {
         try {
             yield take(SET_DASHBOARD_WEEK_DATES);
             yield nprogress.start();
-            yield put(uiActions.setDashboardFetchingState(true));
+            yield put(setDashboardFetchingState(true));
 
             const beginDate = yield select(selectDashboardStartDate);
 
@@ -85,9 +89,9 @@ export function* fetchDashboardCalendarSaga() {
 
             yield put(fetchDashboardCalendarSuccess(data));
         } catch (error) {
-            yield put(uiActions.emitError(error));
+            yield put(emitError(error));
         } finally {
-            yield put(uiActions.setDashboardFetchingState(false));
+            yield put(setDashboardFetchingState(false));
             yield nprogress.done();
         }
     }
@@ -98,7 +102,7 @@ export function* fetchDashboardStationsSaga() {
         try {
             yield take(SET_DASHBOARD_DATE);
             yield nprogress.start();
-            yield put(uiActions.setDashboardFetchingState(true));
+            yield put(setDashboardFetchingState(true));
 
             const beginDate = yield select(selectDashboardDate);
             const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
@@ -108,9 +112,9 @@ export function* fetchDashboardStationsSaga() {
 
             yield put(fetchDashboardStationsSuccess(data));
         } catch (error) {
-            yield put(uiActions.emitError(error));
+            yield put(emitError(error));
         } finally {
-            yield put(uiActions.setDashboardFetchingState(false));
+            yield put(setDashboardFetchingState(false));
             yield nprogress.done();
         }
     }
@@ -123,7 +127,7 @@ export function* linkToDashboardStationsSaga() {
             yield put(setDashboardDate(moment(day)));
             yield put(setDashboardMode('stations'));
         } catch (error) {
-            yield put(uiActions.emitError(error));
+            yield put(emitError(error));
         }
     }
 }

@@ -1,10 +1,13 @@
+// vendor
 import { trim, toUpper } from 'lodash/string';
-import _ from 'lodash';
 import { replace } from 'react-router-redux';
-import { authActions } from 'core/auth/actions';
+import _ from 'lodash';
+
+// proj
+import { logout } from 'core/auth/duck';
+import { getToken } from 'utils';
 import store from 'store/store';
 import book from 'routes/book';
-import { getToken } from 'utils';
 
 export const API = __API_URL__;
 /*
@@ -88,7 +91,7 @@ export default async function fetchAPI(
                 );
                 break;
             case status === 401:
-                dispatch(authActions.logout());
+                dispatch(logout());
                 throw new Error(
                     `Something went wrong with response:\n${response}`,
                 );

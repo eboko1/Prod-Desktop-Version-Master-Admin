@@ -14,7 +14,7 @@ import _ from 'lodash';
 // import * as RA from 'ramda-adjunct';
 
 //proj
-import { uiActions } from 'core/ui/actions';
+import { setOrdersFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
@@ -32,28 +32,13 @@ import {
     // SET_ORDERS_STATUS_FILTER,
 } from './duck';
 
-// import * as ducks from './duck';
-//
-// export function* fetchOrdersSaga(action) { // сейчас не работает, только для примера
-//     yield nprogress.start();
-//     yield put(uiActions.setOrdersFetchingState(true));
-//
-//     const data = yield call(fetchAPI, "GET", "orders", action.payload);
-//
-//     yield put(fetchOrdersSuccess(data));
-//     yield put(uiActions.setOrdersFetchingState(false));
-//     yield nprogress.done();
-// }
-
 const selectFilter = ({ orders: { filter, sort } }) => ({
     sort,
     filter,
 });
 
 export function* fetchOrdersSagaTake() {
-    // сейчас работает (подключена в рут саге)
     while (true) {
-        // const action = yield take(FETCH_ORDERS); // Блочится на этом месте (можно доставать action)
         try {
             yield take(FETCH_ORDERS);
             yield nprogress.start();
@@ -67,15 +52,15 @@ export function* fetchOrdersSagaTake() {
                 [ 'beginDate', 'createDate' ],
             );
 
-            yield put(uiActions.setOrdersFetchingState(true));
+            yield put(setOrdersFetchingState(true));
             const data = yield call(fetchAPI, 'GET', 'orders', filters);
 
             yield put(fetchOrdersSuccess(data));
             yield put(fetchOrdersStats(_.omit(filters, [ 'page', 'status' ])));
         } catch (error) {
-            yield put(uiActions.emitError(error));
+            yield put(emitError(error));
         } finally {
-            yield put(uiActions.setOrdersFetchingState(false));
+            yield put(setOrdersFetchingState(false));
             yield nprogress.done();
         }
     }
@@ -89,20 +74,24 @@ export function* fetchOrdersStatsSaga({ payload: filters = {} }) {
 
         yield put(fetchOrdersStatsSuccess(data));
     } catch (error) {
-        yield put(uiActions.emitError(error));
+        yield put(emitError(error));
     } finally {
         yield nprogress.done();
     }
 }
 
 export function* createInviteOrders({ payload: { invites, filters } }) {
-    yield nprogress.start();
-    const data = yield call(fetchAPI, 'POST', 'orders', null, invites);
+    try {
+        yield nprogress.start();
+        const data = yield call(fetchAPI, 'POST', 'orders', null, invites);
 
-    yield put(createInviteOrdersSuccess(data));
-    yield nprogress.done();
-
-    yield put(fetchOrders(filters));
+        yield put(createInviteOrdersSuccess(data));
+        yield nprogress.done();
+    } catch (error) {
+        yield put(emitError(error));
+    } finally {
+        yield put(fetchOrders(filters));
+    }
 }
 
 export function* fetchStatsCountsSaga() {
@@ -113,12 +102,18 @@ export function* fetchStatsCountsSaga() {
 
         yield put(fetchStatsCountsSuccess(data));
     } catch (error) {
-        yield put(uiActions.emitError(error));
+        yield put(emitError(error));
     } finally {
         yield nprogress.done();
     }
 }
-
+/* eslint-disable array-element-newline */
 export function* saga() {
-    yield all([ call(fetchOrdersSagaTake), takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga), takeEvery(FETCH_STATS_COUNTS_PANEL, fetchStatsCountsSaga), takeEvery(CREATE_INVITE_ORDERS, createInviteOrders) ]);
+    yield all([
+        call(fetchOrdersSagaTake),
+        takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga),
+        takeEvery(FETCH_STATS_COUNTS_PANEL, fetchStatsCountsSaga),
+        takeEvery(CREATE_INVITE_ORDERS, createInviteOrders),
+    ]);
 }
+/* eslint-enable array-element-newline */

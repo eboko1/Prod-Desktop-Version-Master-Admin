@@ -1,23 +1,20 @@
 // vendor
 import React, { Component } from 'react';
-import moment from 'moment';
 import { Table, Icon, Tooltip } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
+import moment from 'moment';
 import { v4 } from 'uuid';
 
 // proj
 import { withReduxForm } from 'utils';
-
-// import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import {
     fetchMyTasks,
     setPage,
     onChangeMyTasksForm,
     getActiveOrder,
 } from 'core/myTasks/duck';
-import { setModal, MODALS } from 'core/modals/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
+import { setModal, MODALS } from 'core/modals/duck';
 
 import { Catcher } from 'commons';
 
@@ -196,12 +193,16 @@ export default class MyTasksContainer extends Component {
                     <div>
                         <Tooltip
                             placement='bottomLeft'
-                            title={ <div 
-                                // style={ {  
+                            title={
+                                <div
+                                // style={ {
                                 //     whiteSpace: 'nowrap',
                                 //     wordBreak:  'break-all',
                                 //     height:     '100%'} }
-                            >{ text }</div> }
+                                >
+                                    { text }
+                                </div>
+                            }
                             getPopupContainer={ trigger => trigger.parentNode }
                         >
                             <div className={ Styles.commentDiv }>{ text }</div>
@@ -237,40 +238,37 @@ export default class MyTasksContainer extends Component {
     };
 
     sortTable = (a, b) => {
-        const {sort}=this.state
-        let priorities={
-            'LOW':      1, 
-            'NORMAL':   2,
-            'HIGH':     3,
-            'CRITICAL': 4,
+        const { sort } = this.state;
+        let priorities = {
+            LOW:      1,
+            NORMAL:   2,
+            HIGH:     3,
+            CRITICAL: 4,
+        };
+        if (sort.field === 'priority' && sort.order === 'ascend') {
+            return (
+                (priorities[ a.priority ] || 0) - (priorities[ b.priority ] || 0)
+            );
+        } else if (sort.field === 'priority' && sort.order === 'descend') {
+            return (
+                (priorities[ b.priority ] || 0) - (priorities[ a.priority ] || 0)
+            );
         }
-        if(sort.field==='priority'&&sort.order==='ascend'){
-            return (priorities[ a.priority ]||0)-(priorities[ b.priority ]||0)
-        }else if(sort.field==='priority'&&sort.order==='descend'){
-            return (priorities[ b.priority ]||0)-(priorities[ a.priority ]||0)
+        if (sort.field === 'duration' && sort.order === 'ascend') {
+            return a.duration - b.duration;
+        } else if (sort.field === 'duration' && sort.order === 'descend') {
+            return b.duration - a.duration;
         }
-        if(sort.field==='duration'&&sort.order==='ascend'){
-            return a.duration-b.duration
-        }else if(sort.field==='duration'&&sort.order==='descend'){
-            return b.duration-a.duration
-        }
-        if(sort.order==='ascend') {
-
+        if (sort.order === 'ascend') {
             var c = new Date(a[ sort.field ]);
             var d = new Date(b[ sort.field ]);
 
-            return c-d;
-            
+            return c - d;
         }
         var c = new Date(a[ sort.field ]);
         var d = new Date(b[ sort.field ]);
 
-        return d-c; 
-        
-
-
-            
-    
+        return d - c;
 
         return 0;
     };
@@ -282,7 +280,7 @@ export default class MyTasksContainer extends Component {
         const pagination = {
             pageSize:         25,
             size:             'large',
-            total:            myTasks?myTasks.length:25,
+            total:            myTasks ? myTasks.length : 25,
             hideOnSinglePage: true,
             current:          page,
             onChange:         page => {
@@ -323,7 +321,8 @@ export default class MyTasksContainer extends Component {
                                 : []
                         }
                         size='small'
-                        scroll={ { x: 2200,
+                        scroll={ {
+                            x: 2200,
                             // y: '50vh',
                         } }
                         columns={ columns }

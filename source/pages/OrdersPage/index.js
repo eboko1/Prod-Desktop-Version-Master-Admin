@@ -33,8 +33,8 @@ const mapState = state => {
     return {
         ordersDaterangeFilter: state.orders.filter.daterange,
         filter:                state.orders.filter,
-        collapsed:             state.ui.get('collapsed'),
-        isMobile:              state.ui.get('isMobile'),
+        collapsed:             state.ui.collapsed,
+        isMobile:              state.ui.isMobile,
     };
 };
 

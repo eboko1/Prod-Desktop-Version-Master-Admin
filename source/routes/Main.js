@@ -4,8 +4,6 @@ import { Switch, Route } from 'react-router';
 import { hot } from 'react-hot-loader';
 
 // proj
-import { authActions } from 'core/auth/actions';
-import { uiActions } from 'core/ui/actions';
 import { getToken } from 'utils';
 
 import { Spinner, Catcher } from 'commons';

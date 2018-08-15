@@ -7,8 +7,8 @@ import DocumentTitle from 'react-document-title';
 import { enquireScreen, unenquireScreen } from 'enquire-js';
 
 // proj
-import { authActions } from 'core/auth/actions';
-import { uiActions } from 'core/ui/actions';
+import { logout } from 'core/auth/duck';
+import { setCollapsedState, setLayoutState } from 'core/ui/duck';
 import {
     Navigation,
     Header,
@@ -25,14 +25,14 @@ let isMobile; // eslint-disable-line
 enquireScreen(b => (isMobile = b)); // eslint-disable-line
 
 const mapStateToProps = state => ({
-    authFetching: state.ui.get('authFetching'),
-    collapsed:    state.ui.get('collapsed'),
+    authFetching: state.ui.authFetching,
+    collapsed:    state.ui.collapsed,
 });
 
 const mapDispatchToProps = {
-    logout:            authActions.logout,
-    setCollapsedState: uiActions.setCollapsedState,
-    setLayoutState:    uiActions.setLayoutState,
+    logout:            logout,
+    setCollapsedState: setCollapsedState,
+    setLayoutState:    setLayoutState,
 };
 
 @withRouter

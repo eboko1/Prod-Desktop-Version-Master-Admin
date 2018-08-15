@@ -10,7 +10,7 @@ import { LoginForm } from 'forms';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    spinner: state.ui.get('authFetching'),
+    spinner: state.ui.authFetching,
 });
 
 @connect(mapStateToProps)

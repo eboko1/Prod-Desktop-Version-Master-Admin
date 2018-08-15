@@ -1,3 +1,4 @@
+// vendor
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 import { v4 } from 'uuid';

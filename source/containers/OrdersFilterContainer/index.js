@@ -1,13 +1,11 @@
 // vendor
-import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
-import { Button, Input, Radio, Icon, Slider, Select } from 'antd';
+import { Input, Radio, Slider, Select } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Catcher } from 'commons';
-import Styles from './styles.m.css';
+import _ from 'lodash';
 import { v4 } from 'uuid';
 
 // proj
@@ -19,13 +17,14 @@ import {
     setOrdersNPSFilter,
     setOrdersCancelReasonFilter,
 } from 'core/orders/duck';
-
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
+import { Catcher } from 'commons';
+
 // own
+import Styles from './styles.m.css';
 const Search = Input.Search;
 const Option = Select.Option;
-const ButtonGroup = Button.Group;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
@@ -37,19 +36,14 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => {
-    return bindActionCreators(
-        {
-            ordersSearch,
-            fetchOrders,
-            setOrdersStatusFilter,
-            setOrdersSearchFilter,
-            setOrdersNPSFilter,
-            fetchUniversalFiltersForm,
-            setOrdersCancelReasonFilter,
-        },
-        dispatch,
-    );
+const mapDispatchToProps = {
+    ordersSearch,
+    fetchOrders,
+    setOrdersStatusFilter,
+    setOrdersSearchFilter,
+    setOrdersNPSFilter,
+    fetchUniversalFiltersForm,
+    setOrdersCancelReasonFilter,
 };
 
 @withRouter

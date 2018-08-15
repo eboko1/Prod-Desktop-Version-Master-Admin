@@ -1,10 +1,9 @@
 // vendor
 import { call, put, all, take } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
-// import nprogress from 'nprogress';
 
 //proj
-import { uiActions } from 'core/ui/actions';
+import { setAuthFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI, setToken } from 'utils';
 import book from 'routes/book';
 
@@ -17,7 +16,7 @@ export function* loginFormSaga() {
             const {
                 payload: { ...credentials },
             } = yield take(LOGIN);
-            yield put(uiActions.setAuthFetchingState(true));
+            yield put(setAuthFetchingState(true));
             const data = yield call(
                 fetchAPI,
                 'POST',
@@ -30,9 +29,9 @@ export function* loginFormSaga() {
             yield put(loginSuccess(data));
             yield setToken(data.token);
         } catch (error) {
-            yield put(uiActions.emitError(error));
+            yield put(emitError(error));
         } finally {
-            yield put(uiActions.setAuthFetchingState(false));
+            yield put(setAuthFetchingState(false));
             yield put(replace(book.dashboard));
         }
     }

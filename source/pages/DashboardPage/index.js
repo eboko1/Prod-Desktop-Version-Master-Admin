@@ -34,8 +34,8 @@ const mapStateToProps = state => ({
     schedule:  state.dashboard.schedule,
     days:      state.dashboard.days,
     load:      state.dashboard.load,
-    spinner:   state.ui.get('dashboardInitializing'),
-    loading:   state.ui.get('dashboardFetching'),
+    spinner:   state.ui.dashboardInitializing,
+    loading:   state.ui.dashboardFetching,
 
     ...selectDasboardData(state),
 });

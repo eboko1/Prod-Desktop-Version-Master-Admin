@@ -16,7 +16,7 @@ import nprogress from 'nprogress';
 
 // proj
 import { resetModal, MODALS } from 'core/modals/duck';
-import { uiActions } from 'core/ui/actions';
+import { setOrderFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 import book from 'routes/book';
 
@@ -85,42 +85,55 @@ export function* fetchOrderFormSaga() {
     while (true) {
         try {
             const { payload: id } = yield take(FETCH_ORDER_FORM);
-            yield put(uiActions.setOrderFetchingState(true));
+            yield put(setOrderFetchingState(true));
 
             const data = yield call(fetchAPI, 'GET', `orders/${id}`);
 
-            if (_.get(data, 'order.beginDatetime') && _.get(data, 'order.stationNum')) {
-                yield put(fetchAvailableHours(data.order.stationNum, moment(data.order.beginDatetime)));
+            if (
+                _.get(data, 'order.beginDatetime') &&
+                _.get(data, 'order.stationNum')
+            ) {
+                yield put(
+                    fetchAvailableHours(
+                        data.order.stationNum,
+                        moment(data.order.beginDatetime),
+                    ),
+                );
             }
             yield put(fetchOrderFormSuccess(data));
         } catch (error) {
-            yield put(uiActions.emitError(error));
+            yield put(emitError(error));
         } finally {
-            yield put(uiActions.setOrderFetchingState(false));
+            yield put(setOrderFetchingState(false));
         }
     }
 }
 
 export function* fetchOrderTaskSaga() {
     while (true) {
-        const { payload: id } = yield take(FETCH_ORDER_TASK);
+        try {
+            const { payload: id } = yield take(FETCH_ORDER_TASK);
+            const data = yield call(fetchAPI, 'GET', `orders/${id}/tasks`);
 
-        // yield put(uiActions.setOrderFetchingState(true));
-
-        const data = yield call(fetchAPI, 'GET', `orders/${id}/tasks`);
-
-        yield put(fetchOrderTaskSuccess(data));
-
-        // yield put(uiActions.setOrderFetchingState(false));
+            yield put(fetchOrderTaskSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        }
     }
 }
 
 export function* createOrderSaga() {
     while (true) {
-        const { payload: entity } = yield take(CREATE_ORDER);
-        yield call(fetchAPI, 'POST', 'orders', {}, entity);
-        yield put(createOrderSuccess());
-        yield put(replace(book.ordersAppointments));
+        try {
+            const { payload: entity } = yield take(CREATE_ORDER);
+            yield call(fetchAPI, 'POST', 'orders', {}, entity);
+
+            yield put(createOrderSuccess());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield put(replace(book.ordersAppointments));
+        }
     }
 }
 
@@ -150,59 +163,72 @@ export function* updateOrderSaga() {
                 yield put(returnToOrdersPage(redirectStatus));
             }
         } catch (error) {
-            yield put(uiActions.emitError(error));
+            yield put(emitError(error));
         }
     }
 }
 
 export function* returnToOrdersPageSaga() {
     while (true) {
-        const { payload: status } = yield take(RETURN_TO_ORDERS_PAGE);
-        const statusesMap = [
-            {
-                route:    '/orders/appointments',
-                statuses: [ 'not_complete', 'required', 'call' ],
-            },
-            { route: '/orders/approve', statuses: [ 'approve', 'reserve' ] },
-            { route: '/orders/in-progress', statuses: [ 'progress' ] },
-            { route: '/orders/success', statuses: [ 'success' ] },
-            { route: '/orders/reviews', statuses: [ 'review' ] },
-            { route: '/orders/invitations', statuses: [ 'invite' ] },
-            { route: '/orders/cancel', statuses: [ 'cancel' ] },
-        ];
-        const config = statusesMap.find(({ statuses }) =>
-            statuses.includes(status));
-        const { route = '/orders/appointments' } = config || {};
-        yield put(replace(route));
+        try {
+            const { payload: status } = yield take(RETURN_TO_ORDERS_PAGE);
+            const statusesMap = [
+                {
+                    route:    '/orders/appointments',
+                    statuses: [ 'not_complete', 'required', 'call' ],
+                },
+                { route: '/orders/approve', statuses: [ 'approve', 'reserve' ] },
+                { route: '/orders/in-progress', statuses: [ 'progress' ] },
+                { route: '/orders/success', statuses: [ 'success' ] },
+                { route: '/orders/reviews', statuses: [ 'review' ] },
+                { route: '/orders/invitations', statuses: [ 'invite' ] },
+                { route: '/orders/cancel', statuses: [ 'cancel' ] },
+            ];
+            const config = statusesMap.find(({ statuses }) =>
+                statuses.includes(status));
+            const { route = '/orders/appointments' } = config || {};
+            yield put(replace(route));
+        } catch (error) {
+            yield put(emitError(error));
+        }
     }
 }
 
 export function* onChangeOrderFormSaga() {
     while (true) {
-        const {
-            meta: { form, field },
-            payload,
-        } = yield take(ON_CHANGE_ORDER_FORM);
-        if (field === 'searchClientQuery') {
-            yield put(onChangeClientSearchQuery(payload[ field ].value));
+        try {
+            const {
+                meta: { form, field },
+                payload,
+            } = yield take(ON_CHANGE_ORDER_FORM);
+
+            if (field === 'searchClientQuery') {
+                yield put(onChangeClientSearchQuery(payload[ field ].value));
+            }
+        } catch (error) {
+            yield put(emitError(error));
         }
     }
 }
 
 function* handleClientSearchSaga({ payload }) {
-    yield put(onChangeClientSearchQueryRequest());
-    yield delay(1000);
+    try {
+        yield put(onChangeClientSearchQueryRequest());
+        yield delay(1000);
 
-    if (payload.length > 2) {
-        const fields = [ 'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites' ];
-        const data = yield call(fetchAPI, 'GET', 'clients', {
-            query:     payload,
-            omitStats: true,
-            fields,
-        });
-        yield put(onChangeClientSearchQuerySuccess(data));
-    } else {
-        yield put(onChangeClientSearchQuerySuccess([]));
+        if (payload.length > 2) {
+            const fields = [ 'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites' ];
+            const data = yield call(fetchAPI, 'GET', 'clients', {
+                query:     payload,
+                omitStats: true,
+                fields,
+            });
+            yield put(onChangeClientSearchQuerySuccess(data));
+        } else {
+            yield put(onChangeClientSearchQuerySuccess([]));
+        }
+    } catch (error) {
+        yield put(emitError(error));
     }
 }
 
@@ -223,35 +249,50 @@ function* handleBrandSearch({ payload }) {
 
 export function* fetchAddOrderFormSaga() {
     while (true) {
-        yield take(FETCH_ADD_ORDER_FORM);
-        yield put(uiActions.setOrderFetchingState(true));
-        const data = yield call(fetchAPI, 'GET', 'orders/form');
+        try {
+            yield take(FETCH_ADD_ORDER_FORM);
+            yield put(setOrderFetchingState(true));
+            const data = yield call(fetchAPI, 'GET', 'orders/form');
 
-        yield put(fetchAddOrderFormSuccess(data));
-        yield put(uiActions.setOrderFetchingState(false));
+            yield put(fetchAddOrderFormSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield put(setOrderFetchingState(false));
+        }
     }
 }
 
 export function* createInviteOrderSaga({ payload: invite }) {
-    yield nprogress.start();
-    const data = yield call(fetchAPI, 'POST', 'orders', null, invite);
+    try {
+        yield nprogress.start();
+        const data = yield call(fetchAPI, 'POST', 'orders', null, invite);
 
-    yield put(createInviteOrderSuccess(data));
-    yield nprogress.done();
+        yield put(createInviteOrderSuccess(data));
+        yield nprogress.done();
 
-    const id = yield select(state => state.forms.orderForm.order.id);
-    yield put(fetchOrderForm(id));
+        const id = yield select(state => state.forms.orderForm.order.id);
+        yield put(fetchOrderForm(id));
+    } catch (error) {
+        yield put(emitError(error));
+    }
 }
 
 export function* fetchAvailableHoursSaga() {
     while (true) {
-        const { payload: {station, date} } = yield take(FETCH_AVAILABLE_HOURS);
+        try {
+            const {
+                payload: { station, date },
+            } = yield take(FETCH_AVAILABLE_HOURS);
 
-        const data = yield call(fetchAPI, 'GET', 'dashboard/free_hours', {
-            stationNum: station,
-            date:       date.toISOString(),
-        });
-        yield put(fetchAvailableHoursSuccess(data));
+            const data = yield call(fetchAPI, 'GET', 'dashboard/free_hours', {
+                stationNum: station,
+                date:       date.toISOString(),
+            });
+            yield put(fetchAvailableHoursSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        }
     }
 }
 
