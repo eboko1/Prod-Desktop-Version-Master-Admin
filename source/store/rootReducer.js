@@ -22,7 +22,7 @@ import dashboardReducer, {
 const persistConfig = {
     key:       'user',
     storage,
-    whitelist: [ 'user' ],
+    whitelist: [ 'auth' ],
 };
 
 const reducer = combineReducers({

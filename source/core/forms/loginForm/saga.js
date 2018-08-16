@@ -1,11 +1,12 @@
 // vendor
-import { call, put, all, take } from 'redux-saga/effects';
+import { call, put, all, take, fork } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
 
 //proj
-import { setUser } from 'core/user/duck';
+// import { setUser } from 'core/user/duck';
+import { authenticateSaga } from 'core/auth/saga';
 import { setAuthFetchingState, emitError } from 'core/ui/duck';
-import { fetchAPI, setToken } from 'utils';
+import { fetchAPI } from 'utils';
 import book from 'routes/book';
 
 // own
@@ -17,9 +18,9 @@ export function* loginFormSaga() {
             const {
                 payload: { ...credentials },
             } = yield take(LOGIN);
-            console.log('→ ИСТИННЫЙ ЛОГИН');
+
             yield put(setAuthFetchingState(true));
-            const data = yield call(
+            const user = yield call(
                 fetchAPI,
                 'POST',
                 'login',
@@ -27,15 +28,14 @@ export function* loginFormSaga() {
                 credentials,
                 // false,
             );
+            yield fork(authenticateSaga, user);
 
-            yield put(loginSuccess(data));
-            yield put(setUser(data));
-            yield setToken(data.token);
+            yield put(loginSuccess());
+            yield put(replace(book.dashboard));
         } catch (error) {
             yield put(emitError(error));
         } finally {
             yield put(setAuthFetchingState(false));
-            yield put(replace(book.dashboard));
         }
     }
 }
