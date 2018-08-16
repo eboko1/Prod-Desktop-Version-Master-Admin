@@ -45,7 +45,7 @@ export default function reducer(state = ReducerState, action) {
         //     return state;
 
         case PURGE:
-            return {}; // Return the initial state of this reducer to 'reset' the app
+            return state; // Return the initial state of this reducer to 'reset' the app
 
         default:
             return state;
@@ -82,6 +82,7 @@ export const logoutFail = error => ({
     error:   true,
 });
 
-export const purge = () => ({
-    type: PURGE,
+export const purge = ReducerState => ({
+    type:    PURGE,
+    payload: ReducerState,
 });

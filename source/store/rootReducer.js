@@ -13,18 +13,14 @@ import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
-
-import hardSet from 'redux-persist/lib/stateReconciler/hardSet';
-
 import dashboardReducer, {
     moduleName as dashboardModule,
 } from 'core/dashboard/duck';
 
-const persistConfig = {
-    key:             'user',
+export const persistConfig = {
+    key:       'user',
     storage,
-    whitelist:       [ 'auth' ],
-    stateReconciler: hardSet,
+    whitelist: [ 'auth' ],
 };
 
 const reducer = combineReducers({
