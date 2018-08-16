@@ -1,0 +1,14 @@
+.editPackageIcon {
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.deletePackageIcon {
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.viewPackageIcon {
+    cursor: pointer;
+    font-size: 25px;
+}

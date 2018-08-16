@@ -11,6 +11,7 @@ import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
+import packageReducer, { moduleName as packageModule} from 'core/package/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
     [ myTasksModule ]:   myTasksReducer,
     [ uiModule ]:        uiReducer,
     [ authModule ]:      authReducer,
+    [ packageModule ]:   packageReducer,
     intl,
     router,
     // [ universalFilters ]: universalFiltersReducer,

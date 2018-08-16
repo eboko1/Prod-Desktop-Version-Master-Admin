@@ -5,6 +5,9 @@ import { combineReducers } from 'redux';
 import orderReducer, { moduleName as order } from './orderForm/duck';
 import loginReducer, { moduleName as login } from './loginForm/duck';
 
+import addPackageReducer, { moduleName as addPackage } from './addPackage/duck';
+import editPackageReducer, { moduleName as editPackage } from './editPackage/duck';
+
 import universalFiltersReducer, {
     moduleName as universalFilters,
 } from './universalFiltersForm/duck';
@@ -34,4 +37,6 @@ export const formsReducer = combineReducers({
     [ toSuccess ]:        toSuccessReducer,
     [ login ]:            loginReducer,
     [ orderTask ]:        orderTaskReducer,
+    [ addPackage ]:       addPackageReducer,
+    [ editPackage ]:      editPackageReducer,
 });

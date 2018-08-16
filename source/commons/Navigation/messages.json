@@ -26,7 +26,8 @@
         "navigation.media_files": "Media files",
         "navigation.system_managers": "System managers",
         "navigation.notice": "Notice",
-        "navigation.suggest_idea": "Suggest idea"
+        "navigation.suggest_idea": "Suggest idea",
+        "navigation.package": "Packages"
     },
     "ru": {
         "navigation.operations": "Операции",
@@ -55,7 +56,8 @@
         "navigation.media_files": "Медиафайлы",
         "navigation.system_managers": "Менеджеры системы",
         "navigation.notice": "Уведомления",
-        "navigation.suggest_idea": "Предложить идею"
+        "navigation.suggest_idea": "Предложить идею",
+        "navigation.package": "Пакеты"
     },
     "uk": {
         "navigation.operations": "Операції",
@@ -84,6 +86,7 @@
         "navigation.media_files": "Медіафайли",
         "navigation.system_managers": "Менеджери системи",
         "navigation.notice": "Сповіщення",
-        "navigation.suggest_idea": "Запропонувати ідею"
+        "navigation.suggest_idea": "Запропонувати ідею",
+        "navigation.package": "Пакети"
     }
 }

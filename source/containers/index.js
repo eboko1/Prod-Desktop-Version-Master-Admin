@@ -3,6 +3,7 @@ import FunelContainer from './FunelContainer';
 import OrdersFilterContainer from './OrdersFilterContainer';
 import UniversalFilters from './UniversalFilters';
 import DashboardContainer from './DashboardContainer';
+import PackageContainer from './PackageContainer';
 
 export {
     OrdersContainer,
@@ -10,4 +11,5 @@ export {
     OrdersFilterContainer,
     UniversalFilters,
     DashboardContainer,
+    PackageContainer,
 };

@@ -10,6 +10,7 @@ export const SET_AUTH_FETCHING_STATE = `${prefix}/SET_AUTH_FETCHING_STATE`;
 export const SET_ORDERS_FETCHING_STATE = `${prefix}/SET_ORDERS_FETCHING_STATE`;
 export const SET_MY_TASKS_FETCHING_STATE = `${prefix}/SET_MY_TASKS_FETCHING_STATE`;
 export const SET_ORDER_FETCHING_STATE = `${prefix}/SET_ORDER_FETCHING_STATE`;
+export const SET_PACKAGE_FETCHING_STATE = `${prefix}/SET_PACKAGE_FETCHING_STATE`;
 export const SET_DASHBOARD_INITALIZING_STATE = `${prefix}/SET_DASHBOARD_INITALIZING_STATE`;
 export const SET_DASHBOARD_FETCHING_STATE = `${prefix}/SET_DASHBOARD_FETCHING_STATE`;
 export const INITIALIZE = `${prefix}/INITIALIZE`;
@@ -26,6 +27,7 @@ const ReducerState = {
     orderFetching:         false,
     dashboardInitializing: false,
     dashboardFetching:     false,
+    packageFetching:       false,
     collapsed:             false,
     isMobile:              void 0,
     error:                 null,
@@ -65,6 +67,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_DASHBOARD_FETCHING_STATE:
             return { ...state, dashboardFetching: payload };
+
+        case SET_PACKAGE_FETCHING_STATE:
+            return { ...state, packageFetching: payload };
 
         default:
             return state;
@@ -115,6 +120,11 @@ export const setDashboardInitializingState = state => ({
 
 export const setDashboardFetchingState = state => ({
     type:    SET_DASHBOARD_FETCHING_STATE,
+    payload: state,
+});
+
+export const setPackageFetchingState = state => ({
+    type:    SET_PACKAGE_FETCHING_STATE,
     payload: state,
 });
 

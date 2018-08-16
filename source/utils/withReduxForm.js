@@ -37,10 +37,10 @@ const change = (props, fields) => {
     });
 };
 
-export const withReduxForm = ({ name, actions, debouncedFields = [] }) => Enhanceable => {
+export const withReduxForm = ({ name, actions, debouncedFields = [], mapStateToProps = () => ({}) }) => Enhanceable => {
     const debouncedFunctions = {};
 
-    @connect(state => ({ ...state.forms[ name ] }), { ...actions })
+    @connect(state => ({ ...state.forms[ name ], ...mapStateToProps(state) }), { ...actions })
     @Form.create({
         mapPropsToFields(props) {
             const { fields } = props;

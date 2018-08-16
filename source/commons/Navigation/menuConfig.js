@@ -146,6 +146,12 @@ export default {
             link:     book.oldApp.feedback,
             name:     'navigation.suggest_idea',
         },
+        {
+            key:      '/package',
+            iconType: 'book',
+            link:     book.packagePage,
+            name:     'navigation.package',
+        },
     ],
 
     getSelectedByRoute: function getSelectedByRoute(currentPath) {

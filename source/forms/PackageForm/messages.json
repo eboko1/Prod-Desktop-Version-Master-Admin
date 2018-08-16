@@ -1,0 +1,20 @@
+{
+    "en": {
+        "edit-package-form.edit_title": "Edit package:",
+        "edit-package-form.edit": "Edit",
+        "edit-package-form.name_field": "Package name",
+        "edit-package-form.name_field_required": "Package name is required"
+    },
+    "ru": {
+        "edit-package-form.edit_title": "Редактировать пакет:",
+        "edit-package-form.edit": "Редактировать",
+        "edit-package-form.name_field": "Название",
+        "edit-package-form.name_field_required": "Поле не может быть пустым"
+    },
+    "uk": {
+        "edit-package-form.edit_title": "Створити пакет:",
+        "edit-package-form.edit": "Редактировать",
+        "edit-package-form.name_field": "Назва",
+        "edit-package-form.name_field_required": "Поле не може бути пустим"
+    }
+}

@@ -23,9 +23,11 @@ export const DecoratedInput = props => {
         icon,
         iconType,
         field,
+        initialValue,
     } = props;
 
     const input = getFieldDecorator(field, {
+        ...initialValue ? { initialValue } : {},
         rules,
     })(
         <Input

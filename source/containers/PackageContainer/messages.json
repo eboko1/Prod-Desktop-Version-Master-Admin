@@ -1,0 +1,29 @@
+{
+    "en": {
+        "package-container.create": "Create",
+        "package-container.index": "№",
+        "package-container.name": "Name",
+        "package-container.roles": "Roles",
+        "package-container.edit": "Edit",
+        "package-container.delete": "Delete",
+        "package-container.view": "View"
+    },
+    "ru": {
+        "package-container.create": "Создать",
+        "package-container.index": "№",
+        "package-container.name": "Название",
+        "package-container.roles": "Роли",
+        "package-container.edit": "Редактировать",
+        "package-container.delete": "Удалить",
+        "package-container.view": "Посмотреть"
+    },
+    "uk": {
+        "package-container.create": "Створити",
+        "package-container.index": "№",
+        "package-container.name": "Назва",
+        "package-container.roles": "Ролі",
+        "package-container.edit": "Редагувати",
+        "package-container.delete": "Видалити",
+        "package-container.view": "Переглянути"
+    }
+}

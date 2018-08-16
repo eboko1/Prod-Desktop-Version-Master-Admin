@@ -7,6 +7,8 @@ import { CancelReasonForm } from './CancelReasonForm';
 import { ToSuccessForm } from './ToSuccessForm';
 import { MobileRecordForm } from './MobileRecordForm';
 import { OrderTaskForm } from './OrderTaskForm';
+import { PackageForm } from './PackageForm';
+import { AddPackageForm } from './AddPackageForm';
 
 export {
     LoginForm,
@@ -18,4 +20,6 @@ export {
     ToSuccessForm,
     MobileRecordForm,
     OrderTaskForm,
+    PackageForm,
+    AddPackageForm,
 };
