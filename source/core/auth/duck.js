@@ -1,3 +1,5 @@
+//vendor
+import { PURGE, REHYDRATE } from 'redux-persist';
 /**
  * Constants
  **/
@@ -39,6 +41,12 @@ export default function reducer(state = ReducerState, action) {
         case LOGOUT_SUCCESS:
             return ReducerState;
 
+        // case REHYDRATE: // This added just to show that this action type also exists, can be omitted.
+        //     return state;
+
+        case PURGE:
+            return {}; // Return the initial state of this reducer to 'reset' the app
+
         default:
             return state;
     }
@@ -72,4 +80,8 @@ export const logoutFail = error => ({
     type:    LOGOUT_FAIL,
     payload: error,
     error:   true,
+});
+
+export const purge = () => ({
+    type: PURGE,
 });

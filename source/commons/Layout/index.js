@@ -26,6 +26,7 @@ const mapSizesToProps = ({ width }) => ({
 const mapStateToProps = state => ({
     authFetching: false,
     collapsed:    false,
+    user:         state.auth,
     // authFetching: state.ui.get('authFetching'),
     // collapsed:    state.ui.get('collapsed'),
 });
@@ -80,6 +81,7 @@ export class LayoutComponent extends Component {
             paper,
             collapsed,
             isMobile,
+            user,
         } = this.props;
 
         return (
@@ -94,6 +96,7 @@ export class LayoutComponent extends Component {
                         { !isMobile && (
                             <Layout.Header className={ Styles.header }>
                                 <Header
+                                    user={ user }
                                     collapsed={ collapsed }
                                     toggleNavigation={ this._toggleNavigation }
                                     logout={ this._logout }

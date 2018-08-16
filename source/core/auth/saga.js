@@ -15,6 +15,7 @@ import {
     authenticate,
     authenticateSuccess,
     logoutSuccess,
+    purge,
     LOGOUT,
 } from './duck';
 
@@ -34,11 +35,9 @@ export function* logoutSaga() {
             yield take(LOGOUT);
 
             yield put(setAuthFetchingState(true));
-
             yield removeToken();
             yield put(replace(`${book.login}`));
-            // console.log('→ persistor', persistor);
-            yield persistor.purge();
+            yield put(purge());
             yield put(logoutSuccess());
         } catch (error) {
             yield put(emitError(error));
