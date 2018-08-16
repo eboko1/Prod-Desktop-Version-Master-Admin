@@ -1,44 +1,34 @@
 // vendor
 import { all, call, put, take } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
-import nprogress from 'nprogress';
+import { purgeStoredState } from 'redux-persist';
+// import nprogress from 'nprogress';
 
 // proj
+import { emitError } from 'core/ui/duck';
 import { setAuthFetchingState } from 'core/ui/duck';
-import { fetchAPI, setToken, removeToken } from 'utils';
+import { setToken, removeToken } from 'utils';
 import book from 'routes/book';
+import persistor from 'store/store';
+import { persistConfig } from 'store/rootReducer';
 
 // own
 import {
-    loginSuccess,
-    loginFail,
+    authenticateSuccess,
     logoutSuccess,
-    logoutFail,
-    LOGIN,
+    AUTHENTICATE,
     LOGOUT,
 } from './duck';
 
-export function* loginSaga() {
+export function* authenticateSaga() {
     while (true) {
         try {
-            const { payload: credentials } = yield take(LOGIN);
-            yield nprogress.start();
-            const data = yield call(
-                fetchAPI,
-                'POST',
-                'login',
-                null,
-                credentials,
-            );
+            const { payload: user } = yield take(AUTHENTICATE);
 
-            yield setToken(data.token);
-
-            yield put(loginSuccess());
-            yield put(replace(`${book.ordersAppointments}`));
+            yield setToken(user.token);
+            yield authenticateSuccess();
         } catch (error) {
-            yield put(loginFail(error));
-        } finally {
-            yield nprogress.done();
+            yield put(emitError(error));
         }
     }
 }
@@ -47,14 +37,16 @@ export function* logoutSaga() {
     while (true) {
         try {
             yield take(LOGOUT);
+
             yield put(setAuthFetchingState(true));
-
             yield removeToken();
-
-            yield put(logoutSuccess());
             yield put(replace(`${book.login}`));
+            // yield put(purge(ReducerState));
+
+            yield purgeStoredState(persistConfig);
+            yield put(logoutSuccess());
         } catch (error) {
-            yield put(logoutFail(error));
+            yield put(emitError(error));
         } finally {
             yield put(setAuthFetchingState(false));
         }
@@ -62,5 +54,5 @@ export function* logoutSaga() {
 }
 
 export function* saga() {
-    yield all([ call(loginSaga), call(logoutSaga) ]);
+    yield all([ call(authenticateSaga), call(logoutSaga) ]);
 }

@@ -4,63 +4,44 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Layout } from 'antd';
 import DocumentTitle from 'react-document-title';
-import { enquireScreen, unenquireScreen } from 'enquire-js';
 
 // proj
 import { logout } from 'core/auth/duck';
-import { setCollapsedState, setLayoutState } from 'core/ui/duck';
-import {
-    Navigation,
-    Header,
-    Footer,
-    ModuleHeader,
-    ResponsiveView,
-} from 'commons';
-import { getCollapsedState } from 'utils';
+import { setCollapsedState, setView } from 'core/ui/duck';
+import { Navigation, Header, Footer, ModuleHeader } from 'commons';
+import { getCollapsedState, withResponsive } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
-let isMobile; // eslint-disable-line
-enquireScreen(b => (isMobile = b)); // eslint-disable-line
-
 const mapStateToProps = state => ({
-    authFetching: state.ui.authFetching,
-    collapsed:    state.ui.collapsed,
+    authFetching: false,
+    collapsed:    false,
+    user:         state.auth,
+    // authFetching: state.ui.get('authFetching'),
+    // collapsed:    state.ui.get('collapsed'),
 });
 
 const mapDispatchToProps = {
-    logout:            logout,
-    setCollapsedState: setCollapsedState,
-    setLayoutState:    setLayoutState,
+    logout,
+    setCollapsedState,
+    setView,
 };
 
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
+@withResponsive()
 export class LayoutComponent extends Component {
     static defaultProps = {
         paper: true,
     };
 
-    state = {
-        isMobile,
-    };
-
     componentDidMount() {
+        const { isMobile, isTablet, isDesktop } = this.props;
         const collapsed = getCollapsedState();
 
-        this.enquireHandler = enquireScreen(mobile => {
-            this.setState({
-                isMobile: mobile,
-            });
-        });
-
-        this.props.setLayoutState(isMobile);
+        this.props.setView({ isMobile, isTablet, isDesktop });
         this.props.setCollapsedState(collapsed);
-    }
-
-    componentWillUnmount() {
-        unenquireScreen(this.enquireHandler);
     }
 
     _toggleNavigation = () => {
@@ -84,8 +65,15 @@ export class LayoutComponent extends Component {
     };
 
     render() {
-        const { title, description, controls, paper, collapsed } = this.props;
-        const { isMobile } = this.state;
+        const {
+            title,
+            description,
+            controls,
+            paper,
+            collapsed,
+            isMobile,
+            user,
+        } = this.props;
 
         return (
             <DocumentTitle title={ this._getPageTitle() }>
@@ -99,6 +87,7 @@ export class LayoutComponent extends Component {
                         { !isMobile && (
                             <Layout.Header className={ Styles.header }>
                                 <Header
+                                    user={ user }
                                     collapsed={ collapsed }
                                     toggleNavigation={ this._toggleNavigation }
                                     logout={ this._logout }
@@ -138,3 +127,5 @@ export class LayoutComponent extends Component {
         );
     }
 }
+
+// export const LayoutComponent = withResponsive(LayoutWrapper);

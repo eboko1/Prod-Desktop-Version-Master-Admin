@@ -1,1 +1,1 @@
-export { updateIntlWorker } from './updateIntlWorker';
+export { updateIntlWorker, initIntlWorker } from './updateIntlWorker';

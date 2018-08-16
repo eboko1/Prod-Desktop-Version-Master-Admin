@@ -1,5 +1,6 @@
 // Core
 import { createStore, applyMiddleware } from 'redux';
+import { persistStore } from 'redux-persist';
 
 // Own
 import { middleware, sagaMiddleware } from './middleware';
@@ -18,6 +19,18 @@ const store = createStore(
     initialState,
     composeEnhancers()(applyMiddleware(...middleware)),
 );
+
+export const persistor = persistStore(store);
+
+// if (module.hot) {
+//     module.hot.accept(() => {
+//         // This fetch the new state of the above reducers.
+//         const nextPersistedReducer = persistedReducer;
+//         store.replaceReducer(
+//             persistReducer(persistConfig, nextPersistedReducer),
+//         );
+//     });
+// }
 
 export { history } from './middleware';
 export default store;

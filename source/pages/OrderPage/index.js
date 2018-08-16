@@ -3,13 +3,11 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
 import { Button, Icon } from 'antd';
 import moment from 'moment';
 import _ from 'lodash';
 
 // proj
-// import { selectInviteData } from 'core/order/duck';
 import {
     fetchOrderForm,
     updateOrder,
@@ -29,13 +27,8 @@ import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { AddClientModal } from 'modals';
 import book from 'routes/book';
 
-import {
-    Layout,
-    Spinner,
-    MobileView,
-    ResponsiveView,
-    BREAKPOINTS,
-} from 'commons';
+import { Layout, Spinner, MobileView, ResponsiveView } from 'commons';
+import { BREAKPOINTS } from 'utils';
 import { OrderForm, MobileRecordForm } from 'forms';
 import { ReportsDropdown, ChangeStatusDropdown } from 'components';
 import {
@@ -75,7 +68,6 @@ const mapStateToProps = state => {
         invited:               state.forms.orderForm.invited,
         modal:                 state.modals.modal,
         spinner:               state.ui.orderFetching,
-        isMobile:              state.ui.isMobile,
         orderEntity:           {
             ...state.forms.orderForm.fields,
             selectedClient: state.forms.orderForm.selectedClient,
@@ -202,16 +194,16 @@ class OrderPage extends Component {
         ) : (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>

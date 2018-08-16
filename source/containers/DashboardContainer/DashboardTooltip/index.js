@@ -22,6 +22,7 @@ class TooltipBox extends Component {
             position,
         } = this.props;
         // console.log('→ Tooltip props', this.props);
+        console.log('→ this.props', this.props);
 
         return position ? (
             <div
@@ -35,12 +36,12 @@ class TooltipBox extends Component {
                 } }
                 // style={ this.state.popupStyles }
             >
-                { /* { console.log('→ position', position) } */ }
+                { console.log('→ comment', comment) }
                 { clientName ||
                 clientPhone ||
                 vehicleMakeName ||
                 vehicleModelName ||
-                comment ?
+                comment ? 
                     <>
                         <div>
                             { clientName } { clientSurname }

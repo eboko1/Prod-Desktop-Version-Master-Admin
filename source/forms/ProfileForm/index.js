@@ -1,12 +1,18 @@
+// vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Select, Button, Upload, Icon, Input } from 'antd';
+
+// proj
+import { DecoratedSelect } from 'forms';
+import { withReduxForm } from 'utils';
+
+//own
 const FormItem = Form.Item;
 const Option = Select.Option;
-const { create } = Form;
 
 @injectIntl
-@create()
+@withReduxForm(name: "profileForm")
 export class ProfileForm extends Component {
     // class Demo extends Component {
     handleSubmit = e => {
@@ -116,12 +122,3 @@ export class ProfileForm extends Component {
         );
     }
 }
-
-// export const ProfileForm = Form.create()(Demo);
-// import React, { Component } from 'react';
-//
-// export class ProfileForm extends Component {
-//     render() {
-//         return <div>profile</div>;
-//     }
-// }

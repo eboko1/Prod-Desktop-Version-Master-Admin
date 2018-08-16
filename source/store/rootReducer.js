@@ -1,6 +1,8 @@
 // vendor
 import { combineReducers } from 'redux';
 import { routerReducer as router } from 'react-router-redux';
+import { persistReducer } from 'redux-persist';
+import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
 
 // proj
 import intl from 'core/intl/reducer';
@@ -13,12 +15,17 @@ import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
 import packageReducer, { moduleName as packageModule } from 'core/package/duck';
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
-
 import dashboardReducer, {
     moduleName as dashboardModule,
 } from 'core/dashboard/duck';
 
-const rootReducer = combineReducers({
+export const persistConfig = {
+    key:       'user',
+    storage,
+    whitelist: [ 'auth' ],
+};
+
+const reducer = combineReducers({
     forms,
     [ ordersModule ]:    ordersReducer,
     [ orderModule ]:     orderReducer,
@@ -31,7 +38,8 @@ const rootReducer = combineReducers({
     [ roleModule ]:      roleReducer,
     intl,
     router,
-    // [ universalFilters ]: universalFiltersReducer,
 });
+
+const rootReducer = persistReducer(persistConfig, reducer);
 
 export default rootReducer;

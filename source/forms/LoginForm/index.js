@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Form, Button } from 'antd';
+import { FormattedMessage } from 'react-intl';
 
 // proj
 import { onChangeLoginForm, login } from 'core/forms/loginForm/duck';
@@ -52,7 +53,7 @@ export class LoginForm extends Component {
                     type='password'
                 />
                 <Button type='primary' htmlType='submit'>
-                    Войти
+                    <FormattedMessage id='enter' />
                 </Button>
             </Form>
         );

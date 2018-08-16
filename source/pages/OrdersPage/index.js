@@ -20,7 +20,7 @@ import {
     UniversalFilters,
 } from 'containers';
 import book from 'routes/book';
-import { getDaterange } from 'utils';
+import { withResponsive, getDaterange } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -29,14 +29,12 @@ const RadioGroup = Radio.Group;
 
 let cx = classNames.bind(Styles);
 
-const mapState = state => {
-    return {
-        ordersDaterangeFilter: state.orders.filter.daterange,
-        filter:                state.orders.filter,
-        collapsed:             state.ui.collapsed,
-        isMobile:              state.ui.isMobile,
-    };
-};
+const mapState = state => ({
+    ordersDaterangeFilter: state.orders.filter.daterange,
+    filter:                state.orders.filter,
+    collapsed:             state.ui.collapsed,
+    // isMobile:              state.ui.views.isMobile,
+});
 
 const mapDispatch = {
     fetchOrders,
@@ -47,6 +45,7 @@ const mapDispatch = {
 
 @withRouter
 @connect(mapState, mapDispatch)
+@withResponsive()
 class OrdersPage extends Component {
     getPageTitle() {
         const status = this.props.match.params.ordersStatuses;

@@ -10,7 +10,6 @@ import {
     TabletView,
     DesktopView,
     ResponsiveView,
-    BREAKPOINTS,
 } from './ResponsiveViews';
 
 export {
@@ -25,5 +24,4 @@ export {
     TabletView,
     DesktopView,
     ResponsiveView,
-    BREAKPOINTS,
 };
