@@ -2,7 +2,7 @@
 import React from 'react';
 import MediaQuery from 'react-responsive';
 
-import { _breakpoints } from './breakpoints';
+import { _breakpoints } from 'utils';
 // <MediaQuery/> factory
 const _breakpoint = (view, children, component) => {
     const breakpoint = _breakpoints[ view ] || view;

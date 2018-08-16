@@ -3,10 +3,7 @@ import React, { Component } from 'react';
 import withSizes from 'react-sizes';
 
 // proj
-import { getDisplayName } from 'utils';
-
-// own
-import { _breakpoints } from './breakpoints';
+import { getDisplayName, _breakpoints } from 'utils';
 
 export const withResponsive = () => Enhanceable => {
     const mapSizesToProps = ({ width }) => ({
