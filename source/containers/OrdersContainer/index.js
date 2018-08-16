@@ -1,6 +1,5 @@
 // vendor
 import React, { Component } from 'react';
-import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { FormattedMessage } from 'react-intl';
@@ -24,29 +23,23 @@ import { InviteModal } from 'modals';
 import { columnsConfig, rowsConfig, scrollConfig } from './ordersTableConfig';
 import Styles from './styles.m.css';
 
-const mapStateToProps = state => {
-    return {
-        count:          state.orders.count,
-        orders:         state.orders.data,
-        filter:         state.orders.filter,
-        modal:          state.modals.modal,
-        sort:           state.orders.sort,
-        ordersFetching: state.ui.ordersFetching,
-    };
-};
+const mapStateToProps = state => ({
+    count:          state.orders.count,
+    orders:         state.orders.data,
+    filter:         state.orders.filter,
+    modal:          state.modals.modal,
+    sort:           state.orders.sort,
+    ordersFetching: state.ui.ordersFetching,
+    user:           state.auth,
+});
 
-const mapDispatchToProps = dispatch => {
-    return bindActionCreators(
-        {
-            fetchOrders,
-            setOrdersStatusFilter,
-            setOrdersPageFilter,
-            createInviteOrders,
-            resetModal,
-            setOrdersPageSort,
-        },
-        dispatch,
-    );
+const mapDispatchToProps = {
+    fetchOrders,
+    setOrdersStatusFilter,
+    setOrdersPageFilter,
+    createInviteOrders,
+    resetModal,
+    setOrdersPageSort,
 };
 
 @withRouter
@@ -164,7 +157,7 @@ class OrdersContainer extends Component {
     }
     // создать приглашение
     invite(requestedInviteOrders) {
-        const { orders, filters } = this.props;
+        const { orders, filters, user } = this.props;
         // осталяем только валидные ордера с уникальными clientId & vehicleId
         const omittedRequestedInviteOrders = this.getAvailableOrdersForInvite(
             requestedInviteOrders,
@@ -189,7 +182,7 @@ class OrdersContainer extends Component {
                 clientId,
                 clientPhone:     (order || {}).clientPhone,
                 clientVehicleId: vehicleId,
-                managerId:       720, // TODO use real manager id
+                managerId:       user.id,
                 status:          'invite',
             };
         };

@@ -12,7 +12,6 @@ import { intl } from 'store/intl';
 export function* initIntlWorker() {
     try {
         yield nprogress.start();
-        // console.log('* initIntlWorker', intl);.
 
         yield setLocale(intl.locale);
 
