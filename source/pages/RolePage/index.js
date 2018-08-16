@@ -1,44 +1,38 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
 
 // proj
-import { Layout, Spinner } from 'commons';
 import { fetchRoles } from 'core/role/duck';
 
-import RoleContainer from 'containers/RoleContainer';
+import { Layout, Spinner } from 'commons';
+import { RoleContainer } from 'containers';
 
-const mapStateToProps = state => {
-    return {
-        isFetching: state.ui.roleFetching,
-        roles:      state.roles.roles,
-    };
-};
+const mapStateToProps = state => ({
+    isFetching: state.ui.roleFetching,
+    roles:      state.roles.roles,
+});
 
 const mapDispatchToProps = {
     fetchRoles,
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
-class RolePage extends Component {
+export default class RolePage extends Component {
     componentDidMount() {
         this.props.fetchRoles(this.props.match.params.id);
     }
 
     render() {
-        const { isFetching, roles } = this.props;
+        const { isFetching, roles, match } = this.props;
 
-        return !isFetching ? (
-            <Layout title='Roles'>
-                <RoleContainer
-                    packageId={ this.props.match.params.id }
-                    roles={ roles }
-                />
-            </Layout>
-        ) : (
+        return isFetching ? (
             <Spinner spin={ isFetching } />
+        ) : (
+            <Layout title={ <FormattedMessage id={ roles } /> }>
+                <RoleContainer packageId={ match.params.id } roles={ roles } />
+            </Layout>
         );
     }
 }
-
-export default RolePage;

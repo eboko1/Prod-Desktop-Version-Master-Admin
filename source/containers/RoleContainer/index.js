@@ -6,11 +6,6 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
-import { RoleForm, AddRoleForm } from 'forms';
-import { Catcher } from 'commons';
-
-// own
-import Styles from './styles.m.css';
 import {
     setCreateRoleForm,
     setEditRoleId,
@@ -19,6 +14,12 @@ import {
     deleteRole,
     hideForms,
 } from 'core/role/duck';
+
+import { Catcher } from 'commons';
+import { RoleForm, AddRoleForm } from 'forms';
+
+// own
+import Styles from './styles.m.css';
 
 const mapDispatchToProps = {
     setCreateRoleForm,
@@ -63,7 +64,7 @@ export default class RoleContainer extends Component {
                             this.props.intl.formatMessage({
                                 id: `role-container.${grant.toLowerCase()}`,
                             }))
-                        .map(message => 
+                        .map(message =>
                             <>
                                 {message} <br />
                             </>),
@@ -85,7 +86,7 @@ export default class RoleContainer extends Component {
                     ),
             },
             {
-                title:  <FormattedMessage id='role-container.edit' />,
+                // title:  <FormattedMessage id='role-container.edit' />,
                 width:  '10%',
                 render: record => (
                     <Icon
@@ -96,7 +97,7 @@ export default class RoleContainer extends Component {
                 ),
             },
             {
-                title:  <FormattedMessage id='role-container.delete' />,
+                // title:  <FormattedMessage id='role-container.delete' />,
                 width:  '10%',
                 render: record => (
                     <Icon
@@ -136,6 +137,7 @@ export default class RoleContainer extends Component {
         return (
             <Catcher>
                 <Button
+                    type='primary'
                     onClick={ () => {
                         this.props.setCreateRoleForm(true);
                     } }
@@ -169,7 +171,11 @@ export default class RoleContainer extends Component {
                             />
                         ) }
                 </Modal>
-                <Table dataSource={ roleRows } columns={ this.columns } />
+                <Table
+                    size='small'
+                    dataSource={ roleRows }
+                    columns={ this.columns }
+                />
             </Catcher>
         );
     }
