@@ -68,6 +68,6 @@ export function* logoutSaga() {
 }
 
 export function* saga() {
-    yield all([ takeEvery(LOGIN, loginSaga), takeEvery(LOGOUT, logoutSaga) ]);
-    // yield all([ call(loginSaga), call(logoutSaga) ]);
+    // yield all([ takeEvery(LOGIN, loginSaga), takeEvery(LOGOUT, logoutSaga) ]);
+    yield all([ call(loginSaga), call(logoutSaga) ]);
 }

@@ -3,6 +3,7 @@ import { call, put, all, take } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
 
 //proj
+import { setUser } from 'core/user/duck';
 import { setAuthFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI, setToken } from 'utils';
 import book from 'routes/book';
@@ -16,6 +17,7 @@ export function* loginFormSaga() {
             const {
                 payload: { ...credentials },
             } = yield take(LOGIN);
+            console.log('→ ИСТИННЫЙ ЛОГИН');
             yield put(setAuthFetchingState(true));
             const data = yield call(
                 fetchAPI,
@@ -27,6 +29,7 @@ export function* loginFormSaga() {
             );
 
             yield put(loginSuccess(data));
+            yield put(setUser(data));
             yield setToken(data.token);
         } catch (error) {
             yield put(emitError(error));
