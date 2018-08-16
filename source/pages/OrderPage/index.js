@@ -29,13 +29,8 @@ import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { AddClientModal } from 'modals';
 import book from 'routes/book';
 
-import {
-    Layout,
-    Spinner,
-    MobileView,
-    ResponsiveView,
-    BREAKPOINTS,
-} from 'commons';
+import { Layout, Spinner } from 'commons';
+import { MobileView, ResponsiveView, BREAKPOINTS } from 'commons/Responsive';
 import { OrderForm, MobileRecordForm } from 'forms';
 import { ReportsDropdown, ChangeStatusDropdown } from 'components';
 import {

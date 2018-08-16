@@ -16,12 +16,17 @@ import { _breakpoints } from 'commons/Responsive';
 // own
 import Styles from './styles.m.css';
 
-const mapSizesToProps = ({ width }) => ({
-    isMobile: width < _breakpoints.mobile.max,
-    isTablet:
-        _breakpoints.tablet.min <= width && width <= _breakpoints.tablet.max,
-    isDesktop: _breakpoints.desktop.min <= width,
-});
+const mapSizesToProps = ({ width }) => {
+    console.log(width < _breakpoints.mobile.max);
+
+    return {
+        isMobile: width < _breakpoints.mobile.max,
+        isTablet:
+            _breakpoints.tablet.min <= width &&
+            width <= _breakpoints.tablet.max,
+        isDesktop: _breakpoints.desktop.min <= width,
+    };
+};
 
 const mapStateToProps = state => ({
     authFetching: state.ui.authFetching,
@@ -34,9 +39,9 @@ const mapDispatchToProps = {
     setView,
 };
 
-@withSizes(mapSizesToProps)
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
+@withSizes(mapSizesToProps)
 export class LayoutComponent extends Component {
     static defaultProps = {
         paper: true,

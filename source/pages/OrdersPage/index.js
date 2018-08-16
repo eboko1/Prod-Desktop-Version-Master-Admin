@@ -6,12 +6,14 @@ import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { Button, Radio } from 'antd';
 import classNames from 'classnames/bind';
+import withSizes from 'react-sizes';
 
 // proj
 import { fetchOrders, setOrdersDaterangeFilter } from 'core/orders/duck';
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { setModal, MODALS } from 'core/modals/duck';
 
+import { _breakpoints, withResponsive } from 'commons/Responsive';
 import { Layout } from 'commons';
 import {
     OrdersContainer,
@@ -29,11 +31,23 @@ const RadioGroup = Radio.Group;
 
 let cx = classNames.bind(Styles);
 
+const mapSizesToProps = ({ width }) => {
+    console.log('zdarove');
+
+    return {
+        isMobile: width < _breakpoints.mobile.max,
+        isTablet:
+            _breakpoints.tablet.min <= width &&
+            width <= _breakpoints.tablet.max,
+        isDesktop: _breakpoints.desktop.min <= width,
+    };
+};
+
 const mapState = state => ({
     ordersDaterangeFilter: state.orders.filter.daterange,
     filter:                state.orders.filter,
     collapsed:             state.ui.collapsed,
-    isMobile:              state.ui.views.isMobile,
+    // isMobile:              state.ui.views.isMobile,
 });
 
 const mapDispatch = {
@@ -43,8 +57,10 @@ const mapDispatch = {
     fetchUniversalFiltersForm,
 };
 
+// @withSizes(mapSizesToProps)
 @withRouter
 @connect(mapState, mapDispatch)
+@withResponsive()
 class OrdersPage extends Component {
     getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
@@ -96,6 +112,7 @@ class OrdersPage extends Component {
             funelWithFiltersShadow:    [ 'success', 'cancel' ].indexOf(status) < 0,
             funelMobile:               isMobile,
         });
+        console.log('→ zdarove isMobile', isMobile);
 
         return (
             <Layout
