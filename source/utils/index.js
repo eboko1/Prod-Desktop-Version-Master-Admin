@@ -7,8 +7,10 @@ export * from './tools';
 //
 export { default as images } from './images';
 export { default as fetchAPI } from './api';
+export { BREAKPOINTS, _breakpoints } from './breakpoints';
 export { ConnectedIntlProvider } from './ConnectedIntlProvider';
 export { ContextProvider } from './ContextProvider';
 export { withReduxForm, hasErrors } from './withReduxForm';
+export { withResponsive } from './withResponsive';
 export { getDaterange } from './getDaterange';
 export { getDateTimeConfig } from './getDateTimeConfig';

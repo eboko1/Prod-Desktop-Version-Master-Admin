@@ -4,24 +4,15 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Layout } from 'antd';
 import DocumentTitle from 'react-document-title';
-import withSizes from 'react-sizes';
 
 // proj
 import { logout } from 'core/auth/duck';
 import { setCollapsedState, setView } from 'core/ui/duck';
 import { Navigation, Header, Footer, ModuleHeader } from 'commons';
-import { getCollapsedState } from 'utils';
-import { _breakpoints } from 'commons/Responsive';
+import { getCollapsedState, withResponsive } from 'utils';
 
 // own
 import Styles from './styles.m.css';
-
-const mapSizesToProps = ({ width }) => ({
-    isMobile: width < _breakpoints.mobile.max,
-    isTablet:
-        _breakpoints.tablet.min <= width && width <= _breakpoints.tablet.max,
-    isDesktop: _breakpoints.desktop.min <= width,
-});
 
 const mapStateToProps = state => ({
     authFetching: false,
@@ -37,9 +28,9 @@ const mapDispatchToProps = {
     setView,
 };
 
-@withSizes(mapSizesToProps)
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
+@withResponsive()
 export class LayoutComponent extends Component {
     static defaultProps = {
         paper: true,
