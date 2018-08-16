@@ -4,6 +4,7 @@ import OrdersFilterContainer from './OrdersFilterContainer';
 import UniversalFilters from './UniversalFilters';
 import DashboardContainer from './DashboardContainer';
 import PackageContainer from './PackageContainer';
+import RoleContainer from './RoleContainer';
 
 export {
     OrdersContainer,
@@ -12,4 +13,5 @@ export {
     UniversalFilters,
     DashboardContainer,
     PackageContainer,
+    RoleContainer,
 };

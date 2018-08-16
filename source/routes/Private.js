@@ -12,6 +12,7 @@ import {
     ExceptionPage,
     MyTasksPage,
     PackagePage,
+    RolePage,
 } from 'pages';
 import book from './book';
 
@@ -34,6 +35,7 @@ export default class Private extends Component {
                 <Route exact component={ ProfilePage } path={ book.profile } />
                 <Route exact component={ MyTasksPage } path={ book.myTasksPage } />
                 <Route exact component={ PackagePage } path={ book.packagePage } />
+                <Route exact component={ RolePage } path={ book.rolePage } />
 
                 <Route
                     component={ ExceptionPage }

@@ -32,6 +32,7 @@ import FunelContainer from 'containers/FunelContainer/messages';
 import OrdersContainer from 'containers/OrdersContainer/messages';
 import MyTasksContainer from 'containers/MyTasksContainer/messages';
 import PackageContainer from 'containers/PackageContainer/messages';
+import RoleContainer from 'containers/RoleContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -44,6 +45,8 @@ import ToSuccessForm from 'forms/ToSuccessForm/messages';
 import OrderTaskForm from 'forms/OrderTaskForm/messages';
 import AddPackageForm from 'forms/AddPackageForm/messages';
 import PackageForm from 'forms/PackageForm/messages';
+import AddRoleForm from 'forms/AddRoleForm/messages';
+import RoleForm from 'forms/RoleForm/messages';
 
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
@@ -79,6 +82,7 @@ const messages = merge.all([
     FunelContainer,
     MyTasksContainer,
     PackageContainer,
+    RoleContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -89,6 +93,8 @@ const messages = merge.all([
     OrderTaskForm,
     AddPackageForm,
     PackageForm,
+    AddRoleForm,
+    RoleForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,

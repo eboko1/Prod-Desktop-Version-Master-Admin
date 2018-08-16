@@ -43,6 +43,8 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_PACKAGES:
             return {
                 ...state,
+                editPackageId:     void 0,
+                createPackageForm: false,
             };
 
         case FETCH_PACKAGES_SUCCESS:

@@ -5,8 +5,15 @@ import { combineReducers } from 'redux';
 import orderReducer, { moduleName as order } from './orderForm/duck';
 import loginReducer, { moduleName as login } from './loginForm/duck';
 
-import addPackageReducer, { moduleName as addPackage } from './addPackage/duck';
-import editPackageReducer, { moduleName as editPackage } from './editPackage/duck';
+import addPackageReducer, {
+    moduleName as addPackage,
+} from './addPackageForm/duck';
+import editPackageReducer, {
+    moduleName as editPackage,
+} from './editPackageForm/duck';
+
+import addRoleReducer, { moduleName as addRole } from './addRoleForm/duck';
+import editRoleReducer, { moduleName as editRole } from './editRoleForm/duck';
 
 import universalFiltersReducer, {
     moduleName as universalFilters,
@@ -39,4 +46,6 @@ export const formsReducer = combineReducers({
     [ orderTask ]:        orderTaskReducer,
     [ addPackage ]:       addPackageReducer,
     [ editPackage ]:      editPackageReducer,
+    [ addRole ]:          addRoleReducer,
+    [ editRole ]:         editRoleReducer,
 });

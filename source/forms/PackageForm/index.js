@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Button } from 'antd';
 
 // proj
-import { onChangePackageForm } from 'core/forms/editPackage/duck';
+import { onChangePackageForm } from 'core/forms/editPackageForm/duck';
 
 import { DecoratedInput } from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';

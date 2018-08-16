@@ -1,6 +1,7 @@
 // vendor
 import React from 'react';
 import { Checkbox, Form } from 'antd';
+import _ from 'lodash';
 
 // own
 const FormItem = Form.Item;
@@ -23,9 +24,9 @@ export const DecoratedCheckbox = props => {
     } = props;
 
     const checkbox = getFieldDecorator(field, {
-        ...initValue
+        ..._.isBoolean(initValue)
             ? {
-                initialValue:  true,
+                initialValue:  !!initValue,
                 valuePropName: 'checked',
             }
             : {},

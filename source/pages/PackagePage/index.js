@@ -29,7 +29,7 @@ class PackagePage extends Component {
         const { isFetching, packages } = this.props;
 
         return !isFetching ? (
-            <Layout>
+            <Layout title='Packages'>
                 <PackageContainer packages={ packages } />
             </Layout>
         ) : (

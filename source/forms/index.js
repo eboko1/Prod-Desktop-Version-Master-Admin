@@ -9,6 +9,8 @@ import { MobileRecordForm } from './MobileRecordForm';
 import { OrderTaskForm } from './OrderTaskForm';
 import { PackageForm } from './PackageForm';
 import { AddPackageForm } from './AddPackageForm';
+import { RoleForm } from './RoleForm';
+import { AddRoleForm } from './AddRoleForm';
 
 export {
     LoginForm,
@@ -22,4 +24,6 @@ export {
     OrderTaskForm,
     PackageForm,
     AddPackageForm,
+    RoleForm,
+    AddRoleForm,
 };

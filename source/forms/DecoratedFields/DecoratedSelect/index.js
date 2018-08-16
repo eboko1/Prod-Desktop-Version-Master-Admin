@@ -45,9 +45,12 @@ export const DecoratedSelect = props => {
         cnStyles,
         dropdownMatchSelectWidth,
         dropdownStyle,
+
+        initialValue,
     } = props;
 
     const select = getFieldDecorator(field, {
+        ...initialValue ? { initialValue } : {},
         rules,
     })(
         <Select
