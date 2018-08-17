@@ -40,11 +40,10 @@ const mapStateToProps = state => ({
     errors:            state.packages.errors,
 });
 
-const openNotificationWithIcon = type => {
+const openNotificationWithIcon = (type, message, description) => {
     notification[ type ]({
-        message:     'Notification Title',
-        description:
-            'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+        message,
+        description,
     });
 };
 
@@ -53,6 +52,15 @@ const openNotificationWithIcon = type => {
 export default class PackageContainer extends Component {
     constructor(props) {
         super(props);
+
+        this.apiErrorsMap = {
+            REFERENCE_VIOLATION: props.intl.formatMessage({
+                id: 'package-container.roles_businesses_restriction',
+            }),
+            UNIQUE_CONSTRAINT_VIOLATION: props.intl.formatMessage({
+                id: 'package-container.unique_name_error',
+            }),
+        };
 
         this.columns = [
             {
@@ -117,8 +125,23 @@ export default class PackageContainer extends Component {
         } = this.props;
 
         if (errors.length) {
-            openNotificationWithIcon('error');
-            this.props.handleError(errors[ 0 ].id);
+            const currentComponentErrors = errors.filter(({ response }) =>
+                _.keys(this.apiErrorsMap).includes(_.get(response, 'message')));
+
+            currentComponentErrors.forEach(componentError => {
+                const description = this.apiErrorsMap[
+                    componentError.response.message
+                ];
+
+                openNotificationWithIcon(
+                    'error',
+                    this.props.intl.formatMessage({
+                        id: 'package-container.error',
+                    }),
+                    description,
+                );
+                this.props.handleError(componentError.id);
+            });
         }
 
         const packageRows = packages.map((packageEntity, index) => ({

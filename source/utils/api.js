@@ -79,7 +79,7 @@ export default async function fetchAPI(
         ...arguments,
     ]);
 
-    const { status, statusText: message } = response;
+    const { status } = response;
     const { dispatch } = store;
 
     switch (true) {
@@ -91,45 +91,46 @@ export default async function fetchAPI(
                 return;
             }
             // dispatch(emitError({ message, status }));
-            throw new ResponseError(message, status);
+            throw new ResponseError(await response.json(), status);
         case status === 401:
             dispatch(logout());
-            throw new ResponseError(message, status);
+            throw new ResponseError(await response.json(), status);
         case status === 403:
             if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/403`));
                 return;
             }
             // dispatch(emitError({ message, status }));
-            throw new ResponseError(message, status);
+            throw new ResponseError(await response.json(), status);
         case status >= 404 && status < 422:
             if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/404`));
                 return;
             }
             // dispatch(emitError({ message, status }));
-            throw new ResponseError(message, status);
+            throw new ResponseError(await response.json(), status);
         case status >= 500 && status <= 504:
             if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/500`));
                 return;
             }
             // dispatch(emitError({ message, status }));
-            throw new ResponseError(message, status);
+            throw new ResponseError(await response.json(), status);
         default:
-            throw new ResponseError(message, status);
+            throw new ResponseError(await response.json(), status);
     }
 }
 
 class ResponseError extends Error {
-    constructor(message, status) {
+    constructor(response, status) {
         super();
 
         Error.captureStackTrace(this, this.constructor);
 
         this.name = this.constructor.name;
 
-        this.message = message || "Something went wrong. Please try again.";
+        this.message = 'Response Error';
+        this.response = response;
         this.status = status || 500;
     }
 }
