@@ -66,6 +66,7 @@ const mapStateToProps = state => {
         orderHistory:          state.forms.orderForm.history,
         initOrderEntity:       state.forms.orderForm.initOrderEntity,
         invited:               state.forms.orderForm.invited,
+        user:                  state.auth,
         modal:                 state.modals.modal,
         spinner:               state.ui.orderFetching,
         orderEntity:           {
@@ -184,6 +185,7 @@ class OrderPage extends Component {
             modal,
             addClientFormData,
             isMobile,
+            user,
         } = this.props;
 
         const { num, status, datetime } = this.props.order;
@@ -252,7 +254,7 @@ class OrderPage extends Component {
                                             clientVehicleId,
                                             clientId,
                                             clientPhone,
-                                            managerId: 720, // TODO fix stub
+                                            managerId: user.id,
                                         });
                                     }
                                 } }

@@ -12,27 +12,27 @@ import { Layout, Spinner } from 'commons';
 import { RoleContainer } from 'containers';
 import book from 'routes/book';
 
-const mapStateToProps = state => {
-    return {
-        isFetching: state.ui.roleFetching,
-        roles:      state.roles.roles,
-    };
-};
+const mapStateToProps = state => ({
+    isFetching: state.ui.roleFetching,
+    roles:      state.roles.roles,
+});
 
 const mapDispatchToProps = {
     fetchRoles,
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
-class RolePage extends Component {
+export default class RolePage extends Component {
     componentDidMount() {
         this.props.fetchRoles(this.props.match.params.id);
     }
 
     render() {
-        const { isFetching, roles } = this.props;
+        const { isFetching, roles, match } = this.props;
 
-        return !isFetching ? (
+        return isFetching ? (
+            <Spinner spin={ isFetching } />
+        ) : (
             <Layout
                 title={ <FormattedMessage id='roles' /> }
                 controls={
@@ -42,15 +42,8 @@ class RolePage extends Component {
                     </Link>
                 }
             >
-                <RoleContainer
-                    packageId={ this.props.match.params.id }
-                    roles={ roles }
-                />
+                <RoleContainer packageId={ match.params.id } roles={ roles } />
             </Layout>
-        ) : (
-            <Spinner spin={ isFetching } />
         );
     }
 }
-
-export default RolePage;

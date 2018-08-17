@@ -23,7 +23,7 @@ const mapDispatchToProps = {
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
-class PackagePage extends Component {
+export default class PackagePage extends Component {
     componentDidMount() {
         this.props.fetchPackages();
     }
@@ -31,14 +31,12 @@ class PackagePage extends Component {
     render() {
         const { isFetching, packages } = this.props;
 
-        return !isFetching ? (
+        return isFetching ? (
+            <Spinner spin={ isFetching } />
+        ) : (
             <Layout title={ <FormattedMessage id='packages' /> }>
                 <PackageContainer packages={ packages } />
             </Layout>
-        ) : (
-            <Spinner spin={ isFetching } />
         );
     }
 }
-
-export default PackagePage;

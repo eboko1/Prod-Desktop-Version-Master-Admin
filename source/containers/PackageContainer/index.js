@@ -7,12 +7,11 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
-import book from 'routes/book';
-import { PackageForm, AddPackageForm } from 'forms';
 import { Catcher } from 'commons';
+import { PackageForm, AddPackageForm } from 'forms';
+import book from 'routes/book';
 
 // own
-import Styles from './styles.m.css';
 import {
     setCreatePackage,
     setEditPackageId,
@@ -22,6 +21,7 @@ import {
     hideForms,
     handleError,
 } from 'core/package/duck';
+import Styles from './styles.m.css';
 
 const mapDispatchToProps = {
     setCreatePackage,
@@ -127,6 +127,7 @@ export default class PackageContainer extends Component {
             updatePackage,
             createPackage,
             errors,
+            setCreatePackage,
         } = this.props;
 
         if (errors.length) {

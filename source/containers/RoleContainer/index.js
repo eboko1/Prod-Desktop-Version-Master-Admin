@@ -6,11 +6,6 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
-import { RoleForm, AddRoleForm } from 'forms';
-import { Catcher } from 'commons';
-
-// own
-import Styles from './styles.m.css';
 import {
     setCreateRoleForm,
     setEditRoleId,
@@ -19,6 +14,12 @@ import {
     deleteRole,
     hideForms,
 } from 'core/role/duck';
+
+import { Catcher } from 'commons';
+import { RoleForm, AddRoleForm } from 'forms';
+
+// own
+import Styles from './styles.m.css';
 
 const mapDispatchToProps = {
     setCreateRoleForm,

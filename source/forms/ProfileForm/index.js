@@ -4,7 +4,8 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Select, Button, Upload, Icon, Input } from 'antd';
 
 // proj
-import { DecoratedSelect } from 'forms';
+import { onChangeProfileForm } from 'core/forms/profileForm/duck';
+import { DecoratedSelect } from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 
 //own
@@ -12,7 +13,10 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-@withReduxForm(name: "profileForm")
+@withReduxForm({
+    name:    'profileForm',
+    actions: { change: onChangeProfileForm },
+})
 export class ProfileForm extends Component {
     // class Demo extends Component {
     handleSubmit = e => {
@@ -22,20 +26,15 @@ export class ProfileForm extends Component {
             // }
         });
     };
+    //
+    // normFile = e => {
+    //     if (Array.isArray(e)) {
+    //         return e;
+    //     }
+    //
+    //     return e && e.fileList;
+    // };
 
-    handleChange = e => {
-        this.setState(() => {
-            this.props.form.validateFields([ 'nickname' ], { force: true });
-        });
-    };
-
-    normFile = e => {
-        if (Array.isArray(e)) {
-            return e;
-        }
-
-        return e && e.fileList;
-    };
     render() {
         const { getFieldDecorator } = this.props.form;
         const formItemLayout = {
@@ -45,7 +44,7 @@ export class ProfileForm extends Component {
 
         return (
             <Form onSubmit={ this.handleSubmit }>
-                <FormItem { ...formItemLayout } label='Name'>
+                { /* <FormItem { ...formItemLayout } label='Name'>
                     { getFieldDecorator('firstName', {
                         rules: [
                             {
@@ -69,9 +68,9 @@ export class ProfileForm extends Component {
                             },
                         ],
                     })(<Input placeholder='Please input your last name' />) }
-                </FormItem>
+                </FormItem> */ }
 
-                <FormItem { ...formItemLayout } label='Dragger'>
+                { /* <FormItem { ...formItemLayout } label='Dragger'>
                     <div className='dropbox'>
                         { getFieldDecorator('dragger', {
                             valuePropName:     'fileList',
@@ -90,28 +89,27 @@ export class ProfileForm extends Component {
                             </Upload.Dragger>,
                         ) }
                     </div>
-                </FormItem>
-
-                <FormItem { ...formItemLayout } label='Select' hasFeedback>
-                    { getFieldDecorator('select', {
-                        rules: [
-                            {
-                                required: true,
-                                message:  'Please select your country!',
-                            },
-                        ],
-                    })(
-                        <Select
-                            placeholder={
-                                <FormattedMessage id='profile-form.please_select_a_language' />
-                            }
-                        >
-                            <Option value='en'>English</Option>
-                            <Option value='uk'>Українська</Option>
-                            <Option value='ru'>Русский</Option>
-                        </Select>,
-                    ) }
-                </FormItem>
+                </FormItem> */ }
+                <DecoratedSelect
+                    field='locale'
+                    formItem
+                    formItemLayout={ formItemLayout }
+                    getFieldDecorator={ getFieldDecorator }
+                    label={
+                        <FormattedMessage id='profile-form.please_select_a_language' />
+                    }
+                    hasFeedback
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'Please select your country!',
+                        },
+                    ] }
+                >
+                    <Option value='en'>English</Option>
+                    <Option value='uk'>Українська</Option>
+                    <Option value='ru'>Русский</Option>
+                </DecoratedSelect>
 
                 <FormItem wrapperCol={ { span: 12, offset: 6 } }>
                     <Button type='primary' htmlType='submit'>

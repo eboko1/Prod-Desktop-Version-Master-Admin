@@ -3,27 +3,17 @@ import _ from 'lodash';
 /**
  * Constants
  * */
-export const moduleName = 'universalFiltersForm';
+export const moduleName = 'profileForm';
 const prefix = `cpb/${moduleName}`;
 
-export const FETCH_PROFILE_FORM = `${prefix}/FETCH_PROFILE_FORM`;
-export const FETCH_PROFILE_FORM_SUCCESS = `${prefix}/FETCH_PROFILE_FORM_SUCCESS`;
+// export const FETCH_PROFILE_FORM = `${prefix}/FETCH_PROFILE_FORM`;
+// export const FETCH_PROFILE_FORM_SUCCESS = `${prefix}/FETCH_PROFILE_FORM_SUCCESS`;
 
 export const ON_CHANGE_PROFILE_FORM = `${prefix}/ON_CHANGE_PROFILE_FORM`;
 
 /**
  * Reducer
  * */
-//
-// const ReducerState = {
-//     orderComments:    [],
-//     services:         [],
-//     managers:         [],
-//     employees:        [],
-//     vehicleModels:    [],
-//     vehicleMakes:     [],
-//     creationsReasons: [],
-// };
 
 const ReducerState = {
     fields: {
@@ -43,14 +33,10 @@ const ReducerState = {
             value:      void 0,
             dirty:      false,
         },
+        locale: {
+            name: 'locale',
+        },
     },
-    orderComments:    [],
-    services:         [],
-    managers:         [],
-    employees:        [],
-    vehicleModels:    [],
-    vehicleMakes:     [],
-    creationsReasons: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -89,16 +75,16 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export const fetchProfileForm = () => ({
-    type: FETCH_PROFILE_FORM,
-});
-
-export function fetchProfileFormSuccess(filters) {
-    return {
-        type:    FETCH_PROFILE_FORM_SUCCESS,
-        payload: filters,
-    };
-}
+// export const fetchProfileForm = () => ({
+//     type: FETCH_PROFILE_FORM,
+// });
+//
+// export function fetchProfileFormSuccess(filters) {
+//     return {
+//         type:    FETCH_PROFILE_FORM_SUCCESS,
+//         payload: filters,
+//     };
+// }
 
 export const onChangeProfileForm = (fields, { form, field }) => ({
     type:    ON_CHANGE_PROFILE_FORM,
