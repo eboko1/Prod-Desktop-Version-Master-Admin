@@ -6,7 +6,9 @@
         "package-container.roles": "Roles",
         "package-container.edit": "Edit",
         "package-container.delete": "Delete",
-        "package-container.view": "View"
+        "package-container.view": "View",
+        "package-container.edit_title": "Edit package",
+        "package-container.create_title": "Create package"
     },
     "ru": {
         "package-container.create": "Создать",
@@ -15,7 +17,9 @@
         "package-container.roles": "Роли",
         "package-container.edit": "Редактировать",
         "package-container.delete": "Удалить",
-        "package-container.view": "Посмотреть"
+        "package-container.view": "Посмотреть",
+        "package-container.edit_title": "Редактировать пакет",
+        "package-container.create_title": "Создать пакет"
     },
     "uk": {
         "package-container.create": "Створити",
@@ -24,6 +28,8 @@
         "package-container.roles": "Ролі",
         "package-container.edit": "Редагувати",
         "package-container.delete": "Видалити",
-        "package-container.view": "Переглянути"
+        "package-container.view": "Переглянути",
+        "package-container.edit_title": "Редагувати пакет",
+        "package-container.create_title": "Створити пакет"
     }
 }

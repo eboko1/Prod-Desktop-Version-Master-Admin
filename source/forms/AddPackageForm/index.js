@@ -25,7 +25,6 @@ export class AddPackageForm extends Component {
 
         return (
             <Form layout={ 'horizontal' }>
-                <FormattedMessage id='add-package-form.create_title' />
                 <DecoratedInput
                     field={ 'name' }
                     formItem
@@ -44,6 +43,7 @@ export class AddPackageForm extends Component {
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <Button
+                    style={ { width: '100%' } }
                     onClick={ () =>
                         validateFields(
                             (err, values) =>

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Table, Icon } from 'antd';
+import { Button, Table, Icon, Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
@@ -19,6 +19,7 @@ import {
     createPackage,
     updatePackage,
     deletePackage,
+    hideForms,
 } from 'core/package/duck';
 
 const mapDispatchToProps = {
@@ -27,6 +28,7 @@ const mapDispatchToProps = {
     createPackage,
     updatePackage,
     deletePackage,
+    hideForms,
 };
 
 const mapStateToProps = state => ({
@@ -63,13 +65,8 @@ export default class PackageContainer extends Component {
                 title:  <FormattedMessage id='package-container.view' />,
                 width:  '10%',
                 render: record => (
-                    <Link
-                        to={ `${book.packagePage}/${record.id}` }
-                    >
-                        <Icon
-                            className={ Styles.viewPackageIcon }
-                            type='table'
-                        />
+                    <Link to={ `${book.packagePage}/${record.id}` }>
+                        <Icon className={ Styles.viewPackageIcon } type='table' />
                     </Link>
                 ),
             },
@@ -122,16 +119,31 @@ export default class PackageContainer extends Component {
                 <Button onClick={ () => this.props.setCreatePackage(true) }>
                     <FormattedMessage id='package-container.create' />
                 </Button>
-                { editPackageId && (
-                    <PackageForm
-                        editPackageId={ editPackageId }
-                        initPackageName={ initPackageName }
-                        updatePackage={ updatePackage }
-                    />
-                ) ||
-                    createPackageForm && (
-                        <AddPackageForm createPackage={ createPackage } />
-                    ) }
+                <Modal
+                    title={
+                        editPackageId ? (
+                            <FormattedMessage id='package-container.edit_title' />
+                        ) : (
+                            <FormattedMessage id='package-container.create_title' />
+                        )
+                    }
+                    visible={ editPackageId || createPackageForm }
+                    onCancel={ () => {
+                        this.props.hideForms();
+                    } }
+                    footer={ null }
+                >
+                    { editPackageId && (
+                        <PackageForm
+                            editPackageId={ editPackageId }
+                            initPackageName={ initPackageName }
+                            updatePackage={ updatePackage }
+                        />
+                    ) ||
+                        createPackageForm && (
+                            <AddPackageForm createPackage={ createPackage } />
+                        ) }
+                </Modal>
                 <Table dataSource={ packageRows } columns={ this.columns } />
             </Catcher>
         );

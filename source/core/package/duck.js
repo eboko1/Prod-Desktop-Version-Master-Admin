@@ -17,6 +17,8 @@ export const UPDATE_PACKAGE = `${prefix}/UPDATE_PACKAGE`;
 export const CREATE_PACKAGE = `${prefix}/CREATE_PACKAGE`;
 export const DELETE_PACKAGE = `${prefix}/DELETE_PACKAGE`;
 
+export const HIDE_FORMS = `${prefix}/HIDE_FORMS`;
+
 /**
  * Reducer
  * */
@@ -75,12 +77,19 @@ export default function reducer(state = ReducerState, action) {
         case UPDATE_PACKAGE:
             return {
                 ...state,
-                editPackageId: null,
+                editPackageId: void 0,
             };
 
         case CREATE_PACKAGE:
             return {
                 ...state,
+                createPackageForm: false,
+            };
+
+        case HIDE_FORMS:
+            return {
+                ...state,
+                editPackageId:     void 0,
                 createPackageForm: false,
             };
 
@@ -130,4 +139,8 @@ export const createPackage = entity => ({
 export const deletePackage = id => ({
     type:    DELETE_PACKAGE,
     payload: { id },
+});
+
+export const hideForms = () => ({
+    type: HIDE_FORMS,
 });

@@ -26,7 +26,6 @@ export class PackageForm extends Component {
 
         return (
             <Form layout={ 'horizontal' }>
-                <FormattedMessage id='edit-package-form.edit_title' /> { initPackageName }
                 <DecoratedInput
                     initialValue={ initPackageName }
                     field={ 'name' }
@@ -40,10 +39,13 @@ export class PackageForm extends Component {
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='edit-package-form.name_field' /> }
+                    label={
+                        <FormattedMessage id='edit-package-form.name_field' />
+                    }
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <Button
+                    style={ { width: '100%' } }
                     onClick={ () => {
                         this.props.form.validateFields((err, values) => {
                             if (!err) {
