@@ -60,7 +60,7 @@ deploy_prod:
     NODE_ENV: production
   script:
     - apt-get update && apt-get install --yes sshpass
-    - yarn
+    - yarn install --production=false
     - NODE_ENV=production yarn build:prod
     - export SSHPASS=$DEPLOY_PASS
     - tar czf - build configs | sshpass -e ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_PROD_HOST "mkdir -p $DEPLOY_PATH && cd $DEPLOY_PATH && tar xzf -"
