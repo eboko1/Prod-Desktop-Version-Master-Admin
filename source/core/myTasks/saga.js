@@ -20,10 +20,9 @@ export function* fetchMyTasks() {
             );
 
             yield put(fetchMyTasksSuccess(data));
+            yield put(setMyTasksFetchingState(false));
         } catch (error) {
             yield put(emitError(error));
-        } finally {
-            yield put(setMyTasksFetchingState(false));
         }
     }
 }

@@ -26,6 +26,7 @@ const ReducerState = {
     authFetching:          false,
     ordersFetching:        false,
     orderFetching:         false,
+    myTasksFetching:       false,
     dashboardInitializing: false,
     dashboardFetching:     false,
     packageFetching:       false,

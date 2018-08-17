@@ -76,7 +76,9 @@ class MyTasksPage extends Component {
             page,
         } = this.props;
 
-        return !spinner ? (
+        return spinner ? (
+            <Spinner spin={ spinner } />
+        ) : (
             <Layout>
                 <MyTasksContainer myTasks={ myTasks } page={ page } />
 
@@ -97,8 +99,6 @@ class MyTasksPage extends Component {
                     orderTasks={ myTasks && myTasks.orderTasks || [] }
                 />
             </Layout>
-        ) : (
-            <Spinner spin={ spinner } />
         );
     }
 }

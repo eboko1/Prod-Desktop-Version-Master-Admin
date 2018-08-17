@@ -223,9 +223,6 @@ export default class MyTasksContainer extends Component {
         ];
     }
 
-    componentDidMount() {
-        this.props.fetchMyTasks(2);
-    }
     handleTableChange = (pagination, filters, sorter) => {
         if (!sorter) {
             return;
@@ -237,6 +234,8 @@ export default class MyTasksContainer extends Component {
         this.setState({ sort });
     };
 
+    /* eslint-disable complexity */
+    // TODO: rewrite
     sortTable = (a, b) => {
         const { sort } = this.state;
         let priorities = {
@@ -254,17 +253,20 @@ export default class MyTasksContainer extends Component {
                 (priorities[ b.priority ] || 0) - (priorities[ a.priority ] || 0)
             );
         }
+
         if (sort.field === 'duration' && sort.order === 'ascend') {
             return a.duration - b.duration;
         } else if (sort.field === 'duration' && sort.order === 'descend') {
             return b.duration - a.duration;
         }
+
         if (sort.order === 'ascend') {
             var c = new Date(a[ sort.field ]);
             var d = new Date(b[ sort.field ]);
 
             return c - d;
         }
+
         var c = new Date(a[ sort.field ]);
         var d = new Date(b[ sort.field ]);
 
@@ -272,6 +274,7 @@ export default class MyTasksContainer extends Component {
 
         return 0;
     };
+    /* eslint-enable complexity */
 
     render() {
         const { myTasks, page } = this.props;
