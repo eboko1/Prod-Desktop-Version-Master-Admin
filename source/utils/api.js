@@ -5,6 +5,8 @@ import _ from 'lodash';
 
 // proj
 import { logout } from 'core/auth/duck';
+// import { emitError } from 'core/ui/duck';
+
 import { getToken } from 'utils';
 import store from 'store/store';
 import book from 'routes/book';
@@ -24,100 +26,111 @@ export default async function fetchAPI(
     endpoint,
     query,
     body,
-    rawResponse,
+    { rawResponse, handleErrorInternally } = {},
 ) {
-    try {
-        const endpointC = trim(endpoint, "/"); // trim all spaces and '/'
-        const handler = endpointC ? `/${endpointC}` : ""; // be sure that after api will be only one /
-        const methodU = toUpper(method);
-        const queryObj = _(query)
-            .toPairs()
-            .filter(
-                ([key, value]) =>
-                    _.isString(value) ? !_.isEmpty(value) : !_.isNil(value),
-            )
-            .map(([key, value]) => ({ key, value }))
-            .map(
-                ({ key, value }) =>
-                    _.isArray(value)
-                        ? value.map(subValue => ({ key, value: subValue }))
-                        : { key, value },
-            )
-            .flatten()
-            .map(({ key, value }) => `${key}=${value}`)
-            .value();
+    const endpointC = trim(endpoint, "/"); // trim all spaces and '/'
+    const handler = endpointC ? `/${endpointC}` : ""; // be sure that after api will be only one /
+    const methodU = toUpper(method);
+    const queryObj = _(query)
+        .toPairs()
+        .filter(
+            ([key, value]) =>
+                _.isString(value) ? !_.isEmpty(value) : !_.isNil(value),
+        )
+        .map(([key, value]) => ({ key, value }))
+        .map(
+            ({ key, value }) =>
+                _.isArray(value)
+                    ? value.map(subValue => ({ key, value: subValue }))
+                    : { key, value },
+        )
+        .flatten()
+        .map(({ key, value }) => `${key}=${value}`)
+        .value();
 
-        const request = {
-            method: methodU,
-            headers: {
-                "content-type": "application/json",
-                "Cache-Control": "no-cache",
-                "Access-Control-Request-Headers": "*",
-                // 'Access-Control-Request-Method':  '*',
-            },
-        };
+    const request = {
+        method: methodU,
+        headers: {
+            "content-type": "application/json",
+            "Cache-Control": "no-cache",
+            "Access-Control-Request-Headers": "*",
+            // 'Access-Control-Request-Method':  '*',
+        },
+    };
 
-        const token = getToken();
+    const token = getToken();
 
-        if (token) {
-            Object.assign(request.headers, {
-                Authorization: `${token}`,
-            });
-        }
+    if (token) {
+        Object.assign(request.headers, {
+            Authorization: `${token}`,
+        });
+    }
 
-        if (methodU === "POST" || methodU === "PUT" || methodU === "DELETE") {
-            request.body = JSON.stringify(body || {});
-        }
+    if (methodU === "POST" || methodU === "PUT" || methodU === "DELETE") {
+        request.body = JSON.stringify(body || {});
+    }
 
-        // async function response() {
-        const response = await fetch.apply(null, [
-            `${apiC}${handler}${
-                queryObj.length > 0 ? `?${queryObj.join("&")}` : ""
-            }`,
-            request,
-            ...arguments,
-        ]);
+    // async function response() {
+    const response = await fetch.apply(null, [
+        `${apiC}${handler}${
+            queryObj.length > 0 ? `?${queryObj.join("&")}` : ""
+        }`,
+        request,
+        ...arguments,
+    ]);
 
-        const status = response.status;
-        const { dispatch } = store;
+    const { status } = response;
+    const { dispatch } = store;
 
-        switch (true) {
-            case status >= 200 && status < 300:
-                return rawResponse ? await response : await response.json();
-            case status === 400:
+    switch (true) {
+        case status >= 200 && status < 300:
+            return rawResponse ? await response : await response.json();
+        case status === 400:
+            if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/400`));
-                throw new Error(
-                    `Something went wrong with response:\n${response}`,
-                );
-                break;
-            case status === 401:
-                dispatch(logout());
-                throw new Error(
-                    `Something went wrong with response:\n${response}`,
-                );
-                break;
-            case status === 403:
+                return;
+            }
+            // dispatch(emitError({ message, status }));
+            throw new ResponseError(await response.json(), status);
+        case status === 401:
+            dispatch(logout());
+            throw new ResponseError(await response.json(), status);
+        case status === 403:
+            if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/403`));
-                throw new Error(
-                    `Something went wrong with response:\n${response}`,
-                );
-                break;
-            case status >= 404 && status < 422:
+                return;
+            }
+            // dispatch(emitError({ message, status }));
+            throw new ResponseError(await response.json(), status);
+        case status >= 404 && status < 422:
+            if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/404`));
-                throw new Error(
-                    `Something went wrong with response:\n${response}`,
-                );
-                break;
-            case status >= 500 && status <= 504:
+                return;
+            }
+            // dispatch(emitError({ message, status }));
+            throw new ResponseError(await response.json(), status);
+        case status >= 500 && status <= 504:
+            if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/500`));
-                throw new Error(
-                    `Something went wrong with response:\n${response}`,
-                );
-                break;
-            default:
-                throw new Error(`Error with response:\n${response}`);
-        }
-    } catch (error) {
-        throw new Error(error);
+                return;
+            }
+            // dispatch(emitError({ message, status }));
+            throw new ResponseError(await response.json(), status);
+        default:
+            throw new ResponseError(await response.json(), status);
+    }
+}
+
+class ResponseError extends Error {
+    constructor(response, status) {
+        super();
+
+        Error.captureStackTrace(this, this.constructor);
+
+        this.name = this.constructor.name;
+
+        this.message = 'Response Error';
+        this.response = response;
+        this.status = status || 500;
     }
 }

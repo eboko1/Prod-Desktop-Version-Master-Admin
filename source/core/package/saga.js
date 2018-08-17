@@ -10,7 +10,10 @@ import {
     fetchPackages,
     fetchPackagesSuccess,
     fetchPackagesError,
+    hideForms,
+    addError,
 } from './duck';
+
 import {
     CREATE_PACKAGE,
     UPDATE_PACKAGE,
@@ -41,8 +44,22 @@ export function* updatePackageSaga() {
         const {
             payload: { id, entity },
         } = yield take(UPDATE_PACKAGE);
-        yield call(fetchAPI, 'PUT', `managers/packages/${id}`, null, entity);
+        try {
+            yield call(
+                fetchAPI,
+                'PUT',
+                `managers/packages/${id}`,
+                null,
+                entity,
+                { handleErrorInternally: true },
+            );
+        } catch ({ response, status }) {
+            yield put(addError({ response, status }));
 
+            continue;
+        }
+
+        yield put(hideForms());
         yield put(fetchPackages());
     }
 }
@@ -52,8 +69,17 @@ export function* createPackageSaga() {
         const {
             payload: { entity },
         } = yield take(CREATE_PACKAGE);
-        yield call(fetchAPI, 'POST', 'managers/packages', null, entity);
+        try {
+            yield call(fetchAPI, 'POST', 'managers/packages', null, entity, {
+                handleErrorInternally: true,
+            });
+        } catch ({ response, status }) {
+            yield put(addError({ response, status }));
 
+            continue;
+        }
+
+        yield put(hideForms());
         yield put(fetchPackages());
     }
 }
@@ -63,7 +89,22 @@ export function* deletePackageSaga() {
         const {
             payload: { id },
         } = yield take(DELETE_PACKAGE);
-        yield call(fetchAPI, 'DELETE', `managers/packages/${id}`);
+        try {
+            yield call(
+                fetchAPI,
+                'DELETE',
+                `managers/packages/${id}`,
+                void 0,
+                void 0,
+                {
+                    handleErrorInternally: true,
+                },
+            );
+        } catch ({ response, status }) {
+            yield put(addError({ response, status }));
+
+            continue;
+        }
 
         yield put(fetchPackages());
     }

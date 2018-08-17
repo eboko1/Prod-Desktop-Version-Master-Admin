@@ -46,6 +46,10 @@ a {
     z-index: 2000;
 }
 
+.ant-notification {
+    z-index: 2200;
+}
+
 .ant-layout .ant-layout-has-sider {
     height: 100%;
 }
