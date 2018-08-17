@@ -45,7 +45,7 @@ export default class RoleContainer extends Component {
             {
                 title:     <FormattedMessage id='role-container.index' />,
                 dataIndex: 'index',
-                width:     '10%',
+                width:     'auto',
                 render:    field => field + 1,
             },
             {
@@ -70,7 +70,7 @@ export default class RoleContainer extends Component {
             },
             {
                 title:  <FormattedMessage id='role-container.grant_other' />,
-                width:  '10%',
+                width:  '12%',
                 render: record =>
                     record.grantOther ? (
                         <Icon
@@ -85,10 +85,11 @@ export default class RoleContainer extends Component {
                     ),
             },
             {
-                title:  <FormattedMessage id='role-container.edit' />,
-                width:  '10%',
+                // title:  <FormattedMessage id='role-container.edit' />,
+                width:  '12%',
                 render: record => (
                     <Icon
+                        color='red'
                         onClick={ () => this.props.setEditRoleId(record.id) }
                         className={ Styles.editRoleIcon }
                         type='edit'
@@ -96,8 +97,8 @@ export default class RoleContainer extends Component {
                 ),
             },
             {
-                title:  <FormattedMessage id='role-container.delete' />,
-                width:  '10%',
+                // title:  <FormattedMessage id='role-container.delete' />,
+                width:  '12%',
                 render: record => (
                     <Icon
                         onClick={ () =>
@@ -136,6 +137,8 @@ export default class RoleContainer extends Component {
         return (
             <Catcher>
                 <Button
+                    className={ Styles.addRoleButton }
+                    type='primary'
                     onClick={ () => {
                         this.props.setCreateRoleForm(true);
                     } }
@@ -169,7 +172,15 @@ export default class RoleContainer extends Component {
                             />
                         ) }
                 </Modal>
-                <Table dataSource={ roleRows } columns={ this.columns } />
+                <Table
+                    pagination={ {
+                        hideOnSinglePage: true,
+                        size:             'large',
+                    } }
+                    size='small'
+                    dataSource={ roleRows }
+                    columns={ this.columns }
+                />
             </Catcher>
         );
     }

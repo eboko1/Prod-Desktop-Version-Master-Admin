@@ -1,12 +1,16 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { Icon } from 'antd';
 
 // proj
-import { Layout, Spinner } from 'commons';
 import { fetchRoles } from 'core/role/duck';
 
-import RoleContainer from 'containers/RoleContainer';
+import { Layout, Spinner } from 'commons';
+import { RoleContainer } from 'containers';
+import book from 'routes/book';
 
 const mapStateToProps = state => {
     return {
@@ -29,7 +33,15 @@ class RolePage extends Component {
         const { isFetching, roles } = this.props;
 
         return !isFetching ? (
-            <Layout title='Roles'>
+            <Layout
+                title={ <FormattedMessage id='roles' /> }
+                controls={
+                    <Link to={ `${book.packagePage}` }>
+                        <Icon type='rollback' />
+                        <FormattedMessage id='roles.back_to_packages' />
+                    </Link>
+                }
+            >
                 <RoleContainer
                     packageId={ this.props.match.params.id }
                     roles={ roles }

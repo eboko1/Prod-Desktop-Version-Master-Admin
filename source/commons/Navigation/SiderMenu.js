@@ -15,8 +15,7 @@ import menuConfig from './menuConfig';
 @withRouter
 export default class SiderMenu extends Component {
     render() {
-        const { history, collapsed, isMobile, onCollapse } = this.props;
-
+        const { history, collapsed, isMobile, onCollapse, user } = this.props;
         const defaultOpenKeys = collapsed
             ? []
             : [ 'operations', 'catalog', 'reports' ];
@@ -48,7 +47,7 @@ export default class SiderMenu extends Component {
                 >
                     { collapsed ? <Icon type='environment-o' /> : 'CARBOOK.PRO' }
                 </div>
-                { isMobile && <HeaderMenu isMobile={ isMobile } /> }
+                { isMobile && <HeaderMenu isMobile={ isMobile } user={ user } /> }
                 <Menu
                     className={ `${Styles.navMenu} ${isMobile &&
                         Styles.navMenuMobile}` }

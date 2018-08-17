@@ -15,11 +15,9 @@ import { getCollapsedState, withResponsive } from 'utils';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    authFetching: false,
-    collapsed:    false,
+    authFetching: state.ui.authFetching,
+    collapsed:    state.ui.collapsed,
     user:         state.auth,
-    // authFetching: state.ui.get('authFetching'),
-    // collapsed:    state.ui.get('collapsed'),
 });
 
 const mapDispatchToProps = {
@@ -28,9 +26,9 @@ const mapDispatchToProps = {
     setView,
 };
 
+@withResponsive()
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
-@withResponsive()
 export class LayoutComponent extends Component {
     static defaultProps = {
         paper: true,
@@ -82,6 +80,7 @@ export class LayoutComponent extends Component {
                         onCollapse={ this._toggleNavigation }
                         collapsed={ collapsed }
                         isMobile={ isMobile }
+                        user={ user }
                     />
                     <Layout className={ Styles.layout }>
                         { !isMobile && (
