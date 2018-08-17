@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { Button, Table, Icon, Modal } from 'antd';
+import { Button, Table, Icon, Modal, notification } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
@@ -20,6 +20,7 @@ import {
     updatePackage,
     deletePackage,
     hideForms,
+    handleError,
 } from 'core/package/duck';
 
 const mapDispatchToProps = {
@@ -29,13 +30,23 @@ const mapDispatchToProps = {
     updatePackage,
     deletePackage,
     hideForms,
+    handleError,
 };
 
 const mapStateToProps = state => ({
     editPackageId:     state.packages.editPackageId,
     createPackageForm: state.packages.createPackageForm,
     packages:          state.packages.packages,
+    errors:            state.packages.errors,
 });
+
+const openNotificationWithIcon = type => {
+    notification[ type ]({
+        message:     'Notification Title',
+        description:
+            'This is the content of the notification. This is the content of the notification. This is the content of the notification.',
+    });
+};
 
 @injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
@@ -102,9 +113,14 @@ export default class PackageContainer extends Component {
             editPackageId,
             updatePackage,
             createPackage,
+            errors,
         } = this.props;
 
-        // TODO reselect
+        if (errors.length) {
+            openNotificationWithIcon('error');
+            this.props.handleError(errors[ 0 ].id);
+        }
+
         const packageRows = packages.map((packageEntity, index) => ({
             ...packageEntity,
             index,

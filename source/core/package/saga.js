@@ -10,7 +10,10 @@ import {
     fetchPackages,
     fetchPackagesSuccess,
     fetchPackagesError,
+    hideForms,
+    addError,
 } from './duck';
+
 import {
     CREATE_PACKAGE,
     UPDATE_PACKAGE,
@@ -43,6 +46,7 @@ export function* updatePackageSaga() {
         } = yield take(UPDATE_PACKAGE);
         yield call(fetchAPI, 'PUT', `managers/packages/${id}`, null, entity);
 
+        yield put(hideForms());
         yield put(fetchPackages());
     }
 }
@@ -52,9 +56,15 @@ export function* createPackageSaga() {
         const {
             payload: { entity },
         } = yield take(CREATE_PACKAGE);
-        yield call(fetchAPI, 'POST', 'managers/packages', null, entity);
-
-        yield put(fetchPackages());
+        try {
+            yield call(fetchAPI, 'POST', 'managers/packages', null, entity, {
+                handleErrorInternally: true,
+            });
+            yield put(hideForms());
+            yield put(fetchPackages());
+        } catch ({ message, status }) {
+            yield put(addError({ message, status }));
+        }
     }
 }
 

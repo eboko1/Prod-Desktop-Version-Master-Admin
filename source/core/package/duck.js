@@ -18,12 +18,16 @@ export const CREATE_PACKAGE = `${prefix}/CREATE_PACKAGE`;
 export const DELETE_PACKAGE = `${prefix}/DELETE_PACKAGE`;
 
 export const HIDE_FORMS = `${prefix}/HIDE_FORMS`;
-
+export const ADD_ERROR = `${prefix}/ADD_ERROR`;
+export const HANDLE_ERROR = `${prefix}/HANDLE_ERROR`;
 /**
  * Reducer
  * */
 
+let errorId = 1;
+
 const ReducerState = {
+    errors:            [],
     fields:            {},
     editPackageId:     null,
     createPackageForm: false,
@@ -77,13 +81,11 @@ export default function reducer(state = ReducerState, action) {
         case UPDATE_PACKAGE:
             return {
                 ...state,
-                editPackageId: void 0,
             };
 
         case CREATE_PACKAGE:
             return {
                 ...state,
-                createPackageForm: false,
             };
 
         case HIDE_FORMS:
@@ -91,6 +93,18 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 editPackageId:     void 0,
                 createPackageForm: false,
+            };
+
+        case ADD_ERROR:
+            return {
+                ...state,
+                errors: [ ...state.errors, { id: errorId++, ...payload }],
+            };
+
+        case HANDLE_ERROR:
+            return {
+                ...state,
+                errors: state.errors.filter(({ id }) => id !== payload),
             };
 
         default:
@@ -143,4 +157,15 @@ export const deletePackage = id => ({
 
 export const hideForms = () => ({
     type: HIDE_FORMS,
+});
+
+export const addError = error => ({
+    type:    ADD_ERROR,
+    payload: error,
+    error:   true,
+});
+
+export const handleError = id => ({
+    type:    HANDLE_ERROR,
+    payload: id,
 });
