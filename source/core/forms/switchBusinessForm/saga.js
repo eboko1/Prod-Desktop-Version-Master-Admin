@@ -5,6 +5,7 @@ import {
     all,
     take,
     takeLatest,
+    takeEvery,
     delay,
     select,
 } from 'redux-saga/effects';
@@ -13,6 +14,7 @@ import { go } from 'react-router-redux';
 // proj
 import { authenticate, selectToken } from 'core/auth/duck';
 import { setSearchBusinessesFetchingState } from 'core/ui/duck';
+import { SET_MODAL, MODALS } from 'core/modals/duck';
 
 import { fetchAPI } from 'utils';
 import book from 'routes/book';
@@ -30,6 +32,16 @@ function* handleBusinessesSearchSaga({ payload: { query } }) {
         const businesses = yield call(fetchAPI, 'GET', 'businesses/search', {
             search: query,
         });
+        yield put(fetchBusinessesSuccess(businesses));
+        yield put(setSearchBusinessesFetchingState(false));
+    }
+}
+
+function* onSetModalSaga({ payload }) {
+    if (payload === MODALS.SWITCH_BUSINESS) {
+        yield put(setSearchBusinessesFetchingState(true));
+
+        const businesses = yield call(fetchAPI, 'GET', 'businesses/search');
         yield put(fetchBusinessesSuccess(businesses));
         yield put(setSearchBusinessesFetchingState(false));
     }
@@ -58,5 +70,5 @@ function* setBusinessSaga() {
 }
 
 export function* saga() {
-    yield all([ takeLatest(SET_SEARCH_QUERY, handleBusinessesSearchSaga), call(setBusinessSaga) ]);
+    yield all([ takeLatest(SET_SEARCH_QUERY, handleBusinessesSearchSaga), call(setBusinessSaga), takeEvery(SET_MODAL, onSetModalSaga) ]);
 }
