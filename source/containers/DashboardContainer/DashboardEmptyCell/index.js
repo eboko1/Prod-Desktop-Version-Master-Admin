@@ -3,23 +3,59 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DropTarget } from 'react-dnd';
+import { Debounce, Throttle } from 'lodash-decorators';
+import _ from 'lodash';
 
 // import { canMoveOrder, moveOrder } from '../Game';
 import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
 
+let flag = false;
+const hoverLog = (props, monitor, component) => {
+    console.group('hoverLog');
+    console.log('props: ', props);
+    console.log('monitor: ', monitor);
+    console.log('component: ', component);
+    console.groupEnd();
+    console.log('→ hoverLog -> flag', flag);
+    flag = false;
+    console.log('→ hoverLog -> flag false', flag);
+};
+
+const debounced = _.debounce(hoverLog, 2000);
+
+let flag2 = false;
 const dropTarget = {
-    // canDrop(props) {
-    //     // console.log('→ canDrop', props);
+    hover(props, monitor, component) {
+        if (!flag) {
+            // const debounced = _.debounce(
+            //     () => hoverLog(props, monitor, component),
+            //     2000,
+            // );
+            debounced(props, monitor, component);
+            console.log('→ flag2', flag2);
+            flag = true;
+        }
+    },
+
+    // @Debounce(5000)
+    // canDrop(props, monitor) {
+    //     console.log('→ canDrop props', props);
+    //     console.log('→ canDrop monitor', monitor);
+    //
+    //     return {};
     //     // return canMoveOrder(props.x, props.y);
     // },
 
     drop(props, monitor) {
         // moveOrder(props.x, props.y);
-        console.group('@drop (dropTarget/DashboardCell)');
-        console.log('→ props: ', props);
-        console.log('→ monitor: ', monitor);
-        console.log('→ getItem: ', monitor.getItem());
-        console.groupEnd();
+        // console.group('@drop (dropTarget/DashboardCell)');
+        // console.log('→ props: ', props);
+        // console.log('→ monitor: ', monitor);
+        // console.log('→ getItem: ', monitor.getItem());
+        // console.groupEnd();
+        // console.log('→ debounced', debounced(props, monitor));
+        debounced.cancel();
+        console.log('__DROP__ flag2', flag2);
 
         return {};
     },
@@ -27,12 +63,12 @@ const dropTarget = {
 
 const collect = (connect, monitor) => ({
     connectDropTarget: connect.dropTarget(),
-    // isOver:            monitor.isOver(),
+    isOver:            monitor.isOver(),
     canDrop:           monitor.canDrop(),
 });
 
-// @DropTarget(DragItemTypes.ORDER, dropTarget, collect)
-class DashboardEmptyCell extends Component {
+@DropTarget(DragItemTypes.ORDER, dropTarget, collect)
+export default class DashboardEmptyCell extends Component {
     static propTypes = {
         x:                 PropTypes.number,
         y:                 PropTypes.number,
@@ -61,29 +97,12 @@ class DashboardEmptyCell extends Component {
                 innerRef={ cell => connectDropTarget(cell) }
             >
                 { children }
-                { /* { isOver && !canDrop && this._renderOverlay('red') }
-                { !isOver && canDrop && this._renderOverlay('yellow') }
-                { isOver && canDrop && this._renderOverlay('green') } */ }
+                { isOver && !canDrop && <EmptyCellOverlay color={ 'red' } /> }
+                { !isOver && canDrop && <EmptyCellOverlay color={ 'yellow' } /> }
+                { isOver && canDrop && <EmptyCellOverlay color={ 'green' } /> }
             </StyledDashboardEmptyCell>
         );
     }
-
-    // _renderOverlay(color) {
-    //     return (
-    //         <div
-    //             style={ {
-    //                 position:        'absolute',
-    //                 top:             0,
-    //                 left:            0,
-    //                 height:          '100%',
-    //                 width:           '100%',
-    //                 zIndex:          1,
-    //                 opacity:         0.5,
-    //                 backgroundColor: color,
-    //             } }
-    //         />
-    //     );
-    // }
 }
 
 export const StyledDashboardEmptyCell = styled.div`
@@ -91,6 +110,13 @@ export const StyledDashboardEmptyCell = styled.div`
     grid-column: ${props => `span ${props.column}`};
 `;
 
-export default DropTarget(DragItemTypes.ORDER, dropTarget, collect)(
-    DashboardEmptyCell,
-);
+export const EmptyCellOverlay = styled.div`
+    height: ${ROW_HEIGHT}px;
+    grid-column: ${props => `span ${props.column}`};
+    opacity: 0.5;
+    background-color: ${props => props.color};
+`;
+
+// export default DropTarget(DragItemTypes.ORDER, dropTarget, collect)(
+//     DashboardEmptyCell,
+// );

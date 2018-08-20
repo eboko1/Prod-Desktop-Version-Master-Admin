@@ -149,9 +149,14 @@ class DashboardOrder extends Component {
             dashboardRef,
             options,
             dropOrder,
+            hideSourceOnDrag,
         } = this.props;
 
         const { tooltipPosition } = this.state;
+
+        // if (isDragging && hideSourceOnDrag) {
+        //     return null;
+        // }
 
         return (
             <StyledDashboardOrder

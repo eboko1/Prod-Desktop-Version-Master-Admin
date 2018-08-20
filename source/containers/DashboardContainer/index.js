@@ -39,10 +39,14 @@ class DashboardContainer extends Component {
         this._dashboardRef = React.createRef();
 
         this.state = {
-            currentDay: moment().format('YYYY-MM-DD'),
+            currentDay:       moment().format('YYYY-MM-DD'),
             // dashboardRef: this._dashboardRef,
+            hideSourceOnDrag: true,
         };
     }
+
+    _hideSourceOnDrag = () =>
+        this.setState({ hideSourceOnDrag: !this.state.hideSourceOnDrag });
 
     render() {
         const { dashboard, schedule } = this.props;
@@ -142,6 +146,8 @@ class DashboardContainer extends Component {
             schedule,
             updateDashboardOrder,
         } = this.props;
+        const { hideSourceOnDrag } = this.state;
+
         const dashboardMode = mode === 'calendar';
         const columnsData = dashboardMode ? days : stations;
 
@@ -195,6 +201,7 @@ class DashboardContainer extends Component {
                                             { ...order }
                                             dashboardRef={ this._dashboardRef }
                                             dropOrder={ updateDashboardOrder }
+                                            hideSourceOnDrag={ hideSourceOnDrag }
                                         >
                                             { result[ index ].options.num }
                                         </DashboardOrder>
