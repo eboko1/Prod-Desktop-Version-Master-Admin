@@ -24,6 +24,8 @@ export const DecoratedInput = props => {
         iconType,
         field,
         initialValue,
+
+        onChange,
     } = props;
 
     const input = getFieldDecorator(field, {
@@ -44,6 +46,7 @@ export const DecoratedInput = props => {
             type={ type }
             placeholder={ placeholder }
             disabled={ disabled }
+            onChange={ onChange }
         />,
     );
 

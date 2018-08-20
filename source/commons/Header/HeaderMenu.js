@@ -1,15 +1,34 @@
 // vendor
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Icon, Avatar } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 // proj
+import { selectAdmin } from 'core/auth/duck';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
+
+import { SwitchBusinessModal } from 'modals';
 import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
 
+const mapStateToProps = state => {
+    return {
+        modal:   state.modals.modal,
+        loading: state.ui.searchBusinessesFetching,
+        isAdmin: selectAdmin(state),
+    };
+};
+
+const mapDispatch = {
+    setModal,
+    resetModal,
+};
+
+@connect(mapStateToProps, mapDispatch)
 export default class HeaderMenu extends Component {
     render() {
         const { isMobile } = this.props;
@@ -41,13 +60,27 @@ export default class HeaderMenu extends Component {
                     type='poweroff'
                     onClick={ logout }
                 />
+                <SwitchBusinessModal
+                    loading={ this.props.loading }
+                    visible={ this.props.modal }
+                    resetModal={ this.props.resetModal }
+                />
             </div>
         );
     };
 
     _renderOpenYourSite = () => {
+        const { isAdmin, setModal } = this.props;
+
         return (
             <div className={ Styles.headerWeb }>
+                { isAdmin && (
+                    <Icon
+                        type='home'
+                        className={ Styles.homeIcon }
+                        onClick={ () => setModal(MODALS.SWITCH_BUSINESS) }
+                    />
+                ) }
                 <a href='#' className={ Styles.headerWebLink }>
                     <Icon type='global' className={ Styles.siteIcon } />
                     <FormattedMessage id='header.open_your_site' />

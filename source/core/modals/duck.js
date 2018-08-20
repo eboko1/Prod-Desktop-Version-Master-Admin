@@ -16,6 +16,7 @@ export const MODALS = {
     CONFIRM_EXIT:      'CONFIRM_EXIT',
     CHANGE_TASK:       'CHANGE_TASK',
     ORDER_TASK:        'ORDER_TASK',
+    SWITCH_BUSINESS:   'SWITCH_BUSINESS',
 };
 
 //
