@@ -3,16 +3,18 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, List } from 'antd';
 
-import { DecoratedInput } from 'forms/DecoratedFields';
-import { withReduxForm } from 'utils';
-// own
-import { Loader } from 'components';
+// proj
 import {
     setSearchQuery,
     setBusiness,
     onChangeSwitchBusinessForm,
-} from 'core/forms/switchForm/duck';
+} from 'core/forms/switchBusinessForm/duck';
 
+import { Loader } from 'components';
+import { DecoratedInput } from 'forms/DecoratedFields';
+import { withReduxForm } from 'utils';
+
+// own
 import Styles from './styles.m.css';
 
 @injectIntl

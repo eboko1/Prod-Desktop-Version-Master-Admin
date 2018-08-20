@@ -6,8 +6,8 @@ import { go } from 'react-router-redux';
 import { fetchAPI } from 'utils';
 
 // own
-import { SET_SEARCH_QUERY, SET_BUSINESS } from 'core/forms/switchForm/duck';
-import { fetchBusinessesSuccess } from 'core/forms/switchForm/duck';
+import { SET_SEARCH_QUERY, SET_BUSINESS } from './duck';
+import { fetchBusinessesSuccess } from './duck';
 import { setSearchBusinessesFetchingState } from 'core/ui/duck';
 
 function* handleBusinessesSearchSaga({ payload: { query } }) {
