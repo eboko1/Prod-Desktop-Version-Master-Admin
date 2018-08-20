@@ -55,6 +55,9 @@ export default function reducer(state = ReducerState, action) {
  * Selectors
  **/
 
+export const selectToken = state => state.auth.token;
+export const selectAdmin = state => state.auth.scope.indexOf('ADMIN') > -1;
+
 /**
  * Action Creators
  **/

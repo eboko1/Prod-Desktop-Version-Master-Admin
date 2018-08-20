@@ -80,10 +80,21 @@
 }
 
 .siteIcon {
-    margin-left: 10px;
+    margin: 0 4px 0 10px;
 }
 
 .avatar {
     background-color: var(--secondary);
     margin-right: 5px;
+}
+
+.homeIcon {
+    font-size: 24px;
+    color: #fff;
+    margin-right: 10px;
+
+    &:hover {
+        color: var(--primary);
+        cursor: pointer;
+    }
 }

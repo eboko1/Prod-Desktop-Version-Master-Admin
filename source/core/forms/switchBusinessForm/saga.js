@@ -1,14 +1,25 @@
 // vendor
-import { call, put, all, take, takeLatest, delay } from 'redux-saga/effects';
+import {
+    call,
+    put,
+    all,
+    take,
+    takeLatest,
+    delay,
+    select,
+} from 'redux-saga/effects';
 import { go } from 'react-router-redux';
 
 // proj
+import { authenticate, selectToken } from 'core/auth/duck';
+import { setSearchBusinessesFetchingState } from 'core/ui/duck';
+
 import { fetchAPI } from 'utils';
+import book from 'routes/book';
 
 // own
 import { SET_SEARCH_QUERY, SET_BUSINESS } from './duck';
 import { fetchBusinessesSuccess } from './duck';
-import { setSearchBusinessesFetchingState } from 'core/ui/duck';
 
 function* handleBusinessesSearchSaga({ payload: { query } }) {
     yield delay(1000);
@@ -30,11 +41,19 @@ function* setBusinessSaga() {
             payload: { id },
         } = yield take(SET_BUSINESS);
 
-        yield call(fetchAPI, 'POST', 'managers/businesses/set', void 0, {
-            businessId: id,
-        });
+        const user = yield call(
+            fetchAPI,
+            'POST',
+            'managers/businesses/set',
+            void 0,
+            {
+                businessId: id,
+            },
+        );
+        const token = yield select(selectToken);
+        yield put(authenticate({ ...user, token }));
 
-        yield put(go('/orders/appointments'));
+        yield put(go(book.dashboard));
     }
 }
 

@@ -6,9 +6,11 @@ import { Icon, Avatar } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 // proj
-import book from 'routes/book';
+import { selectAdmin } from 'core/auth/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
+
 import { SwitchBusinessModal } from 'modals';
+import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
@@ -17,6 +19,7 @@ const mapStateToProps = state => {
     return {
         modal:   state.modals.modal,
         loading: state.ui.searchBusinessesFetching,
+        isAdmin: selectAdmin(state),
     };
 };
 
@@ -67,13 +70,17 @@ export default class HeaderMenu extends Component {
     };
 
     _renderOpenYourSite = () => {
+        const { isAdmin, setModal } = this.props;
+
         return (
             <div className={ Styles.headerWeb }>
-                <Icon
-                    type='bank'
-                    className={ [ Styles.siteIcon, Styles.headerWebLink ] }
-                    onClick={ () => this.props.setModal(MODALS.SWITCH_BUSINESS) }
-                />
+                { isAdmin && (
+                    <Icon
+                        type='home'
+                        className={ Styles.homeIcon }
+                        onClick={ () => setModal(MODALS.SWITCH_BUSINESS) }
+                    />
+                ) }
                 <a href='#' className={ Styles.headerWebLink }>
                     <Icon type='global' className={ Styles.siteIcon } />
                     <FormattedMessage id='header.open_your_site' />
