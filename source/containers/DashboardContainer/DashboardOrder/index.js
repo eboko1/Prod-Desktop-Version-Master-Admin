@@ -29,7 +29,8 @@ const orderSource = {
         const didDrop = monitor.didDrop();
 
         if (didDrop) {
-            console.log('→ did dropped', id);
+            console.log('→ dropOrder', props.dropOrder);
+            console.log('→ did dropped', props);
         }
 
         if (!didDrop) {
@@ -147,6 +148,7 @@ class DashboardOrder extends Component {
             status,
             dashboardRef,
             options,
+            dropOrder,
         } = this.props;
 
         const { tooltipPosition } = this.state;

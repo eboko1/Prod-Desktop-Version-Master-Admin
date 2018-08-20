@@ -95,14 +95,14 @@ class DashboardContainer extends Component {
                 station={ stations ? stations[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length && 
+                    { load.length &&
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) : 
+                                ) :
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -140,6 +140,7 @@ class DashboardContainer extends Component {
             stations,
             orders,
             schedule,
+            updateDashboardOrder,
         } = this.props;
         const dashboardMode = mode === 'calendar';
         const columnsData = dashboardMode ? days : stations;
@@ -193,6 +194,7 @@ class DashboardContainer extends Component {
                                             id={ result[ index ].options.id }
                                             { ...order }
                                             dashboardRef={ this._dashboardRef }
+                                            dropOrder={ updateDashboardOrder }
                                         >
                                             { result[ index ].options.num }
                                         </DashboardOrder>

@@ -19,11 +19,13 @@ import {
     setDashboardWeekDates,
     setDashboardDate,
     setDashboardMode,
+    updateDashboardOrderSuccess,
     INIT_DASHBOARD,
     SET_DASHBOARD_MODE,
     SET_DASHBOARD_WEEK_DATES,
     SET_DASHBOARD_DATE,
     LINK_TO_DASHBOARD_STATIONS,
+    UPDATE_DASHBOARD_ORDER,
     // selectDashboardMode,
     selectDashboardDate,
     selectDashboardStartDate,
@@ -132,6 +134,23 @@ export function* linkToDashboardStationsSaga() {
     }
 }
 
+export function* updateDashboardOrderSaga() {
+    while (true) {
+        try {
+            const { payload: order } = yield take(UPDATE_DASHBOARD_ORDER);
+            yield nprogress.start();
+            console.log('*updateDashboardOrderSaga order', order);
+            yield call(fetchAPI, 'PUT', `orders/${order.id}`, {}, order);
+
+            yield put(updateDashboardOrderSuccess());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 /* eslint-disable array-element-newline */
 export function* saga() {
     yield all([
@@ -140,6 +159,7 @@ export function* saga() {
         call(fetchDashboardStationsSaga),
         call(setDashboardModeSaga),
         call(linkToDashboardStationsSaga),
+        call(updateDashboardOrderSaga),
     ]);
 }
 /* eslint-enable array-element-newline */

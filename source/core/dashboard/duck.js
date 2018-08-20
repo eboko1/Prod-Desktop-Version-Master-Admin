@@ -27,6 +27,9 @@ export const SET_DASHBOARD_WEEK_DATES = `${prefix}/SET_DASHBOARD_WEEK_DATES`;
 
 export const LINK_TO_DASHBOARD_STATIONS = `${prefix}/LINK_TO_DASHBOARD_STATIONS`;
 
+export const UPDATE_DASHBOARD_ORDER = `${prefix}/UPDATE_DASHBOARD_ORDER`;
+export const UPDATE_DASHBOARD_ORDER_SUCCESS = `${prefix}/UPDATE_DASHBOARD_ORDER_SUCCESS`;
+
 /**
  * Reducer
  * */
@@ -199,4 +202,13 @@ export const dropDashboardOrderSuccess = () => ({
 export const linkToDashboardStations = day => ({
     type:    LINK_TO_DASHBOARD_STATIONS,
     payload: day,
+});
+
+export const updateDashboardOrder = order => ({
+    type:    UPDATE_DASHBOARD_ORDER,
+    payload: order,
+});
+
+export const updateDashboardOrderSuccess = () => ({
+    type: UPDATE_DASHBOARD_ORDER_SUCCESS,
 });
