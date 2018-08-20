@@ -15,6 +15,10 @@ import editPackageReducer, {
 import addRoleReducer, { moduleName as addRole } from './addRoleForm/duck';
 import editRoleReducer, { moduleName as editRole } from './editRoleForm/duck';
 
+import switchBusinessReducer, {
+    moduleName as switchBusiness,
+} from './switchBusinessForm/duck';
+
 import universalFiltersReducer, {
     moduleName as universalFilters,
 } from './universalFiltersForm/duck';
@@ -48,4 +52,5 @@ export const formsReducer = combineReducers({
     [ editPackage ]:      editPackageReducer,
     [ addRole ]:          addRoleReducer,
     [ editRole ]:         editRoleReducer,
+    [ switchBusiness ]:   switchBusinessReducer,
 });

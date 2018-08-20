@@ -5,6 +5,7 @@ import CancelReasonModal from './CancelReasonModal';
 import ToSuccessModal from './ToSuccessModal';
 import ConfirmOrderExitModal from './ConfirmOrderExitModal';
 import OrderTaskModal from './OrderTaskModal';
+import SwitchBusinessModal from './SwitchBusinessModal';
 
 export {
     UniversalFiltersModal,
@@ -14,4 +15,5 @@ export {
     ToSuccessModal,
     ConfirmOrderExitModal,
     OrderTaskModal,
+    SwitchBusinessModal,
 };

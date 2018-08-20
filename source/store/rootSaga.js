@@ -19,6 +19,7 @@ import { saga as addClientFormSaga } from 'core/forms/addClientForm/saga';
 import { saga as myTasksContainerSaga } from 'core/myTasks/saga';
 import { saga as packagesSaga} from 'core/package/saga';
 import { saga as rolesSaga} from 'core/role/saga';
+import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -37,6 +38,7 @@ export default function* rootSaga() {
         myTasksContainerSaga(),
         packagesSaga(),
         rolesSaga(),
+        switchBusinessSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */
