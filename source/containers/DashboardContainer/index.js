@@ -99,14 +99,14 @@ class DashboardContainer extends Component {
                 station={ stations ? stations[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length &&
+                    { load.length && 
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) :
+                                ) : 
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -136,7 +136,7 @@ class DashboardContainer extends Component {
         ));
     };
 
-    _renderDashboardContentColumn = id => {
+    _renderDashboardContentColumn = column => {
         const {
             dashboard,
             days,
@@ -153,10 +153,10 @@ class DashboardContainer extends Component {
 
         const columnId = dashboardMode
             ? columnsData
-                ? columnsData[ id ]
+                ? columnsData[ column ]
                 : null
             : columnsData
-                ? columnsData[ id ].num
+                ? columnsData[ column ].num
                 : null;
 
         const dashboardData = dashboardMode
@@ -190,6 +190,12 @@ class DashboardContainer extends Component {
                                         <DashboardEmptyCell
                                             key={ index }
                                             { ...order }
+                                            day={ days ? days[ column ] : null }
+                                            station={
+                                                stations
+                                                    ? stations[ column ]
+                                                    : null
+                                            }
                                         />
                                     ) : (
                                         <DashboardOrder
