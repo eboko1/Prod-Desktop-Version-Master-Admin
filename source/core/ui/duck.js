@@ -4,7 +4,7 @@
 export const moduleName = 'ui';
 const prefix = `GLOBAL/${moduleName}`;
 
-export const SET_LAYOUT_STATE = `${prefix}/SET_LAYOUT_STATE`;
+export const SET_VIEW = `${prefix}/SET_VIEW`;
 export const SET_SWAPI_FETCHING_STATE = `${prefix}/SET_SWAPI_FETCHING_STATE`;
 export const SET_AUTH_FETCHING_STATE = `${prefix}/SET_AUTH_FETCHING_STATE`;
 export const SET_ORDERS_FETCHING_STATE = `${prefix}/SET_ORDERS_FETCHING_STATE`;
@@ -27,13 +27,14 @@ const ReducerState = {
     authFetching:             false,
     ordersFetching:           false,
     orderFetching:            false,
+    myTasksFetching:          false,
     dashboardInitializing:    false,
     dashboardFetching:        false,
+    searchBusinessesFetching: false,
     packageFetching:          false,
     roleFetching:             false,
-    searchBusinessesFetching: false,
     collapsed:                false,
-    isMobile:                 void 0,
+    views:                    {},
     error:                    null,
 };
 
@@ -48,8 +49,8 @@ export default function reducer(state = ReducerState, action) {
         case SET_COLLAPSED_STATE:
             return { ...state, collapsed: payload };
 
-        case SET_LAYOUT_STATE:
-            return { ...state, isMobile: payload };
+        case SET_VIEW:
+            return { ...state, views: { ...payload } };
 
         case EMIT_ERROR:
             return { ...state, error: payload };
@@ -153,8 +154,8 @@ export const setCollapsedState = state => ({
     payload: state,
 });
 
-export const setLayoutState = state => ({
-    type:    SET_LAYOUT_STATE,
+export const setView = state => ({
+    type:    SET_VIEW,
     payload: state,
 });
 

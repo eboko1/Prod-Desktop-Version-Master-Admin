@@ -35,12 +35,11 @@ class TooltipBox extends Component {
                 } }
                 // style={ this.state.popupStyles }
             >
-                { /* { console.log('→ position', position) } */ }
                 { clientName ||
                 clientPhone ||
                 vehicleMakeName ||
                 vehicleModelName ||
-                comment ?
+                comment ? 
                     <>
                         <div>
                             { clientName } { clientSurname }

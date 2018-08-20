@@ -1,12 +1,15 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { FormattedMessage } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { Icon } from 'antd';
 
 // proj
-import { Layout, Spinner } from 'commons';
 import { fetchPackages } from 'core/package/duck';
 
-import PackageContainer from 'containers/PackageContainer';
+import { Layout, Spinner } from 'commons';
+import { PackageContainer } from 'containers';
 
 const mapStateToProps = state => {
     return {
@@ -20,7 +23,7 @@ const mapDispatchToProps = {
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
-class PackagePage extends Component {
+export default class PackagePage extends Component {
     componentDidMount() {
         this.props.fetchPackages();
     }
@@ -28,14 +31,12 @@ class PackagePage extends Component {
     render() {
         const { isFetching, packages } = this.props;
 
-        return !isFetching ? (
-            <Layout title='Packages'>
+        return isFetching ? (
+            <Spinner spin={ isFetching } />
+        ) : (
+            <Layout title={ <FormattedMessage id='packages' /> }>
                 <PackageContainer packages={ packages } />
             </Layout>
-        ) : (
-            <Spinner spin={ isFetching } />
         );
     }
 }
-
-export default PackagePage;

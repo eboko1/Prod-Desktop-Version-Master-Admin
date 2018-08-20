@@ -95,9 +95,7 @@ export class AddRoleForm extends Component {
                 <DecoratedSelect
                     field={ 'grants' }
                     formItem
-                    getPopupContainer={ trigger =>
-                        trigger.parentNode
-                    }
+                    getPopupContainer={ trigger => trigger.parentNode }
                     rules={ [
                         {
                             required: true,
@@ -121,19 +119,18 @@ export class AddRoleForm extends Component {
                     initValue={ false }
                     field={ 'grantOther' }
                     formItem
-                    rules={ [
-                        {
-                            required: true,
-                            message:  this.props.intl.formatMessage({
-                                id: 'add-role-form.grant_other_field_required',
-                            }),
-                        },
-                    ] }
-                    hasFeedback
-                    label={ <FormattedMessage id='add-role-form.grant_other_field' /> }
+                    colon={ false }
+                    label={
+                        <FormattedMessage id='add-role-form.grant_other_field' />
+                    }
                     getFieldDecorator={ getFieldDecorator }
+                    formItemLayout={ {
+                        labelCol:   { span: 14 },
+                        wrapperCol: { span: 6 },
+                    } }
                 />
                 <Button
+                    type='primary'
                     style={ { width: '100%' } }
                     onClick={ () =>
                         validateFields(

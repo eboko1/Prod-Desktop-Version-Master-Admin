@@ -1,11 +1,14 @@
 {
     "en": {
-
+        "roles": "Roles",
+        "roles.back_to_packages": "Get back to packages"
     },
     "ru": {
-
+        "roles": "Роли",
+        "roles.back_to_packages": "Вернуться к пакетам"
     },
     "uk": {
-
+        "roles": "Ролі",
+        "roles.back_to_packages": "Повернутися до пакетів"
     }
 }

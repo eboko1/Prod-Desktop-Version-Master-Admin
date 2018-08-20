@@ -1,12 +1,21 @@
-// Core
-// react-intl-redux
+// vendor
 import { connect } from 'react-redux';
 import { IntlProvider } from 'react-intl';
+
+// Proj
+import { intl } from 'store/intl';
 
 const defaultSelector = state => state.intl;
 
 const mapStateToProps = (state, { intlSelector = defaultSelector }) => {
-    return intlSelector(state);
+    if (intlSelector(state)) {
+        return intlSelector(state);
+    }
+
+    return {
+        locale:   intl.locale,
+        messages: intl.messages,
+    };
 };
 
 export const ConnectedIntlProvider = connect(mapStateToProps, null, null, {

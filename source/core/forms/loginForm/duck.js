@@ -34,7 +34,6 @@ const ReducerState = {
             dirty:      false,
         },
     },
-    user: void 0,
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -48,12 +47,6 @@ export default function reducer(state = ReducerState, action) {
                     ...state.fields,
                     ...payload,
                 },
-            };
-
-        case LOGIN_SUCCESS:
-            return {
-                ...state,
-                user: payload,
             };
 
         default:
@@ -76,9 +69,8 @@ export const login = credentials => ({
     payload: credentials,
 });
 
-export const loginSuccess = data => ({
-    type:    LOGIN_SUCCESS,
-    payload: data,
+export const loginSuccess = () => ({
+    type: LOGIN_SUCCESS,
 });
 
 export const onChangeLoginForm = update => ({

@@ -41,7 +41,7 @@ export default class HeaderMenu extends Component {
     }
 
     _renderHeaderPanel = () => {
-        const { logout, isMobile } = this.props;
+        const { logout, isMobile, user } = this.props;
 
         return (
             <div
@@ -50,7 +50,7 @@ export default class HeaderMenu extends Component {
             >
                 <Link className={ Styles.user } to={ book.profile }>
                     <Avatar className={ Styles.avatar } icon='user' />
-                    <div>СТО Партнер</div>
+                    { user.name } { user.surname }
                 </Link>
                 <Icon
                     className={ Styles.logout }

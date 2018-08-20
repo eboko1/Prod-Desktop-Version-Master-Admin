@@ -39,8 +39,8 @@ class DashboardContainer extends Component {
         this._dashboardRef = React.createRef();
 
         this.state = {
-            currentDay:   moment().format('YYYY-MM-DD'),
-            dashboardRef: this._dashboardRef,
+            currentDay: moment().format('YYYY-MM-DD'),
+            // dashboardRef: this._dashboardRef,
         };
     }
 
@@ -192,9 +192,7 @@ class DashboardContainer extends Component {
                                             }
                                             id={ result[ index ].options.id }
                                             { ...order }
-                                            dashboardRef={
-                                                this.state.dashboardRef
-                                            }
+                                            dashboardRef={ this._dashboardRef }
                                         >
                                             { result[ index ].options.num }
                                         </DashboardOrder>

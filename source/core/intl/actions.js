@@ -2,6 +2,14 @@
 import types from './types';
 
 export const intlActions = Object.freeze({
+    initIntl: intl => ({
+        type:    types.INIT_INTL,
+        payload: intl,
+    }),
+    initIntlSuccess: intl => ({
+        type:    types.INIT_INTL_SUCCESS,
+        payload: intl,
+    }),
     fetchLocaleContent: () => ({
         type: types.FETCH_LOCALE_CONTENT,
     }),

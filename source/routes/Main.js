@@ -14,17 +14,24 @@ import book from './book';
 import Private from './Private';
 import Public from './Public';
 
+// @hot(module)
+// export default class Routes extends Component {
+//     render() {
+//         return (
+//             <Catcher>
+//                 <Switch>
+//                     { !getToken() && <Public /> }
+//                     <Private />
+//                     <Route path={ book.exception } component={ Exception } />
+//                 </Switch>
+//             </Catcher>
+//         );
+//     }
+// }
+
 @hot(module)
 export default class Routes extends Component {
     render() {
-        return (
-            <Catcher>
-                <Switch>
-                    { !getToken() && <Public /> }
-                    <Private />
-                    <Route path={ book.exception } component={ Exception } />
-                </Switch>
-            </Catcher>
-        );
+        return !getToken() ? <Public /> : <Private />;
     }
 }

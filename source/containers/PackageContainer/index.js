@@ -7,12 +7,11 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
-import book from 'routes/book';
-import { PackageForm, AddPackageForm } from 'forms';
 import { Catcher } from 'commons';
+import { PackageForm, AddPackageForm } from 'forms';
+import book from 'routes/book';
 
 // own
-import Styles from './styles.m.css';
 import {
     setCreatePackage,
     setEditPackageId,
@@ -22,6 +21,7 @@ import {
     hideForms,
     handleError,
 } from 'core/package/duck';
+import Styles from './styles.m.css';
 
 const mapDispatchToProps = {
     setCreatePackage,
@@ -66,32 +66,37 @@ export default class PackageContainer extends Component {
             {
                 title:     <FormattedMessage id='package-container.index' />,
                 dataIndex: 'index',
-                width:     '10%',
+                width:     'auto',
                 render:    field => field + 1,
             },
             {
                 title:     <FormattedMessage id='package-container.name' />,
                 dataIndex: 'name',
-                width:     '25%',
-            },
-            {
-                title:     <FormattedMessage id='package-container.roles' />,
-                dataIndex: 'roles',
-                width:     '35%',
-                render:    field => field.map(({ name }) => name).join(','),
-            },
-            {
-                title:  <FormattedMessage id='package-container.view' />,
-                width:  '10%',
-                render: record => (
+                width:     '30%',
+                render:    (name, record) => (
                     <Link to={ `${book.packagePage}/${record.id}` }>
-                        <Icon className={ Styles.viewPackageIcon } type='table' />
+                        { record.name }
                     </Link>
                 ),
             },
             {
-                title:  <FormattedMessage id='package-container.edit' />,
-                width:  '10%',
+                title:     <FormattedMessage id='package-container.roles' />,
+                dataIndex: 'roles',
+                width:     '30%',
+                render:    field => field.map(({ name }) => name).join(','),
+            },
+            // {
+            //     title:  <FormattedMessage id='package-container.view' />,
+            //     width:  '12%',
+            //     render: record => (
+            //         <Link to={ `${book.packagePage}/${record.id}` }>
+            //             <Icon className={ Styles.viewPackageIcon } type='table' />
+            //         </Link>
+            //     ),
+            // },
+            {
+                // title:  <FormattedMessage id='package-container.edit' />,
+                width:  '15%',
                 render: record => (
                     <Icon
                         onClick={ () => this.props.setEditPackageId(record.id) }
@@ -101,8 +106,8 @@ export default class PackageContainer extends Component {
                 ),
             },
             {
-                title:  <FormattedMessage id='package-container.delete' />,
-                width:  '10%',
+                // title:  <FormattedMessage id='package-container.delete' />,
+                width:  '15%',
                 render: record => (
                     <Icon
                         onClick={ () => this.props.deletePackage(record.id) }
@@ -122,6 +127,7 @@ export default class PackageContainer extends Component {
             updatePackage,
             createPackage,
             errors,
+            setCreatePackage,
         } = this.props;
 
         if (errors.length) {
@@ -155,9 +161,22 @@ export default class PackageContainer extends Component {
 
         return (
             <Catcher>
-                <Button onClick={ () => this.props.setCreatePackage(true) }>
+                <Button
+                    type='primary'
+                    className={ Styles.addPackageButton }
+                    onClick={ () => this.props.setCreatePackage(true) }
+                >
                     <FormattedMessage id='package-container.create' />
                 </Button>
+                <Table
+                    size='small'
+                    pagination={ {
+                        hideOnSinglePage: true,
+                        size:             'large',
+                    } }
+                    dataSource={ packageRows }
+                    columns={ this.columns }
+                />
                 <Modal
                     title={
                         editPackageId ? (
@@ -167,9 +186,7 @@ export default class PackageContainer extends Component {
                         )
                     }
                     visible={ editPackageId || createPackageForm }
-                    onCancel={ () => {
-                        this.props.hideForms();
-                    } }
+                    onCancel={ () => this.props.hideForms() }
                     footer={ null }
                 >
                     { editPackageId && (
@@ -183,7 +200,6 @@ export default class PackageContainer extends Component {
                             <AddPackageForm createPackage={ createPackage } />
                         ) }
                 </Modal>
-                <Table dataSource={ packageRows } columns={ this.columns } />
             </Catcher>
         );
     }
