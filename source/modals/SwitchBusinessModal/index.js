@@ -4,9 +4,8 @@ import { Modal } from 'antd';
 
 // proj
 import { MODALS } from 'core/modals/duck';
-import { SwitchBusinessForm } from 'forms';
 
-// own
+import { SwitchBusinessForm } from 'forms';
 
 export default class SwitchBusinessModal extends Component {
     render() {
@@ -14,12 +13,12 @@ export default class SwitchBusinessModal extends Component {
 
         return (
             <Modal
-                title={ 'Switch Business Modal' }
+                title=''
                 visible={ visible === MODALS.SWITCH_BUSINESS }
                 onCancel={ () => resetModal() }
                 footer={ null }
             >
-                <SwitchBusinessForm loading={ loading }/>
+                <SwitchBusinessForm loading={ loading } />
             </Modal>
         );
     }
