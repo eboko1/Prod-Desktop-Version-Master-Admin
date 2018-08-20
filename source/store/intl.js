@@ -49,6 +49,7 @@ import AddPackageForm from 'forms/AddPackageForm/messages';
 import PackageForm from 'forms/PackageForm/messages';
 import AddRoleForm from 'forms/AddRoleForm/messages';
 import RoleForm from 'forms/RoleForm/messages';
+import SwitchBusinessForm from 'forms/SwitchBusinessForm/messages';
 
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
@@ -99,6 +100,7 @@ const messages = merge.all([
     PackageForm,
     AddRoleForm,
     RoleForm,
+    SwitchBusinessForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,

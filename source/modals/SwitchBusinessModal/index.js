@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Modal } from 'antd';
+import { Modal, Icon } from 'antd';
 
 // proj
 import { MODALS } from 'core/modals/duck';
@@ -13,7 +13,7 @@ export default class SwitchBusinessModal extends Component {
 
         return (
             <Modal
-                title=''
+                title={ <Icon type='home' /> }
                 visible={ visible === MODALS.SWITCH_BUSINESS }
                 onCancel={ () => resetModal() }
                 footer={ null }

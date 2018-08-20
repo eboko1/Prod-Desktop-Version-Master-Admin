@@ -1,5 +1,11 @@
 {
-    "en": {},
-    "ru": {},
-    "uk": {}
+    "en": {
+        "search_business": "Search business"
+    },
+    "ru": {
+        "search_business": "Искать бизнес"
+    },
+    "uk": {
+        "search_business": "Шукати бізнес"
+    }
 }

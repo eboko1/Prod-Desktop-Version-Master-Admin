@@ -1,6 +1,6 @@
 //vendor
 import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { Form, List } from 'antd';
 
 // proj
@@ -10,7 +10,6 @@ import {
     onChangeSwitchBusinessForm,
 } from 'core/forms/switchBusinessForm/duck';
 
-import { Loader } from 'components';
 import { DecoratedInput } from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 
@@ -33,6 +32,7 @@ export class SwitchBusinessForm extends Component {
             setSearchQuery,
             businesses,
             form: { getFieldDecorator },
+            intl: { formatMessage },
             loading,
         } = this.props;
 
@@ -40,30 +40,27 @@ export class SwitchBusinessForm extends Component {
             <Form layout='vertical'>
                 <DecoratedInput
                     formItem
-                    field={ 'searchQuery' }
+                    field='searchQuery'
                     onChange={ event => setSearchQuery(event.target.value) }
                     getFieldDecorator={ getFieldDecorator }
+                    placeholder={ formatMessage({ id: 'search_business' }) }
                 />
-                { !loading ? (
-                    <List
-                        bordered
-                        className={ Styles.switchBusinessList }
-                        dataSource={ businesses }
-                        renderItem={ item => (
-                            <List.Item
-                                onClick={ () => setBusiness(item.businessId) }
-                            >
-                                <List.Item.Meta
-                                    className={ Styles.switchBusinessListItem }
-                                    title={ item.name }
-                                    description={ item.address }
-                                />
-                            </List.Item>
-                        ) }
-                    />
-                ) : (
-                    <Loader loading={ loading } />
-                ) }
+                <List
+                    bordered
+                    className={ Styles.switchBusinessList }
+                    locale={ { emptyText: formatMessage({ id: 'no_data' }) } }
+                    dataSource={ businesses }
+                    loading={ loading }
+                    renderItem={ item => (
+                        <List.Item onClick={ () => setBusiness(item.businessId) }>
+                            <List.Item.Meta
+                                className={ Styles.switchBusinessListItem }
+                                title={ item.name }
+                                description={ item.address }
+                            />
+                        </List.Item>
+                    ) }
+                />
             </Form>
         );
     }
