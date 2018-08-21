@@ -135,8 +135,8 @@ class ServicesTable extends Component {
                                     key={ v4() }
                                     disabled={ employee.disabled }
                                 >
-                                    { `${employee.employeeName} ${
-                                        employee.employeeSurname
+                                    { `${employee.name} ${
+                                        employee.surname
                                     }` }
                                 </Option>
                             )) }
@@ -341,8 +341,8 @@ class ServicesTable extends Component {
                                     key={ v4() }
                                     disabled={ employee.disabled }
                                 >
-                                    { `${employee.employeeName} ${
-                                        employee.employeeSurname
+                                    { `${employee.name} ${
+                                        employee.surname
                                     }` }
                                 </Option>
                             )) }

@@ -365,7 +365,7 @@ export class UniversalFiltersForm extends Component {
                                 }
                                 options={ employees }
                                 optionValue='id'
-                                optionLabel='employeeSurname'
+                                optionLabel='surname'
                             />
                         </FormItem>
                     </Col>
