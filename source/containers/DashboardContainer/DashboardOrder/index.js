@@ -11,6 +11,7 @@ import { updateDashboardOrder } from 'core/dashboard/duck';
 import book from 'routes/book';
 
 // own
+import DashboardOrderDropTarget from './DashboardOrderDropTarget';
 import { DragItemTypes } from '../dashboardConfig';
 import DashboardTooltip from '../DashboardTooltip';
 import handleHover from '../dashboardCore/handleHover';
@@ -44,14 +45,14 @@ const orderSource = {
     },
 };
 
-const orderTarget = {
-    drop(props) {
-        return {
-            time: props.globalPosition,
-            day:  props.day,
-        };
-    },
-};
+// const orderTarget = {
+//     drop(props) {
+//         return {
+//             time: props.globalPosition,
+//             day:  props.day,
+//         };
+//     },
+// };
 
 function collectSource(connect, monitor) {
     return {
@@ -61,13 +62,13 @@ function collectSource(connect, monitor) {
     };
 }
 
-function collectTarget(connect, monitor) {
-    return {
-        connectDropTarget: connect.dropTarget(),
-        isOver:            monitor.isOver(),
-        canDrop:           monitor.canDrop(),
-    };
-}
+// function collectTarget(connect, monitor) {
+//     return {
+//         connectDropTarget: connect.dropTarget(),
+//         isOver:            monitor.isOver(),
+//         canDrop:           monitor.canDrop(),
+//     };
+// }
 
 // @DropTarget(DragItemTypes.ORDER, orderTarget, connect => ({
 //     connectDropTarget: connect.dropTarget(),
@@ -79,7 +80,7 @@ function collectTarget(connect, monitor) {
 
 @withRouter
 @DragSource(DragItemTypes.ORDER, orderSource, collectSource)
-@DropTarget(DragItemTypes.ORDER, orderTarget, collectTarget)
+// @DropTarget(DragItemTypes.ORDER, orderTarget, collectTarget)
 export default class DashboardOrder extends Component {
     static propTypes = {
         connectDragSource:  PropTypes.func,
@@ -100,11 +101,11 @@ export default class DashboardOrder extends Component {
         this.props.connectDragSource(order);
     };
 
-    _getOrderDropTargetRef = (dropTarget, key) => {
-        console.log('→ _getOrderDropTargetRef');
-        this[ `orderDropTargetRef${key}` ] = dropTarget;
-        this.props.connectDropTarget(dropTarget);
-    };
+    // _getOrderDropTargetRef = (dropTarget, key) => {
+    //     console.log('→ _getOrderDropTargetRef');
+    //     this[ `orderDropTargetRef${key}` ] = dropTarget;
+    //     this.props.connectDropTarget(dropTarget);
+    // };
 
     _showDashboardTooltip = (ev, order, dashboard) => {
         const tooltipPosition = handleHover(ev, order, dashboard);
@@ -166,6 +167,7 @@ export default class DashboardOrder extends Component {
                 { /* { console.log('→ this.props', this.props) } */ }
                 <StyledDashboardOrderBox>
                     { [ ...Array(rows).keys() ].map((_, index) => (
+                        <DashboardOrderDropTarget key={ index } />
                         // index === 0 ? (
                         //     <StyledOrderDropTarget
                         //         key={ index }
@@ -177,13 +179,13 @@ export default class DashboardOrder extends Component {
                         //         { label }
                         //     </StyledOrderDropTarget>
                         // ) :
-                        <StyledOrderDropTarget
-                            key={ index }
-                            innerRef={ dropTarget =>
-                                this._getOrderDropTargetRef(dropTarget, index)
-                            }
-                            overlayDrop={ isOver && canDrop }
-                        />
+                        // <StyledOrderDropTarget
+                        //     key={ index }
+                        //     innerRef={ dropTarget =>
+                        //         this._getOrderDropTargetRef(dropTarget, index)
+                        //     }
+                        //     overlayDrop={ isOver && canDrop }
+                        // />
                     )) }
                 </StyledDashboardOrderBox>
                 <DashboardTooltip position={ tooltipPosition } { ...options } />
@@ -236,13 +238,13 @@ const StyledDashboardOrderBox = styled.div`
     text-overflow: ellipsis;
 `;
 
-const StyledOrderDropTarget = styled.div`
-    height: 30px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    background-color: ${props => props.overlayDrop && 'var(--primary)'};
-`;
+// const StyledOrderDropTarget = styled.div`
+//     height: 30px;
+//     white-space: nowrap;
+//     overflow: hidden;
+//     text-overflow: ellipsis;
+//     background-color: ${props => props.overlayDrop && 'var(--primary)'};
+// `;
 
 // export default DragSource(DragItemTypes.ORDER, orderSource, collect)(
 //     DashboardOrder,
