@@ -84,11 +84,7 @@ const ordersPuzzle = (data, maxRow) => {
         requiredRows,
         requiredY,
     ) {
-        for (const { x, y, rows, columns, empty } of puzzleItems) {
-            if (empty) {
-                continue;
-            }
-
+        for (const { x, y, rows, columns } of puzzleItems) {
             const allRows = Array(rows)
                 .fill(x)
                 .map((value, index) => value + index);
@@ -131,14 +127,21 @@ const ordersPuzzle = (data, maxRow) => {
     function getPuzzle(data, min) {
         let maxBlocks = 1;
         let maxRows = 1;
-        const result = [];
+        let result = [];
 
-        const countOtherBlocks = (position, quantity, requestedY, blocks) => {
+        const countOtherBlocks = (
+            requestedX,
+            requestedRows,
+            requestedY,
+            blocks,
+            requestedColumns = 1,
+        ) => {
             return blocks.filter(
-                ({ x, rows, y }) =>
-                    requestedY === y &&
-                    !(position >= x + rows) &&
-                    !(position + quantity <= x),
+                ({ x, rows, y, columns }) =>
+                    !(requestedY >= y + columns) &&
+                    !(requestedY + requestedColumns <= y) &&
+                    !(requestedX >= x + rows) &&
+                    !(requestedX + requestedRows <= x),
             ).length;
         };
         /* eslint-disable no-labels*/
@@ -178,6 +181,8 @@ const ordersPuzzle = (data, maxRow) => {
             });
         }
 
+        result = resizePuzzle({ result, maxBlocks, maxRows }).result;
+
         for (let y = 0; y < maxBlocks; y++) {
             for (let x = 0; x < maxRows; x++) {
                 if (!countOtherBlocks(x, 1, y, result)) {
@@ -192,6 +197,8 @@ const ordersPuzzle = (data, maxRow) => {
                 }
             }
         }
+
+        result.sort(({ x: x1, y: y1 }, { x: x2, y: y2 }) => x1 - x2 || y1 - y2);
 
         return { result, maxBlocks, maxRows };
     }

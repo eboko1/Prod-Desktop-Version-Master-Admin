@@ -82,6 +82,7 @@ export default class DashboardEmptyCell extends Component {
         const {
             x,
             y,
+            globalPosition,
             connectDropTarget,
             isOver,
             canDrop,
@@ -94,6 +95,7 @@ export default class DashboardEmptyCell extends Component {
         return (
             <StyledDashboardEmptyCell
                 // className={ className }
+                globalPosition={ globalPosition }
                 innerRef={ cell => connectDropTarget(cell) }
             >
                 { children }
@@ -108,6 +110,7 @@ export default class DashboardEmptyCell extends Component {
 export const StyledDashboardEmptyCell = styled.div`
     height: ${ROW_HEIGHT}px;
     grid-column: ${props => `span ${props.column}`};
+    background-color: ${props => props.globalPosition % 2 ? '#000' : '#fff'};
 `;
 
 export const EmptyCellOverlay = styled.div`

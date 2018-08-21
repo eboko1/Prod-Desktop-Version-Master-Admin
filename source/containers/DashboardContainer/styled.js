@@ -63,10 +63,7 @@ export const DashboardContentBox = styled.div`
     grid-template-columns: ${props => `repeat(${props.columns}, 1fr)`};
     grid-template-rows: ${props => `repeat(${props.rows}, ${ROW_HEIGHT}px)`};
     grid-row: ${props => `span ${props.rows}`};
-
-    &:nth-child(2n) {
-        background: var(--lightGray);
-    }
+    
 `;
 
 export const DashboardAddOrderColumn = styled.div`
