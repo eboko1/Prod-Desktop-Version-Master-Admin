@@ -12,6 +12,8 @@ export const INIT_DASHBOARD_SUCCESS = `${prefix}/INIT_DASHBOARD_SUCCESS`;
 export const FETCH_DASHBOARD = `${prefix}/FETCH_DASHBOARD`;
 export const FETCH_DASHBOARD_SUCCESS = `${prefix}/FETCH_DASHBOARD_SUCCESS`;
 
+export const REFRESH_DASHBOARD = `${prefix}/REFRESH_DASHBOARD`;
+
 export const FETCH_DASHBOARD_CALENDAR = `${prefix}/FETCH_DASHBOARD_CALENDAR`;
 export const FETCH_DASHBOARD_CALENDAR_SUCCESS = `${prefix}/FETCH_DASHBOARD_CALENDAR_SUCCESS`;
 
@@ -211,4 +213,8 @@ export const updateDashboardOrder = order => ({
 
 export const updateDashboardOrderSuccess = () => ({
     type: UPDATE_DASHBOARD_ORDER_SUCCESS,
+});
+
+export const refreshDashboard = () => ({
+    type: REFRESH_DASHBOARD,
 });

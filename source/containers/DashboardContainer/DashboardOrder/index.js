@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { withRouter } from 'react-router';
 import { DragSource, DropTarget } from 'react-dnd';
+import moment from 'moment';
 
 // proj
 import { updateDashboardOrder } from 'core/dashboard/duck';
@@ -27,16 +28,22 @@ const orderSource = {
         console.log('^^ endDrag props', props);
         console.log('^^ endDrag monitor', monitor.getItem());
 
-        const { id, x, y, rows, columns } = monitor.getItem();
+        const { id } = monitor.getItem();
         const didDrop = monitor.didDrop();
 
         if (didDrop) {
-            console.log('→ dropOrder', props.dropOrder);
-            console.log('→ did dropped', props);
-            const dropped = monitor.getDropResult();
-            console.log('→ dropped', dropped);
-            //TODO: call drop action
-            // updateDashboardOrder(props.options);
+            const { day, time } = monitor.getDropResult();
+            const {
+                schedule: { beginHour },
+            } = props;
+            const orderHour = time + beginHour * 2;
+            const timeString =
+                orderHour % 2
+                    ? `${Math.floor(orderHour / 2)}:30`
+                    : `${orderHour / 2}:00`;
+            const newBeginDatetime = moment(`${day} ${timeString}`);
+
+            props.dropOrder({beginDatetime: newBeginDatetime.toISOString(), id} );
         }
 
         if (!didDrop) {

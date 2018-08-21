@@ -210,6 +210,7 @@ class DashboardContainer extends Component {
                                             dropOrder={ updateDashboardOrder }
                                             hideSourceOnDrag={ hideSourceOnDrag }
                                             label={ result[ index ].options.num }
+                                            schedule = { schedule }
                                             { ...order }
                                         />
                                     ),
