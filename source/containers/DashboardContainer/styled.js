@@ -63,7 +63,6 @@ export const DashboardContentBox = styled.div`
     grid-template-columns: ${props => `repeat(${props.columns}, 1fr)`};
     grid-template-rows: ${props => `repeat(${props.rows}, ${ROW_HEIGHT}px)`};
     grid-row: ${props => `span ${props.rows}`};
-    
 `;
 
 export const DashboardAddOrderColumn = styled.div`
@@ -74,7 +73,7 @@ export const DashboardAddOrderColumn = styled.div`
     border-bottom: 1px solid black;
     border-right: 1px solid black;
 
-    & div:nth-child(even) {
+    & div:nth-child(odd) {
         background: var(--lightGray);
     }
 `;
@@ -110,8 +109,9 @@ export const DashboardTimeCell = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    font-weight: bold;
 
-    &:nth-child(odd) {
+    &:nth-child(even) {
         background: var(--lightGray);
     }
 `;

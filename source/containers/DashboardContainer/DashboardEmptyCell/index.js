@@ -90,7 +90,6 @@ export default class DashboardEmptyCell extends Component {
             isOver,
             canDrop,
             children,
-            globalPosition,
             // className,
         } = this.props;
 
@@ -115,7 +114,8 @@ export default class DashboardEmptyCell extends Component {
 export const StyledDashboardEmptyCell = styled.div`
     height: ${ROW_HEIGHT}px;
     grid-column: ${props => `span ${props.column}`};
-    background-color: ${props => props.globalPosition % 2 ? '#000' : '#fff'};
+    background-color: ${props =>
+        props.globalPosition % 2 ? '#fff' : 'var(--lightGray)'};
 `;
 
 export const EmptyCellOverlay = styled.div`
