@@ -54,10 +54,13 @@ const dropTarget = {
         // console.log('→ getItem: ', monitor.getItem());
         // console.groupEnd();
         // console.log('→ debounced', debounced(props, monitor));
+        console.log('→drop props', props);
         debounced.cancel();
-        console.log('__DROP__ flag2', flag2);
 
-        return {};
+        return {
+            time: props.globalPosition,
+            day:  props.day,
+        };
     },
 };
 
@@ -86,9 +89,11 @@ export default class DashboardEmptyCell extends Component {
             isOver,
             canDrop,
             children,
+            globalPosition,
             // className,
         } = this.props;
 
+        // console.log('→ EmptyCell globalPosition', globalPosition);
         // const backgroundColor = 'palevioletred';
 
         return (

@@ -99,14 +99,14 @@ class DashboardContainer extends Component {
                 station={ stations ? stations[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length && 
+                    { load.length &&
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) : 
+                                ) :
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -145,6 +145,7 @@ class DashboardContainer extends Component {
             orders,
             schedule,
             updateDashboardOrder,
+            time,
         } = this.props;
         const { hideSourceOnDrag } = this.state;
 
@@ -176,7 +177,6 @@ class DashboardContainer extends Component {
 
         return (
             <DashboardContentColumn dashboard={ dashboard }>
-                { /* { console.log('→ puzzle', puzzle) } */ }
                 { puzzle.map(
                     ({ data: { result, maxRows, maxBlocks } }, index) => (
                         <DashboardContentBox
@@ -185,9 +185,6 @@ class DashboardContainer extends Component {
                             rows={ maxRows }
                             columns={ maxBlocks }
                         >
-                            { /* { console.log('→ result', result) }
-                            { console.log('→ maxRows', maxRows) }
-                            { console.log('→ maxBlocks', maxBlocks) } */ }
                             { result.map(
                                 (order, index) =>
                                     order.empty ? (
@@ -200,6 +197,7 @@ class DashboardContainer extends Component {
                                                     ? stations[ column ]
                                                     : null
                                             }
+                                            time={ time }
                                         />
                                     ) : (
                                         <DashboardOrder
@@ -213,12 +211,7 @@ class DashboardContainer extends Component {
                                             hideSourceOnDrag={ hideSourceOnDrag }
                                             label={ result[ index ].options.num }
                                             { ...order }
-                                        >
-                                            { /* { result[ index ].options.num }
-                                            { order.rows > 1
-                                                ? console.log('→ BIG')
-                                                : console.log('→ LOLY') } */ }
-                                        </DashboardOrder>
+                                        />
                                     ),
                             ) }
                         </DashboardContentBox>

@@ -7,6 +7,7 @@ import { withRouter } from 'react-router';
 import { DragSource, DropTarget } from 'react-dnd';
 
 // proj
+import { updateDashboardOrder } from 'core/dashboard/duck';
 import book from 'routes/book';
 
 // own
@@ -31,7 +32,10 @@ const orderSource = {
         if (didDrop) {
             console.log('→ dropOrder', props.dropOrder);
             console.log('→ did dropped', props);
+            const dropped = monitor.getDropResult();
+            console.log('→ dropped', dropped);
             //TODO: call drop action
+            // updateDashboardOrder(props.options);
         }
 
         if (!didDrop) {
@@ -152,6 +156,7 @@ class DashboardOrder extends Component {
             dropOrder,
             hideSourceOnDrag,
             label,
+            time,
         } = this.props;
 
         const { tooltipPosition } = this.state;
