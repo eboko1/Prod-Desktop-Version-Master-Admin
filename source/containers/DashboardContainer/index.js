@@ -197,7 +197,6 @@ class DashboardContainer extends Component {
                                                     ? stations[ column ]
                                                     : null
                                             }
-                                            time={ time }
                                         />
                                     ) : (
                                         <DashboardOrder
@@ -210,7 +209,13 @@ class DashboardContainer extends Component {
                                             dropOrder={ updateDashboardOrder }
                                             hideSourceOnDrag={ hideSourceOnDrag }
                                             label={ result[ index ].options.num }
-                                            schedule = { schedule }
+                                            schedule={ schedule }
+                                            day={ days ? days[ column ] : null }
+                                            station={
+                                                stations
+                                                    ? stations[ column ]
+                                                    : null
+                                            }
                                             { ...order }
                                         />
                                     ),

@@ -9,33 +9,34 @@ import _ from 'lodash';
 // import { canMoveOrder, moveOrder } from '../Game';
 import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
 
-let flag = false;
-const hoverLog = (props, monitor, component) => {
-    console.group('hoverLog');
-    console.log('props: ', props);
-    console.log('monitor: ', monitor);
-    console.log('component: ', component);
-    console.groupEnd();
-    console.log('→ hoverLog -> flag', flag);
-    flag = false;
-    console.log('→ hoverLog -> flag false', flag);
-};
+// let flag = false;
+// const hoverLog = (props, monitor, component) => {
+//     console.group('hoverLog');
+//     console.log('props: ', props);
+//     console.log('monitor: ', monitor);
+//     console.log('component: ', component);
+//     console.groupEnd();
+//     console.log('→ hoverLog -> flag', flag);
+//     flag = false;
+//     console.log('→ hoverLog -> flag false', flag);
+// };
+//
+// const debounced = _.debounce(hoverLog, 2000);
+//
+// let flag2 = false;
 
-const debounced = _.debounce(hoverLog, 2000);
-
-let flag2 = false;
 const dropTarget = {
-    hover(props, monitor, component) {
-        if (!flag) {
-            // const debounced = _.debounce(
-            //     () => hoverLog(props, monitor, component),
-            //     2000,
-            // );
-            debounced(props, monitor, component);
-            console.log('→ flag2', flag2);
-            flag = true;
-        }
-    },
+    // hover(props, monitor, component) {
+    //     if (!flag) {
+    //         // const debounced = _.debounce(
+    //         //     () => hoverLog(props, monitor, component),
+    //         //     2000,
+    //         // );
+    //         debounced(props, monitor, component);
+    //         console.log('→ flag2', flag2);
+    //         flag = true;
+    //     }
+    // },
 
     // @Debounce(5000)
     // canDrop(props, monitor) {
@@ -54,8 +55,8 @@ const dropTarget = {
         // console.log('→ getItem: ', monitor.getItem());
         // console.groupEnd();
         // console.log('→ debounced', debounced(props, monitor));
-        console.log('→drop props', props);
-        debounced.cancel();
+        // console.log('→drop props', props);
+        // debounced.cancel();
 
         return {
             time: props.globalPosition,

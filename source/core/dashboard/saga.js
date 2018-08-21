@@ -84,7 +84,7 @@ export function* refreshDashboardSaga() {
         try {
             yield take(REFRESH_DASHBOARD);
             yield nprogress.start();
-            yield put(setDashboardFetchingState(true));
+            // yield put(setDashboardFetchingState(true));
 
             const mode = yield select(selectDashboardMode);
 
@@ -106,11 +106,10 @@ export function* refreshDashboardSaga() {
 
                 yield put(fetchDashboardStationsSuccess(data));
             }
-
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield put(setDashboardFetchingState(false));
+            // yield put(setDashboardFetchingState(false));
             yield nprogress.done();
         }
     }
@@ -180,7 +179,13 @@ export function* updateDashboardOrderSaga() {
         try {
             const { payload: order } = yield take(UPDATE_DASHBOARD_ORDER);
             yield nprogress.start();
-            yield call(fetchAPI, 'PUT', `orders/${order.id}`, {}, _.omit(order, [ 'id' ]));
+            yield call(
+                fetchAPI,
+                'PUT',
+                `orders/${order.id}`,
+                {},
+                _.omit(order, [ 'id' ]),
+            );
 
             yield put(updateDashboardOrderSuccess());
             yield put(refreshDashboard());

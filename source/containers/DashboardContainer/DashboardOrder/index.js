@@ -8,7 +8,6 @@ import { DragSource, DropTarget } from 'react-dnd';
 import moment from 'moment';
 
 // proj
-import { updateDashboardOrder } from 'core/dashboard/duck';
 import book from 'routes/book';
 
 // own
@@ -32,18 +31,22 @@ const orderSource = {
         const didDrop = monitor.didDrop();
 
         if (didDrop) {
+            const { dropOrder, schedule } = props;
+
             const { day, time } = monitor.getDropResult();
-            const {
-                schedule: { beginHour },
-            } = props;
-            const orderHour = time + beginHour * 2;
+
+            const orderHour = time + schedule.beginHour * 2;
             const timeString =
                 orderHour % 2
                     ? `${Math.floor(orderHour / 2)}:30`
                     : `${orderHour / 2}:00`;
+
             const newBeginDatetime = moment(`${day} ${timeString}`);
 
-            props.dropOrder({beginDatetime: newBeginDatetime.toISOString(), id} );
+            dropOrder({
+                beginDatetime: newBeginDatetime.toISOString(),
+                id,
+            });
         }
 
         if (!didDrop) {
@@ -142,6 +145,9 @@ export default class DashboardOrder extends Component {
             time,
             isOver,
             canDrop,
+            day,
+            station,
+            globalPosition,
         } = this.props;
 
         const { tooltipPosition } = this.state;
@@ -171,10 +177,15 @@ export default class DashboardOrder extends Component {
                 // className={ className }
                 innerRef={ order => this._getOrderRef(order) }
             >
-                { /* { console.log('→ this.props', this.props) } */ }
+                { console.log('→ this.props', this.props) }
                 <StyledDashboardOrderBox>
                     { [ ...Array(rows).keys() ].map((_, index) => (
-                        <DashboardOrderDropTarget key={ index } />
+                        <DashboardOrderDropTarget
+                            key={ index }
+                            day={ day }
+                            station={ station }
+                            globalPosition={ globalPosition }
+                        />
                         // index === 0 ? (
                         //     <StyledOrderDropTarget
                         //         key={ index }
