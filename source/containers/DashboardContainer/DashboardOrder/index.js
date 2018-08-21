@@ -151,6 +151,7 @@ class DashboardOrder extends Component {
             options,
             dropOrder,
             hideSourceOnDrag,
+            label,
         } = this.props;
 
         const { tooltipPosition } = this.state;
@@ -180,15 +181,19 @@ class DashboardOrder extends Component {
                 // className={ className }
                 innerRef={ order => this._getOrderRef(order) }
             >
-                <div
-                    style={ {
-                        whiteSpace:   'nowrap',
-                        overflow:     'hidden',
-                        textOverflow: 'ellipsis',
-                    } }
-                >
-                    { children }
-                </div>
+                { /* { console.log('→ this.props', this.props) } */ }
+                <StyledDashboardOrderBox>
+                    { [ ...Array(rows).keys() ].map(
+                        (_, index) =>
+                            index === 0 ? (
+                                <StyledOrderDropTarget key={ index }>
+                                    { label }
+                                </StyledOrderDropTarget>
+                            ) : (
+                                <StyledOrderDropTarget key={ index } />
+                            ),
+                    ) }
+                </StyledDashboardOrderBox>
                 <DashboardTooltip position={ tooltipPosition } { ...options } />
             </StyledDashboardOrder>
         );
@@ -231,6 +236,19 @@ const StyledDashboardOrder = styled.div`
     grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
     grid-column: ${props => `${props.y + 1} / span ${props.columns}`};
     ${'' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */} min-width: 0;
+`;
+
+const StyledDashboardOrderBox = styled.div`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const StyledOrderDropTarget = styled.div`
+    height: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 export default DragSource(DragItemTypes.ORDER, orderSource, collect)(

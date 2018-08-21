@@ -176,6 +176,7 @@ class DashboardContainer extends Component {
 
         return (
             <DashboardContentColumn dashboard={ dashboard }>
+                { /* { console.log('→ puzzle', puzzle) } */ }
                 { puzzle.map(
                     ({ data: { result, maxRows, maxBlocks } }, index) => (
                         <DashboardContentBox
@@ -184,6 +185,9 @@ class DashboardContainer extends Component {
                             rows={ maxRows }
                             columns={ maxBlocks }
                         >
+                            { /* { console.log('→ result', result) }
+                            { console.log('→ maxRows', maxRows) }
+                            { console.log('→ maxBlocks', maxBlocks) } */ }
                             { result.map(
                                 (order, index) =>
                                     order.empty ? (
@@ -204,12 +208,16 @@ class DashboardContainer extends Component {
                                                 result[ index ].options.status
                                             }
                                             id={ result[ index ].options.id }
-                                            { ...order }
                                             dashboardRef={ this._dashboardRef }
                                             dropOrder={ updateDashboardOrder }
                                             hideSourceOnDrag={ hideSourceOnDrag }
+                                            label={ result[ index ].options.num }
+                                            { ...order }
                                         >
-                                            { result[ index ].options.num }
+                                            { /* { result[ index ].options.num }
+                                            { order.rows > 1
+                                                ? console.log('→ BIG')
+                                                : console.log('→ LOLY') } */ }
                                         </DashboardOrder>
                                     ),
                             ) }
