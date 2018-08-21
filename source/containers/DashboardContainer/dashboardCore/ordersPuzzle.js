@@ -12,28 +12,26 @@ const ordersPuzzle = (data, maxRow) => {
                 const allBlockRows = _.flatten(
                     blocks.map(({ min, max }) =>
                         Array(max - min)
-                            .fill(0)
-                            .map((v, index) => min + index)),
+                            .fill(min)
+                            .map((value, index) => value + index)),
                 );
                 // All rows
                 const allRows = Array(maxRow)
-                    .fill(null)
-                    .map((v, index) => index);
+                    .fill(0)
+                    .map((value, index) => value + index);
                 // Empty block configs
                 const emptyRows = _.difference(allRows, allBlockRows).map(
                     value => ({ min: value, max: value + 1, data: [] }),
                 );
 
                 const newBlocks = [
-                    ...blocks.map(block => {
-                        return {
-                            ...block,
-                            data: block.data.map(item => ({
-                                ...item,
-                                position: item.position - block.min,
-                            })),
-                        };
-                    }),
+                    ...blocks.map(block => ({
+                        ...block,
+                        data: block.data.map(item => ({
+                            ...item,
+                            position: item.position - block.min,
+                        })),
+                    })),
                     ...emptyRows,
                 ];
                 newBlocks.sort((first, second) => first.min - second.min);
@@ -56,18 +54,16 @@ const ordersPuzzle = (data, maxRow) => {
                 );
 
                 if (areas.length) {
-                    const area = {};
-                    area.max = Math.max(
-                        ..._.map(areas, 'max'),
-                        position + quantity,
-                    );
-                    area.min = Math.min(..._.map(areas, 'min'), position);
-                    area.data = [];
-                    area.id = v4();
-                    area.data.push(..._.flatten(_.map(areas, 'data')));
-                    area.data.push({ position, quantity, options });
+                    const maxPosition = position + quantity;
+                    const area = {
+                        data: [ ..._.flatten(_.map(areas, 'data')), { position, quantity, options }],
+                        id:   v4(),
+                        min:  Math.min(..._.map(areas, 'min'), position),
+                        max:  Math.max(..._.map(areas, 'max'), maxPosition),
+                    };
 
                     blocks.push(area);
+                    // Exclude merged areas from blocks
                     blocks = blocks.filter(
                         ({ id }) => !_.map(areas, 'id').includes(id),
                     );
@@ -81,6 +77,55 @@ const ordersPuzzle = (data, maxRow) => {
                 }
             },
         };
+    }
+
+    function isPositionOccupiedByPuzzleItem(
+        puzzleItems,
+        requiredRows,
+        requiredY,
+    ) {
+        for (const { x, y, rows, columns, empty } of puzzleItems) {
+            if (empty) {
+                continue;
+            }
+
+            const allRows = Array(rows)
+                .fill(x)
+                .map((value, index) => value + index);
+            const allColumns = Array(columns)
+                .fill(y)
+                .map((value, index) => value + index);
+
+            if (
+                allColumns.includes(requiredY) &&
+                _.intersection(allRows, requiredRows).length
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    function resizePuzzle({ result, maxBlocks, maxRows }) {
+        _.each(result, item => {
+            const { x, rows } = item;
+            const allRows = Array(rows)
+                .fill(x)
+                .map((value, index) => value + index);
+            while (
+                item.columns + item.y < maxBlocks &&
+                !isPositionOccupiedByPuzzleItem(
+                    result,
+                    allRows,
+                    item.y + item.columns,
+                )
+            ) {
+                ++item.columns;
+            }
+        });
+
+        return { result, maxBlocks, maxRows };
     }
 
     function getPuzzle(data, min) {
@@ -155,10 +200,9 @@ const ordersPuzzle = (data, maxRow) => {
     data.forEach(blocksManagers.pushItem);
     const blocks = blocksManagers.getBlocks();
 
-    // TODO normalize columns
     return blocks.map(block => ({
         ...block,
-        data: getPuzzle(block.data, block.min),
+        data: resizePuzzle(getPuzzle(block.data, block.min)),
     }));
 };
 
