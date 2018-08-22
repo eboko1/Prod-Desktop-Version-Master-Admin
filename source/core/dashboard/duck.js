@@ -80,6 +80,13 @@ export default function reducer(state = ReducerState, action) {
                 endDate:   payload.endDate,
             };
 
+        case INIT_DASHBOARD:
+            return {
+                ...state,
+                mode: 'calendar',
+                load: [],
+            };
+
         case INIT_DASHBOARD_SUCCESS:
             return {
                 ...state,

@@ -99,14 +99,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length &&
+                    { load.length && 
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) :
+                                ) : 
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
