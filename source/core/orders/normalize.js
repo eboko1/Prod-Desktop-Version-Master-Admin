@@ -19,8 +19,8 @@ const denormalized = [
         clientSurname:          'Храпунов',
         datetime:               '2018-04-07T03:49:32.924Z',
         employeeJobtitle:       'электрик',
-        employeeName:           'Игорь',
-        employeeSurname:        'Иванов',
+        name:           'Игорь', // employeeName:
+        surname:        'Иванов',// employeeSurname:
         id:                     118552,
         inviteExists:           118712,
         managerName:            null,
@@ -58,8 +58,8 @@ const client = new schema.Entity('client');
 // -----
 // businessId
 // employeeJobtitle
-// employeeName
-// employeeSurname
+// name // employeeName:
+// surname // employeeSurname:
 // managerName
 // managerSurname
 // master
