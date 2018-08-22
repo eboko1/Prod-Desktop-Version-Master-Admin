@@ -4,24 +4,23 @@ import styled from 'styled-components';
 import { DropTarget } from 'react-dnd';
 
 // own
-import { DragItemTypes } from '../../dashboardConfig';
+import { DragItemTypes, ROW_HEIGHT } from '../../dashboardConfig';
 
 const orderTarget = {
     drop(props) {
         return {
-            time: props.globalPosition,
-            day:  props.day,
+            time:       props.globalPosition,
+            day:        props.day,
+            stationNum: props.stationNum,
         };
     },
 };
 
-function collectTarget(connect, monitor) {
-    return {
-        connectDropTarget: connect.dropTarget(),
-        isOver:            monitor.isOver(),
-        canDrop:           monitor.canDrop(),
-    };
-}
+const collectTarget = (connect, monitor) => ({
+    connectDropTarget: connect.dropTarget(),
+    isOver:            monitor.isOver(),
+    canDrop:           monitor.canDrop(),
+});
 
 @DropTarget(DragItemTypes.ORDER, orderTarget, collectTarget)
 class DashboardOrderDropTarget extends Component {
@@ -31,19 +30,21 @@ class DashboardOrderDropTarget extends Component {
     };
 
     render() {
-        const { isOver, canDrop } = this.props;
+        const { isOver, canDrop, label } = this.props;
 
         return (
             <StyledDashboardOrderDropTarget
                 innerRef={ dropTarget => this._getOrderDropTargetRef(dropTarget) }
                 overlayDrop={ isOver && canDrop }
-            />
+            >
+                { label }
+            </StyledDashboardOrderDropTarget>
         );
     }
 }
 
 const StyledDashboardOrderDropTarget = styled.div`
-    height: 30px;
+    height: ${ROW_HEIGHT}px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

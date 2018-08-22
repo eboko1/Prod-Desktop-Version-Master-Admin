@@ -1,10 +1,9 @@
 // vendor
 import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { withRouter } from 'react-router';
-import { DragSource, DropTarget } from 'react-dnd';
+import { DragSource } from 'react-dnd';
 import moment from 'moment';
 
 // proj
@@ -18,14 +17,14 @@ import handleHover from '../dashboardCore/handleHover';
 
 const orderSource = {
     beginDrag(props) {
-        console.log('^ beginDrag', props);
+        // console.log('^ beginDrag', props);
 
         return { ...props };
     },
 
     endDrag(props, monitor) {
-        console.log('^^ endDrag props', props);
-        console.log('^^ endDrag monitor', monitor.getItem());
+        // console.log('^^ endDrag props', props);
+        // console.log('^^ endDrag monitor', monitor.getItem());
 
         const { id } = monitor.getItem();
         const didDrop = monitor.didDrop();
@@ -33,36 +32,29 @@ const orderSource = {
         if (didDrop) {
             const { dropOrder, schedule } = props;
 
-            const { day, time } = monitor.getDropResult();
+            const { day, time, stationNum } = monitor.getDropResult();
 
             const orderHour = time + schedule.beginHour * 2;
             const timeString =
                 orderHour % 2
                     ? `${Math.floor(orderHour / 2)}:30`
                     : `${orderHour / 2}:00`;
-
+            console.log('→ endDrag', day);
+            console.log('→ endDrag', stationNum);
             const newBeginDatetime = moment(`${day} ${timeString}`);
 
             dropOrder({
                 beginDatetime: newBeginDatetime.toISOString(),
+                stationNum,
                 id,
             });
         }
 
         if (!didDrop) {
-            console.log('→ didn\'t dropped', id);
+            console.warn(`Order ${id} didn\'t dropped`);
         }
     },
 };
-
-// const orderTarget = {
-//     drop(props) {
-//         return {
-//             time: props.globalPosition,
-//             day:  props.day,
-//         };
-//     },
-// };
 
 function collectSource(connect, monitor) {
     return {
@@ -72,25 +64,8 @@ function collectSource(connect, monitor) {
     };
 }
 
-// function collectTarget(connect, monitor) {
-//     return {
-//         connectDropTarget: connect.dropTarget(),
-//         isOver:            monitor.isOver(),
-//         canDrop:           monitor.canDrop(),
-//     };
-// }
-
-// @DropTarget(DragItemTypes.ORDER, orderTarget, connect => ({
-//     connectDropTarget: connect.dropTarget(),
-// }))
-
-// export default DragSource(DragItemTypes.ORDER, orderSource, collect)(
-//     DashboardOrder,
-// );
-
 @withRouter
 @DragSource(DragItemTypes.ORDER, orderSource, collectSource)
-// @DropTarget(DragItemTypes.ORDER, orderTarget, collectTarget)
 export default class DashboardOrder extends Component {
     static propTypes = {
         connectDragSource:  PropTypes.func,
@@ -111,12 +86,6 @@ export default class DashboardOrder extends Component {
         this.props.connectDragSource(order);
     };
 
-    // _getOrderDropTargetRef = (dropTarget, key) => {
-    //     console.log('→ _getOrderDropTargetRef');
-    //     this[ `orderDropTargetRef${key}` ] = dropTarget;
-    //     this.props.connectDropTarget(dropTarget);
-    // };
-
     _showDashboardTooltip = (ev, order, dashboard) => {
         const tooltipPosition = handleHover(ev, order, dashboard);
         this.setState({ tooltipPosition });
@@ -127,10 +96,7 @@ export default class DashboardOrder extends Component {
     render() {
         const {
             history,
-            connectDragSource,
             isDragging,
-            className,
-            children,
             x,
             y,
             columns,
@@ -139,22 +105,10 @@ export default class DashboardOrder extends Component {
             status,
             dashboardRef,
             options,
-            dropOrder,
-            hideSourceOnDrag,
-            label,
-            time,
-            isOver,
-            canDrop,
-            day,
-            station,
-            globalPosition,
+            // hideSourceOnDrag,
         } = this.props;
 
         const { tooltipPosition } = this.state;
-
-        // if (isDragging && hideSourceOnDrag) {
-        //     return null;
-        // }
 
         return (
             <StyledDashboardOrder
@@ -174,42 +128,30 @@ export default class DashboardOrder extends Component {
                 }
                 onMouseDown={ this._hideDashboardTooltip }
                 onMouseLeave={ this._hideDashboardTooltip }
-                // className={ className }
                 innerRef={ order => this._getOrderRef(order) }
             >
-                { console.log('→ this.props', this.props) }
                 <StyledDashboardOrderBox>
-                    { [ ...Array(rows).keys() ].map((_, index) => (
-                        <DashboardOrderDropTarget
-                            key={ index }
-                            day={ day }
-                            station={ station }
-                            globalPosition={ globalPosition }
-                        />
-                        // index === 0 ? (
-                        //     <StyledOrderDropTarget
-                        //         key={ index }
-                        //         innerRef={ dropTarget =>
-                        //             this._getOrderDropTargetRef(dropTarget)
-                        //         }
-                        //         overlayDrop={ isOver && canDrop }
-                        //     >
-                        //         { label }
-                        //     </StyledOrderDropTarget>
-                        // ) :
-                        // <StyledOrderDropTarget
-                        //     key={ index }
-                        //     innerRef={ dropTarget =>
-                        //         this._getOrderDropTargetRef(dropTarget, index)
-                        //     }
-                        //     overlayDrop={ isOver && canDrop }
-                        // />
-                    )) }
+                    { [ ...Array(rows).keys() ].map((_, index) =>
+                        this._renderDashboardOrderDropTarget(index)) }
                 </StyledDashboardOrderBox>
                 <DashboardTooltip position={ tooltipPosition } { ...options } />
             </StyledDashboardOrder>
         );
     }
+
+    _renderDashboardOrderDropTarget = index => {
+        const { day, stationNum, globalPosition, label } = this.props;
+
+        return (
+            <DashboardOrderDropTarget
+                key={ index }
+                day={ day }
+                stationNum={ stationNum }
+                globalPosition={ globalPosition + index }
+                label={ index === 0 ? label : null }
+            />
+        );
+    };
 }
 
 const _ordersStatus = status => {
@@ -240,9 +182,7 @@ const StyledDashboardOrder = styled.div`
     padding: 1px;
     color: white;
     font-size: 12px;
-    ${'' /* white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; */} min-height: 28px;
+    min-height: 28px;
     cursor: move;
     opacity: ${props => props.isdragging ? 0.5 : 1};
     grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
@@ -255,89 +195,3 @@ const StyledDashboardOrderBox = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
 `;
-
-// const StyledOrderDropTarget = styled.div`
-//     height: 30px;
-//     white-space: nowrap;
-//     overflow: hidden;
-//     text-overflow: ellipsis;
-//     background-color: ${props => props.overlayDrop && 'var(--primary)'};
-// `;
-
-// export default DragSource(DragItemTypes.ORDER, orderSource, collect)(
-//     DashboardOrder,
-// );
-
-// return connectDragSource(
-//     <div>
-//         <DashboardOrder
-//             isDragging={ isDragging }
-//             innerRef={ order => {
-//                 this.oroder = connectDragSource(order);
-//             } }
-//             // innerRef={ order => connectDragSource(order) }
-//         >
-//             → order →
-//         </DashboardOrder>,
-//     </div>,
-// );
-// return connectDragSource(
-//     connectDropTarget(
-//         <DashboardOrder
-//             isDragging={ isDragging }
-//             innerRef={ order => {
-//                 connectDragSource(order);
-//             } }
-//         >
-//             → order →
-//         </DashboardOrder>,
-//     ),
-// );
-
-// hover(props, monitor, component) {
-//     const dragIndex = monitor.getItem().index;
-//     const hoverIndex = props.index;
-//
-//     // Don't replace items with themselves
-//     if (dragIndex === hoverIndex) {
-//         return;
-//     }
-//
-//     // Determine rectangle on screen
-//     const hoverBoundingRect = findDOMNode(
-//         component,
-//     ).getBoundingClientRect();
-//
-//     // Get vertical middle
-//     const hoverMiddleY =
-//         (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-//
-//     // Determine mouse position
-//     const clientOffset = monitor.getClientOffset();
-//
-//     // Get pixels to the top
-//     const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-//
-//     // Only perform the move when the mouse has crossed half of the items height
-//     // When dragging downwards, only move when the cursor is below 50%
-//     // When dragging upwards, only move when the cursor is above 50%
-//
-//     // Dragging downwards
-//     if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-//         return;
-//     }
-//
-//     // Dragging upwards
-//     if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-//         return;
-//     }
-//
-//     // Time to actually perform the action
-//     props.moveOrder(dragIndex, hoverIndex);
-//
-//     // Note: we're mutating the monitor item here!
-//     // Generally it's better to avoid mutations,
-//     // but it's good here for the sake of performance
-//     // to avoid expensive index searches.
-//     monitor.getItem().index = hoverIndex;
-// },

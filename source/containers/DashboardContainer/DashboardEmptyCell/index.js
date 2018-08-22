@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DropTarget } from 'react-dnd';
-import { Debounce, Throttle } from 'lodash-decorators';
+// import { Debounce, Throttle } from 'lodash-decorators';
 import _ from 'lodash';
 
 // import { canMoveOrder, moveOrder } from '../Game';
@@ -59,8 +59,9 @@ const dropTarget = {
         // debounced.cancel();
 
         return {
-            time: props.globalPosition,
-            day:  props.day,
+            time:       props.globalPosition,
+            day:        props.day,
+            stationNum: props.stationNum,
         };
     },
 };

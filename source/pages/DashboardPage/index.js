@@ -179,16 +179,18 @@ class DashboardPage extends Component {
             dashboard,
             linkToDashboardStations,
             updateDashboardOrder,
+            date,
         } = this.props;
 
         return loading ? (
             <Loader loading={ loading } />
         ) : (
             <DashboardContainer
-                orders={ orders }
-                stations={ stations }
-                days={ days }
                 mode={ mode }
+                date={ date }
+                days={ days }
+                stations={ stations }
+                orders={ orders }
                 load={ load }
                 schedule={ schedule }
                 time={ time }
