@@ -96,8 +96,7 @@ class DashboardContainer extends Component {
                 column={ 1 }
                 key={ index }
                 currentDay={ currentDay }
-                day={ days ? days[ index ] : null }
-                station={ stations ? stations[ index ] : null }
+                day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
                     { load.length &&
@@ -162,7 +161,7 @@ class DashboardContainer extends Component {
                 ? columnsData[ column ].num
                 : null;
 
-        const dashboardData = mode
+        const dashboardData = dashboardMode
             ? orders.filter(
                 ({ beginDatetime }) =>
                     moment(beginDatetime).format('YYYY-MM-DD') === columnId,
@@ -198,7 +197,6 @@ class DashboardContainer extends Component {
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
-                                            // day={ days ? days[ column ] : null }
                                             stationNum={ stations[ column ].num }
                                         />
                                     ) : (
@@ -218,7 +216,6 @@ class DashboardContainer extends Component {
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
-                                            // day={ days ? days[ column ] : null }
                                             stationNum={ stations[ column ].num }
                                             { ...order }
                                         />
