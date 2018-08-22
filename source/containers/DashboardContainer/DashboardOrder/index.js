@@ -16,6 +16,10 @@ import DashboardTooltip from '../DashboardTooltip';
 import handleHover from '../dashboardCore/handleHover';
 
 const orderSource = {
+    canDrag(props) {
+        return props.status !== 'success';
+    },
+
     beginDrag(props) {
         // console.log('^ beginDrag', props);
 
@@ -39,8 +43,8 @@ const orderSource = {
                 orderHour % 2
                     ? `${Math.floor(orderHour / 2)}:30`
                     : `${orderHour / 2}:00`;
-            console.log('→ endDrag', day);
-            console.log('→ endDrag', stationNum);
+            // console.log('→ endDrag', day);
+            // console.log('→ endDrag', stationNum);
             const newBeginDatetime = moment(`${day} ${timeString}`);
 
             dropOrder({
@@ -63,6 +67,15 @@ function collectSource(connect, monitor) {
         isDragging:         monitor.isDragging(),
     };
 }
+
+// const getDragSourceType = props => {
+//     console.log('props', props);
+//     if (props.status === 'success') {
+//         return DragItemTypes.DISABLED;
+//     }
+//
+//     return DragItemTypes.ORDER;
+// };
 
 @withRouter
 @DragSource(DragItemTypes.ORDER, orderSource, collectSource)
@@ -183,7 +196,7 @@ const StyledDashboardOrder = styled.div`
     color: white;
     font-size: 12px;
     min-height: 28px;
-    cursor: move;
+    cursor: ${props => props.status === 'success' ? 'pointer' : 'move'};
     opacity: ${props => props.isdragging ? 0.5 : 1};
     grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
     grid-column: ${props => `${props.y + 1} / span ${props.columns}`};
