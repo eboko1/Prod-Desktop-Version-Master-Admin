@@ -35,6 +35,7 @@
         "nprogress": "~0.2.0",
         "numeral": "^2.0.6",
         "prop-types": "^15.6.1",
+        "qs": "^6.5.2",
         "ramda": "^0.25.0",
         "ramda-adjunct": "^2.9.0",
         "rc-drawer": "^1.7.0",

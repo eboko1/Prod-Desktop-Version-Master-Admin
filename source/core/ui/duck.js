@@ -11,6 +11,7 @@ export const SET_ORDERS_FETCHING_STATE = `${prefix}/SET_ORDERS_FETCHING_STATE`;
 export const SET_MY_TASKS_FETCHING_STATE = `${prefix}/SET_MY_TASKS_FETCHING_STATE`;
 export const SET_ORDER_FETCHING_STATE = `${prefix}/SET_ORDER_FETCHING_STATE`;
 export const SET_PACKAGE_FETCHING_STATE = `${prefix}/SET_PACKAGE_FETCHING_STATE`;
+export const SET_BUSINESS_PACKAGE_FETCHING_STATE = `${prefix}/SET_BUSINESS_PACKAGE_FETCHING_STATE`;
 export const SET_ROLE_FETCHING_STATE = `${prefix}/SET_ROLE_FETCHING_STATE`;
 export const SET_SEARCH_BUSINESSES_FETCHING_STATE = `${prefix}/SET_SEARCH_BUSINESSES_FETCHING_STATE`;
 export const SET_DASHBOARD_INITALIZING_STATE = `${prefix}/SET_DASHBOARD_INITALIZING_STATE`;
@@ -32,6 +33,7 @@ const ReducerState = {
     dashboardFetching:        false,
     searchBusinessesFetching: false,
     packageFetching:          false,
+    businessPackageFetching:  false,
     roleFetching:             false,
     collapsed:                false,
     views:                    {},
@@ -136,6 +138,11 @@ export const setDashboardFetchingState = state => ({
 
 export const setPackageFetchingState = state => ({
     type:    SET_PACKAGE_FETCHING_STATE,
+    payload: state,
+});
+
+export const setBusinessPackageFetchingState = state => ({
+    type:    SET_BUSINESS_PACKAGE_FETCHING_STATE,
     payload: state,
 });
 

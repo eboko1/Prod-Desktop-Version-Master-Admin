@@ -2,6 +2,7 @@
 import { trim, toUpper } from 'lodash/string';
 import { replace } from 'react-router-redux';
 import _ from 'lodash';
+import qs from 'qs';
 
 // proj
 import { logout } from 'core/auth/duck';
@@ -31,22 +32,8 @@ export default async function fetchAPI(
     const endpointC = trim(endpoint, "/"); // trim all spaces and '/'
     const handler = endpointC ? `/${endpointC}` : ""; // be sure that after api will be only one /
     const methodU = toUpper(method);
-    const queryObj = _(query)
-        .toPairs()
-        .filter(
-            ([key, value]) =>
-                _.isString(value) ? !_.isEmpty(value) : !_.isNil(value),
-        )
-        .map(([key, value]) => ({ key, value }))
-        .map(
-            ({ key, value }) =>
-                _.isArray(value)
-                    ? value.map(subValue => ({ key, value: subValue }))
-                    : { key, value },
-        )
-        .flatten()
-        .map(({ key, value }) => `${key}=${value}`)
-        .value();
+    const omittedQuery = _.omitBy(query, (value) => _.isString(value) && _.isEmpty(value));
+    const queryString = qs.stringify(omittedQuery, { skipNulls: true, arrayFormat: 'repeat' });
 
     const request = {
         method: methodU,
@@ -73,7 +60,7 @@ export default async function fetchAPI(
     // async function response() {
     const response = await fetch.apply(null, [
         `${apiC}${handler}${
-            queryObj.length > 0 ? `?${queryObj.join("&")}` : ""
+            queryString ? `?${queryString}` : ""
         }`,
         request,
         ...arguments,
