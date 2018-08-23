@@ -44,7 +44,7 @@ export default {
                 },
                 {
                     key:  '/employees',
-                    link: book.oldApp.employees,
+                    link: book.employeesPage,
                     name: 'navigation.employees',
                 },
             ],

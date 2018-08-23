@@ -6,6 +6,8 @@ import { DecoratedDatePicker } from './DecoratedDatePicker';
 import { DecoratedCheckbox } from './DecoratedCheckbox';
 import { DecoratedTimePicker } from './DecoratedTimePicker';
 import { DecoratedSlider } from './DecoratedSlider';
+import { DecoratedInputPhone } from './DecoratedInputPhone';
+
 
 export {
     DecoratedSelect,
@@ -16,4 +18,5 @@ export {
     DecoratedCheckbox,
     DecoratedTimePicker,
     DecoratedSlider,
+    DecoratedInputPhone,
 };

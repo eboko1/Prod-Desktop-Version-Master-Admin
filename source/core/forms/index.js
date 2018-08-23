@@ -38,19 +38,21 @@ import toSuccessReducer, {
 import orderTaskReducer, {
     moduleName as orderTask,
 } from './orderTaskForm/duck';
+import employeeFormReducer, { moduleName as employeeFormModule } from 'core/forms/employeeForm/duck';
 
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
-    [ order ]:            orderReducer,
-    [ addClient ]:        addClientReducer,
-    [ universalFilters ]: universalFiltersReducer,
-    [ cancelReason ]:     cancelReasonReducer,
-    [ toSuccess ]:        toSuccessReducer,
-    [ login ]:            loginReducer,
-    [ orderTask ]:        orderTaskReducer,
-    [ addPackage ]:       addPackageReducer,
-    [ editPackage ]:      editPackageReducer,
-    [ addRole ]:          addRoleReducer,
-    [ editRole ]:         editRoleReducer,
-    [ switchBusiness ]:   switchBusinessReducer,
+    [ order ]:              orderReducer,
+    [ addClient ]:          addClientReducer,
+    [ universalFilters ]:   universalFiltersReducer,
+    [ cancelReason ]:       cancelReasonReducer,
+    [ toSuccess ]:          toSuccessReducer,
+    [ login ]:              loginReducer,
+    [ orderTask ]:          orderTaskReducer,
+    [ addPackage ]:         addPackageReducer,
+    [ editPackage ]:        editPackageReducer,
+    [ addRole ]:            addRoleReducer,
+    [ editRole ]:           editRoleReducer,
+    [ switchBusiness ]:     switchBusinessReducer,
+    [ employeeFormModule ]: employeeFormReducer,
 });

@@ -1,0 +1,4 @@
+.dateTimePickerBlock {
+    display: flex;
+    flex-direction: row;
+}

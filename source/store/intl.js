@@ -28,6 +28,9 @@ import OrdersPage from 'pages/OrdersPage/messages';
 import DashboardPage from 'pages/DashboardPage/messages';
 import RolePage from 'pages/RolePage/messages';
 import PackagePage from 'pages/PackagePage/messages';
+import EmployeePage from 'pages/EmployeePage/messages';
+import AddEmployeePage from 'pages/AddEmployeePage/messages';
+
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
 import FunelContainer from 'containers/FunelContainer/messages';
@@ -50,6 +53,7 @@ import PackageForm from 'forms/PackageForm/messages';
 import AddRoleForm from 'forms/AddRoleForm/messages';
 import RoleForm from 'forms/RoleForm/messages';
 import SwitchBusinessForm from 'forms/SwitchBusinessForm/messages';
+import EmployeeForm from 'forms/EmployeeForm/messages';
 
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
@@ -64,6 +68,7 @@ import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
 import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
 import TasksTable from 'components/OrderForm/OrderFormTables/TasksTable/messages';
+import EmployeeTable from 'components/EmployeeTable/messages';
 
 /* eslint-disable array-element-newline */
 const messages = merge.all([
@@ -81,6 +86,8 @@ const messages = merge.all([
     DashboardPage,
     RolePage,
     PackagePage,
+    EmployeePage,
+    AddEmployeePage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -101,6 +108,7 @@ const messages = merge.all([
     AddRoleForm,
     RoleForm,
     SwitchBusinessForm,
+    EmployeeForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
@@ -115,6 +123,7 @@ const messages = merge.all([
     ReportsDropdown,
     DecoratedDatePicker,
     CallsTable,
+    EmployeeTable,
 ]);
 /* eslint-enable array-element-newline */
 

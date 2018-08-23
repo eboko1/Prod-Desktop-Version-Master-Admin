@@ -35,7 +35,7 @@
         "add_order_form.select_date": "Укажите дату",
         "add_order_form.station": "Пост",
         "add_order_form.select_station": "Выберите пост",
-        "add_order_form.manager": "Ответственный",
+        "add_order_form.manager": "Мастер-Приемщик",
         "add_order_form.client": "Клиент",
         "add_order_form.client.placeholder": "Поиск по ФИО, авто, телефону, VIN...",
         "add_order_form.name": "ФИО",

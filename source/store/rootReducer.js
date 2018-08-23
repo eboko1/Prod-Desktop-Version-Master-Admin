@@ -11,6 +11,7 @@ import authReducer, { moduleName as authModule } from 'core/auth/duck';
 import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
+import employeeReducer, { moduleName as employeeModule } from 'core/employee/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
 import packageReducer, { moduleName as packageModule } from 'core/package/duck';
@@ -32,6 +33,7 @@ const reducer = combineReducers({
     [ modalsModule ]:    modalsReducer,
     [ dashboardModule ]: dashboardReducer,
     [ myTasksModule ]:   myTasksReducer,
+    [ employeeModule ]:  employeeReducer,
     [ uiModule ]:        uiReducer,
     [ authModule ]:      authReducer,
     [ packageModule ]:   packageReducer,

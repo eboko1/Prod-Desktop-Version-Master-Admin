@@ -8,6 +8,9 @@ import LoginPage from './LoginPage';
 import MyTasksPage from './MyTasksPage';
 import PackagePage from './PackagePage';
 import RolePage from './RolePage';
+import EmployeePage from './EmployeePage';
+import AddEmployeePage from './AddEmployeePage';
+import EditEmployeePage from './EditEmployeePage';
 
 export {
     DashboardPage,
@@ -20,4 +23,7 @@ export {
     MyTasksPage,
     PackagePage,
     RolePage,
+    EmployeePage,
+    AddEmployeePage,
+    EditEmployeePage,
 };

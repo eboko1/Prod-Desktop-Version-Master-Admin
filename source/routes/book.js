@@ -10,6 +10,9 @@ const book = Object.freeze({
     profile:             '/profile',
     dashboard:           '/dashboard',
     myTasksPage:         '/mytasks',
+    employeesPage:       '/employees',
+    addEmployee:         '/employees/add',
+    editEmployee:        '/employees/:id',
     packagePage:         '/packages',
     rolePage:            '/packages/:id',
     // Orders

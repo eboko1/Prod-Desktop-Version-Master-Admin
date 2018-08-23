@@ -97,7 +97,7 @@ export class OrderForm extends Component {
     };
 
     _renderDateBlock = () => {
-        const { stations, managers } = this.props;
+        const { stations, managers, employees } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -204,6 +204,42 @@ export class OrderForm extends Component {
                         </Option>
                     )) }
                 </DecoratedSelect>
+                <FormItem
+                    label={
+                        <FormattedMessage id='order_form_table.master' />
+                    }
+                    className={ Styles.durationPanelItem }
+                >
+                    <DecoratedSelect
+                        field='employee'
+                        getFieldDecorator={ getFieldDecorator }
+                        onSelect={ value => {
+                            const services = this.props.form.getFieldValue(
+                                'services',
+                            );
+
+                            const updatedServices = _(services)
+                                .keys()
+                                .map(serviceKey => [ `services[${serviceKey}][employeeId]`, value ])
+                                .fromPairs()
+                                .value();
+
+                            this.props.form.setFieldsValue(updatedServices);
+                        } }
+                    >
+                        { employees.map(employee => (
+                            <Option
+                                value={ employee.id }
+                                key={ v4() }
+                                disabled={ employee.disabled }
+                            >
+                                { `${employee.employeeName} ${
+                                    employee.employeeSurname
+                                }` }
+                            </Option>
+                        )) }
+                    </DecoratedSelect>
+                </FormItem>
             </div>
         );
     };
