@@ -27,29 +27,32 @@ export class AddBusinessPackageForm extends Component {
 
         return (
             <Form layout={ 'horizontal' }>
-                <FormattedMessage id='add-business-package-form.business' />: <b>{ businessName }</b>
+                <FormattedMessage id='add-business-package-form.business' />:{ ' ' }
+                <b>{ businessName }</b>
                 <br />
-                <FormattedMessage id='add-business-package-form.package' />: <b>{ packageName }</b>
+                <FormattedMessage id='add-business-package-form.package' />:{ ' ' }
+                <b>{ packageName }</b>
                 <br />
                 <DecoratedDatePicker
                     field={ 'activationDatetime' }
                     formItem
                     showTime
                     format='YYYY-MM-DD HH:mm:ss'
-                    getCalendarContainer={ trigger =>
-                        trigger.parentNode
-                    }
+                    getCalendarContainer={ trigger => trigger.parentNode }
                     formatMessage={ formatMessage }
                     rules={ [
                         {
                             required: true,
                             message:  this.props.intl.formatMessage({
-                                id: 'add-business-package-form.activation_datetime_error',
+                                id:
+                                    'add-business-package-form.activation_datetime_error',
                             }),
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='add-business-package-form.activation_datetime' /> }
+                    label={
+                        <FormattedMessage id='add-business-package-form.activation_datetime' />
+                    }
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <DecoratedDatePicker
@@ -57,20 +60,21 @@ export class AddBusinessPackageForm extends Component {
                     formItem
                     showTime
                     format='YYYY-MM-DD HH:mm:ss'
-                    getCalendarContainer={ trigger =>
-                        trigger.parentNode
-                    }
+                    getCalendarContainer={ trigger => trigger.parentNode }
                     formatMessage={ formatMessage }
                     rules={ [
                         {
                             required: true,
                             message:  this.props.intl.formatMessage({
-                                id: 'add-business-package-form.activation_datetime_error',
+                                id:
+                                    'add-business-package-form.expiration_datetime_error',
                             }),
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='add-business-package-form.activation_datetime' /> }
+                    label={
+                        <FormattedMessage id='add-business-package-form.expiration_datetime' />
+                    }
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <Button
