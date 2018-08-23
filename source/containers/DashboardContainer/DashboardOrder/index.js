@@ -12,7 +12,7 @@ import book from 'routes/book';
 
 // own
 import DashboardOrderDropTarget from './DashboardOrderDropTarget';
-import { DragItemTypes } from '../dashboardConfig';
+import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
 import DashboardTooltip from '../DashboardTooltip';
 import handleHover from '../dashboardCore/handleHover';
 
@@ -125,31 +125,47 @@ export default class DashboardOrder extends Component {
 
         const { tooltipPosition } = this.state;
 
+        const resizableStyles = {
+            gridRow:    `${x + 1} / span ${rows}`,
+            gridColumn: `${y + 1} / span ${columns}`,
+            // position:   'absolute',
+            margin:     1,
+            background: 'rebeccapurple',
+            // zIndex:     1,
+        };
+
         return (
             <Resizable
-                style={ {
-                    gridRow:    `${x + 1} / span ${rows}`,
-                    gridColumn: `${y + 1} / span ${columns}`,
-                    position:   'relative',
-                    // minWidth:   0,
-                    // minHeight:  28,
+                style={ resizableStyles }
+                minWidth={ 0 }
+                grid={ [ void 0, 30 ] }
+                // size={ { width: 'auto' } }
+                defaultSize={ { witdh: 'auto' } }
+                enable={ {
+                    top:         false,
+                    right:       false,
+                    bottom:      true,
+                    left:        false,
+                    topRight:    false,
+                    bottomRight: false,
+                    bottomLeft:  false,
+                    topLeft:     false,
                 } }
-                // defaultSize='auto'
-                size={ { widht: 0 } }
-                // defaultSize={ {
-                //     // height: 10,
-                //     minWidht: 0,
-                // } }
-                onResizeStart={ () => console.log('→ onResizeStart') }
+                axis='y'
+                onResizeStart={ () => {
+                    console.log('→ onResizeStart');
+
+                    return { ...resizableStyles, zIndex: 1 };
+                } }
                 onResizeStop={ () => console.log('→ onResizeStop') }
             >
                 <StyledDashboardOrder
                     isdragging={ isDragging ? 1 : 0 }
                     status={ status }
-                    x={ x }
-                    y={ y }
-                    columns={ columns }
-                    rows={ rows }
+                    // x={ x }
+                    // y={ y }
+                    // columns={ columns }
+                    // rows={ rows }
                     onClick={ () => history.push(`${book.order}/${id}`) }
                     onMouseEnter={ ev =>
                         this._showDashboardTooltip(
@@ -213,15 +229,20 @@ const _ordersStatus = status => {
 const StyledDashboardOrder = styled.div`
     position: relative;
     background: ${props => _ordersStatus(props.status)};
-    margin: 1px;
-    padding: 1px;
+    ${'' /* margin: 1px;
+    padding: 1px; */}
     color: white;
     font-size: 12px;
-    min-height: 28px;
+    height: ${ROW_HEIGHT - 1}px;
     cursor: ${props => props.status === 'success' ? 'pointer' : 'move'};
     opacity: ${props => props.isdragging ? 0.5 : 1};
-    ${'' /* grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
-    grid-column: ${props => `${props.y + 1} / span ${props.columns}`}; */} ${'' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */} min-width: 0;
+    ${
+    '' /* grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
+    grid-column: ${props => `${props.y + 1} / span ${props.columns}`}; */
+} ${
+    '' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */
+}
+    ${'' /* min-width: 0; */}
 `;
 
 const StyledDashboardOrderBox = styled.div`
