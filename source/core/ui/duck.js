@@ -78,6 +78,9 @@ export default function reducer(state = ReducerState, action) {
         case SET_PACKAGE_FETCHING_STATE:
             return { ...state, packageFetching: payload };
 
+        case SET_BUSINESS_PACKAGE_FETCHING_STATE:
+            return { ...state, businessPackageFetching: payload };
+
         case SET_ROLE_FETCHING_STATE:
             return { ...state, roleFetching: payload };
 

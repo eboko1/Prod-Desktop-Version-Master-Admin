@@ -30,6 +30,7 @@ export const DecoratedDatePicker = props => {
         getCalendarContainer,
         placeholder,
         allowClear,
+        initialValue,
 
         onChange,
     } = props;
@@ -77,6 +78,7 @@ export const DecoratedDatePicker = props => {
     };
 
     const datePicker = getFieldDecorator(field, {
+        ...initialValue ? { initialValue } : {},
         rules,
     })(
         ranges ? (

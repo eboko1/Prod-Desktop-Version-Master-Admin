@@ -1,15 +1,28 @@
 // vendor
 import React, { Component } from 'react';
 import { Modal, Icon } from 'antd';
+import { connect } from 'react-redux';
 
 // proj
-import { MODALS } from 'core/modals/duck';
+import { resetModal, MODALS } from 'core/modals/duck';
 
 import { SwitchBusinessForm } from 'forms';
 
+const mapStateToProps = state => {
+    return {
+        modal:   state.modals.modal,
+        loading: state.ui.searchBusinessesFetching,
+    };
+};
+
+const mapDispatch = {
+    resetModal,
+};
+
+@connect(mapStateToProps, mapDispatch)
 export default class SwitchBusinessModal extends Component {
     render() {
-        const { visible, resetModal, loading } = this.props;
+        const { modal: visible, resetModal, loading, setBusiness } = this.props;
 
         return (
             <Modal
@@ -18,7 +31,7 @@ export default class SwitchBusinessModal extends Component {
                 onCancel={ () => resetModal() }
                 footer={ null }
             >
-                <SwitchBusinessForm loading={ loading } />
+                <SwitchBusinessForm setBusiness={ setBusiness } loading={ loading } />
             </Modal>
         );
     }

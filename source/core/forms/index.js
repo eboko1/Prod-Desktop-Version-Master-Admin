@@ -8,6 +8,12 @@ import loginReducer, { moduleName as login } from './loginForm/duck';
 import addPackageReducer, {
     moduleName as addPackage,
 } from './addPackageForm/duck';
+import addBusinessPackageReducer, {
+    moduleName as addBusinessPackage,
+} from './addBusinessPackageForm/duck';
+import businessPackageReducer, {
+    moduleName as businessPackage,
+} from './businessPackageForm/duck';
 import editPackageReducer, {
     moduleName as editPackage,
 } from './editPackageForm/duck';
@@ -41,16 +47,18 @@ import orderTaskReducer, {
 
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
-    [ order ]:            orderReducer,
-    [ addClient ]:        addClientReducer,
-    [ universalFilters ]: universalFiltersReducer,
-    [ cancelReason ]:     cancelReasonReducer,
-    [ toSuccess ]:        toSuccessReducer,
-    [ login ]:            loginReducer,
-    [ orderTask ]:        orderTaskReducer,
-    [ addPackage ]:       addPackageReducer,
-    [ editPackage ]:      editPackageReducer,
-    [ addRole ]:          addRoleReducer,
-    [ editRole ]:         editRoleReducer,
-    [ switchBusiness ]:   switchBusinessReducer,
+    [ order ]:              orderReducer,
+    [ addClient ]:          addClientReducer,
+    [ universalFilters ]:   universalFiltersReducer,
+    [ cancelReason ]:       cancelReasonReducer,
+    [ toSuccess ]:          toSuccessReducer,
+    [ login ]:              loginReducer,
+    [ orderTask ]:          orderTaskReducer,
+    [ addPackage ]:         addPackageReducer,
+    [ addBusinessPackage ]: addBusinessPackageReducer,
+    [ businessPackage ]:    businessPackageReducer,
+    [ editPackage ]:        editPackageReducer,
+    [ addRole ]:            addRoleReducer,
+    [ editRole ]:           editRoleReducer,
+    [ switchBusiness ]:     switchBusinessReducer,
 });
