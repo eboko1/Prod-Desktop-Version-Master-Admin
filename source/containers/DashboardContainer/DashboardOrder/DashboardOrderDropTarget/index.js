@@ -23,7 +23,7 @@ const collectTarget = (connect, monitor) => ({
 });
 
 @DropTarget(DragItemTypes.ORDER, orderTarget, collectTarget)
-class DashboardOrderDropTarget extends Component {
+export default class DashboardOrderDropTarget extends Component {
     _getOrderDropTargetRef = dropTarget => {
         this.orderDropTargetRef = dropTarget;
         this.props.connectDropTarget(dropTarget);
@@ -50,5 +50,3 @@ const StyledDashboardOrderDropTarget = styled.div`
     text-overflow: ellipsis;
     background-color: ${props => props.overlayDrop && 'var(--primary)'};
 `;
-
-export default DashboardOrderDropTarget;
