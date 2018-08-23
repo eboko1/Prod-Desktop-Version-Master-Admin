@@ -90,6 +90,7 @@ export default class DashboardOrder extends Component {
         // console.log('→ dashboardRef', dashboardRef);
         // console.log('→ this.state.height', this.state.height);
         // const reRef = this._resizableRef;
+        console.log('→ dashboardRef', dashboardRef);
 
         return (
             <Resizable
@@ -131,7 +132,7 @@ export default class DashboardOrder extends Component {
                 ref={ c => {
                     this.resizable = c;
                 } }
-                bounds={ dashboardRef }
+                bounds={ dashboardRef.current }
             >
                 { /* <div ref={ this._resizableRef }> */ }
                 <DashboardOrderDragSource { ...this.props } />
