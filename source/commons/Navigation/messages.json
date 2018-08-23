@@ -27,7 +27,8 @@
         "navigation.system_managers": "System managers",
         "navigation.notice": "Notice",
         "navigation.suggest_idea": "Suggest idea",
-        "navigation.package": "Packages"
+        "navigation.package": "Packages",
+        "navigation.business_package": "Business-Package"
     },
     "ru": {
         "navigation.operations": "Операции",
@@ -57,7 +58,8 @@
         "navigation.system_managers": "Менеджеры системы",
         "navigation.notice": "Уведомления",
         "navigation.suggest_idea": "Предложить идею",
-        "navigation.package": "Пакеты"
+        "navigation.package": "Пакеты",
+        "navigation.business_package": "Бизнесы-Пакеты"
     },
     "uk": {
         "navigation.operations": "Операції",
@@ -87,6 +89,7 @@
         "navigation.system_managers": "Менеджери системи",
         "navigation.notice": "Сповіщення",
         "navigation.suggest_idea": "Запропонувати ідею",
-        "navigation.package": "Пакети"
+        "navigation.package": "Пакети",
+        "navigation.business_package": "Бізнеси-Пакети"
     }
 }
