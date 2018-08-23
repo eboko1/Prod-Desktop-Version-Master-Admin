@@ -183,6 +183,8 @@ const _ordersStatus = status => {
             return 'var(--success)';
         case 'cancel':
             return 'var(--cancel)';
+        case 'invite':
+            return 'var(--invite)';
         default:
             return '#ddd';
     }
