@@ -117,10 +117,10 @@ export default class DashboardOrderDragSource extends Component {
             <StyledDashboardOrder
                 isdragging={ isDragging ? 1 : 0 }
                 status={ status }
-                // x={ x }
-                // y={ y }
-                // columns={ columns }
-                // rows={ rows }
+                x={ x }
+                y={ y }
+                columns={ columns }
+                rows={ rows }
                 onClick={ () => history.push(`${book.order}/${id}`) }
                 onMouseEnter={ ev =>
                     this._showDashboardTooltip(
@@ -160,20 +160,17 @@ export default class DashboardOrderDragSource extends Component {
 const StyledDashboardOrder = styled.div`
     position: relative;
     background: ${props => ordersStatus(props.status)};
-    ${'' /* margin: 1px;
-    padding: 1px; */}
     color: white;
     font-size: 12px;
-    height: ${ROW_HEIGHT - 1}px;
     cursor: ${props => props.status === 'success' ? 'pointer' : 'move'};
     opacity: ${props => props.isdragging ? 0.5 : 1};
     ${
     '' /* grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
     grid-column: ${props => `${props.y + 1} / span ${props.columns}`}; */
-} ${
-    '' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */
 }
-    ${'' /* min-width: 0; */}
+    ${
+    '' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */
+} ${'' /* min-width: 0; */};
 `;
 
 const StyledDashboardOrderBox = styled.div`
