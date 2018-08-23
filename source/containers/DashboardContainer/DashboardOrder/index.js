@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { withRouter } from 'react-router';
 import { DragSource } from 'react-dnd';
+import Resizable from 're-resizable';
 import moment from 'moment';
 
 // proj
@@ -92,6 +93,7 @@ export default class DashboardOrder extends Component {
 
     state = {
         tooltipPosition: null,
+        resizePosition:  null,
     };
 
     _getOrderRef = order => {
@@ -124,31 +126,49 @@ export default class DashboardOrder extends Component {
         const { tooltipPosition } = this.state;
 
         return (
-            <StyledDashboardOrder
-                isdragging={ isDragging ? 1 : 0 }
-                status={ status }
-                x={ x }
-                y={ y }
-                columns={ columns }
-                rows={ rows }
-                onClick={ () => history.push(`${book.order}/${id}`) }
-                onMouseEnter={ ev =>
-                    this._showDashboardTooltip(
-                        ev,
-                        this.orderRef.getBoundingClientRect(),
-                        dashboardRef,
-                    )
-                }
-                onMouseDown={ this._hideDashboardTooltip }
-                onMouseLeave={ this._hideDashboardTooltip }
-                innerRef={ order => this._getOrderRef(order) }
+            <Resizable
+                style={ {
+                    gridRow:    `${x + 1} / span ${rows}`,
+                    gridColumn: `${y + 1} / span ${columns}`,
+                    position:   'relative',
+                    // minWidth:   0,
+                    // minHeight:  28,
+                } }
+                // defaultSize='auto'
+                size={ { widht: 0 } }
+                // defaultSize={ {
+                //     // height: 10,
+                //     minWidht: 0,
+                // } }
+                onResizeStart={ () => console.log('→ onResizeStart') }
+                onResizeStop={ () => console.log('→ onResizeStop') }
             >
-                <StyledDashboardOrderBox>
-                    { [ ...Array(rows).keys() ].map((_, index) =>
-                        this._renderDashboardOrderDropTarget(index)) }
-                </StyledDashboardOrderBox>
-                <DashboardTooltip position={ tooltipPosition } { ...options } />
-            </StyledDashboardOrder>
+                <StyledDashboardOrder
+                    isdragging={ isDragging ? 1 : 0 }
+                    status={ status }
+                    x={ x }
+                    y={ y }
+                    columns={ columns }
+                    rows={ rows }
+                    onClick={ () => history.push(`${book.order}/${id}`) }
+                    onMouseEnter={ ev =>
+                        this._showDashboardTooltip(
+                            ev,
+                            this.orderRef.getBoundingClientRect(),
+                            dashboardRef,
+                        )
+                    }
+                    onMouseDown={ this._hideDashboardTooltip }
+                    onMouseLeave={ this._hideDashboardTooltip }
+                    innerRef={ order => this._getOrderRef(order) }
+                >
+                    <StyledDashboardOrderBox>
+                        { [ ...Array(rows).keys() ].map((_, index) =>
+                            this._renderDashboardOrderDropTarget(index)) }
+                    </StyledDashboardOrderBox>
+                    <DashboardTooltip position={ tooltipPosition } { ...options } />
+                </StyledDashboardOrder>
+            </Resizable>
         );
     }
 
@@ -183,6 +203,8 @@ const _ordersStatus = status => {
             return 'var(--success)';
         case 'cancel':
             return 'var(--cancel)';
+        case 'invite':
+            return 'var(--invite)';
         default:
             return '#ddd';
     }
@@ -198,9 +220,8 @@ const StyledDashboardOrder = styled.div`
     min-height: 28px;
     cursor: ${props => props.status === 'success' ? 'pointer' : 'move'};
     opacity: ${props => props.isdragging ? 0.5 : 1};
-    grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
-    grid-column: ${props => `${props.y + 1} / span ${props.columns}`};
-    ${'' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */} min-width: 0;
+    ${'' /* grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
+    grid-column: ${props => `${props.y + 1} / span ${props.columns}`}; */} ${'' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */} min-width: 0;
 `;
 
 const StyledDashboardOrderBox = styled.div`
