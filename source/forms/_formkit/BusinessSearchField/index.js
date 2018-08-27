@@ -4,13 +4,10 @@ import { connect } from 'react-redux';
 import { Select, Spin } from 'antd';
 import { injectIntl } from 'react-intl';
 
-// own
+// proj
 import { setBusinessSearchQuery } from 'core/search/duck';
 
-const mapDispatchToProps = {
-    setBusinessSearchQuery,
-};
-
+// own
 const Option = Select.Option;
 
 const mapStateToProps = state => ({
@@ -18,16 +15,16 @@ const mapStateToProps = state => ({
     isFetchingBusinesses: state.search.isFetchingBusinesses,
 });
 
+const mapDispatchToProps = {
+    setBusinessSearchQuery,
+};
+
 @injectIntl
 @connect(
     mapStateToProps,
     mapDispatchToProps,
 )
-export default class BusinessSearchContainer extends Component {
-    constructor(props) {
-        super(props);
-    }
-
+export default class BusinessSearchField extends Component {
     render() {
         const { onSelect, setBusinessSearchQuery } = this.props;
         const { businesses, isFetchingBusinesses, businessId } = this.props;

@@ -7,7 +7,11 @@ import { Icon } from 'antd';
 import _ from 'lodash';
 
 // proj
-import { fetchBusinessPackages, setPage, setSort } from 'core/businessPackage/duck';
+import {
+    fetchBusinessPackages,
+    setPage,
+    setSort,
+} from 'core/businessPackage/duck';
 
 import { Layout, Spinner } from 'commons';
 import { BusinessPackageContainer } from 'containers';
@@ -25,7 +29,10 @@ const mapDispatchToProps = {
     setSort,
 };
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class BusinessPackagePage extends Component {
     constructor(props) {
         super(props);
@@ -41,7 +48,7 @@ export default class BusinessPackagePage extends Component {
         return isFetching ? (
             <Spinner spin={ isFetching } />
         ) : (
-            <Layout title={ 'Business packages' }>
+            <Layout title={ <FormattedMessage id='business_packages' /> }>
                 <BusinessPackageContainer businessPackages={ businessPackages } />
             </Layout>
         );
