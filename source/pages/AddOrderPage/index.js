@@ -118,7 +118,9 @@ class AddOrderPage extends Component {
     render() {
         const { modal, resetModal, addClientFormData, spinner } = this.props;
 
-        return !spinner ? (
+        return spinner ? (
+            <Spinner spin={ spinner } />
+        ) : (
             <Layout
                 title={ <FormattedMessage id='add-order-page.add_order' /> }
                 controls={
@@ -180,6 +182,7 @@ class AddOrderPage extends Component {
                     setAddClientModal={ this._setAddClientModal }
                     modal={ modal }
                     addOrderForm
+                    location={ this.props.history.location }
                 />
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
@@ -189,8 +192,6 @@ class AddOrderPage extends Component {
                     addClientFormData={ addClientFormData }
                 />
             </Layout>
-        ) : (
-            <Spinner spin={ spinner } />
         );
     }
 }
