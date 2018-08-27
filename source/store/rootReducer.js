@@ -21,6 +21,7 @@ import roleReducer, { moduleName as roleModule } from 'core/role/duck';
 import dashboardReducer, {
     moduleName as dashboardModule,
 } from 'core/dashboard/duck';
+import searchReducer, { moduleName as searchModule} from 'core/search/duck';
 
 export const persistConfig = {
     key:       'user',
@@ -40,6 +41,7 @@ const reducer = combineReducers({
     [ packageModule ]:         packageReducer,
     [ roleModule ]:            roleReducer,
     [ businessPackageModule ]: businessPackageReducer,
+    [ searchModule ]:          searchReducer,
     intl,
     router,
 });

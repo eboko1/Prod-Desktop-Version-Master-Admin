@@ -10,6 +10,7 @@ import { saga as uiSaga } from 'core/ui/saga';
 import { saga as dashboardSaga } from 'core/dashboard/saga';
 import { saga as ordersSaga } from 'core/orders/saga';
 import { saga as orderSaga } from 'core/order/saga';
+import { saga as searchSaga } from 'core/search/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
@@ -41,6 +42,7 @@ export default function* rootSaga() {
         rolesSaga(),
         switchBusinessSaga(),
         businessPackageSaga(),
+        searchSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

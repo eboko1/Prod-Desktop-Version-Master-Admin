@@ -9,6 +9,7 @@ import moment from 'moment';
 // proj
 import { Catcher } from 'commons';
 import { AddBusinessPackageForm, BusinessPackageForm } from 'forms';
+import { BusinessSearchContainer } from 'containers';
 
 // own
 import {
@@ -17,7 +18,6 @@ import {
     setSort,
     setPage,
     setFilters,
-    setBusinessSearchQuery,
     hideForms,
     setShowCreateBusinessPackageForm,
     setShowUpdateBusinessPackageForm,
@@ -30,7 +30,6 @@ const mapDispatchToProps = {
     setSort,
     setPage,
     setFilters,
-    setBusinessSearchQuery,
     hideForms,
     setShowCreateBusinessPackageForm,
     setShowUpdateBusinessPackageForm,
@@ -42,15 +41,13 @@ const Option = Select.Option;
 const mapStateToProps = state => ({
     showCreateBusinessPackageForm:
         state.businessPackage.showCreateBusinessPackageForm,
-    businesses:           state.businessPackage.businesses,
-    isFetchingBusinesses: state.businessPackage.isFetchingBusinesses,
-    businessPackage:      state.businessPackage.businessPackage,
-    businessPackages:     state.businessPackage.businessPackages,
-    rolesPackages:        state.businessPackage.rolesPackages,
-    errors:               state.businessPackage.errors,
-    sort:                 state.businessPackage.sort,
-    filters:              state.businessPackage.filters,
-    page:                 state.businessPackage.page,
+    businessPackage:  state.businessPackage.businessPackage,
+    businessPackages: state.businessPackage.businessPackages,
+    rolesPackages:    state.businessPackage.rolesPackages,
+    errors:           state.businessPackage.errors,
+    sort:             state.businessPackage.sort,
+    filters:          state.businessPackage.filters,
+    page:             state.businessPackage.page,
 });
 
 const formItemLayout = {
@@ -64,7 +61,10 @@ const sortOptions = {
 };
 
 @injectIntl
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class BusinessPackageContainer extends Component {
     constructor(props) {
         super(props);
@@ -83,7 +83,6 @@ export default class BusinessPackageContainer extends Component {
             createBusinessPackage,
             updateBusinessPackage,
             setFilters,
-            setBusinessSearchQuery,
             setShowCreateBusinessPackageForm,
             setShowUpdateBusinessPackageForm,
         } = this.props;
@@ -221,32 +220,10 @@ export default class BusinessPackageContainer extends Component {
                         }
                         colon={ false }
                     >
-                        <Select
-                            showSearch
-                            allowClear
-                            filterOption={ false }
-                            notFoundContent={
-                                isFetchingBusinesses ? (
-                                    <Spin size='small' />
-                                ) : 
-                                    'Not found'
-                                
-                            }
-                            onSearch={ item => setBusinessSearchQuery(item) }
-                            onChange={ businessId => setFilters({ businessId }) }
-                            value={ filters.businessId || void 0 }
-                        >
-                            { isFetchingBusinesses
-                                ? []
-                                : businesses.map(({ businessId, name }) => (
-                                    <Option
-                                        key={ businessId }
-                                        value={ businessId }
-                                    >
-                                        { name }
-                                    </Option>
-                                )) }
-                        </Select>
+                        <BusinessSearchContainer
+                            businessId={ filters.businessId }
+                            onSelect={ businessId => setFilters({ businessId }) }
+                        />
                     </FormItem>
                     <Button
                         style={ { alignSelf: 'normal' } }
