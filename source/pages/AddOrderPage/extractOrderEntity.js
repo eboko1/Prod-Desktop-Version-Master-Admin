@@ -98,12 +98,13 @@ export function convertFieldsValuesToDbEntity(
                 : void 0;
     } catch (err) {}
 
+    const orderDuration = _.get(orderFields, 'duration.value');
     const order = {
         clientId:            _.get(orderFields, 'selectedClient.clientId'),
         clientVehicleId:     _.get(orderFields, 'clientVehicle.value'),
         businessRequisiteId: _.get(orderFields, 'requisite.value'),
         managerId:           _.get(orderFields, 'manager.value'),
-        duration:            _.get(orderFields, 'duration.value'),
+        duration:            orderDuration ? Math.max(orderDuration, 0.5) : orderDuration,
         clientPhone:         _.get(orderFields, 'clientPhone.value'),
         paymentMethod:       _.get(orderFields, 'paymentMethod.value'),
         clientRequisiteId:   _.get(orderFields, 'clientRequisite.value'),
@@ -123,7 +124,8 @@ export function convertFieldsValuesToDbEntity(
     };
 
     if (form) {
-        order.duration = form.getFieldValue('duration');
+        const formDuration = form.getFieldValue('duration');
+        order.duration = formDuration ? Math.max(formDuration, 0.5) : formDuration;
     }
 
     return order;

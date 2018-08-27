@@ -53,17 +53,13 @@ export class AddClientForm extends Component {
                 layout='vertical'
                 onSubmit={ () => handleAddClientModalSubmit() }
             >
-                { vehicles.length ? (
-                    <div>
-                        <ClientsVehiclesTable
-                            removeClientVehicle={ this.props.removeClientVehicle }
-                            vehicles={ vehicles }
-                        />
-                        <br />
-                    </div>
-                ) : 
-                    ''
-                }
+                <div>
+                    <ClientsVehiclesTable
+                        removeClientVehicle={ this.props.removeClientVehicle }
+                        vehicles={ vehicles }
+                    />
+                    <br />
+                </div>
 
                 <Row gutter={ 8 } type='flex' align='bottom'>
                     <Col span={ 3 }>
@@ -101,9 +97,9 @@ export class AddClientForm extends Component {
                                     trigger.parentNode
                                 }
                             >
-                                { years.map(year => (
+                                { years.sort((v1, v2) => v2 - v1).map(year => (
                                     <Option value={ year } key={ v4() }>
-                                        { year }
+                                        { String(year) }
                                     </Option>
                                 )) }
                             </DecoratedSelect>
