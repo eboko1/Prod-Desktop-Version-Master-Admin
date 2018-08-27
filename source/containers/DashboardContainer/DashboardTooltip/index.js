@@ -1,11 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-// import { findDOMNode } from 'react-dom';
 import styled from 'styled-components';
-
-// own
-import DashboardOrder from '../DashboardOrder';
 
 class TooltipBox extends Component {
     render() {
@@ -41,13 +37,13 @@ class TooltipBox extends Component {
                 vehicleModelName ||
                 comment ? 
                     <>
-                        <div>
+                        <DashboardTooltipClient>
                             { clientName } { clientSurname }
-                        </div>
+                        </DashboardTooltipClient>
                         {clientName !== clientPhone && <div>{ clientPhone }</div>}
-                        <div>
+                        <DashboardTooltipVehicle>
                             { vehicleMakeName } { vehicleModelName } { vehicleYear }
-                        </div>
+                        </DashboardTooltipVehicle>
                         {comment && (
                             <div>
                                 <span style={ { color: 'var(--link)' } }>
@@ -66,6 +62,18 @@ class TooltipBox extends Component {
         ) : null;
     }
 }
+
+const DashboardTooltipClient = styled.div`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
+
+const DashboardTooltipVehicle = styled.div`
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;
 
 const DashboardTooltipComment = styled.div`
     border: 1px var(--link) solid;

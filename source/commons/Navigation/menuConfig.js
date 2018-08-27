@@ -152,6 +152,12 @@ export default {
             link:     book.packagePage,
             name:     'navigation.package',
         },
+        {
+            key:      '/businessPackage',
+            iconType: 'book',
+            link:     book.businessPackagePage,
+            name:     'navigation.business_package',
+        },
     ],
 
     getSelectedByRoute: function getSelectedByRoute(currentPath) {

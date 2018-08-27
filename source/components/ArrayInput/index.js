@@ -8,77 +8,80 @@ import { DecoratedInput } from 'forms/DecoratedFields';
 // own
 const FormItem = Form.Item;
 
+let uuid = 0;
 class ArrayInput extends Component {
-    remove = key => {
-        const { fieldName, values, optional } = this.props;
+    constructor(props) {
+        super(props);
 
-        if (values.length === 1 && !optional) {
+        this.state = {
+            keys: [],
+        };
+    }
+    remove = key => {
+        const {
+            optional,
+            // form: { getFieldValue, setFieldsValue },
+        } = this.props;
+
+        //const keys = getFieldValue(`${this.props.fieldName}Keys`);
+        const keys = this.state.keys;
+        if (keys.length === 1 && !optional) {
             return;
         }
 
-        if (values.length === 1) {
-            this.props.onChange(
-                {
-                    [ fieldName ]: [],
-                },
-                { form: '', field: fieldName },
-            );
-        }
-        const newValues = [ ...values.slice(0, key), ...values.slice(key + 1, values.length) ].map((value, index) => ({
-            ...value,
-            name: `${fieldName}[${index}]`,
-        }));
-
-        this.props.onChange({
-            [ fieldName ]: newValues,
-        });
+        this.setState({ keys: keys.filter(value => value !== key) });
+        // setFieldsValue({
+        //     [ `${this.props.fieldName}Keys` ]: keys.filter(
+        //         value => value !== key,
+        //     ),
+        // });
     };
 
     add = () => {
-        const { fieldName, values } = this.props;
-        const newValue = {
-            errors:     void 0,
-            name:       `${fieldName}[${values.length}]`,
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      true,
-        };
-
-        this.props.onChange(
-            { [ fieldName ]: [ ...values, newValue ] },
-            { form: '', field: fieldName },
-        );
+        // const keys = this.props.form.getFieldValue(
+        //     `${this.props.fieldName}Keys`,
+        // );
+        // this.props.form.setFieldsValue({
+        //     [ `${this.props.fieldName}Keys` ]: [ ...keys, uuid++ ],
+        // });
+        const keys = this.state.keys;
+        this.setState({ keys: [ ...keys, uuid++ ] });
     };
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { fieldName, values, fieldTitle, rules, optional } = this.props;
+        const { fieldName, fieldTitle, rules, optional } = this.props;
 
-        const formItems = values.map((value, index) => {
+        // getFieldDecorator(`${fieldName}Keys`, {
+        //     initialValue: optional ? [] : [ 0 ],
+        // });
+        //const keys = getFieldValue(`${fieldName}Keys`);
+        const keys = this.state.keys;
+
+        const formItems = keys.map(key => {
             return (
-                <Row type='flex' align='middle' key={ index }>
+                <Row type='flex' align='middle' key={ key }>
                     <Col span={ 20 }>
                         <DecoratedInput
                             hasFeedback
                             formItem
                             label={ fieldTitle }
                             getFieldDecorator={ getFieldDecorator }
-                            key={ index }
-                            field={ `${fieldName}[${index}]` }
+                            key={ key }
+                            field={ `${fieldName}[${key}]` }
                             rules={ rules }
                         />
                     </Col>
                     <Col span={ 4 }>
                         <Row type='flex' justify='center'>
-                            { values.length > 1 || optional ? (
+                            { keys.length > 1 || optional ? (
                                 <Icon
-                                    key={ index }
+                                    key={ key }
                                     className='dynamic-delete-button'
                                     type='minus-circle-o'
                                     style={ { fontSize: 20, color: '#cc1300' } }
-                                    disabled={ values.length === 1 }
-                                    onClick={ () => this.remove(index) }
+                                    disabled={ keys.length === 1 }
+                                    onClick={ () => this.remove(key) }
                                 />
                             ) : null }
                         </Row>

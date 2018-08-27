@@ -1,53 +1,51 @@
 // vendor
-import React, { Component } from 'react';
-import { Button, Form} from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
-
+import React, { Component } from "react";
+import { Button, Form } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
 
 // proj
-import { withReduxForm } from 'utils';
-import {fetchSalary, saveSalary} from 'core/settingSalary/duck'
-import { Catcher } from 'commons';
-import {DecoratedDatePicker} from 'forms/DecoratedFields/DecoratedDatePicker'
-import SettingSalaryTable from 'components/SettingSalaryTable'
+import { withReduxForm } from "utils";
+import { fetchSalary, saveSalary, deleteSalary } from "core/settingSalary/duck";
+import { Catcher } from "commons";
+import { DecoratedDatePicker } from "forms/DecoratedFields/DecoratedDatePicker";
+import SettingSalaryTable from "components/SettingSalaryTable";
 
 // own
 
-import Styles from './styles.m.css'
+import Styles from "./styles.m.css";
 const mapStateToProps = state => {
     return {
-        salaries:  state.settingSalary.salaries,
-        employees: state.employee.employees,
+        salaries: state.settingSalary.salaries,
+        employees: state.employee.employees
     };
 };
 
 const mapDispatchToProps = {
     fetchSalary,
     saveSalary,
+    deleteSalary
 };
 
 const FormItem = Form.Item;
 
 @injectIntl
-@withReduxForm({actions: mapDispatchToProps, mapStateToProps})
+@withReduxForm({ actions: mapDispatchToProps, mapStateToProps })
 export default class SettingSalaryContainer extends Component {
     constructor(props) {
         super(props);
+    }
 
-    }   
-
-
-    componentDidMount(){
-        this.props.fetchSalary()
+    componentDidMount() {
+        this.props.fetchSalary();
     }
     /* eslint-enable complexity */
 
     render() {
-        const {saveSalary, salaries, employees}=this.props
+        const { saveSalary, deleteSalary, salaries, employees } = this.props;
 
         return (
             <Catcher>
-                <div className={ Styles.downloadFile }>
+                {/* <div className={ Styles.downloadFile }>
                     <DecoratedDatePicker
                         ranges
                         field='birthday'
@@ -69,13 +67,15 @@ export default class SettingSalaryContainer extends Component {
                             <FormattedMessage id='setting-salary.calculate'/>
                         </Button>
                     </FormItem>
-                </div>
+                </div> */}
                 <div>
                     <SettingSalaryTable
-                        salaries={ salaries }
-                        saveSalary={ saveSalary }
-                        employees={ employees }/>
-                </div> 
+                        salaries={salaries}
+                        saveSalary={saveSalary}
+                        employees={employees}
+                        deleteSalary={deleteSalary}
+                    />
+                </div>
             </Catcher>
         );
     }

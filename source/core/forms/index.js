@@ -8,6 +8,12 @@ import loginReducer, { moduleName as login } from './loginForm/duck';
 import addPackageReducer, {
     moduleName as addPackage,
 } from './addPackageForm/duck';
+import addBusinessPackageReducer, {
+    moduleName as addBusinessPackage,
+} from './addBusinessPackageForm/duck';
+import businessPackageReducer, {
+    moduleName as businessPackage,
+} from './businessPackageForm/duck';
 import editPackageReducer, {
     moduleName as editPackage,
 } from './editPackageForm/duck';
@@ -57,4 +63,7 @@ export const formsReducer = combineReducers({
     [ switchBusiness ]:             switchBusinessReducer,
     [ employeeFormModule ]:         employeeFormReducer,
     [ employeeScheduleFormModule ]: employeeScheduleFormReducer,
+    [ addBusinessPackage ]:         addBusinessPackageReducer,
+    [ businessPackage ]:            businessPackageReducer,
+
 });

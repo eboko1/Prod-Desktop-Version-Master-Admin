@@ -7,7 +7,8 @@ import { FormattedMessage } from 'react-intl';
 
 // proj
 import { selectAdmin } from 'core/auth/duck';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { setBusiness } from 'core/forms/switchBusinessForm/duck'
+import { setModal, MODALS } from 'core/modals/duck';
 
 import { SwitchBusinessModal } from 'modals';
 import book from 'routes/book';
@@ -17,15 +18,13 @@ import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
-        modal:   state.modals.modal,
-        loading: state.ui.searchBusinessesFetching,
         isAdmin: selectAdmin(state),
     };
 };
 
 const mapDispatch = {
+    setBusiness,
     setModal,
-    resetModal,
 };
 
 @connect(mapStateToProps, mapDispatch)
@@ -61,9 +60,7 @@ export default class HeaderMenu extends Component {
                     onClick={ logout }
                 />
                 <SwitchBusinessModal
-                    loading={ this.props.loading }
-                    visible={ this.props.modal }
-                    resetModal={ this.props.resetModal }
+                    setBusiness={ this.props.setBusiness }
                 />
             </div>
         );

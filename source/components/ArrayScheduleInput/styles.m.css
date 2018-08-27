@@ -1,0 +1,14 @@
+.CheckboxBlock {
+    display: flex;
+}
+.CheckboxBlock label {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+}
+.Hours {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}

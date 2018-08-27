@@ -6,4 +6,27 @@ const DragItemTypes = Object.freeze({
     DISABLED: 'disabled',
 });
 
-export { ROW_HEIGHT, DragItemTypes };
+const ordersStatus = status => {
+    switch (status) {
+        case 'reserve':
+            return 'var(--reserve)';
+        case 'not_complete':
+            return 'var(--approve)';
+        case 'required':
+            return 'var(--required)';
+        case 'approve':
+            return 'var(--approve)';
+        case 'progress':
+            return 'var(--progress)';
+        case 'success':
+            return 'var(--success)';
+        case 'cancel':
+            return 'var(--cancel)';
+        case 'invite':
+            return 'var(--invite)';
+        default:
+            return '#ddd';
+    }
+};
+
+export { ROW_HEIGHT, DragItemTypes, ordersStatus };

@@ -6,7 +6,6 @@ import { Form, List } from 'antd';
 // proj
 import {
     setSearchQuery,
-    setBusiness,
     onChangeSwitchBusinessForm,
 } from 'core/forms/switchBusinessForm/duck';
 
@@ -22,7 +21,6 @@ import Styles from './styles.m.css';
     actions: {
         change: onChangeSwitchBusinessForm,
         setSearchQuery,
-        setBusiness,
     },
 })
 export class SwitchBusinessForm extends Component {

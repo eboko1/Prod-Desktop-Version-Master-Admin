@@ -11,6 +11,8 @@ import ArrayInput from './ArrayInput';
 import OrderFormTabs from './OrderForm/OrderFormTabs';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 import Loader from './Loader';
+import ArrayScheduleInput from './ArrayScheduleInput';
+
 
 export {
     LanguagePad,
@@ -27,4 +29,5 @@ export {
     ArrayInput,
     OrderFormTabs,
     Loader,
+    ArrayScheduleInput,
 };

@@ -8,6 +8,8 @@ export const FETCH_SALARY = `${prefix}/FETCH_SALARY`;
 export const FETCH_SALARY_SUCCESS = `${prefix}/FETCH_SALARY_SUCCESS`;
 export const SAVE_SALARY = `${prefix}/SAVE_SALARY`;
 export const SAVE_SALARY_SUCCESS = `${prefix}/SAVE_SALARY_SUCCESS`;
+export const DELETE_SALARY = `${prefix}/DELETE_SALARY`;
+export const DELETE_SALARY_SUCCESS = `${prefix}/DELETE_SALARY_SUCCESS`;
 /**
  * Reducer
  * */
@@ -24,19 +26,16 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-
         case FETCH_SALARY:
             return {
                 ...state,
                 salaries: null,
             };
         case FETCH_SALARY_SUCCESS:
-
             return {
                 ...state,
                 salaries: payload,
             };
-
 
         default:
             return state;
@@ -53,9 +52,8 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export const fetchSalary = () =>({
+export const fetchSalary = () => ({
     type: FETCH_SALARY,
-
 });
 
 export const fetchSalarySuccess = data => ({
@@ -63,9 +61,9 @@ export const fetchSalarySuccess = data => ({
     payload: data,
 });
 
-export const saveSalary = (salary, id) =>({
+export const saveSalary = (salary, id) => ({
     type:    SAVE_SALARY,
-    payload: {salary: salary, id: id},
+    payload: { salary: salary, id: id },
 });
 
 export const saveSalarySuccess = data => ({
@@ -73,3 +71,12 @@ export const saveSalarySuccess = data => ({
     payload: data,
 });
 
+export const deleteSalary = id => ({
+    type:    DELETE_SALARY,
+    payload: { id },
+});
+
+export const deleteSalarySuccess = data => ({
+    type:    DELETE_SALARY_SUCCESS,
+    payload: data,
+});

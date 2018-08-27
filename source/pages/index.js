@@ -11,6 +11,7 @@ import RolePage from './RolePage';
 import EmployeePage from './EmployeePage';
 import AddEmployeePage from './AddEmployeePage';
 import EditEmployeePage from './EditEmployeePage';
+import BusinessPackagePage from './BusinessPackagePage';
 
 export {
     DashboardPage,
@@ -26,4 +27,5 @@ export {
     EmployeePage,
     AddEmployeePage,
     EditEmployeePage,
+    BusinessPackagePage,
 };

@@ -14,7 +14,9 @@ const book = Object.freeze({
     addEmployee:         '/employees/add',
     editEmployee:        '/employees/:id',
     packagePage:         '/packages',
+    businessPackagePage: '/businesses/packages',
     rolePage:            '/packages/:id',
+
     // Orders
     orders:              '/orders',
     ordersByStatuses:    '/orders/:ordersStatuses',

@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon, Rate} from 'antd';
+import { Table, Icon, Rate } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
@@ -10,7 +10,7 @@ import { withRouter } from 'react-router';
 // proj
 import { Catcher } from 'commons';
 import book from 'routes/book';
-import Styles from './styles.m.css'
+import Styles from './styles.m.css';
 
 @withRouter
 class EmployeeTable extends Component {
@@ -22,28 +22,31 @@ class EmployeeTable extends Component {
                 dataIndex: 'review',
                 width:     '15%',
                 render:    (text, record) => {
-                    
                     return (
                         <>
-                            <Link to={ book.editEmployee.replace(':id', record.id)  }>
+                            <Link
+                                to={ book.editEmployee.replace(':id', record.id) }
+                            >
                                 <Icon
                                     className={ Styles.employeeTableIcon }
                                     onClick={ () => {
-                                        this.props.initEmployeeForm(record)
+                                        this.props.initEmployeeForm(record);
                                     } }
                                     type='edit'
-                                /></Link>
+                                />
+                            </Link>
                             <Icon
                                 className={ Styles.employeeTableIcon }
                                 onClick={ () => {
-                                    console.log('hello')
-                               
+                                    this.props.deleteEmployee(
+                                        record.id,
+                                        this.props.kind,
+                                    );
                                 } }
                                 type='delete'
                             />
                         </>
                     );
-                       
                 },
             },
             // {
@@ -61,7 +64,9 @@ class EmployeeTable extends Component {
                 title:     <FormattedMessage id='employee-table.employee' />,
                 dataIndex: 'name',
                 width:     '20%',
-                render:    (text, record) => <div>{ `${record.name} ${record.surname}` }</div>,
+                render:    (text, record) => (
+                    <div>{ `${record.name} ${record.surname}` }</div>
+                ),
             },
             {
                 title:     <FormattedMessage id='status' />,
@@ -69,27 +74,38 @@ class EmployeeTable extends Component {
                 width:     '20%',
             },
             {
-                title:     <FormattedMessage id='employee-table.date_administation_delay' />,
+                title: (
+                    <FormattedMessage id='employee-table.date_administation_delay' />
+                ),
                 dataIndex: 'hireDate',
                 width:     '15%',
                 render:    (text, record) => (
                     <div>
                         { /* { `${record.hireDate?moment(record.hireDate).format('DD.MM.YYYY'):''}/${record.fireDate?moment(record.fireDate).format('DD.MM.YYYY'):''}` } */ }
-                        <p>{ record.hireDate?moment(record.hireDate).format('DD.MM.YYYY'):'' }</p>
+                        <p>
+                            { record.hireDate
+                                ? moment(record.hireDate).format('DD.MM.YYYY')
+                                : '' }
+                        </p>
                         <p>-</p>
-                        <p>{ record.fireDate?moment(record.fireDate).format('DD.MM.YYYY'):'' }</p>
+                        <p>
+                            { record.fireDate
+                                ? moment(record.fireDate).format('DD.MM.YYYY')
+                                : '' }
+                        </p>
                     </div>
                 ),
             },
             {
-                title: (
-                    <FormattedMessage id='employee-table.rating' />
-                ),
+                title:     <FormattedMessage id='employee-table.rating' />,
                 dataIndex: 'rating',
                 width:     '20%',
-                render:    (text, record) => <div>{ text?<Rate disabled defaultValue={ text }/>:'' }</div>,
+                render:    (text, record) => (
+                    <div>
+                        { text ? <Rate disabled defaultValue={ text } /> : '' }
+                    </div>
+                ),
             },
-            
         ];
     }
 
@@ -100,11 +116,15 @@ class EmployeeTable extends Component {
         return (
             <Catcher>
                 <Table
-                    dataSource={ employees&&employees.length>0?employees.map((task, index) => ({
-                        ...task,
-                        index,
-                        key: v4(),
-                    })):null }
+                    dataSource={
+                        employees && employees.length > 0
+                            ? employees.map((task, index) => ({
+                                ...task,
+                                index,
+                                key: v4(),
+                            }))
+                            : null
+                    }
                     columns={ columns }
                     scroll={ { x: 700 } }
                     pagination={ false }

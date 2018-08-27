@@ -8,7 +8,6 @@ import {
     onChangeAddClientForm,
     fetchVehiclesInfo,
     addClientVehicle,
-    updateArrayField,
     createClient,
     removeClientVehicle,
 } from 'core/forms/addClientForm/duck';
@@ -16,19 +15,18 @@ import {
 import { MODALS } from 'core/modals/duck';
 
 import { AddClientForm } from 'forms';
-import { withReduxForm } from 'utils';
+import { withReduxForm2 } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
-@withReduxForm({
+@withReduxForm2({
     name:    'addClientForm',
     actions: {
         change: onChangeAddClientForm,
         fetchVehiclesInfo,
         addClientVehicle,
         removeClientVehicle,
-        updateArrayField,
         createClient,
     },
 })
@@ -68,15 +66,17 @@ export default class AddClientModal extends Component {
                             );
 
                             const clientEntity = {
-                                birthday:   clientFormData.birthday,
-                                emails:     clientFormData.emails.filter(Boolean),
+                                birthday: clientFormData.birthday,
+                                emails:   clientFormData.emails
+                                    ? clientFormData.emails.filter(Boolean)
+                                    : clientFormData.emails,
                                 middlename: clientFormData.patronymic,
                                 name:       clientFormData.name,
                                 surname:    clientFormData.surname,
                                 sex:        clientFormData.sex,
                                 status:     clientFormData.status,
                                 vehicles,
-                                phones:     clientFormData.phones,
+                                phones:     clientFormData.phones.filter(Boolean),
                             };
 
                             this.props.createClient(clientEntity);

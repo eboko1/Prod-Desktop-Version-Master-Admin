@@ -37,6 +37,7 @@ import FunelContainer from 'containers/FunelContainer/messages';
 import OrdersContainer from 'containers/OrdersContainer/messages';
 import MyTasksContainer from 'containers/MyTasksContainer/messages';
 import PackageContainer from 'containers/PackageContainer/messages';
+import BusinessPackageContainer from 'containers/BusinessPackageContainer/messages';
 import RoleContainer from 'containers/RoleContainer/messages';
 import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
 
@@ -56,6 +57,8 @@ import RoleForm from 'forms/RoleForm/messages';
 import SwitchBusinessForm from 'forms/SwitchBusinessForm/messages';
 import EmployeeForm from 'forms/EmployeeForm/messages';
 import EmployeeScheduleForm from 'forms/EmployeeScheduleForm/messages';
+import BusinessPackageForm from 'forms/BusinessPackageForm/messages';
+import AddBusinessPackageForm from 'forms/AddBusinessPackageForm/messages';
 
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
@@ -99,6 +102,7 @@ const messages = merge.all([
     PackageContainer,
     RoleContainer,
     SettingSalaryContainer,
+    BusinessPackageContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -113,6 +117,8 @@ const messages = merge.all([
     RoleForm,
     SwitchBusinessForm,
     EmployeeForm,
+    BusinessPackageForm,
+    AddBusinessPackageForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
