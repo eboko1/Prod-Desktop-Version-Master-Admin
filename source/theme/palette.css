@@ -25,9 +25,11 @@
     --text4: rgba(0, 0, 0, 0.35);
 
     --not_complete: rgb(255, 126, 126);
+    --required: rgb(255, 126, 126);
     --reserve: rgb(107, 99, 153);
     --approve: rgb(251, 158, 62);
     --progress: rgb(62, 186, 162);
     --success: rgb(26, 156, 234);
     --cancel: rgb(198, 198, 198);
+    --invite: rgb(143, 56, 48);
 }

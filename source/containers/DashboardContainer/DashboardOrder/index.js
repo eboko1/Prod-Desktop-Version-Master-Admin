@@ -1,144 +1,63 @@
 // vendor
 import React, { Component } from 'react';
-import { findDOMNode } from 'react-dom';
-import PropTypes from 'prop-types';
-import styled from 'styled-components';
-import { withRouter } from 'react-router';
-import { DragSource, DropTarget } from 'react-dnd';
+import Resizable from 're-resizable';
 
 // proj
-import book from 'routes/book';
+import { ordersStatus } from '../dashboardConfig';
+// import book from 'routes/book';
 
 // own
-import { DragItemTypes } from '../dashboardConfig';
-import DashboardTooltip from '../DashboardTooltip';
-import handleHover from '../dashboardCore/handleHover';
+import DashboardOrderDragSource from './DashboardOrderDragSource';
 
-const orderSource = {
-    beginDrag(props) {
-        console.log('^ beginDrag', props);
-
-        return { ...props };
-    },
-
-    endDrag(props, monitor) {
-        console.log('^^ endDrag props', props);
-        console.log('^^ endDrag monitor', monitor.getItem());
-
-        const { id, x, y, rows, columns } = monitor.getItem();
-        const didDrop = monitor.didDrop();
-
-        if (didDrop) {
-            console.log('→ did dropped', id);
-        }
-
-        if (!didDrop) {
-            console.log('→ didn\'t dropped', id);
-        }
-    },
-};
-
-const orderTarget = {
-    hover(props, monitor, component) {
-        const dragIndex = monitor.getItem().index;
-        const hoverIndex = props.index;
-
-        // Don't replace items with themselves
-        if (dragIndex === hoverIndex) {
-            return;
-        }
-
-        // Determine rectangle on screen
-        const hoverBoundingRect = findDOMNode(
-            component,
-        ).getBoundingClientRect();
-
-        // Get vertical middle
-        const hoverMiddleY =
-            (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
-
-        // Determine mouse position
-        const clientOffset = monitor.getClientOffset();
-
-        // Get pixels to the top
-        const hoverClientY = clientOffset.y - hoverBoundingRect.top;
-
-        // Only perform the move when the mouse has crossed half of the items height
-        // When dragging downwards, only move when the cursor is below 50%
-        // When dragging upwards, only move when the cursor is above 50%
-
-        // Dragging downwards
-        if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
-            return;
-        }
-
-        // Dragging upwards
-        if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
-            return;
-        }
-
-        // Time to actually perform the action
-        props.moveOrder(dragIndex, hoverIndex);
-
-        // Note: we're mutating the monitor item here!
-        // Generally it's better to avoid mutations,
-        // but it's good here for the sake of performance
-        // to avoid expensive index searches.
-        monitor.getItem().index = hoverIndex;
-    },
-};
-
-function collect(connect, monitor) {
-    return {
-        connectDragSource:  connect.dragSource(),
-        connectDragPreview: connect.dragPreview(),
-        isDragging:         monitor.isDragging(),
-    };
-}
-
-// @DropTarget(DragItemTypes.ORDER, orderTarget, connect => ({
-//     connectDropTarget: connect.dropTarget(),
-// }))
-// @DragSource(DragItemTypes.ORDER, orderSource, (connect, monitor) => ({
-//     connectDragSource: connect.dragSource(),
-//     isDragging:        monitor.isDragging(),
-// }))
-
-@withRouter
-class DashboardOrder extends Component {
-    static propTypes = {
-        connectDragSource:  PropTypes.func,
-        connectDragPreview: PropTypes.func,
-        isDragging:         PropTypes.bool,
-    };
-
-    static defaultProps = {
-        isDragging: false,
-    };
-
+export default class DashboardOrder extends Component {
     state = {
-        tooltipPosition: null,
+        resizing: false,
+        height:   30,
     };
+    // constructor(props) {
+    //     super(props);
+    //
+    //     // this._resizableRef = React.createRef();
+    // }
 
-    _getOrderRef = order => {
-        this.orderRef = order;
-        this.props.connectDragSource(order);
+    // _getResizableRef = resizable => {
+    //     this.resizableRef = resizable;
+    // };
+    componentDidMount() {
+        this.setState({
+            height: this.resizable.resizable.getBoundingClientRect().height,
+        });
+    }
+
+    _setResizeOrderState = () =>
+        this.setState({ resizing: !this.state.resizing });
+
+    _resizeOrder = (event, direction, ref, delta) => {
+        // step in 30 equal with dashboard ROW_HEIGHT / minutes in one hour
+        const {
+            options: { duration },
+            id,
+            dropOrder,
+        } = this.props;
+        console.log('→ this.props', duration);
+        console.log('→ this.state.height', this.state.height);
+        console.log('→ _resizeOrder(delta.height)', delta.height);
+        console.log(
+            '→ (this.state.height + delta.height) / 60',
+            (this.state.height + delta.height) / 60,
+        );
+        const resizedDuration = (this.state.height + delta.height) / 60;
+        console.log('→ resizedDuration', resizedDuration);
+
+        this.setState({ height: this.state.height + delta.height });
+
+        dropOrder({ duration: resizedDuration, id });
     };
-
-    _showDashboardTooltip = (ev, order, dashboard) => {
-        const tooltipPosition = handleHover(ev, order, dashboard);
-        this.setState({ tooltipPosition });
-    };
-
-    _hideDashboardTooltip = () => this.setState({ tooltipPosition: null });
 
     render() {
         const {
             history,
-            connectDragSource,
             isDragging,
-            className,
-            children,
             x,
             y,
             columns,
@@ -147,110 +66,78 @@ class DashboardOrder extends Component {
             status,
             dashboardRef,
             options,
+            // hideSourceOnDrag,
         } = this.props;
 
-        const { tooltipPosition } = this.state;
+        const { resizing } = this.state;
+
+        const resizableStyles = {
+            gridRow:    `${x + 1} / span ${rows}`,
+            gridColumn: `${y + 1} / span ${columns}`,
+            border:     '1px solid white',
+            background: ordersStatus(this.props.status),
+        };
+
+        const resizingStyles = {
+            gridRow:    `${x + 1} / span ${rows}`,
+            gridColumn: `${y + 1} / span ${columns}`,
+            background: ordersStatus(this.props.status),
+            opacity:    0.5,
+            border:     '1px solid white',
+            zIndex:     10,
+        };
+
+        // console.log('→ dashboardRef', dashboardRef);
+        // console.log('→ this.state.height', this.state.height);
+        // const reRef = this._resizableRef;
+        console.log('→ dashboardRef', dashboardRef);
 
         return (
-            <StyledDashboardOrder
-                isdragging={ isDragging ? 1 : 0 }
-                status={ status }
-                x={ x }
-                y={ y }
-                columns={ columns }
-                rows={ rows }
-                onClick={ () => history.push(`${book.order}/${id}`) }
-                onMouseEnter={ ev =>
-                    this._showDashboardTooltip(
-                        ev,
-                        this.orderRef.getBoundingClientRect(),
-                        dashboardRef,
-                    )
-                }
-                onMouseDown={ this._hideDashboardTooltip }
-                onMouseLeave={ this._hideDashboardTooltip }
-                // className={ className }
-                innerRef={ order => this._getOrderRef(order) }
+            <Resizable
+                style={ resizing ? resizingStyles : resizableStyles }
+                minWidth={ 0 }
+                minHeight={ 30 }
+                grid={ [ void 0, 30 ] }
+                // size={ { width: 'auto' } }
+                defaultSize={ { witdh: 'auto' } }
+                enable={ {
+                    top:         false,
+                    right:       false,
+                    bottom:      status !== 'success',
+                    left:        false,
+                    topRight:    false,
+                    bottomRight: false,
+                    bottomLeft:  false,
+                    topLeft:     false,
+                } }
+                // size={ { width: this.state.width, height: this.state.height } }
+                onResizeStart={ () => {
+                    this._setResizeOrderState();
+                    console.log(
+                        '→ onResizeStart',
+                        this.resizable.resizable.getBoundingClientRect(),
+                    );
+                    // console.log('→ this._resizableRef ', this._resizableRef);
+
+                    // return { ...resizableStyles, zIndex: 1 };
+                } }
+                onResize={ () => console.log('→ onResize') }
+                onResizeStop={ (event, direction, ref, delta) => {
+                    this._setResizeOrderState();
+                    this._resizeOrder(event, direction, ref, delta);
+                } }
+                // onResizeStop={ refToElement => {
+                //     console.log('→ onResizeStop', refToElement);
+                // } }
+                ref={ c => {
+                    this.resizable = c;
+                } }
+                bounds={ dashboardRef.current }
             >
-                <div
-                    style={ {
-                        whiteSpace:   'nowrap',
-                        overflow:     'hidden',
-                        textOverflow: 'ellipsis',
-                    } }
-                >
-                    { children }
-                </div>
-                <DashboardTooltip position={ tooltipPosition } { ...options } />
-            </StyledDashboardOrder>
+                { /* <div ref={ this._resizableRef }> */ }
+                <DashboardOrderDragSource { ...this.props } />
+                { /* </div> */ }
+            </Resizable>
         );
     }
 }
-
-const _ordersStatus = status => {
-    switch (status) {
-        case 'reserve':
-            return 'var(--reserve)';
-        case 'not_complete':
-            return 'var(--approve)';
-        case 'required':
-            return 'var(--required)';
-        case 'approve':
-            return 'var(--approve)';
-        case 'progress':
-            return 'var(--progress)';
-        case 'success':
-            return 'var(--success)';
-        case 'cancel':
-            return 'var(--cancel)';
-        default:
-            return '#ddd';
-    }
-};
-
-const StyledDashboardOrder = styled.div`
-    position: relative;
-    background: ${props => _ordersStatus(props.status)};
-    margin: 1px;
-    padding: 1px;
-    color: white;
-    font-size: 12px;
-    ${'' /* white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis; */} min-height: 28px;
-    cursor: move;
-    opacity: ${props => props.isdragging ? 0.5 : 1};
-    grid-row: ${props => `${props.x + 1} / span ${props.rows}`};
-    grid-column: ${props => `${props.y + 1} / span ${props.columns}`};
-    ${'' /* https://stackoverflow.com/questions/43311943/prevent-content-from-expanding-grid-items */} min-width: 0;
-`;
-
-export default DragSource(DragItemTypes.ORDER, orderSource, collect)(
-    DashboardOrder,
-);
-
-// return connectDragSource(
-//     <div>
-//         <DashboardOrder
-//             isDragging={ isDragging }
-//             innerRef={ order => {
-//                 this.oroder = connectDragSource(order);
-//             } }
-//             // innerRef={ order => connectDragSource(order) }
-//         >
-//             → order →
-//         </DashboardOrder>,
-//     </div>,
-// );
-// return connectDragSource(
-//     connectDropTarget(
-//         <DashboardOrder
-//             isDragging={ isDragging }
-//             innerRef={ order => {
-//                 connectDragSource(order);
-//             } }
-//         >
-//             → order →
-//         </DashboardOrder>,
-//     ),
-// );

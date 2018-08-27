@@ -12,6 +12,8 @@ export const INIT_DASHBOARD_SUCCESS = `${prefix}/INIT_DASHBOARD_SUCCESS`;
 export const FETCH_DASHBOARD = `${prefix}/FETCH_DASHBOARD`;
 export const FETCH_DASHBOARD_SUCCESS = `${prefix}/FETCH_DASHBOARD_SUCCESS`;
 
+export const REFRESH_DASHBOARD = `${prefix}/REFRESH_DASHBOARD`;
+
 export const FETCH_DASHBOARD_CALENDAR = `${prefix}/FETCH_DASHBOARD_CALENDAR`;
 export const FETCH_DASHBOARD_CALENDAR_SUCCESS = `${prefix}/FETCH_DASHBOARD_CALENDAR_SUCCESS`;
 
@@ -26,6 +28,9 @@ export const SET_DASHBOARD_DATE = `${prefix}/SET_DASHBOARD_DATE`;
 export const SET_DASHBOARD_WEEK_DATES = `${prefix}/SET_DASHBOARD_WEEK_DATES`;
 
 export const LINK_TO_DASHBOARD_STATIONS = `${prefix}/LINK_TO_DASHBOARD_STATIONS`;
+
+export const UPDATE_DASHBOARD_ORDER = `${prefix}/UPDATE_DASHBOARD_ORDER`;
+export const UPDATE_DASHBOARD_ORDER_SUCCESS = `${prefix}/UPDATE_DASHBOARD_ORDER_SUCCESS`;
 
 /**
  * Reducer
@@ -73,6 +78,13 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 startDate: payload.startDate,
                 endDate:   payload.endDate,
+            };
+
+        case INIT_DASHBOARD:
+            return {
+                ...state,
+                mode: 'calendar',
+                load: [],
             };
 
         case INIT_DASHBOARD_SUCCESS:
@@ -199,4 +211,17 @@ export const dropDashboardOrderSuccess = () => ({
 export const linkToDashboardStations = day => ({
     type:    LINK_TO_DASHBOARD_STATIONS,
     payload: day,
+});
+
+export const updateDashboardOrder = order => ({
+    type:    UPDATE_DASHBOARD_ORDER,
+    payload: order,
+});
+
+export const updateDashboardOrderSuccess = () => ({
+    type: UPDATE_DASHBOARD_ORDER_SUCCESS,
+});
+
+export const refreshDashboard = () => ({
+    type: REFRESH_DASHBOARD,
 });

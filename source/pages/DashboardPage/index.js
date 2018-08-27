@@ -14,6 +14,7 @@ import {
     setDashboardWeekDates,
     setDashboardMode,
     selectDasboardData,
+    updateDashboardOrder,
 } from 'core/dashboard/duck';
 
 import { Layout, Spinner } from 'commons';
@@ -47,6 +48,7 @@ const mapDispatchToProps = {
     setDashboardWeekDates,
     setDashboardMode,
     linkToDashboardStations,
+    updateDashboardOrder,
 };
 
 @connect(mapStateToProps, mapDispatchToProps)
@@ -176,21 +178,25 @@ class DashboardPage extends Component {
             time,
             dashboard,
             linkToDashboardStations,
+            updateDashboardOrder,
+            date,
         } = this.props;
 
         return loading ? (
             <Loader loading={ loading } />
         ) : (
             <DashboardContainer
-                orders={ orders }
-                stations={ stations }
-                days={ days }
                 mode={ mode }
+                date={ date }
+                days={ days }
+                stations={ stations }
+                orders={ orders }
                 load={ load }
                 schedule={ schedule }
                 time={ time }
                 dashboard={ dashboard }
                 linkToDashboardStations={ linkToDashboardStations }
+                updateDashboardOrder={ updateDashboardOrder }
             />
         );
     };

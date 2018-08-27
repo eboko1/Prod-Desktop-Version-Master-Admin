@@ -39,10 +39,15 @@ class DashboardContainer extends Component {
         this._dashboardRef = React.createRef();
 
         this.state = {
-            currentDay: moment().format('YYYY-MM-DD'),
+            currentDay:       moment().format('YYYY-MM-DD'),
             // dashboardRef: this._dashboardRef,
+            hideSourceOnDrag: true,
+            // mode:             props.mode === 'calendar',
         };
     }
+
+    _hideSourceOnDrag = () =>
+        this.setState({ hideSourceOnDrag: !this.state.hideSourceOnDrag });
 
     render() {
         const { dashboard, schedule } = this.props;
@@ -91,18 +96,17 @@ class DashboardContainer extends Component {
                 column={ 1 }
                 key={ index }
                 currentDay={ currentDay }
-                day={ days ? days[ index ] : null }
-                station={ stations ? stations[ index ] : null }
+                day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length && 
+                    { load.length &&
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) : 
+                                ) :
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -132,24 +136,29 @@ class DashboardContainer extends Component {
         ));
     };
 
-    _renderDashboardContentColumn = id => {
+    _renderDashboardContentColumn = column => {
         const {
             dashboard,
             days,
-            mode,
             stations,
             orders,
             schedule,
+            updateDashboardOrder,
+            date,
+            mode,
         } = this.props;
+        // const { hideSourceOnDrag } = this.state;
+
         const dashboardMode = mode === 'calendar';
+
         const columnsData = dashboardMode ? days : stations;
 
         const columnId = dashboardMode
             ? columnsData
-                ? columnsData[ id ]
+                ? columnsData[ column ]
                 : null
             : columnsData
-                ? columnsData[ id ].num
+                ? columnsData[ column ].num
                 : null;
 
         const dashboardData = dashboardMode
@@ -183,6 +192,12 @@ class DashboardContainer extends Component {
                                         <DashboardEmptyCell
                                             key={ index }
                                             { ...order }
+                                            day={
+                                                dashboardMode
+                                                    ? days[ column ]
+                                                    : date.format('YYYY-MM-DD')
+                                            }
+                                            stationNum={ stations[ column ].num }
                                         />
                                     ) : (
                                         <DashboardOrder
@@ -191,11 +206,19 @@ class DashboardContainer extends Component {
                                                 result[ index ].options.status
                                             }
                                             id={ result[ index ].options.id }
-                                            { ...order }
                                             dashboardRef={ this._dashboardRef }
-                                        >
-                                            { result[ index ].options.num }
-                                        </DashboardOrder>
+                                            dropOrder={ updateDashboardOrder }
+                                            // hideSourceOnDrag={ hideSourceOnDrag }
+                                            label={ result[ index ].options.num }
+                                            schedule={ schedule }
+                                            day={
+                                                dashboardMode
+                                                    ? days[ column ]
+                                                    : date.format('YYYY-MM-DD')
+                                            }
+                                            stationNum={ stations[ column ].num }
+                                            { ...order }
+                                        />
                                     ),
                             ) }
                         </DashboardContentBox>

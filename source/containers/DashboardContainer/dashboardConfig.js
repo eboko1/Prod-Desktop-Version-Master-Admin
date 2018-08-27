@@ -1,30 +1,32 @@
 const ROW_HEIGHT = 30;
 
 const DragItemTypes = Object.freeze({
-    EMPTY: 'empty',
-    ORDER: 'order',
+    EMPTY:    'empty',
+    ORDER:    'order',
+    DISABLED: 'disabled',
 });
 
-const findOrder = (orders, id) => {
-    // const order = orders.map(
-    //     order => order.filter(order => order.id === id)[ 0 ],
-    // );
-
-    return {
-        order,
-        index: orders.indexOf(order),
-    };
+const ordersStatus = status => {
+    switch (status) {
+        case 'reserve':
+            return 'var(--reserve)';
+        case 'not_complete':
+            return 'var(--approve)';
+        case 'required':
+            return 'var(--required)';
+        case 'approve':
+            return 'var(--approve)';
+        case 'progress':
+            return 'var(--progress)';
+        case 'success':
+            return 'var(--success)';
+        case 'cancel':
+            return 'var(--cancel)';
+        case 'invite':
+            return 'var(--invite)';
+        default:
+            return '#ddd';
+    }
 };
 
-const moveOrder = (id, atIndex) => {
-    const { order, index } = findOrder(orders, id);
-    // this.setState(
-    //     update(this.state, {
-    //         orders: {
-    //             $splice: [[ index, 1 ], [ atIndex, 0, order ]],
-    //         },
-    //     }),
-    // );
-};
-
-export { ROW_HEIGHT, DragItemTypes, findOrder };
+export { ROW_HEIGHT, DragItemTypes, ordersStatus };
