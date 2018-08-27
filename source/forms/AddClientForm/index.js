@@ -97,11 +97,7 @@ export class AddClientForm extends Component {
                                     trigger.parentNode
                                 }
                             >
-<<<<<<< HEAD
                                 { years.sort((a, b) => b - a).map(year => (
-=======
-                                { years.sort((v1, v2) => v2 - v1).map(year => (
->>>>>>> dev
                                     <Option value={ year } key={ v4() }>
                                         { String(year) }
                                     </Option>
