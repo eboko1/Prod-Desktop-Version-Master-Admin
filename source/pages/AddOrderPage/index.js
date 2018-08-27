@@ -59,7 +59,10 @@ const mapDispatch = {
 };
 
 @withRouter
-@connect(mapStateToProps, mapDispatch)
+@connect(
+    mapStateToProps,
+    mapDispatch,
+)
 class AddOrderPage extends Component {
     componentDidMount() {
         this.props.fetchAddOrderForm();
@@ -73,7 +76,7 @@ class AddOrderPage extends Component {
         this.orderFormRef = formRef;
     };
 
-    onSubmit = () => {
+    _onSubmit = () => {
         const form = this.orderFormRef.props.form;
         const requiredFields =
             requiredFieldsOnStatuses[ this.props.createStatus ];
@@ -95,7 +98,7 @@ class AddOrderPage extends Component {
 
     handleAddClientModalSubmit = () => {
         const form = this.formRef.props.form;
-        this.setAddClientModal();
+        this._setAddClientModal();
         form.validateFields((err, values) => {
             if (!err) {
                 // TBD: @yan
@@ -105,14 +108,12 @@ class AddOrderPage extends Component {
         this.props.resetModal();
     };
 
-    setAddClientModal = () => {
+    _setAddClientModal = () => {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
     };
 
-    setCreateStatus = status => {
-        this.props.setCreateStatus(status);
-    };
+    _setCreateStatus = status => this.props.setCreateStatus(status);
 
     render() {
         const { modal, resetModal, addClientFormData, spinner } = this.props;
@@ -127,7 +128,7 @@ class AddOrderPage extends Component {
                                 <RadioButton
                                     value='reserve'
                                     onClick={ () =>
-                                        this.setCreateStatus('reserve')
+                                        this._setCreateStatus('reserve')
                                     }
                                 >
                                     <FormattedMessage id='reserve' />
@@ -135,7 +136,7 @@ class AddOrderPage extends Component {
                                 <RadioButton
                                     value='not_complete'
                                     onClick={ () =>
-                                        this.setCreateStatus('not_complete')
+                                        this._setCreateStatus('not_complete')
                                     }
                                 >
                                     <FormattedMessage id='not_complete' />
@@ -143,7 +144,7 @@ class AddOrderPage extends Component {
                                 <RadioButton
                                     value='required'
                                     onClick={ () =>
-                                        this.setCreateStatus('required')
+                                        this._setCreateStatus('required')
                                     }
                                 >
                                     <FormattedMessage id='required' />
@@ -151,7 +152,7 @@ class AddOrderPage extends Component {
                                 <RadioButton
                                     value='approve'
                                     onClick={ () =>
-                                        this.setCreateStatus('approve')
+                                        this._setCreateStatus('approve')
                                     }
                                 >
                                     <FormattedMessage id='approve' />
@@ -161,7 +162,7 @@ class AddOrderPage extends Component {
                                 type='primary'
                                 htmlType='submit'
                                 className={ Styles.submit }
-                                onClick={ this.onSubmit }
+                                onClick={ this._onSubmit }
                             >
                                 <FormattedMessage id='add' />
                             </Button>
@@ -174,10 +175,9 @@ class AddOrderPage extends Component {
                     </>
                 }
             >
-                { /* eslint-disable-next-line */ }
                 <OrderForm
                     wrappedComponentRef={ this.saveOrderFormRef }
-                    setAddClientModal={ this.setAddClientModal }
+                    setAddClientModal={ this._setAddClientModal }
                     modal={ modal }
                     addOrderForm
                 />

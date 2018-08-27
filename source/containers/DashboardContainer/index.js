@@ -29,6 +29,7 @@ import {
     DashboardLoad,
 } from './styled.js';
 
+import getBeginDatetime from './dashboardCore/getBeginDatetime';
 import mapOrders from './dashboardCore/mapOrders';
 import ordersPuzzle from './dashboardCore/ordersPuzzle';
 
@@ -99,14 +100,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length &&
+                    { load.length && 
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) :
+                                ) : 
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -130,7 +131,7 @@ class DashboardContainer extends Component {
                 </DashboardHead>
                 <DashboardBody>
                     { this._renderDashboardContentColumn(index) }
-                    { this._renderDashboardAddOrderColumn() }
+                    { this._renderDashboardAddOrderColumn(index) }
                 </DashboardBody>
             </DashboardColumn>
         ));
@@ -228,14 +229,23 @@ class DashboardContainer extends Component {
         );
     };
 
-    _renderDashboardAddOrderColumn = () => {
-        const { dashboard } = this.props;
+    _renderDashboardAddOrderColumn = column => {
+        const { dashboard, days, stations, schedule, mode } = this.props;
 
         return (
             <DashboardAddOrderColumn dashboard={ dashboard }>
                 { [ ...Array(dashboard.rows).keys() ].map((_, index) => (
                     <DashboardAddOrderCell key={ index }>
-                        <DashboardAddOrderLink />
+                        <DashboardAddOrderLink
+                            time={ getBeginDatetime(
+                                days[ column ],
+                                index,
+                                schedule.beginHour,
+                            ) }
+                            stationNum={
+                                mode !== 'calendar' && stations[ column ].num
+                            }
+                        />
                     </DashboardAddOrderCell>
                 )) }
             </DashboardAddOrderColumn>
