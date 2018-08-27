@@ -1,22 +1,22 @@
 {
     "en": {
         "back-to-list": "back to all employees",
-        "employee-page.add_employee": "Add employee",
-        "employee-page.all": "All",
+        "employee.general_data": "Total information",
+        "employee.schedule": "Schedule",
         "employee-page.workers": "Workers",
         "employee-page.dismissed": "Dismissed"
     },
     "ru": {
         "back-to-list": "к списку сотрудников",
-        "employee-page.add_employee": "Добавить сотрудника",
-        "employee-page.all": "Все",
+        "employee.general_data": "Общие данные",
+        "employee.schedule": "График работы",
         "employee-page.workers": "Работающие",
         "employee-page.dismissed": "Уволенные"
     },
     "uk": {
         "back-to-list": "до списку працівників",
-        "employee-page.add_employee": "Добавити працівника",
-        "employee-page.all": "Все",
+        "employee.general_data": "Cпільні дані",
+        "employee.schedule": "Графік роботи",
         "employee-page.workers": "Робочі",
         "employee-page.dismissed": "Звільнені"
     }

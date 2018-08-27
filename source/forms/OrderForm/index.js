@@ -146,7 +146,6 @@ export class OrderForm extends Component {
                 <DecoratedTimePicker
                     formItem
                     field='beginTime'
-                    disabled={ !beginDate }
                     hasFeedback
                     disabledHours={ disabledHours }
                     disabledMinutes={ disabledMinutes }

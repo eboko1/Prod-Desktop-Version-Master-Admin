@@ -1,30 +1,26 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
-import { Button, Icon } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Button, Icon, Tabs } from 'antd';
 import { connect } from 'react-redux';
-import { setModal, resetModal } from 'core/modals/duck';
 import { withRouter, Link } from 'react-router-dom';
 
 // proj
-import {
-    resetOrderTasksForm,
-    saveOrderTask,
-    changeModalStatus,
-} from 'core/forms/orderTaskForm/duck';
+
 import {EmployeeForm} from 'forms/EmployeeForm'
 import { Layout, Spinner } from 'commons';
 import { fetchEmployee} from 'core/employee/duck';
-import { fetchEmployeeById, saveEmployee} from 'core/forms/employeeForm/duck';
-
-
+import { fetchEmployeeById, saveEmployee, resetEmployeeForm} from 'core/forms/employeeForm/duck';
 import book from 'routes/book';
+
+const TabPane =Tabs.TabPane
 
 const mapStateToProps = state => {
     return {
-        employees:     state.employee.employees,
-        employeesData: state.forms.employeeForm.fields,
-
+        employees:       state.employee.employees,
+        employeesData:   state.forms.employeeForm.fields,
+        employeeName:    state.forms.employeeForm.employeeName,
+        initialEmployee: state.forms.employeeForm.initialEmployee,
     };
 };
 
@@ -32,22 +28,28 @@ const mapDispatchToProps = {
     saveEmployee,
     fetchEmployee,
     fetchEmployeeById,
+    resetEmployeeForm,
 };
 @withRouter
+@injectIntl
 @connect(mapStateToProps, mapDispatchToProps)
 class EditEmployeePage extends Component {
     componentDidMount(){
         this.props.fetchEmployeeById(this.props.history.location.pathname.split('/')[ 2 ])
     }
+    componentWillUnmount(){
+        this.props.resetEmployeeForm()
+
+    }
     saveEmployeeFormRef = formRef => {
         this.employeeFormRef = formRef;
     };
+
     saveEmployee= () => {
         const { orderTaskEntity, orderTaskId } = this.props;
         const form = this.employeeFormRef.props.form;
         form.validateFields(err => {
             if (!err) {
-                console.log(this.props.employeesData, this.props.history.location.pathname.split('/')[ 2 ])
                 this.props.saveEmployee(this.props.employeesData, this.props.history.location.pathname.split('/')[ 2 ])
             }
         });
@@ -57,6 +59,7 @@ class EditEmployeePage extends Component {
         const {
             spinner,
             employees,
+            initialEmployee,
         } = this.props;
 
         return (
@@ -64,17 +67,11 @@ class EditEmployeePage extends Component {
                 title={
 
                     <>
-                        <FormattedMessage
-                            id={ 'employee-page.add_employee' }
-                        />
+                        {this.props.employeeName}
                     </>
 
                 }
-                // description={
-                // <>
-                //     <FormattedMessage id='employee-page.description' />
-                // </>
-                // }
+
                 controls={
                 <>
                     <Link to={ book.employeesPage }> <Button                        
@@ -87,10 +84,36 @@ class EditEmployeePage extends Component {
                     </Link>
                 </>
                 }>
-                <EmployeeForm                  
-                    wrappedComponentRef={ this.saveEmployeeFormRef }
-                    saveEmployee={ this.saveEmployee }
-                /> 
+                <Tabs type='card' >
+                    <TabPane
+                        tab={
+                            this.props.intl.formatMessage({
+                                id: 'employee.general_data',
+                            })
+                        }
+                        key='1'
+                    >
+                        <EmployeeForm                  
+                            wrappedComponentRef={ this.saveEmployeeFormRef }
+                            saveEmployee={ this.saveEmployee }
+                        /> 
+                    </TabPane>
+                    <TabPane
+                        tab={
+                            this.props.intl.formatMessage({
+                                id: 'employee.schedule',
+                            })
+                        }
+                        key='2'
+                    >
+                        <EmployeeForm         
+                            initialEmployee={ initialEmployee }         
+                            wrappedComponentRef={ this.saveEmployeeFormRef }
+                            saveEmployee={ this.saveEmployee }
+                        /> 
+                    </TabPane>
+                </Tabs>
+                
             </Layout>
         );
     }

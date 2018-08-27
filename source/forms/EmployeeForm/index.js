@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import {Form, Button, Select, Icon, Tooltip, Input} from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { v4 } from 'uuid';
+import moment from 'moment'
 //proj
 import { onChangeEmployeeForm } from 'core/forms/employeeForm/duck';
 
@@ -13,7 +14,6 @@ import {
     DecoratedInputPhone,
     DecoratedInput,
     DecoratedDatePicker,
-    DecoratedTimePicker,
 } from 'forms/DecoratedFields';
 import Styles from './styles.m.css';
 @injectIntl
@@ -35,10 +35,10 @@ export class EmployeeForm extends Component {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
         const {
+            initialEmployee,
             saveEmployee,
         } = this.props;
 
-        console.log(saveEmployee)
 
         return (
             <Form layout='horizontal'>
@@ -54,6 +54,7 @@ export class EmployeeForm extends Component {
                             id: 'employee.name_placeholder',
                         }) }
                         formItem
+                        initialValue={ initialEmployee&&initialEmployee.name }
                         rules={ [
                             {
                                 required: true,
@@ -71,6 +72,8 @@ export class EmployeeForm extends Component {
                             id: 'employee.surname_placeholder',
                         }) }
                         formItem
+                        initialValue={ initialEmployee&&initialEmployee.surname }
+
                         rules={ [
                             {
                                 required: true,
@@ -89,6 +92,8 @@ export class EmployeeForm extends Component {
                         }) }
                         formItem
                         colon={ false }
+                        initialValue={ initialEmployee&&initialEmployee.phone }
+
                         rules={ [
                             {
                                 required: true,
@@ -117,8 +122,7 @@ export class EmployeeForm extends Component {
                             },
                             {
                                 validator: (rule, value, callback)=>{
-                                    let reg = /^\d+$/;
-                                    if(value&&value.length===9){
+                                    if(value&&value.length===10){
                                         callback()
                                     }else{
                                         callback(new Error(
@@ -144,11 +148,33 @@ export class EmployeeForm extends Component {
                             id: 'employee.email_placeholder',
                         }) }
                         formItem
+                        initialValue={ initialEmployee&&initialEmployee.email }
+
                         autosize={ { minRows: 2, maxRows: 6 } }
                         rules={ [
                             {
-                                max:     2000,
-                                message: 'Too much',
+                                required: true,
+                                message:  '',
+                            },
+                            {
+                                validator: (rule, value, callback)=>{
+                                    let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
+
+                                    if(re.test(value)){
+                                        callback()
+                                    }else{
+                                        callback(
+                                            new Error(
+                                                formatMessage({
+                                                    id: 'employee.enter_correct_email',
+                                                }), 
+                                            ), 
+                                        )
+                                    }
+
+                                    return true
+                                },
+                                message: '',
                             },
                         ] }
                         className={ Styles.selectMargin }
@@ -162,6 +188,8 @@ export class EmployeeForm extends Component {
                             id: 'employee.jobTitle_placeholder',
                         }) }
                         formItem
+                        initialValue={ initialEmployee&&initialEmployee.jobTitle }
+
                         autosize={ { minRows: 2, maxRows: 6 } }
                         rules={ [
                             {
@@ -181,10 +209,10 @@ export class EmployeeForm extends Component {
                             formatMessage={ formatMessage }
                             className={ Styles.selectMargin }
                             getFieldDecorator={ getFieldDecorator }
-                            value={ null }
                             getCalendarContainer={ trigger =>
                                 trigger.parentNode
                             }
+                            initialValue={ initialEmployee&&moment(initialEmployee.hireDate) }
                             rules={ [
                                 {
                                     required: true,
@@ -196,23 +224,7 @@ export class EmployeeForm extends Component {
                                 <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
                             }
                         />
-                        { /* <DecoratedTimePicker
-                            field='hireTime'
-                            label={ <FormattedMessage id='hireDate' /> }
-                            formItem
-                            formatMessage={ formatMessage }
-                            className={ Styles.selectMargin }
-                            getFieldDecorator={ getFieldDecorator }
-                            value={ null }
-                            format={ 'HH:mm' }
-                            getPopupContainer={ trigger =>
-                                trigger.parentNode
-                            }
-                            placeholder={ formatMessage({
-                                id:
-                                        'order_task_modal.deadlineTime_placeholder',
-                            }) }
-                        /> */ }
+
                         
                     </div>
                     <Button

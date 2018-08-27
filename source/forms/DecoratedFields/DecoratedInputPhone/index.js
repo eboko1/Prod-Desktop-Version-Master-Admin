@@ -60,13 +60,13 @@ export const DecoratedInputPhone = props => {
             { ...formItemLayout }
         >
             <InputGroup compact>
-                <Input style={ { width: '20%' } } defaultValue='+380' disabled />
+                <Input style={ { width: '20%' } } defaultValue='+38' disabled />
                 { input }
             </InputGroup>
         </FormItem>
     ) :
         <InputGroup compact>
-            <Input style={ { width: '20%' } } defaultValue='+380' disabled />
+            <Input style={ { width: '20%' } } defaultValue='+38' disabled />
             { input }
         </InputGroup>
     ;

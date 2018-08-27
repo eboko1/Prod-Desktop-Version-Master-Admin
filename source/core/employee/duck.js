@@ -7,7 +7,6 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_EMPLOYEES = `${prefix}/FETCH_EMPLOYEES`;
 export const FETCH_EMPLOYEES_SUCCESS = `${prefix}/FETCH_EMPLOYEES_SUCCESS`;
 
-export const ON_CHANGE_EMPLOYEES_FORM = `${prefix}/ON_CHANGE_EMPLOYEES_FORM`;
 export const SET_CURRENT_PAGE = `${prefix}/SET_CURRENT_PAGE`;
 /**
  * Reducer
@@ -27,14 +26,7 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case ON_CHANGE_EMPLOYEES_FORM:
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    ...payload,
-                },
-            };
+
         case FETCH_EMPLOYEES:
             return {
                 ...state,

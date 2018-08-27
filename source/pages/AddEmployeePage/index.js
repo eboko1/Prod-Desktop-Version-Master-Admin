@@ -1,47 +1,56 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
-import { Button, Icon } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Button, Icon, Tabs} from 'antd';
 import { connect } from 'react-redux';
-import { setModal, resetModal } from 'core/modals/duck';
 import { withRouter, Link } from 'react-router-dom';
 
 // proj
-import {
-    resetOrderTasksForm,
-    saveOrderTask,
-    changeModalStatus,
-} from 'core/forms/orderTaskForm/duck';
-import EmployeeContainer from 'containers/EmployeeContainer'
+
+import {EmployeeForm} from 'forms/EmployeeForm'
 import { Layout, Spinner } from 'commons';
 import { fetchEmployee} from 'core/employee/duck';
+import { fetchEmployeeById, saveEmployee, resetEmployeeForm} from 'core/forms/employeeForm/duck';
 import book from 'routes/book';
+import EmployeeScheduleForm from 'forms/EmployeeScheduleForm'
+const TabPane =Tabs.TabPane
 
 const mapStateToProps = state => {
     return {
-        employees:       state.employee.employees,
-        page:            state.myTasksContainer.page,
-        modal:           state.modals.modal,
-        orderTaskEntity: state.forms.orderTaskForm.fields,
-        orderTaskId:     state.forms.orderTaskForm.taskId,
-        activeOrder:     state.myTasksContainer.activeOrder,
-        spinner:         state.ui.myTasksFetching,
+        employees:     state.employee.employees,
+        employeesData: state.forms.employeeForm.fields,
+
     };
 };
 
 const mapDispatchToProps = {
-    setModal,
-    resetModal,
-    resetOrderTasksForm,
-    saveOrderTask,
-    changeModalStatus,
+    saveEmployee,
     fetchEmployee,
+    fetchEmployeeById,
+    resetEmployeeForm,
 };
+@injectIntl
 @withRouter
 @connect(mapStateToProps, mapDispatchToProps)
-class AddEmployeePage extends Component {
+class EditEmployeePage extends Component {
+    componentDidMount(){
+        this.props.resetEmployeeForm()
+    }
+    saveEmployeeFormRef = formRef => {
+        this.employeeFormRef = formRef;
+    };
+    saveEmployee= () => {
+        const form = this.employeeFormRef.props.form;
+        form.validateFields(err => {
+            if (!err) {
+                this.props.saveEmployee(this.props.employeesData)
+            }
+        });
+    };
+    componentWillUnmount(){
+        this.props.resetEmployeeForm()
 
-
+    }
     /* eslint-disable complexity*/
     render() {
         const {
@@ -49,9 +58,7 @@ class AddEmployeePage extends Component {
             employees,
         } = this.props;
 
-        return spinner ? (
-            <Spinner spin={ spinner } />
-        ) : (
+        return (
             <Layout    
                 title={
 
@@ -62,11 +69,7 @@ class AddEmployeePage extends Component {
                     </>
 
                 }
-                // description={
-                // <>
-                //     <FormattedMessage id='employee-page.description' />
-                // </>
-                // }
+
                 controls={
                 <>
                     <Link to={ book.employeesPage }> <Button                        
@@ -79,10 +82,37 @@ class AddEmployeePage extends Component {
                     </Link>
                 </>
                 }>
-                <h1>hello guys i am new page</h1>
+                <Tabs type='card' >
+                    <TabPane
+                        tab={
+                            this.props.intl.formatMessage({
+                                id: 'employee.general_data',
+                            })
+                        }
+                        key='1'
+                    >
+                        <EmployeeForm                  
+                            wrappedComponentRef={ this.saveEmployeeFormRef }
+                            saveEmployee={ this.saveEmployee }
+                        /> 
+                    </TabPane>
+                    <TabPane
+                        tab={
+                            this.props.intl.formatMessage({
+                                id: 'employee.schedule',
+                            })
+                        }
+                        key='2'
+                    >
+                        <EmployeeScheduleForm
+                            wrappedComponentRef={ this.saveEmployeeFormRef }
+
+                        />
+                    </TabPane>
+                </Tabs>
             </Layout>
         );
     }
 }
 
-export default AddEmployeePage;
+export default EditEmployeePage;

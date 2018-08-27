@@ -16,6 +16,8 @@ import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
 import packageReducer, { moduleName as packageModule } from 'core/package/duck';
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
+import settingSalaryReducer, { moduleName as settingSalaryModule } from 'core/settingSalary/duck';
+
 import dashboardReducer, {
     moduleName as dashboardModule,
 } from 'core/dashboard/duck';
@@ -28,16 +30,17 @@ export const persistConfig = {
 
 const reducer = combineReducers({
     forms,
-    [ ordersModule ]:    ordersReducer,
-    [ orderModule ]:     orderReducer,
-    [ modalsModule ]:    modalsReducer,
-    [ dashboardModule ]: dashboardReducer,
-    [ myTasksModule ]:   myTasksReducer,
-    [ employeeModule ]:  employeeReducer,
-    [ uiModule ]:        uiReducer,
-    [ authModule ]:      authReducer,
-    [ packageModule ]:   packageReducer,
-    [ roleModule ]:      roleReducer,
+    [ ordersModule ]:        ordersReducer,
+    [ orderModule ]:         orderReducer,
+    [ modalsModule ]:        modalsReducer,
+    [ dashboardModule ]:     dashboardReducer,
+    [ myTasksModule ]:       myTasksReducer,
+    [ employeeModule ]:      employeeReducer,
+    [ uiModule ]:            uiReducer,
+    [ authModule ]:          authReducer,
+    [ packageModule ]:       packageReducer,
+    [ roleModule ]:          roleReducer,
+    [ settingSalaryModule ]: settingSalaryReducer,
     intl,
     router,
 });

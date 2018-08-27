@@ -38,6 +38,7 @@ import OrdersContainer from 'containers/OrdersContainer/messages';
 import MyTasksContainer from 'containers/MyTasksContainer/messages';
 import PackageContainer from 'containers/PackageContainer/messages';
 import RoleContainer from 'containers/RoleContainer/messages';
+import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -54,6 +55,7 @@ import AddRoleForm from 'forms/AddRoleForm/messages';
 import RoleForm from 'forms/RoleForm/messages';
 import SwitchBusinessForm from 'forms/SwitchBusinessForm/messages';
 import EmployeeForm from 'forms/EmployeeForm/messages';
+import EmployeeScheduleForm from 'forms/EmployeeScheduleForm/messages';
 
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
@@ -69,6 +71,7 @@ import ReportsDropdown from 'components/ReportsDropdown/messages';
 import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
 import TasksTable from 'components/OrderForm/OrderFormTables/TasksTable/messages';
 import EmployeeTable from 'components/EmployeeTable/messages';
+import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 
 /* eslint-disable array-element-newline */
 const messages = merge.all([
@@ -95,6 +98,7 @@ const messages = merge.all([
     MyTasksContainer,
     PackageContainer,
     RoleContainer,
+    SettingSalaryContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -124,6 +128,9 @@ const messages = merge.all([
     DecoratedDatePicker,
     CallsTable,
     EmployeeTable,
+    EmployeeScheduleForm,
+    SettingSalaryTable,
+
 ]);
 /* eslint-enable array-element-newline */
 

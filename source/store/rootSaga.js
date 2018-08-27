@@ -22,6 +22,7 @@ import { saga as rolesSaga} from 'core/role/saga';
 import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
 import { saga as employee} from 'core/employee/saga';
 import { saga as employeeForm} from 'core/forms/employeeForm/saga';
+import { saga as settingSalary} from 'core/settingSalary/saga';
 
 
 /* eslint-disable array-element-newline */
@@ -44,6 +45,7 @@ export default function* rootSaga() {
         switchBusinessSaga(),
         employee(),
         employeeForm(),
+        settingSalary(),
     ]);
 }
 /* eslint-enable array-element-newline */

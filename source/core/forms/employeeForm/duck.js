@@ -32,8 +32,9 @@ const ReducerState = {
         sendSmsNewOrder:    false,
         surname:            { value: void 0, name: 'surname' },
     },
-    modalStatus: '',
-    employeeId:  null,
+    employeeName:    '',
+    employeeId:      null,
+    initialEmployee: null,
 };
 
 // eslint-disable-next-line
@@ -52,45 +53,38 @@ export default function reducer(state = ReducerState, action) {
 
         case INIT_EMPLOYEE_FORM:
         case FETCH_EMPLOYEE_BY_ID_SUCCESS:
-        
 
             return {
                 ...state,
                 fields: {
                     email: {
-                        value:   payload.email,
-                        name:    'email',
-                        dirty:   false,
-                        touched: true,
+                        value: payload.email||'',
+                        name:  'email',
+
                     },
                     phone: {
-                        value:   payload.phone,
-                        name:    'phone',
-                        dirty:   false,
-                        touched: true,
+                        value: payload.phone,
+                        name:  'phone',
+
                     },
                     enabled: {
-                        value:   payload.enabled,
-                        name:    'enabled',
-                        dirty:   false,
-                        touched: true,
+                        value: payload.enabled,
+                        name:  'enabled',
+
                     },
                     hireDate: {
-                        value:   moment(payload.hireDate),
-                        name:    'hireDate',
-                        dirty:   false,
-                        touched: true,
+                        value: moment(payload.hireDate),
+                        name:  'hireDate',
+
                     },
                     jobTitle: {
-                        value:   payload.jobTitle,
-                        name:    'jobTitle',
-                        dirty:   false,
-                        touched: true,
+                        value: payload.jobTitle,
+                        name:  'jobTitle',
+
                     },
                     name: {
                         value:   payload.name,
                         name:    'name',
-                        dirty:   false,
                         touched: true,
                     },
                     sendSmsCancelOrder: {
@@ -114,11 +108,12 @@ export default function reducer(state = ReducerState, action) {
                     surname: {
                         value:   payload.surname,
                         name:    'surname',
-                        dirty:   false,
                         touched: true,
                     },
     
                 },
+                initialEmployee: payload,
+                employeeName:    `${payload.surname} ${payload.name}`,
             };
 
         case RESET_EMPLOYEE_FORM:

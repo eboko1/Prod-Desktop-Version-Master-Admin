@@ -12,6 +12,7 @@ import { AddPackageForm } from './AddPackageForm';
 import { RoleForm } from './RoleForm';
 import { AddRoleForm } from './AddRoleForm';
 import { SwitchBusinessForm } from './SwitchBusinessForm';
+import { EmployeeScheduleForm } from './EmployeeScheduleForm';
 
 export {
     LoginForm,
@@ -28,4 +29,5 @@ export {
     RoleForm,
     AddRoleForm,
     SwitchBusinessForm,
+    EmployeeScheduleForm,
 };
