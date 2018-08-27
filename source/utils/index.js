@@ -11,6 +11,7 @@ export { BREAKPOINTS, _breakpoints } from './breakpoints';
 export { ConnectedIntlProvider } from './ConnectedIntlProvider';
 export { ContextProvider } from './ContextProvider';
 export { withReduxForm, hasErrors } from './withReduxForm';
+export { withReduxForm2 } from './withReduxForm2';
 export { withResponsive } from './withResponsive';
 export { getDaterange } from './getDaterange';
 export { getDateTimeConfig } from './getDateTimeConfig';

@@ -53,17 +53,13 @@ export class AddClientForm extends Component {
                 layout='vertical'
                 onSubmit={ () => handleAddClientModalSubmit() }
             >
-                { vehicles.length ? (
-                    <div>
-                        <ClientsVehiclesTable
-                            removeClientVehicle={ this.props.removeClientVehicle }
-                            vehicles={ vehicles }
-                        />
-                        <br />
-                    </div>
-                ) : 
-                    ''
-                }
+                <div>
+                    <ClientsVehiclesTable
+                        removeClientVehicle={ this.props.removeClientVehicle }
+                        vehicles={ vehicles }
+                    />
+                    <br />
+                </div>
 
                 <Row gutter={ 8 } type='flex' align='bottom'>
                     <Col span={ 3 }>
@@ -96,14 +92,14 @@ export class AddClientForm extends Component {
                                         filters,
                                     );
                                 } }
-                                // optionFilterProp='children'
+                                optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
                             >
-                                { years.map(year => (
+                                { years.sort((a, b) => b - a).map(year => (
                                     <Option value={ year } key={ v4() }>
-                                        { year }
+                                        { String(year) }
                                     </Option>
                                 )) }
                             </DecoratedSelect>
@@ -459,7 +455,7 @@ export class AddClientForm extends Component {
                 <Row gutter={ 8 }>
                     <Col span={ 6 }>
                         <ArrayInput
-                            onChange={ this.props.updateArrayField }
+                            optional={ false }
                             form={ this.props.form }
                             rules={ [
                                 {
@@ -476,17 +472,16 @@ export class AddClientForm extends Component {
                             buttonText={
                                 <FormattedMessage id='add_client_form.add_phone' />
                             }
-                            values={ this.props.fields.phones }
                         />
                     </Col>
                     <Col span={ 6 }>
                         <ArrayInput
+                            optional
                             rules={ [
                                 {
                                     type: 'email',
                                 },
                             ] }
-                            onChange={ this.props.updateArrayField }
                             form={ this.props.form }
                             fieldName='emails'
                             fieldTitle={
@@ -495,7 +490,6 @@ export class AddClientForm extends Component {
                             buttonText={
                                 <FormattedMessage id='add_client_form.add_email' />
                             }
-                            values={ this.props.fields.emails }
                         />
                     </Col>
                 </Row>

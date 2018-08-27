@@ -9,7 +9,6 @@ export const FETCH_ADD_CLIENT_FORM = `${prefix}/FETCH_ADD_CLIENT_FORM`;
 export const FETCH_ADD_CLIENT_FORM_SUCCESS = `${prefix}/FETCH_ADD_CLIENT_FORM_SUCCESS`;
 
 export const ON_CHANGE_ADD_CLIENT_FORM = `${prefix}/ON_CHANGE_ADD_CLIENT_FORM`;
-export const ON_CHANGE_ADD_CLIENT_FORM_ARRAY_FIELD = `${prefix}/ON_CHANGE_ADD_CLIENT_FORM_ARRAY_FIELD`;
 
 export const SUBMIT_ADD_CLIENT_FORM = `${prefix}/SUBMIT_ADD_CLIENT_FORM`;
 export const SUBMIT_ADD_CLIENT_FORM_SUCCESS = `${prefix}/SUBMIT_ADD_CLIENT_FORM_SUCCESS`;
@@ -32,39 +31,11 @@ export const MODEL_VEHICLES_INFO_FILTER_TYPE =
  * Reducer
  * */
 
-const mergeArrays = (base, toMerge) => {
-    if (!toMerge) {
-        return base;
-    }
-
-    return base.map((value, index) => toMerge[ index ] || value);
-};
-
-export const customFieldValue = (name, value) => ({
-    errors:     void 0,
-    name:       name,
-    touched:    true,
-    validating: false,
-    value:      value,
-    dirty:      true,
-});
-
-export const defaultFieldValue = name => customFieldValue(name, void 0);
-
 const ReducerState = {
     fields: {
-        vehicle: {
-            modelId:        defaultFieldValue('modelId'),
-            makeId:         defaultFieldValue('makeId'),
-            year:           defaultFieldValue('year'),
-            modificationId: defaultFieldValue('modificationId'),
-        },
-        name:       defaultFieldValue('name'),
-        surname:    defaultFieldValue('surname'),
-        patronymic: defaultFieldValue('patronymic'),
-        gender:     defaultFieldValue('gender'),
-        phones:     [ defaultFieldValue('phones[0]') ],
-        emails:     [ defaultFieldValue('emails[0]') ],
+        vehicle: {},
+        phones:  [],
+        emails:  [],
     },
     lastFilterAction: '',
     vehicles:         [],
@@ -80,15 +51,6 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
 
     switch (type) {
-        // case ON_CHANGE_ADD_CLIENT_FORM:
-        //     return {
-        //         ...state,
-        //         fields: {
-        //             ...state.fields,
-        //             [ meta.field ]: { ...payload[ meta.field ] },
-        //         },
-        //     };
-
         case FETCH_ADD_CLIENT_FORM_SUCCESS:
             return {
                 ...state,
@@ -105,51 +67,14 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     ...payload,
-                    vehicle: {
-                        ...state.fields.vehicle,
-                        ...payload.vehicle,
-                    },
-                    phones: mergeArrays(state.fields.phones, payload.phones),
-                    emails: mergeArrays(state.fields.emails, payload.emails),
-                },
-            };
-
-        case ON_CHANGE_ADD_CLIENT_FORM_ARRAY_FIELD:
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    ...payload,
                 },
             };
 
         case CREATE_CLIENT_SUCCESS:
             return {
                 ...state,
-                fields: {
-                    vehicle: {
-                        modelId:        defaultFieldValue('modelId'),
-                        makeId:         defaultFieldValue('makeId'),
-                        year:           defaultFieldValue('year'),
-                        modificationId: defaultFieldValue('modificationId'),
-                    },
-                    name:       defaultFieldValue('name'),
-                    surname:    defaultFieldValue('surname'),
-                    patronymic: defaultFieldValue('patronymic'),
-                    gender:     defaultFieldValue('gender'),
-                    phones:     [ defaultFieldValue('phones[0]') ],
-                    emails:     [ defaultFieldValue('emails[0]') ],
-                },
+                fields:   {},
                 vehicles: [],
-            };
-
-        case SUBMIT_ADD_CLIENT_FORM:
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    ...payload,
-                },
             };
 
         case REMOVE_CLIENT_VEHICLE:
@@ -167,12 +92,7 @@ export default function reducer(state = ReducerState, action) {
                 vehicles: [ ...state.vehicles, payload ],
                 fields:   {
                     ...state.fields,
-                    vehicle: {
-                        modelId:        defaultFieldValue('modelId'),
-                        makeId:         defaultFieldValue('makeId'),
-                        year:           defaultFieldValue('year'),
-                        modificationId: defaultFieldValue('modificationId'),
-                    },
+                    vehicle: {},
                 },
             };
 
@@ -189,11 +109,9 @@ export default function reducer(state = ReducerState, action) {
                             ...state.fields,
                             vehicle: {
                                 ...state.fields.vehicle,
-                                modificationId: defaultFieldValue(
-                                    'modificationId',
-                                ),
-                                modelId: defaultFieldValue('modelId'),
-                                makeId:  defaultFieldValue('makeId'),
+                                modificationId: void 0,
+                                modelId:        void 0,
+                                makeId:         void 0,
                             },
                         },
                     };
@@ -207,10 +125,8 @@ export default function reducer(state = ReducerState, action) {
                             ...state.fields,
                             vehicle: {
                                 ...state.fields.vehicle,
-                                modificationId: defaultFieldValue(
-                                    'modificationId',
-                                ),
-                                modelId: defaultFieldValue('modelId'),
+                                modificationId: void 0,
+                                modelId:        void 0,
                             },
                         },
                     };
@@ -223,9 +139,7 @@ export default function reducer(state = ReducerState, action) {
                             ...state.fields,
                             vehicle: {
                                 ...state.fields.vehicle,
-                                modificationId: defaultFieldValue(
-                                    'modificationId',
-                                ),
+                                modificationId: void 0,
                             },
                         },
                     };
@@ -263,11 +177,6 @@ export const onChangeAddClientForm = (fields, { form, field }) => ({
     type:    ON_CHANGE_ADD_CLIENT_FORM,
     payload: fields,
     meta:    { form, field },
-});
-
-export const updateArrayField = payload => ({
-    type: ON_CHANGE_ADD_CLIENT_FORM_ARRAY_FIELD,
-    payload,
 });
 
 export const submitAddClientForm = addClientForm => ({
