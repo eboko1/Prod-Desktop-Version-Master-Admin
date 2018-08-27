@@ -121,7 +121,9 @@ export default class DashboardOrderDragSource extends Component {
                 y={ y }
                 columns={ columns }
                 rows={ rows }
-                onClick={ () => history.push(`${book.order}/${id}`) }
+                onClick={ () =>
+                    history.push(`${book.order}/${id}`, { fromDashboard: true })
+                }
                 onMouseEnter={ ev =>
                     this._showDashboardTooltip(
                         ev,
