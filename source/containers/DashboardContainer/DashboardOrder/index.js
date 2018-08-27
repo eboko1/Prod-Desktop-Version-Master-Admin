@@ -87,11 +87,6 @@ export default class DashboardOrder extends Component {
             zIndex:     10,
         };
 
-        // console.log('→ dashboardRef', dashboardRef);
-        // console.log('→ this.state.height', this.state.height);
-        // const reRef = this._resizableRef;
-        console.log('→ dashboardRef', dashboardRef);
-
         return (
             <Resizable
                 style={ resizing ? resizingStyles : resizableStyles }
