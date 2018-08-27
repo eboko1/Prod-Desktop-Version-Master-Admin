@@ -39,6 +39,7 @@ export class EmployeeScheduleForm extends Component {
             entity,
             saveEmployeeSchedule,
             initialEmployee,
+            deleteEmployeeSchedule,
         } = this.props;
 
         return (
@@ -47,6 +48,7 @@ export class EmployeeScheduleForm extends Component {
                     getFieldDecorator={ getFieldDecorator }
                     initialSchedule={ initialEmployee.schedule }
                     entity={ entity }
+                    deleteEmployeeSchedule={ deleteEmployeeSchedule }
                     saveEmployeeSchedule={ saveEmployeeSchedule }
                 />
             </div>

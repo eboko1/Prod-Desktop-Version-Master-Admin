@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Icon, Button, Row, Col, Form } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { withRouter } from 'react-router-dom';
 import moment from 'moment';
 // proj
 import {
@@ -15,6 +16,7 @@ import Styles from './styles.m.css';
 const FormItem = Form.Item;
 
 @injectIntl
+@withRouter
 class ArrayScheduleInput extends Component {
     constructor(props) {
         super(props);
@@ -68,7 +70,6 @@ class ArrayScheduleInput extends Component {
         // });
         //const keys = getFieldValue(`${fieldName}Keys`);
         const keys = this.state.keys;
-
         const formItems = keys.map(key => {
             return (
                 <Row type='flex' align='middle' key={ key }>
@@ -286,7 +287,17 @@ class ArrayScheduleInput extends Component {
                                     type='minus-circle-o'
                                     style={ { fontSize: 20, color: '#cc1300' } }
                                     disabled={ keys.length === 1 }
-                                    onClick={ () => this.remove(key) }
+                                    onClick={ () => {
+                                        this.remove(key);
+                                        if (initialSchedule[ key ].id) {
+                                            this.props.deleteEmployeeSchedule(
+                                                initialSchedule[ key ].id,
+                                                this.props.history.location.pathname.split(
+                                                    '/',
+                                                )[ 2 ],
+                                            );
+                                        }
+                                    } }
                                 />
                             ) : null }
                         </Row>

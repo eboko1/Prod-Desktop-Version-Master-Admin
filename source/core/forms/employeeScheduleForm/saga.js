@@ -10,6 +10,8 @@ import {
     saveEmployeeScheduleSuccess,
     SAVE_EMPLOYEE_SCHEDULE,
     FETCH_EMPLOYEE_SCHEDULE,
+    DELETE_EMPLOYEE_SCHEDULE,
+    deleteEmployeeScheduleSuccess,
     fetchEmployeeScheduleSuccess,
 } from './duck';
 import { fetchEmployeeById } from 'core/forms/employeeForm/duck';
@@ -26,20 +28,20 @@ export function* saveSchedule({ payload: { schedule, id } }) {
     }
 }
 
-// export function* fetchSchedule(payload) {
-//     try {
-//         console.log('HEllo', payload.payload);
-//         const data = yield call(fetchAPI, 'GET', `schedule/${payload.payload}`);
+export function* deleteSchedule({ payload: { id, employeeId } }) {
+    try {
+        console.log('HEllo', id);
+        const data = yield call(fetchAPI, 'DELETE', `schedule/${id}`);
 
-//         yield put(fetchEmployeeScheduleSuccess(data));
-//     } catch (error) {
-//         yield put(emitError(error));
-//     }
-// }
+        yield put(deleteEmployeeScheduleSuccess(data));
+        yield put(fetchEmployeeById(employeeId));
+    } catch (error) {
+        yield put(emitError(error));
+    }
+}
 export function* saga() {
     // yield all([ call(saveSchedule) ]);
     yield all([
-        takeEvery(SAVE_EMPLOYEE_SCHEDULE, saveSchedule),
-        //  takeEvery(FETCH_EMPLOYEE_SCHEDULE, fetchSchedule),
+        takeEvery(SAVE_EMPLOYEE_SCHEDULE, saveSchedule), takeEvery(DELETE_EMPLOYEE_SCHEDULE, deleteSchedule),
     ]);
 }

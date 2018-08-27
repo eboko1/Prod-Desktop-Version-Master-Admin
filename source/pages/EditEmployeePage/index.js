@@ -13,6 +13,7 @@ import { fetchEmployee } from 'core/employee/duck';
 import {
     fetchEmployeeSchedule,
     saveEmployeeSchedule,
+    deleteEmployeeSchedule,
 } from 'core/forms/employeeScheduleForm/duck';
 import {
     fetchEmployeeById,
@@ -41,6 +42,7 @@ const mapDispatchToProps = {
     resetEmployeeForm,
     saveEmployeeSchedule,
     fetchEmployeeSchedule,
+    deleteEmployeeSchedule,
 };
 @withRouter
 @injectIntl
@@ -202,6 +204,9 @@ class EditEmployeePage extends Component {
                             history={ this.props.history }
                             saveEmployee={ this.saveEmployee }
                             saveEmployeeSchedule={ this.saveEmployeeSchedule }
+                            deleteEmployeeSchedule={
+                                this.props.deleteEmployeeSchedule
+                            }
                         />
                     </TabPane>
                 </Tabs>

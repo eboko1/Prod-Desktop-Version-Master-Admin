@@ -9,6 +9,8 @@ export const FETCH_EMPLOYEE_SCHEDULE_SUCCESS = `${prefix}/FETCH_EMPLOYEE_SCHEDUL
 
 export const SAVE_EMPLOYEE_SCHEDULE = `${prefix}/SAVE_EMPLOYEE_SCHEDULE`;
 export const SAVE_EMPLOYEE_SCHEDULE_SUCCESS = `${prefix}/SAVE_EMPLOYEE_SCHEDULE_SUCCESS`;
+export const DELETE_EMPLOYEE_SCHEDULE = `${prefix}/DELETE_EMPLOYEE_SCHEDULE`;
+export const DELETE_EMPLOYEE_SCHEDULE_SUCCESS = `${prefix}/DELETE_EMPLOYEE_SCHEDULE_SUCCESS`;
 
 export const ON_CHANGE_EMPLOYEE_SCHEDULE_FORM = `${prefix}/ON_CHANGE_EMPLOYEE_SCHEDULE_FORM`;
 
@@ -110,4 +112,13 @@ export const saveEmployeeScheduleSuccess = data => ({
 export const onChangeEmployeeScheduleForm = update => ({
     type:    ON_CHANGE_EMPLOYEE_SCHEDULE_FORM,
     payload: update,
+});
+export const deleteEmployeeSchedule = (id, employeeId) => ({
+    type:    DELETE_EMPLOYEE_SCHEDULE,
+    payload: { id, employeeId },
+});
+
+export const deleteEmployeeScheduleSuccess = data => ({
+    type:    DELETE_EMPLOYEE_SCHEDULE_SUCCESS,
+    payload: data,
 });
