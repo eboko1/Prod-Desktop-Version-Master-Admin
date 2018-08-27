@@ -47,6 +47,7 @@ export const ON_CHANGE_ORDER_DETAILS = `${prefix}/ON_CHANGE_ORDER_DETAILS`;
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
+export const REDIRECT_TO_DASHBOARD = `${prefix}/REDIRECT_TO_DASHBOARD`;
 export const RETURN_TO_ORDERS_PAGE = `${prefix}/RETURN_TO_ORDERS_PAGE`;
 
 export const CREATE_INVITE_ORDER = `${prefix}/CREATE_INVITE_ORDER`;
@@ -413,6 +414,12 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case REDIRECT_TO_DASHBOARD:
+            return {
+                ...state,
+                redirectToDashboard: true,
+            };
+
         case ON_HANDLE_CUSTOM_SERVICE:
             return {
                 ...state,
@@ -435,14 +442,13 @@ export default function reducer(state = ReducerState, action) {
                     },
                 ],
             };
-
+        /* eslint-disable no-case-declarations */
         case ON_HANDLE_CUSTOM_DETAIL:
             const customDetail = {
                 detailId:         `custom|${v4()}`,
                 detailName:       payload,
                 manuallyInserted: true,
             };
-
             const filteredDetails = state.allDetails.details
                 .filter(({ detailName }) =>
                     detailName.toLocaleLowerCase().includes(payload))
@@ -699,6 +705,11 @@ export const onBrandSearch = search => ({
 export const onDetailSearch = search => ({
     type:    ON_DETAIL_SEARCH,
     payload: search,
+});
+
+export const redirectToDashboard = history => ({
+    type:    REDIRECT_TO_DASHBOARD,
+    payload: history,
 });
 
 export const returnToOrdersPage = status => ({

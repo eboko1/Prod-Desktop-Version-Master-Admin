@@ -81,6 +81,8 @@ const selectBeginDatetime = state => {
 
 const selectStation = state => state.forms.orderForm.fields.station.value;
 
+const selectRedirect = state => state.forms.orderForm.redirectToDashboard;
+
 export function* fetchOrderFormSaga() {
     while (true) {
         try {
@@ -172,6 +174,7 @@ export function* returnToOrdersPageSaga() {
     while (true) {
         try {
             const { payload: status } = yield take(RETURN_TO_ORDERS_PAGE);
+            const dashboard = yield select(selectRedirect);
             const statusesMap = [
                 {
                     route:    '/orders/appointments',

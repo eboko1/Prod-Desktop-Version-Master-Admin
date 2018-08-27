@@ -13,6 +13,12 @@ export const customFieldValue = (name, value, props = {}) => ({
 
 export const defaultFieldValue = name => customFieldValue(name, void 0);
 
+export const customDetail = payload => ({
+    detailId:         `custom|${v4()}`,
+    detailName:       payload,
+    manuallyInserted: true,
+});
+
 export const generateNestedObject = (
     fields,
     fieldNameGenerator,
