@@ -6,6 +6,7 @@ import DashboardContainer from './DashboardContainer';
 import PackageContainer from './PackageContainer';
 import RoleContainer from './RoleContainer';
 import BusinessPackageContainer from './BusinessPackageContainer';
+import BusinessSearchContainer from './BusinessSearchContainer';
 
 export {
     OrdersContainer,
@@ -16,4 +17,5 @@ export {
     PackageContainer,
     RoleContainer,
     BusinessPackageContainer,
+    BusinessSearchContainer,
 };
