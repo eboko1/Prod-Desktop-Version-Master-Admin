@@ -1,0 +1,23 @@
+{
+    "en": {
+      "manager-role-container.business_name": "Business name",
+      "manager-role-container.manager_name": "Manager name",
+      "manager-role-container.manager_surname": "Manager surname",
+      "manager-role-container.roles": "Roles",
+      "manager-role-container.edit_form_title": "Edit manager's roles"
+    },
+    "ru": {
+      "manager-role-container.business_name": "Название бизнеса",
+      "manager-role-container.manager_name": "Имя менеджера",
+      "manager-role-container.manager_surname": "Фамилия менеджера",
+      "manager-role-container.roles": "Роли",
+      "manager-role-container.edit_form_title": "Редактировать роли менеджера"
+    },
+    "uk": {
+      "manager-role-container.business_name": "Назва бізнеса",
+      "manager-role-container.manager_name": "Ім'я менеджера",
+      "manager-role-container.manager_surname": "Прізвище менеджера",
+      "manager-role-container.roles": "Ролі",
+      "manager-role-container.edit_form_title": "Редагувати ролі менеджера"
+    }
+}

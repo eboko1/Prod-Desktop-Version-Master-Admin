@@ -12,6 +12,7 @@ const book = Object.freeze({
     myTasksPage:         '/mytasks',
     packagePage:         '/packages',
     businessPackagePage: '/businesses/packages',
+    managerRolePage:     '/managers/roles',
     rolePage:            '/packages/:id',
 
     // Orders

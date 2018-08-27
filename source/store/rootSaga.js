@@ -20,6 +20,7 @@ import { saga as addClientFormSaga } from 'core/forms/addClientForm/saga';
 import { saga as myTasksContainerSaga } from 'core/myTasks/saga';
 import { saga as packagesSaga } from 'core/package/saga';
 import { saga as businessPackageSaga } from 'core/businessPackage/saga';
+import { saga as managerRoleSaga } from 'core/managerRole/saga';
 import { saga as rolesSaga } from 'core/role/saga';
 import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
 
@@ -43,6 +44,7 @@ export default function* rootSaga() {
         switchBusinessSaga(),
         businessPackageSaga(),
         searchSaga(),
+        managerRoleSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

@@ -45,6 +45,10 @@ import orderTaskReducer, {
     moduleName as orderTask,
 } from './orderTaskForm/duck';
 
+import managerRoleReducer, {
+    moduleName as managerRole,
+} from './managerRoleForm/duck';
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
     [ order ]:              orderReducer,
@@ -61,4 +65,5 @@ export const formsReducer = combineReducers({
     [ addRole ]:            addRoleReducer,
     [ editRole ]:           editRoleReducer,
     [ switchBusiness ]:     switchBusinessReducer,
+    [ managerRole ]:        managerRoleReducer,
 });

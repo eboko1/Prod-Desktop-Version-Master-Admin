@@ -14,6 +14,7 @@ import {
     PackagePage,
     RolePage,
     BusinessPackagePage,
+    ManagerRolePage,
 } from 'pages';
 import book from './book';
 
@@ -38,6 +39,7 @@ export default class Private extends Component {
                 <Route exact component={ PackagePage } path={ book.packagePage } />
                 <Route exact component={ RolePage } path={ book.rolePage } />
                 <Route exact component={ BusinessPackagePage } path={ book.businessPackagePage } />
+                <Route exact component={ ManagerRolePage } path={ book.managerRolePage} />
 
                 <Route
                     component={ ExceptionPage }

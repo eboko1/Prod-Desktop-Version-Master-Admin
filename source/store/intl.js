@@ -29,6 +29,7 @@ import DashboardPage from 'pages/DashboardPage/messages';
 import RolePage from 'pages/RolePage/messages';
 import PackagePage from 'pages/PackagePage/messages';
 import BusinessPackagePage from 'pages/BusinessPackagePage/messages';
+import ManagerRolePage from 'pages/ManagerRolePage/messages';
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
 import FunelContainer from 'containers/FunelContainer/messages';
@@ -37,6 +38,7 @@ import MyTasksContainer from 'containers/MyTasksContainer/messages';
 import PackageContainer from 'containers/PackageContainer/messages';
 import BusinessPackageContainer from 'containers/BusinessPackageContainer/messages';
 import RoleContainer from 'containers/RoleContainer/messages';
+import ManagerRoleContainer from 'containers/ManagerRoleContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -53,6 +55,7 @@ import AddRoleForm from 'forms/AddRoleForm/messages';
 import RoleForm from 'forms/RoleForm/messages';
 import SwitchBusinessForm from 'forms/SwitchBusinessForm/messages';
 import BusinessPackageForm from 'forms/BusinessPackageForm/messages';
+import ManagerRoleForm from 'forms/ManagerRoleForm/messages';
 import AddBusinessPackageForm from 'forms/AddBusinessPackageForm/messages';
 
 // modals
@@ -86,6 +89,7 @@ const messages = merge.all([
     RolePage,
     PackagePage,
     BusinessPackagePage,
+    ManagerRolePage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -94,6 +98,7 @@ const messages = merge.all([
     PackageContainer,
     RoleContainer,
     BusinessPackageContainer,
+    ManagerRoleContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -109,6 +114,7 @@ const messages = merge.all([
     SwitchBusinessForm,
     BusinessPackageForm,
     AddBusinessPackageForm,
+    ManagerRoleForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,

@@ -135,15 +135,6 @@ export default class BusinessPackageContainer extends Component {
                 ),
             },
         ];
-
-        this.pagination = {
-            pageSize:         25,
-            size:             'large',
-            total:            Math.ceil(this.props.count / 25) * 25,
-            hideOnSinglePage: true,
-            current:          props.page,
-            onChange:         page => this.props.setPage(page),
-        };
     }
 
     _handleColumnOrder = (sort, fieldName) =>
@@ -177,6 +168,15 @@ export default class BusinessPackageContainer extends Component {
             setFilters,
             setShowCreateBusinessPackageForm,
         } = this.props;
+
+        const pagination = {
+            pageSize:         25,
+            size:             'large',
+            total:            Math.ceil(this.props.count / 25) * 25,
+            hideOnSinglePage: true,
+            current:          this.props.page,
+            onChange:         page => this.props.setPage(page),
+        };
 
         return (
             <Catcher>
@@ -242,7 +242,7 @@ export default class BusinessPackageContainer extends Component {
                     }
                     rowKey={ record => record.id }
                     onChange={ this._handleTableChange }
-                    pagination={ this.pagination }
+                    pagination={ pagination }
                     dataSource={ businessPackages }
                     columns={ this.columns }
                 />

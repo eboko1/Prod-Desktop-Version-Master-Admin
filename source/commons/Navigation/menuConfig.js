@@ -158,6 +158,12 @@ export default {
             link:     book.businessPackagePage,
             name:     'navigation.business_package',
         },
+        {
+            key:      '/managerRole',
+            iconType: 'book',
+            link:     book.managerRolePage,
+            name:     'navigation.manager_role',
+        },
     ],
 
     getSelectedByRoute: function getSelectedByRoute(currentPath) {
