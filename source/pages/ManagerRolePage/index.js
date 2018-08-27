@@ -8,23 +8,23 @@ import _ from 'lodash';
 
 // proj
 import {
-    fetchBusinessPackages,
+    fetchManagerRoles,
     setPage,
     setSort,
-} from 'core/businessPackage/duck';
+} from 'core/managerRole/duck';
 
 import { Layout, Spinner } from 'commons';
-import { BusinessPackageContainer } from 'containers';
+import { ManagerRoleContainer } from 'containers';
 
 const mapStateToProps = state => {
     return {
-        isFetching:       state.ui.businessPackageFetching,
-        businessPackages: state.businessPackage.businessPackages,
+        isFetching:       state.ui.managerRoleFetching,
+        businessPackages: state.managerRole.managerRoles,
     };
 };
 
 const mapDispatchToProps = {
-    fetchBusinessPackages,
+    fetchManagerRoles,
     setPage,
     setSort,
 };
@@ -33,23 +33,23 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
-export default class BusinessPackagePage extends Component {
+export default class ManagerRolePage extends Component {
     constructor(props) {
         super(props);
     }
 
     componentDidMount() {
-        this.props.fetchBusinessPackages();
+        this.props.fetchManagerRoles();
     }
 
     render() {
-        const { isFetching, businessPackages } = this.props;
+        const { isFetching, managerRoles } = this.props;
 
         return isFetching ? (
             <Spinner spin={ isFetching } />
         ) : (
-            <Layout title={ <FormattedMessage id='business_packages' /> }>
-                <BusinessPackageContainer businessPackages={ businessPackages } />
+            <Layout title={ <FormattedMessage id='manager-role-page.title' /> }>
+                <ManagerRoleContainer businessPackages={ managerRoles } />
             </Layout>
         );
     }

@@ -6,8 +6,6 @@ import {
     take,
     select,
     takeEvery,
-    takeLatest,
-    delay,
 } from 'redux-saga/effects';
 
 //proj
@@ -19,9 +17,6 @@ import {
     fetchBusinessPackages,
     fetchBusinessPackagesSuccess,
     fetchBusinessPackagesError,
-    fetchBusinessesSuccess,
-    setIsFetchingBusinesses,
-    addError,
     hideForms,
 } from './duck';
 
@@ -32,7 +27,6 @@ import {
     SET_PAGE,
     SET_SORT,
     SET_FILTERS,
-    SET_BUSINESS_SEARCH_QUERY,
 } from './duck';
 
 export function* refetchBusinessPackagesSaga() {
@@ -72,19 +66,6 @@ export function* fetchBusinessPackagesSaga() {
     }
 }
 
-function* handleBusinessesSearchSaga({ payload: query }) {
-    yield delay(1000);
-
-    if (query && query.length > 2) {
-        yield put(setIsFetchingBusinesses(true));
-        const businesses = yield call(fetchAPI, 'GET', 'businesses/search', {
-            search: query,
-        });
-        yield put(fetchBusinessesSuccess(businesses));
-        yield put(setIsFetchingBusinesses(false));
-    }
-}
-
 function* createBusinessPackageSaga({
     payload: { businessId, packageId, datetimeRange },
 }) {
@@ -112,7 +93,6 @@ function* updateBusinessPackageSaga({
 
 export function* saga() {
     yield all([
-        takeLatest(SET_BUSINESS_SEARCH_QUERY, handleBusinessesSearchSaga),
         call(fetchBusinessPackagesSaga),
         takeEvery(CREATE_BUSINESS_PACKAGE, createBusinessPackageSaga),
         takeEvery(UPDATE_BUSINESS_PACKAGE, updateBusinessPackageSaga),

@@ -18,12 +18,17 @@ import packageReducer, { moduleName as packageModule } from 'core/package/duck';
 import businessPackageReducer, {
     moduleName as businessPackageModule,
 } from 'core/businessPackage/duck';
+import managerRoleReducer, {
+    moduleName as managerRoleModule,
+} from 'core/managerRole/duck';
+
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
 import settingSalaryReducer, { moduleName as settingSalaryModule } from 'core/settingSalary/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
 } from 'core/dashboard/duck';
+import searchReducer, { moduleName as searchModule } from 'core/search/duck';
 
 export const persistConfig = {
     key:       'user',
@@ -45,6 +50,8 @@ const reducer = combineReducers({
     [ roleModule ]:            roleReducer,
     [ settingSalaryModule ]:   settingSalaryReducer,
     [ businessPackageModule ]: businessPackageReducer,
+    [ searchModule ]:          searchReducer,
+    [ managerRoleModule ]:     managerRoleReducer,
     intl,
     router,
 });

@@ -27,6 +27,8 @@ export const FETCH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ORDER_FORM_SUCCESS`;
 export const ON_CHANGE_ORDER_FORM = `${prefix}/ON_CHANGE_ORDER_FORM`;
 export const ON_CHANGE_CLIENT_SEARCH_QUERY = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY`;
 
+export const PREFILL_FROM_DASHBOARD = `${prefix}/PREFILL_FROM_DASHBOARD`;
+
 // TODO ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST mv to ui (spin load state in table)
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST`;
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS`;
@@ -413,6 +415,15 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case PREFILL_FROM_DASHBOARD:
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    ...payload,
+                },
+            };
+
         case ON_HANDLE_CUSTOM_SERVICE:
             return {
                 ...state,
@@ -435,14 +446,13 @@ export default function reducer(state = ReducerState, action) {
                     },
                 ],
             };
-
+        /* eslint-disable no-case-declarations */
         case ON_HANDLE_CUSTOM_DETAIL:
             const customDetail = {
                 detailId:         `custom|${v4()}`,
                 detailName:       payload,
                 manuallyInserted: true,
             };
-
             const filteredDetails = state.allDetails.details
                 .filter(({ detailName }) =>
                     detailName.toLocaleLowerCase().includes(payload))
@@ -704,6 +714,11 @@ export const onDetailSearch = search => ({
 export const returnToOrdersPage = status => ({
     type:    RETURN_TO_ORDERS_PAGE,
     payload: status,
+});
+
+export const prefillFromDashboard = data => ({
+    type:    PREFILL_FROM_DASHBOARD,
+    payload: data,
 });
 
 export const createInviteOrder = inviteOrder => ({

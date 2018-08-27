@@ -39,15 +39,15 @@ export default class DashboardOrder extends Component {
             id,
             dropOrder,
         } = this.props;
-        console.log('→ this.props', duration);
-        console.log('→ this.state.height', this.state.height);
-        console.log('→ _resizeOrder(delta.height)', delta.height);
-        console.log(
-            '→ (this.state.height + delta.height) / 60',
-            (this.state.height + delta.height) / 60,
-        );
+        // console.log('→ this.props', duration);
+        // console.log('→ this.state.height', this.state.height);
+        // console.log('→ _resizeOrder(delta.height)', delta.height);
+        // console.log(
+        //     '→ (this.state.height + delta.height) / 60',
+        //     (this.state.height + delta.height) / 60,
+        // );
         const resizedDuration = (this.state.height + delta.height) / 60;
-        console.log('→ resizedDuration', resizedDuration);
+        // console.log('→ resizedDuration', resizedDuration);
 
         this.setState({ height: this.state.height + delta.height });
 
@@ -86,11 +86,6 @@ export default class DashboardOrder extends Component {
             border:     '1px solid white',
             zIndex:     10,
         };
-
-        // console.log('→ dashboardRef', dashboardRef);
-        // console.log('→ this.state.height', this.state.height);
-        // const reRef = this._resizableRef;
-        console.log('→ dashboardRef', dashboardRef);
 
         return (
             <Resizable

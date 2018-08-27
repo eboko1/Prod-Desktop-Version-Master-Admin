@@ -15,6 +15,7 @@ const book = Object.freeze({
     editEmployee:        '/employees/:id',
     packagePage:         '/packages',
     businessPackagePage: '/businesses/packages',
+    managerRolePage:     '/managers/roles',
     rolePage:            '/packages/:id',
 
     // Orders

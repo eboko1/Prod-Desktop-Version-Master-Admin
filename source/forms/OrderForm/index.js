@@ -16,6 +16,7 @@ import {
     onServiceSearch,
     onDetailSearch,
     onBrandSearch,
+    prefillFromDashboard,
 } from 'core/forms/orderForm/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 import { defaultDetails } from 'core/forms/orderForm/helpers/details';
@@ -49,8 +50,10 @@ const Option = Select.Option;
 @injectIntl
 @withReduxForm({
     name:            'orderForm',
-    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
-    actions:         {
+    debouncedFields: [
+        'comment', 'recommendation', 'vehicleCondition', 'businessComment',
+    ],
+    actions: {
         change: onChangeOrderForm,
         setClientSelection,
         onChangeOrderServices,
@@ -59,9 +62,21 @@ const Option = Select.Option;
         onDetailSearch,
         onBrandSearch,
         initOrderTasksForm,
+        prefillFromDashboard,
     },
 })
 export class OrderForm extends Component {
+    componentDidMount() {
+        const { location, prefillFromDashboard } = this.props;
+        if (location.state) {
+            prefillFromDashboard({
+                beginDate: location.state.beginDatetime,
+                beginTime: location.state.beginDatetime,
+                station:   location.state.stationNum,
+            });
+        }
+    }
+
     /* eslint-disable complexity */
     render() {
         const dateBlock = this._renderDateBlock();
@@ -97,7 +112,7 @@ export class OrderForm extends Component {
     };
 
     _renderDateBlock = () => {
-        const { stations, managers, employees } = this.props;
+        const { stations, managers, location } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -112,6 +127,10 @@ export class OrderForm extends Component {
 
         return (
             <div className={ Styles.datePanel }>
+                { /* { console.log(
+                    '→ this.props.location.state.beginDatetime',
+                    moment(this.props.location.state.beginDatetime),
+                ) } */ }
                 <DecoratedDatePicker
                     getFieldDecorator={ getFieldDecorator }
                     field='beginDate'
@@ -126,16 +145,18 @@ export class OrderForm extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  '',
+                            message:  'Please provide date',
                         },
                     ] }
                     placeholder={ formatMessage({
-                        id:             'add_order_form.select_date',
-                        defaultMessage: 'Provide date',
+                        id: 'add_order_form.select_date',
                     }) }
                     disabledDate={ disabledDate }
                     format={ 'YYYY-MM-DD' } // HH:mm
                     showTime={ false }
+                    initialValue={
+                        location.state && moment(location.state.beginDatetime)
+                    }
                     // showTime={ {
                     //     disabledHours,
                     //     disabledMinutes,
@@ -155,6 +176,9 @@ export class OrderForm extends Component {
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
                     minuteStep={ 30 }
+                    initialValue={
+                        location.state && moment(location.state.beginDatetime)
+                    }
                 />
                 <DecoratedSelect
                     field='station'
@@ -176,6 +200,7 @@ export class OrderForm extends Component {
                     options={ stations }
                     optionValue='num'
                     optionLabel='name'
+                    initialValue={ location.state && location.state.stationNum }
                 />
                 <DecoratedSelect
                     field='manager'
@@ -204,9 +229,7 @@ export class OrderForm extends Component {
                     )) }
                 </DecoratedSelect>
                 <FormItem
-                    label={
-                        <FormattedMessage id='order_form_table.master' />
-                    }
+                    label={ <FormattedMessage id='order_form_table.master' /> }
                     className={ Styles.durationPanelItem }
                 >
                     <DecoratedSelect
@@ -219,7 +242,9 @@ export class OrderForm extends Component {
 
                             const updatedServices = _(services)
                                 .keys()
-                                .map(serviceKey => [ `services[${serviceKey}][employeeId]`, value ])
+                                .map(serviceKey => [
+                                    `services[${serviceKey}][employeeId]`, value,
+                                ])
                                 .fromPairs()
                                 .value();
 
@@ -536,8 +561,11 @@ export class OrderForm extends Component {
 
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
 
-        const commentsCollection = [ comment, businessComment, vehicleCondition, recommendation ];
-        const commentsCount = commentsCollection.filter(com => _.get(com, 'value')).length;
+        const commentsCollection = [
+            comment, businessComment, vehicleCondition, recommendation,
+        ];
+        const commentsCount = commentsCollection.filter(com =>
+            _.get(com, 'value'),).length;
 
         return (
             <>

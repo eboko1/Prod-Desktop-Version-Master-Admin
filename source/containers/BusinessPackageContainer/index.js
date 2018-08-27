@@ -1,28 +1,31 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Form, Button, Table, Icon, Modal, Select, Spin } from 'antd';
+import { Form, Button, Table, Icon, Modal, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
 
 // proj
-import { Catcher } from 'commons';
-import { AddBusinessPackageForm, BusinessPackageForm } from 'forms';
-
-// own
 import {
     createBusinessPackage,
     updateBusinessPackage,
     setSort,
     setPage,
     setFilters,
-    setBusinessSearchQuery,
     hideForms,
     setShowCreateBusinessPackageForm,
     setShowUpdateBusinessPackageForm,
 } from 'core/businessPackage/duck';
+
+import { Catcher } from 'commons';
+import { AddBusinessPackageForm, BusinessPackageForm } from 'forms';
+import { BusinessSearchField } from 'forms/_formkit';
+
+// own
 import Styles from './styles.m.css';
+const FormItem = Form.Item;
+const Option = Select.Option;
 
 const mapDispatchToProps = {
     createBusinessPackage,
@@ -30,27 +33,21 @@ const mapDispatchToProps = {
     setSort,
     setPage,
     setFilters,
-    setBusinessSearchQuery,
     hideForms,
     setShowCreateBusinessPackageForm,
     setShowUpdateBusinessPackageForm,
 };
 
-const FormItem = Form.Item;
-const Option = Select.Option;
-
 const mapStateToProps = state => ({
     showCreateBusinessPackageForm:
         state.businessPackage.showCreateBusinessPackageForm,
-    businesses:           state.businessPackage.businesses,
-    isFetchingBusinesses: state.businessPackage.isFetchingBusinesses,
-    businessPackage:      state.businessPackage.businessPackage,
-    businessPackages:     state.businessPackage.businessPackages,
-    rolesPackages:        state.businessPackage.rolesPackages,
-    errors:               state.businessPackage.errors,
-    sort:                 state.businessPackage.sort,
-    filters:              state.businessPackage.filters,
-    page:                 state.businessPackage.page,
+    businessPackage:  state.businessPackage.businessPackage,
+    businessPackages: state.businessPackage.businessPackages,
+    rolesPackages:    state.businessPackage.rolesPackages,
+    errors:           state.businessPackage.errors,
+    sort:             state.businessPackage.sort,
+    filters:          state.businessPackage.filters,
+    page:             state.businessPackage.page,
 });
 
 const formItemLayout = {
@@ -64,11 +61,98 @@ const sortOptions = {
 };
 
 @injectIntl
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class BusinessPackageContainer extends Component {
     constructor(props) {
         super(props);
+        const { sort, setShowUpdateBusinessPackageForm } = props;
+        const { formatMessage } = props.intl;
+
+        this.columns = [
+            {
+                title: formatMessage({
+                    id: 'business-package-container.business_name',
+                }),
+                dataIndex: 'businessName',
+                sorter:    true,
+                sortOrder: this._handleColumnOrder(sort, 'businessName'),
+                width:     '15%',
+            },
+            {
+                title: formatMessage({
+                    id: 'business-package-container.business_address',
+                }),
+                dataIndex: 'businessAddress',
+                width:     '20%',
+            },
+            {
+                title: formatMessage({
+                    id: 'business-package-container.activation_datetime',
+                }),
+                dataIndex: 'activationDatetime',
+                sorter:    true,
+                sortOrder: this._handleColumnOrder(sort, 'activationDatetime'),
+                width:     '15%',
+                render:    (name, record) =>
+                    moment(record.activationDatetime).format(
+                        'YYYY-MM-DD HH:mm:ss',
+                    ),
+            },
+            {
+                title: formatMessage({
+                    id: 'business-package-container.expiration_datetime',
+                }),
+                dataIndex: 'expirationDatetime',
+                sorter:    true,
+                sortOrder: this._handleColumnOrder(sort, 'expirationDatetime'),
+                width:     '15%',
+                render:    (name, record) =>
+                    moment(record.expirationDatetime).format(
+                        'YYYY-MM-DD HH:mm:ss',
+                    ),
+            },
+            {
+                title: formatMessage({
+                    id: 'business-package-container.package_name',
+                }),
+                dataIndex: 'packageName',
+                sorter:    true,
+                sortOrder: this._handleColumnOrder(sort, 'packageName'),
+                width:     '20%',
+            },
+
+            {
+                width:  '15%',
+                render: record => (
+                    <Icon
+                        className={ Styles.businessEditIcon }
+                        onClick={ () => setShowUpdateBusinessPackageForm(record) }
+                        type='edit'
+                    />
+                ),
+            },
+        ];
     }
+
+    _handleColumnOrder = (sort, fieldName) =>
+        sort.field === fieldName ? sortOptions[ sort.order ] : false;
+
+    _handleTableChange = (pagination, filters, sorter) => {
+        if (!sorter) {
+            return;
+        }
+        const sort = {
+            field: sorter.field,
+            order: sorter.order === 'ascend' ? 'asc' : 'desc',
+        };
+
+        if (!_.isEqual(sort, this.props.sort)) {
+            this.props.setSort(sort);
+        }
+    };
 
     render() {
         const {
@@ -77,98 +161,13 @@ export default class BusinessPackageContainer extends Component {
             businessPackages,
             filters,
             rolesPackages,
-            sort,
             showCreateBusinessPackageForm,
 
             createBusinessPackage,
             updateBusinessPackage,
             setFilters,
-            setBusinessSearchQuery,
             setShowCreateBusinessPackageForm,
-            setShowUpdateBusinessPackageForm,
         } = this.props;
-
-        const handleColumnOrder = (sort, fieldName) =>
-            sort.field === fieldName ? sortOptions[ sort.order ] : false;
-        const getFormatMessage = id => this.props.intl.formatMessage({ id });
-
-        const columns = [
-            {
-                title: getFormatMessage(
-                    'business-package-container.business_name',
-                ),
-                dataIndex: 'businessName',
-                sorter:    true,
-                sortOrder: handleColumnOrder(sort, 'businessName'),
-                width:     '15%',
-            },
-            {
-                title: getFormatMessage(
-                    'business-package-container.business_address',
-                ),
-                dataIndex: 'businessAddress',
-                width:     '20%',
-            },
-            {
-                title: getFormatMessage(
-                    'business-package-container.activation_datetime',
-                ),
-                dataIndex: 'activationDatetime',
-                sorter:    true,
-                sortOrder: handleColumnOrder(sort, 'activationDatetime'),
-                width:     '15%',
-                render:    (name, record) =>
-                    moment(record.activationDatetime).format(
-                        'YYYY-MM-DD HH:mm:ss',
-                    ),
-            },
-            {
-                title: getFormatMessage(
-                    'business-package-container.expiration_datetime',
-                ),
-                dataIndex: 'expirationDatetime',
-                sorter:    true,
-                sortOrder: handleColumnOrder(sort, 'expirationDatetime'),
-                width:     '15%',
-                render:    (name, record) =>
-                    moment(record.expirationDatetime).format(
-                        'YYYY-MM-DD HH:mm:ss',
-                    ),
-            },
-            {
-                title: getFormatMessage(
-                    'business-package-container.package_name',
-                ),
-                dataIndex: 'packageName',
-                sorter:    true,
-                sortOrder: handleColumnOrder(sort, 'packageName'),
-                width:     '20%',
-            },
-
-            {
-                width:  '15%',
-                render: record => (
-                    <Icon
-                        onClick={ () => setShowUpdateBusinessPackageForm(record) }
-                        type='edit'
-                    />
-                ),
-            },
-        ];
-
-        const handleTableChange = (pagination, filters, sorter) => {
-            if (!sorter) {
-                return;
-            }
-            const sort = {
-                field: sorter.field,
-                order: sorter.order === 'ascend' ? 'asc' : 'desc',
-            };
-
-            if (!_.isEqual(sort, this.props.sort)) {
-                this.props.setSort(sort);
-            }
-        };
 
         const pagination = {
             pageSize:         25,
@@ -178,8 +177,6 @@ export default class BusinessPackageContainer extends Component {
             current:          this.props.page,
             onChange:         page => this.props.setPage(page),
         };
-
-        const { isFetchingBusinesses } = this.props;
 
         return (
             <Catcher>
@@ -196,9 +193,11 @@ export default class BusinessPackageContainer extends Component {
                             optionFilterProp='children'
                             allowClear
                             filterOption={ (input, option) =>
-                                !!~option.props.children
-                                    .toLowerCase()
-                                    .indexOf(input.toLowerCase())
+                                Boolean(
+                                    option.props.children
+                                        .toLowerCase()
+                                        .indexOf(input.toLowerCase() !== -1),
+                                )
                             }
                             onChange={ packageId =>
                                 this.props.setFilters({ packageId })
@@ -221,41 +220,17 @@ export default class BusinessPackageContainer extends Component {
                         }
                         colon={ false }
                     >
-                        <Select
-                            showSearch
-                            allowClear
-                            filterOption={ false }
-                            notFoundContent={
-                                isFetchingBusinesses ? (
-                                    <Spin size='small' />
-                                ) : 
-                                    'Not found'
-                                
-                            }
-                            onSearch={ item => setBusinessSearchQuery(item) }
-                            onChange={ businessId => setFilters({ businessId }) }
-                            value={ filters.businessId || void 0 }
-                        >
-                            { isFetchingBusinesses
-                                ? []
-                                : businesses.map(({ businessId, name }) => (
-                                    <Option
-                                        key={ businessId }
-                                        value={ businessId }
-                                    >
-                                        { name }
-                                    </Option>
-                                )) }
-                        </Select>
+                        <BusinessSearchField
+                            businessId={ filters.businessId }
+                            onSelect={ businessId => setFilters({ businessId }) }
+                        />
                     </FormItem>
                     <Button
                         style={ { alignSelf: 'normal' } }
                         disabled={ !filters.businessId || !filters.packageId }
                         onClick={ () => setShowCreateBusinessPackageForm(true) }
                     >
-                        {
-                            <FormattedMessage id='business-package-container.create' />
-                        }
+                        <FormattedMessage id='business-package-container.create' />
                     </Button>
                 </Form>
                 <Table
@@ -266,22 +241,20 @@ export default class BusinessPackageContainer extends Component {
                             : null
                     }
                     rowKey={ record => record.id }
-                    onChange={ handleTableChange }
+                    onChange={ this._handleTableChange }
                     pagination={ pagination }
                     dataSource={ businessPackages }
-                    columns={ columns }
+                    columns={ this.columns }
                 />
                 <Modal
                     title={
                         <FormattedMessage id='business-package-container.create_form_title' />
                     }
-                    visible={
-                        !!(
-                            showCreateBusinessPackageForm &&
+                    visible={ Boolean(
+                        showCreateBusinessPackageForm &&
                             filters.businessId &&
-                            filters.packageId
-                        )
-                    }
+                            filters.packageId,
+                    ) }
                     onCancel={ () => this.props.hideForms() }
                     footer={ null }
                 >
@@ -312,7 +285,7 @@ export default class BusinessPackageContainer extends Component {
                     title={
                         <FormattedMessage id='business-package-container.edit_form_title' />
                     }
-                    visible={ !!businessPackage }
+                    visible={ Boolean(businessPackage) }
                     onCancel={ () => this.props.hideForms() }
                     footer={ null }
                 >

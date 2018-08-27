@@ -12,6 +12,7 @@ export const SET_MY_TASKS_FETCHING_STATE = `${prefix}/SET_MY_TASKS_FETCHING_STAT
 export const SET_ORDER_FETCHING_STATE = `${prefix}/SET_ORDER_FETCHING_STATE`;
 export const SET_PACKAGE_FETCHING_STATE = `${prefix}/SET_PACKAGE_FETCHING_STATE`;
 export const SET_BUSINESS_PACKAGE_FETCHING_STATE = `${prefix}/SET_BUSINESS_PACKAGE_FETCHING_STATE`;
+export const SET_MANAGER_ROLE_FETCHING_STATE = `${prefix}/SET_MANAGER_ROLE_FETCHING_STATE`;
 export const SET_ROLE_FETCHING_STATE = `${prefix}/SET_ROLE_FETCHING_STATE`;
 export const SET_SEARCH_BUSINESSES_FETCHING_STATE = `${prefix}/SET_SEARCH_BUSINESSES_FETCHING_STATE`;
 export const SET_DASHBOARD_INITALIZING_STATE = `${prefix}/SET_DASHBOARD_INITALIZING_STATE`;
@@ -34,6 +35,7 @@ const ReducerState = {
     searchBusinessesFetching: false,
     packageFetching:          false,
     businessPackageFetching:  false,
+    managerRoleFetching:      false,
     roleFetching:             false,
     collapsed:                false,
     views:                    {},
@@ -86,6 +88,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_SEARCH_BUSINESSES_FETCHING_STATE:
             return { ...state, searchBusinessesFetching: payload };
+
+        case SET_MANAGER_ROLE_FETCHING_STATE:
+            return { ...state, managerRoleFetching: payload };
 
         default:
             return state;
@@ -146,6 +151,11 @@ export const setPackageFetchingState = state => ({
 
 export const setBusinessPackageFetchingState = state => ({
     type:    SET_BUSINESS_PACKAGE_FETCHING_STATE,
+    payload: state,
+});
+
+export const setManagerRoleFetchingState = state => ({
+    type:    SET_MANAGER_ROLE_FETCHING_STATE,
     payload: state,
 });
 

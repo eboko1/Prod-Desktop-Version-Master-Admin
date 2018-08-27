@@ -44,8 +44,16 @@ import toSuccessReducer, {
 import orderTaskReducer, {
     moduleName as orderTask,
 } from './orderTaskForm/duck';
-import employeeFormReducer, { moduleName as employeeFormModule } from 'core/forms/employeeForm/duck';
-import employeeScheduleFormReducer, { moduleName as employeeScheduleFormModule } from 'core/forms/employeeScheduleForm/duck';
+import employeeFormReducer, {
+    moduleName as employeeFormModule,
+} from 'core/forms/employeeForm/duck';
+import employeeScheduleFormReducer, {
+    moduleName as employeeScheduleFormModule,
+} from 'core/forms/employeeScheduleForm/duck';
+
+import managerRoleReducer, {
+    moduleName as managerRole,
+} from './managerRoleForm/duck';
 
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
@@ -65,5 +73,5 @@ export const formsReducer = combineReducers({
     [ employeeScheduleFormModule ]: employeeScheduleFormReducer,
     [ addBusinessPackage ]:         addBusinessPackageReducer,
     [ businessPackage ]:            businessPackageReducer,
-
+    [ managerRole ]:                managerRoleReducer,
 });

@@ -97,7 +97,10 @@ const mapDispatchToProps = {
 };
 
 // @withRouter
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 class OrderPage extends Component {
     componentDidMount() {
         const { fetchOrderForm, fetchOrderTask, match } = this.props;
@@ -156,7 +159,7 @@ class OrderPage extends Component {
         });
     };
 
-    saveNewOrderTask = () => {
+    _saveNewOrderTask = () => {
         const { orderTaskEntity, orderTaskId } = this.props;
         const form = this.orderTaskFormRef.props.form;
         form.validateFields(err => {
@@ -172,9 +175,64 @@ class OrderPage extends Component {
         });
     };
 
+    _close = () => {
+        const {
+            orderEntity,
+            allServices,
+            allDetails,
+
+            initOrderEntity,
+            returnToOrdersPage,
+            setModal,
+            history,
+        } = this.props;
+
+        const newOrder = convertFieldsValuesToDbEntity(
+            orderEntity,
+            allServices,
+            allDetails,
+        );
+
+        if (_.isEqual(newOrder, initOrderEntity)) {
+            _.get(history, 'location.state.fromDashboard')
+                ? history.push(`${book.dashboard}`)
+                : returnToOrdersPage(status);
+        } else {
+            setModal(MODALS.CONFIRM_EXIT);
+        }
+    };
+
+    _invite = () => {
+        const {
+            user,
+            clientVehicleId,
+            clientId,
+            status,
+            clientPhone,
+            createInviteOrder,
+        } = this.props.order;
+
+        if (
+            (status === 'success' || status === 'cancel') &&
+            clientVehicleId &&
+            clientId &&
+            clientPhone
+        ) {
+            createInviteOrder({
+                status:    'invite',
+                clientVehicleId,
+                clientId,
+                clientPhone,
+                managerId: user.id,
+            });
+        }
+    };
+
     /* eslint-disable complexity*/
     render() {
         const {
+            fetchOrderForm,
+            fetchOrderTask,
             setModal,
             resetModal,
             spinner,
@@ -185,27 +243,29 @@ class OrderPage extends Component {
             modal,
             addClientFormData,
             isMobile,
-            user,
+            managers,
+            stations,
         } = this.props;
 
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
+        // console.log('→ this.props.match.params', this.props.history);
 
         return spinner ? (
             <Spinner spin={ spinner } />
         ) : (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
@@ -220,12 +280,8 @@ class OrderPage extends Component {
                             <Link
                                 to={ `${book.order}/${inviteOrderId}` }
                                 onClick={ () => {
-                                    this.props.fetchOrderForm(
-                                        inviteOrderId,
-                                    );
-                                    this.props.fetchOrderTask(
-                                        inviteOrderId,
-                                    );
+                                    fetchOrderForm(inviteOrderId);
+                                    fetchOrderTask(inviteOrderId);
                                 } }
                             >
                                 { inviteOrderId }
@@ -234,30 +290,7 @@ class OrderPage extends Component {
                         {isInviteVisible && !inviteOrderId ? (
                             <Button
                                 disabled={ !isInviteEnabled }
-                                onClick={ () => {
-                                    const {
-                                        clientVehicleId,
-                                        clientId,
-                                        status,
-                                        clientPhone,
-                                    } = this.props.order;
-
-                                    if (
-                                        (status === 'success' ||
-                                            status === 'cancel') &&
-                                        clientVehicleId &&
-                                        clientId &&
-                                        clientPhone
-                                    ) {
-                                        this.props.createInviteOrder({
-                                            status:    'invite',
-                                            clientVehicleId,
-                                            clientId,
-                                            clientPhone,
-                                            managerId: user.id,
-                                        });
-                                    }
-                                } }
+                                onClick={ this._invite }
                             >
                                 <FormattedMessage id='order-page.create_invite_order' />
                             </Button>
@@ -300,24 +333,7 @@ class OrderPage extends Component {
                                 cursor:   'pointer',
                             } }
                             type='close'
-                            onClick={ () => {
-                                const newOrder = convertFieldsValuesToDbEntity(
-                                    this.props.orderEntity,
-                                    this.props.allServices,
-                                    this.props.allDetails,
-                                );
-
-                                if (
-                                    _.isEqual(
-                                        newOrder,
-                                        this.props.initOrderEntity,
-                                    )
-                                ) {
-                                    this.props.returnToOrdersPage(status);
-                                } else {
-                                    setModal(MODALS.CONFIRM_EXIT);
-                                }
-                            } }
+                            onClick={ this._close }
                         />
                     </>
                 }
@@ -344,6 +360,7 @@ class OrderPage extends Component {
                         filteredDetails={ this.props.filteredDetails }
                         setModal={ setModal }
                         changeModalStatus={ this.props.changeModalStatus }
+                        location={ false }
                     />
                 </ResponsiveView>
                 <AddClientModal
@@ -385,11 +402,11 @@ class OrderPage extends Component {
                     resetModal={ () => resetModal() }
                     num={ num }
                     orderTaskId={ this.props.orderTaskId }
-                    orderId={ this.props.match.params.id }
+                    orderId={ id }
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
-                    stations={ this.props.stations }
-                    managers={ this.props.managers }
-                    saveNewOrderTask={ this.saveNewOrderTask }
+                    stations={ stations }
+                    managers={ managers }
+                    saveNewOrderTask={ this._saveNewOrderTask }
                     orderTasks={ this.props.orderTasks }
                 />
             </Layout>

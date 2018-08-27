@@ -17,6 +17,7 @@ class ArrayInput extends Component {
             keys: [],
         };
     }
+
     remove = key => {
         const {
             optional,

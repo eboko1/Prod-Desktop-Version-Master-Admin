@@ -31,6 +31,8 @@ import PackagePage from 'pages/PackagePage/messages';
 import EmployeePage from 'pages/EmployeePage/messages';
 import AddEmployeePage from 'pages/AddEmployeePage/messages';
 
+import BusinessPackagePage from 'pages/BusinessPackagePage/messages';
+import ManagerRolePage from 'pages/ManagerRolePage/messages';
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
 import FunelContainer from 'containers/FunelContainer/messages';
@@ -40,6 +42,7 @@ import PackageContainer from 'containers/PackageContainer/messages';
 import BusinessPackageContainer from 'containers/BusinessPackageContainer/messages';
 import RoleContainer from 'containers/RoleContainer/messages';
 import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
+import ManagerRoleContainer from 'containers/ManagerRoleContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -58,6 +61,7 @@ import SwitchBusinessForm from 'forms/SwitchBusinessForm/messages';
 import EmployeeForm from 'forms/EmployeeForm/messages';
 import EmployeeScheduleForm from 'forms/EmployeeScheduleForm/messages';
 import BusinessPackageForm from 'forms/BusinessPackageForm/messages';
+import ManagerRoleForm from 'forms/ManagerRoleForm/messages';
 import AddBusinessPackageForm from 'forms/AddBusinessPackageForm/messages';
 
 // modals
@@ -94,6 +98,8 @@ const messages = merge.all([
     PackagePage,
     EmployeePage,
     AddEmployeePage,
+    BusinessPackagePage,
+    ManagerRolePage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -103,6 +109,7 @@ const messages = merge.all([
     RoleContainer,
     SettingSalaryContainer,
     BusinessPackageContainer,
+    ManagerRoleContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -119,6 +126,7 @@ const messages = merge.all([
     EmployeeForm,
     BusinessPackageForm,
     AddBusinessPackageForm,
+    ManagerRoleForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
@@ -136,7 +144,6 @@ const messages = merge.all([
     EmployeeTable,
     EmployeeScheduleForm,
     SettingSalaryTable,
-
 ]);
 /* eslint-enable array-element-newline */
 

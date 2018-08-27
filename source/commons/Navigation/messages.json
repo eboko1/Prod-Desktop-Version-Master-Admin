@@ -28,7 +28,8 @@
         "navigation.notice": "Notice",
         "navigation.suggest_idea": "Suggest idea",
         "navigation.package": "Packages",
-        "navigation.business_package": "Business-Package"
+        "navigation.business_package": "Business-Package",
+        "navigation.manager_role": "Manager-Role"
     },
     "ru": {
         "navigation.operations": "Операции",
@@ -59,7 +60,8 @@
         "navigation.notice": "Уведомления",
         "navigation.suggest_idea": "Предложить идею",
         "navigation.package": "Пакеты",
-        "navigation.business_package": "Бизнесы-Пакеты"
+        "navigation.business_package": "Бизнесы-Пакеты",
+        "navigation.manager_role": "Менеджеры-Роли"
     },
     "uk": {
         "navigation.operations": "Операції",
@@ -90,6 +92,7 @@
         "navigation.notice": "Сповіщення",
         "navigation.suggest_idea": "Запропонувати ідею",
         "navigation.package": "Пакети",
-        "navigation.business_package": "Бізнеси-Пакети"
+        "navigation.business_package": "Бізнеси-Пакети",
+        "navigation.manager_role": "Менеджери-Ролі"
     }
 }
