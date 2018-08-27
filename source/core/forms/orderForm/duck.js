@@ -27,6 +27,8 @@ export const FETCH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_ORDER_FORM_SUCCESS`;
 export const ON_CHANGE_ORDER_FORM = `${prefix}/ON_CHANGE_ORDER_FORM`;
 export const ON_CHANGE_CLIENT_SEARCH_QUERY = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY`;
 
+export const PREFILL_FROM_DASHBOARD = `${prefix}/PREFILL_FROM_DASHBOARD`;
+
 // TODO ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST mv to ui (spin load state in table)
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST`;
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS`;
@@ -47,7 +49,6 @@ export const ON_CHANGE_ORDER_DETAILS = `${prefix}/ON_CHANGE_ORDER_DETAILS`;
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
-export const REDIRECT_TO_DASHBOARD = `${prefix}/REDIRECT_TO_DASHBOARD`;
 export const RETURN_TO_ORDERS_PAGE = `${prefix}/RETURN_TO_ORDERS_PAGE`;
 
 export const CREATE_INVITE_ORDER = `${prefix}/CREATE_INVITE_ORDER`;
@@ -414,10 +415,13 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
-        case REDIRECT_TO_DASHBOARD:
+        case PREFILL_FROM_DASHBOARD:
             return {
                 ...state,
-                redirectToDashboard: true,
+                fields: {
+                    ...state.fields,
+                    ...payload,
+                },
             };
 
         case ON_HANDLE_CUSTOM_SERVICE:
@@ -707,14 +711,14 @@ export const onDetailSearch = search => ({
     payload: search,
 });
 
-export const redirectToDashboard = history => ({
-    type:    REDIRECT_TO_DASHBOARD,
-    payload: history,
-});
-
 export const returnToOrdersPage = status => ({
     type:    RETURN_TO_ORDERS_PAGE,
     payload: status,
+});
+
+export const prefillFromDashboard = data => ({
+    type:    PREFILL_FROM_DASHBOARD,
+    payload: data,
 });
 
 export const createInviteOrder = inviteOrder => ({

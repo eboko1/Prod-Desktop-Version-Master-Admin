@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { withRouter } from 'react-router';
 import { DragSource } from 'react-dnd';
-import moment from 'moment';
 
 // proj
 import book from 'routes/book';
@@ -14,6 +13,7 @@ import DashboardOrderDropTarget from '../DashboardOrderDropTarget';
 import { DragItemTypes, ROW_HEIGHT, ordersStatus } from '../../dashboardConfig';
 import DashboardTooltip from '../../DashboardTooltip';
 import handleHover from '../../dashboardCore/handleHover';
+import getBeginDatetime from '../../dashboardCore/getBeginDatetime';
 
 const orderSource = {
     canDrag(props) {
@@ -21,15 +21,10 @@ const orderSource = {
     },
 
     beginDrag(props) {
-        // console.log('^ beginDrag', props);
-
         return { ...props };
     },
 
     endDrag(props, monitor) {
-        // console.log('^^ endDrag props', props);
-        // console.log('^^ endDrag monitor', monitor.getItem());
-
         const { id } = monitor.getItem();
         const didDrop = monitor.didDrop();
 
@@ -37,18 +32,12 @@ const orderSource = {
             const { dropOrder, schedule } = props;
 
             const { day, time, stationNum } = monitor.getDropResult();
-
-            const orderHour = time + schedule.beginHour * 2;
-            const timeString =
-                orderHour % 2
-                    ? `${Math.floor(orderHour / 2)}:30`
-                    : `${orderHour / 2}:00`;
-            // console.log('→ endDrag', day);
-            // console.log('→ endDrag', stationNum);
-            const newBeginDatetime = moment(`${day} ${timeString}`);
-
             dropOrder({
-                beginDatetime: newBeginDatetime.toISOString(),
+                beginDatetime: getBeginDatetime(
+                    day,
+                    time,
+                    schedule.beginHour,
+                ).toISOString(),
                 stationNum,
                 id,
             });
