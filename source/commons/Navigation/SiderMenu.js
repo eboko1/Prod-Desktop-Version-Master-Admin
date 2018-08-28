@@ -45,7 +45,11 @@ export default class SiderMenu extends Component {
                             : Styles.logo
                     }
                 >
-                    { collapsed ? <Icon type='environment-o' /> : 'CARBOOK.PRO' }
+                    { collapsed ? (
+                        <Icon type='environment-o' />
+                    ) : 
+                        user.businessName
+                    }
                 </div>
                 { isMobile && <HeaderMenu isMobile={ isMobile } user={ user } /> }
                 <Menu
