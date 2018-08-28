@@ -29,18 +29,30 @@ const orderSource = {
         const didDrop = monitor.didDrop();
 
         if (didDrop) {
-            const { dropOrder, schedule } = props;
+            const { dropOrder, schedule, mode } = props;
 
             const { day, time, stationNum } = monitor.getDropResult();
-            dropOrder({
-                beginDatetime: getBeginDatetime(
-                    day,
-                    time,
-                    schedule.beginHour,
-                ).toISOString(),
-                stationNum,
-                id,
-            });
+            console.log('→ endDrag: mode', mode);
+            if (mode === 'calender') {
+                dropOrder({
+                    beginDatetime: getBeginDatetime(
+                        day,
+                        time,
+                        schedule.beginHour,
+                    ).toISOString(),
+                    id,
+                });
+            } else {
+                dropOrder({
+                    beginDatetime: getBeginDatetime(
+                        day,
+                        time,
+                        schedule.beginHour,
+                    ).toISOString(),
+                    stationNum,
+                    id,
+                });
+            }
         }
 
         if (!didDrop) {
