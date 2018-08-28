@@ -112,7 +112,7 @@ export class OrderForm extends Component {
     };
 
     _renderDateBlock = () => {
-        const { stations, managers, location } = this.props;
+        const { stations, managers, location, employees } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 

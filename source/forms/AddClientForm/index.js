@@ -1,7 +1,7 @@
 // vendor
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Form, Select, Row, Col, Button } from 'antd';
+import { Form, Select, Row, Col, Button, notification } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { v4 } from 'uuid';
 
@@ -26,8 +26,24 @@ const Option = Select.Option;
 
 const findLabel = (arr, id, keyName) => [ keyName, (_(arr).find({ id }) || {}).name ];
 
+const openNotificationWithIcon = (type, message, description) => {
+    notification[ type ]({
+        message,
+        description,
+    });
+};
+
 @injectIntl
 export class AddClientForm extends Component {
+    constructor(props) {
+        super(props);
+
+        this.apiErrorsMap = {
+            CLIENT_EXISTS: props.intl.formatMessage({
+                id: 'add_client_form.client_exists_error',
+            }),
+        };
+    }
     render() {
         const {
             handleAddClientModalSubmit,
@@ -37,6 +53,7 @@ export class AddClientForm extends Component {
             models,
             modifications,
             lastFilterAction,
+            errors,
         } = this.props;
 
         const {
@@ -47,6 +64,24 @@ export class AddClientForm extends Component {
 
         const { years } = addClientFormData;
         const { vehicle = {} } = getFieldsValue();
+
+        if (errors.length) {
+            const currentComponentErrors = errors.filter(({ response }) =>
+                _.keys(this.apiErrorsMap).includes(_.get(response, 'message')));
+
+            _.each(currentComponentErrors, componentError => {
+                const description = this.apiErrorsMap[
+                    componentError.response.message
+                ];
+
+                const errorTitle = this.props.intl.formatMessage({
+                    id: 'add_client_form.error_title',
+                });
+
+                openNotificationWithIcon('error', errorTitle, description);
+                this.props.handleError(componentError.id);
+            });
+        }
 
         return (
             <Form
