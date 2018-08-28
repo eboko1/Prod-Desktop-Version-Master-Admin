@@ -47,6 +47,7 @@ export function convertFieldsValuesToDbEntity(
             const {
                 detailName: { value: detailId },
                 detailPrice: { value: price },
+                purchasePrice: { value: purchasePrice },
                 detailCount: { value: count },
                 detailCode: { value: code },
                 detailBrandName: { value: brandId },
@@ -125,7 +126,9 @@ export function convertFieldsValuesToDbEntity(
 
     if (form) {
         const formDuration = form.getFieldValue('duration');
-        order.duration = formDuration ? Math.max(formDuration, 0.5) : formDuration;
+        order.duration = formDuration
+            ? Math.max(formDuration, 0.5)
+            : formDuration;
     }
 
     return order;
@@ -144,7 +147,11 @@ export const requiredFieldsOnStatuses = {
     redundant: [],
     cancel:    [],
 
-    progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+    progress: [
+        'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station',
+    ],
 
-    success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+    success: [
+        'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station',
+    ],
 };

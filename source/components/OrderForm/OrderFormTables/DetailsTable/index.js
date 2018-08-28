@@ -103,6 +103,40 @@ class DetailsTable extends Component {
                 ),
             },
             {
+                title:     <FormattedMessage id='order_form_table.purchasePrice' />,
+                dataIndex: 'purchasePrice',
+                width:     '20%',
+                render:    (text, record) => {
+                    console.log(
+                        record,
+                        !_.get(
+                            this.props.details[ record.key ],
+                            'purchasePrice.value',
+                        ),
+                        !_.get(
+                            this.props.details[ record.key ],
+                            'detailName.value',
+                        ),
+                    );
+
+                    return (
+                        <DecoratedInputNumber
+                            field={ `details[${record.key}][purchasePrice]` }
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                            disabled={
+                                !_.get(
+                                    this.props.details[ record.key ],
+                                    'detailName.value',
+                                )
+                            }
+                            min={ 0 }
+                        />
+                    );
+                },
+            },
+            {
                 title:     <FormattedMessage id='order_form_table.price' />,
                 dataIndex: 'price',
                 width:     '10%',
@@ -189,7 +223,7 @@ class DetailsTable extends Component {
 
         if (
             !emptyFields ||
-            emptyFields === 1 && !dataSource[ key ].detailName.value
+            emptyFields === 1 && !dataSource[key].detailName.value
         ) {
             this.handleAdd();
         }

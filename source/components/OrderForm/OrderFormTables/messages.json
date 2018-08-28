@@ -37,7 +37,8 @@
         "endDate": "End Date",
         "comment": "Comment",
         "author": "Author",
-        "duration": "Duration"
+        "duration": "Duration",
+        "order_form_table.purchasePrice": "Purchase Price"
     },
     "ru": {
         "order_form_table.confirm_exit": "Хотите сохранить изменения?",
@@ -78,7 +79,8 @@
         "endDate": "Время конца",
         "comment": "Комментарий",
         "author": "Автор",
-        "duration": "Продолжительность"
+        "duration": "Продолжительность",
+        "order_form_table.purchasePrice": "Закупочная цена"
     },
     "uk": {
         "order_form_table.confirm_exit": "Бажаєте зберегти зміни?",
@@ -118,6 +120,7 @@
         "endDate": "Час Кінця",
         "comment": "Комментарій",
         "author": "Автор",
-        "duration": "Тривалість"
+        "duration": "Тривалість",
+        "order_form_table.purchasePrice": "Закупочна ціна"
     }
 }

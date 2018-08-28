@@ -4,8 +4,10 @@ import { v4 } from 'uuid';
 import { customFieldValue, generateNestedObject } from './utils';
 
 export const defaultDetails = () => {
-    const defaultValues = { detailCount: 1, detailPrice: 0 };
-    const fields = [ 'detailName', 'detailBrandName', 'detailCode', 'detailCount', 'detailPrice' ];
+    const defaultValues = { detailCount: 1, detailPrice: 0, purchasePrice: 0 };
+    const fields = [
+        'detailName', 'detailBrandName', 'detailCode', 'detailCount', 'detailPrice', 'purchasePrice',
+    ];
 
     return generateNestedObject(
         fields,
@@ -25,6 +27,7 @@ export const mapOrderDetailsToSelectDetails = details =>
                 brandName,
                 detailCode,
                 price,
+                purchasePrice,
                 count,
             }) => {
                 const uniqueId = v4();
@@ -41,7 +44,8 @@ export const mapOrderDetailsToSelectDetails = details =>
                         detailBrandName: customFieldValue(
                             `details[${uniqueId}][detailBrandName]`,
                             brandId || brandName
-                                ? (brandId ? String(brandId) : null) || `custom|${id}`
+                                ? (brandId ? String(brandId) : null) ||
+                                  `custom|${id}`
                                 : null,
                         ),
                         detailCode: customFieldValue(
@@ -54,6 +58,10 @@ export const mapOrderDetailsToSelectDetails = details =>
                         ),
                         detailPrice: customFieldValue(
                             `details[${uniqueId}][detailPrice]`,
+                            Number(price) || 0,
+                        ),
+                        purchasePrice: customFieldValue(
+                            `details[${uniqueId}][purchasePrice]`,
                             Number(price) || 0,
                         ),
                     },
@@ -108,7 +116,7 @@ export const getInitDetails = (allDetails, orderDetails) => {
     const requiredIds = [ ...customOrderDetailIds, ...orderDetailIds ];
 
     const baseDetails = mergedDetails.filter(({ detailId }) =>
-        requiredIds.includes(detailId));
+        requiredIds.includes(detailId),);
 
     return _.uniqWith(
         [ ...baseDetails, ...mergedDetails.slice(0, 100) ],
