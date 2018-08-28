@@ -1,8 +1,10 @@
 // vendor
 import { call, put, all, take } from 'redux-saga/effects';
+import _ from 'lodash';
 
 //proj
 import { resetModal } from 'core/modals/duck';
+import { onChangeOrderForm } from 'core/forms/orderForm/duck';
 import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
@@ -59,6 +61,18 @@ export function* createClientSaga() {
         }
 
         yield put(createClientSuccess());
+        const actionData = {
+            fields: {
+                searchClientQuery: {
+                    touched: true,
+                    dirty:   false,
+                    value:   _.first(payload.phones),
+                    name:    'searchClientQuery',
+                },
+            },
+            meta: { form: 'orderForm', field: 'searchClientQuery' },
+        };
+        yield put(onChangeOrderForm(actionData.fields, actionData.meta));
         yield put(resetModal());
     }
 }
