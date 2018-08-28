@@ -100,14 +100,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length && 
+                    { load.length &&
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) : 
+                                ) :
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -192,25 +192,27 @@ class DashboardContainer extends Component {
                                     order.empty ? (
                                         <DashboardEmptyCell
                                             key={ index }
-                                            { ...order }
+                                            mode={ mode }
                                             day={
                                                 dashboardMode
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
                                             stationNum={ stations[ column ].num }
+                                            { ...order }
                                         />
                                     ) : (
                                         <DashboardOrder
                                             key={ index }
+                                            mode={ mode }
+                                            label={ result[ index ].options.num }
+                                            id={ result[ index ].options.id }
                                             status={
                                                 result[ index ].options.status
                                             }
-                                            id={ result[ index ].options.id }
                                             dashboardRef={ this._dashboardRef }
                                             dropOrder={ updateDashboardOrder }
                                             // hideSourceOnDrag={ hideSourceOnDrag }
-                                            label={ result[ index ].options.num }
                                             schedule={ schedule }
                                             day={
                                                 dashboardMode
