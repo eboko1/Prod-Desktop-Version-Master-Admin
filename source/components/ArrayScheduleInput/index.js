@@ -76,7 +76,11 @@ class ArrayScheduleInput extends Component {
                     <Col span={ 20 }>
                         <div className={ Styles.CheckboxBlock }>
                             <DecoratedInput
-                                style={ { display: 'none' } }
+                                className={ Styles.InputBlock }
+                                style={ {
+                                    display:    'none',
+                                    visibility: 'hidden',
+                                } }
                                 field={ `id[${key}]` }
                                 getFieldDecorator={ getFieldDecorator }
                                 initialValue={

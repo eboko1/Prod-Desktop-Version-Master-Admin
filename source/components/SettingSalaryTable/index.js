@@ -66,17 +66,18 @@ class SettingSalaryTable extends Component {
                                     type='save'
                                 />
                             </Button>
-
-                            <Button
-                                onClick={ () => {
-                                    this.props.deleteSalary(record.id);
-                                } }
-                            >
-                                <Icon
-                                    className={ Styles.employeeTableIcon }
-                                    type='delete'
-                                />
-                            </Button>
+                            {record.id !== 'add' ? (
+                                <Button
+                                    onClick={ () => {
+                                        this.props.deleteSalary(record.id);
+                                    } }
+                                >
+                                    <Icon
+                                        className={ Styles.employeeTableIcon }
+                                        type='delete'
+                                    />
+                                </Button>
+                            ) : null}
                         </>
                     );
                 },
@@ -177,6 +178,7 @@ class SettingSalaryTable extends Component {
                 dataIndex: 'jobTitle',
                 width:     '10%',
                 render:    (text, record) => {
+                    console.log(record.employee.jobTitle);
                     if (
                         this.state.changingId === 'add' &&
                         this.state.changingId === record.id &&
@@ -192,7 +194,7 @@ class SettingSalaryTable extends Component {
                                     this,
                                     null,
                                 ) }
-                                defaultValue={ text }
+                                defaultValue={ record.employee.jobTitle }
                             />
                         );
                     } else if (
@@ -210,7 +212,7 @@ class SettingSalaryTable extends Component {
                                     this,
                                     record.id,
                                 ) }
-                                defaultValue={ text }
+                                defaultValue={ record.employee.jobTitle }
                             />
                         );
                     } else if (text || !text) {
@@ -224,7 +226,11 @@ class SettingSalaryTable extends Component {
                                     });
                                 } }
                             >
-                                { text ? text : <Button>Change jobTitle</Button> }{ ' ' }
+                                { record.employee ? 
+                                    record.employee.jobTitle
+                                 : (
+                                    <Button>Change jobTitle</Button>
+                                ) }{ ' ' }
                             </div>
                         );
                     }

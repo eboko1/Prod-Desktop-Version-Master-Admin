@@ -24,7 +24,7 @@ export const DecoratedInput = props => {
         iconType,
         field,
         initialValue,
-
+        style,
         onChange,
     } = props;
 
@@ -43,6 +43,7 @@ export const DecoratedInput = props => {
                     />
                 ) : null
             }
+            style={ style }
             type={ type }
             placeholder={ placeholder }
             disabled={ disabled }
@@ -60,7 +61,7 @@ export const DecoratedInput = props => {
         >
             { input }
         </FormItem>
-    ) :
+    ) : 
         input
     ;
 };

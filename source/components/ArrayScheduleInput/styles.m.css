@@ -1,6 +1,9 @@
 .CheckboxBlock {
     display: flex;
 }
+.CheckboxBlock .ant-input {
+    display: none;
+}
 .CheckboxBlock label {
     display: flex;
     flex-direction: column;
@@ -11,4 +14,7 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+.InputBlock {
+    display: none;
 }
