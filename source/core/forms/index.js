@@ -55,6 +55,10 @@ import managerRoleReducer, {
     moduleName as managerRole,
 } from './managerRoleForm/duck';
 
+import settingSalaryReducer, {
+    moduleName as settingSalary,
+} from './settingSalaryForm/duck';
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
     [ order ]:                      orderReducer,
@@ -74,4 +78,5 @@ export const formsReducer = combineReducers({
     [ addBusinessPackage ]:         addBusinessPackageReducer,
     [ businessPackage ]:            businessPackageReducer,
     [ managerRole ]:                managerRoleReducer,
+    [ settingSalary ]:              settingSalaryReducer,
 });

@@ -1,19 +1,21 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon, Rate } from 'antd';
+import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { Table, Icon, Rate } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
-import { withRouter } from 'react-router';
 
 // proj
 import { Catcher } from 'commons';
 import book from 'routes/book';
+
+// own
 import Styles from './styles.m.css';
 
 @withRouter
-class EmployeeTable extends Component {
+export default class EmployeeTable extends Component {
     constructor(props) {
         super(props);
         this.columns = [
@@ -136,5 +138,3 @@ class EmployeeTable extends Component {
         );
     }
 }
-
-export default EmployeeTable;

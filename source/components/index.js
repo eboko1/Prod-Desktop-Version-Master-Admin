@@ -12,9 +12,12 @@ import OrderFormTabs from './OrderForm/OrderFormTabs';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 import Loader from './Loader';
 import ArrayScheduleInput from './ArrayScheduleInput';
-
+import SettingSalaryTable from './SettingSalaryTable';
+import EmployeeTable from './EmployeeTable';
 
 export {
+    SettingSalaryTable,
+    EmployeeTable,
     LanguagePad,
     ArrowsNav,
     OrderStatusIcon,

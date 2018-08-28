@@ -10,18 +10,19 @@ import { fetchEmployee, deleteEmployee } from 'core/employee/duck';
 import { initEmployeeForm } from 'core/forms/employeeForm/duck';
 
 import { Catcher } from 'commons';
-import EmployeeTable from 'components/EmployeeTable';
-import SettingSalaryContainer from 'containers/SettingSalaryContainer';
+import { EmployeeTable } from 'components';
+import { SettingSalaryContainer } from 'containers';
 
 // own
 import Styles from './styles.m.css';
 
 const TabPane = Tabs.TabPane;
-const mapStateToProps = state => {
-    return {
-        employees: state.employee.employees,
-    };
-};
+
+const mapStateToProps = state => ({
+    salaries:  state.settingSalary.salaries,
+    entity:    state.settingSalary.fields,
+    employees: state.employee.employees,
+});
 
 const mapDispatchToProps = {
     fetchEmployee,
@@ -35,10 +36,6 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class EmployeeContainer extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     componentDidMount() {
         this.props.fetchEmployee({ kind: 'all' });
     }
@@ -46,7 +43,6 @@ export default class EmployeeContainer extends Component {
     /* eslint-enable complexity */
     render() {
         const { employees, initEmployeeForm, deleteEmployee } = this.props;
-        // const { sortField, sortArrow } = this.state;
 
         return (
             <Catcher>
@@ -109,7 +105,11 @@ export default class EmployeeContainer extends Component {
                         key='settingSalary'
                     >
                         <section>
-                            <SettingSalaryContainer />
+                            <SettingSalaryContainer
+                                salaries={ this.props.salaries }
+                                entity={ this.props.entity }
+                                employees={ this.props.employees }
+                            />
                         </section>
                     </TabPane>
                 </Tabs>

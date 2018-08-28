@@ -7,6 +7,8 @@ import PackageContainer from './PackageContainer';
 import RoleContainer from './RoleContainer';
 import BusinessPackageContainer from './BusinessPackageContainer';
 import ManagerRoleContainer from './ManagerRoleContainer';
+import EmployeeContainer from './EmployeeContainer';
+import SettingSalaryContainer from './SettingSalaryContainer';
 
 export {
     OrdersContainer,
@@ -18,4 +20,6 @@ export {
     RoleContainer,
     BusinessPackageContainer,
     ManagerRoleContainer,
+    EmployeeContainer,
+    SettingSalaryContainer,
 };

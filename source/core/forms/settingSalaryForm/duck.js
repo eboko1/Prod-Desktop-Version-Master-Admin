@@ -14,8 +14,6 @@ export const ON_CHANGE_SETTING_SALARY_FORM = `${prefix}/ON_CHANGE_SETTING_SALARY
 export const FETCH_SALARY_REPORT = `${prefix}/FETCH_SALARY_REPORT`;
 export const FETCH_SALARY_REPORT_SUCCESS = `${prefix}/FETCH_SALARY_REPORT_SUCCESS`;
 
-
-
 /**
  * Reducer
  * */
@@ -37,11 +35,13 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 salaries: null,
             };
+
         case FETCH_SALARY_SUCCESS:
             return {
                 ...state,
                 salaries: payload,
             };
+
         case ON_CHANGE_SETTING_SALARY_FORM:
             return {
                 ...state,
@@ -50,6 +50,7 @@ export default function reducer(state = ReducerState, action) {
                     ...payload,
                 },
             };
+
         default:
             return state;
     }
