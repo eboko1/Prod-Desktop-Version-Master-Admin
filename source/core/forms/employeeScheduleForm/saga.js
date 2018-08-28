@@ -30,7 +30,6 @@ export function* saveSchedule({ payload: { schedule, id } }) {
 
 export function* deleteSchedule({ payload: { id, employeeId } }) {
     try {
-        console.log('HEllo', id);
         const data = yield call(fetchAPI, 'DELETE', `schedule/${id}`);
 
         yield put(deleteEmployeeScheduleSuccess(data));

@@ -28,7 +28,8 @@
         "add_order_form.client_requisites": "Client's requisites",
         "add_order_form.select_requisites": "Select requisites",
         "add_order_form.payment_method": "Payment method",
-        "add_order_form.select_payment_method": "Select payment method"
+        "add_order_form.select_payment_method": "Select payment method",
+        "order_form_table.appurtenanciesResponsible": "Spare parts manager"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -59,7 +60,8 @@
         "add_order_form.client_requisites": "Реквизиты клиента",
         "add_order_form.select_requisites": "Укажите реквизиты",
         "add_order_form.payment_method": "Способ оплаты ",
-        "add_order_form.select_payment_method": "Выберете способ оплаты"
+        "add_order_form.select_payment_method": "Выберете способ оплаты",
+        "order_form_table.appurtenanciesResponsible": "Запчастист"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -90,6 +92,7 @@
         "add_order_form.client_requisites": "Реквізити клієнта",
         "add_order_form.select_requisites": "Вкажіть реквізити",
         "add_order_form.payment_method": "Спосіб розрахунку",
-        "add_order_form.select_payment_method": "Виберіть спосіб розрахунку"
+        "add_order_form.select_payment_method": "Виберіть спосіб розрахунку",
+        "order_form_table.appurtenanciesResponsible": "Запчастист"
     }
 }

@@ -1,29 +1,29 @@
 // vendor
-import React, { Component } from "react";
-import { Button, Form } from "antd";
-import { FormattedMessage, injectIntl } from "react-intl";
+import React, { Component } from 'react';
+import { Button, Form } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
-import { withReduxForm } from "utils";
-import { fetchSalary, saveSalary, deleteSalary } from "core/settingSalary/duck";
-import { Catcher } from "commons";
-import { DecoratedDatePicker } from "forms/DecoratedFields/DecoratedDatePicker";
-import SettingSalaryTable from "components/SettingSalaryTable";
+import { withReduxForm } from 'utils';
+import { fetchSalary, saveSalary, deleteSalary } from 'core/settingSalary/duck';
+import { Catcher } from 'commons';
+import { DecoratedDatePicker } from 'forms/DecoratedFields/DecoratedDatePicker';
+import SettingSalaryTable from 'components/SettingSalaryTable';
 
 // own
 
-import Styles from "./styles.m.css";
+import Styles from './styles.m.css';
 const mapStateToProps = state => {
     return {
-        salaries: state.settingSalary.salaries,
-        employees: state.employee.employees
+        salaries:  state.settingSalary.salaries,
+        employees: state.employee.employees,
     };
 };
 
 const mapDispatchToProps = {
     fetchSalary,
     saveSalary,
-    deleteSalary
+    deleteSalary,
 };
 
 const FormItem = Form.Item;
@@ -45,35 +45,30 @@ export default class SettingSalaryContainer extends Component {
 
         return (
             <Catcher>
-                {/* <div className={ Styles.downloadFile }>
+                <div className={ Styles.downloadFile }>
                     <DecoratedDatePicker
                         ranges
                         field='birthday'
-                        label={
-                            null                        }
+                        label={ null }
                         formItem
-                        formatMessage={
-                            this.props.intl.formatMessage
-                        }
+                        formatMessage={ this.props.intl.formatMessage }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         value={ null }
-                        getCalendarContainer={ trigger =>
-                            trigger.parentNode
-                        }
+                        getCalendarContainer={ trigger => trigger.parentNode }
                         format='YYYY-MM-DD'
                     />
                     <FormItem>
                         <Button>
-                            <FormattedMessage id='setting-salary.calculate'/>
+                            <FormattedMessage id='setting-salary.calculate' />
                         </Button>
                     </FormItem>
-                </div> */}
+                </div>
                 <div>
                     <SettingSalaryTable
-                        salaries={salaries}
-                        saveSalary={saveSalary}
-                        employees={employees}
-                        deleteSalary={deleteSalary}
+                        salaries={ salaries }
+                        saveSalary={ saveSalary }
+                        employees={ employees }
+                        deleteSalary={ deleteSalary }
                     />
                 </div>
             </Catcher>

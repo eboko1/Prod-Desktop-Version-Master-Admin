@@ -117,7 +117,7 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.employee' />,
+                title:     <FormattedMessage id='order_form_table.master' />,
                 dataIndex: 'employeeId',
                 render:    (text, record) => {
                     return (
@@ -135,9 +135,7 @@ class ServicesTable extends Component {
                                     key={ v4() }
                                     disabled={ employee.disabled }
                                 >
-                                    { `${employee.name} ${
-                                        employee.surname
-                                    }` }
+                                    { `${employee.name} ${employee.surname}` }
                                 </Option>
                             )) }
                         </DecoratedSelect>
@@ -212,7 +210,7 @@ class ServicesTable extends Component {
 
         if (
             !emptyFields ||
-            emptyFields === 1 && !dataSource[ key ].serviceName.value
+            emptyFields === 1 && !dataSource[key].serviceName.value
         ) {
             this.handleAdd();
         }
@@ -280,11 +278,7 @@ class ServicesTable extends Component {
     };
 
     render() {
-        const {
-            employees,
-            getFieldDecorator,
-            totalHours,
-        } = this.props;
+        const { employees, getFieldDecorator, totalHours } = this.props;
 
         const dataSource = _(this.props.services)
             .toPairs()
@@ -312,7 +306,7 @@ class ServicesTable extends Component {
                         step={ 0.5 }
                         max={ 8 }
                     />
-                    <FormItem
+                    { /* <FormItem
                         label={
                             <FormattedMessage id='order_form_table.master' />
                         }
@@ -347,7 +341,7 @@ class ServicesTable extends Component {
                                 </Option>
                             )) }
                         </DecoratedSelect>
-                    </FormItem>
+                    </FormItem> */ }
                 </div>
             </Catcher>
         );
