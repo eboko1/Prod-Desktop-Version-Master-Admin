@@ -10,6 +10,7 @@ import {
     addClientVehicle,
     createClient,
     removeClientVehicle,
+    handleError,
 } from 'core/forms/addClientForm/duck';
 
 import { MODALS } from 'core/modals/duck';
@@ -28,6 +29,7 @@ import Styles from './styles.m.css';
         addClientVehicle,
         removeClientVehicle,
         createClient,
+        handleError,
     },
 })
 export default class AddClientModal extends Component {
@@ -80,7 +82,7 @@ export default class AddClientModal extends Component {
                             };
 
                             this.props.createClient(clientEntity);
-                            resetModal();
+                            // resetModal();
                         }
                     });
                 } }

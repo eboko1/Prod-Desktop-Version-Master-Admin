@@ -27,9 +27,14 @@ export const YEAR_VEHICLES_INFO_FILTER_TYPE = 'YEAR_VEHICLES_INFO_FILTER_TYPE';
 export const MAKE_VEHICLES_INFO_FILTER_TYPE = 'MAKE_VEHICLES_INFO_FILTER_TYPE';
 export const MODEL_VEHICLES_INFO_FILTER_TYPE =
     'MODEL_VEHICLES_INFO_FILTER_TYPE';
+
+export const ADD_ERROR = `${prefix}/ADD_ERROR`;
+export const HANDLE_ERROR = `${prefix}/HANDLE_ERROR`;
 /**
  * Reducer
  * */
+
+let errorId = 1;
 
 const ReducerState = {
     fields: {
@@ -40,6 +45,7 @@ const ReducerState = {
     lastFilterAction: '',
     vehicles:         [],
     data:             {},
+    errors:           [],
 
     modifications: [],
     makes:         [],
@@ -147,6 +153,18 @@ export default function reducer(state = ReducerState, action) {
                     return state;
             }
 
+        case ADD_ERROR:
+            return {
+                ...state,
+                errors: [ ...state.errors, { id: errorId++, ...payload }],
+            };
+
+        case HANDLE_ERROR:
+            return {
+                ...state,
+                errors: state.errors.filter(({ id }) => id !== payload),
+            };
+
         default:
             return state;
     }
@@ -215,4 +233,15 @@ export const addClientVehicle = vehicle => ({
 export const removeClientVehicle = vehicleIndex => ({
     type:    REMOVE_CLIENT_VEHICLE,
     payload: vehicleIndex,
+});
+
+export const addError = error => ({
+    type:    ADD_ERROR,
+    payload: error,
+    error:   true,
+});
+
+export const handleError = id => ({
+    type:    HANDLE_ERROR,
+    payload: id,
 });

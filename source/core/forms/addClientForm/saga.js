@@ -2,6 +2,7 @@
 import { call, put, all, take } from 'redux-saga/effects';
 
 //proj
+import { resetModal } from 'core/modals/duck';
 import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
@@ -10,6 +11,7 @@ import {
     fetchAddClientFormSuccess,
     fetchVehiclesInfoSuccess,
     createClientSuccess,
+    addError,
     FETCH_ADD_CLIENT_FORM,
     FETCH_VEHICLES_INFO,
     CREATE_CLIENT,
@@ -45,14 +47,19 @@ export function* fetchVehiclesInfoSaga() {
 
 export function* createClientSaga() {
     while (true) {
+        const { payload } = yield take(CREATE_CLIENT);
         try {
-            const { payload } = yield take(CREATE_CLIENT);
+            yield call(fetchAPI, 'POST', 'clients', null, payload, {
+                handleErrorInternally: true,
+            });
+        } catch ({ response, status }) {
+            yield put(addError({ response, status }));
 
-            yield call(fetchAPI, 'POST', 'clients', null, payload);
-            yield put(createClientSuccess());
-        } catch (error) {
-            yield put(emitError(error));
+            continue;
         }
+
+        yield put(createClientSuccess());
+        yield put(resetModal());
     }
 }
 /* eslint-disable array-element-newline */
