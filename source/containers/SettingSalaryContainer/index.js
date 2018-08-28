@@ -2,10 +2,10 @@
 import React, { Component } from 'react';
 import { Button, Form } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-
+import moment from 'moment'
 // proj
-import { withReduxForm } from 'utils';
-import { fetchSalary, saveSalary, deleteSalary } from 'core/settingSalary/duck';
+import { withReduxForm, getDaterange } from 'utils';
+import { fetchSalary, saveSalary, deleteSalary, onChangeSettingSalaryForm, fetchSalaryReport } from 'core/settingSalary/duck';
 import { Catcher } from 'commons';
 import { DecoratedDatePicker } from 'forms/DecoratedFields/DecoratedDatePicker';
 import SettingSalaryTable from 'components/SettingSalaryTable';
@@ -16,20 +16,22 @@ import Styles from './styles.m.css';
 const mapStateToProps = state => {
     return {
         salaries:  state.settingSalary.salaries,
+        entity:    state.settingSalary.fields,
         employees: state.employee.employees,
     };
-};
-
-const mapDispatchToProps = {
-    fetchSalary,
-    saveSalary,
-    deleteSalary,
 };
 
 const FormItem = Form.Item;
 
 @injectIntl
-@withReduxForm({ actions: mapDispatchToProps, mapStateToProps })
+@withReduxForm({ name:    'settingSalary', actions: {
+    change: onChangeSettingSalaryForm,
+    fetchSalary,
+    saveSalary,
+    deleteSalary,
+    fetchSalaryReport}, 
+    // mapStateToProps 
+})
 export default class SettingSalaryContainer extends Component {
     constructor(props) {
         super(props);
@@ -41,35 +43,52 @@ export default class SettingSalaryContainer extends Component {
     /* eslint-enable complexity */
 
     render() {
-        const { saveSalary, deleteSalary, salaries, employees } = this.props;
+        const { saveSalary, deleteSalary, salaries, employees, entity, fetchSalaryReport } = this.props;
+        // console.log(entity.filterRangeDate.value?moment(entity.filterRangeDate.value[ 0 ]).format('YYYY-MM-DD'):null)
 
         return (
             <Catcher>
                 <div className={ Styles.downloadFile }>
                     <DecoratedDatePicker
-                        ranges
-                        field='birthday'
+                        ranges={ {
+                            Today:        getDaterange('today', 'ant'),
+                            'This Month': getDaterange(
+                                'prevMonth',
+                                'ant',
+                            ),
+                        } }
+                        field='filterRangeDate'
                         label={ null }
                         formItem
+                        rules={ [
+                            {
+                                required: true,
+                                message:  '',
+                            },
+                        ] }
                         formatMessage={ this.props.intl.formatMessage }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
-                        value={ null }
-                        getCalendarContainer={ trigger => trigger.parentNode }
+                        // getCalendarContainer={ trigger => trigger.parentNode }
                         format='YYYY-MM-DD'
                     />
                     <FormItem>
-                        <Button>
+                        <Button 
+                            // onClick={
+
+                            //     ()=>fetchSalaryReport(entity.filterRangeDate.value) 
+                            // }
+                        >
                             <FormattedMessage id='setting-salary.calculate' />
                         </Button>
                     </FormItem>
                 </div>
                 <div>
-                    <SettingSalaryTable
+                    { /* <SettingSalaryTable
                         salaries={ salaries }
                         saveSalary={ saveSalary }
                         employees={ employees }
                         deleteSalary={ deleteSalary }
-                    />
+                    /> */ }
                 </div>
             </Catcher>
         );

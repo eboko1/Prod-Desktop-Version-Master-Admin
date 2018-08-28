@@ -90,6 +90,7 @@ export const DecoratedDatePicker = props => {
                 locale={ locale }
                 ranges={ ranges }
                 showTime={ showTime }
+                onChange={ onChange }
                 format={ format }
                 getCalendarContainer={ getCalendarContainer }
                 allowClear={ allowClear }

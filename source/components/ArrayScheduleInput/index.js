@@ -220,12 +220,6 @@ class ArrayScheduleInput extends Component {
                             <DecoratedTimePicker
                                 formItem
                                 field={ `beginBreakHours[${key}]` }
-                                // rules={ [
-                                //     {
-                                //         required: true,
-                                //         message:  '',
-                                //     },
-                                // ] }
                                 initialValue={
                                     initialSchedule[ key ] &&
                                     initialSchedule[ key ].beginBreakHours &&
@@ -235,24 +229,14 @@ class ArrayScheduleInput extends Component {
                                     )
                                 }
                                 hasFeedback
-                                // disabledHours={ disabledHours }
-                                // disabledMinutes={ disabledMinutes }
-                                // disabledSeconds={ disabledSeconds }
                                 label={ <FormattedMessage id='time' /> }
                                 formatMessage={ formatMessage }
-                                // className={ Styles.datePanelItem }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
                             />
                             <span>-</span>
                             <DecoratedTimePicker
                                 formItem
-                                // rules={ [
-                                //     {
-                                //         required: true,
-                                //         message:  '',
-                                //     },
-                                // ] }
                                 field={ `endBreakHours[${key}]` }
                                 initialValue={
                                     initialSchedule[ key ] &&

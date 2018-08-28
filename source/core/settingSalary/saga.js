@@ -12,6 +12,7 @@ import {
     fetchSalary,
     DELETE_SALARY,
     deleteSalarySuccess,
+    FETCH_SALARY_REPORT, fetchSalaryReportSuccess,
 } from './duck';
 
 export function* fetchSalaries() {
@@ -34,14 +35,15 @@ export function* saveSalary() {
                 payload: { salary, id },
             } = yield take(SAVE_SALARY);
             let salaryObj = {
-                considerDiscount: salary.considerDiscount,
-                employeeId:       salary.employeeId,
-                endDate:          salary.endDate,
-                percent:          salary.percent,
-                percentFrom:      salary.percentFrom,
-                period:           salary.period,
-                ratePerPeriod:    salary.ratePerPeriod,
-                startDate:        salary.startDate,
+                considerDiscount:
+                    salary.considerDiscount === 'Yes' ? true : false,
+                employeeId:    salary.employeeId,
+                endDate:       salary.endDate,
+                percent:       salary.percent,
+                percentFrom:   salary.percentFrom,
+                period:        salary.period,
+                ratePerPeriod: salary.ratePerPeriod,
+                startDate:     salary.startDate,
             };
             const data = yield call(
                 fetchAPI,
@@ -80,7 +82,26 @@ export function* deleteSalary() {
         }
     }
 }
+export function* fetchSalaryReport() {
+    while (true) {
+        try {
+            const {
+                payload: info,
+            } = yield take(FETCH_SALARY_REPORT);
+
+            const data = yield call(
+                fetchAPI,
+                'GET',
+                `/employees_salaries/report?startDate=${info.id}`,
+            );
+
+            yield put(fetchSalaryReportSuccess());
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
 
 export function* saga() {
-    yield all([ call(fetchSalaries), call(saveSalary), call(deleteSalary) ]);
+    yield all([ call(fetchSalaries), call(saveSalary), call(deleteSalary), call(fetchSalaryReport) ]);
 }

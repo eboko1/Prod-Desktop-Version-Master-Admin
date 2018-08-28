@@ -23,6 +23,7 @@ class SettingSalaryTable extends Component {
                 dataIndex: 'review',
                 width:     '10%',
                 render:    (text, record) => {
+                    /* eslint-disable complexity */
                     return (
                         <>
                             <Button
@@ -121,7 +122,6 @@ class SettingSalaryTable extends Component {
                         this.state.changingId === record.id &&
                         this.state.changingInputName === 'employee'
                     ) {
-                        console.log(record.id);
 
                         return (
                             <Select
@@ -138,7 +138,6 @@ class SettingSalaryTable extends Component {
                                 value={ record.employeeId }
                             >
                                 { this.props.employees.map(employee => {
-                                    console.log(employee.id);
 
                                     return (
                                         <Option value={ employee.id } key={ v4() }>
@@ -165,9 +164,9 @@ class SettingSalaryTable extends Component {
                                     `${record.employee.name} ${
                                         record.employee.surname
                                     }`
-                                 : (
-                                    <Button>Change Employee</Button>
-                                ) }{ ' ' }
+                                    : (
+                                        <Button>Change Employee</Button>
+                                    ) }{ ' ' }
                             </div>
                         );
                     }
@@ -178,7 +177,6 @@ class SettingSalaryTable extends Component {
                 dataIndex: 'jobTitle',
                 width:     '10%',
                 render:    (text, record) => {
-                    console.log(record.employee.jobTitle);
                     if (
                         this.state.changingId === 'add' &&
                         this.state.changingId === record.id &&
@@ -228,9 +226,9 @@ class SettingSalaryTable extends Component {
                             >
                                 { record.employee ? 
                                     record.employee.jobTitle
-                                 : (
-                                    <Button>Change jobTitle</Button>
-                                ) }{ ' ' }
+                                    : (
+                                        <Button>Change jobTitle</Button>
+                                    ) }
                             </div>
                         );
                     }
@@ -313,7 +311,8 @@ class SettingSalaryTable extends Component {
                 title:     <FormattedMessage id='setting-salary.ratePerPeriod' />,
                 dataIndex: 'ratePerPeriod',
                 width:     '10%',
-                render:    (text, record) => {
+                
+                render: (text, record) => {
                     if (
                         this.state.changingId === 'add' &&
                         this.state.changingId === record.id &&
@@ -363,9 +362,9 @@ class SettingSalaryTable extends Component {
                             >
                                 { text || text === 0 ? 
                                     text
-                                 : (
-                                    <Button>Change ratePerPeriod</Button>
-                                ) }{ ' ' }
+                                    : (
+                                        <Button>Change ratePerPeriod</Button>
+                                    ) }{ ' ' }
                             </div>
                         );
                     }
@@ -394,9 +393,7 @@ class SettingSalaryTable extends Component {
                                 style={ { minWidth: '135px' } }
                                 value={ record.percentFrom }
                             >
-                                { [
-                                    'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT',
-                                ].map(percent => (
+                                { [ 'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT'  ].map(percent => (
                                     <Option value={ percent } key={ v4() }>
                                         { `${percent}` }
                                     </Option>
@@ -422,9 +419,7 @@ class SettingSalaryTable extends Component {
                                 style={ { minWidth: '135px' } }
                                 value={ record.percentFrom }
                             >
-                                { [
-                                    'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT',
-                                ].map(percent => (
+                                { [ 'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT'  ].map(percent => (
                                     <Option value={ percent } key={ v4() }>
                                         { `${percent}` }
                                     </Option>
@@ -444,9 +439,9 @@ class SettingSalaryTable extends Component {
                             >
                                 { text || text === 0 ? 
                                     text
-                                 : (
-                                    <Button>Change percentFrom</Button>
-                                ) }{ ' ' }
+                                    : (
+                                        <Button>Change percentFrom</Button>
+                                    ) }{ ' ' }
                             </div>
                         );
                     }
@@ -511,9 +506,9 @@ class SettingSalaryTable extends Component {
                             >
                                 { text || text === 0 ? 
                                     text
-                                 : (
-                                    <Button>Change percent</Button>
-                                ) }{ ' ' }
+                                    : (
+                                        <Button>Change percent</Button>
+                                    ) }{ ' ' }
                             </div>
                         );
                     }
@@ -526,6 +521,7 @@ class SettingSalaryTable extends Component {
                 dataIndex: 'considerDiscount',
                 width:     '10%',
                 render:    (text, record) => {
+                    console.log(record.considerDiscount);
                     if (
                         this.state.changingId === 'add' &&
                         this.state.changingId === record.id &&
@@ -542,13 +538,21 @@ class SettingSalaryTable extends Component {
                                     'considerDiscount',
                                 ) }
                                 style={ { minWidth: '135px' } }
-                                value={ record.considerDiscount }
+                                value={
+                                    record.considerDiscount 
+                                }
                             >
-                                { [ 'Yes', 'No' ].map(considerDiscount => (
-                                    <Option value={ considerDiscount } key={ v4() }>
-                                        { considerDiscount }
-                                    </Option>
-                                )) }
+                             
+                                <Option value key={ v4() }>
+                                        Yes
+                                </Option>
+                                    
+                                <Option value={ false } key={ v4() }>
+                                        No
+                                </Option>
+                              
+                               
+                               
                             </Select>
                         );
                     } else if (
@@ -568,16 +572,20 @@ class SettingSalaryTable extends Component {
                                     'considerDiscount',
                                 ) }
                                 style={ { minWidth: '135px' } }
-                                value={ record.considerDiscount }
+                                value={
+                                    record.considerDiscount 
+                                }
                             >
-                                { [ 'Yes', 'No' ].map(considerDiscount => (
+                                { [ true, false ].map(considerDiscount => (
                                     <Option value={ considerDiscount } key={ v4() }>
-                                        { considerDiscount }
+                                        { considerDiscount === true ? 'Yes' : 'No' }
                                     </Option>
                                 )) }
                             </Select>
                         );
                     } else if (text || !text) {
+                        console.log(text, 'text')
+
                         return (
                             <div
                                 style={ { cursor: 'pointer' } }
@@ -588,11 +596,11 @@ class SettingSalaryTable extends Component {
                                     });
                                 } }
                             >
-                                { text || text === 0 ? 
-                                    text
-                                 : (
-                                    <Button>Change considerDiscount</Button>
-                                ) }{ ' ' }
+                                { text || text === 0||text===false ? 
+                                    text===true?'Yes':'No'
+                                    : (
+                                        <Button>Change considerDiscount</Button>
+                                    ) }
                             </div>
                         );
                     }
@@ -689,6 +697,7 @@ class SettingSalaryTable extends Component {
     };
     componentDidUpdate(prevProps, prevState) {
         if (this.props.salaries && prevProps.salaries !== this.props.salaries) {
+            
             this.setState({ salariesTable: [ ...this.props.salaries ] });
         }
     }
