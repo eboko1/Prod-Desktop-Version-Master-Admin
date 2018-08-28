@@ -702,7 +702,11 @@ class SettingSalaryTable extends Component {
                                     key: v4(),
                                 }),
                             )
-                            : null
+                            : [ newSalary ].map((salary, index) => ({
+                                ...salary,
+                                index,
+                                key: v4(),
+                            }))
                     }
                     columns={ columns }
                     scroll={ { x: 1500 } }
