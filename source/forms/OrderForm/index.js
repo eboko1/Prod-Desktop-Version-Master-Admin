@@ -117,7 +117,6 @@ export class OrderForm extends Component {
         const { getFieldDecorator } = this.props.form;
 
         const beginDate = this.props.form.getFieldValue('beginDate');
-
         const {
             disabledDate,
             disabledHours,
@@ -257,9 +256,7 @@ export class OrderForm extends Component {
                                 key={ v4() }
                                 disabled={ employee.disabled }
                             >
-                                { `${employee.employeeName} ${
-                                    employee.employeeSurname
-                                }` }
+                                { `${employee.name} ${employee.surname}` }
                             </Option>
                         )) }
                     </DecoratedSelect>
