@@ -11,9 +11,7 @@ import book from 'routes/book';
 import {
     onChangeOrderForm,
     setClientSelection,
-    onChangeOrderServices,
     onChangeOrderDetails,
-    onServiceSearch,
     onDetailSearch,
     onBrandSearch,
     prefillFromDashboard,
@@ -33,7 +31,7 @@ import {
 import { ClientsSearchTable } from 'components/OrderForm/OrderFormTables';
 import { OrderFormTabs } from 'components/OrderForm/OrderFormTabs';
 
-import { withReduxForm, getDateTimeConfig, images } from 'utils';
+import { withReduxForm2, getDateTimeConfig, images } from 'utils';
 import {
     formItemAutoColLayout,
     formItemLayout,
@@ -48,7 +46,7 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-@withReduxForm({
+@withReduxForm2({
     name:            'orderForm',
     debouncedFields: [
         'comment', 'recommendation', 'vehicleCondition', 'businessComment',
@@ -56,9 +54,7 @@ const Option = Select.Option;
     actions: {
         change: onChangeOrderForm,
         setClientSelection,
-        onChangeOrderServices,
         onChangeOrderDetails,
-        onServiceSearch,
         onDetailSearch,
         onBrandSearch,
         initOrderTasksForm,

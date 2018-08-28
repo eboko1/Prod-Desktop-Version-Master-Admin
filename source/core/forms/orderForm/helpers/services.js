@@ -43,28 +43,6 @@ export const mapOrderServicesToSelectServices = (orderServices, allServices, glo
         }),
     );
 
-export const generateAllServices = (prevAllServices, selectedServices) => {
-    const selectedValues = _(selectedServices)
-        .values()
-        .map('serviceName')
-        .map('value')
-        .value();
-
-    const manuallyInsertedServices = prevAllServices.filter(
-        service => service.manuallyInserted,
-    );
-
-    const redundantManuallyInsertedServices = manuallyInsertedServices.filter(
-        ({ id }) => !selectedValues.includes(`custom|${id}`),
-    );
-
-    return _.differenceWith(
-        prevAllServices,
-        redundantManuallyInsertedServices,
-        _.isEqual,
-    );
-};
-
 export const mergeServices = (allServices, orderServices) => {
     const allServicesKeys = allServices.map(
         ({ serviceId, type }) => `${type}|${serviceId}`,
@@ -85,15 +63,4 @@ export const mergeServices = (allServices, orderServices) => {
         }));
 
     return [ ...allServices, ...requiredOrderServices ];
-};
-
-export const defaultServices = (employeeId) => {
-    const defaultValues = { serviceCount: 1, servicePrice: 0, employeeId, ownDetail: false };
-    const fields = [ 'serviceName', 'serviceCount', 'servicePrice', 'employeeId', 'ownDetail' ];
-
-    return generateNestedObject(
-        fields,
-        (randomName, name) => `services[${randomName}][${name}]`,
-        defaultValues,
-    );
 };

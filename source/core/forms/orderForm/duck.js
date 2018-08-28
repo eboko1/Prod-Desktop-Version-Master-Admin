@@ -35,11 +35,9 @@ export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT
 
 export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 
-export const ON_SERVICE_SEARCH = `${prefix}/ON_SERVICE_SEARCH`;
 export const ON_DETAIL_SEARCH = `${prefix}/ON_DETAIL_SEARCH`;
 export const ON_BRAND_SEARCH = `${prefix}/ON_BRAND_SEARCH`;
 
-export const ON_HANDLE_CUSTOM_SERVICE = `${prefix}/ON_HANDLE_CUSTOM_SERVICE`;
 export const ON_HANDLE_CUSTOM_DETAIL = `${prefix}/ON_HANDLE_CUSTOM_DETAIL`;
 export const ON_HANDLE_CUSTOM_BRAND = `${prefix}/ON_HANDLE_CUSTOM_BRAND`;
 
@@ -63,10 +61,7 @@ export const FETCH_AVAILABLE_HOURS_SUCCESS = `${prefix}/FETCH_AVAILABLE_HOURS_SU
 import { customFieldValue, defaultFieldValue } from './helpers/utils';
 
 import {
-    generateAllServices,
-    mapOrderServicesToSelectServices,
     mergeServices,
-    defaultServices,
 } from './helpers/services';
 
 import { convertFieldsValuesToDbEntity } from './../../../pages/AddOrderPage/extractOrderEntity';
@@ -111,7 +106,6 @@ const createDefaultState = () => ({
         ),
         servicesDiscount: customFieldValue('servicesDiscount', 0),
         detailsDiscount:  customFieldValue('detailsDiscount', 0),
-        services:         defaultServices(),
         details:          defaultDetails(),
     },
     createStatus:    'not_complete',
@@ -189,12 +183,6 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
     /* eslint-disable */
     switch (type) {
-        case FETCH_ADD_ORDER_FORM_SUCCESS:
-            return {
-                ...state,
-                ...payload,
-            };
-
         case FETCH_ORDER_FORM_SUCCESS:
             const newState = {
                 ...state,
@@ -300,14 +288,6 @@ export default function reducer(state = ReducerState, action) {
                         "detailsDiscount",
                         payload.order.detailsDiscount,
                     ),
-                    services: {
-                        ...mapOrderServicesToSelectServices(
-                            payload.orderServices,
-                            payload.allServices,
-                            payload.order.employeeId,
-                        ),
-                        ...defaultServices(payload.order.employeeId),
-                    },
                     details: {
                         ...mapOrderDetailsToSelectDetails(payload.orderDetails),
                         ...defaultDetails(),
@@ -369,25 +349,6 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     ...payload,
-                    services: {
-                        // if merge with empty object old state stayed
-                        ..._.merge(
-                            state.fields.services,
-                            payload.services || {},
-                        ),
-                    },
-                    details: {
-                        ..._.merge(state.fields.details, payload.details || {}),
-                    },
-                },
-            };
-
-        case ON_CHANGE_ORDER_SERVICES:
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    services: payload,
                 },
             };
 
@@ -424,28 +385,6 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
-        case ON_HANDLE_CUSTOM_SERVICE:
-            return {
-                ...state,
-                allServices: [
-                    ...appendKey(
-                        generateAllServices(
-                            state.allServices,
-                            state.fields.services,
-                        ),
-                    ),
-                    {
-                        id:               v4(),
-                        servicePrice:     null,
-                        serviceHours:     null,
-                        description:      '',
-                        serviceName:      payload,
-                        serviceId:        v4(),
-                        type:             'custom',
-                        manuallyInserted: true,
-                    },
-                ],
-            };
         /* eslint-disable no-case-declarations */
         case ON_HANDLE_CUSTOM_DETAIL:
             const customDetail = {
@@ -614,11 +553,6 @@ export const fetchOrderTaskSuccess = data => ({
     payload: data,
 });
 
-export const onHandleCustomService = searchService => ({
-    type:    ON_HANDLE_CUSTOM_SERVICE,
-    payload: searchService,
-});
-
 export const onHandleCustomDetail = name => ({
     type:    ON_HANDLE_CUSTOM_DETAIL,
     payload: name,
@@ -694,11 +628,6 @@ export const submitOrderForm = orderForm => ({
 
 export const submitOrderFormSuccess = () => ({
     type: SUBMIT_ORDER_FORM_SUCCESS,
-});
-
-export const onServiceSearch = search => ({
-    type:    ON_SERVICE_SEARCH,
-    payload: search,
 });
 
 export const onBrandSearch = search => ({

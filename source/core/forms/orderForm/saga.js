@@ -31,7 +31,6 @@ import {
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
-    onHandleCustomService,
     onHandleCustomDetail,
     onHandleCustomBrand,
     createOrderSuccess,
@@ -44,7 +43,6 @@ import {
     FETCH_ORDER_TASK,
     ON_CHANGE_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
-    ON_SERVICE_SEARCH,
     ON_DETAIL_SEARCH,
     ON_BRAND_SEARCH,
     CREATE_ORDER,
@@ -232,11 +230,6 @@ function* handleClientSearchSaga({ payload }) {
     }
 }
 
-function* handleServiceSearch({ payload }) {
-    yield delay(200);
-    yield put(onHandleCustomService(payload));
-}
-
 function* handleDetailSearch({ payload }) {
     yield delay(200);
     yield put(onHandleCustomDetail(payload));
@@ -308,7 +301,6 @@ export function* saga() {
         call(fetchOrderFormSaga),
         call(onChangeOrderFormSaga),
         call(fetchAvailableHoursSaga),
-        takeLatest(ON_SERVICE_SEARCH, handleServiceSearch),
         takeLatest(ON_BRAND_SEARCH, handleBrandSearch),
         takeLatest(ON_DETAIL_SEARCH, handleDetailSearch),
         takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
