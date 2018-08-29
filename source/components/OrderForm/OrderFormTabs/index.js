@@ -31,17 +31,12 @@ export class OrderFormTabs extends Component {
             countDetails,
             formatMessage,
             getFieldDecorator,
-            fields,
             orderCalls,
             orderHistory,
-            onServiceSearch,
             defaultDetails,
             priceDetails,
             onDetailSearch,
             onBrandSearch,
-            employees,
-            allDetails,
-            filteredDetails,
             setModal,
             initOrderTasksForm,
             changeModalStatus,
@@ -49,10 +44,12 @@ export class OrderFormTabs extends Component {
             fetchedOrder,
         } = this.props;
 
+        console.log(this.props.form);
         return (
             <Tabs type='card'>
                 { !addOrderForm && (
                     <TabPane
+                        forceRender
                         tab={
                             formatMessage({
                                 id: 'order_form_table.tasks',
@@ -84,6 +81,7 @@ export class OrderFormTabs extends Component {
                     </TabPane>
                 ) }
                 <TabPane
+                    forceRender
                     tab={ `${formatMessage({
                         id:             'add_order_form.services',
                         defaultMessage: 'Services',
@@ -92,8 +90,6 @@ export class OrderFormTabs extends Component {
                 >
                     <ServicesTable
                         { ...this.props }
-                        onServiceSearch={ onServiceSearch }
-                        services={ fields.services }
                     />
                     <DiscountPanel
                         price={ priceServices }
@@ -102,6 +98,7 @@ export class OrderFormTabs extends Component {
                     />
                 </TabPane>
                 <TabPane
+                    forceRender
                     tab={ `${formatMessage({
                         id:             'add_order_form.details',
                         defaultMessage: 'Details',
@@ -110,7 +107,6 @@ export class OrderFormTabs extends Component {
                 >
                     <DetailsTable
                         { ...this.props }
-                        details={ fields.details }
                         onDetailSearch={ onDetailSearch }
                         onBrandSearch={ onBrandSearch }
                         defaultDetail={ defaultDetails }
@@ -123,6 +119,7 @@ export class OrderFormTabs extends Component {
                     />
                 </TabPane>
                 <TabPane
+                    forceRender
                     key='4'
                     tab={
                         formatMessage({
@@ -234,6 +231,7 @@ export class OrderFormTabs extends Component {
                 </TabPane>
                 { !addOrderForm && (
                     <TabPane
+                        forceRender
                         tab={
                             formatMessage({
                                 id: 'order_form_table.history',
@@ -249,6 +247,7 @@ export class OrderFormTabs extends Component {
                 ) }
                 { !addOrderForm && (
                     <TabPane
+                        forceRender
                         tab={
                             formatMessage({
                                 id: 'order_form_table.calls',

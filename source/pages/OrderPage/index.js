@@ -69,13 +69,9 @@ const mapStateToProps = state => {
         user:                  state.auth,
         modal:                 state.modals.modal,
         spinner:               state.ui.orderFetching,
-        orderEntity:           {
-            ...state.forms.orderForm.fields,
-            selectedClient: state.forms.orderForm.selectedClient,
-        },
-        // stationField: state.forms.orderForm.fields.station.value,
-        // beginDatetimeField: state.forms.orderForm.fields
-
+        selectedClient:        state.forms.orderForm.selectedClient,
+        fetchedOrder:          state.forms.orderForm.fetchedOrder,
+        fields:                state.forms.orderForm.fields,
         ...selectInviteData(state),
     };
 };
@@ -138,20 +134,23 @@ class OrderPage extends Component {
     };
 
     onStatusChange = (status, redirectStatus) => {
-        const { id } = this.props.match.params;
+        const { allServices, allDetails, selectedClient } = this.props;
         const requiredFields = requiredFieldsOnStatuses[ status ];
+        const { id } = this.props.match.params;
         const form = this.orderFormRef.props.form;
 
         form.validateFields(requiredFields, err => {
             if (!err) {
+                const values = form.getFieldsValue();
+                const orderFormEntity = { ...values, selectedClient };
+
                 this.props.updateOrder({
                     id,
                     order: convertFieldsValuesToDbEntity(
-                        this.props.orderEntity,
-                        this.props.allServices,
-                        this.props.allDetails,
+                        orderFormEntity,
+                        allServices,
+                        allDetails,
                         status,
-                        form,
                     ),
                     redirectStatus,
                 });
@@ -177,23 +176,60 @@ class OrderPage extends Component {
 
     _close = () => {
         const {
-            orderEntity,
+            selectedClient,
+            fields,
             allServices,
             allDetails,
 
-            initOrderEntity,
+            fetchedOrder,
             returnToOrdersPage,
+
             setModal,
             history,
         } = this.props;
+        const form = this.orderFormRef.props.form;
 
-        const newOrder = convertFieldsValuesToDbEntity(
-            orderEntity,
+        const orderData = form.getFieldsValue();
+        const orderFormEntity = {
+            selectedClient,
+            ...orderData,
+        };
+
+        const orderEntity = convertFieldsValuesToDbEntity(
+            orderFormEntity,
             allServices,
             allDetails,
         );
+        const fetchedOrderEntity = {
+            ...fetchedOrder.order,
+            services: fetchedOrder.orderServices || [],
+            details:  fetchedOrder.orderDetails || [],
+            ..._.get(fetchedOrder, 'client.clientId')
+                ? { clientId: _.get(fetchedOrder, 'client.clientId') }
+                : {},
+        };
 
-        if (_.isEqual(newOrder, initOrderEntity)) {
+        const compareFields = _(orderEntity)
+            .omit([ 'services', 'details' ])
+            .toPairs()
+            .value();
+
+        const areInputValuesEqual = (originValue, fieldValue) => {
+            return !originValue && !fieldValue || originValue === fieldValue;
+        };
+
+        const identicalOrders = _.reduce(
+            compareFields,
+            (prev, [ field, value ]) =>
+                prev && areInputValuesEqual(fetchedOrderEntity[ field ], value),
+            true,
+        );
+
+        if (
+            identicalOrders &&
+            !fields.services.length &&
+            !fields.details.length
+        ) {
             _.get(history, 'location.state.fromDashboard')
                 ? history.push(`${book.dashboard}`)
                 : returnToOrdersPage(status);
@@ -204,13 +240,12 @@ class OrderPage extends Component {
 
     _invite = () => {
         const {
-            user,
             clientVehicleId,
             clientId,
             status,
             clientPhone,
-            createInviteOrder,
         } = this.props.order;
+        const { user, createInviteOrder } = this.props;
 
         if (
             (status === 'success' || status === 'cancel') &&

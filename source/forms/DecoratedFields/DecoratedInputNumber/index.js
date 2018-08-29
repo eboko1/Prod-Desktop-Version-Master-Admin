@@ -37,7 +37,7 @@ export const DecoratedInputNumber = props => {
 
     const inputNumber = getFieldDecorator(field, {
         rules,
-        initialValue: defaultValue,
+        ..._.isNumber(defaultValue) ? { initialValue: defaultValue } : {},
     })(
         <InputNumber
             disabled={ disabled }

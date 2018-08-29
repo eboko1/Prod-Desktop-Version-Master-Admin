@@ -28,7 +28,7 @@ export const DecoratedSlider = props => {
         max,
     } = props;
     // console.log('→ value', initialValue);
-
+    console.log('getFieldDecorator', field);
     const slider = getFieldDecorator(field, {
         ...initDuration ? { initialValue: initDuration } : {},
         rules,

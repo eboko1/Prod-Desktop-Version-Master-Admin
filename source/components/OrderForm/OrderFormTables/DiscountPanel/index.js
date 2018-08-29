@@ -21,7 +21,7 @@ class DiscountPanel extends Component {
             fetchedOrder,
         } = this.props;
 
-        const discount = this.props.form.getFieldValue(discountFieldName);;
+        const discount = this.props.form.getFieldValue(discountFieldName);
 
         const total = price - price * (discount / 100);
 
@@ -30,7 +30,7 @@ class DiscountPanel extends Component {
                 <div className={ Styles.discountPanel }>
                     <DecoratedInputNumber
                         field={ discountFieldName }
-                        initialValue={ _.get(fetchedOrder, `order.${discountFieldName}`) }
+                        initialValue={ _.get(fetchedOrder, `order.${discountFieldName}`) || 0 }
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={

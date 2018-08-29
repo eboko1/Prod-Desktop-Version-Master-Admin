@@ -27,7 +27,7 @@ export const DecoratedTextArea = props => {
 
     const textArea = getFieldDecorator(field, {
         rules,
-        initialValue,
+        ...initialValue ? { initialValue } : {},
     })(
         <TextArea
             disabled={ disabled }

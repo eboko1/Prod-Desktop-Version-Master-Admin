@@ -75,7 +75,7 @@ class DetailsTable extends Component {
                     <LimitedDecoratedSelect
                         mode={ 'combobox' }
                         optionLabelProp={ 'children' }
-                        initValue={
+                        initialValue={
                             this._getDefaultValue(key, 'detailBrandName') || 0
                         }
                         field={ `details[${key}][detailBrandName]` }
@@ -98,9 +98,7 @@ class DetailsTable extends Component {
                 key:    'code',
                 render: ({ key }) => (
                     <DecoratedInput
-                        initValue={
-                            this._getDefaultValue(key, 'detailCode') || 0
-                        }
+                        initialValue={ this._getDefaultValue(key, 'detailCode') }
                         field={ `details[${key}][detailCode]` }
                         disabled={ this._isFieldDisabled(key) }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
@@ -187,9 +185,11 @@ class DetailsTable extends Component {
         const actions = {
             detailName:      orderDetail.detailId || orderDetail.detailName,
             detailCount:     orderDetail.count,
-            detailCode:      orderDetail.code,
+            detailCode:      orderDetail.detailCode,
             detailPrice:     orderDetail.price,
-            detailBrandName: orderDetail.brandId || orderDetail.brandName,
+            detailBrandName:
+                (orderDetail.brandId || orderDetail.brandName) &&
+                String(orderDetail.brandId || orderDetail.brandName),
         };
 
         return actions[ fieldName ];

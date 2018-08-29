@@ -1,8 +1,6 @@
 // vendor
 import { createSelector } from 'reselect';
 import _ from 'lodash';
-import { v4 } from 'uuid';
-import moment from 'moment';
 
 /**
  * Constants
@@ -54,23 +52,25 @@ export const FETCH_AVAILABLE_HOURS_SUCCESS = `${prefix}/FETCH_AVAILABLE_HOURS_SU
  * */
 
 const createDefaultState = () => ({
-    fields:          {},
-    createStatus:    'not_complete',
-    allServices:     [],
-    managers:        [],
-    employees:       [],
-    filteredDetails: [],
-    stations:        [],
-    orderServices:   [],
-    history:         {
+    fields:        {
+        services: [],
+        details:  [],
+    },
+    createStatus:  'not_complete',
+    allServices:   [],
+    managers:      [],
+    employees:     [],
+    stations:      [],
+    orderServices: [],
+    orderDetails:  [],
+    history:       {
         count:  0,
         orders: [],
         stats:  {},
     },
-    calls:        [],
-    tasks:        [],
-    orderDetails: [],
-    allDetails:   {
+    calls:      [],
+    tasks:      [],
+    allDetails: {
         details: [],
         brands:  [],
     },
@@ -121,9 +121,6 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 ...payload,
-                fields: {
-                    ...state.fields,
-                },
             };
 
         case ON_CHANGE_ORDER_FORM:
@@ -165,7 +162,7 @@ export default function reducer(state = ReducerState, action) {
                 selectedClient: payload,
                 searchClientsResult: {
                     clients: [],
-                    searching: true,
+                    searching: false,
                 },
                 fields: {
                     ..._.omit(state.fields, [
@@ -350,10 +347,6 @@ export const fetchAvailableHours = (station, date) => ({
     type: FETCH_AVAILABLE_HOURS,
     payload: { station, date },
 });
-// export const fetchAvailableHours = ({ beginDatetime, station }) => ({
-//     type:    FETCH_AVAILABLE_HOURS,
-//     payload: { stationNum: station, date: beginDatetime },
-// });
 
 export const fetchAvailableHoursSuccess = availableHours => ({
     type: FETCH_AVAILABLE_HOURS_SUCCESS,

@@ -14,7 +14,6 @@ import {
     prefillFromDashboard,
 } from 'core/forms/orderForm/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
-import { defaultDetails } from 'core/forms/orderForm/helpers/details';
 
 import {
     DecoratedInput,
@@ -67,6 +66,8 @@ export class OrderForm extends Component {
 
     /* eslint-disable complexity */
     render() {
+        this.props.form.getFieldDecorator('services[0].serviceName');
+        this.props.form.getFieldDecorator('details[0].detailName');
         const dateBlock = this._renderDateBlock();
         const clientsSearchTable = this._renderClientSearchTable();
         const clientBlock = this._renderClientBlock();
@@ -382,7 +383,7 @@ export class OrderForm extends Component {
                         getFieldDecorator={ getFieldDecorator }
                         initialValue={
                             _.get(fetchedOrder, 'order.clientEmail') ||
-                            _.get(selectedClient, 'emails[0]')
+                            selectedClient.emails.find(Boolean)
                         }
                         placeholder={ 'Choose selected client email' }
                     >
@@ -474,7 +475,7 @@ export class OrderForm extends Component {
                     >
                         <Input
                             disabled
-                            value={ selectedVehicle && selectedVehicle.number }
+                            value={ _.get(selectedVehicle, 'number') }
                         />
                     </FormItem>
 
@@ -502,10 +503,7 @@ export class OrderForm extends Component {
                         label={ <FormattedMessage id='add_order_form.vin' /> }
                         colon={ false }
                     >
-                        <Input
-                            disabled
-                            value={ selectedVehicle && selectedVehicle.vin }
-                        />
+                        <Input disabled value={ _.get(selectedVehicle, 'vin') } />
                     </FormItem>
                     <FormItem { ...formItemAutoColLayout }>
                         <a
@@ -527,37 +525,29 @@ export class OrderForm extends Component {
             selectedClient,
             orderTasks,
             form,
-            fields,
             setModal,
             fetchedOrder,
         } = this.props;
-
-        const {
-            comment,
-            businessComment,
-            vehicleCondition,
-            recommendation,
-        } = fields;
 
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
         const { count: countDetails, price: priceDetails } = detailsStats(
-            fields.details,
+            form.getFieldsValue().details || [],
         );
 
         const {
             count: countServices,
             price: priceServices,
             totalHours,
-        } = servicesStats(fields.services, this.props.allServices);
+        } = servicesStats(
+            form.getFieldsValue().services || [],
+            this.props.allServices,
+        );
 
-        const servicesDiscount = this.props.form.getFieldValue(
-            'servicesDiscount',
-        );
-        const detailsDiscount = this.props.form.getFieldValue(
-            'detailsDiscount',
-        );
+        const servicesDiscount = form.getFieldsValue().servicesDiscount || 0;
+        const detailsDiscount = form.getFieldsValue().detailsDiscount || 0;
+        const comments = form.getFieldsValue([ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);
 
         const detailsTotalPrice =
             priceDetails - priceDetails * (detailsDiscount / 100);
@@ -566,9 +556,8 @@ export class OrderForm extends Component {
 
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
 
-        const commentsCollection = [ comment, businessComment, vehicleCondition, recommendation ];
-        const commentsCount = commentsCollection.filter(com =>
-            _.get(com, 'value')).length;
+        const commentsCollection = _.values(comments);
+        const commentsCount = commentsCollection.filter(Boolean).length;
 
         return (
             <>
@@ -662,7 +651,6 @@ export class OrderForm extends Component {
                     getFieldDecorator={ getFieldDecorator }
                     form={ form }
                     totalHours={ totalHours }
-                    defaultDetails={ defaultDetails }
                     countServices={ countServices }
                     countDetails={ countDetails }
                     priceServices={ priceServices }

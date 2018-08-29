@@ -63,7 +63,7 @@ class ServicesTable extends Component {
                 render: ({ key }) => {
                     return (
                         <DecoratedSelect
-                            field={ `services[${key}][serviceName]` }
+                            field={ `services[${key}].serviceName` }
                             getFieldDecorator={ this.props.getFieldDecorator }
                             mode={ 'combobox' }
                             optionLabelProp={ 'children' }
@@ -96,7 +96,7 @@ class ServicesTable extends Component {
                         initValue={
                             this._getDefaultValue(key, 'servicePrice') || 0
                         }
-                        field={ `services[${key}][servicePrice]` }
+                        field={ `services[${key}].servicePrice` }
                         getFieldDecorator={ this.props.getFieldDecorator }
                         disabled={ this._isFieldDisabled(key) }
                         min={ 0 }
@@ -111,7 +111,7 @@ class ServicesTable extends Component {
                         initValue={
                             this._getDefaultValue(key, 'serviceCount') || 1
                         }
-                        field={ `services[${key}][serviceCount]` }
+                        field={ `services[${key}].serviceCount` }
                         getFieldDecorator={ this.props.getFieldDecorator }
                         disabled={ this._isFieldDisabled(key) }
                         min={ 0.1 }
@@ -143,7 +143,7 @@ class ServicesTable extends Component {
                 render: ({ key }) => {
                     return (
                         <DecoratedSelect
-                            field={ `services[${key}][employeeId]` }
+                            field={ `services[${key}].employeeId` }
                             initialValue={
                                 this._getDefaultValue(key, 'employeeId') ||
                                 this.props.form.getFieldValue('employee')
@@ -162,7 +162,7 @@ class ServicesTable extends Component {
                 render: ({ key }) => (
                     <DecoratedCheckbox
                         initValue={ this._getDefaultValue(key, 'ownDetail') }
-                        field={ `services[${key}][ownDetail]` }
+                        field={ `services[${key}].ownDetail` }
                         getFieldDecorator={ this.props.getFieldDecorator }
                         disabled={ this._isFieldDisabled(key) }
                     />
@@ -241,21 +241,6 @@ class ServicesTable extends Component {
         const { keys } = this.state;
         this.setState({ keys: [ ...keys, this.uuid++ ] });
     };
-
-    shouldComponentUpdate(prevProps, prevState) {
-        if (prevProps.orderServices !== this.props.orderServices) {
-            this.props.form.resetFields([ 'services' ]);
-            const orderServices = this.props.orderServices || [];
-            this.uuid = orderServices.length;
-            this.setState({
-                keys: [ ..._.keys(orderServices), this.uuid++ ],
-            });
-
-            return true;
-        }
-
-        return prevProps !== this.props || prevState !== this.state;
-    }
 
     render() {
         const { getFieldDecorator, totalHours, fetchedOrder } = this.props;
