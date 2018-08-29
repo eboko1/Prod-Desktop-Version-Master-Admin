@@ -35,15 +35,6 @@ export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT
 
 export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 
-export const ON_DETAIL_SEARCH = `${prefix}/ON_DETAIL_SEARCH`;
-export const ON_BRAND_SEARCH = `${prefix}/ON_BRAND_SEARCH`;
-
-export const ON_HANDLE_CUSTOM_DETAIL = `${prefix}/ON_HANDLE_CUSTOM_DETAIL`;
-export const ON_HANDLE_CUSTOM_BRAND = `${prefix}/ON_HANDLE_CUSTOM_BRAND`;
-
-export const ON_CHANGE_ORDER_SERVICES = `${prefix}/ON_CHANGE_ORDER_SERVICES`;
-export const ON_CHANGE_ORDER_DETAILS = `${prefix}/ON_CHANGE_ORDER_DETAILS`;
-
 export const SUBMIT_ORDER_FORM = `${prefix}/SUBMIT_ORDER_FORM`;
 export const SUBMIT_ORDER_FORM_SUCCESS = `${prefix}/SUBMIT_ORDER_FORM_SUCCESS`;
 
@@ -60,25 +51,11 @@ export const FETCH_AVAILABLE_HOURS_SUCCESS = `${prefix}/FETCH_AVAILABLE_HOURS_SU
 
 import { customFieldValue, defaultFieldValue } from './helpers/utils';
 
-import {
-    mergeServices,
-} from './helpers/services';
-
 import { convertFieldsValuesToDbEntity } from './../../../pages/AddOrderPage/extractOrderEntity';
-
-import {
-    generateAllDetails,
-    mapOrderDetailsToSelectDetails,
-    mergeDetails,
-    defaultDetails,
-    getInitDetails,
-} from './helpers/details';
 
 /**
  * Reducer
  * */
-
-const appendKey = arr => arr.map(item => ({ ...item, key: v4() }));
 
 const createDefaultState = () => ({
     fields: {
@@ -106,7 +83,6 @@ const createDefaultState = () => ({
         ),
         servicesDiscount: customFieldValue('servicesDiscount', 0),
         detailsDiscount:  customFieldValue('detailsDiscount', 0),
-        details:          defaultDetails(),
     },
     createStatus:    'not_complete',
     allServices:     [],
@@ -145,39 +121,6 @@ const createDefaultState = () => ({
 
 const ReducerState = createDefaultState();
 
-function calculateAllBrands(allBrands, selectedBrands) {
-    const selectedValues = _(selectedBrands)
-        .values()
-        .map('detailBrandName')
-        .map('value')
-        .value();
-
-    const manuallyInsertedBrands = allBrands.filter(
-        brand => brand.manuallyInserted,
-    );
-
-    const redundantManuallyInsertedBrands = manuallyInsertedBrands.filter(
-        ({ brandId }) => !selectedValues.includes(brandId),
-    );
-
-    return _.differenceWith(
-        allBrands,
-        redundantManuallyInsertedBrands,
-        _.isEqual,
-    );
-}
-
-function mergeAllDetailsOrderBrands(allBrands, orderDetails) {
-    const requiredOrderBrands = orderDetails
-        .filter(({ brandId }) => !brandId)
-        .map(({ brandName, id }) => ({
-            brandId: `custom|${id}`,
-            brandName,
-        }));
-
-    return [ ...requiredOrderBrands, ...allBrands ];
-}
-
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
     const { type, payload, meta } = action;
@@ -187,24 +130,6 @@ export default function reducer(state = ReducerState, action) {
             const newState = {
                 ...state,
                 ...payload,
-                filteredDetails: getInitDetails(
-                    payload.allDetails.details,
-                    payload.orderDetails,
-                ),
-                allServices: appendKey(
-                    mergeServices(payload.allServices, payload.orderServices),
-                ),
-                allDetails: {
-                    ...state.allDetails,
-                    details: mergeDetails(
-                        payload.allDetails.details,
-                        payload.orderDetails,
-                    ),
-                    brands: mergeAllDetailsOrderBrands(
-                        payload.allDetails.brands,
-                        payload.orderDetails,
-                    ),
-                },
                 fields: {
                     ...state.fields,
                     clientPhone: customFieldValue(
@@ -288,10 +213,6 @@ export default function reducer(state = ReducerState, action) {
                         "detailsDiscount",
                         payload.order.detailsDiscount,
                     ),
-                    details: {
-                        ...mapOrderDetailsToSelectDetails(payload.orderDetails),
-                        ...defaultDetails(),
-                    },
                 },
 
                 fetchedOrder: payload,
@@ -327,10 +248,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 ...payload,
-                filteredDetails: payload.allDetails.details.slice(0, 100),
-                allServices:     appendKey(payload.allServices),
-                allDetails:      payload.allDetails,
-                fields:          {
+                fields: {
                     ...state.fields,
                     station: customFieldValue(
                         'station',
@@ -349,15 +267,6 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     ...payload,
-                },
-            };
-
-        case ON_CHANGE_ORDER_DETAILS:
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    details: payload,
                 },
             };
 
@@ -382,56 +291,6 @@ export default function reducer(state = ReducerState, action) {
                 fields: {
                     ...state.fields,
                     ...payload,
-                },
-            };
-
-        /* eslint-disable no-case-declarations */
-        case ON_HANDLE_CUSTOM_DETAIL:
-            const customDetail = {
-                detailId:         `custom|${v4()}`,
-                detailName:       payload,
-                manuallyInserted: true,
-            };
-            const filteredDetails = state.allDetails.details
-                .filter(({ detailName }) =>
-                    detailName.toLocaleLowerCase().includes(payload))
-                .slice(0, 100);
-
-            const includesCustomName = filteredDetails.find(
-                ({ detailName }) => detailName === payload,
-            );
-
-            return {
-                ...state,
-                filteredDetails: [ ...filteredDetails, ...includesCustomName ? [] : [ customDetail ] ],
-                allDetails:      {
-                    ...state.allDetails,
-                    details: [
-                        ...generateAllDetails(
-                            state.allDetails.details,
-                            state.fields.details,
-                        ),
-                        ...includesCustomName ? [] : [ customDetail ],
-                    ],
-                },
-            };
-
-        case ON_HANDLE_CUSTOM_BRAND:
-            return {
-                ...state,
-                allDetails: {
-                    ...state.allDetails,
-                    brands: [
-                        ...calculateAllBrands(
-                            state.allDetails.brands,
-                            state.fields.details,
-                        ),
-                        {
-                            brandId:          `custom|${v4()}`,
-                            brandName:        payload,
-                            manuallyInserted: true,
-                        },
-                    ],
                 },
             };
 
@@ -553,16 +412,6 @@ export const fetchOrderTaskSuccess = data => ({
     payload: data,
 });
 
-export const onHandleCustomDetail = name => ({
-    type:    ON_HANDLE_CUSTOM_DETAIL,
-    payload: name,
-});
-
-export const onHandleCustomBrand = name => ({
-    type:    ON_HANDLE_CUSTOM_BRAND,
-    payload: name,
-});
-
 export const onChangeClientSearchQuery = searchQuery => ({
     type:    ON_CHANGE_CLIENT_SEARCH_QUERY,
     payload: searchQuery,
@@ -571,16 +420,6 @@ export const onChangeClientSearchQuery = searchQuery => ({
 export const setClientSelection = client => ({
     type:    ON_CLIENT_SELECT,
     payload: client,
-});
-
-export const onChangeOrderDetails = data => ({
-    type:    ON_CHANGE_ORDER_DETAILS,
-    payload: data,
-});
-
-export const onChangeOrderServices = data => ({
-    type:    ON_CHANGE_ORDER_SERVICES,
-    payload: data,
 });
 
 export const onChangeClientSearchQuerySuccess = data => ({
@@ -628,16 +467,6 @@ export const submitOrderForm = orderForm => ({
 
 export const submitOrderFormSuccess = () => ({
     type: SUBMIT_ORDER_FORM_SUCCESS,
-});
-
-export const onBrandSearch = search => ({
-    type:    ON_BRAND_SEARCH,
-    payload: search,
-});
-
-export const onDetailSearch = search => ({
-    type:    ON_DETAIL_SEARCH,
-    payload: search,
 });
 
 export const returnToOrdersPage = status => ({

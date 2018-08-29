@@ -11,9 +11,6 @@ import book from 'routes/book';
 import {
     onChangeOrderForm,
     setClientSelection,
-    onChangeOrderDetails,
-    onDetailSearch,
-    onBrandSearch,
     prefillFromDashboard,
 } from 'core/forms/orderForm/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
@@ -54,9 +51,6 @@ const Option = Select.Option;
     actions: {
         change: onChangeOrderForm,
         setClientSelection,
-        onChangeOrderDetails,
-        onDetailSearch,
-        onBrandSearch,
         initOrderTasksForm,
         prefillFromDashboard,
     },
@@ -512,15 +506,8 @@ export class OrderForm extends Component {
         const {
             selectedClient,
             orderTasks,
-            orderCalls,
-            orderHistory,
             form,
             fields,
-            onServiceSearch,
-            allServices,
-            allDetails,
-            employees,
-            filteredDetails,
             setModal,
         } = this.props;
 
@@ -649,25 +636,6 @@ export class OrderForm extends Component {
                     orderTasks={ orderTasks }
                     commentsCount={ commentsCount }
                 />
-                {/* fields={fields}
-                 priceDetails={priceDetails}
-                 priceServices={priceServices}
-                 countServices={countServices}
-                 countDetails={countDetails}
-                 defaultDetails={defaultDetails}
-                 orderTasks={orderTasks}
-                 formatMessage={formatMessage}
-                 getFieldDecorator={getFieldDecorator}
-                 orderCalls={orderCalls}
-                 orderHistory={orderHistory}
-                 onServiceSearch={onServiceSearch}
-                 onDetailSearch={onDetailSearch}
-                 onBrandSearch={onBrandSearch}
-                 form={form}
-                 allServices={allServices}
-                 allDetails={allDetails}
-                 employees={employees}
-                 filteredDetails={filteredDetails} */}
             </>
         );
     };

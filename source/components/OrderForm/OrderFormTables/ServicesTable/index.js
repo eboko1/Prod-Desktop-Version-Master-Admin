@@ -58,6 +58,7 @@ class ServicesTable extends Component {
         this.columns = [
             {
                 title:  <FormattedMessage id='order_form_table.service' />,
+                key:    'service',
                 width:  '30%',
                 render: ({ key }) => {
                     return (
@@ -89,6 +90,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  <FormattedMessage id='order_form_table.price' />,
+                key:    'price',
                 render: ({ key }) => (
                     <DecoratedInputNumber
                         initValue={
@@ -103,6 +105,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  <FormattedMessage id='order_form_table.count' />,
+                key:    'count',
                 render: ({ key }) => (
                     <DecoratedInputNumber
                         initValue={
@@ -118,6 +121,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  <FormattedMessage id='order_form_table.sum' />,
+                key:    'sum',
                 render: ({ key }) => {
                     const services = this.props.form.getFieldValue('services');
                     const value =
@@ -135,6 +139,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  <FormattedMessage id='order_form_table.employee' />,
+                key:    'employee',
                 render: ({ key }) => {
                     return (
                         <DecoratedSelect
@@ -153,6 +158,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  <FormattedMessage id='order_form_table.own_detail' />,
+                key:    'ownDetail',
                 render: ({ key }) => (
                     <DecoratedCheckbox
                         initValue={ this._getDefaultValue(key, 'ownDetail') }
@@ -164,6 +170,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  '',
+                key:    'delete',
                 render: ({ key }) => {
                     return (
                         this.state.keys.length > 1 && (
@@ -188,12 +195,25 @@ class ServicesTable extends Component {
 
     _getDefaultValue = (key, fieldName) => {
         const orderService = (this.props.orderServices || [])[ key ];
+        const allServices = this.props.allServices;
         if (!orderService) {
             return;
         }
 
+        const resolveServiceId = (type, serviceId, name) =>
+            _.find(allServices, { type, serviceId })
+                ? `${type}|${serviceId}`
+                : name;
+
         const actions = {
-            serviceName:  `${orderService.type}|${orderService.serviceId}`,
+            serviceName:
+                orderService.type !== 'custom'
+                    ? resolveServiceId(
+                        orderService.type,
+                        orderService.serviceId,
+                        orderService.serviceName,
+                    )
+                    : orderService.serviceName,
             serviceCount: orderService.count,
             servicePrice: orderService.price,
             ownDetail:    orderService.ownDetail,
@@ -248,6 +268,7 @@ class ServicesTable extends Component {
         return (
             <Catcher>
                 <Table
+                    // rowKey={ v4 }
                     dataSource={ keys.map(key => ({ key })) }
                     columns={ columns }
                     pagination={ false }

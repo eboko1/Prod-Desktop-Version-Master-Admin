@@ -12,6 +12,7 @@ import OrderFormTabs from './OrderForm/OrderFormTabs';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 import Loader from './Loader';
 import ArrayScheduleInput from './ArrayScheduleInput';
+import LimitedDecoratedSelect from './LimitedDecoratedSelect';
 
 
 export {
@@ -30,4 +31,5 @@ export {
     OrderFormTabs,
     Loader,
     ArrayScheduleInput,
+    LimitedDecoratedSelect,
 };

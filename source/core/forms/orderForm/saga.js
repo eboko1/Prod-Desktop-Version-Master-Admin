@@ -31,20 +31,17 @@ import {
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
-    onHandleCustomDetail,
-    onHandleCustomBrand,
     createOrderSuccess,
     updateOrderSuccess,
     returnToOrdersPage,
     createInviteOrderSuccess,
+
     CREATE_INVITE_ORDER,
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
     FETCH_ORDER_TASK,
     ON_CHANGE_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
-    ON_DETAIL_SEARCH,
-    ON_BRAND_SEARCH,
     CREATE_ORDER,
     UPDATE_ORDER,
     RETURN_TO_ORDERS_PAGE,
@@ -230,16 +227,6 @@ function* handleClientSearchSaga({ payload }) {
     }
 }
 
-function* handleDetailSearch({ payload }) {
-    yield delay(200);
-    yield put(onHandleCustomDetail(payload));
-}
-
-function* handleBrandSearch({ payload }) {
-    yield delay(200);
-    yield put(onHandleCustomBrand(payload));
-}
-
 export function* fetchAddOrderFormSaga() {
     while (true) {
         try {
@@ -301,8 +288,6 @@ export function* saga() {
         call(fetchOrderFormSaga),
         call(onChangeOrderFormSaga),
         call(fetchAvailableHoursSaga),
-        takeLatest(ON_BRAND_SEARCH, handleBrandSearch),
-        takeLatest(ON_DETAIL_SEARCH, handleDetailSearch),
         takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
     ]);
 }
