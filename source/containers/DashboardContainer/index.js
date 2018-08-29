@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
+import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
@@ -90,6 +91,7 @@ class DashboardContainer extends Component {
     _renderDashboardColumns = () => {
         const { dashboard, days, stations, load, mode } = this.props;
         const { currentDay } = this.state;
+        console.log('→ dashboard', dashboard);
 
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => (
             <DashboardColumn
@@ -100,14 +102,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length &&
+                    { load.length && 
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) :
+                                ) : 
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -198,7 +200,10 @@ class DashboardContainer extends Component {
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
-                                            stationNum={ stations[ column ].num }
+                                            stationNum={ _.get(
+                                                stations,
+                                                `[${column}].num`,
+                                            ) }
                                             { ...order }
                                         />
                                     ) : (
