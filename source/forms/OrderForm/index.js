@@ -208,7 +208,8 @@ export class OrderForm extends Component {
                     optionLabel='name'
                     initialValue={
                         _.get(location, 'state.stationNum') ||
-                        _.get(fetchedOrder, 'order.stationNum')
+                        _.get(fetchedOrder, 'order.stationNum') ||
+                        _.get(stations, '[0].num')
                     }
                 />
                 <DecoratedSelect
@@ -225,7 +226,10 @@ export class OrderForm extends Component {
                     hasFeedback
                     colon={ false }
                     className={ Styles.datePanelItem }
-                    initialValue={ _.get(fetchedOrder, 'order.managerId') }
+                    initialValue={
+                        _.get(fetchedOrder, 'order.managerId') ||
+                        _.get(managers, '[0].id')
+                    }
                     placeholder='Выберете менеджера'
                 >
                     { managers.map(manager => (
@@ -345,7 +349,10 @@ export class OrderForm extends Component {
                 <DecoratedSelect
                     label={ <FormattedMessage id='add_order_form.phone' /> }
                     field='clientPhone'
-                    initialValue={ _.get(fetchedOrder, 'order.clientPhone') }
+                    initialValue={
+                        _.get(fetchedOrder, 'order.clientPhone') ||
+                        _.get(selectedClient, 'phones[0]')
+                    }
                     formItem
                     formItemLayout={ formItemLayout }
                     hasFeedback
@@ -373,7 +380,10 @@ export class OrderForm extends Component {
                     <DecoratedSelect
                         field='clientEmail'
                         getFieldDecorator={ getFieldDecorator }
-                        initialValue={ _.get(fetchedOrder, 'order.clientEmail') }
+                        initialValue={
+                            _.get(fetchedOrder, 'order.clientEmail') ||
+                            _.get(selectedClient, 'emails[0]')
+                        }
                         placeholder={ 'Choose selected client email' }
                     >
                         { selectedClient.emails.filter(Boolean).map(email => (
@@ -410,11 +420,8 @@ export class OrderForm extends Component {
     };
 
     _renderVehicleColumn = () => {
-        const {
-            selectedClient,
-            fetchedOrder,
-            form: { getFieldDecorator, getFieldValue },
-        } = this.props;
+        const { selectedClient, fetchedOrder } = this.props;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
         const selectedVehicleId = getFieldValue('clientVehicle');
 
         const selectedVehicle =
@@ -429,7 +436,10 @@ export class OrderForm extends Component {
                 </div>
                 <DecoratedSelect
                     field='clientVehicle'
-                    initialValue={ _.get(fetchedOrder, 'order.clientVehicleId') }
+                    initialValue={
+                        _.get(fetchedOrder, 'order.clientVehicleId') ||
+                        _.get(selectedClient, 'vehicles[0].id')
+                    }
                     formItem
                     hasFeedback
                     label={ <FormattedMessage id='add_order_form.car' /> }

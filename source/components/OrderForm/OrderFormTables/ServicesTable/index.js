@@ -94,7 +94,7 @@ class ServicesTable extends Component {
                 render: ({ key }) => (
                     <DecoratedInputNumber
                         initValue={
-                            this._getDefaultValue(key, 'servicePrice')
+                            this._getDefaultValue(key, 'servicePrice') || 0
                         }
                         field={ `services[${key}][servicePrice]` }
                         getFieldDecorator={ this.props.getFieldDecorator }
