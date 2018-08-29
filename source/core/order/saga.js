@@ -52,7 +52,7 @@ export function* getReportSaga({ payload: report }) {
             report.link,
             null,
             null,
-            true,
+            { rawResponse: true },
         );
         const reportFile = yield response.blob();
 

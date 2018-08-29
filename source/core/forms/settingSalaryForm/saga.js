@@ -1,5 +1,8 @@
 // vendor
 import { call, put, all, take } from 'redux-saga/effects';
+import moment from 'moment'
+import { saveAs } from 'file-saver';
+
 //proj
 import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
@@ -88,13 +91,29 @@ export function* fetchSalaryReport() {
             const {
                 payload: info,
             } = yield take(FETCH_SALARY_REPORT);
-
+            // console.log(info, 'HELLO')
             const data = yield call(
                 fetchAPI,
                 'GET',
-                `/employees_salaries/report?startDate=${info.id}`,
+                '/employees_salaries/report',
+                {startDate: info[ 0 ].toISOString(), endDate: info[ 1 ].toISOString()},
+                null,
+                { rawResponse: true },
+                // `/employees_salaries/report?startDate=${ info[ 0 ].toISOString()}&endDate=${info[ 1 ].toISOString()}`,
+            );
+            console.log('data', data);
+            const reportFile = yield data.blob();
+
+            const contentDispositionHeader = data.headers.get(
+                'content-disposition',
             );
 
+            const fileName = contentDispositionHeader.match(
+                /^attachment; filename="(.*)"/,
+            )[ 1 ];
+
+            console.log('fileName', fileName)
+            yield saveAs(reportFile, fileName);
             yield put(fetchSalaryReportSuccess());
         } catch (error) {
             yield put(emitError(error));
