@@ -62,6 +62,11 @@ class DetailsTable extends Component {
                         }
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '70%' } }
+                        defaultValues={
+                            _(_(this.props).get('orderDetails'))
+                                .map('detailName')
+                                .value() || []
+                        }
                     >
                         { this.details }
                     </LimitedDecoratedSelect>
@@ -87,6 +92,11 @@ class DetailsTable extends Component {
                         }
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '35%' } }
+                        defaultValues={
+                            _(_(this.props).get('orderDetails'))
+                                .map('brandName')
+                                .value() || []
+                        }
                     >
                         { this.brands }
                     </LimitedDecoratedSelect>
@@ -183,7 +193,9 @@ class DetailsTable extends Component {
         }
 
         const actions = {
-            detailName:      orderDetail.detailId || orderDetail.detailName,
+            detailName:
+                (orderDetail.detailId || orderDetail.detailName) &&
+                String(orderDetail.detailId || orderDetail.detailName),
             detailCount:     orderDetail.count,
             detailCode:      orderDetail.detailCode,
             detailPrice:     orderDetail.price,

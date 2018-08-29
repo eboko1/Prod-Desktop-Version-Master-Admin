@@ -45,7 +45,7 @@ export function convertFieldsValuesToDbEntity(
             } = detail;
 
             const detailConfig = allDetails.details.find(
-                ({ detailId: id }) => id === detailId,
+                ({ detailId: id }) => String(id) === detailId,
             );
             const brandConfig = allDetails.brands.find(
                 ({ brandId: id }) => String(id) === brandId,

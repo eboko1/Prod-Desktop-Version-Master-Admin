@@ -10,10 +10,13 @@ class LimitedDecoratedSelect extends Component {
     };
 
     render() {
-        const { children } = this.props;
+        const { children, defaultValues = [] } = this.props;
         const { search } = this.state;
+        const requiredOptions = children.filter(({ props: { children } }) =>
+            defaultValues.includes(children));
+
         const limitedChildren = !search
-            ? children.slice(0, 100)
+            ? _.uniq([ ...children.slice(0, 100), requiredOptions ])
             : children
                 .filter(
                     ({ props: { children } }) =>
@@ -25,7 +28,7 @@ class LimitedDecoratedSelect extends Component {
             <DecoratedSelect
                 { ...this.props }
                 children={ limitedChildren }
-                onSearch={ search => this.setState({ search }) }
+                onSearch={ search => this.setState({ search: _.isString(search) ? search.toLowerCase() : search }) }
             />
         );
     }
