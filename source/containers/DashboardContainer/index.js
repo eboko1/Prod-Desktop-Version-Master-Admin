@@ -200,10 +200,13 @@ class DashboardContainer extends Component {
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
-                                            stationNum={ _.get(
-                                                stations,
-                                                `[${column}].num`,
-                                            ) }
+                                            stationNum={
+                                                !dashboardMode &&
+                                                _.get(
+                                                    stations,
+                                                    `[${column}].num`,
+                                                )
+                                            }
                                             { ...order }
                                         />
                                     ) : (
@@ -224,7 +227,15 @@ class DashboardContainer extends Component {
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
-                                            stationNum={ stations[ column ].num }
+                                            stationNum={
+                                                !dashboardMode
+                                                    ? _.get(
+                                                        stations,
+                                                        `[${column}].num`,
+                                                    )
+                                                    : result[ index ].options
+                                                        .stationNum
+                                            }
                                             { ...order }
                                         />
                                     ),

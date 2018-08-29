@@ -10,8 +10,8 @@ import book from 'routes/book';
 
 // own
 import DashboardOrderDropTarget from '../DashboardOrderDropTarget';
-import { DragItemTypes, ROW_HEIGHT, ordersStatus } from '../../dashboardConfig';
 import DashboardTooltip from '../../DashboardTooltip';
+import { DragItemTypes, ordersStatus } from '../../dashboardConfig';
 import handleHover from '../../dashboardCore/handleHover';
 import getBeginDatetime from '../../dashboardCore/getBeginDatetime';
 
