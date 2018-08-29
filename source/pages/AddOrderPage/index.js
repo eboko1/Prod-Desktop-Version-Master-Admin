@@ -41,10 +41,7 @@ const mapStateToProps = state => {
         addClientFormData: state.forms.addClientForm.data,
         spinner:           state.ui.orderFetching,
         createStatus:      state.forms.orderForm.createStatus,
-        orderEntity:       {
-            ...state.forms.orderForm.fields,
-            selectedClient: state.forms.orderForm.selectedClient,
-        },
+        selectedClient:    state.forms.orderForm.selectedClient,
     };
 };
 
@@ -77,18 +74,26 @@ class AddOrderPage extends Component {
 
     _onSubmit = () => {
         const form = this.orderFormRef.props.form;
+        const {
+            allServices,
+            allDetails,
+            selectedClient,
+            createStatus,
+        } = this.props;
         const requiredFields =
             requiredFieldsOnStatuses[ this.props.createStatus ];
 
         form.validateFields(requiredFields, err => {
             if (!err) {
+                const values = form.getFieldsValue();
+                const orderFormEntity = { ...values, selectedClient };
+
                 this.props.createOrder(
                     convertFieldsValuesToDbEntity(
-                        this.props.orderEntity,
-                        this.props.allServices,
-                        this.props.allDetails,
-                        this.props.createStatus,
-                        form,
+                        orderFormEntity,
+                        allServices,
+                        allDetails,
+                        createStatus,
                     ),
                 );
             }
