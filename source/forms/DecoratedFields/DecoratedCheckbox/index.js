@@ -20,15 +20,20 @@ export const DecoratedCheckbox = props => {
         rules,
         field,
         initValue,
+        initialValue,
         children,
         onChange,
     } = props;
 
     const checkbox = getFieldDecorator(field, {
         valuePropName: 'checked',
-        initialValue:  Boolean(initValue),
+        initialValue:  Boolean(initValue || initialValue),
         rules,
-    })(<Checkbox disabled={ disabled } onChange={ onChange }>{ children }</Checkbox>);
+    })(
+        <Checkbox disabled={ disabled } onChange={ onChange }>
+            { children }
+        </Checkbox>,
+    );
 
     return formItem ? (
         <FormItem

@@ -39,7 +39,6 @@ const mapStateToProps = state => {
         requisites:        state.forms.orderForm.requisites,
         modal:             state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
-        createOrderStatus: state.forms.orderForm.fields.createOrderStatus.value,
         spinner:           state.ui.orderFetching,
         createStatus:      state.forms.orderForm.createStatus,
         orderEntity:       {

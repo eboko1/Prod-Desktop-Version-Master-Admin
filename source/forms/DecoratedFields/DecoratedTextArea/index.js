@@ -22,10 +22,12 @@ export const DecoratedTextArea = props => {
         disabled,
         placeholder,
         autosize,
+        initialValue,
     } = props;
 
     const textArea = getFieldDecorator(field, {
         rules,
+        initialValue,
     })(
         <TextArea
             disabled={ disabled }

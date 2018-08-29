@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Tabs, Form, Icon, Button } from 'antd';
+import _ from 'lodash';
 
 // proj
 import { MODALS } from 'core/modals/duck';
@@ -45,6 +46,7 @@ export class OrderFormTabs extends Component {
             initOrderTasksForm,
             changeModalStatus,
             commentsCount,
+            fetchedOrder,
         } = this.props;
 
         return (
@@ -139,6 +141,7 @@ export class OrderFormTabs extends Component {
                         <DecoratedTextArea
                             getFieldDecorator={ getFieldDecorator }
                             field='comment'
+                            initialValue={ _.get(fetchedOrder, 'order.comment') }
                             rules={ [
                                 {
                                     max:     2000,
@@ -160,6 +163,10 @@ export class OrderFormTabs extends Component {
                         <DecoratedTextArea
                             getFieldDecorator={ getFieldDecorator }
                             field='vehicleCondition'
+                            initialValue={ _.get(
+                                fetchedOrder,
+                                'order.vehicleCondition',
+                            ) }
                             rules={ [
                                 {
                                     max:     2000,
@@ -182,6 +189,10 @@ export class OrderFormTabs extends Component {
                         <DecoratedTextArea
                             getFieldDecorator={ getFieldDecorator }
                             field='businessComment'
+                            initialValue={ _.get(
+                                fetchedOrder,
+                                'order.businessComment',
+                            ) }
                             rules={ [
                                 {
                                     max:     2000,
@@ -203,6 +214,10 @@ export class OrderFormTabs extends Component {
                         <DecoratedTextArea
                             getFieldDecorator={ getFieldDecorator }
                             field='recommendation'
+                            initialValue={ _.get(
+                                fetchedOrder,
+                                'order.recommendation',
+                            ) }
                             rules={ [
                                 {
                                     max:     2000,

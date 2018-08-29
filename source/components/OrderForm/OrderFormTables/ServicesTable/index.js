@@ -94,7 +94,7 @@ class ServicesTable extends Component {
                 render: ({ key }) => (
                     <DecoratedInputNumber
                         initValue={
-                            this._getDefaultValue(key, 'servicePrice') || 0
+                            this._getDefaultValue(key, 'servicePrice')
                         }
                         field={ `services[${key}][servicePrice]` }
                         getFieldDecorator={ this.props.getFieldDecorator }
@@ -258,12 +258,10 @@ class ServicesTable extends Component {
     }
 
     render() {
-        const { getFieldDecorator, totalHours } = this.props;
+        const { getFieldDecorator, totalHours, fetchedOrder } = this.props;
         const { keys } = this.state;
 
         const columns = this.columns;
-
-        // _.each(keys, key => getFieldDecorator(`services[${key}].serviceName`));
 
         return (
             <Catcher>
@@ -277,7 +275,7 @@ class ServicesTable extends Component {
                     <DecoratedSlider
                         className={ Styles.durationPanelItem }
                         formItem
-                        initDuration={ totalHours }
+                        initDuration={  _.get(fetchedOrder, 'order.duration') || totalHours }
                         label='Продолжительность'
                         field='duration'
                         getFieldDecorator={ getFieldDecorator }
@@ -292,9 +290,18 @@ class ServicesTable extends Component {
                         }
                         className={ Styles.durationPanelItem }
                         field='employee'
+                        initialValue={ _.get(fetchedOrder, 'order.employeeId') }
                         getFieldDecorator={ getFieldDecorator }
                     >
-                        { this.employees }
+                        { this.props.employees.map(employee => (
+                            <Option
+                                value={ employee.id }
+                                key={ `employee-${employee.id}` }
+                                disabled={ employee.disabled }
+                            >
+                                { `${employee.name} ${employee.surname}` }
+                            </Option>
+                        )) }
                     </DecoratedSelect>
                 </div>
             </Catcher>

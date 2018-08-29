@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { InputNumber, Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
@@ -17,10 +18,10 @@ class DiscountPanel extends Component {
             getFieldDecorator,
             price,
             discountFieldName,
-            fields,
+            fetchedOrder,
         } = this.props;
 
-        const discount = ~~fields[ discountFieldName ].value;
+        const discount = this.props.form.getFieldValue(discountFieldName);;
 
         const total = price - price * (discount / 100);
 
@@ -29,6 +30,7 @@ class DiscountPanel extends Component {
                 <div className={ Styles.discountPanel }>
                     <DecoratedInputNumber
                         field={ discountFieldName }
+                        initialValue={ _.get(fetchedOrder, `order.${discountFieldName}`) }
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={

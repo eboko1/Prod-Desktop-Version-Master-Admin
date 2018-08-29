@@ -49,41 +49,12 @@ export const FETCH_ORDER_TASK_SUCCESS = `${prefix}/FETCH_ORDER_TASK_SUCCESS`;
 export const FETCH_AVAILABLE_HOURS = `${prefix}/FETCH_AVAILABLE_HOURS`;
 export const FETCH_AVAILABLE_HOURS_SUCCESS = `${prefix}/FETCH_AVAILABLE_HOURS_SUCCESS`;
 
-import { customFieldValue, defaultFieldValue } from './helpers/utils';
-
-import { convertFieldsValuesToDbEntity } from './../../../pages/AddOrderPage/extractOrderEntity';
-
 /**
  * Reducer
  * */
 
 const createDefaultState = () => ({
-    fields: {
-        beginDate:         defaultFieldValue('beginDate'),
-        beginTime:         defaultFieldValue('beginTime'),
-        status:            defaultFieldValue('status'),
-        date:              defaultFieldValue('date'),
-        station:           defaultFieldValue('station'),
-        manager:           defaultFieldValue('manager'),
-        employee:          defaultFieldValue('employee'),
-        searchClientQuery: defaultFieldValue('searchClientQuery'),
-        clientPhone:       defaultFieldValue('clientPhone'),
-        clientEmail:       defaultFieldValue('clientEmail'),
-        clientVehicle:     defaultFieldValue('clientVehicle'),
-        clientRequisite:   defaultFieldValue('clientRequisite'),
-        requisite:         defaultFieldValue('requisite'),
-        paymentMethod:     defaultFieldValue('paymentMethod'),
-        odometerValue:     defaultFieldValue('odometerValue'),
-        vehicleCondition:  defaultFieldValue('vehicleCondition'),
-        businessComment:   defaultFieldValue('businessComment'),
-        comment:           defaultFieldValue('comment'),
-        createOrderStatus: customFieldValue(
-            'createOrderStatus',
-            'not_complete',
-        ),
-        servicesDiscount: customFieldValue('servicesDiscount', 0),
-        detailsDiscount:  customFieldValue('detailsDiscount', 0),
-    },
+    fields:          {},
     createStatus:    'not_complete',
     allServices:     [],
     managers:        [],
@@ -127,110 +98,12 @@ export default function reducer(state = ReducerState, action) {
     /* eslint-disable */
     switch (type) {
         case FETCH_ORDER_FORM_SUCCESS:
-            const newState = {
+            return {
                 ...state,
                 ...payload,
-                fields: {
-                    ...state.fields,
-                    clientPhone: customFieldValue(
-                        "clientPhone",
-                        payload.order.clientPhone,
-                    ),
-                    clientEmail: customFieldValue(
-                        "clientEmail",
-                        payload.order.clientEmail,
-                    ),
-                    clientVehicle: customFieldValue(
-                        "clientVehicle",
-                        payload.order.clientVehicleId,
-                    ),
-                    station: customFieldValue(
-                        "station",
-                        payload.order.stationNum,
-                    ),
-                    manager: customFieldValue(
-                        "manager",
-                        payload.order.managerId,
-                    ),
-                    beginDate: customFieldValue(
-                        "beginDate",
-                        payload.order.beginDatetime
-                            ? moment(payload.order.beginDatetime)
-                            : void 0,
-                    ),
-                    beginTime: customFieldValue(
-                        "beginTime",
-                        payload.order.beginDatetime
-                            ? moment(payload.order.beginDatetime)
-                            : void 0,
-                    ),
-                    requisite: customFieldValue(
-                        "requisite",
-                        payload.order.businessRequisiteId,
-                    ),
-                    clientRequisite: customFieldValue(
-                        "clientRequisite",
-                        payload.order.clientRequisiteId,
-                    ),
-                    paymentMethod: customFieldValue(
-                        "paymentMethod",
-                        payload.order.paymentMethod,
-                    ),
-                    odometerValue: customFieldValue(
-                        "odometerValue",
-                        payload.order.odometerValue,
-                    ),
-                    recommendation: customFieldValue(
-                        "recommendation",
-                        payload.order.recommendation,
-                    ),
-                    businessComment: customFieldValue(
-                        "businessComment",
-                        payload.order.businessComment,
-                    ),
-                    vehicleCondition: customFieldValue(
-                        "vehicleCondition",
-                        payload.order.vehicleCondition,
-                    ),
-                    comment: customFieldValue("comment", payload.order.comment),
-                    ...(payload.order.duration
-                        ? {
-                              duration: customFieldValue(
-                                  "duration",
-                                  payload.order.duration,
-                              ),
-                          }
-                        : {}),
-                    employee: customFieldValue(
-                        "employee",
-                        payload.order.employeeId,
-                    ),
-                    servicesDiscount: customFieldValue(
-                        "servicesDiscount",
-                        payload.order.servicesDiscount,
-                    ),
-                    detailsDiscount: customFieldValue(
-                        "detailsDiscount",
-                        payload.order.detailsDiscount,
-                    ),
-                },
-
                 fetchedOrder: payload,
                 selectedClient: payload.client || state.selectedClient,
             };
-
-            const initOrderEntity = convertFieldsValuesToDbEntity(
-                {
-                    ...newState.fields,
-                    selectedClient: newState.selectedClient,
-                },
-                newState.allServices,
-                newState.allDetails,
-            );
-
-            /* eslint-enable */
-
-            return { ...newState, initOrderEntity };
 
         case SET_CREATE_STATUS:
             return {
@@ -250,14 +123,6 @@ export default function reducer(state = ReducerState, action) {
                 ...payload,
                 fields: {
                     ...state.fields,
-                    station: customFieldValue(
-                        'station',
-                        payload.stations[ 0 ].num,
-                    ),
-                    manager: customFieldValue(
-                        'manager',
-                        payload.managers[ 0 ].id,
-                    ),
                 },
             };
 
@@ -297,27 +162,19 @@ export default function reducer(state = ReducerState, action) {
         case ON_CLIENT_SELECT:
             return {
                 ...state,
-                selectedClient:      payload,
+                selectedClient: payload,
                 searchClientsResult: {
-                    clients:   [],
+                    clients: [],
                     searching: true,
                 },
                 fields: {
-                    ...state.fields,
-                    // clearing provided fields with default values
-                    ..._.pick(ReducerState.fields, [ 'clientPhone', 'clientEmail', 'clientVehicle', 'searchClientQuery', 'clientRequisite' ]),
-                    clientPhone: customFieldValue(
-                        'clientPhone',
-                        _.get(payload, 'phones[0]'),
-                    ),
-                    clientEmail: customFieldValue(
-                        'clientEmail',
-                        _.get(payload, 'emails[0]'),
-                    ),
-                    clientVehicle: customFieldValue(
-                        'clientVehicle',
-                        _.get(payload, 'vehicles[0].id'),
-                    ),
+                    ..._.omit(state.fields, [
+                        "clientPhone",
+                        "clientEmail",
+                        "clientVehicle",
+                        "searchClientQuery",
+                        "clientRequisite",
+                    ]),
                 },
             };
         // TODO think about loader state for client search table
@@ -325,7 +182,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 searchClientsResult: {
-                    clients:   [],
+                    clients: [],
                     searching: true,
                 },
             };
@@ -334,7 +191,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 searchClientsResult: {
-                    clients:   payload.clients,
+                    clients: payload.clients,
                     searching: false,
                 },
             };
@@ -359,10 +216,10 @@ export default function reducer(state = ReducerState, action) {
  * Selectors
  * */
 
-export const orderSelector = state => state.forms[ moduleName ].order;
+export const orderSelector = state => state.forms[moduleName].order;
 
 export const selectInviteData = createSelector(orderSelector, order => {
-    const hasInviteStatus = [ 'success', 'cancel' ].includes(order.status);
+    const hasInviteStatus = ["success", "cancel"].includes(order.status);
 
     const isInviteVisible =
         !order.inviteOrderId && order.id && order.status && hasInviteStatus;
@@ -384,12 +241,12 @@ export const selectInviteData = createSelector(orderSelector, order => {
  * */
 
 export const fetchOrderForm = id => ({
-    type:    FETCH_ORDER_FORM,
+    type: FETCH_ORDER_FORM,
     payload: id,
 });
 
 export const fetchOrderFormSuccess = data => ({
-    type:    FETCH_ORDER_FORM_SUCCESS,
+    type: FETCH_ORDER_FORM_SUCCESS,
     payload: data,
 });
 
@@ -398,32 +255,32 @@ export const fetchAddOrderForm = () => ({
 });
 
 export const fetchAddOrderFormSuccess = data => ({
-    type:    FETCH_ADD_ORDER_FORM_SUCCESS,
+    type: FETCH_ADD_ORDER_FORM_SUCCESS,
     payload: data,
 });
 
 export const fetchOrderTask = id => ({
-    type:    FETCH_ORDER_TASK,
+    type: FETCH_ORDER_TASK,
     payload: id,
 });
 
 export const fetchOrderTaskSuccess = data => ({
-    type:    FETCH_ORDER_TASK_SUCCESS,
+    type: FETCH_ORDER_TASK_SUCCESS,
     payload: data,
 });
 
 export const onChangeClientSearchQuery = searchQuery => ({
-    type:    ON_CHANGE_CLIENT_SEARCH_QUERY,
+    type: ON_CHANGE_CLIENT_SEARCH_QUERY,
     payload: searchQuery,
 });
 
 export const setClientSelection = client => ({
-    type:    ON_CLIENT_SELECT,
+    type: ON_CLIENT_SELECT,
     payload: client,
 });
 
 export const onChangeClientSearchQuerySuccess = data => ({
-    type:    ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS,
+    type: ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS,
     payload: data,
 });
 
@@ -432,13 +289,13 @@ export const onChangeClientSearchQueryRequest = () => ({
 });
 
 export const onChangeOrderForm = (fields, { form, field }) => ({
-    type:    ON_CHANGE_ORDER_FORM,
+    type: ON_CHANGE_ORDER_FORM,
     payload: fields,
-    meta:    { form, field },
+    meta: { form, field },
 });
 
 export const createOrder = entity => ({
-    type:    CREATE_ORDER,
+    type: CREATE_ORDER,
     payload: entity,
 });
 
@@ -447,7 +304,7 @@ export const createOrderSuccess = () => ({
 });
 
 export const updateOrder = entity => ({
-    type:    UPDATE_ORDER,
+    type: UPDATE_ORDER,
     payload: entity,
 });
 
@@ -456,12 +313,12 @@ export const updateOrderSuccess = () => ({
 });
 
 export const setCreateStatus = status => ({
-    type:    SET_CREATE_STATUS,
+    type: SET_CREATE_STATUS,
     payload: status,
 });
 
 export const submitOrderForm = orderForm => ({
-    type:    SUBMIT_ORDER_FORM,
+    type: SUBMIT_ORDER_FORM,
     payload: orderForm,
 });
 
@@ -470,27 +327,27 @@ export const submitOrderFormSuccess = () => ({
 });
 
 export const returnToOrdersPage = status => ({
-    type:    RETURN_TO_ORDERS_PAGE,
+    type: RETURN_TO_ORDERS_PAGE,
     payload: status,
 });
 
 export const prefillFromDashboard = data => ({
-    type:    PREFILL_FROM_DASHBOARD,
+    type: PREFILL_FROM_DASHBOARD,
     payload: data,
 });
 
 export const createInviteOrder = inviteOrder => ({
-    type:    CREATE_INVITE_ORDER,
+    type: CREATE_INVITE_ORDER,
     payload: inviteOrder,
 });
 
 export const createInviteOrderSuccess = response => ({
-    type:    CREATE_INVITE_ORDER_SUCCESS,
+    type: CREATE_INVITE_ORDER_SUCCESS,
     payload: response,
 });
 
 export const fetchAvailableHours = (station, date) => ({
-    type:    FETCH_AVAILABLE_HOURS,
+    type: FETCH_AVAILABLE_HOURS,
     payload: { station, date },
 });
 // export const fetchAvailableHours = ({ beginDatetime, station }) => ({
@@ -499,6 +356,6 @@ export const fetchAvailableHours = (station, date) => ({
 // });
 
 export const fetchAvailableHoursSuccess = availableHours => ({
-    type:    FETCH_AVAILABLE_HOURS_SUCCESS,
+    type: FETCH_AVAILABLE_HOURS_SUCCESS,
     payload: availableHours,
 });

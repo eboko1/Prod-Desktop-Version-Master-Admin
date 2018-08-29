@@ -1,6 +1,7 @@
 // vendor
 import React from 'react';
 import { InputNumber, Icon, Form } from 'antd';
+import _ from 'lodash';
 
 // own
 const FormItem = Form.Item;
@@ -24,6 +25,7 @@ export const DecoratedInputNumber = props => {
         // defaultValue,
 
         initValue,
+        initialValue,
         onChange,
 
         placeholder,
@@ -31,9 +33,11 @@ export const DecoratedInputNumber = props => {
         iconType,
     } = props;
 
+    const defaultValue = [ initValue, initialValue ].find(_.isNumber);
+
     const inputNumber = getFieldDecorator(field, {
         rules,
-        initialValue: initValue,
+        initialValue: defaultValue,
     })(
         <InputNumber
             disabled={ disabled }
