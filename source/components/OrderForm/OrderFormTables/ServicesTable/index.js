@@ -94,7 +94,9 @@ class ServicesTable extends Component {
                 render: ({ key }) => (
                     <DecoratedInputNumber
                         initValue={
-                            this._getDefaultValue(key, 'servicePrice') || 0
+                            this._getDefaultValue(key, 'servicePrice') ||
+                            this._getDefaultPrice(key) ||
+                            0
                         }
                         field={ `services[${key}].servicePrice` }
                         getFieldDecorator={ this.props.getFieldDecorator }
@@ -193,6 +195,19 @@ class ServicesTable extends Component {
     _isFieldDisabled = key =>
         !_.get(this.props.form.getFieldValue('services'), [ key, 'serviceName' ]);
 
+    _getDefaultPrice = key => {
+        const service = this.props.form.getFieldValue(`services[${key}]`);
+        const serviceName = _.get(service, 'serviceName');
+        if (!serviceName) {
+            return;
+        }
+        const baseService = this.props.allServices.find(
+            ({ serviceId, type }) => `${type}|${serviceId}` === serviceName,
+        );
+
+        return _.get(baseService, 'servicePrice');
+    };
+
     _getDefaultValue = (key, fieldName) => {
         const orderService = (this.props.orderServices || [])[ key ];
         const allServices = this.props.allServices;
@@ -260,7 +275,9 @@ class ServicesTable extends Component {
                     <DecoratedSlider
                         className={ Styles.durationPanelItem }
                         formItem
-                        initDuration={  _.get(fetchedOrder, 'order.duration') || totalHours }
+                        initDuration={
+                            _.get(fetchedOrder, 'order.duration') || totalHours
+                        }
                         label='Продолжительность'
                         field='duration'
                         getFieldDecorator={ getFieldDecorator }
