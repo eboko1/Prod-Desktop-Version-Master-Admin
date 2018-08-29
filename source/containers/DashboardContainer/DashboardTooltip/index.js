@@ -35,7 +35,7 @@ class TooltipBox extends Component {
                 clientPhone ||
                 vehicleMakeName ||
                 vehicleModelName ||
-                comment ? 
+                comment ?
                     <>
                         <DashboardTooltipClient>
                             { clientName } { clientSurname }
@@ -47,7 +47,7 @@ class TooltipBox extends Component {
                         {comment && (
                             <div>
                                 <span style={ { color: 'var(--link)' } }>
-                                    Коментарий:
+                                    <FormattedMessage id='comment' />:
                                 </span>
                                 <DashboardTooltipComment>
                                     { comment }
@@ -89,17 +89,7 @@ const DashboardTooltip = styled(TooltipBox)`
     border: 1px solid var(--link);
     box-sizing: border-box;
     color: #fff;
-    ${'' /* display: ${props => !props.position ? 'flex' : 'none'}; */}
-    ${
-    '' /* top: ${props => props.position.top};
-    left: ${props => props.position.left}; */
-}
-    ${
-    '' /* top: ${props => props.position ? props.position.top : 0};
-    left: ${props => props.position ? props.position.left : 0}; */
-} ${
-    '' /* display: ${props => props.visible ? 'none' : 'flex'}; */
-} flex-direction: column;
+    flex-direction: column;
     justify-content: space-around;
     max-height: 170px;
     overflow: hidden;
@@ -108,11 +98,15 @@ const DashboardTooltip = styled(TooltipBox)`
     width: 200px;
     word-break: break-all;
     z-index: 3000;
-    transform: translate(35%, -30%);
+    transform: translateX(35%) translateY(calc(-20% - 0.5px)) translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    backface-visibility: hidden;
+    font-weight: bold;
 
     ${'' /* ${DashboardOrder}:hover & {
         display: flex;
-    } */};
+    } ; */};
 `;
 
 export default DashboardTooltip;
