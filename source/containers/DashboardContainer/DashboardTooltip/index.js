@@ -35,7 +35,7 @@ class TooltipBox extends Component {
                 clientPhone ||
                 vehicleMakeName ||
                 vehicleModelName ||
-                comment ? 
+                comment ?
                     <>
                         <DashboardTooltipClient>
                             { clientName } { clientSurname }
@@ -98,7 +98,9 @@ const DashboardTooltip = styled(TooltipBox)`
     width: 200px;
     word-break: break-all;
     z-index: 3000;
+    transition: 0.3s all ease-in-out;
     transform: translateX(35%) translateY(calc(-20% - 0.5px)) translateZ(0);
+    translate3d( 0, 0, 0);
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
     backface-visibility: hidden;
