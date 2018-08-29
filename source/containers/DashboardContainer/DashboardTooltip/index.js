@@ -35,7 +35,7 @@ class TooltipBox extends Component {
                 clientPhone ||
                 vehicleMakeName ||
                 vehicleModelName ||
-                comment ?
+                comment ? 
                     <>
                         <DashboardTooltipClient>
                             { clientName } { clientSurname }
@@ -103,6 +103,7 @@ const DashboardTooltip = styled(TooltipBox)`
     -moz-backface-visibility: hidden;
     backface-visibility: hidden;
     font-weight: bold;
+    -webkit-font-smoothing: antialiased;
 
     ${'' /* ${DashboardOrder}:hover & {
         display: flex;
