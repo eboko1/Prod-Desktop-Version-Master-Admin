@@ -19,8 +19,8 @@ import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
-    salaries:  state.settingSalary.salaries,
-    entity:    state.settingSalary.fields,
+    salaries:  state.forms.settingSalary.salaries,
+    entity:    state.forms.settingSalary.fields,
     employees: state.employee.employees,
 });
 
