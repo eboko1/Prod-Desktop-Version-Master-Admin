@@ -104,6 +104,11 @@ export default {
                     name: 'navigation.main',
                 },
                 {
+                    key:  '/requisites',
+                    link: book.oldApp.settingsRequisites,
+                    name: 'navigation.requisites',
+                },
+                {
                     key:  '/prices',
                     link: book.oldApp.settingsSpecialization,
                     name: 'navigation.specialization_and_prices',
