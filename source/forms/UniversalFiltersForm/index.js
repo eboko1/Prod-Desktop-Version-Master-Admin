@@ -38,20 +38,16 @@ export class UniversalFiltersForm extends Component {
             vehicleModels,
             managers,
             employees,
-            creationReasons,
-            orderComments,
             services,
             handleUniversalFiltersModalSubmit,
-            // setUniversalFiltersModal,
         } = this.props;
-        const { getFieldDecorator, getFieldsError } = this.props.form;
+        const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
         const makeId = _.get(this.props, 'fields.make.value');
         const vehiclesYears = [];
-        const range = new Array(200);
-        for (let i = 0; i < range.length; i++) {
-            vehiclesYears.push(1900 + i);
+        for (let year = new Date().getFullYear(); year >= 1900; year--) {
+            vehiclesYears.push(year);
         }
 
         return (
@@ -218,15 +214,13 @@ export class UniversalFiltersForm extends Component {
                                     trigger.parentNode
                                 }
                             >
-                                { vehiclesYears.map(vehiclesYear => (
-                                    <Option
-                                        value={ vehiclesYear }
-                                        key={ v4() }
-                                        name={ String(vehiclesYear) }
-                                    >
-                                        { vehiclesYear }
-                                    </Option>
-                                )) }
+                                { vehiclesYears
+                                    .sort((a, b) => b - a)
+                                    .map(year => (
+                                        <Option value={ year } key={ v4() }>
+                                            { String(year) }
+                                        </Option>
+                                    )) }
                             </DecoratedSelect>
                         </FormItem>
                     </Col>
