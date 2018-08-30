@@ -2,3 +2,7 @@
     background: lightblue;
     display: block;
 }
+
+.forbiddenPrint {
+    color: gray;
+}

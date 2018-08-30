@@ -261,6 +261,7 @@ class OrdersContainer extends Component {
             this.isAlreadyInvited,
             activeRoute,
             this.props.sort,
+            this.props.user,
         );
 
         const rows = rowsConfig(
