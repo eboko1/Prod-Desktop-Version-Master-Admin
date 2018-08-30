@@ -11,7 +11,6 @@ import book from 'routes/book';
 import {
     onChangeOrderForm,
     setClientSelection,
-    prefillFromDashboard,
 } from 'core/forms/orderForm/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 
@@ -49,19 +48,14 @@ const Option = Select.Option;
         change: onChangeOrderForm,
         setClientSelection,
         initOrderTasksForm,
-        prefillFromDashboard,
     },
 })
 export class OrderForm extends Component {
+    state = {};
+
     componentDidMount() {
-        const { location, prefillFromDashboard } = this.props;
-        if (location.state) {
-            prefillFromDashboard({
-                beginDate: location.state.beginDatetime,
-                beginTime: location.state.beginDatetime,
-                station:   location.state.stationNum,
-            });
-        }
+        // TODO in order to fix late getFieldDecorator invoke for services
+        this.setState({ initialized: true });
     }
 
     /* eslint-disable complexity */
