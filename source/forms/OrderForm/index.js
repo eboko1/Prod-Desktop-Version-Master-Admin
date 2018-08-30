@@ -38,6 +38,10 @@ import Styles from './styles.m.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+const mapStateToProps = state => ({
+    authentificatedManager: state.auth.id,
+});
+
 @injectIntl
 @withReduxForm2({
     name:            'orderForm',
@@ -47,6 +51,7 @@ const Option = Select.Option;
         setClientSelection,
         initOrderTasksForm,
     },
+    mapStateToProps,
 })
 export class OrderForm extends Component {
     state = {};
@@ -100,6 +105,7 @@ export class OrderForm extends Component {
             location,
             employees,
             fetchedOrder,
+            authentificatedManager,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
@@ -217,7 +223,7 @@ export class OrderForm extends Component {
                     className={ Styles.datePanelItem }
                     initialValue={
                         _.get(fetchedOrder, 'order.managerId') ||
-                        _.get(managers, '[0].id')
+                        authentificatedManager
                     }
                     placeholder='Выберете менеджера'
                 >
@@ -267,9 +273,7 @@ export class OrderForm extends Component {
 
                             const updatedServices = _(services)
                                 .keys()
-                                .map(serviceKey => [
-                                    `services[${serviceKey}][appurtenanciesResponsibleId]`, value,
-                                ])
+                                .map(serviceKey => [ `services[${serviceKey}][appurtenanciesResponsibleId]`, value ])
                                 .fromPairs()
                                 .value();
                             this.props.form.setFieldsValue(updatedServices);
