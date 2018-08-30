@@ -140,29 +140,34 @@ export default {
                 },
             ],
         },
+        /* Roles submenu */
+        {
+            key:      'roles',
+            iconType: 'book',
+            name:     'navigation.roles',
+            items:    [
+                {
+                    key:  '/packages',
+                    link: book.packagePage,
+                    name: 'navigation.package',
+                },
+                {
+                    key:  '/businesses/packages',
+                    link: book.businessPackagePage,
+                    name: 'navigation.business_package',
+                },
+                {
+                    key:  '/managers/roles',
+                    link: book.managerRolePage,
+                    name: 'navigation.manager_role',
+                },
+            ],
+        },
         {
             key:      '/suggest-idea',
             iconType: 'bulb',
             link:     book.oldApp.feedback,
             name:     'navigation.suggest_idea',
-        },
-        {
-            key:      '/package',
-            iconType: 'book',
-            link:     book.packagePage,
-            name:     'navigation.package',
-        },
-        {
-            key:      '/businessPackage',
-            iconType: 'book',
-            link:     book.businessPackagePage,
-            name:     'navigation.business_package',
-        },
-        {
-            key:      '/managerRole',
-            iconType: 'book',
-            link:     book.managerRolePage,
-            name:     'navigation.manager_role',
         },
     ],
 

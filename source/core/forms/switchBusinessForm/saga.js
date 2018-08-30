@@ -50,7 +50,7 @@ function* onSetModalSaga({ payload }) {
 function* setBusinessSaga() {
     while (true) {
         const {
-            payload: { id },
+            payload: { businessId, businessName },
         } = yield take(SET_BUSINESS);
 
         const user = yield call(
@@ -59,16 +59,22 @@ function* setBusinessSaga() {
             'managers/businesses/set',
             void 0,
             {
-                businessId: id,
+                businessId,
             },
         );
         const token = yield select(selectToken);
-        yield put(authenticate({ ...user, token }));
+        yield put(authenticate({ ...user, businessName, token }));
 
         yield put(go(book.dashboard));
     }
 }
 
 export function* saga() {
-    yield all([ takeLatest(SET_SEARCH_QUERY, handleBusinessesSearchSaga), call(setBusinessSaga), takeEvery(SET_MODAL, onSetModalSaga) ]);
+    /* eslint-disable array-element-newline */
+    yield all([
+        takeLatest(SET_SEARCH_QUERY, handleBusinessesSearchSaga),
+        takeEvery(SET_MODAL, onSetModalSaga),
+        call(setBusinessSaga),
+    ]);
+    /* eslint-enable array-element-newline */
 }
