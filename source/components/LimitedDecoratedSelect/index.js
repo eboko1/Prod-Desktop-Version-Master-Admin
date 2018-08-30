@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from 'react';
+import _ from 'lodash';
 
 // proj
 import { DecoratedSelect } from 'forms/DecoratedFields';
@@ -16,7 +17,7 @@ class LimitedDecoratedSelect extends Component {
             defaultValues.includes(children));
 
         const limitedChildren = !search
-            ? _.uniq([ ...children.slice(0, 100), requiredOptions ])
+            ? _.uniq([ ...children.slice(0, 100), ...requiredOptions ])
             : children
                 .filter(
                     ({ props: { children } }) =>
