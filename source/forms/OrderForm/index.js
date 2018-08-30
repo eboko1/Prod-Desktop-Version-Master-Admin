@@ -122,10 +122,6 @@ export class OrderForm extends Component {
 
         return (
             <div className={ Styles.datePanel }>
-                { /* { console.log(
-                    '→ this.props.location.state.beginDatetime',
-                    moment(this.props.location.state.beginDatetime),
-                ) } */ }
                 <DecoratedDatePicker
                     getFieldDecorator={ getFieldDecorator }
                     field='beginDate'
@@ -176,6 +172,12 @@ export class OrderForm extends Component {
                     formatMessage={ formatMessage }
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'Please provide time',
+                        },
+                    ] }
                     minuteStep={ 30 }
                     initialValue={
                         _.get(fetchedOrder, 'order.beginDatetime') ||

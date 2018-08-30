@@ -210,7 +210,7 @@ class OrderPage extends Component {
         };
 
         const compareFields = _(orderEntity)
-            .omit([ 'services', 'details' ])
+            .omit([ 'services', 'details', 'status' ])
             .toPairs()
             .value();
 

@@ -44,7 +44,6 @@ export class OrderFormTabs extends Component {
             fetchedOrder,
         } = this.props;
 
-        console.log(this.props.form);
         return (
             <Tabs type='card'>
                 { !addOrderForm && (
