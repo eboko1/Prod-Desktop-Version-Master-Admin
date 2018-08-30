@@ -1,5 +1,6 @@
 .CheckboxBlock {
     display: flex;
+    flex-wrap: wrap;
 }
 .CheckboxBlock .ant-input {
     display: none;
@@ -17,4 +18,14 @@
 }
 .InputBlock {
     display: none;
+}
+.MainBlock {
+    padding: 24px;
+    background: #fbfbfb;
+    border: 1px solid #d9d9d9;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+.AddButton {
+    margin-right: 10px;
 }

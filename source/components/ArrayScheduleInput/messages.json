@@ -1,0 +1,23 @@
+{
+    "en": {
+        "beginWorkingHours": "Begin Working Hours",
+        "endWorkingHours": "End Working Hours",
+        "beginBreakHours": "Begin Break Hours",
+        "endBreakHours": "End Break Hours",
+        "save_schedules": "Save Schedules"
+    },
+    "ru": {
+        "beginWorkingHours": "Начало Рабочих Часов",
+        "endWorkingHours": "Конец Рабочих Часов",
+        "beginBreakHours": "Начало Перерыва",
+        "endBreakHours": "Конец Перерыва",
+        "save_schedules": "Сохранить Графики"
+    },
+    "uk": {
+        "beginWorkingHours": "Початок Рабочого Часу",
+        "endWorkingHours": "Кінець Рабочого Часу",
+        "beginBreakHours": "Початок Перерви",
+        "endBreakHours": "Кінець Перерви",
+        "save_schedules": "Зберегти Графіки"
+    }
+}

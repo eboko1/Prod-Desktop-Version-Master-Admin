@@ -43,7 +43,7 @@ class EditEmployeePage extends Component {
     saveScheduleEmployeeFormRef = formRef => {
         this.employeeScheduleFormRef = formRef;
     };
-    
+
     saveEmployee= () => {
         const form = this.employeeFormRef.props.form;
         form.validateFields(err => {
@@ -109,6 +109,7 @@ class EditEmployeePage extends Component {
                         <EmployeeForm                  
                             wrappedComponentRef={ this.saveEmployeeFormRef }
                             saveEmployee={ this.saveEmployee }
+                            initialEmployee={ null }
                         /> 
                     </TabPane>
                     { /* <TabPane

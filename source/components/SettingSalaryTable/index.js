@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon, Button, Input, Select, message } from 'antd';
+import { Table, Icon, Button, Input, Select, message, DatePicker } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import { v4 } from 'uuid';
@@ -163,8 +163,10 @@ export default class SettingSalaryTable extends Component {
                                         record.employee.surname
                                     }`
                                     : (
-                                        <Button>Change Employee</Button>
-                                    ) }{ ' ' }
+                                        <Button>
+                                            <FormattedMessage id='change_employee' />
+                                        </Button>
+                                    ) }
                             </div>
                         );
                     }
@@ -175,61 +177,12 @@ export default class SettingSalaryTable extends Component {
                 dataIndex: 'jobTitle',
                 width:     '10%',
                 render:    (text, record) => {
-                    if (
-                        this.state.changingId === 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'jobTitle'
-                    ) {
-                        return (
-                            <Input
-                                name='jobTitle'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.jobTitle' />
-                                }
-                                onKeyPress={ this.handleChangeNew.bind(
-                                    this,
-                                    null,
-                                ) }
-                                defaultValue={ record.employee.jobTitle }
-                            />
-                        );
-                    } else if (
-                        this.state.changingId !== 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'jobTitle'
-                    ) {
-                        return (
-                            <Input
-                                name='jobTitle'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.jobTitle' />
-                                }
-                                onKeyPress={ this.handleChangeTableRow.bind(
-                                    this,
-                                    record.id,
-                                ) }
-                                defaultValue={ record.employee.jobTitle }
-                            />
-                        );
-                    } else if (text || !text) {
-                        return (
-                            <div
-                                style={ { cursor: 'pointer' } }
-                                onClick={ () => {
-                                    this.setState({
-                                        changingId:        record.id,
-                                        changingInputName: 'jobTitle',
-                                    });
-                                } }
-                            >
-                                { record.employee ?
-                                    record.employee.jobTitle
-                                    : (
-                                        <Button>Change jobTitle</Button>
-                                    ) }
-                            </div>
-                        );
-                    }
+                    return ( 
+                        record.employee ?
+                            record.employee.jobTitle
+                            : ''
+                    );
+                    
                 },
             },
             {
@@ -246,7 +199,7 @@ export default class SettingSalaryTable extends Component {
                             <Select
                                 name='period'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.period' />
+                                    <FormattedMessage id='setting-salary.period' />
                                 }
                                 onChange={ this.handleChangeNew.bind(
                                     this,
@@ -257,7 +210,7 @@ export default class SettingSalaryTable extends Component {
                             >
                                 { [ 'DAY', 'WEEK', 'MONTH' ].map(period => (
                                     <Option value={ period } key={ v4() }>
-                                        { `${period}` }
+                                        <FormattedMessage id={ `${period}` }/>
                                     </Option>
                                 )) }
                             </Select>
@@ -271,7 +224,7 @@ export default class SettingSalaryTable extends Component {
                             <Select
                                 name='period'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.period' />
+                                    <FormattedMessage id='setting-salary.period' />
                                 }
                                 onChange={ this.handleChangeTableSelect.bind(
                                     this,
@@ -283,7 +236,7 @@ export default class SettingSalaryTable extends Component {
                             >
                                 { [ 'DAY', 'WEEK', 'MONTH' ].map(period => (
                                     <Option value={ period } key={ v4() }>
-                                        { `${period}` }
+                                        <FormattedMessage id={ `${period}` }/>
                                     </Option>
                                 )) }
                             </Select>
@@ -299,7 +252,145 @@ export default class SettingSalaryTable extends Component {
                                     });
                                 } }
                             >
-                                { text ? text : <Button>Change period</Button> }{ ' ' }
+                                { text ?
+                                    <FormattedMessage id={ `${text}` }/>  :
+                                    <Button>
+                                        <FormattedMessage id='change_period' />
+                                    </Button> }
+                            </div>
+                        );
+                    }
+                },
+            },
+            {
+                title:     <FormattedMessage id='setting-salary.startDate' />,
+                dataIndex: 'startDate',
+                width:     '10%',
+                render:    (text, record) => {
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'startDate'
+                    ) {
+                        return (
+                            <DatePicker
+                                name='startDate'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.startDate' />
+                                }
+                                onChange={ this.handleChangeNew.bind(
+                                    this,
+                                    'startDate',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ moment(record.startDate) }
+                            />
+                                
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'startDate'
+                    ) {
+                        return (
+                            <DatePicker
+                                name='startDate'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.startDate' />
+                                }
+                                onChange={ this.handleChangeTableSelect.bind(
+                                    this,
+                                    record.id,
+                                    'startDate',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ moment(record.startDate) }
+                            />
+                            
+                        );
+                    } else if (text || !text) {
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'startDate',
+                                    });
+                                } }
+                            >
+                                { text ?
+                                    moment(text).format('YYYY-MM-DD') :
+                                    <Button>
+                                        <FormattedMessage id='change_start_date' /> 
+                                    </Button> }
+                            </div>
+                        );
+                    }
+                },
+            },
+            {
+                title:     <FormattedMessage id='setting-salary.endDate' />,
+                dataIndex: 'endDate',
+                width:     '10%',
+                render:    (text, record) => {
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'endDate'
+                    ) {
+                        return (
+                            <DatePicker
+                                name='endDate'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.endDate' />
+                                }
+                                onChange={ this.handleChangeNew.bind(
+                                    this,
+                                    'endDate',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.endDate?moment(record.endDate):'' }
+                            />
+                                
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'endDate'
+                    ) {
+                        return (
+                            <DatePicker
+                                name='endDate'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.endDate' />
+                                }
+                                onChange={ this.handleChangeTableSelect.bind(
+                                    this,
+                                    record.id,
+                                    'endDate',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.endDate?moment(record.endDate):'' }
+                            />
+                            
+                        );
+                    } else if (text || !text) {
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'endDate',
+                                    });
+                                } }
+                            >
+                                { text ? 
+                                    moment(text).format('YYYY-MM-DD') :
+                                    <Button>
+                                        <FormattedMessage id='change_end_date' /> 
+                                    </Button> }
                             </div>
                         );
                     }
@@ -320,7 +411,7 @@ export default class SettingSalaryTable extends Component {
                             <Input
                                 name='ratePerPeriod'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.ratePerPeriod' />
+                                    <FormattedMessage id='setting-salary.ratePerPeriod' />
                                 }
                                 onKeyPress={ this.handleChangeNew.bind(
                                     this,
@@ -338,7 +429,7 @@ export default class SettingSalaryTable extends Component {
                             <Input
                                 name='ratePerPeriod'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.ratePerPeriod' />
+                                    <FormattedMessage id='setting-salary.ratePerPeriod' />
                                 }
                                 onKeyPress={ this.handleChangeTableRow.bind(
                                     this,
@@ -359,15 +450,22 @@ export default class SettingSalaryTable extends Component {
                                 } }
                             >
                                 { text || text === 0 ?
+                                    // <FormattedMessage id={ `${text}` } />
                                     text
+
                                     : (
-                                        <Button>Change ratePerPeriod</Button>
-                                    ) }{ ' ' }
+                                        <Button>
+                                            <FormattedMessage id='change_rate_per_period' /> 
+                                        </Button>
+                                    ) }
                             </div>
                         );
                     }
                 },
             },
+
+
+            
             {
                 title:     <FormattedMessage id='setting-salary.percentFrom' />,
                 dataIndex: 'percentFrom',
@@ -382,7 +480,7 @@ export default class SettingSalaryTable extends Component {
                             <Select
                                 name='percentFrom'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.percentFrom' />
+                                    <FormattedMessage id='setting-salary.percentFrom' />
                                 }
                                 onChange={ this.handleChangeNew.bind(
                                     this,
@@ -393,7 +491,7 @@ export default class SettingSalaryTable extends Component {
                             >
                                 { [ 'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT' ].map(percent => (
                                     <Option value={ percent } key={ v4() }>
-                                        { `${percent}` }
+                                        <FormattedMessage id={ `${percent}` }/>
                                     </Option>
                                 )) }
                             </Select>
@@ -407,7 +505,7 @@ export default class SettingSalaryTable extends Component {
                             <Select
                                 name='percentFrom'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.percentFrom' />
+                                    <FormattedMessage id='setting-salary.percentFrom' />
                                 }
                                 onChange={ this.handleChangeTableSelect.bind(
                                     this,
@@ -419,7 +517,7 @@ export default class SettingSalaryTable extends Component {
                             >
                                 { [ 'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT' ].map(percent => (
                                     <Option value={ percent } key={ v4() }>
-                                        { `${percent}` }
+                                        <FormattedMessage id={ `${percent}` }/>
                                     </Option>
                                 )) }
                             </Select>
@@ -436,10 +534,13 @@ export default class SettingSalaryTable extends Component {
                                 } }
                             >
                                 { text || text === 0 ?
+                                    // <FormattedMessage id={ `${text}` } />
                                     text
                                     : (
-                                        <Button>Change percentFrom</Button>
-                                    ) }{ ' ' }
+                                        <Button>
+                                            <FormattedMessage id='change_percent_from' />
+                                        </Button>
+                                    ) }
                             </div>
                         );
                     }
@@ -464,7 +565,7 @@ export default class SettingSalaryTable extends Component {
                             <Input
                                 name='percent'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.percent' />
+                                    <FormattedMessage id='setting-salary.percent' />
                                 }
                                 onKeyPress={ this.handleChangeNew.bind(
                                     this,
@@ -482,7 +583,7 @@ export default class SettingSalaryTable extends Component {
                             <Input
                                 name='percent'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.percent' />
+                                    <FormattedMessage id='setting-salary.percent' />
                                 }
                                 onKeyPress={ this.handleChangeTableRow.bind(
                                     this,
@@ -503,10 +604,14 @@ export default class SettingSalaryTable extends Component {
                                 } }
                             >
                                 { text || text === 0 ?
+                                    // <FormattedMessage id={ `${text}` } />
                                     text
+
                                     : (
-                                        <Button>Change percent</Button>
-                                    ) }{ ' ' }
+                                        <Button>
+                                            <FormattedMessage id='change_percent' />
+                                        </Button>
+                                    ) }
                             </div>
                         );
                     }
@@ -529,7 +634,7 @@ export default class SettingSalaryTable extends Component {
                             <Select
                                 name='considerDiscount'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.considerDiscount' />
+                                    <FormattedMessage id='setting-salary.considerDiscount' />
                                 }
                                 onChange={ this.handleChangeNew.bind(
                                     this,
@@ -539,11 +644,14 @@ export default class SettingSalaryTable extends Component {
                                 value={ record.considerDiscount }
                             >
                                 <Option value key={ v4() }>
-                                    Yes
+                                    
+                                    <FormattedMessage id='yes' />
+
                                 </Option>
 
                                 <Option value={ false } key={ v4() }>
-                                    No
+                                    <FormattedMessage id='no' />
+                                    
                                 </Option>
                             </Select>
                         );
@@ -556,7 +664,7 @@ export default class SettingSalaryTable extends Component {
                             <Select
                                 name='considerDiscount'
                                 placeholder={
-                                    <FormattedMessage id='employee-table.considerDiscount' />
+                                    <FormattedMessage id='setting-salary.considerDiscount' />
                                 }
                                 onChange={ this.handleChangeTableSelect.bind(
                                     this,
@@ -566,17 +674,19 @@ export default class SettingSalaryTable extends Component {
                                 style={ { minWidth: '135px' } }
                                 value={ record.considerDiscount }
                             >
-                                { [ true, false ].map(considerDiscount => (
-                                    <Option value={ considerDiscount } key={ v4() }>
-                                        { considerDiscount === true
-                                            ? 'Yes'
-                                            : 'No' }
-                                    </Option>
-                                )) }
+                                <Option value key={ v4() }>
+                                    
+                                    <FormattedMessage id='yes' />
+
+                                </Option>
+
+                                <Option value={ false } key={ v4() }>
+                                    <FormattedMessage id='no' />
+                                    
+                                </Option>
                             </Select>
                         );
                     } else if (text || !text) {
-                        // console.log(text, 'text');
 
                         return (
                             <div
@@ -590,12 +700,11 @@ export default class SettingSalaryTable extends Component {
                             >
                                 { text || text === 0 || text === false ?
                                     text === true ?
-                                        'Yes'
+                                        <FormattedMessage id='yes' />
                                         :
-                                        'No'
-
+                                        <FormattedMessage id='no' />
                                     : (
-                                        <Button>Change considerDiscount</Button>
+                                        <Button><FormattedMessage id='change_consider_discount' /></Button>
                                     ) }
                             </div>
                         );
@@ -631,7 +740,6 @@ export default class SettingSalaryTable extends Component {
 
     handleChangeTableSelect = (id, name, e, es) => {
         const { salariesTable } = this.state;
-
         salariesTable.map(item => {
             if (item.id === id) {
                 if (name === 'employee') {
