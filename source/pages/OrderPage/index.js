@@ -216,11 +216,14 @@ class OrderPage extends Component {
             true,
         );
 
-        if (
+        const { canEdit, hideEditButton } = this.getSecurityConfig();
+
+        const ordersAreSame =
             identicalOrders &&
             !fields.services.length &&
-            !fields.details.length
-        ) {
+            !fields.details.length;
+
+        if (!canEdit || hideEditButton || ordersAreSame) {
             _.get(history, 'location.state.fromDashboard')
                 ? history.push(`${book.dashboard}`)
                 : returnToOrdersPage(status);
@@ -254,6 +257,34 @@ class OrderPage extends Component {
         }
     };
 
+    getSecurityConfig() {
+        const user = this.props.user;
+        const status = this.props.order.status;
+
+        const isClosedStatus = [ 'success', 'cancel', 'redundant' ].includes(
+            status,
+        );
+        const canEditClosedStatus = !isForbidden(
+            user,
+            permissions.UPDATE_SUCCESS_ORDER,
+        );
+        const canEdit =
+            !isForbidden(user, permissions.ACCESS_ORDER_BODY) ||
+            !isForbidden(user, permissions.ACCESS_ORDER_DETAILS) ||
+            !isForbidden(user, permissions.ACCESS_ORDER_SERVICES) ||
+            !isForbidden(user, permissions.ACCESS_ORDER_COMMENTS);
+
+        const hideEditButton = isClosedStatus && !canEditClosedStatus;
+        const disabledEditButton = hideEditButton || !canEdit;
+
+        return {
+            isClosedStatus,
+            canEditClosedStatus,
+            canEdit,
+            hideEditButton,
+            disabledEditButton,
+        };
+    }
     /* eslint-disable complexity*/
     render() {
         const {
@@ -275,6 +306,12 @@ class OrderPage extends Component {
 
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
+
+        const {
+            isClosedStatus,
+            hideEditButton,
+            disabledEditButton,
+        } = this.getSecurityConfig();
 
         return spinner ? (
             <Spinner spin={ spinner } />
@@ -345,24 +382,34 @@ class OrderPage extends Component {
                             download={ this.props.getReport }
                             isMobile={ isMobile }
                         />
-                        <Icon
-                            type='save'
-                            style={ {
-                                fontSize: isMobile ? 12 : 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
-                            onClick={ () => this.onStatusChange(status) }
-                        />
-                        <Icon
-                            type='delete'
-                            style={ {
-                                fontSize: isMobile ? 12 : 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
-                            onClick={ () => setModal(MODALS.CANCEL_REASON) }
-                        />
+                        {!hideEditButton && (
+                            <Icon
+                                type='save'
+                                style={ {
+                                    fontSize: isMobile ? 12 : 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                    ...disabledEditButton
+                                        ? { color: 'gray' }
+                                        : {},
+                                } }
+                                onClick={ () =>
+                                    !disabledEditButton &&
+                                    this.onStatusChange(status)
+                                }
+                            />
+                        )}
+                        {!isClosedStatus && (
+                            <Icon
+                                type='delete'
+                                style={ {
+                                    fontSize: isMobile ? 12 : 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                } }
+                                onClick={ () => setModal(MODALS.CANCEL_REASON) }
+                            />
+                        )}
                         <Icon
                             style={ {
                                 fontSize: isMobile ? 12 : 24,
