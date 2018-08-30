@@ -54,6 +54,7 @@ const Option = Select.Option;
         modal:                  state.modals.modal,
         addClientFormData:      state.forms.addClientForm.data,
         authentificatedManager: state.auth.id,
+        user:                   state.auth,
     }),
 })
 export class OrderForm extends Component {
