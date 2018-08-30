@@ -116,18 +116,6 @@ class OrderPage extends Component {
         this.orderTaskFormRef = formRef;
     };
 
-    handleAddClientModalSubmit = () => {
-        const form = this.formRef.props.form;
-        this.setAddClientModal();
-        form.validateFields((err, values) => {
-            if (!err) {
-                // eslint-disable-next-line
-                console.info("Received values of AddClientForm: ", values);
-            }
-        });
-        this.props.resetModal();
-    };
-
     setAddClientModal = () => {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
@@ -401,7 +389,6 @@ class OrderPage extends Component {
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
-                    handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
                     resetModal={ resetModal }
                     addClientFormData={ addClientFormData }
                 />

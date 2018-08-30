@@ -100,18 +100,6 @@ class AddOrderPage extends Component {
         });
     };
 
-    handleAddClientModalSubmit = () => {
-        const form = this.formRef.props.form;
-        this._setAddClientModal();
-        form.validateFields((err, values) => {
-            if (!err) {
-                // TBD: @yan
-                // console.log('Received values of AddClientForm: ', values);
-            }
-        });
-        this.props.resetModal();
-    };
-
     _setAddClientModal = () => {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
@@ -191,7 +179,6 @@ class AddOrderPage extends Component {
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
-                    handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
                     resetModal={ resetModal }
                     addClientFormData={ addClientFormData }
                 />
