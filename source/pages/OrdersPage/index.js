@@ -54,7 +54,7 @@ class OrdersPage extends Component {
                 return <FormattedMessage id='appointments' />;
             case 'approve':
                 return <FormattedMessage id='records' />;
-            case 'in-progress':
+            case 'progress':
                 return <FormattedMessage id='repairs' />;
             case 'success':
                 return <FormattedMessage id='done' />;

@@ -375,7 +375,7 @@ export function columnsConfig(
             return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, tasksCol, editCol ];
 
         case '/orders/approve':
-        case '/orders/in-progress':
+        case '/orders/progress':
             return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
 
         case '/orders/success':
@@ -418,7 +418,7 @@ export function scrollConfig(activeRoute) {
             return { x: 1500, y: '50vh' }; //1600 - 80 -
         case '/orders/approve':
             return { x: 1340, y: '50vh' };
-        case '/orders/in-progress':
+        case '/orders/progress':
             return { x: 1340, y: '50vh' }; //1440 - 80 - 20
         case '/orders/success':
             return { x: 1720, y: '50vh' }; //1820

@@ -71,7 +71,7 @@ class OrdersContainer extends Component {
                 statuses: 'not_complete,required,call',
             },
             { route: /orders\/approve/, statuses: 'approve,reserve' },
-            { route: /orders\/in-progress/, statuses: 'progress' },
+            { route: /orders\/progress/, statuses: 'progress' },
             { route: /orders\/success/, statuses: 'success' },
             { route: /orders\/reviews/, statuses: 'review' },
             { route: /orders\/invitations/, statuses: 'invite' },

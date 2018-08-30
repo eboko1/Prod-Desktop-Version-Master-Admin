@@ -12,15 +12,19 @@ export default class CancelReasonModal extends Component {
             visible,
             resetModal,
             saveOrder,
+            returnToOrdersPage,
+            status,
         } = this.props;
 
         return (
             <Modal
-                cancelText={ <FormattedMessage id='order_form_table.confirm_exit_without_changes' /> }
+                cancelText={
+                    <FormattedMessage id='order_form_table.confirm_exit_without_changes' />
+                }
                 visible={ visible === MODALS.CONFIRM_EXIT }
                 onCancel={ () => {
                     resetModal();
-                    // returnToOrdersPage(status);
+                    returnToOrdersPage(status);
                 } }
                 onOk={ () => {
                     resetModal();

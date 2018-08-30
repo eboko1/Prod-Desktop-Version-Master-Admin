@@ -24,7 +24,6 @@ import {
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
-import { AddClientModal } from 'modals';
 import book from 'routes/book';
 
 import { Layout, Spinner, MobileView, ResponsiveView } from 'commons';
@@ -174,10 +173,13 @@ class OrderPage extends Component {
 
             setModal,
             history,
+            order: { status },
         } = this.props;
+
         const form = this.orderFormRef.props.form;
 
         const orderData = form.getFieldsValue();
+
         const orderFormEntity = {
             selectedClient,
             ...orderData,
@@ -264,7 +266,6 @@ class OrderPage extends Component {
             isInviteEnabled,
             inviteOrderId,
             modal,
-            addClientFormData,
             isMobile,
             managers,
             stations,
@@ -272,23 +273,22 @@ class OrderPage extends Component {
 
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
-        // console.log('→ this.props.match.params', this.props.history);
 
         return spinner ? (
             <Spinner spin={ spinner } />
         ) : (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>
@@ -397,9 +397,9 @@ class OrderPage extends Component {
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
                     status={ status }
-                    returnToOrdersPage={ this.props.returnToOrdersPage.bind(
-                        this,
-                    ) }
+                    returnToOrdersPage={ () =>
+                        this.props.returnToOrdersPage(status)
+                    }
                     saveOrder={ () => this.onStatusChange(status, status) }
                     resetModal={ () => resetModal() }
                 />
