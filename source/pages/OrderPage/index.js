@@ -327,6 +327,7 @@ class OrderPage extends Component {
                             isMobile={ isMobile }
                         />
                         <ReportsDropdown
+                            user={ this.props.user }
                             orderId={ id }
                             orderStatus={ status }
                             download={ this.props.getReport }
