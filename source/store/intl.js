@@ -79,6 +79,7 @@ import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
 import TasksTable from 'components/OrderForm/OrderFormTables/TasksTable/messages';
 import EmployeeTable from 'components/EmployeeTable/messages';
 import SettingSalaryTable from 'components/SettingSalaryTable/messages';
+import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 
 /* eslint-disable array-element-newline */
 const messages = merge.all([
@@ -144,6 +145,7 @@ const messages = merge.all([
     EmployeeTable,
     EmployeeScheduleForm,
     SettingSalaryTable,
+    ArrayScheduleInput,
 ]);
 /* eslint-enable array-element-newline */
 

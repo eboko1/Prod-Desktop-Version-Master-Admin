@@ -4,7 +4,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Icon, Tabs } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
-
+import moment from 'moment'
 // proj
 
 import { EmployeeForm, EmployeeScheduleForm } from 'forms';
@@ -19,6 +19,8 @@ import {
     fetchEmployeeById,
     saveEmployee,
     resetEmployeeForm,
+    fireEmployee,
+
 } from 'core/forms/employeeForm/duck';
 import book from 'routes/book';
 
@@ -43,6 +45,7 @@ const mapDispatchToProps = {
     saveEmployeeSchedule,
     fetchEmployeeSchedule,
     deleteEmployeeSchedule,
+    fireEmployee,
 };
 @withRouter
 @injectIntl
@@ -59,12 +62,21 @@ class EditEmployeePage extends Component {
     componentWillUnmount() {
         this.props.resetEmployeeForm();
     }
+    fireEmployee=()=>{
+        console.log(this.props.employeesData,
+            this.props.history.location.pathname.split('/')[ 2 ],
+            moment(), 'HELLO' )
+        this.props.fireEmployee(
+            this.props.employeesData,
+            this.props.history.location.pathname.split('/')[ 2 ],
+            moment(),
+        );
+    }
     saveEmployeeFormRef = formRef => {
         this.employeeFormRef = formRef;
     };
 
     saveEmployee = () => {
-        const { orderTaskEntity, orderTaskId } = this.props;
         const form = this.employeeFormRef.props.form;
         form.validateFields(err => {
             if (!err) {
@@ -149,6 +161,7 @@ class EditEmployeePage extends Component {
         const {
             spinner,
             employees,
+            fireEmployee,
             initialEmployee,
             initialSchedule,
         } = this.props;
@@ -176,6 +189,7 @@ class EditEmployeePage extends Component {
                         key='1'
                     >
                         <EmployeeForm
+                            fireEmployee={ this.fireEmployee }
                             initialEmployee={ initialEmployee }
                             wrappedComponentRef={ this.saveEmployeeFormRef }
                             saveEmployee={ this.saveEmployee }

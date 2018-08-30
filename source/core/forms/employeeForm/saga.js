@@ -9,7 +9,8 @@ import { fetchAPI } from 'utils';
 import book from 'routes/book';
 
 // own
-import { saveEmployeeSuccess, SAVE_EMPLOYEE, FETCH_EMPLOYEE_BY_ID, fetchEmployeeByIdSuccess} from './duck';
+import { saveEmployeeSuccess, SAVE_EMPLOYEE, FETCH_EMPLOYEE_BY_ID, 
+    fetchEmployeeByIdSuccess, FIRE_EMPLOYEE, fireEmployeeSuccess} from './duck';
 
 export function* saveEmployee() {
     while (true) {
@@ -35,7 +36,39 @@ export function* saveEmployee() {
                 null, normalizedEmployee,
             );
             yield put(saveEmployeeSuccess(data));
-            console.warn(book)
+            yield put(replace(book.employeesPage));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+export function* fireEmployee() {
+    while (true) {
+        try {
+            const { payload: employee, id:id, fireDate:fireDate } = yield take(FIRE_EMPLOYEE);
+            console.log(employee, id, fireDate)
+
+            let normilizedPhone= `+38(${employee.phone.value.substr(0, 3)}) ${employee.phone.value.substr(3, 3)}-${employee.phone.value.substr(6, 2)}-${employee.phone.value.substr(8, 2)}`
+            let normalizedEmployee={
+                email:              employee.email.value,
+                phone:              normilizedPhone,
+                enabled:            employee.enabled.value,
+                hireDate:           moment(employee.hireDate.value).format('YYYY-MM-DD'),
+                jobTitle:           employee.jobTitle.value,
+                name:               employee.name.value,
+                sendSmsCancelOrder: employee.sendSmsCancelOrder.value,
+                sendSmsManualOrder: employee.sendSmsManualOrder.value,
+                sendSmsNewOrder:    employee.sendSmsNewOrder.value,
+                surname:            employee.surname.value,
+                fireDate:           moment(fireDate).format('YYYY-MM-DD'),
+            }
+            const data = yield call(
+                fetchAPI,
+                'PUT',
+                id?`employees/${id}`:'employees',
+                null, normalizedEmployee,
+            );
+            yield put(fireEmployeeSuccess(data));
             yield put(replace(book.employeesPage));
         } catch (error) {
             yield put(emitError(error));
@@ -61,5 +94,5 @@ export function* fetchEmployee() {
     }
 }
 export function* saga() {
-    yield all([ call(saveEmployee), call(fetchEmployee) ]);
+    yield all([ call(saveEmployee), call(fireEmployee), call(fetchEmployee) ]);
 }

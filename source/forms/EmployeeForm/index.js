@@ -35,7 +35,7 @@ export class EmployeeForm extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
-        const { initialEmployee, saveEmployee } = this.props;
+        const { initialEmployee, saveEmployee, fireEmployee} = this.props;
 
         return (
             <Form layout='horizontal'>
@@ -92,11 +92,9 @@ export class EmployeeForm extends Component {
                                 required: true,
                                 message:  '',
                             },
-
                             {
                                 validator: (rule, value, callback) => {
                                     let reg = /^\d+$/;
-
                                     if (reg.test(value)) {
                                         callback();
                                     } else {
@@ -222,10 +220,22 @@ export class EmployeeForm extends Component {
                             }
                         />
                     </div>
-                    <Button type='primary' onClick={ () => saveEmployee() }>
-                        <FormattedMessage id='save' />
-                    </Button>
+                    <div className={ Styles.ButtonGroup }>
+                        {
+                            initialEmployee&&!initialEmployee.fireDate?
+                                <Button type='danger' onClick={ () => fireEmployee() }>
+                                    <FormattedMessage id='employee.fire_employee' />
+                                </Button>  
+                                :null 
+                        }
+                        <Button type='primary'  onClick={ () => saveEmployee() }>
+                            <FormattedMessage id='save' />
+                        </Button>
+                        
+                        
+                    </div>
                 </div>
+                
             </Form>
         );
     }

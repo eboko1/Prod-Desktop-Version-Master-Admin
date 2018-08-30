@@ -72,7 +72,7 @@ class ArrayScheduleInput extends Component {
         const keys = this.state.keys;
         const formItems = keys.map(key => {
             return (
-                <Row type='flex' align='middle' key={ key }>
+                <Row className={ Styles.MainBlock } type='flex' align='middle' key={ key }>
                     <Col span={ 20 }>
                         <div className={ Styles.CheckboxBlock }>
                             <DecoratedInput
@@ -96,7 +96,7 @@ class ArrayScheduleInput extends Component {
                                     initialSchedule[ key ].monday
                                 }
                             >
-                                monday
+                                <FormattedMessage id='monday' />
                             </DecoratedCheckbox>
                             <DecoratedCheckbox
                                 field={ `tuesday[${key}]` }
@@ -106,7 +106,7 @@ class ArrayScheduleInput extends Component {
                                     initialSchedule[ key ].tuesday
                                 }
                             >
-                                tuesday
+                                <FormattedMessage id='tuesday' />
                             </DecoratedCheckbox>
                             <DecoratedCheckbox
                                 field={ `wednesday[${key}]` }
@@ -116,7 +116,7 @@ class ArrayScheduleInput extends Component {
                                     initialSchedule[ key ].wednesday
                                 }
                             >
-                                wednesday
+                                <FormattedMessage id='wednesday' />
                             </DecoratedCheckbox>
                             <DecoratedCheckbox
                                 field={ `thursday[${key}]` }
@@ -126,7 +126,7 @@ class ArrayScheduleInput extends Component {
                                     initialSchedule[ key ].thursday
                                 }
                             >
-                                thursday
+                                <FormattedMessage id='thursday' />
                             </DecoratedCheckbox>
                             <DecoratedCheckbox
                                 field={ `friday[${key}]` }
@@ -136,7 +136,7 @@ class ArrayScheduleInput extends Component {
                                     initialSchedule[ key ].friday
                                 }
                             >
-                                friday
+                                <FormattedMessage id='friday' />
                             </DecoratedCheckbox>
                             <DecoratedCheckbox
                                 field={ `saturday[${key}]` }
@@ -146,7 +146,7 @@ class ArrayScheduleInput extends Component {
                                     initialSchedule[ key ].saturday
                                 }
                             >
-                                saturday
+                                <FormattedMessage id='saturday' />
                             </DecoratedCheckbox>
                             <DecoratedCheckbox
                                 field={ `sunday[${key}]` }
@@ -156,7 +156,7 @@ class ArrayScheduleInput extends Component {
                                     initialSchedule[ key ].sunday
                                 }
                             >
-                                sunday
+                                <FormattedMessage id='sunday' />
                             </DecoratedCheckbox>
                         </div>
                         <div className={ Styles.Hours }>
@@ -181,7 +181,7 @@ class ArrayScheduleInput extends Component {
                                 // disabledHours={ disabledHours }
                                 // disabledMinutes={ disabledMinutes }
                                 // disabledSeconds={ disabledSeconds }
-                                label={ <FormattedMessage id='time' /> }
+                                label={ <FormattedMessage id='beginWorkingHours' /> }
                                 formatMessage={ formatMessage }
                                 // className={ Styles.datePanelItem }
                                 getFieldDecorator={ getFieldDecorator }
@@ -205,11 +205,12 @@ class ArrayScheduleInput extends Component {
                                         'HH:mm',
                                     )
                                 }
-                                hasFeedback
+                                hasFeedback={ false }
+
                                 // disabledHours={ disabledHours }
                                 // disabledMinutes={ disabledMinutes }
                                 // disabledSeconds={ disabledSeconds }
-                                label={ <FormattedMessage id='time' /> }
+                                label={ <FormattedMessage id='endWorkingHours' /> }
                                 formatMessage={ formatMessage }
                                 // className={ Styles.datePanelItem }
                                 getFieldDecorator={ getFieldDecorator }
@@ -229,7 +230,7 @@ class ArrayScheduleInput extends Component {
                                     )
                                 }
                                 hasFeedback
-                                label={ <FormattedMessage id='time' /> }
+                                label={ <FormattedMessage id='beginBreakHours' /> }
                                 formatMessage={ formatMessage }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
@@ -246,11 +247,11 @@ class ArrayScheduleInput extends Component {
                                         'HH:mm',
                                     )
                                 }
-                                hasFeedback
+                                hasFeedback={ false }
                                 // disabledHours={ disabledHours }
                                 // disabledMinutes={ disabledMinutes }
                                 // disabledSeconds={ disabledSeconds }
-                                label={ <FormattedMessage id='time' /> }
+                                label={ <FormattedMessage id='endBreakHours' /> }
                                 formatMessage={ formatMessage }
                                 // className={ Styles.datePanelItem }
                                 getFieldDecorator={ getFieldDecorator }
@@ -301,7 +302,7 @@ class ArrayScheduleInput extends Component {
                     <Col span={ 20 }>
                         <Row type='flex' justify='center'>
                             <FormItem>
-                                <Button type='dashed' onClick={ this.add }>
+                                <Button type='dashed' className={ Styles.AddButton } onClick={ this.add }>
                                     <Icon type='plus' /> { this.props.buttonText }
                                 </Button>
                             </FormItem>
@@ -312,7 +313,8 @@ class ArrayScheduleInput extends Component {
                                         this.props.saveEmployeeSchedule(keys)
                                     }
                                 >
-                                    <Icon type='save' /> Save Schedules
+                                    <Icon type='save' />
+                                    <FormattedMessage id='save_schedules' />
                                 </Button>
                             </FormItem>
                         </Row>
