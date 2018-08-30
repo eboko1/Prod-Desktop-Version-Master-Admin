@@ -11,7 +11,7 @@ const ordersStatus = status => {
         case 'reserve':
             return 'var(--reserve)';
         case 'not_complete':
-            return 'var(--approve)';
+            return 'var(--required)';
         case 'required':
             return 'var(--required)';
         case 'approve':

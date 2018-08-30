@@ -17,18 +17,22 @@ class DetailsTable extends Component {
                 // title:     <FormattedMessage id='order_form_table.detail_name' />,
                 title:     'client name',
                 dataIndex: 'name',
+                key:       'name',
             },
             {
                 title:     'client surname',
                 dataIndex: 'surname',
+                key:       'surname',
             },
             {
                 title:     'client phone',
                 dataIndex: 'phones',
+                key:       'phones',
             },
             {
                 title:     'client emails',
                 dataIndex: 'emails',
+                key:       'emails',
             },
         ];
     }

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Tabs, Form, Icon, Button } from 'antd';
+import _ from 'lodash';
 
 // proj
 import { MODALS } from 'core/modals/duck';
@@ -18,7 +19,6 @@ import {
 } from 'components/OrderForm/OrderFormTables';
 import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
-const FormItem = Form.Item;
 
 export class OrderFormTabs extends Component {
     render() {
@@ -30,34 +30,28 @@ export class OrderFormTabs extends Component {
             countDetails,
             formatMessage,
             getFieldDecorator,
-            fields,
             orderCalls,
             orderHistory,
-            onServiceSearch,
             defaultDetails,
             priceDetails,
             onDetailSearch,
             onBrandSearch,
-            employees,
-            allDetails,
-            filteredDetails,
             setModal,
             initOrderTasksForm,
             changeModalStatus,
             commentsCount,
+            fetchedOrder,
         } = this.props;
 
         return (
             <Tabs type='card'>
                 { !addOrderForm && (
                     <TabPane
+                        forceRender
                         tab={
                             formatMessage({
                                 id: 'order_form_table.tasks',
-                            }) +
-                            ' (' +
-                            orderTasks.length +
-                            ')'
+                            }) + ` (${orderTasks.length})`
                         }
                         key='1'
                     >
@@ -82,17 +76,14 @@ export class OrderFormTabs extends Component {
                     </TabPane>
                 ) }
                 <TabPane
+                    forceRender
                     tab={ `${formatMessage({
                         id:             'add_order_form.services',
                         defaultMessage: 'Services',
                     })} (${countServices})` }
                     key='2'
                 >
-                    <ServicesTable
-                        { ...this.props }
-                        onServiceSearch={ onServiceSearch }
-                        services={ fields.services }
-                    />
+                    <ServicesTable { ...this.props } />
                     <DiscountPanel
                         price={ priceServices }
                         discountFieldName={ 'servicesDiscount' }
@@ -100,6 +91,7 @@ export class OrderFormTabs extends Component {
                     />
                 </TabPane>
                 <TabPane
+                    forceRender
                     tab={ `${formatMessage({
                         id:             'add_order_form.details',
                         defaultMessage: 'Details',
@@ -108,124 +100,125 @@ export class OrderFormTabs extends Component {
                 >
                     <DetailsTable
                         { ...this.props }
-                        details={ fields.details }
                         onDetailSearch={ onDetailSearch }
                         onBrandSearch={ onBrandSearch }
                         defaultDetail={ defaultDetails }
                     />
                     <DiscountPanel
+                        { ...this.props }
                         price={ priceDetails }
                         discountFieldName={ 'detailsDiscount' }
-                        { ...this.props }
                         getFieldDecorator={ getFieldDecorator }
                     />
                 </TabPane>
                 <TabPane
+                    forceRender
                     key='4'
                     tab={
                         formatMessage({
                             id: 'add_order_form.comments',
-                        }) +
-                        ' (' +
-                        commentsCount +
-                        ')'
+                        }) + ` (${commentsCount})`
                     }
                 >
-                    <FormItem
+                    <DecoratedTextArea
+                        formItem
                         label={
                             <FormattedMessage id='add_order_form.client_comments' />
                         }
-                    >
-                        <DecoratedTextArea
-                            getFieldDecorator={ getFieldDecorator }
-                            field='comment'
-                            rules={ [
-                                {
-                                    max:     2000,
-                                    message: 'Too much',
-                                },
-                            ] }
-                            placeholder={ formatMessage({
-                                id:             'add_order_form.client_comments',
-                                defaultMessage: 'Client_comments',
-                            }) }
-                            autosize={ { minRows: 2, maxRows: 6 } }
-                        />
-                    </FormItem>
-                    <FormItem
+                        getFieldDecorator={ getFieldDecorator }
+                        field='comment'
+                        initialValue={ _.get(fetchedOrder, 'order.comment') }
+                        rules={ [
+                            {
+                                max:     2000,
+                                message: 'Too much',
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.client_comments',
+                            defaultMessage: 'Client_comments',
+                        }) }
+                        autosize={ { minRows: 2, maxRows: 6 } }
+                    />
+                    <DecoratedTextArea
+                        formItem
                         label={
                             <FormattedMessage id='add_order_form.vehicle_condition' />
                         }
-                    >
-                        <DecoratedTextArea
-                            getFieldDecorator={ getFieldDecorator }
-                            field='vehicleCondition'
-                            rules={ [
-                                {
-                                    max:     2000,
-                                    message: 'Too much',
-                                },
-                            ] }
-                            placeholder={ formatMessage({
-                                id:             'add_order_form.vehicle_condition',
-                                defaultMessage: 'Vehicle condition',
-                            }) }
-                            autosize={ { minRows: 2, maxRows: 6 } }
-                        />
-                    </FormItem>
+                        getFieldDecorator={ getFieldDecorator }
+                        field='vehicleCondition'
+                        initialValue={ _.get(
+                            fetchedOrder,
+                            'order.vehicleCondition',
+                        ) }
+                        rules={ [
+                            {
+                                max:     2000,
+                                message: 'Too much',
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.vehicle_condition',
+                            defaultMessage: 'Vehicle condition',
+                        }) }
+                        autosize={ { minRows: 2, maxRows: 6 } }
+                    />
 
-                    <FormItem
+                    <DecoratedTextArea
+                        formItem
                         label={
                             <FormattedMessage id='add_order_form.business_comment' />
                         }
-                    >
-                        <DecoratedTextArea
-                            getFieldDecorator={ getFieldDecorator }
-                            field='businessComment'
-                            rules={ [
-                                {
-                                    max:     2000,
-                                    message: 'Too much',
-                                },
-                            ] }
-                            placeholder={ formatMessage({
-                                id:             'add_order_form.business_comment',
-                                defaultMessage: 'Business comment',
-                            }) }
-                            autosize={ { minRows: 2, maxRows: 6 } }
-                        />
-                    </FormItem>
-                    <FormItem
+                        getFieldDecorator={ getFieldDecorator }
+                        field='businessComment'
+                        initialValue={ _.get(
+                            fetchedOrder,
+                            'order.businessComment',
+                        ) }
+                        rules={ [
+                            {
+                                max:     2000,
+                                message: 'Too much',
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.business_comment',
+                            defaultMessage: 'Business comment',
+                        }) }
+                        autosize={ { minRows: 2, maxRows: 6 } }
+                    />
+
+                    <DecoratedTextArea
+                        formItem
                         label={
                             <FormattedMessage id='add_order_form.service_recommendations' />
                         }
-                    >
-                        <DecoratedTextArea
-                            getFieldDecorator={ getFieldDecorator }
-                            field='recommendation'
-                            rules={ [
-                                {
-                                    max:     2000,
-                                    message: 'Too much',
-                                },
-                            ] }
-                            placeholder={ formatMessage({
-                                id:             'add_order_form.service_recommendations',
-                                defaultMessage: 'Service recommendations',
-                            }) }
-                            autosize={ { minRows: 2, maxRows: 6 } }
-                        />
-                    </FormItem>
+                        getFieldDecorator={ getFieldDecorator }
+                        field='recommendation'
+                        initialValue={ _.get(
+                            fetchedOrder,
+                            'order.recommendation',
+                        ) }
+                        rules={ [
+                            {
+                                max:     2000,
+                                message: 'Too much',
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.service_recommendations',
+                            defaultMessage: 'Service recommendations',
+                        }) }
+                        autosize={ { minRows: 2, maxRows: 6 } }
+                    />
                 </TabPane>
                 { !addOrderForm && (
                     <TabPane
+                        forceRender
                         tab={
                             formatMessage({
                                 id: 'order_form_table.history',
-                            }) +
-                            ' (' +
-                            orderHistory.orders.length +
-                            ')'
+                            }) + ` (${orderHistory.orders.length})`
                         }
                         key='5'
                     >
@@ -234,13 +227,11 @@ export class OrderFormTabs extends Component {
                 ) }
                 { !addOrderForm && (
                     <TabPane
+                        forceRender
                         tab={
                             formatMessage({
                                 id: 'order_form_table.calls',
-                            }) +
-                            ' (' +
-                            orderCalls.length +
-                            ')'
+                            }) + ` (${orderCalls.length})`
                         }
                         key='6'
                     >

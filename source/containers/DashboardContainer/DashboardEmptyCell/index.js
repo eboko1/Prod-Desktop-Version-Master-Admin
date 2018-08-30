@@ -1,67 +1,21 @@
-//vendor
+// vendor
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { DropTarget } from 'react-dnd';
-// import { Debounce, Throttle } from 'lodash-decorators';
-import _ from 'lodash';
 
-// import { canMoveOrder, moveOrder } from '../Game';
+// own
 import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
 
-// let flag = false;
-// const hoverLog = (props, monitor, component) => {
-//     console.group('hoverLog');
-//     console.log('props: ', props);
-//     console.log('monitor: ', monitor);
-//     console.log('component: ', component);
-//     console.groupEnd();
-//     console.log('→ hoverLog -> flag', flag);
-//     flag = false;
-//     console.log('→ hoverLog -> flag false', flag);
-// };
-//
-// const debounced = _.debounce(hoverLog, 2000);
-//
-// let flag2 = false;
-
 const dropTarget = {
-    // hover(props, monitor, component) {
-    //     if (!flag) {
-    //         // const debounced = _.debounce(
-    //         //     () => hoverLog(props, monitor, component),
-    //         //     2000,
-    //         // );
-    //         debounced(props, monitor, component);
-    //         console.log('→ flag2', flag2);
-    //         flag = true;
-    //     }
-    // },
-
-    // @Debounce(5000)
-    // canDrop(props, monitor) {
-    //     console.log('→ canDrop props', props);
-    //     console.log('→ canDrop monitor', monitor);
-    //
-    //     return {};
-    //     // return canMoveOrder(props.x, props.y);
-    // },
-
     drop(props, monitor) {
-        // moveOrder(props.x, props.y);
-        // console.group('@drop (dropTarget/DashboardCell)');
-        // console.log('→ props: ', props);
-        // console.log('→ monitor: ', monitor);
-        // console.log('→ getItem: ', monitor.getItem());
-        // console.groupEnd();
-        // console.log('→ debounced', debounced(props, monitor));
-        // console.log('→drop props', props);
-        // debounced.cancel();
+        const { mode, globalPosition, day, stationNum } = props;
 
         return {
-            time:       props.globalPosition,
-            day:        props.day,
-            stationNum: props.stationNum,
+            time:       globalPosition,
+            day:        day,
+            stationNum:
+                mode === 'calendar' ? monitor.getItem().station : stationNum,
         };
     },
 };
@@ -126,7 +80,3 @@ export const EmptyCellOverlay = styled.div`
     opacity: 0.5;
     background-color: ${props => props.color};
 `;
-
-// export default DropTarget(DragItemTypes.ORDER, dropTarget, collect)(
-//     DashboardEmptyCell,
-// );

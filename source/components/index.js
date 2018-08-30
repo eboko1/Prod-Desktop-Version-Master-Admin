@@ -14,6 +14,7 @@ import Loader from './Loader';
 import ArrayScheduleInput from './ArrayScheduleInput';
 import SettingSalaryTable from './SettingSalaryTable';
 import EmployeeTable from './EmployeeTable';
+import LimitedDecoratedSelect from './LimitedDecoratedSelect';
 
 export {
     SettingSalaryTable,
@@ -33,4 +34,5 @@ export {
     OrderFormTabs,
     Loader,
     ArrayScheduleInput,
+    LimitedDecoratedSelect,
 };

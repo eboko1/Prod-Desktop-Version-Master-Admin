@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import Resizable from 're-resizable';
 
-// proj
+// own
 import { ordersStatus } from '../dashboardConfig';
 // import book from 'routes/book';
 
@@ -39,15 +39,8 @@ export default class DashboardOrder extends Component {
             id,
             dropOrder,
         } = this.props;
-        // console.log('→ this.props', duration);
-        // console.log('→ this.state.height', this.state.height);
-        // console.log('→ _resizeOrder(delta.height)', delta.height);
-        // console.log(
-        //     '→ (this.state.height + delta.height) / 60',
-        //     (this.state.height + delta.height) / 60,
-        // );
+
         const resizedDuration = (this.state.height + delta.height) / 60;
-        // console.log('→ resizedDuration', resizedDuration);
 
         this.setState({ height: this.state.height + delta.height });
 
@@ -108,30 +101,22 @@ export default class DashboardOrder extends Component {
                 // size={ { width: this.state.width, height: this.state.height } }
                 onResizeStart={ () => {
                     this._setResizeOrderState();
-                    console.log(
-                        '→ onResizeStart',
-                        this.resizable.resizable.getBoundingClientRect(),
-                    );
-                    // console.log('→ this._resizableRef ', this._resizableRef);
-
-                    // return { ...resizableStyles, zIndex: 1 };
+                    // console.log(
+                    //     '→ onResizeStart',
+                    //     this.resizable.resizable.getBoundingClientRect(),
+                    // );
                 } }
                 onResize={ () => console.log('→ onResize') }
                 onResizeStop={ (event, direction, ref, delta) => {
                     this._setResizeOrderState();
                     this._resizeOrder(event, direction, ref, delta);
                 } }
-                // onResizeStop={ refToElement => {
-                //     console.log('→ onResizeStop', refToElement);
-                // } }
                 ref={ c => {
                     this.resizable = c;
                 } }
                 bounds={ dashboardRef.current }
             >
-                { /* <div ref={ this._resizableRef }> */ }
                 <DashboardOrderDragSource { ...this.props } />
-                { /* </div> */ }
             </Resizable>
         );
     }

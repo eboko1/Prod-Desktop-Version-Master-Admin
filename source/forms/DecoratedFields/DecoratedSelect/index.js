@@ -3,6 +3,7 @@ import React from 'react';
 import { Select, Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // own
 const Option = Select.Option;
@@ -47,7 +48,29 @@ export const DecoratedSelect = props => {
         dropdownStyle,
 
         initialValue,
+        // globalLimit,
     } = props;
+
+    // function LimitedSearch() {
+    //     let globalQuery = null;
+    //     let globalOptions = [];
+    //
+    //     this.handleLimitedSearch = function handleLimitedSearch(
+    //         query,
+    //         optionValue,
+    //     ) {
+    //         if (query !== globalQuery) {
+    //             globalOptions = _.map(children, 'props.children')
+    //                 .filter(value => value.toLowerCase().indexOf(query) !== -1)
+    //                 .slice(0, globalLimit);
+    //             globalQuery = query;
+    //         }
+    //
+    //         return globalOptions.includes(optionValue);
+    //     };
+    // }
+    //
+    // const limitedSearch = new LimitedSearch();
 
     const select = getFieldDecorator(field, {
         ...initialValue ? { initialValue } : {},
@@ -67,7 +90,7 @@ export const DecoratedSelect = props => {
             onSelect={ onSelect }
             placeholder={ placeholder }
             notFoundContent={
-                notFoundContent ?
+                notFoundContent ? 
                     notFoundContent
                     : (
                         <FormattedMessage id='no_data' />
@@ -80,12 +103,17 @@ export const DecoratedSelect = props => {
             filterOption={
                 filterOption
                     ? filterOption
-                    : (input, option) =>
-                        option.props.children
-                            ? option.props.children
-                                .toLowerCase()
-                                .indexOf(input.toLowerCase()) >= 0
-                            : null
+                    : // : globalLimit
+                //     ? (input, option) =>
+                //         limitedSearch.handleLimitedSearch(
+                //             input,
+                //             option.props.children,
+                //         )
+                    (input, option) =>
+                        option.props.children &&
+                          option.props.children
+                              .toLowerCase()
+                              .indexOf(input.toLowerCase()) >= 0
             }
         >
             { children
@@ -112,7 +140,7 @@ export const DecoratedSelect = props => {
         >
             { select }
         </FormItem>
-    ) :
+    ) : 
         select
     ;
 };
