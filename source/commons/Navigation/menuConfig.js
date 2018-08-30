@@ -1,5 +1,8 @@
+import _ from 'lodash';
+
 // proj
 import book from 'routes/book';
+import { permissions } from 'utils';
 
 export default {
     sections: [
@@ -15,8 +18,14 @@ export default {
                     name: 'navigation.scheduler',
                 },
                 {
-                    key:  '/orders',
-                    link: book.ordersAppointments,
+                    key:      '/orders',
+                    link:     book.ordersAppointments,
+                    disabled: ({ isAdmin, scope }) =>
+                        !isAdmin &&
+                        !(
+                            _.isArray(scope) &&
+                            scope.includes(permissions.SHOW_ORDERS)
+                        ),
                     name: 'navigation.appointments',
                 },
                 {

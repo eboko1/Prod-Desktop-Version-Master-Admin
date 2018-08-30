@@ -15,3 +15,4 @@ export { withReduxForm2 } from './withReduxForm2';
 export { withResponsive } from './withResponsive';
 export { getDaterange } from './getDaterange';
 export { getDateTimeConfig } from './getDateTimeConfig';
+export { default as permissions } from './permissions';

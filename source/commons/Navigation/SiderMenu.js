@@ -76,10 +76,10 @@ export default class SiderMenu extends Component {
                                     }
                                 >
                                     { items.map(item => {
-                                        const { key, link, name } = item;
+                                        const { key, link, name, disabled } = item;
 
                                         return (
-                                            <Menu.Item key={ key }>
+                                            <Menu.Item key={ key } disabled={ disabled && disabled(user) }>
                                                 <Link
                                                     to={ link }
                                                     onClick={ onCollapse }
