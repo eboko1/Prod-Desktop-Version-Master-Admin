@@ -386,12 +386,6 @@ class OrderPage extends Component {
                         location={ false }
                     />
                 </ResponsiveView>
-                <AddClientModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    resetModal={ resetModal }
-                    addClientFormData={ addClientFormData }
-                />
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
