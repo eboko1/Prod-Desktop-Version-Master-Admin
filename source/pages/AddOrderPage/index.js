@@ -176,12 +176,6 @@ class AddOrderPage extends Component {
                     addOrderForm
                     location={ this.props.history.location }
                 />
-                <AddClientModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    resetModal={ resetModal }
-                    addClientFormData={ addClientFormData }
-                />
             </Layout>
         );
     }

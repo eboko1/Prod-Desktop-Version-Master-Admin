@@ -53,6 +53,7 @@ export class AddClientForm extends Component {
             modifications,
             lastFilterAction,
             errors,
+            searchQuery,
         } = this.props;
 
         const {
@@ -83,9 +84,16 @@ export class AddClientForm extends Component {
         }
 
         return (
-            <Form
-                layout='vertical'
-            >
+            <Form layout='vertical'>
+                { searchQuery && (
+                    <div>
+                        <h2>
+                            <FormattedMessage id='add_client_form.search_query' />
+                            : { searchQuery }
+                        </h2>
+                    </div>
+                ) }
+                <br />
                 <div>
                     <ClientsVehiclesTable
                         removeClientVehicle={ this.props.removeClientVehicle }

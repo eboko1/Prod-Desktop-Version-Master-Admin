@@ -11,6 +11,7 @@ import {
     onChangeOrderForm,
     setClientSelection,
 } from 'core/forms/orderForm/duck';
+import { resetModal } from 'core/modals/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 
 import {
@@ -25,6 +26,7 @@ import {
 import { ClientsSearchTable } from 'components/OrderForm/OrderFormTables';
 import { OrderFormTabs } from 'components/OrderForm/OrderFormTabs';
 import book from 'routes/book';
+import { AddClientModal } from 'modals';
 import { withReduxForm2, getDateTimeConfig, images } from 'utils';
 
 // own
@@ -46,7 +48,12 @@ const Option = Select.Option;
         change: onChangeOrderForm,
         setClientSelection,
         initOrderTasksForm,
+        resetModal,
     },
+    mapStateToProps: state => ({
+        modal:             state.modals.modal,
+        addClientFormData: state.forms.addClientForm.data,
+    }),
 })
 export class OrderForm extends Component {
     state = {};
@@ -75,11 +82,14 @@ export class OrderForm extends Component {
         );
     }
 
+    saveFormRef = formRef => {
+        this.formRef = formRef;
+    };
+
     _renderClientSearchTable = () => {
         const {
             searchClientsResult: { searching: clientsSearching, clients },
             setClientSelection,
-            fields,
             form,
         } = this.props;
 
@@ -267,9 +277,7 @@ export class OrderForm extends Component {
 
                             const updatedServices = _(services)
                                 .keys()
-                                .map(serviceKey => [
-                                    `services[${serviceKey}][appurtenanciesResponsibleId]`, value,
-                                ])
+                                .map(serviceKey => [ `services[${serviceKey}][appurtenanciesResponsibleId]`, value ])
                                 .fromPairs()
                                 .value();
                             this.props.form.setFieldsValue(updatedServices);
@@ -678,6 +686,13 @@ export class OrderForm extends Component {
                     setModal={ setModal }
                     orderTasks={ orderTasks }
                     commentsCount={ commentsCount }
+                />
+                <AddClientModal
+                    searchQuery={ this.props.form.getFieldValue('searchClientQuery') }
+                    wrappedComponentRef={ this.saveFormRef }
+                    visible={ this.props.modal }
+                    resetModal={ this.props.resetModal }
+                    addClientFormData={ this.props.addClientFormData }
                 />
             </>
         );
