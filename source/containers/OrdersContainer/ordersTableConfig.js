@@ -10,7 +10,7 @@ import _ from 'lodash';
 // proj
 import { OrderStatusIcon, Numeral } from 'components';
 import book from 'routes/book';
-
+import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 
@@ -32,6 +32,7 @@ export function columnsConfig(
     isAlreadyInvited,
     activeRoute,
     sort,
+    user,
 ) {
     const sortOptions = {
         asc:  'ascend',
@@ -268,8 +269,11 @@ export function columnsConfig(
     const isInviteButtonDisabled = order => {
         const missingRequiredField = !isOrderInvitable(order);
         const alreadyInvited = isAlreadyInvited(order);
+        const forbidden =
+            isForbidden(user, permissions.CREATE_ORDER) ||
+            isForbidden(user, permissions.CREATE_INVITE_ORDER);
 
-        return !!(missingRequiredField || alreadyInvited);
+        return !!(missingRequiredField || alreadyInvited || forbidden);
     };
 
     const invitationCol = {

@@ -36,6 +36,7 @@ import {
     ConfirmOrderExitModal,
     OrderTaskModal,
 } from 'modals';
+import { permissions, isForbidden } from 'utils';
 
 import {
     convertFieldsValuesToDbEntity,
@@ -269,6 +270,7 @@ class OrderPage extends Component {
             isMobile,
             managers,
             stations,
+            user,
         } = this.props;
 
         const { num, status, datetime } = this.props.order;
@@ -279,16 +281,16 @@ class OrderPage extends Component {
         ) : (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
@@ -312,7 +314,17 @@ class OrderPage extends Component {
                         )}
                         {isInviteVisible && !inviteOrderId ? (
                             <Button
-                                disabled={ !isInviteEnabled }
+                                disabled={
+                                    !isInviteEnabled ||
+                                    isForbidden(
+                                        user,
+                                        permissions.CREATE_ORDER,
+                                    ) ||
+                                    isForbidden(
+                                        user,
+                                        permissions.CREATE_INVITE_ORDER,
+                                    )
+                                }
                                 onClick={ this._invite }
                             >
                                 <FormattedMessage id='order-page.create_invite_order' />
