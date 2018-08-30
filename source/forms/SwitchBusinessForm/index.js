@@ -50,7 +50,14 @@ export class SwitchBusinessForm extends Component {
                     dataSource={ businesses }
                     loading={ loading }
                     renderItem={ item => (
-                        <List.Item onClick={ () => setBusiness(item.businessId) }>
+                        <List.Item
+                            onClick={ () =>
+                                setBusiness({
+                                    businessId:   item.businessId,
+                                    businessName: item.name,
+                                })
+                            }
+                        >
                             <List.Item.Meta
                                 className={ Styles.switchBusinessListItem }
                                 title={ item.name }

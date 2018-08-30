@@ -130,8 +130,8 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title:  <FormattedMessage id='order_form_table.employee' />,
-                key:    'employee',
+                title:  <FormattedMessage id='order_form_table.master' />,
+                key:    'employeeId',
                 render: ({ key }) => {
                     return (
                         <DecoratedSelect

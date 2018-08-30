@@ -27,6 +27,7 @@
         "navigation.system_managers": "System managers",
         "navigation.notice": "Notice",
         "navigation.suggest_idea": "Suggest idea",
+        "navigation.roles": "Roles",
         "navigation.package": "Packages",
         "navigation.business_package": "Business-Package",
         "navigation.manager_role": "Manager-Role"
@@ -59,6 +60,7 @@
         "navigation.system_managers": "Менеджеры системы",
         "navigation.notice": "Уведомления",
         "navigation.suggest_idea": "Предложить идею",
+        "navigation.roles": "Роли",
         "navigation.package": "Пакеты",
         "navigation.business_package": "Бизнесы-Пакеты",
         "navigation.manager_role": "Менеджеры-Роли"
@@ -91,6 +93,7 @@
         "navigation.system_managers": "Менеджери системи",
         "navigation.notice": "Сповіщення",
         "navigation.suggest_idea": "Запропонувати ідею",
+        "navigation.roles": "Ролі",
         "navigation.package": "Пакети",
         "navigation.business_package": "Бізнеси-Пакети",
         "navigation.manager_role": "Менеджери-Ролі"

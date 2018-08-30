@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
+import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
@@ -51,18 +52,24 @@ class DashboardContainer extends Component {
         this.setState({ hideSourceOnDrag: !this.state.hideSourceOnDrag });
 
     render() {
-        const { dashboard, schedule } = this.props;
+        const { dashboard, schedule, mode } = this.props;
 
         const timeColumn = this._renderTimeColumn();
         const dashboardColumns = this._renderDashboardColumns();
+        const dashboardGhostColumns = this._renderDashboardGhostColumns();
 
         return (
             <Catcher>
                 <Dashboard innerRef={ this._dashboardRef }>
                     <DashboardTimeline schedule={ schedule } />
                     { timeColumn }
-                    <DashboardGrid columns={ dashboard.columns }>
+                    <DashboardGrid
+                        columns={ dashboard.columns < 7 ? 7 : dashboard.columns }
+                    >
                         { dashboardColumns }
+                        { mode === 'stations' &&
+                            dashboard.columns < 7 &&
+                            dashboardGhostColumns }
                     </DashboardGrid>
                 </Dashboard>
             </Catcher>
@@ -100,14 +107,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length && 
+                    { load.length &&
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) : 
+                                ) :
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -192,32 +199,48 @@ class DashboardContainer extends Component {
                                     order.empty ? (
                                         <DashboardEmptyCell
                                             key={ index }
-                                            { ...order }
+                                            mode={ mode }
                                             day={
                                                 dashboardMode
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
-                                            stationNum={ stations[ column ].num }
+                                            stationNum={
+                                                !dashboardMode &&
+                                                _.get(
+                                                    stations,
+                                                    `[${column}].num`,
+                                                )
+                                            }
+                                            { ...order }
                                         />
                                     ) : (
                                         <DashboardOrder
                                             key={ index }
+                                            mode={ mode }
+                                            label={ result[ index ].options.num }
+                                            id={ result[ index ].options.id }
                                             status={
                                                 result[ index ].options.status
                                             }
-                                            id={ result[ index ].options.id }
                                             dashboardRef={ this._dashboardRef }
                                             dropOrder={ updateDashboardOrder }
                                             // hideSourceOnDrag={ hideSourceOnDrag }
-                                            label={ result[ index ].options.num }
                                             schedule={ schedule }
                                             day={
                                                 dashboardMode
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
-                                            stationNum={ stations[ column ].num }
+                                            stationNum={
+                                                !dashboardMode
+                                                    ? _.get(
+                                                        stations,
+                                                        `[${column}].num`,
+                                                    )
+                                                    : result[ index ].options
+                                                        .stationNum
+                                            }
                                             { ...order }
                                         />
                                     ),
@@ -250,6 +273,18 @@ class DashboardContainer extends Component {
                 )) }
             </DashboardAddOrderColumn>
         );
+    };
+
+    _renderDashboardGhostColumns = () => {
+        const { dashboard } = this.props;
+
+        if (dashboard.columns < 7) {
+            return [ ...Array(7 - dashboard.columns).keys() ].map((_, index) => (
+                <DashboardColumn dashboard={ dashboard } column={ 1 } key={ index } />
+            ));
+        }
+
+        return null;
     };
 }
 

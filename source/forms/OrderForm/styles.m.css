@@ -10,8 +10,8 @@
 }
 
 .datePanelItem {
-    flex: 0 1 30%;
-    display: flex;
+    /* flex: 0 1 30%;
+    display: flex; */
 }
 
 .datePanelItem :global(.ant-form-item-control-wrapper) {

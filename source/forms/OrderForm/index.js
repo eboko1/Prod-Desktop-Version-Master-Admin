@@ -251,6 +251,41 @@ export class OrderForm extends Component {
                         )) }
                     </DecoratedSelect>
                 </FormItem>
+                <FormItem
+                    label={
+                        <FormattedMessage id='order_form_table.appurtenanciesResponsible' />
+                    }
+                    className={ Styles.durationPanelItem }
+                >
+                    <DecoratedSelect
+                        field='appurtenanciesResponsible'
+                        getFieldDecorator={ getFieldDecorator }
+                        onSelect={ value => {
+                            const services = this.props.form.getFieldValue(
+                                'services',
+                            );
+
+                            const updatedServices = _(services)
+                                .keys()
+                                .map(serviceKey => [
+                                    `services[${serviceKey}][appurtenanciesResponsibleId]`, value,
+                                ])
+                                .fromPairs()
+                                .value();
+                            this.props.form.setFieldsValue(updatedServices);
+                        } }
+                    >
+                        { employees.map(employee => (
+                            <Option
+                                value={ employee.id }
+                                key={ v4() }
+                                disabled={ employee.disabled }
+                            >
+                                { `${employee.name} ${employee.surname}` }
+                            </Option>
+                        )) }
+                    </DecoratedSelect>
+                </FormItem>
             </div>
         );
     };

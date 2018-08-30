@@ -50,7 +50,7 @@ export const FETCH_AVAILABLE_HOURS_SUCCESS = `${prefix}/FETCH_AVAILABLE_HOURS_SU
  * */
 
 const createDefaultState = () => ({
-    fields:        {
+    fields: {
         services: [],
         details:  [],
     },

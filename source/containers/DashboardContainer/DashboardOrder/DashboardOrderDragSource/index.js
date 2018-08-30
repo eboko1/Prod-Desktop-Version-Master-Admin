@@ -10,8 +10,8 @@ import book from 'routes/book';
 
 // own
 import DashboardOrderDropTarget from '../DashboardOrderDropTarget';
-import { DragItemTypes, ROW_HEIGHT, ordersStatus } from '../../dashboardConfig';
 import DashboardTooltip from '../../DashboardTooltip';
+import { DragItemTypes, ordersStatus } from '../../dashboardConfig';
 import handleHover from '../../dashboardCore/handleHover';
 import getBeginDatetime from '../../dashboardCore/getBeginDatetime';
 
@@ -21,26 +21,38 @@ const orderSource = {
     },
 
     beginDrag(props) {
-        return { ...props };
+        return { id: props.id, station: props.options.stationNum };
     },
 
     endDrag(props, monitor) {
-        const { id } = monitor.getItem();
+        const { id, station } = monitor.getItem();
         const didDrop = monitor.didDrop();
 
         if (didDrop) {
-            const { dropOrder, schedule } = props;
-
+            const { dropOrder, schedule, mode } = props;
             const { day, time, stationNum } = monitor.getDropResult();
-            dropOrder({
-                beginDatetime: getBeginDatetime(
-                    day,
-                    time,
-                    schedule.beginHour,
-                ).toISOString(),
-                stationNum,
-                id,
-            });
+
+            if (mode === 'calender') {
+                dropOrder({
+                    beginDatetime: getBeginDatetime(
+                        day,
+                        time,
+                        schedule.beginHour,
+                    ).toISOString(),
+                    station,
+                    id,
+                });
+            } else {
+                dropOrder({
+                    beginDatetime: getBeginDatetime(
+                        day,
+                        time,
+                        schedule.beginHour,
+                    ).toISOString(),
+                    stationNum,
+                    id,
+                });
+            }
         }
 
         if (!didDrop) {

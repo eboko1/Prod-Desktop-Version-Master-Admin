@@ -112,6 +112,23 @@ class DetailsTable extends Component {
                 ),
             },
             {
+                title:  <FormattedMessage id='order_form_table.purchasePrice' />,
+                key:    'purchasePrice',
+                width:  '20%',
+                render: ({ key }) => (
+                    <DecoratedInputNumber
+                        initialValue={ this._getDefaultValue(
+                            key,
+                            'purchasePrice',
+                        ) }
+                        field={ `details[${key}][purchasePrice]` }
+                        disabled={ this._isFieldDisabled(key) }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        min={ 0 }
+                    />
+                ),
+            },
+            {
                 title:  <FormattedMessage id='order_form_table.price' />,
                 width:  '10%',
                 key:    'price',
@@ -195,6 +212,7 @@ class DetailsTable extends Component {
             detailCount:     orderDetail.count,
             detailCode:      orderDetail.detailCode,
             detailPrice:     orderDetail.price,
+            purchasePrice:   orderDetail.purchasePrice,
             detailBrandName:
                 (orderDetail.brandId || orderDetail.brandName) &&
                 String(orderDetail.brandId || orderDetail.brandName),

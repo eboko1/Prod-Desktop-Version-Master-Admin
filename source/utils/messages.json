@@ -45,7 +45,8 @@
         "friday": "Friday",
         "saturday": "Saturday",
         "sunday": "Sunday",
-        "enter": "Login"
+        "enter": "Login",
+        "comment": "Comment"
     },
     "ru": {
         "currency": "грн.",
@@ -93,7 +94,8 @@
         "friday": "Пятница",
         "saturday": "Суббота",
         "sunday": "Воскресенье",
-        "enter": "Войти"
+        "enter": "Войти",
+        "comment": "Комментарий"
     },
     "uk": {
         "currency": "грн.",
@@ -141,6 +143,7 @@
         "friday": "П'ятниця",
         "saturday": "Суббота",
         "sunday": "Неділя",
-        "enter": "Увійти"
+        "enter": "Увійти",
+        "comment": "Коментар"
     }
 }

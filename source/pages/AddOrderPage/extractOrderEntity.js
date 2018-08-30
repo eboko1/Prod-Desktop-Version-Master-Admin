@@ -30,7 +30,8 @@ export function convertFieldsValuesToDbEntity(
                 : { type: name.split('|')[ 0 ], serviceId: name.split('|')[ 1 ] };
 
             return { ...baseService, ...serviceType };
-        }).value();
+        })
+        .value();
 
     const details = _(orderFields.details)
         .filter(Boolean)
@@ -42,6 +43,7 @@ export function convertFieldsValuesToDbEntity(
                 detailCount: count,
                 detailCode: code,
                 detailBrandName: brandId,
+                purchasePrice: purchasePrice,
             } = detail;
 
             const detailConfig = allDetails.details.find(
@@ -51,7 +53,7 @@ export function convertFieldsValuesToDbEntity(
                 ({ brandId: id }) => String(id) === brandId,
             );
 
-            const baseDetail = { price, count, code };
+            const baseDetail = { price, count, code, purchasePrice };
             const detailCustom = !detailConfig
                 ? { name: detailId }
                 : { detailId };
@@ -60,7 +62,8 @@ export function convertFieldsValuesToDbEntity(
                 : { brandId };
 
             return { ...baseDetail, ...detailCustom, ...brandCustom };
-        }).value();
+        })
+        .value();
 
     const beginDate = _.get(orderFields, 'beginDate');
     const beginTime = _.get(orderFields, 'beginTime');
