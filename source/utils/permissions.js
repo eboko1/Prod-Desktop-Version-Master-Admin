@@ -1,4 +1,6 @@
-export default Object.freeze({
+import _ from 'lodash';
+
+export const permissions = Object.freeze({
     ACCESS_ORDER_BODY:     'ACCESS_ORDER_BODY',
     ACCESS_ORDER_CALLS:    'ACCESS_ORDER_CALLS',
     ACCESS_ORDER_COMMENTS: 'ACCESS_ORDER_COMMENTS',
@@ -14,3 +16,6 @@ export default Object.freeze({
     SHOW_ORDERS:           'SHOW_ORDERS',
     UPDATE_SUCCESS_ORDER:  'UPDATE_SUCCESS_ORDER',
 });
+
+export const isForbidden = ({ isAdmin, scope }, grant) =>
+    !isAdmin && !(_.isArray(scope) && scope.includes(grant));

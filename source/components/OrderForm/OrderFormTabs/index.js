@@ -7,7 +7,7 @@ import _ from 'lodash';
 // proj
 import { MODALS } from 'core/modals/duck';
 import { DecoratedTextArea } from 'forms/DecoratedFields';
-
+import { permissions, isForbidden } from 'utils';
 // own
 import {
     DetailsTable,
@@ -42,6 +42,16 @@ export class OrderFormTabs extends Component {
             commentsCount,
             fetchedOrder,
         } = this.props;
+
+        const isHistoryForbidden = isForbidden(
+            this.props.user,
+            permissions.ACCESS_ORDER_HISTORY,
+        );
+
+        const areCallsForbidden = isForbidden(
+            this.props.user,
+            permissions.ACCESS_ORDER_CALLS,
+        );
 
         return (
             <Tabs type='card'>
@@ -215,10 +225,14 @@ export class OrderFormTabs extends Component {
                 { !addOrderForm && (
                     <TabPane
                         forceRender
+                        disabled={ isHistoryForbidden }
                         tab={
                             formatMessage({
                                 id: 'order_form_table.history',
-                            }) + ` (${orderHistory.orders.length})`
+                            }) +
+                            (isHistoryForbidden
+                                ? ''
+                                : ` (${orderHistory.orders.length})`)
                         }
                         key='5'
                     >
@@ -228,10 +242,12 @@ export class OrderFormTabs extends Component {
                 { !addOrderForm && (
                     <TabPane
                         forceRender
+                        disabled={ areCallsForbidden }
                         tab={
                             formatMessage({
                                 id: 'order_form_table.calls',
-                            }) + ` (${orderCalls.length})`
+                            }) +
+                            (areCallsForbidden ? '' : ` (${orderCalls.length})`)
                         }
                         key='6'
                     >

@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 // proj
 import book from 'routes/book';
-import { permissions } from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 export default {
     sections: [
@@ -20,12 +20,8 @@ export default {
                 {
                     key:      '/orders',
                     link:     book.ordersAppointments,
-                    disabled: ({ isAdmin, scope }) =>
-                        !isAdmin &&
-                        !(
-                            _.isArray(scope) &&
-                            scope.includes(permissions.SHOW_ORDERS)
-                        ),
+                    disabled: user =>
+                        isForbidden(user, permissions.SHOW_ORDERS),
                     name: 'navigation.appointments',
                 },
                 {
