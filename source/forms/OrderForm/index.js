@@ -7,7 +7,6 @@ import _ from 'lodash';
 import moment from 'moment';
 
 //proj
-import book from 'routes/book';
 import {
     onChangeOrderForm,
     setClientSelection,
@@ -25,18 +24,17 @@ import {
 
 import { ClientsSearchTable } from 'components/OrderForm/OrderFormTables';
 import { OrderFormTabs } from 'components/OrderForm/OrderFormTabs';
-
+import book from 'routes/book';
 import { withReduxForm2, getDateTimeConfig, images } from 'utils';
+
+// own
+import { servicesStats, detailsStats } from './stats';
 import {
     formItemAutoColLayout,
     formItemLayout,
     formItemTotalLayout,
 } from './layouts';
-import { servicesStats, detailsStats } from './stats';
-
-// own
 import Styles from './styles.m.css';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -148,12 +146,6 @@ export class OrderForm extends Component {
                             )
                             : void 0
                     }
-                    // showTime={ {
-                    //     disabledHours,
-                    //     disabledMinutes,
-                    //     disabledSeconds,
-                    //     format: 'HH:mm',
-                    // } }
                 />
                 <DecoratedTimePicker
                     formItem
@@ -370,48 +362,45 @@ export class OrderForm extends Component {
                         </Option>
                     )) }
                 </DecoratedSelect>
-                <FormItem
+
+                <DecoratedSelect
+                    formItem
                     label={ <FormattedMessage id='add_order_form.email' /> }
-                    { ...formItemLayout }
+                    formItemLayout={ formItemLayout }
+                    field='clientEmail'
+                    getFieldDecorator={ getFieldDecorator }
+                    initialValue={
+                        _.get(fetchedOrder, 'order.clientEmail') ||
+                        selectedClient.emails.find(Boolean)
+                    }
+                    placeholder={ 'Choose selected client email' }
                 >
-                    <DecoratedSelect
-                        field='clientEmail'
-                        getFieldDecorator={ getFieldDecorator }
-                        initialValue={
-                            _.get(fetchedOrder, 'order.clientEmail') ||
-                            selectedClient.emails.find(Boolean)
-                        }
-                        placeholder={ 'Choose selected client email' }
-                    >
-                        { selectedClient.emails.filter(Boolean).map(email => (
-                            <Option value={ email } key={ v4() }>
-                                { email }
-                            </Option>
-                        )) }
-                    </DecoratedSelect>
-                </FormItem>
-                <FormItem
+                    { selectedClient.emails.filter(Boolean).map(email => (
+                        <Option value={ email } key={ v4() }>
+                            { email }
+                        </Option>
+                    )) }
+                </DecoratedSelect>
+                <DecoratedTextArea
+                    formItem
                     label={
                         <FormattedMessage id='add_order_form.client_comments' />
                     }
-                >
-                    <DecoratedTextArea
-                        getFieldDecorator={ getFieldDecorator }
-                        field='comment'
-                        initialValue={ _.get(fetchedOrder, 'order.comment') }
-                        rules={ [
-                            {
-                                max:     2000,
-                                message: 'Too much',
-                            },
-                        ] }
-                        placeholder={ formatMessage({
-                            id:             'add_order_form.client_comments',
-                            defaultMessage: 'Client_comments',
-                        }) }
-                        autosize={ { minRows: 2, maxRows: 6 } }
-                    />
-                </FormItem>
+                    getFieldDecorator={ getFieldDecorator }
+                    field='comment'
+                    initialValue={ _.get(fetchedOrder, 'order.comment') }
+                    rules={ [
+                        {
+                            max:     2000,
+                            message: 'Too much',
+                        },
+                    ] }
+                    placeholder={ formatMessage({
+                        id:             'add_order_form.client_comments',
+                        defaultMessage: 'Client_comments',
+                    }) }
+                    autosize={ { minRows: 2, maxRows: 6 } }
+                />
             </div>
         );
     };

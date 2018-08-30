@@ -1,15 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import {
-    Table,
-    Form,
-    InputNumber,
-    // Input,
-    Icon,
-    Popconfirm,
-    Select,
-} from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -23,9 +15,7 @@ import {
 
 // own
 import Styles from './styles.m.css';
-
 const Option = Select.Option;
-const FormItem = Form.Item;
 
 class ServicesTable extends Component {
     constructor(props) {
@@ -71,7 +61,7 @@ class ServicesTable extends Component {
                             showSearch
                             cnStyles={ Styles.serviceSelect }
                             onChange={ value =>
-                                this.handleServiceSelect(key, value)
+                                this._handleServiceSelect(key, value)
                             }
                             initialValue={ this._getDefaultValue(
                                 key,
@@ -178,7 +168,7 @@ class ServicesTable extends Component {
                         this.state.keys.length > 1 && (
                             <Popconfirm
                                 title='Sure to delete?'
-                                onConfirm={ () => this.onDelete(key) }
+                                onConfirm={ () => this._onDelete(key) }
                             >
                                 <Icon
                                     type='delete'
@@ -238,21 +228,21 @@ class ServicesTable extends Component {
         return actions[ fieldName ];
     };
 
-    handleServiceSelect = key => {
+    _handleServiceSelect = key => {
         const { keys } = this.state;
         const services = this.props.form.getFieldValue('services');
 
         if (_.last(keys) === key && !services[ key ].serviceName) {
-            this.handleAdd();
+            this._handleAdd();
         }
     };
 
-    onDelete = redundantKey => {
+    _onDelete = redundantKey => {
         const { keys } = this.state;
         this.setState({ keys: keys.filter(key => redundantKey !== key) });
     };
 
-    handleAdd = () => {
+    _handleAdd = () => {
         const { keys } = this.state;
         this.setState({ keys: [ ...keys, this.uuid++ ] });
     };

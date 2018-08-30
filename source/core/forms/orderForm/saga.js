@@ -35,7 +35,6 @@ import {
     updateOrderSuccess,
     returnToOrdersPage,
     createInviteOrderSuccess,
-
     CREATE_INVITE_ORDER,
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
@@ -47,34 +46,6 @@ import {
     RETURN_TO_ORDERS_PAGE,
     FETCH_AVAILABLE_HOURS,
 } from './duck';
-
-const selectBeginDatetime = state => {
-    const beginDate = state.forms.orderForm.fields.beginDate.value;
-    const beginTime = state.forms.orderForm.fields.beginTime.value;
-
-    let beginDatetime = null;
-    try {
-        const dayPart = beginDate
-            ? moment(beginDate)
-                .utc()
-                .format('YYYY-MM-DD')
-            : void 0;
-        const hourPart = beginTime
-            ? moment(beginTime)
-                .utc()
-                .format('HH:mm')
-            : void 0;
-
-        beginDatetime =
-            dayPart && hourPart
-                ? moment(`${dayPart}T${hourPart}:00.000Z`)
-                : void 0;
-    } catch (err) {}
-
-    return beginDatetime;
-};
-
-const selectStation = state => state.forms.orderForm.fields.station.value;
 
 export function* fetchOrderFormSaga() {
     while (true) {
@@ -212,7 +183,18 @@ function* handleClientSearchSaga({ payload }) {
         yield delay(1000);
 
         if (payload.length > 2) {
-            const fields = [ 'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites' ];
+            /* eslint-disable array-element-newline */
+            const fields = [
+                'clientId',
+                'name',
+                'surname',
+                'phones',
+                'emails',
+                'vehicles',
+                'disabled',
+                'requisites',
+            ];
+            /* eslint-enable array-element-newline */
             const data = yield call(fetchAPI, 'GET', 'clients', {
                 query:     payload,
                 omitStats: true,
@@ -269,6 +251,7 @@ export function* fetchAvailableHoursSaga() {
                 stationNum: station,
                 date:       date.toISOString(),
             });
+
             yield put(fetchAvailableHoursSuccess(data));
         } catch (error) {
             yield put(emitError(error));

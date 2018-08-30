@@ -42,7 +42,7 @@ class HistoryTable extends Component {
                 dataIndex: 'vehicleMakeName',
                 key:       'history-vehicle',
                 width:     '20%',
-                render:    (text, record) => <div>{ text }</div>,
+                render:    text => <div>{ text }</div>,
             },
             {
                 title:     <FormattedMessage id='order_form_table.order_sum' />,
