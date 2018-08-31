@@ -41,17 +41,18 @@ export class OrderFormTabs extends Component {
             changeModalStatus,
             commentsCount,
             fetchedOrder,
+            user,
         } = this.props;
 
-        const isHistoryForbidden = isForbidden(
-            this.props.user,
-            permissions.ACCESS_ORDER_HISTORY,
-        );
+        const {
+            ACCESS_ORDER_HISTORY,
+            ACCESS_ORDER_CALLS,
+            ACCESS_ORDER_COMMENTS,
+        } = permissions;
 
-        const areCallsForbidden = isForbidden(
-            this.props.user,
-            permissions.ACCESS_ORDER_CALLS,
-        );
+        const isHistoryForbidden = isForbidden(user, ACCESS_ORDER_HISTORY);
+        const areCallsForbidden = isForbidden(user, ACCESS_ORDER_CALLS);
+        const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_COMMENTS);
 
         return (
             <Tabs type='card'>
@@ -132,6 +133,7 @@ export class OrderFormTabs extends Component {
                 >
                     <DecoratedTextArea
                         formItem
+                        disabled={ areCommentsForbidden }
                         label={
                             <FormattedMessage id='add_order_form.client_comments' />
                         }
@@ -152,6 +154,7 @@ export class OrderFormTabs extends Component {
                     />
                     <DecoratedTextArea
                         formItem
+                        disabled={ areCommentsForbidden }
                         label={
                             <FormattedMessage id='add_order_form.vehicle_condition' />
                         }
@@ -176,6 +179,7 @@ export class OrderFormTabs extends Component {
 
                     <DecoratedTextArea
                         formItem
+                        disabled={ areCommentsForbidden }
                         label={
                             <FormattedMessage id='add_order_form.business_comment' />
                         }
@@ -200,6 +204,7 @@ export class OrderFormTabs extends Component {
 
                     <DecoratedTextArea
                         formItem
+                        disabled={ areCommentsForbidden }
                         label={
                             <FormattedMessage id='add_order_form.service_recommendations' />
                         }

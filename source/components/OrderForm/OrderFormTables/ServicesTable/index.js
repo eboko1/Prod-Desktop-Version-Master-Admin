@@ -12,6 +12,7 @@ import {
     DecoratedCheckbox,
     DecoratedSlider,
 } from 'forms/DecoratedFields';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -45,6 +46,8 @@ class ServicesTable extends Component {
             </Option>
         ));
 
+        const editServicesForbidden = isForbidden(props.user, permissions.ACCESS_ORDER_SERVICES);
+
         this.columns = [
             {
                 title:  <FormattedMessage id='order_form_table.service' />,
@@ -53,6 +56,7 @@ class ServicesTable extends Component {
                 render: ({ key }) => {
                     return (
                         <DecoratedSelect
+                            disabled={ editServicesForbidden }
                             field={ `services[${key}].serviceName` }
                             getFieldDecorator={ this.props.getFieldDecorator }
                             mode={ 'combobox' }
@@ -90,7 +94,7 @@ class ServicesTable extends Component {
                         }
                         field={ `services[${key}].servicePrice` }
                         getFieldDecorator={ this.props.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) }
+                        disabled={ this._isFieldDisabled(key) || editServicesForbidden }
                         min={ 0 }
                     />
                 ),
@@ -105,7 +109,7 @@ class ServicesTable extends Component {
                         }
                         field={ `services[${key}].serviceCount` }
                         getFieldDecorator={ this.props.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) }
+                        disabled={ this._isFieldDisabled(key) || editServicesForbidden }
                         min={ 0.1 }
                         step={ 0.1 }
                     />
@@ -141,7 +145,7 @@ class ServicesTable extends Component {
                                 this.props.form.getFieldValue('employee')
                             }
                             getFieldDecorator={ this.props.getFieldDecorator }
-                            disabled={ this._isFieldDisabled(key) }
+                            disabled={ this._isFieldDisabled(key) || editServicesForbidden }
                         >
                             { this.employees }
                         </DecoratedSelect>
@@ -156,7 +160,7 @@ class ServicesTable extends Component {
                         initValue={ this._getDefaultValue(key, 'ownDetail') }
                         field={ `services[${key}].ownDetail` }
                         getFieldDecorator={ this.props.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) }
+                        disabled={ this._isFieldDisabled(key) || editServicesForbidden }
                     />
                 ),
             },
@@ -165,7 +169,7 @@ class ServicesTable extends Component {
                 key:    'delete',
                 render: ({ key }) => {
                     return (
-                        this.state.keys.length > 1 && (
+                        this.state.keys.length > 1 && !editServicesForbidden && (
                             <Popconfirm
                                 title='Sure to delete?'
                                 onConfirm={ () => this._onDelete(key) }
