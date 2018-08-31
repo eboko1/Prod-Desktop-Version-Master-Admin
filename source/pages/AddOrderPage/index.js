@@ -42,6 +42,7 @@ const mapStateToProps = state => {
         spinner:           state.ui.orderFetching,
         createStatus:      state.forms.orderForm.createStatus,
         selectedClient:    state.forms.orderForm.selectedClient,
+        user:              state.auth,
     };
 };
 
@@ -94,6 +95,7 @@ class AddOrderPage extends Component {
                         allServices,
                         allDetails,
                         createStatus,
+                        this.props.user,
                     ),
                 );
             }

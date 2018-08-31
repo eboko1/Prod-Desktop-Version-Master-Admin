@@ -139,6 +139,7 @@ class OrderPage extends Component {
                         allServices,
                         allDetails,
                         status,
+                        this.props.user,
                     ),
                     redirectStatus,
                 });
@@ -190,6 +191,8 @@ class OrderPage extends Component {
             orderFormEntity,
             allServices,
             allDetails,
+            void 0,
+            this.props.user,
         );
         const fetchedOrderEntity = {
             ...fetchedOrder.order,
