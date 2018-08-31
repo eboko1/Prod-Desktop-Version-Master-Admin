@@ -2,7 +2,7 @@ import _ from 'lodash';
 
 // proj
 import book from 'routes/book';
-import { permissions, isForbidden } from 'utils';
+import { permissions, isForbidden, isAdmin } from 'utils';
 
 export default {
     sections: [
@@ -154,22 +154,26 @@ export default {
         {
             key:      'roles',
             iconType: 'book',
+            disabled: user => isForbidden(user, permissions.GRANT),
             name:     'navigation.roles',
             items:    [
                 {
-                    key:  '/packages',
-                    link: book.packagePage,
-                    name: 'navigation.package',
+                    key:     '/packages',
+                    link:    book.packagePage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.package',
                 },
                 {
-                    key:  '/businesses/packages',
-                    link: book.businessPackagePage,
-                    name: 'navigation.business_package',
+                    key:     '/businesses/packages',
+                    link:    book.businessPackagePage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.business_package',
                 },
                 {
-                    key:  '/managers/roles',
-                    link: book.managerRolePage,
-                    name: 'navigation.manager_role',
+                    key:     '/managers/roles',
+                    visible: user => !isForbidden(user, permissions.GRANT),
+                    link:    book.managerRolePage,
+                    name:    'navigation.manager_role',
                 },
             ],
         },
