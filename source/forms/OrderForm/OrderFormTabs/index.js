@@ -1,13 +1,14 @@
-// vendro
+// vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Tabs, Form, Icon, Button } from 'antd';
+import { Tabs, Icon, Button } from 'antd';
 import _ from 'lodash';
 
 // proj
 import { MODALS } from 'core/modals/duck';
 import { DecoratedTextArea } from 'forms/DecoratedFields';
 import { permissions, isForbidden } from 'utils';
+
 // own
 import {
     DetailsTable,
@@ -16,7 +17,7 @@ import {
     TasksTable,
     HistoryTable,
     CallsTable,
-} from 'components/OrderForm/OrderFormTables';
+} from '../OrderFormTables';
 import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 

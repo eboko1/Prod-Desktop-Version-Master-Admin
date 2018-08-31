@@ -18,7 +18,7 @@ import {
     DecoratedDatePicker,
 } from 'forms/DecoratedFields';
 
-import { ClientsVehiclesTable } from 'components/OrderForm/OrderFormTables';
+import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
 import { ArrayInput } from 'components';
 
 const FormItem = Form.Item;
