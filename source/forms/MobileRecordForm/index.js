@@ -23,12 +23,6 @@ import {
 
 import { withReduxForm } from 'utils';
 
-// own
-import {
-    formItemAutoColLayout,
-    formItemLayout,
-    // formItemTotalLayout,
-} from '../OrderForm/layouts';
 import Styles from './styles.m.css';
 
 const FormItem = Form.Item;
@@ -44,48 +38,6 @@ const Option = Select.Option;
     },
 })
 export class MobileRecordForm extends Component {
-    // componentDidMount() {
-    //     // const availableHours = this.props.form.getFieldsValue([ 'beginDatetime', 'station' ]);
-    //     // console.log('→ DM availableHours', availableHours);
-    //     this.props.fetchAvailableHours();
-    // }
-    //
-    // componentDidMount() {
-    //     console.log(
-    //         this.props.form.setFieldsValue({
-    //             duration: this.props.order.duration,
-    //         }),
-    //     );
-    //     console.log(
-    //         '→ this.props.form.setFieldsValue',
-    //         this.props.form.setFieldsValue,
-    //     );
-    //     this.props.form.setFieldsValue({ duration: this.props.order.duration });
-    // }
-
-    // componentDidUpdate(prevProps) {
-    //     if (
-    //         prevProps.form.getFieldsValue([ 'beginDatetime', 'station' ]) ===
-    //         this.props.form.getFieldsValue([ 'beginDatetime', 'station' ])
-    //     ) {
-    //         // const availableHours = this.props.form.getFieldsValue([ 'beginDatetime', 'station' ]);
-    //         // console.log('→ DUP availableHours', availableHours);
-    //         this.props.fetchAvailableHours();
-    //     }
-    // }
-    // componentDidMount() {
-    //     const {
-    //         getFieldDecorator,
-    //         getFieldValue,
-    //         getFieldsValue,
-    //         setFieldsValue,
-    //     } = this.props.form;
-    //     const durationValue = getFieldValue('duration');
-    //     console.log('→ durationValue', durationValue);
-    //
-    //     setFieldsValue({ duration: durationValue || 0.5 });
-    // }
-
     fetchAvailableHours(station, date) {
         this.props.form.resetFields([ 'beginTime' ]); // TODO doesn't work
         this.props.fetchAvailableHours(station, date);
@@ -99,6 +51,18 @@ export class MobileRecordForm extends Component {
         const isDurationDisabled = _.every(
             getFieldsValue([ 'beginDate', 'beginTime', 'station' ]),
         );
+
+        const formItemLayout = {
+            labelCol: {
+                xl:  { span: 24 },
+                xxl: { span: 4 },
+            },
+            wrapperCol: {
+                xl:  { span: 24 },
+                xxl: { span: 20 },
+            },
+            colon: false,
+        };
 
         return (
             <Form layout='horizontal'>
@@ -164,7 +128,7 @@ export class MobileRecordForm extends Component {
                     formItem
                     hasFeedback
                     label={ <FormattedMessage id='add_order_form.car' /> }
-                    formItemLayout={ formItemAutoColLayout }
+                    formItemLayout={ formItemLayout }
                     colon={ false }
                     className={ Styles.clientCol }
                     getFieldDecorator={ getFieldDecorator }

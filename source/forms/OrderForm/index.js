@@ -66,65 +66,65 @@ export class OrderForm extends Component {
         this.setState({ initialized: true });
     }
 
-    /* eslint-disable complexity */
+    _saveFormRef = formRef => {
+        this.formRef = formRef;
+    };
+
     render() {
         this.props.form.getFieldDecorator('services[0].serviceName');
         this.props.form.getFieldDecorator('details[0].detailName');
-        const dateBlock = this._renderDateBlock();
-        const clientsSearchTable = this._renderClientSearchTable();
+
+        const formHeader = this._renderFormHeader();
         const clientBlock = this._renderClientBlock();
-        const totalBlock = this._renderTotalBlock();
+        const clientsSearchTable = this._renderClientSearchTable();
+        const tabs = this._renderTabs();
 
         return (
             <Form className={ Styles.form } layout='horizontal'>
-                { dateBlock }
+                { formHeader }
                 { clientsSearchTable }
                 { clientBlock }
-                { totalBlock }
+                { tabs }
+                <AddClientModal
+                    searchQuery={ this.props.form.getFieldValue(
+                        'searchClientQuery',
+                    ) }
+                    wrappedComponentRef={ this._saveFormRef }
+                    visible={ this.props.modal }
+                    resetModal={ this.props.resetModal }
+                    addClientFormData={ this.props.addClientFormData }
+                />
             </Form>
         );
     }
 
-    saveFormRef = formRef => {
-        this.formRef = formRef;
-    };
-
-    _renderClientSearchTable = () => {
-        const {
-            searchClientsResult: { searching: clientsSearching, clients },
-            setClientSelection,
-            form,
-        } = this.props;
+    _renderFormHeader = () => {
+        const dateBlock = this._renderDateBlock();
+        const masterBlock = this._renderMasterBlock();
+        const totalBlock = this._renderTotalBlock();
 
         return (
-            <ClientsSearchTable
-                clientsSearching={ clientsSearching }
-                setClientSelection={ setClientSelection }
-                visible={ form.getFieldValue('searchClientQuery') }
-                clients={ clients }
-            />
+            <div className={ Styles.formHeader }>
+                { dateBlock }
+                { masterBlock }
+                { totalBlock }
+            </div>
         );
     };
 
+    /* eslint-disable complexity */
     _renderDateBlock = () => {
-        const {
-            stations,
-            managers,
-            location,
-            employees,
-            fetchedOrder,
-            authentificatedManager,
-        } = this.props;
+        const { stations, location, fetchedOrder, schedule } = this.props;
         const { formatMessage } = this.props.intl;
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
 
-        const beginDate = this.props.form.getFieldValue('beginDate');
+        const beginDate = getFieldValue('beginDate');
         const {
             disabledDate,
             disabledHours,
             disabledMinutes,
             disabledSeconds,
-        } = getDateTimeConfig(moment(beginDate), this.props.schedule);
+        } = getDateTimeConfig(moment(beginDate), schedule);
 
         return (
             <div className={ Styles.datePanel }>
@@ -161,6 +161,32 @@ export class OrderForm extends Component {
                             : void 0
                     }
                 />
+                <DecoratedSelect
+                    field='station'
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'provide station',
+                        },
+                    ] }
+                    formItem
+                    label={ <FormattedMessage id='add_order_form.station' /> }
+                    colon={ false }
+                    hasFeedback
+                    className={ Styles.datePanelItem }
+                    getFieldDecorator={ getFieldDecorator }
+                    placeholder={
+                        <FormattedMessage id='add_order_form.select_station' />
+                    }
+                    options={ stations }
+                    optionValue='num'
+                    optionLabel='name'
+                    initialValue={
+                        _.get(location, 'state.stationNum') ||
+                        _.get(fetchedOrder, 'order.stationNum') ||
+                        _.get(stations, '[0].num')
+                    }
+                />
                 <DecoratedTimePicker
                     formItem
                     field='beginTime'
@@ -189,32 +215,22 @@ export class OrderForm extends Component {
                             : void 0
                     }
                 />
-                <DecoratedSelect
-                    field='station'
-                    rules={ [
-                        {
-                            required: true,
-                            message:  'provide station',
-                        },
-                    ] }
-                    formItem
-                    label={ <FormattedMessage id='add_order_form.station' /> }
-                    colon={ false }
-                    hasFeedback
-                    className={ Styles.datePanelItem }
-                    getFieldDecorator={ getFieldDecorator }
-                    placeholder={
-                        <FormattedMessage id='add_order_form.select_station' />
-                    }
-                    options={ stations }
-                    optionValue='num'
-                    optionLabel='name'
-                    initialValue={
-                        _.get(location, 'state.stationNum') ||
-                        _.get(fetchedOrder, 'order.stationNum') ||
-                        _.get(stations, '[0].num')
-                    }
-                />
+            </div>
+        );
+    };
+
+    _renderMasterBlock = () => {
+        const {
+            fetchedOrder,
+            managers,
+            employees,
+            authentificatedManager,
+        } = this.props;
+
+        const { getFieldDecorator } = this.props.form;
+
+        return (
+            <div className={ Styles.masterBlock }>
                 <DecoratedSelect
                     field='manager'
                     formItem
@@ -302,6 +318,86 @@ export class OrderForm extends Component {
         );
     };
 
+    _renderTotalBlock = () => {
+        const { form, fetchedOrder } = this.props;
+
+        const { getFieldDecorator } = this.props.form;
+
+        const { price: priceDetails } = detailsStats(
+            form.getFieldsValue().details || [],
+        );
+
+        const { price: priceServices } = servicesStats(
+            form.getFieldsValue().services || [],
+            this.props.allServices,
+        );
+
+        const servicesDiscount = form.getFieldsValue().servicesDiscount || 0;
+        const detailsDiscount = form.getFieldsValue().detailsDiscount || 0;
+
+        const detailsTotalPrice =
+            priceDetails - priceDetails * (detailsDiscount / 100);
+        const servicesTotalPrice =
+            priceServices - priceServices * (servicesDiscount / 100);
+
+        const totalPrice = detailsTotalPrice + servicesTotalPrice;
+
+        return (
+            <div className={ Styles.totalBlock }>
+                <FormItem>
+                    <div className={ Styles.total }>
+                        <FormattedMessage id='add_order_form.total' />
+                        <span className={ Styles.totalSum }>
+                            { totalPrice }
+                            <FormattedMessage id='currency' />
+                        </span>
+                    </div>
+                </FormItem>
+                <DecoratedSelect
+                    field='paymentMethod'
+                    initialValue={ _.get(fetchedOrder, 'order.paymentMethod') }
+                    formItem
+                    colon={ false }
+                    getFieldDecorator={ getFieldDecorator }
+                    formItemLayout={ formItemTotalLayout }
+                    label={
+                        <FormattedMessage id='add_order_form.payment_method' />
+                    }
+                >
+                    <Option value='cash'>
+                        <Icon type='wallet' /> Нал
+                    </Option>
+                    <Option value='noncash'>
+                        <Icon type='credit-card' /> Безнал
+                    </Option>
+                    <Option value='visa'>
+                        <Icon type='credit-card' /> Visa
+                    </Option>
+                </DecoratedSelect>
+                <DecoratedSelect
+                    field='requisite'
+                    initialValue={ _.get(
+                        fetchedOrder,
+                        'order.businessRequisiteId',
+                    ) }
+                    formItem
+                    label={
+                        <FormattedMessage id='add_order_form.service_requisites' />
+                    }
+                    formItemLayout={ formItemTotalLayout }
+                    getFieldDecorator={ getFieldDecorator }
+                    placeholder={
+                        <FormattedMessage id='add_order_form.select_requisites' />
+                    }
+                    options={ this.props.requisites }
+                    optionValue='id'
+                    optionLabel='name'
+                    optionDisabled='disabled'
+                />
+            </div>
+        );
+    };
+
     _renderClientBlock = () => {
         const clientColumn = this._renderClientColumn();
         const vehicleColumn = this._renderVehicleColumn();
@@ -314,9 +410,25 @@ export class OrderForm extends Component {
         );
     };
 
+    _renderClientSearchTable = () => {
+        const {
+            searchClientsResult: { searching: clientsSearching, clients },
+            setClientSelection,
+        } = this.props;
+        const { getFieldValue } = this.props.form;
+
+        return (
+            <ClientsSearchTable
+                clientsSearching={ clientsSearching }
+                setClientSelection={ setClientSelection }
+                visible={ getFieldValue('searchClientQuery') }
+                clients={ clients }
+            />
+        );
+    };
+
     _renderClientColumn = () => {
-        const { selectedClient, fetchedOrder, user } = this.props;
-        const { ACCESS_ORDER_COMMENTS } = permissions;
+        const { selectedClient, fetchedOrder } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -429,26 +541,25 @@ export class OrderForm extends Component {
                         </Option>
                     )) }
                 </DecoratedSelect>
-                <DecoratedTextArea
+                <DecoratedSelect
+                    field='clientRequisite'
+                    initialValue={ _.get(
+                        fetchedOrder,
+                        'order.clientRequisiteId',
+                    ) }
                     formItem
                     label={
-                        <FormattedMessage id='add_order_form.client_comments' />
+                        <FormattedMessage id='add_order_form.client_requisites' />
                     }
-                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
+                    formItemLayout={ formItemTotalLayout }
                     getFieldDecorator={ getFieldDecorator }
-                    field='comment'
-                    initialValue={ _.get(fetchedOrder, 'order.comment') }
-                    rules={ [
-                        {
-                            max:     2000,
-                            message: 'Too much',
-                        },
-                    ] }
-                    placeholder={ formatMessage({
-                        id:             'add_order_form.client_comments',
-                        defaultMessage: 'Client_comments',
-                    }) }
-                    autosize={ { minRows: 2, maxRows: 6 } }
+                    placeholder={
+                        <FormattedMessage id='add_order_form.select_requisites' />
+                    }
+                    options={ selectedClient.requisites }
+                    optionValue='id'
+                    optionLabel='name'
+                    optionDisabled='disabled'
                 />
             </div>
         );
@@ -554,15 +665,62 @@ export class OrderForm extends Component {
         );
     };
 
-    _renderTotalBlock = () => {
-        const {
-            selectedClient,
-            orderTasks,
-            form,
-            setModal,
-            fetchedOrder,
-        } = this.props;
+    _renderCommentsBlock = () => {
+        const { fetchedOrder, user } = this.props;
+        const { ACCESS_ORDER_COMMENTS } = permissions;
+        const { getFieldDecorator } = this.props.form;
+        const { formatMessage } = this.props.intl;
 
+        return (
+            <div className={ Styles.commentsBlock }>
+                <DecoratedTextArea
+                    formItem
+                    label={
+                        <FormattedMessage id='add_order_form.client_comments' />
+                    }
+                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
+                    getFieldDecorator={ getFieldDecorator }
+                    field='comment'
+                    initialValue={ _.get(fetchedOrder, 'order.comment') }
+                    rules={ [
+                        {
+                            max:     2000,
+                            message: 'Too much',
+                        },
+                    ] }
+                    placeholder={ formatMessage({
+                        id:             'add_order_form.client_comments',
+                        defaultMessage: 'Client_comments',
+                    }) }
+                    autosize={ { minRows: 2, maxRows: 6 } }
+                />
+                <DecoratedTextArea
+                    formItem
+                    label={
+                        <FormattedMessage id='add_order_form.client_comments' />
+                    }
+                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
+                    getFieldDecorator={ getFieldDecorator }
+                    field='comment'
+                    initialValue={ _.get(fetchedOrder, 'order.comment') }
+                    rules={ [
+                        {
+                            max:     2000,
+                            message: 'Too much',
+                        },
+                    ] }
+                    placeholder={ formatMessage({
+                        id:             'add_order_form.client_comments',
+                        defaultMessage: 'Client_comments',
+                    }) }
+                    autosize={ { minRows: 2, maxRows: 6 } }
+                />
+            </div>
+        );
+    };
+
+    _renderTabs = () => {
+        const { form, orderTasks, setModal, allServices } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -574,135 +732,29 @@ export class OrderForm extends Component {
             count: countServices,
             price: priceServices,
             totalHours,
-        } = servicesStats(
-            form.getFieldsValue().services || [],
-            this.props.allServices,
-        );
+        } = servicesStats(form.getFieldsValue().services || [], allServices);
 
-        const servicesDiscount = form.getFieldsValue().servicesDiscount || 0;
-        const detailsDiscount = form.getFieldsValue().detailsDiscount || 0;
         const comments = form.getFieldsValue([ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);
-
-        const detailsTotalPrice =
-            priceDetails - priceDetails * (detailsDiscount / 100);
-        const servicesTotalPrice =
-            priceServices - priceServices * (servicesDiscount / 100);
-
-        const totalPrice = detailsTotalPrice + servicesTotalPrice;
 
         const commentsCollection = _.values(comments);
         const commentsCount = commentsCollection.filter(Boolean).length;
 
         return (
-            <>
-                <div className={ Styles.totalBlock }>
-                    <div className={ Styles.totalBlockCol }>
-                        <DecoratedSelect
-                            field='requisite'
-                            initialValue={ _.get(
-                                fetchedOrder,
-                                'order.businessRequisiteId',
-                            ) }
-                            formItem
-                            label={
-                                <FormattedMessage id='add_order_form.service_requisites' />
-                            }
-                            formItemLayout={ formItemTotalLayout }
-                            getFieldDecorator={ getFieldDecorator }
-                            placeholder={
-                                <FormattedMessage id='add_order_form.select_requisites' />
-                            }
-                            options={ this.props.requisites }
-                            optionValue='id'
-                            optionLabel='name'
-                            optionDisabled='disabled'
-                        />
-                        <DecoratedSelect
-                            field='clientRequisite'
-                            initialValue={ _.get(
-                                fetchedOrder,
-                                'order.clientRequisiteId',
-                            ) }
-                            formItem
-                            label={
-                                <FormattedMessage id='add_order_form.client_requisites' />
-                            }
-                            formItemLayout={ formItemTotalLayout }
-                            getFieldDecorator={ getFieldDecorator }
-                            placeholder={
-                                <FormattedMessage id='add_order_form.select_requisites' />
-                            }
-                            options={ selectedClient.requisites }
-                            optionValue='id'
-                            optionLabel='name'
-                            optionDisabled='disabled'
-                        />
-                    </div>
-                    <div className={ Styles.totalBlockCol }>
-                        <DecoratedSelect
-                            field='paymentMethod'
-                            initialValue={ _.get(
-                                fetchedOrder,
-                                'order.paymentMethod',
-                            ) }
-                            formItem
-                            colon={ false }
-                            getFieldDecorator={ getFieldDecorator }
-                            formItemLayout={ formItemTotalLayout }
-                            label={
-                                <FormattedMessage id='add_order_form.payment_method' />
-                            }
-                            // placeholder={
-                            //     <FormattedMessage id='add_order_form.select_payment_method' />
-                            // }
-                        >
-                            <Option value='cash'>
-                                <Icon type='wallet' /> Нал
-                            </Option>
-                            <Option value='noncash'>
-                                <Icon type='credit-card' /> Безнал
-                            </Option>
-                            <Option value='visa'>
-                                <Icon type='credit-card' /> Visa
-                            </Option>
-                        </DecoratedSelect>
-                        <FormItem>
-                            <div className={ Styles.total }>
-                                <FormattedMessage id='add_order_form.total' />
-                                <span className={ Styles.totalSum }>
-                                    { totalPrice }
-                                    <FormattedMessage id='currency' />
-                                </span>
-                            </div>
-                        </FormItem>
-                    </div>
-                </div>
-                <OrderFormTabs
-                    { ...this.props }
-                    initOrderTasksForm={ this.props.initOrderTasksForm }
-                    // changeModalStatus={ this.props.changeModalStatus }
-                    formatMessage={ formatMessage }
-                    getFieldDecorator={ getFieldDecorator }
-                    form={ form }
-                    totalHours={ totalHours }
-                    countServices={ countServices }
-                    countDetails={ countDetails }
-                    priceServices={ priceServices }
-                    priceDetails={ priceDetails }
-                    setModal={ setModal }
-                    orderTasks={ orderTasks }
-                    commentsCount={ commentsCount }
-                />
-                <AddClientModal
-                    searchQuery={ this.props.form.getFieldValue(
-                        'searchClientQuery',
-                    ) }
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ this.props.modal }
-                    resetModal={ this.props.resetModal }
-                    addClientFormData={ this.props.addClientFormData }
-                />
-            </>
+            <OrderFormTabs
+                { ...this.props }
+                initOrderTasksForm={ this.props.initOrderTasksForm }
+                formatMessage={ formatMessage }
+                getFieldDecorator={ getFieldDecorator }
+                form={ form }
+                totalHours={ totalHours }
+                countServices={ countServices }
+                countDetails={ countDetails }
+                priceServices={ priceServices }
+                priceDetails={ priceDetails }
+                setModal={ setModal }
+                orderTasks={ orderTasks }
+                commentsCount={ commentsCount }
+            />
         );
     };
 }
