@@ -42,12 +42,25 @@ import Styles from './styles.m.css';
     }),
 })
 export class OrderForm extends Component {
-    state = {};
+
+    state = {
+        formValues: {},
+    };
 
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
         this.setState({ initialized: true });
     }
+
+    // TODO BODYA
+    // componentDidUpdate(prevProps, prevState) {
+    //     const { formValues: prevFormValues } = prevState;
+    //     const formValues = this.props.form.getFieldsValue();
+    //
+    //     if (!_.isEqual(formValues, prevFormValues)) {
+    //         this.setState({ formValues });
+    //     }
+    // }
 
     _saveFormRef = formRef => {
         this.formRef = formRef;

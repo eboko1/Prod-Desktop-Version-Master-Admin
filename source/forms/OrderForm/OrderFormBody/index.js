@@ -206,6 +206,7 @@ export default class OrderFormBody extends Component {
         const { selectedClient, fetchedOrder } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
+
         const selectedVehicleId = getFieldValue('clientVehicle');
 
         const selectedVehicle =

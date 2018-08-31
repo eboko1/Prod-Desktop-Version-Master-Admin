@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Table } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
@@ -30,9 +31,34 @@ class DetailsTable extends Component {
                 key:       'phones',
             },
             {
-                title:     'client emails',
-                dataIndex: 'emails',
-                key:       'emails',
+                title:  'vehicle',
+                key:    'vehicle',
+                render: client => {
+                    const vehicle = _.get(client, 'vehicles[0]');
+                    if (!vehicle) {
+                        return '';
+                    }
+
+                    return vehicle.model
+                        ? `${vehicle.make} ${vehicle.model} (${vehicle.year})`
+                        : '';
+                },
+            },
+            {
+                title:  'vehicle',
+                key:    'vin',
+                render: client => {
+                    const vehicle = _.get(client, 'vehicles[0]');
+                    if (!vehicle) {
+                        return '';
+                    }
+
+                    const vin = vehicle.vin || '';
+
+                    return vehicle.number
+                        ? vehicle.number + ' ' + vin
+                        : vehicle.vin;
+                },
             },
         ];
     }
