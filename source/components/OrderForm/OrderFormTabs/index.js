@@ -48,11 +48,15 @@ export class OrderFormTabs extends Component {
             ACCESS_ORDER_HISTORY,
             ACCESS_ORDER_CALLS,
             ACCESS_ORDER_COMMENTS,
+            ACCESS_ORDER_SERVICES,
+            ACCESS_ORDER_DETAILS,
         } = permissions;
 
         const isHistoryForbidden = isForbidden(user, ACCESS_ORDER_HISTORY);
         const areCallsForbidden = isForbidden(user, ACCESS_ORDER_CALLS);
         const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_COMMENTS);
+        const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
+        const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
 
         return (
             <Tabs type='card'>
@@ -96,6 +100,7 @@ export class OrderFormTabs extends Component {
                 >
                     <ServicesTable { ...this.props } />
                     <DiscountPanel
+                        forbidden={ areServicesForbidden }
                         price={ priceServices }
                         discountFieldName={ 'servicesDiscount' }
                         { ...this.props }
@@ -118,6 +123,7 @@ export class OrderFormTabs extends Component {
                     <DiscountPanel
                         { ...this.props }
                         price={ priceDetails }
+                        forbidden={ areDetailsForbidden }
                         discountFieldName={ 'detailsDiscount' }
                         getFieldDecorator={ getFieldDecorator }
                     />

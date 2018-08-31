@@ -125,11 +125,11 @@ export function convertFieldsValuesToDbEntity(
                 : orderEntity,
         orderEntity =>
             isForbidden(user, permissions.ACCESS_ORDER_SERVICES)
-                ? _.omit(orderEntity, [ 'services' ])
+                ? _.omit(orderEntity, [ 'services', 'servicesDiscount' ])
                 : orderEntity,
         orderEntity =>
             isForbidden(user, permissions.ACCESS_ORDER_DETAILS)
-                ? _.omit(orderEntity, [ 'details' ])
+                ? _.omit(orderEntity, [ 'details', 'detailsDiscount' ])
                 : orderEntity,
     ];
 
