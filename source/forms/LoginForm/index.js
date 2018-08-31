@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Form, Button } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
 import { onChangeLoginForm, login } from 'core/forms/loginForm/duck';
@@ -12,6 +12,7 @@ import { withReduxForm } from 'utils';
 // own
 import Styles from './loginForm.m.css';
 
+@injectIntl
 @withReduxForm({
     name:    'loginForm',
     actions: {
@@ -32,24 +33,25 @@ export class LoginForm extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
+        const { formatMessage } = this.props.intl;
 
         return (
             <Form className={ Styles.loginForm } onSubmit={ this._submit }>
                 <DecoratedInput
                     formItem
-                    label='Имя пользователя'
+                    label={ <FormattedMessage id='login_form.login' /> }
                     field='login'
                     getFieldDecorator={ getFieldDecorator }
-                    rules={ [{ required: true, message: 'Login is required!' }] }
-                    placeholder='Введите имя пользователя'
+                    rules={ [{ required: true, message: formatMessage({id: 'login_form.login_is_required'}) }] }
+                    placeholder={ formatMessage({id: 'login_form.enter_login'}) }
                 />
                 <DecoratedInput
                     formItem
-                    label='Пароль'
+                    label={ <FormattedMessage id='login_form.password' /> }
                     field='password'
                     getFieldDecorator={ getFieldDecorator }
-                    rules={ [{ required: true, message: 'Password is required!' }] }
-                    placeholder='Введите имя пользователя'
+                    rules={ [{ required: true, message: formatMessage({id: 'login_form.password_is_required'}) }] }
+                    placeholder={ formatMessage({id: 'login_form.enter_password'}) }
                     type='password'
                 />
                 <Button type='primary' htmlType='submit'>

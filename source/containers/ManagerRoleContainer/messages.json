@@ -5,7 +5,7 @@
       "manager-role-container.manager_surname": "Manager surname",
       "manager-role-container.roles": "Roles",
       "manager-role-container.edit_form_title": "Edit manager's roles",
-      "business-package-container.search": "Search"
+      "manager-role-container.search": "Search"
     },
     "ru": {
       "manager-role-container.business_name": "Название бизнеса",
@@ -13,7 +13,7 @@
       "manager-role-container.manager_surname": "Фамилия менеджера",
       "manager-role-container.roles": "Роли",
       "manager-role-container.edit_form_title": "Редактировать роли менеджера",
-      "business-package-container.search": "Поиск"
+      "manager-role-container.search": "Поиск"
     },
     "uk": {
       "manager-role-container.business_name": "Назва бізнеса",
@@ -21,6 +21,6 @@
       "manager-role-container.manager_surname": "Прізвище менеджера",
       "manager-role-container.roles": "Ролі",
       "manager-role-container.edit_form_title": "Редагувати ролі менеджера",
-      "business-package-container.search": "Пошук"
+      "manager-role-container.search": "Пошук"
     }
 }

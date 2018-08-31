@@ -114,7 +114,7 @@ class AddOrderPage extends Component {
             <Spinner spin={ spinner } />
         ) : (
             <Layout
-                title={ <FormattedMessage id='add-order-page.add_order' /> }
+                title={ <FormattedMessage id='orders-page.add_appointment' /> }
                 controls={
                     <>
                         <div>

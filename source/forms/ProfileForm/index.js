@@ -113,7 +113,7 @@ export class ProfileForm extends Component {
 
                 <FormItem wrapperCol={ { span: 12, offset: 6 } }>
                     <Button type='primary' htmlType='submit'>
-                        Submit
+                        <FormattedMessage id='submit' />
                     </Button>
                 </FormItem>
             </Form>

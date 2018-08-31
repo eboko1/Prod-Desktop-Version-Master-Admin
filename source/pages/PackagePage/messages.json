@@ -1,14 +1,14 @@
 {
     "en": {
-        "packages": "Package",
-        "packages.back_to_roles": "Get baack to roles"
+        "packages": "Packages",
+        "packages.back_to_roles": "Get Back To Roles"
     },
     "ru": {
         "packages": "Пакеты",
-        "packages.back_to_roles": "Вернуться к ролям"
+        "packages.back_to_roles": "Вернуться К Ролям"
     },
     "uk": {
         "packages": "Пакети",
-        "packages.back_to_roles": "Повернутися до ролей"
+        "packages.back_to_roles": "Повернутися До Ролей"
     }
 }

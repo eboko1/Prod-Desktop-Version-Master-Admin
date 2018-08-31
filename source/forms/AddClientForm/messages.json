@@ -23,6 +23,7 @@
         "add_client_form.emails": "Email",
         "add_client_form.add_email": "Add email",
         "add_client_form.required_field": "Required field",
+        "add_client_form.delete_vehicle": "Delete Vehicle",
         "add_client_form.male": "Male",
         "add_client_form.female": "Female",
         "add_client_form.permanent": "Permanent",
