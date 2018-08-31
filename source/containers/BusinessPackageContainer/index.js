@@ -8,6 +8,7 @@ import moment from 'moment';
 
 // proj
 import {
+    fetchBusinessPackages,
     createBusinessPackage,
     updateBusinessPackage,
     setSort,
@@ -36,6 +37,7 @@ const mapDispatchToProps = {
     hideForms,
     setShowCreateBusinessPackageForm,
     setShowUpdateBusinessPackageForm,
+    fetchBusinessPackages,
 };
 
 const mapStateToProps = state => ({
@@ -48,6 +50,7 @@ const mapStateToProps = state => ({
     sort:             state.businessPackage.sort,
     filters:          state.businessPackage.filters,
     page:             state.businessPackage.page,
+    isFetching:       state.ui.businessPackageFetching,
 });
 
 const formItemLayout = {
@@ -135,6 +138,10 @@ export default class BusinessPackageContainer extends Component {
                 ),
             },
         ];
+    }
+
+    componentDidMount() {
+        this.props.fetchBusinessPackages();
     }
 
     _handleColumnOrder = (sort, fieldName) =>
@@ -235,6 +242,7 @@ export default class BusinessPackageContainer extends Component {
                 </Form>
                 <Table
                     size='small'
+                    loading={ this.props.isFetching }
                     rowClassName={ record =>
                         moment(record.expirationDatetime).isBefore(moment())
                             ? Styles.expiredRaw

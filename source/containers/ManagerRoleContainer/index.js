@@ -13,6 +13,7 @@ import {
     setFilters,
     hideForms,
     setSearchQuery,
+    fetchManagerRoles,
     setShowUpdateManagerRoleForm,
 } from 'core/managerRole/duck';
 
@@ -27,6 +28,7 @@ const FormItem = Form.Item;
 
 const mapDispatchToProps = {
     updateManagerRole,
+    fetchManagerRoles,
     setSort,
     setPage,
     setFilters,
@@ -44,6 +46,7 @@ const mapStateToProps = state => ({
     page:         state.managerRole.page,
     count:        state.managerRole.count,
     searchQuery:  state.managerRole.searchQuery,
+    isFetching:   state.ui.managerRoleFetching,
 });
 
 const formItemLayout = {
@@ -115,6 +118,10 @@ export default class ManagerRoleContainer extends Component {
                 ),
             },
         ];
+    }
+
+    componentDidMount() {
+        this.props.fetchManagerRoles();
     }
 
     _handleColumnOrder = (sort, fieldName) =>
@@ -190,6 +197,7 @@ export default class ManagerRoleContainer extends Component {
                 </Form>
                 <Table
                     size='small'
+                    loading={ this.props.isFetching }
                     rowKey={ record => record.managerId }
                     onChange={ this._handleTableChange }
                     pagination={ pagination }
