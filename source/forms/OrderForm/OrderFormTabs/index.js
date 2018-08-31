@@ -20,7 +20,7 @@ import {
 import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
-export class OrderFormTabs extends Component {
+export default class OrderFormTabs extends Component {
     render() {
         const {
             addOrderForm,
