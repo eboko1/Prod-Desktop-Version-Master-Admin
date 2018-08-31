@@ -12,7 +12,7 @@ import {
     DecoratedTimePicker,
     DecoratedSelect,
 } from 'forms/DecoratedFields';
-import { getDateTimeConfig } from 'utils';
+import { getDateTimeConfig, permissions, isForbidden } from 'utils';
 
 // own
 import { servicesStats, detailsStats } from '../stats';
@@ -22,6 +22,10 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 export default class OrderFormHeader extends Component {
+    bodyUpdateIsForbidden() {
+        return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
+    }
+
     render() {
         const dateBlock = this._renderDateBlock();
         const masterBlock = this._renderMasterBlock();
@@ -49,10 +53,21 @@ export default class OrderFormHeader extends Component {
             disabledSeconds,
         } = getDateTimeConfig(moment(beginDate), schedule);
 
+        const beginDatetime =
+            _.get(fetchedOrder, 'order.beginDatetime') ||
+            (this.bodyUpdateIsForbidden()
+                ? void 0
+                : _.get(location, 'state.beginDatetime'));
+
+        const momentBeginDatetime = beginDatetime
+            ? moment(beginDatetime)
+            : void 0;
+
         return (
             <div className={ Styles.datePanel }>
                 <DecoratedDatePicker
                     getFieldDecorator={ getFieldDecorator }
+                    disabled={ this.bodyUpdateIsForbidden() }
                     field='beginDate'
                     hasFeedback
                     formItem
@@ -74,15 +89,7 @@ export default class OrderFormHeader extends Component {
                     disabledDate={ disabledDate }
                     format={ 'YYYY-MM-DD' } // HH:mm
                     showTime={ false }
-                    initialValue={
-                        _.get(fetchedOrder, 'order.beginDatetime') ||
-                        _.get(location, 'state.beginDatetime')
-                            ? moment(
-                                _.get(fetchedOrder, 'order.beginDatetime') ||
-                                      _.get(location, 'state.beginDatetime'),
-                            )
-                            : void 0
-                    }
+                    initialValue={ momentBeginDatetime }
                 />
                 <DecoratedSelect
                     field='station'
@@ -104,14 +111,18 @@ export default class OrderFormHeader extends Component {
                     options={ stations }
                     optionValue='num'
                     optionLabel='name'
+                    disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={
-                        _.get(location, 'state.stationNum') ||
-                        _.get(fetchedOrder, 'order.stationNum') ||
-                        _.get(stations, '[0].num')
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : _.get(location, 'state.stationNum') ||
+                              _.get(stations, '[0].num')) ||
+                        _.get(fetchedOrder, 'order.stationNum')
                     }
                 />
                 <DecoratedTimePicker
                     formItem
+                    disabled={ this.bodyUpdateIsForbidden() }
                     field='beginTime'
                     hasFeedback
                     disabledHours={ disabledHours }
@@ -128,15 +139,7 @@ export default class OrderFormHeader extends Component {
                         },
                     ] }
                     minuteStep={ 30 }
-                    initialValue={
-                        _.get(fetchedOrder, 'order.beginDatetime') ||
-                        _.get(location, 'state.beginDatetime')
-                            ? moment(
-                                _.get(fetchedOrder, 'order.beginDatetime') ||
-                                      _.get(location, 'state.beginDatetime'),
-                            )
-                            : void 0
-                    }
+                    initialValue={ momentBeginDatetime }
                 />
             </div>
         );
@@ -170,8 +173,11 @@ export default class OrderFormHeader extends Component {
                     className={ Styles.datePanelItem }
                     initialValue={
                         _.get(fetchedOrder, 'order.managerId') ||
-                        authentificatedManager
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : authentificatedManager)
                     }
+                    disabled={ this.bodyUpdateIsForbidden() }
                     placeholder='Выберете менеджера'
                 >
                     { managers.map(manager => (
@@ -190,6 +196,7 @@ export default class OrderFormHeader extends Component {
                 >
                     <DecoratedSelect
                         field='employee'
+                        disabled={ this.bodyUpdateIsForbidden() }
                         getFieldDecorator={ getFieldDecorator }
                         initialValue={ _.get(fetchedOrder, 'order.employeeId') }
                     >
@@ -212,19 +219,8 @@ export default class OrderFormHeader extends Component {
                 >
                     <DecoratedSelect
                         field='appurtenanciesResponsible'
+                        disabled={ this.bodyUpdateIsForbidden() }
                         getFieldDecorator={ getFieldDecorator }
-                        onSelect={ value => {
-                            const services = this.props.form.getFieldValue(
-                                'services',
-                            );
-
-                            const updatedServices = _(services)
-                                .keys()
-                                .map(serviceKey => [ `services[${serviceKey}][appurtenanciesResponsibleId]`, value ])
-                                .fromPairs()
-                                .value();
-                            this.props.form.setFieldsValue(updatedServices);
-                        } }
                     >
                         { employees.map(employee => (
                             <Option
@@ -277,11 +273,12 @@ export default class OrderFormHeader extends Component {
                 </FormItem>
                 <DecoratedSelect
                     field='paymentMethod'
+                    disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={ _.get(fetchedOrder, 'order.paymentMethod') }
                     formItem
                     colon={ false }
                     getFieldDecorator={ getFieldDecorator }
-                    // formItemLayout={ formItemTotalLayout }
+                    formItemLayout={ formItemTotalLayout }
                     label={
                         <FormattedMessage id='add_order_form.payment_method' />
                     }
@@ -298,6 +295,7 @@ export default class OrderFormHeader extends Component {
                 </DecoratedSelect>
                 <DecoratedSelect
                     field='requisite'
+                    disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={ _.get(
                         fetchedOrder,
                         'order.businessRequisiteId',
@@ -306,7 +304,7 @@ export default class OrderFormHeader extends Component {
                     label={
                         <FormattedMessage id='add_order_form.service_requisites' />
                     }
-                    // formItemLayout={ formItemTotalLayout }
+                    formItemLayout={ formItemTotalLayout }
                     getFieldDecorator={ getFieldDecorator }
                     placeholder={
                         <FormattedMessage id='add_order_form.select_requisites' />

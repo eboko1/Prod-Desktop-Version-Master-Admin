@@ -255,6 +255,8 @@ class ServicesTable extends Component {
         const { getFieldDecorator, totalHours, fetchedOrder } = this.props;
         const { keys } = this.state;
 
+        const editBodyForbidden = isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
+
         const columns = this.columns;
 
         return (
@@ -269,6 +271,7 @@ class ServicesTable extends Component {
                     <DecoratedSlider
                         className={ Styles.durationPanelItem }
                         formItem
+                        disabled={ editBodyForbidden }
                         initDuration={
                             _.get(fetchedOrder, 'order.duration') || totalHours
                         }
@@ -286,6 +289,7 @@ class ServicesTable extends Component {
                         }
                         className={ Styles.durationPanelItem }
                         field='employee'
+                        disabled={ editBodyForbidden }
                         initialValue={ _.get(fetchedOrder, 'order.employeeId') }
                         getFieldDecorator={ getFieldDecorator }
                     >

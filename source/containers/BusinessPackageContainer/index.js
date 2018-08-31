@@ -8,6 +8,7 @@ import moment from 'moment';
 
 // proj
 import {
+    fetchBusinessPackages,
     createBusinessPackage,
     updateBusinessPackage,
     setSort,
@@ -36,6 +37,7 @@ const mapDispatchToProps = {
     hideForms,
     setShowCreateBusinessPackageForm,
     setShowUpdateBusinessPackageForm,
+    fetchBusinessPackages,
 };
 
 const mapStateToProps = state => ({
@@ -48,6 +50,8 @@ const mapStateToProps = state => ({
     sort:             state.businessPackage.sort,
     filters:          state.businessPackage.filters,
     page:             state.businessPackage.page,
+    isFetching:       state.ui.businessPackageFetching,
+    businesses:       state.search.businesses,
 });
 
 const formItemLayout = {
@@ -135,6 +139,10 @@ export default class BusinessPackageContainer extends Component {
                 ),
             },
         ];
+    }
+
+    componentDidMount() {
+        this.props.fetchBusinessPackages();
     }
 
     _handleColumnOrder = (sort, fieldName) =>
@@ -227,7 +235,7 @@ export default class BusinessPackageContainer extends Component {
                     </FormItem>
                     <Button
                         style={ { alignSelf: 'normal' } }
-                        disabled={ !filters.businessId || !filters.packageId }
+                        disabled={ !filters.businessId }
                         onClick={ () => setShowCreateBusinessPackageForm(true) }
                     >
                         <FormattedMessage id='business-package-container.create' />
@@ -235,6 +243,7 @@ export default class BusinessPackageContainer extends Component {
                 </Form>
                 <Table
                     size='small'
+                    loading={ this.props.isFetching }
                     rowClassName={ record =>
                         moment(record.expirationDatetime).isBefore(moment())
                             ? Styles.expiredRaw
@@ -260,20 +269,12 @@ export default class BusinessPackageContainer extends Component {
                 >
                     <AddBusinessPackageForm
                         { ...filters }
+                        rolesPackages={ this.props.rolesPackages }
                         businessName={
                             filters.businessId &&
                             _.get(
                                 _.find(businesses, {
                                     businessId: filters.businessId,
-                                }),
-                                'name',
-                            )
-                        }
-                        packageName={
-                            filters.packageId &&
-                            _.get(
-                                _.find(rolesPackages, {
-                                    id: filters.packageId,
                                 }),
                                 'name',
                             )

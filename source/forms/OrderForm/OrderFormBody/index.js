@@ -26,6 +26,10 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 export default class OrderFormBody extends Component {
+    bodyUpdateIsForbidden() {
+        return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
+    }
+
     render() {
         const clientSearch = this._renderClientSearch();
         const clientColumn = this._renderClientColumn();
@@ -45,7 +49,6 @@ export default class OrderFormBody extends Component {
     }
 
     _renderClientSearch = () => {
-        const { order } = this.props;
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
@@ -65,7 +68,10 @@ export default class OrderFormBody extends Component {
                     <DecoratedInput
                         field='searchClientQuery'
                         getFieldDecorator={ getFieldDecorator }
-                        disabled={ Boolean(disabledClientSearch) }
+                        disabled={
+                            Boolean(disabledClientSearch) ||
+                            this.bodyUpdateIsForbidden()
+                        }
                         placeholder={ formatMessage({
                             id:             'add_order_form.client.placeholder',
                             defaultMessage: 'search client',
@@ -81,8 +87,8 @@ export default class OrderFormBody extends Component {
                     { hasClient && (
                         <a
                             href={ `${book.oldApp.clients}/${
-                                order.clientId
-                            }?ref=/orders/${order.id}` }
+                                this.props.order.clientId
+                            }?ref=/orders/${this.props.order.id}` }
                         >
                             <Icon
                                 type='edit'
@@ -124,9 +130,12 @@ export default class OrderFormBody extends Component {
                 <DecoratedSelect
                     label={ <FormattedMessage id='add_order_form.phone' /> }
                     field='clientPhone'
+                    disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={
                         _.get(fetchedOrder, 'order.clientPhone') ||
-                        _.get(selectedClient, 'phones[0]')
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : _.get(selectedClient, 'phones[0]'))
                     }
                     formItem
                     formItemLayout={ formItemLayout }
@@ -169,6 +178,7 @@ export default class OrderFormBody extends Component {
                     </DecoratedSelect>
                     <DecoratedSelect
                         field='clientRequisite'
+                        disabled={ this.bodyUpdateIsForbidden() }
                         initialValue={ _.get(
                             fetchedOrder,
                             'order.clientRequisiteId',
@@ -206,9 +216,12 @@ export default class OrderFormBody extends Component {
             <div className={ Styles.autoCol }>
                 <DecoratedSelect
                     field='clientVehicle'
+                    disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={
                         _.get(fetchedOrder, 'order.clientVehicleId') ||
-                        _.get(selectedClient, 'vehicles[0].id')
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : _.get(selectedClient, 'vehicles[0].id'))
                     }
                     formItem
                     hasFeedback
@@ -257,6 +270,7 @@ export default class OrderFormBody extends Component {
                 </div>
                 <DecoratedInputNumber
                     field='odometerValue'
+                    disabled={ this.bodyUpdateIsForbidden() }
                     formItem
                     initialValue={ _.get(fetchedOrder, 'order.odometerValue') }
                     colon={ false }

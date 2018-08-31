@@ -280,12 +280,15 @@ class OrderPage extends Component {
         const hideEditButton = isClosedStatus && !canEditClosedStatus;
         const disabledEditButton = hideEditButton || !canEdit;
 
+        const forbiddenUpdate = isForbidden(user, permissions.ACCESS_ORDER_STATUS);
+
         return {
             isClosedStatus,
             canEditClosedStatus,
             canEdit,
             hideEditButton,
             disabledEditButton,
+            forbiddenUpdate,
         };
     }
     /* eslint-disable complexity*/
@@ -314,6 +317,7 @@ class OrderPage extends Component {
             isClosedStatus,
             hideEditButton,
             disabledEditButton,
+            forbiddenUpdate,
         } = this.getSecurityConfig();
 
         return spinner ? (
@@ -372,6 +376,7 @@ class OrderPage extends Component {
                         ) : null}
 
                         <ChangeStatusDropdown
+                            user={ user }
                             orderStatus={ status }
                             onStatusChange={ this.onStatusChange }
                             setModal={ setModal }
@@ -402,7 +407,7 @@ class OrderPage extends Component {
                                 }
                             />
                         )}
-                        {!isClosedStatus && (
+                        {!isClosedStatus && !forbiddenUpdate && (
                             <Icon
                                 type='delete'
                                 style={ {

@@ -1,12 +1,14 @@
 //vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Button } from 'antd';
+import { Form, Button, Select } from 'antd';
+import _ from 'lodash';
 
+const Option = Select.Option;
 // proj
 import { onChangeBusinessPackageForm } from 'core/forms/addBusinessPackageForm/duck';
 
-import { DecoratedDatePicker } from 'forms/DecoratedFields';
+import { DecoratedDatePicker, DecoratedSelect } from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 
 // own
@@ -22,7 +24,7 @@ import Styles from './styles.m.css';
 export class AddBusinessPackageForm extends Component {
     render() {
         const { getFieldDecorator, validateFields } = this.props.form;
-        const { businessId, packageId, packageName, businessName } = this.props;
+        const { businessId, businessName } = this.props;
         const { formatMessage } = this.props.intl;
 
         return (
@@ -30,9 +32,32 @@ export class AddBusinessPackageForm extends Component {
                 <FormattedMessage id='add-business-package-form.business' />:{ ' ' }
                 <b>{ businessName }</b>
                 <br />
-                <FormattedMessage id='add-business-package-form.package' />:{ ' ' }
-                <b>{ packageName }</b>
-                <br />
+                <DecoratedSelect
+                    formItem
+                    getPopupContainer={ trigger => trigger.parentNode }
+                    getFieldDecorator={ getFieldDecorator }
+                    label={
+                        <FormattedMessage id='add-business-package-form.package' />
+                    }
+                    hasFeedback
+                    field='packageId'
+                    optionFilterProp='children'
+                    allowClear
+                    filterOption={ (input, option) =>
+                        Boolean(
+                            option.props.children
+                                .toLowerCase()
+                                .indexOf(input.toLowerCase() !== -1),
+                        )
+                    }
+                    showSearch
+                >
+                    { this.props.rolesPackages.map(({ id, name }) => (
+                        <Option key={ id } value={ id }>
+                            { name }
+                        </Option>
+                    )) }
+                </DecoratedSelect>
                 <DecoratedDatePicker
                     field={ 'activationDatetime' }
                     formItem
@@ -85,8 +110,8 @@ export class AddBusinessPackageForm extends Component {
                                 !err &&
                                 this.props.createBusinessPackage(
                                     businessId,
-                                    packageId,
-                                    values,
+                                    values.packageId,
+                                    _.omit(values, [ 'packageId' ]),
                                 ),
                         )
                     }

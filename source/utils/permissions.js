@@ -11,6 +11,7 @@ export const permissions = Object.freeze({
     ACCESS_ORDER_TASKS:    'ACCESS_ORDER_TASKS',
     CREATE_INVITE_ORDER:   'CREATE_INVITE_ORDER',
     CREATE_ORDER:          'CREATE_ORDER',
+    GRANT:                 'GRANT',
     PRINT_ORDERS:          'PRINT_ORDERS',
     SHOW_FILTERS:          'SHOW_FILTERS',
     SHOW_ORDERS:           'SHOW_ORDERS',
@@ -19,3 +20,5 @@ export const permissions = Object.freeze({
 
 export const isForbidden = ({ isAdmin, scope }, grant) =>
     !isAdmin && !(_.isArray(scope) && scope.includes(grant));
+
+export const isAdmin = ({ isAdmin }) => isAdmin;
