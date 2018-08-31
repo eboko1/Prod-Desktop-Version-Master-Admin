@@ -46,7 +46,10 @@ const mapDispatch = {
 };
 
 @withRouter
-@connect(mapState, mapDispatch)
+@connect(
+    mapState,
+    mapDispatch,
+)
 @withResponsive()
 class OrdersPage extends Component {
     getPageTitle() {
@@ -115,14 +118,16 @@ class OrdersPage extends Component {
                             { (status === 'cancel' || status === 'success') && (
                                 <Button
                                     type='primary'
-                                    disabled={ isForbidden(
-                                        user,
-                                        permissions.CREATE_ORDER,
-                                    ) ||
-                                    isForbidden(
-                                        user,
-                                        permissions.CREATE_INVITE_ORDER,
-                                    ) }
+                                    disabled={
+                                        isForbidden(
+                                            user,
+                                            permissions.CREATE_ORDER,
+                                        ) ||
+                                        isForbidden(
+                                            user,
+                                            permissions.CREATE_INVITE_ORDER,
+                                        )
+                                    }
                                     onClick={ () =>
                                         this.props.setModal(MODALS.INVITE)
                                     }
@@ -131,7 +136,13 @@ class OrdersPage extends Component {
                                 </Button>
                             ) }
                             <Link to={ book.addOrder }>
-                                <Button type='primary'>
+                                <Button
+                                    type='primary'
+                                    disabled={ isForbidden(
+                                        user,
+                                        permissions.CREATE_ORDER,
+                                    ) }
+                                >
                                     <FormattedMessage id='orders-page.add_appointment' />
                                 </Button>
                             </Link>

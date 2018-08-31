@@ -28,6 +28,7 @@ import { OrderFormTabs } from 'components/OrderForm/OrderFormTabs';
 import book from 'routes/book';
 import { AddClientModal } from 'modals';
 import { withReduxForm2, getDateTimeConfig, images } from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import { servicesStats, detailsStats } from './stats';
@@ -314,7 +315,8 @@ export class OrderForm extends Component {
     };
 
     _renderClientColumn = () => {
-        const { selectedClient, fetchedOrder } = this.props;
+        const { selectedClient, fetchedOrder, user } = this.props;
+        const { ACCESS_ORDER_COMMENTS } = permissions;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -432,6 +434,7 @@ export class OrderForm extends Component {
                     label={
                         <FormattedMessage id='add_order_form.client_comments' />
                     }
+                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
                     getFieldDecorator={ getFieldDecorator }
                     field='comment'
                     initialValue={ _.get(fetchedOrder, 'order.comment') }
