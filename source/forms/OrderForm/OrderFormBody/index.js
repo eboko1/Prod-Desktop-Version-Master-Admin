@@ -205,6 +205,7 @@ export default class OrderFormBody extends Component {
     _renderVehicleColumn = () => {
         const { selectedClient, fetchedOrder } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
+        const { formatMessage } = this.props.intl;
         const selectedVehicleId = getFieldValue('clientVehicle');
 
         const selectedVehicle =
@@ -241,9 +242,15 @@ export default class OrderFormBody extends Component {
                 >
                     { selectedClient.vehicles.map(vehicle => (
                         <Option value={ vehicle.id } key={ v4() }>
-                            { `${vehicle.make} ${
-                                vehicle.model
-                            } ${vehicle.number || vehicle.vin || ''}` }
+                            { vehicle.model
+                                ? `${vehicle.make} ${vehicle.model}
+                                ${vehicle.number ? ' ' + vehicle.number : ''}
+                                ${vehicle.vin ? ' ' + vehicle.vin : ''}`
+                                : `${formatMessage({
+                                    id: 'add_order_form.no_model',
+                                })}
+                                ${vehicle.number ? ' ' + vehicle.number : ''}
+                                ${vehicle.vin ? ' ' + vehicle.vin : ''}` }
                         </Option>
                     )) }
                 </DecoratedSelect>
