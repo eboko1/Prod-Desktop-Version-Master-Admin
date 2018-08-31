@@ -130,6 +130,16 @@ export class OrderForm extends Component {
             disabledSeconds,
         } = getDateTimeConfig(moment(beginDate), this.props.schedule);
 
+        const beginDatetime =
+            _.get(fetchedOrder, 'order.beginDatetime') ||
+            (this.bodyUpdateIsForbidden()
+                ? void 0
+                : _.get(location, 'state.beginDatetime'));
+        
+        const momentBeginDatetime = beginDatetime
+            ? moment(beginDatetime)
+            : void 0;
+
         return (
             <div className={ Styles.datePanel }>
                 <DecoratedDatePicker
@@ -156,23 +166,7 @@ export class OrderForm extends Component {
                     disabledDate={ disabledDate }
                     format={ 'YYYY-MM-DD' } // HH:mm
                     showTime={ false }
-                    initialValue={
-                        this.bodyUpdateIsForbidden()
-                            ? void 0
-                            : _.get(fetchedOrder, 'order.beginDatetime') ||
-                              _.get(location, 'state.beginDatetime')
-                                ? moment(
-                                    _.get(
-                                        fetchedOrder,
-                                        'order.beginDatetime',
-                                    ) ||
-                                          _.get(
-                                              location,
-                                              'state.beginDatetime',
-                                          ),
-                                )
-                                : void 0
-                    }
+                    initialValue={ momentBeginDatetime }
                 />
                 <DecoratedTimePicker
                     formItem
@@ -193,23 +187,7 @@ export class OrderForm extends Component {
                         },
                     ] }
                     minuteStep={ 30 }
-                    initialValue={
-                        this.bodyUpdateIsForbidden()
-                            ? void 0
-                            : _.get(fetchedOrder, 'order.beginDatetime') ||
-                              _.get(location, 'state.beginDatetime')
-                                ? moment(
-                                    _.get(
-                                        fetchedOrder,
-                                        'order.beginDatetime',
-                                    ) ||
-                                          _.get(
-                                              location,
-                                              'state.beginDatetime',
-                                          ),
-                                )
-                                : void 0
-                    }
+                    initialValue={ momentBeginDatetime }
                 />
                 <DecoratedSelect
                     field='station'
@@ -410,7 +388,9 @@ export class OrderForm extends Component {
                     disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={
                         _.get(fetchedOrder, 'order.clientPhone') ||
-                        (this.bodyUpdateIsForbidden() ? void 0 : _.get(selectedClient, 'phones[0]'))
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : _.get(selectedClient, 'phones[0]'))
                     }
                     formItem
                     formItemLayout={ formItemLayout }
@@ -442,7 +422,9 @@ export class OrderForm extends Component {
                     getFieldDecorator={ getFieldDecorator }
                     initialValue={
                         _.get(fetchedOrder, 'order.clientEmail') ||
-                        (this.bodyUpdateIsForbidden() ? void 0 : selectedClient.emails.find(Boolean))
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : selectedClient.emails.find(Boolean))
                     }
                     placeholder={ 'Choose selected client email' }
                 >
@@ -497,7 +479,9 @@ export class OrderForm extends Component {
                     disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={
                         _.get(fetchedOrder, 'order.clientVehicleId') ||
-                        (this.bodyUpdateIsForbidden() ? void 0 : _.get(selectedClient, 'vehicles[0].id'))
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : _.get(selectedClient, 'vehicles[0].id'))
                     }
                     formItem
                     hasFeedback
