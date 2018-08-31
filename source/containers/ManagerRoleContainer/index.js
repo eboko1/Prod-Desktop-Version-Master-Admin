@@ -20,6 +20,7 @@ import {
 import { Catcher } from 'commons';
 import { ManagerRoleForm } from 'forms';
 import { BusinessSearchField } from 'forms/_formkit';
+import { isAdmin } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -47,6 +48,7 @@ const mapStateToProps = state => ({
     count:        state.managerRole.count,
     searchQuery:  state.managerRole.searchQuery,
     isFetching:   state.ui.managerRoleFetching,
+    user:         state.auth,
 });
 
 const formItemLayout = {
@@ -181,19 +183,23 @@ export default class ManagerRoleContainer extends Component {
                             }
                         />
                     </FormItem>
-                    <FormItem
-                        { ...formItemLayout }
-                        className={ Styles.formItemSelectFilter }
-                        label={
-                            <FormattedMessage id='business-package-container.business' />
-                        }
-                        colon={ false }
-                    >
-                        <BusinessSearchField
-                            businessId={ filters.businessId }
-                            onSelect={ businessId => setFilters({ businessId }) }
-                        />
-                    </FormItem>
+                    { isAdmin(this.props.user) && (
+                        <FormItem
+                            { ...formItemLayout }
+                            className={ Styles.formItemSelectFilter }
+                            label={
+                                <FormattedMessage id='business-package-container.business' />
+                            }
+                            colon={ false }
+                        >
+                            <BusinessSearchField
+                                businessId={ filters.businessId }
+                                onSelect={ businessId =>
+                                    setFilters({ businessId })
+                                }
+                            />
+                        </FormItem>
+                    ) }
                 </Form>
                 <Table
                     size='small'
