@@ -16,17 +16,15 @@ import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Spinner } from 'commons';
 import { OrderForm } from 'forms';
-import { AddClientModal } from 'modals';
+import {
+    convertFieldsValuesToDbEntity,
+    requiredFieldsOnStatuses,
+} from 'forms/OrderForm/extractOrderEntity';
 
 //  own
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import Styles from './styles.m.css';
-
-import {
-    convertFieldsValuesToDbEntity,
-    requiredFieldsOnStatuses,
-} from './extractOrderEntity';
 
 const mapStateToProps = state => {
     return {

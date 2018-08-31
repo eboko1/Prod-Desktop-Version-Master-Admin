@@ -37,11 +37,10 @@ import {
     OrderTaskModal,
 } from 'modals';
 import { permissions, isForbidden } from 'utils';
-
 import {
     convertFieldsValuesToDbEntity,
     requiredFieldsOnStatuses,
-} from './../AddOrderPage/extractOrderEntity';
+} from 'forms/OrderForm/extractOrderEntity';
 
 const mapStateToProps = state => {
     return {
@@ -280,7 +279,10 @@ class OrderPage extends Component {
         const hideEditButton = isClosedStatus && !canEditClosedStatus;
         const disabledEditButton = hideEditButton || !canEdit;
 
-        const forbiddenUpdate = isForbidden(user, permissions.ACCESS_ORDER_STATUS);
+        const forbiddenUpdate = isForbidden(
+            user,
+            permissions.ACCESS_ORDER_STATUS,
+        );
 
         return {
             isClosedStatus,
@@ -407,7 +409,8 @@ class OrderPage extends Component {
                                 }
                             />
                         )}
-                        {!isClosedStatus && !forbiddenUpdate && (
+                        {!isClosedStatus &&
+                            !forbiddenUpdate && (
                             <Icon
                                 type='delete'
                                 style={ {
@@ -415,7 +418,9 @@ class OrderPage extends Component {
                                     cursor:   'pointer',
                                     margin:   '0 10px',
                                 } }
-                                onClick={ () => setModal(MODALS.CANCEL_REASON) }
+                                onClick={ () =>
+                                    setModal(MODALS.CANCEL_REASON)
+                                }
                             />
                         )}
                         <Icon
