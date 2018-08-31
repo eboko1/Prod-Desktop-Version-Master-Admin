@@ -29,7 +29,7 @@ import {
     formItemLayout,
     // formItemTotalLayout,
 } from '../OrderForm/layouts';
-import Styles from '../OrderForm/styles.m.css';
+import Styles from './styles.m.css';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
@@ -102,6 +102,21 @@ export class MobileRecordForm extends Component {
 
         return (
             <Form layout='horizontal'>
+                <div className={ Styles.mobileRecordFormFooter }>
+                    <Button
+                        className={ Styles.mobileRecordSubmitBtn }
+                        type='primary'
+                        onClick={ () => onStatusChange('approve') }
+                    >
+                        Записать
+                    </Button>
+                    <Button
+                        className={ Styles.mobileRecordSubmitBtn }
+                        onClick={ () => onStatusChange('cancel') }
+                    >
+                        Отказать
+                    </Button>
+                </div>
                 <FormItem
                     label={ <FormattedMessage id='add_order_form.name' /> }
                     { ...formItemLayout }
@@ -291,34 +306,12 @@ export class MobileRecordForm extends Component {
                     getFieldDecorator={ getFieldDecorator }
                     minuteStep={ 30 }
                 />
-                { /*<DecoratedSelect*/ }
-                { /*formItem*/ }
-                { /*hasFeedback*/ }
-                { /*disabled={*/ }
-                { /*!this.props.form.getFieldValue('beginDate') ||*/ }
-                { /*!this.props.form.getFieldValue('station')*/ }
-                { /*}*/ }
-                { /*field='beginTime'*/ }
-                { /*label={ <FormattedMessage id='time' /> }*/ }
-                { /*className={ Styles.datePanelItem }*/ }
-                { /*getFieldDecorator={ getFieldDecorator }*/ }
-                { /*popupClassName='mobileRecordFormTimePicker'*/ }
-                { /*{ ...formItemLayout }*/ }
-                { /*>*/ }
-                { /*{ (this.props.availableHours || []).map(availableHour => (*/ }
-                { /*<Option value={ availableHour } key={ availableHour }>*/ }
-                { /*{ moment(availableHour).format('HH:mm') }*/ }
-                { /*</Option>*/ }
-                { /*)) }*/ }
-                { /*</DecoratedSelect>*/ }
 
                 <DecoratedSlider
                     formItem
                     label='Продолжительность'
                     field='duration'
                     getFieldDecorator={ getFieldDecorator }
-                    // setFieldsValue={ setFieldsValue }
-                    // initialValue={ this.props.order.duration }
                     disabled={ !isDurationDisabled }
                     min={ 0 }
                     step={ 0.5 }
@@ -344,22 +337,6 @@ export class MobileRecordForm extends Component {
                     }) }
                     autosize={ { minRows: 2, maxRows: 6 } }
                 />
-
-                <div className={ Styles.mobileRecordFormFooter }>
-                    <Button
-                        className={ Styles.mobileRecordSubmitBtn }
-                        type='primary'
-                        onClick={ () => onStatusChange('approve') }
-                    >
-                        Записать
-                    </Button>
-                    <Button
-                        className={ Styles.mobileRecordSubmitBtn }
-                        onClick={ () => onStatusChange('cancel') }
-                    >
-                        Отказать
-                    </Button>
-                </div>
             </Form>
         );
     }

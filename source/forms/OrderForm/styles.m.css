@@ -113,16 +113,6 @@
     margin-left: 10px;
 }
 
-.mobileRecordFormFooter {
-    display: flex;
-    justify-content: space-around;
-    margin: 24px 48px;
-}
-
-.mobileRecordSubmitBtn {
-    margin: 0 10px;
-}
-
 .datePanelItem:global(.ant-time-picker) {
     width: 100%;
 }
@@ -134,8 +124,4 @@
 }
 .orderTaskModalButton {
     margin: 15px;
-}
-
-.mobileRecordFormTimePicker {
-    width: 100%;
 }
