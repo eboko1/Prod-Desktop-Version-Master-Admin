@@ -1,0 +1,18 @@
+.clientBlock {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: space-between; */
+}
+
+.clientData, .commentsBlock {
+    display: flex;
+    justify-content: space-between;
+}
+
+.carNumbers, .clientsInfo {
+    display: flex;
+}
+
+.comment {
+    flex: 0 1 45%;
+}

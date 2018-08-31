@@ -12,11 +12,9 @@ import {
 import { resetModal } from 'core/modals/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 
-import { DecoratedTextArea } from 'forms/DecoratedFields';
-
 import { AddClientModal } from 'modals';
 
-import { withReduxForm2, permissions, isForbidden } from 'utils';
+import { withReduxForm2 } from 'utils';
 
 // own
 import OrderFormHeader from './OrderFormHeader';
@@ -95,60 +93,6 @@ export class OrderForm extends Component {
                 visible={ getFieldValue('searchClientQuery') }
                 clients={ clients }
             />
-        );
-    };
-
-    _renderCommentsBlock = () => {
-        const { fetchedOrder, user } = this.props;
-        const { ACCESS_ORDER_COMMENTS } = permissions;
-        const { getFieldDecorator } = this.props.form;
-        const { formatMessage } = this.props.intl;
-
-        return (
-            <div className={ Styles.commentsBlock }>
-                <DecoratedTextArea
-                    formItem
-                    label={
-                        <FormattedMessage id='add_order_form.client_comments' />
-                    }
-                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
-                    getFieldDecorator={ getFieldDecorator }
-                    field='comment'
-                    initialValue={ _.get(fetchedOrder, 'order.comment') }
-                    rules={ [
-                        {
-                            max:     2000,
-                            message: 'Too much',
-                        },
-                    ] }
-                    placeholder={ formatMessage({
-                        id:             'add_order_form.client_comments',
-                        defaultMessage: 'Client_comments',
-                    }) }
-                    autosize={ { minRows: 2, maxRows: 6 } }
-                />
-                <DecoratedTextArea
-                    formItem
-                    label={
-                        <FormattedMessage id='add_order_form.client_comments' />
-                    }
-                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
-                    getFieldDecorator={ getFieldDecorator }
-                    field='comment'
-                    initialValue={ _.get(fetchedOrder, 'order.comment') }
-                    rules={ [
-                        {
-                            max:     2000,
-                            message: 'Too much',
-                        },
-                    ] }
-                    placeholder={ formatMessage({
-                        id:             'add_order_form.client_comments',
-                        defaultMessage: 'Client_comments',
-                    }) }
-                    autosize={ { minRows: 2, maxRows: 6 } }
-                />
-            </div>
         );
     };
 

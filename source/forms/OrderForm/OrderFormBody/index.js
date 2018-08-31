@@ -10,8 +10,10 @@ import {
     DecoratedInput,
     DecoratedSelect,
     DecoratedInputNumber,
+    DecoratedTextArea,
 } from 'forms/DecoratedFields';
 import book from 'routes/book';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import {
@@ -25,21 +27,27 @@ const Option = Select.Option;
 
 export default class OrderFormBody extends Component {
     render() {
+        const clientSearch = this._renderClientSearch();
         const clientColumn = this._renderClientColumn();
         const vehicleColumn = this._renderVehicleColumn();
+        const comments = this._renderCommentsBlock();
 
         return (
             <div className={ Styles.clientBlock }>
-                { clientColumn }
-                { vehicleColumn }
+                { clientSearch }
+                <div className={ Styles.clientData }>
+                    { clientColumn }
+                    { vehicleColumn }
+                </div>
+                { comments }
             </div>
         );
     }
 
-    _renderClientColumn = () => {
-        const { selectedClient, fetchedOrder, order } = this.props;
-        const { formatMessage } = this.props.intl;
+    _renderClientSearch = () => {
+        const { order } = this.props;
         const { getFieldDecorator } = this.props.form;
+        const { formatMessage } = this.props.intl;
 
         const disabledClientSearch =
             (!_.get(this.props, 'order.status') ||
@@ -49,42 +57,51 @@ export default class OrderFormBody extends Component {
         const hasClient = !!_.get(this.props, 'order.clientId');
 
         return (
-            <div className={ Styles.clientCol }>
-                <div className={ Styles.client }>
-                    <FormItem
-                        label={ <FormattedMessage id='add_order_form.client' /> }
-                        colon={ false }
-                    >
-                        <DecoratedInput
-                            field='searchClientQuery'
-                            getFieldDecorator={ getFieldDecorator }
-                            disabled={ Boolean(disabledClientSearch) }
-                            placeholder={ formatMessage({
-                                id:             'add_order_form.client.placeholder',
-                                defaultMessage: 'search client',
-                            }) }
+            <div className={ Styles.client }>
+                <FormItem
+                    label={ <FormattedMessage id='add_order_form.client' /> }
+                    colon={ false }
+                >
+                    <DecoratedInput
+                        field='searchClientQuery'
+                        getFieldDecorator={ getFieldDecorator }
+                        disabled={ Boolean(disabledClientSearch) }
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.client.placeholder',
+                            defaultMessage: 'search client',
+                        }) }
+                    />
+                    { !disabledClientSearch && (
+                        <Icon
+                            type='plus'
+                            className={ Styles.addClientIcon }
+                            onClick={ () => this.props.setAddClientModal() }
                         />
-                        { !disabledClientSearch && (
+                    ) }
+                    { hasClient && (
+                        <a
+                            href={ `${book.oldApp.clients}/${
+                                order.clientId
+                            }?ref=/orders/${order.id}` }
+                        >
                             <Icon
-                                type='plus'
-                                className={ Styles.addClientIcon }
-                                onClick={ () => this.props.setAddClientModal() }
+                                type='edit'
+                                className={ Styles.editClientIcon }
                             />
-                        ) }
-                        { hasClient && (
-                            <a
-                                href={ `${book.oldApp.clients}/${
-                                    order.clientId
-                                }?ref=/orders/${order.id}` }
-                            >
-                                <Icon
-                                    type='edit'
-                                    className={ Styles.editClientIcon }
-                                />
-                            </a>
-                        ) }
-                    </FormItem>
-                </div>
+                        </a>
+                    ) }
+                </FormItem>
+            </div>
+        );
+    };
+
+    _renderClientColumn = () => {
+        const { selectedClient, fetchedOrder } = this.props;
+        const { formatMessage } = this.props.intl;
+        const { getFieldDecorator } = this.props.form;
+
+        return (
+            <div className={ Styles.clientCol }>
                 <FormItem
                     label={ <FormattedMessage id='add_order_form.name' /> }
                     { ...formItemLayout }
@@ -131,45 +148,46 @@ export default class OrderFormBody extends Component {
                         </Option>
                     )) }
                 </DecoratedSelect>
-
-                <DecoratedSelect
-                    formItem
-                    label={ <FormattedMessage id='add_order_form.email' /> }
-                    formItemLayout={ formItemLayout }
-                    field='clientEmail'
-                    getFieldDecorator={ getFieldDecorator }
-                    initialValue={
-                        _.get(fetchedOrder, 'order.clientEmail') ||
-                        selectedClient.emails.find(Boolean)
-                    }
-                    placeholder={ 'Choose selected client email' }
-                >
-                    { selectedClient.emails.filter(Boolean).map(email => (
-                        <Option value={ email } key={ v4() }>
-                            { email }
-                        </Option>
-                    )) }
-                </DecoratedSelect>
-                <DecoratedSelect
-                    field='clientRequisite'
-                    initialValue={ _.get(
-                        fetchedOrder,
-                        'order.clientRequisiteId',
-                    ) }
-                    formItem
-                    label={
-                        <FormattedMessage id='add_order_form.client_requisites' />
-                    }
-                    formItemLayout={ formItemTotalLayout }
-                    getFieldDecorator={ getFieldDecorator }
-                    placeholder={
-                        <FormattedMessage id='add_order_form.select_requisites' />
-                    }
-                    options={ selectedClient.requisites }
-                    optionValue='id'
-                    optionLabel='name'
-                    optionDisabled='disabled'
-                />
+                <div className={ Styles.clientsInfo }>
+                    <DecoratedSelect
+                        formItem
+                        label={ <FormattedMessage id='add_order_form.email' /> }
+                        formItemLayout={ formItemLayout }
+                        field='clientEmail'
+                        getFieldDecorator={ getFieldDecorator }
+                        initialValue={
+                            _.get(fetchedOrder, 'order.clientEmail') ||
+                            selectedClient.emails.find(Boolean)
+                        }
+                        placeholder={ 'Choose selected client email' }
+                    >
+                        { selectedClient.emails.filter(Boolean).map(email => (
+                            <Option value={ email } key={ v4() }>
+                                { email }
+                            </Option>
+                        )) }
+                    </DecoratedSelect>
+                    <DecoratedSelect
+                        field='clientRequisite'
+                        initialValue={ _.get(
+                            fetchedOrder,
+                            'order.clientRequisiteId',
+                        ) }
+                        formItem
+                        label={
+                            <FormattedMessage id='add_order_form.client_requisites' />
+                        }
+                        formItemLayout={ formItemTotalLayout }
+                        getFieldDecorator={ getFieldDecorator }
+                        placeholder={
+                            <FormattedMessage id='add_order_form.select_requisites' />
+                        }
+                        options={ selectedClient.requisites }
+                        optionValue='id'
+                        optionLabel='name'
+                        optionDisabled='disabled'
+                    />
+                </div>
             </div>
         );
     };
@@ -186,9 +204,6 @@ export default class OrderFormBody extends Component {
 
         return (
             <div className={ Styles.autoCol }>
-                <div className={ Styles.auto }>
-                    <FormattedMessage id='add_order_form.car' />
-                </div>
                 <DecoratedSelect
                     field='clientVehicle'
                     initialValue={
@@ -219,7 +234,7 @@ export default class OrderFormBody extends Component {
                         </Option>
                     )) }
                 </DecoratedSelect>
-                <div className={ Styles.ecatBlock }>
+                <div className={ Styles.carNumbers }>
                     <FormItem
                         label={
                             <FormattedMessage id='add_order_form.car_number' />
@@ -232,26 +247,6 @@ export default class OrderFormBody extends Component {
                             value={ _.get(selectedVehicle, 'number') }
                         />
                     </FormItem>
-
-                    <DecoratedInputNumber
-                        field='odometerValue'
-                        formItem
-                        initialValue={ _.get(
-                            fetchedOrder,
-                            'order.odometerValue',
-                        ) }
-                        colon={ false }
-                        label={ <FormattedMessage id='add_order_form.odometr' /> }
-                        formItemLayout={ formItemAutoColLayout }
-                        getFieldDecorator={ getFieldDecorator }
-                        rules={ [
-                            {
-                                type:    'number',
-                                message: '',
-                            },
-                        ] }
-                        min={ 0 }
-                    />
                     <FormItem
                         { ...formItemAutoColLayout }
                         label={ <FormattedMessage id='add_order_form.vin' /> }
@@ -260,6 +255,76 @@ export default class OrderFormBody extends Component {
                         <Input disabled value={ _.get(selectedVehicle, 'vin') } />
                     </FormItem>
                 </div>
+                <DecoratedInputNumber
+                    field='odometerValue'
+                    formItem
+                    initialValue={ _.get(fetchedOrder, 'order.odometerValue') }
+                    colon={ false }
+                    label={ <FormattedMessage id='add_order_form.odometr' /> }
+                    formItemLayout={ formItemAutoColLayout }
+                    getFieldDecorator={ getFieldDecorator }
+                    rules={ [
+                        {
+                            type:    'number',
+                            message: '',
+                        },
+                    ] }
+                    min={ 0 }
+                />
+            </div>
+        );
+    };
+
+    _renderCommentsBlock = () => {
+        const { fetchedOrder, user } = this.props;
+        const { ACCESS_ORDER_COMMENTS } = permissions;
+        const { getFieldDecorator } = this.props.form;
+        const { formatMessage } = this.props.intl;
+
+        return (
+            <div className={ Styles.commentsBlock }>
+                <DecoratedTextArea
+                    className={ Styles.comment }
+                    formItem
+                    label={
+                        <FormattedMessage id='add_order_form.client_comments' />
+                    }
+                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
+                    getFieldDecorator={ getFieldDecorator }
+                    field='comment'
+                    initialValue={ _.get(fetchedOrder, 'order.comment') }
+                    rules={ [
+                        {
+                            max:     2000,
+                            message: 'Too much',
+                        },
+                    ] }
+                    placeholder={ formatMessage({
+                        id:             'add_order_form.client_comments',
+                        defaultMessage: 'Client_comments',
+                    }) }
+                    autosize={ { minRows: 2, maxRows: 6 } }
+                />
+                <DecoratedTextArea
+                    className={ Styles.comment }
+                    formItem
+                    label={ 'Рекомендации с прошлого заезда' }
+                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
+                    getFieldDecorator={ getFieldDecorator }
+                    field='comment'
+                    initialValue={ _.get(fetchedOrder, 'order.comment') }
+                    rules={ [
+                        {
+                            max:     2000,
+                            message: 'Too much',
+                        },
+                    ] }
+                    placeholder={ formatMessage({
+                        id:             'add_order_form.client_comments',
+                        defaultMessage: 'Client_comments',
+                    }) }
+                    autosize={ { minRows: 2, maxRows: 6 } }
+                />
             </div>
         );
     };

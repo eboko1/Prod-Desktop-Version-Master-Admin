@@ -1,0 +1,4 @@
+.formHeader {
+    display: flex;
+    justify-content: space-between;
+}

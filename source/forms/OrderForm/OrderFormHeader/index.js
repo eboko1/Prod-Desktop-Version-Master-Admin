@@ -269,7 +269,6 @@ export default class OrderFormHeader extends Component {
             <div className={ Styles.totalBlock }>
                 <FormItem>
                     <div className={ Styles.total }>
-                        <FormattedMessage id='add_order_form.total' />
                         <span className={ Styles.totalSum }>
                             { totalPrice }
                             <FormattedMessage id='currency' />
@@ -282,7 +281,7 @@ export default class OrderFormHeader extends Component {
                     formItem
                     colon={ false }
                     getFieldDecorator={ getFieldDecorator }
-                    formItemLayout={ formItemTotalLayout }
+                    // formItemLayout={ formItemTotalLayout }
                     label={
                         <FormattedMessage id='add_order_form.payment_method' />
                     }
@@ -307,7 +306,7 @@ export default class OrderFormHeader extends Component {
                     label={
                         <FormattedMessage id='add_order_form.service_requisites' />
                     }
-                    formItemLayout={ formItemTotalLayout }
+                    // formItemLayout={ formItemTotalLayout }
                     getFieldDecorator={ getFieldDecorator }
                     placeholder={
                         <FormattedMessage id='add_order_form.select_requisites' />
