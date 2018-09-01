@@ -24,12 +24,20 @@ const Option = Select.Option;
 
 const formHeaderItemLayout = {
     labelCol: {
+        xs:  { span: 24 },
+        sm:  { span: 24 },
+        md:  { span: 24 },
+        lg:  { span: 24 },
         xl:  { span: 24 },
-        xxl: { span: 10 },
+        xxl: { span: 9 },
     },
     wrapperCol: {
+        xs:  { span: 24 },
+        sm:  { span: 24 },
+        md:  { span: 24 },
+        lg:  { span: 24 },
         xl:  { span: 24 },
-        xxl: { span: 14 },
+        xxl: { span: 15 },
     },
     colon: false,
 };
@@ -47,7 +55,7 @@ export default class OrderFormHeader extends Component {
 
         return (
             <div className={ Styles.formHeader }>
-                <div className={ Styles.hearedColumns }>
+                <div className={ Styles.headerColumns }>
                     { dateBlock }
                     { masterBlock }
                     { totalBlock }
@@ -63,7 +71,7 @@ export default class OrderFormHeader extends Component {
 
         return (
             <DecoratedSlider
-                className={ Styles.durationPanelItem }
+                className={ Styles.duration }
                 formItem
                 disabled={ this.bodyUpdateIsForbidden() }
                 initDuration={
@@ -110,6 +118,7 @@ export default class OrderFormHeader extends Component {
                     field='beginDate'
                     hasFeedback
                     formItem
+                    formItemLayout={ formHeaderItemLayout }
                     formatMessage={ formatMessage }
                     label={
                         <FormattedMessage id='add_order_form.enrollment_date' />
@@ -139,6 +148,7 @@ export default class OrderFormHeader extends Component {
                         },
                     ] }
                     formItem
+                    formItemLayout={ formHeaderItemLayout }
                     label={ <FormattedMessage id='add_order_form.station' /> }
                     colon={ false }
                     hasFeedback
@@ -161,6 +171,7 @@ export default class OrderFormHeader extends Component {
                 />
                 <DecoratedTimePicker
                     formItem
+                    formItemLayout={ formHeaderItemLayout }
                     disabled={ this.bodyUpdateIsForbidden() }
                     field='beginTime'
                     hasFeedback

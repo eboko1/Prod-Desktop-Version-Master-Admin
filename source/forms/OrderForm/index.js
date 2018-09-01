@@ -52,14 +52,14 @@ export class OrderForm extends Component {
     }
 
     // TODO BODYA
-    // componentDidUpdate(prevProps, prevState) {
-    //     const { formValues: prevFormValues } = prevState;
-    //     const formValues = this.props.form.getFieldsValue();
-    //
-    //     if (!_.isEqual(formValues, prevFormValues)) {
-    //         this.setState({ formValues });
-    //     }
-    // }
+    componentDidUpdate(prevProps, prevState) {
+        const { formValues: prevFormValues } = prevState;
+        const formValues = this.props.form.getFieldsValue();
+
+        if (!_.isEqual(formValues, prevFormValues)) {
+            this.setState({ formValues });
+        }
+    }
 
     _saveFormRef = formRef => {
         this.formRef = formRef;

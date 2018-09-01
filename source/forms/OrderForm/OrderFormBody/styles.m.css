@@ -9,10 +9,118 @@
     justify-content: space-between;
 }
 
+.clientData {
+    border-bottom: 2px solid var(--lightGray);
+}
+
+.client {
+    border-top:  2px solid var(--lightGray);
+}
+
 .carNumbers, .clientsInfo {
+    display: flex;
+    flex: 1 1 auto;
+}
+
+.clientsInfo {
+    justify-content: space-between;
+
+    & > div:first-child {
+        margin-right: 10px;
+    }
+}
+
+.clientsInfoCol {
+    flex: 0 1 50%;
+}
+
+.client {
+    display: flex;
+    align-items: center;
+}
+
+.clientSearchField {
+    flex: 0 1 42.5%;
+}
+
+.addClientIcon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: bold;
+    margin-left: 10px;
+}
+
+.editIcon {
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--primary);
+    font-weight: bold;
+    margin: 42px 0 0 10px;
+}
+
+.bodyColumn {
+    flex: 0 1 45%;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.bodyColumnContent {
+    flex: 1 1 auto;
     display: flex;
 }
 
 .comment {
     flex: 0 1 45%;
 }
+
+.contentWrapper {
+    flex: 1 1 auto;
+}
+
+.comboField {
+    background-color: var(--static);
+    height: 45px;
+    border: 1px solid #d9d9d9;
+    border-left: 1px solid #d9d9d9;
+    border-right: 1px solid #d9d9d9;
+}
+
+.comboFieldSelect {
+    border-left: 1px solid #d9d9d9;
+    border-right: 1px solid #d9d9d9;
+    border-bottom: 1px solid #d9d9d9;
+}
+
+.comboFieldSelect :global(.ant-select-selection) {
+    background-color: var(--static);
+    border-radius: 0;
+    border: none;
+    outline: none;
+}
+
+.comboFieldSelect :global(.ant-select-focused) {
+    border: none;
+    outline: none;
+}
+
+.comboFieldSelect :global(.ant-select-open) {
+    border: none;
+    outline: none;
+}
+
+.odometr {
+    flex: 1 1 100%;
+}
+
+.odometr :global(.ant-input-number) {
+    width: 100%;
+}
+
+/* .comboFieldSelect :global(.ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active) {
+    border: none !important;
+    outline: none !important;
+}
+.comboFieldSelect :global(.ant-select-selection .ant-selection-open:focus) {
+    border: none;
+} */

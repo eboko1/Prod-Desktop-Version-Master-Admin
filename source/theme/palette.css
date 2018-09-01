@@ -24,6 +24,9 @@
     --text3: rgba(67, 78, 89, 1);
     --text4: rgba(0, 0, 0, 0.35);
 
+    --secondaryRGB: 76, 201, 105;
+    --static: rgb(254, 241, 208);
+
     --not_complete: rgb(255, 126, 126);
     --required: rgb(255, 126, 126);
     --reserve: rgb(107, 99, 153);
