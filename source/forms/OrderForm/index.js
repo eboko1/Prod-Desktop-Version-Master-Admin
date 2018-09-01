@@ -42,7 +42,6 @@ import Styles from './styles.m.css';
     }),
 })
 export class OrderForm extends Component {
-
     state = {
         formValues: {},
     };
@@ -67,15 +66,21 @@ export class OrderForm extends Component {
     };
 
     render() {
+        const { form, allServices } = this.props;
         this.props.form.getFieldDecorator('services[0].serviceName');
         this.props.form.getFieldDecorator('details[0].detailName');
 
         const clientsSearchTable = this._renderClientSearchTable();
         const tabs = this._renderTabs();
 
+        const { totalHours } = servicesStats(
+            form.getFieldsValue().services || [],
+            allServices,
+        );
+
         return (
             <Form className={ Styles.form } layout='horizontal'>
-                <OrderFormHeader { ...this.props } />
+                <OrderFormHeader { ...this.props } totalHours={ totalHours } />
                 { clientsSearchTable }
                 <OrderFormBody { ...this.props } />
                 { tabs }
@@ -136,7 +141,7 @@ export class OrderForm extends Component {
                 formatMessage={ formatMessage }
                 getFieldDecorator={ getFieldDecorator }
                 form={ form }
-                totalHours={ totalHours }
+                // totalHours={ totalHours }
                 countServices={ countServices }
                 countDetails={ countDetails }
                 priceServices={ priceServices }

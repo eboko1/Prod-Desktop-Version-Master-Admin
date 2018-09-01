@@ -2,3 +2,7 @@
     display: flex;
     justify-content: space-between;
 }
+
+.headerCol {
+    flex: 0 1 33%;
+}

@@ -11,15 +11,28 @@ import {
     DecoratedDatePicker,
     DecoratedTimePicker,
     DecoratedSelect,
+    DecoratedSlider,
 } from 'forms/DecoratedFields';
 import { getDateTimeConfig, permissions, isForbidden } from 'utils';
 
 // own
 import { servicesStats, detailsStats } from '../stats';
-import { formItemTotalLayout } from '../layouts';
+// import { formItemTotalLayout } from '../layouts';
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+const formHeaderItemLayout = {
+    labelCol: {
+        xl:  { span: 24 },
+        xxl: { span: 10 },
+    },
+    wrapperCol: {
+        xl:  { span: 24 },
+        xxl: { span: 14 },
+    },
+    colon: false,
+};
 
 export default class OrderFormHeader extends Component {
     bodyUpdateIsForbidden() {
@@ -30,15 +43,41 @@ export default class OrderFormHeader extends Component {
         const dateBlock = this._renderDateBlock();
         const masterBlock = this._renderMasterBlock();
         const totalBlock = this._renderTotalBlock();
+        const duration = this._renderDuration();
 
         return (
             <div className={ Styles.formHeader }>
-                { dateBlock }
-                { masterBlock }
-                { totalBlock }
+                <div className={ Styles.hearedColumns }>
+                    { dateBlock }
+                    { masterBlock }
+                    { totalBlock }
+                </div>
+                { duration }
             </div>
         );
     }
+
+    _renderDuration = () => {
+        const { fetchedOrder, totalHours } = this.props;
+        const { getFieldDecorator } = this.props.form;
+
+        return (
+            <DecoratedSlider
+                className={ Styles.durationPanelItem }
+                formItem
+                disabled={ this.bodyUpdateIsForbidden() }
+                initDuration={
+                    _.get(fetchedOrder, 'order.duration') || totalHours
+                }
+                label='Продолжительность'
+                field='duration'
+                getFieldDecorator={ getFieldDecorator }
+                min={ 0 }
+                step={ 0.5 }
+                max={ 8 }
+            />
+        );
+    };
 
     _renderDateBlock = () => {
         const { stations, location, fetchedOrder, schedule } = this.props;
@@ -64,7 +103,7 @@ export default class OrderFormHeader extends Component {
             : void 0;
 
         return (
-            <div className={ Styles.datePanel }>
+            <div className={ Styles.headerCol }>
                 <DecoratedDatePicker
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ this.bodyUpdateIsForbidden() }
@@ -156,7 +195,7 @@ export default class OrderFormHeader extends Component {
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <div className={ Styles.masterBlock }>
+            <div className={ Styles.headerCol }>
                 <DecoratedSelect
                     field='manager'
                     formItem
@@ -179,6 +218,7 @@ export default class OrderFormHeader extends Component {
                     }
                     disabled={ this.bodyUpdateIsForbidden() }
                     placeholder='Выберете менеджера'
+                    formItemLayout={ formHeaderItemLayout }
                 >
                     { managers.map(manager => (
                         <Option
@@ -190,49 +230,49 @@ export default class OrderFormHeader extends Component {
                         </Option>
                     )) }
                 </DecoratedSelect>
-                <FormItem
+
+                <DecoratedSelect
+                    formItem
+                    field='employee'
                     label={ <FormattedMessage id='order_form_table.master' /> }
                     className={ Styles.durationPanelItem }
+                    disabled={ this.bodyUpdateIsForbidden() }
+                    getFieldDecorator={ getFieldDecorator }
+                    initialValue={ _.get(fetchedOrder, 'order.employeeId') }
+                    formItemLayout={ formHeaderItemLayout }
                 >
-                    <DecoratedSelect
-                        field='employee'
-                        disabled={ this.bodyUpdateIsForbidden() }
-                        getFieldDecorator={ getFieldDecorator }
-                        initialValue={ _.get(fetchedOrder, 'order.employeeId') }
-                    >
-                        { employees.map(employee => (
-                            <Option
-                                value={ employee.id }
-                                key={ v4() }
-                                disabled={ employee.disabled }
-                            >
-                                { `${employee.name} ${employee.surname}` }
-                            </Option>
-                        )) }
-                    </DecoratedSelect>
-                </FormItem>
-                <FormItem
+                    { employees.map(employee => (
+                        <Option
+                            value={ employee.id }
+                            key={ v4() }
+                            disabled={ employee.disabled }
+                        >
+                            { `${employee.name} ${employee.surname}` }
+                        </Option>
+                    )) }
+                </DecoratedSelect>
+
+                <DecoratedSelect
+                    formItem
+                    field='appurtenanciesResponsible'
                     label={
                         <FormattedMessage id='order_form_table.appurtenanciesResponsible' />
                     }
                     className={ Styles.durationPanelItem }
+                    disabled={ this.bodyUpdateIsForbidden() }
+                    getFieldDecorator={ getFieldDecorator }
+                    formItemLayout={ formHeaderItemLayout }
                 >
-                    <DecoratedSelect
-                        field='appurtenanciesResponsible'
-                        disabled={ this.bodyUpdateIsForbidden() }
-                        getFieldDecorator={ getFieldDecorator }
-                    >
-                        { employees.map(employee => (
-                            <Option
-                                value={ employee.id }
-                                key={ v4() }
-                                disabled={ employee.disabled }
-                            >
-                                { `${employee.name} ${employee.surname}` }
-                            </Option>
-                        )) }
-                    </DecoratedSelect>
-                </FormItem>
+                    { employees.map(employee => (
+                        <Option
+                            value={ employee.id }
+                            key={ v4() }
+                            disabled={ employee.disabled }
+                        >
+                            { `${employee.name} ${employee.surname}` }
+                        </Option>
+                    )) }
+                </DecoratedSelect>
             </div>
         );
     };
@@ -262,9 +302,10 @@ export default class OrderFormHeader extends Component {
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
 
         return (
-            <div className={ Styles.totalBlock }>
+            <div className={ Styles.headerCol }>
                 <FormItem>
                     <div className={ Styles.total }>
+                        <FormattedMessage id='sum' />
                         <span className={ Styles.totalSum }>
                             { totalPrice }
                             <FormattedMessage id='currency' />
@@ -278,7 +319,7 @@ export default class OrderFormHeader extends Component {
                     formItem
                     colon={ false }
                     getFieldDecorator={ getFieldDecorator }
-                    formItemLayout={ formItemTotalLayout }
+                    formItemLayout={ formHeaderItemLayout }
                     label={
                         <FormattedMessage id='add_order_form.payment_method' />
                     }
@@ -304,7 +345,7 @@ export default class OrderFormHeader extends Component {
                     label={
                         <FormattedMessage id='add_order_form.service_requisites' />
                     }
-                    formItemLayout={ formItemTotalLayout }
+                    formItemLayout={ formHeaderItemLayout }
                     getFieldDecorator={ getFieldDecorator }
                     placeholder={
                         <FormattedMessage id='add_order_form.select_requisites' />

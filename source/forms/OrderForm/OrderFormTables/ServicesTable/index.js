@@ -46,7 +46,10 @@ class ServicesTable extends Component {
             </Option>
         ));
 
-        const editServicesForbidden = isForbidden(props.user, permissions.ACCESS_ORDER_SERVICES);
+        const editServicesForbidden = isForbidden(
+            props.user,
+            permissions.ACCESS_ORDER_SERVICES,
+        );
 
         this.columns = [
             {
@@ -94,7 +97,9 @@ class ServicesTable extends Component {
                         }
                         field={ `services[${key}].servicePrice` }
                         getFieldDecorator={ this.props.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) || editServicesForbidden }
+                        disabled={
+                            this._isFieldDisabled(key) || editServicesForbidden
+                        }
                         min={ 0 }
                     />
                 ),
@@ -109,7 +114,9 @@ class ServicesTable extends Component {
                         }
                         field={ `services[${key}].serviceCount` }
                         getFieldDecorator={ this.props.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) || editServicesForbidden }
+                        disabled={
+                            this._isFieldDisabled(key) || editServicesForbidden
+                        }
                         min={ 0.1 }
                         step={ 0.1 }
                     />
@@ -145,7 +152,10 @@ class ServicesTable extends Component {
                                 this.props.form.getFieldValue('employee')
                             }
                             getFieldDecorator={ this.props.getFieldDecorator }
-                            disabled={ this._isFieldDisabled(key) || editServicesForbidden }
+                            disabled={
+                                this._isFieldDisabled(key) ||
+                                editServicesForbidden
+                            }
                         >
                             { this.employees }
                         </DecoratedSelect>
@@ -160,7 +170,9 @@ class ServicesTable extends Component {
                         initValue={ this._getDefaultValue(key, 'ownDetail') }
                         field={ `services[${key}].ownDetail` }
                         getFieldDecorator={ this.props.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) || editServicesForbidden }
+                        disabled={
+                            this._isFieldDisabled(key) || editServicesForbidden
+                        }
                     />
                 ),
             },
@@ -169,7 +181,8 @@ class ServicesTable extends Component {
                 key:    'delete',
                 render: ({ key }) => {
                     return (
-                        this.state.keys.length > 1 && !editServicesForbidden && (
+                        this.state.keys.length > 1 &&
+                        !editServicesForbidden && (
                             <Popconfirm
                                 title='Sure to delete?'
                                 onConfirm={ () => this._onDelete(key) }
@@ -252,10 +265,13 @@ class ServicesTable extends Component {
     };
 
     render() {
-        const { getFieldDecorator, totalHours, fetchedOrder } = this.props;
+        const { getFieldDecorator, fetchedOrder } = this.props;
         const { keys } = this.state;
 
-        const editBodyForbidden = isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
+        const editBodyForbidden = isForbidden(
+            this.props.user,
+            permissions.ACCESS_ORDER_BODY,
+        );
 
         const columns = this.columns;
 
@@ -268,20 +284,6 @@ class ServicesTable extends Component {
                     pagination={ false }
                 />
                 <div className={ Styles.durationPanel }>
-                    <DecoratedSlider
-                        className={ Styles.durationPanelItem }
-                        formItem
-                        disabled={ editBodyForbidden }
-                        initDuration={
-                            _.get(fetchedOrder, 'order.duration') || totalHours
-                        }
-                        label='Продолжительность'
-                        field='duration'
-                        getFieldDecorator={ getFieldDecorator }
-                        min={ 0 }
-                        step={ 0.5 }
-                        max={ 8 }
-                    />
                     <DecoratedSelect
                         formItem
                         label={
