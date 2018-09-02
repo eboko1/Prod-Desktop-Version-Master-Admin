@@ -13,6 +13,8 @@ import book from 'routes/book';
 class HistoryTable extends Component {
     constructor(props) {
         super(props);
+        console.log('→ HistoryTable props', props);
+
         this.columns = [
             {
                 title:     <FormattedMessage id='date' />,
@@ -31,7 +33,13 @@ class HistoryTable extends Component {
                 key:       'history-num',
                 width:     '15%',
                 render:    (text, record) => (
-                    <Link to={ `${book.order}/${record.id}` }>
+                    <Link
+                        to={ `${book.order}/${record.id}` }
+                        onClick={ () => {
+                            props.fetchOrderForm(record.id);
+                            props.fetchOrderTask(record.id);
+                        } }
+                    >
                         { text }
                         <OrderStatusIcon status={ record.status } />
                     </Link>

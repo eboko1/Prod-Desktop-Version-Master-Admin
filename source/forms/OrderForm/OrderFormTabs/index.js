@@ -43,6 +43,8 @@ export default class OrderFormTabs extends Component {
             commentsCount,
             fetchedOrder,
             user,
+            fetchOrderForm,
+            fetchOrderTask,
         } = this.props;
 
         const {
@@ -248,7 +250,11 @@ export default class OrderFormTabs extends Component {
                         }
                         key='5'
                     >
-                        <HistoryTable orderHistory={ orderHistory } />
+                        <HistoryTable
+                            orderHistory={ orderHistory }
+                            fetchOrderForm={ fetchOrderForm }
+                            fetchOrderTask={ fetchOrderTask }
+                        />
                     </TabPane>
                 ) }
                 { !addOrderForm && (

@@ -327,16 +327,16 @@ class OrderPage extends Component {
         ) : (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>
@@ -457,6 +457,8 @@ class OrderPage extends Component {
                         setModal={ setModal }
                         changeModalStatus={ this.props.changeModalStatus }
                         location={ false }
+                        fetchOrderForm={ fetchOrderForm }
+                        fetchOrderTask={ fetchOrderTask }
                     />
                 </ResponsiveView>
                 <CancelReasonModal
