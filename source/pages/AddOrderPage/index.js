@@ -39,13 +39,9 @@ const mapStateToProps = state => {
         requisites:        state.forms.orderForm.requisites,
         modal:             state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
-        createOrderStatus: state.forms.orderForm.fields.createOrderStatus.value,
         spinner:           state.ui.orderFetching,
         createStatus:      state.forms.orderForm.createStatus,
-        orderEntity:       {
-            ...state.forms.orderForm.fields,
-            selectedClient: state.forms.orderForm.selectedClient,
-        },
+        selectedClient:    state.forms.orderForm.selectedClient,
     };
 };
 
@@ -78,34 +74,30 @@ class AddOrderPage extends Component {
 
     _onSubmit = () => {
         const form = this.orderFormRef.props.form;
+        const {
+            allServices,
+            allDetails,
+            selectedClient,
+            createStatus,
+        } = this.props;
         const requiredFields =
             requiredFieldsOnStatuses[ this.props.createStatus ];
 
         form.validateFields(requiredFields, err => {
             if (!err) {
+                const values = form.getFieldsValue();
+                const orderFormEntity = { ...values, selectedClient };
+
                 this.props.createOrder(
                     convertFieldsValuesToDbEntity(
-                        this.props.orderEntity,
-                        this.props.allServices,
-                        this.props.allDetails,
-                        this.props.createStatus,
-                        form,
+                        orderFormEntity,
+                        allServices,
+                        allDetails,
+                        createStatus,
                     ),
                 );
             }
         });
-    };
-
-    handleAddClientModalSubmit = () => {
-        const form = this.formRef.props.form;
-        this._setAddClientModal();
-        form.validateFields((err, values) => {
-            if (!err) {
-                // TBD: @yan
-                // console.log('Received values of AddClientForm: ', values);
-            }
-        });
-        this.props.resetModal();
     };
 
     _setAddClientModal = () => {
@@ -187,7 +179,6 @@ class AddOrderPage extends Component {
                 <AddClientModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
-                    handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
                     resetModal={ resetModal }
                     addClientFormData={ addClientFormData }
                 />

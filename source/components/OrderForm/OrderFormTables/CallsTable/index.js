@@ -67,7 +67,7 @@ class CallsTable extends Component {
                 dataIndex: 'record',
                 width:     '15%',
                 key:       'order-calls-record',
-                render:    (text, record) => {
+                render:    () => {
                     <div>
                         <Icon type='play-circle-o' />
                         <Icon type='download' />

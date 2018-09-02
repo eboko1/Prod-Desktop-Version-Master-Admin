@@ -15,6 +15,7 @@ import ArrayScheduleInput from './ArrayScheduleInput';
 import ArrayBreakScheduleInput from './ArrayBreakScheduleInput';
 import SettingSalaryTable from './SettingSalaryTable';
 import EmployeeTable from './EmployeeTable';
+import LimitedDecoratedSelect from './LimitedDecoratedSelect';
 
 export {
     SettingSalaryTable,
@@ -35,4 +36,5 @@ export {
     Loader,
     ArrayScheduleInput,
     ArrayBreakScheduleInput,
+    LimitedDecoratedSelect,
 };

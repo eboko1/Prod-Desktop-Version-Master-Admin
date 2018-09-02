@@ -46,7 +46,6 @@ export class AddClientForm extends Component {
     }
     render() {
         const {
-            handleAddClientModalSubmit,
             addClientFormData,
             vehicles,
             makes,
@@ -86,7 +85,6 @@ export class AddClientForm extends Component {
         return (
             <Form
                 layout='vertical'
-                onSubmit={ () => handleAddClientModalSubmit() }
             >
                 <div>
                     <ClientsVehiclesTable

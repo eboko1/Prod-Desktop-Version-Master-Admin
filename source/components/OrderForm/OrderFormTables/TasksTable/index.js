@@ -1,26 +1,30 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon,Tooltip } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import { Table, Icon, Tooltip } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
-import Styles from './styles.m.css';
 
 // proj
-import { Catcher } from 'commons';
 import { MODALS } from 'core/modals/duck';
+import { Catcher } from 'commons';
+
+// own
+import Styles from './styles.m.css';
 
 class TasksTable extends Component {
     constructor(props) {
         super(props);
         const { setModal, initOrderTasksForm, changeModalStatus } = this.props;
+
         this.columns = [
             {
                 title:     '',
                 dataIndex: 'review',
+                key:       'review',
                 width:     '4%',
                 render:    (text, record) => {
-                    if(record.orderNum){
+                    if (record.orderNum) {
                         return (
                             <Icon
                                 className={ Styles.editOrderTaskIcon }
@@ -39,30 +43,34 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='status' />,
                 dataIndex: 'status',
+                key:       'status',
                 width:     '8%',
-                render:    (text, record) => {
+                render:    text => {
                     return text ? <FormattedMessage id={ text } /> : '';
                 },
             },
             {
                 title:     <FormattedMessage id='priority' />,
                 dataIndex: 'priority',
+                key:       'priority',
                 width:     '8%',
-                render:    (text, record) => {
+                render:    text => {
                     return text ? <FormattedMessage id={ text } /> : null;
                 },
             },
             {
                 title:     <FormattedMessage id='urgency' />,
                 dataIndex: 'urgency',
+                key:       'urgency',
                 width:     '8%',
-                render:    (text, record) => {
+                render:    text => {
                     return text ? <FormattedMessage id={ text } /> : null;
                 },
             },
             {
                 title:     <FormattedMessage id='responsible' />,
                 dataIndex: 'responsibleName',
+                key:       'responsibleName',
                 width:     '8%',
                 render:    (text, record) => {
                     return (
@@ -75,18 +83,21 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='position' />,
                 dataIndex: 'position',
+                key:       'position',
                 width:     '8%',
             },
             {
                 title:     <FormattedMessage id='stationName' />,
                 dataIndex: 'stationName',
+                key:       'stationName',
                 width:     '8%',
             },
             {
                 title:     <FormattedMessage id='startDate' />,
                 dataIndex: 'startDate',
+                key:       'startDate',
                 width:     '8%',
-                render:    (text, record) => (
+                render:    text => (
                     <div>
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
                     </div>
@@ -95,8 +106,9 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='deadlineDate' />,
                 dataIndex: 'deadlineDate',
+                key:       'deadlineDate',
                 width:     '8%',
-                render:    (text, record) => (
+                render:    text => (
                     <div>
                         { ' ' }
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
@@ -106,21 +118,23 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='duration' />,
                 dataIndex: 'duration',
+                key:       'duration',
                 width:     '9%',
-                render:    (text, record) => {
-                    let durationText= moment.duration(text, 'seconds')
-                    let duration=moment.utc(durationText.asMilliseconds()).format('HH:mm')
+                render:    text => {
+                    let durationText = moment.duration(text, 'seconds');
+                    let duration = moment
+                        .utc(durationText.asMilliseconds())
+                        .format('HH:mm');
 
-                    return  <div>
-                        { text ? duration: null }
-                    </div>
+                    return <div>{ text ? duration : null }</div>;
                 },
             },
             {
                 title:     <FormattedMessage id='endDate' />,
                 dataIndex: 'endDate',
+                key:       'endDate',
                 width:     '8%',
-                render:    (text, record) => (
+                render:    text => (
                     <div>
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
                     </div>
@@ -129,9 +143,10 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='comment' />,
                 dataIndex: 'comment',
+                key:       'comment',
                 width:     '8%',
-                render:    (text, record) => (
-                    <div >
+                render:    text => (
+                    <div>
                         <Tooltip
                             placement='bottomLeft'
                             title={ <span>{ text }</span> }
@@ -145,6 +160,7 @@ class TasksTable extends Component {
             {
                 title:     <FormattedMessage id='author' />,
                 dataIndex: 'author',
+                key:       'author',
                 width:     '8%',
                 render:    (text, record) => (
                     <div>
@@ -155,37 +171,49 @@ class TasksTable extends Component {
         ];
     }
 
+    sortHistory = (a, b) => {
+        if (moment(a.startDate).isAfter(b.startDate)) {
+            return -1;
+        }
+        if (moment(b.startDate).isAfter(a.startDate)) {
+            return 1;
+        }
+
+        return 0;
+    };
+
     render() {
         const { orderTasks } = this.props;
         const columns = this.columns;
-        const sortHistory=(a, b)=>{
-            if(moment(a.startDate).isAfter(b.startDate)){ return -1 }
-            if(moment(b.startDate).isAfter(a.startDate)){ return 1 }
-
-            return 0
-        }
 
         return (
             <Catcher>
                 <Table
-                    dataSource={ orderTasks.length>0&&orderTasks[ 0 ].history.length>0? [ 
-                        ...orderTasks.map((task, index) => ({
-                            ...task,
-                            index,
-                            key: v4(),
-                        })), 
-                        ...orderTasks[ 0 ].history.sort(sortHistory).map((task, index) => ({
-                            ...task,
-                            index,
-                            key: v4(),
-                        })),
-                    ] :[ 
-                        ...orderTasks.map((task, index) => ({
-                            ...task,
-                            index,
-                            key: v4(),
-                        })), 
-                    ] }
+                    dataSource={
+                        orderTasks.length > 0 &&
+                        orderTasks[ 0 ].history.length > 0
+                            ? [
+                                ...orderTasks.map((task, index) => ({
+                                    ...task,
+                                    index,
+                                    key: v4(),
+                                })),
+                                ...orderTasks[ 0 ].history
+                                    .sort(this.sortHistory)
+                                    .map((task, index) => ({
+                                        ...task,
+                                        index,
+                                        key: v4(),
+                                    })),
+                            ]
+                            : [
+                                ...orderTasks.map((task, index) => ({
+                                    ...task,
+                                    index,
+                                    key: v4(),
+                                })),
+                            ]
+                    }
                     size='small'
                     scroll={ { x: 2000 } }
                     columns={ columns }

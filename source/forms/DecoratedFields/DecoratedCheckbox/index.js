@@ -20,18 +20,20 @@ export const DecoratedCheckbox = props => {
         rules,
         field,
         initValue,
+        initialValue,
         children,
+        onChange,
     } = props;
 
     const checkbox = getFieldDecorator(field, {
-        ..._.isBoolean(initValue)
-            ? {
-                initialValue:  !!initValue,
-                valuePropName: 'checked',
-            }
-            : {},
+        valuePropName: 'checked',
+        initialValue:  Boolean(initValue || initialValue),
         rules,
-    })(<Checkbox disabled={ disabled }>{ children }</Checkbox>);
+    })(
+        <Checkbox disabled={ disabled } onChange={ onChange }>
+            { children }
+        </Checkbox>,
+    );
 
     return formItem ? (
         <FormItem

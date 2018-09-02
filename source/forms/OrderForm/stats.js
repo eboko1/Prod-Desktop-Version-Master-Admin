@@ -1,23 +1,22 @@
 import _ from 'lodash';
 
-function calculateStats(entires) {
-    const price = entires.reduce(
+function calculateStats(entries) {
+    const price = entries.reduce(
         (prev, { price, count }) => prev + count * price,
         0,
     );
-    const count = entires.length;
+    const count = entries.length;
 
     return { price, count };
 }
 
 export const servicesStats = (selectedServices, allServices) => {
     const selectedSimpleServices = _(selectedServices)
-        .values()
-        .filter(service => _.get(service, 'serviceName.value'))
+        .filter(service => _.get(service, 'serviceName'))
         .map(service => ({
-            price: Number(_.get(service, 'servicePrice.value')) || 0,
-            count: Number(_.get(service, 'serviceCount.value')) || 0,
-            id:    _.get(service, 'serviceName.value'),
+            price: _.get(service, 'servicePrice'),
+            count: _.get(service, 'serviceCount'),
+            id:    _.get(service, 'serviceName'),
         }))
         .value();
 
@@ -41,11 +40,11 @@ export const servicesStats = (selectedServices, allServices) => {
 export const detailsStats = selectedDetails => {
     const selectedSimpleDetails = _(selectedDetails)
         .values()
-        .filter(detail => _.get(detail, 'detailName.value'))
+        .filter(detail => _.get(detail, 'detailName'))
         .map(service => ({
-            price: Number(_.get(service, 'detailPrice.value')) || 0,
-            count: Number(_.get(service, 'detailCount.value')) || 0,
-            id:    _.get(service, 'detailName.value'),
+            price: _.get(service, 'detailPrice'),
+            count: _.get(service, 'detailCount'),
+            id:    _.get(service, 'detailName'),
         }))
         .value();
 

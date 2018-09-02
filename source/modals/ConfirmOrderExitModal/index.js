@@ -11,8 +11,6 @@ export default class CancelReasonModal extends Component {
         const {
             visible,
             resetModal,
-            status,
-            returnToOrdersPage,
             saveOrder,
         } = this.props;
 
@@ -22,7 +20,7 @@ export default class CancelReasonModal extends Component {
                 visible={ visible === MODALS.CONFIRM_EXIT }
                 onCancel={ () => {
                     resetModal();
-                    returnToOrdersPage(status);
+                    // returnToOrdersPage(status);
                 } }
                 onOk={ () => {
                     resetModal();

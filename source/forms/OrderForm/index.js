@@ -7,19 +7,11 @@ import _ from 'lodash';
 import moment from 'moment';
 
 //proj
-import book from 'routes/book';
 import {
     onChangeOrderForm,
     setClientSelection,
-    onChangeOrderServices,
-    onChangeOrderDetails,
-    onServiceSearch,
-    onDetailSearch,
-    onBrandSearch,
-    prefillFromDashboard,
 } from 'core/forms/orderForm/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
-import { defaultDetails } from 'core/forms/orderForm/helpers/details';
 
 import {
     DecoratedInput,
@@ -32,53 +24,42 @@ import {
 
 import { ClientsSearchTable } from 'components/OrderForm/OrderFormTables';
 import { OrderFormTabs } from 'components/OrderForm/OrderFormTabs';
+import book from 'routes/book';
+import { withReduxForm2, getDateTimeConfig, images } from 'utils';
 
-import { withReduxForm, getDateTimeConfig, images } from 'utils';
+// own
+import { servicesStats, detailsStats } from './stats';
 import {
     formItemAutoColLayout,
     formItemLayout,
     formItemTotalLayout,
 } from './layouts';
-import { servicesStats, detailsStats } from './stats';
-
-// own
 import Styles from './styles.m.css';
-
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-@withReduxForm({
+@withReduxForm2({
     name:            'orderForm',
-    debouncedFields: [
-        'comment', 'recommendation', 'vehicleCondition', 'businessComment',
-    ],
-    actions: {
+    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
+    actions:         {
         change: onChangeOrderForm,
         setClientSelection,
-        onChangeOrderServices,
-        onChangeOrderDetails,
-        onServiceSearch,
-        onDetailSearch,
-        onBrandSearch,
         initOrderTasksForm,
-        prefillFromDashboard,
     },
 })
 export class OrderForm extends Component {
+    state = {};
+
     componentDidMount() {
-        const { location, prefillFromDashboard } = this.props;
-        if (location.state) {
-            prefillFromDashboard({
-                beginDate: location.state.beginDatetime,
-                beginTime: location.state.beginDatetime,
-                station:   location.state.stationNum,
-            });
-        }
+        // TODO in order to fix late getFieldDecorator invoke for services
+        this.setState({ initialized: true });
     }
 
     /* eslint-disable complexity */
     render() {
+        this.props.form.getFieldDecorator('services[0].serviceName');
+        this.props.form.getFieldDecorator('details[0].detailName');
         const dateBlock = this._renderDateBlock();
         const clientsSearchTable = this._renderClientSearchTable();
         const clientBlock = this._renderClientBlock();
@@ -99,20 +80,27 @@ export class OrderForm extends Component {
             searchClientsResult: { searching: clientsSearching, clients },
             setClientSelection,
             fields,
+            form,
         } = this.props;
 
         return (
             <ClientsSearchTable
                 clientsSearching={ clientsSearching }
                 setClientSelection={ setClientSelection }
-                visible={ !!fields.searchClientQuery.value }
+                visible={ form.getFieldValue('searchClientQuery') }
                 clients={ clients }
             />
         );
     };
 
     _renderDateBlock = () => {
-        const { stations, managers, location, employees } = this.props;
+        const {
+            stations,
+            managers,
+            location,
+            employees,
+            fetchedOrder,
+        } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -126,10 +114,6 @@ export class OrderForm extends Component {
 
         return (
             <div className={ Styles.datePanel }>
-                { /* { console.log(
-                    '→ this.props.location.state.beginDatetime',
-                    moment(this.props.location.state.beginDatetime),
-                ) } */ }
                 <DecoratedDatePicker
                     getFieldDecorator={ getFieldDecorator }
                     field='beginDate'
@@ -154,14 +138,14 @@ export class OrderForm extends Component {
                     format={ 'YYYY-MM-DD' } // HH:mm
                     showTime={ false }
                     initialValue={
-                        location.state && moment(location.state.beginDatetime)
+                        _.get(fetchedOrder, 'order.beginDatetime') ||
+                        _.get(location, 'state.beginDatetime')
+                            ? moment(
+                                _.get(fetchedOrder, 'order.beginDatetime') ||
+                                      _.get(location, 'state.beginDatetime'),
+                            )
+                            : void 0
                     }
-                    // showTime={ {
-                    //     disabledHours,
-                    //     disabledMinutes,
-                    //     disabledSeconds,
-                    //     format: 'HH:mm',
-                    // } }
                 />
                 <DecoratedTimePicker
                     formItem
@@ -174,9 +158,21 @@ export class OrderForm extends Component {
                     formatMessage={ formatMessage }
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'Please provide time',
+                        },
+                    ] }
                     minuteStep={ 30 }
                     initialValue={
-                        location.state && moment(location.state.beginDatetime)
+                        _.get(fetchedOrder, 'order.beginDatetime') ||
+                        _.get(location, 'state.beginDatetime')
+                            ? moment(
+                                _.get(fetchedOrder, 'order.beginDatetime') ||
+                                      _.get(location, 'state.beginDatetime'),
+                            )
+                            : void 0
                     }
                 />
                 <DecoratedSelect
@@ -199,7 +195,11 @@ export class OrderForm extends Component {
                     options={ stations }
                     optionValue='num'
                     optionLabel='name'
-                    initialValue={ location.state && location.state.stationNum }
+                    initialValue={
+                        _.get(location, 'state.stationNum') ||
+                        _.get(fetchedOrder, 'order.stationNum') ||
+                        _.get(stations, '[0].num')
+                    }
                 />
                 <DecoratedSelect
                     field='manager'
@@ -215,6 +215,10 @@ export class OrderForm extends Component {
                     hasFeedback
                     colon={ false }
                     className={ Styles.datePanelItem }
+                    initialValue={
+                        _.get(fetchedOrder, 'order.managerId') ||
+                        _.get(managers, '[0].id')
+                    }
                     placeholder='Выберете менеджера'
                 >
                     { managers.map(manager => (
@@ -234,21 +238,7 @@ export class OrderForm extends Component {
                     <DecoratedSelect
                         field='employee'
                         getFieldDecorator={ getFieldDecorator }
-                        onSelect={ value => {
-                            const services = this.props.form.getFieldValue(
-                                'services',
-                            );
-
-                            const updatedServices = _(services)
-                                .keys()
-                                .map(serviceKey => [
-                                    `services[${serviceKey}][employeeId]`, value,
-                                ])
-                                .fromPairs()
-                                .value();
-
-                            this.props.form.setFieldsValue(updatedServices);
-                        } }
+                        initialValue={ _.get(fetchedOrder, 'order.employeeId') }
                     >
                         { employees.map(employee => (
                             <Option
@@ -313,7 +303,7 @@ export class OrderForm extends Component {
     };
 
     _renderClientColumn = () => {
-        const { selectedClient } = this.props;
+        const { selectedClient, fetchedOrder } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -383,6 +373,10 @@ export class OrderForm extends Component {
                 <DecoratedSelect
                     label={ <FormattedMessage id='add_order_form.phone' /> }
                     field='clientPhone'
+                    initialValue={
+                        _.get(fetchedOrder, 'order.clientPhone') ||
+                        _.get(selectedClient, 'phones[0]')
+                    }
                     formItem
                     formItemLayout={ formItemLayout }
                     hasFeedback
@@ -403,64 +397,58 @@ export class OrderForm extends Component {
                         </Option>
                     )) }
                 </DecoratedSelect>
-                <FormItem
+
+                <DecoratedSelect
+                    formItem
                     label={ <FormattedMessage id='add_order_form.email' /> }
-                    { ...formItemLayout }
+                    formItemLayout={ formItemLayout }
+                    field='clientEmail'
+                    getFieldDecorator={ getFieldDecorator }
+                    initialValue={
+                        _.get(fetchedOrder, 'order.clientEmail') ||
+                        selectedClient.emails.find(Boolean)
+                    }
+                    placeholder={ 'Choose selected client email' }
                 >
-                    <DecoratedSelect
-                        field='clientEmail'
-                        getFieldDecorator={ getFieldDecorator }
-                        placeholder={ 'Choose selected client email' }
-                    >
-                        { selectedClient.emails.filter(Boolean).map(email => (
-                            <Option value={ email } key={ v4() }>
-                                { email }
-                            </Option>
-                        )) }
-                    </DecoratedSelect>
-                </FormItem>
-                <FormItem
+                    { selectedClient.emails.filter(Boolean).map(email => (
+                        <Option value={ email } key={ v4() }>
+                            { email }
+                        </Option>
+                    )) }
+                </DecoratedSelect>
+                <DecoratedTextArea
+                    formItem
                     label={
                         <FormattedMessage id='add_order_form.client_comments' />
                     }
-                >
-                    <DecoratedTextArea
-                        getFieldDecorator={ getFieldDecorator }
-                        field='comment'
-                        rules={ [
-                            {
-                                max:     2000,
-                                message: 'Too much',
-                            },
-                        ] }
-                        placeholder={ formatMessage({
-                            id:             'add_order_form.client_comments',
-                            defaultMessage: 'Client_comments',
-                        }) }
-                        autosize={ { minRows: 2, maxRows: 6 } }
-                    />
-                </FormItem>
+                    getFieldDecorator={ getFieldDecorator }
+                    field='comment'
+                    initialValue={ _.get(fetchedOrder, 'order.comment') }
+                    rules={ [
+                        {
+                            max:     2000,
+                            message: 'Too much',
+                        },
+                    ] }
+                    placeholder={ formatMessage({
+                        id:             'add_order_form.client_comments',
+                        defaultMessage: 'Client_comments',
+                    }) }
+                    autosize={ { minRows: 2, maxRows: 6 } }
+                />
             </div>
         );
     };
 
     _renderVehicleColumn = () => {
-        const {
-            selectedClient,
-            fields: {
-                clientVehicle: { value: selectedVehicleId },
-            },
-        } = this.props;
-        const { getFieldDecorator } = this.props.form;
+        const { selectedClient, fetchedOrder } = this.props;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
+        const selectedVehicleId = getFieldValue('clientVehicle');
 
         const selectedVehicle =
-            this.props.selectedClient &&
+            selectedClient &&
             selectedVehicleId &&
-            _.first(
-                this.props.selectedClient.vehicles.filter(
-                    ({ id }) => id === selectedVehicleId,
-                ),
-            );
+            _.find(selectedClient.vehicles, { id: selectedVehicleId });
 
         return (
             <div className={ Styles.autoCol }>
@@ -469,6 +457,10 @@ export class OrderForm extends Component {
                 </div>
                 <DecoratedSelect
                     field='clientVehicle'
+                    initialValue={
+                        _.get(fetchedOrder, 'order.clientVehicleId') ||
+                        _.get(selectedClient, 'vehicles[0].id')
+                    }
                     formItem
                     hasFeedback
                     label={ <FormattedMessage id='add_order_form.car' /> }
@@ -503,13 +495,17 @@ export class OrderForm extends Component {
                     >
                         <Input
                             disabled
-                            value={ selectedVehicle && selectedVehicle.number }
+                            value={ _.get(selectedVehicle, 'number') }
                         />
                     </FormItem>
 
                     <DecoratedInputNumber
                         field='odometerValue'
                         formItem
+                        initialValue={ _.get(
+                            fetchedOrder,
+                            'order.odometerValue',
+                        ) }
                         colon={ false }
                         label={ <FormattedMessage id='add_order_form.odometr' /> }
                         formItemLayout={ formItemAutoColLayout }
@@ -527,10 +523,7 @@ export class OrderForm extends Component {
                         label={ <FormattedMessage id='add_order_form.vin' /> }
                         colon={ false }
                     >
-                        <Input
-                            disabled
-                            value={ selectedVehicle && selectedVehicle.vin }
-                        />
+                        <Input disabled value={ _.get(selectedVehicle, 'vin') } />
                     </FormItem>
                     <FormItem { ...formItemAutoColLayout }>
                         <a
@@ -551,40 +544,30 @@ export class OrderForm extends Component {
         const {
             selectedClient,
             orderTasks,
-            orderCalls,
-            orderHistory,
             form,
-            fields,
-            onServiceSearch,
-            allServices,
-            allDetails,
-            employees,
-            filteredDetails,
             setModal,
+            fetchedOrder,
         } = this.props;
-
-        const {
-            comment,
-            businessComment,
-            vehicleCondition,
-            recommendation,
-        } = fields;
 
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
         const { count: countDetails, price: priceDetails } = detailsStats(
-            fields.details,
+            form.getFieldsValue().details || [],
         );
 
         const {
             count: countServices,
             price: priceServices,
             totalHours,
-        } = servicesStats(fields.services, this.props.allServices);
+        } = servicesStats(
+            form.getFieldsValue().services || [],
+            this.props.allServices,
+        );
 
-        const servicesDiscount = Number(fields.servicesDiscount.value) || 0;
-        const detailsDiscount = Number(fields.detailsDiscount.value) || 0;
+        const servicesDiscount = form.getFieldsValue().servicesDiscount || 0;
+        const detailsDiscount = form.getFieldsValue().detailsDiscount || 0;
+        const comments = form.getFieldsValue([ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);
 
         const detailsTotalPrice =
             priceDetails - priceDetails * (detailsDiscount / 100);
@@ -593,11 +576,8 @@ export class OrderForm extends Component {
 
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
 
-        const commentsCollection = [
-            comment, businessComment, vehicleCondition, recommendation,
-        ];
-        const commentsCount = commentsCollection.filter(com =>
-            _.get(com, 'value'),).length;
+        const commentsCollection = _.values(comments);
+        const commentsCount = commentsCollection.filter(Boolean).length;
 
         return (
             <>
@@ -605,6 +585,10 @@ export class OrderForm extends Component {
                     <div className={ Styles.totalBlockCol }>
                         <DecoratedSelect
                             field='requisite'
+                            initialValue={ _.get(
+                                fetchedOrder,
+                                'order.businessRequisiteId',
+                            ) }
                             formItem
                             label={
                                 <FormattedMessage id='add_order_form.service_requisites' />
@@ -621,6 +605,10 @@ export class OrderForm extends Component {
                         />
                         <DecoratedSelect
                             field='clientRequisite'
+                            initialValue={ _.get(
+                                fetchedOrder,
+                                'order.clientRequisiteId',
+                            ) }
                             formItem
                             label={
                                 <FormattedMessage id='add_order_form.client_requisites' />
@@ -639,6 +627,10 @@ export class OrderForm extends Component {
                     <div className={ Styles.totalBlockCol }>
                         <DecoratedSelect
                             field='paymentMethod'
+                            initialValue={ _.get(
+                                fetchedOrder,
+                                'order.paymentMethod',
+                            ) }
                             formItem
                             colon={ false }
                             getFieldDecorator={ getFieldDecorator }
@@ -679,7 +671,6 @@ export class OrderForm extends Component {
                     getFieldDecorator={ getFieldDecorator }
                     form={ form }
                     totalHours={ totalHours }
-                    defaultDetails={ defaultDetails }
                     countServices={ countServices }
                     countDetails={ countDetails }
                     priceServices={ priceServices }
@@ -688,25 +679,6 @@ export class OrderForm extends Component {
                     orderTasks={ orderTasks }
                     commentsCount={ commentsCount }
                 />
-                {/* fields={fields}
-                 priceDetails={priceDetails}
-                 priceServices={priceServices}
-                 countServices={countServices}
-                 countDetails={countDetails}
-                 defaultDetails={defaultDetails}
-                 orderTasks={orderTasks}
-                 formatMessage={formatMessage}
-                 getFieldDecorator={getFieldDecorator}
-                 orderCalls={orderCalls}
-                 orderHistory={orderHistory}
-                 onServiceSearch={onServiceSearch}
-                 onDetailSearch={onDetailSearch}
-                 onBrandSearch={onBrandSearch}
-                 form={form}
-                 allServices={allServices}
-                 allDetails={allDetails}
-                 employees={employees}
-                 filteredDetails={filteredDetails} */}
             </>
         );
     };

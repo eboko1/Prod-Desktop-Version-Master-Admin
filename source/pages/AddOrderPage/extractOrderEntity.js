@@ -6,132 +6,111 @@ export function convertFieldsValuesToDbEntity(
     allServices,
     allDetails,
     status = 'not_complete',
-    form,
 ) {
     const services = _(orderFields.services)
-        .values()
-        .filter(service => _.get(service, 'serviceName.value'))
+        .filter(Boolean)
+        .filter(service => _.get(service, 'serviceName'))
         .map(service => {
             const {
-                serviceName: { value: name },
-                servicePrice: { value: price },
-                serviceCount: { value: count },
-                employeeId: { value: employeeId },
-                ownDetail: { value: ownDetail },
+                serviceName: name,
+                servicePrice: price,
+                serviceCount: count,
+                employeeId: employeeId,
+                ownDetail: ownDetail,
             } = service;
-            const [ type, serviceId ] = name.split('|');
-            const label = (
-                allServices.find(({ id, type }) => `${type}|${id}` === name) ||
-                {}
-            ).serviceName;
+            const hours = null;
 
-            const baseService = {
-                price,
-                count,
-                hours: null,
-                employeeId,
-                ownDetail,
-            };
-            const serviceType =
-                type === 'custom'
-                    ? { type, serviceName: label }
-                    : { type, serviceId };
+            const serviceConfig = allServices.find(
+                ({ id, type }) => `${type}|${id}` === name,
+            );
+
+            const baseService = { price, count, hours, employeeId, ownDetail };
+            const serviceType = !serviceConfig
+                ? { type: 'custom', serviceName: name }
+                : { type: name.split('|')[ 0 ], serviceId: name.split('|')[ 1 ] };
 
             return { ...baseService, ...serviceType };
-        });
+        })
+        .value();
 
     const details = _(orderFields.details)
-        .values()
-        .filter(detail => _.get(detail, 'detailName.value'))
+        .filter(Boolean)
+        .filter(detail => _.get(detail, 'detailName'))
         .map(detail => {
             const {
-                detailName: { value: detailId },
-                detailPrice: { value: price },
-                purchasePrice: { value: purchasePrice },
-                detailCount: { value: count },
-                detailCode: { value: code },
-                detailBrandName: { value: brandId },
+                detailName: detailId,
+                detailPrice: price,
+                detailCount: count,
+                detailCode: code,
+                detailBrandName: brandId,
+                purchasePrice: purchasePrice,
             } = detail;
-            const [ detailType ] = String(detailId).split('|');
-            const [ brandType ] = String(brandId).split('|');
 
-            const detailLabel = (
-                allDetails.details.find(
-                    ({ detailId: id }) => id === detailId,
-                ) || {}
-            ).detailName;
-            const brandLabel = (
-                allDetails.brands.find(
-                    ({ brandId: id }) => String(id) === brandId,
-                ) || {}
-            ).brandName;
+            const detailConfig = allDetails.details.find(
+                ({ detailId: id }) => String(id) === detailId,
+            );
+            const brandConfig = allDetails.brands.find(
+                ({ brandId: id }) => String(id) === brandId,
+            );
 
-            const baseDetail = { price, count, code };
-            const detailCustom =
-                detailType === 'custom' ? { name: detailLabel } : { detailId };
-            const brandCustom =
-                brandType === 'custom'
-                    ? { brandName: brandLabel }
-                    : { brandId };
+            const baseDetail = { price, count, code, purchasePrice };
+            const detailCustom = !detailConfig
+                ? { name: detailId }
+                : { detailId };
+            const brandCustom = !brandConfig
+                ? { brandName: brandId }
+                : { brandId };
 
             return { ...baseDetail, ...detailCustom, ...brandCustom };
-        });
+        })
+        .value();
 
-    const beginDate = _.get(orderFields, 'beginDate.value');
-    const beginTime = _.get(orderFields, 'beginTime.value');
+    const beginDate = _.get(orderFields, 'beginDate');
+    const beginTime = _.get(orderFields, 'beginTime');
 
-    let beginDatetime = null;
-    try {
-        const dayPart = beginDate
-            ? moment(beginDate)
-                .utc()
-                .format('YYYY-MM-DD')
-            : void 0;
-        const hourPart = beginTime
-            ? moment(beginTime)
-                .utc()
-                .format('HH:mm')
-            : void 0;
+    const dayPart =
+        beginDate &&
+        moment(beginDate)
+            .utc()
+            .format('YYYY-MM-DD');
+    const hourPart =
+        beginTime &&
+        moment(beginTime)
+            .utc()
+            .format('HH:mm');
 
-        beginDatetime =
-            dayPart && hourPart
-                ? moment(`${dayPart}T${hourPart}:00.000Z`).toISOString()
-                : void 0;
-    } catch (err) {}
+    const beginDatetime =
+        dayPart &&
+        hourPart &&
+        moment(`${dayPart}T${hourPart}:00.000Z`).toISOString();
 
-    const orderDuration = _.get(orderFields, 'duration.value');
+    const orderDuration = _.get(orderFields, 'duration');
+
     const order = {
         clientId:            _.get(orderFields, 'selectedClient.clientId'),
-        clientVehicleId:     _.get(orderFields, 'clientVehicle.value'),
-        businessRequisiteId: _.get(orderFields, 'requisite.value'),
-        managerId:           _.get(orderFields, 'manager.value'),
+        clientVehicleId:     _.get(orderFields, 'clientVehicle'),
+        businessRequisiteId: _.get(orderFields, 'requisite'),
+        managerId:           _.get(orderFields, 'manager'),
         duration:            orderDuration ? Math.max(orderDuration, 0.5) : orderDuration,
-        clientPhone:         _.get(orderFields, 'clientPhone.value'),
-        paymentMethod:       _.get(orderFields, 'paymentMethod.value'),
-        clientRequisiteId:   _.get(orderFields, 'clientRequisite.value'),
+        clientPhone:         _.get(orderFields, 'clientPhone'),
+        paymentMethod:       _.get(orderFields, 'paymentMethod'),
+        clientRequisiteId:   _.get(orderFields, 'clientRequisite'),
         status,
         beginDatetime,
         services,
         details,
-        employeeId:          _.get(orderFields, 'employee.value'),
-        stationNum:          _.get(orderFields, 'station.value'),
-        detailsDiscount:     _.get(orderFields, 'detailsDiscount.value'),
-        servicesDiscount:    _.get(orderFields, 'servicesDiscount.value'),
-        odometerValue:       _.get(orderFields, 'odometerValue.value'),
-        recommendation:      _.get(orderFields, 'recommendation.value'),
-        vehicleCondition:    _.get(orderFields, 'vehicleCondition.value'),
-        businessComment:     _.get(orderFields, 'businessComment.value'),
-        comment:             _.get(orderFields, 'comment.value'),
+        employeeId:          _.get(orderFields, 'employee'),
+        stationNum:          _.get(orderFields, 'station'),
+        detailsDiscount:     _.get(orderFields, 'detailsDiscount'),
+        servicesDiscount:    _.get(orderFields, 'servicesDiscount'),
+        odometerValue:       _.get(orderFields, 'odometerValue'),
+        recommendation:      _.get(orderFields, 'recommendation'),
+        vehicleCondition:    _.get(orderFields, 'vehicleCondition'),
+        businessComment:     _.get(orderFields, 'businessComment'),
+        comment:             _.get(orderFields, 'comment'),
     };
 
-    if (form) {
-        const formDuration = form.getFieldValue('duration');
-        order.duration = formDuration
-            ? Math.max(formDuration, 0.5)
-            : formDuration;
-    }
-
-    return order;
+    return _.mapValues(order, value => value === '' ? null : value);
 }
 
 export const requiredFieldsOnStatuses = {
@@ -147,11 +126,7 @@ export const requiredFieldsOnStatuses = {
     redundant: [],
     cancel:    [],
 
-    progress: [
-        'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station',
-    ],
+    progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
 
-    success: [
-        'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station',
-    ],
+    success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
 };
