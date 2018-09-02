@@ -1,12 +1,13 @@
-// vendro
+// vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Tabs, Form, Icon, Button } from 'antd';
+import { Tabs, Icon, Button } from 'antd';
 import _ from 'lodash';
 
 // proj
 import { MODALS } from 'core/modals/duck';
 import { DecoratedTextArea } from 'forms/DecoratedFields';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import {
@@ -16,11 +17,11 @@ import {
     TasksTable,
     HistoryTable,
     CallsTable,
-} from 'components/OrderForm/OrderFormTables';
+} from '../OrderFormTables';
 import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
-export class OrderFormTabs extends Component {
+export default class OrderFormTabs extends Component {
     render() {
         const {
             addOrderForm,
@@ -41,7 +42,24 @@ export class OrderFormTabs extends Component {
             changeModalStatus,
             commentsCount,
             fetchedOrder,
+            user,
+            fetchOrderForm,
+            fetchOrderTask,
         } = this.props;
+
+        const {
+            ACCESS_ORDER_HISTORY,
+            ACCESS_ORDER_CALLS,
+            ACCESS_ORDER_COMMENTS,
+            ACCESS_ORDER_SERVICES,
+            ACCESS_ORDER_DETAILS,
+        } = permissions;
+
+        const isHistoryForbidden = isForbidden(user, ACCESS_ORDER_HISTORY);
+        const areCallsForbidden = isForbidden(user, ACCESS_ORDER_CALLS);
+        const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_COMMENTS);
+        const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
+        const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
 
         return (
             <Tabs type='card'>
@@ -85,6 +103,7 @@ export class OrderFormTabs extends Component {
                 >
                     <ServicesTable { ...this.props } />
                     <DiscountPanel
+                        forbidden={ areServicesForbidden }
                         price={ priceServices }
                         discountFieldName={ 'servicesDiscount' }
                         { ...this.props }
@@ -107,6 +126,7 @@ export class OrderFormTabs extends Component {
                     <DiscountPanel
                         { ...this.props }
                         price={ priceDetails }
+                        forbidden={ areDetailsForbidden }
                         discountFieldName={ 'detailsDiscount' }
                         getFieldDecorator={ getFieldDecorator }
                     />
@@ -122,6 +142,7 @@ export class OrderFormTabs extends Component {
                 >
                     <DecoratedTextArea
                         formItem
+                        disabled={ areCommentsForbidden }
                         label={
                             <FormattedMessage id='add_order_form.client_comments' />
                         }
@@ -142,6 +163,7 @@ export class OrderFormTabs extends Component {
                     />
                     <DecoratedTextArea
                         formItem
+                        disabled={ areCommentsForbidden }
                         label={
                             <FormattedMessage id='add_order_form.vehicle_condition' />
                         }
@@ -166,6 +188,7 @@ export class OrderFormTabs extends Component {
 
                     <DecoratedTextArea
                         formItem
+                        disabled={ areCommentsForbidden }
                         label={
                             <FormattedMessage id='add_order_form.business_comment' />
                         }
@@ -190,6 +213,7 @@ export class OrderFormTabs extends Component {
 
                     <DecoratedTextArea
                         formItem
+                        disabled={ areCommentsForbidden }
                         label={
                             <FormattedMessage id='add_order_form.service_recommendations' />
                         }
@@ -215,23 +239,33 @@ export class OrderFormTabs extends Component {
                 { !addOrderForm && (
                     <TabPane
                         forceRender
+                        disabled={ isHistoryForbidden }
                         tab={
                             formatMessage({
                                 id: 'order_form_table.history',
-                            }) + ` (${orderHistory.orders.length})`
+                            }) +
+                            (isHistoryForbidden
+                                ? ''
+                                : ` (${orderHistory.orders.length})`)
                         }
                         key='5'
                     >
-                        <HistoryTable orderHistory={ orderHistory } />
+                        <HistoryTable
+                            orderHistory={ orderHistory }
+                            fetchOrderForm={ fetchOrderForm }
+                            fetchOrderTask={ fetchOrderTask }
+                        />
                     </TabPane>
                 ) }
                 { !addOrderForm && (
                     <TabPane
                         forceRender
+                        disabled={ areCallsForbidden }
                         tab={
                             formatMessage({
                                 id: 'order_form_table.calls',
-                            }) + ` (${orderCalls.length})`
+                            }) +
+                            (areCallsForbidden ? '' : ` (${orderCalls.length})`)
                         }
                         key='6'
                     >

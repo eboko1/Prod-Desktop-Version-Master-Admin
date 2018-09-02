@@ -1,0 +1,19 @@
+.mobileRecordFormFooter {
+    display: flex;
+    justify-content: space-around;
+    margin: 24px 48px;
+}
+
+.mobileRecordSubmitBtn {
+    margin: 0 10px;
+    flex: 0 1 40%;
+}
+
+.datePanelItem :global(.ant-calendar-picker),
+.datePanelItem :global(.ant-time-picker) {
+    width: 100%;
+}
+
+.mobileRecordFormTimePicker {
+    width: 100%;
+}

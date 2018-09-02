@@ -46,6 +46,7 @@ const book = Object.freeze({
         statistics:             `${OLD_APP_URL}/statistics`,
         statisticsCalls:        `${OLD_APP_URL}/statistics/calls`,
         settings:               `${OLD_APP_URL}/settings`,
+        settingsRequisites:     `${OLD_APP_URL}/requisites`,
         settingsSpecialization: `${OLD_APP_URL}/settings/specialization`,
         settingsServices:       `${OLD_APP_URL}/settings/services`,
         settingsOffers:         `${OLD_APP_URL}/settings/offers`,

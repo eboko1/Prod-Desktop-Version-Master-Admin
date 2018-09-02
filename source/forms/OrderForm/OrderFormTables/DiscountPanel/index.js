@@ -19,6 +19,7 @@ class DiscountPanel extends Component {
             price,
             discountFieldName,
             fetchedOrder,
+            forbidden,
         } = this.props;
 
         const discount = this.props.form.getFieldValue(discountFieldName);
@@ -30,6 +31,7 @@ class DiscountPanel extends Component {
                 <div className={ Styles.discountPanel }>
                     <DecoratedInputNumber
                         field={ discountFieldName }
+                        disabled={ forbidden }
                         initialValue={ _.get(fetchedOrder, `order.${discountFieldName}`) || 0 }
                         getFieldDecorator={ getFieldDecorator }
                         formItem

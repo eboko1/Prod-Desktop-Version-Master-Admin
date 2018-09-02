@@ -25,7 +25,7 @@ class TooltipBox extends Component {
                 key={ id }
                 data-order={ id }
                 style={ {
-                    display: position ? 'flex' : 'none',
+                    display: position ? 'flex' : 'flex',
                     top:     position.top,
                     left:    position.left,
                 } }
@@ -80,6 +80,8 @@ const DashboardTooltipComment = styled.div`
     padding: 2px;
     overflow: hidden;
     display: -webkit-box;
+    word-break: normal;
+    white-space: pre-wrap;
     -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
 `;

@@ -21,6 +21,7 @@ import {
 } from 'containers';
 import book from 'routes/book';
 import { withResponsive, getDaterange } from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -33,6 +34,7 @@ const mapState = state => ({
     ordersDaterangeFilter: state.orders.filter.daterange,
     filter:                state.orders.filter,
     collapsed:             state.ui.collapsed,
+    user:                  state.auth,
     // isMobile:              state.ui.views.isMobile,
 });
 
@@ -44,7 +46,10 @@ const mapDispatch = {
 };
 
 @withRouter
-@connect(mapState, mapDispatch)
+@connect(
+    mapState,
+    mapDispatch,
+)
 @withResponsive()
 class OrdersPage extends Component {
     getPageTitle() {
@@ -54,7 +59,7 @@ class OrdersPage extends Component {
                 return <FormattedMessage id='appointments' />;
             case 'approve':
                 return <FormattedMessage id='records' />;
-            case 'in-progress':
+            case 'progress':
                 return <FormattedMessage id='repairs' />;
             case 'success':
                 return <FormattedMessage id='done' />;
@@ -85,7 +90,7 @@ class OrdersPage extends Component {
     };
     // eslint-disable-next-line
     render() {
-        const { collapsed, isMobile } = this.props;
+        const { collapsed, isMobile, user } = this.props;
 
         const headerControls = this._renderHeaderContorls();
 
@@ -113,6 +118,16 @@ class OrdersPage extends Component {
                             { (status === 'cancel' || status === 'success') && (
                                 <Button
                                     type='primary'
+                                    disabled={
+                                        isForbidden(
+                                            user,
+                                            permissions.CREATE_ORDER,
+                                        ) ||
+                                        isForbidden(
+                                            user,
+                                            permissions.CREATE_INVITE_ORDER,
+                                        )
+                                    }
                                     onClick={ () =>
                                         this.props.setModal(MODALS.INVITE)
                                     }
@@ -121,7 +136,13 @@ class OrdersPage extends Component {
                                 </Button>
                             ) }
                             <Link to={ book.addOrder }>
-                                <Button type='primary'>
+                                <Button
+                                    type='primary'
+                                    disabled={ isForbidden(
+                                        user,
+                                        permissions.CREATE_ORDER,
+                                    ) }
+                                >
                                     <FormattedMessage id='orders-page.add_appointment' />
                                 </Button>
                             </Link>

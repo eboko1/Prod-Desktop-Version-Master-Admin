@@ -8,7 +8,6 @@ import ChangeStatusDropdown from './ChangeStatusDropdown';
 import ArrowsWeekPicker from './ArrowsWeekPicker';
 import ArrowsDatePicker from './ArrowsDatePicker';
 import ArrayInput from './ArrayInput';
-import OrderFormTabs from './OrderForm/OrderFormTabs';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 import Loader from './Loader';
 import ArrayScheduleInput from './ArrayScheduleInput';
@@ -32,7 +31,6 @@ export {
     ArrowsDatePicker,
     ChangeStatusDropdown,
     ArrayInput,
-    OrderFormTabs,
     Loader,
     ArrayScheduleInput,
     ArrayBreakScheduleInput,

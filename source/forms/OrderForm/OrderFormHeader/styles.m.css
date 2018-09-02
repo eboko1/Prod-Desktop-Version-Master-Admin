@@ -1,0 +1,48 @@
+.formHeader {
+    display: flex;
+    flex-direction: column;
+}
+
+.headerColumns {
+    display: flex;
+    justify-content: space-between;
+}
+
+.headerCol {
+    flex: 0 1 33%;
+}
+
+.formHeader :global(.ant-calendar-picker),
+.formHeader :global(.ant-time-picker) {
+    width: 100%;
+}
+
+.total {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.totalSum {
+    margin-left: 24px;
+}
+
+.duration {
+    width: 34%;
+}
+
+/*  min-width: 922 */
+@media screen and (max-width: 1599px) and (min-width: 768px) {
+    .total {
+        align-items: flex-end;
+        height: 61px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .headerColumns {
+        flex-direction: column;
+    }
+}

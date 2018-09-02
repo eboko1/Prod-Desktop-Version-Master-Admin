@@ -1,5 +1,8 @@
+import _ from 'lodash';
+
 // proj
 import book from 'routes/book';
+import { permissions, isForbidden, isAdmin } from 'utils';
 
 export default {
     sections: [
@@ -15,8 +18,10 @@ export default {
                     name: 'navigation.scheduler',
                 },
                 {
-                    key:  '/orders',
-                    link: book.ordersAppointments,
+                    key:      '/orders',
+                    link:     book.ordersAppointments,
+                    disabled: user =>
+                        isForbidden(user, permissions.SHOW_ORDERS),
                     name: 'navigation.appointments',
                 },
                 {
@@ -99,6 +104,11 @@ export default {
                     name: 'navigation.main',
                 },
                 {
+                    key:  '/requisites',
+                    link: book.oldApp.settingsRequisites,
+                    name: 'navigation.requisites',
+                },
+                {
                     key:  '/prices',
                     link: book.oldApp.settingsSpecialization,
                     name: 'navigation.specialization_and_prices',
@@ -144,22 +154,26 @@ export default {
         {
             key:      'roles',
             iconType: 'book',
+            disabled: user => isForbidden(user, permissions.GRANT),
             name:     'navigation.roles',
             items:    [
                 {
-                    key:  '/packages',
-                    link: book.packagePage,
-                    name: 'navigation.package',
+                    key:     '/packages',
+                    link:    book.packagePage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.package',
                 },
                 {
-                    key:  '/businesses/packages',
-                    link: book.businessPackagePage,
-                    name: 'navigation.business_package',
+                    key:     '/businesses/packages',
+                    link:    book.businessPackagePage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.business_package',
                 },
                 {
-                    key:  '/managers/roles',
-                    link: book.managerRolePage,
-                    name: 'navigation.manager_role',
+                    key:     '/managers/roles',
+                    visible: user => !isForbidden(user, permissions.GRANT),
+                    link:    book.managerRolePage,
+                    name:    'navigation.manager_role',
                 },
             ],
         },
