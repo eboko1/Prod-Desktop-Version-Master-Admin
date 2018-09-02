@@ -18,71 +18,7 @@ export default class SettingSalaryTable extends Component {
     constructor(props) {
         super(props);
         this.columns = [
-            {
-                title:     '',
-                dataIndex: 'review',
-                width:     '10%',
-                render:    (text, record) => {
-                    /* eslint-disable complexity */
-                    return (
-                        <>
-                            <Button
-                                onClick={ () => {
-                                    if (
-                                        record.id === 'add' &&
-                                        record.employeeId === null
-                                    ) {
-                                        this.setState({ employeeEmpty: true });
-                                        message.error('You must add employee');
-                                    } else {
-                                        this.props.saveSalary(
-                                            record,
-                                            record.id,
-                                        );
-
-                                        if (record.id === 'add') {
-                                            this.setState({
-                                                newSalary: {
-                                                    id:               'add',
-                                                    considerDiscount: false,
-                                                    employeeId:       null,
-                                                    endDate:          null,
-                                                    percent:          0,
-                                                    percentFrom:      'ORDER',
-                                                    period:           'DAY',
-                                                    ratePerPeriod:    0,
-                                                    startDate:        moment(),
-                                                    employee:         {
-                                                        name:    '',
-                                                        surname: '',
-                                                    },
-                                                },
-                                            });
-                                        }
-                                    }
-                                } }
-                            >
-                                <Icon
-                                    className={ Styles.employeeTableIcon }
-                                    type='save'
-                                />
-                            </Button>
-                            {record.id !== 'add' ? (
-                                <Button
-                                    onClick={ () => {
-                                        this.props.deleteSalary(record.id);
-                                    } }
-                                >
-                                    <Icon
-                                        className={ Styles.employeeTableIcon }
-                                        type='delete'
-                                    />
-                                </Button>
-                            ) : null}
-                        </>
-                    );
-                },
-            },
+            
 
             {
                 title:     <FormattedMessage id='employee-table.employee' />,
@@ -159,9 +95,9 @@ export default class SettingSalaryTable extends Component {
                                 } }
                             >
                                 { record.employee.name ?
-                                    `${record.employee.name} ${
+                                    <div> { record.employee.name } {
                                         record.employee.surname
-                                    }`
+                                    }<Icon type='edit'/></div>
                                     : (
                                         <Button>
                                             <FormattedMessage id='change_employee' />
@@ -253,7 +189,9 @@ export default class SettingSalaryTable extends Component {
                                 } }
                             >
                                 { text ?
-                                    <FormattedMessage id={ `${text}` }/>  :
+                                    
+                                    <div>{ <FormattedMessage id={ `${text}` }/>  }<Icon type='edit'/></div>
+                                    :
                                     <Button>
                                         <FormattedMessage id='change_period' />
                                     </Button> }
@@ -320,7 +258,7 @@ export default class SettingSalaryTable extends Component {
                                 } }
                             >
                                 { text ?
-                                    moment(text).format('YYYY-MM-DD') :
+                                    <div>{ moment(text).format('YYYY-MM-DD') }<Icon type='edit'/></div> :
                                     <Button>
                                         <FormattedMessage id='change_start_date' /> 
                                     </Button> }
@@ -387,7 +325,7 @@ export default class SettingSalaryTable extends Component {
                                 } }
                             >
                                 { text ? 
-                                    moment(text).format('YYYY-MM-DD') :
+                                    <div>{ moment(text).format('YYYY-MM-DD') }<Icon type='edit'/></div> :
                                     <Button>
                                         <FormattedMessage id='change_end_date' /> 
                                     </Button> }
@@ -451,7 +389,7 @@ export default class SettingSalaryTable extends Component {
                             >
                                 { text || text === 0 ?
                                     // <FormattedMessage id={ `${text}` } />
-                                    text
+                                    <div>{ text }<Icon type='edit'/></div>
 
                                     : (
                                         <Button>
@@ -535,7 +473,7 @@ export default class SettingSalaryTable extends Component {
                             >
                                 { text || text === 0 ?
                                     // <FormattedMessage id={ `${text}` } />
-                                    text
+                                    <div>{ text }<Icon type='edit'/></div>
                                     : (
                                         <Button>
                                             <FormattedMessage id='change_percent_from' />
@@ -605,7 +543,7 @@ export default class SettingSalaryTable extends Component {
                             >
                                 { text || text === 0 ?
                                     // <FormattedMessage id={ `${text}` } />
-                                    text
+                                    <div>{ text }<Icon type='edit'/></div>
 
                                     : (
                                         <Button>
@@ -700,15 +638,80 @@ export default class SettingSalaryTable extends Component {
                             >
                                 { text || text === 0 || text === false ?
                                     text === true ?
-                                        <FormattedMessage id='yes' />
+                                        <div><FormattedMessage id='yes' /><Icon type='edit'/></div>
                                         :
-                                        <FormattedMessage id='no' />
+                                        <div><FormattedMessage id='no' /><Icon type='edit'/></div>
                                     : (
                                         <Button><FormattedMessage id='change_consider_discount' /></Button>
                                     ) }
                             </div>
                         );
                     }
+                },
+            },
+            {
+                title:     '',
+                dataIndex: 'review',
+                width:     '10%',
+                render:    (text, record) => {
+                    /* eslint-disable complexity */
+                    return (
+                        <>
+                            <Button
+                                onClick={ () => {
+                                    if (
+                                        record.id === 'add' &&
+                                        record.employeeId === null
+                                    ) {
+                                        this.setState({ employeeEmpty: true });
+                                        message.error('You must add employee');
+                                    } else {
+                                        this.props.saveSalary(
+                                            record,
+                                            record.id,
+                                        );
+
+                                        if (record.id === 'add') {
+                                            this.setState({
+                                                newSalary: {
+                                                    id:               'add',
+                                                    considerDiscount: false,
+                                                    employeeId:       null,
+                                                    endDate:          null,
+                                                    percent:          0,
+                                                    percentFrom:      'ORDER',
+                                                    period:           'DAY',
+                                                    ratePerPeriod:    0,
+                                                    startDate:        moment(),
+                                                    employee:         {
+                                                        name:    '',
+                                                        surname: '',
+                                                    },
+                                                },
+                                            });
+                                        }
+                                    }
+                                } }
+                            >
+                                <Icon
+                                    className={ Styles.employeeTableIcon }
+                                    type='save'
+                                />
+                            </Button>
+                            {record.id !== 'add' ? (
+                                <Button
+                                    onClick={ () => {
+                                        this.props.deleteSalary(record.id);
+                                    } }
+                                >
+                                    <Icon
+                                        className={ Styles.employeeTableIcon }
+                                        type='delete'
+                                    />
+                                </Button>
+                            ) : null}
+                        </>
+                    );
                 },
             },
         ];

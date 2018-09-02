@@ -4,15 +4,15 @@
 export const moduleName = 'employee';
 const prefix = `cpb/${moduleName}`;
 
-export const FETCH_EMPLOYEE_SCHEDULE = `${prefix}/FETCH_EMPLOYEE_SCHEDULE`;
-export const FETCH_EMPLOYEE_SCHEDULE_SUCCESS = `${prefix}/FETCH_EMPLOYEE_SCHEDULE_SUCCESS`;
+export const FETCH_EMPLOYEE_BREAK_SCHEDULE = `${prefix}/FETCH_EMPLOYEE_BREAK_SCHEDULE`;
+export const FETCH_EMPLOYEE_BREAK_SCHEDULE_SUCCESS = `${prefix}/FETCH_EMPLOYEE_BREAK_SCHEDULE_SUCCESS`;
 
-export const SAVE_EMPLOYEE_SCHEDULE = `${prefix}/SAVE_EMPLOYEE_SCHEDULE`;
-export const SAVE_EMPLOYEE_SCHEDULE_SUCCESS = `${prefix}/SAVE_EMPLOYEE_SCHEDULE_SUCCESS`;
-export const DELETE_EMPLOYEE_SCHEDULE = `${prefix}/DELETE_EMPLOYEE_SCHEDULE`;
-export const DELETE_EMPLOYEE_SCHEDULE_SUCCESS = `${prefix}/DELETE_EMPLOYEE_SCHEDULE_SUCCESS`;
+export const SAVE_EMPLOYEE_BREAK_SCHEDULE = `${prefix}/SAVE_EMPLOYEE_BREAK_SCHEDULE`;
+export const SAVE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS = `${prefix}/SAVE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS`;
+export const DELETE_EMPLOYEE_BREAK_SCHEDULE = `${prefix}/DELETE_EMPLOYEE_BREAK_SCHEDULE`;
+export const DELETE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS = `${prefix}/DELETE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS`;
 
-export const ON_CHANGE_EMPLOYEE_SCHEDULE_FORM = `${prefix}/ON_CHANGE_EMPLOYEE_SCHEDULE_FORM`;
+export const ON_CHANGE_EMPLOYEE_BREAK_SCHEDULE_FORM = `${prefix}/ON_CHANGE_EMPLOYEE_BREAK_SCHEDULE_FORM`;
 
 /**
  * Reducer
@@ -55,7 +55,7 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case ON_CHANGE_EMPLOYEE_SCHEDULE_FORM:
+        case ON_CHANGE_EMPLOYEE_BREAK_SCHEDULE_FORM:
             return {
                 ...state,
                 fields: {
@@ -63,12 +63,12 @@ export default function reducer(state = ReducerState, action) {
                     ...payload,
                 },
             };
-        case FETCH_EMPLOYEE_SCHEDULE:
+        case FETCH_EMPLOYEE_BREAK_SCHEDULE:
             return {
                 ...state,
                 employeeSchedule: null,
             };
-        case FETCH_EMPLOYEE_SCHEDULE_SUCCESS:
+        case FETCH_EMPLOYEE_BREAK_SCHEDULE_SUCCESS:
             return {
                 ...state,
                 employeeSchedule: payload,
@@ -89,36 +89,36 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export const fetchEmployeeSchedule = id => ({
-    type:    FETCH_EMPLOYEE_SCHEDULE,
+export const fetchEmployeeBreakSchedule = id => ({
+    type:    FETCH_EMPLOYEE_BREAK_SCHEDULE,
     payload: id,
 });
 
-export const fetchEmployeeScheduleSuccess = data => ({
-    type:    FETCH_EMPLOYEE_SCHEDULE_SUCCESS,
+export const fetchEmployeeBreakScheduleSuccess = data => ({
+    type:    FETCH_EMPLOYEE_BREAK_SCHEDULE_SUCCESS,
     payload: data,
 });
 
-export const saveEmployeeSchedule = ({ schedule, id, update }) => ({
-    type:    SAVE_EMPLOYEE_SCHEDULE,
-    payload: { schedule, id , update},
+export const saveEmployeeBreakSchedule = ({ schedule, id, update }) => ({
+    type:    SAVE_EMPLOYEE_BREAK_SCHEDULE,
+    payload: { schedule, id, update },
 });
 
-export const saveEmployeeScheduleSuccess = data => ({
-    type:    SAVE_EMPLOYEE_SCHEDULE_SUCCESS,
+export const saveEmployeeBreakScheduleSuccess = data => ({
+    type:    SAVE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS,
     payload: data,
 });
 
-export const onChangeEmployeeScheduleForm = update => ({
-    type:    ON_CHANGE_EMPLOYEE_SCHEDULE_FORM,
+export const onChangeEmployeeBreakScheduleForm = update => ({
+    type:    ON_CHANGE_EMPLOYEE_BREAK_SCHEDULE_FORM,
     payload: update,
 });
-export const deleteEmployeeSchedule = (id, employeeId) => ({
-    type:    DELETE_EMPLOYEE_SCHEDULE,
+export const deleteEmployeeBreakSchedule = (id, employeeId) => ({
+    type:    DELETE_EMPLOYEE_BREAK_SCHEDULE,
     payload: { id, employeeId },
 });
 
-export const deleteEmployeeScheduleSuccess = data => ({
-    type:    DELETE_EMPLOYEE_SCHEDULE_SUCCESS,
+export const deleteEmployeeBreakScheduleSuccess = data => ({
+    type:    DELETE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS,
     payload: data,
 });

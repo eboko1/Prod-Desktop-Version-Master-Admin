@@ -80,6 +80,7 @@ import TasksTable from 'components/OrderForm/OrderFormTables/TasksTable/messages
 import EmployeeTable from 'components/EmployeeTable/messages';
 import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
+import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
 
 /* eslint-disable array-element-newline */
 const messages = merge.all([
@@ -146,6 +147,7 @@ const messages = merge.all([
     EmployeeScheduleForm,
     SettingSalaryTable,
     ArrayScheduleInput,
+    ArrayBreakScheduleInput,
 ]);
 /* eslint-enable array-element-newline */
 

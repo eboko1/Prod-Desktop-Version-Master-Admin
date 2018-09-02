@@ -16,19 +16,11 @@
     justify-content: space-around;
     align-items: center;
 }
-@media (max-width: 500px) {
-    .Hours {
-        flex-direction: column;
-    }
-}
-.HourItem {
-    width: 100%;
-}
-.HourDash {
-    width: 50%;
-}
 .InputBlock {
     display: none;
+}
+.InputNote {
+    width: 40%;
 }
 .MainBlock {
     padding: 24px;
@@ -39,4 +31,7 @@
 }
 .AddButton {
     margin-right: 10px;
+}
+.Select {
+    min-width: 150px;
 }

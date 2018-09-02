@@ -27,6 +27,7 @@ import { saga as employee } from 'core/employee/saga';
 import { saga as employeeForm } from 'core/forms/employeeForm/saga';
 import { saga as settingSalary } from 'core/forms/settingSalaryForm/saga';
 import { saga as employeeScheduleForm } from 'core/forms/employeeScheduleForm/saga';
+import { saga as employeeBreakScheduleForm } from 'core/forms/employeeBreakScheduleForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -53,6 +54,7 @@ export default function* rootSaga() {
         employeeScheduleForm(),
         searchSaga(),
         managerRoleSaga(),
+        employeeBreakScheduleForm(),
     ]);
 }
 /* eslint-enable array-element-newline */

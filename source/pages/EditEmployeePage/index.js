@@ -10,11 +10,7 @@ import moment from 'moment'
 import { EmployeeForm, EmployeeScheduleForm } from 'forms';
 import { Layout, Spinner } from 'commons';
 import { fetchEmployee } from 'core/employee/duck';
-import {
-    fetchEmployeeSchedule,
-    saveEmployeeSchedule,
-    deleteEmployeeSchedule,
-} from 'core/forms/employeeScheduleForm/duck';
+
 import {
     fetchEmployeeById,
     saveEmployee,
@@ -42,9 +38,7 @@ const mapDispatchToProps = {
     fetchEmployee,
     fetchEmployeeById,
     resetEmployeeForm,
-    saveEmployeeSchedule,
-    fetchEmployeeSchedule,
-    deleteEmployeeSchedule,
+
     fireEmployee,
 };
 @withRouter
@@ -63,9 +57,7 @@ class EditEmployeePage extends Component {
         this.props.resetEmployeeForm();
     }
     fireEmployee=()=>{
-        console.log(this.props.employeesData,
-            this.props.history.location.pathname.split('/')[ 2 ],
-            moment(), 'HELLO' )
+        
         this.props.fireEmployee(
             this.props.employeesData,
             this.props.history.location.pathname.split('/')[ 2 ],
@@ -75,10 +67,14 @@ class EditEmployeePage extends Component {
     saveEmployeeFormRef = formRef => {
         this.employeeFormRef = formRef;
     };
+    // saveEmployeeBreakScheduleFormRef = formRef => {
+    //     this.employeeBreakScheduleFormRef = formRef;
+    // };
 
     saveEmployee = () => {
         const form = this.employeeFormRef.props.form;
         form.validateFields(err => {
+
             if (!err) {
                 this.props.saveEmployee(
                     this.props.employeesData,
@@ -87,75 +83,68 @@ class EditEmployeePage extends Component {
             }
         });
     };
-
-    saveScheduleEmployeeFormRef = formRef => {
-        this.employeeScheduleFormRef = formRef;
-    };
-    normilizeScheduleObject = (entity, field, name) => {
-        let value;
-        entity[ field ].map(el => {
-            if (el.name === name) {
-                value = el.value;
-            }
-        });
-
-        return value;
-    };
-    saveEmployeeSchedule = keys => {
-        const form = this.employeeScheduleFormRef.props.form;
-        const { entity } = this.props;
-        form.validateFields((err, values) => {
-            if (!err) {
-                keys.map(item => {
-                    let data = {
-                        beginBreakHours: values.beginBreakHours[ item ]
-                            ? values.beginBreakHours[ item ].format('HH:mm')
-                            : null,
-                        beginWorkingHours: values.beginWorkingHours[ item ]
-                            ? values.beginWorkingHours[ item ].format('HH:mm')
-                            : null,
-                        endBreakHours: values.endBreakHours[ item ]
-                            ? values.endBreakHours[ item ].format('HH:mm')
-                            : null,
-                        endWorkingHours: values.endWorkingHours[ item ]
-                            ? values.endWorkingHours[ item ].format('HH:mm')
-                            : null,
-                        friday: values.friday[ item ]
-                            ? values.friday[ item ]
-                            : false,
-                        monday: values.monday[ item ]
-                            ? values.monday[ item ]
-                            : false,
-                        saturday: values.saturday[ item ]
-                            ? values.saturday[ item ]
-                            : false,
-                        sunday: values.sunday[ item ]
-                            ? values.sunday[ item ]
-                            : false,
-                        thursday: values.thursday[ item ]
-                            ? values.thursday[ item ]
-                            : false,
-                        tuesday: values.tuesday[ item ]
-                            ? values.tuesday[ item ]
-                            : false,
-                        wednesday: values.wednesday[ item ]
-                            ? values.wednesday[ item ]
-                            : false,
-                        type:        'standard',
-                        subjectType: 'employee',
-                    };
-                    if (!values.id[ item ]) {
-                        this.props.saveEmployeeSchedule({
-                            schedule: data,
-                            id:       this.props.history.location.pathname.split(
-                                '/',
-                            )[ 2 ],
-                        });
-                    }
-                });
-            }
-        });
-    };
+    
+    
+    // saveScheduleEmployeeFormRef = formRef => {
+    //     this.employeeScheduleFormRef = formRef;
+    // };
+    
+    // saveEmployeeSchedule = keys => {
+    //     const form = this.employeeScheduleFormRef.props.form;
+    //     const { entity } = this.props;
+    //     form.validateFields((err, values) => {
+    //         console.log(err, 'Hello')
+    //         if (!err) {
+    //             keys.map(item => {
+    //                 let data = {
+    //                     beginBreakHours: values.beginBreakHours[ item ]
+    //                         ? values.beginBreakHours[ item ].format('HH:mm')
+    //                         : null,
+    //                     beginWorkingHours: values.beginWorkingHours[ item ]
+    //                         ? values.beginWorkingHours[ item ].format('HH:mm')
+    //                         : null,
+    //                     endBreakHours: values.endBreakHours[ item ]
+    //                         ? values.endBreakHours[ item ].format('HH:mm')
+    //                         : null,
+    //                     endWorkingHours: values.endWorkingHours[ item ]
+    //                         ? values.endWorkingHours[ item ].format('HH:mm')
+    //                         : null,
+    //                     friday: values.friday[ item ]
+    //                         ? values.friday[ item ]
+    //                         : false,
+    //                     monday: values.monday[ item ]
+    //                         ? values.monday[ item ]
+    //                         : false,
+    //                     saturday: values.saturday[ item ]
+    //                         ? values.saturday[ item ]
+    //                         : false,
+    //                     sunday: values.sunday[ item ]
+    //                         ? values.sunday[ item ]
+    //                         : false,
+    //                     thursday: values.thursday[ item ]
+    //                         ? values.thursday[ item ]
+    //                         : false,
+    //                     tuesday: values.tuesday[ item ]
+    //                         ? values.tuesday[ item ]
+    //                         : false,
+    //                     wednesday: values.wednesday[ item ]
+    //                         ? values.wednesday[ item ]
+    //                         : false,
+    //                     type:        'standard',
+    //                     subjectType: 'employee',
+    //                 };
+    //                 if (!values.id[ item ]) {
+    //                     this.props.saveEmployeeSchedule({
+    //                         schedule: data,
+    //                         id:       this.props.history.location.pathname.split(
+    //                             '/',
+    //                         )[ 2 ],
+    //                     });
+    //                 }
+    //             });
+    //         }
+    //     });
+    // };
     /* eslint-disable complexity*/
     render() {
         const {
@@ -209,15 +198,17 @@ class EditEmployeePage extends Component {
                         <EmployeeScheduleForm
                             initialEmployee={ initialEmployee }
                             initialSchedule={ initialSchedule }
-                            wrappedComponentRef={
-                                this.saveScheduleEmployeeFormRef
-                            }
+                            // wrappedComponentRef={
+                            //     this.saveScheduleEmployeeFormRef
+                            // }
                             fetchEmployeeSchedule={
                                 this.props.fetchEmployeeSchedule
                             }
+                            deleteEmployeeBreakSchedule={ this.props.deleteEmployeeBreakSchedule }
                             history={ this.props.history }
                             saveEmployee={ this.saveEmployee }
-                            saveEmployeeSchedule={ this.saveEmployeeSchedule }
+                            saveEmployeeBreakSchedule={ this.saveEmployeeBreakSchedule }
+                            // saveEmployeeSchedule={ this.saveEmployeeSchedule }
                             deleteEmployeeSchedule={
                                 this.props.deleteEmployeeSchedule
                             }

@@ -26,17 +26,14 @@ export default class EmployeeTable extends Component {
                 render:    (text, record) => {
                     return (
                         <>
-                            <Link
-                                to={ book.editEmployee.replace(':id', record.id) }
-                            >
-                                <Icon
+                            
+                            {/* <Icon
                                     className={ Styles.employeeTableIcon }
                                     onClick={ () => {
                                         this.props.initEmployeeForm(record);
                                     } }
                                     type='edit'
-                                />
-                            </Link>
+                                /> */}
                             <Icon
                                 className={ Styles.employeeTableIcon }
                                 onClick={ () => {
@@ -67,7 +64,9 @@ export default class EmployeeTable extends Component {
                 dataIndex: 'name',
                 width:     '20%',
                 render:    (text, record) => (
-                    <div>{ `${record.name} ${record.surname}` }</div>
+                    <div><Link
+                        to={ book.editEmployee.replace(':id', record.id) }
+                    >{ `${record.name} ${record.surname}` }</Link></div>
                 ),
             },
             {

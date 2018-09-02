@@ -10,13 +10,28 @@ import {
     DecoratedTimePicker,
     DecoratedInput,
 } from 'forms/DecoratedFields';
-
+import { onChangeEmployeeScheduleForm } from 'core/forms/employeeScheduleForm/duck';
+import {
+    fetchEmployeeSchedule,
+    saveEmployeeSchedule,
+    deleteEmployeeSchedule,
+} from 'core/forms/employeeScheduleForm/duck';
+import { withReduxForm, getDateTimeConfigs } from 'utils';
 // own
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
 
 @injectIntl
 @withRouter
+@withReduxForm({
+    name:    'employeeScheduleForm',
+    actions: {
+        change: onChangeEmployeeScheduleForm,
+        fetchEmployeeSchedule,
+        saveEmployeeSchedule,
+        deleteEmployeeSchedule,
+    },
+})
 class ArrayScheduleInput extends Component {
     constructor(props) {
         super(props);
@@ -25,6 +40,76 @@ class ArrayScheduleInput extends Component {
             keys: [],
         };
     }
+    saveScheduleEmployeeFormRef = formRef => {
+        this.employeeScheduleFormRef = formRef;
+    };
+    
+    saveEmployeeSchedule = keys => {
+        const form = this.props.form
+        const { entity } = this.props;
+        form.validateFields((err, values) => {
+            if (!err) {
+                keys.map(item => {
+                    let data = {
+                        beginBreakHours: values.beginBreakHours[ item ]
+                            ? values.beginBreakHours[ item ].format('HH:mm')
+                            : null,
+                        beginWorkingHours: values.beginWorkingHours[ item ]
+                            ? values.beginWorkingHours[ item ].format('HH:mm')
+                            : null,
+                        endBreakHours: values.endBreakHours[ item ]
+                            ? values.endBreakHours[ item ].format('HH:mm')
+                            : null,
+                        endWorkingHours: values.endWorkingHours[ item ]
+                            ? values.endWorkingHours[ item ].format('HH:mm')
+                            : null,
+                        friday: values.friday[ item ]
+                            ? values.friday[ item ]
+                            : false,
+                        monday: values.monday[ item ]
+                            ? values.monday[ item ]
+                            : false,
+                        saturday: values.saturday[ item ]
+                            ? values.saturday[ item ]
+                            : false,
+                        sunday: values.sunday[ item ]
+                            ? values.sunday[ item ]
+                            : false,
+                        thursday: values.thursday[ item ]
+                            ? values.thursday[ item ]
+                            : false,
+                        tuesday: values.tuesday[ item ]
+                            ? values.tuesday[ item ]
+                            : false,
+                        wednesday: values.wednesday[ item ]
+                            ? values.wednesday[ item ]
+                            : false,
+                        type:        'standard',
+                        subjectType: 'employee',
+                    };
+                    if (!values.id[ item ]) {
+                        this.props.saveEmployeeSchedule({
+                            schedule: data,
+                            id:       this.props.history.location.pathname.split(
+                                '/',
+                            )[ 2 ],
+                            update: false,
+                        });
+                    }else if(values.id[ item ]){
+                        this.props.saveEmployeeSchedule({
+                            schedule: data,
+                            id:       this.props.history.location.pathname.split(
+                                '/',
+                            )[ 2 ],
+                            update: true,
+                        });
+                    }
+
+                });
+            }
+        });
+    };
+
     componentDidMount() {
         this.setState({
             keys: this.props.initialSchedule.map((item, key) => key),
@@ -62,7 +147,7 @@ class ArrayScheduleInput extends Component {
     };
 
     render() {
-        const { getFieldDecorator } = this.props;
+        const { getFieldDecorator } = this.props.form;
         const { fieldName, fieldTitle, initialSchedule, optional } = this.props;
         const { formatMessage } = this.props.intl;
         // getFieldDecorator(`${fieldName}Keys`, {
@@ -70,8 +155,10 @@ class ArrayScheduleInput extends Component {
         // });
         //const keys = getFieldValue(`${fieldName}Keys`);
         const keys = this.state.keys;
+        /*eslint-disable complexity*/
         const formItems = keys.map(key => {
             return (
+                
                 <Row className={ Styles.MainBlock } type='flex' align='middle' key={ key }>
                     <Col span={ 20 }>
                         <div className={ Styles.CheckboxBlock }>
@@ -162,6 +249,7 @@ class ArrayScheduleInput extends Component {
                         <div className={ Styles.Hours }>
                             <DecoratedTimePicker
                                 formItem
+                                className={ Styles.HourItem }
                                 field={ `beginWorkingHours[${key}]` }
                                 rules={ [
                                     {
@@ -177,7 +265,7 @@ class ArrayScheduleInput extends Component {
                                         'HH:mm',
                                     )
                                 }
-                                hasFeedback
+                                hasFeedback={ false }
                                 // disabledHours={ disabledHours }
                                 // disabledMinutes={ disabledMinutes }
                                 // disabledSeconds={ disabledSeconds }
@@ -187,9 +275,10 @@ class ArrayScheduleInput extends Component {
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
                             />
-                            <span>-</span>
+                            <span className={ Styles.HourDash }>-</span>
                             <DecoratedTimePicker
                                 formItem
+                                className={ Styles.HourItem }
                                 field={ `endWorkingHours[${key}]` }
                                 rules={ [
                                     {
@@ -220,6 +309,8 @@ class ArrayScheduleInput extends Component {
                         <div className={ Styles.Hours }>
                             <DecoratedTimePicker
                                 formItem
+                                className={ Styles.HourItem }
+
                                 field={ `beginBreakHours[${key}]` }
                                 initialValue={
                                     initialSchedule[ key ] &&
@@ -229,15 +320,17 @@ class ArrayScheduleInput extends Component {
                                         'HH:mm',
                                     )
                                 }
-                                hasFeedback
+                                hasFeedback={ false }
                                 label={ <FormattedMessage id='beginBreakHours' /> }
                                 formatMessage={ formatMessage }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
                             />
-                            <span>-</span>
+                            <span className={ Styles.HourDash }>-</span>
                             <DecoratedTimePicker
                                 formItem
+                                className={ Styles.HourItem }
+
                                 field={ `endBreakHours[${key}]` }
                                 initialValue={
                                     initialSchedule[ key ] &&
@@ -310,7 +403,7 @@ class ArrayScheduleInput extends Component {
                                 <Button
                                     type='dashed'
                                     onClick={ () =>
-                                        this.props.saveEmployeeSchedule(keys)
+                                        this.saveEmployeeSchedule(keys)
                                     }
                                 >
                                     <Icon type='save' />

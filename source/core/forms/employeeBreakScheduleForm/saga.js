@@ -7,21 +7,21 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
-    saveEmployeeScheduleSuccess,
-    SAVE_EMPLOYEE_SCHEDULE,
-    FETCH_EMPLOYEE_SCHEDULE,
-    DELETE_EMPLOYEE_SCHEDULE,
-    deleteEmployeeScheduleSuccess,
-    fetchEmployeeScheduleSuccess,
+    saveEmployeeBreakScheduleSuccess,
+    SAVE_EMPLOYEE_BREAK_SCHEDULE,
+    FETCH_EMPLOYEE_BREAK_SCHEDULE,
+    DELETE_EMPLOYEE_BREAK_SCHEDULE,
+    deleteEmployeeBreakScheduleSuccess,
+    fetchEmployeeBreakScheduleSuccess,
 } from './duck';
 import { fetchEmployeeById } from 'core/forms/employeeForm/duck';
 
 export function* saveSchedule({ payload: { schedule, id, update } }) {
     try {
         const object = { ...schedule, subjectId: id };
-        const data = yield call(fetchAPI, update?'PUT':'POST', update?`schedule/${id}`:'schedule', null, object);
+        const data = yield call(fetchAPI, update?'PUT':'POST', update?`non_working_days/${id}`:'non_working_days', null, object);
 
-        yield put(saveEmployeeScheduleSuccess(data));
+        yield put(saveEmployeeBreakScheduleSuccess(data));
         yield put(fetchEmployeeById(id));
     } catch (error) {
         yield put(emitError(error));
@@ -30,9 +30,9 @@ export function* saveSchedule({ payload: { schedule, id, update } }) {
 
 export function* deleteSchedule({ payload: { id, employeeId } }) {
     try {
-        const data = yield call(fetchAPI, 'DELETE', `schedule/${id}`);
+        const data = yield call(fetchAPI, 'DELETE', `non_working_days/${id}`);
 
-        yield put(deleteEmployeeScheduleSuccess(data));
+        yield put(deleteEmployeeBreakScheduleSuccess(data));
         yield put(fetchEmployeeById(employeeId));
     } catch (error) {
         yield put(emitError(error));
@@ -40,5 +40,5 @@ export function* deleteSchedule({ payload: { id, employeeId } }) {
 }
 export function* saga() {
     // yield all([ call(saveSchedule) ]);
-    yield all([ takeEvery(SAVE_EMPLOYEE_SCHEDULE, saveSchedule), takeEvery(DELETE_EMPLOYEE_SCHEDULE, deleteSchedule)  ]);
+    yield all([ takeEvery(SAVE_EMPLOYEE_BREAK_SCHEDULE, saveSchedule), takeEvery(DELETE_EMPLOYEE_BREAK_SCHEDULE, deleteSchedule)  ]);
 }
