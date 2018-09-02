@@ -67,17 +67,18 @@ export default class OrderFormHeader extends Component {
 
     _renderDuration = () => {
         const { fetchedOrder, totalHours } = this.props;
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
 
         return (
             <DecoratedSlider
                 className={ Styles.duration }
                 formItem
+                colon={ false }
                 disabled={ this.bodyUpdateIsForbidden() }
                 initDuration={
                     _.get(fetchedOrder, 'order.duration') || totalHours
                 }
-                label='Продолжительность'
+                label={ `Продолжительность (${getFieldValue('duration')}ч.)` }
                 field='duration'
                 getFieldDecorator={ getFieldDecorator }
                 min={ 0 }

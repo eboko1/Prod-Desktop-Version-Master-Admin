@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { Form, Select, Input, Icon } from 'antd';
 import _ from 'lodash';
 import { v4 } from 'uuid';
+import classNames from 'classnames/bind';
 
 // proj
 import {
@@ -19,6 +20,8 @@ import { permissions, isForbidden } from 'utils';
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+let cx = classNames.bind(Styles);
 
 const formBodyItemLayout = {
     labelCol: {
@@ -36,26 +39,6 @@ const formBodyItemLayout = {
         lg:  { span: 24 },
         xl:  { span: 24 },
         xxl: { span: 15 },
-    },
-    colon: false,
-};
-
-const formBodyClientItemLayout = {
-    labelCol: {
-        xs:  { span: 24 },
-        sm:  { span: 24 },
-        md:  { span: 24 },
-        lg:  { span: 24 },
-        xl:  { span: 24 },
-        xxl: { span: 12 },
-    },
-    wrapperCol: {
-        xs:  { span: 24 },
-        sm:  { span: 24 },
-        md:  { span: 24 },
-        lg:  { span: 24 },
-        xl:  { span: 24 },
-        xxl: { span: 12 },
     },
     colon: false,
 };
@@ -332,16 +315,42 @@ export default class OrderFormBody extends Component {
     };
 
     _renderCommentsBlock = () => {
-        const { fetchedOrder, user } = this.props;
+        const { orderHistory, fetchedOrder, user } = this.props;
         const { ACCESS_ORDER_COMMENTS } = permissions;
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
+        // (condition) ? (true block) : ((condition2) ? (true block2) : (else block2))
+        let prevRecommendation = null;
+        // = orderHistory
+        //    ? orderHistory.orders
+        //    : orderHistory.orders[ 1 ]
+        //        ? orderHistory.orders[ 1 ].recommendation
+        //        : false;
+
+        if (orderHistory) {
+            if (orderHistory.orders) {
+                if (orderHistory.orders[ 1 ]) {
+                    prevRecommendation = orderHistory.orders[ 1 ].recommendation;
+                }
+                prevRecommendation = false;
+            }
+            prevRecommendation = false;
+        }
+
+        console.log('→ prevRecommendation', prevRecommendation);
+
+        const commentStyles = cx({
+            comment:         true,
+            commentExtended: !prevRecommendation,
+        });
+
         return (
             <div className={ Styles.commentsBlock }>
                 <DecoratedTextArea
-                    className={ Styles.comment }
+                    className={ commentStyles }
                     formItem
+                    colon={ false }
                     label={
                         <FormattedMessage id='add_order_form.client_comments' />
                     }
@@ -361,26 +370,29 @@ export default class OrderFormBody extends Component {
                     }) }
                     autosize={ { minRows: 2, maxRows: 6 } }
                 />
-                <DecoratedTextArea
-                    className={ Styles.comment }
-                    formItem
-                    label={ 'Рекомендации с прошлого заезда' }
-                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
-                    getFieldDecorator={ getFieldDecorator }
-                    field='comment'
-                    initialValue={ _.get(fetchedOrder, 'order.comment') }
-                    rules={ [
-                        {
-                            max:     2000,
-                            message: 'Too much',
-                        },
-                    ] }
-                    placeholder={ formatMessage({
-                        id:             'add_order_form.client_comments',
-                        defaultMessage: 'Client_comments',
-                    }) }
-                    autosize={ { minRows: 2, maxRows: 6 } }
-                />
+                { prevRecommendation && (
+                    <DecoratedTextArea
+                        className={ Styles.comment }
+                        formItem
+                        colon={ false }
+                        label={ 'Рекомендации с прошлого заезда' }
+                        disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
+                        getFieldDecorator={ getFieldDecorator }
+                        field='prevRecommendation'
+                        initialValue={ prevRecommendation }
+                        rules={ [
+                            {
+                                max:     2000,
+                                message: 'Too much',
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id:             'add_order_form.client_comments',
+                            defaultMessage: 'Client_comments',
+                        }) }
+                        autosize={ { minRows: 2, maxRows: 6 } }
+                    />
+                ) }
             </div>
         );
     };
