@@ -59,10 +59,7 @@ export default class SettingSalaryContainer extends Component {
                 <div className={ Styles.downloadFile }>
                     <DecoratedDatePicker
                         field='filterRangeDate'
-                        ranges={ {
-                            Today:        getDaterange('today', 'ant'),
-                            'This Month': getDaterange('prevMonth', 'ant'),
-                        } }
+                        ranges
                         label={ null }
                         formItem
                         formatMessage={ this.props.intl.formatMessage }
