@@ -44,6 +44,7 @@ import {
 
 const mapStateToProps = state => {
     return {
+        isMobile:              state.ui.views.isMobile,
         orderTaskEntity:       state.forms.orderTaskForm.fields,
         orderTaskId:           state.forms.orderTaskForm.taskId,
         priorityOptions:       state.forms.orderTaskForm.priorityOptions,
@@ -349,16 +350,16 @@ class OrderPage extends Component {
         ) : (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>
@@ -398,15 +399,16 @@ class OrderPage extends Component {
                                 <FormattedMessage id='order-page.create_invite_order' />
                             </Button>
                         ) : null}
-
-                        <ChangeStatusDropdown
-                            user={ user }
-                            orderStatus={ status }
-                            onStatusChange={ this._onStatusChange }
-                            setModal={ setModal }
-                            modals={ MODALS }
-                            isMobile={ isMobile }
-                        />
+                        {!isMobile && (
+                            <ChangeStatusDropdown
+                                user={ user }
+                                orderStatus={ status }
+                                onStatusChange={ this._onStatusChange }
+                                setModal={ setModal }
+                                modals={ MODALS }
+                                isMobile={ isMobile }
+                            />
+                        )}
                         <ReportsDropdown
                             user={ this.props.user }
                             orderId={ id }

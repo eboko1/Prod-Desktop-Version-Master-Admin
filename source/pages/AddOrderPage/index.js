@@ -17,7 +17,6 @@ import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Spinner } from 'commons';
-import { ConfirmOrderExitModal } from 'modals';
 import { OrderForm } from 'forms';
 import {
     convertFieldsValuesToDbEntity,

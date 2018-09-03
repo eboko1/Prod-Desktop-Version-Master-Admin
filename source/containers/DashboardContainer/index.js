@@ -107,14 +107,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length && 
+                    { load.length &&
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) : 
+                                ) :
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -131,7 +131,7 @@ class DashboardContainer extends Component {
                                     )} -`
                                     : stations[ index ].name &&
                                       `${stations[ index ].name} - ` }
-                                { load[ index ].loadCoefficient }%
+                                { Math.round(load[ index ].loadCoefficient) }%
                             </DashboardLoad>
                         </>
                     }
