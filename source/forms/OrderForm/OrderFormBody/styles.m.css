@@ -51,12 +51,23 @@
     margin-left: 10px;
 }
 
+.iconsCol {
+    display: flex;
+    flex-direction: column;
+}
+
 .editIcon {
     font-size: 24px;
     cursor: pointer;
     color: var(--primary);
     font-weight: bold;
-    margin: 42px 0 0 10px;
+    margin: 24px 0 24px 10px;
+}
+
+.copyIcon {
+    font-size: 16px;
+    cursor: pointer;
+    color: var(--link);
 }
 
 .bodyColumn {

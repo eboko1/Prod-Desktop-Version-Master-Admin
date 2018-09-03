@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { Form, Select, Input, Icon } from 'antd';
 import _ from 'lodash';
 import { v4 } from 'uuid';
@@ -39,6 +40,26 @@ const formBodyItemLayout = {
         lg:  { span: 24 },
         xl:  { span: 24 },
         xxl: { span: 15 },
+    },
+    colon: false,
+};
+
+const formVerticalLayout = {
+    labelCol: {
+        xs:  { span: 24 },
+        sm:  { span: 24 },
+        md:  { span: 24 },
+        lg:  { span: 24 },
+        xl:  { span: 24 },
+        xxl: { span: 24 },
+    },
+    wrapperCol: {
+        xs:  { span: 24 },
+        sm:  { span: 24 },
+        md:  { span: 24 },
+        lg:  { span: 24 },
+        xl:  { span: 24 },
+        xxl: { span: 24 },
     },
     colon: false,
 };
@@ -157,13 +178,22 @@ export default class OrderFormBody extends Component {
                         </DecoratedSelect>
                     </div>
                     { hasClient && (
-                        <a
-                            href={ `${book.oldApp.clients}/${
-                                this.props.order.clientId
-                            }?ref=/orders/${this.props.order.id}` }
-                        >
-                            <Icon type='edit' className={ Styles.editIcon } />
-                        </a>
+                        <div className={ Styles.iconsCol }>
+                            <a
+                                href={ `${book.oldApp.clients}/${
+                                    this.props.order.clientId
+                                }?ref=/orders/${this.props.order.id}` }
+                            >
+                                <Icon type='edit' className={ Styles.editIcon } />
+                            </a>
+                            <CopyToClipboard text={ hasClient }>
+                                <Icon
+                                    type='copy'
+                                    theme='outlined'
+                                    className={ Styles.copyIcon }
+                                />
+                            </CopyToClipboard>
+                        </div>
                     ) }
                 </div>
                 <div className={ Styles.clientsInfo }>
@@ -171,7 +201,7 @@ export default class OrderFormBody extends Component {
                         field='clientEmail'
                         className={ Styles.clientsInfoCol }
                         formItem
-                        formItemLayout={ formBodyItemLayout }
+                        formItemLayout={ formVerticalLayout }
                         getFieldDecorator={ getFieldDecorator }
                         label={ <FormattedMessage id='add_order_form.email' /> }
                         initialValue={
@@ -198,7 +228,7 @@ export default class OrderFormBody extends Component {
                         label={
                             <FormattedMessage id='add_order_form.client_requisites' />
                         }
-                        formItemLayout={ formBodyItemLayout }
+                        formItemLayout={ formVerticalLayout }
                         getFieldDecorator={ getFieldDecorator }
                         placeholder={
                             <FormattedMessage id='add_order_form.select_requisites' />
@@ -283,13 +313,27 @@ export default class OrderFormBody extends Component {
                         </DecoratedSelect>
                     </div>
                     { selectedVehicle && (
-                        <a
-                            href={ `${book.oldApp.clients}/${
-                                this.props.order.clientId
-                            }?ref=/orders/${this.props.order.id}` }
-                        >
-                            <Icon type='edit' className={ Styles.editIcon } />
-                        </a>
+                        <div className={ Styles.iconsCol }>
+                            <a
+                                href={ `${book.oldApp.clients}/${
+                                    this.props.order.clientId
+                                }?ref=/orders/${this.props.order.id}` }
+                            >
+                                <Icon type='edit' className={ Styles.editIcon } />
+                            </a>
+                            { console.log('→ selectedVehicle', selectedVehicle) }
+                            <CopyToClipboard
+                                text={ `${selectedVehicle.make} ${
+                                    selectedVehicle.model
+                                }` }
+                            >
+                                <Icon
+                                    type='copy'
+                                    theme='outlined'
+                                    className={ Styles.copyIcon }
+                                />
+                            </CopyToClipboard>
+                        </div>
                     ) }
                 </div>
                 <DecoratedInputNumber
@@ -299,7 +343,7 @@ export default class OrderFormBody extends Component {
                     initialValue={ _.get(fetchedOrder, 'order.odometerValue') }
                     colon={ false }
                     label={ <FormattedMessage id='add_order_form.odometr' /> }
-                    formItemLayout={ formBodyItemLayout }
+                    formItemLayout={ formVerticalLayout }
                     getFieldDecorator={ getFieldDecorator }
                     className={ Styles.odometr }
                     rules={ [
@@ -320,13 +364,7 @@ export default class OrderFormBody extends Component {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        // (condition) ? (true block) : ((condition2) ? (true block2) : (else block2))
         let prevRecommendation = null;
-        // = orderHistory
-        //    ? orderHistory.orders
-        //    : orderHistory.orders[ 1 ]
-        //        ? orderHistory.orders[ 1 ].recommendation
-        //        : false;
 
         if (orderHistory) {
             if (orderHistory.orders) {
@@ -337,8 +375,6 @@ export default class OrderFormBody extends Component {
             }
             prevRecommendation = false;
         }
-
-        console.log('→ prevRecommendation', prevRecommendation);
 
         const commentStyles = cx({
             comment:         true,
