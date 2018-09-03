@@ -363,17 +363,14 @@ export default class OrderFormBody extends Component {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        let prevRecommendation = null;
-
-        if (orderHistory) {
-            if (orderHistory.orders) {
-                if (orderHistory.orders[ 1 ]) {
-                    prevRecommendation = orderHistory.orders[ 1 ].recommendation;
-                }
-                prevRecommendation = false;
-            }
-            prevRecommendation = false;
-        }
+        const id = this.props.orderId;
+        const orderIndexInHistory = _.findIndex(_.get(orderHistory, 'orders'), {
+            id,
+        });
+        const prevRecommendation =
+            orderIndexInHistory !== -1
+                ? _.get(orderHistory, [ 'orders', orderIndexInHistory + 1, 'recommendation' ])
+                : null;
 
         const commentStyles = cx({
             comment:         true,
@@ -411,7 +408,7 @@ export default class OrderFormBody extends Component {
                         formItem
                         colon={ false }
                         label={ 'Рекомендации с прошлого заезда' }
-                        disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
+                        disabled
                         getFieldDecorator={ getFieldDecorator }
                         field='prevRecommendation'
                         initialValue={ prevRecommendation }
