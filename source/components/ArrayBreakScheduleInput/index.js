@@ -138,12 +138,24 @@ class ArrayBreakScheduleInput extends Component {
                                 }
                             />
                             <DecoratedSelect
-
+                                formItem
+                            
                                 field={ `type[${key}]` }
                                 cnStyles={ Styles.Select }
                                 style={ {minWidth: '150px'} }
                                 getFieldDecorator={ getFieldDecorator }
                                 getPopupContainer={ trigger => trigger.parentNode }
+                                rules={ [
+                                    {
+                                        required: true,
+                                        message:  'Type is reuired',
+                                    },
+                                ] }
+                                hasFeedback={ false }
+                                initialValue={
+                                    initialSchedule[ key ] &&
+                                    initialSchedule[ key ].type
+                                }
                             >
                                 { [ 'absenteeism', 'holiday', 'cant_work', 'legal_holiday', 'valid_reason', 'sick_leave', 'vacation'                                ].map(item=>{
                                     return <Option value={ item } key={ v4() }>
@@ -155,6 +167,7 @@ class ArrayBreakScheduleInput extends Component {
                             </DecoratedSelect>
                             <DecoratedDatePicker
                                 field={ `beginDate[${key}]` }
+                                formItem
                                 rules={ [
                                     {
                                         required: true,
@@ -174,9 +187,10 @@ class ArrayBreakScheduleInput extends Component {
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
                             />
-                            <span>-</span>
+                            <FormItem><span>-</span></FormItem>
                             <DecoratedDatePicker
                                 field={ `endDate[${key}]` }
+                                formItem
                                 rules={ [
                                     {
                                         required: true,
@@ -199,6 +213,7 @@ class ArrayBreakScheduleInput extends Component {
                             <DecoratedInput
                                 className={ Styles.InputNote }
                                 field={ `note[${key}]` }
+                                formItem
                                 getFieldDecorator={ getFieldDecorator }
                                 initialValue={
                                     initialSchedule[ key ] &&

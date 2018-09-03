@@ -20,33 +20,10 @@ export const ON_CHANGE_EMPLOYEE_BREAK_SCHEDULE_FORM = `${prefix}/ON_CHANGE_EMPLO
 
 const ReducerState = {
     fields: {
-        monday:            [{ value: false, name: 'monday' }],
-        tuesday:           [{ value: false, name: 'tuesday' }],
-        wednesday:         [{ value: false, name: 'wednesday' }],
-        thursday:          [{ value: false, name: 'thursday' }],
-        friday:            [{ value: false, name: 'friday' }],
-        saturday:          [{ value: false, name: 'saturday' }],
-        sunday:            [{ value: false, name: 'sunday' }],
-        beginWorkingHours: [{ value: void 0, name: 'beginWorkingHours' }],
-        endWorkingHours:   [{ value: void 0, name: 'endWorkingHours' }],
-        beginBreakHours:   [{ value: void 0, name: 'beginBreakHours' }],
-        endBreakHours:     [{ value: void 0, name: 'endBreakHours' }],
-        id:                [{ value: void 0, name: 'endBreakHours' }],
+
+        id: [{ value: void 0, name: 'endBreakHours' }],
     },
-    // initialSchedule: {
-    //     id:                { value: 0, name: '' },
-    //     monday:            { value: false, name: 'monday' },
-    //     tuesday:           [{ value: false, name: 'tuesday' }],
-    //     wednesday:         [{ value: false, name: 'wednesday' }],
-    //     thursday:          [{ value: false, name: 'thursday' }],
-    //     friday:            [{ value: false, name: 'friday' }],
-    //     saturday:          [{ value: false, name: 'saturday' }],
-    //     sunday:            [{ value: false, name: 'sunday' }],
-    //     beginWorkingHours: [{ value: void 0, name: 'beginWorkingHours' }],
-    //     endWorkingHours:   [{ value: void 0, name: 'endWorkingHours' }],
-    //     beginBreakHours:   [{ value: void 0, name: 'beginBreakHours' }],
-    //     endBreakHours:     [{ value: void 0, name: 'endBreakHours' }],
-    // },
+
     employeeSchedule: null,
 };
 

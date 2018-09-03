@@ -33,13 +33,12 @@ const FormItem = Form.Item;
     },
 })
 class ArrayScheduleInput extends Component {
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            keys: [],
-        };
-    }
+
+state = {
+    keys: [],
+}
+
     saveScheduleEmployeeFormRef = formRef => {
         this.employeeScheduleFormRef = formRef;
     };
