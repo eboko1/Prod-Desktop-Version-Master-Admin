@@ -120,7 +120,7 @@ class OrderPage extends Component {
         this.props.setModal(MODALS.ADD_CLIENT);
     };
 
-    _onStatusChange = (status, redirectStatus) => {
+    _onStatusChange = (status, redirectStatus, options) => {
         const { allServices, allDetails, selectedClient, history } = this.props;
         const requiredFields = requiredFieldsOnStatuses[ status ];
         const { id } = this.props.match.params;
@@ -146,6 +146,7 @@ class OrderPage extends Component {
                     ),
                     redirectStatus,
                     redirectToDashboard,
+                    options,
                 });
             }
         });

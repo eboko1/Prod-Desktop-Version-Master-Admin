@@ -119,9 +119,16 @@ export function* updateOrderSaga() {
     while (true) {
         try {
             const {
-                payload: { order, id, redirectStatus, redirectToDashboard },
+                payload: {
+                    order,
+                    id,
+                    redirectStatus,
+                    redirectToDashboard,
+                    options,
+                },
             } = yield take(UPDATE_ORDER);
-            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
+            const mergedOrder = options ? { ...order, ...options } : order;
+            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder);
 
             if (!redirectStatus) {
                 yield put(fetchOrderForm(id));

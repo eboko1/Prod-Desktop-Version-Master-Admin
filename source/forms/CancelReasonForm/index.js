@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Form, Select, Button } from 'antd';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // proj
 import { onChangeCancelReasonForm } from 'core/forms/cancelReasonForm/duck';
@@ -27,7 +28,7 @@ export class CancelReasonForm extends Component {
             handleCancelReasonModalSubmit,
             resetModal,
         } = this.props;
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldsValue } = this.props.form;
         // const { formatMessage } = this.props.intl;
 
         return (
@@ -37,7 +38,26 @@ export class CancelReasonForm extends Component {
                 </div>
                 <div className={ Styles.submit }>
                     <Button
-                        onClick={ () => handleCancelReasonModalSubmit('cancel') }
+                        onClick={ () => {
+                            const values = getFieldsValue();
+                            const orderStatusCommentId = values.cancelReason;
+                            const orderStatusAdditionalComment =
+                                values.cancelComment;
+
+                            const options = {
+                                orderStatusAdditionalComment,
+                                orderStatusCommentId,
+                            };
+
+                            handleCancelReasonModalSubmit(
+                                'cancel',
+                                void 0,
+                                _.mapValues(
+                                    options,
+                                    value => value === '' ? null : value,
+                                ),
+                            );
+                        } }
                         className={ Styles.submitButton }
                     >
                         <FormattedMessage id='yes' />
