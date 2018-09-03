@@ -28,6 +28,18 @@ import Styles from './styles.m.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+const formItemLayout = {
+    labelCol: {
+        xl:  { span: 24 },
+        xxl: { span: 4 },
+    },
+    wrapperCol: {
+        xl:  { span: 24 },
+        xxl: { span: 20 },
+    },
+    colon: false,
+};
+
 @injectIntl
 @withReduxForm({
     name:            'orderForm',
@@ -44,7 +56,12 @@ export class MobileRecordForm extends Component {
     }
 
     render() {
-        const { selectedClient, stations, onStatusChange } = this.props;
+        const {
+            selectedClient,
+            stations,
+            onStatusChange,
+            order: { status },
+        } = this.props;
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
@@ -52,34 +69,26 @@ export class MobileRecordForm extends Component {
             getFieldsValue([ 'beginDate', 'beginTime', 'station' ]),
         );
 
-        const formItemLayout = {
-            labelCol: {
-                xl:  { span: 24 },
-                xxl: { span: 4 },
-            },
-            wrapperCol: {
-                xl:  { span: 24 },
-                xxl: { span: 20 },
-            },
-            colon: false,
-        };
-
         return (
             <Form layout='horizontal'>
                 <div className={ Styles.mobileRecordFormFooter }>
-                    <Button
-                        className={ Styles.mobileRecordSubmitBtn }
-                        type='primary'
-                        onClick={ () => onStatusChange('approve') }
-                    >
-                        Записать
-                    </Button>
-                    <Button
-                        className={ Styles.mobileRecordSubmitBtn }
-                        onClick={ () => onStatusChange('cancel') }
-                    >
-                        Отказать
-                    </Button>
+                    { status !== 'cancel' && (
+                        <Button
+                            className={ Styles.mobileRecordSubmitBtn }
+                            type='primary'
+                            onClick={ () => onStatusChange('approve') }
+                        >
+                            Записать
+                        </Button>
+                    ) }
+                    { status !== 'cancel' && (
+                        <Button
+                            className={ Styles.mobileRecordSubmitBtn }
+                            onClick={ () => onStatusChange('cancel') }
+                        >
+                            Отказать
+                        </Button>
+                    ) }
                 </div>
                 <FormItem
                     label={ <FormattedMessage id='add_order_form.name' /> }

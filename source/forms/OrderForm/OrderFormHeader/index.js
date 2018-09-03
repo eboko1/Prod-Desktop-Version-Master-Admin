@@ -163,11 +163,11 @@ export default class OrderFormHeader extends Component {
                     optionLabel='name'
                     disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={
+                        _.get(fetchedOrder, 'order.stationNum') ||
                         (this.bodyUpdateIsForbidden()
                             ? void 0
-                            : _.get(location, 'state.stationNum') ||
-                              _.get(stations, '[0].num')) ||
-                        _.get(fetchedOrder, 'order.stationNum')
+                            : _.get(location, 'state.stationNum')) ||
+                        _.get(stations, '[0].num')
                     }
                 />
                 <DecoratedTimePicker

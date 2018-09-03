@@ -4,12 +4,14 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Icon, Button, Radio } from 'antd';
+import _ from 'lodash';
 
 // proj
 import {
     fetchAddOrderForm,
     createOrder,
     setCreateStatus,
+    returnToOrdersPage,
 } from 'core/forms/orderForm/duck';
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -20,6 +22,7 @@ import {
     convertFieldsValuesToDbEntity,
     requiredFieldsOnStatuses,
 } from 'forms/OrderForm/extractOrderEntity';
+import book from 'routes/book';
 
 //  own
 const RadioButton = Radio.Button;
@@ -51,6 +54,7 @@ const mapDispatch = {
     resetModal,
     createOrder,
     setCreateStatus,
+    returnToOrdersPage,
 };
 
 @withRouter
@@ -71,13 +75,15 @@ class AddOrderPage extends Component {
         this.orderFormRef = formRef;
     };
 
-    _onSubmit = () => {
+    _createOrder = redirectStatus => {
         const form = this.orderFormRef.props.form;
         const {
             allServices,
             allDetails,
             selectedClient,
             createStatus,
+            user,
+            history,
         } = this.props;
         const requiredFields =
             requiredFieldsOnStatuses[ this.props.createStatus ];
@@ -87,17 +93,32 @@ class AddOrderPage extends Component {
                 const values = form.getFieldsValue();
                 const orderFormEntity = { ...values, selectedClient };
 
-                this.props.createOrder(
-                    convertFieldsValuesToDbEntity(
+                const redirectToDashboard = _.get(
+                    history,
+                    'location.state.fromDashboard',
+                );
+
+                this.props.createOrder({
+                    order: convertFieldsValuesToDbEntity(
                         orderFormEntity,
                         allServices,
                         allDetails,
                         createStatus,
-                        this.props.user,
+                        user,
                     ),
-                );
+                    redirectStatus,
+                    redirectToDashboard,
+                });
             }
         });
+    };
+
+    _redirect = () => {
+        const { returnToOrdersPage, history, createStatus } = this.props;
+
+        _.get(history, 'location.state.fromDashboard')
+            ? history.push(`${book.dashboard}`)
+            : returnToOrdersPage(createStatus);
     };
 
     _setAddClientModal = () => {
@@ -108,7 +129,7 @@ class AddOrderPage extends Component {
     _setCreateStatus = status => this.props.setCreateStatus(status);
 
     render() {
-        const { modal, resetModal, addClientFormData, spinner } = this.props;
+        const { modal, addClientFormData, createStatus, spinner } = this.props;
 
         return spinner ? (
             <Spinner spin={ spinner } />
@@ -118,7 +139,7 @@ class AddOrderPage extends Component {
                 controls={
                     <>
                         <div>
-                            <RadioGroup value={ this.props.createStatus }>
+                            <RadioGroup value={ createStatus }>
                                 <RadioButton
                                     value='reserve'
                                     onClick={ () =>
@@ -156,15 +177,18 @@ class AddOrderPage extends Component {
                                 type='primary'
                                 htmlType='submit'
                                 className={ Styles.submit }
-                                onClick={ this._onSubmit }
+                                onClick={ () => this._createOrder(createStatus) }
                             >
                                 <FormattedMessage id='add' />
                             </Button>
                         </div>
                         <Icon
-                            style={ { fontSize: 24, cursor: 'pointer' } }
+                            style={ {
+                                fontSize: 24,
+                                cursor:   'pointer',
+                            } }
                             type='close'
-                            onClick={ () => this.props.history.goBack() }
+                            onClick={ this._redirect }
                         />
                     </>
                 }

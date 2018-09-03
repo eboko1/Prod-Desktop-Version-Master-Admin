@@ -77,10 +77,9 @@ export default class OrderFormTabs extends Component {
                             <Button
                                 className={ Styles.orderTaskModalButton }
                                 type='primary'
-                                onClick={ () => {
-                                    setModal(MODALS.ORDER_TASK);
-                                } }
+                                onClick={ () => setModal(MODALS.ORDER_TASK) }
                             >
+                                <FormattedMessage id='add' />
                                 <Icon type='plus' />
                             </Button>
                         ) : null }
