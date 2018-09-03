@@ -1,11 +1,17 @@
 {
     "en": {
-        "cancel_reason.title": "Delete order?"
+        "cancel_reason.title": "Delete order?",
+        "cancel_reason.select_cancel_reason": "Select refusal reason",
+        "cancel_reason.other_cancel_reason": "Other refusal reason"
     },
     "ru": {
-        "cancel_reason.title": "Отказаться от закказа?"
+        "cancel_reason.title": "Отказаться от закказа?",
+        "cancel_reason.select_cancel_reason": "Выберите причину отмены",
+        "cancel_reason.other_cancel_reason": "Другая причина отмены"
     },
     "uk": {
-        "cancel_reason.title": "Відмовитися від замовлення?"
+        "cancel_reason.title": "Відмовитися від замовлення?",
+        "cancel_reason.select_cancel_reason": "Оберіть причину відмови",
+        "cancel_reason.other_cancel_reason": "Інша причина відмови"
     }
 }

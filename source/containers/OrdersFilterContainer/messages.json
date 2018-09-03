@@ -2,18 +2,18 @@
     "en": {
         "orders-filter.search_placeholder":
             "Search by number, client, master, phone, auto...",
-        "orders-filter.filter_by_cancel_reason": "Filter by 'Cancel reason'"
+        "orders-filter.filter_by_refusal_reason": "Filter by 'Refusal reason'"
     },
     "ru": {
         "orders-filter.search_placeholder":
             "Поиск по номеру, клиенту, мастеру, телефону, авто...",
-        "orders-filter.filter_by_cancel_reason":
+        "orders-filter.filter_by_refusal_reason":
             "Фильтровать по 'Причине отмены'"
     },
     "uk": {
         "orders-filter.search_placeholder":
             "Шукати по номеру, клієнту, майстру, телефону, авто...",
-        "orders-filter.filter_by_cancel_reason":
+        "orders-filter.filter_by_refusal_reason":
             "Фільтрувати за 'Причиною відміни'"
     }
 }

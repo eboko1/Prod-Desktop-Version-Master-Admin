@@ -1,6 +1,6 @@
 //vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Select, Button } from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
@@ -15,6 +15,7 @@ import { withReduxForm } from 'utils';
 import Styles from './styles.m.css';
 const { Option } = Select;
 
+@injectIntl
 @withReduxForm({
     name:    'cancelReasonForm',
     actions: {
@@ -29,7 +30,7 @@ export class CancelReasonForm extends Component {
             resetModal,
         } = this.props;
         const { getFieldDecorator, getFieldsValue } = this.props.form;
-        // const { formatMessage } = this.props.intl;
+        const { formatMessage } = this.props.intl;
 
         return (
             <Form layout='vertical'>
@@ -72,7 +73,7 @@ export class CancelReasonForm extends Component {
                 { orderComments && (
                     <DecoratedSelect
                         formItem
-                        label='Выберите причину отмены'
+                        label={ <FormattedMessage id='cancel_reason.select_cancel_reason' /> }
                         field='cancelReason'
                         getFieldDecorator={ getFieldDecorator }
                         getPopupContainer={ trigger => trigger.parentNode }
@@ -94,7 +95,7 @@ export class CancelReasonForm extends Component {
                 <DecoratedTextArea
                     field='cancelComment'
                     getFieldDecorator={ getFieldDecorator }
-                    placeholder='Другая причина отмены'
+                    placeholder={ formatMessage({ id: 'cancel_reason.other_cancel_reason'}) }
                     rows={ 4 }
                     autosize={ { minRows: 2, maxRows: 6 } }
                 />

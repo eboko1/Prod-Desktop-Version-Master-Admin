@@ -46,7 +46,7 @@ class Exception extends Component {
                     <div className={ Styles.errorData }>
                         <h1 className={ Styles.errorCode }>{ statusCode }</h1>
                         <span className={ Styles.errorDesc }>
-                            error description
+                            { /* TODO error description*/ }
                         </span>
                         <Link to={ book.ordersAppointments }>
                             <Button type='primary'>
