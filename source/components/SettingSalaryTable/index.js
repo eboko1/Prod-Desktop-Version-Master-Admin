@@ -484,11 +484,7 @@ export default class SettingSalaryTable extends Component {
                     }
                 },
             },
-            // {
-            //     title:     <FormattedMessage id='setting-salary.percentFrom' />,
-            //     dataIndex: 'percentFrom',
-            //     width:     '10%',
-            // },
+
             {
                 title:     <FormattedMessage id='setting-salary.percent' />,
                 dataIndex: 'percent',
@@ -792,8 +788,8 @@ export default class SettingSalaryTable extends Component {
         if (name) {
             if (name === 'employee') {
                 newSalary.employeeId = e;
-                newSalary.employee.name = es.props.children.split(' ')[ 0 ];
-                newSalary.employee.surname = es.props.children.split(' ')[ 1 ];
+                newSalary.employee.name = es.props.children.split(' ')[ 0 ]; //employeeName
+                newSalary.employee.surname = es.props.children.split(' ')[ 1 ];////employeeSurname
             } else {
                 newSalary[ name ] = e;
             }

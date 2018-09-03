@@ -26,14 +26,6 @@ export default class EmployeeTable extends Component {
                 render:    (text, record) => {
                     return (
                         <>
-                            
-                            {/* <Icon
-                                    className={ Styles.employeeTableIcon }
-                                    onClick={ () => {
-                                        this.props.initEmployeeForm(record);
-                                    } }
-                                    type='edit'
-                                /> */}
                             <Icon
                                 className={ Styles.employeeTableIcon }
                                 onClick={ () => {
@@ -48,17 +40,7 @@ export default class EmployeeTable extends Component {
                     );
                 },
             },
-            // {
-            //     title:     <FormattedMessage id='employee-table.photo' />,
-            //     dataIndex: 'avatar',
-            //     width:     '15%',
-            //     render:    (text, record) => {
-            //         let avatar= text?JSON.parse(text):''
-            //         console.log(avatar)
 
-            //         return    <div><img src={ avatar?avatar.original.path:'' }></img></div>
-            //     },
-            // },
             {
                 title:     <FormattedMessage id='employee-table.employee' />,
                 dataIndex: 'name',
@@ -82,7 +64,6 @@ export default class EmployeeTable extends Component {
                 width:     '15%',
                 render:    (text, record) => (
                     <div>
-                        { /* { `${record.hireDate?moment(record.hireDate).format('DD.MM.YYYY'):''}/${record.fireDate?moment(record.fireDate).format('DD.MM.YYYY'):''}` } */ }
                         <p>
                             { record.hireDate
                                 ? moment(record.hireDate).format('DD.MM.YYYY')

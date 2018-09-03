@@ -16,7 +16,7 @@ import {
     saveEmployeeSchedule,
     deleteEmployeeSchedule,
 } from 'core/forms/employeeScheduleForm/duck';
-import { withReduxForm, getDateTimeConfigs } from 'utils';
+import { withReduxForm } from 'utils';
 // own
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
@@ -46,7 +46,6 @@ class ArrayScheduleInput extends Component {
     
     saveEmployeeSchedule = keys => {
         const form = this.props.form
-        const { entity } = this.props;
         form.validateFields((err, values) => {
             if (!err) {
                 keys.map(item => {
@@ -100,7 +99,7 @@ class ArrayScheduleInput extends Component {
                             schedule: data,
                             id:       this.props.history.location.pathname.split(
                                 '/',
-                            )[ 2 ],
+                            )[ 2 ], //emplyee id
                             update: true,
                         });
                     }
@@ -118,42 +117,28 @@ class ArrayScheduleInput extends Component {
     remove = key => {
         const {
             optional,
-            // form: { getFieldValue, setFieldsValue },
         } = this.props;
 
-        //const keys = getFieldValue(`${this.props.fieldName}Keys`);
         const keys = this.state.keys;
         if (keys.length === 1 && !optional) {
             return;
         }
 
         this.setState({ keys: keys.filter(value => value !== key) });
-        // setFieldsValue({
-        //     [ `${this.props.fieldName}Keys` ]: keys.filter(
-        //         value => value !== key,
-        //     ),
-        // });
+
     };
 
     add = () => {
-        // const keys = this.props.form.getFieldValue(
-        //     `${this.props.fieldName}Keys`,
-        // );
-        // this.props.form.setFieldsValue({
-        //     [ `${this.props.fieldName}Keys` ]: [ ...keys, uuid++ ],
-        // });
+
         const keys = this.state.keys;
         this.setState({ keys: [ ...keys, keys.length++ ] });
     };
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { fieldName, fieldTitle, initialSchedule, optional } = this.props;
+        const { initialSchedule, optional } = this.props;
         const { formatMessage } = this.props.intl;
-        // getFieldDecorator(`${fieldName}Keys`, {
-        //     initialValue: optional ? [] : [ 0 ],
-        // });
-        //const keys = getFieldValue(`${fieldName}Keys`);
+
         const keys = this.state.keys;
         /*eslint-disable complexity*/
         const formItems = keys.map(key => {
@@ -266,12 +251,8 @@ class ArrayScheduleInput extends Component {
                                     )
                                 }
                                 hasFeedback={ false }
-                                // disabledHours={ disabledHours }
-                                // disabledMinutes={ disabledMinutes }
-                                // disabledSeconds={ disabledSeconds }
                                 label={ <FormattedMessage id='beginWorkingHours' /> }
                                 formatMessage={ formatMessage }
-                                // className={ Styles.datePanelItem }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
                             />
@@ -295,13 +276,8 @@ class ArrayScheduleInput extends Component {
                                     )
                                 }
                                 hasFeedback={ false }
-
-                                // disabledHours={ disabledHours }
-                                // disabledMinutes={ disabledMinutes }
-                                // disabledSeconds={ disabledSeconds }
                                 label={ <FormattedMessage id='endWorkingHours' /> }
                                 formatMessage={ formatMessage }
-                                // className={ Styles.datePanelItem }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
                             />
@@ -341,12 +317,8 @@ class ArrayScheduleInput extends Component {
                                     )
                                 }
                                 hasFeedback={ false }
-                                // disabledHours={ disabledHours }
-                                // disabledMinutes={ disabledMinutes }
-                                // disabledSeconds={ disabledSeconds }
                                 label={ <FormattedMessage id='endBreakHours' /> }
                                 formatMessage={ formatMessage }
-                                // className={ Styles.datePanelItem }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
                             />
@@ -354,14 +326,6 @@ class ArrayScheduleInput extends Component {
                     </Col>
                     <Col span={ 4 }>
                         <Row type='flex' justify='center'>
-                            { /* <Icon
-                                key={ key }
-                                className='dynamic-delete-button'
-                                type='save'
-                                style={ { fontSize: 20, color: '#cc1300' } }
-                                disabled={ keys.length === 1 }
-                                onClick={ () => this.props.saveEmployeeSchedule(key) }
-                            /> */ }
                             { keys.length > 1 || optional ? (
                                 <Icon
                                     key={ key }
@@ -376,7 +340,7 @@ class ArrayScheduleInput extends Component {
                                                 initialSchedule[ key ].id,
                                                 this.props.history.location.pathname.split(
                                                     '/',
-                                                )[ 2 ],
+                                                )[ 2 ], //emplyee id
                                             );
                                         }
                                     } }

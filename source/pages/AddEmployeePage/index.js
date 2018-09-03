@@ -7,8 +7,8 @@ import { withRouter, Link } from 'react-router-dom';
 
 // proj
 
-import { EmployeeForm, EmployeeScheduleForm} from 'forms'
-import { Layout, Spinner } from 'commons';
+import { EmployeeForm} from 'forms'
+import { Layout } from 'commons';
 import { fetchEmployee} from 'core/employee/duck';
 import { fetchEmployeeById, saveEmployee, resetEmployeeForm} from 'core/forms/employeeForm/duck';
 import book from 'routes/book';
@@ -16,10 +16,7 @@ const TabPane =Tabs.TabPane
 
 const mapStateToProps = state => {
     return {
-        employees:       state.employee.employees,
-        employeesData:   state.forms.employeeForm.fields,
-        initialSchedule: state.forms.employee.initialSchedule,
-        entity:          state.forms.employee.fields,
+        employeesData: state.forms.employeeForm.fields,
 
     };
 };
@@ -52,39 +49,24 @@ class EditEmployeePage extends Component {
             }
         });
     };
-    saveEmployeeSchedule= () => {
-        const form = this.employeeScheduleFormRef.props.form;
-        form.validateFields(err => {
-            if (!err) {
-                console.log('hello', this.props.entity)
-            }
-        });
-    };
+    
     componentWillUnmount(){
         this.props.resetEmployeeForm()
 
     }
     /* eslint-disable complexity*/
     render() {
-        const {
-            spinner,
-            employees,
-            entity,
-            initialSchedule,
-        } = this.props;
+
 
         return (
             <Layout    
                 title={
-
                     <>
                         <FormattedMessage
                             id={ 'employee-page.add_employee' }
                         />
                     </>
-
                 }
-
                 controls={
                 <>
                     <Link to={ book.employeesPage }> <Button                        
@@ -112,20 +94,6 @@ class EditEmployeePage extends Component {
                             initialEmployee={ null }
                         /> 
                     </TabPane>
-                    { /* <TabPane
-                        tab={
-                            this.props.intl.formatMessage({
-                                id: 'employee.schedule',
-                            })
-                        }
-                        key='2'
-                    >
-                        <EmployeeScheduleForm
-                            wrappedComponentRef={ this.saveScheduleEmployeeFormRef }
-                            initialSchedule={ initialSchedule }
-                            saveEmployeeSchedule={ this.saveEmployeeSchedule }
-                        /> 
-                    </TabPane> */ }
                 </Tabs>
             </Layout>
         );

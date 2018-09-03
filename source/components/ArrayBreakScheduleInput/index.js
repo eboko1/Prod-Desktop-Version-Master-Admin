@@ -18,7 +18,7 @@ import {
     deleteEmployeeBreakSchedule,
 } from 'core/forms/employeeBreakScheduleForm/duck';
 import { onChangeEmployeeBreakScheduleForm } from 'core/forms/employeeBreakScheduleForm/duck';
-import { withReduxForm, getDateTimeConfigs } from 'utils';
+import { withReduxForm} from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -36,7 +36,7 @@ const Option = Select.Option;
         deleteEmployeeBreakSchedule,
     },
 })
-class ArrayScheduleInput extends Component {
+class ArrayBreakScheduleInput extends Component {
     constructor(props) {
         super(props);
 
@@ -71,7 +71,7 @@ class ArrayScheduleInput extends Component {
                             schedule: data,
                             id:       this.props.history.location.pathname.split(
                                 '/',
-                            )[ 2 ],
+                            )[ 2 ], //emplyee id
                             update: false,
                         });
                     }else if(values.id[ item ]){
@@ -79,7 +79,7 @@ class ArrayScheduleInput extends Component {
                             schedule: data,
                             id:       this.props.history.location.pathname.split(
                                 '/',
-                            )[ 2 ],
+                            )[ 2 ], //emplyee id
                             update: 'true',
                         });
                     }
@@ -90,49 +90,33 @@ class ArrayScheduleInput extends Component {
     }
     componentDidMount() {
         this.setState({
-            // keys: [ ...this.props.initialSchedule.map((item, key) => key),                 ...[ this.props.initialSchedule?this.props.initialSchedule[ this.props.initialSchedule.length+1 ]+1:[] ]  ],
             keys: this.props.initialSchedule.map((item, key) => key),
         });
     }
     remove = key => {
         const {
             optional,
-            // form: { getFieldValue, setFieldsValue },
         } = this.props;
 
-        //const keys = getFieldValue(`${this.props.fieldName}Keys`);
         const keys = this.state.keys;
         if (keys.length === 1 && !optional) {
             return;
         }
 
         this.setState({ keys: keys.filter(value => value !== key) });
-        // setFieldsValue({
-        //     [ `${this.props.fieldName}Keys` ]: keys.filter(
-        //         value => value !== key,
-        //     ),
-        // });
+
     };
 
     add = () => {
-        // const keys = this.props.form.getFieldValue(
-        //     `${this.props.fieldName}Keys`,
-        // );
-        // this.props.form.setFieldsValue({
-        //     [ `${this.props.fieldName}Keys` ]: [ ...keys, uuid++ ],
-        // });
+
         const keys = this.state.keys;
         this.setState({ keys: [ ...keys, keys.length++ ] });
     };
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { fieldName, fieldTitle, initialSchedule, optional } = this.props;
+        const { initialSchedule, optional } = this.props;
         const { formatMessage } = this.props.intl;
-        // getFieldDecorator(`${fieldName}Keys`, {
-        //     initialValue: optional ? [] : [ 0 ],
-        // });
-        //const keys = getFieldValue(`${fieldName}Keys`);
         const keys = this.state.keys;
         const formItems = keys.map(key => {
             return (
@@ -154,8 +138,7 @@ class ArrayScheduleInput extends Component {
                                 }
                             />
                             <DecoratedSelect
-                                // formItem
-                                // label='Выберите причину отмены'
+
                                 field={ `type[${key}]` }
                                 cnStyles={ Styles.Select }
                                 style={ {minWidth: '150px'} }
@@ -171,7 +154,6 @@ class ArrayScheduleInput extends Component {
                                        
                             </DecoratedSelect>
                             <DecoratedDatePicker
-                                // formItem
                                 field={ `beginDate[${key}]` }
                                 rules={ [
                                     {
@@ -188,18 +170,12 @@ class ArrayScheduleInput extends Component {
                                     )
                                 }
                                 hasFeedback
-                                // disabledHours={ disabledHours }
-                                // disabledMinutes={ disabledMinutes }
-                                // disabledSeconds={ disabledSeconds }
-                                // label={ <FormattedMessage id='beginDate' /> }
                                 formatMessage={ formatMessage }
-                                // className={ Styles.datePanelItem }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
                             />
                             <span>-</span>
                             <DecoratedDatePicker
-                                // formItem
                                 field={ `endDate[${key}]` }
                                 rules={ [
                                     {
@@ -216,18 +192,11 @@ class ArrayScheduleInput extends Component {
                                     )
                                 }
                                 hasFeedback={ false }
-
-                                // disabledHours={ disabledHours }
-                                // disabledMinutes={ disabledMinutes }
-                                // disabledSeconds={ disabledSeconds }
-                                // label={ <FormattedMessage id='endWorkingHours' /> }
                                 formatMessage={ formatMessage }
-                                // className={ Styles.datePanelItem }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
                             />
                             <DecoratedInput
-                                // formItem
                                 className={ Styles.InputNote }
                                 field={ `note[${key}]` }
                                 getFieldDecorator={ getFieldDecorator }
@@ -241,14 +210,6 @@ class ArrayScheduleInput extends Component {
                     </Col>
                     <Col span={ 4 }>
                         <Row type='flex' justify='center'>
-                            { /* <Icon
-                                key={ key }
-                                className='dynamic-delete-button'
-                                type='save'
-                                style={ { fontSize: 20, color: '#cc1300' } }
-                                disabled={ keys.length === 1 }
-                                onClick={ () => this.props.saveEmployeeSchedule(key) }
-                            /> */ }
                             { keys.length > 1 || optional ? (
                                 <Icon
                                     key={ key }
@@ -263,7 +224,7 @@ class ArrayScheduleInput extends Component {
                                                 initialSchedule[ key ].id,
                                                 this.props.history.location.pathname.split(
                                                     '/',
-                                                )[ 2 ],
+                                                )[ 2 ], //emplyee id
                                             );
                                         }
                                     } }
@@ -305,4 +266,4 @@ class ArrayScheduleInput extends Component {
     }
 }
 
-export default ArrayScheduleInput;
+export default ArrayBreakScheduleInput;

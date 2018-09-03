@@ -53,7 +53,6 @@ export default class SettingSalaryContainer extends Component {
             fetchSalaryReport,
             filterRangeDate,
         } = this.props;
-        // console.log(entity.filterRangeDate.value?moment(entity.filterRangeDate.value[ 0 ]).format('YYYY-MM-DD'):null)
 
         return (
             <Catcher>
