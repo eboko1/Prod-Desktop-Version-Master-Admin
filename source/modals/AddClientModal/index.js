@@ -51,6 +51,7 @@ export default class AddClientModal extends Component {
                     validateFields([ 'name', 'phones' ], err => {
                         if (!err) {
                             const clientFormData = getFieldsValue();
+                            console.log(clientFormData);
                             const vehicles = this.props.vehicles.map(
                                 ({
                                     modelId,
@@ -78,7 +79,12 @@ export default class AddClientModal extends Component {
                                 sex:        clientFormData.sex,
                                 status:     clientFormData.status,
                                 vehicles,
-                                phones:     clientFormData.phones.filter(Boolean),
+                                phones:     clientFormData.phones
+                                    .filter(Boolean)
+                                    .map(
+                                        ({ number, country }) =>
+                                            country + number,
+                                    ),
                             };
 
                             this.props.createClient(clientEntity);

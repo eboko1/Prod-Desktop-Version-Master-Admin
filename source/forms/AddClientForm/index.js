@@ -498,11 +498,19 @@ export class AddClientForm extends Component {
                         <ArrayInput
                             optional={ false }
                             form={ this.props.form }
+                            phone
                             rules={ [
                                 {
                                     required: true,
                                     message:  this.props.intl.formatMessage({
                                         id: 'add_client_form.required_field',
+                                    }),
+                                },
+                                {
+                                    pattern:   /^[\d]{9}$/,
+                                    transform: value => String(value),
+                                    message: this.props.intl.formatMessage({
+                                        id: 'add_client_form.invalid_phone_format',
                                     }),
                                 },
                             ] }
