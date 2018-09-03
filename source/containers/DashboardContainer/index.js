@@ -107,14 +107,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length &&
+                    { load.length && 
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) :
+                                ) : 
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -218,7 +218,20 @@ class DashboardContainer extends Component {
                                         <DashboardOrder
                                             key={ index }
                                             mode={ mode }
-                                            label={ result[ index ].options.num }
+                                            label={ {
+                                                vehicleMakeName:
+                                                    result[ index ].options
+                                                        .vehicleMakeName,
+                                                vehicleModelName:
+                                                    result[ index ].options
+                                                        .vehicleModelName,
+                                                vehicleNumber:
+                                                    result[ index ].options
+                                                        .vehicleNumber,
+                                                clientName:
+                                                    result[ index ].options
+                                                        .clientName,
+                                            } }
                                             id={ result[ index ].options.id }
                                             status={
                                                 result[ index ].options.status
