@@ -28,6 +28,10 @@ export const DecoratedInputNumber = props => {
         initialValue,
         onChange,
 
+        formatter,
+        parser,
+        style,
+
         placeholder,
         icon,
         iconType,
@@ -40,11 +44,14 @@ export const DecoratedInputNumber = props => {
         ..._.isNumber(defaultValue) ? { initialValue: defaultValue } : {},
     })(
         <InputNumber
-            disabled={ disabled }
             min={ min }
             max={ max }
-            // defaultValue={ defaultValue }
+            style={ style }
+            disabled={ disabled }
             onChange={ onChange }
+            placeholder={ placeholder }
+            formatter={ formatter }
+            parser={ parser }
         />,
     );
 
