@@ -469,6 +469,7 @@ class OrderPage extends Component {
                     view={ { min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max } }
                 >
                     <OrderForm
+                        orderId={ Number(this.props.match.params.id) }
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
                         orderHistory={ this.props.orderHistory }
