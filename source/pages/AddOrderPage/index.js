@@ -16,17 +16,15 @@ import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Spinner } from 'commons';
 import { OrderForm } from 'forms';
-import { AddClientModal } from 'modals';
+import {
+    convertFieldsValuesToDbEntity,
+    requiredFieldsOnStatuses,
+} from 'forms/OrderForm/extractOrderEntity';
 
 //  own
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import Styles from './styles.m.css';
-
-import {
-    convertFieldsValuesToDbEntity,
-    requiredFieldsOnStatuses,
-} from './extractOrderEntity';
 
 const mapStateToProps = state => {
     return {
@@ -42,6 +40,7 @@ const mapStateToProps = state => {
         spinner:           state.ui.orderFetching,
         createStatus:      state.forms.orderForm.createStatus,
         selectedClient:    state.forms.orderForm.selectedClient,
+        user:              state.auth,
     };
 };
 
@@ -94,6 +93,7 @@ class AddOrderPage extends Component {
                         allServices,
                         allDetails,
                         createStatus,
+                        this.props.user,
                     ),
                 );
             }
@@ -175,12 +175,6 @@ class AddOrderPage extends Component {
                     modal={ modal }
                     addOrderForm
                     location={ this.props.history.location }
-                />
-                <AddClientModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    resetModal={ resetModal }
-                    addClientFormData={ addClientFormData }
                 />
             </Layout>
         );

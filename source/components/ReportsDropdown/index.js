@@ -5,6 +5,7 @@ import { Menu, Dropdown, Icon } from 'antd';
 
 // proj
 import book from 'routes/book';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -65,9 +66,15 @@ class ReportsDropdown extends React.Component {
             </Menu>
         );
 
+        const forbidden = isForbidden(this.props.user, permissions.PRINT_ORDERS);
+
         return (
-            <Dropdown overlay={ menu }>
+            <Dropdown
+                overlay={ menu }
+                disabled={ forbidden }
+            >
                 <Icon
+                    className={ forbidden ? Styles.forbiddenPrint : '' }
                     type='printer'
                     style={ {
                         fontSize: isMobile ? 12 : 24,

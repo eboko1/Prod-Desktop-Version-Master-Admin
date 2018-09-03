@@ -8,13 +8,14 @@ import { DecoratedInput } from 'forms/DecoratedFields';
 // own
 const FormItem = Form.Item;
 
-let uuid = 0;
 class ArrayInput extends Component {
     constructor(props) {
         super(props);
 
+        this.uuid = 0;
+        const keys = props.optional ? [] : [ this.uuid++ ];
         this.state = {
-            keys: [],
+            keys,
         };
     }
 
@@ -46,7 +47,7 @@ class ArrayInput extends Component {
         //     [ `${this.props.fieldName}Keys` ]: [ ...keys, uuid++ ],
         // });
         const keys = this.state.keys;
-        this.setState({ keys: [ ...keys, uuid++ ] });
+        this.setState({ keys: [ ...keys, this.uuid++ ] });
     };
 
     render() {

@@ -3,6 +3,7 @@ import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Menu, Dropdown, Icon } from 'antd';
 import _ from 'lodash';
+import { permissions, isForbidden } from 'utils';
 
 // proj
 // import book from 'routes/book';
@@ -19,6 +20,7 @@ class ChangeStatusDropdown extends React.Component {
             setModal,
             modals,
             isMobile,
+            user,
         } = this.props;
 
         const getMenuItems = () => {
@@ -117,14 +119,15 @@ class ChangeStatusDropdown extends React.Component {
             </Menu>
         );
 
-        return menuItems.length ? (
-            <Dropdown overlay={ menu }>
-                <div className={ Styles.dropdownTitle }>
-                    <Icon type='swap' className={ Styles.dropdownTitleIcon } />
-                    { !isMobile && <span>Перевести в статус</span> }
-                </div>
-            </Dropdown>
-        ) : null;
+        return menuItems.length &&
+            !isForbidden(user, permissions.ACCESS_ORDER_STATUS) ? (
+                <Dropdown overlay={ menu }>
+                    <div className={ Styles.dropdownTitle }>
+                        <Icon type='swap' className={ Styles.dropdownTitleIcon } />
+                        { !isMobile && <span>Перевести в статус</span> }
+                    </div>
+                </Dropdown>
+            ) : null;
     }
 }
 

@@ -49,6 +49,28 @@ export const FETCH_AVAILABLE_HOURS_SUCCESS = `${prefix}/FETCH_AVAILABLE_HOURS_SU
  * Reducer
  * */
 
+function duplicate(clients) {
+    return _.flatten(
+        _.map(clients, client => {
+            const { vehicles } = client;
+            const hasVehicles = _.isArray(vehicles) && vehicles.length;
+            if (!hasVehicles) {
+                return client;
+            }
+
+            return vehicles.map((v, index) => {
+                const duplicatedVehicles = _.cloneDeep(vehicles);
+                duplicatedVehicles.splice(index, 1);
+
+                return {
+                    ...client,
+                    vehicles: [ vehicles[ index ], ...duplicatedVehicles ],
+                };
+            });
+        }),
+    );
+}
+
 const createDefaultState = () => ({
     fields: {
         services: [],
@@ -177,7 +199,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 searchClientsResult: {
-                    clients: payload.clients,
+                    clients: duplicate(payload.clients),
                     searching: false,
                 },
             };

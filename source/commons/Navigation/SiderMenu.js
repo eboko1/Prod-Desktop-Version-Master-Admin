@@ -63,37 +63,63 @@ export default class SiderMenu extends Component {
                     defaultOpenKeys={ defaultOpenKeys }
                 >
                     { menuConfig.sections.map(section => {
-                        const { key, iconType, name, items, link } = section;
+                        const {
+                            key,
+                            iconType,
+                            name,
+                            items,
+                            link,
+                            disabled,
+                        } = section;
+
                         if (items) {
                             return (
-                                <Menu.SubMenu
-                                    key={ key }
-                                    title={
-                                        <>
-                                            <Icon type={ iconType } />
-                                            <FormattedMessage id={ name } />
-                                        </>
-                                    }
-                                >
-                                    { items.map(item => {
-                                        const { key, link, name } = item;
+                                (!disabled || !disabled(user)) && (
+                                    <Menu.SubMenu
+                                        key={ key }
+                                        title={
+                                            <>
+                                                <Icon type={ iconType } />
+                                                <FormattedMessage id={ name } />
+                                            </>
+                                        }
+                                    >
+                                        { items.map(item => {
+                                            const {
+                                                key,
+                                                link,
+                                                name,
+                                                disabled,
+                                                visible,
+                                            } = item;
 
-                                        return (
-                                            <Menu.Item key={ key }>
-                                                <Link
-                                                    to={ link }
-                                                    onClick={ onCollapse }
-                                                    collapsed={ collapsed }
-                                                    mobile={ isMobile }
-                                                >
-                                                    <FormattedMessage
-                                                        id={ name }
-                                                    />
-                                                </Link>
-                                            </Menu.Item>
-                                        );
-                                    }) }
-                                </Menu.SubMenu>
+                                            return (
+                                                (!visible || visible(user)) && (
+                                                    <Menu.Item
+                                                        key={ key }
+                                                        disabled={
+                                                            disabled &&
+                                                            disabled(user)
+                                                        }
+                                                    >
+                                                        <Link
+                                                            to={ link }
+                                                            onClick={ onCollapse }
+                                                            collapsed={
+                                                                collapsed
+                                                            }
+                                                            mobile={ isMobile }
+                                                        >
+                                                            <FormattedMessage
+                                                                id={ name }
+                                                            />
+                                                        </Link>
+                                                    </Menu.Item>
+                                                )
+                                            );
+                                        }) }
+                                    </Menu.SubMenu>
+                                )
                             );
                         }
 

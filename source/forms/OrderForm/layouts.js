@@ -25,11 +25,11 @@ export const formItemAutoColLayout = {
 export const formItemTotalLayout = {
     labelCol: {
         xl:  { span: 24 },
-        xxl: { span: 6 },
+        xxl: { span: 10 },
     },
     wrapperCol: {
         xl:  { span: 24 },
-        xxl: { span: 18 },
+        xxl: { span: 14 },
     },
     colon: false,
 };

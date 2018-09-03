@@ -24,7 +24,6 @@ import {
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
-import { AddClientModal } from 'modals';
 import book from 'routes/book';
 
 import { Layout, Spinner, MobileView, ResponsiveView } from 'commons';
@@ -37,11 +36,11 @@ import {
     ConfirmOrderExitModal,
     OrderTaskModal,
 } from 'modals';
-
+import { permissions, isForbidden } from 'utils';
 import {
     convertFieldsValuesToDbEntity,
     requiredFieldsOnStatuses,
-} from './../AddOrderPage/extractOrderEntity';
+} from 'forms/OrderForm/extractOrderEntity';
 
 const mapStateToProps = state => {
     return {
@@ -139,6 +138,7 @@ class OrderPage extends Component {
                         allServices,
                         allDetails,
                         status,
+                        this.props.user,
                     ),
                     redirectStatus,
                 });
@@ -174,10 +174,13 @@ class OrderPage extends Component {
 
             setModal,
             history,
+            order: { status },
         } = this.props;
+
         const form = this.orderFormRef.props.form;
 
         const orderData = form.getFieldsValue();
+
         const orderFormEntity = {
             selectedClient,
             ...orderData,
@@ -187,6 +190,8 @@ class OrderPage extends Component {
             orderFormEntity,
             allServices,
             allDetails,
+            void 0,
+            this.props.user,
         );
         const fetchedOrderEntity = {
             ...fetchedOrder.order,
@@ -213,11 +218,14 @@ class OrderPage extends Component {
             true,
         );
 
-        if (
+        const { canEdit, hideEditButton } = this.getSecurityConfig();
+
+        const ordersAreSame =
             identicalOrders &&
             !fields.services.length &&
-            !fields.details.length
-        ) {
+            !fields.details.length;
+
+        if (!canEdit || hideEditButton || ordersAreSame) {
             _.get(history, 'location.state.fromDashboard')
                 ? history.push(`${book.dashboard}`)
                 : returnToOrdersPage(status);
@@ -251,6 +259,40 @@ class OrderPage extends Component {
         }
     };
 
+    getSecurityConfig() {
+        const user = this.props.user;
+        const status = this.props.order.status;
+
+        const isClosedStatus = [ 'success', 'cancel', 'redundant' ].includes(
+            status,
+        );
+        const canEditClosedStatus = !isForbidden(
+            user,
+            permissions.UPDATE_SUCCESS_ORDER,
+        );
+        const canEdit =
+            !isForbidden(user, permissions.ACCESS_ORDER_BODY) ||
+            !isForbidden(user, permissions.ACCESS_ORDER_DETAILS) ||
+            !isForbidden(user, permissions.ACCESS_ORDER_SERVICES) ||
+            !isForbidden(user, permissions.ACCESS_ORDER_COMMENTS);
+
+        const hideEditButton = isClosedStatus && !canEditClosedStatus;
+        const disabledEditButton = hideEditButton || !canEdit;
+
+        const forbiddenUpdate = isForbidden(
+            user,
+            permissions.ACCESS_ORDER_STATUS,
+        );
+
+        return {
+            isClosedStatus,
+            canEditClosedStatus,
+            canEdit,
+            hideEditButton,
+            disabledEditButton,
+            forbiddenUpdate,
+        };
+    }
     /* eslint-disable complexity*/
     render() {
         const {
@@ -264,31 +306,37 @@ class OrderPage extends Component {
             isInviteEnabled,
             inviteOrderId,
             modal,
-            addClientFormData,
             isMobile,
             managers,
             stations,
+            user,
         } = this.props;
 
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
-        // console.log('→ this.props.match.params', this.props.history);
+
+        const {
+            isClosedStatus,
+            hideEditButton,
+            disabledEditButton,
+            forbiddenUpdate,
+        } = this.getSecurityConfig();
 
         return spinner ? (
             <Spinner spin={ spinner } />
         ) : (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>
@@ -312,7 +360,17 @@ class OrderPage extends Component {
                         )}
                         {isInviteVisible && !inviteOrderId ? (
                             <Button
-                                disabled={ !isInviteEnabled }
+                                disabled={
+                                    !isInviteEnabled ||
+                                    isForbidden(
+                                        user,
+                                        permissions.CREATE_ORDER,
+                                    ) ||
+                                    isForbidden(
+                                        user,
+                                        permissions.CREATE_INVITE_ORDER,
+                                    )
+                                }
                                 onClick={ this._invite }
                             >
                                 <FormattedMessage id='order-page.create_invite_order' />
@@ -320,6 +378,7 @@ class OrderPage extends Component {
                         ) : null}
 
                         <ChangeStatusDropdown
+                            user={ user }
                             orderStatus={ status }
                             onStatusChange={ this.onStatusChange }
                             setModal={ setModal }
@@ -327,29 +386,43 @@ class OrderPage extends Component {
                             isMobile={ isMobile }
                         />
                         <ReportsDropdown
+                            user={ this.props.user }
                             orderId={ id }
                             orderStatus={ status }
                             download={ this.props.getReport }
                             isMobile={ isMobile }
                         />
-                        <Icon
-                            type='save'
-                            style={ {
-                                fontSize: isMobile ? 12 : 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
-                            onClick={ () => this.onStatusChange(status) }
-                        />
-                        <Icon
-                            type='delete'
-                            style={ {
-                                fontSize: isMobile ? 12 : 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
-                            onClick={ () => setModal(MODALS.CANCEL_REASON) }
-                        />
+                        {!hideEditButton && (
+                            <Icon
+                                type='save'
+                                style={ {
+                                    fontSize: isMobile ? 12 : 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                    ...disabledEditButton
+                                        ? { color: 'gray' }
+                                        : {},
+                                } }
+                                onClick={ () =>
+                                    !disabledEditButton &&
+                                    this.onStatusChange(status)
+                                }
+                            />
+                        )}
+                        {!isClosedStatus &&
+                            !forbiddenUpdate && (
+                            <Icon
+                                type='delete'
+                                style={ {
+                                    fontSize: isMobile ? 12 : 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                } }
+                                onClick={ () =>
+                                    setModal(MODALS.CANCEL_REASON)
+                                }
+                            />
+                        )}
                         <Icon
                             style={ {
                                 fontSize: isMobile ? 12 : 24,
@@ -384,14 +457,10 @@ class OrderPage extends Component {
                         setModal={ setModal }
                         changeModalStatus={ this.props.changeModalStatus }
                         location={ false }
+                        fetchOrderForm={ fetchOrderForm }
+                        fetchOrderTask={ fetchOrderTask }
                     />
                 </ResponsiveView>
-                <AddClientModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    resetModal={ resetModal }
-                    addClientFormData={ addClientFormData }
-                />
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
@@ -403,9 +472,9 @@ class OrderPage extends Component {
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
                     status={ status }
-                    returnToOrdersPage={ this.props.returnToOrdersPage.bind(
-                        this,
-                    ) }
+                    returnToOrdersPage={ () =>
+                        this.props.returnToOrdersPage(status)
+                    }
                     saveOrder={ () => this.onStatusChange(status, status) }
                     resetModal={ () => resetModal() }
                 />

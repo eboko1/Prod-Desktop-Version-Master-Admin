@@ -8,7 +8,7 @@ import _ from 'lodash';
 // proj
 import { Catcher } from 'commons';
 import { LimitedDecoratedSelect } from 'components';
-
+import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
@@ -39,6 +39,8 @@ class DetailsTable extends Component {
             ),
         );
 
+        const editDetailsForbidden = isForbidden(props.user, permissions.ACCESS_ORDER_DETAILS);
+
         this.columns = [
             {
                 title:  <FormattedMessage id='order_form_table.detail_name' />,
@@ -46,6 +48,7 @@ class DetailsTable extends Component {
                 key:    'detail',
                 render: ({ key }) => (
                     <LimitedDecoratedSelect
+                        disabled={ editDetailsForbidden }
                         field={ `details[${key}][detailName]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         mode={ 'combobox' }
@@ -80,7 +83,7 @@ class DetailsTable extends Component {
                             this._getDefaultValue(key, 'detailBrandName') || 0
                         }
                         field={ `details[${key}][detailBrandName]` }
-                        disabled={ this._isFieldDisabled(key) }
+                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         showSearch
                         placeholder={
@@ -106,7 +109,7 @@ class DetailsTable extends Component {
                     <DecoratedInput
                         initialValue={ this._getDefaultValue(key, 'detailCode') }
                         field={ `details[${key}][detailCode]` }
-                        disabled={ this._isFieldDisabled(key) }
+                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                     />
                 ),
@@ -122,7 +125,7 @@ class DetailsTable extends Component {
                             'purchasePrice',
                         ) }
                         field={ `details[${key}][purchasePrice]` }
-                        disabled={ this._isFieldDisabled(key) }
+                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         min={ 0 }
                     />
@@ -136,7 +139,7 @@ class DetailsTable extends Component {
                     <DecoratedInputNumber
                         field={ `details[${key}][detailPrice]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) }
+                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
                         initValue={
                             this._getDefaultValue(key, 'detailPrice') || 0
                         }
@@ -152,7 +155,7 @@ class DetailsTable extends Component {
                     <DecoratedInputNumber
                         field={ `details[${key}][detailCount]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) }
+                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
                         initValue={
                             this._getDefaultValue(key, 'detailCount') || 1
                         }
@@ -184,7 +187,7 @@ class DetailsTable extends Component {
                 title:  '',
                 key:    'delete',
                 render: ({ key }) =>
-                    this.state.keys.length > 1 && (
+                    this.state.keys.length > 1 && !editDetailsForbidden && (
                         <Popconfirm
                             title='Sure to delete?'
                             onConfirm={ () => this._onDelete(key) }

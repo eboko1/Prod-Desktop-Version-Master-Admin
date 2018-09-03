@@ -1,11 +1,14 @@
 import _ from 'lodash';
 import moment from 'moment';
 
+import { permissions, isForbidden } from 'utils';
+
 export function convertFieldsValuesToDbEntity(
     orderFields,
     allServices,
     allDetails,
     status = 'not_complete',
+    user,
 ) {
     const services = _(orderFields.services)
         .filter(Boolean)
@@ -110,7 +113,38 @@ export function convertFieldsValuesToDbEntity(
         comment:             _.get(orderFields, 'comment'),
     };
 
-    return _.mapValues(order, value => value === '' ? null : value);
+    const orderClearedFields = _.mapValues(
+        order,
+        value => value === '' ? null : value,
+    );
+
+    const rolesOmitFieldsFunctions = [
+        orderEntity =>
+            isForbidden(user, permissions.ACCESS_ORDER_COMMENTS)
+                ? _.omit(orderEntity, [ 'recommendation', 'vehicleCondition', 'businessComment', 'comment' ])
+                : orderEntity,
+        orderEntity =>
+            isForbidden(user, permissions.ACCESS_ORDER_STATUS)
+                ? _.omit(orderEntity, [ 'status' ])
+                : orderEntity,
+        orderEntity =>
+            isForbidden(user, permissions.ACCESS_ORDER_SERVICES)
+                ? _.omit(orderEntity, [ 'services', 'servicesDiscount' ])
+                : orderEntity,
+        orderEntity =>
+            isForbidden(user, permissions.ACCESS_ORDER_DETAILS)
+                ? _.omit(orderEntity, [ 'details', 'detailsDiscount' ])
+                : orderEntity,
+        orderEntity =>
+            isForbidden(user, permissions.ACCESS_ORDER_BODY)
+                ? _.pick(orderEntity, [ 'recommendation', 'vehicleCondition', 'businessComment', 'comment', 'status', 'services', 'servicesDiscount', 'details', 'detailsDiscount' ])
+                : orderEntity,
+    ];
+
+    return rolesOmitFieldsFunctions.reduce(
+        (prev, current) => current(prev),
+        orderClearedFields,
+    );
 }
 
 export const requiredFieldsOnStatuses = {
