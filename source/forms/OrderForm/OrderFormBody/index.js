@@ -321,7 +321,6 @@ export default class OrderFormBody extends Component {
                             >
                                 <Icon type='edit' className={ Styles.editIcon } />
                             </a>
-                            { console.log('→ selectedVehicle', selectedVehicle) }
                             <CopyToClipboard
                                 text={ `${selectedVehicle.make} ${
                                     selectedVehicle.model

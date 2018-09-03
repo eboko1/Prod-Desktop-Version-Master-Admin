@@ -105,18 +105,19 @@ export function* createOrderSaga() {
 
 const selectModal = state => state.modals.modal;
 
+/* eslint-disable complexity */
 export function* updateOrderSaga() {
     while (true) {
         try {
             const {
-                payload: { order, id, redirectStatus },
+                payload: { order, id, redirectStatus, redirectToDashboard },
             } = yield take(UPDATE_ORDER);
             yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
-            yield put(updateOrderSuccess());
 
             if (!redirectStatus) {
                 yield put(fetchOrderForm(id));
             }
+
             const modal = yield select(selectModal);
             if (
                 modal === MODALS.CANCEL_REASON ||
@@ -125,11 +126,18 @@ export function* updateOrderSaga() {
             ) {
                 yield put(resetModal());
             }
-            if (redirectStatus) {
+
+            if (redirectToDashboard && redirectStatus) {
+                yield put(replace(book.dashboard));
+            }
+
+            if (!redirectToDashboard && redirectStatus) {
                 yield put(returnToOrdersPage(redirectStatus));
             }
         } catch (error) {
             yield put(emitError(error));
+        } finally {
+            yield put(updateOrderSuccess());
         }
     }
 }
@@ -153,6 +161,7 @@ export function* returnToOrdersPageSaga() {
             const config = statusesMap.find(({ statuses }) =>
                 statuses.includes(status));
             const { route = '/orders/appointments' } = config || {};
+
             yield put(replace(route));
         } catch (error) {
             yield put(emitError(error));

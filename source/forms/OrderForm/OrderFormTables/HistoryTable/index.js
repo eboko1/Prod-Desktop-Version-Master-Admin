@@ -13,7 +13,6 @@ import book from 'routes/book';
 class HistoryTable extends Component {
     constructor(props) {
         super(props);
-        console.log('→ HistoryTable props', props);
 
         this.columns = [
             {
