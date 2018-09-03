@@ -18,6 +18,7 @@ import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { Catcher } from 'commons';
 import { UniversalFiltersModal } from 'modals';
 import { UniversalFiltersTags } from 'components';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -27,6 +28,7 @@ const mapStateToProps = state => {
         stats:                state.orders.statsCountsPanel.stats.stats,
         filter:               state.orders.filter,
         universaFiltersModal: state.modals.modal,
+        user:                 state.auth,
     };
 };
 
@@ -108,12 +110,14 @@ export default class UniversalFilters extends Component {
 
     render() {
         const { resetModal, universaFiltersModal, stats, filter } = this.props;
+        const areFiltersDisabled = isForbidden(this.props.user, permissions.SHOW_FILTERS);
 
         return (
             <Catcher>
                 <section className={ Styles.filters }>
                     <Button
                         type='primary'
+                        disabled={ areFiltersDisabled }
                         onClick={ () => this.setUniversalFiltersModal() }
                     >
                         Фильтр

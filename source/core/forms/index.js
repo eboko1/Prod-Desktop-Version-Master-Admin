@@ -8,6 +8,12 @@ import loginReducer, { moduleName as login } from './loginForm/duck';
 import addPackageReducer, {
     moduleName as addPackage,
 } from './addPackageForm/duck';
+import addBusinessPackageReducer, {
+    moduleName as addBusinessPackage,
+} from './addBusinessPackageForm/duck';
+import businessPackageReducer, {
+    moduleName as businessPackage,
+} from './businessPackageForm/duck';
 import editPackageReducer, {
     moduleName as editPackage,
 } from './editPackageForm/duck';
@@ -38,19 +44,34 @@ import toSuccessReducer, {
 import orderTaskReducer, {
     moduleName as orderTask,
 } from './orderTaskForm/duck';
+import employeeFormReducer, {
+    moduleName as employeeFormModule,
+} from 'core/forms/employeeForm/duck';
+import employeeScheduleFormReducer, {
+    moduleName as employeeScheduleFormModule,
+} from 'core/forms/employeeScheduleForm/duck';
+
+import managerRoleReducer, {
+    moduleName as managerRole,
+} from './managerRoleForm/duck';
 
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
-    [ order ]:            orderReducer,
-    [ addClient ]:        addClientReducer,
-    [ universalFilters ]: universalFiltersReducer,
-    [ cancelReason ]:     cancelReasonReducer,
-    [ toSuccess ]:        toSuccessReducer,
-    [ login ]:            loginReducer,
-    [ orderTask ]:        orderTaskReducer,
-    [ addPackage ]:       addPackageReducer,
-    [ editPackage ]:      editPackageReducer,
-    [ addRole ]:          addRoleReducer,
-    [ editRole ]:         editRoleReducer,
-    [ switchBusiness ]:   switchBusinessReducer,
+    [ order ]:                      orderReducer,
+    [ addClient ]:                  addClientReducer,
+    [ universalFilters ]:           universalFiltersReducer,
+    [ cancelReason ]:               cancelReasonReducer,
+    [ toSuccess ]:                  toSuccessReducer,
+    [ login ]:                      loginReducer,
+    [ orderTask ]:                  orderTaskReducer,
+    [ addPackage ]:                 addPackageReducer,
+    [ editPackage ]:                editPackageReducer,
+    [ addRole ]:                    addRoleReducer,
+    [ editRole ]:                   editRoleReducer,
+    [ switchBusiness ]:             switchBusinessReducer,
+    [ employeeFormModule ]:         employeeFormReducer,
+    [ employeeScheduleFormModule ]: employeeScheduleFormReducer,
+    [ addBusinessPackage ]:         addBusinessPackageReducer,
+    [ businessPackage ]:            businessPackageReducer,
+    [ managerRole ]:                managerRoleReducer,
 });

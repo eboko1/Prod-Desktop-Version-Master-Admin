@@ -24,7 +24,6 @@ import {
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { getReport, fetchReport } from 'core/order/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
-import { AddClientModal } from 'modals';
 import book from 'routes/book';
 
 import { Layout, Spinner, MobileView, ResponsiveView } from 'commons';
@@ -37,14 +36,15 @@ import {
     ConfirmOrderExitModal,
     OrderTaskModal,
 } from 'modals';
-
+import { permissions, isForbidden } from 'utils';
 import {
     convertFieldsValuesToDbEntity,
     requiredFieldsOnStatuses,
-} from './../AddOrderPage/extractOrderEntity';
+} from 'forms/OrderForm/extractOrderEntity';
 
 const mapStateToProps = state => {
     return {
+        isMobile:              state.ui.views.isMobile,
         orderTaskEntity:       state.forms.orderTaskForm.fields,
         orderTaskId:           state.forms.orderTaskForm.taskId,
         priorityOptions:       state.forms.orderTaskForm.priorityOptions,
@@ -69,13 +69,9 @@ const mapStateToProps = state => {
         user:                  state.auth,
         modal:                 state.modals.modal,
         spinner:               state.ui.orderFetching,
-        orderEntity:           {
-            ...state.forms.orderForm.fields,
-            selectedClient: state.forms.orderForm.selectedClient,
-        },
-        // stationField: state.forms.orderForm.fields.station.value,
-        // beginDatetimeField: state.forms.orderForm.fields
-
+        selectedClient:        state.forms.orderForm.selectedClient,
+        fetchedOrder:          state.forms.orderForm.fetchedOrder,
+        fields:                state.forms.orderForm.fields,
         ...selectInviteData(state),
     };
 };
@@ -97,7 +93,10 @@ const mapDispatchToProps = {
 };
 
 // @withRouter
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 class OrderPage extends Component {
     componentDidMount() {
         const { fetchOrderForm, fetchOrderTask, match } = this.props;
@@ -117,64 +116,212 @@ class OrderPage extends Component {
         this.orderTaskFormRef = formRef;
     };
 
-    handleAddClientModalSubmit = () => {
-        const form = this.formRef.props.form;
-        this.setAddClientModal();
-        form.validateFields((err, values) => {
-            if (!err) {
-                // eslint-disable-next-line
-                console.info("Received values of AddClientForm: ", values);
-            }
-        });
-        this.props.resetModal();
-    };
-
     setAddClientModal = () => {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
     };
 
-    onStatusChange = (status, redirectStatus) => {
-        const { id } = this.props.match.params;
+    _onStatusChange = (status, redirectStatus, options) => {
+        const { allServices, allDetails, selectedClient, history } = this.props;
         const requiredFields = requiredFieldsOnStatuses[ status ];
+        const { id } = this.props.match.params;
         const form = this.orderFormRef.props.form;
 
         form.validateFields(requiredFields, err => {
             if (!err) {
+                const values = form.getFieldsValue();
+                const orderFormEntity = { ...values, selectedClient };
+                const redirectToDashboard = _.get(
+                    history,
+                    'location.state.fromDashboard',
+                );
+
                 this.props.updateOrder({
                     id,
                     order: convertFieldsValuesToDbEntity(
-                        this.props.orderEntity,
-                        this.props.allServices,
-                        this.props.allDetails,
+                        orderFormEntity,
+                        allServices,
+                        allDetails,
                         status,
-                        form,
+                        this.props.user,
                     ),
                     redirectStatus,
+                    redirectToDashboard,
+                    options,
                 });
             }
         });
     };
 
-    saveNewOrderTask = () => {
-        const { orderTaskEntity, orderTaskId } = this.props;
+    _saveNewOrderTask = () => {
+        const {
+            saveOrderTask,
+            resetModal,
+            resetOrderTasksForm,
+            orderTaskEntity,
+            orderTaskId,
+        } = this.props;
+
         const form = this.orderTaskFormRef.props.form;
         form.validateFields(err => {
             if (!err) {
-                this.props.saveOrderTask(
+                saveOrderTask(
                     orderTaskEntity,
                     this.props.match.params.id,
                     orderTaskId,
                 );
-                this.props.resetModal();
-                this.props.resetOrderTasksForm();
+                resetModal();
+                resetOrderTasksForm();
             }
         });
     };
 
+    _close = () => {
+        const {
+            selectedClient,
+            fields,
+            allServices,
+            allDetails,
+            fetchedOrder,
+            returnToOrdersPage,
+            setModal,
+            history,
+            order: { status },
+        } = this.props;
+
+        const form = this.orderFormRef.props.form;
+
+        const orderData = form.getFieldsValue();
+
+        const orderFormEntity = {
+            selectedClient,
+            ...orderData,
+        };
+
+        const orderEntity = convertFieldsValuesToDbEntity(
+            orderFormEntity,
+            allServices,
+            allDetails,
+            void 0,
+            this.props.user,
+        );
+        const fetchedOrderEntity = {
+            ...fetchedOrder.order,
+            services: fetchedOrder.orderServices || [],
+            details:  fetchedOrder.orderDetails || [],
+            ..._.get(fetchedOrder, 'client.clientId')
+                ? { clientId: _.get(fetchedOrder, 'client.clientId') }
+                : {},
+        };
+
+        const compareFields = _(orderEntity)
+            .omit([ 'services', 'details', 'status' ])
+            .toPairs()
+            .value();
+
+        const areInputValuesEqual = (originValue, fieldValue) => {
+            return !originValue && !fieldValue || originValue === fieldValue;
+        };
+
+        const identicalOrders = _.reduce(
+            compareFields,
+            (prev, [ field, value ]) =>
+                prev && areInputValuesEqual(fetchedOrderEntity[ field ], value),
+            true,
+        );
+
+        const { canEdit, hideEditButton } = this.getSecurityConfig();
+
+        const ordersAreSame =
+            identicalOrders &&
+            !fields.services.length &&
+            !fields.details.length;
+
+        if (!canEdit || hideEditButton || ordersAreSame) {
+            this._redirect();
+        } else {
+            setModal(MODALS.CONFIRM_EXIT);
+        }
+    };
+
+    _redirect = () => {
+        const {
+            resetModal,
+            returnToOrdersPage,
+            history,
+            order: { status },
+        } = this.props;
+
+        resetModal();
+        _.get(history, 'location.state.fromDashboard')
+            ? history.push(`${book.dashboard}`)
+            : returnToOrdersPage(status);
+    };
+
+    _invite = () => {
+        const {
+            clientVehicleId,
+            clientId,
+            status,
+            clientPhone,
+        } = this.props.order;
+        const { user, createInviteOrder } = this.props;
+
+        if (
+            (status === 'success' || status === 'cancel') &&
+            clientVehicleId &&
+            clientId &&
+            clientPhone
+        ) {
+            createInviteOrder({
+                status:    'invite',
+                clientVehicleId,
+                clientId,
+                clientPhone,
+                managerId: user.id,
+            });
+        }
+    };
+
+    getSecurityConfig() {
+        const user = this.props.user;
+        const status = this.props.order.status;
+
+        const isClosedStatus = [ 'success', 'cancel', 'redundant' ].includes(
+            status,
+        );
+        const canEditClosedStatus = !isForbidden(
+            user,
+            permissions.UPDATE_SUCCESS_ORDER,
+        );
+        const canEdit =
+            !isForbidden(user, permissions.ACCESS_ORDER_BODY) ||
+            !isForbidden(user, permissions.ACCESS_ORDER_DETAILS) ||
+            !isForbidden(user, permissions.ACCESS_ORDER_SERVICES) ||
+            !isForbidden(user, permissions.ACCESS_ORDER_COMMENTS);
+
+        const hideEditButton = isClosedStatus && !canEditClosedStatus;
+        const disabledEditButton = hideEditButton || !canEdit;
+
+        const forbiddenUpdate = isForbidden(
+            user,
+            permissions.ACCESS_ORDER_STATUS,
+        );
+
+        return {
+            isClosedStatus,
+            canEditClosedStatus,
+            canEdit,
+            hideEditButton,
+            disabledEditButton,
+            forbiddenUpdate,
+        };
+    }
     /* eslint-disable complexity*/
     render() {
         const {
+            fetchOrderForm,
+            fetchOrderTask,
             setModal,
             resetModal,
             spinner,
@@ -183,13 +330,21 @@ class OrderPage extends Component {
             isInviteEnabled,
             inviteOrderId,
             modal,
-            addClientFormData,
             isMobile,
+            managers,
+            stations,
             user,
         } = this.props;
 
         const { num, status, datetime } = this.props.order;
         const { id } = this.props.match.params;
+
+        const {
+            isClosedStatus,
+            hideEditButton,
+            disabledEditButton,
+            forbiddenUpdate,
+        } = this.getSecurityConfig();
 
         return spinner ? (
             <Spinner spin={ spinner } />
@@ -220,12 +375,8 @@ class OrderPage extends Component {
                             <Link
                                 to={ `${book.order}/${inviteOrderId}` }
                                 onClick={ () => {
-                                    this.props.fetchOrderForm(
-                                        inviteOrderId,
-                                    );
-                                    this.props.fetchOrderTask(
-                                        inviteOrderId,
-                                    );
+                                    fetchOrderForm(inviteOrderId);
+                                    fetchOrderTask(inviteOrderId);
                                 } }
                             >
                                 { inviteOrderId }
@@ -233,91 +384,77 @@ class OrderPage extends Component {
                         )}
                         {isInviteVisible && !inviteOrderId ? (
                             <Button
-                                disabled={ !isInviteEnabled }
-                                onClick={ () => {
-                                    const {
-                                        clientVehicleId,
-                                        clientId,
-                                        status,
-                                        clientPhone,
-                                    } = this.props.order;
-
-                                    if (
-                                        (status === 'success' ||
-                                            status === 'cancel') &&
-                                        clientVehicleId &&
-                                        clientId &&
-                                        clientPhone
-                                    ) {
-                                        this.props.createInviteOrder({
-                                            status:    'invite',
-                                            clientVehicleId,
-                                            clientId,
-                                            clientPhone,
-                                            managerId: user.id,
-                                        });
-                                    }
-                                } }
+                                disabled={
+                                    !isInviteEnabled ||
+                                    isForbidden(
+                                        user,
+                                        permissions.CREATE_ORDER,
+                                    ) ||
+                                    isForbidden(
+                                        user,
+                                        permissions.CREATE_INVITE_ORDER,
+                                    )
+                                }
+                                onClick={ this._invite }
                             >
                                 <FormattedMessage id='order-page.create_invite_order' />
                             </Button>
                         ) : null}
-
-                        <ChangeStatusDropdown
-                            orderStatus={ status }
-                            onStatusChange={ this.onStatusChange }
-                            setModal={ setModal }
-                            modals={ MODALS }
-                            isMobile={ isMobile }
-                        />
+                        {!isMobile && (
+                            <ChangeStatusDropdown
+                                user={ user }
+                                orderStatus={ status }
+                                onStatusChange={ this._onStatusChange }
+                                setModal={ setModal }
+                                modals={ MODALS }
+                                isMobile={ isMobile }
+                            />
+                        )}
                         <ReportsDropdown
+                            user={ this.props.user }
                             orderId={ id }
                             orderStatus={ status }
                             download={ this.props.getReport }
                             isMobile={ isMobile }
                         />
-                        <Icon
-                            type='save'
-                            style={ {
-                                fontSize: isMobile ? 12 : 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
-                            onClick={ () => this.onStatusChange(status) }
-                        />
-                        <Icon
-                            type='delete'
-                            style={ {
-                                fontSize: isMobile ? 12 : 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
-                            onClick={ () => setModal(MODALS.CANCEL_REASON) }
-                        />
+                        {!hideEditButton && (
+                            <Icon
+                                type='save'
+                                style={ {
+                                    fontSize: isMobile ? 12 : 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                    ...disabledEditButton
+                                        ? { color: 'gray' }
+                                        : {},
+                                } }
+                                onClick={ () =>
+                                    !disabledEditButton &&
+                                    this._onStatusChange(status)
+                                }
+                            />
+                        )}
+                        {!isClosedStatus &&
+                            !forbiddenUpdate && (
+                            <Icon
+                                type='delete'
+                                style={ {
+                                    fontSize: isMobile ? 12 : 24,
+                                    cursor:   'pointer',
+                                    margin:   '0 10px',
+                                } }
+                                onClick={ () =>
+                                    setModal(MODALS.CANCEL_REASON)
+                                }
+                            />
+                        )}
                         <Icon
                             style={ {
                                 fontSize: isMobile ? 12 : 24,
                                 cursor:   'pointer',
                             } }
                             type='close'
-                            onClick={ () => {
-                                const newOrder = convertFieldsValuesToDbEntity(
-                                    this.props.orderEntity,
-                                    this.props.allServices,
-                                    this.props.allDetails,
-                                );
-
-                                if (
-                                    _.isEqual(
-                                        newOrder,
-                                        this.props.initOrderEntity,
-                                    )
-                                ) {
-                                    this.props.returnToOrdersPage(status);
-                                } else {
-                                    setModal(MODALS.CONFIRM_EXIT);
-                                }
-                            } }
+                            onClick={ this._close }
                         />
                     </>
                 }
@@ -325,7 +462,7 @@ class OrderPage extends Component {
                 <MobileView>
                     <MobileRecordForm
                         wrappedComponentRef={ this.saveOrderFormRef }
-                        onStatusChange={ this.onStatusChange }
+                        onStatusChange={ this._onStatusChange }
                     />
                 </MobileView>
                 <ResponsiveView
@@ -344,19 +481,15 @@ class OrderPage extends Component {
                         filteredDetails={ this.props.filteredDetails }
                         setModal={ setModal }
                         changeModalStatus={ this.props.changeModalStatus }
+                        location={ false }
+                        fetchOrderForm={ fetchOrderForm }
+                        fetchOrderTask={ fetchOrderTask }
                     />
                 </ResponsiveView>
-                <AddClientModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
-                    resetModal={ resetModal }
-                    addClientFormData={ addClientFormData }
-                />
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
-                    handleCancelReasonModalSubmit={ this.onStatusChange }
+                    handleCancelReasonModalSubmit={ this._onStatusChange }
                     orderComments={ this.props.orderComments }
                     resetModal={ () => resetModal() }
                 />
@@ -364,16 +497,24 @@ class OrderPage extends Component {
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
                     status={ status }
-                    returnToOrdersPage={ this.props.returnToOrdersPage.bind(
-                        this,
-                    ) }
-                    saveOrder={ () => this.onStatusChange(status, status) }
+                    returnToOrdersPage={ () =>
+                        this.props.returnToOrdersPage(status)
+                    }
+                    saveOrder={ () => {
+                        if (_.get(history, 'location.state.fromDashboard')) {
+                            return this._onStatusChange(status, 'dashboard');
+                        }
+
+                        return this._onStatusChange(status, status);
+                    } }
                     resetModal={ () => resetModal() }
+                    closeModal={ () => this._close() }
+                    redirect={ () => this._redirect() }
                 />
                 <ToSuccessModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
-                    handleToSuccessModalSubmit={ this.onStatusChange }
+                    handleToSuccessModalSubmit={ this._onStatusChange }
                     resetModal={ () => resetModal() }
                 />
                 <OrderTaskModal
@@ -385,11 +526,11 @@ class OrderPage extends Component {
                     resetModal={ () => resetModal() }
                     num={ num }
                     orderTaskId={ this.props.orderTaskId }
-                    orderId={ this.props.match.params.id }
+                    orderId={ id }
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
-                    stations={ this.props.stations }
-                    managers={ this.props.managers }
-                    saveNewOrderTask={ this.saveNewOrderTask }
+                    stations={ stations }
+                    managers={ managers }
+                    saveNewOrderTask={ this._saveNewOrderTask }
                     orderTasks={ this.props.orderTasks }
                 />
             </Layout>

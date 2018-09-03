@@ -4,29 +4,30 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Icon, Button, Radio } from 'antd';
+import _ from 'lodash';
 
 // proj
 import {
     fetchAddOrderForm,
     createOrder,
     setCreateStatus,
+    returnToOrdersPage,
 } from 'core/forms/orderForm/duck';
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Spinner } from 'commons';
 import { OrderForm } from 'forms';
-import { AddClientModal } from 'modals';
+import {
+    convertFieldsValuesToDbEntity,
+    requiredFieldsOnStatuses,
+} from 'forms/OrderForm/extractOrderEntity';
+import book from 'routes/book';
 
 //  own
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 import Styles from './styles.m.css';
-
-import {
-    convertFieldsValuesToDbEntity,
-    requiredFieldsOnStatuses,
-} from './extractOrderEntity';
 
 const mapStateToProps = state => {
     return {
@@ -39,13 +40,10 @@ const mapStateToProps = state => {
         requisites:        state.forms.orderForm.requisites,
         modal:             state.modals.modal,
         addClientFormData: state.forms.addClientForm.data,
-        createOrderStatus: state.forms.orderForm.fields.createOrderStatus.value,
         spinner:           state.ui.orderFetching,
         createStatus:      state.forms.orderForm.createStatus,
-        orderEntity:       {
-            ...state.forms.orderForm.fields,
-            selectedClient: state.forms.orderForm.selectedClient,
-        },
+        selectedClient:    state.forms.orderForm.selectedClient,
+        user:              state.auth,
     };
 };
 
@@ -56,10 +54,14 @@ const mapDispatch = {
     resetModal,
     createOrder,
     setCreateStatus,
+    returnToOrdersPage,
 };
 
 @withRouter
-@connect(mapStateToProps, mapDispatch)
+@connect(
+    mapStateToProps,
+    mapDispatch,
+)
 class AddOrderPage extends Component {
     componentDidMount() {
         this.props.fetchAddOrderForm();
@@ -73,61 +75,75 @@ class AddOrderPage extends Component {
         this.orderFormRef = formRef;
     };
 
-    onSubmit = () => {
+    _createOrder = redirectStatus => {
         const form = this.orderFormRef.props.form;
+        const {
+            allServices,
+            allDetails,
+            selectedClient,
+            createStatus,
+            user,
+            history,
+        } = this.props;
         const requiredFields =
             requiredFieldsOnStatuses[ this.props.createStatus ];
 
         form.validateFields(requiredFields, err => {
             if (!err) {
-                this.props.createOrder(
-                    convertFieldsValuesToDbEntity(
-                        this.props.orderEntity,
-                        this.props.allServices,
-                        this.props.allDetails,
-                        this.props.createStatus,
-                        form,
-                    ),
+                const values = form.getFieldsValue();
+                const orderFormEntity = { ...values, selectedClient };
+
+                const redirectToDashboard = _.get(
+                    history,
+                    'location.state.fromDashboard',
                 );
+
+                this.props.createOrder({
+                    order: convertFieldsValuesToDbEntity(
+                        orderFormEntity,
+                        allServices,
+                        allDetails,
+                        createStatus,
+                        user,
+                    ),
+                    redirectStatus,
+                    redirectToDashboard,
+                });
             }
         });
     };
 
-    handleAddClientModalSubmit = () => {
-        const form = this.formRef.props.form;
-        this.setAddClientModal();
-        form.validateFields((err, values) => {
-            if (!err) {
-                // TBD: @yan
-                // console.log('Received values of AddClientForm: ', values);
-            }
-        });
-        this.props.resetModal();
+    _redirect = () => {
+        const { returnToOrdersPage, history, createStatus } = this.props;
+
+        _.get(history, 'location.state.fromDashboard')
+            ? history.push(`${book.dashboard}`)
+            : returnToOrdersPage(createStatus);
     };
 
-    setAddClientModal = () => {
+    _setAddClientModal = () => {
         this.props.fetchAddClientForm();
         this.props.setModal(MODALS.ADD_CLIENT);
     };
 
-    setCreateStatus = status => {
-        this.props.setCreateStatus(status);
-    };
+    _setCreateStatus = status => this.props.setCreateStatus(status);
 
     render() {
-        const { modal, resetModal, addClientFormData, spinner } = this.props;
+        const { modal, addClientFormData, createStatus, spinner } = this.props;
 
-        return !spinner ? (
+        return spinner ? (
+            <Spinner spin={ spinner } />
+        ) : (
             <Layout
                 title={ <FormattedMessage id='add-order-page.add_order' /> }
                 controls={
                     <>
                         <div>
-                            <RadioGroup value={ this.props.createStatus }>
+                            <RadioGroup value={ createStatus }>
                                 <RadioButton
                                     value='reserve'
                                     onClick={ () =>
-                                        this.setCreateStatus('reserve')
+                                        this._setCreateStatus('reserve')
                                     }
                                 >
                                     <FormattedMessage id='reserve' />
@@ -135,7 +151,7 @@ class AddOrderPage extends Component {
                                 <RadioButton
                                     value='not_complete'
                                     onClick={ () =>
-                                        this.setCreateStatus('not_complete')
+                                        this._setCreateStatus('not_complete')
                                     }
                                 >
                                     <FormattedMessage id='not_complete' />
@@ -143,7 +159,7 @@ class AddOrderPage extends Component {
                                 <RadioButton
                                     value='required'
                                     onClick={ () =>
-                                        this.setCreateStatus('required')
+                                        this._setCreateStatus('required')
                                     }
                                 >
                                     <FormattedMessage id='required' />
@@ -151,7 +167,7 @@ class AddOrderPage extends Component {
                                 <RadioButton
                                     value='approve'
                                     onClick={ () =>
-                                        this.setCreateStatus('approve')
+                                        this._setCreateStatus('approve')
                                     }
                                 >
                                     <FormattedMessage id='approve' />
@@ -161,36 +177,30 @@ class AddOrderPage extends Component {
                                 type='primary'
                                 htmlType='submit'
                                 className={ Styles.submit }
-                                onClick={ this.onSubmit }
+                                onClick={ () => this._createOrder(createStatus) }
                             >
                                 <FormattedMessage id='add' />
                             </Button>
                         </div>
                         <Icon
-                            style={ { fontSize: 24, cursor: 'pointer' } }
+                            style={ {
+                                fontSize: 24,
+                                cursor:   'pointer',
+                            } }
                             type='close'
-                            onClick={ () => this.props.history.goBack() }
+                            onClick={ this._redirect }
                         />
                     </>
                 }
             >
-                { /* eslint-disable-next-line */ }
                 <OrderForm
                     wrappedComponentRef={ this.saveOrderFormRef }
-                    setAddClientModal={ this.setAddClientModal }
+                    setAddClientModal={ this._setAddClientModal }
                     modal={ modal }
                     addOrderForm
-                />
-                <AddClientModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    handleAddClientModalSubmit={ this.handleAddClientModalSubmit }
-                    resetModal={ resetModal }
-                    addClientFormData={ addClientFormData }
+                    location={ this.props.history.location }
                 />
             </Layout>
-        ) : (
-            <Spinner spin={ spinner } />
         );
     }
 }

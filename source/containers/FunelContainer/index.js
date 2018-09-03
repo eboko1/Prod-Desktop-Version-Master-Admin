@@ -95,7 +95,7 @@ class FunelContainer extends Component {
                         </NavLink>
                         <NavLink
                             exact
-                            to={ `${book.orders}/in-progress` }
+                            to={ `${book.orders}/progress` }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]

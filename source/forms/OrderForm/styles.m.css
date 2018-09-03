@@ -10,8 +10,8 @@
 }
 
 .datePanelItem {
-    flex: 0 1 30%;
-    display: flex;
+    /* flex: 0 1 30%;
+    display: flex; */
 }
 
 .datePanelItem :global(.ant-form-item-control-wrapper) {
@@ -55,22 +55,6 @@
     width: auto;
 } */
 
-.addClientIcon {
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--primary);
-    font-weight: bold;
-    margin-left: 10px;
-}
-
-.editClientIcon {
-    font-size: 24px;
-    cursor: pointer;
-    color: var(--primary);
-    font-weight: bold;
-    margin-left: 10px;
-}
-
 .ecatBlock {
     display: flex;
     flex-wrap: wrap;
@@ -113,16 +97,6 @@
     margin-left: 10px;
 }
 
-.mobileRecordFormFooter {
-    display: flex;
-    justify-content: space-around;
-    margin: 24px 48px;
-}
-
-.mobileRecordSubmitBtn {
-    margin: 0 10px;
-}
-
 .datePanelItem:global(.ant-time-picker) {
     width: 100%;
 }
@@ -134,8 +108,4 @@
 }
 .orderTaskModalButton {
     margin: 15px;
-}
-
-.mobileRecordFormTimePicker {
-    width: 100%;
 }

@@ -23,16 +23,22 @@ import {
 
 import { withReduxForm } from 'utils';
 
-// own
-import {
-    formItemAutoColLayout,
-    formItemLayout,
-    // formItemTotalLayout,
-} from '../OrderForm/layouts';
-import Styles from '../OrderForm/styles.m.css';
+import Styles from './styles.m.css';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+const formItemLayout = {
+    labelCol: {
+        xl:  { span: 24 },
+        xxl: { span: 4 },
+    },
+    wrapperCol: {
+        xl:  { span: 24 },
+        xxl: { span: 20 },
+    },
+    colon: false,
+};
 
 @injectIntl
 @withReduxForm({
@@ -44,55 +50,18 @@ const Option = Select.Option;
     },
 })
 export class MobileRecordForm extends Component {
-    // componentDidMount() {
-    //     // const availableHours = this.props.form.getFieldsValue([ 'beginDatetime', 'station' ]);
-    //     // console.log('→ DM availableHours', availableHours);
-    //     this.props.fetchAvailableHours();
-    // }
-    //
-    // componentDidMount() {
-    //     console.log(
-    //         this.props.form.setFieldsValue({
-    //             duration: this.props.order.duration,
-    //         }),
-    //     );
-    //     console.log(
-    //         '→ this.props.form.setFieldsValue',
-    //         this.props.form.setFieldsValue,
-    //     );
-    //     this.props.form.setFieldsValue({ duration: this.props.order.duration });
-    // }
-
-    // componentDidUpdate(prevProps) {
-    //     if (
-    //         prevProps.form.getFieldsValue([ 'beginDatetime', 'station' ]) ===
-    //         this.props.form.getFieldsValue([ 'beginDatetime', 'station' ])
-    //     ) {
-    //         // const availableHours = this.props.form.getFieldsValue([ 'beginDatetime', 'station' ]);
-    //         // console.log('→ DUP availableHours', availableHours);
-    //         this.props.fetchAvailableHours();
-    //     }
-    // }
-    // componentDidMount() {
-    //     const {
-    //         getFieldDecorator,
-    //         getFieldValue,
-    //         getFieldsValue,
-    //         setFieldsValue,
-    //     } = this.props.form;
-    //     const durationValue = getFieldValue('duration');
-    //     console.log('→ durationValue', durationValue);
-    //
-    //     setFieldsValue({ duration: durationValue || 0.5 });
-    // }
-
     fetchAvailableHours(station, date) {
         this.props.form.resetFields([ 'beginTime' ]); // TODO doesn't work
         this.props.fetchAvailableHours(station, date);
     }
 
     render() {
-        const { selectedClient, stations, onStatusChange } = this.props;
+        const {
+            selectedClient,
+            stations,
+            onStatusChange,
+            order: { status },
+        } = this.props;
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
@@ -102,6 +71,25 @@ export class MobileRecordForm extends Component {
 
         return (
             <Form layout='horizontal'>
+                <div className={ Styles.mobileRecordFormFooter }>
+                    { status !== 'cancel' && (
+                        <Button
+                            className={ Styles.mobileRecordSubmitBtn }
+                            type='primary'
+                            onClick={ () => onStatusChange('approve') }
+                        >
+                            Записать
+                        </Button>
+                    ) }
+                    { status !== 'cancel' && (
+                        <Button
+                            className={ Styles.mobileRecordSubmitBtn }
+                            onClick={ () => onStatusChange('cancel') }
+                        >
+                            Отказать
+                        </Button>
+                    ) }
+                </div>
                 <FormItem
                     label={ <FormattedMessage id='add_order_form.name' /> }
                     { ...formItemLayout }
@@ -149,7 +137,7 @@ export class MobileRecordForm extends Component {
                     formItem
                     hasFeedback
                     label={ <FormattedMessage id='add_order_form.car' /> }
-                    formItemLayout={ formItemAutoColLayout }
+                    formItemLayout={ formItemLayout }
                     colon={ false }
                     className={ Styles.clientCol }
                     getFieldDecorator={ getFieldDecorator }
@@ -291,34 +279,12 @@ export class MobileRecordForm extends Component {
                     getFieldDecorator={ getFieldDecorator }
                     minuteStep={ 30 }
                 />
-                { /*<DecoratedSelect*/ }
-                { /*formItem*/ }
-                { /*hasFeedback*/ }
-                { /*disabled={*/ }
-                { /*!this.props.form.getFieldValue('beginDate') ||*/ }
-                { /*!this.props.form.getFieldValue('station')*/ }
-                { /*}*/ }
-                { /*field='beginTime'*/ }
-                { /*label={ <FormattedMessage id='time' /> }*/ }
-                { /*className={ Styles.datePanelItem }*/ }
-                { /*getFieldDecorator={ getFieldDecorator }*/ }
-                { /*popupClassName='mobileRecordFormTimePicker'*/ }
-                { /*{ ...formItemLayout }*/ }
-                { /*>*/ }
-                { /*{ (this.props.availableHours || []).map(availableHour => (*/ }
-                { /*<Option value={ availableHour } key={ availableHour }>*/ }
-                { /*{ moment(availableHour).format('HH:mm') }*/ }
-                { /*</Option>*/ }
-                { /*)) }*/ }
-                { /*</DecoratedSelect>*/ }
 
                 <DecoratedSlider
                     formItem
                     label='Продолжительность'
                     field='duration'
                     getFieldDecorator={ getFieldDecorator }
-                    // setFieldsValue={ setFieldsValue }
-                    // initialValue={ this.props.order.duration }
                     disabled={ !isDurationDisabled }
                     min={ 0 }
                     step={ 0.5 }
@@ -344,22 +310,6 @@ export class MobileRecordForm extends Component {
                     }) }
                     autosize={ { minRows: 2, maxRows: 6 } }
                 />
-
-                <div className={ Styles.mobileRecordFormFooter }>
-                    <Button
-                        className={ Styles.mobileRecordSubmitBtn }
-                        type='primary'
-                        onClick={ () => onStatusChange('approve') }
-                    >
-                        Записать
-                    </Button>
-                    <Button
-                        className={ Styles.mobileRecordSubmitBtn }
-                        onClick={ () => onStatusChange('cancel') }
-                    >
-                        Отказать
-                    </Button>
-                </div>
             </Form>
         );
     }

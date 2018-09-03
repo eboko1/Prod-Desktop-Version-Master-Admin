@@ -1,7 +1,7 @@
 // vendor
 import _ from 'lodash';
 import React, { Component } from 'react';
-import { Form, Select, Row, Col, Button } from 'antd';
+import { Form, Select, Row, Col, Button, notification } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { v4 } from 'uuid';
 
@@ -18,7 +18,7 @@ import {
     DecoratedDatePicker,
 } from 'forms/DecoratedFields';
 
-import { ClientsVehiclesTable } from 'components/OrderForm/OrderFormTables';
+import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
 import { ArrayInput } from 'components';
 
 const FormItem = Form.Item;
@@ -26,17 +26,34 @@ const Option = Select.Option;
 
 const findLabel = (arr, id, keyName) => [ keyName, (_(arr).find({ id }) || {}).name ];
 
+const openNotificationWithIcon = (type, message, description) => {
+    notification[ type ]({
+        message,
+        description,
+    });
+};
+
 @injectIntl
 export class AddClientForm extends Component {
+    constructor(props) {
+        super(props);
+
+        this.apiErrorsMap = {
+            CLIENT_EXISTS: props.intl.formatMessage({
+                id: 'add_client_form.client_exists_error',
+            }),
+        };
+    }
     render() {
         const {
-            handleAddClientModalSubmit,
             addClientFormData,
             vehicles,
             makes,
             models,
             modifications,
             lastFilterAction,
+            errors,
+            searchQuery,
         } = this.props;
 
         const {
@@ -48,11 +65,35 @@ export class AddClientForm extends Component {
         const { years } = addClientFormData;
         const { vehicle = {} } = getFieldsValue();
 
+        if (errors.length) {
+            const currentComponentErrors = errors.filter(({ response }) =>
+                _.keys(this.apiErrorsMap).includes(_.get(response, 'message')));
+
+            _.each(currentComponentErrors, componentError => {
+                const description = this.apiErrorsMap[
+                    componentError.response.message
+                ];
+
+                const errorTitle = this.props.intl.formatMessage({
+                    id: 'add_client_form.error_title',
+                });
+
+                openNotificationWithIcon('error', errorTitle, description);
+                this.props.handleError(componentError.id);
+            });
+        }
+
         return (
-            <Form
-                layout='vertical'
-                onSubmit={ () => handleAddClientModalSubmit() }
-            >
+            <Form layout='vertical'>
+                { searchQuery && (
+                    <div>
+                        <h2>
+                            <FormattedMessage id='add_client_form.search_query' />
+                            : { searchQuery }
+                        </h2>
+                    </div>
+                ) }
+                <br />
                 <div>
                     <ClientsVehiclesTable
                         removeClientVehicle={ this.props.removeClientVehicle }
@@ -92,12 +133,12 @@ export class AddClientForm extends Component {
                                         filters,
                                     );
                                 } }
-                                // optionFilterProp='children'
+                                optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
                             >
-                                { years.sort((v1, v2) => v2 - v1).map(year => (
+                                { years.sort((a, b) => b - a).map(year => (
                                     <Option value={ year } key={ v4() }>
                                         { String(year) }
                                     </Option>
@@ -455,13 +496,22 @@ export class AddClientForm extends Component {
                 <Row gutter={ 8 }>
                     <Col span={ 6 }>
                         <ArrayInput
-                            onChange={ this.props.updateArrayField }
+                            optional={ false }
                             form={ this.props.form }
+                            phone
                             rules={ [
                                 {
                                     required: true,
                                     message:  this.props.intl.formatMessage({
                                         id: 'add_client_form.required_field',
+                                    }),
+                                },
+                                {
+                                    pattern:   /^[\d]{9}$/,
+                                    transform: value => String(value),
+                                    message:   this.props.intl.formatMessage({
+                                        id:
+                                            'add_client_form.invalid_phone_format',
                                     }),
                                 },
                             ] }
@@ -472,17 +522,16 @@ export class AddClientForm extends Component {
                             buttonText={
                                 <FormattedMessage id='add_client_form.add_phone' />
                             }
-                            values={ this.props.fields.phones }
                         />
                     </Col>
                     <Col span={ 6 }>
                         <ArrayInput
+                            optional
                             rules={ [
                                 {
                                     type: 'email',
                                 },
                             ] }
-                            onChange={ this.props.updateArrayField }
                             form={ this.props.form }
                             fieldName='emails'
                             fieldTitle={
@@ -491,7 +540,6 @@ export class AddClientForm extends Component {
                             buttonText={
                                 <FormattedMessage id='add_client_form.add_email' />
                             }
-                            values={ this.props.fields.emails }
                         />
                     </Col>
                 </Row>

@@ -23,7 +23,7 @@ const collectTarget = (connect, monitor) => ({
 });
 
 @DropTarget(DragItemTypes.ORDER, orderTarget, collectTarget)
-class DashboardOrderDropTarget extends Component {
+export default class DashboardOrderDropTarget extends Component {
     _getOrderDropTargetRef = dropTarget => {
         this.orderDropTargetRef = dropTarget;
         this.props.connectDropTarget(dropTarget);
@@ -37,7 +37,21 @@ class DashboardOrderDropTarget extends Component {
                 innerRef={ dropTarget => this._getOrderDropTargetRef(dropTarget) }
                 overlayDrop={ isOver && canDrop }
             >
-                { label }
+                { label && 
+                    <>
+                        <StyledDashboardOrderDropTargetLabel>
+                            { label.vehicleNumber }
+                        </StyledDashboardOrderDropTargetLabel>
+                        <StyledDashboardOrderDropTargetLabel>
+                            { label.vehicleMakeName } { label.vehicleModelName }
+                        </StyledDashboardOrderDropTargetLabel>
+                        {!label.vehicleNumber && (
+                            <StyledDashboardOrderDropTargetLabel>
+                                { label.clientName }
+                            </StyledDashboardOrderDropTargetLabel>
+                        )}
+                    </>
+                }
             </StyledDashboardOrderDropTarget>
         );
     }
@@ -51,4 +65,10 @@ const StyledDashboardOrderDropTarget = styled.div`
     background-color: ${props => props.overlayDrop && 'var(--primary)'};
 `;
 
-export default DashboardOrderDropTarget;
+const StyledDashboardOrderDropTargetLabel = styled.div`
+    font-size: 10px;
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+`;

@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Modal } from 'antd';
+import { Modal, Button } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 // proj
@@ -11,23 +11,32 @@ export default class CancelReasonModal extends Component {
         const {
             visible,
             resetModal,
-            status,
-            returnToOrdersPage,
             saveOrder,
+            returnToOrdersPage,
+            status,
+            redirect,
         } = this.props;
 
         return (
             <Modal
-                cancelText={ <FormattedMessage id='order_form_table.confirm_exit_without_changes' /> }
+                cancelText={
+                    <FormattedMessage id='order_form_table.confirm_exit_without_changes' />
+                }
                 visible={ visible === MODALS.CONFIRM_EXIT }
-                onCancel={ () => {
-                    resetModal();
-                    returnToOrdersPage(status);
-                } }
-                onOk={ () => {
-                    resetModal();
-                    saveOrder();
-                } }
+                onCancel={ () => resetModal() }
+                footer={
+                    <div>
+                        <Button onClick={ () => redirect() }>Cancel</Button>
+                        <Button
+                            onClick={ () => {
+                                resetModal();
+                                saveOrder();
+                            } }
+                        >
+                            Ok
+                        </Button>
+                    </div>
+                }
             >
                 <FormattedMessage id='order_form_table.confirm_exit' />
             </Modal>

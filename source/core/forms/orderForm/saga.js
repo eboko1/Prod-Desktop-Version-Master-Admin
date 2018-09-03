@@ -31,9 +31,6 @@ import {
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
-    onHandleCustomService,
-    onHandleCustomDetail,
-    onHandleCustomBrand,
     createOrderSuccess,
     updateOrderSuccess,
     returnToOrdersPage,
@@ -44,42 +41,11 @@ import {
     FETCH_ORDER_TASK,
     ON_CHANGE_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
-    ON_SERVICE_SEARCH,
-    ON_DETAIL_SEARCH,
-    ON_BRAND_SEARCH,
     CREATE_ORDER,
     UPDATE_ORDER,
     RETURN_TO_ORDERS_PAGE,
     FETCH_AVAILABLE_HOURS,
 } from './duck';
-
-const selectBeginDatetime = state => {
-    const beginDate = state.forms.orderForm.fields.beginDate.value;
-    const beginTime = state.forms.orderForm.fields.beginTime.value;
-
-    let beginDatetime = null;
-    try {
-        const dayPart = beginDate
-            ? moment(beginDate)
-                .utc()
-                .format('YYYY-MM-DD')
-            : void 0;
-        const hourPart = beginTime
-            ? moment(beginTime)
-                .utc()
-                .format('HH:mm')
-            : void 0;
-
-        beginDatetime =
-            dayPart && hourPart
-                ? moment(`${dayPart}T${hourPart}:00.000Z`)
-                : void 0;
-    } catch (err) {}
-
-    return beginDatetime;
-};
-
-const selectStation = state => state.forms.orderForm.fields.station.value;
 
 export function* fetchOrderFormSaga() {
     while (true) {
@@ -125,32 +91,49 @@ export function* fetchOrderTaskSaga() {
 export function* createOrderSaga() {
     while (true) {
         try {
-            const { payload: entity } = yield take(CREATE_ORDER);
-            yield call(fetchAPI, 'POST', 'orders', {}, entity);
+            const {
+                payload: { order, redirectStatus, redirectToDashboard },
+            } = yield take(CREATE_ORDER);
+            yield call(fetchAPI, 'POST', 'orders', {}, order);
+            console.log('** redirectStatus', redirectStatus);
+            console.log('** redirectToDashboard', redirectToDashboard);
+            if (redirectToDashboard && redirectStatus) {
+                yield put(replace(book.dashboard));
+            }
 
-            yield put(createOrderSuccess());
+            if (!redirectToDashboard && redirectStatus) {
+                yield put(returnToOrdersPage(redirectStatus));
+            }
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield put(replace(book.ordersAppointments));
+            yield put(createOrderSuccess());
         }
     }
 }
 
 const selectModal = state => state.modals.modal;
 
+/* eslint-disable complexity */
 export function* updateOrderSaga() {
     while (true) {
         try {
             const {
-                payload: { order, id, redirectStatus },
+                payload: {
+                    order,
+                    id,
+                    redirectStatus,
+                    redirectToDashboard,
+                    options,
+                },
             } = yield take(UPDATE_ORDER);
-            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
-            yield put(updateOrderSuccess());
+            const mergedOrder = options ? { ...order, ...options } : order;
+            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder);
 
             if (!redirectStatus) {
                 yield put(fetchOrderForm(id));
             }
+
             const modal = yield select(selectModal);
             if (
                 modal === MODALS.CANCEL_REASON ||
@@ -159,11 +142,18 @@ export function* updateOrderSaga() {
             ) {
                 yield put(resetModal());
             }
-            if (redirectStatus) {
+
+            if (redirectToDashboard && redirectStatus) {
+                yield put(replace(book.dashboard));
+            }
+
+            if (!redirectToDashboard && redirectStatus) {
                 yield put(returnToOrdersPage(redirectStatus));
             }
         } catch (error) {
             yield put(emitError(error));
+        } finally {
+            yield put(updateOrderSuccess());
         }
     }
 }
@@ -178,7 +168,7 @@ export function* returnToOrdersPageSaga() {
                     statuses: [ 'not_complete', 'required', 'call' ],
                 },
                 { route: '/orders/approve', statuses: [ 'approve', 'reserve' ] },
-                { route: '/orders/in-progress', statuses: [ 'progress' ] },
+                { route: '/orders/progress', statuses: [ 'progress' ] },
                 { route: '/orders/success', statuses: [ 'success' ] },
                 { route: '/orders/reviews', statuses: [ 'review' ] },
                 { route: '/orders/invitations', statuses: [ 'invite' ] },
@@ -187,6 +177,7 @@ export function* returnToOrdersPageSaga() {
             const config = statusesMap.find(({ statuses }) =>
                 statuses.includes(status));
             const { route = '/orders/appointments' } = config || {};
+
             yield put(replace(route));
         } catch (error) {
             yield put(emitError(error));
@@ -217,7 +208,18 @@ function* handleClientSearchSaga({ payload }) {
         yield delay(1000);
 
         if (payload.length > 2) {
-            const fields = [ 'clientId', 'name', 'surname', 'phones', 'emails', 'vehicles', 'disabled', 'requisites' ];
+            /* eslint-disable array-element-newline */
+            const fields = [
+                'clientId',
+                'name',
+                'surname',
+                'phones',
+                'emails',
+                'vehicles',
+                'disabled',
+                'requisites',
+            ];
+            /* eslint-enable array-element-newline */
             const data = yield call(fetchAPI, 'GET', 'clients', {
                 query:     payload,
                 omitStats: true,
@@ -230,21 +232,6 @@ function* handleClientSearchSaga({ payload }) {
     } catch (error) {
         yield put(emitError(error));
     }
-}
-
-function* handleServiceSearch({ payload }) {
-    yield delay(200);
-    yield put(onHandleCustomService(payload));
-}
-
-function* handleDetailSearch({ payload }) {
-    yield delay(200);
-    yield put(onHandleCustomDetail(payload));
-}
-
-function* handleBrandSearch({ payload }) {
-    yield delay(200);
-    yield put(onHandleCustomBrand(payload));
 }
 
 export function* fetchAddOrderFormSaga() {
@@ -289,6 +276,7 @@ export function* fetchAvailableHoursSaga() {
                 stationNum: station,
                 date:       date.toISOString(),
             });
+
             yield put(fetchAvailableHoursSuccess(data));
         } catch (error) {
             yield put(emitError(error));
@@ -308,9 +296,6 @@ export function* saga() {
         call(fetchOrderFormSaga),
         call(onChangeOrderFormSaga),
         call(fetchAvailableHoursSaga),
-        takeLatest(ON_SERVICE_SEARCH, handleServiceSearch),
-        takeLatest(ON_BRAND_SEARCH, handleBrandSearch),
-        takeLatest(ON_DETAIL_SEARCH, handleDetailSearch),
         takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
     ]);
 }

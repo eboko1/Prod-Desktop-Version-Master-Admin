@@ -1,0 +1,26 @@
+{
+    "en": {
+        "employee-page.description": "Managing your employees, uploading them, ordering and working hours",
+        "employee-page.add_employee": "Add employee",
+        "employee-page.all": "All",
+        "employee-page.workers": "Workers",
+        "employee-page.dismissed": "Dismissed",
+        "employee-page.setting_salary": "Setting salary"
+    },
+    "ru": {
+        "employee-page.description": "Управление Вашими сотрудниками, их загрузкой, заказами и временем работы",
+        "employee-page.add_employee": "Добавить сотрудника",
+        "employee-page.all": "Все",
+        "employee-page.workers": "Работающие",
+        "employee-page.dismissed": "Уволенные",
+        "employee-page.setting_salary": "Настройка ЗП"
+    },
+    "uk": {
+        "employee-page.description": "Управління Вашими співробітниками, їх завантаженням, замовленнями і часом роботи",
+        "employee-page.add_employee": "Добавити працівника",
+        "employee-page.all": "Все",
+        "employee-page.workers": "Робочі",
+        "employee-page.dismissed": "Звільнені",
+        "employee-page.setting_salary": "Настройка ЗП"
+    }
+}

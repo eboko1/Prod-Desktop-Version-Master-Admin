@@ -10,8 +10,18 @@ import book from 'routes/book';
 // own
 import { ROW_HEIGHT } from '../dashboardConfig';
 
-const AddOrderLink = ({ className }) => (
-    <Link to={ book.addOrder } className={ className }>
+const AddOrderLink = ({ className, time, stationNum }) => (
+    <Link
+        to={ {
+            pathname: book.addOrder,
+            state:    {
+                beginDatetime: time.format('YYYY-MM-DD HH:mm'),
+                stationNum,
+                fromDashboard: true,
+            },
+        } }
+        className={ className }
+    >
         <FormattedMessage id='add' />
     </Link>
 );

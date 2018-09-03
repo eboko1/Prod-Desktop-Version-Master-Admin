@@ -8,28 +8,28 @@ import {
     onChangeAddClientForm,
     fetchVehiclesInfo,
     addClientVehicle,
-    updateArrayField,
     createClient,
     removeClientVehicle,
+    handleError,
 } from 'core/forms/addClientForm/duck';
 
 import { MODALS } from 'core/modals/duck';
 
 import { AddClientForm } from 'forms';
-import { withReduxForm } from 'utils';
+import { withReduxForm2 } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
-@withReduxForm({
+@withReduxForm2({
     name:    'addClientForm',
     actions: {
         change: onChangeAddClientForm,
         fetchVehiclesInfo,
         addClientVehicle,
         removeClientVehicle,
-        updateArrayField,
         createClient,
+        handleError,
     },
 })
 export default class AddClientModal extends Component {
@@ -51,6 +51,7 @@ export default class AddClientModal extends Component {
                     validateFields([ 'name', 'phones' ], err => {
                         if (!err) {
                             const clientFormData = getFieldsValue();
+                            console.log(clientFormData);
                             const vehicles = this.props.vehicles.map(
                                 ({
                                     modelId,
@@ -68,19 +69,26 @@ export default class AddClientModal extends Component {
                             );
 
                             const clientEntity = {
-                                birthday:   clientFormData.birthday,
-                                emails:     clientFormData.emails.filter(Boolean),
+                                birthday: clientFormData.birthday,
+                                emails:   clientFormData.emails
+                                    ? clientFormData.emails.filter(Boolean)
+                                    : clientFormData.emails,
                                 middlename: clientFormData.patronymic,
                                 name:       clientFormData.name,
                                 surname:    clientFormData.surname,
                                 sex:        clientFormData.sex,
                                 status:     clientFormData.status,
                                 vehicles,
-                                phones:     clientFormData.phones,
+                                phones:     clientFormData.phones
+                                    .filter(Boolean)
+                                    .map(
+                                        ({ number, country }) =>
+                                            country + number,
+                                    ),
                             };
 
                             this.props.createClient(clientEntity);
-                            resetModal();
+                            // resetModal();
                         }
                     });
                 } }

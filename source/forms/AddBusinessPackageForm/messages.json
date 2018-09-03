@@ -1,0 +1,29 @@
+{
+    "en": {
+        "add-business-package-form.activation_datetime": "Activation date",
+        "add-business-package-form.expiration_datetime": "Expiration date",
+        "add-business-package-form.activation_datetime_error": "Activation date is required",
+        "add-business-package-form.expiration_datetime_error": "Expiration date is required",
+        "add-business-package-form.business": "Business",
+        "add-business-package-form.package": "Package",
+        "add-business-package-form.create": "Create"
+    },
+    "ru": {
+        "add-business-package-form.activation_datetime": "Дата начала",
+        "add-business-package-form.expiration_datetime": "Дата конца",
+        "add-business-package-form.activation_datetime_error": "Обязательное поле",
+        "add-business-package-form.expiration_datetime_error": "Обязательное поле",
+        "add-business-package-form.business": "Бизнес",
+        "add-business-package-form.package": "Пакет",
+        "add-business-package-form.create": "Создать"
+    },
+    "uk": {
+        "add-business-package-form.activation_datetime": "Дата початку",
+        "add-business-package-form.expiration_datetime": "Дата кінця",
+        "add-business-package-form.activation_datetime_error": "Обов'язкове поле",
+        "add-business-package-form.expiration_datetime_error": "Обов'язкове поле",
+        "add-business-package-form.business": "Бізнес",
+        "add-business-package-form.package": "Пакет",
+        "add-business-package-form.create": "Створити"
+    }
+}

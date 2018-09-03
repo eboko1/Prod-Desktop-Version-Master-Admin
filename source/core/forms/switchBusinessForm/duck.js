@@ -61,9 +61,9 @@ export const setSearchQuery = query => ({
     payload: { query },
 });
 
-export const setBusiness = id => ({
+export const setBusiness = ({ businessId, businessName }) => ({
     type:    SET_BUSINESS,
-    payload: { id },
+    payload: { businessId, businessName },
 });
 
 export const onChangeSwitchBusinessForm = payload => ({

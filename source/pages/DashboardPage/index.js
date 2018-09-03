@@ -51,7 +51,10 @@ const mapDispatchToProps = {
     updateDashboardOrder,
 };
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 class DashboardPage extends Component {
     componentDidMount() {
         const { initDashboard } = this.props;

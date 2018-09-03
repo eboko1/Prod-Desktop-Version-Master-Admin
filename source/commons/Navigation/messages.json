@@ -18,6 +18,7 @@
         "navigation.calls_statistics": "Calls Statistics",
         "navigation.settings": "Settings",
         "navigation.main": "Main",
+        "navigation.requisites": "Requisites",
         "navigation.specialization_and_prices": "Specialization and Prices",
         "navigation.services": "Services",
         "navigation.stocks": "Stocks",
@@ -27,7 +28,10 @@
         "navigation.system_managers": "System managers",
         "navigation.notice": "Notice",
         "navigation.suggest_idea": "Suggest idea",
-        "navigation.package": "Packages"
+        "navigation.roles": "Roles",
+        "navigation.package": "Packages",
+        "navigation.business_package": "Business-Package",
+        "navigation.manager_role": "Manager-Role"
     },
     "ru": {
         "navigation.operations": "Операции",
@@ -37,7 +41,7 @@
         "navigation.mytasks": "Мои Задачи",
         "navigation.catalog": "Справочник",
         "navigation.clients": "Клиенты",
-        "navigation.employees": "Работники",
+        "navigation.employees": "Сотрудники",
         "navigation.autos": "Авто",
         "navigation.reports": "Отчёты",
         "navigation.control_panel": "Панель управления",
@@ -48,6 +52,7 @@
         "navigation.calls_statistics": "Стастистика звонков",
         "navigation.settings": "Настройки",
         "navigation.main": "Основные",
+        "navigation.requisites": "Реквизити",
         "navigation.specialization_and_prices": "Специализация и Цены",
         "navigation.services": "Услуги",
         "navigation.stocks": "Акции",
@@ -57,7 +62,10 @@
         "navigation.system_managers": "Менеджеры системы",
         "navigation.notice": "Уведомления",
         "navigation.suggest_idea": "Предложить идею",
-        "navigation.package": "Пакеты"
+        "navigation.roles": "Роли",
+        "navigation.package": "Пакеты",
+        "navigation.business_package": "Бизнесы-Пакеты",
+        "navigation.manager_role": "Менеджеры-Роли"
     },
     "uk": {
         "navigation.operations": "Операції",
@@ -78,6 +86,7 @@
         "navigation.calls_statistics": "Статистика дзвінків",
         "navigation.settings": "Налаштування",
         "navigation.main": "Основні",
+        "navigation.requisites": "Реквізити",
         "navigation.specialization_and_prices": "Спеціалізація та Ціни",
         "navigation.services": "Послуги",
         "navigation.stocks": "Акції",
@@ -87,6 +96,9 @@
         "navigation.system_managers": "Менеджери системи",
         "navigation.notice": "Сповіщення",
         "navigation.suggest_idea": "Запропонувати ідею",
-        "navigation.package": "Пакети"
+        "navigation.roles": "Ролі",
+        "navigation.package": "Пакети",
+        "navigation.business_package": "Бізнеси-Пакети",
+        "navigation.manager_role": "Менеджери-Ролі"
     }
 }
