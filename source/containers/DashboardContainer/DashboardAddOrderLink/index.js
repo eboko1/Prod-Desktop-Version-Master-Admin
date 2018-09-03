@@ -17,6 +17,7 @@ const AddOrderLink = ({ className, time, stationNum }) => (
             state:    {
                 beginDatetime: time.format('YYYY-MM-DD HH:mm'),
                 stationNum,
+                fromDashboard: true,
             },
         } }
         className={ className }

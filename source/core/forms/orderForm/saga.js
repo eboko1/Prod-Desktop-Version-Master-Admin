@@ -91,14 +91,23 @@ export function* fetchOrderTaskSaga() {
 export function* createOrderSaga() {
     while (true) {
         try {
-            const { payload: entity } = yield take(CREATE_ORDER);
-            yield call(fetchAPI, 'POST', 'orders', {}, entity);
+            const {
+                payload: { order, redirectStatus, redirectToDashboard },
+            } = yield take(CREATE_ORDER);
+            yield call(fetchAPI, 'POST', 'orders', {}, order);
+            console.log('** redirectStatus', redirectStatus);
+            console.log('** redirectToDashboard', redirectToDashboard);
+            if (redirectToDashboard && redirectStatus) {
+                yield put(replace(book.dashboard));
+            }
 
-            yield put(createOrderSuccess());
+            if (!redirectToDashboard && redirectStatus) {
+                yield put(returnToOrdersPage(redirectStatus));
+            }
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield put(replace(book.ordersAppointments));
+            yield put(createOrderSuccess());
         }
     }
 }
