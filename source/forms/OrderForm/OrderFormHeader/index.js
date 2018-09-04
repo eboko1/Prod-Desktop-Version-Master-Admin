@@ -68,6 +68,7 @@ export default class OrderFormHeader extends Component {
     _renderDuration = () => {
         const { fetchedOrder, totalHours } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
+        const { formatMessage } = this.props.intl;
 
         return (
             <DecoratedSlider
@@ -78,7 +79,7 @@ export default class OrderFormHeader extends Component {
                 initDuration={
                     _.get(fetchedOrder, 'order.duration') || totalHours
                 }
-                label={ `Продолжительность (${getFieldValue('duration')}ч.)` }
+                label={ `${formatMessage({ id: 'add_order_form.duration'})} (${getFieldValue('duration')}${formatMessage({ id: 'add_order_form.hours_shortcut'})})` }
                 field='duration'
                 getFieldDecorator={ getFieldDecorator }
                 min={ 0 }
@@ -155,9 +156,9 @@ export default class OrderFormHeader extends Component {
                     hasFeedback
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
-                    placeholder={
-                        <FormattedMessage id='add_order_form.select_station' />
-                    }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_station',
+                    }) }
                     options={ stations }
                     optionValue='num'
                     optionLabel='name'
@@ -186,9 +187,12 @@ export default class OrderFormHeader extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  'Please provide time',
+                            message:  formatMessage({ id: 'add_order_form.please_provide_time'}),
                         },
                     ] }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.provide_time',
+                    }) }
                     minuteStep={ 30 }
                     initialValue={ momentBeginDatetime }
                 />
@@ -205,6 +209,7 @@ export default class OrderFormHeader extends Component {
         } = this.props;
 
         const { getFieldDecorator } = this.props.form;
+        const { formatMessage } = this.props.intl;
 
         return (
             <div className={ Styles.headerCol }>
@@ -215,7 +220,7 @@ export default class OrderFormHeader extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  'Please select your manager!',
+                            message:  formatMessage({ id: 'add_order_form.please_select_manager'}),
                         },
                     ] }
                     label={ <FormattedMessage id='add_order_form.manager' /> }
@@ -229,7 +234,9 @@ export default class OrderFormHeader extends Component {
                             : authentificatedManager)
                     }
                     disabled={ this.bodyUpdateIsForbidden() }
-                    placeholder='Выберете менеджера'
+                    placeholder={
+                        formatMessage({ id: 'add_order_form.select_manager'})
+                    }
                     formItemLayout={ formHeaderItemLayout }
                 >
                     { managers.map(manager => (
@@ -251,6 +258,9 @@ export default class OrderFormHeader extends Component {
                     disabled={ this.bodyUpdateIsForbidden() }
                     getFieldDecorator={ getFieldDecorator }
                     initialValue={ _.get(fetchedOrder, 'order.employeeId') }
+                    placeholder={
+                        formatMessage({ id: 'order_form_table.select_master'})
+                    }
                     formItemLayout={ formHeaderItemLayout }
                 >
                     { employees.map(employee => (
@@ -268,11 +278,14 @@ export default class OrderFormHeader extends Component {
                     formItem
                     field='appurtenanciesResponsible'
                     label={
-                        <FormattedMessage id='order_form_table.appurtenanciesResponsible' />
+                        <FormattedMessage id='order_form_table.appurtenancies_responsible' />
                     }
                     className={ Styles.durationPanelItem }
                     disabled={ this.bodyUpdateIsForbidden() }
                     getFieldDecorator={ getFieldDecorator }
+                    placeholder={
+                        formatMessage({ id: 'add_order_form.select_appurtenancies_responsible'})
+                    }
                     formItemLayout={ formHeaderItemLayout }
                 >
                     { employees.map(employee => (
@@ -291,6 +304,7 @@ export default class OrderFormHeader extends Component {
 
     _renderTotalBlock = () => {
         const { form, fetchedOrder } = this.props;
+        const { formatMessage } = this.props.intl;
 
         const { getFieldDecorator } = this.props.form;
 
@@ -334,6 +348,9 @@ export default class OrderFormHeader extends Component {
                     formItemLayout={ formHeaderItemLayout }
                     label={
                         <FormattedMessage id='add_order_form.payment_method' />
+                    }
+                    placeholder={
+                        formatMessage({ id: 'add_order_form.select_payment_method'})
                     }
                 >
                     <Option value='cash'>

@@ -20,12 +20,12 @@
         "datepicker.select_date": "Date Select",
         "datepicker.select_month": "Month Select",
         "datepicker.select_year": "Year Select",
-        "datepicker.prevMonth": "Previous month (PageUp)",
-        "datepicker.nextMonth": "Next month (PageDown)",
-        "datepicker.prevQuarter": "Previous quarter",
-        "datepicker.nextQuarter": "Next quarter",
-        "datepicker.prevYear": "Previous Year",
-        "datepicker.nextYear": "Next Year"
+        "datepicker.prev_month": "Previous month",
+        "datepicker.next_month": "Next month",
+        "datepicker.prev_quarter": "Previous quarter",
+        "datepicker.next_quarter": "Next quarter",
+        "datepicker.prev_year": "Previous Year",
+        "datepicker.next_year": "Next Year"
     },
     "ru": {
         "date": "Дата",
@@ -48,12 +48,12 @@
         "datepicker.select_date": "Укажите дату",
         "datepicker.select_month": "Укажите месяц",
         "datepicker.select_year": "Укажите год",
-        "datepicker.prevMonth": "Предыдущий месяц (PageUp)",
-        "datepicker.nextMonth": "Следующий месяц (PageDown)",
-        "datepicker.prevQuarter": "Предыдущий квартал",
-        "datepicker.nextQuarter": "Следующий квартал",
-        "datepicker.prevYear": "Предыдущий год",
-        "datepicker.nextYear": "Следующий год"
+        "datepicker.prev_month": "Предыдущий месяц",
+        "datepicker.next_month": "Следующий месяц",
+        "datepicker.prev_quarter": "Предыдущий квартал",
+        "datepicker.next_quarter": "Следующий квартал",
+        "datepicker.prev_year": "Предыдущий год",
+        "datepicker.next_year": "Следующий год"
     },
     "uk": {
         "date": "Дата",
@@ -76,11 +76,11 @@
         "datepicker.select_date": "Вкажіть дату",
         "datepicker.select_month": "Вкажіть місяць",
         "datepicker.select_year": "Вкажіть рік",
-        "datepicker.prevMonth": "Минулий місяць (PageUp)",
-        "datepicker.nextMonth": "Наступний місяць (PageDown)",
-        "datepicker.prevQuarter": "Минулий квартал",
-        "datepicker.nextQuarter": "Наступний квартал",
-        "datepicker.prevYear": "Минулий Рік",
-        "datepicker.nextYear": "Наступний Рік"
+        "datepicker.prev_month": "Минулий місяць",
+        "datepicker.next_month": "Наступний місяць",
+        "datepicker.prev_quarter": "Минулий квартал",
+        "datepicker.next_quarter": "Наступний квартал",
+        "datepicker.prev_year": "Минулий Рік",
+        "datepicker.next_year": "Наступний Рік"
     }
 }

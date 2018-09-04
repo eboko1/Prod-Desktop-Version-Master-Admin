@@ -1,14 +1,50 @@
 {
     "en": {
+        "order-page.title": "Transactions",
+        "order-page.description": "Control your orders",
         "order-page.creation_date": "Creation Date",
-        "order-page.create_invite_order": "Create Invitation"
+        "order-status.call": "Call",
+        "order-status.not_complete": "New",
+        "order-status.reserve": "Reserve",
+        "order-status.required": "Required",
+        "order-status.approve": "Approve",
+        "order-status.progress": "Repair",
+        "order-status.success": "Success",
+        "order-status.cancel": "Cancel",
+        "order-status.invite": "Invitation",
+        "order-status.order": "Order",
+        "order-page.create_invite_order": "Create invitation"
     },
     "ru": {
+        "order-page.title": "Заказы",
+        "order-page.description": "Управление Вашими заказами",
         "order-page.creation_date": "Дата Создания",
-        "order-page.create_invite_order": "Создать Приглашение"
+        "order-status.call": "Звонок",
+        "order-status.not_complete": "Новый",
+        "order-status.reserve": "Резерв",
+        "order-status.required": "Под вопросом",
+        "order-status.approve": "Запись",
+        "order-status.progress": "Ремонт",
+        "order-status.success": "Выполненно",
+        "order-status.cancel": "Отказ",
+        "order-status.invite": "Приглашение",
+        "order-status.order": "Заказ",
+        "order-page.create_invite_order": "Создать приглашение"
     },
     "uk": {
+        "order-page.title": "Транзакции",
+        "order-page.description": "Управление Вашими заказами",
         "order-page.creation_date": "Дата Створення",
-        "order-page.create_invite_order": "Створити Запрошення"
+        "order-status.call": "Дзвінок",
+        "order-status.not_complete": "Новий",
+        "order-status.reserve": "Резерв",
+        "order-status.required": "Під питанням",
+        "order-status.approve": "Запис",
+        "order-status.progress": "Ремонт",
+        "order-status.success": "Виконано",
+        "order-status.cancel": "Відмова",
+        "order-status.invite": "Запрошення",
+        "order-status.order": "Замовлення",
+        "order-page.create_invite_order": "Створити запрошення"
     }
 }

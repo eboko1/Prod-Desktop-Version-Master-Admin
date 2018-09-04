@@ -103,7 +103,7 @@ export default class OrderFormBody extends Component {
                     field='searchClientQuery'
                     formItem
                     colon={ false }
-                    label='Поиск клиента'
+                    label={ <FormattedMessage id='add_order_form.search_client'/> }
                     getFieldDecorator={ getFieldDecorator }
                     disabled={
                         Boolean(disabledClientSearch) ||
@@ -111,7 +111,7 @@ export default class OrderFormBody extends Component {
                     }
                     placeholder={ formatMessage({
                         id:             'add_order_form.client.placeholder',
-                        defaultMessage: 'search client',
+                        defaultMessage: 'Search client',
                     }) }
                 />
                 <Icon
@@ -407,7 +407,9 @@ export default class OrderFormBody extends Component {
                         className={ Styles.comment }
                         formItem
                         colon={ false }
-                        label={ 'Рекомендации с прошлого заезда' }
+                        label={
+                            <FormattedMessage id='add_order_form.prev_order_recommendations' />
+                        }
                         disabled
                         getFieldDecorator={ getFieldDecorator }
                         field='prevRecommendation'
