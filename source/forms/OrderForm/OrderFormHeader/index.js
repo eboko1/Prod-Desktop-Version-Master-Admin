@@ -205,6 +205,7 @@ export default class OrderFormHeader extends Component {
                     formItem
                     formItemLayout={ formHeaderItemLayout }
                     disabled={ this.bodyUpdateIsForbidden() }
+                    defaultOpenValue={ moment('00:00:00', 'HH:mm:ss') }
                     field='beginTime'
                     hasFeedback
                     disabledHours={ disabledHours }
