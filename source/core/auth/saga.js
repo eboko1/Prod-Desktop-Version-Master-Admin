@@ -14,7 +14,9 @@ import { setToken, removeToken, setLocale, removeLocale } from 'utils';
 import {
     authenticateSuccess,
     logoutSuccess,
+    updateUserSuccess,
     AUTHENTICATE,
+    UPDATE_USER,
     LOGOUT,
 } from './duck';
 
@@ -51,6 +53,18 @@ export function* logoutSaga() {
     }
 }
 
+export function* updateUserSaga() {
+    while (true) {
+        try {
+            const { payload: user } = yield take(UPDATE_USER);
+            yield setLocale(user.language);
+            yield put(updateUserSuccess(user));
+        } catch {
+            yield put(emitError(error));
+        }
+    }
+}
+
 export function* saga() {
-    yield all([ call(authenticateSaga), call(logoutSaga) ]);
+    yield all([ call(authenticateSaga), call(logoutSaga), call(updateUserSaga) ]);
 }

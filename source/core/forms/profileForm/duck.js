@@ -49,6 +49,7 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
+export const profileFieldsSelector = state => state[ moduleName ].fields;
 
 /**
  * Action Creators
