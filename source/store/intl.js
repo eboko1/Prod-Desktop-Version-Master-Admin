@@ -163,8 +163,8 @@ if (persistedLocale === 'ua') {
 }
 
 const intl = {
-    locale:   persistedLocale || fallbackLocale,
-    messages: messages[ persistedLocale || fallbackLocale ],
+    locale:   'en' || fallbackLocale,
+    messages: messages[ 'en' || fallbackLocale ],
 };
 
 // Numeral
