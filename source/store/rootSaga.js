@@ -23,11 +23,12 @@ import { saga as businessPackageSaga } from 'core/businessPackage/saga';
 import { saga as managerRoleSaga } from 'core/managerRole/saga';
 import { saga as rolesSaga } from 'core/role/saga';
 import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
-import { saga as employee } from 'core/employee/saga';
-import { saga as employeeForm } from 'core/forms/employeeForm/saga';
-import { saga as settingSalary } from 'core/forms/settingSalaryForm/saga';
-import { saga as employeeScheduleForm } from 'core/forms/employeeScheduleForm/saga';
-import { saga as employeeBreakScheduleForm } from 'core/forms/employeeBreakScheduleForm/saga';
+import { saga as employeeSaga } from 'core/employee/saga';
+import { saga as employeeFormSaga } from 'core/forms/employeeForm/saga';
+import { saga as settingSalarySaga } from 'core/settingSalary/saga';
+import { saga as employeeScheduleFormSaga } from 'core/forms/employeeScheduleForm/saga';
+import { saga as employeeBreakScheduleFormSaga } from 'core/forms/employeeBreakScheduleForm/saga';
+import { saga as profileFormSaga } from 'core/forms/profileForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -47,14 +48,15 @@ export default function* rootSaga() {
         packagesSaga(),
         rolesSaga(),
         switchBusinessSaga(),
-        employee(),
-        employeeForm(),
-        settingSalary(),
+        employeeSaga(),
+        employeeFormSaga(),
+        settingSalarySaga(),
         businessPackageSaga(),
-        employeeScheduleForm(),
+        employeeScheduleFormSaga(),
+        employeeBreakScheduleFormSaga(),
         searchSaga(),
         managerRoleSaga(),
-        employeeBreakScheduleForm(),
+        profileFormSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

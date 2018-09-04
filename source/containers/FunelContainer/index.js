@@ -74,7 +74,7 @@ class FunelContainer extends Component {
                             }
                         >
                             <span>
-                                <FormattedMessage id='funel.appointments' /> ({ stats.not_complete +
+                                <FormattedMessage id='appointments' /> ({ stats.not_complete +
                                     stats.call +
                                     stats.required })
                             </span>
@@ -89,7 +89,7 @@ class FunelContainer extends Component {
                             onClick={ () => this.setStatus('approve,reserve') }
                         >
                             <span>
-                                <FormattedMessage id='funel.record' /> ({ stats.approve +
+                                <FormattedMessage id='records' /> ({ stats.approve +
                                     stats.reserve })
                             </span>
                         </NavLink>
@@ -103,7 +103,7 @@ class FunelContainer extends Component {
                             onClick={ () => this.setStatus('progress') }
                         >
                             <span>
-                                <FormattedMessage id='funel.repair' /> ({
+                                <FormattedMessage id='repairs' /> ({
                                     stats.progress
                                 })
                             </span>
@@ -118,7 +118,7 @@ class FunelContainer extends Component {
                             onClick={ () => this.setStatus('success') }
                         >
                             <span>
-                                <FormattedMessage id='funel.done' /> ({
+                                <FormattedMessage id='done' /> ({
                                     stats.success
                                 })
                             </span>
@@ -140,7 +140,7 @@ class FunelContainer extends Component {
                             onClick={ () => this.setStatus('invite') }
                         >
                             <span>
-                                <FormattedMessage id='funel.invitation' /> ({
+                                <FormattedMessage id='invitations' /> ({
                                     stats.invite
                                 })
                             </span>
@@ -156,7 +156,7 @@ class FunelContainer extends Component {
                             onClick={ () => this.setStatus('review') }
                         >
                             <span>
-                                <FormattedMessage id='funel.review' /> ({
+                                <FormattedMessage id='reviews' /> ({
                                     stats.review
                                 })
                             </span>
@@ -187,7 +187,7 @@ class FunelContainer extends Component {
                         onClick={ () => this.setStatus('cancel') }
                     >
                         <span>
-                            <FormattedMessage id='funel.cancel' /> ({
+                            <FormattedMessage id='cancels' /> ({
                                 stats.cancel
                             })
                         </span>
@@ -209,7 +209,9 @@ class FunelContainer extends Component {
                 />
             </div>
         ) : (
-            <div>...loading</div>
+            <div>
+                <FormattedMessage id='loading' />
+            </div>
         );
     }
 }

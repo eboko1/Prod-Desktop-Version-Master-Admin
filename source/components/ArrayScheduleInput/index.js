@@ -238,7 +238,9 @@ state = {
                                 rules={ [
                                     {
                                         required: true,
-                                        message:  '',
+                                        message:  formatMessage({
+                                            id: 'required_field',
+                                        }),
                                     },
                                 ] }
                                 initialValue={
@@ -263,7 +265,9 @@ state = {
                                 rules={ [
                                     {
                                         required: true,
-                                        message:  '',
+                                        message:  formatMessage({
+                                            id: 'required_field',
+                                        }),
                                     },
                                 ] }
                                 initialValue={

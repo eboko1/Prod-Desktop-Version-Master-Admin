@@ -1,9 +1,9 @@
 // vendor
-import _ from 'lodash';
 import React, { Component } from 'react';
 import { Form, Row, Col, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // proj
 import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
@@ -18,7 +18,6 @@ import {
 import { withReduxForm, getDaterange } from 'utils';
 
 // own
-import Styles from './styles.m.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -70,19 +69,17 @@ export class UniversalFiltersForm extends Component {
                                     trigger.parentNode
                                 }
                                 ranges={ {
-                                    // day
+                                    // this day
                                     [ formatMessage({
                                         id: 'datepicker.today',
                                     }) ]: getDaterange('today', 'ant'),
-                                    // month
+                                    // prev month
                                     [ formatMessage({
-                                        id: 'datepicker.month',
+                                        id: 'datepicker.prev_month',
                                     }) ]: getDaterange('prevMonth', 'ant'),
+                                    // prev year
                                     [ formatMessage({
-                                        id: 'datepicker.year',
-                                    }) ]: getDaterange('prevYear', 'ant'),
-                                    [ formatMessage({
-                                        id: 'datepicker.year',
+                                        id: 'datepicker.prev_year',
                                     }) ]: getDaterange('prevYear', 'ant'),
                                 } }
                                 // showTime
@@ -104,41 +101,25 @@ export class UniversalFiltersForm extends Component {
                                     trigger.parentNode
                                 }
                                 ranges={ {
-                                    Today:        getDaterange('today', 'ant'),
-                                    'This Month': getDaterange(
-                                        'prevMonth',
-                                        'ant',
-                                    ),
+                                    // this day
+                                    [ formatMessage({
+                                        id: 'datepicker.today',
+                                    }) ]: getDaterange('today', 'ant'),
+                                    // prev month
+                                    [ formatMessage({
+                                        id: 'datepicker.prev_month',
+                                    }) ]: getDaterange('prevMonth', 'ant'),
+                                    // prev year
+                                    [ formatMessage({
+                                        id: 'datepicker.prev_year',
+                                    }) ]: getDaterange('prevYear', 'ant'),
                                 } }
-                                showTime
+                                // showTime
                                 format='YYYY-MM-DD HH:mm:ss'
                             />
                         </FormItem>
                     </Col>
                 </Row>
-                { /* <Row gutter={ 24 }>
-                    <Col span={ 12 }>
-                        <FormItem label='createDate'>
-                            <DecoratedDatePicker
-                                field='createDate'
-                                getFieldDecorator={ getFieldDecorator }
-                                formatMessage={ formatMessage }
-                                getPopupContainer={ trigger =>
-                                    trigger.parentNode
-                                }
-                                ranges={ {
-                                    Today:        getDaterange('today', 'ant'),
-                                    'This Month': getDaterange(
-                                        'prevMonth',
-                                        'ant',
-                                    ),
-                                } }
-                                showTime
-                                format='YYYY-MM-DD HH:mm:ss'
-                            />
-                        </FormItem>
-                    </Col>
-                </Row> */ }
                 <Row gutter={ 8 }>
                     <Col span={ 6 }>
                         <FormItem
@@ -235,9 +216,9 @@ export class UniversalFiltersForm extends Component {
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.mileage_from' />
-                                }
+                                placeholder={ formatMessage({
+                                    id: 'universal_filters_form.mileage_from',
+                                }) }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
@@ -257,9 +238,9 @@ export class UniversalFiltersForm extends Component {
                             <DecoratedInputNumber
                                 field='odometerGreater'
                                 getFieldDecorator={ getFieldDecorator }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.mileage_to' />
-                                }
+                                placeholder={ formatMessage({
+                                    id: 'universal_filters_form.mileage_to',
+                                }) }
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
@@ -269,28 +250,6 @@ export class UniversalFiltersForm extends Component {
                 </Row>
                 <Row gutter={ 8 }>
                     <Col span={ 12 }>
-                        { /* <FormItem
-                            label={
-                                <FormattedMessage id='universal_filters_form.creationReason' />
-                            }
-                        >
-                            <DecoratedSelect
-                                field='creationReason'
-                                mode='multiple'
-                                showSearch
-                                getFieldDecorator={ getFieldDecorator }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.creationReason' />
-                                }
-                                // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
-                                    trigger.parentNode
-                                }
-                                options={ creationReasons }
-                                optionValue='creationReason'
-                                optionLabel='creationReason'
-                            />
-                        </FormItem> */ }
                         <FormItem
                             label={
                                 <FormattedMessage id='universal_filters_form.service' />
@@ -375,9 +334,10 @@ export class UniversalFiltersForm extends Component {
                                 field='ordersGreater'
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.number_of_visits_from' />
-                                }
+                                placeholder={ formatMessage({
+                                    id:
+                                        'universal_filters_form.number_of_visits_from',
+                                }) }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
@@ -395,9 +355,10 @@ export class UniversalFiltersForm extends Component {
                                 field='ordersLower'
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.number_of_visits_to' />
-                                }
+                                placeholder={ formatMessage({
+                                    id:
+                                        'universal_filters_form.number_of_visits_to',
+                                }) }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
@@ -456,9 +417,9 @@ export class UniversalFiltersForm extends Component {
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.last' />
-                                }
+                                placeholder={ formatMessage({
+                                    id: 'universal_filters_form.last',
+                                }) }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode

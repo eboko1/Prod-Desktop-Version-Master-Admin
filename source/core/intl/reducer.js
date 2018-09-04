@@ -10,12 +10,13 @@ const initialState = {
 };
 
 export default (state = initialState, action) => {
-    switch (action.type) {
+    const { type, payload } = action;
+    switch (type) {
         case types.INIT_INTL_SUCCESS:
-            return action.payload;
+            return payload;
 
         case types.UPDATE_INTL_SUCCESS:
-            return action.payload;
+            return payload;
 
         default:
             return state;

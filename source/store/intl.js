@@ -36,7 +36,6 @@ import ManagerRolePage from 'pages/ManagerRolePage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
-import FunelContainer from 'containers/FunelContainer/messages';
 import OrdersContainer from 'containers/OrdersContainer/messages';
 import MyTasksContainer from 'containers/MyTasksContainer/messages';
 import PackageContainer from 'containers/PackageContainer/messages';
@@ -44,6 +43,7 @@ import BusinessPackageContainer from 'containers/BusinessPackageContainer/messag
 import RoleContainer from 'containers/RoleContainer/messages';
 import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
 import ManagerRoleContainer from 'containers/ManagerRoleContainer/messages';
+import UniversalFiltersContainer from 'containers/UniversalFilters/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -59,6 +59,7 @@ import EmployeeScheduleForm from 'forms/EmployeeScheduleForm/messages';
 import BusinessPackageForm from 'forms/BusinessPackageForm/messages';
 import ManagerRoleForm from 'forms/ManagerRoleForm/messages';
 import AddBusinessPackageForm from 'forms/AddBusinessPackageForm/messages';
+import LoginForm from 'forms/LoginForm/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
@@ -86,6 +87,9 @@ import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
 
+//commons
+import Footer from 'commons/Footer/messages';
+
 /* eslint-disable array-element-newline */
 const messages = merge.all([
     global,
@@ -109,13 +113,13 @@ const messages = merge.all([
     // containers
     OrdersContainer,
     OrdersFilterContainer,
-    FunelContainer,
     MyTasksContainer,
     PackageContainer,
     RoleContainer,
     SettingSalaryContainer,
     BusinessPackageContainer,
     ManagerRoleContainer,
+    UniversalFiltersContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -133,6 +137,7 @@ const messages = merge.all([
     BusinessPackageForm,
     AddBusinessPackageForm,
     ManagerRoleForm,
+    LoginForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
@@ -152,18 +157,31 @@ const messages = merge.all([
     SettingSalaryTable,
     ArrayScheduleInput,
     ArrayBreakScheduleInput,
+    //commons
+    Footer,
 ]);
 /* eslint-enable array-element-newline */
 
 // Intl
-const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
+const setIntl = language => {
+    const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
+    let locale = language;
+    if (locale === 'ua') {
+        locale = 'uk';
+    }
 
-const persistedLocale = getLocale();
-
-const intl = {
-    locale:   persistedLocale || fallbackLocale,
-    messages: messages[ persistedLocale || fallbackLocale ],
+    return {
+        locale:   locale || fallbackLocale,
+        messages: messages[ locale || fallbackLocale ],
+    };
 };
+
+let persistedLocale = getLocale();
+if (persistedLocale === 'ua') {
+    persistedLocale = 'uk';
+}
+
+const intl = setIntl(persistedLocale);
 
 // Numeral
 // TODO: provide locale dynamic for numeral register
@@ -185,4 +203,4 @@ numeral.register('locale', 'ru', {
 });
 numeral.locale('ru');
 
-export { messages, intl };
+export { messages, intl, setIntl };

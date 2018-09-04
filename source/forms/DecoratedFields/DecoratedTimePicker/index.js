@@ -32,6 +32,7 @@ export const DecoratedTimePicker = props => {
         inputReadOnly,
         allowEmpty,
         initialValue,
+        defaultOpenValue,
     } = props;
 
     const timePicker = getFieldDecorator(field, {
@@ -39,6 +40,7 @@ export const DecoratedTimePicker = props => {
         rules,
     })(
         <TimePicker
+            defaultOpenValue={ defaultOpenValue }
             format={ format || 'HH:mm' }
             disabled={ disabled }
             disabledHours={ disabledHours }

@@ -103,15 +103,15 @@ export default class OrderFormBody extends Component {
                     field='searchClientQuery'
                     formItem
                     colon={ false }
-                    label='Поиск клиента'
+                    label={ <FormattedMessage id='add_order_form.search_client'/> }
                     getFieldDecorator={ getFieldDecorator }
                     disabled={
                         Boolean(disabledClientSearch) ||
                         this.bodyUpdateIsForbidden()
                     }
                     placeholder={ formatMessage({
-                        id:             'add_order_form.client.placeholder',
-                        defaultMessage: 'search client',
+                        id:             'add_order_form.search_client.placeholder',
+                        defaultMessage: 'Search client',
                     }) }
                 />
                 <Icon
@@ -126,6 +126,7 @@ export default class OrderFormBody extends Component {
     _renderClientColumn = () => {
         const { selectedClient, fetchedOrder } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
+        const { formatMessage } = this.props.intl;
 
         // const hasClient = !!_.get(this.props, 'order.clientId');
         const hasClient = getFieldValue('clientPhone');
@@ -162,7 +163,9 @@ export default class OrderFormBody extends Component {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  '',
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
                                 },
                             ] }
                             getFieldDecorator={ getFieldDecorator }
@@ -292,7 +295,9 @@ export default class OrderFormBody extends Component {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  '',
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
                                 },
                             ] }
                             optionDisabled='enabled'
@@ -345,10 +350,15 @@ export default class OrderFormBody extends Component {
                     formItemLayout={ formVerticalLayout }
                     getFieldDecorator={ getFieldDecorator }
                     className={ Styles.odometr }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.provide_odometr',
+                    }) }
                     rules={ [
                         {
                             type:    'number',
-                            message: '',
+                            message: formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     min={ 0 }
@@ -363,17 +373,14 @@ export default class OrderFormBody extends Component {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        let prevRecommendation = null;
-
-        if (orderHistory) {
-            if (orderHistory.orders) {
-                if (orderHistory.orders[ 1 ]) {
-                    prevRecommendation = orderHistory.orders[ 1 ].recommendation;
-                }
-                prevRecommendation = false;
-            }
-            prevRecommendation = false;
-        }
+        const id = this.props.orderId;
+        const orderIndexInHistory = _.findIndex(_.get(orderHistory, 'orders'), {
+            id,
+        });
+        const prevRecommendation =
+            orderIndexInHistory !== -1
+                ? _.get(orderHistory, [ 'orders', orderIndexInHistory + 1, 'recommendation' ])
+                : null;
 
         const commentStyles = cx({
             comment:         true,
@@ -396,7 +403,9 @@ export default class OrderFormBody extends Component {
                     rules={ [
                         {
                             max:     2000,
-                            message: 'Too much',
+                            message: formatMessage({
+                                id: 'field_should_be_below_2000_chars',
+                            }),
                         },
                     ] }
                     placeholder={ formatMessage({
@@ -410,15 +419,19 @@ export default class OrderFormBody extends Component {
                         className={ Styles.comment }
                         formItem
                         colon={ false }
-                        label={ 'Рекомендации с прошлого заезда' }
-                        disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
+                        label={
+                            <FormattedMessage id='add_order_form.prev_order_recommendations' />
+                        }
+                        disabled
                         getFieldDecorator={ getFieldDecorator }
                         field='prevRecommendation'
                         initialValue={ prevRecommendation }
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({

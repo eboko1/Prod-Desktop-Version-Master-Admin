@@ -95,8 +95,7 @@ export function* createOrderSaga() {
                 payload: { order, redirectStatus, redirectToDashboard },
             } = yield take(CREATE_ORDER);
             yield call(fetchAPI, 'POST', 'orders', {}, order);
-            console.log('** redirectStatus', redirectStatus);
-            console.log('** redirectToDashboard', redirectToDashboard);
+
             if (redirectToDashboard && redirectStatus) {
                 yield put(replace(book.dashboard));
             }
@@ -119,9 +118,16 @@ export function* updateOrderSaga() {
     while (true) {
         try {
             const {
-                payload: { order, id, redirectStatus, redirectToDashboard },
+                payload: {
+                    order,
+                    id,
+                    redirectStatus,
+                    redirectToDashboard,
+                    options,
+                },
             } = yield take(UPDATE_ORDER);
-            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
+            const mergedOrder = options ? { ...order, ...options } : order;
+            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder);
 
             if (!redirectStatus) {
                 yield put(fetchOrderForm(id));
@@ -214,9 +220,8 @@ function* handleClientSearchSaga({ payload }) {
             ];
             /* eslint-enable array-element-newline */
             const data = yield call(fetchAPI, 'GET', 'clients', {
-                query:     payload,
-                omitStats: true,
-                fields,
+                filters: { query: payload },
+                options: { omitStats: true, fields },
             });
             yield put(onChangeClientSearchQuerySuccess(data));
         } else {

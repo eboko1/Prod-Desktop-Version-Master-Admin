@@ -1,23 +1,23 @@
 {
     "en": {
-        "to_success.title": "Complete order?",
-        "to_success.sms1": "Ваш заказа на ",
-        "to_success.sms2": " исполнен, Вы можете забрать авто",
-        "to_success.create_new": "Create new appointment with reminder?",
-        "to_success.send_message": "Do you want to send sms to client?"
+        "to_success.title": "Are you sure you want to complete the order?",
+        "to_success.sms1": "Your order at ",
+        "to_success.sms2": " completed, you can pick up your car",
+        "to_success.create_new": "Create new application with reminder",
+        "to_success.send_message": "Send sms to the client"
     },
     "ru": {
         "to_success.title": "Закрыть наряд-заказ?",
         "to_success.sms1": "Ваш заказа на ",
-        "to_success.sms2": " исполнен, Вы можете забрать авто",
-        "to_success.create_new": "Создать обращение с напоминанием о новом заезде?",
-        "to_success.send_message": "Хотите отправить SMS клиенту о выполнении заказе?"
+        "to_success.sms2": " выполнен, Вы можете забрать авто",
+        "to_success.create_new": "Создать обращение с напоминанием о новом заезде",
+        "to_success.send_message": "Отправить SMS клиенту о выполнении заказе"
     },
     "uk": {
         "to_success.title": "Виконати наряд-замовлння?",
-        "to_success.sms1": "Ваш заказа на ",
-        "to_success.sms2": " исполнен, Вы можете забрать авто",
-        "to_success.create_ne": "Створити звернення з нагадуванням про новий заїзд?",
-        "to_success.send_message": "Хочете відправити смс кліенту о виконаному замовленні?"
+        "to_success.sms1": "Ваше замовлення на ",
+        "to_success.sms2": " виконано, Ви можете забрати авто",
+        "to_success.create_ne": "Створити звернення з нагадуванням про новий заїзд",
+        "to_success.send_message": "Відправити смс кліенту про виконате замовлення"
     }
 }
