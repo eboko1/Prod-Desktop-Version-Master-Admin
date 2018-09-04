@@ -2,7 +2,9 @@
 import React from 'react';
 import { DatePicker } from 'antd';
 import { Form } from 'antd';
-import 'moment/locale/en-gb';
+
+// proj
+import { getLocale } from 'utils';
 
 const FormItem = Form.Item;
 // own
@@ -88,7 +90,7 @@ export const DecoratedDatePicker = props => {
                 //     Today:        [ moment(), moment() ],
                 //     'This Month': [ moment(), moment().endOf('month') ],
                 // } }
-                locale={ 'en' }
+                locale={ getLocale() }
                 ranges={ ranges }
                 showTime={ showTime }
                 format={ format }
@@ -104,7 +106,7 @@ export const DecoratedDatePicker = props => {
                 onChange={ onChange }
                 disabledDate={ disabledDate }
                 disabledTime={ disabledTime }
-                locale={ locale }
+                locale={ getLocale() }
                 allowClear={ allowClear }
             />
         ),
@@ -120,7 +122,7 @@ export const DecoratedDatePicker = props => {
         >
             { datePicker }
         </FormItem>
-    ) :
+    ) : 
         datePicker
     ;
 };
