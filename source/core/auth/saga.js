@@ -2,6 +2,7 @@
 import { all, call, put, take } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
 import { purgeStoredState } from 'redux-persist';
+import moment from 'moment';
 
 // proj
 import { emitError, setAuthFetchingState } from 'core/ui/duck';
@@ -21,7 +22,6 @@ export function* authenticateSaga() {
     while (true) {
         try {
             const { payload: user } = yield take(AUTHENTICATE);
-
             yield setLocale(user.language);
             yield setToken(user.token);
             yield authenticateSuccess();
@@ -37,8 +37,8 @@ export function* logoutSaga() {
             yield take(LOGOUT);
 
             yield put(setAuthFetchingState(true));
-            yield removeToken();
             yield removeLocale();
+            yield removeToken();
             yield put(replace(`${book.login}`));
 
             yield purgeStoredState(persistConfig);

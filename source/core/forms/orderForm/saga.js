@@ -221,9 +221,8 @@ function* handleClientSearchSaga({ payload }) {
             ];
             /* eslint-enable array-element-newline */
             const data = yield call(fetchAPI, 'GET', 'clients', {
-                query:     payload,
-                omitStats: true,
-                fields,
+                filters: { query: payload },
+                options: { omitStats: true, fields },
             });
             yield put(onChangeClientSearchQuerySuccess(data));
         } else {

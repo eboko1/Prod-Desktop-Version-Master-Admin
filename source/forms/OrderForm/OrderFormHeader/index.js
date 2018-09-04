@@ -42,6 +42,26 @@ const formHeaderItemLayout = {
     colon: false,
 };
 
+const formHorizontalItemLayout = {
+    labelCol: {
+        xs:  { span: 24 },
+        sm:  { span: 24 },
+        md:  { span: 24 },
+        lg:  { span: 9 },
+        xl:  { span: 9 },
+        xxl: { span: 9 },
+    },
+    wrapperCol: {
+        xs:  { span: 24 },
+        sm:  { span: 24 },
+        md:  { span: 24 },
+        lg:  { span: 15 },
+        xl:  { span: 15 },
+        xxl: { span: 15 },
+    },
+    colon: false,
+};
+
 export default class OrderFormHeader extends Component {
     bodyUpdateIsForbidden() {
         return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
@@ -51,7 +71,6 @@ export default class OrderFormHeader extends Component {
         const dateBlock = this._renderDateBlock();
         const masterBlock = this._renderMasterBlock();
         const totalBlock = this._renderTotalBlock();
-        const duration = this._renderDuration();
 
         return (
             <div className={ Styles.formHeader }>
@@ -60,7 +79,7 @@ export default class OrderFormHeader extends Component {
                     { masterBlock }
                     { totalBlock }
                 </div>
-                { duration }
+                { /* { duration } */ }
             </div>
         );
     }
@@ -72,15 +91,20 @@ export default class OrderFormHeader extends Component {
 
         return (
             <DecoratedSlider
-                className={ Styles.duration }
+                field='duration'
                 formItem
+                formItemLayout={ formHorizontalItemLayout }
+                className={ Styles.duration }
                 colon={ false }
                 disabled={ this.bodyUpdateIsForbidden() }
                 initDuration={
                     _.get(fetchedOrder, 'order.duration') || totalHours
                 }
-                label={ `${formatMessage({ id: 'add_order_form.duration'})} (${getFieldValue('duration')}${formatMessage({ id: 'add_order_form.hours_shortcut'})})` }
-                field='duration'
+                label={ `${formatMessage({
+                    id: 'add_order_form.duration',
+                })} (${getFieldValue('duration')}${formatMessage({
+                    id: 'add_order_form.hours_shortcut',
+                })})` }
                 getFieldDecorator={ getFieldDecorator }
                 min={ 0 }
                 step={ 0.5 }
@@ -111,6 +135,8 @@ export default class OrderFormHeader extends Component {
         const momentBeginDatetime = beginDatetime
             ? moment(beginDatetime)
             : void 0;
+
+        const duration = this._renderDuration();
 
         return (
             <div className={ Styles.headerCol }>
@@ -187,7 +213,9 @@ export default class OrderFormHeader extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  formatMessage({ id: 'add_order_form.please_provide_time'}),
+                            message:  formatMessage({
+                                id: 'add_order_form.please_provide_time',
+                            }),
                         },
                     ] }
                     placeholder={ formatMessage({
@@ -196,6 +224,7 @@ export default class OrderFormHeader extends Component {
                     minuteStep={ 30 }
                     initialValue={ momentBeginDatetime }
                 />
+                { duration }
             </div>
         );
     };
@@ -220,7 +249,9 @@ export default class OrderFormHeader extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  formatMessage({ id: 'add_order_form.please_select_manager'}),
+                            message:  formatMessage({
+                                id: 'add_order_form.please_select_manager',
+                            }),
                         },
                     ] }
                     label={ <FormattedMessage id='add_order_form.manager' /> }
@@ -234,9 +265,9 @@ export default class OrderFormHeader extends Component {
                             : authentificatedManager)
                     }
                     disabled={ this.bodyUpdateIsForbidden() }
-                    placeholder={
-                        formatMessage({ id: 'add_order_form.select_manager'})
-                    }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_manager',
+                    }) }
                     formItemLayout={ formHeaderItemLayout }
                 >
                     { managers.map(manager => (
@@ -258,9 +289,9 @@ export default class OrderFormHeader extends Component {
                     disabled={ this.bodyUpdateIsForbidden() }
                     getFieldDecorator={ getFieldDecorator }
                     initialValue={ _.get(fetchedOrder, 'order.employeeId') }
-                    placeholder={
-                        formatMessage({ id: 'order_form_table.select_master'})
-                    }
+                    placeholder={ formatMessage({
+                        id: 'order_form_table.select_master',
+                    }) }
                     formItemLayout={ formHeaderItemLayout }
                 >
                     { employees.map(employee => (
@@ -283,9 +314,9 @@ export default class OrderFormHeader extends Component {
                     className={ Styles.durationPanelItem }
                     disabled={ this.bodyUpdateIsForbidden() }
                     getFieldDecorator={ getFieldDecorator }
-                    placeholder={
-                        formatMessage({ id: 'add_order_form.select_appurtenancies_responsible'})
-                    }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_appurtenancies_responsible',
+                    }) }
                     formItemLayout={ formHeaderItemLayout }
                 >
                     { employees.map(employee => (
@@ -349,9 +380,9 @@ export default class OrderFormHeader extends Component {
                     label={
                         <FormattedMessage id='add_order_form.payment_method' />
                     }
-                    placeholder={
-                        formatMessage({ id: 'add_order_form.select_payment_method'})
-                    }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_payment_method',
+                    }) }
                 >
                     <Option value='cash'>
                         <Icon type='wallet' /> Нал
