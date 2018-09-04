@@ -110,7 +110,7 @@ export default class OrderFormBody extends Component {
                         this.bodyUpdateIsForbidden()
                     }
                     placeholder={ formatMessage({
-                        id:             'add_order_form.client.placeholder',
+                        id:             'add_order_form.search_client.placeholder',
                         defaultMessage: 'Search client',
                     }) }
                 />

@@ -1,10 +1,12 @@
 // vendor
 import React, { Component } from 'react';
 import { DatePicker, Button } from 'antd';
+import { injectIntl } from 'react-intl';
 
 // own
 import Styles from './styles.m.css';
 
+@injectIntl
 class ArrowsDatePicker extends Component {
     state = {
         date: this.props.date,
@@ -21,7 +23,10 @@ class ArrowsDatePicker extends Component {
     }
 
     render() {
-        const { nextDay, prevDay, onDayChange, date, loading } = this.props;
+        const {
+            nextDay, prevDay, onDayChange, date, loading,
+            intl: { formatMessage },
+        } = this.props;
 
         return (
             <div className={ Styles.container }>
@@ -36,7 +41,9 @@ class ArrowsDatePicker extends Component {
                     className={ Styles.datePicker }
                     value={ date }
                     onChange={ value => onDayChange(value) }
-                    placeholder='Select Day'
+                    placeholder={ formatMessage({
+                        id: 'select_date',
+                    }) }
                     format={ 'dddd, DD MMM YYYY' }
                     disabled={ loading }
                 />

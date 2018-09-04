@@ -85,6 +85,9 @@ import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
 import EmployeeTable from 'components/EmployeeTable/messages';
 import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 
+//commons
+import Footer from 'commons/Footer/messages';
+
 /* eslint-disable array-element-newline */
 const messages = merge.all([
     global,
@@ -150,6 +153,8 @@ const messages = merge.all([
     EmployeeTable,
     EmployeeScheduleForm,
     SettingSalaryTable,
+    //commons
+    Footer,
 ]);
 /* eslint-enable array-element-newline */
 
