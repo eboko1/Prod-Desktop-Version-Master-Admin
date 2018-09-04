@@ -70,19 +70,17 @@ export class UniversalFiltersForm extends Component {
                                     trigger.parentNode
                                 }
                                 ranges={ {
-                                    // day
+                                    // this day
                                     [ formatMessage({
                                         id: 'datepicker.today',
                                     }) ]: getDaterange('today', 'ant'),
-                                    // month
+                                    // prev month
                                     [ formatMessage({
-                                        id: 'datepicker.month',
+                                        id: 'datepicker.prev_month',
                                     }) ]: getDaterange('prevMonth', 'ant'),
+                                    // prev year
                                     [ formatMessage({
-                                        id: 'datepicker.year',
-                                    }) ]: getDaterange('prevYear', 'ant'),
-                                    [ formatMessage({
-                                        id: 'datepicker.year',
+                                        id: 'datepicker.prev_year',
                                     }) ]: getDaterange('prevYear', 'ant'),
                                 } }
                                 // showTime
@@ -104,11 +102,18 @@ export class UniversalFiltersForm extends Component {
                                     trigger.parentNode
                                 }
                                 ranges={ {
-                                    Today:        getDaterange('today', 'ant'),
-                                    'This Month': getDaterange(
-                                        'prevMonth',
-                                        'ant',
-                                    ),
+                                    // this day
+                                    [ formatMessage({
+                                        id: 'datepicker.today',
+                                    }) ]: getDaterange('today', 'ant'),
+                                    // prev month
+                                    [ formatMessage({
+                                        id: 'datepicker.prev_month',
+                                    }) ]: getDaterange('prevMonth', 'ant'),
+                                    // prev year
+                                    [ formatMessage({
+                                        id: 'datepicker.prev_year',
+                                    }) ]: getDaterange('prevYear', 'ant'),
                                 } }
                                 showTime
                                 format='YYYY-MM-DD HH:mm:ss'
@@ -235,9 +240,9 @@ export class UniversalFiltersForm extends Component {
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.mileage_from' />
-                                }
+                                placeholder={ formatMessage({
+                                    id: 'universal_filters_form.mileage_from',
+                                }) }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
@@ -257,9 +262,9 @@ export class UniversalFiltersForm extends Component {
                             <DecoratedInputNumber
                                 field='odometerGreater'
                                 getFieldDecorator={ getFieldDecorator }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.mileage_to' />
-                                }
+                                placeholder={ formatMessage({
+                                    id: 'universal_filters_form.mileage_to',
+                                }) }
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
@@ -375,9 +380,9 @@ export class UniversalFiltersForm extends Component {
                                 field='ordersGreater'
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.number_of_visits_from' />
-                                }
+                                placeholder={ formatMessage({
+                                    id: 'universal_filters_form.number_of_visits_from',
+                                }) }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
@@ -395,9 +400,9 @@ export class UniversalFiltersForm extends Component {
                                 field='ordersLower'
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.number_of_visits_to' />
-                                }
+                                placeholder={ formatMessage({
+                                    id: 'universal_filters_form.number_of_visits_to',
+                                }) }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
@@ -456,9 +461,9 @@ export class UniversalFiltersForm extends Component {
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
-                                placeholder={
-                                    <FormattedMessage id='universal_filters_form.last' />
-                                }
+                                placeholder={ formatMessage({
+                                    id: 'universal_filters_form.last',
+                                }) }
                                 // optionFilterProp='children'
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode

@@ -270,7 +270,7 @@ export default class OrdersFilterContainer extends Component {
                             }
                             // mode='multiple'
                             placeholder={
-                                <FormattedMessage id='orders-filter.filter_by_cancel_reason' />
+                                <FormattedMessage id='orders-filter.filter_by_refusal_reason' />
                             }
                             onChange={ value =>
                                 this.handleCancelReasonSelect(value)

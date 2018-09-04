@@ -15,14 +15,14 @@ export default {
                 {
                     key:  '/dashboard',
                     link: book.dashboard,
-                    name: 'navigation.scheduler',
+                    name: 'navigation.planner',
                 },
                 {
                     key:      '/orders',
                     link:     book.ordersAppointments,
                     disabled: user =>
                         isForbidden(user, permissions.SHOW_ORDERS),
-                    name: 'navigation.appointments',
+                    name: 'navigation.workflow',
                 },
                 {
                     key:  '/tasks',
@@ -73,22 +73,22 @@ export default {
                 {
                     key:  '/funel',
                     link: book.oldApp.funel,
-                    name: 'navigation.funel',
+                    name: 'navigation.funnel',
                 },
                 {
                     key:  '/reviews',
                     link: book.oldApp.reviews,
-                    name: 'navigation.reviews',
+                    name: 'navigation.feedback',
                 },
                 {
                     key:  '/statistics',
                     link: book.oldApp.statistics,
-                    name: 'navigation.general_statistics',
+                    name: 'navigation.statistics',
                 },
                 {
                     key:  '/statistics/calls',
                     link: book.oldApp.statisticsCalls,
-                    name: 'navigation.calls_statistics',
+                    name: 'navigation.call_statistics',
                 },
             ],
         },
@@ -101,7 +101,7 @@ export default {
                 {
                     key:  '/settings',
                     link: book.oldApp.settings,
-                    name: 'navigation.main',
+                    name: 'navigation.main_settings',
                 },
                 {
                     key:  '/requisites',
@@ -121,7 +121,7 @@ export default {
                 {
                     key:  '/stocks',
                     link: book.oldApp.settingsOffers,
-                    name: 'navigation.stocks',
+                    name: 'navigation.special_offers',
                 },
                 {
                     key:  '/news',
@@ -141,12 +141,12 @@ export default {
                 {
                     key:  '/managers',
                     link: book.oldApp.settingsManagers,
-                    name: 'navigation.system_managers',
+                    name: 'navigation.managers',
                 },
                 {
                     key:  '/notice',
                     link: book.oldApp.settingsNotifications,
-                    name: 'navigation.notice',
+                    name: 'navigation.notifications',
                 },
             ],
         },
@@ -167,13 +167,13 @@ export default {
                     key:     '/businesses/packages',
                     link:    book.businessPackagePage,
                     visible: user => isAdmin(user),
-                    name:    'navigation.business_package',
+                    name:    'navigation.business_packages',
                 },
                 {
                     key:     '/managers/roles',
-                    visible: user => !isForbidden(user, permissions.GRANT),
                     link:    book.managerRolePage,
-                    name:    'navigation.manager_role',
+                    visible: user => !isForbidden(user, permissions.GRANT),
+                    name:    'navigation.manager_roles',
                 },
             ],
         },
@@ -184,7 +184,7 @@ export default {
             name:     'navigation.suggest_idea',
         },
     ],
-
+                    
     getSelectedByRoute: function getSelectedByRoute(currentPath) {
         const result = {
             sectionKey: '',

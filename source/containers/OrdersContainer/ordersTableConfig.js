@@ -260,7 +260,7 @@ export function columnsConfig(
 
             return (
                 <Button>
-                    <FormattedMessage id='orders.add_review' />
+                    <FormattedMessage id='orders.add_feedback' />
                 </Button>
             );
         },

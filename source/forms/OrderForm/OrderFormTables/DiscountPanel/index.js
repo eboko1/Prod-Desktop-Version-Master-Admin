@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { InputNumber, Form } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
@@ -12,6 +12,7 @@ import { DecoratedInputNumber } from 'forms/DecoratedFields';
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
 
+@injectIntl
 class DiscountPanel extends Component {
     render() {
         const {
@@ -21,6 +22,7 @@ class DiscountPanel extends Component {
             fetchedOrder,
             forbidden,
         } = this.props;
+        const { formatMessage } = this.props.intl;
 
         const discount = this.props.form.getFieldValue(discountFieldName);
 
@@ -57,7 +59,7 @@ class DiscountPanel extends Component {
                             value={ this.props.price }
                             min={ 0 }
                             formatter={ value =>
-                                `${value} грн.`.replace(
+                                `${value} ${formatMessage({id: 'currency'})}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ',',
                                 )
@@ -77,7 +79,7 @@ class DiscountPanel extends Component {
                             value={ total }
                             min={ 0 }
                             formatter={ value =>
-                                `${value} грн.`.replace(
+                                `${value} ${formatMessage({id: 'currency'})}`.replace(
                                     /\B(?=(\d{3})+(?!\d))/g,
                                     ',',
                                 )

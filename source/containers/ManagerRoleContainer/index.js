@@ -172,7 +172,7 @@ export default class ManagerRoleContainer extends Component {
                         { ...formItemLayout }
                         className={ Styles.formItemSelectFilter }
                         label={
-                            <FormattedMessage id='business-package-container.search' />
+                            <FormattedMessage id='manager-role-container.search' />
                         }
                         colon={ false }
                     >
