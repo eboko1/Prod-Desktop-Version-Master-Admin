@@ -97,7 +97,6 @@ const ReducerState = {
 
     modalStatus: '',
     taskId:      null,
-    vehicle:     '',
 };
 
 // eslint-disable-next-line

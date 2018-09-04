@@ -2,7 +2,10 @@
 import React, { Component } from 'react';
 import MyTasksContainer from 'containers/MyTasksContainer';
 import { connect } from 'react-redux';
-import { setModal, resetModal } from 'core/modals/duck';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { Button, Radio, Input } from 'antd';
+import _ from 'lodash';
 
 // proj
 import {
@@ -12,7 +15,22 @@ import {
 } from 'core/forms/orderTaskForm/duck';
 import { OrderTaskModal } from 'modals';
 import { Layout, Spinner } from 'commons';
-import { fetchMyTasks } from 'core/myTasks/duck';
+import {
+    fetchMyTasks,
+    resetData,
+    setMyTasksDaterangeFilter,
+    setMyTasksSortFieldFilter,
+    setMyTasksSortOrderFilter,
+    setMyTasksSearchFilter,
+    setMyTasksStatusFilter,
+} from 'core/myTasks/duck';
+import { withResponsive, getDaterange } from 'utils';
+import book from 'routes/book';
+import { setModal, MODALS, resetModal } from 'core/modals/duck';
+import Styles from './styles.m.css';
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
+const Search = Input.Search;
 
 const mapStateToProps = state => {
     return {
@@ -22,7 +40,10 @@ const mapStateToProps = state => {
         orderTaskEntity: state.forms.orderTaskForm.fields,
         orderTaskId:     state.forms.orderTaskForm.taskId,
         activeOrder:     state.myTasksContainer.activeOrder,
+        activeVehicle:   state.myTasksContainer.vehicle,
         spinner:         state.ui.myTasksFetching,
+        filter:          state.myTasksContainer.filters,
+        isMobile:        state.ui.views.isMobile,
     };
 };
 
@@ -33,12 +54,35 @@ const mapDispatchToProps = {
     saveOrderTask,
     changeModalStatus,
     fetchMyTasks,
+    resetData,
+    setMyTasksDaterangeFilter,
+    setMyTasksSearchFilter,
+    setMyTasksStatusFilter,
+    setMyTasksSortFieldFilter,
+    setMyTasksSortOrderFilter,
 };
-
-@connect(mapStateToProps, mapDispatchToProps)
+@injectIntl
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 class MyTasksPage extends Component {
+    constructor(props) {
+        super(props);
+        this.handleOrdersSearch = _.debounce(value => {
+            const { setMyTasksSearchFilter, fetchOrders, filter } = this.props;
+            setMyTasksSearchFilter(value);
+            // fetchOrders({ page: 1, ...filter });
+        }, 1000);
+    }
+    selectStatus(ev) {
+        const { setMyTasksStatusFilter, fetchMyTasks, filter } = this.props;
+
+        setMyTasksStatusFilter(ev.target.value);
+        fetchMyTasks({ page: 1, ...filter });
+    }
     componentDidMount() {
-        this.props.fetchMyTasks();
+        this.props.fetchMyTasks(1);
     }
     saveOrderTaskFormRef = formRef => {
         this.orderTaskFormRef = formRef;
@@ -61,26 +105,157 @@ class MyTasksPage extends Component {
             }
         });
     };
+    _handleRadioDaterange = event => {
+        const { fetchMyTasks, filter, setMyTasksDaterangeFilter } = this.props;
+        const daterange = event.target.value;
+
+        if (daterange === 'all') {
+            setMyTasksDaterangeFilter({});
+        } else if (daterange !== 'all') {
+            const daterangeFilter = getDaterange(daterange);
+            setMyTasksDaterangeFilter({ ...daterangeFilter });
+        }
+        fetchMyTasks(filter);
+    };
+    _renderHeaderContorls = () => {
+        return (
+            <RadioGroup
+                defaultValue='all'
+                // defaultValue={ ordersDaterangeFilter }
+                onChange={ this._handleRadioDaterange }
+                className={ Styles.filters }
+            >
+                <RadioButton value='all'>
+                    <FormattedMessage id='orders-page.all' />
+                </RadioButton>
+                <RadioButton value='today'>
+                    <FormattedMessage id='orders-page.today' />
+                </RadioButton>
+                <RadioButton value='tomorrow'>
+                    <FormattedMessage id='orders-page.tomorrow' />
+                </RadioButton>
+                <RadioButton value='nextWeek'>
+                    <FormattedMessage id='orders-page.week' />
+                </RadioButton>
+                <RadioButton value='nextMonth'>
+                    <FormattedMessage id='orders-page.month' />
+                </RadioButton>
+            </RadioGroup>
+        );
+    };
     /* eslint-disable complexity*/
     render() {
+        const headerControls = this._renderHeaderContorls();
         const {
             myTasks,
             resetModal,
             modal,
             activeOrder,
+            activeVehicle,
             orderTaskId,
             orderTaskEntity,
             progressStatusOptions,
             priorityOptions,
             spinner,
-            page,
+            filter,
+            resetData,
+            setModal,
+            isMobile,
+            intl,
+            setMyTasksSortOrderFilter,
+            setMyTasksSortFieldFilter,
         } = this.props;
 
         return spinner ? (
             <Spinner spin={ spinner } />
         ) : (
-            <Layout>
-                <MyTasksContainer myTasks={ myTasks } page={ page } />
+            <Layout
+                paper={ false }
+                title={ <FormattedMessage id='navigation.mytasks' /> }
+                description={ <FormattedMessage id='order-task.description' /> }
+                controls={
+                    <div className={ Styles.controls }>
+                        { !isMobile && headerControls }
+                        <div className={ Styles.buttonGroup }>
+                            { /* { (status === 'cancel' || status === 'success') && (
+                                <Button
+                                    type='primary'
+                                    disabled={
+                                        isForbidden(
+                                            user,
+                                            permissions.CREATE_ORDER,
+                                        ) ||
+                                        isForbidden(
+                                            user,
+                                            permissions.CREATE_INVITE_ORDER,
+                                        )
+                                    }
+                                    onClick={ () =>
+                                        this.props.setModal(MODALS.INVITE)
+                                    }
+                                >
+                                    <FormattedMessage id='add_task' />
+                                </Button>
+                            ) } */ }
+                            <Button
+                                type='primary'
+                                onClick={ () => {
+                                    setModal(MODALS.ORDER_TASK);
+                                    resetData();
+                                } }
+                                // disabled={ isForbidden(
+                                //     user,
+                                //     permissions.CREATE_ORDER,
+                                // ) }
+                            >
+                                <FormattedMessage id='add_task' />
+                            </Button>
+                        </div>
+                    </div>
+                }
+            >
+                <div className={ Styles.filter }>
+                    <Search
+                        className={ Styles.search }
+                        placeholder={ intl.formatMessage({
+                            id: 'orders-filter.search_placeholder',
+                        }) }
+                        // placeholder={
+                        //     <FormattedMessage id='orders-filter.search.search_placeholder' />
+                        // }
+                        // eslint-disable-next-line
+                        onChange={({ target: { value } }) =>
+                            this.handleOrdersSearch(value)
+                        }
+                        // onChange={ this.handleOrdersSearch }
+                        // enterButton
+                        // enterButton={ <Icon type='close' /> }
+                    />
+                    <RadioGroup
+                        onChange={ ev => this.selectStatus(ev) }
+                        className={ Styles.buttonFilterGroup }
+                        defaultValue={ filter.status }
+                    >
+                        <RadioButton value='all'>
+                            <FormattedMessage id='all' />
+                            { /* ({ stats.not_complete +
+                                    stats.required +
+                                    stats.call }) */ }
+                        </RadioButton>
+                        <RadioButton value='active'>
+                            <FormattedMessage id='active' />
+                            { /* ({
+                            stats.not_complete
+                        }) */ }
+                        </RadioButton>
+                    </RadioGroup>
+                </div>
+                <MyTasksContainer
+                    setMyTasksSortOrderFilter={ setMyTasksSortOrderFilter }
+                    setMyTasksSortFieldFilter={ setMyTasksSortFieldFilter }
+                    myTasks={ myTasks }
+                    page={ filter.page }
+                />
 
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }
@@ -92,6 +267,7 @@ class MyTasksPage extends Component {
                     num={ activeOrder }
                     orderTaskId={ orderTaskId }
                     orderId={ activeOrder }
+                    activeVehicle={ activeVehicle }
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
                     stations={ myTasks && myTasks.stations || [] }
                     managers={ myTasks && myTasks.managers || [] }

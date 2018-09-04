@@ -24,6 +24,7 @@ export default class OrderTaskModal extends Component {
             managers,
             saveNewOrderTask,
             orderTasks,
+            activeVehicle,
         } = this.props;
 
         return (
@@ -48,6 +49,7 @@ export default class OrderTaskModal extends Component {
                 } }
             >
                 <OrderTaskForm
+                    activeVehicle={ activeVehicle }
                     num={ num }
                     orderTasks={ orderTasks }
                     stations={ stations }

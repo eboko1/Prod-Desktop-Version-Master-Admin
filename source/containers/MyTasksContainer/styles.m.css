@@ -16,3 +16,6 @@
     justify-content: center;
     display: flex;
 }
+.TableMyTasks :global(.ant-table-body) {
+    position: unset !important;
+}
