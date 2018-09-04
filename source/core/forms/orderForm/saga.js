@@ -95,8 +95,7 @@ export function* createOrderSaga() {
                 payload: { order, redirectStatus, redirectToDashboard },
             } = yield take(CREATE_ORDER);
             yield call(fetchAPI, 'POST', 'orders', {}, order);
-            console.log('** redirectStatus', redirectStatus);
-            console.log('** redirectToDashboard', redirectToDashboard);
+
             if (redirectToDashboard && redirectStatus) {
                 yield put(replace(book.dashboard));
             }

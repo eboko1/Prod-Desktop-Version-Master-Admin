@@ -78,7 +78,7 @@ export class MobileRecordForm extends Component {
                             type='primary'
                             onClick={ () => onStatusChange('approve') }
                         >
-                            Записать
+                            <FormattedMessage id='add_order_form.save_appointment' />
                         </Button>
                     ) }
                     { status !== 'cancel' && (
@@ -86,7 +86,7 @@ export class MobileRecordForm extends Component {
                             className={ Styles.mobileRecordSubmitBtn }
                             onClick={ () => onStatusChange('cancel') }
                         >
-                            Отказать
+                            <FormattedMessage id='cancel' />
                         </Button>
                     ) }
                 </div>
@@ -120,11 +120,15 @@ export class MobileRecordForm extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  '',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     getFieldDecorator={ getFieldDecorator }
-                    placeholder={ 'Choose selected client phone' }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_client_phone',
+                    }) }
                 >
                     { selectedClient.phones.filter(Boolean).map(phone => (
                         <Option value={ phone } key={ v4() }>
@@ -144,10 +148,14 @@ export class MobileRecordForm extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  '',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
-                    placeholder={ 'Choose selected client vehicle' }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_client_vehicle',
+                    }) }
                     optionDisabled='enabled'
                 >
                     { selectedClient.vehicles.map(vehicle => (
@@ -166,14 +174,18 @@ export class MobileRecordForm extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  'Please select your manager!',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     label={ <FormattedMessage id='add_order_form.manager' /> }
                     hasFeedback
                     colon={ false }
                     className={ Styles.datePanelItem }
-                    placeholder='Выберете менеджера'
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_manager',
+                    }) }
                 >
                     { this.props.managers.map(manager => (
                         <Option
@@ -187,14 +199,16 @@ export class MobileRecordForm extends Component {
                 </DecoratedSelect>
                 <hr />
                 <div style={ { fontSize: '18px', marginBottom: '10px' } }>
-                    Записать на:
+                    <FormattedMessage id='add_order_form.appointment_details' />
                 </div>
                 <DecoratedSelect
                     field='station'
                     rules={ [
                         {
                             required: true,
-                            message:  'provide station',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     formItem
@@ -282,7 +296,7 @@ export class MobileRecordForm extends Component {
 
                 <DecoratedSlider
                     formItem
-                    label='Продолжительность'
+                    label={ <FormattedMessage id='add_order_form.duration' /> }
                     field='duration'
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ !isDurationDisabled }
@@ -301,7 +315,9 @@ export class MobileRecordForm extends Component {
                     rules={ [
                         {
                             max:     2000,
-                            message: 'Too much',
+                            message: formatMessage({
+                                id: 'field_should_be_below_2000_chars',
+                            }),
                         },
                     ] }
                     placeholder={ formatMessage({

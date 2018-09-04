@@ -1,21 +1,25 @@
 // Core
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
+import { connect } from 'react-redux';
 
-import { Layout } from 'commons';
+import { Layout, Spinner } from 'commons';
 import { ProfileForm } from 'forms';
 
-class Profile extends Component {
+@connect(state => ({ profileUpdating: state.ui.profileUpdating }))
+export default class Profile extends Component {
     render() {
-        return (
+        const { profileUpdating } = this.props;
+
+        return profileUpdating ? (
+            <Spinner spin={ profileUpdating } />
+        ) : (
             <Layout
                 title={ <FormattedMessage id='profile.title' /> }
                 description={ <FormattedMessage id='profile.description' /> }
             >
-                { /* <ProfileForm /> */ }
+                <ProfileForm />
             </Layout>
         );
     }
 }
-
-export default Profile;

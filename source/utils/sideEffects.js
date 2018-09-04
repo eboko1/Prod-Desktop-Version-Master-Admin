@@ -19,7 +19,17 @@ export const getToken = () => localStorage.getItem('@@my.carbook.pro/token');
 
 export const removeToken = () =>
     localStorage.removeItem('@@my.carbook.pro/token');
+
 // locale
+// export const setIntl = (locale, messages) => {
+//     const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
+//
+//     return {
+//         locale:   locale || fallbackLocale,
+//         messages: messages[ locale || fallbackLocale ],
+//     };
+// };
+
 export const setLocale = locale => {
     if (locale === 'ua') {
         return localStorage.setItem('@@my.carbook.pro/locale', 'uk');
@@ -35,7 +45,6 @@ export const removeLocale = () =>
 
 export const setLocaleProvider = () => {
     const language = getLocale();
-    console.log('→ language', language);
     switch (language) {
         case 'en':
             return en_GB;

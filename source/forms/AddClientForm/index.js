@@ -44,6 +44,7 @@ export class AddClientForm extends Component {
             }),
         };
     }
+
     render() {
         const {
             addClientFormData,
@@ -118,8 +119,7 @@ export class AddClientForm extends Component {
                                     {
                                         required: true,
                                         message:  this.props.intl.formatMessage({
-                                            id:
-                                                'add_client_form.required_field',
+                                            id: 'required_field',
                                         }),
                                     },
                                 ] }
@@ -161,8 +161,7 @@ export class AddClientForm extends Component {
                                     {
                                         required: true,
                                         message:  this.props.intl.formatMessage({
-                                            id:
-                                                'add_client_form.required_field',
+                                            id: 'required_field',
                                         }),
                                     },
                                 ] }
@@ -209,8 +208,7 @@ export class AddClientForm extends Component {
                                     {
                                         required: true,
                                         message:  this.props.intl.formatMessage({
-                                            id:
-                                                'add_client_form.required_field',
+                                            id: 'required_field',
                                         }),
                                     },
                                 ] }
@@ -281,7 +279,7 @@ export class AddClientForm extends Component {
                                 {
                                     required: true,
                                     message:  this.props.intl.formatMessage({
-                                        id: 'add_client_form.required_field',
+                                        id: 'required_field',
                                     }),
                                 },
                             ] }
@@ -367,7 +365,7 @@ export class AddClientForm extends Component {
                                 {
                                     required: true,
                                     message:  this.props.intl.formatMessage({
-                                        id: 'add_client_form.required_field',
+                                        id: 'required_field',
                                     }),
                                 },
                             ] }
@@ -503,7 +501,7 @@ export class AddClientForm extends Component {
                                 {
                                     required: true,
                                     message:  this.props.intl.formatMessage({
-                                        id: 'add_client_form.required_field',
+                                        id: 'required_field',
                                     }),
                                 },
                                 {
