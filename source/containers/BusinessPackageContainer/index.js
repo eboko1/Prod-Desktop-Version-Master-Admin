@@ -260,9 +260,7 @@ export default class BusinessPackageContainer extends Component {
                         <FormattedMessage id='business-package-container.create_form_title' />
                     }
                     visible={ Boolean(
-                        showCreateBusinessPackageForm &&
-                            filters.businessId &&
-                            filters.packageId,
+                        showCreateBusinessPackageForm && filters.businessId,
                     ) }
                     onCancel={ () => this.props.hideForms() }
                     footer={ null }

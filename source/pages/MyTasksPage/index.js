@@ -75,14 +75,18 @@ class MyTasksPage extends Component {
             // fetchOrders({ page: 1, ...filter });
         }, 1000);
     }
+    state = {
+        button: 'all',
+    };
     selectStatus(ev) {
         const { setMyTasksStatusFilter, fetchMyTasks, filter } = this.props;
 
         setMyTasksStatusFilter(ev.target.value);
-        fetchMyTasks({ page: 1, ...filter });
+        fetchMyTasks(filter);
     }
     componentDidMount() {
-        this.props.fetchMyTasks(1);
+        const { filter, fetchMyTasks } = this.props;
+        fetchMyTasks(filter);
     }
     saveOrderTaskFormRef = formRef => {
         this.orderTaskFormRef = formRef;
@@ -108,7 +112,7 @@ class MyTasksPage extends Component {
     _handleRadioDaterange = event => {
         const { fetchMyTasks, filter, setMyTasksDaterangeFilter } = this.props;
         const daterange = event.target.value;
-
+        this.setState({ button: daterange });
         if (daterange === 'all') {
             setMyTasksDaterangeFilter({});
         } else if (daterange !== 'all') {
@@ -118,9 +122,12 @@ class MyTasksPage extends Component {
         fetchMyTasks(filter);
     };
     _renderHeaderContorls = () => {
+        const { filter } = this.props;
+        const { button } = this.state;
+
         return (
             <RadioGroup
-                defaultValue='all'
+                defaultValue={ button }
                 // defaultValue={ ordersDaterangeFilter }
                 onChange={ this._handleRadioDaterange }
                 className={ Styles.filters }
@@ -164,6 +171,7 @@ class MyTasksPage extends Component {
             intl,
             setMyTasksSortOrderFilter,
             setMyTasksSortFieldFilter,
+            fetchMyTasks,
         } = this.props;
 
         return spinner ? (
@@ -177,36 +185,12 @@ class MyTasksPage extends Component {
                     <div className={ Styles.controls }>
                         { !isMobile && headerControls }
                         <div className={ Styles.buttonGroup }>
-                            { /* { (status === 'cancel' || status === 'success') && (
-                                <Button
-                                    type='primary'
-                                    disabled={
-                                        isForbidden(
-                                            user,
-                                            permissions.CREATE_ORDER,
-                                        ) ||
-                                        isForbidden(
-                                            user,
-                                            permissions.CREATE_INVITE_ORDER,
-                                        )
-                                    }
-                                    onClick={ () =>
-                                        this.props.setModal(MODALS.INVITE)
-                                    }
-                                >
-                                    <FormattedMessage id='add_task' />
-                                </Button>
-                            ) } */ }
                             <Button
                                 type='primary'
                                 onClick={ () => {
                                     setModal(MODALS.ORDER_TASK);
                                     resetData();
                                 } }
-                                // disabled={ isForbidden(
-                                //     user,
-                                //     permissions.CREATE_ORDER,
-                                // ) }
                             >
                                 <FormattedMessage id='add_task' />
                             </Button>
@@ -220,16 +204,9 @@ class MyTasksPage extends Component {
                         placeholder={ intl.formatMessage({
                             id: 'orders-filter.search_placeholder',
                         }) }
-                        // placeholder={
-                        //     <FormattedMessage id='orders-filter.search.search_placeholder' />
-                        // }
-                        // eslint-disable-next-line
-                        onChange={({ target: { value } }) =>
+                        onChange={ ({ target: { value } }) =>
                             this.handleOrdersSearch(value)
                         }
-                        // onChange={ this.handleOrdersSearch }
-                        // enterButton
-                        // enterButton={ <Icon type='close' /> }
                     />
                     <RadioGroup
                         onChange={ ev => this.selectStatus(ev) }
@@ -238,15 +215,9 @@ class MyTasksPage extends Component {
                     >
                         <RadioButton value='all'>
                             <FormattedMessage id='all' />
-                            { /* ({ stats.not_complete +
-                                    stats.required +
-                                    stats.call }) */ }
                         </RadioButton>
                         <RadioButton value='active'>
                             <FormattedMessage id='active' />
-                            { /* ({
-                            stats.not_complete
-                        }) */ }
                         </RadioButton>
                     </RadioGroup>
                 </div>
@@ -254,6 +225,8 @@ class MyTasksPage extends Component {
                     setMyTasksSortOrderFilter={ setMyTasksSortOrderFilter }
                     setMyTasksSortFieldFilter={ setMyTasksSortFieldFilter }
                     myTasks={ myTasks }
+                    fetchMyTasks={ fetchMyTasks }
+                    filter={ filter }
                     page={ filter.page }
                 />
 

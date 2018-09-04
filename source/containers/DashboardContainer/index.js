@@ -131,7 +131,7 @@ class DashboardContainer extends Component {
                                     )} -`
                                     : stations[ index ].name &&
                                       `${stations[ index ].name} - ` }
-                                { load[ index ].loadCoefficient }%
+                                { Math.round(load[ index ].loadCoefficient) }%
                             </DashboardLoad>
                         </>
                     }
@@ -218,7 +218,20 @@ class DashboardContainer extends Component {
                                         <DashboardOrder
                                             key={ index }
                                             mode={ mode }
-                                            label={ result[ index ].options.num }
+                                            label={ {
+                                                vehicleMakeName:
+                                                    result[ index ].options
+                                                        .vehicleMakeName,
+                                                vehicleModelName:
+                                                    result[ index ].options
+                                                        .vehicleModelName,
+                                                vehicleNumber:
+                                                    result[ index ].options
+                                                        .vehicleNumber,
+                                                clientName:
+                                                    result[ index ].options
+                                                        .clientName,
+                                            } }
                                             id={ result[ index ].options.id }
                                             status={
                                                 result[ index ].options.status

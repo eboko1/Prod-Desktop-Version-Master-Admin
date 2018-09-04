@@ -36,7 +36,10 @@ export class ProfileForm extends Component {
     // };
 
     render() {
-        const { getFieldDecorator } = this.props.form;
+        const {
+            form: {getFieldDecorator},
+            intl: {formatMessage},
+        } = this.props;
         const formItemLayout = {
             labelCol:   { span: 6 },
             wrapperCol: { span: 14 },
@@ -102,7 +105,9 @@ export class ProfileForm extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  'Please select your country!',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                 >
@@ -113,7 +118,7 @@ export class ProfileForm extends Component {
 
                 <FormItem wrapperCol={ { span: 12, offset: 6 } }>
                     <Button type='primary' htmlType='submit'>
-                        Submit
+                        <FormattedMessage id='submit' />
                     </Button>
                 </FormItem>
             </Form>

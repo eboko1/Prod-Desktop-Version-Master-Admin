@@ -91,32 +91,49 @@ export function* fetchOrderTaskSaga() {
 export function* createOrderSaga() {
     while (true) {
         try {
-            const { payload: entity } = yield take(CREATE_ORDER);
-            yield call(fetchAPI, 'POST', 'orders', {}, entity);
+            const {
+                payload: { order, redirectStatus, redirectToDashboard },
+            } = yield take(CREATE_ORDER);
+            yield call(fetchAPI, 'POST', 'orders', {}, order);
+            console.log('** redirectStatus', redirectStatus);
+            console.log('** redirectToDashboard', redirectToDashboard);
+            if (redirectToDashboard && redirectStatus) {
+                yield put(replace(book.dashboard));
+            }
 
-            yield put(createOrderSuccess());
+            if (!redirectToDashboard && redirectStatus) {
+                yield put(returnToOrdersPage(redirectStatus));
+            }
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield put(replace(book.ordersAppointments));
+            yield put(createOrderSuccess());
         }
     }
 }
 
 const selectModal = state => state.modals.modal;
 
+/* eslint-disable complexity */
 export function* updateOrderSaga() {
     while (true) {
         try {
             const {
-                payload: { order, id, redirectStatus },
+                payload: {
+                    order,
+                    id,
+                    redirectStatus,
+                    redirectToDashboard,
+                    options,
+                },
             } = yield take(UPDATE_ORDER);
-            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, order);
-            yield put(updateOrderSuccess());
+            const mergedOrder = options ? { ...order, ...options } : order;
+            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder);
 
             if (!redirectStatus) {
                 yield put(fetchOrderForm(id));
             }
+
             const modal = yield select(selectModal);
             if (
                 modal === MODALS.CANCEL_REASON ||
@@ -125,11 +142,18 @@ export function* updateOrderSaga() {
             ) {
                 yield put(resetModal());
             }
-            if (redirectStatus) {
+
+            if (redirectToDashboard && redirectStatus) {
+                yield put(replace(book.dashboard));
+            }
+
+            if (!redirectToDashboard && redirectStatus) {
                 yield put(returnToOrdersPage(redirectStatus));
             }
         } catch (error) {
             yield put(emitError(error));
+        } finally {
+            yield put(updateOrderSuccess());
         }
     }
 }
@@ -153,6 +177,7 @@ export function* returnToOrdersPageSaga() {
             const config = statusesMap.find(({ statuses }) =>
                 statuses.includes(status));
             const { route = '/orders/appointments' } = config || {};
+
             yield put(replace(route));
         } catch (error) {
             yield put(emitError(error));
@@ -196,9 +221,8 @@ function* handleClientSearchSaga({ payload }) {
             ];
             /* eslint-enable array-element-newline */
             const data = yield call(fetchAPI, 'GET', 'clients', {
-                query:     payload,
-                omitStats: true,
-                fields,
+                filters: { query: payload },
+                options: { omitStats: true, fields },
             });
             yield put(onChangeClientSearchQuerySuccess(data));
         } else {

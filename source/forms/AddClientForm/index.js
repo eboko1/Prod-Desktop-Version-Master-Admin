@@ -1,9 +1,9 @@
 // vendor
 import _ from 'lodash';
-import React, { Component } from 'react';
-import { Form, Select, Row, Col, Button, notification } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { v4 } from 'uuid';
+import React, {Component} from 'react';
+import {Form, Select, Row, Col, Button, notification} from 'antd';
+import {FormattedMessage, injectIntl} from 'react-intl';
+import {v4} from 'uuid';
 
 // proj
 import {
@@ -18,13 +18,13 @@ import {
     DecoratedDatePicker,
 } from 'forms/DecoratedFields';
 
-import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
-import { ArrayInput } from 'components';
+import {ClientsVehiclesTable} from 'forms/OrderForm/OrderFormTables';
+import {ArrayInput} from 'components';
 
 const FormItem = Form.Item;
 const Option = Select.Option;
 
-const findLabel = (arr, id, keyName) => [ keyName, (_(arr).find({ id }) || {}).name ];
+const findLabel = (arr, id, keyName) => [ keyName, (_(arr).find({id}) || {}).name ];
 
 const openNotificationWithIcon = (type, message, description) => {
     notification[ type ]({
@@ -44,6 +44,7 @@ export class AddClientForm extends Component {
             }),
         };
     }
+
     render() {
         const {
             addClientFormData,
@@ -62,11 +63,11 @@ export class AddClientForm extends Component {
             validateFields,
         } = this.props.form;
 
-        const { years } = addClientFormData;
-        const { vehicle = {} } = getFieldsValue();
+        const {years} = addClientFormData;
+        const {vehicle = {}} = getFieldsValue();
 
         if (errors.length) {
-            const currentComponentErrors = errors.filter(({ response }) =>
+            const currentComponentErrors = errors.filter(({response}) =>
                 _.keys(this.apiErrorsMap).includes(_.get(response, 'message')));
 
             _.each(currentComponentErrors, componentError => {
@@ -88,18 +89,18 @@ export class AddClientForm extends Component {
                 { searchQuery && (
                     <div>
                         <h2>
-                            <FormattedMessage id='add_client_form.search_query' />
+                            <FormattedMessage id='add_client_form.search_query'/>
                             : { searchQuery }
                         </h2>
                     </div>
                 ) }
-                <br />
+                <br/>
                 <div>
                     <ClientsVehiclesTable
                         removeClientVehicle={ this.props.removeClientVehicle }
                         vehicles={ vehicles }
                     />
-                    <br />
+                    <br/>
                 </div>
 
                 <Row gutter={ 8 } type='flex' align='bottom'>
@@ -111,23 +112,22 @@ export class AddClientForm extends Component {
                                 formItem
                                 hasFeedback
                                 label={
-                                    <FormattedMessage id='add_client_form.year' />
+                                    <FormattedMessage id='add_client_form.year'/>
                                 }
                                 getFieldDecorator={ getFieldDecorator }
                                 rules={ [
                                     {
                                         required: true,
                                         message:  this.props.intl.formatMessage({
-                                            id:
-                                                'add_client_form.required_field',
+                                            id: 'required_field',
                                         }),
                                     },
                                 ] }
                                 placeholder={
-                                    <FormattedMessage id='add_client_form.year_placeholder' />
+                                    <FormattedMessage id='add_client_form.year_placeholder'/>
                                 }
                                 onSelect={ value => {
-                                    const filters = { year: value };
+                                    const filters = {year: value};
                                     this.props.fetchVehiclesInfo(
                                         YEAR_VEHICLES_INFO_FILTER_TYPE,
                                         filters,
@@ -152,7 +152,7 @@ export class AddClientForm extends Component {
                                 field='vehicle.makeId'
                                 showSearch
                                 label={
-                                    <FormattedMessage id='add_client_form.make' />
+                                    <FormattedMessage id='add_client_form.make'/>
                                 }
                                 hasFeedback
                                 formItem
@@ -161,20 +161,19 @@ export class AddClientForm extends Component {
                                     {
                                         required: true,
                                         message:  this.props.intl.formatMessage({
-                                            id:
-                                                'add_client_form.required_field',
+                                            id: 'required_field',
                                         }),
                                     },
                                 ] }
                                 placeholder={
-                                    <FormattedMessage id='add_client_form.make_placeholder' />
+                                    <FormattedMessage id='add_client_form.make_placeholder'/>
                                 }
                                 disabled={
                                     ![ YEAR_VEHICLES_INFO_FILTER_TYPE, MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)
                                 }
                                 onSelect={ value => {
                                     const filters = _.pick(
-                                        { ...vehicle, makeId: value },
+                                        {...vehicle, makeId: value},
                                         [ 'year', 'makeId' ],
                                     );
                                     this.props.fetchVehiclesInfo(
@@ -186,7 +185,7 @@ export class AddClientForm extends Component {
                                     trigger.parentNode
                                 }
                             >
-                                { makes.map(({ id, name }) => (
+                                { makes.map(({id, name}) => (
                                     <Option value={ id } key={ v4() }>
                                         { name }
                                     </Option>
@@ -202,27 +201,26 @@ export class AddClientForm extends Component {
                                 hasFeedback
                                 formItem
                                 label={
-                                    <FormattedMessage id='add_client_form.model' />
+                                    <FormattedMessage id='add_client_form.model'/>
                                 }
                                 getFieldDecorator={ getFieldDecorator }
                                 rules={ [
                                     {
                                         required: true,
                                         message:  this.props.intl.formatMessage({
-                                            id:
-                                                'add_client_form.required_field',
+                                            id: 'required_field',
                                         }),
                                     },
                                 ] }
                                 placeholder={
-                                    <FormattedMessage id='add_client_form.model_placeholder' />
+                                    <FormattedMessage id='add_client_form.model_placeholder'/>
                                 }
                                 disabled={
                                     ![ MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)
                                 }
                                 onSelect={ value => {
                                     const filters = _.pick(
-                                        { ...vehicle, modelId: value },
+                                        {...vehicle, modelId: value},
                                         [ 'modelId', 'year', 'makeId' ],
                                     );
                                     this.props.fetchVehiclesInfo(
@@ -234,7 +232,7 @@ export class AddClientForm extends Component {
                                     trigger.parentNode
                                 }
                             >
-                                { models.map(({ id, name }) => (
+                                { models.map(({id, name}) => (
                                     <Option value={ id } key={ v4() }>
                                         { name }
                                     </Option>
@@ -250,11 +248,11 @@ export class AddClientForm extends Component {
                                 formItem
                                 hasFeedback
                                 label={
-                                    <FormattedMessage id='add_client_form.modification' />
+                                    <FormattedMessage id='add_client_form.modification'/>
                                 }
                                 getFieldDecorator={ getFieldDecorator }
                                 placeholder={
-                                    <FormattedMessage id='add_client_form.modification_placeholder' />
+                                    <FormattedMessage id='add_client_form.modification_placeholder'/>
                                 }
                                 disabled={
                                     ![ MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(
@@ -265,7 +263,7 @@ export class AddClientForm extends Component {
                                     trigger.parentNode
                                 }
                             >
-                                { modifications.map(({ id, name }) => (
+                                { modifications.map(({id, name}) => (
                                     <Option value={ id } key={ v4() }>
                                         { name }
                                     </Option>
@@ -281,12 +279,12 @@ export class AddClientForm extends Component {
                                 {
                                     required: true,
                                     message:  this.props.intl.formatMessage({
-                                        id: 'add_client_form.required_field',
+                                        id: 'required_field',
                                     }),
                                 },
                             ] }
                             label={
-                                <FormattedMessage id='add_client_form.number' />
+                                <FormattedMessage id='add_client_form.number'/>
                             }
                             getFieldDecorator={ getFieldDecorator }
                             field='vehicle.number'
@@ -297,7 +295,7 @@ export class AddClientForm extends Component {
                             hasFeedback
                             formItem
                             label={
-                                <FormattedMessage id='add_client_form.vin' />
+                                <FormattedMessage id='add_client_form.vin'/>
                             }
                             getFieldDecorator={ getFieldDecorator }
                             field='vehicle.vin'
@@ -312,7 +310,7 @@ export class AddClientForm extends Component {
                                             [ 'vehicle.modelId', 'vehicle.makeId', 'vehicle.year', 'vehicle.vin', 'vehicle.number', 'vehicle.modificationId' ],
                                             (err, values) => {
                                                 if (!err) {
-                                                    const { vehicle } = values;
+                                                    const {vehicle} = values;
                                                     const names = _([
                                                         findLabel(
                                                             makes,
@@ -344,7 +342,7 @@ export class AddClientForm extends Component {
                                         );
                                     } }
                                 >
-                                    <FormattedMessage id='add_client_form.add_vehicle' />
+                                    <FormattedMessage id='add_client_form.add_vehicle'/>
                                 </Button>
                             </FormItem>
                         </Row>
@@ -355,7 +353,7 @@ export class AddClientForm extends Component {
                         <DecoratedInput
                             field={ 'name' }
                             label={
-                                <FormattedMessage id='add_client_form.name' />
+                                <FormattedMessage id='add_client_form.name'/>
                             }
                             formItem
                             hasFeedback
@@ -367,7 +365,7 @@ export class AddClientForm extends Component {
                                 {
                                     required: true,
                                     message:  this.props.intl.formatMessage({
-                                        id: 'add_client_form.required_field',
+                                        id: 'required_field',
                                     }),
                                 },
                             ] }
@@ -377,7 +375,7 @@ export class AddClientForm extends Component {
                         <DecoratedInput
                             field='patronymic'
                             label={
-                                <FormattedMessage id='add_client_form.patronymic' />
+                                <FormattedMessage id='add_client_form.patronymic'/>
                             }
                             formItem
                             getPopupContainer={ trigger => trigger.parentNode }
@@ -390,7 +388,7 @@ export class AddClientForm extends Component {
                         <DecoratedInput
                             field='surname'
                             label={
-                                <FormattedMessage id='add_client_form.surname' />
+                                <FormattedMessage id='add_client_form.surname'/>
                             }
                             formItem
                             getPopupContainer={ trigger => trigger.parentNode }
@@ -411,7 +409,7 @@ export class AddClientForm extends Component {
                                         trigger.parentNode
                                     }
                                     label={
-                                        <FormattedMessage id='add_client_form.sex' />
+                                        <FormattedMessage id='add_client_form.sex'/>
                                     }
                                     options={ [
                                         {
@@ -446,7 +444,7 @@ export class AddClientForm extends Component {
                                         trigger.parentNode
                                     }
                                     label={
-                                        <FormattedMessage id='add_client_form.status' />
+                                        <FormattedMessage id='add_client_form.status'/>
                                     }
                                     options={ [
                                         {
@@ -476,7 +474,7 @@ export class AddClientForm extends Component {
                                 <DecoratedDatePicker
                                     field='birthday'
                                     label={
-                                        <FormattedMessage id='add_client_form.birthday' />
+                                        <FormattedMessage id='add_client_form.birthday'/>
                                     }
                                     formItem
                                     formatMessage={
@@ -503,23 +501,23 @@ export class AddClientForm extends Component {
                                 {
                                     required: true,
                                     message:  this.props.intl.formatMessage({
-                                        id: 'add_client_form.required_field',
+                                        id: 'required_field',
                                     }),
                                 },
                                 {
                                     pattern:   /^[\d]{9}$/,
                                     transform: value => String(value),
-                                    message: this.props.intl.formatMessage({
+                                    message:   this.props.intl.formatMessage({
                                         id: 'add_client_form.invalid_phone_format',
                                     }),
                                 },
                             ] }
                             fieldName='phones'
                             fieldTitle={
-                                <FormattedMessage id='add_client_form.phones' />
+                                <FormattedMessage id='add_client_form.phones'/>
                             }
                             buttonText={
-                                <FormattedMessage id='add_client_form.add_phone' />
+                                <FormattedMessage id='add_client_form.add_phone'/>
                             }
                         />
                     </Col>
@@ -534,10 +532,10 @@ export class AddClientForm extends Component {
                             form={ this.props.form }
                             fieldName='emails'
                             fieldTitle={
-                                <FormattedMessage id='add_client_form.emails' />
+                                <FormattedMessage id='add_client_form.emails'/>
                             }
                             buttonText={
-                                <FormattedMessage id='add_client_form.add_email' />
+                                <FormattedMessage id='add_client_form.add_email'/>
                             }
                         />
                     </Col>

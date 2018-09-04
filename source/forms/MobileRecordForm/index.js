@@ -28,6 +28,18 @@ import Styles from './styles.m.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+const formItemLayout = {
+    labelCol: {
+        xl:  { span: 24 },
+        xxl: { span: 4 },
+    },
+    wrapperCol: {
+        xl:  { span: 24 },
+        xxl: { span: 20 },
+    },
+    colon: false,
+};
+
 @injectIntl
 @withReduxForm({
     name:            'orderForm',
@@ -44,7 +56,12 @@ export class MobileRecordForm extends Component {
     }
 
     render() {
-        const { selectedClient, stations, onStatusChange } = this.props;
+        const {
+            selectedClient,
+            stations,
+            onStatusChange,
+            order: { status },
+        } = this.props;
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
@@ -52,34 +69,26 @@ export class MobileRecordForm extends Component {
             getFieldsValue([ 'beginDate', 'beginTime', 'station' ]),
         );
 
-        const formItemLayout = {
-            labelCol: {
-                xl:  { span: 24 },
-                xxl: { span: 4 },
-            },
-            wrapperCol: {
-                xl:  { span: 24 },
-                xxl: { span: 20 },
-            },
-            colon: false,
-        };
-
         return (
             <Form layout='horizontal'>
                 <div className={ Styles.mobileRecordFormFooter }>
-                    <Button
-                        className={ Styles.mobileRecordSubmitBtn }
-                        type='primary'
-                        onClick={ () => onStatusChange('approve') }
-                    >
-                        Записать
-                    </Button>
-                    <Button
-                        className={ Styles.mobileRecordSubmitBtn }
-                        onClick={ () => onStatusChange('cancel') }
-                    >
-                        Отказать
-                    </Button>
+                    { status !== 'cancel' && (
+                        <Button
+                            className={ Styles.mobileRecordSubmitBtn }
+                            type='primary'
+                            onClick={ () => onStatusChange('approve') }
+                        >
+                            <FormattedMessage id='add_order_form.save_appointment' />
+                        </Button>
+                    ) }
+                    { status !== 'cancel' && (
+                        <Button
+                            className={ Styles.mobileRecordSubmitBtn }
+                            onClick={ () => onStatusChange('cancel') }
+                        >
+                            <FormattedMessage id='cancel' />
+                        </Button>
+                    ) }
                 </div>
                 <FormItem
                     label={ <FormattedMessage id='add_order_form.name' /> }
@@ -111,11 +120,15 @@ export class MobileRecordForm extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  '',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     getFieldDecorator={ getFieldDecorator }
-                    placeholder={ 'Choose selected client phone' }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_client_phone',
+                    }) }
                 >
                     { selectedClient.phones.filter(Boolean).map(phone => (
                         <Option value={ phone } key={ v4() }>
@@ -135,10 +148,14 @@ export class MobileRecordForm extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  '',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
-                    placeholder={ 'Choose selected client vehicle' }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_client_vehicle',
+                    }) }
                     optionDisabled='enabled'
                 >
                     { selectedClient.vehicles.map(vehicle => (
@@ -157,14 +174,18 @@ export class MobileRecordForm extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  'Please select your manager!',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     label={ <FormattedMessage id='add_order_form.manager' /> }
                     hasFeedback
                     colon={ false }
                     className={ Styles.datePanelItem }
-                    placeholder='Выберете менеджера'
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.select_manager',
+                    }) }
                 >
                     { this.props.managers.map(manager => (
                         <Option
@@ -178,14 +199,16 @@ export class MobileRecordForm extends Component {
                 </DecoratedSelect>
                 <hr />
                 <div style={ { fontSize: '18px', marginBottom: '10px' } }>
-                    Записать на:
+                    <FormattedMessage id='add_order_form.appointment_details' />
                 </div>
                 <DecoratedSelect
                     field='station'
                     rules={ [
                         {
                             required: true,
-                            message:  'provide station',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     formItem
@@ -273,7 +296,7 @@ export class MobileRecordForm extends Component {
 
                 <DecoratedSlider
                     formItem
-                    label='Продолжительность'
+                    label={ <FormattedMessage id='add_order_form.duration' /> }
                     field='duration'
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ !isDurationDisabled }
@@ -292,7 +315,9 @@ export class MobileRecordForm extends Component {
                     rules={ [
                         {
                             max:     2000,
-                            message: 'Too much',
+                            message: formatMessage({
+                                id: 'field_should_be_below_2000_chars',
+                            }),
                         },
                     ] }
                     placeholder={ formatMessage({

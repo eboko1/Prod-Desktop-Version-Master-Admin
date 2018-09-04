@@ -77,7 +77,7 @@ export default class MyTasksContainer extends Component {
                 dataIndex: 'orderNum',
                 width:     '7%',
                 render:    (text, record) => (
-                    <Link to={ `/orders/${record.orderId}` }>{ text }</Link>
+                    <Link to={ `/order/${record.orderId}` }>{ text }</Link>
                 ),
             },
             {
@@ -249,6 +249,8 @@ export default class MyTasksContainer extends Component {
         const {
             setMyTasksSortFieldFilter,
             setMyTasksSortOrderFilter,
+            fetchMyTasks,
+            filter,
         } = this.state;
         if (!sorter) {
             return;
@@ -259,8 +261,7 @@ export default class MyTasksContainer extends Component {
         };
         setMyTasksSortFieldFilter(sorter.field);
         setMyTasksSortOrderFilter(sorter.order === 'ascend' ? 'asc' : 'desc');
-
-        this.setState({ sort });
+        fetchMyTasks(filter);
     };
 
     /* eslint-disable complexity */

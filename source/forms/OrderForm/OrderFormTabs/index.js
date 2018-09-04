@@ -77,10 +77,9 @@ export default class OrderFormTabs extends Component {
                             <Button
                                 className={ Styles.orderTaskModalButton }
                                 type='primary'
-                                onClick={ () => {
-                                    setModal(MODALS.ORDER_TASK);
-                                } }
+                                onClick={ () => setModal(MODALS.ORDER_TASK) }
                             >
+                                <FormattedMessage id='add' />
                                 <Icon type='plus' />
                             </Button>
                         ) : null }
@@ -152,7 +151,9 @@ export default class OrderFormTabs extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({
@@ -176,7 +177,9 @@ export default class OrderFormTabs extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({
@@ -201,7 +204,9 @@ export default class OrderFormTabs extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({
@@ -226,7 +231,9 @@ export default class OrderFormTabs extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({

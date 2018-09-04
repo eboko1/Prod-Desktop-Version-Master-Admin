@@ -18,10 +18,6 @@ export const SET_MY_TASKS_STATUS_FILTER = `${prefix}/SET_MY_TASKS_STATUS_FILTER`
 export const SET_MY_TASKS_SORT_FIELD_FILTER = `${prefix}/SET_MY_TASKS_SORT_FIELD_FILTER`;
 export const SET_MY_TASKS_SORT_ORDER_FILTER = `${prefix}/SET_MY_TASKS_SORT_ORDER_FILTER`;
 
-
-
-
-
 /**
  * Reducer
  * */
@@ -38,9 +34,9 @@ const ReducerState = {
         page:      1,
         status:    'active',
         query:     '',
-        daterange: {},
-        sortField: void 0,
-        sortOrder: void 0,
+        daterange: { startDate: '', endDate: '' },
+        sortField: 'startDate',
+        sortOrder: 'asc',
     },
 };
 
@@ -76,14 +72,15 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 filters: {
-                    ...state, 
-                    page: payload},
+                    ...state.filters,
+                    page: payload,
+                },
             };
         case SET_MY_TASKS_DATERANGE_FILTER:
             return {
                 ...state,
                 filters: {
-                    ...state,
+                    ...state.filters,
                     daterange: payload,
                 },
             };
@@ -91,7 +88,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 filters: {
-                    ...state,
+                    ...state.filters,
                     query: payload,
                 },
             };
@@ -99,7 +96,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 filters: {
-                    ...state,
+                    ...state.filters,
                     status: payload,
                 },
             };
@@ -107,7 +104,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 filters: {
-                    ...state,
+                    ...state.filters,
                     sortOrder: payload,
                 },
             };
@@ -115,17 +112,17 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 filters: {
-                    ...state,
+                    ...state.filters,
                     sortField: payload,
                 },
-            }; 
+            };
         case RESET_DATA:
             return {
                 ...state,
                 activeOrder: null,
                 vehicle:     null,
             };
-            
+
         default:
             return state;
     }
@@ -141,9 +138,9 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export const fetchMyTasks = page => ({
+export const fetchMyTasks = filter => ({
     type:    FETCH_MY_TASKS,
-    payload: page,
+    payload: filter,
 });
 
 export const fetchMyTasksSuccess = data => ({
@@ -166,23 +163,23 @@ export const setPage = page => ({
 export const resetData = () => ({
     type: RESET_DATA,
 });
-export const setMyTasksDaterangeFilter = (range) => ({
+export const setMyTasksDaterangeFilter = range => ({
     type:    SET_MY_TASKS_DATERANGE_FILTER,
     payload: range,
 });
-export const setMyTasksSearchFilter = (update) => ({
+export const setMyTasksSearchFilter = update => ({
     type:    SET_MY_TASKS_SEARCH_FILTER,
     payload: update,
 });
-export const setMyTasksStatusFilter = (update) => ({
+export const setMyTasksStatusFilter = update => ({
     type:    SET_MY_TASKS_STATUS_FILTER,
     payload: update,
 });
-export const setMyTasksSortFieldFilter = (update) => ({
+export const setMyTasksSortFieldFilter = update => ({
     type:    SET_MY_TASKS_SORT_FIELD_FILTER,
     payload: update,
 });
-export const setMyTasksSortOrderFilter = (update) => ({
+export const setMyTasksSortOrderFilter = update => ({
     type:    SET_MY_TASKS_SORT_ORDER_FILTER,
     payload: update,
 });

@@ -36,7 +36,6 @@ import ManagerRolePage from 'pages/ManagerRolePage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
-import FunelContainer from 'containers/FunelContainer/messages';
 import OrdersContainer from 'containers/OrdersContainer/messages';
 import MyTasksContainer from 'containers/MyTasksContainer/messages';
 import PackageContainer from 'containers/PackageContainer/messages';
@@ -44,6 +43,7 @@ import BusinessPackageContainer from 'containers/BusinessPackageContainer/messag
 import RoleContainer from 'containers/RoleContainer/messages';
 import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
 import ManagerRoleContainer from 'containers/ManagerRoleContainer/messages';
+import UniversalFiltersContainer from 'containers/UniversalFilters/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -59,6 +59,7 @@ import EmployeeScheduleForm from 'forms/EmployeeScheduleForm/messages';
 import BusinessPackageForm from 'forms/BusinessPackageForm/messages';
 import ManagerRoleForm from 'forms/ManagerRoleForm/messages';
 import AddBusinessPackageForm from 'forms/AddBusinessPackageForm/messages';
+import LoginForm from 'forms/LoginForm/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
@@ -107,13 +108,13 @@ const messages = merge.all([
     // containers
     OrdersContainer,
     OrdersFilterContainer,
-    FunelContainer,
     MyTasksContainer,
     PackageContainer,
     RoleContainer,
     SettingSalaryContainer,
     BusinessPackageContainer,
     ManagerRoleContainer,
+    UniversalFiltersContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -131,6 +132,7 @@ const messages = merge.all([
     BusinessPackageForm,
     AddBusinessPackageForm,
     ManagerRoleForm,
+    LoginForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
@@ -154,7 +156,11 @@ const messages = merge.all([
 // Intl
 const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
 
-const persistedLocale = getLocale();
+let persistedLocale = getLocale();
+
+if (persistedLocale === 'ua') {
+    persistedLocale = 'uk';
+}
 
 const intl = {
     locale:   persistedLocale || fallbackLocale,

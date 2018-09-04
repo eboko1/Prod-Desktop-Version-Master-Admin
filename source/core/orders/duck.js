@@ -113,7 +113,7 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 filter: {
-                    ...state.filter,
+                    query:         state.filter.query,
                     page:          1,
                     minNps:        void 0,
                     maxNps:        void 0,

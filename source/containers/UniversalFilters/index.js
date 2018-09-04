@@ -22,6 +22,7 @@ import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
+import {FormattedMessage} from 'react-intl';
 
 const mapStateToProps = state => {
     return {
@@ -120,7 +121,7 @@ export default class UniversalFilters extends Component {
                         disabled={ areFiltersDisabled }
                         onClick={ () => this.setUniversalFiltersModal() }
                     >
-                        Фильтр
+                        <FormattedMessage id='universal-filters-container.filter' />
                     </Button>
                     <UniversalFiltersTags
                         filter={ filter }

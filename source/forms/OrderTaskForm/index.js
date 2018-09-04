@@ -162,7 +162,9 @@ export class OrderTaskForm extends Component {
                         rules={ [
                             {
                                 required: true,
-                                message:  'you must add status',
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
                             },
                         ] }
                         getPopupContainer={ trigger => trigger.parentNode }
@@ -244,7 +246,9 @@ export class OrderTaskForm extends Component {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  'you must add responsible',
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
                                 },
                             ] }
                             // optionFilterProp='children'
@@ -306,7 +310,9 @@ export class OrderTaskForm extends Component {
                             rules={ [
                                 {
                                     max:     2000,
-                                    message: 'Too much',
+                                    message: formatMessage({
+                                        id: 'field_should_be_below_2000_chars',
+                                    }),
                                 },
                             ] }
                             className={ Styles.selectMargin }

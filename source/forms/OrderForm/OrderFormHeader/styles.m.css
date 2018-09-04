@@ -9,7 +9,11 @@
 }
 
 .headerCol {
-    flex: 0 1 33%;
+    flex: 0 1 30%;
+}
+
+.duration :global(.ant-form-item-label) {
+    text-align: left;
 }
 
 .formHeader :global(.ant-calendar-picker),
@@ -27,10 +31,6 @@
 
 .totalSum {
     margin-left: 24px;
-}
-
-.duration {
-    width: 34%;
 }
 
 /*  min-width: 922 */

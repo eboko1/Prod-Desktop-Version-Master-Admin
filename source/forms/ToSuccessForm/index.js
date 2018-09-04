@@ -44,15 +44,13 @@ export class ToSuccessForm extends Component {
                         <FormattedMessage id='no' />
                     </Button>
                 </div>
-                <div>      
-                    <FormattedMessage id='to_success.send_message' />
-                </div>
                 <div>
                     <div className={ Styles.checkbox }>
                         <DecoratedCheckbox
                             field='toSuccess'
                             getFieldDecorator={ getFieldDecorator }
                         >
+                            <FormattedMessage id='to_success.send_message' />:<br/>
                             <FormattedMessage id='to_success.sms1' />
                             СТО Партнер
                             <FormattedMessage id='to_success.sms2' />

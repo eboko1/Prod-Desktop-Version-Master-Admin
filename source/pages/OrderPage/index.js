@@ -44,6 +44,7 @@ import {
 
 const mapStateToProps = state => {
     return {
+        isMobile:              state.ui.views.isMobile,
         orderTaskEntity:       state.forms.orderTaskForm.fields,
         orderTaskId:           state.forms.orderTaskForm.taskId,
         priorityOptions:       state.forms.orderTaskForm.priorityOptions,
@@ -120,8 +121,8 @@ class OrderPage extends Component {
         this.props.setModal(MODALS.ADD_CLIENT);
     };
 
-    onStatusChange = (status, redirectStatus) => {
-        const { allServices, allDetails, selectedClient } = this.props;
+    _onStatusChange = (status, redirectStatus, options) => {
+        const { allServices, allDetails, selectedClient, history } = this.props;
         const requiredFields = requiredFieldsOnStatuses[ status ];
         const { id } = this.props.match.params;
         const form = this.orderFormRef.props.form;
@@ -130,6 +131,10 @@ class OrderPage extends Component {
             if (!err) {
                 const values = form.getFieldsValue();
                 const orderFormEntity = { ...values, selectedClient };
+                const redirectToDashboard = _.get(
+                    history,
+                    'location.state.fromDashboard',
+                );
 
                 this.props.updateOrder({
                     id,
@@ -141,23 +146,32 @@ class OrderPage extends Component {
                         this.props.user,
                     ),
                     redirectStatus,
+                    redirectToDashboard,
+                    options,
                 });
             }
         });
     };
 
     _saveNewOrderTask = () => {
-        const { orderTaskEntity, orderTaskId } = this.props;
+        const {
+            saveOrderTask,
+            resetModal,
+            resetOrderTasksForm,
+            orderTaskEntity,
+            orderTaskId,
+        } = this.props;
+
         const form = this.orderTaskFormRef.props.form;
         form.validateFields(err => {
             if (!err) {
-                this.props.saveOrderTask(
+                saveOrderTask(
                     orderTaskEntity,
                     this.props.match.params.id,
                     orderTaskId,
                 );
-                this.props.resetModal();
-                this.props.resetOrderTasksForm();
+                resetModal();
+                resetOrderTasksForm();
             }
         });
     };
@@ -168,10 +182,8 @@ class OrderPage extends Component {
             fields,
             allServices,
             allDetails,
-
             fetchedOrder,
             returnToOrdersPage,
-
             setModal,
             history,
             order: { status },
@@ -226,12 +238,24 @@ class OrderPage extends Component {
             !fields.details.length;
 
         if (!canEdit || hideEditButton || ordersAreSame) {
-            _.get(history, 'location.state.fromDashboard')
-                ? history.push(`${book.dashboard}`)
-                : returnToOrdersPage(status);
+            this._redirect();
         } else {
             setModal(MODALS.CONFIRM_EXIT);
         }
+    };
+
+    _redirect = () => {
+        const {
+            resetModal,
+            returnToOrdersPage,
+            history,
+            order: { status },
+        } = this.props;
+
+        resetModal();
+        _.get(history, 'location.state.fromDashboard')
+            ? history.push(`${book.dashboard}`)
+            : returnToOrdersPage(status);
     };
 
     _invite = () => {
@@ -376,15 +400,16 @@ class OrderPage extends Component {
                                 <FormattedMessage id='order-page.create_invite_order' />
                             </Button>
                         ) : null}
-
-                        <ChangeStatusDropdown
-                            user={ user }
-                            orderStatus={ status }
-                            onStatusChange={ this.onStatusChange }
-                            setModal={ setModal }
-                            modals={ MODALS }
-                            isMobile={ isMobile }
-                        />
+                        {!isMobile && (
+                            <ChangeStatusDropdown
+                                user={ user }
+                                orderStatus={ status }
+                                onStatusChange={ this._onStatusChange }
+                                setModal={ setModal }
+                                modals={ MODALS }
+                                isMobile={ isMobile }
+                            />
+                        )}
                         <ReportsDropdown
                             user={ this.props.user }
                             orderId={ id }
@@ -405,7 +430,7 @@ class OrderPage extends Component {
                                 } }
                                 onClick={ () =>
                                     !disabledEditButton &&
-                                    this.onStatusChange(status)
+                                    this._onStatusChange(status)
                                 }
                             />
                         )}
@@ -437,13 +462,14 @@ class OrderPage extends Component {
                 <MobileView>
                     <MobileRecordForm
                         wrappedComponentRef={ this.saveOrderFormRef }
-                        onStatusChange={ this.onStatusChange }
+                        onStatusChange={ this._onStatusChange }
                     />
                 </MobileView>
                 <ResponsiveView
                     view={ { min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max } }
                 >
                     <OrderForm
+                        orderId={ Number(this.props.match.params.id) }
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
                         orderHistory={ this.props.orderHistory }
@@ -464,7 +490,7 @@ class OrderPage extends Component {
                 <CancelReasonModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
-                    handleCancelReasonModalSubmit={ this.onStatusChange }
+                    handleCancelReasonModalSubmit={ this._onStatusChange }
                     orderComments={ this.props.orderComments }
                     resetModal={ () => resetModal() }
                 />
@@ -475,13 +501,21 @@ class OrderPage extends Component {
                     returnToOrdersPage={ () =>
                         this.props.returnToOrdersPage(status)
                     }
-                    saveOrder={ () => this.onStatusChange(status, status) }
+                    saveOrder={ () => {
+                        if (_.get(history, 'location.state.fromDashboard')) {
+                            return this._onStatusChange(status, 'dashboard');
+                        }
+
+                        return this._onStatusChange(status, status);
+                    } }
                     resetModal={ () => resetModal() }
+                    closeModal={ () => this._close() }
+                    redirect={ () => this._redirect() }
                 />
                 <ToSuccessModal
                     wrappedComponentRef={ this.saveFormRef }
                     visible={ modal }
-                    handleToSuccessModalSubmit={ this.onStatusChange }
+                    handleToSuccessModalSubmit={ this._onStatusChange }
                     resetModal={ () => resetModal() }
                 />
                 <OrderTaskModal
