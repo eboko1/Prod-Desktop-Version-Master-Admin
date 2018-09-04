@@ -156,7 +156,11 @@ const messages = merge.all([
 // Intl
 const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
 
-const persistedLocale = getLocale();
+let persistedLocale = getLocale();
+
+if (persistedLocale === 'ua') {
+    persistedLocale = 'uk';
+}
 
 const intl = {
     locale:   persistedLocale || fallbackLocale,
