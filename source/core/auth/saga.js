@@ -57,7 +57,6 @@ export function* updateUserSaga() {
     while (true) {
         try {
             const { payload: user } = yield take(UPDATE_USER);
-            yield setLocale(user.language);
             yield put(updateUserSuccess(user));
         } catch {
             yield put(emitError(error));

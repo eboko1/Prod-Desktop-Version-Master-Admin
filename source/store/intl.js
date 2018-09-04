@@ -159,18 +159,25 @@ const messages = merge.all([
 /* eslint-enable array-element-newline */
 
 // Intl
-const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
+const setIntl = language => {
+    const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
+    let locale = language;
+    if (locale === 'ua') {
+        locale = 'uk';
+    }
+
+    return {
+        locale:   locale || fallbackLocale,
+        messages: messages[ locale || fallbackLocale ],
+    };
+};
 
 let persistedLocale = getLocale();
-
 if (persistedLocale === 'ua') {
     persistedLocale = 'uk';
 }
 
-const intl = {
-    locale:   persistedLocale || fallbackLocale,
-    messages: messages[ persistedLocale || fallbackLocale ],
-};
+const intl = setIntl(persistedLocale);
 
 // Numeral
 // TODO: provide locale dynamic for numeral register
@@ -192,4 +199,4 @@ numeral.register('locale', 'ru', {
 });
 numeral.locale('ru');
 
-export { messages, intl };
+export { messages, intl, setIntl };

@@ -41,14 +41,14 @@ const formItemLayout = {
     name:            'profileForm',
     actions:         { change: onChangeProfileForm, submitProfileForm },
     mapStateToProps: state => ({
-        user: state.auth,
+        user:            state.auth,
+        profileUpdating: state.ui.profileUpdating,
     }),
 })
 export class ProfileForm extends Component {
     _submitProfile = () => {
         const { form, submitProfileForm } = this.props;
         form.validateFields((err, values) => {
-            console.log('→ values', values);
             if (!err) {
                 submitProfileForm(values);
             }
