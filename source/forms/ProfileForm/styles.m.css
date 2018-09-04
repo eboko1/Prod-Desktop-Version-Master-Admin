@@ -1,0 +1,9 @@
+.profileForm {
+    display: flex;
+    flex-direction: column;
+}
+
+.saveBtn {
+    width: 280px;
+    align-self: center;
+}

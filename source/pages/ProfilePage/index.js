@@ -12,7 +12,7 @@ class Profile extends Component {
                 title={ <FormattedMessage id='profile.title' /> }
                 description={ <FormattedMessage id='profile.description' /> }
             >
-                { /* <ProfileForm /> */ }
+                <ProfileForm />
             </Layout>
         );
     }

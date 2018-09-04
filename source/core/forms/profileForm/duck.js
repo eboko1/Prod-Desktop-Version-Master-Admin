@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 /**
  * Constants
  * */
@@ -9,6 +7,9 @@ const prefix = `cpb/${moduleName}`;
 // export const FETCH_PROFILE_FORM = `${prefix}/FETCH_PROFILE_FORM`;
 // export const FETCH_PROFILE_FORM_SUCCESS = `${prefix}/FETCH_PROFILE_FORM_SUCCESS`;
 
+export const SUBMIT_PROFILE_FORM = `${prefix}/SUBMIT_PROFILE_FORM`;
+export const SUBMIT_PROFILE_FORM_SUCCESS = `${prefix}/SUBMIT_PROFILE_FORM_SUCCESS`;
+
 export const ON_CHANGE_PROFILE_FORM = `${prefix}/ON_CHANGE_PROFILE_FORM`;
 
 /**
@@ -16,49 +17,27 @@ export const ON_CHANGE_PROFILE_FORM = `${prefix}/ON_CHANGE_PROFILE_FORM`;
  * */
 
 const ReducerState = {
-    fields: {
-        email: {
-            errors:     void 0,
-            name:       'email',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        phone: {
-            errors:     void 0,
-            name:       'phone',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        locale: {
-            name: 'locale',
-        },
-    },
+    fields: {},
 };
 
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case FETCH_PROFILE_FORM_SUCCESS:
+        case SUBMIT_PROFILE_FORM_SUCCESS:
             return {
                 ...state,
                 ...payload,
             };
 
-        case ON_CHANGE_PROFILE_FORM: {
-            const newState = {
+        case ON_CHANGE_PROFILE_FORM:
+            return {
                 ...state,
+                fields: {
+                    ...state.fields,
+                    ...payload,
+                },
             };
-            _.set(newState, `${action.meta.form}.${action.meta.field}`, {
-                ...action.payload[ action.meta.field ],
-            });
-
-            return newState;
-        }
 
         default:
             return state;
@@ -75,19 +54,17 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-// export const fetchProfileForm = () => ({
-//     type: FETCH_PROFILE_FORM,
-// });
-//
-// export function fetchProfileFormSuccess(filters) {
-//     return {
-//         type:    FETCH_PROFILE_FORM_SUCCESS,
-//         payload: filters,
-//     };
-// }
+export const submitProfileForm = fields => ({
+    type:    SUBMIT_PROFILE_FORM,
+    payload: fields,
+});
 
-export const onChangeProfileForm = (fields, { form, field }) => ({
+export const submitProfileFormSuccess = data => ({
+    type:    SUBMIT_PROFILE_FORM_SUCCESS,
+    payload: data,
+});
+
+export const onChangeProfileForm = fields => ({
     type:    ON_CHANGE_PROFILE_FORM,
     payload: fields,
-    meta:    { form, field },
 });
