@@ -55,7 +55,9 @@
         "submit": "Submit",
         "save": "Save",
         "required_field": "Required field!",
-        "field_should_be_below_2000_chars": "Field should be below 2000 characters"
+        "field_should_be_below_2000_chars": "Field should be below 2000 characters",
+        "error": "Error",
+        "or": "or"
     },
     "ru": {
         "currency": "грн.",
@@ -113,7 +115,9 @@
         "submit": "Применить",
         "save": "Сохранить",
         "required_field": "Обязательное поле!",
-        "field_should_be_below_2000_chars": "Поле должно иметь менее 2000 символов"
+        "field_should_be_below_2000_chars": "Поле должно иметь менее 2000 символов",
+        "error": "Ошибка",
+        "or": "или"
     },
     "uk": {
         "currency": "грн.",
@@ -142,9 +146,9 @@
         "date": "Дата",
         "status": "Статус",
         "name": "Ім'я",
-        "surname": "Призвище",
         "phone": "Телефон",
         "email": "Email",
+        "surname": "Прізвище",
         "text": "Текст",
         "sum": "Сума",
         "transfer_not_complete": "Новий",
@@ -171,6 +175,8 @@
         "submit": "Застосувати",
         "save": "Зберегти",
         "required_field": "Обов'язкове поле!",
-        "field_should_be_below_2000_chars": "Поле повинно мати менше 2000 символів"
+        "field_should_be_below_2000_chars": "Поле повинно мати менше 2000 символів",
+        "error": "Помилка",
+        "or": "або"
     }
 }
