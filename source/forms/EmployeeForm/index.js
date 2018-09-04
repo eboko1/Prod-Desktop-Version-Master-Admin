@@ -58,7 +58,9 @@ export class EmployeeForm extends Component {
                         rules={ [
                             {
                                 required: true,
-                                message:  '',
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
                             },
                         ] }
                         className={ Styles.selectMargin }
@@ -77,7 +79,9 @@ export class EmployeeForm extends Component {
                         rules={ [
                             {
                                 required: true,
-                                message:  '',
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
                             },
                         ] }
                         className={ Styles.selectMargin }
@@ -97,7 +101,9 @@ export class EmployeeForm extends Component {
                         rules={ [
                             {
                                 required: true,
-                                message:  '',
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
                             },
 
                             {
@@ -154,7 +160,9 @@ export class EmployeeForm extends Component {
                         rules={ [
                             {
                                 required: true,
-                                message:  '',
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
                             },
                             {
                                 validator: (rule, value, callback)=>{
@@ -194,7 +202,9 @@ export class EmployeeForm extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         className={ Styles.selectMargin }
@@ -216,7 +226,9 @@ export class EmployeeForm extends Component {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  '',
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
                                 },
                             ] }
                             format={ 'YYYY-MM-DD' }

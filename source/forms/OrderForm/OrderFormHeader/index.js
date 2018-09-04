@@ -156,7 +156,9 @@ export default class OrderFormHeader extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  'Please provide date',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     placeholder={ formatMessage({
@@ -172,7 +174,9 @@ export default class OrderFormHeader extends Component {
                     rules={ [
                         {
                             required: true,
-                            message:  'provide station',
+                            message:  formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     formItem
@@ -364,8 +368,7 @@ export default class OrderFormHeader extends Component {
                     <div className={ Styles.total }>
                         <FormattedMessage id='sum' />
                         <span className={ Styles.totalSum }>
-                            { totalPrice }
-                            <FormattedMessage id='currency' />
+                            { `${totalPrice} ${formatMessage({id: 'currency'})}` }
                         </span>
                     </div>
                 </FormItem>

@@ -151,7 +151,9 @@ export default class OrderFormTabs extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({
@@ -175,7 +177,9 @@ export default class OrderFormTabs extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({
@@ -200,7 +204,9 @@ export default class OrderFormTabs extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({
@@ -225,7 +231,9 @@ export default class OrderFormTabs extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({

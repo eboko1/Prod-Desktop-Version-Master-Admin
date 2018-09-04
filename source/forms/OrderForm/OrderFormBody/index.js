@@ -126,6 +126,7 @@ export default class OrderFormBody extends Component {
     _renderClientColumn = () => {
         const { selectedClient, fetchedOrder } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
+        const { formatMessage } = this.props.intl;
 
         // const hasClient = !!_.get(this.props, 'order.clientId');
         const hasClient = getFieldValue('clientPhone');
@@ -162,7 +163,9 @@ export default class OrderFormBody extends Component {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  '',
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
                                 },
                             ] }
                             getFieldDecorator={ getFieldDecorator }
@@ -292,7 +295,9 @@ export default class OrderFormBody extends Component {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  '',
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
                                 },
                             ] }
                             optionDisabled='enabled'
@@ -345,10 +350,15 @@ export default class OrderFormBody extends Component {
                     formItemLayout={ formVerticalLayout }
                     getFieldDecorator={ getFieldDecorator }
                     className={ Styles.odometr }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.provide_odometr',
+                    }) }
                     rules={ [
                         {
                             type:    'number',
-                            message: '',
+                            message: formatMessage({
+                                id: 'required_field',
+                            }),
                         },
                     ] }
                     min={ 0 }
@@ -393,7 +403,9 @@ export default class OrderFormBody extends Component {
                     rules={ [
                         {
                             max:     2000,
-                            message: 'Too much',
+                            message: formatMessage({
+                                id: 'field_should_be_below_2000_chars',
+                            }),
                         },
                     ] }
                     placeholder={ formatMessage({
@@ -417,7 +429,9 @@ export default class OrderFormBody extends Component {
                         rules={ [
                             {
                                 max:     2000,
-                                message: 'Too much',
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
                             },
                         ] }
                         placeholder={ formatMessage({

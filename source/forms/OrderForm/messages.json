@@ -11,10 +11,13 @@
         "add_order_form.name": "Name",
         "add_order_form.select_name": "Select name",
         "add_order_form.phone": "Phone",
+        "add_order_form.select_client_phone": "Select client phone",
+        "add_order_form.select_client_vehicle": "Select client vehicle",
         "add_order_form.email": "Email",
         "add_order_form.car": "Car",
         "add_order_form.car_number": "Licence num",
-        "add_order_form.odometr": "Odometr",
+        "add_order_form.odometr": "Mileage",
+        "add_order_form.provide_odometr": "Provide mileage",
         "add_order_form.vin": "VIN",
         "add_order_form.total": "Total",
         "add_order_form.services": "Services",
@@ -37,7 +40,9 @@
         "add_order_form.select_manager": "Select manager",
         "add_order_form.please_select_manager": "Please select manager",
         "add_order_form.select_appurtenancies_responsible": "Select spare parts manger",
-        "order_form_table.appurtenancies_responsible": "Spare parts manager"
+        "order_form_table.appurtenancies_responsible": "Spare parts manager",
+        "add_order_form.appointment_details": "Appointment Details:",
+        "add_order_form.save_appointment": "Save Appointment"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -51,10 +56,13 @@
         "add_order_form.name": "ФИО",
         "add_order_form.select_name": "Выберите клиента по имени",
         "add_order_form.phone": "Телефон",
+        "add_order_form.select_client_phone": "Укажите телефон клиента",
+        "add_order_form.select_client_vehicle": "Укажите автомобиль клиента",
         "add_order_form.email": "Email",
         "add_order_form.car": "Автомобиль",
         "add_order_form.car_number": "Гос. номер",
         "add_order_form.odometr": "Пробег",
+        "add_order_form.provide_odometr": "Укажите пробег",
         "add_order_form.vin": "VIN-код",
         "add_order_form.total": "Итого",
         "add_order_form.services": "Работы",
@@ -77,7 +85,9 @@
         "add_order_form.select_manager": "Укажите мастера-приемщика",
         "add_order_form.please_select_manager": "Пожалуйста, укажите мастера-приемщика",
         "add_order_form.select_appurtenancies_responsible": "Укажите запчастиста",
-        "order_form_table.appurtenancies_responsible": "Запчастист"
+        "order_form_table.appurtenancies_responsible": "Запчастист",
+        "add_order_form.appointment_details": "Записать на:",
+        "add_order_form.save_appointment": "Записать"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -91,10 +101,13 @@
         "add_order_form.name": "ПІБ",
         "add_order_form.select_name": "Оберіть клієнта за ім'ям",
         "add_order_form.phone": "Телефон",
+        "add_order_form.select_client_phone": "Вкажіть телефон клієнта",
+        "add_order_form.select_client_vehicle": "Вкажіть автомобіль клієнта",
         "add_order_form.email": "Email",
         "add_order_form.car": "Автомобіль",
         "add_order_form.car_number": "Держ. номер",
         "add_order_form.odometr": "Пробіг",
+        "add_order_form.provide_odometr": "Вкажіть пробіг",
         "add_order_form.vin": "VIN-код",
         "add_order_form.total": "Всього",
         "add_order_form.services": "Роботи",
@@ -117,6 +130,8 @@
         "add_order_form.select_manager": "Вкажіть мастера-приемщика",
         "add_order_form.please_select_manager": "Будь ласка, вкажіть мастера-приемщика",
         "add_order_form.select_appurtenancies_responsible": "Вкажіть запчастиста",
-        "order_form_table.appurtenancies_responsible": "Запчастист"
+        "order_form_table.appurtenancies_responsible": "Запчастист",
+        "add_order_form.appointment_details": "Записати на:",
+        "add_order_form.save_appointment": "Записати"
     }
 }
