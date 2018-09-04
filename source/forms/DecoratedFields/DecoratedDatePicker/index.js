@@ -2,6 +2,7 @@
 import React from 'react';
 import { DatePicker } from 'antd';
 import { Form } from 'antd';
+import 'moment/locale/en-gb';
 
 const FormItem = Form.Item;
 // own
@@ -35,47 +36,47 @@ export const DecoratedDatePicker = props => {
         onChange,
     } = props;
 
-    const locale = {
-        lang: {
-            placeholder:      formatMessage({ id: 'datepicker.placeholder' }),
-            rangePlaceholder: [ formatMessage({ id: 'datepicker.range.start_date' }), formatMessage({ id: 'datepicker.range.end_date' }) ],
-            today:            formatMessage({ id: 'datepicker.today' }),
-            now:              formatMessage({ id: 'datepicker.now' }),
-            backToToday:      formatMessage({ id: 'datepicker.back_to_today' }),
-            ok:               formatMessage({ id: 'datepicker.ok' }),
-            clear:            formatMessage({ id: 'datepicker.clear' }),
-            month:            formatMessage({ id: 'datepicker.month' }),
-            year:             formatMessage({ id: 'datepicker.year' }),
-            timeSelect:       formatMessage({
-                id: 'datepicker.timepicker.placeholder',
-            }),
-            dateSelect: formatMessage({
-                id: 'datepicker.placeholder',
-            }),
-            monthSelect:     formatMessage({ id: 'datepicker.select_month' }),
-            yearSelect:      formatMessage({ id: 'datepicker.select_year' }),
-            decadeSelect:    'Choose a decade',
-            yearFormat:      'YYYY',
-            dateFormat:      'M/D/YYYY',
-            dayFormat:       'D',
-            dateTimeFormat:  'M/D/YYYY HH:mm:ss',
-            monthFormat:     'MMMM',
-            monthBeforeYear: true,
-            previousMonth:   'Previous month (PageUp)',
-            nextMonth:       'Next month (PageDown)',
-            previousYear:    'Last year (Control + left)',
-            nextYear:        'Next year (Control + right)',
-            previousDecade:  'Last decade',
-            nextDecade:      'Next decade',
-            previousCentury: 'Last century',
-            nextCentury:     'Next century',
-        },
-        timePickerLocale: {
-            placeholder: formatMessage({
-                id: 'datepicker.timepicker.placeholder',
-            }),
-        },
-    };
+    // const locale = {
+    //     lang: {
+    //         placeholder:      formatMessage({ id: 'datepicker.placeholder' }),
+    //         rangePlaceholder: [ formatMessage({ id: 'datepicker.range.start_date' }), formatMessage({ id: 'datepicker.range.end_date' }) ],
+    //         today:            formatMessage({ id: 'datepicker.today' }),
+    //         now:              formatMessage({ id: 'datepicker.now' }),
+    //         backToToday:      formatMessage({ id: 'datepicker.back_to_today' }),
+    //         ok:               formatMessage({ id: 'datepicker.ok' }),
+    //         clear:            formatMessage({ id: 'datepicker.clear' }),
+    //         month:            formatMessage({ id: 'datepicker.month' }),
+    //         year:             formatMessage({ id: 'datepicker.year' }),
+    //         timeSelect:       formatMessage({
+    //             id: 'datepicker.timepicker.placeholder',
+    //         }),
+    //         dateSelect: formatMessage({
+    //             id: 'datepicker.placeholder',
+    //         }),
+    //         monthSelect:     formatMessage({ id: 'datepicker.select_month' }),
+    //         yearSelect:      formatMessage({ id: 'datepicker.select_year' }),
+    //         decadeSelect:    'Choose a decade',
+    //         yearFormat:      'YYYY',
+    //         dateFormat:      'M/D/YYYY',
+    //         dayFormat:       'D',
+    //         dateTimeFormat:  'M/D/YYYY HH:mm:ss',
+    //         monthFormat:     'MMMM',
+    //         monthBeforeYear: true,
+    //         previousMonth:   'Previous month (PageUp)',
+    //         nextMonth:       'Next month (PageDown)',
+    //         previousYear:    'Last year (Control + left)',
+    //         nextYear:        'Next year (Control + right)',
+    //         previousDecade:  'Last decade',
+    //         nextDecade:      'Next decade',
+    //         previousCentury: 'Last century',
+    //         nextCentury:     'Next century',
+    //     },
+    //     timePickerLocale: {
+    //         placeholder: formatMessage({
+    //             id: 'datepicker.timepicker.placeholder',
+    //         }),
+    //     },
+    // };
 
     const datePicker = getFieldDecorator(field, {
         ...initialValue ? { initialValue } : {},
@@ -87,7 +88,7 @@ export const DecoratedDatePicker = props => {
                 //     Today:        [ moment(), moment() ],
                 //     'This Month': [ moment(), moment().endOf('month') ],
                 // } }
-                locale={ locale }
+                locale={ 'en' }
                 ranges={ ranges }
                 showTime={ showTime }
                 format={ format }
@@ -119,7 +120,7 @@ export const DecoratedDatePicker = props => {
         >
             { datePicker }
         </FormItem>
-    ) : 
+    ) :
         datePicker
     ;
 };

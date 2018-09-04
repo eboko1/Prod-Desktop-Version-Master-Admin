@@ -4,6 +4,7 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import { ConnectedRouter as Router } from 'react-router-redux';
 import { PersistGate } from 'redux-persist/integration/react';
+import { LocaleProvider } from 'antd';
 
 // proj
 import { ConnectedIntlProvider as IntlProvider } from 'utils';
@@ -12,15 +13,18 @@ import './theme/antd/antd.less';
 import './store/nprogress'; // whole file
 import store, { history, persistor } from './store/store';
 import Routes from './routes/Main';
-
+import { setLocaleProvider } from 'utils';
+console.log('→ setLocaleProvider()', setLocaleProvider());
 render(
     <Provider store={ store }>
         <IntlProvider>
-            <PersistGate loading={ null } persistor={ persistor }>
-                <Router history={ history }>
-                    <Routes />
-                </Router>
-            </PersistGate>
+            <LocaleProvider locale={ setLocaleProvider() }>
+                <PersistGate loading={ null } persistor={ persistor }>
+                    <Router history={ history }>
+                        <Routes />
+                    </Router>
+                </PersistGate>
+            </LocaleProvider>
         </IntlProvider>
     </Provider>,
     document.getElementById('app'),
