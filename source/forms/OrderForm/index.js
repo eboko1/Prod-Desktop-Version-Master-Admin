@@ -20,7 +20,6 @@ import { withReduxForm2 } from 'utils';
 import OrderFormHeader from './OrderFormHeader';
 import OrderFormBody from './OrderFormBody';
 import OrderFormTabs from './OrderFormTabs';
-import { ClientsSearchTable } from './OrderFormTables';
 import { servicesStats, detailsStats } from './stats';
 import Styles from './styles.m.css';
 
@@ -70,7 +69,6 @@ export class OrderForm extends Component {
         this.props.form.getFieldDecorator('services[0].serviceName');
         this.props.form.getFieldDecorator('details[0].detailName');
 
-        const clientsSearchTable = this._renderClientSearchTable();
         const tabs = this._renderTabs();
 
         const { totalHours } = servicesStats(
@@ -81,7 +79,6 @@ export class OrderForm extends Component {
         return (
             <Form className={ Styles.form } layout='horizontal'>
                 <OrderFormHeader { ...this.props } totalHours={ totalHours } />
-                { clientsSearchTable }
                 <OrderFormBody { ...this.props } />
                 { tabs }
                 <AddClientModal
@@ -96,23 +93,6 @@ export class OrderForm extends Component {
             </Form>
         );
     }
-
-    _renderClientSearchTable = () => {
-        const {
-            searchClientsResult: { searching: clientsSearching, clients },
-            setClientSelection,
-        } = this.props;
-        const { getFieldValue } = this.props.form;
-
-        return (
-            <ClientsSearchTable
-                clientsSearching={ clientsSearching }
-                setClientSelection={ setClientSelection }
-                visible={ getFieldValue('searchClientQuery') }
-                clients={ clients }
-            />
-        );
-    };
 
     _renderTabs = () => {
         const { form, orderTasks, setModal, allServices } = this.props;

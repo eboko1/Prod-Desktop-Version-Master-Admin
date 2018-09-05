@@ -541,6 +541,12 @@ export class AddClientForm extends Component {
                         />
                     </Col>
                 </Row>
+                <div>
+                    <ClientsVehiclesTable
+                        removeClientVehicle={ this.props.removeClientVehicle }
+                        vehicles={ vehicles }
+                    />
+                </div>
             </Form>
         );
     }

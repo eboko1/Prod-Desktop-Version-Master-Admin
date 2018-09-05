@@ -86,6 +86,7 @@ import EmployeeTable from 'components/EmployeeTable/messages';
 import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
+import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -157,6 +158,7 @@ const messages = merge.all([
     SettingSalaryTable,
     ArrayScheduleInput,
     ArrayBreakScheduleInput,
+    ChangeStatusDropdown,
     //commons
     Footer,
 ]);

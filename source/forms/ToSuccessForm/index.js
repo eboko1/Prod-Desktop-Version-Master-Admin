@@ -1,26 +1,33 @@
 //vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Form, Button, Checkbox } from 'antd';
+import { Form, Button } from 'antd';
 
 // proj
 import { onChangeToSuccessForm } from 'core/forms/toSuccessForm/duck';
 
 import { DecoratedCheckbox } from 'forms/DecoratedFields';
-import { withReduxForm } from 'utils';
+import { withReduxForm2 } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
-@withReduxForm({
+@withReduxForm2({
     name:    'toSuccessForm',
     actions: {
         change: onChangeToSuccessForm,
     },
+    mapStateToProps: state => ({
+        businessName: state.auth.businessName,
+    }),
 })
 export class ToSuccessForm extends Component {
     render() {
-        const { handleToSuccessModalSubmit, resetModal } = this.props;
+        const {
+            handleToSuccessModalSubmit,
+            resetModal,
+            businessName,
+        } = this.props;
         const { getFieldDecorator } = this.props.form;
         // const { formatMessage } = this.props.intl;
 
@@ -50,10 +57,14 @@ export class ToSuccessForm extends Component {
                             field='toSuccess'
                             getFieldDecorator={ getFieldDecorator }
                         >
-                            <FormattedMessage id='to_success.send_message' />:<br/>
-                            <FormattedMessage id='to_success.sms1' />
-                            СТО Партнер
-                            <FormattedMessage id='to_success.sms2' />
+                            <FormattedMessage id='to_success.send_message' />
+                            { businessName && (
+                                <p className={ Styles.text }>
+                                    <FormattedMessage id='to_success.sms1' />
+                                    businessName
+                                    <FormattedMessage id='to_success.sms2' />
+                                </p>
+                            ) }
                         </DecoratedCheckbox>
                     </div>
                     { /* <div className={ Styles.checkbox }>

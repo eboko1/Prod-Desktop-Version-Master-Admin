@@ -2,11 +2,13 @@
 import React, { Component } from 'react';
 import { DatePicker, Icon, Button } from 'antd';
 import moment from 'moment';
+import { injectIntl } from 'react-intl';
 
 // own
 import Styles from './styles.m.css';
 const WeekPicker = DatePicker.WeekPicker;
 
+@injectIntl
 class ArrowsWeekPicker extends Component {
     render() {
         const {
@@ -16,6 +18,7 @@ class ArrowsWeekPicker extends Component {
             startDate,
             endDate,
             loading,
+            intl: { formatMessage },
         } = this.props;
 
         return (
@@ -30,7 +33,9 @@ class ArrowsWeekPicker extends Component {
                     allowClear={ false }
                     value={ startDate }
                     onChange={ value => onWeekChange(value) }
-                    placeholder='Select Week'
+                    placeholder={ formatMessage({
+                        id: 'select_week',
+                    }) }
                     disabled={ loading }
                 />
                 <div className={ Styles.weekDays }>

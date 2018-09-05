@@ -47,17 +47,17 @@ const formHorizontalItemLayout = {
         xs:  { span: 24 },
         sm:  { span: 24 },
         md:  { span: 24 },
-        lg:  { span: 9 },
-        xl:  { span: 9 },
-        xxl: { span: 9 },
+        lg:  { span: 24 },
+        xl:  { span: 11 },
+        xxl: { span: 10 },
     },
     wrapperCol: {
         xs:  { span: 24 },
         sm:  { span: 24 },
         md:  { span: 24 },
-        lg:  { span: 15 },
-        xl:  { span: 15 },
-        xxl: { span: 15 },
+        lg:  { span: 24 },
+        xl:  { span: 13 },
+        xxl: { span: 14 },
     },
     colon: false,
 };
@@ -71,6 +71,7 @@ export default class OrderFormHeader extends Component {
         const dateBlock = this._renderDateBlock();
         const masterBlock = this._renderMasterBlock();
         const totalBlock = this._renderTotalBlock();
+        const duration = this._renderDuration();
 
         return (
             <div className={ Styles.formHeader }>
@@ -79,7 +80,7 @@ export default class OrderFormHeader extends Component {
                     { masterBlock }
                     { totalBlock }
                 </div>
-                { /* { duration } */ }
+                { duration }
             </div>
         );
     }
@@ -135,8 +136,6 @@ export default class OrderFormHeader extends Component {
         const momentBeginDatetime = beginDatetime
             ? moment(beginDatetime)
             : void 0;
-
-        const duration = this._renderDuration();
 
         return (
             <div className={ Styles.headerCol }>
@@ -228,7 +227,6 @@ export default class OrderFormHeader extends Component {
                     minuteStep={ 30 }
                     initialValue={ momentBeginDatetime }
                 />
-                { duration }
             </div>
         );
     };

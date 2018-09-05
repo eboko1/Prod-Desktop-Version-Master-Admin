@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Modal } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
 import {
@@ -21,6 +21,7 @@ import { withReduxForm2 } from 'utils';
 // own
 import Styles from './styles.m.css';
 
+@injectIntl
 @withReduxForm2({
     name:    'addClientForm',
     actions: {
@@ -34,15 +35,24 @@ import Styles from './styles.m.css';
 })
 export default class AddClientModal extends Component {
     render() {
-        const { visible, resetModal, addClientFormData } = this.props;
+        const {
+            visible,
+            resetModal,
+            addClientFormData,
+            searchQuery,
+        } = this.props;
 
         const { getFieldsValue, validateFields } = this.props.form;
+        const title =
+            this.props.intl.formatMessage({
+                id: 'add-client-form.add_client',
+            }) + (searchQuery ? ` (${searchQuery})` : '');
 
         return (
             <Modal
                 className={ Styles.addClientModal }
                 width={ '80%' }
-                title={ <FormattedMessage id='add-client-form.add_client' /> }
+                title={ <>{title}</> }
                 cancelText={ <FormattedMessage id='cancel' /> }
                 okText={ <FormattedMessage id='add' /> }
                 wrapClassName={ Styles.addClientModal }
@@ -51,7 +61,6 @@ export default class AddClientModal extends Component {
                     validateFields([ 'name', 'phones' ], err => {
                         if (!err) {
                             const clientFormData = getFieldsValue();
-                            console.log(clientFormData);
                             const vehicles = this.props.vehicles.map(
                                 ({
                                     modelId,

@@ -7,6 +7,7 @@ import _ from 'lodash';
 // proj
 import { Catcher } from 'commons';
 import withDnDropContext from 'utils/withDnDContext.js';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import DashboardEmptyCell from './DashboardEmptyCell';
@@ -107,14 +108,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length &&
+                    { load.length && 
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) :
+                                ) : 
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -154,6 +155,7 @@ class DashboardContainer extends Component {
             updateDashboardOrder,
             date,
             mode,
+            user,
         } = this.props;
         // const { hideSourceOnDrag } = this.state;
 
@@ -216,6 +218,7 @@ class DashboardContainer extends Component {
                                         />
                                     ) : (
                                         <DashboardOrder
+                                            user={ user }
                                             key={ index }
                                             mode={ mode }
                                             label={ {
@@ -266,7 +269,15 @@ class DashboardContainer extends Component {
     };
 
     _renderDashboardAddOrderColumn = column => {
-        const { dashboard, days, date, stations, schedule, mode } = this.props;
+        const {
+            dashboard,
+            days,
+            date,
+            stations,
+            schedule,
+            mode,
+            user,
+        } = this.props;
 
         const setBeginDateitme = index => {
             if (mode !== 'calendar') {
@@ -280,16 +291,22 @@ class DashboardContainer extends Component {
             return getBeginDatetime(days[ column ], index, schedule.beginHour);
         };
 
+        const showLink =
+            !isForbidden(user, permissions.CREATE_DASHBOARD_ORDER) &&
+            !isForbidden(user, permissions.SHOW_ORDERS);
+
         return (
             <DashboardAddOrderColumn dashboard={ dashboard }>
                 { [ ...Array(dashboard.rows).keys() ].map((_, index) => (
                     <DashboardAddOrderCell key={ index }>
-                        <DashboardAddOrderLink
-                            time={ setBeginDateitme(index) }
-                            stationNum={
-                                mode !== 'calendar' && stations[ column ].num
-                            }
-                        />
+                        { showLink ? (
+                            <DashboardAddOrderLink
+                                time={ setBeginDateitme(index) }
+                                stationNum={
+                                    mode !== 'calendar' && stations[ column ].num
+                                }
+                            />
+                        ) : null }
                     </DashboardAddOrderCell>
                 )) }
             </DashboardAddOrderColumn>

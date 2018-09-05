@@ -26,6 +26,7 @@ const ReducerState = {
         deadlineTime: { value: void 0, name: 'deadlineTime' },
         comment:      { value: void 0, name: 'comment' },
     },
+    initialOrderTask:      null,
     progressStatusOptions: [
         {
             value: 'Звонок',
@@ -170,7 +171,8 @@ export default function reducer(state = ReducerState, action) {
                         touched: true,
                     },
                 },
-                taskId: payload.id,
+                taskId:           payload.id,
+                initialOrderTask: payload,
             };
 
         case RESET_ORDER_TASKS_FORM:

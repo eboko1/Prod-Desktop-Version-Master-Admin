@@ -6,7 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { Button, Radio, Input } from 'antd';
 import _ from 'lodash';
-
+import moment from 'moment';
 // proj
 import {
     resetOrderTasksForm,
@@ -31,19 +31,32 @@ import Styles from './styles.m.css';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Search = Input.Search;
-
+const compareOrderTasks = (initialOrderTask, orderTaskEntity) => {
+    return (
+        initialOrderTask.responsibleId !== orderTaskEntity.responsible.value ||
+        initialOrderTask.priority !== orderTaskEntity.priority.value ||
+        initialOrderTask.status !== orderTaskEntity.status.value ||
+        initialOrderTask.comment !== orderTaskEntity.comment.value ||
+        moment(initialOrderTask.deadlineDate).format('HH:mm') !==
+            moment(orderTaskEntity.deadlineTime.value).format('HH:mm') ||
+        moment(initialOrderTask.deadlineDate).format() !==
+            moment(orderTaskEntity.deadlineDate.value).format() ||
+        initialOrderTask.stationNum !== orderTaskEntity.stationName.value
+    );
+};
 const mapStateToProps = state => {
     return {
-        myTasks:         state.myTasksContainer.myTasks,
-        page:            state.myTasksContainer.page,
-        modal:           state.modals.modal,
-        orderTaskEntity: state.forms.orderTaskForm.fields,
-        orderTaskId:     state.forms.orderTaskForm.taskId,
-        activeOrder:     state.myTasksContainer.activeOrder,
-        activeVehicle:   state.myTasksContainer.vehicle,
-        spinner:         state.ui.myTasksFetching,
-        filter:          state.myTasksContainer.filters,
-        isMobile:        state.ui.views.isMobile,
+        myTasks:          state.myTasksContainer.myTasks,
+        page:             state.myTasksContainer.page,
+        modal:            state.modals.modal,
+        orderTaskEntity:  state.forms.orderTaskForm.fields,
+        initialOrderTask: state.forms.orderTaskForm.initialOrderTask,
+        orderTaskId:      state.forms.orderTaskForm.taskId,
+        activeOrder:      state.myTasksContainer.activeOrder,
+        activeVehicle:    state.myTasksContainer.vehicle,
+        spinner:          state.ui.myTasksFetching,
+        filter:           state.myTasksContainer.filters,
+        isMobile:         state.ui.views.isMobile,
     };
 };
 
@@ -93,19 +106,24 @@ class MyTasksPage extends Component {
     };
 
     saveOrderTask = () => {
-        const { orderTaskEntity, orderTaskId } = this.props;
+        const { orderTaskEntity, orderTaskId, initialOrderTask } = this.props;
         const form = this.orderTaskFormRef.props.form;
         let myTasks = 'mytasks';
         form.validateFields(err => {
             if (!err) {
-                this.props.saveOrderTask(
-                    orderTaskEntity,
-                    this.props.activeOrder,
-                    orderTaskId,
-                    myTasks,
-                );
-                this.props.resetModal();
-                this.props.resetOrderTasksForm();
+                if (compareOrderTasks(initialOrderTask, orderTaskEntity)) {
+                    this.props.saveOrderTask(
+                        orderTaskEntity,
+                        this.props.activeOrder,
+                        orderTaskId,
+                        myTasks,
+                    );
+                    this.props.resetModal();
+                    this.props.resetOrderTasksForm();
+                } else {
+                    this.props.resetModal();
+                    this.props.resetOrderTasksForm();
+                }
             }
         });
     };
@@ -172,6 +190,7 @@ class MyTasksPage extends Component {
             setMyTasksSortOrderFilter,
             setMyTasksSortFieldFilter,
             fetchMyTasks,
+            initialOrderTask,
         } = this.props;
 
         return spinner ? (
@@ -233,6 +252,7 @@ class MyTasksPage extends Component {
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }
                     orderTaskEntity={ orderTaskEntity }
+                    initialOrderTask={ initialOrderTask }
                     priorityOptions={ priorityOptions }
                     progressStatusOptions={ progressStatusOptions }
                     visible={ modal }

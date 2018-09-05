@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import {FormattedMessage} from 'react-intl';
 import { Menu, Dropdown, Icon } from 'antd';
 import _ from 'lodash';
 import { permissions, isForbidden } from 'utils';
@@ -124,7 +124,9 @@ class ChangeStatusDropdown extends React.Component {
                 <Dropdown overlay={ menu }>
                     <div className={ Styles.dropdownTitle }>
                         <Icon type='swap' className={ Styles.dropdownTitleIcon } />
-                        { !isMobile && <span>Перевести в статус</span> }
+                        { !isMobile && <span>
+                            <FormattedMessage id='change_status_dropdown.change_status' />
+                        </span> }
                     </div>
                 </Dropdown>
             ) : null;
