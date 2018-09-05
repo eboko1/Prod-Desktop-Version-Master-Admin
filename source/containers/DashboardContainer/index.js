@@ -266,18 +266,26 @@ class DashboardContainer extends Component {
     };
 
     _renderDashboardAddOrderColumn = column => {
-        const { dashboard, days, stations, schedule, mode } = this.props;
+        const { dashboard, days, date, stations, schedule, mode } = this.props;
+
+        const setBeginDateitme = index => {
+            if (mode !== 'calendar') {
+                return getBeginDatetime(
+                    date.format('YYYY-MM-DD'),
+                    index,
+                    schedule.beginHour,
+                );
+            }
+
+            return getBeginDatetime(days[ column ], index, schedule.beginHour);
+        };
 
         return (
             <DashboardAddOrderColumn dashboard={ dashboard }>
                 { [ ...Array(dashboard.rows).keys() ].map((_, index) => (
                     <DashboardAddOrderCell key={ index }>
                         <DashboardAddOrderLink
-                            time={ getBeginDatetime(
-                                days[ column ],
-                                index,
-                                schedule.beginHour,
-                            ) }
+                            time={ setBeginDateitme(index) }
                             stationNum={
                                 mode !== 'calendar' && stations[ column ].num
                             }

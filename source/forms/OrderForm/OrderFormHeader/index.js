@@ -197,8 +197,7 @@ export default class OrderFormHeader extends Component {
                         _.get(fetchedOrder, 'order.stationNum') ||
                         (this.bodyUpdateIsForbidden()
                             ? void 0
-                            : _.get(location, 'state.stationNum')) ||
-                        _.get(stations, '[0].num')
+                            : _.get(location, 'state.stationNum'))
                     }
                 />
                 <DecoratedTimePicker
@@ -369,7 +368,9 @@ export default class OrderFormHeader extends Component {
                     <div className={ Styles.total }>
                         <FormattedMessage id='sum' />
                         <span className={ Styles.totalSum }>
-                            { `${totalPrice} ${formatMessage({id: 'currency'})}` }
+                            { `${totalPrice} ${formatMessage({
+                                id: 'currency',
+                            })}` }
                         </span>
                     </div>
                 </FormItem>
