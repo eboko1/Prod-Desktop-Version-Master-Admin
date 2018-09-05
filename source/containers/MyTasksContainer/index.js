@@ -324,22 +324,6 @@ export default class MyTasksContainer extends Component {
 
         return (
             <Catcher>
-                { /* <section className={ Styles.filters }>
-                    <DecoratedDatePicker
-                        field='filterDate'
-                        label={ <FormattedMessage id='filterDate' /> }
-                        formItem
-                        ranges
-                        formatMessage={ formatMessage }
-                        className={ Styles.selectMargin }
-                        getFieldDecorator={ getFieldDecorator }
-                        value={ null }
-                        getCalendarContainer={ trigger => trigger.parentNode }
-                        format={ 'YYYY-MM-DD' }
-                        placeholder={
-                            <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
-                        }/>
-                </section> */ }
                 <section className={ Styles.myTasks }>
                     <Table
                         className={ Styles.TableMyTasks }
