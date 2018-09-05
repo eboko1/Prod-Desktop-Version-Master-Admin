@@ -20,8 +20,8 @@
         "add_order_form.provide_odometr": "Provide mileage",
         "add_order_form.vin": "VIN",
         "add_order_form.total": "Total",
-        "add_order_form.services": "Services",
-        "add_order_form.details": "Details",
+        "add_order_form.services": "Labors",
+        "add_order_form.details": "Spare parts",
         "add_order_form.comments": "Comments",
         "add_order_form.duration": "Duration",
         "add_order_form.hours_shortcut": "h",
@@ -42,7 +42,8 @@
         "add_order_form.select_appurtenancies_responsible": "Select spare parts manger",
         "order_form_table.appurtenancies_responsible": "Spare parts manager",
         "add_order_form.appointment_details": "Appointment Details:",
-        "add_order_form.save_appointment": "Save Appointment"
+        "add_order_form.save_appointment": "Save Appointment",
+        "add_order_form.no_model": "Model not specified"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -87,7 +88,8 @@
         "add_order_form.select_appurtenancies_responsible": "Укажите запчастиста",
         "order_form_table.appurtenancies_responsible": "Запчастист",
         "add_order_form.appointment_details": "Записать на:",
-        "add_order_form.save_appointment": "Записать"
+        "add_order_form.save_appointment": "Записать",
+        "add_order_form.no_model": "Модель не указана"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -132,6 +134,7 @@
         "add_order_form.select_appurtenancies_responsible": "Вкажіть запчастиста",
         "order_form_table.appurtenancies_responsible": "Запчастист",
         "add_order_form.appointment_details": "Записати на:",
-        "add_order_form.save_appointment": "Записати"
+        "add_order_form.save_appointment": "Записати",
+        "add_order_form.no_model": "Модель не вказана"
     }
 }

@@ -2,7 +2,7 @@
     "en": {
         "order-page.title": "Transactions",
         "order-page.description": "Control your orders",
-        "order-page.creation_date": "Creation Date",
+        "order-page.creation_date": "Created",
         "order-status.call": "Call",
         "order-status.not_complete": "New",
         "order-status.reserve": "Reserve",
