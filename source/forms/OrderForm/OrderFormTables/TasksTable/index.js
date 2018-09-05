@@ -39,7 +39,6 @@ class TasksTable extends Component {
                     }
                 },
             },
-
             {
                 title:     <FormattedMessage id='status' />,
                 dataIndex: 'status',
@@ -185,14 +184,13 @@ class TasksTable extends Component {
     render() {
         const { orderTasks } = this.props;
         const columns = this.columns;
-        console.log(orderTasks);
 
         return (
             <Catcher>
                 <Table
                     dataSource={
                         orderTasks.orderTasks &&
-                        orderTasks.orderTasks.length>0&&
+                        orderTasks.orderTasks.length > 0 &&
                         orderTasks.orderTasks[ 0 ].history.length > 0
                             ? [
                                 ...orderTasks.orderTasks.map(
@@ -223,7 +221,7 @@ class TasksTable extends Component {
                                 : []
                     }
                     size='small'
-                    scroll={ { x: 2000 } }
+                    scroll={ { x: 2000, y: 200 } }
                     columns={ columns }
                     pagination={ false }
                     locale={ {

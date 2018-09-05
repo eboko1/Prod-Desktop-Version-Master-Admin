@@ -41,6 +41,7 @@ export class OrderTaskForm extends Component {
             priorityOptions,
             stations,
             managers,
+            initialOrderTask,
             orderTasks,
             activeVehicle,
         } = this.props;
@@ -132,16 +133,16 @@ export class OrderTaskForm extends Component {
         return (
             <Form layout='horizontal'>
                 <div className={ Styles.orderDescription }>
-                    { num?<div>
-                        
-                        <FormattedMessage id='order-task-modal.order_number' />:
-                        { num }
-
-                    </div>
-                        :null }
+                    { num ? (
+                        <div>
+                            <FormattedMessage id='order-task-modal.order_number' />
+                            :{ num }
+                        </div>
+                    ) : null }
                     { activeVehicle ? (
                         <div>
-                            <FormattedMessage id='order-task-modal.vehicle' />:{ activeVehicle }
+                            <FormattedMessage id='order-task-modal.vehicle' />:
+                            { activeVehicle }
                         </div>
                     ) : null }
                 </div>
@@ -151,9 +152,7 @@ export class OrderTaskForm extends Component {
                         showSearch
                         formItem
                         hasFeedback
-                        label={
-                            <FormattedMessage id='status' />
-                        }
+                        label={ <FormattedMessage id='status' /> }
                         getFieldDecorator={ getFieldDecorator }
                         className={ Styles.statusSelect }
                         placeholder={
@@ -282,6 +281,7 @@ export class OrderTaskForm extends Component {
                                 }
                             />
                             <DecoratedTimePicker
+                                minuteStep={ 30 }
                                 field='deadlineTime'
                                 label={ <FormattedMessage id='deadlineTime' /> }
                                 formItem

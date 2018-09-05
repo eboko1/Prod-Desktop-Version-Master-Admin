@@ -42,10 +42,25 @@ import {
     requiredFieldsOnStatuses,
 } from 'forms/OrderForm/extractOrderEntity';
 
+const compareOrderTasks = (initialOrderTask, orderTaskEntity) => {
+    return (
+        initialOrderTask.responsibleId !== orderTaskEntity.responsible.value ||
+        initialOrderTask.priority !== orderTaskEntity.priority.value ||
+        initialOrderTask.status !== orderTaskEntity.status.value ||
+        initialOrderTask.comment !== orderTaskEntity.comment.value ||
+        moment(initialOrderTask.deadlineDate).format('HH:mm') !==
+            moment(orderTaskEntity.deadlineTime.value).format('HH:mm') ||
+        moment(initialOrderTask.deadlineDate).format() !==
+            moment(orderTaskEntity.deadlineDate.value).format() ||
+        initialOrderTask.stationNum !== orderTaskEntity.stationName.value
+    );
+};
+
 const mapStateToProps = state => {
     return {
         isMobile:              state.ui.views.isMobile,
         orderTaskEntity:       state.forms.orderTaskForm.fields,
+        initialOrderTask:      state.forms.orderTaskForm.initialOrderTask,
         orderTaskId:           state.forms.orderTaskForm.taskId,
         priorityOptions:       state.forms.orderTaskForm.priorityOptions,
         progressStatusOptions: state.forms.orderTaskForm.progressStatusOptions,
@@ -160,11 +175,15 @@ class OrderPage extends Component {
             resetOrderTasksForm,
             orderTaskEntity,
             orderTaskId,
+            initialOrderTask
         } = this.props;
 
         const form = this.orderTaskFormRef.props.form;
+        
         form.validateFields(err => {
             if (!err) {
+                if (compareOrderTasks(initialOrderTask, orderTaskEntity)) {
+
                 saveOrderTask(
                     orderTaskEntity,
                     this.props.match.params.id,
@@ -172,6 +191,11 @@ class OrderPage extends Component {
                 );
                 resetModal();
                 resetOrderTasksForm();
+
+            }else{
+                    resetModal();
+                    resetOrderTasksForm();    
+                }
             }
         });
     };
@@ -334,6 +358,7 @@ class OrderPage extends Component {
             managers,
             stations,
             user,
+            initialOrderTask,
         } = this.props;
 
         const { num, status, datetime } = this.props.order;
@@ -351,16 +376,16 @@ class OrderPage extends Component {
         ) : (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
@@ -521,6 +546,7 @@ class OrderPage extends Component {
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }
                     orderTaskEntity={ this.props.orderTaskEntity }
+                    initialOrderTask={initialOrderTask}
                     priorityOptions={ this.props.priorityOptions }
                     progressStatusOptions={ this.props.progressStatusOptions }
                     visible={ modal }
