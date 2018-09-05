@@ -6,7 +6,7 @@ import { v4 } from 'uuid';
 //proj
 import { onChangeOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 
-import { withReduxForm, getDateTimeConfigs } from 'utils';
+import { withReduxForm } from 'utils';
 const Option = Select.Option;
 
 // own
@@ -42,15 +42,10 @@ export class OrderTaskForm extends Component {
             stations,
             managers,
             orderTasks,
+            activeVehicle,
         } = this.props;
         const { toogleDirectory } = this.state;
-        // const {
-        //     disabledDate,
-        //     disabledHours,
-        //     disabledMinutes,
-        //     disabledSeconds,
-        //     disabledTime,
-        // } = getDateTimeConfig(beginDatetime, this.props.schedule);
+
         const textDirectory = (
             <div className={ Styles.directory }>
                 <Icon
@@ -137,16 +132,16 @@ export class OrderTaskForm extends Component {
         return (
             <Form layout='horizontal'>
                 <div className={ Styles.orderDescription }>
-                    <div>
-                        { ' ' }
-                        <FormattedMessage id='order-task-modal.order_number' />:{ ' ' }
+                    { num?<div>
+                        
+                        <FormattedMessage id='order-task-modal.order_number' />:
                         { num }
+
                     </div>
-                    { orderTasks.length > 0 ? (
+                        :null }
+                    { activeVehicle ? (
                         <div>
-                            <FormattedMessage id='order-task-modal.vehicle' />:{ ' ' }
-                            { orderTasks[ 0 ].vehicleMakeName }{ ' ' }
-                            { orderTasks[ 0 ].vehicleModelName }
+                            <FormattedMessage id='order-task-modal.vehicle' />:{ activeVehicle }
                         </div>
                     ) : null }
                 </div>
@@ -158,17 +153,6 @@ export class OrderTaskForm extends Component {
                         hasFeedback
                         label={
                             <FormattedMessage id='status' />
-                            // <div >
-                            //     <FormattedMessage id='status' />
-                            //     <Tooltip placement='bottom'
-                            //         title={ popup }
-                            //         getPopupContainer={ trigger => trigger.parentNode }
-                            //     >
-                            //         <Icon
-                            //             // className={ Styles.questionIcon }
-                            //             type='question-circle-o'/>
-                            //     </Tooltip>
-                            //     </div>
                         }
                         getFieldDecorator={ getFieldDecorator }
                         className={ Styles.statusSelect }
@@ -216,7 +200,6 @@ export class OrderTaskForm extends Component {
                             placeholder={
                                 <FormattedMessage id='order_task_modal.priority_placeholder' />
                             }
-                            // optionFilterProp='children'
                             getPopupContainer={ trigger => trigger.parentNode }
                         >
                             { priorityOptions.map(({ id, value }) => {

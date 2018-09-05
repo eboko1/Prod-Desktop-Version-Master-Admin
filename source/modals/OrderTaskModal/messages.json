@@ -2,17 +2,23 @@
     "en": {
         "order-task-modal.order_number": "Order Number",
         "order-task-modal.transfer_change_task": "Transfer/Change Task",
-        "order-task-modal.change_task": "Change Task"
+        "order-task-modal.change_task": "Change Task",
+        "add_task": "Add Task",
+        "order-task.description": "Control your tasks"
     },
     "ru": {
         "order-task-modal.order_number": "Номер Заказа",
         "order-task-modal.transfer_change_task": "Перевести/Изменить Задачу",
         "order-task-modal.change_task": "Изменить Задачу",
-        "save":"Сохранить"
+        "save": "Сохранить",
+        "add_task": "Добавить Задачу",
+        "order-task.description": "Управления вашими задачами"
     },
     "uk": {
         "order-task-modal.order_number": "Номер Заказу",
         "order-task-modal.transfer_change_task": "Перевести/Змінити Задачу",
-        "order-task-modal.change_task": "Змінити Задачу"
+        "order-task-modal.change_task": "Змінити Задачу",
+        "add_task": "Додати Задачу",
+        "order-task.description": "Управління вашими задачами"
     }
 }

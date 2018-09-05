@@ -4,73 +4,86 @@ import { Button, Form } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
-import { withReduxForm } from 'utils';
-import { fetchSalary, saveSalary, deleteSalary } from 'core/settingSalary/duck';
-import { Catcher } from 'commons';
-import { DecoratedDatePicker } from 'forms/DecoratedFields/DecoratedDatePicker';
-import SettingSalaryTable from 'components/SettingSalaryTable';
-
-// own
-
-import Styles from './styles.m.css';
-const mapStateToProps = state => {
-    return {
-        salaries:  state.settingSalary.salaries,
-        employees: state.employee.employees,
-    };
-};
-
-const mapDispatchToProps = {
+import {
     fetchSalary,
     saveSalary,
     deleteSalary,
-};
+    onChangeSettingSalaryForm,
+    fetchSalaryReport,
+} from 'core/forms/settingSalaryForm/duck';
 
+import { Catcher } from 'commons';
+import { DecoratedDatePicker } from 'forms/DecoratedFields/DecoratedDatePicker';
+import { SettingSalaryTable } from 'components';
+import { withReduxForm, getDaterange } from 'utils';
+
+// own
+import Styles from './styles.m.css';
 const FormItem = Form.Item;
 
-@injectIntl
-@withReduxForm({ actions: mapDispatchToProps, mapStateToProps })
-export default class SettingSalaryContainer extends Component {
-    constructor(props) {
-        super(props);
-    }
+const mapStateToProps = state => ({
+    filterRangeDate: state.forms.settingSalary.fields.filterRangeDate,
+});
 
+@injectIntl
+@withReduxForm({
+    name:    'settingSalary',
+    actions: {
+        change: onChangeSettingSalaryForm,
+        fetchSalary,
+        saveSalary,
+        deleteSalary,
+        fetchSalaryReport,
+    },
+    mapStateToProps,
+})
+export default class SettingSalaryContainer extends Component {
     componentDidMount() {
         this.props.fetchSalary();
     }
     /* eslint-enable complexity */
 
     render() {
-        const { saveSalary, deleteSalary, salaries, employees } = this.props;
+        const {
+            saveSalary,
+            deleteSalary,
+            salaries,
+            employees,
+            entity,
+            fetchSalaryReport,
+            filterRangeDate,
+        } = this.props;
 
         return (
             <Catcher>
                 <div className={ Styles.downloadFile }>
                     <DecoratedDatePicker
+                        field='filterRangeDate'
                         ranges
-                        field='birthday'
                         label={ null }
                         formItem
                         formatMessage={ this.props.intl.formatMessage }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
-                        value={ null }
-                        getCalendarContainer={ trigger => trigger.parentNode }
                         format='YYYY-MM-DD'
                     />
                     <FormItem>
-                        <Button>
+                        <Button
+                            type='primary'
+                            disabled={ !filterRangeDate.value }
+                            onClick={ () =>
+                                fetchSalaryReport(entity.filterRangeDate.value)
+                            }
+                        >
                             <FormattedMessage id='setting-salary.calculate' />
                         </Button>
                     </FormItem>
                 </div>
-                <div>
-                    <SettingSalaryTable
-                        salaries={ salaries }
-                        saveSalary={ saveSalary }
-                        employees={ employees }
-                        deleteSalary={ deleteSalary }
-                    />
-                </div>
+                <SettingSalaryTable
+                    salaries={ salaries }
+                    saveSalary={ saveSalary }
+                    employees={ employees }
+                    deleteSalary={ deleteSalary }
+                />
             </Catcher>
         );
     }

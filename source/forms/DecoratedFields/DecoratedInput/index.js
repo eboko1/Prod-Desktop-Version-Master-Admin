@@ -45,6 +45,7 @@ export const DecoratedInput = props => {
             }
             style={ style }
             type={ type }
+            className={ className }
             placeholder={ placeholder }
             disabled={ disabled }
             onChange={ onChange }

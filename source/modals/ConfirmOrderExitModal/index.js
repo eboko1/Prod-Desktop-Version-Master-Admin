@@ -8,14 +8,7 @@ import { MODALS } from 'core/modals/duck';
 
 export default class CancelReasonModal extends Component {
     render() {
-        const {
-            visible,
-            resetModal,
-            saveOrder,
-            returnToOrdersPage,
-            status,
-            redirect,
-        } = this.props;
+        const { visible, resetModal, saveOrder, redirect } = this.props;
 
         return (
             <Modal
@@ -26,14 +19,17 @@ export default class CancelReasonModal extends Component {
                 onCancel={ () => resetModal() }
                 footer={
                     <div>
-                        <Button onClick={ () => redirect() }>Cancel</Button>
+                        <Button onClick={ () => redirect() }>
+                            <FormattedMessage id='no' />
+                        </Button>
                         <Button
+                            type='primary'
                             onClick={ () => {
                                 resetModal();
                                 saveOrder();
                             } }
                         >
-                            Ok
+                            <FormattedMessage id='yes' />
                         </Button>
                     </div>
                 }

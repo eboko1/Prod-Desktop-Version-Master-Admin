@@ -103,7 +103,9 @@ export default class OrderFormBody extends Component {
                     field='searchClientQuery'
                     formItem
                     colon={ false }
-                    label={ <FormattedMessage id='add_order_form.search_client'/> }
+                    label={
+                        <FormattedMessage id='add_order_form.search_client' />
+                    }
                     getFieldDecorator={ getFieldDecorator }
                     disabled={
                         Boolean(disabledClientSearch) ||
@@ -258,6 +260,15 @@ export default class OrderFormBody extends Component {
             selectedVehicleId &&
             _.find(selectedClient.vehicles, { id: selectedVehicleId });
 
+        function formatVehicleLabel(vehicle) {
+            const modelPart = vehicle.model
+                ? `${vehicle.make} ${vehicle.model}`
+                : formatMessage({ id: 'add_order_form.no_model' });
+            const parts = [ modelPart, vehicle.year, vehicle.modification, vehicle.number, vehicle.vin ];
+
+            return parts.filter(Boolean).map(String).map(_.trimEnd).join(', ');
+        }
+
         return (
             <div className={ Styles.bodyColumn }>
                 <div className={ Styles.bodyColumnContent }>
@@ -304,15 +315,7 @@ export default class OrderFormBody extends Component {
                         >
                             { selectedClient.vehicles.map(vehicle => (
                                 <Option value={ vehicle.id } key={ v4() }>
-                                    { vehicle.model
-                                        ? `${vehicle.make} ${vehicle.model}
-                                ${vehicle.number ? ' ' + vehicle.number : ''}
-                                ${vehicle.vin ? ' ' + vehicle.vin : ''}`
-                                        : `${formatMessage({
-                                            id: 'add_order_form.no_model',
-                                        })}
-                                ${vehicle.number ? ' ' + vehicle.number : ''}
-                                ${vehicle.vin ? ' ' + vehicle.vin : ''}` }
+                                    { formatVehicleLabel(vehicle) }
                                 </Option>
                             )) }
                         </DecoratedSelect>

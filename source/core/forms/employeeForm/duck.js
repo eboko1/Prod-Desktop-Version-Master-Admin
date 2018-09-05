@@ -14,7 +14,8 @@ export const SAVE_EMPLOYEE_FAILURE = `${prefix}/SAVE_EMPLOYEE_FAILURE`;
 export const FETCH_EMPLOYEE_BY_ID = `${prefix}/FETCH_EMPLOYEE_BY_ID`;
 export const FETCH_EMPLOYEE_BY_ID_SUCCESS = `${prefix}/FETCH_EMPLOYEE_BY_ID_SUCCESS`;
 export const FETCH_EMPLOYEE_BY_ID_FAILURE = `${prefix}/FETCH_EMPLOYEE_BY_ID_FAILURE`;
-
+export const FIRE_EMPLOYEE_SUCCESS = `${prefix}/FIRE_EMPLOYEE_SUCCESS`;
+export const FIRE_EMPLOYEE = `${prefix}/FIRE_EMPLOYEE`;
 /**
  * Reducer
  * */
@@ -156,6 +157,16 @@ export const saveEmployeeSuccess = data => ({
 });
 export const saveEmployeeFailure = data => ({
     type:    SAVE_EMPLOYEE_FAILURE,
+    payload: data,
+});
+export const fireEmployee = (employee, id, FireDate) => ({
+    type:     FIRE_EMPLOYEE,
+    payload:  employee,
+    id:       id,
+    fireDate: FireDate,
+});
+export const fireEmployeeSuccess = data => ({
+    type:    FIRE_EMPLOYEE_SUCCESS,
     payload: data,
 });
 export const fetchEmployeeById = (id) => ({

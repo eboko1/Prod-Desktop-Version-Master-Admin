@@ -25,8 +25,8 @@ import { saga as rolesSaga } from 'core/role/saga';
 import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
 import { saga as employeeSaga } from 'core/employee/saga';
 import { saga as employeeFormSaga } from 'core/forms/employeeForm/saga';
-import { saga as settingSalarySaga } from 'core/settingSalary/saga';
 import { saga as employeeScheduleFormSaga } from 'core/forms/employeeScheduleForm/saga';
+import { saga as employeeBreakScheduleFormSaga } from 'core/forms/employeeBreakScheduleForm/saga';
 import { saga as profileFormSaga } from 'core/forms/profileForm/saga';
 
 /* eslint-disable array-element-newline */
@@ -49,9 +49,9 @@ export default function* rootSaga() {
         switchBusinessSaga(),
         employeeSaga(),
         employeeFormSaga(),
-        settingSalarySaga(),
         businessPackageSaga(),
         employeeScheduleFormSaga(),
+        employeeBreakScheduleFormSaga(),
         searchSaga(),
         managerRoleSaga(),
         profileFormSaga(),

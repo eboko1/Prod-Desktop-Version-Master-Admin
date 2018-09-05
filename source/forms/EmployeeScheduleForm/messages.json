@@ -6,7 +6,8 @@
         "thu": "Thu",
         "fri": "Fri",
         "sat": "Sat",
-        "sun": "Sun"
+        "sun": "Sun",
+        "add_non_working_day": "Add non working day"
     },
     "ru": {
         "mon": "Пн",
@@ -15,7 +16,8 @@
         "thu": "Чт",
         "fri": "Пт",
         "sat": "Сб",
-        "sun": "Вс"
+        "sun": "Вс",
+        "add_non_working_day": "Добавить нерабочий день"
     },
     "uk": {
         "mon": "Пн",
@@ -24,6 +26,7 @@
         "thu": "Чт",
         "fri": "Пт",
         "sat": "Сб",
-        "sun": "Вс"
+        "sun": "Вс",
+        "add_non_working_day": "Добавити неробочий день"
     }
 }

@@ -25,11 +25,6 @@ export default {
                     name: 'navigation.workflow',
                 },
                 {
-                    key:  '/tasks',
-                    link: book.oldApp.tasks,
-                    name: 'navigation.tasks',
-                },
-                {
                     key:  '/mytasks',
                     link: book.myTasksPage,
                     name: 'navigation.mytasks',
@@ -184,7 +179,7 @@ export default {
             name:     'navigation.suggest_idea',
         },
     ],
-                    
+
     getSelectedByRoute: function getSelectedByRoute(currentPath) {
         const result = {
             sectionKey: '',

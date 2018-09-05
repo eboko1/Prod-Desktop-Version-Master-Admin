@@ -207,21 +207,8 @@ function* handleClientSearchSaga({ payload }) {
         yield delay(1000);
 
         if (payload.length > 2) {
-            /* eslint-disable array-element-newline */
-            const fields = [
-                'clientId',
-                'name',
-                'surname',
-                'phones',
-                'emails',
-                'vehicles',
-                'disabled',
-                'requisites',
-            ];
-            /* eslint-enable array-element-newline */
-            const data = yield call(fetchAPI, 'GET', 'clients', {
-                filters: { query: payload },
-                options: { omitStats: true, fields },
+            const data = yield call(fetchAPI, 'GET', 'clients/search', {
+                query: payload,
             });
             yield put(onChangeClientSearchQuerySuccess(data));
         } else {

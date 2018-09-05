@@ -2,16 +2,19 @@
     "en": {
         "orderNumber": "Order Number",
         "filterDate": "Filter Date",
-        "vehicle": "Vehicle"
+        "vehicle": "Vehicle",
+        "active": "Active"
     },
     "ru": {
         "orderNumber": "Номер Заказа",
         "filterDate": "Фильтр По Дате",
-        "vehicle": "Авто"
+        "vehicle": "Авто",
+        "active": "Активные"
     },
     "uk": {
         "orderNumber": "Номер Заказу",
         "filterDate": "Фільтр По Даті",
-        "vehicle": "Авто"
+        "vehicle": "Авто",
+        "active": "Активні"
     }
 }

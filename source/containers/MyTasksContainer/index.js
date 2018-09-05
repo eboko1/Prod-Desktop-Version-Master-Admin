@@ -4,6 +4,7 @@ import { Table, Icon, Tooltip } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { v4 } from 'uuid';
+import { Link } from 'react-router-dom';
 
 // proj
 import { withReduxForm } from 'utils';
@@ -12,6 +13,7 @@ import {
     setPage,
     onChangeMyTasksForm,
     getActiveOrder,
+    getActiveVehicle,
 } from 'core/myTasks/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 import { setModal, MODALS } from 'core/modals/duck';
@@ -31,6 +33,7 @@ import Styles from './styles.m.css';
         initOrderTasksForm,
         getActiveOrder,
         setPage,
+        getActiveVehicle,
     },
 })
 export default class MyTasksContainer extends Component {
@@ -56,6 +59,10 @@ export default class MyTasksContainer extends Component {
                                         this.props.getActiveOrder(
                                             record.orderId,
                                         );
+                                        this.props.getActiveVehicle(
+                                            `${record.vehicleMakeName}
+                                            ${record.vehicleModelName}`,
+                                        );
                                     } }
                                     type='edit'
                                 />
@@ -69,6 +76,25 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='orderNumber' />,
                 dataIndex: 'orderNum',
                 width:     '7%',
+                render:    (text, record) => (
+                    <Link to={ `/order/${record.orderId}` }>{ text }</Link>
+                ),
+            },
+            {
+                title:     <FormattedMessage id='comment' />,
+                dataIndex: 'comment',
+                width:     '7%',
+                render:    (text, record) => (
+                    <div>
+                        <Tooltip
+                            placement='bottomLeft'
+                            title={ <div>{ text }</div> }
+                            getPopupContainer={ trigger => trigger.parentNode }
+                        >
+                            <div className={ Styles.commentDiv }>{ text }</div>
+                        </Tooltip>
+                    </div>
+                ),
             },
             {
                 title:     <FormattedMessage id='status' />,
@@ -107,23 +133,23 @@ export default class MyTasksContainer extends Component {
                     ) : null;
                 },
             },
-            {
-                title:     <FormattedMessage id='responsible' />,
-                dataIndex: 'responsibleName',
-                width:     '7%',
-                render:    (text, record) => {
-                    return (
-                        <div style={ { wordBreak: 'normal' } }>{ `${text} ${
-                            record.responsibleSurname
-                        }` }</div>
-                    );
-                },
-            },
-            {
-                title:     <FormattedMessage id='position' />,
-                dataIndex: 'position',
-                width:     '7%',
-            },
+            // {
+            //     title:     <FormattedMessage id='responsible' />,
+            //     dataIndex: 'responsibleName',
+            //     width:     '7%',
+            //     render:    (text, record) => {
+            //         return (
+            //             <div style={ { wordBreak: 'normal' } }>{ `${text} ${
+            //                 record.responsibleSurname
+            //             }` }</div>
+            //         );
+            //     },
+            // },
+            // {
+            //     title:     <FormattedMessage id='position' />,
+            //     dataIndex: 'position',
+            //     width:     '7%',
+            // },
             {
                 title:     <FormattedMessage id='stationName' />,
                 dataIndex: 'stationName',
@@ -185,31 +211,27 @@ export default class MyTasksContainer extends Component {
                 ),
                 sorter: true,
             },
-            {
-                title:     <FormattedMessage id='comment' />,
-                dataIndex: 'comment',
-                width:     '7%',
-                render:    (text, record) => (
-                    <div>
-                        <Tooltip
-                            placement='bottomLeft'
-                            title={
-                                <div
-                                // style={ {
-                                //     whiteSpace: 'nowrap',
-                                //     wordBreak:  'break-all',
-                                //     height:     '100%'} }
-                                >
-                                    { text }
-                                </div>
-                            }
-                            getPopupContainer={ trigger => trigger.parentNode }
-                        >
-                            <div className={ Styles.commentDiv }>{ text }</div>
-                        </Tooltip>
-                    </div>
-                ),
-            },
+            // {
+            //     title:     <FormattedMessage id='comment' />,
+            //     dataIndex: 'comment',
+            //     width:     '7%',
+            //     render:    (text, record) => (
+            //         <div>
+            //             <Tooltip
+            //                 placement='bottomLeft'
+            //                 title={
+            //                     <div
+            //                     >
+            //                         { text }
+            //                     </div>
+            //                 }
+            //                 getPopupContainer={ trigger => trigger.parentNode }
+            //             >
+            //                 <div className={ Styles.commentDiv }>{ text }</div>
+            //             </Tooltip>
+            //         </div>
+            //     ),
+            // },
             {
                 title:     <FormattedMessage id='author' />,
                 dataIndex: 'author',
@@ -224,58 +246,66 @@ export default class MyTasksContainer extends Component {
     }
 
     handleTableChange = (pagination, filters, sorter) => {
+        const {
+            setMyTasksSortFieldFilter,
+            setMyTasksSortOrderFilter,
+            fetchMyTasks,
+            filter,
+        } = this.state;
         if (!sorter) {
             return;
         }
         const sort = {
             field: sorter.field,
-            order: sorter.order === 'ascend' ? 'ascend' : 'descend',
+            order: sorter.order === 'ascend' ? 'asc' : 'desc',
         };
-        this.setState({ sort });
+        setMyTasksSortFieldFilter(sorter.field);
+        setMyTasksSortOrderFilter(sorter.order === 'ascend' ? 'asc' : 'desc');
+        fetchMyTasks(filter);
     };
 
     /* eslint-disable complexity */
     // TODO: rewrite
-    sortTable = (a, b) => {
-        const { sort } = this.state;
-        let priorities = {
-            LOW:      1,
-            NORMAL:   2,
-            HIGH:     3,
-            CRITICAL: 4,
-        };
-        if (sort.field === 'priority' && sort.order === 'ascend') {
-            return (
-                (priorities[ a.priority ] || 0) - (priorities[ b.priority ] || 0)
-            );
-        } else if (sort.field === 'priority' && sort.order === 'descend') {
-            return (
-                (priorities[ b.priority ] || 0) - (priorities[ a.priority ] || 0)
-            );
-        }
+    // sortTable = (a, b) => {
+    //     const { sort } = this.state;
+    //     let priorities = {
+    //         LOW:      1,
+    //         NORMAL:   2,
+    //         HIGH:     3,
+    //         CRITICAL: 4,
+    //     };
+    //     if (sort.field === 'priority' && sort.order === 'ascend') {
+    //         return (
+    //             (priorities[ a.priority ] || 0) - (priorities[ b.priority ] || 0)
+    //         );
+    //     } else if (sort.field === 'priority' && sort.order === 'descend') {
+    //         return (
+    //             (priorities[ b.priority ] || 0) - (priorities[ a.priority ] || 0)
+    //         );
+    //     }
 
-        if (sort.field === 'duration' && sort.order === 'ascend') {
-            return a.duration - b.duration;
-        } else if (sort.field === 'duration' && sort.order === 'descend') {
-            return b.duration - a.duration;
-        }
+    //     if (sort.field === 'duration' && sort.order === 'ascend') {
+    //         return a.duration - b.duration;
+    //     } else if (sort.field === 'duration' && sort.order === 'descend') {
+    //         return b.duration - a.duration;
+    //     }
 
-        if (sort.order === 'ascend') {
-            var c = new Date(a[ sort.field ]);
-            var d = new Date(b[ sort.field ]);
+    //     if (sort.order === 'ascend') {
+    //         var c = new Date(a[ sort.field ]);
+    //         var d = new Date(b[ sort.field ]);
 
-            return c - d;
-        }
+    //         return c - d;
+    //     }
 
-        var c = new Date(a[ sort.field ]);
-        var d = new Date(b[ sort.field ]);
+    //     var c = new Date(a[ sort.field ]);
+    //     var d = new Date(b[ sort.field ]);
 
-        return d - c;
+    //     return d - c;
 
-        return 0;
-    };
+    //     return 0;
+    // };
+
     /* eslint-enable complexity */
-
     render() {
         const { myTasks, page } = this.props;
         const columns = this.columns;
@@ -283,7 +313,7 @@ export default class MyTasksContainer extends Component {
         const pagination = {
             pageSize:         25,
             size:             'large',
-            total:            myTasks ? myTasks.length : 25,
+            total:            myTasks ? Number(myTasks.orderTasks.orderTasksCount) : 25,
             hideOnSinglePage: true,
             current:          page,
             onChange:         page => {
@@ -294,28 +324,13 @@ export default class MyTasksContainer extends Component {
 
         return (
             <Catcher>
-                { /* <section className={ Styles.filters }>
-                    <DecoratedDatePicker
-                        field='filterDate'
-                        label={ <FormattedMessage id='filterDate' /> }
-                        formItem
-                        ranges
-                        formatMessage={ formatMessage }
-                        className={ Styles.selectMargin }
-                        getFieldDecorator={ getFieldDecorator }
-                        value={ null }
-                        getCalendarContainer={ trigger => trigger.parentNode }
-                        format={ 'YYYY-MM-DD' }
-                        placeholder={
-                            <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
-                        }/>
-                </section> */ }
                 <section className={ Styles.myTasks }>
                     <Table
+                        className={ Styles.TableMyTasks }
                         dataSource={
-                            myTasks && myTasks.orderTasks.length > 0
-                                ? myTasks.orderTasks
-                                    .sort(this.sortTable)
+                            myTasks && myTasks.orderTasks.orderTasks.length > 0
+                                ? myTasks.orderTasks.orderTasks
+                                // .sort(this.sortTable)
                                     .map((task, index) => ({
                                         ...task,
                                         index,
@@ -326,7 +341,7 @@ export default class MyTasksContainer extends Component {
                         size='small'
                         scroll={ {
                             x: 2200,
-                            // y: '50vh',
+                            y: '50vh',
                         } }
                         columns={ columns }
                         pagination={ pagination }

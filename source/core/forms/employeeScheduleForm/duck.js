@@ -99,9 +99,9 @@ export const fetchEmployeeScheduleSuccess = data => ({
     payload: data,
 });
 
-export const saveEmployeeSchedule = ({ schedule, id }) => ({
+export const saveEmployeeSchedule = ({ schedule, id, update }) => ({
     type:    SAVE_EMPLOYEE_SCHEDULE,
-    payload: { schedule, id },
+    payload: { schedule, id , update},
 });
 
 export const saveEmployeeScheduleSuccess = data => ({

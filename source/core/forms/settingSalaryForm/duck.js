@@ -10,13 +10,17 @@ export const SAVE_SALARY = `${prefix}/SAVE_SALARY`;
 export const SAVE_SALARY_SUCCESS = `${prefix}/SAVE_SALARY_SUCCESS`;
 export const DELETE_SALARY = `${prefix}/DELETE_SALARY`;
 export const DELETE_SALARY_SUCCESS = `${prefix}/DELETE_SALARY_SUCCESS`;
+export const ON_CHANGE_SETTING_SALARY_FORM = `${prefix}/ON_CHANGE_SETTING_SALARY_FORM`;
+export const FETCH_SALARY_REPORT = `${prefix}/FETCH_SALARY_REPORT`;
+export const FETCH_SALARY_REPORT_SUCCESS = `${prefix}/FETCH_SALARY_REPORT_SUCCESS`;
+
 /**
  * Reducer
  * */
 
 const ReducerState = {
     fields: {
-        // filterDate: { value: void 0, name: 'filterDate' },
+        filterRangeDate: { value: void 0, name: 'filterRangeDate' },
     },
     salaries: null,
 };
@@ -31,10 +35,20 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 salaries: null,
             };
+
         case FETCH_SALARY_SUCCESS:
             return {
                 ...state,
                 salaries: payload,
+            };
+
+        case ON_CHANGE_SETTING_SALARY_FORM:
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    ...payload,
+                },
             };
 
         default:
@@ -78,5 +92,17 @@ export const deleteSalary = id => ({
 
 export const deleteSalarySuccess = data => ({
     type:    DELETE_SALARY_SUCCESS,
+    payload: data,
+});
+export const onChangeSettingSalaryForm = update => ({
+    type:    ON_CHANGE_SETTING_SALARY_FORM,
+    payload: update,
+});
+export const fetchSalaryReport = info => ({
+    type:    FETCH_SALARY_REPORT,
+    payload: info,
+});
+export const fetchSalaryReportSuccess = data => ({
+    type:    FETCH_SALARY_REPORT_SUCCESS,
     payload: data,
 });
