@@ -72,7 +72,8 @@ export class MobileRecordForm extends Component {
         return (
             <Form layout='horizontal'>
                 <div className={ Styles.mobileRecordFormFooter }>
-                    { status !== 'cancel' && (
+                    { status !== 'cancel' &&
+                        status !== 'approve' && (
                         <Button
                             className={ Styles.mobileRecordSubmitBtn }
                             type='primary'

@@ -175,26 +175,24 @@ class OrderPage extends Component {
             resetOrderTasksForm,
             orderTaskEntity,
             orderTaskId,
-            initialOrderTask
+            initialOrderTask,
         } = this.props;
 
         const form = this.orderTaskFormRef.props.form;
-        
+
         form.validateFields(err => {
             if (!err) {
                 if (compareOrderTasks(initialOrderTask, orderTaskEntity)) {
-
-                saveOrderTask(
-                    orderTaskEntity,
-                    this.props.match.params.id,
-                    orderTaskId,
-                );
-                resetModal();
-                resetOrderTasksForm();
-
-            }else{
+                    saveOrderTask(
+                        orderTaskEntity,
+                        this.props.match.params.id,
+                        orderTaskId,
+                    );
                     resetModal();
-                    resetOrderTasksForm();    
+                    resetOrderTasksForm();
+                } else {
+                    resetModal();
+                    resetOrderTasksForm();
                 }
             }
         });
@@ -546,7 +544,7 @@ class OrderPage extends Component {
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }
                     orderTaskEntity={ this.props.orderTaskEntity }
-                    initialOrderTask={initialOrderTask}
+                    initialOrderTask={ initialOrderTask }
                     priorityOptions={ this.props.priorityOptions }
                     progressStatusOptions={ this.props.progressStatusOptions }
                     visible={ modal }

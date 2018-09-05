@@ -234,7 +234,9 @@ export default class OrderFormBody extends Component {
                             _.get(fetchedOrder, 'order.clientEmail') ||
                             selectedClient.emails.find(Boolean)
                         }
-                        placeholder={ 'Choose selected client email' }
+                        placeholder={ formatMessage({
+                            id: 'add_order_form.email.placeholder',
+                        }) }
                     >
                         { selectedClient.emails.filter(Boolean).map(email => (
                             <Option value={ email } key={ v4() }>
@@ -287,7 +289,11 @@ export default class OrderFormBody extends Component {
                 : formatMessage({ id: 'add_order_form.no_model' });
             const parts = [ modelPart, vehicle.year, vehicle.modification, vehicle.number, vehicle.vin ];
 
-            return parts.filter(Boolean).map(String).map(_.trimEnd).join(', ');
+            return parts
+                .filter(Boolean)
+                .map(String)
+                .map(_.trimEnd)
+                .join(', ');
         }
 
         return (

@@ -7,16 +7,19 @@ import { Form, Button, Checkbox } from 'antd';
 import { onChangeToSuccessForm } from 'core/forms/toSuccessForm/duck';
 
 import { DecoratedCheckbox } from 'forms/DecoratedFields';
-import { withReduxForm } from 'utils';
+import { withReduxForm2 } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
-@withReduxForm({
+@withReduxForm2({
     name:    'toSuccessForm',
     actions: {
         change: onChangeToSuccessForm,
     },
+    mapStateToProps: state => ({
+        businessName: state.auth.businessName,
+    }),
 })
 export class ToSuccessForm extends Component {
     render() {
@@ -50,9 +53,10 @@ export class ToSuccessForm extends Component {
                             field='toSuccess'
                             getFieldDecorator={ getFieldDecorator }
                         >
-                            <FormattedMessage id='to_success.send_message' />:<br/>
+                            <FormattedMessage id='to_success.send_message' />:
+                            <br />
                             <FormattedMessage id='to_success.sms1' />
-                            СТО Партнер
+                            { businessName }
                             <FormattedMessage id='to_success.sms2' />
                         </DecoratedCheckbox>
                     </div>
