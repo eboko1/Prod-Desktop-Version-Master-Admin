@@ -19,6 +19,7 @@ import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
+import { ClientsSearchTable } from './../OrderFormTables';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -74,10 +75,12 @@ export default class OrderFormBody extends Component {
         const clientColumn = this._renderClientColumn();
         const vehicleColumn = this._renderVehicleColumn();
         const comments = this._renderCommentsBlock();
+        const clientsSearchTable = this._renderClientSearchTable();
 
         return (
             <div className={ Styles.clientBlock }>
                 { clientSearch }
+                { clientsSearchTable }
                 <div className={ Styles.clientData }>
                     { clientColumn }
                     { vehicleColumn }
@@ -86,6 +89,23 @@ export default class OrderFormBody extends Component {
             </div>
         );
     }
+
+    _renderClientSearchTable = () => {
+        const {
+            searchClientsResult: { searching: clientsSearching, clients },
+            setClientSelection,
+        } = this.props;
+        const { getFieldValue } = this.props.form;
+
+        return (
+            <ClientsSearchTable
+                clientsSearching={ clientsSearching }
+                setClientSelection={ setClientSelection }
+                visible={ getFieldValue('searchClientQuery') }
+                clients={ clients }
+            />
+        );
+    };
 
     _renderClientSearch = () => {
         const { getFieldDecorator } = this.props.form;
