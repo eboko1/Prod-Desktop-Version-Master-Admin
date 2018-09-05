@@ -41,9 +41,7 @@ export default class OrderTaskModal extends Component {
                 okText={ <FormattedMessage id='save' /> }
                 wrapClassName={ Styles.orderTaskModal }
                 visible={ visible === MODALS.ORDER_TASK }
-                onOk={ () => {
-                    saveNewOrderTask();
-                } }
+                onOk={ () => saveNewOrderTask() }
                 onCancel={ () => {
                     resetModal();
                     resetOrderTasksForm();

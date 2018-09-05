@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { Form, Select, Icon, Tooltip } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { v4 } from 'uuid';
+
 //proj
 import { onChangeOrderTasksForm } from 'core/forms/orderTaskForm/duck';
-
 import { withReduxForm } from 'utils';
 const Option = Select.Option;
 
@@ -17,6 +17,7 @@ import {
     DecoratedTimePicker,
 } from 'forms/DecoratedFields';
 import Styles from './styles.m.css';
+
 @injectIntl
 @withReduxForm({
     name:    'orderTaskForm',

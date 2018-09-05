@@ -175,22 +175,23 @@ class OrderPage extends Component {
             resetOrderTasksForm,
             orderTaskEntity,
             orderTaskId,
+            orderTasks,
             initialOrderTask,
+            match: { params },
         } = this.props;
 
         const form = this.orderTaskFormRef.props.form;
 
         form.validateFields(err => {
             if (!err) {
-                if (compareOrderTasks(initialOrderTask, orderTaskEntity)) {
-                    saveOrderTask(
-                        orderTaskEntity,
-                        this.props.match.params.id,
-                        orderTaskId,
-                    );
+                if (orderTasks.orderTasks.length >= 1) {
+                    if (compareOrderTasks(initialOrderTask, orderTaskEntity)) {
+                        saveOrderTask(orderTaskEntity, params.id, orderTaskId);
+                    }
                     resetModal();
                     resetOrderTasksForm();
                 } else {
+                    saveOrderTask(orderTaskEntity, params.id, orderTaskId);
                     resetModal();
                     resetOrderTasksForm();
                 }
