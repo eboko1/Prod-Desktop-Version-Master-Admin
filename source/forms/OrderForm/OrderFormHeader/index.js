@@ -301,7 +301,7 @@ export default class OrderFormHeader extends Component {
                     { employees.map(employee => (
                         <Option
                             value={ employee.id }
-                            key={ v4() }
+                            key={ `employee-${employee.id}` }
                             disabled={ employee.disabled }
                         >
                             { `${employee.name} ${employee.surname}` }
