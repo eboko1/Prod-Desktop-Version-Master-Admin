@@ -43,6 +43,12 @@ import {
 } from 'forms/OrderForm/extractOrderEntity';
 
 const compareOrderTasks = (initialOrderTask, orderTaskEntity) => {
+    if (!initialOrderTask) {
+        console.warn(' compareOrderTasks failed with initialOrderTask !');
+
+        return false;
+    }
+
     return (
         initialOrderTask.responsibleId !== orderTaskEntity.responsible.value ||
         initialOrderTask.priority !== orderTaskEntity.priority.value ||

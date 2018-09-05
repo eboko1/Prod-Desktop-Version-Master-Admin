@@ -1,7 +1,7 @@
 //vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Form, Button, Checkbox } from 'antd';
+import { Form, Button } from 'antd';
 
 // proj
 import { onChangeToSuccessForm } from 'core/forms/toSuccessForm/duck';
@@ -56,7 +56,7 @@ export class ToSuccessForm extends Component {
                             <FormattedMessage id='to_success.send_message' />:
                             <br />
                             <FormattedMessage id='to_success.sms1' />
-                            { businessName }
+                            { this.props.businessName }
                             <FormattedMessage id='to_success.sms2' />
                         </DecoratedCheckbox>
                     </div>

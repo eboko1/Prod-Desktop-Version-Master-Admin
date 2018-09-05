@@ -147,7 +147,7 @@ export class OrderTaskForm extends Component {
                         </div>
                     ) : null }
                 </div>
-                <div>
+                <div className={ Styles.statusPanel }>
                     <DecoratedSelect
                         field={ 'status' }
                         showSearch
@@ -178,11 +178,14 @@ export class OrderTaskForm extends Component {
                         }) }
                     </DecoratedSelect>
                     <Tooltip
-                        placement='bottom'
+                        placement='top'
                         title={ popup }
                         getPopupContainer={ trigger => trigger.parentNode }
                     >
-                        <Icon type='question-circle-o' />
+                        <Icon
+                            type='question-circle-o'
+                            style={ { marginBottom: 8 } }
+                        />
                     </Tooltip>
                 </div>
                 { toogleDirectory ? (
