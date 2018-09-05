@@ -23,7 +23,11 @@ import Styles from './styles.m.css';
 })
 export class ToSuccessForm extends Component {
     render() {
-        const { handleToSuccessModalSubmit, resetModal } = this.props;
+        const {
+            handleToSuccessModalSubmit,
+            resetModal,
+            businessName,
+        } = this.props;
         const { getFieldDecorator } = this.props.form;
         // const { formatMessage } = this.props.intl;
 
@@ -53,11 +57,14 @@ export class ToSuccessForm extends Component {
                             field='toSuccess'
                             getFieldDecorator={ getFieldDecorator }
                         >
-                            <FormattedMessage id='to_success.send_message' />:
-                            <br />
-                            <FormattedMessage id='to_success.sms1' />
-                            { this.props.businessName }
-                            <FormattedMessage id='to_success.sms2' />
+                            <FormattedMessage id='to_success.send_message' />
+                            { businessName && (
+                                <p className={ Styles.text }>
+                                    <FormattedMessage id='to_success.sms1' />
+                                    businessName
+                                    <FormattedMessage id='to_success.sms2' />
+                                </p>
+                            ) }
                         </DecoratedCheckbox>
                     </div>
                     { /* <div className={ Styles.checkbox }>
