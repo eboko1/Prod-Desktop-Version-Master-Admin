@@ -192,6 +192,7 @@ class TasksTable extends Component {
                 <Table
                     dataSource={
                         orderTasks.orderTasks &&
+                        orderTasks.orderTasks.length>0&&
                         orderTasks.orderTasks[ 0 ].history.length > 0
                             ? [
                                 ...orderTasks.orderTasks.map(
