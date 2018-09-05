@@ -13,8 +13,10 @@ export default {
             name:     'navigation.operations',
             items:    [
                 {
-                    key:  '/dashboard',
-                    link: book.dashboard,
+                    key:      '/dashboard',
+                    link:     book.dashboard,
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_DASHBOARD),
                     name: 'navigation.planner',
                 },
                 {

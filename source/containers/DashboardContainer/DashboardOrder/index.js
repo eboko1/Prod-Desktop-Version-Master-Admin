@@ -2,6 +2,9 @@
 import React, { Component } from 'react';
 import Resizable from 're-resizable';
 
+// proj
+import { permissions, isForbidden } from 'utils';
+
 // own
 import { ordersStatus } from '../dashboardConfig';
 // import book from 'routes/book';
@@ -59,10 +62,15 @@ export default class DashboardOrder extends Component {
             status,
             dashboardRef,
             options,
+            user,
             // hideSourceOnDrag,
         } = this.props;
 
         const { resizing } = this.state;
+
+        const canUpdate =
+            !isForbidden(user, permissions.EDIT_DASHBOARD_ORDER) &&
+            !isForbidden(user, permissions.ACCESS_ORDER_BODY);
 
         const resizableStyles = {
             gridRow:    `${x + 1} / span ${rows}`,
@@ -91,7 +99,7 @@ export default class DashboardOrder extends Component {
                 enable={ {
                     top:         false,
                     right:       false,
-                    bottom:      status !== 'success',
+                    bottom:      canUpdate && status !== 'success',
                     left:        false,
                     topRight:    false,
                     bottomRight: false,

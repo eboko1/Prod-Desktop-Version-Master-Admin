@@ -37,6 +37,7 @@ const mapStateToProps = state => ({
     load:      state.dashboard.load,
     spinner:   state.ui.dashboardInitializing,
     loading:   state.ui.dashboardFetching,
+    user:      state.auth,
 
     ...selectDasboardData(state),
 });
@@ -183,12 +184,14 @@ class DashboardPage extends Component {
             linkToDashboardStations,
             updateDashboardOrder,
             date,
+            user,
         } = this.props;
 
         return loading ? (
             <Loader loading={ loading } />
         ) : (
             <DashboardContainer
+                user={ user }
                 mode={ mode }
                 date={ date }
                 days={ days }
