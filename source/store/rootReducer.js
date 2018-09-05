@@ -10,6 +10,7 @@ import uiReducer, { moduleName as uiModule } from 'core/ui/duck';
 import authReducer, { moduleName as authModule } from 'core/auth/duck';
 import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
+import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
 import employeeReducer, {
     moduleName as employeeModule,
@@ -52,6 +53,7 @@ const reducer = combineReducers({
     [ businessPackageModule ]: businessPackageReducer,
     [ searchModule ]:          searchReducer,
     [ managerRoleModule ]:     managerRoleReducer,
+    [ clientsModule ]:         clientsReducer,
     intl,
     router,
 });
