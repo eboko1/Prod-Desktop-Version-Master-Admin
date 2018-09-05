@@ -5,8 +5,10 @@ export const moduleName = 'ui';
 const prefix = `GLOBAL/${moduleName}`;
 
 export const SET_VIEW = `${prefix}/SET_VIEW`;
-export const SET_SWAPI_FETCHING_STATE = `${prefix}/SET_SWAPI_FETCHING_STATE`;
+
 export const SET_AUTH_FETCHING_STATE = `${prefix}/SET_AUTH_FETCHING_STATE`;
+export const SET_PROFILE_UPDATING_STATE = `${prefix}/SET_PROFILE_UPDATING_STATE`;
+
 export const SET_ORDERS_FETCHING_STATE = `${prefix}/SET_ORDERS_FETCHING_STATE`;
 export const SET_MY_TASKS_FETCHING_STATE = `${prefix}/SET_MY_TASKS_FETCHING_STATE`;
 export const SET_ORDER_FETCHING_STATE = `${prefix}/SET_ORDER_FETCHING_STATE`;
@@ -15,8 +17,10 @@ export const SET_BUSINESS_PACKAGE_FETCHING_STATE = `${prefix}/SET_BUSINESS_PACKA
 export const SET_MANAGER_ROLE_FETCHING_STATE = `${prefix}/SET_MANAGER_ROLE_FETCHING_STATE`;
 export const SET_ROLE_FETCHING_STATE = `${prefix}/SET_ROLE_FETCHING_STATE`;
 export const SET_SEARCH_BUSINESSES_FETCHING_STATE = `${prefix}/SET_SEARCH_BUSINESSES_FETCHING_STATE`;
+
 export const SET_DASHBOARD_INITALIZING_STATE = `${prefix}/SET_DASHBOARD_INITALIZING_STATE`;
 export const SET_DASHBOARD_FETCHING_STATE = `${prefix}/SET_DASHBOARD_FETCHING_STATE`;
+
 export const INITIALIZE = `${prefix}/INITIALIZE`;
 export const SET_COLLAPSED_STATE = `${prefix}/SET_COLLAPSED_STATE`;
 export const EMIT_ERROR = `${prefix}/EMIT_ERROR`;
@@ -27,6 +31,7 @@ export const EMIT_ERROR = `${prefix}/EMIT_ERROR`;
 const ReducerState = {
     initialized:              false,
     authFetching:             false,
+    profileUpdating:          false,
     ordersFetching:           false,
     orderFetching:            false,
     myTasksFetching:          false,
@@ -61,6 +66,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_AUTH_FETCHING_STATE:
             return { ...state, authFetching: payload };
+
+        case SET_PROFILE_UPDATING_STATE:
+            return { ...state, profileUpdating: payload };
 
         case SET_ORDERS_FETCHING_STATE:
             return { ...state, ordersFetching: payload };
@@ -105,17 +113,17 @@ export default function reducer(state = ReducerState, action) {
  * Action Creators
  **/
 
-export const setSwapiFetchingState = state => ({
-    type:    SET_SWAPI_FETCHING_STATE,
-    payload: state,
-});
-
 export const initialize = () => ({
     type: INITIALIZE,
 });
 
 export const setAuthFetchingState = state => ({
     type:    SET_AUTH_FETCHING_STATE,
+    payload: state,
+});
+
+export const setProfileUpdatingState = state => ({
+    type:    SET_PROFILE_UPDATING_STATE,
     payload: state,
 });
 

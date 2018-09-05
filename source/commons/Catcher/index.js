@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Icon } from 'antd';
+import { FormattedMessage } from 'react-intl';
 
 // proj
 import Styles from './styles.m.css';
@@ -23,7 +24,7 @@ export default class Catcher extends Component {
         if (error) {
             return (
                 <section className={ Styles.catcher }>
-                    Error!
+                    <FormattedMessage id='error'/>!
                     <Icon className={ Styles.catcherIcon } type='frown-o' />
                 </section>
             );

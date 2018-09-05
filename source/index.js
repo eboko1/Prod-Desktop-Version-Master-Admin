@@ -14,7 +14,7 @@ import './store/nprogress'; // whole file
 import store, { history, persistor } from './store/store';
 import Routes from './routes/Main';
 import { setLocaleProvider } from 'utils';
-console.log('→ setLocaleProvider()', setLocaleProvider());
+
 render(
     <Provider store={ store }>
         <IntlProvider>

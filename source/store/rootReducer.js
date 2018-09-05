@@ -11,7 +11,9 @@ import authReducer, { moduleName as authModule } from 'core/auth/duck';
 import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
-import employeeReducer, { moduleName as employeeModule } from 'core/employee/duck';
+import employeeReducer, {
+    moduleName as employeeModule,
+} from 'core/employee/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
 import packageReducer, { moduleName as packageModule } from 'core/package/duck';
@@ -23,7 +25,6 @@ import managerRoleReducer, {
 } from 'core/managerRole/duck';
 
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
-import settingSalaryReducer, { moduleName as settingSalaryModule } from 'core/settingSalary/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
@@ -48,7 +49,6 @@ const reducer = combineReducers({
     [ authModule ]:            authReducer,
     [ packageModule ]:         packageReducer,
     [ roleModule ]:            roleReducer,
-    [ settingSalaryModule ]:   settingSalaryReducer,
     [ businessPackageModule ]: businessPackageReducer,
     [ searchModule ]:          searchReducer,
     [ managerRoleModule ]:     managerRoleReducer,

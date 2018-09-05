@@ -14,7 +14,8 @@
         "employee.email_placeholder": "Enter email",
         "employee.jobTitle_placeholder": "Enter position",
         "employee.hireDate_placeholder": "Enter employment date",
-        "employee.enter_correct_email": "Enter correct email"
+        "employee.enter_correct_email": "Enter correct email",
+        "employee.fire_employee": "Fire employee"
     },
     "ru": {
         "employee.phone_placeholder": "Введите телефон",
@@ -31,7 +32,8 @@
         "employee.email_placeholder": "Введите email",
         "employee.jobTitle_placeholder": "Введите должность",
         "employee.hireDate_placeholder": "Выберите дату приема на работу",
-        "employee.enter_correct_email": "Введите корректный email"
+        "employee.enter_correct_email": "Введите корректный email",
+        "employee.fire_employee": "Уволить сотрудника"
     },
     "uk": {
         "employee.phone_placeholder": "Введіть телефон",
@@ -48,6 +50,7 @@
         "employee.email_placeholder": "Введіть email",
         "employee.jobTitle_placeholder": "Введіть позицію",
         "employee.hireDate_placeholder": "Виберіть дату прийому на роботу",
-        "employee.enter_correct_email": "Введіть корректний email"
+        "employee.enter_correct_email": "Введіть корректний email",
+        "employee.fire_employee": "звільнити співробітника"
     }
 }

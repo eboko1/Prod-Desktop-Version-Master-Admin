@@ -1,19 +1,21 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon, Rate } from 'antd';
+import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
+import { Table, Icon, Rate } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
-import { withRouter } from 'react-router';
 
 // proj
 import { Catcher } from 'commons';
 import book from 'routes/book';
+
+// own
 import Styles from './styles.m.css';
 
 @withRouter
-class EmployeeTable extends Component {
+export default class EmployeeTable extends Component {
     constructor(props) {
         super(props);
         this.columns = [
@@ -24,17 +26,6 @@ class EmployeeTable extends Component {
                 render:    (text, record) => {
                     return (
                         <>
-                            <Link
-                                to={ book.editEmployee.replace(':id', record.id) }
-                            >
-                                <Icon
-                                    className={ Styles.employeeTableIcon }
-                                    onClick={ () => {
-                                        this.props.initEmployeeForm(record);
-                                    } }
-                                    type='edit'
-                                />
-                            </Link>
                             <Icon
                                 className={ Styles.employeeTableIcon }
                                 onClick={ () => {
@@ -49,23 +40,15 @@ class EmployeeTable extends Component {
                     );
                 },
             },
-            // {
-            //     title:     <FormattedMessage id='employee-table.photo' />,
-            //     dataIndex: 'avatar',
-            //     width:     '15%',
-            //     render:    (text, record) => {
-            //         let avatar= text?JSON.parse(text):''
-            //         console.log(avatar)
 
-            //         return    <div><img src={ avatar?avatar.original.path:'' }></img></div>
-            //     },
-            // },
             {
                 title:     <FormattedMessage id='employee-table.employee' />,
                 dataIndex: 'name',
                 width:     '20%',
                 render:    (text, record) => (
-                    <div>{ `${record.name} ${record.surname}` }</div>
+                    <div><Link
+                        to={ book.editEmployee.replace(':id', record.id) }
+                    >{ `${record.name} ${record.surname}` }</Link></div>
                 ),
             },
             {
@@ -81,7 +64,6 @@ class EmployeeTable extends Component {
                 width:     '15%',
                 render:    (text, record) => (
                     <div>
-                        { /* { `${record.hireDate?moment(record.hireDate).format('DD.MM.YYYY'):''}/${record.fireDate?moment(record.fireDate).format('DD.MM.YYYY'):''}` } */ }
                         <p>
                             { record.hireDate
                                 ? moment(record.hireDate).format('DD.MM.YYYY')
@@ -136,5 +118,3 @@ class EmployeeTable extends Component {
         );
     }
 }
-
-export default EmployeeTable;

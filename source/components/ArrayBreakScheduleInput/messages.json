@@ -1,0 +1,33 @@
+{
+    "en": {
+        "absenteeism": "Absenteeism",
+        "holiday": "Holiday",
+        "cant_work": "Cant work",
+
+        "legal_holiday": "Legal holiday",
+        "valid_reason": "Valid reason",
+        "sick_leave": "Sick leave",
+        "vacation": "Vacation",
+        "save_break_schedules": "Save break schedules"
+    },
+    "ru": {
+        "absenteeism": "Прогул",
+        "holiday": "Праздник",
+        "cant_work": "Не возможность работать",
+        "legal_holiday": "Легальный выходной",
+        "valid_reason": "Уважительная причина",
+        "sick_leave": "Болезнь",
+        "vacation": "Отпуск",
+        "save_break_schedules": "Сохранить неробочие дни"
+    },
+    "uk": {
+        "absenteeism": "Прогул",
+        "holiday": "Свято",
+        "cant_work": "Не здатність працювати",
+        "legal_holiday": "Легальный вихідний",
+        "valid_reason": "Поважна причина",
+        "sick_leave": "Хвороба",
+        "vacation": "Відпустка",
+        "save_break_schedules": "Зберегти неробочі дні"
+    }
+}

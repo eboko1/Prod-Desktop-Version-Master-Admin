@@ -4,21 +4,19 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Icon, Tabs } from 'antd';
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
-
+import moment from 'moment'
 // proj
 
 import { EmployeeForm, EmployeeScheduleForm } from 'forms';
 import { Layout, Spinner } from 'commons';
 import { fetchEmployee } from 'core/employee/duck';
-import {
-    fetchEmployeeSchedule,
-    saveEmployeeSchedule,
-    deleteEmployeeSchedule,
-} from 'core/forms/employeeScheduleForm/duck';
+
 import {
     fetchEmployeeById,
     saveEmployee,
     resetEmployeeForm,
+    fireEmployee,
+
 } from 'core/forms/employeeForm/duck';
 import book from 'routes/book';
 
@@ -40,9 +38,8 @@ const mapDispatchToProps = {
     fetchEmployee,
     fetchEmployeeById,
     resetEmployeeForm,
-    saveEmployeeSchedule,
-    fetchEmployeeSchedule,
-    deleteEmployeeSchedule,
+
+    fireEmployee,
 };
 @withRouter
 @injectIntl
@@ -53,102 +50,40 @@ const mapDispatchToProps = {
 class EditEmployeePage extends Component {
     componentDidMount() {
         this.props.fetchEmployeeById(
-            this.props.history.location.pathname.split('/')[ 2 ],
+            this.props.history.location.pathname.split('/')[ 2 ], //employee id 
         );
     }
     componentWillUnmount() {
         this.props.resetEmployeeForm();
     }
+    fireEmployee=()=>{
+        
+        this.props.fireEmployee(
+            this.props.employeesData,
+            this.props.history.location.pathname.split('/')[ 2 ], //employee id 
+            moment(),
+        );
+    }
     saveEmployeeFormRef = formRef => {
         this.employeeFormRef = formRef;
     };
 
+
     saveEmployee = () => {
-        const { orderTaskEntity, orderTaskId } = this.props;
         const form = this.employeeFormRef.props.form;
         form.validateFields(err => {
+
             if (!err) {
                 this.props.saveEmployee(
                     this.props.employeesData,
-                    this.props.history.location.pathname.split('/')[ 2 ],
+                    this.props.history.location.pathname.split('/')[ 2 ], ////employee id 
                 );
-            }
-        });
-    };
-
-    saveScheduleEmployeeFormRef = formRef => {
-        this.employeeScheduleFormRef = formRef;
-    };
-    normilizeScheduleObject = (entity, field, name) => {
-        let value;
-        entity[ field ].map(el => {
-            if (el.name === name) {
-                value = el.value;
-            }
-        });
-
-        return value;
-    };
-    saveEmployeeSchedule = keys => {
-        const form = this.employeeScheduleFormRef.props.form;
-        const { entity } = this.props;
-        form.validateFields((err, values) => {
-            if (!err) {
-                keys.map(item => {
-                    let data = {
-                        beginBreakHours: values.beginBreakHours[ item ]
-                            ? values.beginBreakHours[ item ].format('HH:mm')
-                            : null,
-                        beginWorkingHours: values.beginWorkingHours[ item ]
-                            ? values.beginWorkingHours[ item ].format('HH:mm')
-                            : null,
-                        endBreakHours: values.endBreakHours[ item ]
-                            ? values.endBreakHours[ item ].format('HH:mm')
-                            : null,
-                        endWorkingHours: values.endWorkingHours[ item ]
-                            ? values.endWorkingHours[ item ].format('HH:mm')
-                            : null,
-                        friday: values.friday[ item ]
-                            ? values.friday[ item ]
-                            : false,
-                        monday: values.monday[ item ]
-                            ? values.monday[ item ]
-                            : false,
-                        saturday: values.saturday[ item ]
-                            ? values.saturday[ item ]
-                            : false,
-                        sunday: values.sunday[ item ]
-                            ? values.sunday[ item ]
-                            : false,
-                        thursday: values.thursday[ item ]
-                            ? values.thursday[ item ]
-                            : false,
-                        tuesday: values.tuesday[ item ]
-                            ? values.tuesday[ item ]
-                            : false,
-                        wednesday: values.wednesday[ item ]
-                            ? values.wednesday[ item ]
-                            : false,
-                        type:        'standard',
-                        subjectType: 'employee',
-                    };
-                    if (!values.id[ item ]) {
-                        this.props.saveEmployeeSchedule({
-                            schedule: data,
-                            id:       this.props.history.location.pathname.split(
-                                '/',
-                            )[ 2 ],
-                        });
-                    }
-                });
             }
         });
     };
     /* eslint-disable complexity*/
     render() {
         const {
-            spinner,
-            employees,
             initialEmployee,
             initialSchedule,
         } = this.props;
@@ -176,6 +111,7 @@ class EditEmployeePage extends Component {
                         key='1'
                     >
                         <EmployeeForm
+                            fireEmployee={ this.fireEmployee }
                             initialEmployee={ initialEmployee }
                             wrappedComponentRef={ this.saveEmployeeFormRef }
                             saveEmployee={ this.saveEmployee }
@@ -187,23 +123,16 @@ class EditEmployeePage extends Component {
                         }) }
                         key='2'
                     >
-                        { /* <EmployeeForm         
-                            initialEmployee={ initialEmployee }         
-                            wrappedComponentRef={ this.saveEmployeeFormRef }
-                            saveEmployee={ this.saveEmployee }
-                        />  */ }
                         <EmployeeScheduleForm
                             initialEmployee={ initialEmployee }
                             initialSchedule={ initialSchedule }
-                            wrappedComponentRef={
-                                this.saveScheduleEmployeeFormRef
-                            }
                             fetchEmployeeSchedule={
                                 this.props.fetchEmployeeSchedule
                             }
+                            deleteEmployeeBreakSchedule={ this.props.deleteEmployeeBreakSchedule }
                             history={ this.props.history }
                             saveEmployee={ this.saveEmployee }
-                            saveEmployeeSchedule={ this.saveEmployeeSchedule }
+                            saveEmployeeBreakSchedule={ this.saveEmployeeBreakSchedule }
                             deleteEmployeeSchedule={
                                 this.props.deleteEmployeeSchedule
                             }

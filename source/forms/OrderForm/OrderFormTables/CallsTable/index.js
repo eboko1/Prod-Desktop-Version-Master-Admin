@@ -13,7 +13,7 @@ class CallsTable extends Component {
         super(props);
         this.columns = [
             {
-                title:     'Дата',
+                title:     <FormattedMessage id='date' />,
                 dateIndex: 'date',
                 key:       'order-calls-date',
                 width:     '10%',

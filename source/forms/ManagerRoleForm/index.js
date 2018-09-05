@@ -11,8 +11,6 @@ import { DecoratedSelect } from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 
 // own
-import Styles from './styles.m.css';
-
 const Option = Select.Option;
 
 @injectIntl

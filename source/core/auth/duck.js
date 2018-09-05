@@ -10,6 +10,9 @@ export const AUTHENTICATE = `${prefix}/AUTHENTICATE`;
 export const AUTHENTICATE_SUCCESS = `${prefix}/AUTHENTICATE_SUCCESS`;
 export const AUTHENTICATE_FAIL = `${prefix}/AUTHENTICATE_FAIL`;
 
+export const UPDATE_USER = `${prefix}/UPDATE_USER`;
+export const UPDATE_USER_SUCCESS = `${prefix}/UPDATE_USER_SUCCESS`;
+
 export const LOGOUT = `${prefix}/LOGOUT`;
 export const LOGOUT_SUCCESS = `${prefix}/LOGOUT_SUCCESS`;
 export const LOGOUT_FAIL = `${prefix}/LOGOUT_FAIL`;
@@ -36,6 +39,9 @@ export default function reducer(state = ReducerState, action) {
 
     switch (type) {
         case AUTHENTICATE:
+            return { ...state, ...payload };
+
+        case UPDATE_USER_SUCCESS:
             return { ...state, ...payload };
 
         case LOGOUT_SUCCESS:
@@ -69,6 +75,16 @@ export const authenticate = user => ({
 
 export const authenticateSuccess = () => ({
     type: AUTHENTICATE_SUCCESS,
+});
+
+export const updateUser = user => ({
+    type:    UPDATE_USER,
+    payload: user,
+});
+
+export const updateUserSuccess = user => ({
+    type:    UPDATE_USER_SUCCESS,
+    payload: user,
 });
 
 export const logout = () => ({

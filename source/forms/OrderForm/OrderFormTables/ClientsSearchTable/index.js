@@ -15,23 +15,22 @@ class DetailsTable extends Component {
         super(props);
         this.columns = [
             {
-                // title:     <FormattedMessage id='order_form_table.detail_name' />,
-                title:     'client name',
+                title:     <FormattedMessage id='name' />,
                 dataIndex: 'name',
                 key:       'name',
             },
             {
-                title:     'client surname',
+                title:     <FormattedMessage id='surname' />,
                 dataIndex: 'surname',
                 key:       'surname',
             },
             {
-                title:     'client phone',
+                title:     <FormattedMessage id='add_order_form.phone' />,
                 dataIndex: 'phones',
                 key:       'phones',
             },
             {
-                title:  'vehicle',
+                title:  <FormattedMessage id='vehicle' />,
                 key:    'vehicle',
                 render: client => {
                     const vehicle = _.get(client, 'vehicles[0]');
@@ -45,7 +44,7 @@ class DetailsTable extends Component {
                 },
             },
             {
-                title:  'vehicle',
+                title:  <FormattedMessage id='add_order_form.vin' />,
                 key:    'vin',
                 render: client => {
                     const vehicle = _.get(client, 'vehicles[0]');

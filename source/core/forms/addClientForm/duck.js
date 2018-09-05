@@ -95,8 +95,9 @@ export default function reducer(state = ReducerState, action) {
         case ADD_CLIENT_VEHICLE:
             return {
                 ...state,
-                vehicles: [ ...state.vehicles, payload ],
-                fields:   {
+                vehicles:         [ ...state.vehicles, payload ],
+                lastFilterAction: INIT_VEHICLES_INFO_FILTER_TYPE,
+                fields:           {
                     ...state.fields,
                     vehicle: {},
                 },

@@ -84,6 +84,11 @@ import ReportsDropdown from 'components/ReportsDropdown/messages';
 import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
 import EmployeeTable from 'components/EmployeeTable/messages';
 import SettingSalaryTable from 'components/SettingSalaryTable/messages';
+import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
+import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
+
+//commons
+import Footer from 'commons/Footer/messages';
 
 /* eslint-disable array-element-newline */
 const messages = merge.all([
@@ -150,22 +155,33 @@ const messages = merge.all([
     EmployeeTable,
     EmployeeScheduleForm,
     SettingSalaryTable,
+    ArrayScheduleInput,
+    ArrayBreakScheduleInput,
+    //commons
+    Footer,
 ]);
 /* eslint-enable array-element-newline */
 
 // Intl
-const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
+const setIntl = language => {
+    const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
+    let locale = language;
+    if (locale === 'ua') {
+        locale = 'uk';
+    }
+
+    return {
+        locale:   locale || fallbackLocale,
+        messages: messages[ locale || fallbackLocale ],
+    };
+};
 
 let persistedLocale = getLocale();
-
 if (persistedLocale === 'ua') {
     persistedLocale = 'uk';
 }
 
-const intl = {
-    locale:   persistedLocale || fallbackLocale,
-    messages: messages[ persistedLocale || fallbackLocale ],
-};
+const intl = setIntl(persistedLocale);
 
 // Numeral
 // TODO: provide locale dynamic for numeral register
@@ -187,4 +203,4 @@ numeral.register('locale', 'ru', {
 });
 numeral.locale('ru');
 
-export { messages, intl };
+export { messages, intl, setIntl };

@@ -11,9 +11,14 @@ import ArrayInput from './ArrayInput';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 import Loader from './Loader';
 import ArrayScheduleInput from './ArrayScheduleInput';
+import ArrayBreakScheduleInput from './ArrayBreakScheduleInput';
+import SettingSalaryTable from './SettingSalaryTable';
+import EmployeeTable from './EmployeeTable';
 import LimitedDecoratedSelect from './LimitedDecoratedSelect';
 
 export {
+    SettingSalaryTable,
+    EmployeeTable,
     LanguagePad,
     ArrowsNav,
     OrderStatusIcon,
@@ -28,5 +33,6 @@ export {
     ArrayInput,
     Loader,
     ArrayScheduleInput,
+    ArrayBreakScheduleInput,
     LimitedDecoratedSelect,
 };

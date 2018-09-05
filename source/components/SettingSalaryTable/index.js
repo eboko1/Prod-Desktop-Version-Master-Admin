@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon, Button, Input, Select, message } from 'antd';
-import { Link } from 'react-router-dom';
+import { Table, Icon, Button, Input, Select, message, DatePicker } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import { v4 } from 'uuid';
@@ -9,20 +8,649 @@ import { withRouter } from 'react-router';
 
 // proj
 import { Catcher } from 'commons';
-import book from 'routes/book';
+
+// own
 import Styles from './styles.m.css';
 const Option = Select.Option;
 
 @withRouter
-class SettingSalaryTable extends Component {
+export default class SettingSalaryTable extends Component {
     constructor(props) {
         super(props);
         this.columns = [
+            
+
+            {
+                title:     <FormattedMessage id='employee-table.employee' />,
+                dataIndex: 'employee.id',
+                width:     '10%',
+                render:    (text, record) => {
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'employee'
+                    ) {
+                        return (
+                            <Select
+                                name='employee'
+                                placeholder={
+                                    <FormattedMessage id='employee-table.employee' />
+                                }
+                                onChange={ this.handleChangeNew.bind(
+                                    this,
+                                    'employee',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.employeeId }
+                            >
+                                { this.props.employees &&
+                                    this.props.employees.map(employee => (
+                                        <Option value={ employee.id } key={ v4() }>
+                                            { `${employee.name} ${
+                                                employee.surname
+                                            }` }
+                                        </Option>
+                                    )) }
+                            </Select>
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'employee'
+                    ) {
+                        return (
+                            <Select
+                                name='employee'
+                                placeholder={
+                                    <FormattedMessage id='employee-table.employee' />
+                                }
+                                onChange={ this.handleChangeTableSelect.bind(
+                                    this,
+                                    record.id,
+                                    'employee',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.employeeId }
+                            >
+                                { this.props.employees.map(employee => {
+                                    return (
+                                        <Option value={ employee.id } key={ v4() }>
+                                            { `${employee.name} ${
+                                                employee.surname
+                                            }` }
+                                        </Option>
+                                    );
+                                }) }
+                            </Select>
+                        );
+                    } else if (text || !text) {
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'employee',
+                                    });
+                                } }
+                            >
+                                { record.employee.name ?
+                                    <div> { record.employee.name } {
+                                        record.employee.surname
+                                    }<Icon type='edit'/></div>
+                                    : (
+                                        <Button>
+                                            <FormattedMessage id='change_employee' />
+                                        </Button>
+                                    ) }
+                            </div>
+                        );
+                    }
+                },
+            },
+            {
+                title:     <FormattedMessage id='employee.jobTitle' />,
+                dataIndex: 'jobTitle',
+                width:     '10%',
+                render:    (text, record) => {
+                    return ( 
+                        record.employee ?
+                            record.employee.jobTitle
+                            : ''
+                    );
+                    
+                },
+            },
+            {
+                title:     <FormattedMessage id='setting-salary.period' />,
+                dataIndex: 'period',
+                width:     '10%',
+                render:    (text, record) => {
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'period'
+                    ) {
+                        return (
+                            <Select
+                                name='period'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.period' />
+                                }
+                                onChange={ this.handleChangeNew.bind(
+                                    this,
+                                    'period',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.period }
+                            >
+                                { [ 'DAY', 'WEEK', 'MONTH' ].map(period => (
+                                    <Option value={ period } key={ v4() }>
+                                        <FormattedMessage id={ `${period}` }/>
+                                    </Option>
+                                )) }
+                            </Select>
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'period'
+                    ) {
+                        return (
+                            <Select
+                                name='period'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.period' />
+                                }
+                                onChange={ this.handleChangeTableSelect.bind(
+                                    this,
+                                    record.id,
+                                    'period',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.period }
+                            >
+                                { [ 'DAY', 'WEEK', 'MONTH' ].map(period => (
+                                    <Option value={ period } key={ v4() }>
+                                        <FormattedMessage id={ `${period}` }/>
+                                    </Option>
+                                )) }
+                            </Select>
+                        );
+                    } else if (text || !text) {
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'period',
+                                    });
+                                } }
+                            >
+                                { text ?
+                                    
+                                    <div>{ <FormattedMessage id={ `${text}` }/>  }<Icon type='edit'/></div>
+                                    :
+                                    <Button>
+                                        <FormattedMessage id='change_period' />
+                                    </Button> }
+                            </div>
+                        );
+                    }
+                },
+            },
+            {
+                title:     <FormattedMessage id='setting-salary.startDate' />,
+                dataIndex: 'startDate',
+                width:     '10%',
+                render:    (text, record) => {
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'startDate'
+                    ) {
+                        return (
+                            <DatePicker
+                                name='startDate'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.startDate' />
+                                }
+                                onChange={ this.handleChangeNew.bind(
+                                    this,
+                                    'startDate',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ moment(record.startDate) }
+                            />
+                                
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'startDate'
+                    ) {
+                        return (
+                            <DatePicker
+                                name='startDate'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.startDate' />
+                                }
+                                onChange={ this.handleChangeTableSelect.bind(
+                                    this,
+                                    record.id,
+                                    'startDate',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ moment(record.startDate) }
+                            />
+                            
+                        );
+                    } else if (text || !text) {
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'startDate',
+                                    });
+                                } }
+                            >
+                                { text ?
+                                    <div>{ moment(text).format('YYYY-MM-DD') }<Icon type='edit'/></div> :
+                                    <Button>
+                                        <FormattedMessage id='change_start_date' /> 
+                                    </Button> }
+                            </div>
+                        );
+                    }
+                },
+            },
+            {
+                title:     <FormattedMessage id='setting-salary.endDate' />,
+                dataIndex: 'endDate',
+                width:     '10%',
+                render:    (text, record) => {
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'endDate'
+                    ) {
+                        return (
+                            <DatePicker
+                                name='endDate'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.endDate' />
+                                }
+                                onChange={ this.handleChangeNew.bind(
+                                    this,
+                                    'endDate',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.endDate?moment(record.endDate):'' }
+                            />
+                                
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'endDate'
+                    ) {
+                        return (
+                            <DatePicker
+                                name='endDate'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.endDate' />
+                                }
+                                onChange={ this.handleChangeTableSelect.bind(
+                                    this,
+                                    record.id,
+                                    'endDate',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.endDate?moment(record.endDate):'' }
+                            />
+                            
+                        );
+                    } else if (text || !text) {
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'endDate',
+                                    });
+                                } }
+                            >
+                                { text ? 
+                                    <div>{ moment(text).format('YYYY-MM-DD') }<Icon type='edit'/></div> :
+                                    <Button>
+                                        <FormattedMessage id='change_end_date' /> 
+                                    </Button> }
+                            </div>
+                        );
+                    }
+                },
+            },
+            {
+                title:     <FormattedMessage id='setting-salary.ratePerPeriod' />,
+                dataIndex: 'ratePerPeriod',
+                width:     '10%',
+
+                render: (text, record) => {
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'ratePerPeriod'
+                    ) {
+                        return (
+                            <Input
+                                name='ratePerPeriod'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.ratePerPeriod' />
+                                }
+                                onKeyPress={ this.handleChangeNew.bind(
+                                    this,
+                                    null,
+                                ) }
+                                defaultValue={ text }
+                            />
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'ratePerPeriod'
+                    ) {
+                        return (
+                            <Input
+                                name='ratePerPeriod'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.ratePerPeriod' />
+                                }
+                                onKeyPress={ this.handleChangeTableRow.bind(
+                                    this,
+                                    record.id,
+                                ) }
+                                defaultValue={ text }
+                            />
+                        );
+                    } else if (text || !text) {
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'ratePerPeriod',
+                                    });
+                                } }
+                            >
+                                { text || text === 0 ?
+                                    // <FormattedMessage id={ `${text}` } />
+                                    <div>{ text }<Icon type='edit'/></div>
+
+                                    : (
+                                        <Button>
+                                            <FormattedMessage id='change_rate_per_period' /> 
+                                        </Button>
+                                    ) }
+                            </div>
+                        );
+                    }
+                },
+            },
+
+
+            
+            {
+                title:     <FormattedMessage id='setting-salary.percentFrom' />,
+                dataIndex: 'percentFrom',
+                width:     '10%',
+                render:    (text, record) => {
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'percentFrom'
+                    ) {
+                        return (
+                            <Select
+                                name='percentFrom'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.percentFrom' />
+                                }
+                                onChange={ this.handleChangeNew.bind(
+                                    this,
+                                    'percentFrom',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.percentFrom }
+                            >
+                                { [ 'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT' ].map(percent => (
+                                    <Option value={ percent } key={ v4() }>
+                                        <FormattedMessage id={ `${percent}` }/>
+                                    </Option>
+                                )) }
+                            </Select>
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'percentFrom'
+                    ) {
+                        return (
+                            <Select
+                                name='percentFrom'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.percentFrom' />
+                                }
+                                onChange={ this.handleChangeTableSelect.bind(
+                                    this,
+                                    record.id,
+                                    'percentFrom',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.percentFrom }
+                            >
+                                { [ 'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT' ].map(percent => (
+                                    <Option value={ percent } key={ v4() }>
+                                        <FormattedMessage id={ `${percent}` }/>
+                                    </Option>
+                                )) }
+                            </Select>
+                        );
+                    } else if (text || !text) {
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'percentFrom',
+                                    });
+                                } }
+                            >
+                                { text || text === 0 ?
+                                    // <FormattedMessage id={ `${text}` } />
+                                    <div>{ text }<Icon type='edit'/></div>
+                                    : (
+                                        <Button>
+                                            <FormattedMessage id='change_percent_from' />
+                                        </Button>
+                                    ) }
+                            </div>
+                        );
+                    }
+                },
+            },
+
+            {
+                title:     <FormattedMessage id='setting-salary.percent' />,
+                dataIndex: 'percent',
+                width:     '10%',
+                render:    (text, record) => {
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'percent'
+                    ) {
+                        return (
+                            <Input
+                                name='percent'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.percent' />
+                                }
+                                onKeyPress={ this.handleChangeNew.bind(
+                                    this,
+                                    null,
+                                ) }
+                                defaultValue={ text }
+                            />
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'percent'
+                    ) {
+                        return (
+                            <Input
+                                name='percent'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.percent' />
+                                }
+                                onKeyPress={ this.handleChangeTableRow.bind(
+                                    this,
+                                    record.id,
+                                ) }
+                                defaultValue={ text }
+                            />
+                        );
+                    } else if (text || !text) {
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'percent',
+                                    });
+                                } }
+                            >
+                                { text || text === 0 ?
+                                    // <FormattedMessage id={ `${text}` } />
+                                    <div>{ text }<Icon type='edit'/></div>
+
+                                    : (
+                                        <Button>
+                                            <FormattedMessage id='change_percent' />
+                                        </Button>
+                                    ) }
+                            </div>
+                        );
+                    }
+                },
+            },
+            {
+                title: (
+                    <FormattedMessage id='setting-salary.considerDiscount' />
+                ),
+                dataIndex: 'considerDiscount',
+                width:     '10%',
+                render:    (text, record) => {
+                    // console.log(record.considerDiscount);
+                    if (
+                        this.state.changingId === 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'considerDiscount'
+                    ) {
+                        return (
+                            <Select
+                                name='considerDiscount'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.considerDiscount' />
+                                }
+                                onChange={ this.handleChangeNew.bind(
+                                    this,
+                                    'considerDiscount',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.considerDiscount }
+                            >
+                                <Option value key={ v4() }>
+                                    
+                                    <FormattedMessage id='yes' />
+
+                                </Option>
+
+                                <Option value={ false } key={ v4() }>
+                                    <FormattedMessage id='no' />
+                                    
+                                </Option>
+                            </Select>
+                        );
+                    } else if (
+                        this.state.changingId !== 'add' &&
+                        this.state.changingId === record.id &&
+                        this.state.changingInputName === 'considerDiscount'
+                    ) {
+                        return (
+                            <Select
+                                name='considerDiscount'
+                                placeholder={
+                                    <FormattedMessage id='setting-salary.considerDiscount' />
+                                }
+                                onChange={ this.handleChangeTableSelect.bind(
+                                    this,
+                                    record.id,
+                                    'considerDiscount',
+                                ) }
+                                style={ { minWidth: '135px' } }
+                                value={ record.considerDiscount }
+                            >
+                                <Option value key={ v4() }>
+                                    
+                                    <FormattedMessage id='yes' />
+
+                                </Option>
+
+                                <Option value={ false } key={ v4() }>
+                                    <FormattedMessage id='no' />
+                                    
+                                </Option>
+                            </Select>
+                        );
+                    } else if (text || !text) {
+
+                        return (
+                            <div
+                                style={ { cursor: 'pointer' } }
+                                onClick={ () => {
+                                    this.setState({
+                                        changingId:        record.id,
+                                        changingInputName: 'considerDiscount',
+                                    });
+                                } }
+                            >
+                                { text || text === 0 || text === false ?
+                                    text === true ?
+                                        <div><FormattedMessage id='yes' /><Icon type='edit'/></div>
+                                        :
+                                        <div><FormattedMessage id='no' /><Icon type='edit'/></div>
+                                    : (
+                                        <Button><FormattedMessage id='change_consider_discount' /></Button>
+                                    ) }
+                            </div>
+                        );
+                    }
+                },
+            },
             {
                 title:     '',
                 dataIndex: 'review',
                 width:     '10%',
                 render:    (text, record) => {
+                    /* eslint-disable complexity */
                     return (
                         <>
                             <Button
@@ -82,522 +710,6 @@ class SettingSalaryTable extends Component {
                     );
                 },
             },
-
-            {
-                title:     <FormattedMessage id='employee-table.employee' />,
-                dataIndex: 'employee.id',
-                width:     '10%',
-                render:    (text, record) => {
-                    if (
-                        this.state.changingId === 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'employee'
-                    ) {
-                        return (
-                            <Select
-                                name='employee'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.employee' />
-                                }
-                                onChange={ this.handleChangeNew.bind(
-                                    this,
-                                    'employee',
-                                ) }
-                                style={ { minWidth: '135px' } }
-                                value={ record.employeeId }
-                            >
-                                { this.props.employees &&
-                                    this.props.employees.map(employee => (
-                                        <Option value={ employee.id } key={ v4() }>
-                                            { `${employee.name} ${
-                                                employee.surname
-                                            }` }
-                                        </Option>
-                                    )) }
-                            </Select>
-                        );
-                    } else if (
-                        this.state.changingId !== 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'employee'
-                    ) {
-                        console.log(record.id);
-
-                        return (
-                            <Select
-                                name='employee'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.employee' />
-                                }
-                                onChange={ this.handleChangeTableSelect.bind(
-                                    this,
-                                    record.id,
-                                    'employee',
-                                ) }
-                                style={ { minWidth: '135px' } }
-                                value={ record.employeeId }
-                            >
-                                { this.props.employees.map(employee => {
-                                    console.log(employee.id);
-
-                                    return (
-                                        <Option value={ employee.id } key={ v4() }>
-                                            { `${employee.name} ${
-                                                employee.surname
-                                            }` }
-                                        </Option>
-                                    );
-                                }) }
-                            </Select>
-                        );
-                    } else if (text || !text) {
-                        return (
-                            <div
-                                style={ { cursor: 'pointer' } }
-                                onClick={ () => {
-                                    this.setState({
-                                        changingId:        record.id,
-                                        changingInputName: 'employee',
-                                    });
-                                } }
-                            >
-                                { record.employee.name ? 
-                                    `${record.employee.name} ${
-                                        record.employee.surname
-                                    }`
-                                 : (
-                                    <Button>Change Employee</Button>
-                                ) }{ ' ' }
-                            </div>
-                        );
-                    }
-                },
-            },
-            {
-                title:     <FormattedMessage id='employee.jobTitle' />,
-                dataIndex: 'jobTitle',
-                width:     '10%',
-                render:    (text, record) => {
-                    console.log(record.employee.jobTitle);
-                    if (
-                        this.state.changingId === 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'jobTitle'
-                    ) {
-                        return (
-                            <Input
-                                name='jobTitle'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.jobTitle' />
-                                }
-                                onKeyPress={ this.handleChangeNew.bind(
-                                    this,
-                                    null,
-                                ) }
-                                defaultValue={ record.employee.jobTitle }
-                            />
-                        );
-                    } else if (
-                        this.state.changingId !== 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'jobTitle'
-                    ) {
-                        return (
-                            <Input
-                                name='jobTitle'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.jobTitle' />
-                                }
-                                onKeyPress={ this.handleChangeTableRow.bind(
-                                    this,
-                                    record.id,
-                                ) }
-                                defaultValue={ record.employee.jobTitle }
-                            />
-                        );
-                    } else if (text || !text) {
-                        return (
-                            <div
-                                style={ { cursor: 'pointer' } }
-                                onClick={ () => {
-                                    this.setState({
-                                        changingId:        record.id,
-                                        changingInputName: 'jobTitle',
-                                    });
-                                } }
-                            >
-                                { record.employee ? 
-                                    record.employee.jobTitle
-                                 : (
-                                    <Button>Change jobTitle</Button>
-                                ) }{ ' ' }
-                            </div>
-                        );
-                    }
-                },
-            },
-            {
-                title:     <FormattedMessage id='setting-salary.period' />,
-                dataIndex: 'period',
-                width:     '10%',
-                render:    (text, record) => {
-                    if (
-                        this.state.changingId === 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'period'
-                    ) {
-                        return (
-                            <Select
-                                name='period'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.period' />
-                                }
-                                onChange={ this.handleChangeNew.bind(
-                                    this,
-                                    'period',
-                                ) }
-                                style={ { minWidth: '135px' } }
-                                value={ record.period }
-                            >
-                                { [ 'DAY', 'WEEK', 'MONTH' ].map(period => (
-                                    <Option value={ period } key={ v4() }>
-                                        { `${period}` }
-                                    </Option>
-                                )) }
-                            </Select>
-                        );
-                    } else if (
-                        this.state.changingId !== 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'period'
-                    ) {
-                        return (
-                            <Select
-                                name='period'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.period' />
-                                }
-                                onChange={ this.handleChangeTableSelect.bind(
-                                    this,
-                                    record.id,
-                                    'period',
-                                ) }
-                                style={ { minWidth: '135px' } }
-                                value={ record.period }
-                            >
-                                { [ 'DAY', 'WEEK', 'MONTH' ].map(period => (
-                                    <Option value={ period } key={ v4() }>
-                                        { `${period}` }
-                                    </Option>
-                                )) }
-                            </Select>
-                        );
-                    } else if (text || !text) {
-                        return (
-                            <div
-                                style={ { cursor: 'pointer' } }
-                                onClick={ () => {
-                                    this.setState({
-                                        changingId:        record.id,
-                                        changingInputName: 'period',
-                                    });
-                                } }
-                            >
-                                { text ? text : <Button>Change period</Button> }{ ' ' }
-                            </div>
-                        );
-                    }
-                },
-            },
-            {
-                title:     <FormattedMessage id='setting-salary.ratePerPeriod' />,
-                dataIndex: 'ratePerPeriod',
-                width:     '10%',
-                render:    (text, record) => {
-                    if (
-                        this.state.changingId === 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'ratePerPeriod'
-                    ) {
-                        return (
-                            <Input
-                                name='ratePerPeriod'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.ratePerPeriod' />
-                                }
-                                onKeyPress={ this.handleChangeNew.bind(
-                                    this,
-                                    null,
-                                ) }
-                                defaultValue={ text }
-                            />
-                        );
-                    } else if (
-                        this.state.changingId !== 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'ratePerPeriod'
-                    ) {
-                        return (
-                            <Input
-                                name='ratePerPeriod'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.ratePerPeriod' />
-                                }
-                                onKeyPress={ this.handleChangeTableRow.bind(
-                                    this,
-                                    record.id,
-                                ) }
-                                defaultValue={ text }
-                            />
-                        );
-                    } else if (text || !text) {
-                        return (
-                            <div
-                                style={ { cursor: 'pointer' } }
-                                onClick={ () => {
-                                    this.setState({
-                                        changingId:        record.id,
-                                        changingInputName: 'ratePerPeriod',
-                                    });
-                                } }
-                            >
-                                { text || text === 0 ? 
-                                    text
-                                 : (
-                                    <Button>Change ratePerPeriod</Button>
-                                ) }{ ' ' }
-                            </div>
-                        );
-                    }
-                },
-            },
-            {
-                title:     <FormattedMessage id='setting-salary.percentFrom' />,
-                dataIndex: 'percentFrom',
-                width:     '10%',
-                render:    (text, record) => {
-                    if (
-                        this.state.changingId === 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'percentFrom'
-                    ) {
-                        return (
-                            <Select
-                                name='percentFrom'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.percentFrom' />
-                                }
-                                onChange={ this.handleChangeNew.bind(
-                                    this,
-                                    'percentFrom',
-                                ) }
-                                style={ { minWidth: '135px' } }
-                                value={ record.percentFrom }
-                            >
-                                { [
-                                    'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT',
-                                ].map(percent => (
-                                    <Option value={ percent } key={ v4() }>
-                                        { `${percent}` }
-                                    </Option>
-                                )) }
-                            </Select>
-                        );
-                    } else if (
-                        this.state.changingId !== 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'percentFrom'
-                    ) {
-                        return (
-                            <Select
-                                name='percentFrom'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.percentFrom' />
-                                }
-                                onChange={ this.handleChangeTableSelect.bind(
-                                    this,
-                                    record.id,
-                                    'percentFrom',
-                                ) }
-                                style={ { minWidth: '135px' } }
-                                value={ record.percentFrom }
-                            >
-                                { [
-                                    'ORDER', 'ORDER_HOURS', 'ORDER_SERVICES', 'SPARE_PARTS_PROFIT', 'ORDER_PROFIT',
-                                ].map(percent => (
-                                    <Option value={ percent } key={ v4() }>
-                                        { `${percent}` }
-                                    </Option>
-                                )) }
-                            </Select>
-                        );
-                    } else if (text || !text) {
-                        return (
-                            <div
-                                style={ { cursor: 'pointer' } }
-                                onClick={ () => {
-                                    this.setState({
-                                        changingId:        record.id,
-                                        changingInputName: 'percentFrom',
-                                    });
-                                } }
-                            >
-                                { text || text === 0 ? 
-                                    text
-                                 : (
-                                    <Button>Change percentFrom</Button>
-                                ) }{ ' ' }
-                            </div>
-                        );
-                    }
-                },
-            },
-            // {
-            //     title:     <FormattedMessage id='setting-salary.percentFrom' />,
-            //     dataIndex: 'percentFrom',
-            //     width:     '10%',
-            // },
-            {
-                title:     <FormattedMessage id='setting-salary.percent' />,
-                dataIndex: 'percent',
-                width:     '10%',
-                render:    (text, record) => {
-                    if (
-                        this.state.changingId === 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'percent'
-                    ) {
-                        return (
-                            <Input
-                                name='percent'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.percent' />
-                                }
-                                onKeyPress={ this.handleChangeNew.bind(
-                                    this,
-                                    null,
-                                ) }
-                                defaultValue={ text }
-                            />
-                        );
-                    } else if (
-                        this.state.changingId !== 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'percent'
-                    ) {
-                        return (
-                            <Input
-                                name='percent'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.percent' />
-                                }
-                                onKeyPress={ this.handleChangeTableRow.bind(
-                                    this,
-                                    record.id,
-                                ) }
-                                defaultValue={ text }
-                            />
-                        );
-                    } else if (text || !text) {
-                        return (
-                            <div
-                                style={ { cursor: 'pointer' } }
-                                onClick={ () => {
-                                    this.setState({
-                                        changingId:        record.id,
-                                        changingInputName: 'percent',
-                                    });
-                                } }
-                            >
-                                { text || text === 0 ? 
-                                    text
-                                 : (
-                                    <Button>Change percent</Button>
-                                ) }{ ' ' }
-                            </div>
-                        );
-                    }
-                },
-            },
-            {
-                title: (
-                    <FormattedMessage id='setting-salary.considerDiscount' />
-                ),
-                dataIndex: 'considerDiscount',
-                width:     '10%',
-                render:    (text, record) => {
-                    if (
-                        this.state.changingId === 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'considerDiscount'
-                    ) {
-                        return (
-                            <Select
-                                name='considerDiscount'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.considerDiscount' />
-                                }
-                                onChange={ this.handleChangeNew.bind(
-                                    this,
-                                    'considerDiscount',
-                                ) }
-                                style={ { minWidth: '135px' } }
-                                value={ record.considerDiscount }
-                            >
-                                { [ 'Yes', 'No' ].map(considerDiscount => (
-                                    <Option value={ considerDiscount } key={ v4() }>
-                                        { considerDiscount }
-                                    </Option>
-                                )) }
-                            </Select>
-                        );
-                    } else if (
-                        this.state.changingId !== 'add' &&
-                        this.state.changingId === record.id &&
-                        this.state.changingInputName === 'considerDiscount'
-                    ) {
-                        return (
-                            <Select
-                                name='considerDiscount'
-                                placeholder={
-                                    <FormattedMessage id='employee-table.considerDiscount' />
-                                }
-                                onChange={ this.handleChangeTableSelect.bind(
-                                    this,
-                                    record.id,
-                                    'considerDiscount',
-                                ) }
-                                style={ { minWidth: '135px' } }
-                                value={ record.considerDiscount }
-                            >
-                                { [ 'Yes', 'No' ].map(considerDiscount => (
-                                    <Option value={ considerDiscount } key={ v4() }>
-                                        { considerDiscount }
-                                    </Option>
-                                )) }
-                            </Select>
-                        );
-                    } else if (text || !text) {
-                        return (
-                            <div
-                                style={ { cursor: 'pointer' } }
-                                onClick={ () => {
-                                    this.setState({
-                                        changingId:        record.id,
-                                        changingInputName: 'considerDiscount',
-                                    });
-                                } }
-                            >
-                                { text || text === 0 ? 
-                                    text
-                                 : (
-                                    <Button>Change considerDiscount</Button>
-                                ) }{ ' ' }
-                            </div>
-                        );
-                    }
-                },
-            },
         ];
         this.state = {
             employeeEmpty: false,
@@ -619,9 +731,14 @@ class SettingSalaryTable extends Component {
         };
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.salaries && prevProps.salaries !== this.props.salaries) {
+            this.setState({ salariesTable: [ ...this.props.salaries ] });
+        }
+    }
+
     handleChangeTableSelect = (id, name, e, es) => {
         const { salariesTable } = this.state;
-
         salariesTable.map(item => {
             if (item.id === id) {
                 if (name === 'employee') {
@@ -638,12 +755,14 @@ class SettingSalaryTable extends Component {
 
             return item;
         });
+
         this.setState({
             salariesTable:     salariesTable,
             changingId:        null,
             changingInputName: null,
         });
     };
+
     handleChangeTableRow(id, e) {
         const { salariesTable } = this.state;
 
@@ -655,6 +774,7 @@ class SettingSalaryTable extends Component {
 
                 return item;
             });
+
             this.setState({
                 salariesTable:     salariesTable,
                 changingId:        null,
@@ -662,13 +782,14 @@ class SettingSalaryTable extends Component {
             });
         }
     }
+
     handleChangeNew = (name, e, es) => {
         const { newSalary } = this.state;
         if (name) {
             if (name === 'employee') {
                 newSalary.employeeId = e;
-                newSalary.employee.name = es.props.children.split(' ')[ 0 ];
-                newSalary.employee.surname = es.props.children.split(' ')[ 1 ];
+                newSalary.employee.name = es.props.children.split(' ')[ 0 ]; //employeeName
+                newSalary.employee.surname = es.props.children.split(' ')[ 1 ];////employeeSurname
             } else {
                 newSalary[ name ] = e;
             }
@@ -687,11 +808,7 @@ class SettingSalaryTable extends Component {
             });
         }
     };
-    componentDidUpdate(prevProps, prevState) {
-        if (this.props.salaries && prevProps.salaries !== this.props.salaries) {
-            this.setState({ salariesTable: [ ...this.props.salaries ] });
-        }
-    }
+
     render() {
         const { salariesTable, newSalary } = this.state;
         const columns = this.columns;
@@ -725,5 +842,3 @@ class SettingSalaryTable extends Component {
         );
     }
 }
-
-export default SettingSalaryTable;
