@@ -206,6 +206,7 @@ export default class OrderFormBody extends Component {
                         field='clientEmail'
                         className={ Styles.clientsInfoCol }
                         formItem
+                        disabled={ this.bodyUpdateIsForbidden() }
                         formItemLayout={ formVerticalLayout }
                         getFieldDecorator={ getFieldDecorator }
                         label={ <FormattedMessage id='add_order_form.email' /> }

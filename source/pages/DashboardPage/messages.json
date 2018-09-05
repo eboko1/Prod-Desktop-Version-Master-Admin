@@ -4,7 +4,7 @@
         "dashboard-page.description":
             "Manage schedule of your stations and employees",
         "dashboard-page.calendar": "Calendar",
-        "dashboard-page.stations_load": "Stations Load"
+        "dashboard-page.stations_load": "Working Posts Load"
     },
     "ru": {
         "dashboard-page.title": "Календарь Загрузки",

@@ -73,7 +73,7 @@ export const DecoratedSelect = props => {
     // const limitedSearch = new LimitedSearch();
 
     const select = getFieldDecorator(field, {
-        ...initialValue ? { initialValue } : {},
+        ...initialValue ? { initialValue } : { initialValue: void 0 },
         rules,
     })(
         <Select

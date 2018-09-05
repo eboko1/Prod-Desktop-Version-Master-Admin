@@ -62,7 +62,7 @@ export default class RoleContainer extends Component {
                     field
                         .map(grant =>
                             this.props.intl.formatMessage({
-                                id: `role-container.${grant.toLowerCase()}`,
+                                id: `roles.${grant.toLowerCase()}`,
                             }))
                         .map(message => 
                             <>

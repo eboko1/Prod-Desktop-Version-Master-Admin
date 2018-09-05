@@ -7,6 +7,7 @@ import { DragSource } from 'react-dnd';
 
 // proj
 import book from 'routes/book';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import DashboardOrderDropTarget from '../DashboardOrderDropTarget';
@@ -17,7 +18,11 @@ import getBeginDatetime from '../../dashboardCore/getBeginDatetime';
 
 const orderSource = {
     canDrag(props) {
-        return props.status !== 'success';
+        const canUpdate =
+            !isForbidden(props.user, permissions.EDIT_DASHBOARD_ORDER) &&
+            !isForbidden(props.user, permissions.ACCESS_ORDER_BODY);
+
+        return canUpdate && props.status !== 'success';
     },
 
     beginDrag(props) {
@@ -109,10 +114,19 @@ export default class DashboardOrderDragSource extends Component {
             status,
             dashboardRef,
             options,
+            user,
             // hideSourceOnDrag,
         } = this.props;
 
         const { tooltipPosition } = this.state;
+        const canOpenOrder =
+            !isForbidden(user, permissions.OPEN_DASHBOARD_ORDER) &&
+            !isForbidden(user, permissions.SHOW_ORDERS);
+
+        const openOrder = () =>
+            history.push(`${book.order}/${id}`, {
+                fromDashboard: true,
+            });
 
         return (
             <StyledDashboardOrder
@@ -122,9 +136,7 @@ export default class DashboardOrderDragSource extends Component {
                 y={ y }
                 columns={ columns }
                 rows={ rows }
-                onClick={ () =>
-                    history.push(`${book.order}/${id}`, { fromDashboard: true })
-                }
+                { ...(canOpenOrder ? { onClick: openOrder } : {}) }
                 onMouseEnter={ ev =>
                     this._showDashboardTooltip(
                         ev,
