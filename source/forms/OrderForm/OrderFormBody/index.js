@@ -206,7 +206,7 @@ export default class OrderFormBody extends Component {
                         <div className={ Styles.iconsCol }>
                             <a
                                 href={ `${book.oldApp.clients}/${
-                                    this.props.order.clientId
+                                    this.props.selectedClient.clientId
                                 }?ref=/orders/${this.props.order.id}` }
                             >
                                 <Icon type='edit' className={ Styles.editIcon } />

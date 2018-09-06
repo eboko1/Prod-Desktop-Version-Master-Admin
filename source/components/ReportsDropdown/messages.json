@@ -4,20 +4,26 @@
         "businessOrderReport": "Business Order Report",
         "clientOrderReport": "Client Order Report",
         "diagnosticsActReport": "Diagnostics Act Report",
-        "actOfAcceptanceReport": "Act Of Acceptance Report"
+        "actOfAcceptanceReport": "Act Of Acceptance Report",
+        "completedWorkReport": "Completed Work Report",
+        "invoiceReport": "Invoice"
     },
     "ru": {
         "calculationReport": "Калькуляция",
         "businessOrderReport": "Наряд-заказ в цех",
         "clientOrderReport": "Наряд-заказ клиенту",
         "diagnosticsActReport": "Акт диагностики",
-        "actOfAcceptanceReport": "Акт приема-передачи"
+        "actOfAcceptanceReport": "Акт приема-передачи",
+        "completedWorkReport": "Акт выполненых работ",
+        "invoiceReport": "Счет-фактура"
     },
     "uk": {
         "calculationReport": "Калькуляція",
         "businessOrderReport": "Наряд-замовлення у цех",
         "clientOrderReport": "Наряд-замовлення для клієнта",
         "diagnosticsActReport": "Акт діагностики",
-        "actOfAcceptanceReport": "Акт прийому-передачі"
+        "actOfAcceptanceReport": "Акт прийому-передачі",
+        "completedWorkReport": "Акт виконаних робіт",
+        "invoiceReport": "Рахунок-фактура"
     }
 }

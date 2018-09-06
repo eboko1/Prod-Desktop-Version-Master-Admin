@@ -35,6 +35,8 @@
         "add_order_form.select_requisites": "Select requisites",
         "add_order_form.payment_method": "Payment method",
         "add_order_form.select_payment_method": "Select payment method",
+        "add_order_form.cash": "Cash",
+        "add_order_form.non-cash": "Non-cash",
         "add_order_form.prev_order_recommendations": "Previous service recommendations",
         "add_order_form.provide_time": "Provide time",
         "add_order_form.please_provide_time": "Please provide time",
