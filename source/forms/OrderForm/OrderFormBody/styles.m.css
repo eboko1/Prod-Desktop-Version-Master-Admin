@@ -14,7 +14,10 @@
 }
 
 .client {
-    border-top:  2px solid var(--lightGray);
+    display: flex;
+    align-items: center;
+    border-top: 2px solid var(--lightGray);
+    width: 45%;
 }
 
 .carNumbers, .clientsInfo {
@@ -34,13 +37,8 @@
     flex: 0 1 50%;
 }
 
-.client {
-    display: flex;
-    align-items: center;
-}
-
 .clientSearchField {
-    flex: 0 1 42.5%;
+    flex: 1 1 auto;
 }
 
 .addClientIcon {

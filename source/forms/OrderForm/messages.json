@@ -14,14 +14,15 @@
         "add_order_form.select_client_phone": "Select client phone",
         "add_order_form.select_client_vehicle": "Select client vehicle",
         "add_order_form.email": "Email",
+        "add_order_form.email.placeholder": "Select client email",
         "add_order_form.car": "Car",
         "add_order_form.car_number": "Licence num",
         "add_order_form.odometr": "Mileage",
         "add_order_form.provide_odometr": "Provide mileage",
         "add_order_form.vin": "VIN",
         "add_order_form.total": "Total",
-        "add_order_form.services": "Services",
-        "add_order_form.details": "Details",
+        "add_order_form.services": "Labors",
+        "add_order_form.details": "Spare parts",
         "add_order_form.comments": "Comments",
         "add_order_form.duration": "Duration",
         "add_order_form.hours_shortcut": "h",
@@ -34,6 +35,8 @@
         "add_order_form.select_requisites": "Select requisites",
         "add_order_form.payment_method": "Payment method",
         "add_order_form.select_payment_method": "Select payment method",
+        "add_order_form.cash": "Cash",
+        "add_order_form.non-cash": "Non-cash",
         "add_order_form.prev_order_recommendations": "Previous service recommendations",
         "add_order_form.provide_time": "Provide time",
         "add_order_form.please_provide_time": "Please provide time",
@@ -42,7 +45,8 @@
         "add_order_form.select_appurtenancies_responsible": "Select spare parts manger",
         "order_form_table.appurtenancies_responsible": "Spare parts manager",
         "add_order_form.appointment_details": "Appointment Details:",
-        "add_order_form.save_appointment": "Save Appointment"
+        "add_order_form.save_appointment": "Save Appointment",
+        "add_order_form.no_model": "Model not specified"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -51,7 +55,7 @@
         "add_order_form.select_station": "Выберите пост",
         "add_order_form.manager": "Мастер-Приемщик",
         "add_order_form.client": "Клиент",
-        "add_order_form.search_client": "Поиск клиент",
+        "add_order_form.search_client": "Поиск клиента",
         "add_order_form.search_client.placeholder": "Поиск по ФИО, авто, телефону, VIN...",
         "add_order_form.name": "ФИО",
         "add_order_form.select_name": "Выберите клиента по имени",
@@ -59,6 +63,7 @@
         "add_order_form.select_client_phone": "Укажите телефон клиента",
         "add_order_form.select_client_vehicle": "Укажите автомобиль клиента",
         "add_order_form.email": "Email",
+        "add_order_form.email.placeholder": "Укажите email клиента",
         "add_order_form.car": "Автомобиль",
         "add_order_form.car_number": "Гос. номер",
         "add_order_form.odometr": "Пробег",
@@ -87,7 +92,8 @@
         "add_order_form.select_appurtenancies_responsible": "Укажите запчастиста",
         "order_form_table.appurtenancies_responsible": "Запчастист",
         "add_order_form.appointment_details": "Записать на:",
-        "add_order_form.save_appointment": "Записать"
+        "add_order_form.save_appointment": "Записать",
+        "add_order_form.no_model": "Модель не указана"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -104,6 +110,7 @@
         "add_order_form.select_client_phone": "Вкажіть телефон клієнта",
         "add_order_form.select_client_vehicle": "Вкажіть автомобіль клієнта",
         "add_order_form.email": "Email",
+        "add_order_form.email.placeholder": "Вкажіть email клієнта",
         "add_order_form.car": "Автомобіль",
         "add_order_form.car_number": "Держ. номер",
         "add_order_form.odometr": "Пробіг",
@@ -132,6 +139,7 @@
         "add_order_form.select_appurtenancies_responsible": "Вкажіть запчастиста",
         "order_form_table.appurtenancies_responsible": "Запчастист",
         "add_order_form.appointment_details": "Записати на:",
-        "add_order_form.save_appointment": "Записати"
+        "add_order_form.save_appointment": "Записати",
+        "add_order_form.no_model": "Модель не вказана"
     }
 }

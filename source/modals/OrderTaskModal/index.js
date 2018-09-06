@@ -25,6 +25,7 @@ export default class OrderTaskModal extends Component {
             saveNewOrderTask,
             orderTasks,
             activeVehicle,
+            initialOrderTask,
         } = this.props;
 
         return (
@@ -40,15 +41,14 @@ export default class OrderTaskModal extends Component {
                 okText={ <FormattedMessage id='save' /> }
                 wrapClassName={ Styles.orderTaskModal }
                 visible={ visible === MODALS.ORDER_TASK }
-                onOk={ () => {
-                    saveNewOrderTask();
-                } }
+                onOk={ () => saveNewOrderTask() }
                 onCancel={ () => {
                     resetModal();
                     resetOrderTasksForm();
                 } }
             >
                 <OrderTaskForm
+                    initialOrderTask={ initialOrderTask }
                     activeVehicle={ activeVehicle }
                     num={ num }
                     orderTasks={ orderTasks }

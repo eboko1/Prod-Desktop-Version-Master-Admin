@@ -13,6 +13,7 @@ import {
     DecoratedSelect,
     DecoratedSlider,
 } from 'forms/DecoratedFields';
+import { Numeral } from 'components';
 import { getDateTimeConfig, permissions, isForbidden } from 'utils';
 
 // own
@@ -47,17 +48,17 @@ const formHorizontalItemLayout = {
         xs:  { span: 24 },
         sm:  { span: 24 },
         md:  { span: 24 },
-        lg:  { span: 9 },
-        xl:  { span: 9 },
-        xxl: { span: 9 },
+        lg:  { span: 24 },
+        xl:  { span: 11 },
+        xxl: { span: 10 },
     },
     wrapperCol: {
         xs:  { span: 24 },
         sm:  { span: 24 },
         md:  { span: 24 },
-        lg:  { span: 15 },
-        xl:  { span: 15 },
-        xxl: { span: 15 },
+        lg:  { span: 24 },
+        xl:  { span: 13 },
+        xxl: { span: 14 },
     },
     colon: false,
 };
@@ -71,6 +72,7 @@ export default class OrderFormHeader extends Component {
         const dateBlock = this._renderDateBlock();
         const masterBlock = this._renderMasterBlock();
         const totalBlock = this._renderTotalBlock();
+        const duration = this._renderDuration();
 
         return (
             <div className={ Styles.formHeader }>
@@ -79,7 +81,7 @@ export default class OrderFormHeader extends Component {
                     { masterBlock }
                     { totalBlock }
                 </div>
-                { /* { duration } */ }
+                { duration }
             </div>
         );
     }
@@ -135,8 +137,6 @@ export default class OrderFormHeader extends Component {
         const momentBeginDatetime = beginDatetime
             ? moment(beginDatetime)
             : void 0;
-
-        const duration = this._renderDuration();
 
         return (
             <div className={ Styles.headerCol }>
@@ -228,7 +228,6 @@ export default class OrderFormHeader extends Component {
                     minuteStep={ 30 }
                     initialValue={ momentBeginDatetime }
                 />
-                { duration }
             </div>
         );
     };
@@ -301,7 +300,7 @@ export default class OrderFormHeader extends Component {
                     { employees.map(employee => (
                         <Option
                             value={ employee.id }
-                            key={ v4() }
+                            key={ `employee-${employee.id}` }
                             disabled={ employee.disabled }
                         >
                             { `${employee.name} ${employee.surname}` }
@@ -367,11 +366,20 @@ export default class OrderFormHeader extends Component {
                 <FormItem>
                     <div className={ Styles.total }>
                         <FormattedMessage id='sum' />
-                        <span className={ Styles.totalSum }>
+                        <Numeral
+                            className={ Styles.totalSum }
+                            currency={ this.props.intl.formatMessage({
+                                id: 'currency',
+                            }) }
+                            nullText='0'
+                        >
+                            { totalPrice }
+                        </Numeral>
+                        { /* <span className={ Styles.totalSum }>
                             { `${totalPrice} ${formatMessage({
                                 id: 'currency',
                             })}` }
-                        </span>
+                        </span> */ }
                     </div>
                 </FormItem>
                 <DecoratedSelect
@@ -390,10 +398,12 @@ export default class OrderFormHeader extends Component {
                     }) }
                 >
                     <Option value='cash'>
-                        <Icon type='wallet' /> Нал
+                        <Icon type='wallet' />
+                        <FormattedMessage id='add_order_form.cash' />
                     </Option>
                     <Option value='noncash'>
-                        <Icon type='credit-card' /> Безнал
+                        <Icon type='credit-card' />
+                        <FormattedMessage id='add_order_form.non-cash' />
                     </Option>
                     <Option value='visa'>
                         <Icon type='credit-card' /> Visa

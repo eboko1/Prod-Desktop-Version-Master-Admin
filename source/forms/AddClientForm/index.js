@@ -86,23 +86,6 @@ export class AddClientForm extends Component {
 
         return (
             <Form layout='vertical'>
-                { searchQuery && (
-                    <div>
-                        <h2>
-                            <FormattedMessage id='add_client_form.search_query'/>
-                            : { searchQuery }
-                        </h2>
-                    </div>
-                ) }
-                <br/>
-                <div>
-                    <ClientsVehiclesTable
-                        removeClientVehicle={ this.props.removeClientVehicle }
-                        vehicles={ vehicles }
-                    />
-                    <br/>
-                </div>
-
                 <Row gutter={ 8 } type='flex' align='bottom'>
                     <Col span={ 3 }>
                         { years && (
@@ -540,6 +523,12 @@ export class AddClientForm extends Component {
                         />
                     </Col>
                 </Row>
+                <div>
+                    <ClientsVehiclesTable
+                        removeClientVehicle={ this.props.removeClientVehicle }
+                        vehicles={ vehicles }
+                    />
+                </div>
             </Form>
         );
     }

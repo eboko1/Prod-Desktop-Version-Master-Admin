@@ -69,20 +69,23 @@ export default class OrderFormTabs extends Component {
                         tab={
                             formatMessage({
                                 id: 'order_form_table.tasks',
-                            }) + ` (${orderTasks.length})`
+                            }) +
+                            ` (${orderTasks.orderTasks &&
+                                orderTasks.orderTasks.length})`
                         }
                         key='1'
                     >
-                        { orderTasks.length < 1 ? (
+                        { orderTasks.orderTasks &&
+                        orderTasks.orderTasks.length < 1 ? (
                             <Button
-                                className={ Styles.orderTaskModalButton }
-                                type='primary'
-                                onClick={ () => setModal(MODALS.ORDER_TASK) }
-                            >
-                                <FormattedMessage id='add' />
-                                <Icon type='plus' />
-                            </Button>
-                        ) : null }
+                                    className={ Styles.orderTaskModalButton }
+                                    type='primary'
+                                    onClick={ () => setModal(MODALS.ORDER_TASK) }
+                                >
+                                    <FormattedMessage id='add' />
+                                    <Icon type='plus' />
+                                </Button>
+                            ) : null }
 
                         <TasksTable
                             initOrderTasksForm={ initOrderTasksForm }

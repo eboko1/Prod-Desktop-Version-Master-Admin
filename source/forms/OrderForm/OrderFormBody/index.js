@@ -19,6 +19,7 @@ import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
+import { ClientsSearchTable } from './../OrderFormTables';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -74,10 +75,12 @@ export default class OrderFormBody extends Component {
         const clientColumn = this._renderClientColumn();
         const vehicleColumn = this._renderVehicleColumn();
         const comments = this._renderCommentsBlock();
+        const clientsSearchTable = this._renderClientSearchTable();
 
         return (
             <div className={ Styles.clientBlock }>
                 { clientSearch }
+                { clientsSearchTable }
                 <div className={ Styles.clientData }>
                     { clientColumn }
                     { vehicleColumn }
@@ -86,6 +89,23 @@ export default class OrderFormBody extends Component {
             </div>
         );
     }
+
+    _renderClientSearchTable = () => {
+        const {
+            searchClientsResult: { searching: clientsSearching, clients },
+            setClientSelection,
+        } = this.props;
+        const { getFieldValue } = this.props.form;
+
+        return (
+            <ClientsSearchTable
+                clientsSearching={ clientsSearching }
+                setClientSelection={ setClientSelection }
+                visible={ getFieldValue('searchClientQuery') }
+                clients={ clients }
+            />
+        );
+    };
 
     _renderClientSearch = () => {
         const { getFieldDecorator } = this.props.form;
@@ -103,7 +123,9 @@ export default class OrderFormBody extends Component {
                     field='searchClientQuery'
                     formItem
                     colon={ false }
-                    label={ <FormattedMessage id='add_order_form.search_client'/> }
+                    label={
+                        <FormattedMessage id='add_order_form.search_client' />
+                    }
                     getFieldDecorator={ getFieldDecorator }
                     disabled={
                         Boolean(disabledClientSearch) ||
@@ -184,7 +206,7 @@ export default class OrderFormBody extends Component {
                         <div className={ Styles.iconsCol }>
                             <a
                                 href={ `${book.oldApp.clients}/${
-                                    this.props.order.clientId
+                                    this.props.selectedClient.clientId
                                 }?ref=/orders/${this.props.order.id}` }
                             >
                                 <Icon type='edit' className={ Styles.editIcon } />
@@ -204,6 +226,7 @@ export default class OrderFormBody extends Component {
                         field='clientEmail'
                         className={ Styles.clientsInfoCol }
                         formItem
+                        disabled={ this.bodyUpdateIsForbidden() }
                         formItemLayout={ formVerticalLayout }
                         getFieldDecorator={ getFieldDecorator }
                         label={ <FormattedMessage id='add_order_form.email' /> }
@@ -211,7 +234,9 @@ export default class OrderFormBody extends Component {
                             _.get(fetchedOrder, 'order.clientEmail') ||
                             selectedClient.emails.find(Boolean)
                         }
-                        placeholder={ 'Choose selected client email' }
+                        placeholder={ formatMessage({
+                            id: 'add_order_form.email.placeholder',
+                        }) }
                     >
                         { selectedClient.emails.filter(Boolean).map(email => (
                             <Option value={ email } key={ v4() }>
@@ -257,6 +282,19 @@ export default class OrderFormBody extends Component {
             selectedClient &&
             selectedVehicleId &&
             _.find(selectedClient.vehicles, { id: selectedVehicleId });
+
+        function formatVehicleLabel(vehicle) {
+            const modelPart = vehicle.model
+                ? `${vehicle.make} ${vehicle.model}`
+                : formatMessage({ id: 'add_order_form.no_model' });
+            const parts = [ modelPart, vehicle.year, vehicle.modification, vehicle.number, vehicle.vin ];
+
+            return parts
+                .filter(Boolean)
+                .map(String)
+                .map(_.trimEnd)
+                .join(', ');
+        }
 
         return (
             <div className={ Styles.bodyColumn }>
@@ -304,15 +342,7 @@ export default class OrderFormBody extends Component {
                         >
                             { selectedClient.vehicles.map(vehicle => (
                                 <Option value={ vehicle.id } key={ v4() }>
-                                    { vehicle.model
-                                        ? `${vehicle.make} ${vehicle.model}
-                                ${vehicle.number ? ' ' + vehicle.number : ''}
-                                ${vehicle.vin ? ' ' + vehicle.vin : ''}`
-                                        : `${formatMessage({
-                                            id: 'add_order_form.no_model',
-                                        })}
-                                ${vehicle.number ? ' ' + vehicle.number : ''}
-                                ${vehicle.vin ? ' ' + vehicle.vin : ''}` }
+                                    { formatVehicleLabel(vehicle) }
                                 </Option>
                             )) }
                         </DecoratedSelect>

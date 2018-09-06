@@ -10,6 +10,14 @@ import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 
+const ACT_OF_ACCEPTANCE_REPORT = 'actOfAcceptanceReport'; // actOfAcceptanceReport -> акт приема работ
+const BUSINESS_ORDER_REPORT = 'businessOrderReport'; // businessOrderReport -> наряд заказ в цех
+const CALCULATION_REPORT = 'calculationReport'; // calculationReport - калькуляция
+const CLIENT_ORDER_REPORT = 'clientOrderReport'; // clientOrderReport -> наряд заказ
+const COMPLETED_WORK_REPORT = 'completedWorkReport'; // completedWorkReport -> акт выполненых работ
+const DIAGNOSTICS_ACT_REPORT = 'diagnosticsActReport'; // diagnosticsActReport -> акт диагностики
+const INVOICE_REPORT = 'invoiceReport'; // invoiceReport -> счет-фактура
+
 class ReportsDropdown extends React.Component {
     constructor(props) {
         super(props);
@@ -22,22 +30,17 @@ class ReportsDropdown extends React.Component {
             return [];
         }
 
-        // calculationReport - калькуляция
-        // businessOrderReport -> наряд заказ в цех
-        // clientOrderReport -> наряд заказ
-        // diagnosticsActReport -> акт диагностики
-        // actOfAcceptanceReport -> акт приема работ
         const statusToReportsMap = {
-            not_complete: ["calculationReport"], // eslint-disable-line
-            required:     [ 'calculationReport' ],
-            reserve:      [ 'calculationReport' ],
-            call:         [ 'calculationReport' ],
-            approve:      [ 'calculationReport', 'actOfAcceptanceReport', 'diagnosticsActReport', 'businessOrderReport' ],
-            progress:     [ 'actOfAcceptanceReport', 'diagnosticsActReport', 'businessOrderReport', 'clientOrderReport' ],
-            success:      [ 'clientOrderReport' ],
-            review:       [ 'clientOrderReport' ],
-            invite:       [ 'calculationReport' ],
-            cancel:       [ 'calculationReport' ],
+            not_complete: [ CALCULATION_REPORT ],
+            required:     [ CALCULATION_REPORT ],
+            reserve:      [ INVOICE_REPORT, COMPLETED_WORK_REPORT, CALCULATION_REPORT, ACT_OF_ACCEPTANCE_REPORT, DIAGNOSTICS_ACT_REPORT, BUSINESS_ORDER_REPORT ],
+            call:         [ CALCULATION_REPORT ],
+            approve:      [ INVOICE_REPORT, COMPLETED_WORK_REPORT, CALCULATION_REPORT, ACT_OF_ACCEPTANCE_REPORT, DIAGNOSTICS_ACT_REPORT, BUSINESS_ORDER_REPORT ],
+            progress:     [ INVOICE_REPORT, COMPLETED_WORK_REPORT, ACT_OF_ACCEPTANCE_REPORT, DIAGNOSTICS_ACT_REPORT, BUSINESS_ORDER_REPORT ],
+            success:      [ CLIENT_ORDER_REPORT, COMPLETED_WORK_REPORT, CALCULATION_REPORT ],
+            review:       [ CLIENT_ORDER_REPORT ],
+            invite:       [ CALCULATION_REPORT ],
+            cancel:       [ CALCULATION_REPORT ],
         };
         const reports = statusToReportsMap[ orderStatus ].map(name => {
             return {
@@ -66,13 +69,13 @@ class ReportsDropdown extends React.Component {
             </Menu>
         );
 
-        const forbidden = isForbidden(this.props.user, permissions.PRINT_ORDERS);
+        const forbidden = isForbidden(
+            this.props.user,
+            permissions.PRINT_ORDERS,
+        );
 
         return (
-            <Dropdown
-                overlay={ menu }
-                disabled={ forbidden }
-            >
+            <Dropdown overlay={ menu } disabled={ forbidden }>
                 <Icon
                     className={ forbidden ? Styles.forbiddenPrint : '' }
                     type='printer'

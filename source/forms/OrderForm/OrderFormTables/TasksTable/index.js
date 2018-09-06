@@ -39,7 +39,6 @@ class TasksTable extends Component {
                     }
                 },
             },
-
             {
                 title:     <FormattedMessage id='status' />,
                 dataIndex: 'status',
@@ -190,15 +189,18 @@ class TasksTable extends Component {
             <Catcher>
                 <Table
                     dataSource={
-                        orderTasks.length > 0 &&
-                        orderTasks[ 0 ].history.length > 0
+                        orderTasks.orderTasks &&
+                        orderTasks.orderTasks.length > 0 &&
+                        orderTasks.orderTasks[ 0 ].history.length > 0
                             ? [
-                                ...orderTasks.map((task, index) => ({
-                                    ...task,
-                                    index,
-                                    key: v4(),
-                                })),
-                                ...orderTasks[ 0 ].history
+                                ...orderTasks.orderTasks.map(
+                                    (task, index) => ({
+                                        ...task,
+                                        index,
+                                        key: v4(),
+                                    }),
+                                ),
+                                ...orderTasks.orderTasks[ 0 ].history
                                     .sort(this.sortHistory)
                                     .map((task, index) => ({
                                         ...task,
@@ -206,16 +208,20 @@ class TasksTable extends Component {
                                         key: v4(),
                                     })),
                             ]
-                            : [
-                                ...orderTasks.map((task, index) => ({
-                                    ...task,
-                                    index,
-                                    key: v4(),
-                                })),
-                            ]
+                            : orderTasks.orderTasks
+                                ? [
+                                    ...orderTasks.orderTasks.map(
+                                        (task, index) => ({
+                                            ...task,
+                                            index,
+                                            key: v4(),
+                                        }),
+                                    ),
+                                ]
+                                : []
                     }
                     size='small'
-                    scroll={ { x: 2000 } }
+                    scroll={ { x: 2000, y: 200 } }
                     columns={ columns }
                     pagination={ false }
                     locale={ {

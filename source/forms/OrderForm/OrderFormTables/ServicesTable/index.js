@@ -283,29 +283,6 @@ class ServicesTable extends Component {
                     columns={ columns }
                     pagination={ false }
                 />
-                <div className={ Styles.durationPanel }>
-                    <DecoratedSelect
-                        formItem
-                        label={
-                            <FormattedMessage id='order_form_table.master' />
-                        }
-                        className={ Styles.durationPanelItem }
-                        field='employee'
-                        disabled={ editBodyForbidden }
-                        initialValue={ _.get(fetchedOrder, 'order.employeeId') }
-                        getFieldDecorator={ getFieldDecorator }
-                    >
-                        { this.props.employees.map(employee => (
-                            <Option
-                                value={ employee.id }
-                                key={ `employee-${employee.id}` }
-                                disabled={ employee.disabled }
-                            >
-                                { `${employee.name} ${employee.surname}` }
-                            </Option>
-                        )) }
-                    </DecoratedSelect>
-                </div>
             </Catcher>
         );
     }
