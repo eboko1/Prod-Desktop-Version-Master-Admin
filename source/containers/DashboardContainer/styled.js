@@ -23,6 +23,7 @@ export const Dashboard = styled.div`
     display: grid;
     grid-template-columns: 80px 1fr;
     grid-gap: 1%;
+    overflow-y: hidden;
 `;
 
 export const DashboardGrid = styled.div`
@@ -32,6 +33,37 @@ export const DashboardGrid = styled.div`
     grid-gap: 1%;
     width: auto;
     overflow-x: scroll;
+    overflow-y: hidden;
+
+    &::-webkit-scrollbar {
+        width: 0.8em;
+        position: absolute;
+        height: 0.8em;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--primary);
+        position: absolute;
+    }
+
+    &::-webkit-scrollbar-track {
+        border-radius: 10px;
+        background: rgba(0, 0, 0, 0.1);
+        border: 1px solid #ccc;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        border-radius: 10px;
+        background: linear-gradient(to left, #fff, var(--primary));
+        border: 1px solid #aaa;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+        background: var(--primary);
+    }
+    &::-webkit-scrollbar-thumb:active {
+        background: linear-gradient(to left, #fff, var(--primary));
+    }
 `;
 
 export const DashboardColumn = styled.div`
