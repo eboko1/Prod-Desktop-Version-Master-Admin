@@ -61,7 +61,7 @@ class DashboardContainer extends Component {
 
         return (
             <Catcher>
-                <Dashboard innerRef={ this._dashboardRef }>
+                <Dashboard innerRef={ this._dashboardRef } className='withScroll'>
                     <DashboardTimeline schedule={ schedule } />
                     { timeColumn }
                     <DashboardGrid
@@ -108,14 +108,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length && 
+                    { load.length &&
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) : 
+                                ) :
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
