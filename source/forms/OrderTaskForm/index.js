@@ -285,6 +285,7 @@ export class OrderTaskForm extends Component {
                                 }
                             />
                             <DecoratedTimePicker
+                                allowEmpty={ false }
                                 minuteStep={ 30 }
                                 field='deadlineTime'
                                 label={ <FormattedMessage id='deadlineTime' /> }

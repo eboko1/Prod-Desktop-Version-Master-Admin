@@ -32,6 +32,8 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Search = Input.Search;
 const compareOrderTasks = (initialOrderTask, orderTaskEntity) => {
+    if(initialOrderTask===null){ return true }
+
     return (
         initialOrderTask.responsibleId !== orderTaskEntity.responsible.value ||
         initialOrderTask.priority !== orderTaskEntity.priority.value ||
@@ -83,9 +85,9 @@ class MyTasksPage extends Component {
     constructor(props) {
         super(props);
         this.handleOrdersSearch = _.debounce(value => {
-            const { setMyTasksSearchFilter, fetchOrders, filter } = this.props;
+            const { setMyTasksSearchFilter, fetchMyTasks, filter } = this.props;
             setMyTasksSearchFilter(value);
-            // fetchOrders({ page: 1, ...filter });
+            fetchMyTasks( filter );
         }, 1000);
     }
     state = {
@@ -99,7 +101,7 @@ class MyTasksPage extends Component {
     }
     componentDidMount() {
         const { filter, fetchMyTasks } = this.props;
-        fetchMyTasks(filter);
+        fetchMyTasks(filter, true);
     }
     saveOrderTaskFormRef = formRef => {
         this.orderTaskFormRef = formRef;
@@ -111,7 +113,9 @@ class MyTasksPage extends Component {
         let myTasks = 'mytasks';
         form.validateFields(err => {
             if (!err) {
+
                 if (compareOrderTasks(initialOrderTask, orderTaskEntity)) {
+
                     this.props.saveOrderTask(
                         orderTaskEntity,
                         this.props.activeOrder,
@@ -203,17 +207,7 @@ class MyTasksPage extends Component {
                 controls={
                     <div className={ Styles.controls }>
                         { !isMobile && headerControls }
-                        <div className={ Styles.buttonGroup }>
-                            <Button
-                                type='primary'
-                                onClick={ () => {
-                                    setModal(MODALS.ORDER_TASK);
-                                    resetData();
-                                } }
-                            >
-                                <FormattedMessage id='add_task' />
-                            </Button>
-                        </div>
+                 
                     </div>
                 }
             >
@@ -223,6 +217,7 @@ class MyTasksPage extends Component {
                         placeholder={ intl.formatMessage({
                             id: 'orders-filter.search_placeholder',
                         }) }
+                        defaultValue={ filter.query }
                         onChange={ ({ target: { value } }) =>
                             this.handleOrdersSearch(value)
                         }
@@ -240,15 +235,16 @@ class MyTasksPage extends Component {
                         </RadioButton>
                     </RadioGroup>
                 </div>
-                <MyTasksContainer
-                    setMyTasksSortOrderFilter={ setMyTasksSortOrderFilter }
-                    setMyTasksSortFieldFilter={ setMyTasksSortFieldFilter }
-                    myTasks={ myTasks }
-                    fetchMyTasks={ fetchMyTasks }
-                    filter={ filter }
-                    page={ filter.page }
-                />
-
+                <div className={ Styles.myTasksWrapper }>
+                    <MyTasksContainer
+                        setMyTasksSortOrderFilter={ setMyTasksSortOrderFilter }
+                        setMyTasksSortFieldFilter={ setMyTasksSortFieldFilter }
+                        myTasks={ myTasks }
+                        fetchMyTasks={ fetchMyTasks }
+                        filter={ filter }
+                        page={ filter.page }
+                    />
+                </div>
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }
                     orderTaskEntity={ orderTaskEntity }
@@ -261,6 +257,7 @@ class MyTasksPage extends Component {
                     orderTaskId={ orderTaskId }
                     orderId={ activeOrder }
                     activeVehicle={ activeVehicle }
+                    
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
                     stations={ myTasks && myTasks.stations || [] }
                     managers={ myTasks && myTasks.managers || [] }

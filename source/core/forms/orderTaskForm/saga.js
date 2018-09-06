@@ -28,7 +28,7 @@ export function* saveNewOrderTask() {
                 obj.deadlineDate = moment(
                     `${moment(payload.deadlineDate.value).format(
                         'YYYY-MM-DD',
-                    )} ${moment(payload.deadlineTime.value).format('HH:mm')}`,
+                    )} ${payload.deadlineTime.value?moment(payload.deadlineTime.value).format('HH:mm'):'00:00'}`,
                 ).format();
             }
             let data;

@@ -79,6 +79,13 @@
 .filter {
     display: flex;
     justify-content: space-between;
+    background: white;
+    position: fixed;
+    z-index: 130;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.16);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    box-sizing: border-box;
+    width: calc(100% - 256px);
 }
 
 .search {
@@ -99,4 +106,8 @@
 
 .cancelReasonSelect {
     flex: 0 1 40%;
+}
+.myTasksWrapper {
+    padding: 80px 0 0 0;
+    margin: 0 16px;
 }

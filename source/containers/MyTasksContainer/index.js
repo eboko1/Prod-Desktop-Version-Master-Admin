@@ -103,6 +103,8 @@ export default class MyTasksContainer extends Component {
                 render:    (text, record) => {
                     return text ? <FormattedMessage id={ text } /> : '';
                 },
+                sorter: true,
+
             },
             {
                 title:     <FormattedMessage id='priority' />,
@@ -120,6 +122,8 @@ export default class MyTasksContainer extends Component {
                 render:    (text, record) => {
                     return text ? <FormattedMessage id={ text } /> : null;
                 },
+                sorter: true,
+
             },
             {
                 title:     <FormattedMessage id='vehicle' />,
@@ -177,6 +181,9 @@ export default class MyTasksContainer extends Component {
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
                     </div>
                 ),
+                sorter: true,
+
+
             },
             {
                 title:     <FormattedMessage id='duration' />,
@@ -251,7 +258,8 @@ export default class MyTasksContainer extends Component {
             setMyTasksSortOrderFilter,
             fetchMyTasks,
             filter,
-        } = this.state;
+        } = this.props;
+
         if (!sorter) {
             return;
         }
@@ -324,33 +332,37 @@ export default class MyTasksContainer extends Component {
 
         return (
             <Catcher>
-                <section className={ Styles.myTasks }>
-                    <Table
-                        className={ Styles.TableMyTasks }
-                        dataSource={
-                            myTasks && myTasks.orderTasks.orderTasks.length > 0
-                                ? myTasks.orderTasks.orderTasks
-                                // .sort(this.sortTable)
-                                    .map((task, index) => ({
-                                        ...task,
-                                        index,
-                                        key: v4(),
-                                    }))
-                                : []
-                        }
-                        size='small'
-                        scroll={ {
-                            x: 2200,
-                            y: '50vh',
-                        } }
-                        columns={ columns }
-                        pagination={ pagination }
-                        locale={ {
-                            emptyText: <FormattedMessage id='no_data' />,
-                        } }
-                        onChange={ this.handleTableChange }
-                    />
-                </section>
+                <div className={ Styles.paper }>
+
+                    <section className={ Styles.myTasks }>
+                        <Table
+                            className={ Styles.TableMyTasks }
+                            dataSource={
+                                myTasks && myTasks.orderTasks.orderTasks.length > 0
+                                    ? myTasks.orderTasks.orderTasks
+                                    // .sort(this.sortTable)
+                                        .map((task, index) => ({
+                                            ...task,
+                                            index,
+                                            key: v4(),
+                                        }))
+                                    : []
+                            }
+                            size='small'
+                            scroll={ {
+                                x: 2200,
+                                y: '50vh',
+                            } }
+                            columns={ columns }
+                            pagination={ pagination }
+                            locale={ {
+                                emptyText: <FormattedMessage id='no_data' />,
+                            } }
+                            
+                            onChange={ this.handleTableChange }
+                        />
+                    </section>
+                </div>
             </Catcher>
         );
     }
