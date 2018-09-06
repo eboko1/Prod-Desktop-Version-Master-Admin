@@ -14,16 +14,7 @@ import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 
-// /// /// //
-// if class in construc
-// const TableMagic = (props) => {
-// columnConfig(activeRo){}
-//   return (
-//     <orderTab props={columnConfig}
-//   );
-// };
-// withRouter(TableMagic)
-// // //
+/* eslint-disable complexity */
 
 export function columnsConfig(
     invited,
@@ -52,7 +43,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) => 
+        render:    (_, order) =>
             <>
                 <Link
                     className={ Styles.ordernLink }

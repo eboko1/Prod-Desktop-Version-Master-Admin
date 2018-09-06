@@ -3,7 +3,7 @@ import { v4 } from 'uuid';
 /**
  * Constants
  * */
-export const moduleName = 'CLIENTS';
+export const moduleName = 'clients';
 const prefix = `cpb/${moduleName}`;
 
 export const FETCH_CLIENTS = `${prefix}/FETCH_CLIENTS`;
@@ -27,14 +27,11 @@ export const SET_CLIENTS_PAGE_SORT = `${prefix}/SET_CLIENTS_PAGE_SORT`;
  * Reducer
  * */
 const ReducerState = {
-    stats:  {},
-    data:   [],
-    filter: {
-        page:  1,
+    stats:   {},
+    clients: [],
+    filter:  {
+        sort:  { page: 1, sort: 'asc' },
         query: '',
-    },
-    statsCountsPanel: {
-        stats: {},
     },
 };
 // eslint-disable-next-line

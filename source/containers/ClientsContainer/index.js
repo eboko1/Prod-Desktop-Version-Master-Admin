@@ -24,7 +24,7 @@ import { columnsConfig, rowsConfig, scrollConfig } from './clientsTableConfig';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    clients:         state.clients.data,
+    clients:         state.clients.clients,
     filter:          state.clients.filter,
     modal:           state.modals.modal,
     sort:            state.clients.sort,
@@ -56,28 +56,10 @@ class OrdersContainer extends Component {
             invited:         [],
         };
 
-        this.invite = this.invite.bind(this);
-        this.isOrderInvitable = this.isOrderInvitable.bind(this);
-        this.isAlreadyInvited = this.isAlreadyInvited.bind(this);
-        this.inviteSelected = this.inviteSelected.bind(this);
-    }
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        // Store prev activeRoute in state so we can compare when props change.
-        // Clear out any previously-loaded user data (so we don't render stale stuff).
-        if (nextProps.location.pathname !== prevState.activeRoute) {
-            const status = OrdersContainer.getStatuses(nextProps);
-
-            return {
-                status:          status,
-                activeRoute:     nextProps.location.pathname,
-                selectedRowKeys: [],
-                invited:         [],
-            };
-        }
-
-        // No state update necessary
-        return null;
+        // this.invite = this.invite.bind(this);
+        // this.isOrderInvitable = this.isOrderInvitable.bind(this);
+        // this.isAlreadyInvited = this.isAlreadyInvited.bind(this);
+        // this.inviteSelected = this.inviteSelected.bind(this);
     }
 
     componentDidMount() {
