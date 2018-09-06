@@ -3,7 +3,7 @@
     position: fixed;
     width: calc(100% - 256px);
     padding: 0;
-    z-index: 100;
+    z-index: 120;
     flex: 1 1 100%;
     padding-right: 24px;
 }
