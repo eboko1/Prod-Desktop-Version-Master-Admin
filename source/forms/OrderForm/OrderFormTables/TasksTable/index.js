@@ -67,6 +67,23 @@ class TasksTable extends Component {
                 },
             },
             {
+                title:     <FormattedMessage id='comment' />,
+                dataIndex: 'comment',
+                key:       'comment',
+                width:     '8%',
+                render:    text => (
+                    <div>
+                        <Tooltip
+                            placement='bottomLeft'
+                            title={ <span>{ text }</span> }
+                            getPopupContainer={ trigger => trigger.parentNode }
+                        >
+                            <div className={ Styles.commentDiv }>{ text }</div>
+                        </Tooltip>
+                    </div>
+                ),
+            },
+            {
                 title:     <FormattedMessage id='responsible' />,
                 dataIndex: 'responsibleName',
                 key:       'responsibleName',
@@ -139,23 +156,7 @@ class TasksTable extends Component {
                     </div>
                 ),
             },
-            {
-                title:     <FormattedMessage id='comment' />,
-                dataIndex: 'comment',
-                key:       'comment',
-                width:     '8%',
-                render:    text => (
-                    <div>
-                        <Tooltip
-                            placement='bottomLeft'
-                            title={ <span>{ text }</span> }
-                            getPopupContainer={ trigger => trigger.parentNode }
-                        >
-                            <div className={ Styles.commentDiv }>{ text }</div>
-                        </Tooltip>
-                    </div>
-                ),
-            },
+           
             {
                 title:     <FormattedMessage id='author' />,
                 dataIndex: 'author',
@@ -187,28 +188,13 @@ class TasksTable extends Component {
 
         return (
             <Catcher>
-                <Table
-                    dataSource={
-                        orderTasks.orderTasks &&
-                        orderTasks.orderTasks.length > 0 &&
-                        orderTasks.orderTasks[ 0 ].history.length > 0
-                            ? [
-                                ...orderTasks.orderTasks.map(
-                                    (task, index) => ({
-                                        ...task,
-                                        index,
-                                        key: v4(),
-                                    }),
-                                ),
-                                ...orderTasks.orderTasks[ 0 ].history
-                                    .sort(this.sortHistory)
-                                    .map((task, index) => ({
-                                        ...task,
-                                        index,
-                                        key: v4(),
-                                    })),
-                            ]
-                            : orderTasks.orderTasks
+                <div                     className={ Styles.table }
+                >
+                    <Table
+                        className={ Styles.ExpandedTable }
+
+                        dataSource={
+                            orderTasks.orderTasks
                                 ? [
                                     ...orderTasks.orderTasks.map(
                                         (task, index) => ({
@@ -219,15 +205,33 @@ class TasksTable extends Component {
                                     ),
                                 ]
                                 : []
-                    }
-                    size='small'
-                    scroll={ { x: 2000, y: 200 } }
-                    columns={ columns }
-                    pagination={ false }
-                    locale={ {
-                        emptyText: <FormattedMessage id='no_data' />,
-                    } }
-                />
+                        }
+                        size='small'
+                        scroll={ { x: 2000, y: 200 } }
+                        columns={ columns }
+                        pagination={ false }
+                        expandedRowClassName={ ()=>Styles.ExpandedRow }
+                        expandedRowRender={ ()=>{
+                            return <Table
+                                columns={ columns }
+                                dataSource={ [
+                                    ...orderTasks.orderTasks[ 0 ].history
+                                        .sort(this.sortHistory)
+                                        .map((task, index) => ({
+                                            ...task,
+                                            index,
+                                            key: v4(),
+                                        })),
+                                ] }
+                                pagination={ false }
+                                showHeader={ false }
+                            />
+                        } }
+                        locale={ {
+                            emptyText: <FormattedMessage id='no_data' />,
+                        } }
+                    />
+                </div>
             </Catcher>
         );
     }
