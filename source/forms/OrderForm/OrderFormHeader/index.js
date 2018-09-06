@@ -13,6 +13,7 @@ import {
     DecoratedSelect,
     DecoratedSlider,
 } from 'forms/DecoratedFields';
+import { Numeral } from 'components';
 import { getDateTimeConfig, permissions, isForbidden } from 'utils';
 
 // own
@@ -365,11 +366,20 @@ export default class OrderFormHeader extends Component {
                 <FormItem>
                     <div className={ Styles.total }>
                         <FormattedMessage id='sum' />
-                        <span className={ Styles.totalSum }>
+                        <Numeral
+                            className={ Styles.totalSum }
+                            currency={ this.props.intl.formatMessage({
+                                id: 'currency',
+                            }) }
+                            nullText='0'
+                        >
+                            { totalPrice }
+                        </Numeral>
+                        { /* <span className={ Styles.totalSum }>
                             { `${totalPrice} ${formatMessage({
                                 id: 'currency',
                             })}` }
-                        </span>
+                        </span> */ }
                     </div>
                 </FormItem>
                 <DecoratedSelect
@@ -388,10 +398,12 @@ export default class OrderFormHeader extends Component {
                     }) }
                 >
                     <Option value='cash'>
-                        <Icon type='wallet' /> Нал
+                        <Icon type='wallet' />
+                        <FormattedMessage id='add_order_form.cash' />
                     </Option>
                     <Option value='noncash'>
-                        <Icon type='credit-card' /> Безнал
+                        <Icon type='credit-card' />
+                        <FormattedMessage id='add_order_form.non-cash' />
                     </Option>
                     <Option value='visa'>
                         <Icon type='credit-card' /> Visa
