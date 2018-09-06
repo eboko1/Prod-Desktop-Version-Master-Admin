@@ -39,7 +39,10 @@ class DetailsTable extends Component {
             ),
         );
 
-        const editDetailsForbidden = isForbidden(props.user, permissions.ACCESS_ORDER_DETAILS);
+        const editDetailsForbidden = isForbidden(
+            props.user,
+            permissions.ACCESS_ORDER_DETAILS,
+        );
 
         this.columns = [
             {
@@ -83,7 +86,9 @@ class DetailsTable extends Component {
                             this._getDefaultValue(key, 'detailBrandName') || 0
                         }
                         field={ `details[${key}][detailBrandName]` }
-                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
+                        disabled={
+                            this._isFieldDisabled(key) || editDetailsForbidden
+                        }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         showSearch
                         placeholder={
@@ -109,7 +114,9 @@ class DetailsTable extends Component {
                     <DecoratedInput
                         initialValue={ this._getDefaultValue(key, 'detailCode') }
                         field={ `details[${key}][detailCode]` }
-                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
+                        disabled={
+                            this._isFieldDisabled(key) || editDetailsForbidden
+                        }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                     />
                 ),
@@ -125,9 +132,15 @@ class DetailsTable extends Component {
                             'purchasePrice',
                         ) }
                         field={ `details[${key}][purchasePrice]` }
-                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
+                        disabled={
+                            this._isFieldDisabled(key) || editDetailsForbidden
+                        }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         min={ 0 }
+                        formatter={ value =>
+                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                        }
+                        parser={ value => `${value}`.replace(/\$\s?|(\s)/g, '') }
                     />
                 ),
             },
@@ -139,11 +152,17 @@ class DetailsTable extends Component {
                     <DecoratedInputNumber
                         field={ `details[${key}][detailPrice]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
+                        disabled={
+                            this._isFieldDisabled(key) || editDetailsForbidden
+                        }
                         initValue={
                             this._getDefaultValue(key, 'detailPrice') || 0
                         }
                         min={ 0 }
+                        formatter={ value =>
+                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                        }
+                        parser={ value => `${value}`.replace(/\$\s?|(\s)/g, '') }
                     />
                 ),
             },
@@ -155,12 +174,18 @@ class DetailsTable extends Component {
                     <DecoratedInputNumber
                         field={ `details[${key}][detailCount]` }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
-                        disabled={ this._isFieldDisabled(key) || editDetailsForbidden }
+                        disabled={
+                            this._isFieldDisabled(key) || editDetailsForbidden
+                        }
                         initValue={
                             this._getDefaultValue(key, 'detailCount') || 1
                         }
                         min={ 0.1 }
                         step={ 0.1 }
+                        formatter={ value =>
+                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                        }
+                        parser={ value => `${value}`.replace(/\$\s?|(\s)/g, '') }
                     />
                 ),
             },
@@ -179,6 +204,12 @@ class DetailsTable extends Component {
                             disabled
                             defaultValue={ 0 }
                             value={ value }
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                         />
                     );
                 },
@@ -187,7 +218,8 @@ class DetailsTable extends Component {
                 title:  '',
                 key:    'delete',
                 render: ({ key }) =>
-                    this.state.keys.length > 1 && !editDetailsForbidden && (
+                    this.state.keys.length > 1 &&
+                    !editDetailsForbidden && (
                         <Popconfirm
                             title='Sure to delete?'
                             onConfirm={ () => this._onDelete(key) }

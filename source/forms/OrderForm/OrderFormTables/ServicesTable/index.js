@@ -101,6 +101,10 @@ class ServicesTable extends Component {
                             this._isFieldDisabled(key) || editServicesForbidden
                         }
                         min={ 0 }
+                        formatter={ value =>
+                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                        }
+                        parser={ value => `${value}`.replace(/\$\s?|(\s)/g, '') }
                     />
                 ),
             },
@@ -119,6 +123,10 @@ class ServicesTable extends Component {
                         }
                         min={ 0.1 }
                         step={ 0.1 }
+                        formatter={ value =>
+                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                        }
+                        parser={ value => `${value}`.replace(/\$\s?|(\s)/g, '') }
                     />
                 ),
             },
@@ -136,6 +144,12 @@ class ServicesTable extends Component {
                             disabled
                             defaultValue={ 0 }
                             value={ value }
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                         />
                     );
                 },
