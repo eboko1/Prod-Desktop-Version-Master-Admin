@@ -24,12 +24,12 @@ import { columnsConfig, rowsConfig, scrollConfig } from './clientsTableConfig';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    orders:         state.clients.data,
-    filter:         state.clients.filter,
-    modal:          state.modals.modal,
-    sort:           state.clients.sort,
-    ordersFetching: state.ui.clientsFetching,
-    user:           state.auth,
+    clients:         state.clients.data,
+    filter:          state.clients.filter,
+    modal:           state.modals.modal,
+    sort:            state.clients.sort,
+    clientsFetching: state.ui.clientsFetching,
+    user:            state.auth,
 });
 
 const mapDispatchToProps = {
@@ -100,130 +100,7 @@ class OrdersContainer extends Component {
                 invited:         [],
             });
         }
-        // if (this.state.ordersOrError === null) {
-        //     // At this point, we're in the "commit" phase, so it's safe to load the new data.
-        //     this.props.actions.fetchOrders(1);
-        // }
     }
-    // достаем ключ из ордеров и проверяем есть ли ключ в стейте
-    // которая сохраняет ключивы выбраных рядов таблицы
-    inviteSelected() {
-        const inviteOrders = this.props.orders.filter(({ key }) =>
-            this.state.selectedRowKeys.includes(key));
-        // создаем приглашение на основании ключей из state
-        this.invite(inviteOrders);
-        this.props.resetModal();
-    }
-    // можно ли вообще создать приглашение
-    isOrderInvitable(order) {
-        return !!(
-            order.clientPhone &&
-            order.clientId &&
-            order.vehicleId &&
-            !order.vehicleInviteExists
-        );
-    }
-    // генерируем массив из ордеров, который можно использовать для создания приглашений
-    getAvailableOrdersForInvite(orders) {
-        const inviteCandidates = orders
-            .filter(this.isOrderInvitable)
-            .filter(order => !this.isAlreadyInvited(order))
-            .map(order => _.pick(order, [ 'clientId', 'vehicleId' ]));
-
-        // проверка на унивальность добавленных в массив объектов по value
-        return _.uniqWith(inviteCandidates, _.isEqual);
-    }
-    // создать приглашение
-    invite(requestedInviteOrders) {
-        const { orders, filters, user } = this.props;
-        // осталяем только валидные ордера с уникальными clientId & vehicleId
-        const omittedRequestedInviteOrders = this.getAvailableOrdersForInvite(
-            requestedInviteOrders,
-        );
-        // массив из тех, кого пригласили
-        const invited = [ ...this.state.invited, ...omittedRequestedInviteOrders ];
-        // конвертация clientId, vehicleId в полноценную entitny для создания приглашения
-        const createInviteOrderPayload = requestedInviteOrder => {
-            const { clientId, vehicleId } = requestedInviteOrder;
-            const order = _(orders)
-                .filter(requestedInviteOrder)
-                .sort(
-                    (
-                        { datetime: firstDatetime },
-                        { datetime: secondDatetime },
-                    ) => secondDatetime.localeCompare(firstDatetime),
-                )
-                .filter(({ clientPhone }) => clientPhone)
-                .first();
-
-            return {
-                clientId,
-                clientPhone:     (order || {}).clientPhone,
-                clientVehicleId: vehicleId,
-                managerId:       user.id,
-                status:          'invite',
-            };
-        };
-        // создаем entity для создания приглашений
-        const invites = omittedRequestedInviteOrders.map(
-            createInviteOrderPayload,
-        );
-        this.setState(() => {
-            this.props.createInviteOrders({ invites, filters });
-
-            return { selectedRowKeys: [], invited };
-        });
-    }
-
-    onSelectChange = (selectedRowKeys, selectedOrders) => {
-        const removedKeys = _.difference(
-            this.state.selectedRowKeys,
-            selectedRowKeys,
-        );
-        const removedOrders = _.filter(this.props.orders, ({ key }) =>
-            removedKeys.includes(key)).map(order => _.pick(order, [ 'clientId', 'vehicleId' ]));
-
-        // Filter invited orders
-        const availableSelectedOrders = this.getAvailableOrdersForInvite(
-            selectedOrders,
-        );
-        // Filter duplicate orders
-        const availableOrders = _.differenceWith(
-            availableSelectedOrders,
-            removedOrders,
-            _.isEqual,
-        );
-
-        // ~ -1 == false
-        // ~ (>=0) == true
-        const allOrders = this.props.orders.filter(
-            ({ clientId, vehicleId }) =>
-                ~_.findIndex(availableOrders, { clientId, vehicleId }),
-        );
-        const selectedKeys = _.map(allOrders, 'key');
-
-        this.setState({ selectedRowKeys: selectedKeys });
-    };
-
-    isAlreadyInvited({ clientId, vehicleId } = {}) {
-        return !!(
-            clientId &&
-            vehicleId &&
-            ~_.findIndex(this.state.invited, { clientId, vehicleId })
-        );
-    }
-
-    getOrderCheckboxProps = order => {
-        // Checkbox is disabled if clientId or vehicleId is missing
-        // Checkbox is disabled if clientVehicleId is already invited
-        const missingRequiredFields = !this.isOrderInvitable(order);
-        const invited = this.isAlreadyInvited(order);
-
-        return {
-            defaultValue: false,
-            disabled:     missingRequiredFields || invited,
-        };
-    };
 
     setIniviteModal = () => this.props.setModal(MODALS.INVITE);
 

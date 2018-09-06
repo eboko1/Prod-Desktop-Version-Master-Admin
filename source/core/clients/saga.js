@@ -77,10 +77,10 @@ export function* inviteClients({ payload: { invites, filters } }) {
         const data = yield call(fetchAPI, 'POST', 'clients', null, invites);
 
         yield put(inviteClientsSuccess(data));
-        yield nprogress.done();
     } catch (error) {
         yield put(emitError(error));
     } finally {
+        yield nprogress.done();
         yield put(fetchClients(filters));
     }
 }

@@ -73,7 +73,7 @@ export default class ClientsPage extends Component {
                 }
             >
                 <div>ClientsContainer</div>
-                { /* <ClientsContainer /> */ }
+                <ClientsContainer />
                 <AddClientModal
                     // searchQuery={ form.getFieldValue('searchClientQuery') }
                     wrappedComponentRef={ this.clientsPageRef }
