@@ -57,64 +57,98 @@ export class OrderTaskForm extends Component {
                 <div className={ Styles.info }>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            Калькуляция:
-                        </div>
-                        <div>М/п готовит калькуляцию</div>
-                    </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            Согласование:
+                            <FormattedMessage id='calculation' />
                         </div>
                         <div>
-                            Коммуникация с клиентом, обычно после Калькуляции
-                            или Диагностики
+                            <FormattedMessage id='manager_prepares_cost_estimate' />
+
+
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            Ожидание заезда:
+                            <FormattedMessage id='harmonization' />
                         </div>
-                        <div>Все согласовано, ждем заезда</div>
-                    </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Приемка:</div>
-                        <div>М/п принимает авто</div>
-                    </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            Диагностика:
-                        </div>
-                        <div>Проходит диагностика авто</div>
-                    </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            Ожидание ремонта:
-                        </div>
-                        <div>Авто ждет ремонта в цеху или на территории </div>
-                    </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>
-                            Ожидание з/ч:
-                        </div>
-                        <div>Авто ожидает з/ч</div>
-                    </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Ремонт:</div>
-                        <div>Идет ремонт</div>
-                    </div>
-                    <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Выдача:</div>
                         <div>
-                            Ремонт выполнен, ожидание оплаты и возврата авто
+                            <FormattedMessage id='communication_with_the_client' />
+      
+                            
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Закрыто:</div>
-                        <div>Ремонт закрыт</div>
+                        <div className={ Styles.infoDirectoryName }>
+                            <FormattedMessage id='waiting_for_arrival' />:
+                        </div>
+                        <div>
+                            <FormattedMessage id='all_agreed' />
+
+                        </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
-                        <div className={ Styles.infoDirectoryName }>Другое:</div>
-                        <div>Кастомные задачи </div>
+                        <div className={ Styles.infoDirectoryName }>
+                            <FormattedMessage id='acceptance' />:</div>
+                        <div>
+                            <FormattedMessage id='manager_accepts_cars' />
+                        </div>
+                    </div>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>
+                            <FormattedMessage id='diagnostics' />:
+                        </div>
+                        <div>
+                            <FormattedMessage id='passes_car_diagnostics' />
+
+                        </div>
+                    </div>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>
+                            <FormattedMessage id='waiting_for_repair' />:
+                        </div>
+                        <div>
+                            <FormattedMessage id='auto_waiting_for_repair' />
+
+                        </div>
+                    </div>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>
+                            <FormattedMessage id='waiting_for_spare_parts' />
+
+                            :
+                        </div>
+                        <div>
+                            <FormattedMessage id='auto_expects_spare_parts' />
+                        </div>
+                    </div>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>
+                            <FormattedMessage id='repairs' />:</div>
+                        <div>
+                            <FormattedMessage id='there_is_a_repair' />
+
+                        </div>
+                    </div>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>
+                            <FormattedMessage id='extradition' />:</div>
+                        <div>
+                            <FormattedMessage id='repair_is_completed' />
+                            
+                            
+                        </div>
+                    </div>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>
+                            <FormattedMessage id='closed' />:</div>
+                        <div>
+                            <FormattedMessage id='repair_is_closed' />
+                        </div>
+                    </div>
+                    <div className={ Styles.infoDirectory }>
+                        <div className={ Styles.infoDirectoryName }>
+                            <FormattedMessage id='other' />:</div>
+                        <div>
+                            <FormattedMessage id='custom_tasks' />
+                        </div>
                     </div>
                 </div>
             </div>
