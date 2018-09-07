@@ -18,6 +18,7 @@ import { SwitchBusinessForm } from './SwitchBusinessForm';
 import { EmployeeScheduleForm } from './EmployeeScheduleForm';
 import { EmployeeForm } from './EmployeeForm';
 import { ManagerRoleForm } from './ManagerRoleForm';
+import { EditClientVehicleForm } from './EditClientVehicleForm';
 
 export {
     LoginForm,
@@ -40,4 +41,5 @@ export {
     EmployeeForm,
     ManagerRoleForm,
     AddClientVehicleForm,
+    EditClientVehicleForm,
 };
