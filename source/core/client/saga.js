@@ -6,9 +6,9 @@ import { setClientFetchingState } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
-import { fetchClientSuccess } from './duck';
+import { fetchClient, fetchClientSuccess } from './duck';
 
-import { FETCH_CLIENT } from './duck';
+import { FETCH_CLIENT, CREATE_CLIENT_VEHICLE } from './duck';
 
 export function* fetchClientSaga() {
     while (true) {
@@ -26,6 +26,38 @@ export function* fetchClientSaga() {
     }
 }
 
+export function* createClientVehicleSaga() {
+    while (true) {
+        const {
+            payload: { clientId, clientVehicle },
+        } = yield take(CREATE_CLIENT_VEHICLE);
+        const {
+            modificationId: vehicleModificationId,
+            number: vehicleNumber,
+            vin: vehicleVin,
+            modelId: vehicleModelId,
+            year: vehicleYear,
+        } = clientVehicle;
+
+        const payload = {
+            vehicleModelId,
+            vehicleModificationId,
+            vehicleVin,
+            vehicleNumber,
+            vehicleYear,
+        };
+
+        yield call(
+            fetchAPI,
+            'POST',
+            `clients/${clientId}/vehicles`,
+            null,
+            payload,
+        );
+        yield put(fetchClient(clientId));
+    }
+}
+
 export function* saga() {
-    yield all([ call(fetchClientSaga) ]);
+    yield all([ call(fetchClientSaga), call(createClientVehicleSaga) ]);
 }

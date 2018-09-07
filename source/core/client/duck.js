@@ -7,6 +7,8 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_CLIENT = `${prefix}/FETCH_CLIENT`;
 export const FETCH_CLIENT_SUCCESS = `${prefix}/FETCH_CLIENT_SUCCESS`;
 
+export const CREATE_CLIENT_VEHICLE = `${prefix}/CREATE_CLIENT_VEHICLE`;
+
 /**
  * Reducer
  * */
@@ -29,6 +31,11 @@ export default function reducer(state = ReducerState, action) {
             return state;
     }
 }
+
+export const createClientVehicle = (clientId, clientVehicle) => ({
+    type:    CREATE_CLIENT_VEHICLE,
+    payload: { clientId, clientVehicle },
+});
 
 export const fetchClient = id => ({
     type:    FETCH_CLIENT,
