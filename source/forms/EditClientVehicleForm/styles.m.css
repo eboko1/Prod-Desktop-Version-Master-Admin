@@ -1,0 +1,3 @@
+.listItem :global(.ant-list-item-content) {
+    display: block;
+}

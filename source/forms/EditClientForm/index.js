@@ -10,6 +10,9 @@ import {
     updateClient,
 } from 'core/forms/editClientForm/duck';
 
+// own
+import Styles from './styles.m.css';
+
 @withReduxForm2({
     name:    'editClientForm',
     actions: {

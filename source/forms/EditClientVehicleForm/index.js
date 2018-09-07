@@ -14,6 +14,8 @@ import {
 } from 'core/forms/editClientVehicleForm/duck';
 
 // own
+import Styles from './styles.m.css';
+
 const FormItem = Form.Item;
 const Option = Select.Option;
 
@@ -73,96 +75,109 @@ export class EditClientVehicleForm extends Component {
                 bordered
                 dataSource={ clientEntity.vehicles }
                 renderItem={ (item, index) => (
-                    <Row gutter={ 8 } type='flex' align='bottom'>
-                        <Col span={ 8 }>{ `${item.make} ${item.model}` }</Col>
-                        <Col span={ 2 }>
-                            <DecoratedCheckbox
-                                field={ `clientVehicles[${index}].enabled` }
-                                initialValue={ !item.disabled }
-                                disabled={ editableItem !== index }
-                                getFieldDecorator={
-                                    this.props.form.getFieldDecorator
-                                }
-                            />
-                        </Col>
-                        <Col span={ 4 }>
-                            { editableItem === index ? (
-                                <DecoratedInput
-                                    field={ `clientVehicles[${index}].number` }
-                                    initialValue={ item.number }
-                                    rules={ [
-                                        {
-                                            required: true,
-                                            message:  this.props.intl.formatMessage(
+                    <List.Item className={ Styles.listItem }>
+                        <Form>
+                            <Row gutter={ 8 } type='flex' align='bottom'>
+                                <Col span={ 8 }>{ `${item.make} ${
+                                    item.model
+                                }` }</Col>
+                                <Col span={ 2 }>
+                                    <DecoratedCheckbox
+                                        field={ `clientVehicles[${index}].enabled` }
+                                        initialValue={ !item.disabled }
+                                        disabled={ editableItem !== index }
+                                        getFieldDecorator={
+                                            this.props.form.getFieldDecorator
+                                        }
+                                    />
+                                </Col>
+                                <Col span={ 4 }>
+                                    { editableItem === index ? (
+                                        <DecoratedInput
+                                            field={ `clientVehicles[${index}].number` }
+                                            initialValue={ item.number }
+                                            rules={ [
                                                 {
-                                                    id: 'required_field',
+                                                    required: true,
+                                                    message:  this.props.intl.formatMessage(
+                                                        {
+                                                            id:
+                                                                'required_field',
+                                                        },
+                                                    ),
                                                 },
-                                            ),
-                                        },
-                                    ] }
-                                    hasFeedback
-                                    getFieldDecorator={
-                                        this.props.form.getFieldDecorator
+                                            ] }
+                                            hasFeedback
+                                            getFieldDecorator={
+                                                this.props.form
+                                                    .getFieldDecorator
+                                            }
+                                        />
+                                    ) : 
+                                        item.number
                                     }
-                                />
-                            ) : 
-                                item.number
-                            }
-                        </Col>
-                        <Col span={ 4 }>
-                            { editableItem === index ? (
-                                <DecoratedInput
-                                    field={ `clientVehicles[${index}].vin` }
-                                    initialValue={ item.vin }
-                                    getFieldDecorator={
-                                        this.props.form.getFieldDecorator
+                                </Col>
+                                <Col span={ 4 }>
+                                    { editableItem === index ? (
+                                        <DecoratedInput
+                                            field={ `clientVehicles[${index}].vin` }
+                                            initialValue={ item.vin }
+                                            getFieldDecorator={
+                                                this.props.form
+                                                    .getFieldDecorator
+                                            }
+                                        />
+                                    ) : 
+                                        item.vin
                                     }
-                                />
-                            ) : 
-                                item.vin
-                            }
-                        </Col>
-                        <Col span={ 3 }>
-                            { editableItem === index ? (
-                                <Button
-                                    onClick={ () => {
-                                        const payload = this.props.form.getFieldValue(
-                                            `clientVehicles[${index}]`,
-                                        );
-                                        this.props.updateClientVehicle(
-                                            item.id,
-                                            clientId,
-                                            payload,
-                                        );
+                                </Col>
+                                <Col span={ 3 }>
+                                    { editableItem === index ? (
+                                        <Button
+                                            onClick={ () => {
+                                                const payload = this.props.form.getFieldValue(
+                                                    `clientVehicles[${index}]`,
+                                                );
+                                                this.props.updateClientVehicle(
+                                                    item.id,
+                                                    clientId,
+                                                    payload,
+                                                );
 
-                                        this.props.setEditableItem(null);
-                                    } }
-                                >
-                                    Save
-                                </Button>
-                            ) : (
-                                <Button
-                                    onClick={ () =>
-                                        this.props.setEditableItem(index)
-                                    }
-                                >
-                                    Edit
-                                </Button>
-                            ) }
-                        </Col>
-                        <Col span={ 3 }>
-                            <Button
-                                onClick={ () =>
-                                    this.props.deleteClientVehicle(
-                                        clientId,
-                                        item.id,
-                                    )
-                                }
-                            >
-                                Delete
-                            </Button>
-                        </Col>
-                    </Row>
+                                                this.props.setEditableItem(
+                                                    null,
+                                                );
+                                            } }
+                                        >
+                                            Save
+                                        </Button>
+                                    ) : (
+                                        <Button
+                                            onClick={ () =>
+                                                this.props.setEditableItem(
+                                                    index,
+                                                )
+                                            }
+                                        >
+                                            Edit
+                                        </Button>
+                                    ) }
+                                </Col>
+                                <Col span={ 3 }>
+                                    <Button
+                                        onClick={ () =>
+                                            this.props.deleteClientVehicle(
+                                                clientId,
+                                                item.id,
+                                            )
+                                        }
+                                    >
+                                        Delete
+                                    </Button>
+                                </Col>
+                            </Row>
+                        </Form>
+                    </List.Item>
                 ) }
             />
         );
