@@ -24,6 +24,9 @@ import editRoleReducer, { moduleName as editRole } from './editRoleForm/duck';
 import addClientVehicleReducer, { moduleName as addClientVehicle } from './addClientVehicleForm/duck';
 import editClientVehicleReducer, { moduleName as editClientVehicle } from './editClientVehicleForm/duck';
 
+import addClientRequisiteReducer, { moduleName as addClientRequisite } from './addClientRequisiteForm/duck';
+import editClientRequisiteReducer, { moduleName as editClientRequisite } from './editClientRequisiteForm/duck';
+
 import switchBusinessReducer, {
     moduleName as switchBusiness,
 } from './switchBusinessForm/duck';
@@ -99,4 +102,6 @@ export const formsReducer = combineReducers({
     [ addClientVehicle ]:                addClientVehicleReducer,
     [ editClientVehicle ]:               editClientVehicleReducer,
     [ editClient ]:                      editClientReducer,
+    [ addClientRequisite ]:              addClientRequisiteReducer,
+    [ editClientRequisite ]:             editClientRequisiteReducer,
 });

@@ -1,0 +1,19 @@
+.editClientRequisiteIcon {
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.deleteClientRequisiteIcon {
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.viewClientRequisiteIcon {
+    cursor: pointer;
+    font-size: 25px;
+}
+
+.addClientRequisiteButton {
+    width: 30%;
+    margin: 10px auto;
+}

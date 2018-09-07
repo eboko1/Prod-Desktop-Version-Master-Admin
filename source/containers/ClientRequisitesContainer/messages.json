@@ -1,11 +1,35 @@
 {
     "en": {
-
+        "client_requisites_container.create": "Add Requisites",
+        "client_requisites_container.index": "№",
+        "client_requisites_container.enabled": "Enabled",
+        "client_requisites_container.name": "Name",
+        "client_requisites_container.address": "Address",
+        "client_requisites_container.bank": "Bank",
+        "client_requisites_container.ifi": "IFI",
+        "client_requisites_container.ca": "CA",
+        "client_requisites_container.itn": "ITN"
     },
     "ru": {
-
+        "client_requisites_container.create": "Добавить Реквизиты",
+        "client_requisites_container.index": "№",
+        "client_requisites_container.enabled": "Активный",
+        "client_requisites_container.name": "Название",
+        "client_requisites_container.address": "Адрес",
+        "client_requisites_container.bank": "Банк",
+        "client_requisites_container.ifi": "МФО банка",
+        "client_requisites_container.ca": "Р/С",
+        "client_requisites_container.itn": "ЕДРПОУ/ИНН"
     },
     "uk": {
-
+        "client_requisites_container.create": "Додати Реквізити",
+        "client_requisites_container.index": "№",
+        "client_requisites_container.enabled": "Активний",
+        "client_requisites_container.name": "Назва",
+        "client_requisites_container.address": "Адреса",
+        "client_requisites_container.bank": "Банк",
+        "client_requisites_container.ifi": "МФО банку",
+        "client_requisites_container.ca": "Р/Р",
+        "client_requisites_container.itn": "ЄДРПОУ/ІПН"
     }
 }
