@@ -10,7 +10,7 @@ import { Numeral } from 'components';
 // own
 import Styles from './styles.m.css';
 
-class StatsCountsPanel extends Component {
+export default class StatsCountsPanel extends Component {
     render() {
         const { stats } = this.props;
 
@@ -30,5 +30,3 @@ class StatsCountsPanel extends Component {
         ) : null;
     }
 }
-
-export default StatsCountsPanel;

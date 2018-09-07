@@ -1,0 +1,20 @@
+{
+    "en": {
+        "clients-page.title": "Clients",
+        "clients-page.description": "Manage your customer data",
+        "clients-page.invite_to_service": "Invite",
+        "clients-page.add_client": "Add client"
+    },
+    "ru": {
+        "clients-page.title": "Клиенты",
+        "clients-page.description": "Управление данными Ваших клиентов",
+        "clients-page.invite_to_service": "Пригласить на СТО",
+        "clients-page.add_client": "Добавить клиента"
+    },
+    "uk": {
+        "clients-page.title": "Клієнти",
+        "clients-page.description": "Керування даними Ваших клієнтів",
+        "clients-page.invite_to_service": "Invite",
+        "clients-page.add_client": "Додати клієнта"
+    }
+}

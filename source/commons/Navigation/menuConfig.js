@@ -1,5 +1,3 @@
-import _ from 'lodash';
-
 // proj
 import book from 'routes/book';
 import { permissions, isForbidden, isAdmin } from 'utils';
@@ -41,7 +39,7 @@ export default {
             items:    [
                 {
                     key:  '/clients',
-                    link: book.oldApp.clients,
+                    link: book.clients,
                     name: 'navigation.clients',
                 },
                 {

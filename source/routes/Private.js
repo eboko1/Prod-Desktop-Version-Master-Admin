@@ -13,6 +13,7 @@ import {
     MyTasksPage,
     PackagePage,
     RolePage,
+    ClientsPage,
     EmployeePage,
     AddEmployeePage,
     EditEmployeePage,
@@ -26,7 +27,22 @@ export default class Private extends Component {
     render() {
         return (
             <Switch>
+                { /* Operations */ }
                 <Route exact component={ DashboardPage } path={ book.dashboard } />
+                <Route
+                    exact
+                    component={ OrdersPage }
+                    path={ book.ordersByStatuses }
+                />
+                <Route
+                    exact
+                    render={ props => <OrderPage { ...props } /> }
+                    path={ book.orderId }
+                />
+                <Route exact component={ AddOrderPage } path={ book.addOrder } />
+                <Route exact component={ MyTasksPage } path={ book.myTasksPage } />
+                { /* Reference book */ }
+                <Route exact component={ ClientsPage } path={ book.clients } />
                 <Route
                     exact
                     component={ EmployeePage }
@@ -39,28 +55,15 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    component={ EditEmployeePage }
-                    path={ book.editEmployee }
-                />
-
-                <Route
-                    exact
-                    component={ OrdersPage }
-                    path={ book.ordersByStatuses }
-                />
-                <Route
-                    exact
                     render={ props => <ClientPage { ...props } /> }
                     path={ book.clientId }
                 />
                 <Route
                     exact
-                    render={ props => <OrderPage { ...props } /> }
-                    path={ book.orderId }
+                    component={ EditEmployeePage }
+                    path={ book.editEmployee }
                 />
-                <Route exact component={ AddOrderPage } path={ book.addOrder } />
-                <Route exact component={ ProfilePage } path={ book.profile } />
-                <Route exact component={ MyTasksPage } path={ book.myTasksPage } />
+                { /* Roles */ }
                 <Route exact component={ PackagePage } path={ book.packagePage } />
                 <Route exact component={ RolePage } path={ book.rolePage } />
                 <Route
@@ -73,7 +76,8 @@ export default class Private extends Component {
                     component={ ManagerRolePage }
                     path={ book.managerRolePage }
                 />
-
+                { /* Global */ }
+                <Route exact component={ ProfilePage } path={ book.profile } />
                 <Route
                     component={ ExceptionPage }
                     path={ book.exceptionStatusCode }
