@@ -6,6 +6,7 @@ import Navigation from './Navigation';
 import Spinner from './Spinner';
 import StyledButton from './StyledButton';
 import Catcher from './Catcher';
+import Numeral from './Numeral';
 import {
     MobileView,
     TabletView,
@@ -22,6 +23,7 @@ export {
     Spinner,
     StyledButton,
     Catcher,
+    Numeral,
     MobileView,
     TabletView,
     DesktopView,

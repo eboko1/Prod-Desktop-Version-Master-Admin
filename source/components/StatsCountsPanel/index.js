@@ -4,8 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
 
 // proj
-import { Catcher } from 'commons';
-import { Numeral } from 'components';
+import { Catcher, Numeral } from 'commons';
 
 // own
 import Styles from './styles.m.css';

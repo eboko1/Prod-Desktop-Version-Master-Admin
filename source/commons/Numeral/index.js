@@ -1,9 +1,10 @@
+// vendor
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import numeral from 'numeral';
 
-class Numeral extends Component {
+export default class Numeral extends Component {
     static propTypes = {
         children: PropTypes.number,
         mask:     PropTypes.string,
@@ -58,5 +59,3 @@ class Numeral extends Component {
         );
     }
 }
-
-export default Numeral;

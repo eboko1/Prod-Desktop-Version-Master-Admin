@@ -1,12 +1,12 @@
 // vendor
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { Icon, Popconfirm, Button } from 'antd';
 import moment from 'moment';
 
 // proj
-import { OrderStatusIcon, Numeral } from 'components';
+import { Numeral } from 'commons';
 import book from 'routes/book';
 import { permissions, isForbidden } from 'utils';
 // own
@@ -108,7 +108,7 @@ export function columnsConfig(
         dataIndex: 'orders',
         key:       'orders',
         render:    orders =>
-            orders && <div className={ Styles.orders }>{ orders }</div>,
+            orders && <Numeral className={ Styles.orders }>{ orders }</Numeral>,
     };
 
     const invitation = {

@@ -13,7 +13,7 @@ import {
     DecoratedSelect,
     DecoratedSlider,
 } from 'forms/DecoratedFields';
-import { Numeral } from 'components';
+import { Numeral } from 'commons';
 import { getDateTimeConfig, permissions, isForbidden } from 'utils';
 
 // own

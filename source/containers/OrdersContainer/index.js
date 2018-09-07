@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
 import _ from 'lodash';
 
@@ -16,7 +16,7 @@ import {
 } from 'core/orders/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Catcher, Spinner } from 'commons';
+import { Catcher } from 'commons';
 import { InviteModal } from 'modals';
 
 // own
@@ -38,12 +38,17 @@ const mapDispatchToProps = {
     setOrdersStatusFilter,
     setOrdersPageFilter,
     createInviteOrders,
+    setModal,
     resetModal,
     setOrdersPageSort,
 };
 
 @withRouter
-@connect(mapStateToProps, mapDispatchToProps)
+@injectIntl
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 class OrdersContainer extends Component {
     constructor(props) {
         super(props);
@@ -251,6 +256,7 @@ class OrdersContainer extends Component {
 
     render() {
         const { orders } = this.props;
+        const { formatMessage } = this.props.intl;
         const { status, loading, activeRoute, selectedRowKeys } = this.state;
         // const { status, loading, selectedRowKeys } = this.state;
 
@@ -262,6 +268,7 @@ class OrdersContainer extends Component {
             activeRoute,
             this.props.sort,
             this.props.user,
+            formatMessage,
         );
 
         const rows = rowsConfig(

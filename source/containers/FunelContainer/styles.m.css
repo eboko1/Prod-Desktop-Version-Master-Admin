@@ -229,3 +229,7 @@ a.funel__tabs__link--reverse:hover {
 .funel__wrapper--bottom > .funel__tabs__link {
     flex: 0 49.7%;
 }
+
+.count {
+    margin-left: 0.5em;
+}

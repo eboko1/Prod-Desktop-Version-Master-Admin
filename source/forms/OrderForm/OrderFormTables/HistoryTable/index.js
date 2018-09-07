@@ -1,16 +1,17 @@
 // vendor
 import React, { Component } from 'react';
-import { Table } from 'antd';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { Table } from 'antd';
 import moment from 'moment';
 
 // proj
-import { Catcher } from 'commons';
-import { OrderStatusIcon, Numeral } from 'components';
+import { Catcher, Numeral } from 'commons';
+import { OrderStatusIcon } from 'components';
 import book from 'routes/book';
 
-class HistoryTable extends Component {
+@injectIntl
+export default class HistoryTable extends Component {
     constructor(props) {
         super(props);
 
@@ -31,7 +32,7 @@ class HistoryTable extends Component {
                 dataIndex: 'num',
                 key:       'history-num',
                 width:     '15%',
-                render:    (text, record) =>
+                render:    (text, record) => 
                     <>
                         <Link
                             to={ `${book.order}/${record.id}` }
@@ -70,7 +71,11 @@ class HistoryTable extends Component {
                 key:       'history-sum',
                 width:     '15%',
                 render:    (text, record) => (
-                    <Numeral>
+                    <Numeral
+                        currency={ this.props.intl.formatMessage({
+                            id: 'currency',
+                        }) }
+                    >
                         { record.detailsTotalSum + record.servicesTotalSum }
                     </Numeral>
                 ),
@@ -115,5 +120,3 @@ class HistoryTable extends Component {
         );
     }
 }
-
-export default HistoryTable;

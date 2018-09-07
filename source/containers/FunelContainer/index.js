@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
+import classNames from 'classnames';
 
 // proj
 import {
@@ -12,15 +13,15 @@ import {
     resetOrdersDaterangeFilter,
 } from 'core/orders/duck';
 
+import { Numeral } from 'commons';
 import { images } from 'utils';
 import book from 'routes/book';
-import classNames from 'classnames';
 
 // own
 import Styles from './styles.m.css';
-// eslint-disable-next-line
+
 const mapStateToProps = state => ({
-    stats: state.orders.stats, // ===
+    stats: state.orders.stats,
 });
 
 const mapDispatchToProps = {
@@ -30,10 +31,17 @@ const mapDispatchToProps = {
 };
 
 @withRouter
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 class FunelContainer extends Component {
     setStatus = status => {
-        if (status === 'success' || status === 'cancel' || status === 'review') {
+        if (
+            status === 'success' ||
+            status === 'cancel' ||
+            status === 'review'
+        ) {
             this.props.resetOrdersDaterangeFilter();
         }
 
@@ -73,10 +81,15 @@ class FunelContainer extends Component {
                                 this.setStatus('not_complete,required,call')
                             }
                         >
-                            <span>
-                                <FormattedMessage id='appointments' /> ({ stats.not_complete +
-                                    stats.call +
-                                    stats.required })
+                            <FormattedMessage id='appointments' />
+                            <span className={ Styles.count }>
+                                (
+                                <Numeral>
+                                    { stats.not_complete +
+                                        stats.call +
+                                        stats.required }
+                                </Numeral>
+                                )
                             </span>
                         </NavLink>
                         <NavLink
@@ -88,9 +101,13 @@ class FunelContainer extends Component {
                             }
                             onClick={ () => this.setStatus('approve,reserve') }
                         >
-                            <span>
-                                <FormattedMessage id='records' /> ({ stats.approve +
-                                    stats.reserve })
+                            <FormattedMessage id='records' />
+                            <span className={ Styles.count }>
+                                (
+                                <Numeral>
+                                    { stats.approve + stats.reserve }
+                                </Numeral>
+                                )
                             </span>
                         </NavLink>
                         <NavLink
@@ -102,10 +119,9 @@ class FunelContainer extends Component {
                             }
                             onClick={ () => this.setStatus('progress') }
                         >
-                            <span>
-                                <FormattedMessage id='repairs' /> ({
-                                    stats.progress
-                                })
+                            <FormattedMessage id='repairs' />
+                            <span className={ Styles.count }>
+                                (<Numeral>{ stats.progress }</Numeral>)
                             </span>
                         </NavLink>
                         <NavLink
@@ -117,10 +133,9 @@ class FunelContainer extends Component {
                             }
                             onClick={ () => this.setStatus('success') }
                         >
-                            <span>
-                                <FormattedMessage id='done' /> ({
-                                    stats.success
-                                })
+                            <FormattedMessage id='done' />
+                            <span className={ Styles.count }>
+                                (<Numeral>{ stats.success }</Numeral>)
                             </span>
                         </NavLink>
                     </div>
@@ -139,12 +154,10 @@ class FunelContainer extends Component {
                             }
                             onClick={ () => this.setStatus('invite') }
                         >
-                            <span>
-                                <FormattedMessage id='invitations' /> ({
-                                    stats.invite
-                                })
+                            <FormattedMessage id='invitations' />
+                            <span className={ Styles.count }>
+                                (<Numeral>{ stats.invite }</Numeral>)
                             </span>
-                            { /* </Link> */ }
                         </NavLink>
                         <NavLink
                             exact
@@ -155,10 +168,9 @@ class FunelContainer extends Component {
                             }
                             onClick={ () => this.setStatus('review') }
                         >
-                            <span>
-                                <FormattedMessage id='reviews' /> ({
-                                    stats.review
-                                })
+                            <FormattedMessage id='reviews' />
+                            <span className={ Styles.count }>
+                                (<Numeral>{ stats.review }</Numeral>)
                             </span>
                         </NavLink>
                     </div>
@@ -186,10 +198,9 @@ class FunelContainer extends Component {
                         activeClassName={ Styles[ 'funel__tabs__link--active' ] }
                         onClick={ () => this.setStatus('cancel') }
                     >
-                        <span>
-                            <FormattedMessage id='cancels' /> ({
-                                stats.cancel
-                            })
+                        <FormattedMessage id='cancels' />
+                        <span className={ Styles.count }>
+                            (<Numeral>{ stats.cancel }</Numeral>)
                         </span>
                     </NavLink>
                     <div

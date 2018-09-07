@@ -1,6 +1,5 @@
 import LanguagePad from './LanguagePad';
 import ArrowsNav from './ArrowsNav';
-import Numeral from './Numeral';
 import ReportsDropdown from './ReportsDropdown';
 import StatsCountsPanel from './StatsCountsPanel';
 import UniversalFiltersTags from './UniversalFiltersTags';
@@ -23,7 +22,6 @@ export {
     ArrowsNav,
     OrderStatusIcon,
     CallStatusIcon,
-    Numeral,
     ReportsDropdown,
     StatsCountsPanel,
     UniversalFiltersTags,
