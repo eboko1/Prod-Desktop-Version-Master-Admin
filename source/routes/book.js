@@ -10,7 +10,6 @@ const book = Object.freeze({
     profile:             '/profile',
     dashboard:           '/dashboard',
     myTasksPage:         '/mytasks',
-    clients:             '/clients',
     employeesPage:       '/employees',
     addEmployee:         '/employees/add',
     editEmployee:        '/employees/:id',
@@ -26,7 +25,9 @@ const book = Object.freeze({
     // Order
     order:               '/order',
     orderId:             '/order/:id',
-    //Client
+    // Clients
+    clients:             '/clients',
+    client:              '/client',
     clientId:            '/client/:id',
     // AddOrder
     addOrder:            '/add',

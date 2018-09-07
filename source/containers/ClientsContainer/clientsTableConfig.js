@@ -36,7 +36,7 @@ export function columnsConfig(
         render:    (_, client) => (
             <Link
                 className={ Styles.client }
-                to={ `${book.clients}/${client.clientId}` }
+                to={ `${book.client}/${client.clientId}` }
             >
                 { client.name } { client.surname }
             </Link>
