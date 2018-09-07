@@ -6,11 +6,12 @@ import { all } from 'redux-saga/effects';
 import intl from 'core/intl/saga/watchers';
 import { saga as authSaga } from 'core/auth/saga';
 import { saga as uiSaga } from 'core/ui/saga';
-// smart components
+// containers
 import { saga as dashboardSaga } from 'core/dashboard/saga';
 import { saga as ordersSaga } from 'core/orders/saga';
 import { saga as orderSaga } from 'core/order/saga';
 import { saga as searchSaga } from 'core/search/saga';
+import { saga as clientsSaga } from 'core/clients/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
@@ -37,6 +38,7 @@ export default function* rootSaga() {
         uiSaga(),
         ordersSaga(),
         orderSaga(),
+        clientsSaga(),
         universalFiltersFormSaga(),
         orderFormSaga(),
         addClientFormSaga(),

@@ -61,7 +61,7 @@ export class ToSuccessForm extends Component {
                             { businessName && (
                                 <p className={ Styles.text }>
                                     <FormattedMessage id='to_success.sms1' />
-                                    businessName
+                                    { businessName }
                                     <FormattedMessage id='to_success.sms2' />
                                 </p>
                             ) }
