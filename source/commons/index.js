@@ -4,6 +4,7 @@ import Footer from './Footer';
 import ModuleHeader from './ModuleHeader';
 import Navigation from './Navigation';
 import Spinner from './Spinner';
+import StyledButton from './StyledButton';
 import Catcher from './Catcher';
 import {
     MobileView,
@@ -19,6 +20,7 @@ export {
     Layout,
     Navigation,
     Spinner,
+    StyledButton,
     Catcher,
     MobileView,
     TabletView,

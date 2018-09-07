@@ -5,6 +5,7 @@
         rgba(0, 0, 0, 0.23) 0px 3px 10px;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     box-sizing: border-box;
+    padding: 10px;
 }
 
 .table td {
@@ -69,7 +70,7 @@
 }
 
 .editClientIcon {
-    color: var(--primary);
+    color: var(--secondary);
 }
 
 .deleteClientIcon {

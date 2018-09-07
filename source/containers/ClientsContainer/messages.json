@@ -1,0 +1,26 @@
+{
+    "en": {
+        "clients-table.client": "Client",
+        "clients-table.phone": "Phone",
+        "clients-table.vehicles": "Cars",
+        "clients-table.last_order": "Last Order",
+        "clients-table.orders": "Orders",
+        "clients-table.invitation": "Invitaiton"
+    },
+    "ru": {
+        "clients-table.client": "Клиент",
+        "clients-table.phone": "Телефон",
+        "clients-table.vehicles": "Авто",
+        "clients-table.last_order": "Последний заказ",
+        "clients-table.orders": "Заказы",
+        "clients-table.invitation": "Приглашение"
+    },
+    "uk": {
+        "clients-table.client": "Клієнт",
+        "clients-table.phone": "Телефон",
+        "clients-table.vehicles": "Авто",
+        "clients-table.last_order": "Попереднє замовлення",
+        "clients-table.orders": "Замовлення",
+        "clients-table.invitation": "Запрошення"
+    }
+}

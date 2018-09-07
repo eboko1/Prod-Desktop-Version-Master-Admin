@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Button } from 'antd';
 import _ from 'lodash';
@@ -22,16 +23,13 @@ import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
-import {FormattedMessage} from 'react-intl';
 
-const mapStateToProps = state => {
-    return {
-        stats:                state.orders.statsCountsPanel.stats.stats,
-        filter:               state.orders.filter,
-        universaFiltersModal: state.modals.modal,
-        user:                 state.auth,
-    };
-};
+const mapStateToProps = state => ({
+    stats:                state.orders.statsCountsPanel.stats.stats,
+    filter:               state.orders.filter,
+    universaFiltersModal: state.modals.modal,
+    user:                 state.auth,
+});
 
 const mapDispatchToProps = {
     fetchOrders,
@@ -43,7 +41,10 @@ const mapDispatchToProps = {
     resetModal,
 };
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class UniversalFilters extends Component {
     setUniversalFiltersModal = () => {
         this.props.setModal(MODALS.UNIVERSAL_FILTERS);
@@ -72,10 +73,6 @@ export default class UniversalFilters extends Component {
         this.props.resetModal();
         form.validateFields((err, values) => {
             if (!err) {
-                // console.log(
-                //     'Received values of UniversalFiltersForm: ',
-                //     values,
-                // );
                 const modelsTransformQuery = values.models
                     ? {
                         models: _(values.models)
@@ -111,7 +108,10 @@ export default class UniversalFilters extends Component {
 
     render() {
         const { resetModal, universaFiltersModal, stats, filter } = this.props;
-        const areFiltersDisabled = isForbidden(this.props.user, permissions.SHOW_FILTERS);
+        const areFiltersDisabled = isForbidden(
+            this.props.user,
+            permissions.SHOW_FILTERS,
+        );
 
         return (
             <Catcher>

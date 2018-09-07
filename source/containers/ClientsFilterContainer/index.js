@@ -7,7 +7,7 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 
 // proj
-import { fetchOrders, setClientsSearchFilter } from 'core/orders/duck';
+import { fetchClients, setClientsSearchFilter } from 'core/clients/duck';
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
 import { Catcher } from 'commons';
@@ -25,7 +25,7 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = {
-    fetchOrders,
+    fetchClients,
     setClientsSearchFilter,
     fetchUniversalFiltersForm,
 };
@@ -42,7 +42,7 @@ export default class OrdersFilterContainer extends Component {
         this.handleClientsSearch = _.debounce(value => {
             const { setClientsSearchFilter, fetchClients, filter } = this.props;
             setClientsSearchFilter(value);
-            fetchClients({ page: 1, ...filter });
+            fetchClients({ sort: { page: 1 }, ...filter });
         }, 1000);
     }
 
