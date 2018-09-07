@@ -9,6 +9,7 @@ import BusinessPackageContainer from './BusinessPackageContainer';
 import ManagerRoleContainer from './ManagerRoleContainer';
 import EmployeeContainer from './EmployeeContainer';
 import SettingSalaryContainer from './SettingSalaryContainer';
+import ClientContainer from './ClientContainer';
 
 export {
     OrdersContainer,
@@ -22,4 +23,5 @@ export {
     ManagerRoleContainer,
     EmployeeContainer,
     SettingSalaryContainer,
+    ClientContainer,
 };

@@ -21,6 +21,8 @@ import editPackageReducer, {
 import addRoleReducer, { moduleName as addRole } from './addRoleForm/duck';
 import editRoleReducer, { moduleName as editRole } from './editRoleForm/duck';
 
+import addClientVehicleReducer, { moduleName as addClientVehicle } from './addClientVehicleForm/duck';
+
 import switchBusinessReducer, {
     moduleName as switchBusiness,
 } from './switchBusinessForm/duck';
@@ -89,4 +91,5 @@ export const formsReducer = combineReducers({
     [ businessPackage ]:                 businessPackageReducer,
     [ managerRole ]:                     managerRoleReducer,
     [ profile ]:                         profileReducer,
+    [ addClientVehicle ]:                addClientVehicleReducer,
 });

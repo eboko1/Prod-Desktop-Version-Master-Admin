@@ -13,6 +13,7 @@ import AddEmployeePage from './AddEmployeePage';
 import EditEmployeePage from './EditEmployeePage';
 import BusinessPackagePage from './BusinessPackagePage';
 import ManagerRolePage from './ManagerRolePage';
+import ClientPage from './ClientPage';
 
 export {
     DashboardPage,
@@ -30,4 +31,5 @@ export {
     EditEmployeePage,
     BusinessPackagePage,
     ManagerRolePage,
+    ClientPage,
 };

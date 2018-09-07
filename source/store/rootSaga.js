@@ -22,7 +22,9 @@ import { saga as packagesSaga } from 'core/package/saga';
 import { saga as businessPackageSaga } from 'core/businessPackage/saga';
 import { saga as managerRoleSaga } from 'core/managerRole/saga';
 import { saga as rolesSaga } from 'core/role/saga';
+import { saga as clientSaga } from 'core/client/saga';
 import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
+import { saga as addClientVehicleSaga } from 'core/forms/addClientVehicleForm/saga';
 import { saga as employeeSaga } from 'core/employee/saga';
 import { saga as employeeFormSaga } from 'core/forms/employeeForm/saga';
 import { saga as employeeScheduleFormSaga } from 'core/forms/employeeScheduleForm/saga';
@@ -55,6 +57,8 @@ export default function* rootSaga() {
         searchSaga(),
         managerRoleSaga(),
         profileFormSaga(),
+        clientSaga(),
+        addClientVehicleSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

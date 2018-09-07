@@ -18,6 +18,7 @@ import {
     EditEmployeePage,
     BusinessPackagePage,
     ManagerRolePage,
+    ClientPage,
 } from 'pages';
 import book from './book';
 
@@ -46,6 +47,11 @@ export default class Private extends Component {
                     exact
                     component={ OrdersPage }
                     path={ book.ordersByStatuses }
+                />
+                <Route
+                    exact
+                    render={ props => <ClientPage { ...props } /> }
+                    path={ book.clientId }
                 />
                 <Route
                     exact

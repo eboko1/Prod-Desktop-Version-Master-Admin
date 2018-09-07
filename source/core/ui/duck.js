@@ -16,6 +16,7 @@ export const SET_PACKAGE_FETCHING_STATE = `${prefix}/SET_PACKAGE_FETCHING_STATE`
 export const SET_BUSINESS_PACKAGE_FETCHING_STATE = `${prefix}/SET_BUSINESS_PACKAGE_FETCHING_STATE`;
 export const SET_MANAGER_ROLE_FETCHING_STATE = `${prefix}/SET_MANAGER_ROLE_FETCHING_STATE`;
 export const SET_ROLE_FETCHING_STATE = `${prefix}/SET_ROLE_FETCHING_STATE`;
+export const SET_CLIENT_FETCHING_STATE = `${prefix}/SET_CLIENT_FETCHING_STATE`;
 export const SET_SEARCH_BUSINESSES_FETCHING_STATE = `${prefix}/SET_SEARCH_BUSINESSES_FETCHING_STATE`;
 
 export const SET_DASHBOARD_INITALIZING_STATE = `${prefix}/SET_DASHBOARD_INITALIZING_STATE`;
@@ -42,6 +43,7 @@ const ReducerState = {
     businessPackageFetching:  false,
     managerRoleFetching:      false,
     roleFetching:             false,
+    clientFetching:           false,
     collapsed:                false,
     views:                    {},
     error:                    null,
@@ -99,6 +101,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_MANAGER_ROLE_FETCHING_STATE:
             return { ...state, managerRoleFetching: payload };
+
+        case SET_CLIENT_FETCHING_STATE:
+            return { ...state, clientFetching: payload };
 
         default:
             return state;
@@ -169,6 +174,11 @@ export const setManagerRoleFetchingState = state => ({
 
 export const setRoleFetchingState = state => ({
     type:    SET_ROLE_FETCHING_STATE,
+    payload: state,
+});
+
+export const setClientFetchingState = state => ({
+    type:    SET_CLIENT_FETCHING_STATE,
     payload: state,
 });
 
