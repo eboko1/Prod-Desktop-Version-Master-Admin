@@ -1,11 +1,23 @@
 {
     "en": {
-
+        "client_container.general_info": "General Information",
+        "client_container.orders": "Orders",
+        "client_container.feedback": "Feedback",
+        "client_container.send_sms": "Send SMS",
+        "client_container.requisites": "Requisites"
     },
     "ru": {
-
+        "client_container.general_info": "Общие данные",
+        "client_container.orders": "Заказы",
+        "client_container.feedback": "Отзывы",
+        "client_container.send_sms": "Отправить SMS",
+        "client_container.requisites": "Реквизиты"
     },
     "uk": {
-
+        "client_container.general_info": "Загальна інформація",
+        "client_container.orders": "Замовлення",
+        "client_container.feedback": "Відгуки",
+        "client_container.send_sms": "Надіслати SMS",
+        "client_container.requisites": "Реквізити"
     }
 }

@@ -12,6 +12,7 @@ import SettingSalaryContainer from './SettingSalaryContainer';
 import ClientContainer from './ClientContainer';
 import ClientsContainer from './ClientsContainer';
 import ClientsFilterContainer from './ClientsFilterContainer';
+import ClientRequisitesContainer from './ClientRequisitesContainer';
 
 export {
     OrdersContainer,
@@ -28,4 +29,5 @@ export {
     ClientContainer,
     ClientsContainer,
     ClientsFilterContainer,
+    ClientRequisitesContainer,
 };

@@ -45,6 +45,8 @@ import RoleContainer from 'containers/RoleContainer/messages';
 import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
 import ManagerRoleContainer from 'containers/ManagerRoleContainer/messages';
 import UniversalFiltersContainer from 'containers/UniversalFilters/messages';
+import ClientContainer from 'containers/ClientContainer/messages';
+import ClientRequisitesContainer from 'containers/ClientRequisitesContainer/messages'
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -123,6 +125,8 @@ const messages = merge.all([
     BusinessPackageContainer,
     ManagerRoleContainer,
     UniversalFiltersContainer,
+    ClientContainer,
+    ClientRequisitesContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
