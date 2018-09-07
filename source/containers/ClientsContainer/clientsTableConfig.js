@@ -146,7 +146,7 @@ export function columnsConfig(
         width:  'auto',
         render: (_, client) => (
             <div className={ Styles.actions }>
-                <Link to={ `${book.clients}/${client.clientId}` }>
+                <Link to={ `${book.client}/${client.clientId}` }>
                     <Icon className={ Styles.editClientIcon } type='edit' />
                 </Link>
                 <div className={ Styles.actionsLine } />
