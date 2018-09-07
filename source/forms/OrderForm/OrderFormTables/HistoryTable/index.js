@@ -7,7 +7,7 @@ import moment from 'moment';
 
 // proj
 import { Catcher } from 'commons';
-import { OrderStatusIcon } from 'components';
+import { OrderStatusIcon, Numeral } from 'components';
 import book from 'routes/book';
 
 class HistoryTable extends Component {
@@ -31,18 +31,31 @@ class HistoryTable extends Component {
                 dataIndex: 'num',
                 key:       'history-num',
                 width:     '15%',
-                render:    (text, record) => (
-                    <Link
-                        to={ `${book.order}/${record.id}` }
-                        onClick={ () => {
-                            props.fetchOrderForm(record.id);
-                            props.fetchOrderTask(record.id);
-                        } }
-                    >
-                        { text }
-                        <OrderStatusIcon status={ record.status } />
-                    </Link>
-                ),
+                render:    (text, record) =>
+                    <>
+                        <Link
+                            to={ `${book.order}/${record.id}` }
+                            onClick={ () => {
+                                props.fetchOrderForm(record.id);
+                                props.fetchOrderTask(record.id);
+                            } }
+                        >
+                            { text }
+                            <OrderStatusIcon status={ record.status } />
+                        </Link>
+                        <div
+                            style={ {
+                                whiteSpace:   'nowrap',
+                                overflow:     'hidden',
+                                textOverflow: 'ellipsis',
+                            } }
+                        >
+                            { record.serviceNames
+                                .map(serviceName => serviceName)
+                                .join(', ') }
+                        </div>
+                    </>
+                ,
             },
             {
                 title:     <FormattedMessage id='order_form_table.vehicle' />,
@@ -57,9 +70,9 @@ class HistoryTable extends Component {
                 key:       'history-sum',
                 width:     '15%',
                 render:    (text, record) => (
-                    <div>
+                    <Numeral>
                         { record.detailsTotalSum + record.servicesTotalSum }
-                    </div>
+                    </Numeral>
                 ),
             },
             {

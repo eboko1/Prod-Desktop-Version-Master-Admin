@@ -42,7 +42,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) => 
+        render:    (_, order) =>
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -242,7 +242,7 @@ export function columnsConfig(
                                 [ Styles.npsLow ]: order.nps <= 6,
                             }) }
                         >
-                            { order.nps }
+                            { Math.round(order.nps) }
                         </div>
                     </a>
                 );
