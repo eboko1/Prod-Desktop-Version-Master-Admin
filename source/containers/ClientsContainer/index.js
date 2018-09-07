@@ -8,11 +8,9 @@ import _ from 'lodash';
 
 // proj
 import {
-    fetchOrders,
-    setOrdersPageFilter,
-    setOrdersStatusFilter,
+    fetchClients,
+    setClientsPageSort,
     createInviteOrders,
-    setOrdersPageSort,
 } from 'core/clients/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
@@ -25,21 +23,20 @@ import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
     clients:         state.clients.clients,
+    stats:           state.clients.stats,
     filter:          state.clients.filter,
-    modal:           state.modals.modal,
     sort:            state.clients.sort,
+    modal:           state.modals.modal,
     clientsFetching: state.ui.clientsFetching,
     user:            state.auth,
 });
 
 const mapDispatchToProps = {
-    fetchOrders,
-    setOrdersStatusFilter,
-    setOrdersPageFilter,
+    fetchClients,
+    setClientsPageSort,
     createInviteOrders,
     setModal,
     resetModal,
-    setOrdersPageSort,
 };
 
 @withRouter
@@ -47,7 +44,7 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
-class OrdersContainer extends Component {
+export default class ClientsContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -63,8 +60,7 @@ class OrdersContainer extends Component {
     }
 
     componentDidMount() {
-        this.props.setOrdersStatusFilter(this.state.status);
-        this.props.fetchOrders(this.props.filter);
+        this.props.fetchClients(this.props.filter);
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -108,29 +104,29 @@ class OrdersContainer extends Component {
             this.getOrderCheckboxProps,
         );
 
-        const handleTableChange = (pagination, filters, sorter) => {
-            if (!sorter) {
-                return;
-            }
-            const sort = {
-                field:  sorter.field,
-                client: sorter.client === 'ascend' ? 'asc' : 'desc',
-            };
-            if (!_.isEqual(sort, this.props.sort)) {
-                this.props.setClientsPageSort(sort);
-                this.props.fetchClients();
-            }
-        };
-
+        // const handleTableChange = (pagination, filters, sorter) => {
+        //     if (!sorter) {
+        //         return;
+        //     }
+        //     const sort = {
+        //         field:  sorter.field,
+        //         client: sorter.client === 'ascend' ? 'asc' : 'desc',
+        //     };
+        //     if (!_.isEqual(sort, this.props.sort)) {
+        //         this.props.setClientsPageSort(sort);
+        //         this.props.fetchClients();
+        //     }
+        // };
+        console.log('→ this.props.sort.page', this.props.sort);
         const pagination = {
             pageSize:         25,
             size:             'large',
-            total:            Math.ceil(this.props.count / 25) * 25,
+            total:            Math.ceil(this.props.stats.countClients / 25) * 25,
             hideOnSinglePage: true,
-            current:          this.props.filter.page,
+            current:          this.props.sort.page,
             onChange:         page => {
-                this.props.setOrdersPageFilter(page);
-                this.props.fetchOrders(this.props.filter);
+                this.props.setClientsPageSort({ page });
+                this.props.fetchClients(this.props.filter);
             },
         };
 
@@ -141,7 +137,7 @@ class OrdersContainer extends Component {
                 <div className={ Styles.paper }>
                     <Table
                         size='small'
-                        className={ Styles.ordersTable }
+                        className={ Styles.table }
                         columns={ columns }
                         rowSelection={ rows }
                         dataSource={ clients }
@@ -151,7 +147,8 @@ class OrdersContainer extends Component {
                             emptyText: <FormattedMessage id='no_data' />,
                         } }
                         pagination={ pagination }
-                        onChange={ handleTableChange }
+                        // onChange={ handleTableChange }
+                        scroll={ { x: 1360 } }
                     />
                 </div>
                 <InviteModal
@@ -165,5 +162,3 @@ class OrdersContainer extends Component {
         );
     }
 }
-
-export default OrdersContainer;

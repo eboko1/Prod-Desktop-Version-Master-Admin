@@ -1,4 +1,4 @@
-import { v4 } from 'uuid';
+// import { v4 } from 'uuid';
 
 /**
  * Constants
@@ -8,31 +8,23 @@ const prefix = `cpb/${moduleName}`;
 
 export const FETCH_CLIENTS = `${prefix}/FETCH_CLIENTS`;
 export const FETCH_CLIENTS_SUCCESS = `${prefix}/FETCH_CLIENTS_SUCCESS`;
-
-export const FETCH_CLIENTS_STATS = `${prefix}/FETCH_CLIENTS_STATS`;
-export const FETCH_CLIENTS_STATS_SUCCESS = `${prefix}/FETCH_CLIENTS_STATS_SUCCESS`;
 // filters
-export const SET_CLIENTS_PAGE_FILTER = `${prefix}/SET_CLIENTS_PAGE_FILTER`;
+export const SET_CLIENTS_PAGE_SORT = `${prefix}/SET_CLIENTS_PAGE_SORT`;
 export const SET_CLIENTS_SEARCH_FILTER = `${prefix}/SET_CLIENTS_SEARCH_FILTER`;
 // universal UniversalFilters
-export const FETCH_STATS_COUNTS_PANEL = `${prefix}/FETCH_STATS_COUNTS_PANEL`;
-export const FETCH_STATS_COUNTS_PANEL_SUCCESS = `${prefix}/FETCH_STATS_COUNTS_PANEL_SUCCESS`;
 export const SET_UNIVERSAL_FILTERS = `${prefix}/SET_UNIVERSAL_FILTERS`;
 
 export const INVITE_CLIENTS = `${prefix}/INVITE_CLIENTS`;
 export const INVITE_CLIENTS_SUCCESS = `${prefix}/INVITE_CLIENTS_SUCCESS`;
 
-export const SET_CLIENTS_PAGE_SORT = `${prefix}/SET_CLIENTS_PAGE_SORT`;
 /**
  * Reducer
  * */
 const ReducerState = {
     stats:   {},
     clients: [],
-    filter:  {
-        sort:  { page: 1, sort: 'asc' },
-        query: '',
-    },
+    filter:  {},
+    sort:    { page: 1, order: 'asc' },
 };
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
@@ -42,30 +34,18 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_CLIENTS_SUCCESS:
             return {
                 ...state,
-                count: payload.count,
-                data:  payload.CLIENTS.map(client =>
-                    Object.assign({ ...client }, { key: v4() })),
-            };
-
-        case FETCH_CLIENTS_STATS_SUCCESS:
-            return {
-                ...state,
-                stats: payload,
-            };
-
-        case SET_CLIENTS_PAGE_FILTER:
-            return {
-                ...state,
-                filter: {
-                    ...state.filter,
-                    page: payload,
-                },
+                ...payload,
+                // clients: payload.CLIENTS.map(client =>
+                //     Object.assign({ ...client }, { key: v4() })),
             };
 
         case SET_CLIENTS_PAGE_SORT:
             return {
                 ...state,
-                sort: payload,
+                sort: {
+                    ...state.sort,
+                    ...payload,
+                },
             };
 
         case SET_CLIENTS_SEARCH_FILTER:
@@ -88,14 +68,6 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
-        case FETCH_STATS_COUNTS_PANEL_SUCCESS:
-            return {
-                ...state,
-                statsCountsPanel: {
-                    stats: payload,
-                },
-            };
-
         case INVITE_CLIENTS_SUCCESS:
             return {
                 ...state,
@@ -111,6 +83,10 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
+export const selectFilter = ({ clients: { filter, sort } }) => ({
+    filter,
+    sort,
+});
 
 /**
  * Action Creators
@@ -126,16 +102,6 @@ export const fetchClientsSuccess = clients => ({
     payload: clients,
 });
 
-export const fetchClientsStats = (filters = {}) => ({
-    type:    FETCH_CLIENTS_STATS,
-    payload: filters,
-});
-
-export const fetchClientsStatsSuccess = stats => ({
-    type:    FETCH_CLIENTS_STATS_SUCCESS,
-    payload: stats,
-});
-
 export const inviteClients = inviteCLIENTSPayload => ({
     type:    INVITE_CLIENTS,
     payload: inviteCLIENTSPayload,
@@ -147,11 +113,6 @@ export const inviteClientsSuccess = response => ({
 });
 
 // Filter
-export const setClientsPageFilter = pageFilter => ({
-    type:    SET_CLIENTS_PAGE_FILTER,
-    payload: pageFilter,
-});
-
 export const setClientsPageSort = sort => ({
     type:    SET_CLIENTS_PAGE_SORT,
     payload: sort,
@@ -166,14 +127,4 @@ export const setClientsSearchFilter = searchFilter => ({
 export const setUniversalFilters = universalFilters => ({
     type:    SET_UNIVERSAL_FILTERS,
     payload: universalFilters,
-});
-
-// StatsCountsPanel
-export const fetchStatsCounts = () => ({
-    type: FETCH_STATS_COUNTS_PANEL,
-});
-
-export const fetchStatsCountsSuccess = stats => ({
-    type:    FETCH_STATS_COUNTS_PANEL_SUCCESS,
-    payload: stats,
 });

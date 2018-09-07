@@ -72,7 +72,6 @@ export default class ClientsPage extends Component {
                     </div>
                 }
             >
-                <div>ClientsContainer</div>
                 <ClientsContainer />
                 <AddClientModal
                     // searchQuery={ form.getFieldValue('searchClientQuery') }

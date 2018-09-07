@@ -12,62 +12,35 @@ import { fetchAPI } from 'utils';
 import {
     fetchClients,
     fetchClientsSuccess,
-    fetchClientsStats,
-    fetchClientsStatsSuccess,
-    fetchStatsCountsSuccess,
     inviteClientsSuccess,
+    selectFilter,
     FETCH_CLIENTS,
-    FETCH_CLIENTS_STATS,
-    FETCH_STATS_COUNTS_PANEL,
     INVITE_CLIENTS,
     // SET_CLIENTS_STATUS_FILTER,
 } from './duck';
 
-const selectFilter = ({ clients: { filter, sort } }) => ({
-    sort,
-    filter,
-});
-
-export function* fetchClientsSagaTake() {
+export function* fetchClientsSaga() {
     while (true) {
         try {
             yield take(FETCH_CLIENTS);
+            console.log('fetch');
             yield nprogress.start();
 
-            const {
+            const { filter, sort } = yield select(selectFilter);
+            console.log('* filter', { filter, sort });
+            // yield put(setClientsFetchingState(true));
+            const data = yield call(fetchAPI, 'GET', 'clients', {
                 filter,
-                sort: { field: sortField, client: sortOrder },
-            } = yield select(selectFilter);
-            const filters = _.omit(
-                spreadProp('daterange', { ...filter, sortField, sortOrder }),
-                [ 'beginDate', 'createDate' ],
-            );
-
-            yield put(setClientsFetchingState(true));
-            const data = yield call(fetchAPI, 'GET', 'clients', filters);
+                sort,
+            });
 
             yield put(fetchClientsSuccess(data));
-            yield put(fetchClientsStats(_.omit(filters, [ 'page', 'status' ])));
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield put(setClientsFetchingState(false));
+            // yield put(setClientsFetchingState(false));
             yield nprogress.done();
         }
-    }
-}
-
-export function* fetchClientsStatsSaga({ payload: filters = {} }) {
-    try {
-        yield nprogress.start();
-        const statsFilters = _.omit(spreadProp('daterange', filters), [ 'page', 'status' ]);
-        const data = yield call(fetchAPI, 'GET', 'clients/stats', statsFilters);
-
-        yield put(fetchClientsStatsSuccess(data));
-    } catch (error) {
-        yield put(emitError(error));
-    } finally {
-        yield nprogress.done();
     }
 }
 
@@ -85,25 +58,10 @@ export function* inviteClients({ payload: { invites, filters } }) {
     }
 }
 
-export function* fetchStatsCountsSaga() {
-    try {
-        yield nprogress.start();
-
-        const data = yield call(fetchAPI, 'GET', 'clients');
-
-        yield put(fetchStatsCountsSuccess(data));
-    } catch (error) {
-        yield put(emitError(error));
-    } finally {
-        yield nprogress.done();
-    }
-}
 /* eslint-disable array-element-newline */
 export function* saga() {
     yield all([
-        call(fetchClientsSagaTake),
-        takeEvery(FETCH_CLIENTS_STATS, fetchClientsStatsSaga),
-        takeEvery(FETCH_STATS_COUNTS_PANEL, fetchStatsCountsSaga),
+        call(fetchClientsSaga),
         takeEvery(INVITE_CLIENTS, inviteClients),
     ]);
 }

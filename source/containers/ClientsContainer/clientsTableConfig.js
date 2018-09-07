@@ -28,198 +28,143 @@ export function columnsConfig(
         desc: 'descend',
     };
 
-    const clientsCol = {
-        title:     <FormattedMessage id='client' />,
+    const client = {
+        title:     'Client',
         width:     220,
         dataIndex: 'name',
         key:       'name',
         // fixed:     'left',
         render:    (_, client) => (
-            <div>
-                { client.name } { client.surname }
-            </div>
-        ),
-    };
-
-    const datetimeCol = {
-        title:     <FormattedMessage id='orders.creation_date' />,
-        dataIndex: 'datetime',
-        key:       'datetime',
-        sorter:    true,
-        sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
-        width:     160,
-        render:    (_, order) => (
-            <div className={ Styles.datetime }>
-                { order.datetime
-                    ? moment(order.datetime).format('DD.MM.YYYY HH:mm')
-                    : '-' }
-            </div>
-        ),
-    };
-
-    const beginDatetimeCol = {
-        title:     <FormattedMessage id='orders.begin_date' />,
-        dataIndex: 'beginDatetime',
-        key:       'beginDatetime',
-        sortOrder:
-            sort.field === 'beginDatetime' ? sortOptions[ sort.order ] : false,
-        sorter: true,
-        width:  160,
-        render: (_, order) => (
-            <div className={ Styles.datetime }>
-                { order.beginDatetime
-                    ? moment(order.beginDatetime).format('DD.MM.YYYY HH:mm')
-                    : '-' }
-            </div>
-        ),
-    };
-
-    const successDatetimeCol = {
-        title:     <FormattedMessage id='orders.success_date' />,
-        dataIndex: 'successDatetime',
-        key:       'successDatetime',
-        width:     160,
-        render:    (_, order) => (
-            <div className={ Styles.datetime }>
-                { order.successDatetime
-                    ? moment(order.successDatetime).format('DD.MM.YYYY HH:mm')
-                    : '-' }
-            </div>
-        ),
-    };
-
-    const createDatetimeCol = {
-        title:     <FormattedMessage id='orders.creation_date' />,
-        dataIndex: 'datetime',
-        key:       'datetime',
-        sorter:    true,
-        sortOrder: sort.field === 'datetime' ? sortOptions[ sort.order ] : false,
-        width:     160,
-        render:    (_, order) => (
-            <div className={ Styles.datetime }>
-                { order.datetime
-                    ? moment(order.datetime).format('DD.MM.YYYY HH:mm')
-                    : '-' }
-            </div>
-        ),
-    };
-
-    const clientCol = {
-        title:     <FormattedMessage id='orders.client' />,
-        dataIndex: 'clientFullName',
-        key:       'clientFullName',
-        width:     220,
-        render:    (_, order) => (
-            <div className={ Styles.client }>
-                <span className={ Styles.clientFullname }>
-                    { `${order.clientName || '-'} ${order.clientSurname || ''}` }
-                </span>
-                <span className={ Styles.clientVehicle }>
-                    { `${order.vehicleMakeName ||
-                        '-'} ${order.vehicleModelName ||
-                        '-'} ${order.vehicleYear || '-'}` }
-                </span>
-                <a
-                    className={ Styles.clientPhone }
-                    href={ `tel:${order.clientPhone}` }
-                >
-                    { order.clientPhone || '-' }
-                </a>
-            </div>
-        ),
-    };
-
-    const sumCol = {
-        title:     <FormattedMessage id='orders.sum' />,
-        dataIndex: 'totalSum',
-        key:       'totalSum',
-        sorter:    true,
-        sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
-        width:     140,
-        render:    (_, order) => (
-            <Numeral
-                // TODO intl.formattedMessage({ id: currency})
-                currency='грн.'
-                nullText='0'
+            <Link
+                className={ Styles.client }
+                to={ `${book.clients}/${client.clientId}` }
             >
-                { order.servicesTotalSum + order.detailsTotalSum }
-            </Numeral>
+                { client.name } { client.surname }
+            </Link>
         ),
     };
 
-    const responsibleCol = {
-        title:     <FormattedMessage id='orders.responsible' />,
-        dataIndex: 'managerName',
-        key:       'managerName',
-        width:     190,
-        render:    (_, order) => {
-            if (order.managerName) {
-                return `${order.managerName} ${order.managerSurname &&
-                    order.managerSurname}`;
-            }
-
-            return <FormattedMessage id='orders.not_assigned' />;
-        },
+    const phone = {
+        title:     'Phone',
+        width:     200,
+        dataIndex: 'phones',
+        key:       'phones',
+        render:    phones => (
+            <a className={ Styles.phone } href={ `tel:${phones[ 0 ]}` }>
+                { phones[ 0 ] }
+            </a>
+        ),
     };
 
-    const sourceCol = {
-        title:     <FormattedMessage id='orders.source' />,
-        dataIndex: 'changeReason',
-        key:       'changeReason',
-        width:     125,
-        render:    (_, order) =>
-            order.changeReason ? (
-                <FormattedMessage id={ `orders.${order.changeReason}` } />
-            ) : (
-                <FormattedMessage id='orders.not_provided' />
-            ),
+    const vehicles = {
+        title:     'Vehicles',
+        width:     400,
+        dataIndex: 'vehicles',
+        key:       'vehicles',
+        render:    (data, client) =>
+            client.vehicles.length > 0
+                ? client.vehicles.map(vehicle => (
+                    <div className={ Styles.vehicle } key={ vehicle.id }>
+                        { vehicle.number ? (
+                            <span className={ Styles.vehicleNum }>
+                                { `${vehicle.number} -` }
+                            </span>
+                        ) : (
+                            <span className={ Styles.vehicleNum }>-</span>
+                        ) }
+                        <span>
+                            { vehicle.make } { vehicle.model }{ ' ' }
+                            { vehicle.modification } ({ vehicle.year })
+                        </span>
+                    </div>
+                ))
+                : null,
     };
 
-    const tasksCol = {
-        title:     <FormattedMessage id='orders.tasks' />,
-        dataIndex: 'activeTasks',
-        key:       'activeTasks',
+    const lastOrder = {
+        title:     'Last Order',
+        width:     140,
+        dataIndex: 'lastOrderId',
+        key:       'lastOrderId',
+        render:    (data, order) => (
+            <div className={ Styles.lastOrder }>
+                { order.lastOrderBeginDatetime
+                    ? moment(order.lastOrderBeginDatetime).format('YYYY-MM-DD')
+                    : null }{ ' ' }
+                <Link
+                    className={ Styles.lastOrderLink }
+                    to={ `${book.order}/${order.lastOrderId}` }
+                >
+                    { order.lastOrderId }
+                </Link>
+            </div>
+        ),
+    };
+
+    const orders = {
+        title:     'Orders',
+        width:     100,
+        // sorter:    true,
+        // sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
+        dataIndex: 'orders',
+        key:       'orders',
+        render:    orders =>
+            orders && <div className={ Styles.orders }>{ orders }</div>,
+    };
+
+    const invitation = {
+        title:     <FormattedMessage id='orders.invitation' />,
+        dataIndex: 'invite',
+        key:       'invite',
         width:     150,
-        render:    (_, order) => {
-            if (order.activeTasks) {
+        render:    (_void, order) => {
+            if (!order.vehicleInviteExists) {
                 return (
-                    <Link to={ `${book.order}/${order.id}` }>
-                        { order.activeTasks }
-                    </Link>
-                );
-            }
-
-            return <FormattedMessage id='orders.no_tasks' />;
-        },
-    };
-
-    const reviewCol = {
-        title:     <FormattedMessage id='orders.review' />,
-        dataIndex: 'review',
-        key:       'review',
-        width:     175,
-        render:    (_, order) => {
-            if (order.nps) {
-                return (
-                    <a href={ `${book.oldApp.reviews}/${order.reviewIds[ 0 ]}` }>
-                        <div
-                            className={ classNames(Styles.nps, {
-                                [ Styles.npsMid ]:
-                                    order.nps === 7 || order.nps === 8,
-                                [ Styles.npsLow ]: order.nps <= 6,
-                            }) }
-                        >
-                            { order.nps }
-                        </div>
-                    </a>
+                    <Button
+                        type='primary'
+                        onClick={ () => action([ order ]) }
+                        // disabled={ isInviteButtonDisabled(order) }
+                    >
+                        <FormattedMessage id='orders.invite' />
+                    </Button>
                 );
             }
 
             return (
-                <Button>
-                    <FormattedMessage id='orders.add_feedback' />
-                </Button>
+                <Link
+                // to={ `${book.order}/${order.vehicleInviteExists}` }
+                >
+                    { /* { order.vehicleInviteExists } */ }
+                </Link>
             );
         },
     };
+
+    const actions = {
+        title:  '',
+        key:    'actions',
+        // fixed:  'right',
+        width:  'auto',
+        render: (_, client) => (
+            <div className={ Styles.actions }>
+                <Link to={ `${book.clients}/${client.clientId}` }>
+                    <Icon className={ Styles.editClientIcon } type='edit' />
+                </Link>
+                <div className={ Styles.actionsLine } />
+                <Icon
+                    onClick={ () => console.log('→ delete') }
+                    className={ Styles.deleteClientIcon }
+                    type='delete'
+                />
+            </div>
+        ),
+    };
+
+    return [ client, phone, vehicles, lastOrder, orders, invitation, actions ];
 }
+
+export const rowsConfig = (selectedRowKeys, onChange, getCheckboxProps) => ({
+    selectedRowKeys,
+    onChange,
+    getCheckboxProps,
+});
