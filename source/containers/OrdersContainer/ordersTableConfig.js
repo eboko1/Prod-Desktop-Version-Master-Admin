@@ -15,7 +15,6 @@ import { permissions, isForbidden } from 'utils';
 import Styles from './styles.m.css';
 
 /* eslint-disable complexity */
-
 export function columnsConfig(
     invited,
     action,
@@ -43,7 +42,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) =>
+        render:    (_, order) => 
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -232,8 +231,8 @@ export function columnsConfig(
         dataIndex: 'review',
         key:       'review',
         width:     175,
-        render:    (_, order) => {
-            if (order.nps) {
+        render:    (data, order) => {
+            if (_.isNumber(order.nps)) {
                 return (
                     <a href={ `${book.oldApp.reviews}/${order.reviewIds[ 0 ]}` }>
                         <div
@@ -380,7 +379,7 @@ export function columnsConfig(
             return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, invitationCol, editCol ];
 
         case '/orders/reviews':
-            return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, reviewCol, editCol ];
+            return [ indexCol, orderCol, reviewCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
 
         case '/orders/invitations':
             return [ indexCol, orderCol, createDatetimeCol, beginDatetimeCol, clientCol, actionCol, responsibleCol, editCol ];

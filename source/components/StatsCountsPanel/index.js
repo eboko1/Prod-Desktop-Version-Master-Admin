@@ -5,6 +5,7 @@ import { v4 } from 'uuid';
 
 // proj
 import { Catcher } from 'commons';
+import { Numeral } from 'components';
 
 // own
 import Styles from './styles.m.css';
@@ -21,7 +22,7 @@ class StatsCountsPanel extends Component {
                             <FormattedMessage
                                 id={ `stats_counts_panel.${key}` }
                             />
-                            <div>{ stats[ key ] }</div>
+                            <Numeral>{ stats[ key ] }</Numeral>
                         </div>
                     )) }
                 </div>

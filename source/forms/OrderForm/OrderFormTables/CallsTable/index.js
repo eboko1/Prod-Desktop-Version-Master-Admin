@@ -19,7 +19,7 @@ class CallsTable extends Component {
                 width:     '10%',
                 render:    (text, record) => (
                     <div style={ { wordBreak: 'normal' } }>
-                        { moment(record.datetime).format('DD.MM.YYYY HH:mm') }
+                        { moment(record.date).format('DD.MM.YYYY HH:mm') }
                     </div>
                 ),
             },

@@ -34,7 +34,10 @@ class DiscountPanel extends Component {
                     <DecoratedInputNumber
                         field={ discountFieldName }
                         disabled={ forbidden }
-                        initialValue={ _.get(fetchedOrder, `order.${discountFieldName}`) || 0 }
+                        initialValue={
+                            _.get(fetchedOrder, `order.${discountFieldName}`) ||
+                            0
+                        }
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={
@@ -59,12 +62,11 @@ class DiscountPanel extends Component {
                             value={ this.props.price }
                             min={ 0 }
                             formatter={ value =>
-                                `${value} ${formatMessage({id: 'currency'})}`.replace(
-                                    /\B(?=(\d{3})+(?!\d))/g,
-                                    ',',
-                                )
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
-                            parser={ value => value.replace(/\$\s?|(,*)/g, '') }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                         />
                     </FormItem>
                     <FormItem
@@ -79,13 +81,11 @@ class DiscountPanel extends Component {
                             value={ total }
                             min={ 0 }
                             formatter={ value =>
-                                `${value} ${formatMessage({id: 'currency'})}`.replace(
-                                    /\B(?=(\d{3})+(?!\d))/g,
-                                    ',',
-                                )
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
-                            parser={ value => value.replace(/\$\s?|(,*)/g, '') }
-                            // onChange={ value => this.onChange(value) }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                         />
                     </FormItem>
                 </div>

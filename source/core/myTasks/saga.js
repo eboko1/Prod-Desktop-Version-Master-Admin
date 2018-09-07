@@ -13,8 +13,11 @@ const selectFilter = ({ myTasksContainer: { filters } }) => ({
 export function* fetchMyTasks() {
     while (true) {
         try {
-            yield take(FETCH_MY_TASKS);
-            yield put(setMyTasksFetchingState(true));
+            const{payload:{firstLoading}}=yield take(FETCH_MY_TASKS);
+            if(firstLoading){
+                yield put(setMyTasksFetchingState(true));
+
+            }
             // const { filter } = yield select(selectFilter);
             const { filter } = yield select(selectFilter);
 
@@ -34,7 +37,10 @@ export function* fetchMyTasks() {
             const data = yield call(fetchAPI, 'GET', url);
 
             yield put(fetchMyTasksSuccess(data));
-            yield put(setMyTasksFetchingState(false));
+            if(firstLoading){
+
+                yield put(setMyTasksFetchingState(false));
+            }
         } catch (error) {
             yield put(emitError(error));
         }

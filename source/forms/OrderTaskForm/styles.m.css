@@ -10,6 +10,7 @@
 .statusSelect {
     margin-bottom: 0px;
     margin-right: 10px;
+    width: 30.2%;
 }
 .directory {
     display: flex;
@@ -21,14 +22,6 @@
 .statusTooltip {
     cursor: pointer;
 }
-/* .statusSelect label {
-    display: flex;
-    height: 43px;
-    width: 250px;
-}
-.statusSelect .ant-form-item-label {
-    width: 100%;
-} */
 .dateTimePickerBlock {
     display: flex;
     flex-direction: row;

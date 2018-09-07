@@ -138,9 +138,9 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export const fetchMyTasks = filter => ({
+export const fetchMyTasks = (filter, firstLoading) => ({
     type:    FETCH_MY_TASKS,
-    payload: filter,
+    payload: {filter, firstLoading},
 });
 
 export const fetchMyTasksSuccess = data => ({
