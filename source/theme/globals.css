@@ -77,3 +77,7 @@ a {
 .drawer.drawer-open .drawer-mask {
     animation: none;
 }
+
+.bg-success {
+    background-color: var(--secondary);
+}

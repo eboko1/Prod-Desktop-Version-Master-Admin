@@ -13,20 +13,20 @@
 
     --layout: rgba(0, 21, 41, 1);
 
-    --primary: #9b59b6;
+    --primary: rgb(155, 89, 182);
     --secondary: rgb(81, 205, 102);
+    --link: rgb(82, 179, 255);
     --blocks: rgba(0, 22, 40, 1);
     --moduleHeader: rgba(247, 247, 247, 1);
-    --link: #52b3ff;
     --errorBG: rgba(236, 16, 28, 0.2);
     --text: #001529;
     --text2: rgba(0, 0, 0, 0.45);
     --text3: rgba(67, 78, 89, 1);
     --text4: rgba(0, 0, 0, 0.35);
 
-    --secondaryRGB: 76, 201, 105;
     --static: rgb(254, 241, 208);
 
+    /* Statuses */
     --not_complete: rgb(255, 126, 126);
     --required: rgb(255, 126, 126);
     --reserve: rgb(107, 99, 153);
@@ -35,4 +35,9 @@
     --success: rgb(26, 156, 234);
     --cancel: rgb(198, 198, 198);
     --invite: rgb(143, 56, 48);
+
+    /* RGB */
+    --primaryRGB: 155, 89, 182;
+    --secondaryRGB: 76, 201, 105;
+    --linkRGB: 82, 179, 255;
 }

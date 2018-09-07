@@ -8,7 +8,7 @@ import { Button } from 'antd';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
-import { Layout } from 'commons';
+import { Layout, StyledButton } from 'commons';
 import { AddClientModal } from 'modals';
 import {
     ClientsContainer,
@@ -59,7 +59,8 @@ export default class ClientsPage extends Component {
                 description={ <FormattedMessage id='clients-page.description' /> }
                 controls={
                     <div className={ Styles.buttonGroup }>
-                        <Button
+                        <StyledButton
+                            type='secondary'
                             disabled={
                                 isForbidden(user, permissions.CREATE_ORDER) ||
                                 isForbidden(
@@ -70,7 +71,7 @@ export default class ClientsPage extends Component {
                             onClick={ () => setModal(MODALS.INVITE) }
                         >
                             <FormattedMessage id='clients-page.invite_to_service' />
-                        </Button>
+                        </StyledButton>
                         <Button
                             type='primary'
                             onClick={ () => setModal(MODALS.ADD_CLIENT) }
