@@ -24,6 +24,7 @@ import { saga as businessPackageSaga } from 'core/businessPackage/saga';
 import { saga as managerRoleSaga } from 'core/managerRole/saga';
 import { saga as rolesSaga } from 'core/role/saga';
 import { saga as clientSaga } from 'core/client/saga';
+import { saga as clientRequisitesSaga } from 'core/clientRequisite/saga';
 import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
 import { saga as addClientVehicleSaga } from 'core/forms/addClientVehicleForm/saga';
 import { saga as employeeSaga } from 'core/employee/saga';
@@ -63,6 +64,7 @@ export default function* rootSaga() {
         clientSaga(),
         addClientVehicleSaga(),
         editClientFormSaga(),
+        clientRequisitesSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

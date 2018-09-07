@@ -97,14 +97,12 @@ export default class ClientContainer extends Component {
                         key='feedback'
                     />
                     <TabPane
-                        tab={
-                            <FormattedMessage
-                                id={ 'client_container.requisites' }
-                            />
-                        }
-                        key='clientRequisites'
-                    >
-                        <ClientRequisitesContainer />
+                        tab={ <FormattedMessage id={ 'client_container.requisites' }/> }
+                        key='clientRequisites'>
+                        { clientEntity ? <ClientRequisitesContainer
+                            requisites={ clientEntity.requisites }
+                            clientId={ clientEntity.clientId }
+                        /> : null }
                     </TabPane>
                 </Tabs>
             </Catcher>

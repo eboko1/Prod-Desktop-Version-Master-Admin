@@ -20,6 +20,8 @@ import { ManagerRoleForm } from './ManagerRoleForm';
 import { EditClientVehicleForm } from './EditClientVehicleForm';
 import { EditClientForm } from './EditClientForm';
 import { AbstractClientForm } from './AbstractClientForm';
+import { RequisiteForm } from './RequisiteForm';
+import { AddRequisiteForm } from './AddRequisiteForm';
 
 export {
     LoginForm,
@@ -44,4 +46,6 @@ export {
     AddClientVehicleForm,
     EditClientVehicleForm,
     EditClientForm,
+    RequisiteForm,
+    AddRequisiteForm,
 };

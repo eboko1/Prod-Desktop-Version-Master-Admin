@@ -1,0 +1,33 @@
+{
+    "en": {
+        "edit_requisite_form.edit_title": "Edit role:",
+        "edit_requisite_form.edit": "Edit",
+        "edit_requisite_form.name_field": "Package name",
+        "edit_requisite_form.name_field_required": "Package name is required",
+        "edit_requisite_form.grants_field": "Grants",
+        "edit_requisite_form.grants_field_required": "Grants required",
+        "edit_requisite_form.grant_other_field": "Assign role",
+        "edit_requisite_form.grant_other_field_required":
+            "Grant other field is required"
+    },
+    "ru": {
+        "edit_requisite_form.edit_title": "Редактировать роль:",
+        "edit_requisite_form.edit": "Редактировать",
+        "edit_requisite_form.name_field": "Название",
+        "edit_requisite_form.name_field_required": "Поле не может быть пустым",
+        "edit_requisite_form.grants_field": "Доступы",
+        "edit_requisite_form.grants_field_required": "Поле не может быть пустым",
+        "edit_requisite_form.grant_other_field": "Присваивать роли",
+        "edit_requisite_form.grant_other_field_required": "Поле не может быть пустым"
+    },
+    "uk": {
+        "edit_requisite_form.edit_title": "Редагувати роль:",
+        "edit_requisite_form.edit": "Редагувати",
+        "edit_requisite_form.name_field": "Назва",
+        "edit_requisite_form.name_field_required": "Поле не може бути пустим",
+        "edit_requisite_form.grants_field": "Доступи",
+        "edit_requisite_form.grants_field_required": "Поле не може бути пустим",
+        "edit_requisite_form.grant_other_field": "Назначати ролі",
+        "edit_requisite_form.grant_other_field_required": "Поле не може бути пустим"
+    }
+}
