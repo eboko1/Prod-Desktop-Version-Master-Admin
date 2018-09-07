@@ -6,10 +6,15 @@ import { Button } from 'antd';
 
 // proj
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
 import { Layout } from 'commons';
 import { AddClientModal } from 'modals';
-import { ClientsContainer } from 'containers';
+import {
+    ClientsContainer,
+    ClientsFilterContainer,
+    UniversalFilters,
+} from 'containers';
 import { permissions, isForbidden } from 'utils';
 
 // own
@@ -18,12 +23,14 @@ import Styles from './styles.m.css';
 const mapStateToProps = state => ({
     modal:             state.modals.modal,
     addClientFormData: state.forms.addClientForm.data,
+    collapsed:         state.ui.collapsed,
     user:              state.auth,
 });
 
 const mapDispatchToProps = {
     setModal,
     resetModal,
+    fetchUniversalFiltersForm,
 };
 
 @connect(
@@ -42,11 +49,12 @@ export default class ClientsPage extends Component {
             setModal,
             resetModal,
             addClientFormData,
-            // form,
+            collapsed,
         } = this.props;
 
         return (
             <Layout
+                paper={ false }
                 title={ <FormattedMessage id='clients-page.title' /> }
                 description={ <FormattedMessage id='clients-page.description' /> }
                 controls={
@@ -72,7 +80,16 @@ export default class ClientsPage extends Component {
                     </div>
                 }
             >
-                <ClientsContainer />
+                <section
+                    className={ `${Styles.filters} ${collapsed &&
+                        Styles.filtersCollapsed}` }
+                >
+                    <ClientsFilterContainer />
+                    <UniversalFilters />
+                </section>
+                <section className={ Styles.table }>
+                    <ClientsContainer />
+                </section>
                 <AddClientModal
                     // searchQuery={ form.getFieldValue('searchClientQuery') }
                     wrappedComponentRef={ this.clientsPageRef }
