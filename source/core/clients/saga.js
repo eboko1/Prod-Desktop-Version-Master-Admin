@@ -30,7 +30,7 @@ export function* fetchClientsSaga() {
             console.log('* filter', { filter, sort });
             // yield put(setClientsFetchingState(true));
             const data = yield call(fetchAPI, 'GET', 'clients', {
-                filter,
+                filters: filter,
                 sort,
             });
 

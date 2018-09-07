@@ -45,34 +45,25 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class ClientsContainer extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            loading:         false,
-            selectedRowKeys: [],
-            invited:         [],
-        };
-
-        // this.invite = this.invite.bind(this);
-        // this.isOrderInvitable = this.isOrderInvitable.bind(this);
-        // this.isAlreadyInvited = this.isAlreadyInvited.bind(this);
-        // this.inviteSelected = this.inviteSelected.bind(this);
-    }
+    state = {
+        loading:         false,
+        selectedRowKeys: [],
+        invited:         [],
+    };
 
     componentDidMount() {
         this.props.fetchClients(this.props.filter);
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.activeRoute !== this.state.activeRoute) {
-            this.props.fetchOrders({
-                ...this.props.filter,
-                status: this.state.status,
-            });
-            // this.columnsConfig(status);
-        }
+        // if (prevState.activeRoute !== this.state.activeRoute) {
+        //     this.props.fetchClients({
+        //         ...this.props.filter,
+        //     });
+        //     // this.columnsConfig(status);
+        // }
 
-        if (prevProps.orders !== this.props.orders) {
+        if (prevProps.clients !== this.props.clients) {
             return this.setState({
                 selectedRowKeys: [],
                 invited:         [],
@@ -104,20 +95,6 @@ export default class ClientsContainer extends Component {
             this.getOrderCheckboxProps,
         );
 
-        // const handleTableChange = (pagination, filters, sorter) => {
-        //     if (!sorter) {
-        //         return;
-        //     }
-        //     const sort = {
-        //         field:  sorter.field,
-        //         client: sorter.client === 'ascend' ? 'asc' : 'desc',
-        //     };
-        //     if (!_.isEqual(sort, this.props.sort)) {
-        //         this.props.setClientsPageSort(sort);
-        //         this.props.fetchClients();
-        //     }
-        // };
-        console.log('→ this.props.sort.page', this.props.sort);
         const pagination = {
             pageSize:         25,
             size:             'large',
@@ -129,8 +106,6 @@ export default class ClientsContainer extends Component {
                 this.props.fetchClients(this.props.filter);
             },
         };
-
-        const hasSelected = selectedRowKeys.length > 0;
 
         return (
             <Catcher>

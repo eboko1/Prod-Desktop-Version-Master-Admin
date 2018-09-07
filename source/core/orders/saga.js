@@ -37,7 +37,7 @@ const selectFilter = ({ orders: { filter, sort } }) => ({
     filter,
 });
 
-export function* fetchOrdersSagaTake() {
+export function* fetchOrdersSaga() {
     while (true) {
         try {
             yield take(FETCH_ORDERS);
@@ -110,7 +110,7 @@ export function* fetchStatsCountsSaga() {
 /* eslint-disable array-element-newline */
 export function* saga() {
     yield all([
-        call(fetchOrdersSagaTake),
+        call(fetchOrdersSaga),
         takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga),
         takeEvery(FETCH_STATS_COUNTS_PANEL, fetchStatsCountsSaga),
         takeEvery(CREATE_INVITE_ORDERS, createInviteOrders),
