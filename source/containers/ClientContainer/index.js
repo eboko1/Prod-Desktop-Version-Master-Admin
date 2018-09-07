@@ -69,10 +69,6 @@ export default class ClientContainer extends Component {
                         key='feedback'>
                     </TabPane>
                     <TabPane
-                        tab={ <FormattedMessage id={ 'client_container.send_sms' }/> }
-                        key='sendSMS'>
-                    </TabPane>
-                    <TabPane
                         tab={ <FormattedMessage id={ 'client_container.requisites' }/> }
                         key='clientRequisites'>
                         <ClientRequisitesContainer/>
