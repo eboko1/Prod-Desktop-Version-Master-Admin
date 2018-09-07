@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
 import _ from 'lodash';
 
@@ -40,6 +40,7 @@ const mapDispatchToProps = {
 };
 
 @withRouter
+@injectIntl
 @connect(
     mapStateToProps,
     mapDispatchToProps,
@@ -75,6 +76,7 @@ export default class ClientsContainer extends Component {
 
     render() {
         const { clients } = this.props;
+        const { formatMessage } = this.props.intl;
         const { loading, activeRoute, selectedRowKeys } = this.state;
         // const { status, loading, selectedRowKeys } = this.state;
 
@@ -86,6 +88,7 @@ export default class ClientsContainer extends Component {
             activeRoute,
             this.props.sort,
             this.props.user,
+            formatMessage,
         );
 
         const rows = rowsConfig(

@@ -23,12 +23,9 @@ export function* fetchClientsSaga() {
     while (true) {
         try {
             yield take(FETCH_CLIENTS);
-            console.log('fetch');
             yield nprogress.start();
 
             const { filter, sort } = yield select(selectFilter);
-            console.log('* filter', { filter, sort });
-            // yield put(setClientsFetchingState(true));
             const data = yield call(fetchAPI, 'GET', 'clients', {
                 filters: filter,
                 sort,
@@ -38,7 +35,6 @@ export function* fetchClientsSaga() {
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            // yield put(setClientsFetchingState(false));
             yield nprogress.done();
         }
     }

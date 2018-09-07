@@ -2,10 +2,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Icon, Tooltip, Button } from 'antd';
-import classNames from 'classnames';
+import { Icon, Popconfirm, Button } from 'antd';
 import moment from 'moment';
-import _ from 'lodash';
 
 // proj
 import { OrderStatusIcon, Numeral } from 'components';
@@ -22,6 +20,7 @@ export function columnsConfig(
     activeRoute,
     sort,
     user,
+    formatMessage,
 ) {
     const sortOptions = {
         asc:  'ascend',
@@ -29,7 +28,7 @@ export function columnsConfig(
     };
 
     const client = {
-        title:     'Client',
+        title:     <FormattedMessage id='clients-table.client' />,
         width:     220,
         dataIndex: 'name',
         key:       'name',
@@ -45,7 +44,7 @@ export function columnsConfig(
     };
 
     const phone = {
-        title:     'Phone',
+        title:     <FormattedMessage id='clients-table.phone' />,
         width:     200,
         dataIndex: 'phones',
         key:       'phones',
@@ -57,7 +56,7 @@ export function columnsConfig(
     };
 
     const vehicles = {
-        title:     'Vehicles',
+        title:     <FormattedMessage id='clients-table.vehicles' />,
         width:     400,
         dataIndex: 'vehicles',
         key:       'vehicles',
@@ -82,7 +81,7 @@ export function columnsConfig(
     };
 
     const lastOrder = {
-        title:     'Last Order',
+        title:     <FormattedMessage id='clients-table.last_order' />,
         width:     140,
         dataIndex: 'lastOrderId',
         key:       'lastOrderId',
@@ -102,7 +101,7 @@ export function columnsConfig(
     };
 
     const orders = {
-        title:     'Orders',
+        title:     <FormattedMessage id='clients-table.orders' />,
         width:     100,
         // sorter:    true,
         // sortOrder: sort.field === 'totalSum' ? sortOptions[ sort.order ] : false,
@@ -113,7 +112,7 @@ export function columnsConfig(
     };
 
     const invitation = {
-        title:     <FormattedMessage id='orders.invitation' />,
+        title:     <FormattedMessage id='clients-table.invitation' />,
         dataIndex: 'invite',
         key:       'invite',
         width:     150,
@@ -151,11 +150,14 @@ export function columnsConfig(
                     <Icon className={ Styles.editClientIcon } type='edit' />
                 </Link>
                 <div className={ Styles.actionsLine } />
-                <Icon
-                    onClick={ () => console.log('→ delete') }
-                    className={ Styles.deleteClientIcon }
-                    type='delete'
-                />
+                <Popconfirm
+                    cancelText={ formatMessage({ id: 'no' }) }
+                    okText={ formatMessage({ id: 'yes' }) }
+                    title={ `${formatMessage({ id: 'delete' })}?` }
+                    onConfirm={ () => console.log('→ deleted') }
+                >
+                    <Icon className={ Styles.deleteClientIcon } type='delete' />
+                </Popconfirm>
             </div>
         ),
     };

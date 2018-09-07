@@ -45,6 +45,7 @@ import RoleContainer from 'containers/RoleContainer/messages';
 import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
 import ManagerRoleContainer from 'containers/ManagerRoleContainer/messages';
 import UniversalFiltersContainer from 'containers/UniversalFilters/messages';
+import ClientsContainer from 'containers/ClientsContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -113,6 +114,7 @@ const messages = merge.all([
     AddEmployeePage,
     BusinessPackagePage,
     ManagerRolePage,
+    ClientsContainer,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
