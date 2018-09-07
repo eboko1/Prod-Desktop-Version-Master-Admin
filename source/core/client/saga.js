@@ -7,8 +7,14 @@ import { fetchAPI } from 'utils';
 
 // own
 import { fetchClient, fetchClientSuccess } from './duck';
+import { addError } from './../forms/editClientVehicleForm/duck';
 
-import { FETCH_CLIENT, CREATE_CLIENT_VEHICLE } from './duck';
+import {
+    FETCH_CLIENT,
+    CREATE_CLIENT_VEHICLE,
+    UPDATE_CLIENT_VEHICLE,
+    DELETE_CLIENT_VEHICLE,
+} from './duck';
 
 export function* fetchClientSaga() {
     while (true) {
@@ -23,6 +29,24 @@ export function* fetchClientSaga() {
         } finally {
             yield put(setClientFetchingState(false));
         }
+    }
+}
+
+export function* updateClientVehicleSaga() {
+    while (true) {
+        const {
+            payload: { clientVehicleId, clientId, clientVehicle },
+        } = yield take(UPDATE_CLIENT_VEHICLE);
+
+        yield call(
+            fetchAPI,
+            'PUT',
+            `clients/vehicles/${clientVehicleId}`,
+            null,
+            clientVehicle,
+        );
+
+        yield put(fetchClient(clientId));
     }
 }
 
@@ -58,6 +82,30 @@ export function* createClientVehicleSaga() {
     }
 }
 
+export function* deleteClientVehicleSaga() {
+    while (true) {
+        const {
+            payload: { clientId, clientVehicleId },
+        } = yield take(DELETE_CLIENT_VEHICLE);
+
+        try {
+            yield call(
+                fetchAPI,
+                'DELETE',
+                `clients/vehicles/${clientVehicleId}`,
+                null,
+                null,
+                { handleErrorInternally: true },
+            );
+        } catch ({ response, status }) {
+            yield put(addError({ response, status }));
+
+            continue;
+        }
+        yield put(fetchClient(clientId));
+    }
+}
+
 export function* saga() {
-    yield all([ call(fetchClientSaga), call(createClientVehicleSaga) ]);
+    yield all([ call(fetchClientSaga), call(createClientVehicleSaga), call(updateClientVehicleSaga), call(deleteClientVehicleSaga) ]);
 }

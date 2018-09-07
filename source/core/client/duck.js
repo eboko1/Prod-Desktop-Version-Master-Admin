@@ -8,6 +8,8 @@ export const FETCH_CLIENT = `${prefix}/FETCH_CLIENT`;
 export const FETCH_CLIENT_SUCCESS = `${prefix}/FETCH_CLIENT_SUCCESS`;
 
 export const CREATE_CLIENT_VEHICLE = `${prefix}/CREATE_CLIENT_VEHICLE`;
+export const UPDATE_CLIENT_VEHICLE = `${prefix}/UPDATE_CLIENT_VEHICLE`;
+export const DELETE_CLIENT_VEHICLE = `${prefix}/DELETE_CLIENT_VEHICLE`;
 
 /**
  * Reducer
@@ -35,6 +37,20 @@ export default function reducer(state = ReducerState, action) {
 export const createClientVehicle = (clientId, clientVehicle) => ({
     type:    CREATE_CLIENT_VEHICLE,
     payload: { clientId, clientVehicle },
+});
+
+export const deleteClientVehicle = (clientId, clientVehicleId) => ({
+    type:    DELETE_CLIENT_VEHICLE,
+    payload: { clientVehicleId, clientId },
+});
+
+export const updateClientVehicle = (
+    clientVehicleId,
+    clientId,
+    clientVehicle,
+) => ({
+    type:    UPDATE_CLIENT_VEHICLE,
+    payload: { clientVehicleId, clientVehicle, clientId },
 });
 
 export const fetchClient = id => ({

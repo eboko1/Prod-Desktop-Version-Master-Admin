@@ -8,8 +8,14 @@ import { Tabs } from 'antd';
 const { TabPane } = Tabs;
 
 // proj
-import { createClientVehicle } from 'core/client/duck';
+
+import {
+    createClientVehicle,
+    updateClientVehicle,
+    deleteClientVehicle,
+} from 'core/client/duck';
 import { ClientRequisitesContainer } from 'containers';
+
 import { AddClientVehicleForm, EditClientVehicleForm } from 'forms';
 import { Catcher } from 'commons';
 
@@ -18,6 +24,8 @@ import Styles from './styles.m.css';
 
 const mapDispatchToProps = {
     createClientVehicle,
+    updateClientVehicle,
+    deleteClientVehicle,
 };
 
 const mapStateToProps = state => ({
@@ -46,12 +54,25 @@ export default class ClientContainer extends Component {
                     type='card'
                 >
                     <TabPane
-                        tab={ <FormattedMessage id={ 'client_container.general_info' }/> }
-                        key='generalInfo'>
+                        tab={
+                            <FormattedMessage
+                                id={ 'client_container.general_info' }
+                            />
+                        }
+                        key='generalInfo'
+                    >
                         test catch 228{ ' ' }
-                        { clientEntity ? JSON.stringify(clientEntity) : null }
                         <Form>
-                            <EditClientVehicleForm clientEntity={ clientEntity }/>
+                            <EditClientVehicleForm
+                                updateClientVehicle={
+                                    this.props.updateClientVehicle
+                                }
+                                deleteClientVehicle={
+                                    this.props.deleteClientVehicle
+                                }
+                                clientEntity={ clientEntity }
+                                clientId={ clientId }
+                            />
                             <AddClientVehicleForm
                                 addClientVehicle={ this.props.createClientVehicle.bind(
                                     null,
@@ -61,17 +82,28 @@ export default class ClientContainer extends Component {
                         </Form>
                     </TabPane>
                     <TabPane
-                        tab={ <FormattedMessage id={ 'client_container.orders' }/> }
-                        key='orders'>
-                    </TabPane>
+                        tab={
+                            <FormattedMessage id={ 'client_container.orders' } />
+                        }
+                        key='orders'
+                    />
                     <TabPane
-                        tab={ <FormattedMessage id={ 'client_container.feedback' }/> }
-                        key='feedback'>
-                    </TabPane>
+                        tab={
+                            <FormattedMessage
+                                id={ 'client_container.feedback' }
+                            />
+                        }
+                        key='feedback'
+                    />
                     <TabPane
-                        tab={ <FormattedMessage id={ 'client_container.requisites' }/> }
-                        key='clientRequisites'>
-                        <ClientRequisitesContainer/>
+                        tab={
+                            <FormattedMessage
+                                id={ 'client_container.requisites' }
+                            />
+                        }
+                        key='clientRequisites'
+                    >
+                        <ClientRequisitesContainer />
                     </TabPane>
                 </Tabs>
             </Catcher>
