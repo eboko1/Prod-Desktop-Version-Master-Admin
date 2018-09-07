@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Form, Select, Input, Icon } from 'antd';
+import { Link } from 'react-router-dom';
+import { Select, Icon } from 'antd';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 import classNames from 'classnames/bind';
@@ -20,7 +21,6 @@ import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 import { ClientsSearchTable } from './../OrderFormTables';
-const FormItem = Form.Item;
 const Option = Select.Option;
 
 let cx = classNames.bind(Styles);
@@ -204,13 +204,11 @@ export default class OrderFormBody extends Component {
                     </div>
                     { hasClient && (
                         <div className={ Styles.iconsCol }>
-                            <a
-                                href={ `${book.oldApp.clients}/${
-                                    this.props.selectedClient.clientId
-                                }?ref=/orders/${this.props.order.id}` }
+                            <Link
+                                to={ `${book.client}/${selectedClient.clientId}` }
                             >
                                 <Icon type='edit' className={ Styles.editIcon } />
-                            </a>
+                            </Link>
                             <CopyToClipboard text={ hasClient }>
                                 <Icon
                                     type='copy'
