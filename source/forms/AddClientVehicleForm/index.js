@@ -54,18 +54,179 @@ export class AddClientVehicleForm extends Component {
         const vehicle = getFieldsValue();
 
         return (
-            <Row gutter={ 8 } type='flex' align='bottom'>
-                <Col span={ 3 }>
-                    { years && (
-                        <DecoratedSelect
-                            field={ 'year' }
-                            showSearch
-                            formItem
+            <Form>
+                <Row gutter={ 8 } type='flex' align='bottom'>
+                    <Col span={ 3 }>
+                        { years && (
+                            <DecoratedSelect
+                                field={ 'year' }
+                                showSearch
+                                formItem
+                                hasFeedback
+                                label={
+                                    <FormattedMessage id='add_client_form.year' />
+                                }
+                                getFieldDecorator={ getFieldDecorator }
+                                rules={ [
+                                    {
+                                        required: true,
+                                        message:  this.props.intl.formatMessage({
+                                            id: 'required_field',
+                                        }),
+                                    },
+                                ] }
+                                placeholder={
+                                    <FormattedMessage id='add_client_form.year_placeholder' />
+                                }
+                                onSelect={ value => {
+                                    const filters = { year: value };
+                                    this.props.fetchVehiclesInfo(
+                                        YEAR_VEHICLES_INFO_FILTER_TYPE,
+                                        filters,
+                                    );
+                                } }
+                                optionFilterProp='children'
+                                getPopupContainer={ trigger =>
+                                    trigger.parentNode
+                                }
+                            >
+                                { years.sort((a, b) => b - a).map(year => (
+                                    <Option value={ year } key={ v4() }>
+                                        { String(year) }
+                                    </Option>
+                                )) }
+                            </DecoratedSelect>
+                        ) }
+                    </Col>
+                    <Col span={ 3 }>
+                        { years && (
+                            <DecoratedSelect
+                                field='makeId'
+                                showSearch
+                                label={
+                                    <FormattedMessage id='add_client_form.make' />
+                                }
+                                hasFeedback
+                                formItem
+                                getFieldDecorator={ getFieldDecorator }
+                                rules={ [
+                                    {
+                                        required: true,
+                                        message:  this.props.intl.formatMessage({
+                                            id: 'required_field',
+                                        }),
+                                    },
+                                ] }
+                                placeholder={
+                                    <FormattedMessage id='add_client_form.make_placeholder' />
+                                }
+                                disabled={
+                                    ![ YEAR_VEHICLES_INFO_FILTER_TYPE, MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)
+                                }
+                                onSelect={ value => {
+                                    const filters = _.pick(
+                                        { ...vehicle, makeId: value },
+                                        [ 'year', 'makeId' ],
+                                    );
+                                    this.props.fetchVehiclesInfo(
+                                        MAKE_VEHICLES_INFO_FILTER_TYPE,
+                                        filters,
+                                    );
+                                } }
+                                getPopupContainer={ trigger =>
+                                    trigger.parentNode
+                                }
+                            >
+                                { makes.map(({ id, name }) => (
+                                    <Option value={ id } key={ v4() }>
+                                        { name }
+                                    </Option>
+                                )) }
+                            </DecoratedSelect>
+                        ) }
+                    </Col>
+                    <Col span={ 4 }>
+                        { years && (
+                            <DecoratedSelect
+                                field='modelId'
+                                showSearch
+                                hasFeedback
+                                formItem
+                                label={
+                                    <FormattedMessage id='add_client_form.model' />
+                                }
+                                getFieldDecorator={ getFieldDecorator }
+                                rules={ [
+                                    {
+                                        required: true,
+                                        message:  this.props.intl.formatMessage({
+                                            id: 'required_field',
+                                        }),
+                                    },
+                                ] }
+                                placeholder={
+                                    <FormattedMessage id='add_client_form.model_placeholder' />
+                                }
+                                disabled={
+                                    ![ MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)
+                                }
+                                onSelect={ value => {
+                                    const filters = _.pick(
+                                        { ...vehicle, modelId: value },
+                                        [ 'modelId', 'year', 'makeId' ],
+                                    );
+                                    this.props.fetchVehiclesInfo(
+                                        MODEL_VEHICLES_INFO_FILTER_TYPE,
+                                        filters,
+                                    );
+                                } }
+                                getPopupContainer={ trigger =>
+                                    trigger.parentNode
+                                }
+                            >
+                                { models.map(({ id, name }) => (
+                                    <Option value={ id } key={ v4() }>
+                                        { name }
+                                    </Option>
+                                )) }
+                            </DecoratedSelect>
+                        ) }
+                    </Col>
+                    <Col span={ 4 }>
+                        { years && (
+                            <DecoratedSelect
+                                field={ 'modificationId' }
+                                showSearch
+                                formItem
+                                hasFeedback
+                                label={
+                                    <FormattedMessage id='add_client_form.modification' />
+                                }
+                                getFieldDecorator={ getFieldDecorator }
+                                placeholder={
+                                    <FormattedMessage id='add_client_form.modification_placeholder' />
+                                }
+                                disabled={
+                                    ![ MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(
+                                        lastFilterAction,
+                                    )
+                                }
+                                getPopupContainer={ trigger =>
+                                    trigger.parentNode
+                                }
+                            >
+                                { modifications.map(({ id, name }) => (
+                                    <Option value={ id } key={ v4() }>
+                                        { name }
+                                    </Option>
+                                )) }
+                            </DecoratedSelect>
+                        ) }
+                    </Col>
+                    <Col span={ 3 }>
+                        <DecoratedInput
                             hasFeedback
-                            label={
-                                <FormattedMessage id='add_client_form.year' />
-                            }
-                            getFieldDecorator={ getFieldDecorator }
+                            formItem
                             rules={ [
                                 {
                                     required: true,
@@ -74,217 +235,68 @@ export class AddClientVehicleForm extends Component {
                                     }),
                                 },
                             ] }
-                            placeholder={
-                                <FormattedMessage id='add_client_form.year_placeholder' />
-                            }
-                            onSelect={ value => {
-                                const filters = { year: value };
-                                this.props.fetchVehiclesInfo(
-                                    YEAR_VEHICLES_INFO_FILTER_TYPE,
-                                    filters,
-                                );
-                            } }
-                            optionFilterProp='children'
-                            getPopupContainer={ trigger => trigger.parentNode }
-                        >
-                            { years.sort((a, b) => b - a).map(year => (
-                                <Option value={ year } key={ v4() }>
-                                    { String(year) }
-                                </Option>
-                            )) }
-                        </DecoratedSelect>
-                    ) }
-                </Col>
-                <Col span={ 3 }>
-                    { years && (
-                        <DecoratedSelect
-                            field='makeId'
-                            showSearch
                             label={
-                                <FormattedMessage id='add_client_form.make' />
+                                <FormattedMessage id='add_client_form.number' />
                             }
-                            hasFeedback
-                            formItem
                             getFieldDecorator={ getFieldDecorator }
-                            rules={ [
-                                {
-                                    required: true,
-                                    message:  this.props.intl.formatMessage({
-                                        id: 'required_field',
-                                    }),
-                                },
-                            ] }
-                            placeholder={
-                                <FormattedMessage id='add_client_form.make_placeholder' />
-                            }
-                            disabled={
-                                ![ YEAR_VEHICLES_INFO_FILTER_TYPE, MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)
-                            }
-                            onSelect={ value => {
-                                const filters = _.pick(
-                                    { ...vehicle, makeId: value },
-                                    [ 'year', 'makeId' ],
-                                );
-                                this.props.fetchVehiclesInfo(
-                                    MAKE_VEHICLES_INFO_FILTER_TYPE,
-                                    filters,
-                                );
-                            } }
-                            getPopupContainer={ trigger => trigger.parentNode }
-                        >
-                            { makes.map(({ id, name }) => (
-                                <Option value={ id } key={ v4() }>
-                                    { name }
-                                </Option>
-                            )) }
-                        </DecoratedSelect>
-                    ) }
-                </Col>
-                <Col span={ 4 }>
-                    { years && (
-                        <DecoratedSelect
-                            field='modelId'
-                            showSearch
+                            field='number'
+                        />
+                    </Col>
+                    <Col span={ 3 }>
+                        <DecoratedInput
                             hasFeedback
                             formItem
                             label={
-                                <FormattedMessage id='add_client_form.model' />
+                                <FormattedMessage id='add_client_form.vin' />
                             }
                             getFieldDecorator={ getFieldDecorator }
-                            rules={ [
-                                {
-                                    required: true,
-                                    message:  this.props.intl.formatMessage({
-                                        id: 'required_field',
-                                    }),
-                                },
-                            ] }
-                            placeholder={
-                                <FormattedMessage id='add_client_form.model_placeholder' />
-                            }
-                            disabled={
-                                ![ MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)
-                            }
-                            onSelect={ value => {
-                                const filters = _.pick(
-                                    { ...vehicle, modelId: value },
-                                    [ 'modelId', 'year', 'makeId' ],
-                                );
-                                this.props.fetchVehiclesInfo(
-                                    MODEL_VEHICLES_INFO_FILTER_TYPE,
-                                    filters,
-                                );
-                            } }
-                            getPopupContainer={ trigger => trigger.parentNode }
-                        >
-                            { models.map(({ id, name }) => (
-                                <Option value={ id } key={ v4() }>
-                                    { name }
-                                </Option>
-                            )) }
-                        </DecoratedSelect>
-                    ) }
-                </Col>
-                <Col span={ 4 }>
-                    { years && (
-                        <DecoratedSelect
-                            field={ 'modificationId' }
-                            showSearch
-                            formItem
-                            hasFeedback
-                            label={
-                                <FormattedMessage id='add_client_form.modification' />
-                            }
-                            getFieldDecorator={ getFieldDecorator }
-                            placeholder={
-                                <FormattedMessage id='add_client_form.modification_placeholder' />
-                            }
-                            disabled={
-                                ![ MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(
-                                    lastFilterAction,
-                                )
-                            }
-                            getPopupContainer={ trigger => trigger.parentNode }
-                        >
-                            { modifications.map(({ id, name }) => (
-                                <Option value={ id } key={ v4() }>
-                                    { name }
-                                </Option>
-                            )) }
-                        </DecoratedSelect>
-                    ) }
-                </Col>
-                <Col span={ 3 }>
-                    <DecoratedInput
-                        hasFeedback
-                        formItem
-                        rules={ [
-                            {
-                                required: true,
-                                message:  this.props.intl.formatMessage({
-                                    id: 'required_field',
-                                }),
-                            },
-                        ] }
-                        label={ <FormattedMessage id='add_client_form.number' /> }
-                        getFieldDecorator={ getFieldDecorator }
-                        field='number'
-                    />
-                </Col>
-                <Col span={ 3 }>
-                    <DecoratedInput
-                        hasFeedback
-                        formItem
-                        label={ <FormattedMessage id='add_client_form.vin' /> }
-                        getFieldDecorator={ getFieldDecorator }
-                        field='vin'
-                    />
-                </Col>
-                <Col span={ 4 }>
-                    <Row type='flex' justify='end'>
-                        <FormItem>
-                            <Button
-                                onClick={ () => {
-                                    validateFields((err, values) => {
-                                        if (!err) {
-                                            const vehicle = values;
-                                            const names = _([
-                                                findLabel(
-                                                    makes,
-                                                    vehicle.makeId,
-                                                    'makeName',
-                                                ),
-                                                findLabel(
-                                                    models,
-                                                    vehicle.modelId,
-                                                    'modelName',
-                                                ),
-                                                findLabel(
-                                                    modifications,
-                                                    vehicle.modificationId,
-                                                    'modificationName',
-                                                ),
-                                            ])
-                                                .fromPairs()
-                                                .value();
+                            field='vin'
+                        />
+                    </Col>
+                    <Col span={ 4 }>
+                        <Row type='flex' justify='end'>
+                            <FormItem>
+                                <Button
+                                    onClick={ () => {
+                                        validateFields((err, values) => {
+                                            if (!err) {
+                                                const vehicle = values;
+                                                const names = _([
+                                                    findLabel(
+                                                        makes,
+                                                        vehicle.makeId,
+                                                        'makeName',
+                                                    ),
+                                                    findLabel(
+                                                        models,
+                                                        vehicle.modelId,
+                                                        'modelName',
+                                                    ),
+                                                    findLabel(
+                                                        modifications,
+                                                        vehicle.modificationId,
+                                                        'modificationName',
+                                                    ),
+                                                ])
+                                                    .fromPairs()
+                                                    .value();
 
-                                            this.props.resetAddClientVehicleForm();
-                                            this.props.addClientVehicle(
-                                                {
+                                                this.props.resetAddClientVehicleForm();
+                                                this.props.addClientVehicle({
                                                     ...vehicle,
                                                     ...names,
-                                                },
-                                            );
-                                        }
-                                    });
-                                } }
-                            >
-                                <FormattedMessage id='add_client_form.add_vehicle' />
-                            </Button>
-                        </FormItem>
-                    </Row>
-                </Col>
-            </Row>
+                                                });
+                                            }
+                                        });
+                                    } }
+                                >
+                                    <FormattedMessage id='add_client_form.add_vehicle' />
+                                </Button>
+                            </FormItem>
+                        </Row>
+                    </Col>
+                </Row>
+            </Form>
         );
     }
 }

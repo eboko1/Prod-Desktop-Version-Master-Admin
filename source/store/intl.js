@@ -66,7 +66,7 @@ import LoginForm from 'forms/LoginForm/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
-import AddClientForm from 'forms/AddClientForm/messages';
+import AbstractClientForm from 'forms/AbstractClientForm/messages';
 import OrderTaskForm from 'forms/OrderTaskForm/messages';
 import OrderFormTables from 'forms/OrderForm/OrderFormTables/messages';
 import TasksTable from 'forms/OrderForm/OrderFormTables/TasksTable/messages';
@@ -133,7 +133,7 @@ const messages = merge.all([
     OrderForm,
     CancelReasonForm,
     ToSuccessForm,
-    AddClientForm,
+    AbstractClientForm,
     OrderTaskForm,
     AddPackageForm,
     PackageForm,

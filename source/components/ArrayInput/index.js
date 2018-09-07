@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Icon, Button, Row, Col, Form } from 'antd';
+import _ from 'lodash';
 
 // proj
 import { DecoratedInput, DecoratedInputNumber } from 'forms/DecoratedFields';
@@ -12,12 +13,29 @@ class ArrayInput extends Component {
     constructor(props) {
         super(props);
 
-        this.uuid = 0;
-        const keys = props.optional ? [] : [ this.uuid++ ];
+        this.uuid = props.initialValue ? props.initialValue.length : 0;
+        const keys = props.initialValue
+            ? _.keys(props.initialValue)
+            : props.optional
+                ? []
+                : [ this.uuid++ ];
+
         this.state = {
             keys,
         };
     }
+
+    _getDefaultValue = key => {
+        const value = (this.props.initialValue || [])[ key ];
+        if (!value) {
+            return void 0;
+        }
+
+        // TODO locale & number
+        return this.props.phone
+            ? Number(value.replace(/[^\d]/g, '').replace(/^38/, ''))
+            : value;
+    };
 
     remove = key => {
         const {
@@ -58,6 +76,7 @@ class ArrayInput extends Component {
         //     initialValue: optional ? [] : [ 0 ],
         // });
         //const keys = getFieldValue(`${fieldName}Keys`);
+        // TODO locale
         const keys = this.state.keys;
 
         const formatter = value => {
@@ -91,15 +110,15 @@ class ArrayInput extends Component {
             return (
                 <Row type='flex' align='middle' key={ key }>
                     { this.props.phone &&
-                        getFieldDecorator(
-                            `${fieldName}[${key}][country]`,
-                            { initialValue: '380' },
-                        ) }
+                        getFieldDecorator(`${fieldName}[${key}][country]`, {
+                            initialValue: '380',
+                        }) }
                     <Col span={ 20 }>
                         { this.props.phone ? (
                             <DecoratedInputNumber
                                 { ...options }
                                 hasFeedback
+                                initialValue={ this._getDefaultValue(key) }
                                 formItem
                                 label={ fieldTitle }
                                 getFieldDecorator={ getFieldDecorator }
@@ -111,6 +130,7 @@ class ArrayInput extends Component {
                             <DecoratedInput
                                 { ...options }
                                 hasFeedback
+                                initialValue={ this._getDefaultValue(key) }
                                 formItem
                                 label={ fieldTitle }
                                 getFieldDecorator={ getFieldDecorator }

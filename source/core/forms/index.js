@@ -70,6 +70,10 @@ import profileReducer, {
     moduleName as profile,
 } from 'core/forms/profileForm/duck';
 
+import editClientReducer, {
+    moduleName as editClient,
+} from 'core/forms/editClientForm/duck';
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
     [ order ]:                           orderReducer,
@@ -94,4 +98,5 @@ export const formsReducer = combineReducers({
     [ profile ]:                         profileReducer,
     [ addClientVehicle ]:                addClientVehicleReducer,
     [ editClientVehicle ]:               editClientVehicleReducer,
+    [ editClient ]:                      editClientReducer,
 });

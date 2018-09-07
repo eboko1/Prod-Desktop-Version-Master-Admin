@@ -1,5 +1,6 @@
 // vendor
 import _ from 'lodash';
+import moment from 'moment';
 import React, { Component } from 'react';
 import { Form, Select, Row, Col, notification } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -11,7 +12,6 @@ import {
 } from 'forms/DecoratedFields';
 
 import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
-import { AddClientVehicleForm } from 'forms';
 import { ArrayInput } from 'components';
 
 const FormItem = Form.Item;
@@ -25,7 +25,7 @@ const openNotificationWithIcon = (type, message, description) => {
 };
 
 @injectIntl
-export class AddClientForm extends Component {
+export class AbstractClientForm extends Component {
     constructor(props) {
         super(props);
 
@@ -37,7 +37,7 @@ export class AddClientForm extends Component {
     }
 
     render() {
-        const { vehicles, errors } = this.props;
+        const { client, vehicles, errors } = this.props;
         const { getFieldDecorator } = this.props.form;
 
         if (errors.length) {
@@ -60,9 +60,6 @@ export class AddClientForm extends Component {
 
         return (
             <Form layout='vertical'>
-                <AddClientVehicleForm
-                    addClientVehicle={ this.props.addClientVehicle }
-                />
                 <Row gutter={ 8 }>
                     <Col span={ 5 }>
                         <DecoratedInput
@@ -72,6 +69,7 @@ export class AddClientForm extends Component {
                             }
                             formItem
                             hasFeedback
+                            initialValue={ _.get(client, 'name') }
                             getPopupContainer={ trigger => trigger.parentNode }
                             getFieldDecorator={ getFieldDecorator }
                             rules={ [
@@ -87,6 +85,7 @@ export class AddClientForm extends Component {
                     <Col span={ 5 }>
                         <DecoratedInput
                             field='patronymic'
+                            initialValue={ _.get(client, 'middleName') }
                             label={
                                 <FormattedMessage id='add_client_form.patronymic' />
                             }
@@ -101,6 +100,7 @@ export class AddClientForm extends Component {
                             label={
                                 <FormattedMessage id='add_client_form.surname' />
                             }
+                            initialValue={ _.get(client, 'surname') }
                             formItem
                             getPopupContainer={ trigger => trigger.parentNode }
                             getFieldDecorator={ getFieldDecorator }
@@ -113,6 +113,7 @@ export class AddClientForm extends Component {
                                     field='sex'
                                     formItem
                                     hasFeedback
+                                    initialValue={ _.get(client, 'sex') }
                                     getFieldDecorator={ getFieldDecorator }
                                     getPopupContainer={ trigger =>
                                         trigger.parentNode
@@ -146,6 +147,7 @@ export class AddClientForm extends Component {
                             <Col span={ 7 }>
                                 <DecoratedSelect
                                     field='status'
+                                    initialValue={ _.get(client, 'status') }
                                     formItem
                                     hasFeedback
                                     getFieldDecorator={ getFieldDecorator }
@@ -182,6 +184,7 @@ export class AddClientForm extends Component {
                             <Col span={ 7 }>
                                 <DecoratedDatePicker
                                     field='birthday'
+                                    initialValue={ _.get(client, 'birthday') ? moment(_.get(client, 'birthday')) : void 0 }
                                     label={
                                         <FormattedMessage id='add_client_form.birthday' />
                                     }
@@ -203,9 +206,13 @@ export class AddClientForm extends Component {
                 <Row gutter={ 8 }>
                     <Col span={ 6 }>
                         <ArrayInput
-                            optional={ false }
                             form={ this.props.form }
                             phone
+                            initialValue={
+                                _.get(client, 'phones')
+                                    ? _.get(client, 'phones').filter(Boolean)
+                                    : void 0
+                            }
                             rules={ [
                                 {
                                     required: true,
@@ -234,6 +241,11 @@ export class AddClientForm extends Component {
                     <Col span={ 6 }>
                         <ArrayInput
                             optional
+                            initialValue={
+                                _.get(client, 'emails')
+                                    ? _.get(client, 'emails').filter(Boolean)
+                                    : void 0
+                            }
                             rules={ [
                                 {
                                     type: 'email',
@@ -250,10 +262,12 @@ export class AddClientForm extends Component {
                         />
                     </Col>
                 </Row>
-                <ClientsVehiclesTable
-                    removeClientVehicle={ this.props.removeClientVehicle }
-                    vehicles={ vehicles }
-                />
+                { vehicles && (
+                    <ClientsVehiclesTable
+                        removeClientVehicle={ this.props.removeClientVehicle }
+                        vehicles={ vehicles }
+                    />
+                ) }
             </Form>
         );
     }

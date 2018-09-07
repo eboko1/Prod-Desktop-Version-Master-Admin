@@ -16,7 +16,11 @@ import {
 } from 'core/client/duck';
 import { ClientRequisitesContainer } from 'containers';
 
-import { AddClientVehicleForm, EditClientVehicleForm } from 'forms';
+import {
+    AddClientVehicleForm,
+    EditClientVehicleForm,
+    EditClientForm,
+} from 'forms';
 import { Catcher } from 'commons';
 
 // own
@@ -61,25 +65,22 @@ export default class ClientContainer extends Component {
                         }
                         key='generalInfo'
                     >
-                        test catch 228{ ' ' }
-                        <Form>
-                            <EditClientVehicleForm
-                                updateClientVehicle={
-                                    this.props.updateClientVehicle
-                                }
-                                deleteClientVehicle={
-                                    this.props.deleteClientVehicle
-                                }
-                                clientEntity={ clientEntity }
-                                clientId={ clientId }
-                            />
-                            <AddClientVehicleForm
-                                addClientVehicle={ this.props.createClientVehicle.bind(
-                                    null,
-                                    clientId,
-                                ) }
-                            />
-                        </Form>
+                        <EditClientForm
+                            client={ clientEntity }
+                            clientId={ clientId }
+                        />
+                        <EditClientVehicleForm
+                            updateClientVehicle={ this.props.updateClientVehicle }
+                            deleteClientVehicle={ this.props.deleteClientVehicle }
+                            clientEntity={ clientEntity }
+                            clientId={ clientId }
+                        />
+                        <AddClientVehicleForm
+                            addClientVehicle={ this.props.createClientVehicle.bind(
+                                null,
+                                clientId,
+                            ) }
+                        />
                     </TabPane>
                     <TabPane
                         tab={

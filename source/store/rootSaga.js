@@ -31,6 +31,7 @@ import { saga as employeeFormSaga } from 'core/forms/employeeForm/saga';
 import { saga as employeeScheduleFormSaga } from 'core/forms/employeeScheduleForm/saga';
 import { saga as employeeBreakScheduleFormSaga } from 'core/forms/employeeBreakScheduleForm/saga';
 import { saga as profileFormSaga } from 'core/forms/profileForm/saga';
+import { saga as editClientFormSaga } from 'core/forms/editClientForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -61,6 +62,7 @@ export default function* rootSaga() {
         profileFormSaga(),
         clientSaga(),
         addClientVehicleSaga(),
+        editClientFormSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */
