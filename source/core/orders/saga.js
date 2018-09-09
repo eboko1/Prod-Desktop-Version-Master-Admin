@@ -37,13 +37,22 @@ export function* fetchOrdersSaga() {
                 filter,
                 sort: { field: sortField, order: sortOrder },
             } = yield select(selectFilter);
-            // const universalFilters = yield select(selectUniversalFilters);
+            const universalFilters = yield select(selectUniversalFilters);
 
-            const filters = _.omit(
+            const ordersFilters = _.omit(
                 spreadProp('daterange', { ...filter, sortField, sortOrder }),
                 [ 'beginDate', 'createDate' ],
             );
-            // console.log('*fetchOrdersSaga filters', filters);
+
+            const filters = {
+                ...ordersFilters,
+                ...universalFilters,
+            };
+            // console.log('→ ordersFilters', {
+            //     ...ordersFilters,
+            //     ...universalFilters,
+            // });
+            // console.log('*fetchOrdersSaga filters', ordersFilters);
             // console.log('*fetchOrdersSaga universalFilters', universalFilters);
 
             yield put(setOrdersFetchingState(true));

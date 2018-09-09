@@ -75,8 +75,17 @@ export default function reducer(state = ReducerState, action) {
  * Selectors
  * */
 
-export const stateSelector = state => state[ moduleName ];
-export const selectUniversalFilters = state => state[ moduleName ].fields;
+export const stateSelector = state => state.forms[ moduleName ];
+export const selectUniversalFilters = state => {
+    const fields = state.forms.universalFiltersForm.fields;
+    const filtersValues = {};
+    Object.entries(fields).forEach(([ key, field ]) =>
+        Object.assign(filtersValues, { [ key ]: field.value }), );
+
+    return filtersValues;
+};
+// export const selectUniversalFilters = state =>
+//     state.forms.universalFiltersForm.fields;
 
 /**
  * Action Creators
