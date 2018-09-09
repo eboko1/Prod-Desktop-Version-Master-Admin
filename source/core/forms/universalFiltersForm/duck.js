@@ -13,27 +13,10 @@ export const ON_CHANGE_UNIVERSAL_FILTERS_FORM = `${prefix}/ON_CHANGE_UNIVERSAL_F
 /**
  * Reducer
  * */
-//
 
 const ReducerState = {
-    fields: {
-        make: {
-            errors:     void 0,
-            name:       'make',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        models: {
-            errors:     void 0,
-            name:       'models',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-    },
+    fields:          {},
+    errors:          [],
     orderComments:   void 0, // []
     services:        [],
     managers:        [],
@@ -44,7 +27,7 @@ const ReducerState = {
 };
 
 export default function reducer(state = ReducerState, action) {
-    const { type, payload, meta } = action;
+    const { type, payload } = action;
 
     switch (type) {
         case FETCH_UNIVERSAL_FILTERS_FORM_SUCCESS:
