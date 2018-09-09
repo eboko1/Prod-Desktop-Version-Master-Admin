@@ -1,4 +1,8 @@
+// vendor
 import { v4 as uid } from 'uuid';
+
+// proj
+// import { }
 
 /**
  * Constants
@@ -8,11 +12,9 @@ const prefix = `cpb/${moduleName}`;
 
 export const FETCH_ORDERS = `${prefix}/FETCH_ORDERS`;
 export const FETCH_ORDERS_SUCCESS = `${prefix}/FETCH_ORDERS_SUCCESS`;
-export const FETCH_ORDERS_FAIL = `${prefix}/FETCH_ORDERS_FAIL`;
 
 export const FETCH_ORDERS_STATS = `${prefix}/FETCH_ORDERS_STATS`;
 export const FETCH_ORDERS_STATS_SUCCESS = `${prefix}/FETCH_ORDERS_STATS_SUCCESS`;
-export const FETCH_ORDERS_STATS_FAIL = `${prefix}/FETCH_ORDERS_STATS_FAIL`;
 // filters
 export const SET_ORDERS_PAGE_FILTER = `${prefix}/SET_ORDERS_PAGE_FILTER`;
 export const SET_ORDERS_DATERANGE_FILTER = `${prefix}/SET_ORDERS_DATERANGE_FILTER`;
@@ -22,10 +24,6 @@ export const SET_ORDERS_SEARCH_FILTER = `${prefix}/SET_ORDERS_SEARCH_FILTER`;
 export const SET_ORDERS_NPS_FILTER = `${prefix}/SET_ORDERS_NPS_FILTER`;
 export const FETCH_ORDERS_CANCEL_REASON_FILTER = `${prefix}/FETCH_CANCEL_REASON_FILTER`;
 export const SET_ORDERS_CANCEL_REASON_FILTER = `${prefix}/SET_CANCEL_REASON_FILTER`;
-// universal UniversalFilters
-export const FETCH_STATS_COUNTS_PANEL = `${prefix}/FETCH_STATS_COUNTS_PANEL`;
-export const FETCH_STATS_COUNTS_PANEL_SUCCESS = `${prefix}/FETCH_STATS_COUNTS_PANEL_SUCCESS`;
-export const SET_UNIVERSAL_FILTERS = `${prefix}/SET_UNIVERSAL_FILTERS`;
 
 export const CREATE_INVITE_ORDERS = `${prefix}/CREATE_INVITE_ORDERS`;
 export const CREATE_INVITE_ORDERS_SUCCESS = `${prefix}/CREATE_INVITE_ORDERS_SUCCESS`;
@@ -52,11 +50,8 @@ const ReducerState = {
         field: 'datetime',
         order: 'descend',
     },
-    statsCountsPanel: {
-        stats: {},
-    },
 };
-// eslint-disable-next-line
+/* eslint-disable complexity */
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
@@ -156,24 +151,6 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
-        case SET_UNIVERSAL_FILTERS:
-            return {
-                ...state,
-                filter: {
-                    ...state.filter,
-                    page: 1,
-                    ...payload,
-                },
-            };
-
-        case FETCH_STATS_COUNTS_PANEL_SUCCESS:
-            return {
-                ...state,
-                statsCountsPanel: {
-                    stats: payload,
-                },
-            };
-
         case CREATE_INVITE_ORDERS_SUCCESS:
             return {
                 ...state,
@@ -194,49 +171,25 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export function fetchOrders(filter) {
-    return {
-        type:    FETCH_ORDERS,
-        payload: filter,
-    };
-}
+export const fetchOrders = filter => ({
+    type:    FETCH_ORDERS,
+    payload: filter,
+});
 
-export function fetchOrdersSuccess(orders) {
-    return {
-        type:    FETCH_ORDERS_SUCCESS,
-        payload: orders,
-    };
-}
+export const fetchOrdersSuccess = orders => ({
+    type:    FETCH_ORDERS_SUCCESS,
+    payload: orders,
+});
 
-export function fetchOrdersFail(error) {
-    return {
-        type:    FETCH_ORDERS_FAIL,
-        payload: error,
-        error:   true,
-    };
-}
+export const fetchOrdersStats = (filters = {}) => ({
+    type:    FETCH_ORDERS_STATS,
+    payload: filters,
+});
 
-export function fetchOrdersStats(filters = {}) {
-    return {
-        type:    FETCH_ORDERS_STATS,
-        payload: filters,
-    };
-}
-
-export function fetchOrdersStatsSuccess(stats) {
-    return {
-        type:    FETCH_ORDERS_STATS_SUCCESS,
-        payload: stats,
-    };
-}
-
-export function fetchOrdersStatsFail(error) {
-    return {
-        type:    FETCH_ORDERS_STATS_FAIL,
-        payload: error,
-        error:   true,
-    };
-}
+export const fetchOrdersStatsSuccess = stats => ({
+    type:    FETCH_ORDERS_STATS_SUCCESS,
+    payload: stats,
+});
 
 // Filter
 export const setOrdersPageFilter = pageFilter => ({
@@ -278,42 +231,18 @@ export const setOrdersCancelReasonFilter = cancelReason => ({
     payload: cancelReason,
 });
 
-// Universal Filters
-export const setUniversalFilters = universalFilters => ({
-    type:    SET_UNIVERSAL_FILTERS,
-    payload: universalFilters,
+export const createInviteOrders = inviteOrdersPayload => ({
+    type:    CREATE_INVITE_ORDERS,
+    payload: inviteOrdersPayload,
 });
 
-// StatsCountsPanel
-export const fetchStatsCounts = () => ({
-    type: FETCH_STATS_COUNTS_PANEL,
+export const createInviteOrdersSuccess = response => ({
+    type:    CREATE_INVITE_ORDERS_SUCCESS,
+    payload: response,
 });
 
-export function fetchStatsCountsSuccess(stats) {
-    return {
-        type:    FETCH_STATS_COUNTS_PANEL_SUCCESS,
-        payload: stats,
-    };
-}
-
-export function createInviteOrders(inviteOrdersPayload) {
-    return {
-        type:    CREATE_INVITE_ORDERS,
-        payload: inviteOrdersPayload,
-    };
-}
-
-export function createInviteOrdersSuccess(response) {
-    return {
-        type:    CREATE_INVITE_ORDERS_SUCCESS,
-        payload: response,
-    };
-}
-
-export function createInviteOrdersFail(error) {
-    return {
-        type:    CREATE_INVITE_ORDERS_FAIL,
-        payload: error,
-        error:   true,
-    };
-}
+export const createInviteOrdersFail = error => ({
+    type:    CREATE_INVITE_ORDERS_FAIL,
+    payload: error,
+    error:   true,
+});

@@ -1,19 +1,11 @@
 // vendor
-import {
-    call,
-    put,
-    takeEvery,
-    all,
-    apply,
-    take,
-    select,
-} from 'redux-saga/effects';
+import { call, put, takeEvery, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import { spreadProp } from 'ramda-adjunct';
 import _ from 'lodash';
-// import * as RA from 'ramda-adjunct';
 
 //proj
+import { selectUniversalFilters } from 'core/forms/universalFiltersForm/duck';
 import { setOrdersFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
@@ -23,11 +15,9 @@ import {
     fetchOrders,
     fetchOrdersStats,
     fetchOrdersStatsSuccess,
-    fetchStatsCountsSuccess,
     createInviteOrdersSuccess,
     FETCH_ORDERS,
     FETCH_ORDERS_STATS,
-    FETCH_STATS_COUNTS_PANEL,
     CREATE_INVITE_ORDERS,
     // SET_ORDERS_STATUS_FILTER,
 } from './duck';
@@ -47,10 +37,14 @@ export function* fetchOrdersSaga() {
                 filter,
                 sort: { field: sortField, order: sortOrder },
             } = yield select(selectFilter);
+            // const universalFilters = yield select(selectUniversalFilters);
+
             const filters = _.omit(
                 spreadProp('daterange', { ...filter, sortField, sortOrder }),
                 [ 'beginDate', 'createDate' ],
             );
+            // console.log('*fetchOrdersSaga filters', filters);
+            // console.log('*fetchOrdersSaga universalFilters', universalFilters);
 
             yield put(setOrdersFetchingState(true));
             const data = yield call(fetchAPI, 'GET', 'orders', filters);
@@ -94,25 +88,11 @@ export function* createInviteOrders({ payload: { invites, filters } }) {
     }
 }
 
-export function* fetchStatsCountsSaga() {
-    try {
-        yield nprogress.start();
-
-        const data = yield call(fetchAPI, 'GET', 'orders');
-
-        yield put(fetchStatsCountsSuccess(data));
-    } catch (error) {
-        yield put(emitError(error));
-    } finally {
-        yield nprogress.done();
-    }
-}
 /* eslint-disable array-element-newline */
 export function* saga() {
     yield all([
         call(fetchOrdersSaga),
         takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga),
-        takeEvery(FETCH_STATS_COUNTS_PANEL, fetchStatsCountsSaga),
         takeEvery(CREATE_INVITE_ORDERS, createInviteOrders),
     ]);
 }

@@ -1,13 +1,17 @@
 // vendor
 import React, { Component } from 'react';
-import { Form, Row, Col, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Form, Row, Col, Select } from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
 
 // proj
-import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
-import { fetchOrders, setUniversalFilters } from 'core/orders/duck';
+import {
+    onChangeUniversalFiltersForm,
+    setUniversalFilters,
+} from 'core/forms/universalFiltersForm/duck';
+import { fetchOrders } from 'core/orders/duck';
+import { fetchClients } from 'core/clients/duck';
 
 import {
     DecoratedSelect,
@@ -15,18 +19,19 @@ import {
     DecoratedInputNumber,
 } from 'forms/DecoratedFields';
 
-import { withReduxForm, getDaterange } from 'utils';
+import { withReduxForm2, getDaterange } from 'utils';
 
 // own
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-@withReduxForm({
+@withReduxForm2({
     name:    'universalFiltersForm',
     actions: {
         change: onChangeUniversalFiltersForm,
         fetchOrders,
+        fetchClients,
         setUniversalFilters,
     },
 })

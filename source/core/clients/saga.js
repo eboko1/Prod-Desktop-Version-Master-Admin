@@ -54,11 +54,11 @@ export function* inviteClients({ payload: { invites, filters } }) {
     }
 }
 
-/* eslint-disable array-element-newline */
 export function* saga() {
+    /* eslint-disable array-element-newline */
     yield all([
         call(fetchClientsSaga),
         takeEvery(INVITE_CLIENTS, inviteClients),
     ]);
+    /* eslint-enable array-element-newline */
 }
-/* eslint-enable array-element-newline */

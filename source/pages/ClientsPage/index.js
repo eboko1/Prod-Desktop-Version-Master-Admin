@@ -86,7 +86,7 @@ export default class ClientsPage extends Component {
                         Styles.filtersCollapsed}` }
                 >
                     <ClientsFilterContainer />
-                    <UniversalFilters />
+                    <UniversalFilters type='clients' />
                 </section>
                 <section className={ Styles.table }>
                     <ClientsContainer />

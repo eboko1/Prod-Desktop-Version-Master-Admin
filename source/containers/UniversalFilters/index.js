@@ -7,14 +7,14 @@ import _ from 'lodash';
 import moment from 'moment';
 
 // proj
-import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
-import { fetchClients } from 'core/clients/duck';
 import {
-    fetchOrders,
+    onChangeUniversalFiltersForm,
+    fetchUniversalFiltersForm,
     fetchStatsCounts,
     setUniversalFilters,
-} from 'core/orders/duck';
-import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
+} from 'core/forms/universalFiltersForm/duck';
+import { fetchClients } from 'core/clients/duck';
+import { fetchOrders } from 'core/orders/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Catcher } from 'commons';
@@ -26,8 +26,9 @@ import { permissions, isForbidden } from 'utils';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    stats:                state.orders.statsCountsPanel.stats.stats,
-    filter:               state.orders.filter,
+    stats:                state.forms.universalFiltersForm.stats,
+    ordersFilter:         state.orders.filter,
+    clientsFilter:        state.clients.filter,
     universaFiltersModal: state.modals.modal,
     user:                 state.auth,
 });
@@ -48,6 +49,16 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class UniversalFilters extends Component {
+    // state = {};
+    //
+    // static getDerivedStateFromProps(nextProps, prevState) {
+    //     if (nextProps.type !== prevState.type) {
+    //         return { type: nextProps.type };
+    //     }
+    //
+    //     return null;
+    // }
+
     _saveFormRef = formRef => {
         this.formRef = formRef;
     };
@@ -60,12 +71,12 @@ export default class UniversalFilters extends Component {
 
     _clearUniversalFilters = filterNames => {
         const {
-            type,
             filter,
             fetchOrders,
             fetchClients,
             onChangeUniversalFiltersForm,
             setUniversalFilters,
+            type,
         } = this.props;
 
         const updateFilters = _.fromPairs(
@@ -89,8 +100,8 @@ export default class UniversalFilters extends Component {
             resetModal,
             fetchOrders,
             setUniversalFilters,
-            type,
             fetchClients,
+            type,
         } = this.props;
         const form = this.formRef.props.form;
 

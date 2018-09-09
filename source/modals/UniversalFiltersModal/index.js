@@ -1,37 +1,17 @@
 // vendor
 import React, { Component } from 'react';
-import { Modal, Form, Row, Col } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Select } from 'antd';
-import { v4 } from 'uuid';
-import _ from 'lodash';
-import moment from 'moment';
+import { FormattedMessage } from 'react-intl';
+import { Modal } from 'antd';
 
 // proj
-import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
-import { fetchOrders, setUniversalFilters } from 'core/orders/duck';
 import { MODALS } from 'core/modals/duck';
 
-import { DecoratedSelect, DecoratedDatePicker } from 'forms/DecoratedFields';
-import { StatsCountsPanel } from 'components';
 import { UniversalFiltersForm } from 'forms';
-import { withReduxForm, getDaterange } from 'utils';
+import { StatsCountsPanel } from 'components';
 
 // own
 import Styles from './styles.m.css';
-const Option = Select.Option;
-const FormItem = Form.Item;
 
-// const dateFormat = 'YYYY-MM-DD';
-
-// @withReduxForm({
-//     name:    'universalFiltersForm',
-//     actions: {
-//         change: onChangeUniversalFiltersForm,
-//         fetchOrders,
-//         setUniversalFilters,
-//     },
-// })
 export default class UniversalFiltersModal extends Component {
     state = {
         // Whether to apply loading visual effect for OK button or not

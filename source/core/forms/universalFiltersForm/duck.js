@@ -9,6 +9,10 @@ export const FETCH_UNIVERSAL_FILTERS_FORM = `${prefix}/FETCH_UNIVERSAL_FILTERS_F
 export const FETCH_UNIVERSAL_FILTERS_FORM_SUCCESS = `${prefix}/FETCH_UNIVERSAL_FILTERS_FORM_SUCCESS`;
 
 export const ON_CHANGE_UNIVERSAL_FILTERS_FORM = `${prefix}/ON_CHANGE_UNIVERSAL_FILTERS_FORM`;
+export const SET_UNIVERSAL_FILTERS = `${prefix}/SET_UNIVERSAL_FILTERS`;
+
+export const FETCH_STATS_COUNTS_PANEL = `${prefix}/FETCH_STATS_COUNTS_PANEL`;
+export const FETCH_STATS_COUNTS_PANEL_SUCCESS = `${prefix}/FETCH_STATS_COUNTS_PANEL_SUCCESS`;
 
 /**
  * Reducer
@@ -17,6 +21,7 @@ export const ON_CHANGE_UNIVERSAL_FILTERS_FORM = `${prefix}/ON_CHANGE_UNIVERSAL_F
 const ReducerState = {
     fields:          {},
     errors:          [],
+    stats:           {},
     orderComments:   void 0, // []
     services:        [],
     managers:        [],
@@ -45,6 +50,22 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case SET_UNIVERSAL_FILTERS:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    page: 1,
+                    ...payload,
+                },
+            };
+
+        case FETCH_STATS_COUNTS_PANEL_SUCCESS:
+            return {
+                ...state,
+                stats: payload,
+            };
+
         default:
             return state;
     }
@@ -55,11 +76,12 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
+export const selectUniversalFilters = state => state[ moduleName ].fields;
 
 /**
  * Action Creators
  * */
-
+// Universal Filters
 export const fetchUniversalFiltersForm = () => ({
     type: FETCH_UNIVERSAL_FILTERS_FORM,
 });
@@ -72,4 +94,19 @@ export const fetchUniversalFiltersFormSuccess = filters => ({
 export const onChangeUniversalFiltersForm = update => ({
     type:    ON_CHANGE_UNIVERSAL_FILTERS_FORM,
     payload: update,
+});
+
+export const setUniversalFilters = universalFilters => ({
+    type:    SET_UNIVERSAL_FILTERS,
+    payload: universalFilters,
+});
+
+// StatsCountsPanel
+export const fetchStatsCounts = () => ({
+    type: FETCH_STATS_COUNTS_PANEL,
+});
+
+export const fetchStatsCountsSuccess = stats => ({
+    type:    FETCH_STATS_COUNTS_PANEL_SUCCESS,
+    payload: stats,
 });

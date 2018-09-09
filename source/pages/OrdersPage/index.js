@@ -159,7 +159,7 @@ class OrdersPage extends Component {
                         className={ `${Styles.universalFilters} ${collapsed &&
                             Styles.universalFiltersCollapsed}` }
                     >
-                        <UniversalFilters />
+                        <UniversalFilters type='orders' />
                     </section>
                 ) }
                 <section
