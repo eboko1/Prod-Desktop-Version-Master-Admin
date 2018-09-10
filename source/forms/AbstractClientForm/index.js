@@ -184,7 +184,11 @@ export class AbstractClientForm extends Component {
                             <Col span={ 7 }>
                                 <DecoratedDatePicker
                                     field='birthday'
-                                    initialValue={ _.get(client, 'birthday') ? moment(_.get(client, 'birthday')) : void 0 }
+                                    initialValue={
+                                        _.get(client, 'birthday')
+                                            ? moment(_.get(client, 'birthday'))
+                                            : void 0
+                                    }
                                     label={
                                         <FormattedMessage id='add_client_form.birthday' />
                                     }
@@ -242,7 +246,8 @@ export class AbstractClientForm extends Component {
                         <ArrayInput
                             optional
                             initialValue={
-                                _.get(client, 'emails')
+                                _.get(client, 'emails') &&
+                                _.isArray(client, 'emails')
                                     ? _.get(client, 'emails').filter(Boolean)
                                     : void 0
                             }

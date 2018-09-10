@@ -89,7 +89,12 @@ export default class AddClientModal extends Component {
                                 status:     clientFormData.status,
                                 vehicles,
                                 phones:     clientFormData.phones
-                                    .filter(Boolean)
+                                    .filter(
+                                        phone =>
+                                            phone &&
+                                            phone.country &&
+                                            phone.number,
+                                    )
                                     .map(
                                         ({ number, country }) =>
                                             country + number,

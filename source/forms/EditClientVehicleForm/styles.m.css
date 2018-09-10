@@ -1,3 +1,30 @@
 .listItem :global(.ant-list-item-content) {
     display: block;
 }
+
+.editIcon {
+    font-size: 24px;
+    cursor: pointer;
+
+&:hover {
+     color: var(--primary);
+ }
+}
+
+.saveIcon {
+    font-size: 24px;
+    cursor: pointer;
+
+&:hover {
+     color: var(--primary);
+ }
+}
+
+.deleteIcon {
+    font-size: 24px;
+    cursor: pointer;
+
+&:hover {
+     color: var(--primary);
+ }
+}

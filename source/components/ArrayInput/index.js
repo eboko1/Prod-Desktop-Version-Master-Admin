@@ -107,12 +107,14 @@ class ArrayInput extends Component {
             : {};
 
         const formItems = keys.map(key => {
+            if (this.props.phone) {
+                getFieldDecorator(`${fieldName}[${key}][country]`, {
+                    initialValue: '380',
+                });
+            }
+
             return (
                 <Row type='flex' align='middle' key={ key }>
-                    { this.props.phone &&
-                        getFieldDecorator(`${fieldName}[${key}][country]`, {
-                            initialValue: '380',
-                        }) }
                     <Col span={ 20 }>
                         { this.props.phone ? (
                             <DecoratedInputNumber
@@ -141,8 +143,8 @@ class ArrayInput extends Component {
                         ) }
                     </Col>
                     <Col span={ 4 }>
-                        <Row type='flex' justify='center'>
-                            { keys.length > 1 || optional ? (
+                        { keys.length > 1 || optional ? (
+                            <Row type='flex' justify='center'>
                                 <Icon
                                     key={ key }
                                     className='dynamic-delete-button'
@@ -151,8 +153,8 @@ class ArrayInput extends Component {
                                     disabled={ keys.length === 1 }
                                     onClick={ () => this.remove(key) }
                                 />
-                            ) : null }
-                        </Row>
+                            </Row>
+                        ) : null }
                     </Col>
                 </Row>
             );
