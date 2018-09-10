@@ -29,6 +29,7 @@ const mapStateToProps = state => ({
     stats:                state.forms.universalFiltersForm.stats,
     ordersFilter:         state.orders.filter,
     clientsFilter:        state.clients.filter,
+    universalFilters:     state.forms.universalFiltersForm.fields,
     universaFiltersModal: state.modals.modal,
     user:                 state.auth,
 });
@@ -49,15 +50,29 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class UniversalFilters extends Component {
-    // state = {};
-    //
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if (nextProps.type !== prevState.type) {
-    //         return { type: nextProps.type };
-    //     }
-    //
-    //     return null;
-    // }
+    state = {
+        filters: {},
+    };
+
+    static getDerivedStateFromProps(nextProps, prevState) {
+        if (nextProps.type === 'clients') {
+            return {
+                filters: {
+                    ...nextProps.clientsFilter,
+                    ...nextProps.universalFilters,
+                },
+            };
+        }
+
+        if (nextProps.type === 'orders') {
+            return {
+                filters: {
+                    ...nextProps.ordersFilter,
+                    ...nextProps.universalFilters,
+                },
+            };
+        }
+    }
 
     _saveFormRef = formRef => {
         this.formRef = formRef;
@@ -71,26 +86,27 @@ export default class UniversalFilters extends Component {
 
     _clearUniversalFilters = filterNames => {
         const {
-            filter,
             fetchOrders,
             fetchClients,
             onChangeUniversalFiltersForm,
             setUniversalFilters,
             type,
         } = this.props;
+        const { filters } = this.state;
 
         const updateFilters = _.fromPairs(
             filterNames.map(filterName => [ filterName, void 0 ]),
         );
         onChangeUniversalFiltersForm(updateFilters);
         setUniversalFilters({
-            ...filter,
+            ...filters,
             ...updateFilters,
         });
 
         if (type === 'clients') {
             fetchClients();
-        } else {
+        }
+        if (type === 'orders') {
             fetchOrders();
         }
     };
@@ -99,8 +115,8 @@ export default class UniversalFilters extends Component {
         const {
             resetModal,
             fetchOrders,
-            setUniversalFilters,
             fetchClients,
+            setUniversalFilters,
             type,
         } = this.props;
         const form = this.formRef.props.form;
@@ -139,7 +155,8 @@ export default class UniversalFilters extends Component {
 
                 if (type === 'clients') {
                     fetchClients();
-                } else {
+                }
+                if (type === 'orders') {
                     fetchOrders();
                 }
             }
@@ -147,13 +164,9 @@ export default class UniversalFilters extends Component {
     };
 
     render() {
-        const {
-            user,
-            resetModal,
-            universaFiltersModal,
-            stats,
-            filter,
-        } = this.props;
+        const { user, resetModal, universaFiltersModal, stats } = this.props;
+
+        const { filters } = this.state;
 
         const areFiltersDisabled = isForbidden(user, permissions.SHOW_FILTERS);
 
@@ -168,7 +181,7 @@ export default class UniversalFilters extends Component {
                         <FormattedMessage id='universal-filters-container.filter' />
                     </Button>
                     <UniversalFiltersTags
-                        filter={ filter }
+                        filter={ filters }
                         clearUniversalFilters={ this._clearUniversalFilters.bind(
                             this,
                         ) }
@@ -178,7 +191,7 @@ export default class UniversalFilters extends Component {
                     wrappedComponentRef={ this._saveFormRef }
                     visible={ universaFiltersModal }
                     stats={ stats }
-                    filter={ filter }
+                    filter={ filters }
                     handleUniversalFiltersModalSubmit={
                         this._handleUniversalFiltersModalSubmit
                     }

@@ -1,5 +1,12 @@
 // vendor
-import { call, put, all, take, takeEvery } from 'redux-saga/effects';
+import {
+    call,
+    put,
+    all,
+    take,
+    takeEvery,
+    takeLatest,
+} from 'redux-saga/effects';
 import nprogress from 'nprogress';
 
 //proj
@@ -14,6 +21,7 @@ import {
     fetchUniversalFiltersFormSuccess,
     FETCH_UNIVERSAL_FILTERS_FORM,
     FETCH_STATS_COUNTS_PANEL,
+    ON_CHANGE_UNIVERSAL_FILTERS_FORM,
 } from './duck';
 
 export function* fetchUniversalFiltersFormSaga() {
@@ -32,7 +40,6 @@ export function* fetchUniversalFiltersFormSaga() {
 export function* fetchStatsSaga() {
     try {
         yield nprogress.start();
-        console.log('*fetchStatsCountsSaga111');
         const data = yield call(fetchAPI, 'GET', 'orders');
         console.log('* fetchStatsCountsSaga222', data);
         yield put(fetchStatsCountsSuccess(data.stats));
@@ -47,7 +54,8 @@ export function* saga() {
     /* eslint-disable array-element-newline */
     yield all([
         call(fetchUniversalFiltersFormSaga),
-        takeEvery(FETCH_STATS_COUNTS_PANEL, fetchStatsSaga),
+        // takeEvery(ON_CHANGE_UNIVERSAL_FILTERS_FORM, fetchStatsSaga),
+        takeLatest(FETCH_STATS_COUNTS_PANEL, fetchStatsSaga),
     ]);
     /* eslint-enable array-element-newline */
 }

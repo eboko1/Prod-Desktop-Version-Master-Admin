@@ -48,12 +48,6 @@ export function* fetchOrdersSaga() {
                 ...ordersFilters,
                 ...universalFilters,
             };
-            // console.log('→ ordersFilters', {
-            //     ...ordersFilters,
-            //     ...universalFilters,
-            // });
-            // console.log('*fetchOrdersSaga filters', ordersFilters);
-            // console.log('*fetchOrdersSaga universalFilters', universalFilters);
 
             yield put(setOrdersFetchingState(true));
             const data = yield call(fetchAPI, 'GET', 'orders', filters);

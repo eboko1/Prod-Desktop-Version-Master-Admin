@@ -61,6 +61,7 @@ export default class UniversalFiltersTags extends Component {
     }
 
     render() {
+        console.log('→ this.props.filter', this.props.filter);
         let filter = this.props.filter || {};
         if (filter.notVisitDays) {
             filter = { ...filter, notVisitRange: true };
@@ -105,7 +106,7 @@ export default class UniversalFiltersTags extends Component {
                         >
                             { tagElem }
                         </Tooltip>
-                    ) : 
+                    ) :
                         tagElem
                     ;
                 }) }

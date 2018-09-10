@@ -1,9 +1,6 @@
 // vendor
 import { v4 as uid } from 'uuid';
 
-// proj
-// import { }
-
 /**
  * Constants
  * */

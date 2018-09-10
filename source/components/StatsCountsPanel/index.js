@@ -12,6 +12,7 @@ import Styles from './styles.m.css';
 export default class StatsCountsPanel extends Component {
     render() {
         const { stats } = this.props;
+        console.log('→ stats', stats);
 
         return stats ? (
             <Catcher>

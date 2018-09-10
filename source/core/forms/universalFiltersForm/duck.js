@@ -53,9 +53,7 @@ export default function reducer(state = ReducerState, action) {
         case SET_UNIVERSAL_FILTERS:
             return {
                 ...state,
-                filter: {
-                    ...state.filter,
-                    page: 1,
+                fields: {
                     ...payload,
                 },
             };
