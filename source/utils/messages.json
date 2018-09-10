@@ -80,7 +80,10 @@
         "roles.create_dashboard_order": "Create orders on dashboard",
         "edit": "Edit",
         "client_page.title": "Edit client",
-        "reference_violation": "Reference violation!"
+        "reference_violation": "Reference violation!",
+        "roles.get_employees": "Access employees",
+        "roles.create_edit_delete_employees": "Edit employees",
+        "roles.employees_salaries": "Access employees salaries"
     },
     "ru": {
         "currency": "грн.",
@@ -163,7 +166,10 @@
         "roles.create_dashboard_order": "Создать заказ на планировщике",
         "edit": "Редактировать",
         "client_page.title": "Редактировать клиента",
-        "reference_violation": "Нарушение целостность"
+        "reference_violation": "Нарушение целостность",
+        "roles.get_employees": "Доступ к сотрудникам",
+        "roles.create_edit_delete_employees": "Редактировать сотрудников",
+        "roles.employees_salaries": "Доступ к ФОТ"
     },
     "uk": {
         "currency": "грн.",
@@ -246,6 +252,9 @@
         "roles.create_dashboard_order": "Створити замовлення на планувальнику",
         "edit": "Редагувати",
         "client_page.title": "Редагувати клієнта",
-        "reference_violation": "Порушення цілісності"
+        "reference_violation": "Порушення цілісності",
+        "roles.get_employees": "Доступ до співробітників",
+        "roles.create_edit_delete_employees": "Редагувати співробітників",
+        "roles.employees_salaries": "Доступ до зарплат співробітників"
     }
 }
