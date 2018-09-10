@@ -43,8 +43,10 @@ export default {
                     name: 'navigation.clients',
                 },
                 {
-                    key:  '/employees',
-                    link: book.employeesPage,
+                    key:      '/employees',
+                    link:     book.employeesPage,
+                    disabled: user =>
+                        isForbidden(user, permissions.GET_EMPLOYEES),
                     name: 'navigation.employees',
                 },
             ],

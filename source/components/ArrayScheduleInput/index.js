@@ -17,6 +17,7 @@ import {
     deleteEmployeeSchedule,
 } from 'core/forms/employeeScheduleForm/duck';
 import { withReduxForm } from 'utils';
+import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
@@ -369,6 +370,10 @@ state = {
                             <FormItem>
                                 <Button
                                     type='dashed'
+                                    disabled={ isForbidden(
+                                        this.props.user,
+                                        permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                                    ) }
                                     onClick={ () =>
                                         this.saveEmployeeSchedule(keys)
                                     }

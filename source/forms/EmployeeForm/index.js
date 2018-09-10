@@ -8,6 +8,7 @@ import moment from 'moment';
 import { onChangeEmployeeForm } from 'core/forms/employeeForm/duck';
 
 import { withReduxForm, getDateTimeConfigs } from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import {
@@ -35,7 +36,7 @@ export class EmployeeForm extends Component {
     render() {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
-        const { initialEmployee, saveEmployee, fireEmployee} = this.props;
+        const { initialEmployee, saveEmployee, fireEmployee } = this.props;
 
         return (
             <Form layout='horizontal'>
@@ -233,21 +234,30 @@ export class EmployeeForm extends Component {
                         />
                     </div>
                     <div className={ Styles.ButtonGroup }>
-                        {
-                            initialEmployee&&!initialEmployee.fireDate?
-                                <Button type='danger' onClick={ () => fireEmployee() }>
-                                    <FormattedMessage id='employee.fire_employee' />
-                                </Button>  
-                                :null 
-                        }
-                        <Button type='primary'  onClick={ () => saveEmployee() }>
+                        { initialEmployee && !initialEmployee.fireDate ? (
+                            <Button
+                                type='danger'
+                                disabled={ isForbidden(
+                                    this.props.user,
+                                    permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                                ) }
+                                onClick={ () => fireEmployee() }
+                            >
+                                <FormattedMessage id='employee.fire_employee' />
+                            </Button>
+                        ) : null }
+                        <Button
+                            disabled={ isForbidden(
+                                this.props.user,
+                                permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                            ) }
+                            type='primary'
+                            onClick={ () => saveEmployee() }
+                        >
                             <FormattedMessage id='save' />
                         </Button>
-                        
-                        
                     </div>
                 </div>
-                
             </Form>
         );
     }
