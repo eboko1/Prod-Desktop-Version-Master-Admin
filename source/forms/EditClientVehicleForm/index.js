@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Button, List, Form, Row, Col, Select, notification } from 'antd';
+import { Button, List, Form, Row, Col, Select, notification, Icon } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
@@ -133,7 +133,9 @@ export class EditClientVehicleForm extends Component {
                                 </Col>
                                 <Col span={ 3 }>
                                     { editableItem === index ? (
-                                        <Button
+                                        <Icon
+                                            type='save'
+                                            className={ Styles.saveIcon }
                                             onClick={ () => {
                                                 const payload = this.props.form.getFieldValue(
                                                     `clientVehicles[${index}]`,
@@ -148,32 +150,30 @@ export class EditClientVehicleForm extends Component {
                                                     null,
                                                 );
                                             } }
-                                        >
-                                            Save
-                                        </Button>
+                                        />
                                     ) : (
-                                        <Button
+                                        <Icon
+                                            type='edit'
+                                            className={ Styles.editIcon }
                                             onClick={ () =>
                                                 this.props.setEditableItem(
                                                     index,
                                                 )
                                             }
-                                        >
-                                            Edit
-                                        </Button>
+                                        />
                                     ) }
                                 </Col>
                                 <Col span={ 3 }>
-                                    <Button
+                                    <Icon
+                                        type='delete'
+                                        className={ Styles.deleteIcon }
                                         onClick={ () =>
                                             this.props.deleteClientVehicle(
                                                 clientId,
                                                 item.id,
                                             )
                                         }
-                                    >
-                                        Delete
-                                    </Button>
+                                    />
                                 </Col>
                             </Row>
                         </Form>

@@ -46,7 +46,12 @@ export class EditClientForm extends Component {
                                     sex:        clientFormData.sex,
                                     status:     clientFormData.status,
                                     phones:     clientFormData.phones
-                                        .filter(Boolean)
+                                        .filter(
+                                            phone =>
+                                                phone &&
+                                                phone.country &&
+                                                phone.number,
+                                        )
                                         .map(
                                             ({ number, country }) =>
                                                 country + number,

@@ -7,6 +7,7 @@ const prefix = `cpb/${moduleName}`;
 export const ON_CHANGE_CLIENT_FORM = `${prefix}/ON_CHANGE_CLIENT_FORM`;
 
 export const UPDATE_CLIENT = `${prefix}/UPDATE_CLIENT`;
+export const UPDATE_CLIENT_SUCCESS = `${prefix}/UPDATE_CLIENT_SUCCESS`;
 
 export const ADD_ERROR = `${prefix}/ADD_ERROR`;
 export const HANDLE_ERROR = `${prefix}/HANDLE_ERROR`;
@@ -46,6 +47,12 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case UPDATE_CLIENT_SUCCESS:
+            return {
+                ...state,
+                fields: {},
+            };
+
         default:
             return state;
     }
@@ -70,4 +77,8 @@ export const handleError = id => ({
 export const updateClient = (clientId, client) => ({
     type:    UPDATE_CLIENT,
     payload: { clientId, client },
+});
+
+export const updateClientSuccess = () => ({
+    type: UPDATE_CLIENT_SUCCESS,
 });
