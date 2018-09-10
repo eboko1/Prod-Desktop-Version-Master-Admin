@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Table, Icon, Modal, Form } from 'antd';
+import { Button, Table, Icon, Modal, Row, Col } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
@@ -52,7 +52,7 @@ export default class ClientRequisitesContainer extends Component {
             {
                 title:     <FormattedMessage id='client_requisites_container.enabled' />,
                 dataIndex: 'enabled',
-                width:     '10%',
+                width:     '11%',
                 render:    record => {
                     return record ? (
                         <Icon
@@ -73,7 +73,7 @@ export default class ClientRequisitesContainer extends Component {
             {
                 title:     <FormattedMessage id='client_requisites_container.address' />,
                 dataIndex: 'address',
-                width:     '15%',
+                width:     '10%',
             },
             {
                 title:     <FormattedMessage id='client_requisites_container.bank' />,
@@ -148,21 +148,37 @@ export default class ClientRequisitesContainer extends Component {
 
         return (
             <Catcher>
-                <Button
-                    className={ Styles.addClientRequisiteButton }
-                    type='primary'
-                    onClick={ () => {
-                        this.props.setCreateClientRequisiteForm(true);
-                    } }
-                >
-                    <FormattedMessage id='client_requisites_container.create' />
-                </Button>
+                <Row
+                    type='flex'
+                    justify='space-between'
+                    align='top'
+                    className={ Styles.header }>
+                    <Col span={ 12 }>
+                        <h2 className={ Styles.title }>
+                            <FormattedMessage id='client_requisites_container.requisites_list' />
+                        </h2>
+                    </Col>
+                    <Col span={ 6 }>
+                        <Button
+                            className={ Styles.addClientRequisiteButton }
+                            type='primary'
+                            onClick={ () => {
+                                this.props.setCreateClientRequisiteForm(true);
+                            } }
+                        >
+                            <FormattedMessage id='client_requisites_container.create' />
+                        </Button>
+                    </Col>
+                </Row>
+
+
+
                 <Modal
                     title={
                         editClientRequisiteId ? (
-                            <FormattedMessage id='ClientRequisite-container.edit_title' />
+                            <FormattedMessage id='client_requisites_container.edit_title' />
                         ) : (
-                            <FormattedMessage id='ClientRequisite-container.create_title' />
+                            <FormattedMessage id='client_requisites_container.create_title' />
                         )
                     }
                     visible={ editClientRequisiteId || createClientRequisiteForm }

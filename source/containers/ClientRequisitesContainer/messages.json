@@ -8,7 +8,10 @@
         "client_requisites_container.bank": "Bank",
         "client_requisites_container.ifi": "IFI",
         "client_requisites_container.ca": "CA",
-        "client_requisites_container.itn": "ITN"
+        "client_requisites_container.itn": "ITN",
+        "client_requisites_container.create_title": "Create requisite:",
+        "client_requisites_container.edit_title": "Edit requisite:",
+        "client_requisites_container.requisites_list": "Requisites List"
     },
     "ru": {
         "client_requisites_container.create": "Добавить Реквизиты",
@@ -19,7 +22,10 @@
         "client_requisites_container.bank": "Банк",
         "client_requisites_container.ifi": "МФО банка",
         "client_requisites_container.ca": "Р/С",
-        "client_requisites_container.itn": "ЕДРПОУ/ИНН"
+        "client_requisites_container.itn": "ЕДРПОУ/ИНН",
+        "client_requisites_container.create_title": "Добавить реквизиты:",
+        "client_requisites_container.edit_title": "Редактировать реквизиты:",
+        "client_requisites_container.requisites_list": "Список Реквизитов"
     },
     "uk": {
         "client_requisites_container.create": "Додати Реквізити",
@@ -30,6 +36,9 @@
         "client_requisites_container.bank": "Банк",
         "client_requisites_container.ifi": "МФО банку",
         "client_requisites_container.ca": "Р/Р",
-        "client_requisites_container.itn": "ЄДРПОУ/ІПН"
+        "client_requisites_container.itn": "ЄДРПОУ/ІПН",
+        "client_requisites_container.create_title": "Додати реквізити:",
+        "client_requisites_container.edit_title": "Редагувати реквізити:",
+        "client_requisites_container.requisites_list": "Список Реквізитів"
     }
 }

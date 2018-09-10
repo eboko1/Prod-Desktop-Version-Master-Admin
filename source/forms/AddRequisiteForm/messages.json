@@ -1,32 +1,8 @@
 {
     "en": {
-        "add-role-form.create_title": "Create role:",
-        "add-role-form.create": "Create",
-        "add-role-form.name_field": "Role name",
-        "add-role-form.name_field_required": "Role name is required",
-        "add-role-form.grants_field": "Grants",
-        "add-role-form.grants_field_required": "Grants required",
-        "add-role-form.grant_other_field": "Assign role",
-        "add-role-form.grant_other_field_required": "Grant other field is required"
     },
     "ru": {
-        "add-role-form.create_title": "Cоздать роль:",
-        "add-role-form.create": "Создать",
-        "add-role-form.name_field": "Название",
-        "add-role-form.name_field_required": "Поле не может быть пустым",
-        "add-role-form.grants_field": "Доступы",
-        "add-role-form.grants_field_required": "Поле не может быть пустым",
-        "add-role-form.grant_other_field": "Присваивать роли",
-        "add-role-form.grant_other_field_required": "Поле не может быть пустым"
     },
     "uk": {
-        "add-role-form.create_title": "Створити роль:",
-        "add-role-form.create": "Створити",
-        "add-role-form.name_field": "Назва",
-        "add-role-form.name_field_required": "Поле не може бути пустим",
-        "add-role-form.grants_field": "Доступи",
-        "add-role-form.grants_field_required": "Поле не може бути пустим",
-        "add-role-form.grant_other_field": "Назначати ролі",
-        "add-role-form.grant_other_field_required": "Поле не може бути пустим"
     }
 }

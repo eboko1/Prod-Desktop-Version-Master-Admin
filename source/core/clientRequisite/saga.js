@@ -16,7 +16,7 @@ export function* updateClientRequisiteSaga() {
         const {
             payload: { clientId, id, entity },
         } = yield take(UPDATE_CLIENT_REQUISITE);
-        const payload = { ...entity, enabled: true };
+        const payload = { ...entity };
         yield call(fetchAPI, 'PUT', `/clients/requisites/${id}`, null, payload);
 
         yield put(fetchClient(clientId));

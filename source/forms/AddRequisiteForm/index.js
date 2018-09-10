@@ -1,26 +1,22 @@
 //vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Button, Select } from 'antd';
-import _ from 'lodash';
+import { Form, Button } from 'antd';
 
 // proj
 import { onChangeClientRequisiteForm } from 'core/forms/addClientRequisiteForm/duck';
 
 import {
     DecoratedInput,
-    DecoratedSelect,
     DecoratedCheckbox,
 } from 'forms/DecoratedFields';
-import { withReduxForm } from 'utils';
+import { withReduxForm2 } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
-const Option = Select.Option;
-
 @injectIntl
-@withReduxForm({
+@withReduxForm2({
     name:    'addClientRequisiteForm',
     actions: {
         change: onChangeClientRequisiteForm,
@@ -34,109 +30,116 @@ export class AddRequisiteForm extends Component {
         const { getFieldDecorator, validateFields } = this.props.form;
 
         return (
-            <Form>
-                <DecoratedCheckbox
-                    field={ 'enabled' }
-                    formItem
-                    label={
-                        <FormattedMessage id='edit_requisite_form.enabled' />
-                    }
-                    getFieldDecorator={ getFieldDecorator }
-                    colon={ false }
-                    formItemLayout={ {
-                        labelCol:   { span: 14 },
-                        wrapperCol: { span: 6 },
-                    } }
-                />
+            <Form className={ Styles.requsitesForm }>
                 <DecoratedInput
                     field={ 'name' }
                     formItem
+                    colon={ false }
                     rules={ [
                         {
                             required: true,
                             message:  this.props.intl.formatMessage({
-                                id: 'edit_requisite_form.name_field_required',
+                                id: 'required_field',
                             }),
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='edit_requisite_form.name_field' /> }
+                    label={ <FormattedMessage id='client_requisites_container.name' /> }
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <DecoratedInput
                     field={ 'address' }
                     formItem
+                    colon={ false }
                     rules={ [
                         {
                             required: true,
                             message:  this.props.intl.formatMessage({
-                                id: 'edit_requisite_form.address_field_required',
+                                id: 'required_field',
                             }),
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='edit_requisite_form.address_field' /> }
+                    label={ <FormattedMessage id='client_requisites_container.address' /> }
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <DecoratedInput
                     field={ 'bank' }
                     formItem
+                    colon={ false }
                     rules={ [
                         {
                             required: true,
                             message:  this.props.intl.formatMessage({
-                                id: 'edit_requisite_form.bank_field_required',
+                                id: 'required_field',
                             }),
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='edit_requisite_form.bank_field' /> }
+                    label={ <FormattedMessage id='client_requisites_container.bank' /> }
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <DecoratedInput
                     field={ 'ifi' }
                     formItem
+                    colon={ false }
                     rules={ [
                         {
                             required: true,
                             message:  this.props.intl.formatMessage({
-                                id: 'edit_requisite_form.ifi_field_required',
+                                id: 'required_field',
                             }),
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='edit_requisite_form.ifi_field' /> }
+                    label={ <FormattedMessage id='client_requisites_container.ifi' /> }
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <DecoratedInput
                     field={ 'ca' }
                     formItem
+                    colon={ false }
                     rules={ [
                         {
                             required: true,
                             message:  this.props.intl.formatMessage({
-                                id: 'edit_requisite_form.ca_field_required',
+                                id: 'required_field',
                             }),
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='edit_requisite_form.ca_field' /> }
+                    label={ <FormattedMessage id='client_requisites_container.ca' /> }
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <DecoratedInput
                     field={ 'itn' }
                     formItem
+                    colon={ false }
                     rules={ [
                         {
                             required: true,
                             message:  this.props.intl.formatMessage({
-                                id: 'edit_requisite_form.itn_field_required',
+                                id: 'required_field',
                             }),
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='edit_requisite_form.itn_field' /> }
+                    label={ <FormattedMessage id='client_requisites_container.itn' /> }
                     getFieldDecorator={ getFieldDecorator }
+                />
+                <DecoratedCheckbox
+                    field={ 'enabled' }
+                    formItem
+                    colon={ false }
+                    initValue
+                    label={
+                        <FormattedMessage id='client_requisites_container.enabled' />
+                    }
+                    getFieldDecorator={ getFieldDecorator }
+                    formItemLayout={ {
+                        labelCol:   { span: 14 },
+                        wrapperCol: { span: 6 },
+                    } }
                 />
 
                 <Button
@@ -149,7 +152,7 @@ export class AddRequisiteForm extends Component {
                         )
                     }
                 >
-                    <FormattedMessage id='edit_requisite_form.create' />
+                    <FormattedMessage id='save' />
                 </Button>
             </Form>
         );
