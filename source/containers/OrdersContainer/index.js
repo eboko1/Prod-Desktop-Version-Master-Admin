@@ -15,6 +15,7 @@ import {
     setOrdersPageSort,
 } from 'core/orders/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { clearUniversalFilters } from 'core/forms/universalFiltersForm/duck';
 
 import { Catcher } from 'commons';
 import { InviteModal } from 'modals';
@@ -41,6 +42,7 @@ const mapDispatchToProps = {
     setModal,
     resetModal,
     setOrdersPageSort,
+    clearUniversalFilters,
 };
 
 @withRouter
@@ -109,6 +111,7 @@ class OrdersContainer extends Component {
 
     componentDidMount() {
         this.props.setOrdersStatusFilter(this.state.status);
+        this.props.clearUniversalFilters();
         this.props.fetchOrders(this.props.filter);
     }
 

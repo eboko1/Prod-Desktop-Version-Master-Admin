@@ -17,7 +17,10 @@ import {
     setOrdersNPSFilter,
     setOrdersCancelReasonFilter,
 } from 'core/orders/duck';
-import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
+import {
+    fetchUniversalFiltersForm,
+    clearUniversalFilters,
+} from 'core/forms/universalFiltersForm/duck';
 
 import { Catcher } from 'commons';
 
@@ -44,11 +47,15 @@ const mapDispatchToProps = {
     setOrdersNPSFilter,
     fetchUniversalFiltersForm,
     setOrdersCancelReasonFilter,
+    clearUniversalFilters,
 };
 
 @withRouter
 @injectIntl
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class OrdersFilterContainer extends Component {
     constructor(props) {
         super(props);
@@ -83,6 +90,7 @@ export default class OrdersFilterContainer extends Component {
         const { setOrdersStatusFilter, fetchOrders, filter } = this.props;
 
         setOrdersStatusFilter(ev.target.value);
+        this.props.clearUniversalFilters();
         fetchOrders({ page: 1, ...filter });
     }
 
@@ -202,19 +210,19 @@ export default class OrdersFilterContainer extends Component {
                             defaultValue={ filter.status }
                         >
                             <RadioButton value='not_complete,required,call'>
-                                <FormattedMessage id='all' /> ({ stats.not_complete +
+                                <FormattedMessage id='all' /> (
+                                { stats.not_complete +
                                     stats.required +
-                                    stats.call })
+                                    stats.call }
+                                )
                             </RadioButton>
                             <RadioButton value='not_complete'>
-                                <FormattedMessage id='not_complete' /> ({
-                                    stats.not_complete
-                                })
+                                <FormattedMessage id='not_complete' /> (
+                                { stats.not_complete })
                             </RadioButton>
                             <RadioButton value='required'>
-                                <FormattedMessage id='required' /> ({
-                                    stats.required
-                                })
+                                <FormattedMessage id='required' /> (
+                                { stats.required })
                             </RadioButton>
                             <RadioButton value='call'>
                                 <FormattedMessage id='call' /> ({ stats.call })
@@ -228,18 +236,16 @@ export default class OrdersFilterContainer extends Component {
                             defaultValue={ 'approve,reserve' } // filter.status
                         >
                             <RadioButton value='approve,reserve'>
-                                <FormattedMessage id='all' /> ({ stats.approve +
-                                    stats.reserve })
+                                <FormattedMessage id='all' /> (
+                                { stats.approve + stats.reserve })
                             </RadioButton>
                             <RadioButton value='approve'>
-                                <FormattedMessage id='approve' /> ({
-                                    stats.approve
-                                })
+                                <FormattedMessage id='approve' /> (
+                                { stats.approve })
                             </RadioButton>
                             <RadioButton value='reserve'>
-                                <FormattedMessage id='reserve' /> ({
-                                    stats.reserve
-                                })
+                                <FormattedMessage id='reserve' /> (
+                                { stats.reserve })
                             </RadioButton>
                         </RadioGroup>
                     ) }

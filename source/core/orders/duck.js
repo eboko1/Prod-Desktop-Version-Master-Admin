@@ -21,6 +21,7 @@ export const SET_ORDERS_SEARCH_FILTER = `${prefix}/SET_ORDERS_SEARCH_FILTER`;
 export const SET_ORDERS_NPS_FILTER = `${prefix}/SET_ORDERS_NPS_FILTER`;
 export const FETCH_ORDERS_CANCEL_REASON_FILTER = `${prefix}/FETCH_CANCEL_REASON_FILTER`;
 export const SET_ORDERS_CANCEL_REASON_FILTER = `${prefix}/SET_CANCEL_REASON_FILTER`;
+export const SET_UNIVERSAL_FILTERS = `${prefix}/SET_UNIVERSAL_FILTERS`;
 
 export const CREATE_INVITE_ORDERS = `${prefix}/CREATE_INVITE_ORDERS`;
 export const CREATE_INVITE_ORDERS_SUCCESS = `${prefix}/CREATE_INVITE_ORDERS_SUCCESS`;
@@ -31,10 +32,11 @@ export const SET_ORDERS_PAGE_SORT = `${prefix}/SET_ORDERS_PAGE_SORT`;
  * Reducer
  * */
 const ReducerState = {
-    stats:  {},
-    count:  0,
-    data:   [],
-    filter: {
+    stats:           {},
+    count:           0,
+    data:            [],
+    universalFilter: {},
+    filter:          {
         page:          1,
         status:        'not_complete,required,call',
         query:         '',
@@ -56,8 +58,9 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_ORDERS_SUCCESS:
             return {
                 ...state,
-                count: payload.count,
-                data:  payload.orders.map(order =>
+                count:          payload.count,
+                universalStats: payload.stats,
+                data:           payload.orders.map(order =>
                     Object.assign({ ...order }, { key: uid() })),
             };
 
@@ -65,6 +68,17 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 stats: payload,
+            };
+        case SET_UNIVERSAL_FILTERS:
+            return {
+                ...state,
+                universalFilter: {
+                    ...payload,
+                },
+                filter: {
+                    ...state.filter,
+                    page: 1,
+                },
             };
 
         case SET_ORDERS_PAGE_FILTER:
@@ -112,7 +126,8 @@ export default function reducer(state = ReducerState, action) {
                     status:        payload,
                     cancelReasons: void 0,
                 },
-                sort: {
+                universalFilter: {},
+                sort:            {
                     order: 'desc',
                     field: 'datetime',
                 },
@@ -242,4 +257,9 @@ export const createInviteOrdersFail = error => ({
     type:    CREATE_INVITE_ORDERS_FAIL,
     payload: error,
     error:   true,
+});
+
+export const setUniversalFilter = universalFilter => ({
+    type:    SET_UNIVERSAL_FILTERS,
+    payload: universalFilter,
 });

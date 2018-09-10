@@ -21,16 +21,24 @@ export default class UniversalFiltersModal extends Component {
     render() {
         const {
             visible,
+
+            // Actions
             resetModal,
-            handleUniversalFiltersModalSubmit,
+            hideModal,
+
+            // Filters
             vehicleMakes,
             vehicleModels,
-            stats,
             managers,
             employees,
             creationReasons,
             orderComments,
             services,
+
+            // Modal stats
+            stats,
+
+            form,
         } = this.props;
 
         // Parent Node which the selector should be rendered to.
@@ -50,12 +58,17 @@ export default class UniversalFiltersModal extends Component {
                 okText={ <FormattedMessage id='universal_filters.submit' /> }
                 wrapClassName={ Styles.ufmoldal }
                 visible={ visible === MODALS.UNIVERSAL_FILTERS }
-                onOk={ () => handleUniversalFiltersModalSubmit() }
+                onOk={ () => {
+                    this.props.setUniversalFilter(
+                        this.props.form.getFieldsValue(),
+                    );
+                    hideModal();
+                } }
                 onCancel={ () => resetModal() }
             >
                 <StatsCountsPanel stats={ stats } />
                 <UniversalFiltersForm
-                    wrappedComponentRef={ this.props.wrappedComponentRef }
+                    form={ form }
                     vehicleMakes={ vehicleMakes }
                     vehicleModels={ vehicleModels }
                     managers={ managers }

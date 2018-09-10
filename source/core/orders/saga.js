@@ -3,9 +3,9 @@ import { call, put, takeEvery, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import { spreadProp } from 'ramda-adjunct';
 import _ from 'lodash';
+import moment from 'moment';
 
 //proj
-import { selectUniversalFilters } from 'core/forms/universalFiltersForm/duck';
 import { setOrdersFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
@@ -19,13 +19,47 @@ import {
     FETCH_ORDERS,
     FETCH_ORDERS_STATS,
     CREATE_INVITE_ORDERS,
+    SET_UNIVERSAL_FILTERS,
     // SET_ORDERS_STATUS_FILTER,
 } from './duck';
 
-const selectFilter = ({ orders: { filter, sort } }) => ({
+const selectFilter = ({ orders: { filter, sort, universalFilter } }) => ({
     sort,
     filter,
+    universalFilter,
 });
+
+function mergeFilters(filter, universalFilters) {
+    const modelsTransformQuery =
+        universalFilters.models && universalFilters.models.length
+            ? {
+                models: _(universalFilters.models)
+                    .map(model => model.split(','))
+                    .flatten()
+                    .value(),
+            }
+            : {};
+
+    const [ startDate, endDate ] = universalFilters.beginDate || [];
+    const [ createStartDate, createEndDate ] = universalFilters.createDate || [];
+
+    const momentFields = _({
+        startDate,
+        endDate,
+        createEndDate,
+        createStartDate,
+    })
+        .pickBy(moment.isMoment)
+        .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
+        .value();
+
+    return _.omit({
+        ...universalFilters,
+        ...modelsTransformQuery,
+        ...momentFields,
+        ...filter,
+    }, [ 'beginDate', 'createDate' ]);
+}
 
 export function* fetchOrdersSaga() {
     while (true) {
@@ -35,19 +69,17 @@ export function* fetchOrdersSaga() {
 
             const {
                 filter,
+                universalFilter,
                 sort: { field: sortField, order: sortOrder },
             } = yield select(selectFilter);
-            const universalFilters = yield select(selectUniversalFilters);
 
-            const ordersFilters = _.omit(
-                spreadProp('daterange', { ...filter, sortField, sortOrder }),
-                [ 'beginDate', 'createDate' ],
-            );
+            const ordersFilters = spreadProp('daterange', {
+                ...filter,
+                sortField,
+                sortOrder,
+            });
 
-            const filters = {
-                ...ordersFilters,
-                ...universalFilters,
-            };
+            const filters = mergeFilters(ordersFilters, universalFilter);
 
             yield put(setOrdersFetchingState(true));
             const data = yield call(fetchAPI, 'GET', 'orders', filters);
@@ -60,6 +92,13 @@ export function* fetchOrdersSaga() {
             yield put(setOrdersFetchingState(false));
             yield nprogress.done();
         }
+    }
+}
+
+export function* setUniversalFilter() {
+    while(true) {
+        yield take(SET_UNIVERSAL_FILTERS);
+        yield put(fetchOrders());
     }
 }
 
@@ -95,6 +134,7 @@ export function* createInviteOrders({ payload: { invites, filters } }) {
 export function* saga() {
     yield all([
         call(fetchOrdersSaga),
+        call(setUniversalFilter),
         takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga),
         takeEvery(CREATE_INVITE_ORDERS, createInviteOrders),
     ]);

@@ -3,15 +3,6 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Row, Col, Select } from 'antd';
 import { v4 } from 'uuid';
-import _ from 'lodash';
-
-// proj
-import {
-    onChangeUniversalFiltersForm,
-    setUniversalFilters,
-} from 'core/forms/universalFiltersForm/duck';
-import { fetchOrders } from 'core/orders/duck';
-import { fetchClients } from 'core/clients/duck';
 
 import {
     DecoratedSelect,
@@ -19,22 +10,13 @@ import {
     DecoratedInputNumber,
 } from 'forms/DecoratedFields';
 
-import { withReduxForm2, getDaterange } from 'utils';
+import { getDaterange } from 'utils';
 
 // own
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-@withReduxForm2({
-    name:    'universalFiltersForm',
-    actions: {
-        change: onChangeUniversalFiltersForm,
-        fetchOrders,
-        fetchClients,
-        setUniversalFilters,
-    },
-})
 export class UniversalFiltersForm extends Component {
     render() {
         const {
@@ -45,10 +27,11 @@ export class UniversalFiltersForm extends Component {
             services,
             handleUniversalFiltersModalSubmit,
         } = this.props;
-        const { getFieldDecorator } = this.props.form;
+
+        const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        const makeId = _.get(this.props, 'fields.make.value');
+        const makeId = getFieldValue('make');
         const vehiclesYears = [];
         for (let year = new Date().getFullYear(); year >= 1900; year--) {
             vehiclesYears.push(year);
