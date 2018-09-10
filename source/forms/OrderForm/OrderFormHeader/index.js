@@ -126,6 +126,7 @@ export default class OrderFormHeader extends Component {
             disabledHours,
             disabledMinutes,
             disabledSeconds,
+            beginTime,
         } = getDateTimeConfig(moment(beginDate), schedule);
 
         const beginDatetime =
@@ -204,7 +205,7 @@ export default class OrderFormHeader extends Component {
                     formItem
                     formItemLayout={ formHeaderItemLayout }
                     disabled={ this.bodyUpdateIsForbidden() }
-                    defaultOpenValue={ moment('00:00:00', 'HH:mm:ss') }
+                    defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                     field='beginTime'
                     hasFeedback
                     disabledHours={ disabledHours }
