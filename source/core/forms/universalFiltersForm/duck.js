@@ -10,47 +10,35 @@ export const FETCH_UNIVERSAL_FILTERS_FORM_SUCCESS = `${prefix}/FETCH_UNIVERSAL_F
 
 export const ON_CHANGE_UNIVERSAL_FILTERS_FORM = `${prefix}/ON_CHANGE_UNIVERSAL_FILTERS_FORM`;
 
+export const CLEAR_UNIVERSAL_FILTERS_FORM = `${prefix}/CLEAR_UNIVERSAL_FILTERS_FORM`;
+
 /**
  * Reducer
  * */
-//
 
 const ReducerState = {
-    fields: {
-        make: {
-            errors:     void 0,
-            name:       'make',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        models: {
-            errors:     void 0,
-            name:       'models',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
+    fields:  {},
+    filters: {
+        orderComments:   void 0, // []
+        services:        [],
+        managers:        [],
+        employees:       [],
+        vehicleModels:   [],
+        vehicleMakes:    [],
+        creationReasons: [],
     },
-    orderComments:   void 0, // []
-    services:        [],
-    managers:        [],
-    employees:       [],
-    vehicleModels:   [],
-    vehicleMakes:    [],
-    creationReasons: [],
 };
 
 export default function reducer(state = ReducerState, action) {
-    const { type, payload, meta } = action;
+    const { type, payload } = action;
 
     switch (type) {
         case FETCH_UNIVERSAL_FILTERS_FORM_SUCCESS:
             return {
                 ...state,
-                ...payload,
+                filters: {
+                    ...payload,
+                },
             };
 
         case ON_CHANGE_UNIVERSAL_FILTERS_FORM:
@@ -62,6 +50,12 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case CLEAR_UNIVERSAL_FILTERS_FORM:
+            return {
+                ...state,
+                fields: {},
+            };
+
         default:
             return state;
     }
@@ -71,12 +65,14 @@ export default function reducer(state = ReducerState, action) {
  * Selectors
  * */
 
-export const stateSelector = state => state[ moduleName ];
+export const stateSelector = state => state.forms[ moduleName ];
+// export const selectUniversalFilters = state =>
+//     state.forms.universalFiltersForm.fields;
 
 /**
  * Action Creators
  * */
-
+// Universal Filters
 export const fetchUniversalFiltersForm = () => ({
     type: FETCH_UNIVERSAL_FILTERS_FORM,
 });
@@ -89,4 +85,8 @@ export const fetchUniversalFiltersFormSuccess = filters => ({
 export const onChangeUniversalFiltersForm = update => ({
     type:    ON_CHANGE_UNIVERSAL_FILTERS_FORM,
     payload: update,
+});
+
+export const clearUniversalFilters = () => ({
+    type: CLEAR_UNIVERSAL_FILTERS_FORM,
 });

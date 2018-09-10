@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import { routerReducer as router } from 'react-router-redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
+import { LOCATION_CHANGE } from 'react-router-redux';
 
 // proj
 import intl from 'core/intl/reducer';
@@ -27,8 +28,12 @@ import managerRoleReducer, {
 
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
 import clientReducer, { moduleName as clientModule } from 'core/client/duck';
-import clientRequisiteReducer, { moduleName as clientRequisiteModule } from 'core/clientRequisite/duck';
-import clientOrdersReducer, { moduleName as clientOrdersModule } from 'core/clientOrders/duck';
+import clientOrdersReducer, {
+    moduleName as clientOrdersModule,
+} from 'core/clientOrders/duck';
+import clientRequisiteReducer, {
+    moduleName as clientRequisiteModule,
+} from 'core/clientRequisite/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
@@ -41,7 +46,13 @@ export const persistConfig = {
     whitelist: [ 'auth' ],
 };
 
-const reducer = combineReducers({
+const persistedState = {
+    [ authModule ]: authReducer,
+    intl,
+    router,
+};
+
+const appState = {
     forms,
     [ ordersModule ]:          ordersReducer,
     [ orderModule ]:           orderReducer,
@@ -50,7 +61,6 @@ const reducer = combineReducers({
     [ myTasksModule ]:         myTasksReducer,
     [ employeeModule ]:        employeeReducer,
     [ uiModule ]:              uiReducer,
-    [ authModule ]:            authReducer,
     [ packageModule ]:         packageReducer,
     [ roleModule ]:            roleReducer,
     [ businessPackageModule ]: businessPackageReducer,
@@ -60,10 +70,32 @@ const reducer = combineReducers({
     [ clientModule ]:          clientReducer,
     [ clientRequisiteModule ]: clientRequisiteReducer,
     [ clientOrdersModule ]:    clientOrdersReducer,
-    intl,
-    router,
-});
+    // [ authModule ]:            authReducer,
+    // intl,
+    // router,
+};
 
-const rootReducer = persistReducer(persistConfig, reducer);
+const appReducer = combineReducers({ ...persistedState, ...appState });
+
+const reducer = (state, action) => {
+    let resetedState = state;
+
+    if (action.type === LOCATION_CHANGE) {
+        resetedState = Object.keys(persistedState).reduce(
+            (resetedState, moduleName) => {
+                resetedState[ moduleName ] = state[ moduleName ];
+
+                return resetedState;
+            },
+            {},
+        );
+    }
+
+    return appReducer(resetedState, action);
+};
+
+const rootReducer = persistReducer(persistConfig, (state, action) => {
+    return reducer(state, action);
+});
 
 export default rootReducer;

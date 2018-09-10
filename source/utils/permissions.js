@@ -23,6 +23,11 @@ const EDIT_DASHBOARD_ORDER = 'EDIT_DASHBOARD_ORDER';
 const OPEN_DASHBOARD_ORDER = 'OPEN_DASHBOARD_ORDER';
 const CREATE_DASHBOARD_ORDER = 'CREATE_DASHBOARD_ORDER';
 
+// Employees
+const GET_EMPLOYEES = 'GET_EMPLOYEES';
+const CREATE_EDIT_DELETE_EMPLOYEES = 'CREATE_EDIT_DELETE_EMPLOYEES';
+const EMPLOYEES_SALARIES = 'EMPLOYEES_SALARIES';
+
 export const permissions = Object.freeze({
     ACCESS_ORDER_BODY,
     ACCESS_ORDER_CALLS,
@@ -44,6 +49,10 @@ export const permissions = Object.freeze({
     EDIT_DASHBOARD_ORDER,
     OPEN_DASHBOARD_ORDER,
     CREATE_DASHBOARD_ORDER,
+
+    GET_EMPLOYEES,
+    CREATE_EDIT_DELETE_EMPLOYEES,
+    EMPLOYEES_SALARIES,
 });
 
 export const isForbidden = ({ isAdmin, scope }, grant) =>
@@ -94,5 +103,14 @@ export const rolesOptionValues = intl => ({
     }),
     [ CREATE_DASHBOARD_ORDER ]: intl.formatMessage({
         id: 'roles.create_dashboard_order',
+    }),
+    [ GET_EMPLOYEES ]: intl.formatMessage({
+        id: 'roles.get_employees',
+    }),
+    [ CREATE_EDIT_DELETE_EMPLOYEES ]: intl.formatMessage({
+        id: 'roles.create_edit_delete_employees',
+    }),
+    [ EMPLOYEES_SALARIES ]: intl.formatMessage({
+        id: 'roles.employees_salaries',
     }),
 });

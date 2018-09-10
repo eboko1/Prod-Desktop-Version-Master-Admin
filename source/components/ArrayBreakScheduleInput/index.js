@@ -19,6 +19,7 @@ import {
 } from 'core/forms/employeeBreakScheduleForm/duck';
 import { onChangeEmployeeBreakScheduleForm } from 'core/forms/employeeBreakScheduleForm/duck';
 import { withReduxForm} from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -265,6 +266,10 @@ class ArrayBreakScheduleInput extends Component {
                             <FormItem>
                                 <Button
                                     type='dashed'
+                                    disabled={ isForbidden(
+                                        this.props.user,
+                                        permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                                    ) }
                                     onClick={ () =>
                                         this.saveEmployeeBreakSchedule(keys)
                                     }

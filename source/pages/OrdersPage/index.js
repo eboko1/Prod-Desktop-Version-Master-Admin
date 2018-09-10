@@ -8,7 +8,11 @@ import { Button, Radio } from 'antd';
 import classNames from 'classnames/bind';
 
 // proj
-import { fetchOrders, setOrdersDaterangeFilter } from 'core/orders/duck';
+import {
+    fetchOrders,
+    setOrdersDaterangeFilter,
+    setUniversalFilter,
+} from 'core/orders/duck';
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { setModal, MODALS } from 'core/modals/duck';
 
@@ -33,6 +37,8 @@ let cx = classNames.bind(Styles);
 const mapState = state => ({
     ordersDaterangeFilter: state.orders.filter.daterange,
     filter:                state.orders.filter,
+    universalStats:        state.orders.universalStats,
+    universalFilter:       state.orders.universalFilter,
     collapsed:             state.ui.collapsed,
     user:                  state.auth,
     // isMobile:              state.ui.views.isMobile,
@@ -43,6 +49,7 @@ const mapDispatch = {
     setOrdersDaterangeFilter,
     setModal,
     fetchUniversalFiltersForm,
+    setUniversalFilter,
 };
 
 @withRouter
@@ -51,8 +58,8 @@ const mapDispatch = {
     mapDispatch,
 )
 @withResponsive()
-class OrdersPage extends Component {
-    getPageTitle() {
+export default class OrdersPage extends Component {
+    _getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
         switch (status) {
             case 'appointments':
@@ -106,7 +113,7 @@ class OrdersPage extends Component {
         return (
             <Layout
                 paper={ false }
-                title={ this.getPageTitle() }
+                title={ this._getPageTitle() }
                 description={ <FormattedMessage id='orders-page.description' /> }
                 controls={
                     <div className={ Styles.controls }>
@@ -159,7 +166,11 @@ class OrdersPage extends Component {
                         className={ `${Styles.universalFilters} ${collapsed &&
                             Styles.universalFiltersCollapsed}` }
                     >
-                        <UniversalFilters />
+                        <UniversalFilters
+                            stats={ this.props.universalStats }
+                            universalFilter={ this.props.universalFilter }
+                            setUniversalFilter={ this.props.setUniversalFilter }
+                        />
                     </section>
                 ) }
                 <section
@@ -204,5 +215,3 @@ class OrdersPage extends Component {
         );
     };
 }
-
-export default OrdersPage;

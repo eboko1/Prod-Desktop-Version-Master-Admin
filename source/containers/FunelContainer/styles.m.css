@@ -57,6 +57,10 @@ a.funel__tabs__link:hover {
 .funel__tabs__link--active {
     color: #fff;
     background: #9b59b6;
+    
+    &:focus {
+        text-decoration: none
+    }
 }
 .funel__tabs__link--active:before {
     content: "";

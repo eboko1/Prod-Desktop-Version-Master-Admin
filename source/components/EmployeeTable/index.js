@@ -10,6 +10,7 @@ import { v4 } from 'uuid';
 // proj
 import { Catcher } from 'commons';
 import book from 'routes/book';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -26,16 +27,21 @@ export default class EmployeeTable extends Component {
                 render:    (text, record) => {
                     return (
                         <>
-                            <Icon
-                                className={ Styles.employeeTableIcon }
-                                onClick={ () => {
-                                    this.props.deleteEmployee(
-                                        record.id,
-                                        this.props.kind,
-                                    );
-                                } }
-                                type='delete'
-                            />
+                            {!isForbidden(
+                                this.props.user,
+                                permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                            ) ? (
+                                <Icon
+                                        className={ Styles.employeeTableIcon }
+                                        onClick={ () => {
+                                            this.props.deleteEmployee(
+                                                record.id,
+                                                this.props.kind,
+                                            );
+                                        } }
+                                        type='delete'
+                                    />
+                                ) : null}
                         </>
                     );
                 },
@@ -46,9 +52,11 @@ export default class EmployeeTable extends Component {
                 dataIndex: 'name',
                 width:     '20%',
                 render:    (text, record) => (
-                    <div><Link
-                        to={ book.editEmployee.replace(':id', record.id) }
-                    >{ `${record.name} ${record.surname}` }</Link></div>
+                    <div>
+                        <Link
+                            to={ book.editEmployee.replace(':id', record.id) }
+                        >{ `${record.name} ${record.surname}` }</Link>
+                    </div>
                 ),
             },
             {

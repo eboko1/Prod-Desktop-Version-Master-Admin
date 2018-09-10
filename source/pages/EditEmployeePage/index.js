@@ -30,6 +30,7 @@ const mapStateToProps = state => {
         initialEmployee: state.forms.employeeForm.initialEmployee,
         initialSchedule: state.forms.employeeForm.initialSchedule,
         entity:          state.forms.employee.fields,
+        user:            state.auth,
     };
 };
 
@@ -86,6 +87,7 @@ class EditEmployeePage extends Component {
         const {
             initialEmployee,
             initialSchedule,
+            user,
         } = this.props;
 
         return (
@@ -111,6 +113,7 @@ class EditEmployeePage extends Component {
                         key='1'
                     >
                         <EmployeeForm
+                            user = { user }
                             fireEmployee={ this.fireEmployee }
                             initialEmployee={ initialEmployee }
                             wrappedComponentRef={ this.saveEmployeeFormRef }
@@ -124,6 +127,7 @@ class EditEmployeePage extends Component {
                         key='2'
                     >
                         <EmployeeScheduleForm
+                            user = { user }
                             initialEmployee={ initialEmployee }
                             initialSchedule={ initialSchedule }
                             fetchEmployeeSchedule={

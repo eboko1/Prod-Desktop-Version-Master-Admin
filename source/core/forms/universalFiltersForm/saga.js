@@ -1,6 +1,13 @@
 // vendor
-import { call, put, all, take } from 'redux-saga/effects';
-// import nprogress from 'nprogress';
+import {
+    call,
+    put,
+    all,
+    take,
+    takeEvery,
+    takeLatest,
+} from 'redux-saga/effects';
+import nprogress from 'nprogress';
 
 //proj
 import { emitError } from 'core/ui/duck';
@@ -26,5 +33,10 @@ export function* fetchUniversalFiltersFormSaga() {
 }
 
 export function* saga() {
-    yield all([ call(fetchUniversalFiltersFormSaga) ]);
+    /* eslint-disable array-element-newline */
+    yield all([
+        call(fetchUniversalFiltersFormSaga),
+        // takeEvery(ON_CHANGE_UNIVERSAL_FILTERS_FORM, fetchStatsSaga),
+    ]);
+    /* eslint-enable array-element-newline */
 }

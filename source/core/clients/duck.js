@@ -21,10 +21,11 @@ export const INVITE_CLIENTS_SUCCESS = `${prefix}/INVITE_CLIENTS_SUCCESS`;
  * Reducer
  * */
 const ReducerState = {
-    stats:   {},
-    clients: [],
-    filter:  {},
-    sort:    { page: 1, order: 'asc' },
+    stats:           {},
+    clients:         [],
+    filter:          {},
+    sort:            { page: 1, order: 'asc' },
+    universalFilter: {},
 };
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
@@ -37,6 +38,19 @@ export default function reducer(state = ReducerState, action) {
                 ...payload,
                 // clients: payload.CLIENTS.map(client =>
                 //     Object.assign({ ...client }, { key: v4() })),
+            };
+
+        case SET_UNIVERSAL_FILTERS:
+            return {
+                ...state,
+                universalFilter: {
+                    ...payload,
+                },
+                sort: {
+                    ...state.filter,
+                    page:  1,
+                    order: 'asc',
+                },
             };
 
         case SET_CLIENTS_PAGE_SORT:
@@ -57,15 +71,6 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
-        case SET_UNIVERSAL_FILTERS:
-            return {
-                ...state,
-                filter: {
-                    ...state.filter,
-                    ...payload,
-                },
-            };
-
         case INVITE_CLIENTS_SUCCESS:
             return {
                 ...state,
@@ -81,9 +86,10 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
-export const selectFilter = ({ clients: { filter, sort } }) => ({
+export const selectFilter = ({ clients: { filter, sort, universalFilter } }) => ({
     filter,
     sort,
+    universalFilter,
 });
 
 /**

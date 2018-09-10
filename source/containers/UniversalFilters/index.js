@@ -1,117 +1,72 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
-import { connect } from 'react-redux';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 import _ from 'lodash';
-import moment from 'moment';
 
 // proj
-import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import {
-    fetchOrders,
-    fetchStatsCounts,
-    setUniversalFilters,
-} from 'core/orders/duck';
-import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
+    onChangeUniversalFiltersForm,
+    fetchUniversalFiltersForm,
+} from 'core/forms/universalFiltersForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Catcher } from 'commons';
 import { UniversalFiltersModal } from 'modals';
 import { UniversalFiltersTags } from 'components';
 import { permissions, isForbidden } from 'utils';
+import { withReduxForm2 } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
-const mapStateToProps = state => ({
-    stats:                state.orders.statsCountsPanel.stats.stats,
-    filter:               state.orders.filter,
-    universaFiltersModal: state.modals.modal,
-    user:                 state.auth,
+const universalLinkedFields = Object.freeze({
+    notVisitRange: [ 'notVisit', 'notVisitDays' ],
 });
 
-const mapDispatchToProps = {
-    fetchOrders,
-    fetchStatsCounts,
-    fetchUniversalFiltersForm,
-    setUniversalFilters,
-    onChangeUniversalFiltersForm,
-    setModal,
-    resetModal,
-};
+const tagFields = Object.freeze([ 'createDate', 'beginDate', 'ordersGreater', 'ordersLower', 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'year', 'odometerLower', 'odometerGreater' ]);
 
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
+@injectIntl
+@withReduxForm2({
+    name:    'universalFiltersForm',
+    actions: {
+        change: onChangeUniversalFiltersForm,
+        fetchUniversalFiltersForm,
+        setModal,
+        resetModal,
+    },
+    mapStateToProps: state => ({
+        universalFiltersModal: state.modals.modal,
+        user:                  state.auth,
+    }),
+})
 export default class UniversalFilters extends Component {
-    setUniversalFiltersModal = () => {
+    // Contains: modal, show button, tags
+    // Modal contains: form
+
+    showUniversalFiltersModal = () => {
         this.props.setModal(MODALS.UNIVERSAL_FILTERS);
-        this.props.fetchStatsCounts();
         this.props.fetchUniversalFiltersForm();
     };
 
-    clearUniversalFilters = filterNames => {
-        const updateFilters = _.fromPairs(
-            filterNames.map(filterName => [ filterName, void 0 ]),
-        );
-        this.props.onChangeUniversalFiltersForm(updateFilters);
-        this.props.setUniversalFilters({
-            ...this.props.filter,
-            ...updateFilters,
-        });
-        this.props.fetchOrders();
-    };
-
-    saveFormRef = formRef => {
-        this.formRef = formRef;
-    };
-
-    handleUniversalFiltersModalSubmit = () => {
-        const form = this.formRef.props.form;
-        this.props.resetModal();
-        form.validateFields((err, values) => {
-            if (!err) {
-                const modelsTransformQuery = values.models
-                    ? {
-                        models: _(values.models)
-                            .map(model => model.split(','))
-                            .flatten()
-                            .value(),
-                    }
-                    : {};
-
-                const [ startDate, endDate ] = values.beginDate || [];
-                const [ createStartDate, createEndDate ] =
-                    values.createDate || [];
-
-                const momentFields = _({
-                    startDate,
-                    endDate,
-                    createEndDate,
-                    createStartDate,
-                })
-                    .pickBy(moment.isMoment)
-                    .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
-                    .value();
-
-                this.props.setUniversalFilters({
-                    ...values,
-                    ...modelsTransformQuery,
-                    ...momentFields,
-                });
-                this.props.fetchOrders();
-            }
-        });
+    clearFilters = fieldNames => {
+        this.props.form.resetFields(fieldNames);
+        this.props.setUniversalFilter(this.props.form.getFieldsValue());
     };
 
     render() {
-        const { resetModal, universaFiltersModal, stats, filter } = this.props;
-        const areFiltersDisabled = isForbidden(
-            this.props.user,
-            permissions.SHOW_FILTERS,
-        );
+        const {
+            user,
+            resetModal,
+            universalFiltersModal,
+            setUniversalFilter,
+            stats,
+            form,
+            filters,
+        } = this.props;
+
+        const areFiltersDisabled = isForbidden(user, permissions.SHOW_FILTERS);
+        const formFilters = form.getFieldsValue();
 
         return (
             <Catcher>
@@ -119,26 +74,34 @@ export default class UniversalFilters extends Component {
                     <Button
                         type='primary'
                         disabled={ areFiltersDisabled }
-                        onClick={ () => this.setUniversalFiltersModal() }
+                        onClick={ () => this.showUniversalFiltersModal() }
                     >
                         <FormattedMessage id='universal-filters-container.filter' />
                     </Button>
                     <UniversalFiltersTags
-                        filter={ filter }
-                        clearUniversalFilters={ this.clearUniversalFilters.bind(
-                            this,
-                        ) }
+                        universalLinkedFields={ universalLinkedFields }
+                        tagFields={ tagFields }
+                        filter={ formFilters }
+                        clearUniversalFilters={ this.clearFilters }
                     />
                 </section>
                 <UniversalFiltersModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ universaFiltersModal }
+                    { ...filters }
+                    setUniversalFilter={ setUniversalFilter }
+                    form={ form }
                     stats={ stats }
-                    filter={ filter }
-                    handleUniversalFiltersModalSubmit={
-                        this.handleUniversalFiltersModalSubmit
-                    }
-                    resetModal={ () => resetModal() }
+                    visible={ universalFiltersModal }
+                    hideModal={ () => resetModal() }
+                    resetModal={ () => {
+                        if (_.isEqual(this.props.universalFilter, {})) {
+                            this.props.form.resetFields();
+                        } else {
+                            this.props.form.setFieldsValue(
+                                this.props.universalFilter,
+                            );
+                        }
+                        resetModal();
+                    } }
                 />
             </Catcher>
         );

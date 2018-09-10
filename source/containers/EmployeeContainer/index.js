@@ -13,6 +13,8 @@ import { Catcher } from 'commons';
 import { EmployeeTable } from 'components';
 import { SettingSalaryContainer } from 'containers';
 
+import { permissions, isForbidden } from 'utils';
+
 // own
 import Styles from './styles.m.css';
 
@@ -22,6 +24,7 @@ const mapStateToProps = state => ({
     salaries:  state.forms.settingSalary.salaries,
     entity:    state.forms.settingSalary.fields,
     employees: state.employee.employees,
+    user:      state.auth,
 });
 
 const mapDispatchToProps = {
@@ -42,7 +45,7 @@ export default class EmployeeContainer extends Component {
 
     /* eslint-enable complexity */
     render() {
-        const { employees, initEmployeeForm, deleteEmployee } = this.props;
+        const { employees, initEmployeeForm, deleteEmployee, user } = this.props;
 
         return (
             <Catcher>
@@ -60,6 +63,7 @@ export default class EmployeeContainer extends Component {
                     >
                         <section className={ Styles.myTasks }>
                             <EmployeeTable
+                                user={ user }
                                 kind='all'
                                 deleteEmployee={ deleteEmployee }
                                 initEmployeeForm={ initEmployeeForm }
@@ -76,6 +80,7 @@ export default class EmployeeContainer extends Component {
                         <section className={ Styles.myTasks }>
                             <EmployeeTable
                                 kind='workers'
+                                user={ user }
                                 deleteEmployee={ deleteEmployee }
                                 initEmployeeForm={ initEmployeeForm }
                                 employees={ employees }
@@ -91,6 +96,7 @@ export default class EmployeeContainer extends Component {
                         <section className={ Styles.myTasks }>
                             <EmployeeTable
                                 kind='disabled'
+                                user={ user }
                                 deleteEmployee={ deleteEmployee }
                                 initEmployeeForm={ initEmployeeForm }
                                 employees={ employees }
@@ -102,6 +108,7 @@ export default class EmployeeContainer extends Component {
                         tab={ this.props.intl.formatMessage({
                             id: 'employee-page.setting_salary',
                         }) }
+                        disabled={ isForbidden(this.props.user, permissions.EMPLOYEES_SALARIES) }
                         key='settingSalary'
                     >
                         <section>

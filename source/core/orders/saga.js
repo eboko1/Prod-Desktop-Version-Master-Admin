@@ -1,17 +1,10 @@
 // vendor
-import {
-    call,
-    put,
-    takeEvery,
-    all,
-    apply,
-    take,
-    select,
-} from 'redux-saga/effects';
+import { call, put, takeEvery, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import { spreadProp } from 'ramda-adjunct';
 import _ from 'lodash';
-// import * as RA from 'ramda-adjunct';
+import moment from 'moment';
+// import { routerReducer } from 'react-router-redux';
 
 //proj
 import { setOrdersFetchingState, emitError } from 'core/ui/duck';
@@ -23,19 +16,54 @@ import {
     fetchOrders,
     fetchOrdersStats,
     fetchOrdersStatsSuccess,
-    fetchStatsCountsSuccess,
     createInviteOrdersSuccess,
     FETCH_ORDERS,
     FETCH_ORDERS_STATS,
-    FETCH_STATS_COUNTS_PANEL,
     CREATE_INVITE_ORDERS,
+    SET_UNIVERSAL_FILTERS,
     // SET_ORDERS_STATUS_FILTER,
 } from './duck';
 
-const selectFilter = ({ orders: { filter, sort } }) => ({
+const selectFilter = ({ orders: { filter, sort, universalFilter } }) => ({
     sort,
     filter,
+    universalFilter,
 });
+
+function mergeFilters(filter, universalFilters) {
+    const modelsTransformQuery =
+        universalFilters.models && universalFilters.models.length
+            ? {
+                models: _(universalFilters.models)
+                    .map(model => model.split(','))
+                    .flatten()
+                    .value(),
+            }
+            : {};
+
+    const [ startDate, endDate ] = universalFilters.beginDate || [];
+    const [ createStartDate, createEndDate ] = universalFilters.createDate || [];
+
+    const momentFields = _({
+        startDate,
+        endDate,
+        createEndDate,
+        createStartDate,
+    })
+        .pickBy(moment.isMoment)
+        .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
+        .value();
+
+    return _.omit(
+        {
+            ...universalFilters,
+            ...modelsTransformQuery,
+            ...momentFields,
+            ...filter,
+        },
+        [ 'beginDate', 'createDate' ],
+    );
+}
 
 export function* fetchOrdersSaga() {
     while (true) {
@@ -45,11 +73,23 @@ export function* fetchOrdersSaga() {
 
             const {
                 filter,
+                universalFilter,
                 sort: { field: sortField, order: sortOrder },
             } = yield select(selectFilter);
-            const filters = _.omit(
-                spreadProp('daterange', { ...filter, sortField, sortOrder }),
-                [ 'beginDate', 'createDate' ],
+
+            const activeStatuses = yield select(
+                state => state.router.location.state.status,
+            );
+
+            const ordersFilters = spreadProp('daterange', {
+                ...filter,
+                sortField,
+                sortOrder,
+            });
+
+            const filters = mergeFilters(
+                { ...ordersFilters, status: activeStatuses },
+                universalFilter,
             );
 
             yield put(setOrdersFetchingState(true));
@@ -63,6 +103,13 @@ export function* fetchOrdersSaga() {
             yield put(setOrdersFetchingState(false));
             yield nprogress.done();
         }
+    }
+}
+
+export function* setUniversalFilter() {
+    while (true) {
+        yield take(SET_UNIVERSAL_FILTERS);
+        yield put(fetchOrders());
     }
 }
 
@@ -94,25 +141,12 @@ export function* createInviteOrders({ payload: { invites, filters } }) {
     }
 }
 
-export function* fetchStatsCountsSaga() {
-    try {
-        yield nprogress.start();
-
-        const data = yield call(fetchAPI, 'GET', 'orders');
-
-        yield put(fetchStatsCountsSuccess(data));
-    } catch (error) {
-        yield put(emitError(error));
-    } finally {
-        yield nprogress.done();
-    }
-}
 /* eslint-disable array-element-newline */
 export function* saga() {
     yield all([
         call(fetchOrdersSaga),
+        call(setUniversalFilter),
         takeEvery(FETCH_ORDERS_STATS, fetchOrdersStatsSaga),
-        takeEvery(FETCH_STATS_COUNTS_PANEL, fetchStatsCountsSaga),
         takeEvery(CREATE_INVITE_ORDERS, createInviteOrders),
     ]);
 }

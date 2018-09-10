@@ -18,7 +18,7 @@ const Button = ({
             icon={ icon }
             className={ className }
             loading={ loading }
-            onClick={ () => onClick }
+            onClick={ onClick }
             disabled={ disabled }
         >
             { children }
@@ -82,6 +82,20 @@ const _hoveredColor = (type, alpha) => {
     }
 };
 
+const _activeColor = type => {
+    switch (type) {
+        case 'primary':
+            return 'rgba(var(--primaryDarkRGB), 1)';
+        case 'secondary':
+            return 'rgba(var(--secondaryDarkRGB), 1)}';
+        case 'link':
+            return 'rgba(var(--linkRGB), 1)';
+
+        default:
+            return 'rgba(var(--primaryDarkRGB), 1)';
+    }
+};
+
 export const StyledButton = styled(Button)`
     background-color: ${props => _bgColor(props.type)};
     color: ${props => _textColor(props.type)};
@@ -95,9 +109,7 @@ export const StyledButton = styled(Button)`
     }
 
     &:active {
-        color: ${props => _textColor(props.type)};
-        border: ${props => `1px solid ${_borderColor(props.type)}`};
-        background-color: ${props => _hoveredColor(props.type, 1)};
+        background-color: ${props => _activeColor(props.type, 1)};
     }
 `;
 
