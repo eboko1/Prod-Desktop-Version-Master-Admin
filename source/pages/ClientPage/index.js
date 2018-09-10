@@ -5,7 +5,6 @@ import { injectIntl, FormattedMessage } from 'react-intl';
 
 // proj
 import { fetchClient } from 'core/client/duck';
-
 import { Layout, Spinner } from 'commons';
 import { ClientContainer } from 'containers';
 

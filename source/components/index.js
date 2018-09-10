@@ -14,6 +14,9 @@ import ArrayBreakScheduleInput from './ArrayBreakScheduleInput';
 import SettingSalaryTable from './SettingSalaryTable';
 import EmployeeTable from './EmployeeTable';
 import LimitedDecoratedSelect from './LimitedDecoratedSelect';
+import ClientFeedbackTab from './ClientFeedbackTab';
+import ClientOrdersTab from './ClientOrdersTab';
+import FormattedDatetime from './FormattedDatetime'
 
 export {
     SettingSalaryTable,
@@ -33,4 +36,7 @@ export {
     ArrayScheduleInput,
     ArrayBreakScheduleInput,
     LimitedDecoratedSelect,
+    ClientFeedbackTab,
+    ClientOrdersTab,
+    FormattedDatetime,
 };

@@ -1,0 +1,44 @@
+.title {
+    margin: 5px;
+    font-size: 22px;
+    white-space: nowrap;
+}
+
+.recommendationIcon{
+    font-size: 28px;
+    color: var(--primary);
+}
+
+.ratingStars{
+    color: var(--secondary);
+}
+
+.ordernLink {
+    margin-right: 5px;
+}
+
+.serviceNames,
+.recommendation,
+.cancelReason {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 188px;
+    /* width 188 + 16*2(padding) = 220px for 220px width orders num col */
+}
+
+.serviceNames {
+    color: var(--text2);
+}
+
+.recommendation {
+    color: var(--secondary);
+}
+
+.cancelReason {
+    color: var(--not_complete);
+}
+
+.clientVehicle {
+    color: var(--text4);
+}

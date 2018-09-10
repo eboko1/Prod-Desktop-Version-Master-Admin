@@ -28,6 +28,7 @@ import managerRoleReducer, {
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
 import clientReducer, { moduleName as clientModule } from 'core/client/duck';
 import clientRequisiteReducer, { moduleName as clientRequisiteModule } from 'core/clientRequisite/duck';
+import clientOrdersReducer, { moduleName as clientOrdersModule } from 'core/clientOrders/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
@@ -58,6 +59,7 @@ const reducer = combineReducers({
     [ clientsModule ]:         clientsReducer,
     [ clientModule ]:          clientReducer,
     [ clientRequisiteModule ]: clientRequisiteReducer,
+    [ clientOrdersModule ]:    clientOrdersReducer,
     intl,
     router,
 });

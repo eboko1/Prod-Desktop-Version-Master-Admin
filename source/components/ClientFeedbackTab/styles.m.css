@@ -1,0 +1,14 @@
+.title {
+    margin: 5px;
+    font-size: 22px;
+    white-space: nowrap;
+}
+
+.recommendationIcon{
+    font-size: 28px;
+    color: var(--primary);
+}
+
+.ratingStars{
+    color: var(--secondary);
+}

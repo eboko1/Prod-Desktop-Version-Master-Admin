@@ -91,6 +91,8 @@ import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
+import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
+import ClientOrdersTab from 'components/ClientOrdersTab/messages'
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -102,6 +104,7 @@ const messages = merge.all([
     Navigation,
     Header,
     LanguagePad,
+    Footer,
     // pages
     ProfilePage,
     OrdersPage,
@@ -167,8 +170,8 @@ const messages = merge.all([
     ArrayScheduleInput,
     ArrayBreakScheduleInput,
     ChangeStatusDropdown,
-    //commons
-    Footer,
+    ClientFeedbackTab,
+    ClientOrdersTab,
 ]);
 /* eslint-enable array-element-newline */
 

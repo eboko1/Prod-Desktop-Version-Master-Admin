@@ -8,19 +8,18 @@ import { Tabs } from 'antd';
 const { TabPane } = Tabs;
 
 // proj
-
 import {
     createClientVehicle,
     updateClientVehicle,
     deleteClientVehicle,
 } from 'core/client/duck';
 import { ClientRequisitesContainer } from 'containers';
-
 import {
     AddClientVehicleForm,
     EditClientVehicleForm,
     EditClientForm,
 } from 'forms';
+import { ClientFeedbackTab, ClientOrdersTab } from 'components';
 import { Catcher } from 'commons';
 
 // own
@@ -87,7 +86,9 @@ export default class ClientContainer extends Component {
                             <FormattedMessage id={ 'client_container.orders' } />
                         }
                         key='orders'
-                    />
+                    >
+                        <ClientOrdersTab clientId={ clientId }/>
+                    </TabPane>
                     <TabPane
                         tab={
                             <FormattedMessage
@@ -95,14 +96,17 @@ export default class ClientContainer extends Component {
                             />
                         }
                         key='feedback'
-                    />
+                    >
+                        <ClientFeedbackTab feedback={ clientEntity.reviews }/>
+                    </TabPane>
                     <TabPane
                         tab={ <FormattedMessage id={ 'client_container.requisites' }/> }
-                        key='clientRequisites'>
-                        { clientEntity ? <ClientRequisitesContainer
+                        key='clientRequisites'
+                    >
+                        <ClientRequisitesContainer
                             requisites={ clientEntity.requisites }
                             clientId={ clientEntity.clientId }
-                        /> : null }
+                        />
                     </TabPane>
                 </Tabs>
             </Catcher>
