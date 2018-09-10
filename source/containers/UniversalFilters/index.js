@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button } from 'antd';
+import _ from 'lodash';
 
 // proj
 import {
@@ -92,9 +93,13 @@ export default class UniversalFilters extends Component {
                     visible={ universalFiltersModal }
                     hideModal={ () => resetModal() }
                     resetModal={ () => {
-                        this.props.form.setFieldsValue(
-                            this.props.universalFilter,
-                        );
+                        if (_.isEqual(this.props.universalFilter, {})) {
+                            this.props.form.resetFields();
+                        } else {
+                            this.props.form.setFieldsValue(
+                                this.props.universalFilter,
+                            );
+                        }
                         resetModal();
                     } }
                 />

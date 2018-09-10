@@ -16,6 +16,9 @@ import {
     UniversalFilters,
 } from 'containers';
 import { permissions, isForbidden } from 'utils';
+import {
+    setUniversalFilters,
+} from 'core/clients/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -25,12 +28,15 @@ const mapStateToProps = state => ({
     addClientFormData: state.forms.addClientForm.data,
     collapsed:         state.ui.collapsed,
     user:              state.auth,
+    stats:             state.clients.stats,
+    universalFilter:   state.clients.universalFilter,
 });
 
 const mapDispatchToProps = {
     setModal,
     resetModal,
     fetchUniversalFiltersForm,
+    setUniversalFilters,
 };
 
 @connect(
@@ -38,9 +44,6 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class ClientsPage extends Component {
-    _saveClientsPageRef = clientsPageRef => {
-        this.clientsPageRef = clientsPageRef;
-    };
 
     render() {
         const {
@@ -50,6 +53,7 @@ export default class ClientsPage extends Component {
             resetModal,
             addClientFormData,
             collapsed,
+            stats,
         } = this.props;
 
         return (
@@ -86,7 +90,10 @@ export default class ClientsPage extends Component {
                         Styles.filtersCollapsed}` }
                 >
                     <ClientsFilterContainer />
-                    <UniversalFilters type='clients' />
+                    <UniversalFilters
+                        universalFilter={ this.props.universalFilter }
+                        setUniversalFilter={ this.props.setUniversalFilters }
+                        stats={ stats } />
                 </section>
                 <section className={ Styles.table }>
                     <ClientsContainer />

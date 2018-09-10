@@ -16,8 +16,44 @@ import {
     selectFilter,
     FETCH_CLIENTS,
     INVITE_CLIENTS,
+    SET_UNIVERSAL_FILTERS,
     // SET_CLIENTS_STATUS_FILTER,
 } from './duck';
+import moment from 'moment/moment';
+
+function mergeFilters(universalFilters) {
+    const modelsTransformQuery =
+        universalFilters.models && universalFilters.models.length
+            ? {
+                models: _(universalFilters.models)
+                    .map(model => model.split(','))
+                    .flatten()
+                    .value(),
+            }
+            : {};
+
+    const [ startDate, endDate ] = universalFilters.beginDate || [];
+    const [ createStartDate, createEndDate ] = universalFilters.createDate || [];
+
+    const momentFields = _({
+        startDate,
+        endDate,
+        createEndDate,
+        createStartDate,
+    })
+        .pickBy(moment.isMoment)
+        .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
+        .value();
+
+    return _.omit(
+        {
+            ...universalFilters,
+            ...modelsTransformQuery,
+            ...momentFields,
+        },
+        [ 'beginDate', 'createDate' ],
+    );
+}
 
 export function* fetchClientsSaga() {
     while (true) {
@@ -25,9 +61,11 @@ export function* fetchClientsSaga() {
             yield take(FETCH_CLIENTS);
             yield nprogress.start();
 
-            const { filter, sort } = yield select(selectFilter);
+            const { filter, sort, universalFilter } = yield select(
+                selectFilter,
+            );
             const data = yield call(fetchAPI, 'GET', 'clients', {
-                filters: filter,
+                filters: { ...filter, ...mergeFilters(universalFilter) },
                 sort,
             });
 
@@ -54,10 +92,18 @@ export function* inviteClients({ payload: { invites, filters } }) {
     }
 }
 
+export function* setUniversalFilter() {
+    while(true) {
+        yield take(SET_UNIVERSAL_FILTERS);
+        yield put(fetchClients());
+    }
+}
+
 export function* saga() {
     /* eslint-disable array-element-newline */
     yield all([
         call(fetchClientsSaga),
+        call(setUniversalFilter),
         takeEvery(INVITE_CLIENTS, inviteClients),
     ]);
     /* eslint-enable array-element-newline */

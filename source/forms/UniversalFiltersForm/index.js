@@ -200,7 +200,7 @@ export class UniversalFiltersForm extends Component {
                             }
                         >
                             <DecoratedInputNumber
-                                field='odometerLower'
+                                field='odometerGreater'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
@@ -224,7 +224,7 @@ export class UniversalFiltersForm extends Component {
                             }
                         >
                             <DecoratedInputNumber
-                                field='odometerGreater'
+                                field='odometerLower'
                                 getFieldDecorator={ getFieldDecorator }
                                 placeholder={ formatMessage({
                                     id: 'universal_filters_form.mileage_to',
