@@ -3,6 +3,7 @@ import { combineReducers } from 'redux';
 import { routerReducer as router } from 'react-router-redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
+import { LOCATION_CHANGE } from 'react-router-redux';
 
 // proj
 import intl from 'core/intl/reducer';
@@ -27,7 +28,9 @@ import managerRoleReducer, {
 
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
 import clientReducer, { moduleName as clientModule } from 'core/client/duck';
-import clientRequisiteReducer, { moduleName as clientRequisiteModule } from 'core/clientRequisite/duck';
+import clientRequisiteReducer, {
+    moduleName as clientRequisiteModule,
+} from 'core/clientRequisite/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
@@ -40,7 +43,11 @@ export const persistConfig = {
     whitelist: [ 'auth' ],
 };
 
-const reducer = combineReducers({
+const persistedReducer = combineReducers({
+    [ authModule ]: authReducer,
+});
+
+const appReducer = combineReducers({
     forms,
     [ ordersModule ]:          ordersReducer,
     [ orderModule ]:           orderReducer,
@@ -49,7 +56,6 @@ const reducer = combineReducers({
     [ myTasksModule ]:         myTasksReducer,
     [ employeeModule ]:        employeeReducer,
     [ uiModule ]:              uiReducer,
-    [ authModule ]:            authReducer,
     [ packageModule ]:         packageReducer,
     [ roleModule ]:            roleReducer,
     [ businessPackageModule ]: businessPackageReducer,
@@ -61,6 +67,39 @@ const reducer = combineReducers({
     intl,
     router,
 });
+
+const reducer = (state, action) => {
+    let initialState = state;
+    if (action.type === LOCATION_CHANGE) {
+        console.log('→LOCATION_CHANGE 111', state);
+
+        initialState = void 0;
+    }
+    // console.log('→LOCATION_CHANGE 222', state);
+    console.log('aaa', {
+        ...appReducer(initialState, action),
+        ...persistedReducer(state, action),
+    });
+    console.log('→ state', state);
+    console.log('→ initialState', initialState);
+
+    return {
+        ...appReducer(initialState, action),
+        ...persistedReducer(state, action),
+    };
+};
+
+// const reducer = (state, action) =>
+//     appReducer(
+//         action.type === LOCATION_CHANGE
+//             ? {
+//                 ...appReducer({}, {}),
+//                 router: state && state.router || {},
+//             }
+//             : state,
+//         action,
+//     );
+console.log('→ reducer', reducer);
 
 const rootReducer = persistReducer(persistConfig, reducer);
 
