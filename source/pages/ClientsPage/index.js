@@ -16,9 +16,7 @@ import {
     UniversalFilters,
 } from 'containers';
 import { permissions, isForbidden } from 'utils';
-import {
-    setUniversalFilters,
-} from 'core/clients/duck';
+import { setUniversalFilters } from 'core/clients/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -44,7 +42,6 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class ClientsPage extends Component {
-
     render() {
         const {
             user,
@@ -93,7 +90,8 @@ export default class ClientsPage extends Component {
                     <UniversalFilters
                         universalFilter={ this.props.universalFilter }
                         setUniversalFilter={ this.props.setUniversalFilters }
-                        stats={ stats } />
+                        stats={ stats }
+                    />
                 </section>
                 <section className={ Styles.table }>
                     <ClientsContainer />
