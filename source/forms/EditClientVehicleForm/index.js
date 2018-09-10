@@ -41,7 +41,7 @@ export class EditClientVehicleForm extends Component {
 
         this.apiErrorsMap = {
             REFERENCE_VIOLATION: props.intl.formatMessage({
-                id: 'REFERENCE_VIOLATION',
+                id: 'reference_violation',
             }),
         };
     }

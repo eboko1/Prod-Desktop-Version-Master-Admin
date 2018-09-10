@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
-import { Button } from 'antd';
+import { Button, Form } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
 import { AbstractClientForm } from 'forms';
@@ -20,6 +21,7 @@ import Styles from './styles.m.css';
         updateClient,
     },
 })
+@injectIntl
 export class EditClientForm extends Component {
     constructor(props) {
         super(props);
@@ -29,45 +31,51 @@ export class EditClientForm extends Component {
         return (
             <>
                 <AbstractClientForm { ...this.props } />
-                <Button
-                    onClick={ () => {
-                        this.props.form.validateFields((err, values) => {
-                            if (!err) {
-                                const clientFormData = values;
+                <Form className={ Styles.editClientForm }>
+                    <Button
+                        type='primary'
+                        className={ Styles.editClientButton }
+                        onClick={ () => {
+                            this.props.form.validateFields((err, values) => {
+                                if (!err) {
+                                    const clientFormData = values;
 
-                                const clientEntity = {
-                                    birthday: clientFormData.birthday,
-                                    emails:   clientFormData.emails
-                                        ? clientFormData.emails.filter(Boolean)
-                                        : clientFormData.emails,
-                                    middlename: clientFormData.patronymic,
-                                    name:       clientFormData.name,
-                                    surname:    clientFormData.surname,
-                                    sex:        clientFormData.sex,
-                                    status:     clientFormData.status,
-                                    phones:     clientFormData.phones
-                                        .filter(
-                                            phone =>
-                                                phone &&
-                                                phone.country &&
-                                                phone.number,
-                                        )
-                                        .map(
-                                            ({ number, country }) =>
-                                                country + number,
-                                        ),
-                                };
+                                    const clientEntity = {
+                                        birthday: clientFormData.birthday,
+                                        emails:   clientFormData.emails
+                                            ? clientFormData.emails.filter(
+                                                Boolean,
+                                            )
+                                            : clientFormData.emails,
+                                        middlename: clientFormData.patronymic,
+                                        name:       clientFormData.name,
+                                        surname:    clientFormData.surname,
+                                        sex:        clientFormData.sex,
+                                        status:     clientFormData.status,
+                                        phones:     clientFormData.phones
+                                            .filter(
+                                                phone =>
+                                                    phone &&
+                                                    phone.country &&
+                                                    phone.number,
+                                            )
+                                            .map(
+                                                ({ number, country }) =>
+                                                    country + number,
+                                            ),
+                                    };
 
-                                this.props.updateClient(
-                                    this.props.clientId,
-                                    clientEntity,
-                                );
-                            }
-                        });
-                    } }
-                >
-                    Edit
-                </Button>
+                                    this.props.updateClient(
+                                        this.props.clientId,
+                                        clientEntity,
+                                    );
+                                }
+                            });
+                        } }
+                    >
+                        <FormattedMessage id='edit' />
+                    </Button>
+                </Form>
             </>
         );
     }

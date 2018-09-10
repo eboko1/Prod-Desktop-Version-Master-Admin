@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 
 // proj
 import { fetchClient } from 'core/client/duck';
@@ -22,6 +22,7 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
+@injectIntl
 export default class ClientPage extends Component {
     componentDidMount() {
         this.props.fetchClient(this.props.match.params.id);
@@ -33,7 +34,7 @@ export default class ClientPage extends Component {
         return isFetching ? (
             <Spinner spin={ isFetching } />
         ) : (
-            <Layout title={ <FormattedMessage id='client' /> }>
+            <Layout title={ <FormattedMessage id='client_page.title' /> }>
                 <ClientContainer
                     clientId={ match.params.id }
                     clientEntity={ clientEntity }
