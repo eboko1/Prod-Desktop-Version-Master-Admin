@@ -4,6 +4,7 @@ import nprogress from 'nprogress';
 import { spreadProp } from 'ramda-adjunct';
 import _ from 'lodash';
 import moment from 'moment';
+// import { routerReducer } from 'react-router-redux';
 
 //proj
 import { setOrdersFetchingState, emitError } from 'core/ui/duck';
@@ -53,12 +54,15 @@ function mergeFilters(filter, universalFilters) {
         .mapValues(momentDate => momentDate.format('YYYY-MM-DD'))
         .value();
 
-    return _.omit({
-        ...universalFilters,
-        ...modelsTransformQuery,
-        ...momentFields,
-        ...filter,
-    }, [ 'beginDate', 'createDate' ]);
+    return _.omit(
+        {
+            ...universalFilters,
+            ...modelsTransformQuery,
+            ...momentFields,
+            ...filter,
+        },
+        [ 'beginDate', 'createDate' ],
+    );
 }
 
 export function* fetchOrdersSaga() {
@@ -73,13 +77,20 @@ export function* fetchOrdersSaga() {
                 sort: { field: sortField, order: sortOrder },
             } = yield select(selectFilter);
 
+            const activeStatuses = yield select(
+                state => state.router.location.state.status,
+            );
+
             const ordersFilters = spreadProp('daterange', {
                 ...filter,
                 sortField,
                 sortOrder,
             });
 
-            const filters = mergeFilters(ordersFilters, universalFilter);
+            const filters = mergeFilters(
+                { ...ordersFilters, status: activeStatuses },
+                universalFilter,
+            );
 
             yield put(setOrdersFetchingState(true));
             const data = yield call(fetchAPI, 'GET', 'orders', filters);
@@ -96,7 +107,7 @@ export function* fetchOrdersSaga() {
 }
 
 export function* setUniversalFilter() {
-    while(true) {
+    while (true) {
         yield take(SET_UNIVERSAL_FILTERS);
         yield put(fetchOrders());
     }

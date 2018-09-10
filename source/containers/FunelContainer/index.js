@@ -75,7 +75,10 @@ class FunelContainer extends Component {
                     <div className={ Styles.funel__wrapper }>
                         <NavLink
                             exact
-                            to={ `${book.orders}/appointments` }
+                            to={ {
+                                pathname: `${book.orders}/appointments`,
+                                state:    { status: 'not_complete,required,call' },
+                            } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
@@ -97,7 +100,10 @@ class FunelContainer extends Component {
                         </NavLink>
                         <NavLink
                             exact
-                            to={ `${book.orders}/approve` }
+                            to={ {
+                                pathname: `${book.orders}/approve`,
+                                state:    { status: 'approve,reserve' },
+                            } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
@@ -115,7 +121,10 @@ class FunelContainer extends Component {
                         </NavLink>
                         <NavLink
                             exact
-                            to={ `${book.orders}/progress` }
+                            to={ {
+                                pathname: `${book.orders}/progress`,
+                                state:    { status: 'progress' },
+                            } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
@@ -129,7 +138,10 @@ class FunelContainer extends Component {
                         </NavLink>
                         <NavLink
                             exact
-                            to={ `${book.orders}/success` }
+                            to={ {
+                                pathname: `${book.orders}/success`,
+                                state:    { status: 'success' },
+                            } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
@@ -150,7 +162,10 @@ class FunelContainer extends Component {
                     >
                         <NavLink
                             exact
-                            to={ `${book.orders}/invitations` }
+                            to={ {
+                                pathname: `${book.orders}/invitations`,
+                                state:    { status: 'invite' },
+                            } }
                             className={ Styles[ 'funel__tabs__link--reverse' ] }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active--reverse' ]
@@ -164,7 +179,10 @@ class FunelContainer extends Component {
                         </NavLink>
                         <NavLink
                             exact
-                            to={ `${book.orders}/reviews` }
+                            to={ {
+                                pathname: `${book.orders}/reviews`,
+                                state:    { status: 'review' },
+                            } }
                             className={ Styles[ 'funel__tabs__link--reverse' ] }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active--reverse' ]
@@ -196,7 +214,10 @@ class FunelContainer extends Component {
                 >
                     <NavLink
                         exact
-                        to={ `${book.orders}/cancel` }
+                        to={ {
+                            pathname: `${book.orders}/cancel`,
+                            state:    { status: 'cancel' },
+                        } }
                         className={ Styles.funel__tabs__link }
                         activeClassName={ Styles[ 'funel__tabs__link--active' ] }
                         onClick={ () => this.setStatus('cancel') }

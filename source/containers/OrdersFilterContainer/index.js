@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { Input, Radio, Slider, Select } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
@@ -31,13 +30,12 @@ const Option = Select.Option;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-const mapStateToProps = state => {
-    return {
-        stats:         state.orders.stats,
-        filter:        state.orders.filter,
-        orderComments: state.forms.universalFiltersForm.orderComments,
-    };
-};
+const mapStateToProps = state => ({
+    stats:         state.orders.stats,
+    filter:        state.orders.filter,
+    orderComments: state.forms.universalFiltersForm.orderComments,
+    currentStatus: state.router.location.state.status,
+});
 
 const mapDispatchToProps = {
     ordersSearch,
@@ -75,10 +73,17 @@ export default class OrdersFilterContainer extends Component {
         }
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         const status = this.props.match.params.ordersStatuses;
-        const { orderComments, fetchUniversalFiltersForm } = this.props;
+        const {
+            orderComments,
+            fetchUniversalFiltersForm,
+            currentStatus,
+        } = this.props;
         // TODO check []
+        if (prevProps.filter.status !== this.props.filter.status) {
+            this.props.setOrdersStatusFilter(currentStatus);
+        }
         if (status === 'cancel') {
             if (!orderComments) {
                 fetchUniversalFiltersForm();
@@ -86,7 +91,7 @@ export default class OrdersFilterContainer extends Component {
         }
     }
 
-    selectStatus(ev) {
+    _selectStatus(ev) {
         const { setOrdersStatusFilter, fetchOrders, filter } = this.props;
 
         setOrdersStatusFilter(ev.target.value);
@@ -110,10 +115,6 @@ export default class OrdersFilterContainer extends Component {
 
     render() {
         const { status, stats, intl, filter, orderComments } = this.props;
-
-        // const mid = ((max - min) / 2).toFixed(5);
-        // const preColor = value >= mid ? '' : 'rgba(0, 0, 0, .45)';
-        // const nextColor = value >= mid ? 'rgba(0, 0, 0, .45)' : '';
 
         const marks = {
             0: {
@@ -192,9 +193,6 @@ export default class OrdersFilterContainer extends Component {
                         placeholder={ intl.formatMessage({
                             id: 'orders-filter.search_placeholder',
                         }) }
-                        // placeholder={
-                        //     <FormattedMessage id='orders-filter.search.search_placeholder' />
-                        // }
                         // eslint-disable-next-line
                         onChange={({ target: { value } }) =>
                             this.handleOrdersSearch(value)
@@ -205,7 +203,7 @@ export default class OrdersFilterContainer extends Component {
                     />
                     { status === 'appointments' && (
                         <RadioGroup
-                            onChange={ ev => this.selectStatus(ev) }
+                            onChange={ ev => this._selectStatus(ev) }
                             className={ Styles.buttonGroup }
                             defaultValue={ filter.status }
                         >
@@ -231,7 +229,7 @@ export default class OrdersFilterContainer extends Component {
                     ) }
                     { status === 'approve' && (
                         <RadioGroup
-                            onChange={ ev => this.selectStatus(ev) }
+                            onChange={ ev => this._selectStatus(ev) }
                             className={ Styles.buttonGroup }
                             defaultValue={ 'approve,reserve' } // filter.status
                         >

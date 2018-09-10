@@ -58,9 +58,10 @@ const mapDispatch = {
     mapDispatch,
 )
 @withResponsive()
-class OrdersPage extends Component {
+export default class OrdersPage extends Component {
     getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
+        console.log('→ status', status);
         switch (status) {
             case 'appointments':
                 return <FormattedMessage id='appointments' />;
@@ -215,5 +216,3 @@ class OrdersPage extends Component {
         );
     };
 }
-
-export default OrdersPage;
