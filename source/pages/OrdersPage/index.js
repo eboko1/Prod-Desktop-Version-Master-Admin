@@ -59,9 +59,8 @@ const mapDispatch = {
 )
 @withResponsive()
 export default class OrdersPage extends Component {
-    getPageTitle() {
+    _getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
-        console.log('→ status', status);
         switch (status) {
             case 'appointments':
                 return <FormattedMessage id='appointments' />;
@@ -114,7 +113,7 @@ export default class OrdersPage extends Component {
         return (
             <Layout
                 paper={ false }
-                title={ this.getPageTitle() }
+                title={ this._getPageTitle() }
                 description={ <FormattedMessage id='orders-page.description' /> }
                 controls={
                     <div className={ Styles.controls }>
