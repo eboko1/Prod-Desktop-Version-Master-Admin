@@ -12,6 +12,7 @@ import {
     setOrdersStatusFilter,
     resetOrdersDaterangeFilter,
 } from 'core/orders/duck';
+import { clearUniversalFilters } from 'core/forms/universalFiltersForm/duck';
 
 import { Numeral } from 'commons';
 import { images } from 'utils';
@@ -28,6 +29,7 @@ const mapDispatchToProps = {
     fetchOrdersStats,
     setOrdersStatusFilter,
     resetOrdersDaterangeFilter,
+    clearUniversalFilters,
 };
 
 @withRouter
@@ -45,6 +47,7 @@ class FunelContainer extends Component {
             this.props.resetOrdersDaterangeFilter();
         }
 
+        this.props.clearUniversalFilters();
         this.props.setOrdersStatusFilter(status);
     };
 
