@@ -47,7 +47,7 @@ const ReducerState = {
     },
     sort: {
         field: 'datetime',
-        order: 'descend',
+        order: 'desc',
     },
 };
 /* eslint-disable complexity */
