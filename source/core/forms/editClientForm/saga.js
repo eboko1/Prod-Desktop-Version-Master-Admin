@@ -7,7 +7,7 @@ import { fetchClient } from 'core/client/duck';
 
 // own
 
-import { UPDATE_CLIENT } from './duck';
+import { UPDATE_CLIENT, updateClientSuccess } from './duck';
 
 export function* updateClientSaga() {
     while (true) {
@@ -17,6 +17,7 @@ export function* updateClientSaga() {
 
         yield call(fetchAPI, 'PUT', `clients/${clientId}`, null, client, { handleErrorInternally: true });
         yield put(fetchClient(clientId));
+        yield put(updateClientSuccess());
     }
 }
 
