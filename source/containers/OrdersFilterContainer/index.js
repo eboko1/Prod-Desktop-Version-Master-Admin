@@ -34,7 +34,7 @@ const mapStateToProps = state => ({
     stats:         state.orders.stats,
     filter:        state.orders.filter,
     orderComments: state.forms.universalFiltersForm.orderComments,
-    currentStatus: state.router.location.state.status,
+    currentStatus: _.get(state, 'router.location.state.status'),
 });
 
 const mapDispatchToProps = {

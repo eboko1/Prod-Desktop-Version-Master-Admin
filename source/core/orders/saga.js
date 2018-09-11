@@ -77,9 +77,8 @@ export function* fetchOrdersSaga() {
                 sort: { field: sortField, order: sortOrder },
             } = yield select(selectFilter);
 
-            const activeStatuses = yield select(
-                state => state.router.location.state.status,
-            );
+            const activeStatuses = yield select(state =>
+                _.get(state, 'router.location.state.status'));
 
             const ordersFilters = spreadProp('daterange', {
                 ...filter,
@@ -88,7 +87,10 @@ export function* fetchOrdersSaga() {
             });
 
             const filters = mergeFilters(
-                { ...ordersFilters, status: activeStatuses },
+                {
+                    ...ordersFilters,
+                    ...activeStatuses && { status: activeStatuses },
+                },
                 universalFilter,
             );
 
