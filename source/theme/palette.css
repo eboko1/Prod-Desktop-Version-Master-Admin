@@ -36,6 +36,9 @@
     --cancel: rgb(198, 198, 198);
     --invite: rgb(143, 56, 48);
 
+    --disabled: rgb(255, 126, 126);
+    --enabled: rgb(62, 186, 162);
+
     /* RGB */
     --primaryRGB: 155, 89, 182;
     --primaryDarkRGB: 117,63,143;

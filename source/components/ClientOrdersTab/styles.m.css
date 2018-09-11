@@ -4,6 +4,21 @@
     white-space: nowrap;
 }
 
+.countsContainer {
+    margin-bottom: 2em;
+}
+
+.countTitle {
+    margin: 5px;
+    font-size: 18px;
+    white-space: nowrap;
+}
+
+.countNumber {
+    font-size: 26px;
+    color: var(--secondary);
+}
+
 .recommendationIcon{
     font-size: 28px;
     color: var(--primary);
@@ -41,4 +56,5 @@
 
 .clientVehicle {
     color: var(--text4);
+    word-break: normal;
 }

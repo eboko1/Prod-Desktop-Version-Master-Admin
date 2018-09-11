@@ -26,3 +26,17 @@
 .addClientRequisiteButton {
     width: 100%;
 }
+
+.enabledIcon {
+    color: var(--enabled);
+    margin: 0 auto;
+}
+
+.disabledIcon {
+    color: var(--disabled);
+    margin: 0 auto;
+}
+
+.statusIconContainer {
+    text-align: center;
+}

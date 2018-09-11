@@ -54,15 +54,19 @@ export default class ClientRequisitesContainer extends Component {
                 dataIndex: 'enabled',
                 width:     '11%',
                 render:    record => {
-                    return record ? (
-                        <Icon
-                            type='check-circle'
-                        />
-                    ) : (
-                        <Icon
-                            type='close-circle'
-                        />
-                    );
+                    return <div className={ Styles.statusIconContainer }>
+                        { record ? (
+                            <Icon
+                                className={ Styles.enabledIcon }
+                                type='check-circle'
+                            />
+                        ) : (
+                            <Icon
+                                className={ Styles.disabledIcon }
+                                type='close-circle'
+                            />
+                        ) }
+                    </div>;
                 },
             },
             {

@@ -86,11 +86,11 @@ export default class ClientOrdersTab extends Component {
                             { order.vehicleNumber }
                         </span>
                         <br/>
-                        <span className={ Styles.clientVehicle }>
+                        <div className={ Styles.clientVehicle }>
                             { `${order.vehicleMakeName ||
                     '-'} ${order.vehicleModelName ||
                     '-'} ${order.vehicleYear || '-'}` }
-                        </span>
+                        </div>
                      </>,
             },
             {
@@ -130,7 +130,7 @@ export default class ClientOrdersTab extends Component {
     }
 
     render() {
-        const { isFetching, ordersData: { stats, orders } } = this.props;
+        const { isFetching, ordersData: { stats, orders, statusStats } } = this.props;
         if (isFetching || !orders) { return <Loader loading={ isFetching } /> }
 
         const {
@@ -157,6 +157,20 @@ export default class ClientOrdersTab extends Component {
         };
 
         return <>
+            <div className={ Styles.countsContainer }>
+                <h2 className={ Styles.title }>
+                    <FormattedMessage id='client_order_tab.completed_orders' />
+                </h2>
+                <p>
+                    <span className={ Styles.countTitle}>
+                        <FormattedMessage id='client_order_tab.count_of_orders' />
+                    </span>
+                    <span className={ Styles.countNumber} >
+                        { statusStats.success }
+                    </span>
+                </p>
+            </div>
+
             <h2 className={ Styles.title }>
                 <FormattedMessage id='client_order_tab.all_orders' />
             </h2>
