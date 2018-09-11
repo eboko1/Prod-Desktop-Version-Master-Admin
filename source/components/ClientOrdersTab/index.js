@@ -6,15 +6,17 @@ import moment from 'moment';
 
 // proj
 import book from 'routes/book';
-import { fetchClientOrders, setClientOrdersPageFilter } from 'core/clientOrders/duck';
+import {
+    fetchClientOrders,
+    setClientOrdersPageFilter,
+} from 'core/clientOrders/duck';
 import { Loader, FormattedDatetime, OrderStatusIcon } from 'components';
 import { Numeral } from 'commons';
 
 // own
 import Styles from './styles.m.css';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import connect from 'react-redux/es/connect/connect';
-
 
 const mapStateToProps = state => ({
     isFetching: state.ui.clientOrdersFetching,
@@ -42,12 +44,14 @@ export default class ClientOrdersTab extends Component {
                 title:     <FormattedMessage id='client_order_tab.date' />,
                 dataIndex: 'datetime',
                 width:     '20%',
-                render:    record => <FormattedDatetime datetime={ record }/>,
+                render:    record => <FormattedDatetime datetime={ record } />,
             },
             {
                 title:  <FormattedMessage id='client_order_tab.order' />,
                 width:  '20%',
-                render: (order) => //TODO to separate component, same in ordersTableConfig
+                render: (
+                    order, //TODO to separate component, same in ordersTableConfig
+                ) =>
                     <>
                         <Link
                             className={ Styles.ordernLink }
@@ -67,41 +71,43 @@ export default class ClientOrdersTab extends Component {
                             </div>
                         )}
                         {(order.cancelReason ||
-                        order.cancelStatusReason ||
-                        order.cancelStatusOwnReason) && (
+                            order.cancelStatusReason ||
+                            order.cancelStatusOwnReason) && (
                             <div className={ Styles.cancelReason }>
                                 { /* <div>{ order.cancelReason }</div> */ }
                                 <div>{ order.cancelStatusReason }</div>
                                 <div>{ order.cancelStatusOwnReason }</div>
                             </div>
                         )}
-                </>,
+                    </>
+                ,
             },
             {
                 title:  <FormattedMessage id='client_order_tab.car' />,
                 width:  '20%',
                 render: order =>
                     <>
-                        <span>
-                            { order.vehicleNumber }
-                        </span>
-                        <br/>
+                        <span>{ order.vehicleNumber }</span>
+                        <br />
                         <div className={ Styles.clientVehicle }>
                             { `${order.vehicleMakeName ||
-                    '-'} ${order.vehicleModelName ||
-                    '-'} ${order.vehicleYear || '-'}` }
+                                '-'} ${order.vehicleModelName ||
+                                '-'} ${order.vehicleYear || '-'}` }
                         </div>
-                     </>,
+                    </>
+                ,
             },
             {
                 title:  <FormattedMessage id='client_order_tab.amount' />,
                 width:  '10%',
-                render: order => <Numeral
-                    currency={ formatMessage({ id: 'currency' }) }
-                    nullText='0'
-                >
-                    { order.servicesTotalSum + order.detailsTotalSum }
-                </Numeral>,
+                render: order => (
+                    <Numeral
+                        currency={ formatMessage({ id: 'currency' }) }
+                        nullText='0'
+                    >
+                        { order.servicesTotalSum + order.detailsTotalSum }
+                    </Numeral>
+                ),
             },
             {
                 title:     <FormattedMessage id='client_order_tab.raiting' />,
@@ -113,30 +119,34 @@ export default class ClientOrdersTab extends Component {
     }
 
     componentWillMount() {
-        const {clientId, filter} = this.props;
-        this.props.fetchClientOrders({ clientId, filter});
+        const { clientId, filter } = this.props;
+        this.props.fetchClientOrders({ clientId, filter });
     }
 
     renderRatingStars(rating) {
         const value = rating / 2;
-        const ratingStarts = <Rate
-            className={ Styles.ratingStars }
-            allowHalf
-            disabled
-            defaultValue={ value }
-        />;
+        const ratingStarts = (
+            <Rate
+                className={ Styles.ratingStars }
+                allowHalf
+                disabled
+                defaultValue={ value }
+            />
+        );
 
         return ratingStarts;
     }
 
     render() {
-        const { isFetching, ordersData: { stats, orders, statusStats } } = this.props;
-        if (isFetching || !orders) { return <Loader loading={ isFetching } /> }
-
         const {
-            clientId,
-            filter,
+            isFetching,
+            ordersData: { stats, orders, count },
         } = this.props;
+        if (isFetching || !orders) {
+            return <Loader loading={ isFetching } />;
+        }
+
+        const { clientId, filter } = this.props;
 
         const ordersRows = orders.map((item, index) => ({
             ...item,
@@ -152,35 +162,35 @@ export default class ClientOrdersTab extends Component {
             current:          filter.page,
             onChange:         page => {
                 this.props.setClientOrdersPageFilter(page);
-                this.props.fetchClientOrders({ clientId, filter});
+                this.props.fetchClientOrders({ clientId, filter });
             },
         };
 
-        return <>
-            <div className={ Styles.countsContainer }>
+        return (
+            <>
+                <div className={ Styles.countsContainer }>
+                    <h2 className={ Styles.title }>
+                        <FormattedMessage id='client_order_tab.completed_orders' />
+                    </h2>
+                    <p>
+                        <span className={ Styles.countTitle }>
+                            <FormattedMessage id='client_order_tab.count_of_orders' />
+                        </span>
+                        <span className={ Styles.countNumber }>{ count }</span>
+                    </p>
+                </div>
+
                 <h2 className={ Styles.title }>
-                    <FormattedMessage id='client_order_tab.completed_orders' />
+                    <FormattedMessage id='client_order_tab.all_orders' />
                 </h2>
-                <p>
-                    <span className={ Styles.countTitle}>
-                        <FormattedMessage id='client_order_tab.count_of_orders' />
-                    </span>
-                    <span className={ Styles.countNumber} >
-                        { statusStats.success }
-                    </span>
-                </p>
-            </div>
 
-            <h2 className={ Styles.title }>
-                <FormattedMessage id='client_order_tab.all_orders' />
-            </h2>
-
-            <Table
-                pagination={ pagination }
-                size='small'
-                dataSource={ ordersRows }
-                columns={ this.columns }
-            />
-            </>;
+                <Table
+                    pagination={ pagination }
+                    size='small'
+                    dataSource={ ordersRows }
+                    columns={ this.columns }
+                />
+            </>
+        );
     }
 }
