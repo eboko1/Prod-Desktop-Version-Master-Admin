@@ -83,7 +83,13 @@
         "reference_violation": "Reference violation!",
         "roles.get_employees": "Access employees",
         "roles.create_edit_delete_employees": "Edit employees",
-        "roles.employees_salaries": "Access employees salaries"
+        "roles.employees_salaries": "Access employees salaries",
+        "roles.get_clients": "Access clients",
+        "roles.create_edit_delete_clients": "Edit clients",
+        "roles.create_edit_delete_client_vehicles": "Edit client vehicles",
+        "roles.filter_clients": "Filter clients",
+        "roles.get_clients_basic_information": "Get client (basic)",
+        "roles.get_clients_additional_information": "Get client (advanced)"
     },
     "ru": {
         "currency": "грн.",
@@ -169,7 +175,13 @@
         "reference_violation": "Нарушение целостность",
         "roles.get_employees": "Доступ к сотрудникам",
         "roles.create_edit_delete_employees": "Редактировать сотрудников",
-        "roles.employees_salaries": "Доступ к ФОТ"
+        "roles.employees_salaries": "Доступ к ФОТ",
+        "roles.get_clients": "Доступ к клиентам",
+        "roles.create_edit_delete_clients": "Редактировать клиентов",
+        "roles.create_edit_delete_client_vehicles": "Редактировать автомобили клиентов",
+        "roles.filter_clients": "Фильтрировать клиентов",
+        "roles.get_clients_basic_information": "Информация клиента (основная)",
+        "roles.get_clients_additional_information": "Информация клиента (дополнительная)"
     },
     "uk": {
         "currency": "грн.",
@@ -255,6 +267,12 @@
         "reference_violation": "Порушення цілісності",
         "roles.get_employees": "Доступ до співробітників",
         "roles.create_edit_delete_employees": "Редагувати співробітників",
-        "roles.employees_salaries": "Доступ до зарплат співробітників"
+        "roles.employees_salaries": "Доступ до зарплат співробітників",
+        "roles.get_clients": "Доступ до клієнтів",
+        "roles.create_edit_delete_clients": "Редагувати клієнтів",
+        "roles.create_edit_delete_client_vehicles": "Редагувати автомобілі клієнтів",
+        "roles.filter_clients": "Фільтрувати клієнтів",
+        "roles.get_clients_basic_information": "Інформація клієнта (основна)",
+        "roles.get_clients_additional_information": "Інформація клієнта (додаткова)"
     }
 }
