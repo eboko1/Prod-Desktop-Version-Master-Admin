@@ -93,7 +93,7 @@ export function* fetchOrdersSaga() {
                 },
                 universalFilter,
             );
-            console.log('→ filters', filters);
+
             yield put(setOrdersFetchingState(true));
             const data = yield call(fetchAPI, 'GET', 'orders', filters);
 

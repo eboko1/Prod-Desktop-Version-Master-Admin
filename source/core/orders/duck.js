@@ -1,6 +1,6 @@
 // vendor
 import { v4 as uid } from 'uuid';
-
+import _ from 'lodash';
 /**
  * Constants
  * */
@@ -37,6 +37,7 @@ const ReducerState = {
     data:            [],
     universalFilter: {},
     currentStatuses: '',
+    daterange:       'all',
     filter:          {
         page:          1,
         status:        'not_complete,required,call',
@@ -97,8 +98,9 @@ export default function reducer(state = ReducerState, action) {
                 filter: {
                     ...state.filter,
                     page:      1,
-                    daterange: payload,
+                    daterange: _.omit(payload, 'daterange'),
                 },
+                daterange: payload.daterange,
             };
 
         case RESET_ORDERS_DATERANGE_FILTER:
