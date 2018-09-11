@@ -46,7 +46,7 @@ export default class ClientOrdersTab extends Component {
             },
             {
                 title:  <FormattedMessage id='client_order_tab.order' />,
-                width:  '30%',
+                width:  '20%',
                 render: (order) => //TODO to separate component, same in ordersTableConfig
                     <>
                         <Link
@@ -79,7 +79,7 @@ export default class ClientOrdersTab extends Component {
             },
             {
                 title:  <FormattedMessage id='client_order_tab.car' />,
-                width:  '30%',
+                width:  '20%',
                 render: order =>
                     <>
                         <span>
@@ -95,7 +95,7 @@ export default class ClientOrdersTab extends Component {
             },
             {
                 title:  <FormattedMessage id='client_order_tab.amount' />,
-                width:  '20%',
+                width:  '10%',
                 render: order => <Numeral
                     currency={ formatMessage({ id: 'currency' }) }
                     nullText='0'
@@ -103,12 +103,30 @@ export default class ClientOrdersTab extends Component {
                     { order.servicesTotalSum + order.detailsTotalSum }
                 </Numeral>,
             },
+            {
+                title:     <FormattedMessage id='client_order_tab.raiting' />,
+                dataIndex: 'nps',
+                width:     '20%',
+                render:    record => this.renderRatingStars(record),
+            },
         ];
     }
 
     componentWillMount() {
         const {clientId, filter} = this.props;
         this.props.fetchClientOrders({ clientId, filter});
+    }
+
+    renderRatingStars(rating) {
+        const value = rating / 2;
+        const ratingStarts = <Rate
+            className={ Styles.ratingStars }
+            allowHalf
+            disabled
+            defaultValue={ value }
+        />;
+
+        return ratingStarts;
     }
 
     render() {

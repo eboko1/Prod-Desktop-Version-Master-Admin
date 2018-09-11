@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { Table, Icon, Rate } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import moment from 'moment';
 
 // proj
 import book from 'routes/book';

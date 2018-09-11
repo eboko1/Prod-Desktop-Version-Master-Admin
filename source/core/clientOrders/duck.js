@@ -17,6 +17,10 @@ const ReducerState = {
     filter:     {
         page: 1,
     },
+    sort: {
+        field: 'datetime',
+        order: 'desc',
+    },
 };
 
 export default function reducer(state = ReducerState, action) {

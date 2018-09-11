@@ -5,7 +5,7 @@
         "client_order_tab.order": "Order",
         "client_order_tab.car": "Car",
         "client_order_tab.amount": "Amount",
-        "client_order_tab.raiting": "Raiting"
+        "client_order_tab.raiting": "NPS rating"
     },
     "ru": {
         "client_order_tab.all_orders": "Все заказы",
@@ -13,7 +13,7 @@
         "client_order_tab.order": "Заказ",
         "client_order_tab.car": "Автомобиль",
         "client_order_tab.amount": "Сумма",
-        "client_order_tab.raiting": "Рейтинг"
+        "client_order_tab.raiting": "NPS рейтинг"
     },
     "uk": {
         "client_order_tab.all_orders": "Всі замовлення",
@@ -21,6 +21,6 @@
         "client_order_tab.order": "Замовлення",
         "client_order_tab.car": "Автомобіль",
         "client_order_tab.amount": "Сума",
-        "client_order_tab.raiting": "Рейтинг"
+        "client_order_tab.raiting": "NPS рейтинг"
     }
 }
