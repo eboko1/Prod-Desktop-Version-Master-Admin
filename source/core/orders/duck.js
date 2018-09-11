@@ -36,6 +36,7 @@ const ReducerState = {
     count:           0,
     data:            [],
     universalFilter: {},
+    currentStatuses: '',
     filter:          {
         page:          1,
         status:        'not_complete,required,call',
@@ -116,6 +117,8 @@ export default function reducer(state = ReducerState, action) {
             };
 
         case SET_ORDERS_STATUS_FILTER:
+            console.log('→ reducer');
+
             return {
                 ...state,
                 filter: {

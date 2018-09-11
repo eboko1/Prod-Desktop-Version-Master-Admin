@@ -81,22 +81,17 @@ export default class OrdersFilterContainer extends Component {
             currentStatus,
         } = this.props;
         // TODO check []
-        if (prevProps.filter.status !== this.props.filter.status) {
+        if (prevProps.currentStatus !== this.props.currentStatus) {
             this.props.setOrdersStatusFilter(currentStatus);
         }
+        // if (prevProps.filter.status !== this.props.filter.status) {
+        //     this.props.setOrdersStatusFilter(currentStatus);
+        // }
         if (status === 'cancel') {
             if (!orderComments) {
                 fetchUniversalFiltersForm();
             }
         }
-    }
-
-    _selectStatus(ev) {
-        const { setOrdersStatusFilter, fetchOrders, filter } = this.props;
-
-        setOrdersStatusFilter(ev.target.value);
-        this.props.clearUniversalFilters();
-        fetchOrders({ page: 1, ...filter });
     }
 
     handleReviewSlider = value => {
@@ -113,8 +108,14 @@ export default class OrdersFilterContainer extends Component {
         fetchOrders({ page: 1, ...filter });
     };
 
+    _setFilterStatus = status => {
+        this.props.setOrdersStatusFilter(status);
+        this.props.fetchOrders();
+    };
+
     render() {
         const { status, stats, intl, filter, orderComments } = this.props;
+        const filterStatus = filter.status;
 
         const marks = {
             0: {
@@ -203,46 +204,72 @@ export default class OrdersFilterContainer extends Component {
                     />
                     { status === 'appointments' && (
                         <RadioGroup
-                            onChange={ ev => this._selectStatus(ev) }
                             className={ Styles.buttonGroup }
-                            defaultValue={ filter.status }
+                            value={ filterStatus }
                         >
-                            <RadioButton value='not_complete,required,call'>
+                            <RadioButton
+                                value='not_complete,required,call'
+                                onClick={ () =>
+                                    this._setFilterStatus(
+                                        'not_complete,required,call',
+                                    )
+                                }
+                            >
                                 <FormattedMessage id='all' /> (
                                 { stats.not_complete +
                                     stats.required +
                                     stats.call }
                                 )
                             </RadioButton>
-                            <RadioButton value='not_complete'>
+                            <RadioButton
+                                value='not_complete'
+                                onClick={ () =>
+                                    this._setFilterStatus('not_complete')
+                                }
+                            >
                                 <FormattedMessage id='not_complete' /> (
                                 { stats.not_complete })
                             </RadioButton>
-                            <RadioButton value='required'>
+                            <RadioButton
+                                value='required'
+                                onClick={ () =>
+                                    this._setFilterStatus('required')
+                                }
+                            >
                                 <FormattedMessage id='required' /> (
                                 { stats.required })
                             </RadioButton>
-                            <RadioButton value='call'>
+                            <RadioButton
+                                value='call'
+                                onClick={ () => this._setFilterStatus('call') }
+                            >
                                 <FormattedMessage id='call' /> ({ stats.call })
                             </RadioButton>
                         </RadioGroup>
                     ) }
                     { status === 'approve' && (
-                        <RadioGroup
-                            onChange={ ev => this._selectStatus(ev) }
-                            className={ Styles.buttonGroup }
-                            defaultValue={ 'approve,reserve' } // filter.status
-                        >
-                            <RadioButton value='approve,reserve'>
-                                <FormattedMessage id='all' /> (
+                        <RadioGroup value={ filterStatus }>
+                            <RadioButton
+                                value='approve,reserve'
+                                onClick={ () =>
+                                    this._setFilterStatus('approve,reserve')
+                                }
+                            >
+                                <FormattedMessage id='all' />(
                                 { stats.approve + stats.reserve })
                             </RadioButton>
-                            <RadioButton value='approve'>
-                                <FormattedMessage id='approve' /> (
+                            <RadioButton
+                                value='approve'
+                                onClick={ () => this._setFilterStatus('approve') }
+                            >
+                                <FormattedMessage id='approve' />(
                                 { stats.approve })
                             </RadioButton>
-                            <RadioButton value='reserve'>
-                                <FormattedMessage id='reserve' /> (
+                            <RadioButton
+                                value='reserve'
+                                onClick={ () => this._setFilterStatus('reserve') }
+                            >
+                                <FormattedMessage id='reserve' />(
                                 { stats.reserve })
                             </RadioButton>
                         </RadioGroup>
