@@ -23,7 +23,7 @@ export default class HistoryTable extends Component {
                 width:     '10%',
                 render:    (text, record) => (
                     <div style={ { wordBreak: 'normal' } }>
-                        { moment(record.datetime).format('DD.MM.YYYY HH:mm') }
+                        { record.beginDatetime ? moment(record.beginDatetime).format('DD.MM.YYYY HH:mm') : null }
                     </div>
                 ),
             },
