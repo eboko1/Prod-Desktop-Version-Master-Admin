@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Button, Table, Icon, List, Form, Row, Col } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Tabs } from 'antd';
-const { TabPane } = Tabs;
 import { permissions, isForbidden } from 'utils';
 
 // proj
@@ -13,6 +12,8 @@ import {
     updateClientVehicle,
     deleteClientVehicle,
 } from 'core/client/duck';
+
+import { Catcher } from 'commons';
 import { ClientRequisitesContainer } from 'containers';
 import {
     AddClientVehicleForm,
@@ -20,10 +21,14 @@ import {
     EditClientForm,
 } from 'forms';
 import { ClientFeedbackTab, ClientOrdersTab } from 'components';
-import { Catcher } from 'commons';
 
 // own
 import Styles from './styles.m.css';
+const { TabPane } = Tabs;
+
+const mapStateToProps = state => ({
+    user: state.auth,
+});
 
 const mapDispatchToProps = {
     createClientVehicle,
@@ -31,23 +36,18 @@ const mapDispatchToProps = {
     deleteClientVehicle,
 };
 
-const mapStateToProps = state => ({
-    user: state.auth,
-});
-
 @injectIntl
 @connect(
     mapStateToProps,
     mapDispatchToProps,
 )
 export default class ClientContainer extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
         const { clientEntity, clientId, user } = this.props;
-        const { CREATE_EDIT_DELETE_CLIENTS, GET_CLIENTS_ADDITIONAL_INFORMATION } = permissions;
+        const {
+            CREATE_EDIT_DELETE_CLIENTS,
+            GET_CLIENTS_ADDITIONAL_INFORMATION,
+        } = permissions;
 
         // Client
         return (
@@ -89,8 +89,12 @@ export default class ClientContainer extends Component {
                             <FormattedMessage id={ 'client_container.orders' } />
                         }
                         key='orders'
-                        disabled={ isForbidden(user, GET_CLIENTS_ADDITIONAL_INFORMATION) }
+                        disabled={ isForbidden(
+                            user,
+                            GET_CLIENTS_ADDITIONAL_INFORMATION,
+                        ) }
                     >
+                        { console.log('→ CC this.props', this.props) }
                         <ClientOrdersTab clientId={ clientId } />
                     </TabPane>
                     <TabPane
@@ -100,7 +104,10 @@ export default class ClientContainer extends Component {
                             />
                         }
                         key='feedback'
-                        disabled={ isForbidden(user, GET_CLIENTS_ADDITIONAL_INFORMATION) }
+                        disabled={ isForbidden(
+                            user,
+                            GET_CLIENTS_ADDITIONAL_INFORMATION,
+                        ) }
                     >
                         <ClientFeedbackTab feedback={ clientEntity.reviews } />
                     </TabPane>
