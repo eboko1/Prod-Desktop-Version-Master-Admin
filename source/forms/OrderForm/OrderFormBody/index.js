@@ -289,7 +289,15 @@ export default class OrderFormBody extends Component {
             const modelPart = vehicle.model
                 ? `${vehicle.make} ${vehicle.model}`
                 : formatMessage({ id: 'add_order_form.no_model' });
-            const parts = [ modelPart, vehicle.year, vehicle.modification, vehicle.number, vehicle.vin ];
+            const horsePowerLabel = !vehicle.horsePower
+                ? null
+                : `(${vehicle.horsePower} ${formatMessage({
+                    id: 'horse_power',
+                })})`;
+            const modificationPart = [ vehicle.modification, horsePowerLabel ]
+                .filter(Boolean)
+                .join(' ');
+            const parts = [ modelPart, vehicle.year, modificationPart, vehicle.number, vehicle.vin ];
 
             return parts
                 .filter(Boolean)

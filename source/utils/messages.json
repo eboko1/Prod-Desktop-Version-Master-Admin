@@ -89,7 +89,8 @@
         "roles.create_edit_delete_client_vehicles": "Edit client vehicles",
         "roles.filter_clients": "Filter clients",
         "roles.get_clients_basic_information": "Get client (basic)",
-        "roles.get_clients_additional_information": "Get client (advanced)"
+        "roles.get_clients_additional_information": "Get client (advanced)",
+        "horse_power": "h.p."
     },
     "ru": {
         "currency": "грн.",
@@ -181,7 +182,8 @@
         "roles.create_edit_delete_client_vehicles": "Редактировать автомобили клиентов",
         "roles.filter_clients": "Фильтрировать клиентов",
         "roles.get_clients_basic_information": "Информация клиента (основная)",
-        "roles.get_clients_additional_information": "Информация клиента (дополнительная)"
+        "roles.get_clients_additional_information": "Информация клиента (дополнительная)",
+        "horse_power": "л.с."
     },
     "uk": {
         "currency": "грн.",
@@ -273,6 +275,7 @@
         "roles.create_edit_delete_client_vehicles": "Редагувати автомобілі клієнтів",
         "roles.filter_clients": "Фільтрувати клієнтів",
         "roles.get_clients_basic_information": "Інформація клієнта (основна)",
-        "roles.get_clients_additional_information": "Інформація клієнта (додаткова)"
+        "roles.get_clients_additional_information": "Інформація клієнта (додаткова)",
+        "horse_power": "к.с."
     }
 }
