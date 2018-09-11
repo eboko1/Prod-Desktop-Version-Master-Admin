@@ -1,12 +1,15 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon } from 'antd';
+import { Table } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 
 // proj
 import { Catcher } from 'commons';
 import { CallStatusIcon } from 'components';
+
+// own
+import Styles from './styles.m.css';
 
 class CallsTable extends Component {
     constructor(props) {
@@ -64,15 +67,17 @@ class CallsTable extends Component {
             },
             {
                 title:     <FormattedMessage id='order_form_table.calls.record' />,
-                dataIndex: 'record',
-                width:     '15%',
+                dataIndex: 'recordingLink',
+                width:     'auto',
                 key:       'order-calls-record',
-                render:    () => {
-                    <div>
-                        <Icon type='play-circle-o' />
-                        <Icon type='download' />
-                    </div>;
-                },
+                render:    recordingLink =>
+                    recordingLink ? (
+                        <audio controls>
+                            <source src={ recordingLink } />
+                        </audio>
+                    ) : (
+                        <FormattedMessage id='order_form_table.calls.no_record' />
+                    ),
             },
         ];
     }
@@ -84,6 +89,7 @@ class CallsTable extends Component {
         return (
             <Catcher>
                 <Table
+                    className={ Styles.callsTable }
                     dataSource={ orderCalls }
                     columns={ columns }
                     pagination={ false }

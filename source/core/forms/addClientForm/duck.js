@@ -13,20 +13,11 @@ export const ON_CHANGE_ADD_CLIENT_FORM = `${prefix}/ON_CHANGE_ADD_CLIENT_FORM`;
 export const SUBMIT_ADD_CLIENT_FORM = `${prefix}/SUBMIT_ADD_CLIENT_FORM`;
 export const SUBMIT_ADD_CLIENT_FORM_SUCCESS = `${prefix}/SUBMIT_ADD_CLIENT_FORM_SUCCESS`;
 
-export const FETCH_VEHICLES_INFO = `${prefix}/FETCH_VEHICLES_INFO`;
-export const FETCH_VEHICLES_INFO_SUCCESS = `${prefix}/FETCH_VEHICLES_INFO_SUCCESS`;
-
 export const CREATE_CLIENT = `${prefix}/CREATE_CLIENT`;
 export const CREATE_CLIENT_SUCCESS = `${prefix}/CREATE_CLIENT_SUCCESS`;
 
 export const ADD_CLIENT_VEHICLE = `${prefix}/ADD_CLIENT_VEHICLE`;
 export const REMOVE_CLIENT_VEHICLE = `${prefix}/REMOVE_CLIENT_VEHICLE`;
-
-export const INIT_VEHICLES_INFO_FILTER_TYPE = 'INIT_VEHICLES_INFO_FILTER_TYPE';
-export const YEAR_VEHICLES_INFO_FILTER_TYPE = 'YEAR_VEHICLES_INFO_FILTER_TYPE';
-export const MAKE_VEHICLES_INFO_FILTER_TYPE = 'MAKE_VEHICLES_INFO_FILTER_TYPE';
-export const MODEL_VEHICLES_INFO_FILTER_TYPE =
-    'MODEL_VEHICLES_INFO_FILTER_TYPE';
 
 export const ADD_ERROR = `${prefix}/ADD_ERROR`;
 export const HANDLE_ERROR = `${prefix}/HANDLE_ERROR`;
@@ -42,19 +33,14 @@ const ReducerState = {
         phones:  [],
         emails:  [],
     },
-    lastFilterAction: '',
-    vehicles:         [],
-    data:             {},
-    errors:           [],
-
-    modifications: [],
-    makes:         [],
-    models:        [],
+    vehicles: [],
+    data:     {},
+    errors:   [],
 };
 
 /* eslint-disable complexity */
 export default function reducer(state = ReducerState, action) {
-    const { type, payload, meta } = action;
+    const { type, payload } = action;
 
     switch (type) {
         case FETCH_ADD_CLIENT_FORM_SUCCESS:
@@ -64,7 +50,6 @@ export default function reducer(state = ReducerState, action) {
                     ...state.data,
                     ...payload,
                 },
-                lastFilterAction: INIT_VEHICLES_INFO_FILTER_TYPE,
             };
 
         case ON_CHANGE_ADD_CLIENT_FORM:
@@ -95,64 +80,12 @@ export default function reducer(state = ReducerState, action) {
         case ADD_CLIENT_VEHICLE:
             return {
                 ...state,
-                vehicles:         [ ...state.vehicles, payload ],
-                lastFilterAction: INIT_VEHICLES_INFO_FILTER_TYPE,
-                fields:           {
+                vehicles: [ ...state.vehicles, payload ],
+                fields:   {
                     ...state.fields,
                     vehicle: {},
                 },
             };
-
-        case FETCH_VEHICLES_INFO_SUCCESS:
-            switch (payload.type) {
-                case YEAR_VEHICLES_INFO_FILTER_TYPE:
-                    return {
-                        ...state,
-                        makes:            payload.data.makes,
-                        models:           [],
-                        modifications:    [],
-                        lastFilterAction: YEAR_VEHICLES_INFO_FILTER_TYPE,
-                        fields:           {
-                            ...state.fields,
-                            vehicle: {
-                                ...state.fields.vehicle,
-                                modificationId: void 0,
-                                modelId:        void 0,
-                                makeId:         void 0,
-                            },
-                        },
-                    };
-                case MAKE_VEHICLES_INFO_FILTER_TYPE:
-                    return {
-                        ...state,
-                        models:           payload.data.models,
-                        modifications:    [],
-                        lastFilterAction: MAKE_VEHICLES_INFO_FILTER_TYPE,
-                        fields:           {
-                            ...state.fields,
-                            vehicle: {
-                                ...state.fields.vehicle,
-                                modificationId: void 0,
-                                modelId:        void 0,
-                            },
-                        },
-                    };
-                case MODEL_VEHICLES_INFO_FILTER_TYPE:
-                    return {
-                        ...state,
-                        modifications:    payload.data.modifications,
-                        lastFilterAction: MODEL_VEHICLES_INFO_FILTER_TYPE,
-                        fields:           {
-                            ...state.fields,
-                            vehicle: {
-                                ...state.fields.vehicle,
-                                modificationId: void 0,
-                            },
-                        },
-                    };
-                default:
-                    return state;
-            }
 
         case ADD_ERROR:
             return {
@@ -214,16 +147,6 @@ export const createClient = clientEntity => ({
 
 export const createClientSuccess = () => ({
     type: CREATE_CLIENT_SUCCESS,
-});
-
-export const fetchVehiclesInfo = (type, filters) => ({
-    type:    FETCH_VEHICLES_INFO,
-    payload: { type, filters },
-});
-
-export const fetchVehiclesInfoSuccess = (type, data) => ({
-    type:    FETCH_VEHICLES_INFO_SUCCESS,
-    payload: { type, data },
 });
 
 export const addClientVehicle = vehicle => ({

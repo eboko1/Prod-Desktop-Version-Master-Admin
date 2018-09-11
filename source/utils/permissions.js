@@ -23,6 +23,19 @@ const EDIT_DASHBOARD_ORDER = 'EDIT_DASHBOARD_ORDER';
 const OPEN_DASHBOARD_ORDER = 'OPEN_DASHBOARD_ORDER';
 const CREATE_DASHBOARD_ORDER = 'CREATE_DASHBOARD_ORDER';
 
+// Employees
+const GET_EMPLOYEES = 'GET_EMPLOYEES';
+const CREATE_EDIT_DELETE_EMPLOYEES = 'CREATE_EDIT_DELETE_EMPLOYEES';
+const EMPLOYEES_SALARIES = 'EMPLOYEES_SALARIES';
+
+// Clients
+const GET_CLIENTS = 'GET_CLIENTS';
+const CREATE_EDIT_DELETE_CLIENTS = 'CREATE_EDIT_DELETE_CLIENTS';
+const CREATE_EDIT_DELETE_CLIENT_VEHICLES = 'CREATE_EDIT_DELETE_CLIENT_VEHICLES';
+const FILTER_CLIENTS = 'FILTER_CLIENTS';
+const GET_CLIENTS_BASIC_INFORMATION = 'GET_CLIENTS_BASIC_INFORMATION';
+const GET_CLIENTS_ADDITIONAL_INFORMATION = 'GET_CLIENTS_ADDITIONAL_INFORMATION';
+
 export const permissions = Object.freeze({
     ACCESS_ORDER_BODY,
     ACCESS_ORDER_CALLS,
@@ -44,6 +57,17 @@ export const permissions = Object.freeze({
     EDIT_DASHBOARD_ORDER,
     OPEN_DASHBOARD_ORDER,
     CREATE_DASHBOARD_ORDER,
+
+    GET_EMPLOYEES,
+    CREATE_EDIT_DELETE_EMPLOYEES,
+    EMPLOYEES_SALARIES,
+
+    GET_CLIENTS,
+    CREATE_EDIT_DELETE_CLIENTS,
+    CREATE_EDIT_DELETE_CLIENT_VEHICLES,
+    FILTER_CLIENTS,
+    GET_CLIENTS_BASIC_INFORMATION,
+    GET_CLIENTS_ADDITIONAL_INFORMATION,
 });
 
 export const isForbidden = ({ isAdmin, scope }, grant) =>
@@ -94,5 +118,32 @@ export const rolesOptionValues = intl => ({
     }),
     [ CREATE_DASHBOARD_ORDER ]: intl.formatMessage({
         id: 'roles.create_dashboard_order',
+    }),
+    [ GET_EMPLOYEES ]: intl.formatMessage({
+        id: 'roles.get_employees',
+    }),
+    [ CREATE_EDIT_DELETE_EMPLOYEES ]: intl.formatMessage({
+        id: 'roles.create_edit_delete_employees',
+    }),
+    [ EMPLOYEES_SALARIES ]: intl.formatMessage({
+        id: 'roles.employees_salaries',
+    }),
+    [ GET_CLIENTS ]: intl.formatMessage({
+        id: 'roles.get_clients',
+    }),
+    [ CREATE_EDIT_DELETE_CLIENTS ]: intl.formatMessage({
+        id: 'roles.create_edit_delete_clients',
+    }),
+    [ CREATE_EDIT_DELETE_CLIENT_VEHICLES ]: intl.formatMessage({
+        id: 'roles.create_edit_delete_client_vehicles',
+    }),
+    [ FILTER_CLIENTS ]: intl.formatMessage({
+        id: 'roles.filter_clients',
+    }),
+    [ GET_CLIENTS_BASIC_INFORMATION ]: intl.formatMessage({
+        id: 'roles.get_clients_basic_information',
+    }),
+    [ GET_CLIENTS_ADDITIONAL_INFORMATION ]: intl.formatMessage({
+        id: 'roles.get_clients_additional_information',
     }),
 });

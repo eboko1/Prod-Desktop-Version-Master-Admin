@@ -8,7 +8,11 @@ import { Button, Radio } from 'antd';
 import classNames from 'classnames/bind';
 
 // proj
-import { fetchOrders, setOrdersDaterangeFilter } from 'core/orders/duck';
+import {
+    fetchOrders,
+    setOrdersDaterangeFilter,
+    setUniversalFilter,
+} from 'core/orders/duck';
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 import { setModal, MODALS } from 'core/modals/duck';
 
@@ -33,8 +37,11 @@ let cx = classNames.bind(Styles);
 const mapState = state => ({
     ordersDaterangeFilter: state.orders.filter.daterange,
     filter:                state.orders.filter,
+    universalStats:        state.orders.universalStats,
+    universalFilter:       state.orders.universalFilter,
     collapsed:             state.ui.collapsed,
     user:                  state.auth,
+    daterange:             state.orders.daterange,
     // isMobile:              state.ui.views.isMobile,
 });
 
@@ -43,6 +50,7 @@ const mapDispatch = {
     setOrdersDaterangeFilter,
     setModal,
     fetchUniversalFiltersForm,
+    setUniversalFilter,
 };
 
 @withRouter
@@ -51,8 +59,8 @@ const mapDispatch = {
     mapDispatch,
 )
 @withResponsive()
-class OrdersPage extends Component {
-    getPageTitle() {
+export default class OrdersPage extends Component {
+    _getPageTitle() {
         const status = this.props.match.params.ordersStatuses;
         switch (status) {
             case 'appointments':
@@ -75,18 +83,17 @@ class OrdersPage extends Component {
         }
     }
 
-    _handleRadioDaterange = event => {
+    _setOrdersDaterange = daterange => {
         const { setOrdersDaterangeFilter, fetchOrders } = this.props;
-        const daterange = event.target.value;
 
         if (daterange === 'all') {
             setOrdersDaterangeFilter({});
         } else if (daterange !== 'all') {
             const daterangeFilter = getDaterange(daterange);
-            setOrdersDaterangeFilter({ ...daterangeFilter });
+            setOrdersDaterangeFilter({ daterange, ...daterangeFilter });
         }
 
-        fetchOrders(this.props.filter);
+        fetchOrders();
     };
     // eslint-disable-next-line
     render() {
@@ -106,7 +113,7 @@ class OrdersPage extends Component {
         return (
             <Layout
                 paper={ false }
-                title={ this.getPageTitle() }
+                title={ this._getPageTitle() }
                 description={ <FormattedMessage id='orders-page.description' /> }
                 controls={
                     <div className={ Styles.controls }>
@@ -159,7 +166,15 @@ class OrdersPage extends Component {
                         className={ `${Styles.universalFilters} ${collapsed &&
                             Styles.universalFiltersCollapsed}` }
                     >
-                        <UniversalFilters />
+                        <UniversalFilters
+                            areFiltersDisabled={ isForbidden(
+                                this.props.user,
+                                permissions.SHOW_FILTERS,
+                            ) }
+                            stats={ this.props.universalStats }
+                            universalFilter={ this.props.universalFilter }
+                            setUniversalFilter={ this.props.setUniversalFilter }
+                        />
                     </section>
                 ) }
                 <section
@@ -178,31 +193,43 @@ class OrdersPage extends Component {
     }
 
     _renderHeaderContorls = () => {
+        // const {
+        //     filter: { daterange },
+        // } = this.props;
+
         return (
-            <RadioGroup
-                defaultValue='all'
-                // defaultValue={ ordersDaterangeFilter }
-                onChange={ this._handleRadioDaterange }
-                className={ Styles.filters }
-            >
-                <RadioButton value='all'>
+            <RadioGroup value={ this.props.daterange } className={ Styles.filters }>
+                <RadioButton
+                    value='all'
+                    onClick={ () => this._setOrdersDaterange('all') }
+                >
                     <FormattedMessage id='orders-page.all' />
                 </RadioButton>
-                <RadioButton value='today'>
+                <RadioButton
+                    value='today'
+                    onClick={ () => this._setOrdersDaterange('today') }
+                >
                     <FormattedMessage id='orders-page.today' />
                 </RadioButton>
-                <RadioButton value='tomorrow'>
+                <RadioButton
+                    value='tomorrow'
+                    onClick={ () => this._setOrdersDaterange('tomorrow') }
+                >
                     <FormattedMessage id='orders-page.tomorrow' />
                 </RadioButton>
-                <RadioButton value='nextWeek'>
+                <RadioButton
+                    value='nextWeek'
+                    onClick={ () => this._setOrdersDaterange('nextWeek') }
+                >
                     <FormattedMessage id='orders-page.week' />
                 </RadioButton>
-                <RadioButton value='nextMonth'>
+                <RadioButton
+                    value='nextMonth'
+                    onClick={ () => this._setOrdersDaterange('nextMonth') }
+                >
                     <FormattedMessage id='orders-page.month' />
                 </RadioButton>
             </RadioGroup>
         );
     };
 }
-
-export default OrdersPage;

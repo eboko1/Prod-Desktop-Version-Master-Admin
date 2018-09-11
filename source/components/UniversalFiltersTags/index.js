@@ -1,64 +1,67 @@
 // vendor
 import React, { Component } from 'react';
 import { Tag, Tooltip } from 'antd';
-import _ from 'lodash';
 import { v4 } from 'uuid';
 import { injectIntl } from 'react-intl';
+import _ from 'lodash';
 
 // own
 import Styles from './styles.m.css';
 
 @injectIntl
-class UniversalFiltersTags extends Component {
-    state = {
-        tags: [],
-    };
-
-    // To deals with dateranges, one daterange == two date pickers, which we need to clear
-    tagsToUniversalFilterFields = {
-        beginDate:     [ 'startDate', 'endDate' ],
-        createDate:    [ 'createStartDate', 'createEndDate' ],
-        notVisitRange: [ 'notVisit', 'notVisitDays' ],
-    };
-
-    // Bind tags to filters keys
-    filterTagsFields = [ 'notVisitRange', 'ordersGreater', 'ordersLower', 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'beginDate', 'createDate', 'year', 'odometerLower', 'odometerGreater' ];
-
+export default class UniversalFiltersTags extends Component {
     // Clear tags using tagsToUniversalFilterFields
     handleClose = removedTagId => {
-        this.props.clearUniversalFilters([ ...this.tagsToUniversalFilterFields[ removedTagId ] || [], removedTagId ]);
+        const universalLinkedFields = this.props.universalLinkedFields || {};
+        const additionalFieldsArrays =
+            universalLinkedFields[ removedTagId ] || [];
+        const additionalFields = _.flatten(additionalFieldsArrays);
+
+        this.props.clearUniversalFilters([ ...additionalFields, removedTagId ]);
     };
 
     localizeTag(id) {
-        const name = this.props.intl.formatMessage({
-            id:             `universal_filters_tags.${id}`,
-            defaultMessage: id,
-        });
-        const tag = {
-            id,
-            name,
-        };
+        const localeId = `universal_filters_tags.${id}`;
+        const name = this.props.intl.formatMessage({ id: localeId });
+        const tag = { id, name };
 
         return tag;
     }
 
     render() {
-        let filter = this.props.filter || {};
-        if (filter.notVisitDays) {
-            filter = { ...filter, notVisitRange: true };
-        }
+        const { filter, tagFields, universalLinkedFields = {} } = this.props;
 
-        // TODO refactro lodash chain
+        const findLinkedFieldParent = field => {
+            const config = _(universalLinkedFields)
+                .toPairs()
+                .find(config => _.get(config, '1').includes(field));
+
+            if (config) {
+                return _.first(config);
+            }
+        };
+
+        const hasTag = (key, value) => {
+            const isValueValid =
+                !_.isNil(value) &&
+                !(_.isString(value) && _.isEmpty(value)) &&
+                !(_.isArray(value) && !value.length);
+            const isKeyValid =
+                findLinkedFieldParent(key) || tagFields.includes(key);
+
+            return isValueValid && isKeyValid;
+        };
+
         const tagsFilter = _(filter)
-            .pick(this.filterTagsFields)
             .toPairs()
-            .filter(
-                ([ key, value ]) =>
-                    !_.isNil(value) && !(_.isString(value) && _.isEmpty(value)),
+            .filter(([ key, value ]) => hasTag(key, value))
+            .map(
+                ([ key ]) =>
+                    tagFields.includes(key) ? key : findLinkedFieldParent(key),
             )
-            .map(([ key ]) => key)
-            .value()
-            .map(tagId => this.localizeTag(tagId));
+            .uniq()
+            .map(tagId => this.localizeTag(tagId))
+            .value();
 
         return (
             <div>
@@ -95,5 +98,3 @@ class UniversalFiltersTags extends Component {
         );
     }
 }
-
-export default UniversalFiltersTags;

@@ -1,16 +1,18 @@
 // vendor
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { Icon, Tooltip, Button } from 'antd';
 import classNames from 'classnames';
 import moment from 'moment';
 import _ from 'lodash';
 
 // proj
-import { OrderStatusIcon, Numeral } from 'components';
-import book from 'routes/book';
+import { Numeral } from 'commons';
+import { OrderStatusIcon } from 'components';
 import { permissions, isForbidden } from 'utils';
+import book from 'routes/book';
+
 // own
 import Styles from './styles.m.css';
 
@@ -23,6 +25,7 @@ export function columnsConfig(
     activeRoute,
     sort,
     user,
+    formatMessage,
 ) {
     const sortOptions = {
         asc:  'ascend',
@@ -171,8 +174,8 @@ export function columnsConfig(
         width:     140,
         render:    (_, order) => (
             <Numeral
-                // TODO intl.formattedMessage({ id: currency})
-                currency='грн.'
+                // TODO
+                currency={ formatMessage({ id: 'currency' }) }
                 nullText='0'
             >
                 { order.servicesTotalSum + order.detailsTotalSum }
@@ -242,7 +245,7 @@ export function columnsConfig(
                                 [ Styles.npsLow ]: order.nps <= 6,
                             }) }
                         >
-                            { order.nps }
+                            { Math.round(order.nps) }
                         </div>
                     </a>
                 );

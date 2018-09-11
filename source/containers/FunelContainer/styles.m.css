@@ -57,6 +57,10 @@ a.funel__tabs__link:hover {
 .funel__tabs__link--active {
     color: #fff;
     background: #9b59b6;
+    
+    &:focus {
+        text-decoration: none
+    }
 }
 .funel__tabs__link--active:before {
     content: "";
@@ -228,4 +232,8 @@ a.funel__tabs__link--reverse:hover {
 }
 .funel__wrapper--bottom > .funel__tabs__link {
     flex: 0 49.7%;
+}
+
+.count {
+    margin-left: 0.5em;
 }

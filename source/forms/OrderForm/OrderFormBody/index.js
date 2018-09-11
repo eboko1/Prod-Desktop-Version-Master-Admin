@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Form, Select, Input, Icon } from 'antd';
+import { Link } from 'react-router-dom';
+import { Select, Icon } from 'antd';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 import classNames from 'classnames/bind';
@@ -20,7 +21,6 @@ import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 import { ClientsSearchTable } from './../OrderFormTables';
-const FormItem = Form.Item;
 const Option = Select.Option;
 
 let cx = classNames.bind(Styles);
@@ -110,6 +110,8 @@ export default class OrderFormBody extends Component {
     _renderClientSearch = () => {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
+        const { user } = this.props;
+        const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
 
         const disabledClientSearch =
             (!_.get(this.props, 'order.status') ||
@@ -136,11 +138,13 @@ export default class OrderFormBody extends Component {
                         defaultMessage: 'Search client',
                     }) }
                 />
-                <Icon
-                    type='plus'
-                    className={ Styles.addClientIcon }
-                    onClick={ () => this.props.setAddClientModal() }
-                />
+                { !isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
+                    <Icon
+                        type='plus'
+                        className={ Styles.addClientIcon }
+                        onClick={ () => this.props.setAddClientModal() }
+                    />
+                ) : null }
             </div>
         ) : null;
     };
@@ -204,13 +208,11 @@ export default class OrderFormBody extends Component {
                     </div>
                     { hasClient && (
                         <div className={ Styles.iconsCol }>
-                            <a
-                                href={ `${book.oldApp.clients}/${
-                                    this.props.selectedClient.clientId
-                                }?ref=/orders/${this.props.order.id}` }
+                            <Link
+                                to={ `${book.client}/${selectedClient.clientId}` }
                             >
                                 <Icon type='edit' className={ Styles.editIcon } />
-                            </a>
+                            </Link>
                             <CopyToClipboard text={ hasClient }>
                                 <Icon
                                     type='copy'
@@ -287,7 +289,15 @@ export default class OrderFormBody extends Component {
             const modelPart = vehicle.model
                 ? `${vehicle.make} ${vehicle.model}`
                 : formatMessage({ id: 'add_order_form.no_model' });
-            const parts = [ modelPart, vehicle.year, vehicle.modification, vehicle.number, vehicle.vin ];
+            const horsePowerLabel = !vehicle.horsePower
+                ? null
+                : `(${vehicle.horsePower} ${formatMessage({
+                    id: 'horse_power',
+                })})`;
+            const modificationPart = [ vehicle.modification, horsePowerLabel ]
+                .filter(Boolean)
+                .join(' ');
+            const parts = [ modelPart, vehicle.year, modificationPart, vehicle.number, vehicle.vin ];
 
             return parts
                 .filter(Boolean)

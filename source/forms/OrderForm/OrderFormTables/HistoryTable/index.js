@@ -1,16 +1,17 @@
 // vendor
 import React, { Component } from 'react';
-import { Table } from 'antd';
 import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { Table } from 'antd';
 import moment from 'moment';
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher, Numeral } from 'commons';
 import { OrderStatusIcon } from 'components';
 import book from 'routes/book';
 
-class HistoryTable extends Component {
+@injectIntl
+export default class HistoryTable extends Component {
     constructor(props) {
         super(props);
 
@@ -22,7 +23,7 @@ class HistoryTable extends Component {
                 width:     '10%',
                 render:    (text, record) => (
                     <div style={ { wordBreak: 'normal' } }>
-                        { moment(record.datetime).format('DD.MM.YYYY HH:mm') }
+                        { record.beginDatetime ? moment(record.beginDatetime).format('DD.MM.YYYY HH:mm') : null }
                     </div>
                 ),
             },
@@ -31,18 +32,31 @@ class HistoryTable extends Component {
                 dataIndex: 'num',
                 key:       'history-num',
                 width:     '15%',
-                render:    (text, record) => (
-                    <Link
-                        to={ `${book.order}/${record.id}` }
-                        onClick={ () => {
-                            props.fetchOrderForm(record.id);
-                            props.fetchOrderTask(record.id);
-                        } }
-                    >
-                        { text }
-                        <OrderStatusIcon status={ record.status } />
-                    </Link>
-                ),
+                render:    (text, record) => 
+                    <>
+                        <Link
+                            to={ `${book.order}/${record.id}` }
+                            onClick={ () => {
+                                props.fetchOrderForm(record.id);
+                                props.fetchOrderTask(record.id);
+                            } }
+                        >
+                            { text }
+                            <OrderStatusIcon status={ record.status } />
+                        </Link>
+                        <div
+                            style={ {
+                                whiteSpace:   'nowrap',
+                                overflow:     'hidden',
+                                textOverflow: 'ellipsis',
+                            } }
+                        >
+                            { record.serviceNames
+                                .map(serviceName => serviceName)
+                                .join(', ') }
+                        </div>
+                    </>
+                ,
             },
             {
                 title:     <FormattedMessage id='order_form_table.vehicle' />,
@@ -57,9 +71,13 @@ class HistoryTable extends Component {
                 key:       'history-sum',
                 width:     '15%',
                 render:    (text, record) => (
-                    <div>
+                    <Numeral
+                        currency={ this.props.intl.formatMessage({
+                            id: 'currency',
+                        }) }
+                    >
                         { record.detailsTotalSum + record.servicesTotalSum }
-                    </div>
+                    </Numeral>
                 ),
             },
             {
@@ -102,5 +120,3 @@ class HistoryTable extends Component {
         );
     }
 }
-
-export default HistoryTable;

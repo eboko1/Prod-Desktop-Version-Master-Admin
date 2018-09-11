@@ -1,13 +1,8 @@
 // vendor
 import React, { Component } from 'react';
-import { Form, Row, Col, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Form, Row, Col, Select } from 'antd';
 import { v4 } from 'uuid';
-import _ from 'lodash';
-
-// proj
-import { onChangeUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
-import { fetchOrders, setUniversalFilters } from 'core/orders/duck';
 
 import {
     DecoratedSelect,
@@ -15,21 +10,13 @@ import {
     DecoratedInputNumber,
 } from 'forms/DecoratedFields';
 
-import { withReduxForm, getDaterange } from 'utils';
+import { getDaterange } from 'utils';
 
 // own
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
-@withReduxForm({
-    name:    'universalFiltersForm',
-    actions: {
-        change: onChangeUniversalFiltersForm,
-        fetchOrders,
-        setUniversalFilters,
-    },
-})
 export class UniversalFiltersForm extends Component {
     render() {
         const {
@@ -40,10 +27,11 @@ export class UniversalFiltersForm extends Component {
             services,
             handleUniversalFiltersModalSubmit,
         } = this.props;
-        const { getFieldDecorator } = this.props.form;
+
+        const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        const makeId = _.get(this.props, 'fields.make.value');
+        const makeId = getFieldValue('make');
         const vehiclesYears = [];
         for (let year = new Date().getFullYear(); year >= 1900; year--) {
             vehiclesYears.push(year);
@@ -212,7 +200,7 @@ export class UniversalFiltersForm extends Component {
                             }
                         >
                             <DecoratedInputNumber
-                                field='odometerLower'
+                                field='odometerGreater'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
@@ -236,7 +224,7 @@ export class UniversalFiltersForm extends Component {
                             }
                         >
                             <DecoratedInputNumber
-                                field='odometerGreater'
+                                field='odometerLower'
                                 getFieldDecorator={ getFieldDecorator }
                                 placeholder={ formatMessage({
                                     id: 'universal_filters_form.mileage_to',

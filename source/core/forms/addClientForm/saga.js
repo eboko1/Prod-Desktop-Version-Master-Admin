@@ -11,11 +11,9 @@ import { fetchAPI } from 'utils';
 // own
 import {
     fetchAddClientFormSuccess,
-    fetchVehiclesInfoSuccess,
     createClientSuccess,
     addError,
     FETCH_ADD_CLIENT_FORM,
-    FETCH_VEHICLES_INFO,
     CREATE_CLIENT,
 } from './duck';
 
@@ -26,21 +24,6 @@ export function* fetchAddClientFormSaga() {
             const data = yield call(fetchAPI, 'GET', 'vehicles_info');
 
             yield put(fetchAddClientFormSuccess(data));
-        } catch (error) {
-            yield put(emitError(error));
-        }
-    }
-}
-
-export function* fetchVehiclesInfoSaga() {
-    while (true) {
-        try {
-            const {
-                payload: { type, filters },
-            } = yield take(FETCH_VEHICLES_INFO);
-
-            const data = yield call(fetchAPI, 'GET', 'vehicles_info', filters);
-            yield put(fetchVehiclesInfoSuccess(type, data));
         } catch (error) {
             yield put(emitError(error));
         }
@@ -80,7 +63,6 @@ export function* createClientSaga() {
 export function* saga() {
     yield all([
         call(fetchAddClientFormSaga),
-        call(fetchVehiclesInfoSaga),
         call(createClientSaga),
     ]);
 }

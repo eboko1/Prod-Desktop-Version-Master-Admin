@@ -1,6 +1,5 @@
 import LanguagePad from './LanguagePad';
 import ArrowsNav from './ArrowsNav';
-import Numeral from './Numeral';
 import ReportsDropdown from './ReportsDropdown';
 import StatsCountsPanel from './StatsCountsPanel';
 import UniversalFiltersTags from './UniversalFiltersTags';
@@ -15,6 +14,9 @@ import ArrayBreakScheduleInput from './ArrayBreakScheduleInput';
 import SettingSalaryTable from './SettingSalaryTable';
 import EmployeeTable from './EmployeeTable';
 import LimitedDecoratedSelect from './LimitedDecoratedSelect';
+import ClientFeedbackTab from './ClientFeedbackTab';
+import ClientOrdersTab from './ClientOrdersTab';
+import FormattedDatetime from './FormattedDatetime'
 
 export {
     SettingSalaryTable,
@@ -23,7 +25,6 @@ export {
     ArrowsNav,
     OrderStatusIcon,
     CallStatusIcon,
-    Numeral,
     ReportsDropdown,
     StatsCountsPanel,
     UniversalFiltersTags,
@@ -35,4 +36,7 @@ export {
     ArrayScheduleInput,
     ArrayBreakScheduleInput,
     LimitedDecoratedSelect,
+    ClientFeedbackTab,
+    ClientOrdersTab,
+    FormattedDatetime,
 };

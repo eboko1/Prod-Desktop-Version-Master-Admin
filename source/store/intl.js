@@ -29,6 +29,7 @@ import OrdersPage from 'pages/OrdersPage/messages';
 import DashboardPage from 'pages/DashboardPage/messages';
 import RolePage from 'pages/RolePage/messages';
 import PackagePage from 'pages/PackagePage/messages';
+import ClientsPage from 'pages/ClientsPage/messages';
 import EmployeePage from 'pages/EmployeePage/messages';
 import AddEmployeePage from 'pages/AddEmployeePage/messages';
 import BusinessPackagePage from 'pages/BusinessPackagePage/messages';
@@ -44,6 +45,9 @@ import RoleContainer from 'containers/RoleContainer/messages';
 import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
 import ManagerRoleContainer from 'containers/ManagerRoleContainer/messages';
 import UniversalFiltersContainer from 'containers/UniversalFilters/messages';
+import ClientContainer from 'containers/ClientContainer/messages';
+import ClientRequisitesContainer from 'containers/ClientRequisitesContainer/messages';
+import ClientsContainer from 'containers/ClientsContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -63,7 +67,7 @@ import LoginForm from 'forms/LoginForm/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
-import AddClientForm from 'forms/AddClientForm/messages';
+import AbstractClientForm from 'forms/AbstractClientForm/messages';
 import OrderTaskForm from 'forms/OrderTaskForm/messages';
 import OrderFormTables from 'forms/OrderForm/OrderFormTables/messages';
 import TasksTable from 'forms/OrderForm/OrderFormTables/TasksTable/messages';
@@ -87,6 +91,8 @@ import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
+import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
+import ClientOrdersTab from 'components/ClientOrdersTab/messages'
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -98,6 +104,7 @@ const messages = merge.all([
     Navigation,
     Header,
     LanguagePad,
+    Footer,
     // pages
     ProfilePage,
     OrdersPage,
@@ -107,10 +114,12 @@ const messages = merge.all([
     DashboardPage,
     RolePage,
     PackagePage,
+    ClientsPage,
     EmployeePage,
     AddEmployeePage,
     BusinessPackagePage,
     ManagerRolePage,
+    ClientsContainer,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -121,13 +130,15 @@ const messages = merge.all([
     BusinessPackageContainer,
     ManagerRoleContainer,
     UniversalFiltersContainer,
+    ClientContainer,
+    ClientRequisitesContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
     OrderForm,
     CancelReasonForm,
     ToSuccessForm,
-    AddClientForm,
+    AbstractClientForm,
     OrderTaskForm,
     AddPackageForm,
     PackageForm,
@@ -159,8 +170,8 @@ const messages = merge.all([
     ArrayScheduleInput,
     ArrayBreakScheduleInput,
     ChangeStatusDropdown,
-    //commons
-    Footer,
+    ClientFeedbackTab,
+    ClientOrdersTab,
 ]);
 /* eslint-enable array-element-newline */
 

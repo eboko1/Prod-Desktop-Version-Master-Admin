@@ -15,7 +15,7 @@ import {
 
 import { MODALS } from 'core/modals/duck';
 
-import { AddClientForm } from 'forms';
+import { AbstractClientForm, AddClientVehicleForm } from 'forms';
 import { withReduxForm2 } from 'utils';
 
 // own
@@ -89,7 +89,12 @@ export default class AddClientModal extends Component {
                                 status:     clientFormData.status,
                                 vehicles,
                                 phones:     clientFormData.phones
-                                    .filter(Boolean)
+                                    .filter(
+                                        phone =>
+                                            phone &&
+                                            phone.country &&
+                                            phone.number,
+                                    )
                                     .map(
                                         ({ number, country }) =>
                                             country + number,
@@ -103,7 +108,10 @@ export default class AddClientModal extends Component {
                 } }
                 onCancel={ () => resetModal() }
             >
-                <AddClientForm
+                <AddClientVehicleForm
+                    addClientVehicle={ this.props.addClientVehicle }
+                />
+                <AbstractClientForm
                     { ...this.props }
                     wrappedComponentRef={ this.props.wrappedComponentRef }
                     addClientFormData={ addClientFormData }

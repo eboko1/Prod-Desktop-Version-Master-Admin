@@ -1,0 +1,11 @@
+{
+    "en": {
+        "client_feedback.client_feedback_about_completed_orders": "Client feedback about completed orders"
+    },
+    "ru": {
+        "client_feedback.client_feedback_about_completed_orders": "Отзывы клиента о выполненных заказах"
+    },
+    "uk": {
+        "client_feedback.client_feedback_about_completed_orders": "Відгуки клієнта про виконані замовлення"
+    }
+}

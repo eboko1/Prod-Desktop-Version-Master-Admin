@@ -1,7 +1,7 @@
 import { LoginForm } from './LoginForm';
 import { ProfileForm } from './ProfileForm';
 import { OrderForm } from './OrderForm';
-import { AddClientForm } from './AddClientForm';
+import { AddClientVehicleForm } from './AddClientVehicleForm';
 import { UniversalFiltersForm } from './UniversalFiltersForm';
 import { CancelReasonForm } from './CancelReasonForm';
 import { ToSuccessForm } from './ToSuccessForm';
@@ -17,12 +17,17 @@ import { SwitchBusinessForm } from './SwitchBusinessForm';
 import { EmployeeScheduleForm } from './EmployeeScheduleForm';
 import { EmployeeForm } from './EmployeeForm';
 import { ManagerRoleForm } from './ManagerRoleForm';
+import { EditClientVehicleForm } from './EditClientVehicleForm';
+import { EditClientForm } from './EditClientForm';
+import { AbstractClientForm } from './AbstractClientForm';
+import { RequisiteForm } from './RequisiteForm';
+import { AddRequisiteForm } from './AddRequisiteForm';
 
 export {
     LoginForm,
     ProfileForm,
     OrderForm,
-    AddClientForm,
+    AbstractClientForm,
     UniversalFiltersForm,
     CancelReasonForm,
     ToSuccessForm,
@@ -38,4 +43,9 @@ export {
     BusinessPackageForm,
     EmployeeForm,
     ManagerRoleForm,
+    AddClientVehicleForm,
+    EditClientVehicleForm,
+    EditClientForm,
+    RequisiteForm,
+    AddRequisiteForm,
 };

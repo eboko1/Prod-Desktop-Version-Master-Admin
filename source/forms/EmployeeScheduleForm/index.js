@@ -24,12 +24,14 @@ export class EmployeeScheduleForm extends Component {
             saveEmployeeSchedule,
             initialEmployee,
             deleteEmployeeSchedule,
+            user,
         } = this.props;
 
         return (
             <div>
                 <div>
                     <ArrayScheduleInput
+                        user={ user }
                         initialSchedule={ initialEmployee.schedule }
                         entity={ entity }
                         deleteEmployeeSchedule={ deleteEmployeeSchedule }
@@ -39,6 +41,7 @@ export class EmployeeScheduleForm extends Component {
                 <div><FormItem className={ Styles.FormItem }><FormattedMessage id='add_non_working_day'/></FormItem></div>
                 <div>
                     <ArrayBreakScheduleInput
+                        user={ user }
                         initialSchedule={ initialEmployee.nonWorkingDays }
                         entity={ entity }
                         deleteEmployeeSchedule={ deleteEmployeeBreakSchedule }

@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { withRouter } from 'react-router';
 import { Input, Radio, Slider, Select } from 'antd';
 import { injectIntl, FormattedMessage } from 'react-intl';
@@ -17,7 +16,10 @@ import {
     setOrdersNPSFilter,
     setOrdersCancelReasonFilter,
 } from 'core/orders/duck';
-import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
+import {
+    fetchUniversalFiltersForm,
+    clearUniversalFilters,
+} from 'core/forms/universalFiltersForm/duck';
 
 import { Catcher } from 'commons';
 
@@ -28,13 +30,12 @@ const Option = Select.Option;
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
-const mapStateToProps = state => {
-    return {
-        stats:         state.orders.stats,
-        filter:        state.orders.filter,
-        orderComments: state.forms.universalFiltersForm.orderComments,
-    };
-};
+const mapStateToProps = state => ({
+    stats:         state.orders.stats,
+    filter:        state.orders.filter,
+    orderComments: state.forms.universalFiltersForm.orderComments,
+    currentStatus: _.get(state, 'router.location.state.status'),
+});
 
 const mapDispatchToProps = {
     ordersSearch,
@@ -44,11 +45,15 @@ const mapDispatchToProps = {
     setOrdersNPSFilter,
     fetchUniversalFiltersForm,
     setOrdersCancelReasonFilter,
+    clearUniversalFilters,
 };
 
 @withRouter
 @injectIntl
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class OrdersFilterContainer extends Component {
     constructor(props) {
         super(props);
@@ -68,22 +73,25 @@ export default class OrdersFilterContainer extends Component {
         }
     }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
         const status = this.props.match.params.ordersStatuses;
-        const { orderComments, fetchUniversalFiltersForm } = this.props;
+        const {
+            orderComments,
+            fetchUniversalFiltersForm,
+            currentStatus,
+        } = this.props;
         // TODO check []
+        if (prevProps.currentStatus !== this.props.currentStatus) {
+            this.props.setOrdersStatusFilter(currentStatus);
+        }
+        // if (prevProps.filter.status !== this.props.filter.status) {
+        //     this.props.setOrdersStatusFilter(currentStatus);
+        // }
         if (status === 'cancel') {
             if (!orderComments) {
                 fetchUniversalFiltersForm();
             }
         }
-    }
-
-    selectStatus(ev) {
-        const { setOrdersStatusFilter, fetchOrders, filter } = this.props;
-
-        setOrdersStatusFilter(ev.target.value);
-        fetchOrders({ page: 1, ...filter });
     }
 
     handleReviewSlider = value => {
@@ -100,12 +108,14 @@ export default class OrdersFilterContainer extends Component {
         fetchOrders({ page: 1, ...filter });
     };
 
+    _setFilterStatus = status => {
+        this.props.setOrdersStatusFilter(status);
+        this.props.fetchOrders();
+    };
+
     render() {
         const { status, stats, intl, filter, orderComments } = this.props;
-
-        // const mid = ((max - min) / 2).toFixed(5);
-        // const preColor = value >= mid ? '' : 'rgba(0, 0, 0, .45)';
-        // const nextColor = value >= mid ? 'rgba(0, 0, 0, .45)' : '';
+        const filterStatus = filter.status;
 
         const marks = {
             0: {
@@ -184,9 +194,6 @@ export default class OrdersFilterContainer extends Component {
                         placeholder={ intl.formatMessage({
                             id: 'orders-filter.search_placeholder',
                         }) }
-                        // placeholder={
-                        //     <FormattedMessage id='orders-filter.search.search_placeholder' />
-                        // }
                         // eslint-disable-next-line
                         onChange={({ target: { value } }) =>
                             this.handleOrdersSearch(value)
@@ -197,49 +204,73 @@ export default class OrdersFilterContainer extends Component {
                     />
                     { status === 'appointments' && (
                         <RadioGroup
-                            onChange={ ev => this.selectStatus(ev) }
                             className={ Styles.buttonGroup }
-                            defaultValue={ filter.status }
+                            value={ filterStatus }
                         >
-                            <RadioButton value='not_complete,required,call'>
-                                <FormattedMessage id='all' /> ({ stats.not_complete +
+                            <RadioButton
+                                value='not_complete,required,call'
+                                onClick={ () =>
+                                    this._setFilterStatus(
+                                        'not_complete,required,call',
+                                    )
+                                }
+                            >
+                                <FormattedMessage id='all' /> (
+                                { stats.not_complete +
                                     stats.required +
-                                    stats.call })
+                                    stats.call }
+                                )
                             </RadioButton>
-                            <RadioButton value='not_complete'>
-                                <FormattedMessage id='not_complete' /> ({
-                                    stats.not_complete
-                                })
+                            <RadioButton
+                                value='not_complete'
+                                onClick={ () =>
+                                    this._setFilterStatus('not_complete')
+                                }
+                            >
+                                <FormattedMessage id='not_complete' /> (
+                                { stats.not_complete })
                             </RadioButton>
-                            <RadioButton value='required'>
-                                <FormattedMessage id='required' /> ({
-                                    stats.required
-                                })
+                            <RadioButton
+                                value='required'
+                                onClick={ () =>
+                                    this._setFilterStatus('required')
+                                }
+                            >
+                                <FormattedMessage id='required' /> (
+                                { stats.required })
                             </RadioButton>
-                            <RadioButton value='call'>
+                            <RadioButton
+                                value='call'
+                                onClick={ () => this._setFilterStatus('call') }
+                            >
                                 <FormattedMessage id='call' /> ({ stats.call })
                             </RadioButton>
                         </RadioGroup>
                     ) }
                     { status === 'approve' && (
-                        <RadioGroup
-                            onChange={ ev => this.selectStatus(ev) }
-                            className={ Styles.buttonGroup }
-                            defaultValue={ 'approve,reserve' } // filter.status
-                        >
-                            <RadioButton value='approve,reserve'>
-                                <FormattedMessage id='all' /> ({ stats.approve +
-                                    stats.reserve })
+                        <RadioGroup value={ filterStatus }>
+                            <RadioButton
+                                value='approve,reserve'
+                                onClick={ () =>
+                                    this._setFilterStatus('approve,reserve')
+                                }
+                            >
+                                <FormattedMessage id='all' />(
+                                { stats.approve + stats.reserve })
                             </RadioButton>
-                            <RadioButton value='approve'>
-                                <FormattedMessage id='approve' /> ({
-                                    stats.approve
-                                })
+                            <RadioButton
+                                value='approve'
+                                onClick={ () => this._setFilterStatus('approve') }
+                            >
+                                <FormattedMessage id='approve' />(
+                                { stats.approve })
                             </RadioButton>
-                            <RadioButton value='reserve'>
-                                <FormattedMessage id='reserve' /> ({
-                                    stats.reserve
-                                })
+                            <RadioButton
+                                value='reserve'
+                                onClick={ () => this._setFilterStatus('reserve') }
+                            >
+                                <FormattedMessage id='reserve' />(
+                                { stats.reserve })
                             </RadioButton>
                         </RadioGroup>
                     ) }

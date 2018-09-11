@@ -12,7 +12,7 @@ import { images } from 'utils';
 import Styles from './styles.m.css';
 
 class Exception extends Component {
-    getErrorImage = statusCode => {
+    _getErrorImage = statusCode => {
         switch (statusCode) {
             case '400':
                 return images.exception400;
@@ -31,6 +31,25 @@ class Exception extends Component {
         }
     };
 
+    _getErrorText = statusCode => {
+        switch (statusCode) {
+            case '400':
+                return 'Bad Request';
+
+            case '403':
+                return 'Forbidden ';
+
+            case '404':
+                return 'Not Found';
+
+            case '500':
+                return 'Internal Server Error';
+
+            default:
+                return 'Error!';
+        }
+    };
+
     render() {
         const statusCode = this.props.match.params.statusCode;
 
@@ -41,12 +60,15 @@ class Exception extends Component {
             >
                 <div className={ Styles.error }>
                     <div className={ Styles.errorImage }>
-                        <img src={ this.getErrorImage(statusCode) } alt='error' />
+                        <img
+                            src={ this._getErrorImage(statusCode) }
+                            alt='error'
+                        />
                     </div>
                     <div className={ Styles.errorData }>
                         <h1 className={ Styles.errorCode }>{ statusCode }</h1>
                         <span className={ Styles.errorDesc }>
-                            { /* TODO error description*/ }
+                            { this._getErrorText(statusCode) }
                         </span>
                         <Link to={ book.ordersAppointments }>
                             <Button type='primary'>

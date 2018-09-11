@@ -9,6 +9,10 @@ import BusinessPackageContainer from './BusinessPackageContainer';
 import ManagerRoleContainer from './ManagerRoleContainer';
 import EmployeeContainer from './EmployeeContainer';
 import SettingSalaryContainer from './SettingSalaryContainer';
+import ClientContainer from './ClientContainer';
+import ClientsContainer from './ClientsContainer';
+import ClientsFilterContainer from './ClientsFilterContainer';
+import ClientRequisitesContainer from './ClientRequisitesContainer';
 
 export {
     OrdersContainer,
@@ -22,4 +26,8 @@ export {
     ManagerRoleContainer,
     EmployeeContainer,
     SettingSalaryContainer,
+    ClientContainer,
+    ClientsContainer,
+    ClientsFilterContainer,
+    ClientRequisitesContainer,
 };

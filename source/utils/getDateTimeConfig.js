@@ -93,5 +93,6 @@ export const getDateTimeConfig = (datetime, availableDateTimeConfigs) => {
         disabledHours,
         disabledMinutes,
         disabledSeconds,
+        beginTime: dateTimeConfig.h24 ? '00:00' : dateTimeConfig.beginTime,
     };
 };

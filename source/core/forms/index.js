@@ -21,6 +21,12 @@ import editPackageReducer, {
 import addRoleReducer, { moduleName as addRole } from './addRoleForm/duck';
 import editRoleReducer, { moduleName as editRole } from './editRoleForm/duck';
 
+import addClientVehicleReducer, { moduleName as addClientVehicle } from './addClientVehicleForm/duck';
+import editClientVehicleReducer, { moduleName as editClientVehicle } from './editClientVehicleForm/duck';
+
+import addClientRequisiteReducer, { moduleName as addClientRequisite } from './addClientRequisiteForm/duck';
+import editClientRequisiteReducer, { moduleName as editClientRequisite } from './editClientRequisiteForm/duck';
+
 import switchBusinessReducer, {
     moduleName as switchBusiness,
 } from './switchBusinessForm/duck';
@@ -67,6 +73,10 @@ import profileReducer, {
     moduleName as profile,
 } from 'core/forms/profileForm/duck';
 
+import editClientReducer, {
+    moduleName as editClient,
+} from 'core/forms/editClientForm/duck';
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
     [ order ]:                           orderReducer,
@@ -89,4 +99,9 @@ export const formsReducer = combineReducers({
     [ businessPackage ]:                 businessPackageReducer,
     [ managerRole ]:                     managerRoleReducer,
     [ profile ]:                         profileReducer,
+    [ addClientVehicle ]:                addClientVehicleReducer,
+    [ editClientVehicle ]:               editClientVehicleReducer,
+    [ editClient ]:                      editClientReducer,
+    [ addClientRequisite ]:              addClientRequisiteReducer,
+    [ editClientRequisite ]:             editClientRequisiteReducer,
 });

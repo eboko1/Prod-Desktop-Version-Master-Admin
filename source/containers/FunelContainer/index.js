@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
+import classNames from 'classnames';
 
 // proj
 import {
@@ -11,32 +12,42 @@ import {
     setOrdersStatusFilter,
     resetOrdersDaterangeFilter,
 } from 'core/orders/duck';
+import { clearUniversalFilters } from 'core/forms/universalFiltersForm/duck';
 
+import { Numeral } from 'commons';
 import { images } from 'utils';
 import book from 'routes/book';
-import classNames from 'classnames';
 
 // own
 import Styles from './styles.m.css';
-// eslint-disable-next-line
+
 const mapStateToProps = state => ({
-    stats: state.orders.stats, // ===
+    stats: state.orders.stats,
 });
 
 const mapDispatchToProps = {
     fetchOrdersStats,
     setOrdersStatusFilter,
     resetOrdersDaterangeFilter,
+    clearUniversalFilters,
 };
 
 @withRouter
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 class FunelContainer extends Component {
     setStatus = status => {
-        if (status === 'success' || status === 'cancel' || status === 'review') {
+        if (
+            status === 'success' ||
+            status === 'cancel' ||
+            status === 'review'
+        ) {
             this.props.resetOrdersDaterangeFilter();
         }
 
+        this.props.clearUniversalFilters();
         this.props.setOrdersStatusFilter(status);
     };
 
@@ -64,7 +75,10 @@ class FunelContainer extends Component {
                     <div className={ Styles.funel__wrapper }>
                         <NavLink
                             exact
-                            to={ `${book.orders}/appointments` }
+                            to={ {
+                                pathname: `${book.orders}/appointments`,
+                                state:    { status: 'not_complete,required,call' },
+                            } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
@@ -73,54 +87,70 @@ class FunelContainer extends Component {
                                 this.setStatus('not_complete,required,call')
                             }
                         >
-                            <span>
-                                <FormattedMessage id='appointments' /> ({ stats.not_complete +
-                                    stats.call +
-                                    stats.required })
+                            <FormattedMessage id='appointments' />
+                            <span className={ Styles.count }>
+                                (
+                                <Numeral>
+                                    { stats.not_complete +
+                                        stats.call +
+                                        stats.required }
+                                </Numeral>
+                                )
                             </span>
                         </NavLink>
                         <NavLink
                             exact
-                            to={ `${book.orders}/approve` }
+                            to={ {
+                                pathname: `${book.orders}/approve`,
+                                state:    { status: 'approve,reserve' },
+                            } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
                             }
                             onClick={ () => this.setStatus('approve,reserve') }
                         >
-                            <span>
-                                <FormattedMessage id='records' /> ({ stats.approve +
-                                    stats.reserve })
+                            <FormattedMessage id='records' />
+                            <span className={ Styles.count }>
+                                (
+                                <Numeral>
+                                    { stats.approve + stats.reserve }
+                                </Numeral>
+                                )
                             </span>
                         </NavLink>
                         <NavLink
                             exact
-                            to={ `${book.orders}/progress` }
+                            to={ {
+                                pathname: `${book.orders}/progress`,
+                                state:    { status: 'progress' },
+                            } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
                             }
                             onClick={ () => this.setStatus('progress') }
                         >
-                            <span>
-                                <FormattedMessage id='repairs' /> ({
-                                    stats.progress
-                                })
+                            <FormattedMessage id='repairs' />
+                            <span className={ Styles.count }>
+                                (<Numeral>{ stats.progress }</Numeral>)
                             </span>
                         </NavLink>
                         <NavLink
                             exact
-                            to={ `${book.orders}/success` }
+                            to={ {
+                                pathname: `${book.orders}/success`,
+                                state:    { status: 'success' },
+                            } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
                             }
                             onClick={ () => this.setStatus('success') }
                         >
-                            <span>
-                                <FormattedMessage id='done' /> ({
-                                    stats.success
-                                })
+                            <FormattedMessage id='done' />
+                            <span className={ Styles.count }>
+                                (<Numeral>{ stats.success }</Numeral>)
                             </span>
                         </NavLink>
                     </div>
@@ -132,33 +162,36 @@ class FunelContainer extends Component {
                     >
                         <NavLink
                             exact
-                            to={ `${book.orders}/invitations` }
+                            to={ {
+                                pathname: `${book.orders}/invitations`,
+                                state:    { status: 'invite' },
+                            } }
                             className={ Styles[ 'funel__tabs__link--reverse' ] }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active--reverse' ]
                             }
                             onClick={ () => this.setStatus('invite') }
                         >
-                            <span>
-                                <FormattedMessage id='invitations' /> ({
-                                    stats.invite
-                                })
+                            <FormattedMessage id='invitations' />
+                            <span className={ Styles.count }>
+                                (<Numeral>{ stats.invite }</Numeral>)
                             </span>
-                            { /* </Link> */ }
                         </NavLink>
                         <NavLink
                             exact
-                            to={ `${book.orders}/reviews` }
+                            to={ {
+                                pathname: `${book.orders}/reviews`,
+                                state:    { status: 'review' },
+                            } }
                             className={ Styles[ 'funel__tabs__link--reverse' ] }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active--reverse' ]
                             }
                             onClick={ () => this.setStatus('review') }
                         >
-                            <span>
-                                <FormattedMessage id='reviews' /> ({
-                                    stats.review
-                                })
+                            <FormattedMessage id='reviews' />
+                            <span className={ Styles.count }>
+                                (<Numeral>{ stats.review }</Numeral>)
                             </span>
                         </NavLink>
                     </div>
@@ -181,15 +214,17 @@ class FunelContainer extends Component {
                 >
                     <NavLink
                         exact
-                        to={ `${book.orders}/cancel` }
+                        to={ {
+                            pathname: `${book.orders}/cancel`,
+                            state:    { status: 'cancel' },
+                        } }
                         className={ Styles.funel__tabs__link }
                         activeClassName={ Styles[ 'funel__tabs__link--active' ] }
                         onClick={ () => this.setStatus('cancel') }
                     >
-                        <span>
-                            <FormattedMessage id='cancels' /> ({
-                                stats.cancel
-                            })
+                        <FormattedMessage id='cancels' />
+                        <span className={ Styles.count }>
+                            (<Numeral>{ stats.cancel }</Numeral>)
                         </span>
                     </NavLink>
                     <div
