@@ -12,6 +12,7 @@ import {
     setEditableItem,
     handleError,
 } from 'core/forms/editClientVehicleForm/duck';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -34,6 +35,9 @@ const openNotificationWithIcon = (type, message, description) => {
         setEditableItem,
         handleError,
     },
+    mapStateToProps: state => ({
+        user: state.auth,
+    }),
 })
 export class EditClientVehicleForm extends Component {
     constructor(props) {
@@ -47,7 +51,15 @@ export class EditClientVehicleForm extends Component {
     }
 
     render() {
-        const { clientEntity, editableItem, clientId, errors } = this.props;
+        const {
+            clientEntity,
+            editableItem,
+            clientId,
+            errors,
+            user,
+        } = this.props;
+        const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
+        const isEditForbidden = isForbidden(user, CREATE_EDIT_DELETE_CLIENTS);
 
         if (errors.length) {
             const currentComponentErrors = errors.filter(({ response }) =>
@@ -132,48 +144,52 @@ export class EditClientVehicleForm extends Component {
                                     }
                                 </Col>
                                 <Col span={ 3 }>
-                                    { editableItem === index ? (
-                                        <Icon
-                                            type='save'
-                                            className={ Styles.saveIcon }
-                                            onClick={ () => {
-                                                const payload = this.props.form.getFieldValue(
-                                                    `clientVehicles[${index}]`,
-                                                );
-                                                this.props.updateClientVehicle(
-                                                    item.id,
-                                                    clientId,
-                                                    payload,
-                                                );
+                                    { !isEditForbidden ? 
+                                        editableItem === index ? (
+                                            <Icon
+                                                type='save'
+                                                className={ Styles.saveIcon }
+                                                onClick={ () => {
+                                                    const payload = this.props.form.getFieldValue(
+                                                        `clientVehicles[${index}]`,
+                                                    );
+                                                    this.props.updateClientVehicle(
+                                                        item.id,
+                                                        clientId,
+                                                        payload,
+                                                    );
 
-                                                this.props.setEditableItem(
-                                                    null,
-                                                );
-                                            } }
-                                        />
-                                    ) : (
+                                                    this.props.setEditableItem(
+                                                        null,
+                                                    );
+                                                } }
+                                            />
+                                        ) : (
+                                            <Icon
+                                                type='edit'
+                                                className={ Styles.editIcon }
+                                                onClick={ () =>
+                                                    this.props.setEditableItem(
+                                                        index,
+                                                    )
+                                                }
+                                            />
+                                        )
+                                        : null }
+                                </Col>
+                                <Col span={ 3 }>
+                                    { !isEditForbidden ? (
                                         <Icon
-                                            type='edit'
-                                            className={ Styles.editIcon }
+                                            type='delete'
+                                            className={ Styles.deleteIcon }
                                             onClick={ () =>
-                                                this.props.setEditableItem(
-                                                    index,
+                                                this.props.deleteClientVehicle(
+                                                    clientId,
+                                                    item.id,
                                                 )
                                             }
                                         />
-                                    ) }
-                                </Col>
-                                <Col span={ 3 }>
-                                    <Icon
-                                        type='delete'
-                                        className={ Styles.deleteIcon }
-                                        onClick={ () =>
-                                            this.props.deleteClientVehicle(
-                                                clientId,
-                                                item.id,
-                                            )
-                                        }
-                                    />
+                                    ) : null }
                                 </Col>
                             </Row>
                         </Form>

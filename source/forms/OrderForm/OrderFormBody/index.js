@@ -110,6 +110,8 @@ export default class OrderFormBody extends Component {
     _renderClientSearch = () => {
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
+        const { user } = this.props;
+        const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
 
         const disabledClientSearch =
             (!_.get(this.props, 'order.status') ||
@@ -136,11 +138,13 @@ export default class OrderFormBody extends Component {
                         defaultMessage: 'Search client',
                     }) }
                 />
-                <Icon
-                    type='plus'
-                    className={ Styles.addClientIcon }
-                    onClick={ () => this.props.setAddClientModal() }
-                />
+                { !isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
+                    <Icon
+                        type='plus'
+                        className={ Styles.addClientIcon }
+                        onClick={ () => this.props.setAddClientModal() }
+                    />
+                ) : null }
             </div>
         ) : null;
     };

@@ -27,20 +27,31 @@ export function columnsConfig(
         desc: 'descend',
     };
 
+    const { GET_CLIENTS_BASIC_INFORMATION } = permissions;
+    const isClientInformationForbidden = isForbidden(
+        user,
+        GET_CLIENTS_BASIC_INFORMATION,
+    );
+
     const client = {
         title:     <FormattedMessage id='clients-table.client' />,
         width:     220,
         dataIndex: 'name',
         key:       'name',
         // fixed:     'left',
-        render:    (_, client) => (
-            <Link
-                className={ Styles.client }
-                to={ `${book.client}/${client.clientId}` }
-            >
-                { client.name } { client.surname }
-            </Link>
-        ),
+        render:    (_, client) =>
+            !isForbidden(user, permissions.GET_CLIENTS_BASIC_INFORMATION) ? (
+                <Link
+                    className={ Styles.client }
+                    to={ `${book.client}/${client.clientId}` }
+                >
+                    { client.name } { client.surname }
+                </Link>
+            ) : 
+                <>
+                    {client.name} {client.surname}
+                </>
+        ,
     };
 
     const phone = {
@@ -146,18 +157,25 @@ export function columnsConfig(
         width:  'auto',
         render: (_, client) => (
             <div className={ Styles.actions }>
-                <Link to={ `${book.client}/${client.clientId}` }>
-                    <Icon className={ Styles.editClientIcon } type='edit' />
-                </Link>
+                { !isClientInformationForbidden ? (
+                    <Link to={ `${book.client}/${client.clientId}` }>
+                        <Icon className={ Styles.editClientIcon } type='edit' />
+                    </Link>
+                ) : null }
                 <div className={ Styles.actionsLine } />
-                <Popconfirm
-                    cancelText={ formatMessage({ id: 'no' }) }
-                    okText={ formatMessage({ id: 'yes' }) }
-                    title={ `${formatMessage({ id: 'delete' })}?` }
-                    onConfirm={ () => console.log('→ deleted') }
-                >
-                    <Icon className={ Styles.deleteClientIcon } type='delete' />
-                </Popconfirm>
+                { !isForbidden(user, permissions.CREATE_EDIT_DELETE_CLIENTS) ? (
+                    <Popconfirm
+                        cancelText={ formatMessage({ id: 'no' }) }
+                        okText={ formatMessage({ id: 'yes' }) }
+                        title={ `${formatMessage({ id: 'delete' })}?` }
+                        onConfirm={ () => console.log('→ deleted') }
+                    >
+                        <Icon
+                            className={ Styles.deleteClientIcon }
+                            type='delete'
+                        />
+                    </Popconfirm>
+                ) : null }
             </div>
         ),
     };

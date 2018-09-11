@@ -10,6 +10,7 @@ import {
     onChangeClientForm,
     updateClient,
 } from 'core/forms/editClientForm/duck';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -20,6 +21,9 @@ import Styles from './styles.m.css';
         change: onChangeClientForm,
         updateClient,
     },
+    mapStateToProps: state => ({
+        user: state.auth,
+    }),
 })
 @injectIntl
 export class EditClientForm extends Component {
@@ -28,11 +32,15 @@ export class EditClientForm extends Component {
     }
 
     render() {
+        const { user } = this.props;
+        const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
+
         return (
             <>
                 <AbstractClientForm { ...this.props } />
                 <Form className={ Styles.editClientForm }>
                     <Button
+                        disabled={ isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) }
                         type='primary'
                         className={ Styles.editClientButton }
                         onClick={ () => {

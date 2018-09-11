@@ -75,6 +75,10 @@ export default class ClientsPage extends Component {
                         </StyledButton>
                         <Button
                             type='primary'
+                            disabled={ isForbidden(
+                                this.props.user,
+                                permissions.CREATE_EDIT_DELETE_CLIENTS,
+                            ) }
                             onClick={ () => setModal(MODALS.ADD_CLIENT) }
                         >
                             <FormattedMessage id='clients-page.add_client' />
@@ -88,6 +92,10 @@ export default class ClientsPage extends Component {
                 >
                     <ClientsFilterContainer />
                     <UniversalFilters
+                        areFiltersDisabled={ isForbidden(
+                            this.props.user,
+                            permissions.FILTER_CLIENTS,
+                        ) }
                         universalFilter={ this.props.universalFilter }
                         setUniversalFilter={ this.props.setUniversalFilters }
                         stats={ stats }

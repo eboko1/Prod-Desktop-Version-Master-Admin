@@ -167,6 +167,7 @@ export default class OrdersPage extends Component {
                             Styles.universalFiltersCollapsed}` }
                     >
                         <UniversalFilters
+                            areFiltersDisabled={ isForbidden(this.props.user, permissions.SHOW_FILTERS) }
                             stats={ this.props.universalStats }
                             universalFilter={ this.props.universalFilter }
                             setUniversalFilter={ this.props.setUniversalFilter }

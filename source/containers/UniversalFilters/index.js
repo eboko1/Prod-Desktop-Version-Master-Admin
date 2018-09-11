@@ -63,9 +63,9 @@ export default class UniversalFilters extends Component {
             stats,
             form,
             filters,
+            areFiltersDisabled,
         } = this.props;
 
-        const areFiltersDisabled = isForbidden(user, permissions.SHOW_FILTERS);
         const formFilters = form.getFieldsValue();
 
         return (

@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Button, Table, Icon, List, Form, Row, Col } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
 import { Tabs } from 'antd';
 const { TabPane } = Tabs;
+import { permissions, isForbidden } from 'utils';
 
 // proj
 import {
@@ -32,7 +32,7 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = state => ({
-    // clientEntity: state.client.clientEntity,
+    user: state.auth,
 });
 
 @injectIntl
@@ -46,7 +46,8 @@ export default class ClientContainer extends Component {
     }
 
     render() {
-        const { clientEntity, clientId } = this.props;
+        const { clientEntity, clientId, user } = this.props;
+        const { CREATE_EDIT_DELETE_CLIENTS, GET_CLIENTS_ADDITIONAL_INFORMATION } = permissions;
 
         // Client
         return (
@@ -74,20 +75,23 @@ export default class ClientContainer extends Component {
                             clientEntity={ clientEntity }
                             clientId={ clientId }
                         />
-                        <AddClientVehicleForm
-                            addClientVehicle={ this.props.createClientVehicle.bind(
-                                null,
-                                clientId,
-                            ) }
-                        />
+                        { !isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
+                            <AddClientVehicleForm
+                                addClientVehicle={ this.props.createClientVehicle.bind(
+                                    null,
+                                    clientId,
+                                ) }
+                            />
+                        ) : null }
                     </TabPane>
                     <TabPane
                         tab={
                             <FormattedMessage id={ 'client_container.orders' } />
                         }
                         key='orders'
+                        disabled={ isForbidden(user, GET_CLIENTS_ADDITIONAL_INFORMATION) }
                     >
-                        <ClientOrdersTab clientId={ clientId }/>
+                        <ClientOrdersTab clientId={ clientId } />
                     </TabPane>
                     <TabPane
                         tab={
@@ -96,11 +100,17 @@ export default class ClientContainer extends Component {
                             />
                         }
                         key='feedback'
+                        disabled={ isForbidden(user, GET_CLIENTS_ADDITIONAL_INFORMATION) }
                     >
-                        <ClientFeedbackTab feedback={ clientEntity.reviews }/>
+                        <ClientFeedbackTab feedback={ clientEntity.reviews } />
                     </TabPane>
                     <TabPane
-                        tab={ <FormattedMessage id={ 'client_container.requisites' }/> }
+                        disabled={ isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) }
+                        tab={
+                            <FormattedMessage
+                                id={ 'client_container.requisites' }
+                            />
+                        }
                         key='clientRequisites'
                     >
                         <ClientRequisitesContainer
