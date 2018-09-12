@@ -11,8 +11,8 @@ import {
     setClientOrdersPageFilter,
 } from 'core/clientOrders/duck';
 
-import { Numeral } from 'commons';
-import { Loader, FormattedDatetime, OrderStatusIcon } from 'components';
+import { Numeral, Loader } from 'commons';
+import { FormattedDatetime, OrderStatusIcon } from 'components';
 
 // own
 import book from 'routes/book';

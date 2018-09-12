@@ -8,7 +8,7 @@ import ArrowsWeekPicker from './ArrowsWeekPicker';
 import ArrowsDatePicker from './ArrowsDatePicker';
 import ArrayInput from './ArrayInput';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
-import Loader from './Loader';
+
 import ArrayScheduleInput from './ArrayScheduleInput';
 import ArrayBreakScheduleInput from './ArrayBreakScheduleInput';
 import SettingSalaryTable from './SettingSalaryTable';
@@ -16,7 +16,7 @@ import EmployeeTable from './EmployeeTable';
 import LimitedDecoratedSelect from './LimitedDecoratedSelect';
 import ClientFeedbackTab from './ClientFeedbackTab';
 import ClientOrdersTab from './ClientOrdersTab';
-import FormattedDatetime from './FormattedDatetime'
+import FormattedDatetime from './FormattedDatetime';
 
 export {
     SettingSalaryTable,
@@ -32,7 +32,6 @@ export {
     ArrowsDatePicker,
     ChangeStatusDropdown,
     ArrayInput,
-    Loader,
     ArrayScheduleInput,
     ArrayBreakScheduleInput,
     LimitedDecoratedSelect,

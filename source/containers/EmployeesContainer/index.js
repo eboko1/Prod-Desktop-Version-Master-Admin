@@ -63,7 +63,7 @@ export default class EmployeesContainer extends Component {
                 <Tabs type='card' tabPosition='right'>
                     <TabPane
                         tab={ this.props.intl.formatMessage({
-                            id: 'employee-page.all',
+                            id: 'employee-page.employees',
                         }) }
                         key='employees'
                     >

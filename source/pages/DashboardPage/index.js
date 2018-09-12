@@ -17,8 +17,8 @@ import {
     updateDashboardOrder,
 } from 'core/dashboard/duck';
 
-import { Layout, Spinner } from 'commons';
-import { ArrowsWeekPicker, ArrowsDatePicker, Loader } from 'components';
+import { Layout, Spinner, Loader } from 'commons';
+import { ArrowsWeekPicker, ArrowsDatePicker } from 'components';
 import { DashboardContainer } from 'containers';
 
 // own

@@ -9,8 +9,6 @@ const Loader = ({ loading }) =>
         <div className={ Styles.loader }>
             <div className={ Styles.animation } />
         </div>
-    ) : (
-        <div>loading</div>
-    );
+    ) : null;
 
 export default Loader;
