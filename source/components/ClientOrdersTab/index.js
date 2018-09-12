@@ -1,22 +1,22 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon, Rate } from 'antd';
+import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import moment from 'moment';
+import { Table, Rate } from 'antd';
 
 // proj
-import book from 'routes/book';
 import {
     fetchClientOrders,
     setClientOrdersPageFilter,
 } from 'core/clientOrders/duck';
-import { Loader, FormattedDatetime, OrderStatusIcon } from 'components';
+
 import { Numeral } from 'commons';
+import { Loader, FormattedDatetime, OrderStatusIcon } from 'components';
 
 // own
+import book from 'routes/book';
 import Styles from './styles.m.css';
-import { Link } from 'react-router-dom';
-import connect from 'react-redux/es/connect/connect';
 
 const mapStateToProps = state => ({
     isFetching: state.ui.clientOrdersFetching,
@@ -49,9 +49,7 @@ export default class ClientOrdersTab extends Component {
             {
                 title:  <FormattedMessage id='client_order_tab.order' />,
                 width:  '20%',
-                render: (
-                    order, //TODO to separate component, same in ordersTableConfig
-                ) =>
+                render: order => 
                     <>
                         <Link
                             className={ Styles.ordernLink }
@@ -85,10 +83,14 @@ export default class ClientOrdersTab extends Component {
             {
                 title:  <FormattedMessage id='client_order_tab.car' />,
                 width:  '20%',
-                render: order =>
+                render: order => 
                     <>
-                        <span>{ order.vehicleNumber }</span>
-                        <br />
+                        {order.vehicleNumber && 
+                            <>
+                                <span>{ order.vehicleNumber }</span>
+                                <br />
+                            </>
+                        }
                         <div className={ Styles.clientVehicle }>
                             { `${order.vehicleMakeName ||
                                 '-'} ${order.vehicleModelName ||
@@ -118,7 +120,7 @@ export default class ClientOrdersTab extends Component {
         ];
     }
 
-    componentWillMount() {
+    componentDidMount() {
         const { clientId, filter } = this.props;
         this.props.fetchClientOrders({ clientId, filter });
     }
@@ -140,7 +142,7 @@ export default class ClientOrdersTab extends Component {
     render() {
         const {
             isFetching,
-            ordersData: { stats, orders, count },
+            ordersData: { stats, orders, count, statusStats },
         } = this.props;
         if (isFetching || !orders) {
             return <Loader loading={ isFetching } />;
@@ -170,19 +172,16 @@ export default class ClientOrdersTab extends Component {
             <>
                 <div className={ Styles.countsContainer }>
                     <h2 className={ Styles.title }>
-                        <FormattedMessage id='client_order_tab.completed_orders' />
-                    </h2>
-                    <p>
-                        <span className={ Styles.countTitle }>
-                            <FormattedMessage id='client_order_tab.count_of_orders' />
-                        </span>
+                        <FormattedMessage id='client_order_tab.count_of_orders' />
                         <span className={ Styles.countNumber }>{ count }</span>
-                    </p>
+                    </h2>
+                    <h2 className={ Styles.title }>
+                        <FormattedMessage id='client_order_tab.completed_orders' />
+                        <span className={ Styles.countNumber }>
+                            { statusStats.success }
+                        </span>
+                    </h2>
                 </div>
-
-                <h2 className={ Styles.title }>
-                    <FormattedMessage id='client_order_tab.all_orders' />
-                </h2>
 
                 <Table
                     pagination={ pagination }

@@ -64,7 +64,7 @@ export default class UniversalFiltersTags extends Component {
             .value();
 
         return (
-            <div>
+            <div className={ Styles.universalFilters }>
                 { tagsFilter.map(({ id, name }) => {
                     const isLongTag = name.length > 20;
                     const tagElem = (

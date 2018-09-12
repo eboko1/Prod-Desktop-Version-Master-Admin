@@ -11,7 +11,6 @@ import { fetchClients, setClientsSearchFilter } from 'core/clients/duck';
 import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
 import { Catcher } from 'commons';
-import { StatsCountsPanel } from 'components';
 
 // own
 import Styles from './styles.m.css';
@@ -56,7 +55,6 @@ export default class OrdersFilterContainer extends Component {
         return (
             <Catcher>
                 <div className={ Styles.filter }>
-                    <StatsCountsPanel stats={ stats } />
                     <Search
                         className={ Styles.search }
                         placeholder={ intl.formatMessage({

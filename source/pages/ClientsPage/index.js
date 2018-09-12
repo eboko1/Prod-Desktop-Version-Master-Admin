@@ -73,8 +73,8 @@ export default class ClientsPage extends Component {
                         >
                             <FormattedMessage id='clients-page.invite_to_service' />
                         </StyledButton>
-                        <Button
-                            type='primary'
+                        <StyledButton
+                            type='secondary'
                             disabled={ isForbidden(
                                 this.props.user,
                                 permissions.CREATE_EDIT_DELETE_CLIENTS,
@@ -82,7 +82,7 @@ export default class ClientsPage extends Component {
                             onClick={ () => setModal(MODALS.ADD_CLIENT) }
                         >
                             <FormattedMessage id='clients-page.add_client' />
-                        </Button>
+                        </StyledButton>
                     </div>
                 }
             >

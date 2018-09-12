@@ -6,7 +6,7 @@ import { Icon, Popconfirm, Button } from 'antd';
 import moment from 'moment';
 
 // proj
-import { Numeral } from 'commons';
+import { Numeral, StyledButton } from 'commons';
 import book from 'routes/book';
 import { permissions, isForbidden } from 'utils';
 // own
@@ -130,13 +130,13 @@ export function columnsConfig(
         render:    (_void, order) => {
             if (!order.vehicleInviteExists) {
                 return (
-                    <Button
-                        type='primary'
+                    <StyledButton
+                        type='secondary'
                         onClick={ () => action([ order ]) }
                         // disabled={ isInviteButtonDisabled(order) }
                     >
                         <FormattedMessage id='orders.invite' />
-                    </Button>
+                    </StyledButton>
                 );
             }
 
