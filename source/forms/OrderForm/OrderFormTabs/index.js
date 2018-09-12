@@ -21,6 +21,17 @@ import {
 import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
+function hideTasks(orderTasks, managerId) {
+    const newOrderTasks = _.cloneDeep(orderTasks);
+    _.each(_.get(newOrderTasks, 'orderTasks'), newOrderTask => {
+        newOrderTask.history = _.filter(newOrderTask.history, {
+            responsibleId: managerId,
+        });
+    });
+
+    return newOrderTasks;
+}
+
 export default class OrderFormTabs extends Component {
     render() {
         const {
@@ -53,6 +64,7 @@ export default class OrderFormTabs extends Component {
             ACCESS_ORDER_COMMENTS,
             ACCESS_ORDER_SERVICES,
             ACCESS_ORDER_DETAILS,
+            GET_ALL_TASKS,
         } = permissions;
 
         const isHistoryForbidden = isForbidden(user, ACCESS_ORDER_HISTORY);
@@ -60,6 +72,16 @@ export default class OrderFormTabs extends Component {
         const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_COMMENTS);
         const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
         const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
+
+        const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
+        const canCreateTask =
+            viewAllTasks &&
+            orderTasks.orderTasks &&
+            orderTasks.orderTasks.length < 1;
+
+        const tasks = viewAllTasks
+            ? orderTasks
+            : hideTasks(orderTasks, user.id);
 
         return (
             <Tabs type='card'>
@@ -75,23 +97,23 @@ export default class OrderFormTabs extends Component {
                         }
                         key='1'
                     >
-                        { orderTasks.orderTasks &&
-                        orderTasks.orderTasks.length < 1 ? (
+                        { canCreateTask ? (
                             <Button
-                                    className={ Styles.orderTaskModalButton }
-                                    type='primary'
-                                    onClick={ () => setModal(MODALS.ORDER_TASK) }
-                                >
-                                    <FormattedMessage id='add' />
-                                    <Icon type='plus' />
-                                </Button>
-                            ) : null }
+                                className={ Styles.orderTaskModalButton }
+                                type='primary'
+                                onClick={ () => setModal(MODALS.ORDER_TASK) }
+                            >
+                                <FormattedMessage id='add' />
+                                <Icon type='plus' />
+                            </Button>
+                        ) : null }
 
                         <TasksTable
+                            user={ user }
                             initOrderTasksForm={ initOrderTasksForm }
                             setModal={ setModal }
                             changeModalStatus={ changeModalStatus }
-                            orderTasks={ orderTasks }
+                            orderTasks={ tasks }
                         />
                     </TabPane>
                 ) }

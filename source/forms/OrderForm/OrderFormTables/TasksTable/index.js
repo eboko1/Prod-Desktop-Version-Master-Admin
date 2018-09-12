@@ -8,6 +8,7 @@ import { v4 } from 'uuid';
 // proj
 import { MODALS } from 'core/modals/duck';
 import { Catcher } from 'commons';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -15,7 +16,8 @@ import Styles from './styles.m.css';
 class TasksTable extends Component {
     constructor(props) {
         super(props);
-        const { setModal, initOrderTasksForm, changeModalStatus } = this.props;
+        const { setModal, initOrderTasksForm, changeModalStatus, user } = this.props;
+        const viewAllTasks = !isForbidden(user, permissions.GET_ALL_TASKS);
 
         this.columns = [
             {
@@ -24,7 +26,7 @@ class TasksTable extends Component {
                 key:       'review',
                 width:     '4%',
                 render:    (text, record) => {
-                    if (record.orderNum) {
+                    if (record.orderNum && (viewAllTasks || user.id === record.responsibleId)) {
                         return (
                             <Icon
                                 className={ Styles.editOrderTaskIcon }

@@ -1,19 +1,18 @@
 // vendor
-import {
-    call,
-    put,
-    all,
-    takeLatest,
-    delay,
-} from 'redux-saga/effects';
+import { call, put, all, takeLatest, delay } from 'redux-saga/effects';
 
 //proj
 import { fetchAPI } from 'utils';
 
 // own
-import { fetchBusinessesSuccess, setIsFetchingBusinesses } from './duck';
+import {
+    fetchBusinessesSuccess,
+    setIsFetchingBusinesses,
+    fetchManagersSuccess,
+    setIsFetchingManagers,
+} from './duck';
 
-import { SET_BUSINESS_SEARCH_QUERY } from './duck';
+import { SET_BUSINESS_SEARCH_QUERY, SET_MANAGER_SEARCH_QUERY } from './duck';
 
 function* handleBusinessesSearchSaga({ payload: query }) {
     yield delay(1000);
@@ -28,6 +27,17 @@ function* handleBusinessesSearchSaga({ payload: query }) {
     }
 }
 
+function* handleManagersSearchSaga({ payload: query }) {
+    yield delay(1000);
+
+    yield put(setIsFetchingManagers(true));
+    const managers = yield call(fetchAPI, 'GET', 'managers/search', {
+        search: query,
+    });
+    yield put(fetchManagersSuccess(managers));
+    yield put(setIsFetchingManagers(false));
+}
+
 export function* saga() {
-    yield all([ takeLatest(SET_BUSINESS_SEARCH_QUERY, handleBusinessesSearchSaga) ]);
+    yield all([ takeLatest(SET_BUSINESS_SEARCH_QUERY, handleBusinessesSearchSaga), takeLatest(SET_MANAGER_SEARCH_QUERY, handleManagersSearchSaga) ]);
 }
