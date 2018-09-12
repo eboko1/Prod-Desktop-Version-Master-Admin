@@ -90,7 +90,10 @@
         "roles.filter_clients": "Filter clients",
         "roles.get_clients_basic_information": "Get client (basic)",
         "roles.get_clients_additional_information": "Get client (advanced)",
-        "horse_power": "h.p."
+        "roles.get_all_tasks": "Access all tasks",
+        "horse_power": "h.p.",
+        "select_manager": "Choose manager",
+        "my_tasks": "My tasks"
     },
     "ru": {
         "currency": "грн.",
@@ -183,7 +186,10 @@
         "roles.filter_clients": "Фильтрировать клиентов",
         "roles.get_clients_basic_information": "Информация клиента (основная)",
         "roles.get_clients_additional_information": "Информация клиента (дополнительная)",
-        "horse_power": "л.с."
+        "roles.get_all_tasks": "Доступ ко всем задачам",
+        "horse_power": "л.с.",
+        "select_manager": "Выберите менеджера",
+        "my_tasks": "Мои задачи"
     },
     "uk": {
         "currency": "грн.",
@@ -276,6 +282,9 @@
         "roles.filter_clients": "Фільтрувати клієнтів",
         "roles.get_clients_basic_information": "Інформація клієнта (основна)",
         "roles.get_clients_additional_information": "Інформація клієнта (додаткова)",
-        "horse_power": "к.с."
+        "roles.get_all_tasks": "Доступ до всіх задач",
+        "horse_power": "к.с.",
+        "select_manager": "Виберіть менеджера",
+        "my_tasks": "Мої задачі"
     }
 }

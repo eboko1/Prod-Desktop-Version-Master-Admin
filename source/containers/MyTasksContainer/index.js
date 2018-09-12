@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon, Tooltip } from 'antd';
+import { Table, Icon, Tooltip, Button, Row, Col } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import moment from 'moment';
 import { v4 } from 'uuid';
@@ -14,11 +14,13 @@ import {
     onChangeMyTasksForm,
     getActiveOrder,
     getActiveVehicle,
+    setManager,
 } from 'core/myTasks/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 import { setModal, MODALS } from 'core/modals/duck';
-
+import { ManagerSearchField } from 'forms/_formkit';
 import { Catcher } from 'commons';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -34,7 +36,12 @@ import Styles from './styles.m.css';
         getActiveOrder,
         setPage,
         getActiveVehicle,
+        setManager,
     },
+    mapStateToProps: state => ({
+        managerId: state.myTasksContainer.managerId,
+        user:      state.auth,
+    }),
 })
 export default class MyTasksContainer extends Component {
     constructor(props) {
@@ -104,7 +111,6 @@ export default class MyTasksContainer extends Component {
                     return text ? <FormattedMessage id={ text } /> : '';
                 },
                 sorter: true,
-
             },
             {
                 title:     <FormattedMessage id='priority' />,
@@ -123,7 +129,6 @@ export default class MyTasksContainer extends Component {
                     return text ? <FormattedMessage id={ text } /> : null;
                 },
                 sorter: true,
-
             },
             {
                 title:     <FormattedMessage id='vehicle' />,
@@ -137,18 +142,18 @@ export default class MyTasksContainer extends Component {
                     ) : null;
                 },
             },
-            // {
-            //     title:     <FormattedMessage id='responsible' />,
-            //     dataIndex: 'responsibleName',
-            //     width:     '7%',
-            //     render:    (text, record) => {
-            //         return (
-            //             <div style={ { wordBreak: 'normal' } }>{ `${text} ${
-            //                 record.responsibleSurname
-            //             }` }</div>
-            //         );
-            //     },
-            // },
+            {
+                title:     <FormattedMessage id='responsible' />,
+                dataIndex: 'responsibleName',
+                width:     '7%',
+                render:    (text, record) => {
+                    return (
+                        <div style={ { wordBreak: 'normal' } }>{ `${text} ${
+                            record.responsibleSurname
+                        }` }</div>
+                    );
+                },
+            },
             // {
             //     title:     <FormattedMessage id='position' />,
             //     dataIndex: 'position',
@@ -182,8 +187,6 @@ export default class MyTasksContainer extends Component {
                     </div>
                 ),
                 sorter: true,
-
-
             },
             {
                 title:     <FormattedMessage id='duration' />,
@@ -315,7 +318,7 @@ export default class MyTasksContainer extends Component {
 
     /* eslint-enable complexity */
     render() {
-        const { myTasks, page } = this.props;
+        const { myTasks, page, user } = this.props;
         const columns = this.columns;
         // const { sortField, sortArrow } = this.state;
         const pagination = {
@@ -330,15 +333,50 @@ export default class MyTasksContainer extends Component {
             },
         };
 
+        const { GET_ALL_TASKS } = permissions;
+        const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
+
         return (
             <Catcher>
                 <div className={ Styles.paper }>
-
+                    { viewAllTasks ? (
+                        <Row type='flex' className={ Styles.searchRow }>
+                            <Col span={ 18 }>
+                                <ManagerSearchField
+                                    managerId={ this.props.managerId }
+                                    onSelect={ managerId => {
+                                        this.props.setManager(managerId);
+                                        this.props.fetchMyTasks();
+                                    } }
+                                />
+                            </Col>
+                            <Col span={ 6 }>
+                                <div
+                                    style={ {
+                                        display:        'flex',
+                                        justifyContent: 'flex-end',
+                                    } }
+                                >
+                                    <Button
+                                        onClick={ () => {
+                                            this.props.setManager(
+                                                this.props.user.id,
+                                            );
+                                            this.props.fetchMyTasks();
+                                        } }
+                                    >
+                                        <FormattedMessage id='my_tasks' />
+                                    </Button>
+                                </div>
+                            </Col>
+                        </Row>
+                    ) : null }
                     <section className={ Styles.myTasks }>
                         <Table
                             className={ Styles.TableMyTasks }
                             dataSource={
-                                myTasks && myTasks.orderTasks.orderTasks.length > 0
+                                myTasks &&
+                                myTasks.orderTasks.orderTasks.length > 0
                                     ? myTasks.orderTasks.orderTasks
                                     // .sort(this.sortTable)
                                         .map((task, index) => ({
@@ -358,7 +396,6 @@ export default class MyTasksContainer extends Component {
                             locale={ {
                                 emptyText: <FormattedMessage id='no_data' />,
                             } }
-                            
                             onChange={ this.handleTableChange }
                         />
                     </section>

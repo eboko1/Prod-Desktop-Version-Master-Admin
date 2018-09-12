@@ -36,6 +36,9 @@ const FILTER_CLIENTS = 'FILTER_CLIENTS';
 const GET_CLIENTS_BASIC_INFORMATION = 'GET_CLIENTS_BASIC_INFORMATION';
 const GET_CLIENTS_ADDITIONAL_INFORMATION = 'GET_CLIENTS_ADDITIONAL_INFORMATION';
 
+// Tasks
+const GET_ALL_TASKS = 'GET_ALL_TASKS';
+
 export const permissions = Object.freeze({
     ACCESS_ORDER_BODY,
     ACCESS_ORDER_CALLS,
@@ -68,6 +71,8 @@ export const permissions = Object.freeze({
     FILTER_CLIENTS,
     GET_CLIENTS_BASIC_INFORMATION,
     GET_CLIENTS_ADDITIONAL_INFORMATION,
+
+    GET_ALL_TASKS,
 });
 
 export const isForbidden = ({ isAdmin, scope }, grant) =>
@@ -145,5 +150,9 @@ export const rolesOptionValues = intl => ({
     }),
     [ GET_CLIENTS_ADDITIONAL_INFORMATION ]: intl.formatMessage({
         id: 'roles.get_clients_additional_information',
+    }),
+
+    [ GET_ALL_TASKS ]: intl.formatMessage({
+        id: 'roles.get_all_tasks',
     }),
 });

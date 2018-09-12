@@ -18,6 +18,8 @@ export const SET_MY_TASKS_STATUS_FILTER = `${prefix}/SET_MY_TASKS_STATUS_FILTER`
 export const SET_MY_TASKS_SORT_FIELD_FILTER = `${prefix}/SET_MY_TASKS_SORT_FIELD_FILTER`;
 export const SET_MY_TASKS_SORT_ORDER_FILTER = `${prefix}/SET_MY_TASKS_SORT_ORDER_FILTER`;
 
+export const SET_MANAGER = `${prefix}/SET_MANAGER`;
+
 /**
  * Reducer
  * */
@@ -28,6 +30,7 @@ const ReducerState = {
     },
     myTasks:     null,
     activeOrder: null,
+    managerId:   void 0,
     page:        1,
     vehicle:     null,
     filters:     {
@@ -52,6 +55,11 @@ export default function reducer(state = ReducerState, action) {
                     ...state.fields,
                     ...payload,
                 },
+            };
+        case SET_MANAGER:
+            return {
+                ...state,
+                managerId: payload,
             };
         case FETCH_MY_TASKS_SUCCESS:
             return {
@@ -137,6 +145,11 @@ export const stateSelector = state => state[ moduleName ];
 /**
  * Action Creators
  * */
+
+export const setManager = managerId => ({
+    type:    SET_MANAGER,
+    payload: managerId,
+});
 
 export const fetchMyTasks = (filter, firstLoading) => ({
     type:    FETCH_MY_TASKS,
