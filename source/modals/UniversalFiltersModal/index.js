@@ -62,7 +62,7 @@ export default class UniversalFiltersModal extends Component {
                     this.props.setUniversalFilter(
                         this.props.form.getFieldsValue(),
                     );
-                    hideModal();
+                    // hideModal();
                 } }
                 onCancel={ () => resetModal() }
             >
