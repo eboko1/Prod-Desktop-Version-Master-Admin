@@ -93,7 +93,12 @@
         "roles.get_all_tasks": "Access all tasks",
         "horse_power": "h.p.",
         "select_manager": "Choose manager",
-        "my_tasks": "My tasks"
+        "my_tasks": "My tasks",
+        "roles.dashboard_permissions": "Dashboard",
+        "roles.tasks_permissions": "Tasks",
+        "roles.clients_permissions": "Clients",
+        "roles.employees_permissions": "Employees",
+        "roles.orders_permissions": "Orders"
     },
     "ru": {
         "currency": "грн.",
@@ -189,7 +194,12 @@
         "roles.get_all_tasks": "Доступ ко всем задачам",
         "horse_power": "л.с.",
         "select_manager": "Выберите менеджера",
-        "my_tasks": "Мои задачи"
+        "my_tasks": "Мои задачи",
+        "roles.dashboard_permissions": "Планировщик",
+        "roles.tasks_permissions": "Задачи",
+        "roles.clients_permissions": "Клиенты",
+        "roles.employees_permissions": "Работники",
+        "roles.orders_permissions": "Заказы"
     },
     "uk": {
         "currency": "грн.",
@@ -285,6 +295,11 @@
         "roles.get_all_tasks": "Доступ до всіх задач",
         "horse_power": "к.с.",
         "select_manager": "Виберіть менеджера",
-        "my_tasks": "Мої задачі"
+        "my_tasks": "Мої задачі",
+        "roles.dashboard_permissions": "Планувальник",
+        "roles.tasks_permissions": "Задачі",
+        "roles.clients_permissions": "Клієнти",
+        "roles.employees_permissions": "Працівники",
+        "roles.orders_permissions": "Замовлення"
     }
 }
