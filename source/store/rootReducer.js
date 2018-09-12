@@ -13,9 +13,9 @@ import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
-import employeeReducer, {
-    moduleName as employeeModule,
-} from 'core/employee/duck';
+import employeesReducer, {
+    moduleName as employeesModule,
+} from 'core/employees/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
 import packageReducer, { moduleName as packageModule } from 'core/package/duck';
@@ -59,7 +59,7 @@ const appState = {
     [ modalsModule ]:          modalsReducer,
     [ dashboardModule ]:       dashboardReducer,
     [ myTasksModule ]:         myTasksReducer,
-    [ employeeModule ]:        employeeReducer,
+    [ employeesModule ]:       employeesReducer,
     [ uiModule ]:              uiReducer,
     [ packageModule ]:         packageReducer,
     [ roleModule ]:            roleReducer,

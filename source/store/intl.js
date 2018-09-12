@@ -30,7 +30,7 @@ import DashboardPage from 'pages/DashboardPage/messages';
 import RolePage from 'pages/RolePage/messages';
 import PackagePage from 'pages/PackagePage/messages';
 import ClientsPage from 'pages/ClientsPage/messages';
-import EmployeePage from 'pages/EmployeePage/messages';
+import EmployeesPage from 'pages/EmployeesPage/messages';
 import AddEmployeePage from 'pages/AddEmployeePage/messages';
 import BusinessPackagePage from 'pages/BusinessPackagePage/messages';
 import ManagerRolePage from 'pages/ManagerRolePage/messages';
@@ -92,7 +92,7 @@ import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
 import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
-import ClientOrdersTab from 'components/ClientOrdersTab/messages'
+import ClientOrdersTab from 'components/ClientOrdersTab/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -115,7 +115,7 @@ const messages = merge.all([
     RolePage,
     PackagePage,
     ClientsPage,
-    EmployeePage,
+    EmployeesPage,
     AddEmployeePage,
     BusinessPackagePage,
     ManagerRolePage,

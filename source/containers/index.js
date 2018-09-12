@@ -7,7 +7,7 @@ import PackageContainer from './PackageContainer';
 import RoleContainer from './RoleContainer';
 import BusinessPackageContainer from './BusinessPackageContainer';
 import ManagerRoleContainer from './ManagerRoleContainer';
-import EmployeeContainer from './EmployeeContainer';
+import EmployeesContainer from './EmployeesContainer';
 import SettingSalaryContainer from './SettingSalaryContainer';
 import ClientContainer from './ClientContainer';
 import ClientsContainer from './ClientsContainer';
@@ -24,7 +24,7 @@ export {
     RoleContainer,
     BusinessPackageContainer,
     ManagerRoleContainer,
-    EmployeeContainer,
+    EmployeesContainer,
     SettingSalaryContainer,
     ClientContainer,
     ClientsContainer,

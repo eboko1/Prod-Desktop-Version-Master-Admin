@@ -1,33 +1,37 @@
 // vendor
 import React, { Component } from 'react';
-import { Tabs } from 'antd';
 import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
+import { Tabs } from 'antd';
 
 // proj
-import { fetchEmployee, deleteEmployee } from 'core/employee/duck';
+import {
+    fetchEmployees,
+    deleteEmployee,
+    setEmployeesStatus,
+} from 'core/employees/duck';
 import { initEmployeeForm } from 'core/forms/employeeForm/duck';
 
 import { Catcher } from 'commons';
 import { EmployeeTable } from 'components';
 import { SettingSalaryContainer } from 'containers';
-
 import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
-
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
     salaries:  state.forms.settingSalary.salaries,
     entity:    state.forms.settingSalary.fields,
-    employees: state.employee.employees,
+    employees: state.employees.employees,
+    status:    state.employees.status,
     user:      state.auth,
 });
 
 const mapDispatchToProps = {
-    fetchEmployee,
+    setEmployeesStatus,
+    fetchEmployees,
     initEmployeeForm,
     deleteEmployee,
 };
@@ -37,77 +41,44 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
-export default class EmployeeContainer extends Component {
+export default class EmployeesContainer extends Component {
     componentDidMount() {
-        this.props.fetchEmployee({ kind: 'all' });
+        this.props.fetchEmployees();
     }
 
     /* eslint-enable complexity */
     render() {
         const {
+            user,
             employees,
             initEmployeeForm,
             deleteEmployee,
-            user,
+            setEmployeesStatus,
+            fetchEmployees,
+            status,
         } = this.props;
 
         return (
             <Catcher>
-                <Tabs
-                    type='card'
-                    onChange={ active => {
-                        this.props.fetchEmployee({ kind: active });
-                    } }
-                >
+                <Tabs type='card' tabPosition='right'>
                     <TabPane
                         tab={ this.props.intl.formatMessage({
                             id: 'employee-page.all',
                         }) }
-                        key='all'
+                        key='employees'
                     >
                         <section className={ Styles.myTasks }>
                             <EmployeeTable
                                 user={ user }
-                                kind='all'
                                 deleteEmployee={ deleteEmployee }
                                 initEmployeeForm={ initEmployeeForm }
                                 employees={ employees }
+                                status={ status }
+                                setEmployeesStatus={ setEmployeesStatus }
+                                fetchEmployees={ fetchEmployees }
                             />
                         </section>
                     </TabPane>
-                    <TabPane
-                        tab={ this.props.intl.formatMessage({
-                            id: 'employee-page.workers',
-                        }) }
-                        key='workers'
-                    >
-                        <section className={ Styles.myTasks }>
-                            <EmployeeTable
-                                kind='workers'
-                                user={ user }
-                                deleteEmployee={ deleteEmployee }
-                                initEmployeeForm={ initEmployeeForm }
-                                employees={ employees }
-                            />
-                        </section>
-                    </TabPane>
-                    <TabPane
-                        tab={ this.props.intl.formatMessage({
-                            id: 'employee-page.dismissed',
-                        }) }
-                        key='disabled'
-                    >
-                        <section className={ Styles.myTasks }>
-                            <EmployeeTable
-                                kind='disabled'
-                                user={ user }
-                                deleteEmployee={ deleteEmployee }
-                                initEmployeeForm={ initEmployeeForm }
-                                employees={ employees }
-                            />
-                        </section>
-                    </TabPane>
-
                     <TabPane
                         tab={ this.props.intl.formatMessage({
                             id: 'employee-page.setting_salary',

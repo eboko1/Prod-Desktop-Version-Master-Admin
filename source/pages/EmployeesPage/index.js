@@ -2,27 +2,22 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
-import {FormattedMessage, injectIntl} from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button } from 'antd';
 
 // proj
 import { Layout } from 'commons';
-import { EmployeeContainer } from 'containers';
-import book from 'routes/book';
+import { EmployeesContainer } from 'containers';
 import { permissions, isForbidden } from 'utils';
+import book from 'routes/book';
 
 const mapStateToProps = state => ({
     user: state.auth,
 });
 
-const mapDispatchToProps = {};
-
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
-export default class EmployeePage extends Component {
+@connect(mapStateToProps)
+export default class EmployeesPage extends Component {
     render() {
         return (
             <Layout
@@ -44,7 +39,7 @@ export default class EmployeePage extends Component {
                     </Button>
                 }
             >
-                <EmployeeContainer />
+                <EmployeesContainer />
             </Layout>
         );
     }

@@ -28,7 +28,7 @@ import { saga as clientRequisitesSaga } from 'core/clientRequisite/saga';
 import { saga as clientOrdersSaga } from 'core/clientOrders/saga';
 import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
 import { saga as addClientVehicleSaga } from 'core/forms/addClientVehicleForm/saga';
-import { saga as employeeSaga } from 'core/employee/saga';
+import { saga as employeesSaga } from 'core/employees/saga';
 import { saga as employeeFormSaga } from 'core/forms/employeeForm/saga';
 import { saga as employeeScheduleFormSaga } from 'core/forms/employeeScheduleForm/saga';
 import { saga as employeeBreakScheduleFormSaga } from 'core/forms/employeeBreakScheduleForm/saga';
@@ -54,7 +54,7 @@ export default function* rootSaga() {
         packagesSaga(),
         rolesSaga(),
         switchBusinessSaga(),
-        employeeSaga(),
+        employeesSaga(),
         employeeFormSaga(),
         businessPackageSaga(),
         employeeScheduleFormSaga(),

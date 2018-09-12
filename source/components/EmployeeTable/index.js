@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Table, Icon, Rate } from 'antd';
+import { Table, Icon, Rate, Radio } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
 
@@ -14,6 +14,8 @@ import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
+const RadioButton = Radio.Button;
+const RadioGroup = Radio.Group;
 
 @withRouter
 export default class EmployeeTable extends Component {
@@ -46,7 +48,9 @@ export default class EmployeeTable extends Component {
                     record.fireDate ? (
                         <div className={ Styles.fired }>
                             <FormattedMessage id='employee-table.fired' />
-                            <div>{ record.fireReason }</div>
+                            <div className={ Styles.fireReason }>
+                                { record.fireReason }
+                            </div>
                         </div>
                     ) : (
                         <div className={ Styles.working }>
@@ -76,10 +80,10 @@ export default class EmployeeTable extends Component {
                 render:    value => value && this._renderRatingStars(value),
             },
             {
-                title:     '',
-                dataIndex: 'review',
-                width:     'auto%',
-                render:    (text, record) => {
+                title:  '',
+                key:    'delete',
+                width:  'auto%',
+                render: (text, record) => {
                     return (
                         !isForbidden(
                             this.props.user,
@@ -102,26 +106,19 @@ export default class EmployeeTable extends Component {
         ];
     }
 
-    _renderRatingStars = rating => {
-        const value = rating / 2;
-        const ratingStarts = (
-            <Rate
-                className={ Styles.ratingStars }
-                allowHalf
-                disabled
-                defaultValue={ value }
-            />
-        );
-
-        return ratingStarts;
+    _setEmployeesFilterStatus = ({ status, disabled }) => {
+        this.props.setEmployeesStatus({ status, disabled });
+        this.props.fetchEmployees();
     };
 
     render() {
         const { employees } = this.props;
         const columns = this.columns;
+        const statusFilter = this._renderEmployeeStatusFilter();
 
         return (
             <Catcher>
+                { statusFilter }
                 <Table
                     dataSource={
                         employees && employees.length > 0
@@ -142,4 +139,60 @@ export default class EmployeeTable extends Component {
             </Catcher>
         );
     }
+
+    _renderRatingStars = rating => {
+        const value = rating / 2;
+        const ratingStarts = (
+            <Rate
+                className={ Styles.ratingStars }
+                allowHalf
+                disabled
+                defaultValue={ value }
+            />
+        );
+
+        return ratingStarts;
+    };
+
+    _renderEmployeeStatusFilter = () => {
+        const { status } = this.props;
+
+        return (
+            <RadioGroup value={ status }>
+                <RadioButton
+                    value='all'
+                    onClick={ () =>
+                        this._setEmployeesFilterStatus({
+                            status:   'all',
+                            disabled: null,
+                        })
+                    }
+                >
+                    <FormattedMessage id='all' />
+                </RadioButton>
+                <RadioButton
+                    value='working'
+                    onClick={ () =>
+                        this._setEmployeesFilterStatus({
+                            status:   'working',
+                            disabled: false,
+                        })
+                    }
+                >
+                    <FormattedMessage id='employee-table.filter.working' />
+                </RadioButton>
+                <RadioButton
+                    value='fired'
+                    onClick={ () =>
+                        this._setEmployeesFilterStatus({
+                            status:   'fired',
+                            disabled: true,
+                        })
+                    }
+                >
+                    <FormattedMessage id='employee-table.filter.fired' />
+                </RadioButton>
+            </RadioGroup>
+        );
+    };
 }

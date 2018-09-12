@@ -1,26 +1,28 @@
 /**
  * Constants
  * */
-export const moduleName = 'employee';
+export const moduleName = 'employees';
 const prefix = `cpb/${moduleName}`;
 
 export const FETCH_EMPLOYEES = `${prefix}/FETCH_EMPLOYEES`;
 export const FETCH_EMPLOYEES_SUCCESS = `${prefix}/FETCH_EMPLOYEES_SUCCESS`;
-export const DELETE_EMPLOYEES = `${prefix}/DELETE_EMPLOYEES`;
-export const DELETE_EMPLOYEES_SUCCESS = `${prefix}/DELETE_EMPLOYEES_SUCCESS`;
+export const DELETE_EMPLOYEE = `${prefix}/DELETE_EMPLOYEE`;
+export const DELETE_EMPLOYEE_SUCCESS = `${prefix}/DELETE_EMPLOYEE_SUCCESS`;
 
-export const SET_CURRENT_PAGE = `${prefix}/SET_CURRENT_PAGE`;
+export const SET_EMPLOYEES_STATUS = `${prefix}/SET_EMPLOYEES_STATUS`;
+export const SET_EMPLOYEES_DISABLED = `${prefix}/SET_EMPLOYEES_DISABLED`;
 /**
  * Reducer
  * */
 
 const ReducerState = {
-    fields: {
-        // filterDate: { value: void 0, name: 'filterDate' },
+    fields: {},
+    filter: {
+        disabled: null,
     },
     employees:   null,
+    status:      'all',
     activeOrder: null,
-    page:        1,
 };
 
 // eslint-disable-next-line
@@ -28,21 +30,19 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case FETCH_EMPLOYEES:
-            return {
-                ...state,
-                employees: null,
-            };
         case FETCH_EMPLOYEES_SUCCESS:
             return {
                 ...state,
                 employees: payload,
             };
 
-        case SET_CURRENT_PAGE:
+        case SET_EMPLOYEES_STATUS:
             return {
                 ...state,
-                page: payload,
+                status: payload.status,
+                filter: {
+                    disabled: payload.disabled,
+                },
             };
 
         default:
@@ -60,22 +60,26 @@ export const stateSelector = state => state[ moduleName ];
  * Action Creators
  * */
 
-export const fetchEmployee = ({ page, kind }) => ({
-    type:    FETCH_EMPLOYEES,
-    payload: { page, kind },
+export const fetchEmployees = () => ({
+    type: FETCH_EMPLOYEES,
 });
 
-export const fetchEmployeeSuccess = data => ({
+export const fetchEmployeesSuccess = data => ({
     type:    FETCH_EMPLOYEES_SUCCESS,
     payload: data,
 });
 
-export const deleteEmployee = (id, kind) => ({
-    type:    DELETE_EMPLOYEES,
-    payload: { id, kind },
+export const setEmployeesStatus = ({ status, disabled }) => ({
+    type:    SET_EMPLOYEES_STATUS,
+    payload: { status, disabled },
+});
+
+export const deleteEmployee = id => ({
+    type:    DELETE_EMPLOYEE,
+    payload: id,
 });
 
 export const deleteEmployeeSuccess = data => ({
-    type:    DELETE_EMPLOYEES_SUCCESS,
+    type:    DELETE_EMPLOYEE_SUCCESS,
     payload: data,
 });

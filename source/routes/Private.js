@@ -14,7 +14,7 @@ import {
     PackagePage,
     RolePage,
     ClientsPage,
-    EmployeePage,
+    EmployeesPage,
     AddEmployeePage,
     EditEmployeePage,
     BusinessPackagePage,
@@ -45,7 +45,7 @@ export default class Private extends Component {
                 <Route exact component={ ClientsPage } path={ book.clients } />
                 <Route
                     exact
-                    component={ EmployeePage }
+                    component={ EmployeesPage }
                     path={ book.employeesPage }
                 />
                 <Route
