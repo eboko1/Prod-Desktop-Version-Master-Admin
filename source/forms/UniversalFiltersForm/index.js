@@ -142,6 +142,7 @@ export class UniversalFiltersForm extends Component {
                             <DecoratedSelect
                                 field='models'
                                 mode='multiple'
+                                disabled={ !makeId }
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
