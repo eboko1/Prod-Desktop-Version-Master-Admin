@@ -21,68 +21,51 @@ export default class EmployeeTable extends Component {
         super(props);
         this.columns = [
             {
-                title:     '',
-                dataIndex: 'review',
-                width:     '15%',
-                render:    (text, record) => {
-                    return (
-                        <>
-                            {!isForbidden(
-                                this.props.user,
-                                permissions.CREATE_EDIT_DELETE_EMPLOYEES,
-                            ) ? (
-                                <Icon
-                                        className={ Styles.employeeTableIcon }
-                                        onClick={ () => {
-                                            this.props.deleteEmployee(
-                                                record.id,
-                                                this.props.kind,
-                                            );
-                                        } }
-                                        type='delete'
-                                    />
-                                ) : null}
-                        </>
-                    );
-                },
-            },
-
-            {
                 title:     <FormattedMessage id='employee-table.employee' />,
                 dataIndex: 'name',
-                width:     '20%',
+                width:     '25%',
                 render:    (text, record) => (
                     <div>
                         <Link
+                            className={ Styles.employeeName }
                             to={ book.editEmployee.replace(':id', record.id) }
-                        >{ `${record.name} ${record.surname}` }</Link>
+                        >
+                            { `${record.name} ${record.surname}` }
+                            <div className={ Styles.jobTitle }>
+                                { record.jobTitle }
+                            </div>
+                        </Link>
                     </div>
                 ),
             },
             {
-                title:     <FormattedMessage id='status' />,
-                dataIndex: 'status',
+                title:     <FormattedMessage id='employee-table.status' />,
+                dataIndex: 'fireDate',
                 width:     '20%',
+                render:    (data, record) =>
+                    record.fireDate ? (
+                        <div className={ Styles.fired }>
+                            <FormattedMessage id='employee-table.fired' />
+                            <div>{ record.fireReason }</div>
+                        </div>
+                    ) : (
+                        <div className={ Styles.working }>
+                            <FormattedMessage id='employee-table.working' />
+                        </div>
+                    ),
             },
             {
-                title: (
-                    <FormattedMessage id='employee-table.date_administation_delay' />
-                ),
+                title:     <FormattedMessage id='employee-table.hire_date' />,
                 dataIndex: 'hireDate',
-                width:     '15%',
+                width:     '30%',
                 render:    (text, record) => (
                     <div>
-                        <p>
-                            { record.hireDate
-                                ? moment(record.hireDate).format('DD.MM.YYYY')
-                                : '' }
-                        </p>
-                        <p>-</p>
-                        <p>
-                            { record.fireDate
-                                ? moment(record.fireDate).format('DD.MM.YYYY')
-                                : '' }
-                        </p>
+                        { record.hireDate &&
+                            moment(record.hireDate).format('DD.MM.YYYY') }
+                        { record.fireDate &&
+                            ` - ${moment(record.fireDate).format(
+                                'DD.MM.YYYY',
+                            )}` }
                     </div>
                 ),
             },
@@ -90,14 +73,48 @@ export default class EmployeeTable extends Component {
                 title:     <FormattedMessage id='employee-table.rating' />,
                 dataIndex: 'rating',
                 width:     '20%',
-                render:    (text, record) => (
-                    <div>
-                        { text ? <Rate disabled defaultValue={ text } /> : '' }
-                    </div>
-                ),
+                render:    value => value && this._renderRatingStars(value),
+            },
+            {
+                title:     '',
+                dataIndex: 'review',
+                width:     'auto%',
+                render:    (text, record) => {
+                    return (
+                        !isForbidden(
+                            this.props.user,
+                            permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                        ) && (
+                            <Icon
+                                className={ Styles.employeeTableIcon }
+                                onClick={ () => {
+                                    this.props.deleteEmployee(
+                                        record.id,
+                                        this.props.kind,
+                                    );
+                                } }
+                                type='delete'
+                            />
+                        )
+                    );
+                },
             },
         ];
     }
+
+    _renderRatingStars = rating => {
+        const value = rating / 2;
+        const ratingStarts = (
+            <Rate
+                className={ Styles.ratingStars }
+                allowHalf
+                disabled
+                defaultValue={ value }
+            />
+        );
+
+        return ratingStarts;
+    };
 
     render() {
         const { employees } = this.props;
@@ -116,7 +133,7 @@ export default class EmployeeTable extends Component {
                             : null
                     }
                     columns={ columns }
-                    scroll={ { x: 700 } }
+                    scroll={ { x: 840 } }
                     pagination={ false }
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,

@@ -5,7 +5,6 @@ import { injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
 // proj
-
 import { fetchEmployee, deleteEmployee } from 'core/employee/duck';
 import { initEmployeeForm } from 'core/forms/employeeForm/duck';
 
@@ -45,7 +44,12 @@ export default class EmployeeContainer extends Component {
 
     /* eslint-enable complexity */
     render() {
-        const { employees, initEmployeeForm, deleteEmployee, user } = this.props;
+        const {
+            employees,
+            initEmployeeForm,
+            deleteEmployee,
+            user,
+        } = this.props;
 
         return (
             <Catcher>
@@ -108,7 +112,10 @@ export default class EmployeeContainer extends Component {
                         tab={ this.props.intl.formatMessage({
                             id: 'employee-page.setting_salary',
                         }) }
-                        disabled={ isForbidden(this.props.user, permissions.EMPLOYEES_SALARIES) }
+                        disabled={ isForbidden(
+                            this.props.user,
+                            permissions.EMPLOYEES_SALARIES,
+                        ) }
                         key='settingSalary'
                     >
                         <section>

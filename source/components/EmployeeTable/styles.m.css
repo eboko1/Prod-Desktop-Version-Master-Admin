@@ -2,3 +2,25 @@
     cursor: pointer;
     font-size: 25px;
 }
+
+.employeeName:hover {
+    color: var(--link);
+}
+
+.jobTitle {
+    color: var(--primary);
+}
+
+.fired {
+    color: var(--warning);
+    font-weight: bold;
+}
+
+.working {
+    color: var(--secondary);
+    font-weight: bold;
+}
+
+.ratingStars{
+    color: var(--secondary);
+}

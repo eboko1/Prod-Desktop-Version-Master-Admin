@@ -115,7 +115,7 @@ export default class ClientOrdersTab extends Component {
                 title:     <FormattedMessage id='client_order_tab.raiting' />,
                 dataIndex: 'nps',
                 width:     '20%',
-                render:    record => this.renderRatingStars(record),
+                render:    record => this._renderRatingStars(record),
             },
         ];
     }
@@ -125,7 +125,7 @@ export default class ClientOrdersTab extends Component {
         this.props.fetchClientOrders({ clientId, filter });
     }
 
-    renderRatingStars(rating) {
+    _renderRatingStars = rating => {
         const value = rating / 2;
         const ratingStarts = (
             <Rate
@@ -137,7 +137,7 @@ export default class ClientOrdersTab extends Component {
         );
 
         return ratingStarts;
-    }
+    };
 
     render() {
         const {
