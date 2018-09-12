@@ -56,7 +56,7 @@ const mapStateToProps = state => ({
 
 const formItemLayout = {
     labelCol:   { span: 6 },
-    wrapperCol: { span: 14 },
+    wrapperCol: { span: 18 },
 };
 
 const sortOptions = {

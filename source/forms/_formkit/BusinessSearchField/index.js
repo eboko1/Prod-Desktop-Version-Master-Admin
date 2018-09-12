@@ -44,9 +44,9 @@ export default class BusinessSearchField extends Component {
             >
                 { isFetchingBusinesses
                     ? []
-                    : businesses.map(({ businessId, name }) => (
+                    : businesses.map(({ businessId, name, address }) => (
                         <Option key={ businessId } value={ businessId }>
-                            { name }
+                            ({ businessId }) { name } [{ address }]
                         </Option>
                     )) }
             </Select>
