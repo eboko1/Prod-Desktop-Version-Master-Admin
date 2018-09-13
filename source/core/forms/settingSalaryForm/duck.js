@@ -19,9 +19,7 @@ export const FETCH_SALARY_REPORT_SUCCESS = `${prefix}/FETCH_SALARY_REPORT_SUCCES
  * */
 
 const ReducerState = {
-    fields: {
-        filterRangeDate: { value: void 0, name: 'filterRangeDate' },
-    },
+    fields:   {},
     salaries: null,
 };
 
@@ -30,12 +28,6 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case FETCH_SALARY:
-            return {
-                ...state,
-                salaries: null,
-            };
-
         case FETCH_SALARY_SUCCESS:
             return {
                 ...state,
@@ -75,9 +67,9 @@ export const fetchSalarySuccess = data => ({
     payload: data,
 });
 
-export const saveSalary = (salary, id) => ({
+export const saveSalary = (salary, meth) => ({
     type:    SAVE_SALARY,
-    payload: { salary: salary, id: id },
+    payload: { salary, meth },
 });
 
 export const saveSalarySuccess = data => ({
@@ -87,21 +79,24 @@ export const saveSalarySuccess = data => ({
 
 export const deleteSalary = id => ({
     type:    DELETE_SALARY,
-    payload: { id },
+    payload: id,
 });
 
 export const deleteSalarySuccess = data => ({
     type:    DELETE_SALARY_SUCCESS,
     payload: data,
 });
+
 export const onChangeSettingSalaryForm = update => ({
     type:    ON_CHANGE_SETTING_SALARY_FORM,
     payload: update,
 });
+
 export const fetchSalaryReport = info => ({
     type:    FETCH_SALARY_REPORT,
     payload: info,
 });
+
 export const fetchSalaryReportSuccess = data => ({
     type:    FETCH_SALARY_REPORT_SUCCESS,
     payload: data,

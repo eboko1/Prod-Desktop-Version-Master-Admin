@@ -66,7 +66,7 @@ export default class SettingSalaryContainer extends Component {
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         format='YYYY-MM-DD'
                     />
-                    <FormItem>
+                    { /* <FormItem>
                         <Button
                             type='primary'
                             disabled={ !filterRangeDate.value }
@@ -76,7 +76,7 @@ export default class SettingSalaryContainer extends Component {
                         >
                             <FormattedMessage id='setting-salary.calculate' />
                         </Button>
-                    </FormItem>
+                    </FormItem> */ }
                 </div>
                 <SettingSalaryTable
                     salaries={ salaries }

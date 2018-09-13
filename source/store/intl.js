@@ -86,7 +86,7 @@ import StatusIcons from 'components/StatusIcons/messages';
 import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
 import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
-import EmployeeTable from 'components/EmployeeTable/messages';
+import EmployeesTable from 'components/EmployeesTable/messages';
 import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
@@ -164,7 +164,7 @@ const messages = merge.all([
     ReportsDropdown,
     DecoratedDatePicker,
     CallsTable,
-    EmployeeTable,
+    EmployeesTable,
     EmployeeScheduleForm,
     SettingSalaryTable,
     ArrayScheduleInput,

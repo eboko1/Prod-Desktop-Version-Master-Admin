@@ -1,3 +1,11 @@
-.employeeTableIcon:hover {
-    color: #b17ec2;
+.employeeName {
+    background: red;
+}
+
+.jobTitle {
+    background: blue;
+}
+
+.employeesTableIcon {
+    background: var(--primary);
 }

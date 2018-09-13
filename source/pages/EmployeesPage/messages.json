@@ -5,6 +5,8 @@
         "employee-page.employees": "Employees",
         "employee-page.workers": "Workers",
         "employee-page.dismissed": "Dismissed",
+        "employee-page.statistics": "Statistics",
+        "employee-page.feedback": "Feedback",
         "employee-page.setting_salary": "Salaries settings"
     },
     "ru": {
@@ -13,6 +15,8 @@
         "employee-page.employees": "Сотрудники",
         "employee-page.workers": "Работающие",
         "employee-page.dismissed": "Уволенные",
+        "employee-page.statistics": "Статистика",
+        "employee-page.feedback": "Отзывы",
         "employee-page.setting_salary": "Настройка ЗП"
     },
     "uk": {
@@ -21,6 +25,8 @@
         "employee-page.employees": "Співробітники",
         "employee-page.workers": "Робочі",
         "employee-page.dismissed": "Звільнені",
+        "employee-page.statistics": "Статистика",
+        "employee-page.feedback": "Відгуки",
         "employee-page.setting_salary": "Налаштування ЗП"
     }
 }

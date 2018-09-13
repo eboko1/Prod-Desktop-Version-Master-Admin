@@ -1,7 +1,7 @@
 // vendor
 import { call, put, all, take, takeEvery } from 'redux-saga/effects';
-import moment from 'moment'
 import { saveAs } from 'file-saver';
+import moment from 'moment';
 
 //proj
 import { emitError } from 'core/ui/duck';
@@ -15,12 +15,11 @@ import {
     fetchSalary,
     DELETE_SALARY,
     deleteSalarySuccess,
-    FETCH_SALARY_REPORT, fetchSalaryReportSuccess,
+    FETCH_SALARY_REPORT,
+    fetchSalaryReportSuccess,
 } from './duck';
-import {FETCH_ORDER} from '../../order/duck';
-import {fetchOrderSaga} from '../../order/saga';
 
-export function* fetchSalaries() {
+export function* fetchSalariesSaga() {
     while (true) {
         try {
             yield take(FETCH_SALARY);
@@ -33,12 +32,13 @@ export function* fetchSalaries() {
     }
 }
 
-export function* saveSalary() {
+export function* saveSalarySaga() {
     while (true) {
         try {
             const {
-                payload: { salary, id },
+                payload: { salary, meth },
             } = yield take(SAVE_SALARY);
+
             let salaryObj = {
                 considerDiscount:
                     salary.considerDiscount === 'Yes' ? true : false,
@@ -52,9 +52,9 @@ export function* saveSalary() {
             };
             const data = yield call(
                 fetchAPI,
-                id !== 'add' ? 'PUT' : 'POST',
-                id !== 'add'
-                    ? `employees_salaries/${id}`
+                meth !== 'add' ? 'PUT' : 'POST',
+                meth !== 'add'
+                    ? `employees_salaries/${meth}`
                     : 'employees_salaries',
                 null,
                 salaryObj,
@@ -67,7 +67,7 @@ export function* saveSalary() {
     }
 }
 
-export function* deleteSalary() {
+export function* deleteSalarySaga() {
     while (true) {
         try {
             const {
@@ -87,18 +87,17 @@ export function* deleteSalary() {
         }
     }
 }
-export function* fetchSalaryReport({payload: info}) {
 
+export function* fetchSalaryReport({ payload: info }) {
     try {
-        // const {
-        //     payload: info,
-        // } = yield take(FETCH_SALARY_REPORT);
-        // console.log(info, 'HELLO')
         const data = yield call(
             fetchAPI,
             'GET',
             '/employees_salaries/report',
-            {startDate: info[ 0 ].toISOString(), endDate: info[ 1 ].toISOString()},
+            {
+                startDate: info[ 0 ].toISOString(),
+                endDate:   info[ 1 ].toISOString(),
+            },
             null,
             { rawResponse: true },
             // `/employees_salaries/report?startDate=${ info[ 0 ].toISOString()}&endDate=${info[ 1 ].toISOString()}`,
@@ -116,9 +115,15 @@ export function* fetchSalaryReport({payload: info}) {
     } finally {
         yield put(fetchSalaryReportSuccess());
     }
-
 }
 
 export function* saga() {
-    yield all([ takeEvery(FETCH_SALARY_REPORT, fetchSalaryReport), call(fetchSalaries), call(saveSalary), call(deleteSalary) ]);
+    /* eslint-disable array-element-newline */
+    yield all([
+        takeEvery(FETCH_SALARY_REPORT, fetchSalaryReport),
+        call(fetchSalariesSaga),
+        call(saveSalarySaga),
+        call(deleteSalarySaga),
+    ]);
+    /* eslint-enable array-element-newline */
 }

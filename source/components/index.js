@@ -12,7 +12,7 @@ import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
 import ArrayScheduleInput from './ArrayScheduleInput';
 import ArrayBreakScheduleInput from './ArrayBreakScheduleInput';
 import SettingSalaryTable from './SettingSalaryTable';
-import EmployeeTable from './EmployeeTable';
+import EmployeesTable from './EmployeesTable';
 import LimitedDecoratedSelect from './LimitedDecoratedSelect';
 import ClientFeedbackTab from './ClientFeedbackTab';
 import ClientOrdersTab from './ClientOrdersTab';
@@ -20,7 +20,7 @@ import FormattedDatetime from './FormattedDatetime';
 
 export {
     SettingSalaryTable,
-    EmployeeTable,
+    EmployeesTable,
     LanguagePad,
     ArrowsNav,
     OrderStatusIcon,

@@ -8,10 +8,7 @@ import moment from 'moment';
 import classNames from 'classnames/bind';
 
 // proj
-import { EmployeeForm, EmployeeScheduleForm } from 'forms';
-import { Layout, Spinner, Loader } from 'commons';
 import { fetchEmployees } from 'core/employees/duck';
-
 import {
     fetchEmployeeById,
     saveEmployee,
@@ -19,7 +16,10 @@ import {
     fireEmployee,
 } from 'core/forms/employeeForm/duck';
 
-import { linkTo } from 'utils';
+import { EmployeeForm, EmployeeScheduleForm, SettingSalaryForm } from 'forms';
+import { Layout, Spinner, Loader } from 'commons';
+
+import { permissions, isForbidden, linkTo } from 'utils';
 import book from 'routes/book';
 
 // own
@@ -182,7 +182,7 @@ export default class EditEmployeePage extends Component {
                 </TabPane>
                 <TabPane
                     tab={ this.props.intl.formatMessage({
-                        id: 'employee.statistics',
+                        id: 'employee-page.statistics',
                     }) }
                     key='3'
                 >
@@ -190,11 +190,27 @@ export default class EditEmployeePage extends Component {
                 </TabPane>
                 <TabPane
                     tab={ this.props.intl.formatMessage({
-                        id: 'employee.feedback',
+                        id: 'employee-page.feedback',
                     }) }
                     key='4'
                 >
                     Feedback
+                </TabPane>
+                <TabPane
+                    tab={ this.props.intl.formatMessage({
+                        id: 'employee-page.setting_salary',
+                    }) }
+                    disabled={ isForbidden(
+                        this.props.user,
+                        permissions.EMPLOYEES_SALARIES,
+                    ) }
+                    key='5'
+                >
+                    <SettingSalaryForm
+                        salaries={ this.props.salaries }
+                        entity={ this.props.entity }
+                        employees={ this.props.employees }
+                    />
                 </TabPane>
             </Tabs>
         );

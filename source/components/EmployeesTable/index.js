@@ -18,7 +18,7 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 @withRouter
-export default class EmployeeTable extends Component {
+export default class EmployeesTable extends Component {
     constructor(props) {
         super(props);
         this.columns = [
@@ -90,7 +90,7 @@ export default class EmployeeTable extends Component {
                             permissions.CREATE_EDIT_DELETE_EMPLOYEES,
                         ) && (
                             <Icon
-                                className={ Styles.employeeTableIcon }
+                                className={ Styles.EmployeesTableIcon }
                                 onClick={ () => {
                                     this.props.deleteEmployee(
                                         record.id,

@@ -13,9 +13,7 @@ import {
 import { initEmployeeForm } from 'core/forms/employeeForm/duck';
 
 import { Catcher } from 'commons';
-import { EmployeeTable } from 'components';
-import { SettingSalaryContainer } from 'containers';
-import { permissions, isForbidden } from 'utils';
+import { EmployeesTable } from 'components';
 
 // own
 import Styles from './styles.m.css';
@@ -60,44 +58,15 @@ export default class EmployeesContainer extends Component {
 
         return (
             <Catcher>
-                <Tabs type='card' tabPosition='right'>
-                    <TabPane
-                        tab={ this.props.intl.formatMessage({
-                            id: 'employee-page.employees',
-                        }) }
-                        key='employees'
-                    >
-                        <section className={ Styles.myTasks }>
-                            <EmployeeTable
-                                user={ user }
-                                deleteEmployee={ deleteEmployee }
-                                initEmployeeForm={ initEmployeeForm }
-                                employees={ employees }
-                                status={ status }
-                                setEmployeesStatus={ setEmployeesStatus }
-                                fetchEmployees={ fetchEmployees }
-                            />
-                        </section>
-                    </TabPane>
-                    <TabPane
-                        tab={ this.props.intl.formatMessage({
-                            id: 'employee-page.setting_salary',
-                        }) }
-                        disabled={ isForbidden(
-                            this.props.user,
-                            permissions.EMPLOYEES_SALARIES,
-                        ) }
-                        key='settingSalary'
-                    >
-                        <section>
-                            <SettingSalaryContainer
-                                salaries={ this.props.salaries }
-                                entity={ this.props.entity }
-                                employees={ this.props.employees }
-                            />
-                        </section>
-                    </TabPane>
-                </Tabs>
+                <EmployeesTable
+                    user={ user }
+                    deleteEmployee={ deleteEmployee }
+                    initEmployeeForm={ initEmployeeForm }
+                    employees={ employees }
+                    status={ status }
+                    setEmployeesStatus={ setEmployeesStatus }
+                    fetchEmployees={ fetchEmployees }
+                />
             </Catcher>
         );
     }
