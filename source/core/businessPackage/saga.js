@@ -1,12 +1,5 @@
 // vendor
-import {
-    call,
-    put,
-    all,
-    take,
-    select,
-    takeEvery,
-} from 'redux-saga/effects';
+import { call, put, all, take, select, takeEvery } from 'redux-saga/effects';
 
 //proj
 import { emitError, setBusinessPackageFetchingState } from 'core/ui/duck';
@@ -67,11 +60,11 @@ export function* fetchBusinessPackagesSaga() {
 }
 
 function* createBusinessPackageSaga({
-    payload: { businessId, packageId, datetimeRange },
+    payload: { businessId, packageId, fields },
 }) {
     const entity = {
         businessId,
-        rolePackages: [{ rolePackageId: packageId, ...datetimeRange }],
+        rolePackages: [{ rolePackageId: packageId, ...fields }],
     };
 
     yield call(fetchAPI, 'POST', 'managers/packages/assign', null, entity);
@@ -81,11 +74,16 @@ function* createBusinessPackageSaga({
 }
 
 function* updateBusinessPackageSaga({
-    payload: { businessPackageId, datetimeRange },
+    payload: { businessPackageId, entity },
 }) {
-    const entity = { ...datetimeRange };
 
-    yield call(fetchAPI, 'PUT', `/managers/businesses/packages/${businessPackageId}`, null, entity);
+    yield call(
+        fetchAPI,
+        'PUT',
+        `/managers/businesses/packages/${businessPackageId}`,
+        null,
+        entity,
+    );
 
     yield put(hideForms());
     yield put(fetchBusinessPackages());

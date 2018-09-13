@@ -41,7 +41,9 @@ export const DecoratedInputNumber = props => {
 
     const inputNumber = getFieldDecorator(field, {
         rules,
-        ..._.isNumber(defaultValue) ? { initialValue: defaultValue } : {},
+        ..._.isNumber(defaultValue)
+            ? { initialValue: defaultValue }
+            : { initialValue: void 0 },
     })(
         <InputNumber
             min={ min }
