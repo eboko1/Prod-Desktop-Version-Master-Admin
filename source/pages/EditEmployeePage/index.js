@@ -18,6 +18,8 @@ import {
     resetEmployeeForm,
     fireEmployee,
 } from 'core/forms/employeeForm/duck';
+
+import { linkTo } from 'utils';
 import book from 'routes/book';
 
 // own
@@ -86,7 +88,8 @@ export default class EditEmployeePage extends Component {
     };
 
     _linkToEmployee = id => {
-        this.props.history.push(`${book.employeesPage}/${id}`);
+        linkTo(`${book.employeesPage}/${id}`);
+        this.props.fetchEmployeeById(id);
         this.props.fetchEmployees();
     };
 

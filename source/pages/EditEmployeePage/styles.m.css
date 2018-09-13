@@ -45,7 +45,15 @@
     overflow: scroll;
 }
 
-.listItemActive {
+.listItem {
+    cursor: pointer;
+}
+
+.listItem:hover {
+    background-color: rgba(var(--primaryRGB), .2);
+}
+
+.listItemActive, .listItemActive:hover {
     background-color: var(--primary);
 }
 
