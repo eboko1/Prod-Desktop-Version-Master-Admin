@@ -82,7 +82,7 @@ export default class Private extends Component {
                     component={ ExceptionPage }
                     path={ book.exceptionStatusCode }
                 />
-                <Redirect from='/' to={ book.ordersAppointments } />
+                <Redirect exact from='/' to={ book.ordersAppointments } />
                 <Redirect to={ `${book.exception}/404` } />
             </Switch>
         );
