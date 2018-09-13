@@ -40,7 +40,7 @@ export class AddClientVehicleForm extends Component {
     render() {
         const { makes, models, modifications, lastFilterAction } = this.props;
 
-        const years = Array(new Date().getFullYear() - 1900)
+        const years = Array(new Date().getFullYear() - 1900 + 1)
             .fill(1900)
             .map((val, index) => val + index)
             .reverse();
