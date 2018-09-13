@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table } from 'antd';
+import { Table, Modal, Select, Form, Button } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -11,15 +11,20 @@ import {
     fetchClients,
     setClientsPageSort,
     createInviteOrders,
+    setInvite,
+    createInvite,
 } from 'core/clients/duck';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { setModal, resetModal } from 'core/modals/duck';
 
 import { Catcher } from 'commons';
-import { InviteModal } from 'modals';
 
 // own
-import { columnsConfig, rowsConfig, scrollConfig } from './clientsTableConfig';
+import { columnsConfig } from './clientsTableConfig';
 import Styles from './styles.m.css';
+import { v4 } from 'uuid';
+
+const Option = Select.Option;
+const FormItem = Form.Item;
 
 const mapStateToProps = state => ({
     clients:         state.clients.clients,
@@ -29,6 +34,7 @@ const mapStateToProps = state => ({
     modal:           state.modals.modal,
     clientsFetching: state.ui.clientsFetching,
     user:            state.auth,
+    invite:          state.clients.invite,
 });
 
 const mapDispatchToProps = {
@@ -37,7 +43,30 @@ const mapDispatchToProps = {
     createInviteOrders,
     setModal,
     resetModal,
+    setInvite,
+    createInvite,
 };
+
+function formatVehicleLabel(vehicle, formatMessage) {
+    const modelPart = vehicle.model
+        ? `${vehicle.make} ${vehicle.model}`
+        : formatMessage({ id: 'add_order_form.no_model' });
+    const horsePowerLabel = !vehicle.horsePower
+        ? null
+        : `(${vehicle.horsePower} ${formatMessage({
+            id: 'horse_power',
+        })})`;
+    const modificationPart = [ vehicle.modification, horsePowerLabel ]
+        .filter(Boolean)
+        .join(' ');
+    const parts = [ modelPart, vehicle.year, modificationPart, vehicle.number, vehicle.vin ];
+
+    return parts
+        .filter(Boolean)
+        .map(String)
+        .map(_.trimEnd)
+        .join(', ');
+}
 
 @withRouter
 @injectIntl
@@ -46,57 +75,16 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class ClientsContainer extends Component {
-    state = {
-        loading:         false,
-        selectedRowKeys: [],
-        invited:         [],
-    };
-
     componentDidMount() {
         this.props.fetchClients(this.props.filter);
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        // if (prevState.activeRoute !== this.state.activeRoute) {
-        //     this.props.fetchClients({
-        //         ...this.props.filter,
-        //     });
-        //     // this.columnsConfig(status);
-        // }
-
-        if (prevProps.clients !== this.props.clients) {
-            return this.setState({
-                selectedRowKeys: [],
-                invited:         [],
-            });
-        }
-    }
-
-    setIniviteModal = () => this.props.setModal(MODALS.INVITE);
-
     render() {
-        const { clients } = this.props;
+        const { clients, invite, user, sort } = this.props;
+        const { setInvite, createInvite } = this.props;
         const { formatMessage } = this.props.intl;
-        const { loading, activeRoute, selectedRowKeys } = this.state;
-        // const { status, loading, selectedRowKeys } = this.state;
 
-        const columns = columnsConfig(
-            this.state.invited,
-            this.invite,
-            this.isOrderInvitable,
-            this.isAlreadyInvited,
-            activeRoute,
-            this.props.sort,
-            this.props.user,
-            formatMessage,
-        );
-
-        const rows = rowsConfig(
-            activeRoute,
-            selectedRowKeys,
-            this.onSelectChange,
-            this.getOrderCheckboxProps,
-        );
+        const columns = columnsConfig(sort, user, formatMessage, setInvite);
 
         const pagination = {
             pageSize:         25,
@@ -117,7 +105,6 @@ export default class ClientsContainer extends Component {
                         size='small'
                         className={ Styles.table }
                         columns={ columns }
-                        rowSelection={ rows }
                         dataSource={ clients }
                         // scroll={ scrollConfig() }
                         loading={ this.props.clientsFetching }
@@ -129,13 +116,70 @@ export default class ClientsContainer extends Component {
                         scroll={ { x: 1360 } }
                     />
                 </div>
-                <InviteModal
-                    // wrappedComponentRef={ this.saveFormRef }
-                    visible={ this.props.modal }
-                    count={ selectedRowKeys.length }
-                    confirmInviteModal={ this.inviteSelected }
-                    resetModal={ this.props.resetModal }
-                />
+                <Modal
+                    title={ <FormattedMessage id='orders.invitation' /> }
+                    visible={ invite.client }
+                    footer={ [
+                        <Button
+                            key='back'
+                            onClick={ () => setInvite(null, null) }
+                        >
+                            <FormattedMessage id='cancel' />
+                        </Button>,
+                        <Button
+                            key='submit'
+                            type='primary'
+                            disabled={ !invite.clientVehicleId }
+                            onClick={ () => {
+                                const inviteOrder = {
+                                    managerId:       user.id,
+                                    clientId:        invite.client.clientId,
+                                    clientVehicleId: invite.clientVehicleId,
+                                    clientPhone:     invite.client.phones.find(
+                                        Boolean,
+                                    ),
+                                    status: 'invite',
+                                };
+                                setInvite(null, null);
+                                createInvite(inviteOrder);
+                            } }
+                        >
+                            <FormattedMessage id='orders.invite' />
+                        </Button>,
+                    ] }
+                >
+                    { invite.client && (
+                        <Form>
+                            <FormItem
+                                label={
+                                    <FormattedMessage id='client_order_tab.car' />
+                                }
+                            >
+                                <Select
+                                    value={ invite.clientVehicleId }
+                                    getPopupContainer={ trigger =>
+                                        trigger.parentNode
+                                    }
+                                    onChange={ clientVehicleId =>
+                                        setInvite(
+                                            invite.client,
+                                            clientVehicleId,
+                                        )
+                                    }
+                                >
+                                    { invite.client.vehicles.map(vehicle => (
+                                        <Option value={ vehicle.id } key={ v4() }>
+                                            { formatVehicleLabel(
+                                                vehicle,
+                                                formatMessage,
+                                            ) }
+                                        </Option>
+                                    )) }
+                                </Select>
+                            </FormItem>
+                        </Form>
+                    ) }
+                </Modal>
             </Catcher>
         );
     }

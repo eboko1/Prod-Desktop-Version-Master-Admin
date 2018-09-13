@@ -17,6 +17,9 @@ export const SET_UNIVERSAL_FILTERS = `${prefix}/SET_UNIVERSAL_FILTERS`;
 export const INVITE_CLIENTS = `${prefix}/INVITE_CLIENTS`;
 export const INVITE_CLIENTS_SUCCESS = `${prefix}/INVITE_CLIENTS_SUCCESS`;
 
+export const SET_INVITE = `${prefix}/SET_INVITE`;
+export const CREATE_INVITE = `${prefix}/CREATE_INVITE`;
+
 /**
  * Reducer
  * */
@@ -26,6 +29,10 @@ const ReducerState = {
     filter:          {},
     sort:            { page: 1, order: 'asc' },
     universalFilter: {},
+    invite:          {
+        client:          null,
+        clientVehicleId: null,
+    },
 };
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
@@ -51,6 +58,12 @@ export default function reducer(state = ReducerState, action) {
                     page:  1,
                     order: 'asc',
                 },
+            };
+
+        case SET_INVITE:
+            return {
+                ...state,
+                invite: payload,
             };
 
         case SET_CLIENTS_PAGE_SORT:
@@ -86,7 +99,9 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
-export const selectFilter = ({ clients: { filter, sort, universalFilter } }) => ({
+export const selectFilter = ({
+    clients: { filter, sort, universalFilter },
+}) => ({
     filter,
     sort,
     universalFilter,
@@ -95,6 +110,11 @@ export const selectFilter = ({ clients: { filter, sort, universalFilter } }) => 
 /**
  * Action Creators
  * */
+
+export const setInvite = (client, clientVehicleId) => ({
+    type:    SET_INVITE,
+    payload: { client, clientVehicleId },
+});
 
 export const fetchClients = filter => ({
     type:    FETCH_CLIENTS,
@@ -125,6 +145,11 @@ export const setClientsPageSort = sort => ({
 export const setClientsSearchFilter = searchFilter => ({
     type:    SET_CLIENTS_SEARCH_FILTER,
     payload: searchFilter,
+});
+
+export const createInvite = invite => ({
+    type:    CREATE_INVITE,
+    payload: invite,
 });
 
 // Universal Filters

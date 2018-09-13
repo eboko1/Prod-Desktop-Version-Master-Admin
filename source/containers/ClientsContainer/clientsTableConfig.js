@@ -6,32 +6,19 @@ import { Icon, Popconfirm, Button } from 'antd';
 import moment from 'moment';
 
 // proj
-import { Numeral, StyledButton } from 'commons';
+import { Numeral } from 'commons';
 import book from 'routes/book';
 import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 
-export function columnsConfig(
-    invited,
-    action,
-    isOrderInvitable,
-    isAlreadyInvited,
-    activeRoute,
-    sort,
-    user,
-    formatMessage,
-) {
-    const sortOptions = {
-        asc:  'ascend',
-        desc: 'descend',
-    };
-
-    const { GET_CLIENTS_BASIC_INFORMATION } = permissions;
+export function columnsConfig(sort, user, formatMessage, setInvite) {
+    const { GET_CLIENTS_BASIC_INFORMATION, CREATE_INVITE_ORDER } = permissions;
     const isClientInformationForbidden = isForbidden(
         user,
         GET_CLIENTS_BASIC_INFORMATION,
     );
+    const isInviteForbidden = isForbidden(user, CREATE_INVITE_ORDER);
 
     const client = {
         title:     <FormattedMessage id='clients-table.client' />,
@@ -123,28 +110,28 @@ export function columnsConfig(
     };
 
     const invitation = {
-        title:     <FormattedMessage id='clients-table.invitation' />,
-        dataIndex: 'invite',
-        key:       'invite',
-        width:     150,
-        render:    (_void, order) => {
-            if (!order.vehicleInviteExists) {
+        title:  <FormattedMessage id='clients-table.invitation' />,
+        key:    'invite',
+        width:  150,
+        render: client => {
+            if (!client.inviteId) {
                 return (
-                    <StyledButton
-                        type='secondary'
-                        onClick={ () => action([ order ]) }
-                        // disabled={ isInviteButtonDisabled(order) }
+                    <Button
+                        disabled={ !client.vehicles.length || isInviteForbidden }
+                        type='primary'
+                        onClick={ () => setInvite(client) }
                     >
                         <FormattedMessage id='orders.invite' />
-                    </StyledButton>
+                    </Button>
                 );
             }
 
             return (
                 <Link
-                // to={ `${book.order}/${order.vehicleInviteExists}` }
+                    className={ Styles.lastOrderLink }
+                    to={ `${book.order}/${client.inviteId}` }
                 >
-                    { /* { order.vehicleInviteExists } */ }
+                    { client.inviteId }
                 </Link>
             );
         },
@@ -182,9 +169,3 @@ export function columnsConfig(
 
     return [ client, phone, vehicles, lastOrder, orders, invitation, actions ];
 }
-
-export const rowsConfig = (selectedRowKeys, onChange, getCheckboxProps) => ({
-    selectedRowKeys,
-    onChange,
-    getCheckboxProps,
-});
