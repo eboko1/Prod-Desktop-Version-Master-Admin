@@ -1,11 +1,8 @@
-.employeeName {
-    background: red;
+.settingSalaryTable :global(.ant-table-thead > tr > th, .ant-table-tbody > tr > td) {
+    /* padding: 4px; */
+    word-break: break-word;
 }
 
-.jobTitle {
-    background: blue;
-}
-
-.employeesTableIcon {
-    background: var(--primary);
+.settingSalaryTable :global(.ant-select) {
+    width: 100%;
 }

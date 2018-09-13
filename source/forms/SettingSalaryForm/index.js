@@ -1,7 +1,8 @@
 // vendor
 import React, { Component } from 'react';
-import { Button, Form } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Button, Form } from 'antd';
+import _ from 'lodash';
 
 // proj
 import {
@@ -15,7 +16,7 @@ import {
 import { Catcher } from 'commons';
 import { DecoratedDatePicker } from 'forms/DecoratedFields/DecoratedDatePicker';
 import { SettingSalaryTable } from 'components';
-import { withReduxForm, getDaterange } from 'utils';
+import { withReduxForm2, getDaterange } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -27,7 +28,7 @@ const mapStateToProps = state => ({
 });
 
 @injectIntl
-@withReduxForm({
+@withReduxForm2({
     name:    'settingSalary',
     actions: {
         change: onChangeSettingSalaryForm,
@@ -42,7 +43,15 @@ export default class SettingSalaryContainer extends Component {
     componentDidMount() {
         this.props.fetchSalary();
     }
-    /* eslint-enable complexity */
+
+    componentDidUpdate(prevProps, prevState) {
+        const { formValues: prevFormValues } = prevState;
+        const formValues = this.props.form.getFieldsValue();
+
+        if (!_.isEqual(formValues, prevFormValues)) {
+            this.setState({ formValues });
+        }
+    }
 
     render() {
         const {
@@ -54,6 +63,7 @@ export default class SettingSalaryContainer extends Component {
             fetchSalaryReport,
             filterRangeDate,
             user,
+            form: { getFieldDecorator },
         } = this.props;
 
         return (
@@ -65,20 +75,22 @@ export default class SettingSalaryContainer extends Component {
                         label={ null }
                         formItem
                         formatMessage={ this.props.intl.formatMessage }
-                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        getFieldDecorator={ getFieldDecorator }
                         format='YYYY-MM-DD'
                     />
-                    { /* <FormItem>
+                    <FormItem>
                         <Button
                             type='primary'
-                            disabled={ !filterRangeDate.value }
+                            disabled={
+                                filterRangeDate ? !filterRangeDate.value : true
+                            }
                             onClick={ () =>
                                 fetchSalaryReport(entity.filterRangeDate.value)
                             }
                         >
                             <FormattedMessage id='setting-salary.calculate' />
                         </Button>
-                    </FormItem> */ }
+                    </FormItem>
                 </div>
                 <SettingSalaryTable
                     user={ user }
@@ -86,6 +98,7 @@ export default class SettingSalaryContainer extends Component {
                     saveSalary={ saveSalary }
                     employees={ employees }
                     deleteSalary={ deleteSalary }
+                    getFieldDecorator={ getFieldDecorator }
                 />
             </Catcher>
         );

@@ -1,24 +1,17 @@
 // vendor
 import React, { Component } from 'react';
-import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
-import { FormattedMessage } from 'react-intl';
-import { Table, Icon, Rate, Radio, Button } from 'antd';
-import moment from 'moment';
-import { v4 } from 'uuid';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { Table, Button } from 'antd';
 import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import book from 'routes/book';
-import { permissions, isForbidden } from 'utils';
 
 // own
 import { columnsConfig } from './settingSalaryTableConfig';
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
+import Styles from './styles.m.css';
 
-@withRouter
+@injectIntl
 export default class SettingSalaryTable extends Component {
     constructor(props) {
         super(props);
@@ -67,26 +60,31 @@ export default class SettingSalaryTable extends Component {
     };
 
     render() {
-        const { user, saveSalary } = this.props;
+        const { user, saveSalary, getFieldDecorator } = this.props;
+        const { formatMessage } = this.props.intl;
         const { keys } = this.state;
-        console.log(user);
-        const columns = columnsConfig(user, saveSalary);
+
+        const columns = columnsConfig(
+            user,
+            saveSalary,
+            formatMessage,
+            getFieldDecorator,
+        );
 
         return (
             <Catcher>
                 <Table
+                    className={ Styles.settingSalaryTable }
                     dataSource={ keys.map(key => ({ key })) }
                     columns={ columns }
-                    scroll={ { x: 840 } }
+                    size='small'
+                    scroll={ { x: 1000 } }
                     pagination={ false }
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                 />
-                <Button
-                    onClick={ () => this._handleAdd() }>
-                    Click me
-                </Button>
+                <Button onClick={ () => this._handleAdd() }>Click me</Button>
             </Catcher>
         );
     }
