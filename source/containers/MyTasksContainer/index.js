@@ -266,13 +266,9 @@ export default class MyTasksContainer extends Component {
         if (!sorter) {
             return;
         }
-        const sort = {
-            field: sorter.field,
-            order: sorter.order === 'ascend' ? 'asc' : 'desc',
-        };
         setMyTasksSortFieldFilter(sorter.field);
         setMyTasksSortOrderFilter(sorter.order === 'ascend' ? 'asc' : 'desc');
-        fetchMyTasks(filter);
+        fetchMyTasks();
     };
 
     /* eslint-disable complexity */
@@ -329,7 +325,7 @@ export default class MyTasksContainer extends Component {
             current:          page,
             onChange:         page => {
                 this.props.setPage(page);
-                this.props.fetchMyTasks(page);
+                this.props.fetchMyTasks();
             },
         };
 
