@@ -4,6 +4,7 @@ import { routerReducer as router } from 'react-router-redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
 import { LOCATION_CHANGE } from 'react-router-redux';
+import _ from 'lodash';
 
 // proj
 import intl from 'core/intl/reducer';
@@ -78,9 +79,13 @@ const appState = {
 const appReducer = combineReducers({ ...persistedState, ...appState });
 
 const reducer = (state, action) => {
-    let resetedState = state;
+    const { type, payload } = action;
+    let resetedState = null;
 
-    if (action.type === LOCATION_CHANGE) {
+    if (
+        type === LOCATION_CHANGE &&
+        _.get(payload, 'pathname') !== _.get(state, 'router.location.pathname')
+    ) {
         resetedState = Object.keys(persistedState).reduce(
             (resetedState, moduleName) => {
                 resetedState[ moduleName ] = state[ moduleName ];
@@ -91,7 +96,7 @@ const reducer = (state, action) => {
         );
     }
 
-    return appReducer(resetedState, action);
+    return appReducer(resetedState || state, action);
 };
 
 const rootReducer = persistReducer(persistConfig, (state, action) => {
