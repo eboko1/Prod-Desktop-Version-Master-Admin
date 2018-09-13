@@ -32,10 +32,10 @@ export class UniversalFiltersForm extends Component {
         const { formatMessage } = this.props.intl;
 
         const makeId = getFieldValue('make');
-        const vehiclesYears = [];
-        for (let year = new Date().getFullYear(); year >= 1900; year--) {
-            vehiclesYears.push(year);
-        }
+        const vehiclesYears = Array(new Date().getFullYear() - 1900 + 1)
+            .fill(1900)
+            .map((val, index) => val + index)
+            .reverse();
 
         return (
             <Form
