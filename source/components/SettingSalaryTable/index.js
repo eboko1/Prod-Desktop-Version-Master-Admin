@@ -20,6 +20,12 @@ const RadioGroup = Radio.Group;
 
 @withRouter
 export default class SettingSalaryTable extends Component {
+    constructor(props) {
+        super(props);
+        this.uuid = 0;
+        this.state = { keys: [ this.uuid++ ] };
+    }
+
     _getDefaultValue = (key, fieldName) => {
         const salaryField = (this.props.salaryFields || [])[ key ];
         if (!salaryField) {
@@ -63,6 +69,7 @@ export default class SettingSalaryTable extends Component {
     render() {
         const { user, saveSalary } = this.props;
         const { keys } = this.state;
+        console.log(user);
         const columns = columnsConfig(user, saveSalary);
 
         return (

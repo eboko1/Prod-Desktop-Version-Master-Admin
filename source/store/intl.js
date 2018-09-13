@@ -42,7 +42,7 @@ import MyTasksContainer from 'containers/MyTasksContainer/messages';
 import PackageContainer from 'containers/PackageContainer/messages';
 import BusinessPackageContainer from 'containers/BusinessPackageContainer/messages';
 import RoleContainer from 'containers/RoleContainer/messages';
-import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
+import SettingSalaryForm from 'forms/SettingSalaryForm/messages';
 import ManagerRoleContainer from 'containers/ManagerRoleContainer/messages';
 import UniversalFiltersContainer from 'containers/UniversalFilters/messages';
 import ClientContainer from 'containers/ClientContainer/messages';
@@ -126,7 +126,7 @@ const messages = merge.all([
     MyTasksContainer,
     PackageContainer,
     RoleContainer,
-    SettingSalaryContainer,
+    SettingSalaryForm,
     BusinessPackageContainer,
     ManagerRoleContainer,
     UniversalFiltersContainer,

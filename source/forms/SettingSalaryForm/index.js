@@ -23,6 +23,7 @@ const FormItem = Form.Item;
 
 const mapStateToProps = state => ({
     filterRangeDate: state.forms.settingSalary.fields.filterRangeDate,
+    user:            state.auth,
 });
 
 @injectIntl
@@ -52,6 +53,7 @@ export default class SettingSalaryContainer extends Component {
             entity,
             fetchSalaryReport,
             filterRangeDate,
+            user,
         } = this.props;
 
         return (
@@ -79,6 +81,7 @@ export default class SettingSalaryContainer extends Component {
                     </FormItem> */ }
                 </div>
                 <SettingSalaryTable
+                    user={ user }
                     salaries={ salaries }
                     saveSalary={ saveSalary }
                     employees={ employees }

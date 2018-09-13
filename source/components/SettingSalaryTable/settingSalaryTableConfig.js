@@ -19,15 +19,7 @@ const Option = Select.Option;
 
 /* eslint-disable complexity */
 export function columnsConfig(
-    invited,
-    action,
-    isOrderInvitable,
-    isAlreadyInvited,
-    activeRoute,
-    sort,
-    user,
-    saveSalary,
-    formatMessage,
+    user, saveSalary,
 ) {
     const employee = {
         title:     <FormattedMessage id='employee-table.employee' />,
@@ -62,7 +54,7 @@ export function columnsConfig(
                 // style={ { minWidth: '135px' } }
                 value={ record.period }
             >
-                { [ 'DAY', 'WEEK', 'MONTH' ].map(period, index => (
+                { [ 'DAY', 'WEEK', 'MONTH' ].map((period, index) => (
                     <Option value={ period } key={ `${period}-${index}` }>
                         <FormattedMessage id={ period } />
                     </Option>
