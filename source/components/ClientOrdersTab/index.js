@@ -42,7 +42,7 @@ export default class ClientOrdersTab extends Component {
         this.columns = [
             {
                 title:     <FormattedMessage id='client_order_tab.date' />,
-                dataIndex: 'datetime',
+                dataIndex: 'beginDatetime',
                 width:     '20%',
                 render:    record => <FormattedDatetime datetime={ record } />,
             },
