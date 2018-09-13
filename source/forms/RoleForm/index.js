@@ -16,6 +16,7 @@ import {
     getPermissionsLabels,
     groupedPermissions,
     getGroupsLabels,
+    permissions,
 } from 'utils';
 
 // own
@@ -34,6 +35,7 @@ const Option = Select.Option;
 export class RoleForm extends Component {
     render() {
         const { role } = this.props;
+        const roleGrants = _.intersection(role.grants, _.values(permissions));
         const { getFieldDecorator, validateFields } = this.props.form;
         const groupsLabels = getGroupsLabels(this.props.intl);
         const permissionsLabels = getPermissionsLabels(this.props.intl);
@@ -58,7 +60,7 @@ export class RoleForm extends Component {
                 />
                 <DecoratedSelect
                     field={ 'grants' }
-                    initialValue={ role.grants }
+                    initialValue={ roleGrants }
                     formItem
                     getPopupContainer={ trigger => trigger.parentNode }
                     rules={ [
