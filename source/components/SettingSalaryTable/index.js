@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Table, Icon, Rate, Radio } from 'antd';
+import { Table, Icon, Rate, Radio, Button } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
 import _ from 'lodash';
@@ -83,6 +83,10 @@ export default class SettingSalaryTable extends Component {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                 />
+                <Button
+                    onClick={ () => this._handleAdd() }>
+                    Click me
+                </Button>
             </Catcher>
         );
     }
