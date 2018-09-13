@@ -318,6 +318,7 @@ export default class OrderFormHeader extends Component {
                     className={ Styles.durationPanelItem }
                     disabled={ this.bodyUpdateIsForbidden() }
                     getFieldDecorator={ getFieldDecorator }
+                    initialValue={ _.get(fetchedOrder, 'order.appurtenanciesResponsibleId') }
                     placeholder={ formatMessage({
                         id: 'add_order_form.select_appurtenancies_responsible',
                     }) }
