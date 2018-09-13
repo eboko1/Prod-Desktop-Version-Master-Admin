@@ -119,6 +119,7 @@ export default class ClientsContainer extends Component {
                 <Modal
                     title={ <FormattedMessage id='orders.invitation' /> }
                     visible={ invite.client }
+                    onCancel={ () => setInvite(null, null) }
                     footer={ [
                         <Button
                             key='back'
