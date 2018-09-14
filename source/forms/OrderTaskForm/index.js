@@ -161,7 +161,7 @@ export class OrderTaskForm extends Component {
                     this.setState({ toogleDirectory: !toogleDirectory })
                 }
             >
-                Открыть справочник по статусам
+                <FormattedMessage id='order-task-modal.open_status_helper' />
             </span>
         );
 
