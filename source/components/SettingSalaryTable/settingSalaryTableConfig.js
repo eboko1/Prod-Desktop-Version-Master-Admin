@@ -9,7 +9,11 @@ import { v4 } from 'uuid';
 
 // proj
 import { Numeral } from 'commons';
-import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
+import {
+    DecoratedSelect,
+    DecoratedInputNumber,
+    DecoratedDatePicker,
+} from 'forms/DecoratedFields';
 import { permissions, isForbidden } from 'utils';
 import book from 'routes/book';
 
@@ -24,16 +28,10 @@ export function columnsConfig(
     formatMessage,
     getFieldDecorator,
 ) {
-    const jobTitle = {
-        title:     <FormattedMessage id='setting-salary.jobTitle' />,
-        dataIndex: 'jobTitle',
-        width:     '7.5%',
-    };
-
     const period = {
         title:     <FormattedMessage id='setting-salary.period' />,
         dataIndex: 'period',
-        width:     '7.5%',
+        width:     '10%',
         render:    (text, record) => (
             <DecoratedSelect
                 field='period'
@@ -53,38 +51,42 @@ export function columnsConfig(
     const startDate = {
         title:     <FormattedMessage id='setting-salary.start_date' />,
         dataIndex: 'startDate',
-        width:     '12.5%',
+        width:     '15%',
         render:    (text, record) => (
-            <div>
-                startDate
-                { /* { record.hireDate &&
-                    moment(record.hireDate).format('DD.MM.YYYY') }
-                { record.fireDate &&
-                    ` - ${moment(record.fireDate).format('DD.MM.YYYY')}` } */ }
-            </div>
+            <DecoratedDatePicker
+                field='startDate'
+                // initialValue={ moment(startDate) }
+                format='YYYY-MM-DD'
+                formatMessage={ formatMessage }
+                getFieldDecorator={ getFieldDecorator }
+            />
         ),
     };
 
     const endDate = {
         title:     <FormattedMessage id='setting-salary.end_date' />,
         dataIndex: 'endDate',
-        width:     '12.5%',
-        render:    (text, record) => (
-            <div>
-                { console.log('→ record', record) }
-                endDate
-                { /* { record.hireDate &&
-                    moment(record.hireDate).format('DD.MM.YYYY') }
-                { record.fireDate &&
-                    ` - ${moment(record.fireDate).format('DD.MM.YYYY')}` } */ }
-            </div>
-        ),
+        width:     '15%',
+        render:    (text, record) => {
+            console.log('→ record', record);
+
+            return (
+                <DecoratedDatePicker
+                    field='endDate'
+                    // initialValue={ moment(startDate) }
+                    format='YYYY-MM-DD'
+                    // getCalendarContainer={ trigger => trigger.parentNode }
+                    formatMessage={ formatMessage }
+                    getFieldDecorator={ getFieldDecorator }
+                />
+            );
+        },
     };
 
     const ratePerPeriod = {
         title:     <FormattedMessage id='setting-salary.ratePerPeriod' />,
         dataIndex: 'ratePerPeriod',
-        width:     '7.5%',
+        width:     '10%',
         render:    (text, record) => (
             <DecoratedInputNumber
                 field='ratePerPeriod'
@@ -92,6 +94,7 @@ export function columnsConfig(
                 placeholder={ formatMessage({
                     id: 'setting-salary.ratePerPeriod',
                 }) }
+                min={ 0 }
                 // onKeyPress={ this.handleChangeNew.bind(this, null) }
                 // defaultValue={ text }
             />
@@ -133,13 +136,13 @@ export function columnsConfig(
         title:     <FormattedMessage id='setting-salary.percent' />,
         dataIndex: 'percent',
         width:     '10%',
-        render:    (text, record) => (
+        render:    (data, record) => (
             <DecoratedInputNumber
                 field='percent'
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({ id: 'setting-salary.percent' }) }
                 // onKeyPress={ this.handleChangeNew.bind(this, null) }
-                defaultValue={ text }
+                initialValue={ data || 0 }
                 min={ 0 }
                 max={ 100 }
                 formatter={ value => `${value}%` }
@@ -151,7 +154,7 @@ export function columnsConfig(
     const considerDiscount = {
         title:     <FormattedMessage id='setting-salary.considerDiscount' />,
         dataIndex: 'considerDiscount',
-        width:     '12.5%',
+        width:     '15%',
         render:    (text, record) => (
             <DecoratedSelect
                 field='considerDiscount'
@@ -184,6 +187,7 @@ export function columnsConfig(
                     permissions.CREATE_EDIT_DELETE_EMPLOYEES,
                 ) && (
                     <Icon
+                        className={ Styles.saveSalary }
                         onClick={ () => saveSalary(record, record.id) }
                         type='save'
                     />
@@ -194,7 +198,6 @@ export function columnsConfig(
 
     /* eslint-disable array-element-newline */
     return [
-        jobTitle,
         period,
         startDate,
         endDate,

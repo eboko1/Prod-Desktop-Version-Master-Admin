@@ -6,3 +6,19 @@
 .settingSalaryTable :global(.ant-select) {
     width: 100%;
 }
+
+.settingSalaryTable td:last-child {
+    text-align: center;
+}
+
+.saveSalary {
+    font-size: 26px;
+    color: var(--secondary);
+    cursor: pointer;
+}
+
+.newSalary {
+    display: flex;
+    align-items: center;
+    margin: 24px auto;
+}

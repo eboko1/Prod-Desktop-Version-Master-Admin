@@ -1,11 +1,11 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table, Button } from 'antd';
+import { Table, Button, Icon } from 'antd';
 import _ from 'lodash';
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher, StyledButton } from 'commons';
 
 // own
 import { columnsConfig } from './settingSalaryTableConfig';
@@ -84,7 +84,14 @@ export default class SettingSalaryTable extends Component {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                 />
-                <Button onClick={ () => this._handleAdd() }>Click me</Button>
+                <StyledButton
+                    type='secondary'
+                    onClick={ this._handleAdd }
+                    className={ Styles.newSalary }
+                >
+                    <Icon type='plus' />
+                    <FormattedMessage id='setting-salary.add_new_salary' />
+                </StyledButton>
             </Catcher>
         );
     }
