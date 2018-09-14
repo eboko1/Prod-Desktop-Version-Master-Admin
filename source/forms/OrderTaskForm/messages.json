@@ -23,7 +23,7 @@
         "all_agreed": "All agreed, waiting for arrival",
         "manager_accepts_cars": "Manager accepts cars",
         "passes_car_diagnostics": "Passes car diagnostics",
-        "auto_waiting_for_repair": "Auto waiting for repair in the shop or on the territory",
+        "auto_waiting_for_repair": "Auto waiting for repair in the manufactory or on the territory",
         "waiting_for_spare_parts": "Waiting for spare parts",
         "auto_expects_spare_parts": "Auto expects spare parts",
         "there_is_a_repair": "There is a repair",

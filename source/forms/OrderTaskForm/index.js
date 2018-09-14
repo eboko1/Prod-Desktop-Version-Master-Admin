@@ -203,10 +203,10 @@ export class OrderTaskForm extends Component {
                         ] }
                         getPopupContainer={ trigger => trigger.parentNode }
                     >
-                        { progressStatusOptions.map(({ id, value }) => {
+                        { progressStatusOptions.map(({ id }) => {
                             return (
                                 <Option value={ id } key={ v4() }>
-                                    { value }
+                                    <FormattedMessage id={ id } />
                                 </Option>
                             );
                         }) }
@@ -239,10 +239,10 @@ export class OrderTaskForm extends Component {
                             }
                             getPopupContainer={ trigger => trigger.parentNode }
                         >
-                            { priorityOptions.map(({ id, value }) => {
+                            { priorityOptions.map(({ id }) => {
                                 return (
                                     <Option value={ id } key={ v4() }>
-                                        { value }
+                                        <FormattedMessage id={ id } />
                                     </Option>
                                 );
                             }) }
