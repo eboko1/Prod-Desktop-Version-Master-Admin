@@ -121,7 +121,7 @@ export class OrderTaskForm extends Component {
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='repairs' />:</div>
+                            <FormattedMessage id='order_task.repairs' />:</div>
                         <div>
                             <FormattedMessage id='there_is_a_repair' />
 
