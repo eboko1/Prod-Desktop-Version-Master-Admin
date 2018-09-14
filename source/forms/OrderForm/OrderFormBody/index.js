@@ -156,6 +156,7 @@ export default class OrderFormBody extends Component {
 
         // const hasClient = !!_.get(this.props, 'order.clientId');
         const hasClient = getFieldValue('clientPhone');
+        const clipboardClientEmail = getFieldValue('clientEmail');
 
         return (
             <div className={ Styles.bodyColumn }>
@@ -231,7 +232,22 @@ export default class OrderFormBody extends Component {
                         disabled={ this.bodyUpdateIsForbidden() }
                         formItemLayout={ formVerticalLayout }
                         getFieldDecorator={ getFieldDecorator }
-                        label={ <FormattedMessage id='add_order_form.email' /> }
+                        label={
+                            <div>
+                                <FormattedMessage id='add_order_form.email' />
+                                { clipboardClientEmail && (
+                                    <CopyToClipboard
+                                        text={ clipboardClientEmail }
+                                    >
+                                        <Icon
+                                            type='copy'
+                                            theme='outlined'
+                                            className={ Styles.copyIcon }
+                                        />
+                                    </CopyToClipboard>
+                                ) }
+                            </div>
+                        }
                         initialValue={
                             _.get(fetchedOrder, 'order.clientEmail') ||
                             selectedClient.emails.find(Boolean)
