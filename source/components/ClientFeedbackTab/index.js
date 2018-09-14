@@ -30,7 +30,7 @@ export default class ClientFeedbackTab extends Component {
             {
                 dataIndex: 'rating',
                 width:     '20%',
-                render:    record => this.renderRatingStars(record),
+                render:    record => this._renderRatingStars(record),
             },
             {
                 dataIndex: 'recommended',
@@ -63,7 +63,7 @@ export default class ClientFeedbackTab extends Component {
         return icon;
     };
 
-    renderRatingStars(rating) {
+    _renderRatingStars(rating) {
         const value = rating / 2;
         const ratingStarts = (
             <Rate

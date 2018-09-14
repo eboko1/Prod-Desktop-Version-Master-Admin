@@ -6,6 +6,7 @@ import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
 import moment from 'moment';
 import classNames from 'classnames/bind';
+import _ from 'lodash';
 
 // proj
 import { fetchEmployees } from 'core/employees/duck';
@@ -18,7 +19,7 @@ import {
 
 import { EmployeeForm, EmployeeScheduleForm, SettingSalaryForm } from 'forms';
 import { Layout, Spinner, Loader } from 'commons';
-
+import { EmployeeStatistics } from 'components';
 import { permissions, isForbidden, linkTo } from 'utils';
 import book from 'routes/book';
 
@@ -186,7 +187,10 @@ export default class EditEmployeePage extends Component {
                     }) }
                     key='3'
                 >
-                    statistics
+                    <EmployeeStatistics
+                        ordersCount={ _.get(initialEmployee, 'ordersCount') }
+                        labourHours={ _.get(initialEmployee, 'labourHours') }
+                    />
                 </TabPane>
                 <TabPane
                     tab={ this.props.intl.formatMessage({
