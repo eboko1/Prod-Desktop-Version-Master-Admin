@@ -161,7 +161,7 @@ export default class EditEmployeePage extends Component {
                 </TabPane>
                 <TabPane
                     tab={ this.props.intl.formatMessage({
-                        id: 'employee.schedule',
+                        id: 'add-employee-page.schedule',
                     }) }
                     key='2'
                 >

@@ -33,19 +33,17 @@ const FormItem = Form.Item;
         deleteEmployeeSchedule,
     },
 })
-class ArrayScheduleInput extends Component {
-
-
-state = {
-    keys: [],
-}
+export default class ArrayScheduleInput extends Component {
+    state = {
+        keys: [],
+    };
 
     saveScheduleEmployeeFormRef = formRef => {
         this.employeeScheduleFormRef = formRef;
     };
-    
+
     saveEmployeeSchedule = keys => {
-        const form = this.props.form
+        const form = this.props.form;
         form.validateFields((err, values) => {
             if (!err) {
                 keys.map(item => {
@@ -94,7 +92,7 @@ state = {
                             )[ 2 ],
                             update: false,
                         });
-                    }else if(values.id[ item ]){
+                    } else if (values.id[ item ]) {
                         this.props.saveEmployeeSchedule({
                             schedule: data,
                             id:       this.props.history.location.pathname.split(
@@ -103,7 +101,6 @@ state = {
                             update: true,
                         });
                     }
-
                 });
             }
         });
@@ -115,9 +112,7 @@ state = {
         });
     }
     remove = key => {
-        const {
-            optional,
-        } = this.props;
+        const { optional } = this.props;
 
         const keys = this.state.keys;
         if (keys.length === 1 && !optional) {
@@ -125,11 +120,9 @@ state = {
         }
 
         this.setState({ keys: keys.filter(value => value !== key) });
-
     };
 
     add = () => {
-
         const keys = this.state.keys;
         this.setState({ keys: [ ...keys, keys.length++ ] });
     };
@@ -143,8 +136,12 @@ state = {
         /*eslint-disable complexity*/
         const formItems = keys.map(key => {
             return (
-                
-                <Row className={ Styles.MainBlock } type='flex' align='middle' key={ key }>
+                <Row
+                    className={ Styles.MainBlock }
+                    type='flex'
+                    align='middle'
+                    key={ key }
+                >
                     <Col span={ 20 }>
                         <div className={ Styles.CheckboxBlock }>
                             <DecoratedInput
@@ -253,7 +250,9 @@ state = {
                                     )
                                 }
                                 hasFeedback={ false }
-                                label={ <FormattedMessage id='beginWorkingHours' /> }
+                                label={
+                                    <FormattedMessage id='beginWorkingHours' />
+                                }
                                 formatMessage={ formatMessage }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
@@ -280,7 +279,9 @@ state = {
                                     )
                                 }
                                 hasFeedback={ false }
-                                label={ <FormattedMessage id='endWorkingHours' /> }
+                                label={
+                                    <FormattedMessage id='endWorkingHours' />
+                                }
                                 formatMessage={ formatMessage }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
@@ -290,7 +291,6 @@ state = {
                             <DecoratedTimePicker
                                 formItem
                                 className={ Styles.HourItem }
-
                                 field={ `beginBreakHours[${key}]` }
                                 initialValue={
                                     initialSchedule[ key ] &&
@@ -301,7 +301,9 @@ state = {
                                     )
                                 }
                                 hasFeedback={ false }
-                                label={ <FormattedMessage id='beginBreakHours' /> }
+                                label={
+                                    <FormattedMessage id='beginBreakHours' />
+                                }
                                 formatMessage={ formatMessage }
                                 getFieldDecorator={ getFieldDecorator }
                                 minuteStep={ 30 }
@@ -310,7 +312,6 @@ state = {
                             <DecoratedTimePicker
                                 formItem
                                 className={ Styles.HourItem }
-
                                 field={ `endBreakHours[${key}]` }
                                 initialValue={
                                     initialSchedule[ key ] &&
@@ -363,7 +364,11 @@ state = {
                     <Col span={ 20 }>
                         <Row type='flex' justify='center'>
                             <FormItem>
-                                <Button type='dashed' className={ Styles.AddButton } onClick={ this.add }>
+                                <Button
+                                    type='dashed'
+                                    className={ Styles.AddButton }
+                                    onClick={ this.add }
+                                >
                                     <Icon type='plus' /> { this.props.buttonText }
                                 </Button>
                             </FormItem>
@@ -389,5 +394,3 @@ state = {
         );
     }
 }
-
-export default ArrayScheduleInput;

@@ -1,42 +1,58 @@
 // vendor
 import React, { Component } from 'react';
-import { Form, Button, Select, Icon, Tooltip, Input } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { v4 } from 'uuid';
+import { Form, Button } from 'antd';
 import moment from 'moment';
+
 //proj
 import { onChangeEmployeeForm } from 'core/forms/employeeForm/duck';
 
-import { withReduxForm, getDateTimeConfigs } from 'utils';
-import { permissions, isForbidden } from 'utils';
-
-// own
 import {
     DecoratedInputPhone,
     DecoratedInput,
     DecoratedDatePicker,
 } from 'forms/DecoratedFields';
+import { withReduxForm2, permissions, isForbidden } from 'utils';
+
+// own
 import Styles from './styles.m.css';
 
+const formItemLayout = {
+    labelCol: {
+        xs:  { span: 24 },
+        sm:  { span: 24 },
+        md:  { span: 24 },
+        lg:  { span: 8 },
+        xl:  { span: 6 },
+        xxl: { span: 4 },
+    },
+    wrapperCol: {
+        xs:  { span: 24 },
+        sm:  { span: 24 },
+        md:  { span: 24 },
+        lg:  { span: 16 },
+        xl:  { span: 18 },
+        xxl: { span: 20 },
+    },
+    colon: false,
+};
+
 @injectIntl
-@withReduxForm({
+@withReduxForm2({
     name:    'employeeForm',
     actions: {
         change: onChangeEmployeeForm,
     },
 })
 export class EmployeeForm extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            toogleDirectory: false,
-        };
-    }
+    state = {
+        toogleDirectory: false,
+    };
 
     render() {
+        const { initialEmployee, saveEmployee, fireEmployee } = this.props;
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
-        const { initialEmployee, saveEmployee, fireEmployee } = this.props;
 
         return (
             <Form layout='horizontal'>
@@ -48,6 +64,7 @@ export class EmployeeForm extends Component {
                             id: 'employee.name_placeholder',
                         }) }
                         formItem
+                        formItemLayout={ formItemLayout }
                         initialValue={ initialEmployee && initialEmployee.name }
                         rules={ [
                             {
@@ -68,6 +85,7 @@ export class EmployeeForm extends Component {
                             id: 'employee.surname_placeholder',
                         }) }
                         formItem
+                        formItemLayout={ formItemLayout }
                         initialValue={
                             initialEmployee && initialEmployee.surname
                         }
@@ -90,7 +108,7 @@ export class EmployeeForm extends Component {
                             id: 'employee.phone_placeholder',
                         }) }
                         formItem
-                        colon={ false }
+                        formItemLayout={ formItemLayout }
                         initialValue={ initialEmployee && initialEmployee.phone }
                         rules={ [
                             {
@@ -148,6 +166,7 @@ export class EmployeeForm extends Component {
                             id: 'employee.email_placeholder',
                         }) }
                         formItem
+                        formItemLayout={ formItemLayout }
                         initialValue={ initialEmployee && initialEmployee.email }
                         autosize={ { minRows: 2, maxRows: 6 } }
                         rules={ [
@@ -190,15 +209,17 @@ export class EmployeeForm extends Component {
                             id: 'employee.jobTitle_placeholder',
                         }) }
                         formItem
+                        formItemLayout={ formItemLayout }
                         initialValue={
                             initialEmployee && initialEmployee.jobTitle
                         }
                         autosize={ { minRows: 2, maxRows: 6 } }
                         rules={ [
                             {
-                                max:     2000,
-                                message: formatMessage({
-                                    id: 'field_should_be_below_2000_chars',
+                                required: true,
+                                max:      2000,
+                                message:  formatMessage({
+                                    id: 'required_field',
                                 }),
                             },
                         ] }
@@ -206,33 +227,33 @@ export class EmployeeForm extends Component {
                         getPopupContainer={ trigger => trigger.parentNode }
                         getFieldDecorator={ getFieldDecorator }
                     />
-                    <div className={ Styles.dateTimePickerBlock }>
-                        <DecoratedDatePicker
-                            field='hireDate'
-                            label={ <FormattedMessage id='employee.hireDate' /> }
-                            formItem
-                            formatMessage={ formatMessage }
-                            className={ Styles.selectMargin }
-                            getFieldDecorator={ getFieldDecorator }
-                            getCalendarContainer={ trigger => trigger.parentNode }
-                            initialValue={
-                                initialEmployee &&
-                                moment(initialEmployee.hireDate)
-                            }
-                            rules={ [
-                                {
-                                    required: true,
-                                    message:  formatMessage({
-                                        id: 'required_field',
-                                    }),
-                                },
-                            ] }
-                            format={ 'YYYY-MM-DD' }
-                            placeholder={
-                                <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
-                            }
-                        />
-                    </div>
+
+                    <DecoratedDatePicker
+                        field='hireDate'
+                        label={ <FormattedMessage id='employee.hireDate' /> }
+                        formItem
+                        formItemLayout={ formItemLayout }
+                        formatMessage={ formatMessage }
+                        // className={ Styles.selectMargin }
+                        getFieldDecorator={ getFieldDecorator }
+                        getCalendarContainer={ trigger => trigger.parentNode }
+                        initialValue={
+                            initialEmployee && moment(initialEmployee.hireDate)
+                        }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
+                        format={ 'YYYY-MM-DD' }
+                        placeholder={
+                            <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
+                        }
+                    />
+
                     <div className={ Styles.ButtonGroup }>
                         { initialEmployee && !initialEmployee.fireDate ? (
                             <Button
