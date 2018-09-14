@@ -34,7 +34,7 @@ export function columnsConfig(
         width:     '10%',
         render:    (text, record) => (
             <DecoratedSelect
-                field='period'
+                field={ `period[${record.key}]` }
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({ id: 'setting-salary.period' }) }
                 // value={ record.period }
@@ -54,7 +54,7 @@ export function columnsConfig(
         width:     '15%',
         render:    (text, record) => (
             <DecoratedDatePicker
-                field='startDate'
+                field={ `startDate[${record.key}]` }
                 // initialValue={ moment(startDate) }
                 format='YYYY-MM-DD'
                 formatMessage={ formatMessage }
@@ -72,7 +72,7 @@ export function columnsConfig(
 
             return (
                 <DecoratedDatePicker
-                    field='endDate'
+                    field={ `endDate[${record.key}]` }
                     // initialValue={ moment(startDate) }
                     format='YYYY-MM-DD'
                     // getCalendarContainer={ trigger => trigger.parentNode }
@@ -89,7 +89,7 @@ export function columnsConfig(
         width:     '10%',
         render:    (text, record) => (
             <DecoratedInputNumber
-                field='ratePerPeriod'
+                field={ `ratePerPeriod[${record.key}]` }
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({
                     id: 'setting-salary.ratePerPeriod',
@@ -107,7 +107,7 @@ export function columnsConfig(
         width:     '15%',
         render:    (text, record) => (
             <DecoratedSelect
-                field='percentFrom'
+                field={ `percentFrom[${record.key}]` }
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({
                     id: 'setting-salary.percentFrom',
@@ -138,7 +138,7 @@ export function columnsConfig(
         width:     '10%',
         render:    (data, record) => (
             <DecoratedInputNumber
-                field='percent'
+                field={ `percent[${record.key}]` }
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({ id: 'setting-salary.percent' }) }
                 // onKeyPress={ this.handleChangeNew.bind(this, null) }
@@ -157,7 +157,7 @@ export function columnsConfig(
         width:     '15%',
         render:    (text, record) => (
             <DecoratedSelect
-                field='considerDiscount'
+                field={ `considerDiscount[${record.key}]` }
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({
                     id: 'setting-salary.considerDiscount',

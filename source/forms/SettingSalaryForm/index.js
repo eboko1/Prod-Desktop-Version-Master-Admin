@@ -40,6 +40,11 @@ const mapStateToProps = state => ({
     mapStateToProps,
 })
 export default class SettingSalaryContainer extends Component {
+
+    state = {
+        formValues: {},
+    };
+
     componentDidMount() {
         this.props.fetchSalary();
     }
