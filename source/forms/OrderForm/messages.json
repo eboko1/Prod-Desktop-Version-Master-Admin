@@ -36,6 +36,7 @@
         "add_order_form.payment_method": "Payment method",
         "add_order_form.select_payment_method": "Select payment method",
         "add_order_form.cash": "Cash",
+        "add_order_form.visa": "Visa",
         "add_order_form.non-cash": "Non-cash",
         "add_order_form.prev_order_recommendations": "Previous service recommendations",
         "add_order_form.provide_time": "Provide time",
@@ -46,7 +47,8 @@
         "order_form_table.appurtenancies_responsible": "Spare parts manager",
         "add_order_form.appointment_details": "Appointment Details:",
         "add_order_form.save_appointment": "Save Appointment",
-        "add_order_form.no_model": "Model not specified"
+        "add_order_form.no_model": "Model not specified",
+        "add_order_form.delete_confirm": "Sure to delete?"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -84,6 +86,9 @@
         "add_order_form.select_requisites": "Укажите реквизиты",
         "add_order_form.payment_method": "Способ оплаты ",
         "add_order_form.select_payment_method": "Выберете способ оплаты",
+        "add_order_form.cash": "Наличные",
+        "add_order_form.visa": "Visa",
+        "add_order_form.non-cash": "Безналичный расчет",
         "add_order_form.prev_order_recommendations": "Рекомендации с прошлого заезда",
         "add_order_form.provide_time": "Укажите время",
         "add_order_form.please_provide_time": "Пожалуйста, укажите время",
@@ -93,7 +98,8 @@
         "order_form_table.appurtenancies_responsible": "Запчастист",
         "add_order_form.appointment_details": "Записать на:",
         "add_order_form.save_appointment": "Записать",
-        "add_order_form.no_model": "Модель не указана"
+        "add_order_form.no_model": "Модель не указана",
+        "add_order_form.delete_confirm": "Удалить?"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -131,15 +137,19 @@
         "add_order_form.select_requisites": "Вкажіть реквізити",
         "add_order_form.payment_method": "Спосіб розрахунку",
         "add_order_form.select_payment_method": "Виберіть спосіб розрахунку",
+        "add_order_form.cash": "Готівка",
+        "add_order_form.visa": "Visa",
+        "add_order_form.non-cash": "Безготівковий розрахунок",
         "add_order_form.prev_order_recommendations": "Рекомендації з минулого заїзду",
         "add_order_form.provide_time": "Вкажіть час",
         "add_order_form.please_provide_time": "Будь ласка, вкажіть час",
         "add_order_form.select_manager": "Вкажіть мастера-приемщика",
         "add_order_form.please_select_manager": "Будь ласка, вкажіть мастера-приемщика",
-        "add_order_form.select_appurtenancies_responsible": "Вкажіть запчастиста",
+        "add_order_form.select_appurtenancies_responsible": "Вкажіть Запчастиста",
         "order_form_table.appurtenancies_responsible": "Запчастист",
         "add_order_form.appointment_details": "Записати на:",
         "add_order_form.save_appointment": "Записати",
-        "add_order_form.no_model": "Модель не вказана"
+        "add_order_form.no_model": "Модель не вказана",
+        "add_order_form.delete_confirm": "Видалити?"
     }
 }

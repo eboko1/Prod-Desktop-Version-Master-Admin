@@ -62,19 +62,6 @@ export default class ClientsPage extends Component {
                     <div className={ Styles.buttonGroup }>
                         <StyledButton
                             type='secondary'
-                            disabled={
-                                isForbidden(user, permissions.CREATE_ORDER) ||
-                                isForbidden(
-                                    user,
-                                    permissions.CREATE_INVITE_ORDER,
-                                )
-                            }
-                            onClick={ () => setModal(MODALS.INVITE) }
-                        >
-                            <FormattedMessage id='clients-page.invite_to_service' />
-                        </StyledButton>
-                        <StyledButton
-                            type='secondary'
                             disabled={ isForbidden(
                                 this.props.user,
                                 permissions.CREATE_EDIT_DELETE_CLIENTS,

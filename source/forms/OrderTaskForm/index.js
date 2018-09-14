@@ -121,7 +121,7 @@ export class OrderTaskForm extends Component {
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='repairs' />:</div>
+                            <FormattedMessage id='order_task.repairs' />:</div>
                         <div>
                             <FormattedMessage id='there_is_a_repair' />
 
@@ -161,7 +161,7 @@ export class OrderTaskForm extends Component {
                     this.setState({ toogleDirectory: !toogleDirectory })
                 }
             >
-                Открыть справочник по статусам
+                <FormattedMessage id='order-task-modal.open_status_helper' />
             </span>
         );
 
@@ -203,10 +203,10 @@ export class OrderTaskForm extends Component {
                         ] }
                         getPopupContainer={ trigger => trigger.parentNode }
                     >
-                        { progressStatusOptions.map(({ id, value }) => {
+                        { progressStatusOptions.map(({ id }) => {
                             return (
                                 <Option value={ id } key={ v4() }>
-                                    { value }
+                                    <FormattedMessage id={ id } />
                                 </Option>
                             );
                         }) }
@@ -239,10 +239,10 @@ export class OrderTaskForm extends Component {
                             }
                             getPopupContainer={ trigger => trigger.parentNode }
                         >
-                            { priorityOptions.map(({ id, value }) => {
+                            { priorityOptions.map(({ id }) => {
                                 return (
                                     <Option value={ id } key={ v4() }>
-                                        { value }
+                                        <FormattedMessage id={ id } />
                                     </Option>
                                 );
                             }) }

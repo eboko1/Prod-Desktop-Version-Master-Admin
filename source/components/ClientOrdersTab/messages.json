@@ -2,7 +2,7 @@
     "en": {
         "client_order_tab.all_orders": "All Orders",
         "client_order_tab.completed_orders": "Completed orders: ",
-        "client_order_tab.count_of_completed_orders": "Number of completed orders: ",
+        "client_order_tab.count_of_orders": "Orders: ",
         "client_order_tab.date": "Date",
         "client_order_tab.order": "Order",
         "client_order_tab.car": "Car",

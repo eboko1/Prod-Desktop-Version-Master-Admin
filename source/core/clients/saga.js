@@ -1,21 +1,19 @@
 // vendor
 import { call, put, takeEvery, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
-import { spreadProp } from 'ramda-adjunct';
 import _ from 'lodash';
 
 //proj
-import { setClientsFetchingState, emitError } from 'core/ui/duck';
+import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
 import {
     fetchClients,
     fetchClientsSuccess,
-    inviteClientsSuccess,
     selectFilter,
     FETCH_CLIENTS,
-    INVITE_CLIENTS,
+    CREATE_INVITE,
     SET_UNIVERSAL_FILTERS,
     // SET_CLIENTS_STATUS_FILTER,
 } from './duck';
@@ -78,22 +76,18 @@ export function* fetchClientsSaga() {
     }
 }
 
-export function* inviteClients({ payload: { invites, filters } }) {
+export function* inviteClients({ payload: invite }) {
     try {
         yield nprogress.start();
-        const data = yield call(fetchAPI, 'POST', 'clients', null, invites);
-
-        yield put(inviteClientsSuccess(data));
-    } catch (error) {
-        yield put(emitError(error));
+        yield call(fetchAPI, 'POST', 'orders', null, [ invite ]);
     } finally {
         yield nprogress.done();
-        yield put(fetchClients(filters));
+        yield put(fetchClients());
     }
 }
 
 export function* setUniversalFilter() {
-    while(true) {
+    while (true) {
         yield take(SET_UNIVERSAL_FILTERS);
         yield put(fetchClients());
     }
@@ -104,7 +98,7 @@ export function* saga() {
     yield all([
         call(fetchClientsSaga),
         call(setUniversalFilter),
-        takeEvery(INVITE_CLIENTS, inviteClients),
+        takeEvery(CREATE_INVITE, inviteClients),
     ]);
     /* eslint-enable array-element-newline */
 }
