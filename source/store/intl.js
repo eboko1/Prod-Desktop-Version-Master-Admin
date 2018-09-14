@@ -93,6 +93,8 @@ import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
 import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
 import ClientOrdersTab from 'components/ClientOrdersTab/messages';
+import EmployeeFeedback from 'components/EmployeeFeedback/messages';
+import EmployeeStatistics from 'components/EmployeeStatistics/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -172,6 +174,8 @@ const messages = merge.all([
     ChangeStatusDropdown,
     ClientFeedbackTab,
     ClientOrdersTab,
+    EmployeeFeedback,
+    EmployeeStatistics,
 ]);
 /* eslint-enable array-element-newline */
 

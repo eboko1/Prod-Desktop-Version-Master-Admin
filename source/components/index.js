@@ -17,6 +17,7 @@ import ClientFeedbackTab from './ClientFeedbackTab';
 import ClientOrdersTab from './ClientOrdersTab';
 import FormattedDatetime from './FormattedDatetime';
 import Rating from './Rating';
+import { Like } from './Like';
 import EmployeeFeedback from './EmployeeFeedback';
 import EmployeeStatistics from './EmployeeStatistics';
 
@@ -41,6 +42,7 @@ export {
     ClientOrdersTab,
     FormattedDatetime,
     Rating,
+    Like,
     EmployeeFeedback,
     EmployeeStatistics,
 };

@@ -19,7 +19,7 @@ import {
 
 import { EmployeeForm, EmployeeScheduleForm, SettingSalaryForm } from 'forms';
 import { Layout, Spinner, Loader } from 'commons';
-import { EmployeeStatistics } from 'components';
+import { EmployeeStatistics, EmployeeFeedback } from 'components';
 import { permissions, isForbidden, linkTo } from 'utils';
 import book from 'routes/book';
 
@@ -198,7 +198,9 @@ export default class EditEmployeePage extends Component {
                     }) }
                     key='4'
                 >
-                    Feedback
+                    <EmployeeFeedback
+                        reviews={ _.get(initialEmployee, 'reviews') }
+                    />
                 </TabPane>
                 <TabPane
                     tab={ this.props.intl.formatMessage({

@@ -1,0 +1,23 @@
+.avgRating {
+    margin-bottom: 24px;
+    font-size: 24px;
+}
+
+.avgRatingStars {
+    margin-left: 24px;
+}
+
+.employeeFeedbackTable td {
+    vertical-align: middle;
+}
+
+.link {
+    color: var(--link);
+}
+
+.comment {
+    width: 320px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

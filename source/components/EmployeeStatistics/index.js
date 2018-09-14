@@ -15,11 +15,15 @@ export default class EmployeeStatistics extends Component {
         return (
             <Catcher>
                 <div>
-                    <FormattedMessage id='add' className={ Styles.title } />
+                    <span className={ Styles.title }>
+                        <FormattedMessage id='employee-statistics.orders' />
+                    </span>
                     <Numeral className={ Styles.count }>{ ordersCount }</Numeral>
                 </div>
                 <div>
-                    <FormattedMessage id='add' className={ Styles.title } />
+                    <span className={ Styles.title }>
+                        <FormattedMessage id='employee-statistics.labour_hours' />
+                    </span>
                     <Numeral className={ Styles.count }>
                         { Math.round(labourHours) }
                     </Numeral>

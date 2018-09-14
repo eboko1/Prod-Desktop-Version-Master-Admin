@@ -1,0 +1,14 @@
+{
+    "en": {
+        "employee-statistics.orders": "Orders",
+        "employee-statistics.labour_hours": "Labour hours"
+    },
+    "ru": {
+        "employee-statistics.orders": "Заказы",
+        "employee-statistics.labour_hours": "Норм/Часов"
+    },
+    "uk": {
+        "employee-statistics.orders": "Замовлення",
+        "employee-statistics.labour_hours": "Норм/Годин"
+    }
+}

@@ -26,12 +26,3 @@ export default class Rating extends Component {
         );
     }
 }
-
-// .recommendationIcon {
-//     font-size: 28px;
-//     color: var(--primary);
-// }
-//
-// .ratingStars {
-//     color: var(--secondary);
-// }
