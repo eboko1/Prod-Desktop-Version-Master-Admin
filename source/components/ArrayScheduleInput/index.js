@@ -42,16 +42,20 @@ export default class ArrayScheduleInput extends Component {
         }
     }
 
-    getScheduleData(key) {
-        const schedule = this.props.form.getFieldValue(`schedule[${key}]`);
-        const scheduleWithParsedHours = _.mapValues(
-            schedule,
-            value => moment.isMoment(value) ? value.format('HH:mm') : value,
-        );
+    getScheduleData(key, callback) {
+        this.props.form.validateFields([ `schedule[${key}]` ], (err) => {
+            if (err) {
+                return;
+            }
+            const schedule = this.props.form.getFieldValue(`schedule[${key}]`);
+            const scheduleWithParsedHours = _.mapValues(
+                schedule,
+                value =>
+                    moment.isMoment(value) ? value.format('HH:mm') : value,
+            );
 
-        return {
-            ...scheduleWithParsedHours,
-        };
+            callback && callback(scheduleWithParsedHours);
+        });
     }
 
     remove = key => {
@@ -195,15 +199,16 @@ export default class ArrayScheduleInput extends Component {
                     <Button
                         type={ 'primary' }
                         onClick={ () => {
-                            const initialEntity = initialSchedule[ key ];
-                            const entity = this.getScheduleData(key);
-
-                            if (initialEntity) {
-                                const { id } = initialEntity;
-                                this.props.updateSchedule(id, entity);
-                            } else {
-                                this.props.createSchedule(entity);
-                            }
+                            const callback = entity => {
+                                const initialEntity = initialSchedule[ key ];
+                                if (initialEntity) {
+                                    const { id } = initialEntity;
+                                    this.props.updateSchedule(id, entity);
+                                } else {
+                                    this.props.createSchedule(entity);
+                                }
+                            };
+                            this.getScheduleData(key, callback);
                         } }
                     >
                         { initialSchedule[ key ] ? 'Save' : 'Create' }

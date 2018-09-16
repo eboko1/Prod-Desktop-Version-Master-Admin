@@ -36,7 +36,7 @@ export const DecoratedTimePicker = props => {
     } = props;
 
     const timePicker = getFieldDecorator(field, {
-        ...initialValue ? { initialValue } : {},
+        ...initialValue ? { initialValue } : { initialValue: void 0 },
         rules,
     })(
         <TimePicker

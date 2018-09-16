@@ -34,11 +34,18 @@ class ArrayBreakScheduleInput extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (!_.isEqual(this.props.initialBreakSchedule, prevProps.initialBreakSchedule)) {
+        if (
+            !_.isEqual(
+                this.props.initialBreakSchedule,
+                prevProps.initialBreakSchedule,
+            )
+        ) {
             this.props.form.resetFields();
 
             const { initialBreakSchedule } = this.props;
-            this.uuid = _.isArray(initialBreakSchedule) ? initialBreakSchedule.length : 0;
+            this.uuid = _.isArray(initialBreakSchedule)
+                ? initialBreakSchedule.length
+                : 0;
             const keys = _.isArray(initialBreakSchedule)
                 ? _.keys(initialBreakSchedule)
                 : [];
@@ -47,18 +54,25 @@ class ArrayBreakScheduleInput extends Component {
         }
     }
 
-    getBreakScheduleData(key) {
-        const schedule = this.props.form.getFieldValue(`schedule[${key}]`);
-        const scheduleWithParsedHours = _.mapValues(
-            schedule,
-            value =>
-                moment.isMoment(value) ? value.format('YYYY-MM-DD') : value,
-        );
+    getBreakScheduleData(key, callback) {
+        this.props.form.validateFields([ `schedule[${key}]` ], err => {
+            if (err) {
+                return;
+            }
 
-        return {
-            ...scheduleWithParsedHours,
-            subjectType: 'employee',
-        };
+            const schedule = this.props.form.getFieldValue(`schedule[${key}]`);
+            const scheduleWithParsedHours = _.mapValues(
+                schedule,
+                value =>
+                    moment.isMoment(value) ? value.format('YYYY-MM-DD') : value,
+            );
+
+            callback &&
+                callback({
+                    ...scheduleWithParsedHours,
+                    subjectType: 'employee',
+                });
+        });
     }
 
     remove = key => {
@@ -181,19 +195,23 @@ class ArrayBreakScheduleInput extends Component {
                             <Button
                                 type={ 'primary' }
                                 onClick={ () => {
-                                    const initialEntity =
-                                        initialBreakSchedule[ key ];
-                                    const entity = this.getBreakScheduleData(key);
+                                    const callback = entity => {
+                                        const initialEntity =
+                                            initialBreakSchedule[ key ];
 
-                                    if (initialEntity) {
-                                        const { id } = initialEntity;
-                                        this.props.updateBreakSchedule(
-                                            id,
-                                            entity,
-                                        );
-                                    } else {
-                                        this.props.createBreakSchedule(entity);
-                                    }
+                                        if (initialEntity) {
+                                            const { id } = initialEntity;
+                                            this.props.updateBreakSchedule(
+                                                id,
+                                                entity,
+                                            );
+                                        } else {
+                                            this.props.createBreakSchedule(
+                                                entity,
+                                            );
+                                        }
+                                    };
+                                    this.getBreakScheduleData(key, callback);
                                 } }
                             >
                                 { initialBreakSchedule[ key ] ? 'Save' : 'Create' }
