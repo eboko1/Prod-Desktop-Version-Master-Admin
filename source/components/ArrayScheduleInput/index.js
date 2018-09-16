@@ -104,6 +104,7 @@ export default class ArrayScheduleInput extends Component {
                     <DecoratedTimePicker
                         field={ `schedule[${record.key}][${name}]` }
                         formItem
+                        className={ Styles.scheduleFormItem }
                         rules={ [
                             {
                                 required: true,

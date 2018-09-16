@@ -107,6 +107,7 @@ class ArrayBreakScheduleInput extends Component {
                     <DecoratedDatePicker
                         field={ `schedule[${key}][${name}]` }
                         formItem
+                        className={ Styles.breakScheduleFormItem }
                         rules={ [
                             {
                                 required: true,
@@ -146,6 +147,7 @@ class ArrayBreakScheduleInput extends Component {
                     }
                     getFieldDecorator={ getFieldDecorator }
                     formItem
+                    className={ Styles.breakScheduleFormItem }
                     rules={ [
                         {
                             required: true,

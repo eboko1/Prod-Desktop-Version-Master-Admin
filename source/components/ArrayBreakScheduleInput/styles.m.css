@@ -12,3 +12,7 @@
 .scheduleType {
     width: 100%;
 }
+
+.breakScheduleFormItem {
+    margin-bottom: 0;
+}
