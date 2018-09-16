@@ -126,7 +126,6 @@ export default class ArrayScheduleInput extends Component {
                 width:  '10%',
                 render: (text, record) => (
                     <DecoratedTimePicker
-                        formItem
                         field={ `schedule[${record.key}][${name}]` }
                         initialValue={ getHourTitle(record.key, name) }
                         formatMessage={ formatMessage }
