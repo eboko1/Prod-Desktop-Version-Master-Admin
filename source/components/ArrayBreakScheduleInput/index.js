@@ -185,6 +185,7 @@ class ArrayBreakScheduleInput extends Component {
                                 } else {
                                     this.props.createBreakSchedule(entity);
                                 }
+                                this.props.resetFields();
                             };
                             this.getBreakScheduleData(key, callback);
                         } }
@@ -198,6 +199,7 @@ class ArrayBreakScheduleInput extends Component {
                             if (id) {
                                 this.props.deleteBreakSchedule(id);
                             }
+                            this.props.resetFields();
                         } }
                     />
                 </>
@@ -209,6 +211,16 @@ class ArrayBreakScheduleInput extends Component {
         return (
             <Catcher>
                 <Table
+                    rowClassName={ ({ key }) => {
+                        const wasEdited = _.get(this.props.fields, [ 'schedule', key ]);
+                        const exists = initialBreakSchedule[ key ];
+
+                        if (!exists) {
+                            return Styles.newBreakScheduleRow;
+                        } else if (wasEdited) {
+                            return Styles.editedBreakScheduleRow;
+                        }
+                    } }
                     dataSource={ keys.map(key => ({ key })) }
                     columns={ columns }
                     size='small'

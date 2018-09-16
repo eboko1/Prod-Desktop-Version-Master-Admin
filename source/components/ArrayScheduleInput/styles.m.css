@@ -12,3 +12,11 @@
 .scheduleFormItem {
     margin-bottom: 0;
 }
+
+.newScheduleRow {
+    background-color: rgba(11, 127, 0, 0.28);
+}
+
+.editedScheduleRow {
+    background-color: rgba(255, 45, 45, 0.28);
+}

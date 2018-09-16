@@ -5,10 +5,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
 // proj
-import {
-    DecoratedCheckbox,
-    DecoratedTimePicker,
-} from 'forms/DecoratedFields';
+import { DecoratedCheckbox, DecoratedTimePicker } from 'forms/DecoratedFields';
 import { Catcher, StyledButton } from 'commons';
 
 // own
@@ -155,6 +152,7 @@ export default class ArrayScheduleInput extends Component {
                                 } else {
                                     this.props.createSchedule(entity);
                                 }
+                                this.props.resetFields();
                             };
                             this.getScheduleData(key, callback);
                         } }
@@ -168,6 +166,7 @@ export default class ArrayScheduleInput extends Component {
                             if (id) {
                                 this.props.deleteSchedule(id);
                             }
+                            this.props.resetFields();
                         } }
                     />
                 </>
@@ -179,6 +178,16 @@ export default class ArrayScheduleInput extends Component {
         return (
             <Catcher>
                 <Table
+                    rowClassName={ ({ key }) => {
+                        const wasEdited = _.get(this.props.fields, [ 'schedule', key ]);
+                        const exists = initialSchedule[ key ];
+
+                        if (!exists) {
+                            return Styles.newScheduleRow;
+                        } else if (wasEdited) {
+                            return Styles.editedScheduleRow;
+                        }
+                    } }
                     dataSource={ keys.map(key => ({ key })) }
                     columns={ columns }
                     size='small'

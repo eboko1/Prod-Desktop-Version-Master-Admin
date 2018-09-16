@@ -4,7 +4,10 @@ import { injectIntl } from 'react-intl';
 
 // proj
 import { ArrayBreakScheduleInput } from 'components';
-import { onChangeBreakScheduleForm } from 'core/forms/breakScheduleForm/duck';
+import {
+    onChangeBreakScheduleForm,
+    resetFields,
+} from 'core/forms/breakScheduleForm/duck';
 import { withReduxForm2 } from 'utils';
 
 // own
@@ -14,16 +17,23 @@ import { withReduxForm2 } from 'utils';
     name:    'breakScheduleForm',
     actions: {
         change: onChangeBreakScheduleForm,
+        resetFields,
     },
 })
 export class BreakScheduleForm extends Component {
-
     render() {
-        const { initialBreakSchedule, form, intl } = this.props;
-        const { updateBreakSchedule, createBreakSchedule, deleteBreakSchedule } = this.props;
+        const { initialBreakSchedule, form, intl, fields } = this.props;
+        const {
+            updateBreakSchedule,
+            createBreakSchedule,
+            deleteBreakSchedule,
+            resetFields,
+        } = this.props;
 
         return (
             <ArrayBreakScheduleInput
+                fields={ fields }
+                resetFields={ resetFields }
                 updateBreakSchedule={ updateBreakSchedule }
                 createBreakSchedule={ createBreakSchedule }
                 deleteBreakSchedule={ deleteBreakSchedule }

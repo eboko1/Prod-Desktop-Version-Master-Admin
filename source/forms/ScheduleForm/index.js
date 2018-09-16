@@ -4,7 +4,7 @@ import { injectIntl } from 'react-intl';
 
 // proj
 import { ArrayScheduleInput } from 'components';
-import { onChangeScheduleForm } from 'core/forms/scheduleForm/duck';
+import { onChangeScheduleForm, resetFields } from 'core/forms/scheduleForm/duck';
 import { withReduxForm2 } from 'utils';
 
 // own
@@ -14,16 +14,19 @@ import { withReduxForm2 } from 'utils';
     name:    'scheduleForm',
     actions: {
         change: onChangeScheduleForm,
+        resetFields,
     },
 })
 export class ScheduleForm extends Component {
 
     render() {
-        const { initialSchedule, form, intl } = this.props;
-        const { updateSchedule, createSchedule, deleteSchedule } = this.props;
+        const { initialSchedule, form, intl, fields } = this.props;
+        const { updateSchedule, createSchedule, deleteSchedule, resetFields } = this.props;
 
         return (
             <ArrayScheduleInput
+                fields={ fields }
+                resetFields={ resetFields }
                 updateSchedule={ updateSchedule }
                 createSchedule={ createSchedule }
                 deleteSchedule={ deleteSchedule }
