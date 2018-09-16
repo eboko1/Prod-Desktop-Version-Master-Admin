@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Icon, Button, Row, Col, Form, Checkbox } from 'antd';
+import { Icon, Col, Form, Table } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
@@ -8,10 +8,9 @@ import moment from 'moment';
 import {
     DecoratedCheckbox,
     DecoratedTimePicker,
-    DecoratedInput,
 } from 'forms/DecoratedFields';
+import { Catcher, StyledButton } from 'commons';
 
-import { permissions, isForbidden } from 'utils';
 // own
 import Styles from './styles.m.css';
 const FormItem = Form.Item;
@@ -43,7 +42,7 @@ export default class ArrayScheduleInput extends Component {
     }
 
     getScheduleData(key, callback) {
-        this.props.form.validateFields([ `schedule[${key}]` ], (err) => {
+        this.props.form.validateFields([ `schedule[${key}]` ], err => {
             if (err) {
                 return;
             }
@@ -80,124 +79,72 @@ export default class ArrayScheduleInput extends Component {
         };
 
         const keys = this.state.keys;
-        const formItems = keys.map(key => {
-            return (
-                <div className={ Styles.MainBlock }>
-                    <Row type='flex' align='middle' key={ key }>
-                        <Col span={ 12 }>
-                            <Row>
-                                { [ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ].map(day => (
-                                    <Col span={ 6 }>
-                                        <DecoratedCheckbox
-                                            field={ `schedule[${key}][${day}]` }
-                                            getFieldDecorator={
-                                                getFieldDecorator
-                                            }
-                                            initValue={ _.get(initialSchedule, [ key, day ]) }
-                                        >
-                                            <FormattedMessage id={ day } />
-                                        </DecoratedCheckbox>
-                                    </Col>
-                                )) }
-                            </Row>
-                        </Col>
-                        <Col span={ 12 }>
-                            <Row type='flex' align='middle'>
-                                <Col span={ 12 }>
-                                    <DecoratedTimePicker
-                                        formItem
-                                        field={ `schedule[${key}][beginWorkingHours]` }
-                                        rules={ [
-                                            {
-                                                required: true,
-                                                message:  formatMessage({
-                                                    id: 'required_field',
-                                                }),
-                                            },
-                                        ] }
-                                        initialValue={ getHourTitle(
-                                            key,
-                                            'beginWorkingHours',
-                                        ) }
-                                        hasFeedback
-                                        label={
-                                            <FormattedMessage id='beginWorkingHours' />
-                                        }
-                                        formatMessage={ formatMessage }
-                                        getFieldDecorator={ getFieldDecorator }
-                                        minuteStep={ 30 }
-                                    />
-                                    <DecoratedTimePicker
-                                        formItem
-                                        field={ `schedule[${key}][endWorkingHours]` }
-                                        rules={ [
-                                            {
-                                                required: true,
-                                                message:  formatMessage({
-                                                    id: 'required_field',
-                                                }),
-                                            },
-                                        ] }
-                                        initialValue={ getHourTitle(
-                                            key,
-                                            'endWorkingHours',
-                                        ) }
-                                        hasFeedback
-                                        label={
-                                            <FormattedMessage id='endWorkingHours' />
-                                        }
-                                        formatMessage={ formatMessage }
-                                        getFieldDecorator={ getFieldDecorator }
-                                        minuteStep={ 30 }
-                                    />
-                                </Col>
-                                <Col span={ 12 }>
-                                    <DecoratedTimePicker
-                                        formItem
-                                        field={ `schedule[${key}][beginBreakHours]` }
-                                        initialValue={ getHourTitle(
-                                            key,
-                                            'beginBreakHours',
-                                        ) }
-                                        label={
-                                            <FormattedMessage id='beginBreakHours' />
-                                        }
-                                        formatMessage={ formatMessage }
-                                        getFieldDecorator={ getFieldDecorator }
-                                        minuteStep={ 30 }
-                                    />
-                                    <DecoratedTimePicker
-                                        formItem
-                                        field={ `schedule[${key}][endBreakHours]` }
-                                        initialValue={ getHourTitle(
-                                            key,
-                                            'endBreakHours',
-                                        ) }
-                                        label={
-                                            <FormattedMessage id='endBreakHours' />
-                                        }
-                                        formatMessage={ formatMessage }
-                                        getFieldDecorator={ getFieldDecorator }
-                                        minuteStep={ 30 }
-                                    />
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Button
-                        type={ 'primary' }
-                        onClick={ () => {
-                            this.remove(key);
-                            const id = _.get(initialSchedule, [ key, 'id' ]);
-                            if (id) {
-                                this.props.deleteSchedule(id);
-                            }
-                        } }
-                    >
-                        Delete
-                    </Button>{ ' ' }
-                    <Button
-                        type={ 'primary' }
+
+        const days = [
+            ...[ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ].map(day => ({
+                title:  <FormattedMessage id={ day } />,
+                width:  '7%',
+                render: (text, record) => (
+                    <Col span={ 12 }>
+                        <DecoratedCheckbox
+                            field={ `schedule[${record.key}][${day}]` }
+                            getFieldDecorator={ getFieldDecorator }
+                            initValue={ _.get(initialSchedule, [ record.key, day ]) }
+                        />
+                    </Col>
+                ),
+            })),
+        ];
+
+        const workingHours = [
+            ...[ 'beginWorkingHours', 'endWorkingHours' ].map(name => ({
+                title:  <FormattedMessage id={ name } />,
+                width:  '12%',
+                render: (text, record) => (
+                    <DecoratedTimePicker
+                        field={ `schedule[${record.key}][${name}]` }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
+                        initialValue={ getHourTitle(record.key, name) }
+                        formatMessage={ formatMessage }
+                        getFieldDecorator={ getFieldDecorator }
+                        minuteStep={ 30 }
+                    />
+                ),
+            })),
+        ];
+
+        const breakHours = [
+            ...[ 'beginBreakHours', 'endBreakHours' ].map(name => ({
+                title:  <FormattedMessage id={ name } />,
+                width:  '10%',
+                render: (text, record) => (
+                    <DecoratedTimePicker
+                        formItem
+                        field={ `schedule[${record.key}][${name}]` }
+                        initialValue={ getHourTitle(record.key, name) }
+                        formatMessage={ formatMessage }
+                        getFieldDecorator={ getFieldDecorator }
+                        minuteStep={ 30 }
+                    />
+                ),
+            })),
+        ];
+
+        const actions = {
+            title:  '',
+            width:  '10%',
+            render: (text, { key }) => 
+                <>
+                    <Icon
+                        type={ initialSchedule[ key ] ? 'edit' : 'save' }
+                        className={ Styles.scheduleIcon }
                         onClick={ () => {
                             const callback = entity => {
                                 const initialEntity = initialSchedule[ key ];
@@ -210,23 +157,44 @@ export default class ArrayScheduleInput extends Component {
                             };
                             this.getScheduleData(key, callback);
                         } }
-                    >
-                        { initialSchedule[ key ] ? 'Save' : 'Create' }
-                    </Button>
-                </div>
-            );
-        });
+                    />{' '}
+                    <Icon
+                        type='delete'
+                        className={ Styles.scheduleIcon }
+                        onClick={ () => {
+                            this.remove(key);
+                            const id = _.get(initialSchedule, [ key, 'id' ]);
+                            if (id) {
+                                this.props.deleteSchedule(id);
+                            }
+                        } }
+                    />
+                </>
+            ,
+        };
+
+        const columns = [ ...days, ...workingHours, ...breakHours, actions ];
 
         return (
             <div>
-                { formItems }
-                <Button
-                    type='dashed'
-                    className={ Styles.AddButton }
+                <Table
+                    dataSource={ keys.map(key => ({ key })) }
+                    columns={ columns }
+                    size='small'
+                    scroll={ { x: 1000 } }
+                    pagination={ false }
+                    locale={ {
+                        emptyText: <FormattedMessage id='no_data' />,
+                    } }
+                />
+                <StyledButton
+                    type='secondary'
                     onClick={ this.add }
+                    className={ Styles.newSchedule }
                 >
-                    <Icon type='plus' /> { this.props.buttonText }
-                </Button>
+                    <Icon type='plus' />
+                    <FormattedMessage id='add_schedule' />
+                </StyledButton>
             </div>
         );
     }
