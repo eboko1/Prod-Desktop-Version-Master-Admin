@@ -24,6 +24,7 @@ import { RequisiteForm } from './RequisiteForm';
 import { AddRequisiteForm } from './AddRequisiteForm';
 import SettingSalaryForm from './SettingSalaryForm';
 import { ScheduleForm } from './ScheduleForm';
+import { BreakScheduleForm } from './BreakScheduleForm';
 
 export {
     LoginForm,
@@ -52,4 +53,5 @@ export {
     AddRequisiteForm,
     SettingSalaryForm,
     ScheduleForm,
+    BreakScheduleForm,
 };

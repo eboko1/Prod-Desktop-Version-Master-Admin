@@ -94,28 +94,6 @@ class EditEmployeePage extends Component {
                             initialEmployee={ null }
                         />
                     </TabPane>
-                    <TabPane
-                        tab={ this.props.intl.formatMessage({
-                            id: 'add-employee-page.schedule',
-                        }) }
-                        key='2'
-                    >
-                        <EmployeeScheduleForm
-                            user={ user }
-                            initialEmployee={ null }
-                            initialSchedule={ null }
-                            fetchEmployeeSchedule={ fetchEmployeeSchedule }
-                            deleteEmployeeBreakSchedule={
-                                deleteEmployeeBreakSchedule
-                            }
-                            history={ history }
-                            saveEmployee={ this.saveEmployee }
-                            saveEmployeeBreakSchedule={
-                                this.saveEmployeeBreakSchedule
-                            }
-                            deleteEmployeeSchedule={ deleteEmployeeSchedule }
-                        />
-                    </TabPane>
                 </Tabs>
             </Layout>
         );

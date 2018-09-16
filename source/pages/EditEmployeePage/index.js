@@ -122,11 +122,7 @@ export default class EditEmployeePage extends Component {
     }
 
     _renderEmployeeTabs = () => {
-        const {
-            user,
-            initialEmployee,
-            initialSchedule,
-        } = this.props;
+        const { user, initialEmployee, initialSchedule } = this.props;
         const employeeId = this.props.match.params.id;
 
         return (
@@ -155,6 +151,10 @@ export default class EditEmployeePage extends Component {
                         user={ user }
                         initialEmployee={ initialEmployee }
                         initialSchedule={ _.get(initialEmployee, 'schedule') }
+                        initialBreakSchedule={ _.get(
+                            initialEmployee,
+                            'nonWorkingDays',
+                        ) }
                         employeeId={ employeeId }
                     />
                 </TabPane>

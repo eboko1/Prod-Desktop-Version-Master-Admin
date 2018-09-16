@@ -58,6 +58,10 @@ import scheduleFormReducer, {
     moduleName as scheduleFormModule,
 } from 'core/forms/scheduleForm/duck';
 
+import breakScheduleFormReducer, {
+    moduleName as breakScheduleFormModule,
+} from 'core/forms/breakScheduleForm/duck';
+
 import managerRoleReducer, {
     moduleName as managerRole,
 } from './managerRoleForm/duck';
@@ -65,10 +69,6 @@ import managerRoleReducer, {
 import settingSalaryReducer, {
     moduleName as settingSalary,
 } from './settingSalaryForm/duck';
-
-import employeeBreakScheduleFormReducer, {
-    moduleName as employeeBreakScheduleFormModule,
-} from 'core/forms/employeeBreakScheduleForm/duck';
 
 import profileReducer, {
     moduleName as profile,
@@ -94,8 +94,8 @@ export const formsReducer = combineReducers({
     [ switchBusiness ]:                  switchBusinessReducer,
     [ employeeFormModule ]:              employeeFormReducer,
     [ scheduleFormModule ]:              scheduleFormReducer,
+    [ breakScheduleFormModule ]:         breakScheduleFormReducer,
     [ settingSalary ]:                   settingSalaryReducer,
-    [ employeeBreakScheduleFormModule ]: employeeBreakScheduleFormReducer,
     [ addBusinessPackage ]:              addBusinessPackageReducer,
     [ businessPackage ]:                 businessPackageReducer,
     [ managerRole ]:                     managerRoleReducer,
