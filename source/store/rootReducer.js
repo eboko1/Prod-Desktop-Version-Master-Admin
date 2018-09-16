@@ -27,6 +27,9 @@ import managerRoleReducer, {
     moduleName as managerRoleModule,
 } from 'core/managerRole/duck';
 
+import employeeScheduleReducer, {
+    moduleName as employeeScheduleModule,
+} from 'core/employeeSchedule/duck';
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
 import clientReducer, { moduleName as clientModule } from 'core/client/duck';
 import clientOrdersReducer, {
@@ -55,22 +58,23 @@ const persistedState = {
 
 const appState = {
     forms,
-    [ ordersModule ]:          ordersReducer,
-    [ orderModule ]:           orderReducer,
-    [ modalsModule ]:          modalsReducer,
-    [ dashboardModule ]:       dashboardReducer,
-    [ myTasksModule ]:         myTasksReducer,
-    [ employeesModule ]:       employeesReducer,
-    [ uiModule ]:              uiReducer,
-    [ packageModule ]:         packageReducer,
-    [ roleModule ]:            roleReducer,
-    [ businessPackageModule ]: businessPackageReducer,
-    [ searchModule ]:          searchReducer,
-    [ managerRoleModule ]:     managerRoleReducer,
-    [ clientsModule ]:         clientsReducer,
-    [ clientModule ]:          clientReducer,
-    [ clientRequisiteModule ]: clientRequisiteReducer,
-    [ clientOrdersModule ]:    clientOrdersReducer,
+    [ ordersModule ]:           ordersReducer,
+    [ orderModule ]:            orderReducer,
+    [ modalsModule ]:           modalsReducer,
+    [ dashboardModule ]:        dashboardReducer,
+    [ myTasksModule ]:          myTasksReducer,
+    [ employeesModule ]:        employeesReducer,
+    [ uiModule ]:               uiReducer,
+    [ packageModule ]:          packageReducer,
+    [ roleModule ]:             roleReducer,
+    [ businessPackageModule ]:  businessPackageReducer,
+    [ searchModule ]:           searchReducer,
+    [ managerRoleModule ]:      managerRoleReducer,
+    [ clientsModule ]:          clientsReducer,
+    [ clientModule ]:           clientReducer,
+    [ clientRequisiteModule ]:  clientRequisiteReducer,
+    [ clientOrdersModule ]:     clientOrdersReducer,
+    [ employeeScheduleModule ]: employeeScheduleReducer,
     // [ authModule ]:            authReducer,
     // intl,
     // router,

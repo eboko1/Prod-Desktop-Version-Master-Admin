@@ -18,7 +18,7 @@ import {
 } from 'core/forms/employeeForm/duck';
 
 import { EmployeeForm, EmployeeScheduleForm, SettingSalaryForm } from 'forms';
-import { Layout, Spinner, Loader } from 'commons';
+import { Layout, Loader } from 'commons';
 import { EmployeeStatistics, EmployeeFeedback } from 'components';
 import { permissions, isForbidden, linkTo } from 'utils';
 import book from 'routes/book';
@@ -34,8 +34,6 @@ const mapStateToProps = state => ({
     employeesData:   state.forms.employeeForm.fields,
     employeeName:    state.forms.employeeForm.employeeName,
     initialEmployee: state.forms.employeeForm.initialEmployee,
-    initialSchedule: state.forms.employeeForm.initialSchedule,
-    entity:          state.forms.employee.fields,
     user:            state.auth,
 });
 
@@ -55,21 +53,14 @@ const mapDispatchToProps = {
 )
 export default class EditEmployeePage extends Component {
     componentDidMount() {
-        const { history, fetchEmployeeById, fetchEmployees } = this.props;
-        fetchEmployeeById(history.location.pathname.split('/')[ 2 ]); // employee id
-        fetchEmployees();
-    }
-
-    componentWillUnmount() {
-        this.props.resetEmployeeForm();
+        this.props.fetchEmployeeById(this.props.match.params.id);
+        this.props.fetchEmployees();
     }
 
     fireEmployee = () => {
-        this.props.fireEmployee(
-            this.props.employeesData,
-            this.props.history.location.pathname.split('/')[ 2 ], // employee id
-            moment(),
-        );
+        const { employeesData } = this.props;
+        const id = this.props.match.params.id;
+        this.props.fireEmployee(employeesData, id, moment());
     };
 
     saveEmployeeFormRef = formRef => {
@@ -80,10 +71,9 @@ export default class EditEmployeePage extends Component {
         const form = this.employeeFormRef.props.form;
         form.validateFields(err => {
             if (!err) {
-                this.props.saveEmployee(
-                    this.props.employeesData,
-                    this.props.history.location.pathname.split('/')[ 2 ], // employee id
-                );
+                const { employeesData } = this.props;
+                const id = this.props.match.params.id;
+                this.props.saveEmployee(employeesData, id);
             }
         });
     };
@@ -94,7 +84,6 @@ export default class EditEmployeePage extends Component {
         this.props.fetchEmployees();
     };
 
-    /* eslint-disable complexity*/
     render() {
         const employeeTabs = this._renderEmployeeTabs();
         const employeesList = this._renderEmployeesList();
@@ -135,13 +124,10 @@ export default class EditEmployeePage extends Component {
     _renderEmployeeTabs = () => {
         const {
             user,
-            history,
             initialEmployee,
             initialSchedule,
-            fetchEmployeeSchedule,
-            deleteEmployeeSchedule,
-            deleteEmployeeBreakSchedule,
         } = this.props;
+        const employeeId = this.props.match.params.id;
 
         return (
             <Tabs type='card'>
@@ -168,17 +154,8 @@ export default class EditEmployeePage extends Component {
                     <EmployeeScheduleForm
                         user={ user }
                         initialEmployee={ initialEmployee }
-                        initialSchedule={ initialSchedule }
-                        fetchEmployeeSchedule={ fetchEmployeeSchedule }
-                        deleteEmployeeBreakSchedule={
-                            deleteEmployeeBreakSchedule
-                        }
-                        history={ history }
-                        saveEmployee={ this.saveEmployee }
-                        saveEmployeeBreakSchedule={
-                            this.saveEmployeeBreakSchedule
-                        }
-                        deleteEmployeeSchedule={ deleteEmployeeSchedule }
+                        initialSchedule={ _.get(initialEmployee, 'schedule') }
+                        employeeId={ employeeId }
                     />
                 </TabPane>
                 <TabPane

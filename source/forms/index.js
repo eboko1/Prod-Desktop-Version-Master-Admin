@@ -23,6 +23,7 @@ import { AbstractClientForm } from './AbstractClientForm';
 import { RequisiteForm } from './RequisiteForm';
 import { AddRequisiteForm } from './AddRequisiteForm';
 import SettingSalaryForm from './SettingSalaryForm';
+import { ScheduleForm } from './ScheduleForm';
 
 export {
     LoginForm,
@@ -50,4 +51,5 @@ export {
     RequisiteForm,
     AddRequisiteForm,
     SettingSalaryForm,
+    ScheduleForm,
 };

@@ -19,11 +19,7 @@ export const ON_CHANGE_EMPLOYEE_BREAK_SCHEDULE_FORM = `${prefix}/ON_CHANGE_EMPLO
  * */
 
 const ReducerState = {
-    fields: {
-
-        id: [{ value: void 0, name: 'endBreakHours' }],
-    },
-
+    fields: {},
     employeeSchedule: null,
 };
 
