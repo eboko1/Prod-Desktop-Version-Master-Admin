@@ -103,6 +103,7 @@ export default class ArrayScheduleInput extends Component {
                 render: (text, record) => (
                     <DecoratedTimePicker
                         field={ `schedule[${record.key}][${name}]` }
+                        formItem
                         rules={ [
                             {
                                 required: true,
@@ -175,7 +176,7 @@ export default class ArrayScheduleInput extends Component {
         const columns = [ ...days, ...workingHours, ...breakHours, actions ];
 
         return (
-            <div>
+            <Catcher>
                 <Table
                     dataSource={ keys.map(key => ({ key })) }
                     columns={ columns }
@@ -194,7 +195,7 @@ export default class ArrayScheduleInput extends Component {
                     <Icon type='plus' />
                     <FormattedMessage id='add_schedule' />
                 </StyledButton>
-            </div>
+            </Catcher>
         );
     }
 }

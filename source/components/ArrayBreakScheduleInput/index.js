@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Icon, Button, Row, Col, Form, Select } from 'antd';
+import { Icon, Form, Select, Table } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
@@ -11,6 +11,7 @@ import {
     DecoratedInput,
     DecoratedSelect,
 } from 'forms/DecoratedFields';
+import { Catcher, StyledButton } from 'commons';
 
 // own
 import Styles from './styles.m.css';
@@ -97,142 +98,133 @@ class ArrayBreakScheduleInput extends Component {
         };
 
         const keys = this.state.keys;
-        const formItems = keys.map(key => {
-            return (
-                <Row
-                    className={ Styles.MainBlock }
-                    type='flex'
-                    align='middle'
-                    key={ key }
-                >
-                    <Col span={ 20 }>
-                        <div className={ Styles.Hours }>
-                            <DecoratedSelect
-                                formItem
-                                field={ `schedule[${key}][type]` }
-                                cnStyles={ Styles.Select }
-                                style={ { minWidth: '150px' } }
-                                getFieldDecorator={ getFieldDecorator }
-                                getPopupContainer={ trigger =>
-                                    trigger.parentNode
-                                }
-                                rules={ [
-                                    {
-                                        required: true,
-                                        message:  'Type is required',
-                                    },
-                                ] }
-                                hasFeedback={ false }
-                                initialValue={ _.get(initialBreakSchedule, [ key, 'type' ]) }
-                            >
-                                { [ 'absenteeism', 'holiday', 'cant_work', 'legal_holiday', 'valid_reason', 'sick_leave', 'vacation' ].map(item => {
-                                    return (
-                                        <Option value={ item } key={ item }>
-                                            <FormattedMessage id={ item } />
-                                        </Option>
-                                    );
-                                }) }
-                            </DecoratedSelect>
-                            <DecoratedDatePicker
-                                field={ `schedule[${key}][beginDate]` }
-                                formItem
-                                rules={ [
-                                    {
-                                        required: true,
-                                        message:  'Begin date is required',
-                                    },
-                                ] }
-                                initialValue={ getDateTitle(key, 'beginDate') }
-                                hasFeedback
-                                formatMessage={ formatMessage }
-                                getFieldDecorator={ getFieldDecorator }
-                                minuteStep={ 30 }
-                            />
-                            <FormItem>
-                                <span>-</span>
-                            </FormItem>
-                            <DecoratedDatePicker
-                                field={ `schedule[${key}][endDate]` }
-                                formItem
-                                rules={ [
-                                    {
-                                        required: true,
-                                        message:  '',
-                                    },
-                                ] }
-                                initialValue={ getDateTitle(key, 'endDate') }
-                                hasFeedback={ false }
-                                formatMessage={ formatMessage }
-                                getFieldDecorator={ getFieldDecorator }
-                                minuteStep={ 30 }
-                            />
-                            <DecoratedInput
-                                className={ Styles.InputNote }
-                                field={ `schedule[${key}][note]` }
-                                formItem
-                                getFieldDecorator={ getFieldDecorator }
-                                initialValue={ _.get(
-                                    initialBreakSchedule,
-                                    'note',
-                                ) }
-                            />
-                        </div>
-                    </Col>
-                    <Col span={ 4 }>
-                        <Row type='flex' justify='center'>
-                            <Button
-                                type={ 'primary' }
-                                onClick={ () => {
-                                    this.remove(key);
-                                    const id = _.get(initialBreakSchedule, [ key, 'id' ]);
-                                    if (id) {
-                                        this.props.deleteBreakSchedule(id);
-                                    }
-                                } }
-                            >
-                                Delete
-                            </Button>
-                            <Button
-                                type={ 'primary' }
-                                onClick={ () => {
-                                    const callback = entity => {
-                                        const initialEntity =
-                                            initialBreakSchedule[ key ];
 
-                                        if (initialEntity) {
-                                            const { id } = initialEntity;
-                                            this.props.updateBreakSchedule(
-                                                id,
-                                                entity,
-                                            );
-                                        } else {
-                                            this.props.createBreakSchedule(
-                                                entity,
-                                            );
-                                        }
-                                    };
-                                    this.getBreakScheduleData(key, callback);
-                                } }
-                            >
-                                { initialBreakSchedule[ key ] ? 'Save' : 'Create' }
-                            </Button>
-                        </Row>
-                    </Col>
-                </Row>
-            );
-        });
+        const dates = [
+            ...[ 'beginDate', 'endDate' ].map(name => ({
+                title:  <FormattedMessage id={ `break-schedule.${name}` } />,
+                width:  '20%',
+                render: (text, { key }) => (
+                    <DecoratedDatePicker
+                        field={ `schedule[${key}][${name}]` }
+                        formItem
+                        rules={ [
+                            {
+                                required: true,
+                                message:  '',
+                            },
+                        ] }
+                        initialValue={ getDateTitle(key, name) }
+                        formatMessage={ formatMessage }
+                        getFieldDecorator={ getFieldDecorator }
+                        minuteStep={ 30 }
+                    />
+                ),
+            })),
+        ];
+
+        const comment = {
+            title:  <FormattedMessage id={ 'break-schedule.comment' } />,
+            width:  '35%',
+            render: (text, { key }) => (
+                <DecoratedInput
+                    field={ `schedule[${key}][note]` }
+                    getFieldDecorator={ getFieldDecorator }
+                    initialValue={ _.get(initialBreakSchedule, 'note') }
+                />
+            ),
+        };
+
+        const breakType = {
+            title:  <FormattedMessage id={ 'break-schedule.break_type' } />,
+            width:  '15%',
+            render: (text, { key }) => (
+                <DecoratedSelect
+                    cnStyles={ Styles.scheduleType }
+                    field={ `schedule[${key}][type]` }
+                    getPopupContainer={ trigger =>
+                        trigger.parentNode
+                    }
+                    getFieldDecorator={ getFieldDecorator }
+                    formItem
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'Type is required',
+                        },
+                    ] }
+                    initialValue={ _.get(initialBreakSchedule, [ key, 'type' ]) }
+                >
+                    { [ 'absenteeism', 'holiday', 'cant_work', 'legal_holiday', 'valid_reason', 'sick_leave', 'vacation' ].map(item => {
+                        return (
+                            <Option value={ item } key={ item }>
+                                <FormattedMessage id={ item } />
+                            </Option>
+                        );
+                    }) }
+                </DecoratedSelect>
+            ),
+        };
+
+        const actions = {
+            title:  '',
+            width:  '10%',
+            render: (text, { key }) => 
+                <>
+                    <Icon
+                        type={ initialBreakSchedule[ key ] ? 'edit' : 'save' }
+                        className={ Styles.scheduleBreakIcon }
+                        onClick={ () => {
+                            const callback = entity => {
+                                const initialEntity = initialBreakSchedule[ key ];
+
+                                if (initialEntity) {
+                                    const { id } = initialEntity;
+                                    this.props.updateBreakSchedule(id, entity);
+                                } else {
+                                    this.props.createBreakSchedule(entity);
+                                }
+                            };
+                            this.getBreakScheduleData(key, callback);
+                        } }
+                    />{' '}
+                    <Icon
+                        type='delete'
+                        className={ Styles.scheduleBreakIcon }
+                        onClick={ () => {
+                            this.remove(key);
+                            const id = _.get(initialBreakSchedule, [ key, 'id' ]);
+                            if (id) {
+                                this.props.deleteBreakSchedule(id);
+                            }
+                        } }
+                    />
+                </>
+            ,
+        };
+
+        const columns = [ breakType, ...dates, comment, actions ];
 
         return (
-            <div>
-                { formItems }
-                <Button
-                    type='dashed'
-                    className={ Styles.AddButton }
+            <Catcher>
+                <Table
+                    dataSource={ keys.map(key => ({ key })) }
+                    columns={ columns }
+                    size='small'
+                    scroll={ { x: 1000 } }
+                    pagination={ false }
+                    locale={ {
+                        emptyText: <FormattedMessage id='no_data' />,
+                    } }
+                />
+                <StyledButton
+                    type='secondary'
                     onClick={ this.add }
+                    className={ Styles.newScheduleBreak }
                 >
-                    <Icon type='plus' /> { this.props.buttonText }
-                </Button>
-            </div>
+                    <Icon type='plus' />
+                    <FormattedMessage id='add_break_schedule' />
+                </StyledButton>
+            </Catcher>
         );
     }
 }
