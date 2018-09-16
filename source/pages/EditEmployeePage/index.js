@@ -148,13 +148,6 @@ export default class EditEmployeePage extends Component {
                     key='2'
                 >
                     <EmployeeScheduleForm
-                        user={ user }
-                        initialEmployee={ initialEmployee }
-                        initialSchedule={ _.get(initialEmployee, 'schedule') }
-                        initialBreakSchedule={ _.get(
-                            initialEmployee,
-                            'nonWorkingDays',
-                        ) }
                         employeeId={ employeeId }
                     />
                 </TabPane>

@@ -4,6 +4,9 @@
 export const moduleName = 'employeeSchedule';
 const prefix = `cpb/${moduleName}`;
 
+export const FETCH_EMPLOYEE_SCHEDULE = `${prefix}/FETCH_EMPLOYEE_SCHEDULE`;
+export const FETCH_EMPLOYEE_SCHEDULE_SUCCESS = `${prefix}/FETCH_EMPLOYEE_SCHEDULE_SUCCESS`;
+
 export const CREATE_EMPLOYEE_SCHEDULE = `${prefix}/CREATE_EMPLOYEE_SCHEDULE`;
 export const UPDATE_EMPLOYEE_SCHEDULE = `${prefix}/UPDATE_EMPLOYEE_SCHEDULE`;
 export const DELETE_EMPLOYEE_SCHEDULE = `${prefix}/DELETE_EMPLOYEE_SCHEDULE`;
@@ -23,13 +26,22 @@ export const DELETE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS = `${prefix}/DELETE_EMPLOYEE
  * Reducer
  * */
 
-const ReducerState = {};
+const ReducerState = {
+    schedule:       null,
+    nonWorkingDays: null,
+};
 
 /* eslint-disable complexity */
 export default function reducer(state = ReducerState, action) {
-    const { type } = action;
+    const { type, payload } = action;
 
     switch (type) {
+        case FETCH_EMPLOYEE_SCHEDULE_SUCCESS:
+            return {
+                ...state,
+                schedule:       payload.schedule,
+                nonWorkingDays: payload.nonWorkingDays,
+            };
         default:
             return state;
     }
@@ -91,4 +103,14 @@ export const updateEmployeeBreakScheduleSuccess = () => ({
 
 export const deleteEmployeeBreakScheduleSuccess = () => ({
     type: DELETE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS,
+});
+
+export const fetchEmployeeSchedule = id => ({
+    type:    FETCH_EMPLOYEE_SCHEDULE,
+    payload: id,
+});
+
+export const fetchEmployeeScheduleSuccess = entity => ({
+    type:    FETCH_EMPLOYEE_SCHEDULE_SUCCESS,
+    payload: entity,
 });
