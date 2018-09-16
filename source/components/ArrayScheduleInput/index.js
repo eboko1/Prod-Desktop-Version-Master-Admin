@@ -28,6 +28,20 @@ export default class ArrayScheduleInput extends Component {
         this.state = { keys };
     }
 
+    componentDidUpdate(prevProps) {
+        if (!_.isEqual(this.props.initialSchedule, prevProps.initialSchedule)) {
+            this.props.form.resetFields();
+
+            const { initialSchedule } = this.props;
+            this.uuid = _.isArray(initialSchedule) ? initialSchedule.length : 0;
+            const keys = _.isArray(initialSchedule)
+                ? _.keys(initialSchedule)
+                : [];
+
+            this.setState({ keys });
+        }
+    }
+
     getScheduleData(key) {
         const schedule = this.props.form.getFieldValue(`schedule[${key}]`);
         const scheduleWithParsedHours = _.mapValues(

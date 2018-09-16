@@ -33,6 +33,20 @@ class ArrayBreakScheduleInput extends Component {
         this.state = { keys };
     }
 
+    componentDidUpdate(prevProps) {
+        if (!_.isEqual(this.props.initialBreakSchedule, prevProps.initialBreakSchedule)) {
+            this.props.form.resetFields();
+
+            const { initialBreakSchedule } = this.props;
+            this.uuid = _.isArray(initialBreakSchedule) ? initialBreakSchedule.length : 0;
+            const keys = _.isArray(initialBreakSchedule)
+                ? _.keys(initialBreakSchedule)
+                : [];
+
+            this.setState({ keys });
+        }
+    }
+
     getBreakScheduleData(key) {
         const schedule = this.props.form.getFieldValue(`schedule[${key}]`);
         const scheduleWithParsedHours = _.mapValues(
