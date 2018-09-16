@@ -194,7 +194,7 @@ export default class ArrayScheduleInput extends Component {
                     className={ Styles.newSchedule }
                 >
                     <Icon type='plus' />
-                    <FormattedMessage id='add_schedule' />
+                    <FormattedMessage id='array-schedule.add_schedule' />
                 </StyledButton>
             </Catcher>
         );

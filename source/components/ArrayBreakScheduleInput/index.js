@@ -101,7 +101,7 @@ class ArrayBreakScheduleInput extends Component {
 
         const dates = [
             ...[ 'beginDate', 'endDate' ].map(name => ({
-                title:  <FormattedMessage id={ `break-schedule.${name}` } />,
+                title:  <FormattedMessage id={ `array-break-schedule.${name}` } />,
                 width:  '20%',
                 render: (text, { key }) => (
                     <DecoratedDatePicker
@@ -124,7 +124,7 @@ class ArrayBreakScheduleInput extends Component {
         ];
 
         const comment = {
-            title:  <FormattedMessage id={ 'break-schedule.comment' } />,
+            title:  <FormattedMessage id={ 'array-break-schedule.comment' } />,
             width:  '35%',
             render: (text, { key }) => (
                 <DecoratedInput
@@ -136,7 +136,7 @@ class ArrayBreakScheduleInput extends Component {
         };
 
         const breakType = {
-            title:  <FormattedMessage id={ 'break-schedule.break_type' } />,
+            title:  <FormattedMessage id={ 'array-break-schedule.break_type' } />,
             width:  '15%',
             render: (text, { key }) => (
                 <DecoratedSelect
@@ -224,7 +224,7 @@ class ArrayBreakScheduleInput extends Component {
                     className={ Styles.newScheduleBreak }
                 >
                     <Icon type='plus' />
-                    <FormattedMessage id='add_break_schedule' />
+                    <FormattedMessage id='array-break-schedule.add_break_schedule' />
                 </StyledButton>
             </Catcher>
         );

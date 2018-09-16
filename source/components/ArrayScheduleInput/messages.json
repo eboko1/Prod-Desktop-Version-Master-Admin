@@ -4,20 +4,23 @@
         "endWorkingHours": "End Working Hours",
         "beginBreakHours": "Begin Break Hours",
         "endBreakHours": "End Break Hours",
-        "save_schedules": "Save Schedules"
+        "save_schedules": "Save Schedules",
+        "array-schedule.add_schedule": "Add schedule"
     },
     "ru": {
         "beginWorkingHours": "Начало Рабочих Часов",
         "endWorkingHours": "Конец Рабочих Часов",
         "beginBreakHours": "Начало Перерыва",
         "endBreakHours": "Конец Перерыва",
-        "save_schedules": "Сохранить Графики"
+        "save_schedules": "Сохранить Графики",
+        "array-schedule.add_schedule": "Добавить расписание"
     },
     "uk": {
         "beginWorkingHours": "Початок Рабочого Часу",
         "endWorkingHours": "Кінець Рабочого Часу",
         "beginBreakHours": "Початок Перерви",
         "endBreakHours": "Кінець Перерви",
-        "save_schedules": "Зберегти Графіки"
+        "save_schedules": "Зберегти Графіки",
+        "array-schedule.add_schedule": "Додати розклад"
     }
 }
