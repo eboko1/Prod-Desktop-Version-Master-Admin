@@ -1,11 +1,11 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table, Button, Icon } from 'antd';
+import { Table } from 'antd';
 import _ from 'lodash';
 
 // proj
-import { Catcher, StyledButton } from 'commons';
+import { Catcher } from 'commons';
 
 // own
 import { columnsConfig } from './settingSalaryTableConfig';
@@ -15,65 +15,82 @@ import Styles from './styles.m.css';
 export default class SettingSalaryTable extends Component {
     constructor(props) {
         super(props);
-        this.uuid = 0;
-        this.state = { keys: [ this.uuid++ ] };
+
+        const { initialSettingSalaries } = props;
+        this.uuid = _.isArray(initialSettingSalaries)
+            ? initialSettingSalaries.length
+            : 0;
+        const keys = _.isArray(initialSettingSalaries)
+            ? _.keys(initialSettingSalaries)
+            : [];
+
+        this.state = { keys: [ ...keys, this.uuid++ ] };
     }
 
-    _getDefaultValue = (key, fieldName) => {
-        const salaryField = (this.props.salaryFields || [])[ key ];
-        if (!salaryField) {
-            return;
+    componentDidUpdate(prevProps) {
+        if (
+            !_.isEqual(
+                this.props.initialSettingSalaries,
+                prevProps.initialSettingSalaries,
+            )
+        ) {
+            const { initialSettingSalaries } = this.props;
+            this.uuid = _.isArray(initialSettingSalaries)
+                ? initialSettingSalaries.length
+                : 0;
+            const keys = _.isArray(initialSettingSalaries)
+                ? _.keys(initialSettingSalaries)
+                : [];
+
+            this.setState({ keys: [ ...keys, this.uuid++ ] });
         }
+    }
 
-        const actions = {
-            employeeName:     salaryField.employeeName,
-            jobTitle:         salaryField.jobTitle,
-            period:           salaryField.period,
-            startDate:        salaryField.startDate,
-            endDate:          salaryField.endDate,
-            ratePerPeriod:    salaryField.ratePerPeriod,
-            percentFrom:      salaryField.percentFrom,
-            percent:          salaryField.percent,
-            considerDiscount: salaryField.considerDiscount,
-        };
-
-        return actions[ fieldName ];
+    remove = key => {
+        const keys = this.state.keys;
+        this.setState({ keys: keys.filter(value => value !== key) });
     };
 
-    _handleSalaryRowSelect = key => {
-        const { keys } = this.state;
-        const details = this.props.form.getFieldValue('details');
-
-        if (_.last(keys) === key && !details[ key ].detailName) {
-            this._handleAdd();
-        }
-    };
-
-    _onDelete = redundantKey => {
-        const { keys } = this.state;
-        this.setState({ keys: keys.filter(key => redundantKey !== key) });
-    };
-
-    _handleAdd = () => {
-        const { keys } = this.state;
+    add = () => {
+        const keys = this.state.keys;
         this.setState({ keys: [ ...keys, this.uuid++ ] });
     };
 
     render() {
-        const { user, saveSalary, getFieldDecorator } = this.props;
+        const {
+            initialSettingSalaries,
+            form,
+            user,
+            createSalary,
+            updateSalary,
+            deleteSalary,
+        } = this.props;
         const { formatMessage } = this.props.intl;
         const { keys } = this.state;
 
         const columns = columnsConfig(
-            user,
-            saveSalary,
             formatMessage,
-            getFieldDecorator,
+            form,
+            initialSettingSalaries,
+            createSalary,
+            updateSalary,
+            deleteSalary,
+            user,
         );
 
         return (
             <Catcher>
                 <Table
+                    rowClassName={ ({ key }) => {
+                        const wasEdited = _.get(this.props.fields, [ 'settingSalaries', key ]);
+                        const exists = _.get(initialSettingSalaries, [ key ]);
+
+                        if (!exists) {
+                            return Styles.newSalaryRow;
+                        } else if (wasEdited) {
+                            return Styles.editedSalaryRow;
+                        }
+                    } }
                     className={ Styles.settingSalaryTable }
                     dataSource={ keys.map(key => ({ key })) }
                     columns={ columns }
@@ -84,14 +101,6 @@ export default class SettingSalaryTable extends Component {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                 />
-                <StyledButton
-                    type='secondary'
-                    onClick={ this._handleAdd }
-                    className={ Styles.newSalary }
-                >
-                    <Icon type='plus' />
-                    <FormattedMessage id='setting-salary.add_new_salary' />
-                </StyledButton>
             </Catcher>
         );
     }

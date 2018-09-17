@@ -81,7 +81,7 @@ export const DecoratedDatePicker = props => {
     // };
 
     const datePicker = getFieldDecorator(field, {
-        ...initialValue ? { initialValue } : {},
+        ...initialValue ? { initialValue } : { initialValue: void 0 },
         rules,
     })(
         ranges ? (

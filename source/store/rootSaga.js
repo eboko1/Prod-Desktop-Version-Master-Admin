@@ -34,6 +34,7 @@ import { saga as employeeFormSaga } from 'core/forms/employeeForm/saga';
 import { saga as scheduleFormSaga } from 'core/forms/scheduleForm/saga';
 import { saga as profileFormSaga } from 'core/forms/profileForm/saga';
 import { saga as editClientFormSaga } from 'core/forms/editClientForm/saga';
+import { saga as settingSalaryFormSaga } from 'core/forms/settingSalaryForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -67,6 +68,7 @@ export default function* rootSaga() {
         clientRequisitesSaga(),
         clientOrdersSaga(),
         employeeScheduleSaga(),
+        settingSalaryFormSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

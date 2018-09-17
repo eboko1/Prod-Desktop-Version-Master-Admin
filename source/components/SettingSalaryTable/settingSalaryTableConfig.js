@@ -1,21 +1,18 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Icon, Button, Select, Input } from 'antd';
-// import classNames from 'classnames';
-import moment from 'moment';
+import { Icon, Row, Select } from 'antd';
 import _ from 'lodash';
-import { v4 } from 'uuid';
+import moment from 'moment';
 
 // proj
-import { Numeral } from 'commons';
 import {
+    DecoratedCheckbox,
     DecoratedSelect,
     DecoratedInputNumber,
     DecoratedDatePicker,
 } from 'forms/DecoratedFields';
 import { permissions, isForbidden } from 'utils';
-import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
@@ -23,21 +20,31 @@ const Option = Select.Option;
 
 /* eslint-disable complexity */
 export function columnsConfig(
-    user,
-    saveSalary,
     formatMessage,
-    getFieldDecorator,
+    form,
+    initialSettingSalaries,
+    createSalary,
+    updateSalary,
+    deleteSalary,
+    user,
 ) {
+    const { getFieldDecorator } = form;
+    const getDateTitle = (key, title) => {
+        const date = _.get(initialSettingSalaries, [ key, title ]);
+
+        return date ? moment(date, 'YYYY-MM-DD') : date;
+    };
+
     const period = {
         title:     <FormattedMessage id='setting-salary.period' />,
         dataIndex: 'period',
-        width:     '10%',
+        width:     '15%',
         render:    (text, record) => (
             <DecoratedSelect
-                field={ `period[${record.key}]` }
+                field={ `settingSalaries[${record.key}][period]` }
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({ id: 'setting-salary.period' }) }
-                // value={ record.period }
+                initialValue={ _.get(initialSettingSalaries, [ record.key, 'period' ]) }
             >
                 { [ 'DAY', 'WEEK', 'MONTH' ].map((period, index) => (
                     <Option value={ period } key={ `${period}-${index}` }>
@@ -54,8 +61,9 @@ export function columnsConfig(
         width:     '15%',
         render:    (text, record) => (
             <DecoratedDatePicker
-                field={ `startDate[${record.key}]` }
+                field={ `settingSalaries[${record.key}][startDate]` }
                 // initialValue={ moment(startDate) }
+                initialValue={ getDateTitle(record.key, 'startDate') }
                 format='YYYY-MM-DD'
                 formatMessage={ formatMessage }
                 getFieldDecorator={ getFieldDecorator }
@@ -68,12 +76,10 @@ export function columnsConfig(
         dataIndex: 'endDate',
         width:     '15%',
         render:    (text, record) => {
-            console.log('→ record', record);
-
             return (
                 <DecoratedDatePicker
-                    field={ `endDate[${record.key}]` }
-                    // initialValue={ moment(startDate) }
+                    field={ `settingSalaries[${record.key}][endDate]` }
+                    initialValue={ getDateTitle(record.key, 'endDate') }
                     format='YYYY-MM-DD'
                     // getCalendarContainer={ trigger => trigger.parentNode }
                     formatMessage={ formatMessage }
@@ -89,7 +95,8 @@ export function columnsConfig(
         width:     '10%',
         render:    (text, record) => (
             <DecoratedInputNumber
-                field={ `ratePerPeriod[${record.key}]` }
+                initialValue={ _.get(initialSettingSalaries, [ record.key, 'ratePerPeriod' ]) }
+                field={ `settingSalaries[${record.key}][ratePerPeriod]` }
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({
                     id: 'setting-salary.ratePerPeriod',
@@ -107,7 +114,8 @@ export function columnsConfig(
         width:     '15%',
         render:    (text, record) => (
             <DecoratedSelect
-                field={ `percentFrom[${record.key}]` }
+                field={ `settingSalaries[${record.key}][percentFrom]` }
+                initialValue={ _.get(initialSettingSalaries, [ record.key, 'percentFrom' ]) }
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({
                     id: 'setting-salary.percentFrom',
@@ -123,7 +131,7 @@ export function columnsConfig(
                     'SPARE_PARTS_PROFIT',
                     'ORDER_PROFIT',
                 ].map(percent => (
-                    <Option value={ percent } key={ v4() }>
+                    <Option value={ percent } key={ percent }>
                         <FormattedMessage id={ `${percent}` } />
                     </Option>
                 )) }
@@ -138,11 +146,11 @@ export function columnsConfig(
         width:     '10%',
         render:    (data, record) => (
             <DecoratedInputNumber
-                field={ `percent[${record.key}]` }
+                field={ `settingSalaries[${record.key}][percent]` }
                 getFieldDecorator={ getFieldDecorator }
                 placeholder={ formatMessage({ id: 'setting-salary.percent' }) }
                 // onKeyPress={ this.handleChangeNew.bind(this, null) }
-                initialValue={ data || 0 }
+                initialValue={ _.get(initialSettingSalaries, [ record.key, 'percent' ]) }
                 min={ 0 }
                 max={ 100 }
                 formatter={ value => `${value}%` }
@@ -154,25 +162,15 @@ export function columnsConfig(
     const considerDiscount = {
         title:     <FormattedMessage id='setting-salary.considerDiscount' />,
         dataIndex: 'considerDiscount',
-        width:     '15%',
+        width:     '10%',
         render:    (text, record) => (
-            <DecoratedSelect
-                field={ `considerDiscount[${record.key}]` }
-                getFieldDecorator={ getFieldDecorator }
-                placeholder={ formatMessage({
-                    id: 'setting-salary.considerDiscount',
-                }) }
-                // onChange={ this.handleChangeNew.bind(this, 'considerDiscount') }
-                // value={ record.considerDiscount }
-            >
-                <Option value={ Boolean(true) } key='yes'>
-                    <FormattedMessage id='yes' />
-                </Option>
-
-                <Option value={ false } key='no'>
-                    <FormattedMessage id='no' />
-                </Option>
-            </DecoratedSelect>
+            <Row type='flex' align='center'>
+                <DecoratedCheckbox
+                    field={ `settingSalaries[${record.key}][considerDiscount]` }
+                    getFieldDecorator={ getFieldDecorator }
+                    initialValue={ _.get(initialSettingSalaries, [ record.key, 'considerDiscount' ]) }
+                />
+            </Row>
         ),
     };
 
@@ -186,11 +184,41 @@ export function columnsConfig(
                     user,
                     permissions.CREATE_EDIT_DELETE_EMPLOYEES,
                 ) && (
-                    <Icon
-                        className={ Styles.saveSalary }
-                        onClick={ () => saveSalary(record, record.id) }
-                        type='save'
-                    />
+                    <div>
+                        <Icon
+                            className={ Styles.saveSalary }
+                            onClick={ () => {
+                                const entity = _.get(
+                                    form.getFieldValue('settingSalaries'),
+                                    record.key,
+                                );
+                                const salaryId = _.get(initialSettingSalaries, [ record.key, 'id' ]);
+
+                                if (!salaryId) {
+                                    createSalary(entity);
+                                } else {
+                                    updateSalary(salaryId, entity);
+                                }
+                            } }
+                            type='save'
+                        />
+                        { _.get(initialSettingSalaries, [ record.key, 'id' ]) && (
+                            <Icon
+                                className={ Styles.saveSalary }
+                                onClick={ () => {
+                                    const salaryId = _.get(
+                                        initialSettingSalaries,
+                                        [ record.key, 'id' ],
+                                    );
+
+                                    if (salaryId) {
+                                        deleteSalary(salaryId);
+                                    }
+                                } }
+                                type='delete'
+                            />
+                        ) }
+                    </div>
                 )
             );
         },

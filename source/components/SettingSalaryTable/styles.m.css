@@ -22,3 +22,11 @@
     align-items: center;
     margin: 24px auto;
 }
+
+.newSalaryRow {
+    background-color: rgba(11, 127, 0, 0.28);
+}
+
+.editedSalaryRow {
+    background-color: rgba(255, 45, 45, 0.28);
+}

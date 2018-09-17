@@ -2,15 +2,18 @@
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Button, Form } from 'antd';
-import _ from 'lodash';
 
 // proj
 import {
     fetchSalary,
-    saveSalary,
-    deleteSalary,
-    onChangeSettingSalaryForm,
     fetchSalaryReport,
+
+    createSalary,
+    updateSalary,
+    deleteSalary,
+
+    onChangeSettingSalaryForm,
+    resetFields,
 } from 'core/forms/settingSalaryForm/duck';
 
 import { Catcher } from 'commons';
@@ -23,8 +26,7 @@ import Styles from './styles.m.css';
 const FormItem = Form.Item;
 
 const mapStateToProps = state => ({
-    filterRangeDate: state.forms.settingSalary.fields.filterRangeDate,
-    user:            state.auth,
+    user: state.auth,
 });
 
 @injectIntl
@@ -32,43 +34,41 @@ const mapStateToProps = state => ({
     name:    'settingSalary',
     actions: {
         change: onChangeSettingSalaryForm,
+        resetFields,
         fetchSalary,
-        saveSalary,
-        deleteSalary,
         fetchSalaryReport,
+
+        createSalary,
+        updateSalary,
+        deleteSalary,
     },
     mapStateToProps,
 })
-export default class SettingSalaryContainer extends Component {
-
-    state = {
-        formValues: {},
-    };
-
+export default class SettingSalaryForm extends Component {
     componentDidMount() {
-        this.props.fetchSalary();
+        const { employeeId } = this.props;
+        this.props.fetchSalary(employeeId);
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        const { formValues: prevFormValues } = prevState;
-        const formValues = this.props.form.getFieldsValue();
-
-        if (!_.isEqual(formValues, prevFormValues)) {
-            this.setState({ formValues });
+    componentDidUpdate(prevProps) {
+        if (this.props.employeeId !== prevProps.employeeId) {
+            const { employeeId } = this.props;
+            this.props.fetchSalary(employeeId);
         }
     }
 
     render() {
         const {
-            saveSalary,
+            createSalary,
+            updateSalary,
             deleteSalary,
-            salaries,
-            employees,
-            entity,
             fetchSalaryReport,
-            filterRangeDate,
+
+            employeeId,
+            salaries,
             user,
-            form: { getFieldDecorator },
+            form,
+            intl,
         } = this.props;
 
         return (
@@ -79,18 +79,19 @@ export default class SettingSalaryContainer extends Component {
                         ranges
                         label={ null }
                         formItem
-                        formatMessage={ this.props.intl.formatMessage }
-                        getFieldDecorator={ getFieldDecorator }
+                        formatMessage={ intl.formatMessage }
+                        getFieldDecorator={ form.getFieldDecorator }
                         format='YYYY-MM-DD'
                     />
                     <FormItem>
                         <Button
                             type='primary'
                             disabled={
-                                filterRangeDate ? !filterRangeDate.value : true
+                                false
                             }
                             onClick={ () =>
-                                fetchSalaryReport(entity.filterRangeDate.value)
+                                console.log('clicked')
+                                // fetchSalaryReport(entity.filterRangeDate.value)
                             }
                         >
                             <FormattedMessage id='setting-salary.calculate' />
@@ -98,12 +99,14 @@ export default class SettingSalaryContainer extends Component {
                     </FormItem>
                 </div>
                 <SettingSalaryTable
+                    fields={ this.props.fields }
+                    form={ form }
                     user={ user }
-                    salaries={ salaries }
-                    saveSalary={ saveSalary }
-                    employees={ employees }
-                    deleteSalary={ deleteSalary }
-                    getFieldDecorator={ getFieldDecorator }
+                    initialSettingSalaries={ salaries }
+                    createSalary={ createSalary.bind(this, employeeId) }
+                    updateSalary={ updateSalary.bind(this, employeeId) }
+                    deleteSalary={ deleteSalary.bind(this, employeeId) }
+                    resetFields={ resetFields }
                 />
             </Catcher>
         );

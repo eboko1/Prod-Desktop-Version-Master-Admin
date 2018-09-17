@@ -9,82 +9,79 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
-    fetchSalarySuccess,
     FETCH_SALARY,
-    SAVE_SALARY,
-    fetchSalary,
-    DELETE_SALARY,
-    deleteSalarySuccess,
     FETCH_SALARY_REPORT,
+    DELETE_SALARY,
+    CREATE_SALARY,
+    UPDATE_SALARY,
+} from './duck';
+
+import {
+    fetchSalarySuccess,
+    fetchSalary,
+    updateSalarySuccess,
+    createSalarySuccess,
+    deleteSalarySuccess,
     fetchSalaryReportSuccess,
 } from './duck';
 
 export function* fetchSalariesSaga() {
     while (true) {
-        try {
-            yield take(FETCH_SALARY);
-            const data = yield call(fetchAPI, 'GET', 'employees_salaries');
+        const { payload: employeeId } = yield take(FETCH_SALARY);
+        const data = yield call(
+            fetchAPI,
+            'GET',
+            `employees_salaries?employeeId=${employeeId}`,
+        );
 
-            yield put(fetchSalarySuccess(data));
-        } catch (error) {
-            yield put(emitError(error));
-        }
+        yield put(fetchSalarySuccess(data));
     }
 }
 
-export function* saveSalarySaga() {
+export function* createSalarySaga() {
     while (true) {
-        try {
-            const {
-                payload: { salary, meth },
-            } = yield take(SAVE_SALARY);
+        const {
+            payload: { salary, employeeId },
+        } = yield take(CREATE_SALARY);
+        const payload = { ...salary, employeeId };
 
-            let salaryObj = {
-                considerDiscount:
-                    salary.considerDiscount === 'Yes' ? true : false,
-                employeeId:    salary.employeeId,
-                endDate:       salary.endDate,
-                percent:       salary.percent,
-                percentFrom:   salary.percentFrom,
-                period:        salary.period,
-                ratePerPeriod: salary.ratePerPeriod,
-                startDate:     salary.startDate,
-            };
-            const data = yield call(
-                fetchAPI,
-                meth !== 'add' ? 'PUT' : 'POST',
-                meth !== 'add'
-                    ? `employees_salaries/${meth}`
-                    : 'employees_salaries',
-                null,
-                salaryObj,
-            );
+        yield call(fetchAPI, 'POST', 'employees_salaries', null, payload);
 
-            yield put(fetchSalary());
-        } catch (error) {
-            yield put(emitError(error));
-        }
+        yield put(createSalarySuccess());
+        yield put(fetchSalary(employeeId));
+    }
+}
+
+export function* updateSalarySaga() {
+    while (true) {
+        const {
+            payload: { salary, employeeId, salaryId },
+        } = yield take(UPDATE_SALARY);
+        const payload = { ...salary, employeeId };
+
+        yield call(
+            fetchAPI,
+            'PUT',
+            `employees_salaries/${salaryId}`,
+            null,
+            payload,
+        );
+
+        yield put(updateSalarySuccess());
+        yield put(fetchSalary(employeeId));
     }
 }
 
 export function* deleteSalarySaga() {
     while (true) {
-        try {
-            const {
-                payload: { id },
-            } = yield take(DELETE_SALARY);
+        const {
+            payload: { salaryId, employeeId },
+        } = yield take(DELETE_SALARY);
 
-            const data = yield call(
-                fetchAPI,
-                'DELETE',
-                `employees_salaries/${id}`,
-            );
+        yield call(fetchAPI, 'DELETE', `employees_salaries/${salaryId}`);
 
-            yield put(deleteSalarySuccess());
-            yield put(fetchSalary());
-        } catch (error) {
-            yield put(emitError(error));
-        }
+        yield put(deleteSalarySuccess());
+        yield put(fetchSalary(employeeId));
     }
 }
 
@@ -122,7 +119,8 @@ export function* saga() {
     yield all([
         takeEvery(FETCH_SALARY_REPORT, fetchSalaryReport),
         call(fetchSalariesSaga),
-        call(saveSalarySaga),
+        call(createSalarySaga),
+        call(updateSalarySaga),
         call(deleteSalarySaga),
     ]);
     /* eslint-enable array-element-newline */

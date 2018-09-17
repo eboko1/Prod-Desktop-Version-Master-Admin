@@ -183,9 +183,7 @@ export default class EditEmployeePage extends Component {
                     key='5'
                 >
                     <SettingSalaryForm
-                        salaries={ this.props.salaries }
-                        entity={ this.props.entity }
-                        employees={ this.props.employees }
+                        employeeId={ employeeId }
                     />
                 </TabPane>
             </Tabs>
