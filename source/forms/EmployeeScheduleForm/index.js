@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Form } from 'antd';
+import { Form, Tabs } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
@@ -21,6 +21,7 @@ import Styles from './styles.m.css';
 
 // own
 const FormItem = Form.Item;
+const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
     initialSchedule:      state.employeeSchedule.schedule,
@@ -76,42 +77,48 @@ export class EmployeeScheduleForm extends Component {
 
         return (
             <div>
-                { initialSchedule && (
-                    <ScheduleForm
-                        initialSchedule={ initialSchedule }
-                        createSchedule={ createEmployeeSchedule.bind(
-                            null,
-                            employeeId,
+                <Tabs defaultActiveKey='1'>
+                    <TabPane tab={ <FormattedMessage id={ 'working_days' } /> } key='1'>
+                        { initialSchedule && (
+                            <ScheduleForm
+                                initialSchedule={ initialSchedule }
+                                createSchedule={ createEmployeeSchedule.bind(
+                                    null,
+                                    employeeId,
+                                ) }
+                                updateSchedule={ updateEmployeeSchedule.bind(
+                                    null,
+                                    employeeId,
+                                ) }
+                                deleteSchedule={ deleteEmployeeSchedule.bind(
+                                    null,
+                                    employeeId,
+                                ) }
+                                isForbidden={ false }
+                            />
                         ) }
-                        updateSchedule={ updateEmployeeSchedule.bind(
-                            null,
-                            employeeId,
+                    </TabPane>
+                    <TabPane tab={ <FormattedMessage id={ 'non_working_days' } /> } key='2'>
+                        { initialBreakSchedule && (
+                            <BreakScheduleForm
+                                initialBreakSchedule={ initialBreakSchedule }
+                                createBreakSchedule={ createEmployeeBreakSchedule.bind(
+                                    null,
+                                    employeeId,
+                                ) }
+                                updateBreakSchedule={ updateEmployeeBreakSchedule.bind(
+                                    null,
+                                    employeeId,
+                                ) }
+                                deleteBreakSchedule={ deleteEmployeeBreakSchedule.bind(
+                                    null,
+                                    employeeId,
+                                ) }
+                                isForbidden={ false }
+                            />
                         ) }
-                        deleteSchedule={ deleteEmployeeSchedule.bind(
-                            null,
-                            employeeId,
-                        ) }
-                        isForbidden={ false }
-                    />
-                ) }
-                { initialBreakSchedule && (
-                    <BreakScheduleForm
-                        initialBreakSchedule={ initialBreakSchedule }
-                        createBreakSchedule={ createEmployeeBreakSchedule.bind(
-                            null,
-                            employeeId,
-                        ) }
-                        updateBreakSchedule={ updateEmployeeBreakSchedule.bind(
-                            null,
-                            employeeId,
-                        ) }
-                        deleteBreakSchedule={ deleteEmployeeBreakSchedule.bind(
-                            null,
-                            employeeId,
-                        ) }
-                        isForbidden={ false }
-                    />
-                ) }
+                    </TabPane>
+                </Tabs>
             </div>
         );
     }
