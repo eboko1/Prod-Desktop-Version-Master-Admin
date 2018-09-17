@@ -125,7 +125,7 @@ class ArrayBreakScheduleInput extends Component {
                 <DecoratedInput
                     field={ `schedule[${key}][note]` }
                     getFieldDecorator={ getFieldDecorator }
-                    initialValue={ _.get(initialBreakSchedule, 'note') }
+                    initialValue={ _.get(initialBreakSchedule, [ key, 'note' ]) }
                 />
             ),
         };
