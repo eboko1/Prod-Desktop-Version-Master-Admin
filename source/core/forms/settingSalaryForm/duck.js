@@ -20,6 +20,9 @@ export const RESET_FIELDS = `${prefix}/RESET_FIELDS`;
 export const FETCH_SALARY_REPORT = `${prefix}/FETCH_SALARY_REPORT`;
 export const FETCH_SALARY_REPORT_SUCCESS = `${prefix}/FETCH_SALARY_REPORT_SUCCESS`;
 
+export const FETCH_ANNUAL_SALARY_REPORT = `${prefix}/FETCH_ANNUAL_SALARY_REPORT`;
+export const FETCH_ANNUAL_SALARY_REPORT_SUCCESS = `${prefix}/FETCH_ANNUAL_SALARY_REPORT_SUCCESS`;
+
 /**
  * Reducer
  * */
@@ -121,14 +124,23 @@ export const onChangeSettingSalaryForm = update => ({
     payload: update,
 });
 
-export const fetchSalaryReport = info => ({
+export const fetchSalaryReport = parameters => ({
     type:    FETCH_SALARY_REPORT,
-    payload: info,
+    payload: parameters,
 });
 
 export const fetchSalaryReportSuccess = data => ({
     type:    FETCH_SALARY_REPORT_SUCCESS,
     payload: data,
+});
+
+export const fetchAnnualSalaryReport = parameters => ({
+    type:    FETCH_ANNUAL_SALARY_REPORT,
+    payload: parameters,
+});
+
+export const fetchAnnualSalaryReportSuccess = () => ({
+    type: FETCH_ANNUAL_SALARY_REPORT_SUCCESS,
 });
 
 export const resetFields = () => ({

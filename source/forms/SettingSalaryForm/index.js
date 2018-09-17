@@ -1,25 +1,24 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button, Form } from 'antd';
+import { Form } from 'antd';
 
 // proj
 import {
     fetchSalary,
     fetchSalaryReport,
-
     createSalary,
     updateSalary,
     deleteSalary,
-
     onChangeSettingSalaryForm,
     resetFields,
 } from 'core/forms/settingSalaryForm/duck';
 
 import { Catcher } from 'commons';
-import { DecoratedDatePicker } from 'forms/DecoratedFields/DecoratedDatePicker';
 import { SettingSalaryTable } from 'components';
-import { withReduxForm2, getDaterange } from 'utils';
+import { SalaryReportForm } from 'forms';
+import { withReduxForm2 } from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -62,43 +61,21 @@ export default class SettingSalaryForm extends Component {
             createSalary,
             updateSalary,
             deleteSalary,
-            fetchSalaryReport,
 
             employeeId,
             salaries,
             user,
             form,
-            intl,
+            fields,
         } = this.props;
 
         return (
             <Catcher>
-                <div className={ Styles.downloadFile }>
-                    <DecoratedDatePicker
-                        field='filterRangeDate'
-                        ranges
-                        label={ null }
-                        formItem
-                        formatMessage={ intl.formatMessage }
-                        getFieldDecorator={ form.getFieldDecorator }
-                        format='YYYY-MM-DD'
-                    />
-                    <FormItem>
-                        <Button
-                            type='primary'
-                            disabled={
-                                !this.props.form.getFieldValue('filterRangeDate')
-                            }
-                            onClick={ () =>
-                                fetchSalaryReport(this.props.form.getFieldValue('filterRangeDate'))
-                            }
-                        >
-                            <FormattedMessage id='setting-salary.calculate' />
-                        </Button>
-                    </FormItem>
-                </div>
+                { !isForbidden(user, permissions.EMPLOYEES_SALARIES) && (
+                    <SalaryReportForm employeesIds={ [ employeeId ] } />
+                ) }
                 <SettingSalaryTable
-                    fields={ this.props.fields }
+                    fields={ fields }
                     form={ form }
                     user={ user }
                     initialSettingSalaries={ salaries }

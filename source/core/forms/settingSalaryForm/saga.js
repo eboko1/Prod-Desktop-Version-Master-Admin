@@ -11,6 +11,7 @@ import { fetchAPI } from 'utils';
 import {
     FETCH_SALARY,
     FETCH_SALARY_REPORT,
+    FETCH_ANNUAL_SALARY_REPORT,
     DELETE_SALARY,
     CREATE_SALARY,
     UPDATE_SALARY,
@@ -23,6 +24,7 @@ import {
     createSalarySuccess,
     deleteSalarySuccess,
     fetchSalaryReportSuccess,
+    fetchAnnualSalaryReportSuccess,
 } from './duck';
 
 export function* fetchSalariesSaga() {
@@ -85,20 +87,42 @@ export function* deleteSalarySaga() {
     }
 }
 
-export function* fetchSalaryReport({ payload: info }) {
+export function* fetchAnnualSalaryReport({ payload }) {
+    try {
+        const data = yield call(
+            fetchAPI,
+            'GET',
+            '/employees_salaries/annual_report',
+            payload,
+            null,
+            { rawResponse: true },
+        );
+        const reportFile = yield data.blob();
+        const contentDispositionHeader = data.headers.get(
+            'content-disposition',
+        );
+        const fileName = contentDispositionHeader.match(
+            /^attachment; filename="(.*)"/,
+        )[ 1 ];
+        yield saveAs(reportFile, fileName);
+    } catch (error) {
+        yield put(emitError(error));
+    } finally {
+        yield put(fetchAnnualSalaryReportSuccess());
+    }
+}
+
+export function* fetchSalaryReport({ payload }) {
     try {
         const data = yield call(
             fetchAPI,
             'GET',
             '/employees_salaries/report',
-            {
-                startDate: info[ 0 ].toISOString(),
-                endDate:   info[ 1 ].toISOString(),
-            },
+            payload,
             null,
             { rawResponse: true },
-            // `/employees_salaries/report?startDate=${ info[ 0 ].toISOString()}&endDate=${info[ 1 ].toISOString()}`,
         );
+
         const reportFile = yield data.blob();
         const contentDispositionHeader = data.headers.get(
             'content-disposition',
@@ -118,6 +142,7 @@ export function* saga() {
     /* eslint-disable array-element-newline */
     yield all([
         takeEvery(FETCH_SALARY_REPORT, fetchSalaryReport),
+        takeEvery(FETCH_ANNUAL_SALARY_REPORT, fetchAnnualSalaryReport),
         call(fetchSalariesSaga),
         call(createSalarySaga),
         call(updateSalarySaga),

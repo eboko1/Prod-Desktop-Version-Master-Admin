@@ -64,6 +64,7 @@ import BusinessPackageForm from 'forms/BusinessPackageForm/messages';
 import ManagerRoleForm from 'forms/ManagerRoleForm/messages';
 import AddBusinessPackageForm from 'forms/AddBusinessPackageForm/messages';
 import LoginForm from 'forms/LoginForm/messages';
+import SalaryReportForm from 'forms/SalaryReportForm/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
@@ -152,6 +153,7 @@ const messages = merge.all([
     AddBusinessPackageForm,
     ManagerRoleForm,
     LoginForm,
+    SalaryReportForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,

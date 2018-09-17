@@ -1,10 +1,10 @@
 /**
  * Constants
  * */
-export const moduleName = 'addRole';
+export const moduleName = 'salaryReport';
 const prefix = `cpb/${moduleName}`;
 
-export const ON_CHANGE_ROLE_FORM = `${prefix}/ON_CHANGE_ROLE_FORM`;
+export const ON_CHANGE_SALARY_REPORT_FORM = `${prefix}/ON_CHANGE_SALARY_REPORT_FORM`;
 
 /**
  * Reducer
@@ -18,7 +18,7 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case ON_CHANGE_ROLE_FORM:
+        case ON_CHANGE_SALARY_REPORT_FORM:
             return {
                 ...state,
                 fields: {
@@ -32,7 +32,7 @@ export default function reducer(state = ReducerState, action) {
     }
 }
 
-export const onChangeRoleForm = update => ({
-    type:    ON_CHANGE_ROLE_FORM,
+export const onChangeSalaryReportForm = update => ({
+    type:    ON_CHANGE_SALARY_REPORT_FORM,
     payload: update,
 });

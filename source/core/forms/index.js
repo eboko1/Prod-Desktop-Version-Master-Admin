@@ -21,11 +21,23 @@ import editPackageReducer, {
 import addRoleReducer, { moduleName as addRole } from './addRoleForm/duck';
 import editRoleReducer, { moduleName as editRole } from './editRoleForm/duck';
 
-import addClientVehicleReducer, { moduleName as addClientVehicle } from './addClientVehicleForm/duck';
-import editClientVehicleReducer, { moduleName as editClientVehicle } from './editClientVehicleForm/duck';
+import addClientVehicleReducer, {
+    moduleName as addClientVehicle,
+} from './addClientVehicleForm/duck';
+import editClientVehicleReducer, {
+    moduleName as editClientVehicle,
+} from './editClientVehicleForm/duck';
 
-import addClientRequisiteReducer, { moduleName as addClientRequisite } from './addClientRequisiteForm/duck';
-import editClientRequisiteReducer, { moduleName as editClientRequisite } from './editClientRequisiteForm/duck';
+import addClientRequisiteReducer, {
+    moduleName as addClientRequisite,
+} from './addClientRequisiteForm/duck';
+import editClientRequisiteReducer, {
+    moduleName as editClientRequisite,
+} from './editClientRequisiteForm/duck';
+
+import salaryReportReducer, {
+    moduleName as salaryReport,
+} from './salaryReportForm/duck';
 
 import switchBusinessReducer, {
     moduleName as switchBusiness,
@@ -80,29 +92,30 @@ import editClientReducer, {
 
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
-    [ order ]:                           orderReducer,
-    [ addClient ]:                       addClientReducer,
-    [ universalFilters ]:                universalFiltersReducer,
-    [ cancelReason ]:                    cancelReasonReducer,
-    [ toSuccess ]:                       toSuccessReducer,
-    [ login ]:                           loginReducer,
-    [ orderTask ]:                       orderTaskReducer,
-    [ addPackage ]:                      addPackageReducer,
-    [ editPackage ]:                     editPackageReducer,
-    [ addRole ]:                         addRoleReducer,
-    [ editRole ]:                        editRoleReducer,
-    [ switchBusiness ]:                  switchBusinessReducer,
-    [ employeeFormModule ]:              employeeFormReducer,
-    [ scheduleFormModule ]:              scheduleFormReducer,
-    [ breakScheduleFormModule ]:         breakScheduleFormReducer,
-    [ settingSalary ]:                   settingSalaryReducer,
-    [ addBusinessPackage ]:              addBusinessPackageReducer,
-    [ businessPackage ]:                 businessPackageReducer,
-    [ managerRole ]:                     managerRoleReducer,
-    [ profile ]:                         profileReducer,
-    [ addClientVehicle ]:                addClientVehicleReducer,
-    [ editClientVehicle ]:               editClientVehicleReducer,
-    [ editClient ]:                      editClientReducer,
-    [ addClientRequisite ]:              addClientRequisiteReducer,
-    [ editClientRequisite ]:             editClientRequisiteReducer,
+    [ order ]:                   orderReducer,
+    [ addClient ]:               addClientReducer,
+    [ universalFilters ]:        universalFiltersReducer,
+    [ cancelReason ]:            cancelReasonReducer,
+    [ toSuccess ]:               toSuccessReducer,
+    [ login ]:                   loginReducer,
+    [ orderTask ]:               orderTaskReducer,
+    [ addPackage ]:              addPackageReducer,
+    [ editPackage ]:             editPackageReducer,
+    [ addRole ]:                 addRoleReducer,
+    [ editRole ]:                editRoleReducer,
+    [ switchBusiness ]:          switchBusinessReducer,
+    [ employeeFormModule ]:      employeeFormReducer,
+    [ scheduleFormModule ]:      scheduleFormReducer,
+    [ breakScheduleFormModule ]: breakScheduleFormReducer,
+    [ settingSalary ]:           settingSalaryReducer,
+    [ addBusinessPackage ]:      addBusinessPackageReducer,
+    [ businessPackage ]:         businessPackageReducer,
+    [ managerRole ]:             managerRoleReducer,
+    [ profile ]:                 profileReducer,
+    [ addClientVehicle ]:        addClientVehicleReducer,
+    [ editClientVehicle ]:       editClientVehicleReducer,
+    [ editClient ]:              editClientReducer,
+    [ addClientRequisite ]:      addClientRequisiteReducer,
+    [ editClientRequisite ]:     editClientRequisiteReducer,
+    [ salaryReport ]:            salaryReportReducer,
 });

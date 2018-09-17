@@ -14,6 +14,7 @@ import { initEmployeeForm } from 'core/forms/employeeForm/duck';
 
 import { Catcher } from 'commons';
 import { EmployeesTable } from 'components';
+import { SalaryReportForm } from 'forms';
 
 // own
 import Styles from './styles.m.css';
@@ -58,6 +59,7 @@ export default class EmployeesContainer extends Component {
 
         return (
             <Catcher>
+                <SalaryReportForm />
                 <EmployeesTable
                     user={ user }
                     deleteEmployee={ deleteEmployee }
