@@ -32,7 +32,7 @@ export function columnsConfig(
     const getDateTitle = (key, title) => {
         const date = _.get(initialSettingSalaries, [ key, title ]);
 
-        return date ? moment(date, 'YYYY-MM-DD') : date;
+        return date ? moment(date) : date;
     };
 
     const period = {

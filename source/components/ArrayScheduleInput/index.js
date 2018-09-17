@@ -21,7 +21,7 @@ export default class ArrayScheduleInput extends Component {
         this.uuid = _.isArray(initialSchedule) ? initialSchedule.length : 0;
         const keys = _.isArray(initialSchedule) ? _.keys(initialSchedule) : [];
 
-        this.state = { keys };
+        this.state = { keys: [ ...keys, this.uuid++ ] };
     }
 
     componentDidUpdate(prevProps) {
@@ -34,7 +34,7 @@ export default class ArrayScheduleInput extends Component {
                 ? _.keys(initialSchedule)
                 : [];
 
-            this.setState({ keys });
+            this.setState({ keys: [ ...keys, this.uuid++ ] });
         }
     }
 
@@ -53,11 +53,6 @@ export default class ArrayScheduleInput extends Component {
             callback && callback(scheduleWithParsedHours);
         });
     }
-
-    remove = key => {
-        const keys = this.state.keys;
-        this.setState({ keys: keys.filter(value => value !== key) });
-    };
 
     add = () => {
         const keys = this.state.keys;
@@ -138,10 +133,10 @@ export default class ArrayScheduleInput extends Component {
         const actions = {
             title:  '',
             width:  '10%',
-            render: (text, { key }) => 
-                <>
+            render: (text, { key }) => (
+                <div>
                     <Icon
-                        type={ initialSchedule[ key ] ? 'edit' : 'save' }
+                        type={ 'save' }
                         className={ Styles.scheduleIcon }
                         onClick={ () => {
                             const callback = entity => {
@@ -156,21 +151,22 @@ export default class ArrayScheduleInput extends Component {
                             };
                             this.getScheduleData(key, callback);
                         } }
-                    />{' '}
-                    <Icon
-                        type='delete'
-                        className={ Styles.scheduleIcon }
-                        onClick={ () => {
-                            this.remove(key);
-                            const id = _.get(initialSchedule, [ key, 'id' ]);
-                            if (id) {
-                                this.props.deleteSchedule(id);
-                            }
-                            this.props.resetFields();
-                        } }
-                    />
-                </>
-            ,
+                    />{ ' ' }
+                    { initialSchedule[ key ] && (
+                        <Icon
+                            type='delete'
+                            className={ Styles.scheduleIcon }
+                            onClick={ () => {
+                                const id = _.get(initialSchedule, [ key, 'id' ]);
+                                if (id) {
+                                    this.props.deleteSchedule(id);
+                                }
+                                this.props.resetFields();
+                            } }
+                        />
+                    ) }
+                </div>
+            ),
         };
 
         const columns = [ ...days, ...workingHours, ...breakHours, actions ];
@@ -197,14 +193,6 @@ export default class ArrayScheduleInput extends Component {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                 />
-                <StyledButton
-                    type='secondary'
-                    onClick={ this.add }
-                    className={ Styles.newSchedule }
-                >
-                    <Icon type='plus' />
-                    <FormattedMessage id='array-schedule.add_schedule' />
-                </StyledButton>
             </Catcher>
         );
     }

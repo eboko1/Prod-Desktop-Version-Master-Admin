@@ -11,7 +11,7 @@ import {
     DecoratedInput,
     DecoratedSelect,
 } from 'forms/DecoratedFields';
-import { Catcher, StyledButton } from 'commons';
+import { Catcher } from 'commons';
 
 // own
 import Styles from './styles.m.css';
@@ -31,7 +31,7 @@ class ArrayBreakScheduleInput extends Component {
             ? _.keys(initialBreakSchedule)
             : [];
 
-        this.state = { keys };
+        this.state = { keys: [ ...keys, this.uuid++ ] };
     }
 
     componentDidUpdate(prevProps) {
@@ -51,7 +51,7 @@ class ArrayBreakScheduleInput extends Component {
                 ? _.keys(initialBreakSchedule)
                 : [];
 
-            this.setState({ keys });
+            this.setState({ keys: [ ...keys, this.uuid++ ] });
         }
     }
 
@@ -76,11 +76,6 @@ class ArrayBreakScheduleInput extends Component {
         });
     }
 
-    remove = key => {
-        const keys = this.state.keys;
-        this.setState({ keys: keys.filter(value => value !== key) });
-    };
-
     add = () => {
         const keys = this.state.keys;
         this.setState({ keys: [ ...keys, this.uuid++ ] });
@@ -94,7 +89,7 @@ class ArrayBreakScheduleInput extends Component {
         const getDateTitle = (key, title) => {
             const date = _.get(initialBreakSchedule, [ key, title ]);
 
-            return date ? moment(date, 'YYYY-MM-DD') : date;
+            return date ? moment(date) : date;
         };
 
         const keys = this.state.keys;
@@ -142,9 +137,7 @@ class ArrayBreakScheduleInput extends Component {
                 <DecoratedSelect
                     cnStyles={ Styles.scheduleType }
                     field={ `schedule[${key}][type]` }
-                    getPopupContainer={ trigger =>
-                        trigger.parentNode
-                    }
+                    getPopupContainer={ trigger => trigger.parentNode }
                     getFieldDecorator={ getFieldDecorator }
                     formItem
                     className={ Styles.breakScheduleFormItem }
@@ -170,10 +163,10 @@ class ArrayBreakScheduleInput extends Component {
         const actions = {
             title:  '',
             width:  '10%',
-            render: (text, { key }) => 
-                <>
+            render: (text, { key }) => (
+                <div>
                     <Icon
-                        type={ initialBreakSchedule[ key ] ? 'edit' : 'save' }
+                        type={ 'save' }
                         className={ Styles.scheduleBreakIcon }
                         onClick={ () => {
                             const callback = entity => {
@@ -189,21 +182,22 @@ class ArrayBreakScheduleInput extends Component {
                             };
                             this.getBreakScheduleData(key, callback);
                         } }
-                    />{' '}
-                    <Icon
-                        type='delete'
-                        className={ Styles.scheduleBreakIcon }
-                        onClick={ () => {
-                            this.remove(key);
-                            const id = _.get(initialBreakSchedule, [ key, 'id' ]);
-                            if (id) {
-                                this.props.deleteBreakSchedule(id);
-                            }
-                            this.props.resetFields();
-                        } }
-                    />
-                </>
-            ,
+                    />{ ' ' }
+                    { initialBreakSchedule[ key ] && (
+                        <Icon
+                            type='delete'
+                            className={ Styles.scheduleBreakIcon }
+                            onClick={ () => {
+                                const id = _.get(initialBreakSchedule, [ key, 'id' ]);
+                                if (id) {
+                                    this.props.deleteBreakSchedule(id);
+                                }
+                                this.props.resetFields();
+                            } }
+                        />
+                    ) }
+                </div>
+            ),
         };
 
         const columns = [ breakType, ...dates, comment, actions ];
@@ -230,14 +224,6 @@ class ArrayBreakScheduleInput extends Component {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
                 />
-                <StyledButton
-                    type='secondary'
-                    onClick={ this.add }
-                    className={ Styles.newScheduleBreak }
-                >
-                    <Icon type='plus' />
-                    <FormattedMessage id='array-break-schedule.add_break_schedule' />
-                </StyledButton>
             </Catcher>
         );
     }
