@@ -84,23 +84,24 @@ export default class EmployeesTable extends Component {
                 key:    'delete',
                 width:  'auto%',
                 render: (text, record) => {
-                    return (
-                        !isForbidden(
-                            this.props.user,
-                            permissions.CREATE_EDIT_DELETE_EMPLOYEES,
-                        ) && (
-                            <Icon
-                                className={ Styles.EmployeesTableIcon }
-                                onClick={ () => {
-                                    this.props.deleteEmployee(
-                                        record.id,
-                                        this.props.kind,
-                                    );
-                                } }
-                                type='delete'
-                            />
-                        )
-                    );
+                    return null;
+                    // return (
+                    //     !isForbidden(
+                    //         this.props.user,
+                    //         permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                    //     ) && (
+                    //         <Icon
+                    //             className={ Styles.EmployeesTableIcon }
+                    //             onClick={ () => {
+                    //                 this.props.deleteEmployee(
+                    //                     record.id,
+                    //                     this.props.kind,
+                    //                 );
+                    //             } }
+                    //             type='delete'
+                    //         />
+                    //     )
+                    // );
                 },
             },
         ];
