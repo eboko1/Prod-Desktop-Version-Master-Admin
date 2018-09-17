@@ -87,11 +87,10 @@ export default class SettingSalaryForm extends Component {
                         <Button
                             type='primary'
                             disabled={
-                                false
+                                !this.props.form.getFieldValue('filterRangeDate')
                             }
                             onClick={ () =>
-                                console.log('clicked')
-                                // fetchSalaryReport(entity.filterRangeDate.value)
+                                fetchSalaryReport(this.props.form.getFieldValue('filterRangeDate'))
                             }
                         >
                             <FormattedMessage id='setting-salary.calculate' />
