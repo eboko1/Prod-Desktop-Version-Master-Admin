@@ -61,7 +61,7 @@ export default class ArrayScheduleInput extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { initialSchedule } = this.props;
+        const { initialSchedule, forbiddenUpdate } = this.props;
         const { formatMessage } = this.props.intl;
 
         const getHourTitle = (key, title) => {
@@ -133,40 +133,41 @@ export default class ArrayScheduleInput extends Component {
         const actions = {
             title:  '',
             width:  '10%',
-            render: (text, { key }) => (
-                <div>
-                    <Icon
-                        type={ 'save' }
-                        className={ Styles.scheduleIcon }
-                        onClick={ () => {
-                            const callback = entity => {
-                                const initialEntity = initialSchedule[ key ];
-                                if (initialEntity) {
-                                    const { id } = initialEntity;
-                                    this.props.updateSchedule(id, entity);
-                                } else {
-                                    this.props.createSchedule(entity);
-                                }
-                                this.props.resetFields();
-                            };
-                            this.getScheduleData(key, callback);
-                        } }
-                    />{ ' ' }
-                    { initialSchedule[ key ] && (
+            render: (text, { key }) =>
+                !forbiddenUpdate && (
+                    <div>
                         <Icon
-                            type='delete'
+                            type={ 'save' }
                             className={ Styles.scheduleIcon }
                             onClick={ () => {
-                                const id = _.get(initialSchedule, [ key, 'id' ]);
-                                if (id) {
-                                    this.props.deleteSchedule(id);
-                                }
-                                this.props.resetFields();
+                                const callback = entity => {
+                                    const initialEntity = initialSchedule[ key ];
+                                    if (initialEntity) {
+                                        const { id } = initialEntity;
+                                        this.props.updateSchedule(id, entity);
+                                    } else {
+                                        this.props.createSchedule(entity);
+                                    }
+                                    this.props.resetFields();
+                                };
+                                this.getScheduleData(key, callback);
                             } }
-                        />
-                    ) }
-                </div>
-            ),
+                        />{ ' ' }
+                        { initialSchedule[ key ] && (
+                            <Icon
+                                type='delete'
+                                className={ Styles.scheduleIcon }
+                                onClick={ () => {
+                                    const id = _.get(initialSchedule, [ key, 'id' ]);
+                                    if (id) {
+                                        this.props.deleteSchedule(id);
+                                    }
+                                    this.props.resetFields();
+                                } }
+                            />
+                        ) }
+                    </div>
+                ),
         };
 
         const columns = [ ...days, ...workingHours, ...breakHours, actions ];

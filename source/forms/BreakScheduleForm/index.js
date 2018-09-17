@@ -28,11 +28,13 @@ export class BreakScheduleForm extends Component {
             createBreakSchedule,
             deleteBreakSchedule,
             resetFields,
+            forbiddenUpdate,
         } = this.props;
 
         return (
             <ArrayBreakScheduleInput
                 fields={ fields }
+                forbiddenUpdate={ forbiddenUpdate }
                 resetFields={ resetFields }
                 updateBreakSchedule={ updateBreakSchedule }
                 createBreakSchedule={ createBreakSchedule }

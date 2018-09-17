@@ -15,6 +15,8 @@ import {
     fetchEmployeeSchedule,
 } from 'core/employeeSchedule/duck';
 import { ScheduleForm, BreakScheduleForm } from 'forms';
+import { permissions, isForbidden } from 'utils';
+
 // own
 
 import Styles from './styles.m.css';
@@ -26,6 +28,7 @@ const TabPane = Tabs.TabPane;
 const mapStateToProps = state => ({
     initialSchedule:      state.employeeSchedule.schedule,
     initialBreakSchedule: state.employeeSchedule.nonWorkingDays,
+    user:                 state.auth,
 });
 
 const mapDispatchToProps = {
@@ -63,6 +66,7 @@ export class EmployeeScheduleForm extends Component {
             initialSchedule,
             initialBreakSchedule,
             employeeId,
+            user,
         } = this.props;
 
         const {
@@ -78,7 +82,10 @@ export class EmployeeScheduleForm extends Component {
         return (
             <div>
                 <Tabs defaultActiveKey='1'>
-                    <TabPane tab={ <FormattedMessage id={ 'working_days' } /> } key='1'>
+                    <TabPane
+                        tab={ <FormattedMessage id={ 'working_days' } /> }
+                        key='1'
+                    >
                         { initialSchedule && (
                             <ScheduleForm
                                 initialSchedule={ initialSchedule }
@@ -94,11 +101,17 @@ export class EmployeeScheduleForm extends Component {
                                     null,
                                     employeeId,
                                 ) }
-                                isForbidden={ false }
+                                forbiddenUpdate={ isForbidden(
+                                    user,
+                                    permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                                ) }
                             />
                         ) }
                     </TabPane>
-                    <TabPane tab={ <FormattedMessage id={ 'non_working_days' } /> } key='2'>
+                    <TabPane
+                        tab={ <FormattedMessage id={ 'non_working_days' } /> }
+                        key='2'
+                    >
                         { initialBreakSchedule && (
                             <BreakScheduleForm
                                 initialBreakSchedule={ initialBreakSchedule }
@@ -114,7 +127,10 @@ export class EmployeeScheduleForm extends Component {
                                     null,
                                     employeeId,
                                 ) }
-                                isForbidden={ false }
+                                forbiddenUpdate={ isForbidden(
+                                    user,
+                                    permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                                ) }
                             />
                         ) }
                     </TabPane>

@@ -83,7 +83,7 @@ class ArrayBreakScheduleInput extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { initialBreakSchedule } = this.props;
+        const { initialBreakSchedule, forbiddenUpdate } = this.props;
         const { formatMessage } = this.props.intl;
 
         const getDateTitle = (key, title) => {
@@ -163,41 +163,46 @@ class ArrayBreakScheduleInput extends Component {
         const actions = {
             title:  '',
             width:  '10%',
-            render: (text, { key }) => (
-                <div>
-                    <Icon
-                        type={ 'save' }
-                        className={ Styles.scheduleBreakIcon }
-                        onClick={ () => {
-                            const callback = entity => {
-                                const initialEntity = initialBreakSchedule[ key ];
-
-                                if (initialEntity) {
-                                    const { id } = initialEntity;
-                                    this.props.updateBreakSchedule(id, entity);
-                                } else {
-                                    this.props.createBreakSchedule(entity);
-                                }
-                                this.props.resetFields();
-                            };
-                            this.getBreakScheduleData(key, callback);
-                        } }
-                    />{ ' ' }
-                    { initialBreakSchedule[ key ] && (
+            render: (text, { key }) =>
+                !forbiddenUpdate && (
+                    <div>
                         <Icon
-                            type='delete'
+                            type={ 'save' }
                             className={ Styles.scheduleBreakIcon }
                             onClick={ () => {
-                                const id = _.get(initialBreakSchedule, [ key, 'id' ]);
-                                if (id) {
-                                    this.props.deleteBreakSchedule(id);
-                                }
-                                this.props.resetFields();
+                                const callback = entity => {
+                                    const initialEntity =
+                                        initialBreakSchedule[ key ];
+
+                                    if (initialEntity) {
+                                        const { id } = initialEntity;
+                                        this.props.updateBreakSchedule(
+                                            id,
+                                            entity,
+                                        );
+                                    } else {
+                                        this.props.createBreakSchedule(entity);
+                                    }
+                                    this.props.resetFields();
+                                };
+                                this.getBreakScheduleData(key, callback);
                             } }
-                        />
-                    ) }
-                </div>
-            ),
+                        />{ ' ' }
+                        { initialBreakSchedule[ key ] && (
+                            <Icon
+                                type='delete'
+                                className={ Styles.scheduleBreakIcon }
+                                onClick={ () => {
+                                    const id = _.get(initialBreakSchedule, [ key, 'id' ]);
+                                    if (id) {
+                                        this.props.deleteBreakSchedule(id);
+                                    }
+                                    this.props.resetFields();
+                                } }
+                            />
+                        ) }
+                    </div>
+                ),
         };
 
         const columns = [ breakType, ...dates, comment, actions ];

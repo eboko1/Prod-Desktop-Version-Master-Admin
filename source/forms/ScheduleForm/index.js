@@ -20,12 +20,13 @@ import { withReduxForm2 } from 'utils';
 export class ScheduleForm extends Component {
 
     render() {
-        const { initialSchedule, form, intl, fields } = this.props;
+        const { initialSchedule, form, intl, fields, forbiddenUpdate } = this.props;
         const { updateSchedule, createSchedule, deleteSchedule, resetFields } = this.props;
 
         return (
             <ArrayScheduleInput
                 fields={ fields }
+                forbiddenUpdate={ forbiddenUpdate }
                 resetFields={ resetFields }
                 updateSchedule={ updateSchedule }
                 createSchedule={ createSchedule }
