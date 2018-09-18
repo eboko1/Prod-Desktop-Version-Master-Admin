@@ -137,7 +137,6 @@ class ArrayBreakScheduleInput extends Component {
                 <DecoratedSelect
                     cnStyles={ Styles.scheduleType }
                     field={ `schedule[${key}][type]` }
-                    getPopupContainer={ trigger => trigger.parentNode }
                     getFieldDecorator={ getFieldDecorator }
                     formItem
                     className={ Styles.breakScheduleFormItem }

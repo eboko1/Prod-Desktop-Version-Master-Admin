@@ -108,7 +108,6 @@ export class EmployeeScheduleForm extends Component {
                                 permissions.CREATE_EDIT_DELETE_EMPLOYEES,
                             ) }
                         />
-                        )
                     </TabPane>
                     <TabPane
                         tab={ <FormattedMessage id={ 'non_working_days' } /> }
