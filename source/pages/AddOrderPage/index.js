@@ -86,7 +86,7 @@ class AddOrderPage extends Component {
             history,
         } = this.props;
         const requiredFields =
-            requiredFieldsOnStatuses[ this.props.createStatus ];
+            requiredFieldsOnStatuses(form.getFieldsValue())[ this.props.createStatus ];
 
         form.validateFields(requiredFields, err => {
             if (!err) {

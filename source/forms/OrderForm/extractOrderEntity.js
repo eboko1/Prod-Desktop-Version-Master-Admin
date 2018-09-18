@@ -151,20 +151,29 @@ export function convertFieldsValuesToDbEntity(
     );
 }
 
-export const requiredFieldsOnStatuses = {
-    invite: [ 'clientVehicle', 'manager', 'clientPhone' ],
-    call:   [ 'clientPhone', 'manager' ],
+export const requiredFieldsOnStatuses = values => {
+    const statuses = {
+        invite: [ 'clientVehicle', 'manager', 'clientPhone' ],
+        call:   [ 'clientPhone', 'manager' ],
 
-    not_complete: [ 'manager' ],
-    required:     [ 'manager' ],
+        not_complete: [ 'manager' ],
+        required:     [ 'manager' ],
 
-    reserve: [ 'beginDate', 'beginTime', 'manager' ],
-    approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone' ],
+        reserve: [ 'beginDate', 'beginTime', 'manager' ],
+        approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone' ],
 
-    redundant: [],
-    cancel:    [],
+        redundant: [],
+        cancel:    [],
 
-    progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+        progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
 
-    success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+        success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+    };
+
+    if (values.beginDate || values.beginTime) {
+        return _.mapValues(statuses, fields =>
+            _.uniq([ ...fields, 'beginDate', 'beginTime' ]));
+    }
+
+    return statuses;
 };
