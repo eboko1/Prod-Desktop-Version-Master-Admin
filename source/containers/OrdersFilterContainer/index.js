@@ -62,6 +62,13 @@ export default class OrdersFilterContainer extends Component {
             setOrdersSearchFilter(value);
             fetchOrders({ page: 1, ...filter });
         }, 1000);
+
+        this.handleReviewSlider = _.debounce(value => {
+            const { setOrdersNPSFilter, fetchOrders, filter } = this.props;
+
+            setOrdersNPSFilter({ minNps: value[ 0 ], maxNps: value[ 1 ] });
+            fetchOrders({ page: 1, ...filter });
+        }, 1000);
     }
 
     componentDidMount() {
@@ -93,13 +100,6 @@ export default class OrdersFilterContainer extends Component {
             }
         }
     }
-
-    handleReviewSlider = value => {
-        const { setOrdersNPSFilter, fetchOrders, filter } = this.props;
-
-        setOrdersNPSFilter({ minNps: value[ 0 ], maxNps: value[ 1 ] });
-        fetchOrders({ page: 1, ...filter });
-    };
 
     handleCancelReasonSelect = value => {
         const { setOrdersCancelReasonFilter, fetchOrders, filter } = this.props;
