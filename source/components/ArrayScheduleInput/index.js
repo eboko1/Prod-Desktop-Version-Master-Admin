@@ -74,7 +74,7 @@ export default class ArrayScheduleInput extends Component {
 
         const days = [
             ...[ 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday' ].map(day => ({
-                title:  <FormattedMessage id={ day } />,
+                title:  <FormattedMessage id={ day.substring(0, 3) } />,
                 width:  '7%',
                 render: (text, record) => (
                     <Col span={ 12 }>
