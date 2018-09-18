@@ -1,3 +1,32 @@
-.employeeTableIcon:hover {
-    color: #b17ec2;
+.settingSalaryTable :global(.ant-table-thead > tr > th, .ant-table-tbody > tr > td) {
+    /* padding: 4px; */
+    word-break: break-word;
+}
+
+.settingSalaryTable :global(.ant-select) {
+    width: 100%;
+}
+
+.settingSalaryTable td:last-child {
+    text-align: center;
+}
+
+.saveSalary {
+    font-size: 26px;
+    color: var(--secondary);
+    cursor: pointer;
+}
+
+.newSalary {
+    display: flex;
+    align-items: center;
+    margin: 24px auto;
+}
+
+.newSalaryRow {
+    background-color: rgba(11, 127, 0, 0.28);
+}
+
+.editedSalaryRow {
+    background-color: rgba(255, 45, 45, 0.28);
 }

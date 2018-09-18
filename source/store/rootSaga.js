@@ -12,6 +12,7 @@ import { saga as ordersSaga } from 'core/orders/saga';
 import { saga as orderSaga } from 'core/order/saga';
 import { saga as searchSaga } from 'core/search/saga';
 import { saga as clientsSaga } from 'core/clients/saga';
+import { saga as employeeScheduleSaga } from 'core/employeeSchedule/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
@@ -28,12 +29,12 @@ import { saga as clientRequisitesSaga } from 'core/clientRequisite/saga';
 import { saga as clientOrdersSaga } from 'core/clientOrders/saga';
 import { saga as switchBusinessSaga } from 'core/forms/switchBusinessForm/saga';
 import { saga as addClientVehicleSaga } from 'core/forms/addClientVehicleForm/saga';
-import { saga as employeeSaga } from 'core/employee/saga';
+import { saga as employeesSaga } from 'core/employees/saga';
 import { saga as employeeFormSaga } from 'core/forms/employeeForm/saga';
-import { saga as employeeScheduleFormSaga } from 'core/forms/employeeScheduleForm/saga';
-import { saga as employeeBreakScheduleFormSaga } from 'core/forms/employeeBreakScheduleForm/saga';
+import { saga as scheduleFormSaga } from 'core/forms/scheduleForm/saga';
 import { saga as profileFormSaga } from 'core/forms/profileForm/saga';
 import { saga as editClientFormSaga } from 'core/forms/editClientForm/saga';
+import { saga as settingSalaryFormSaga } from 'core/forms/settingSalaryForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -54,11 +55,10 @@ export default function* rootSaga() {
         packagesSaga(),
         rolesSaga(),
         switchBusinessSaga(),
-        employeeSaga(),
+        employeesSaga(),
         employeeFormSaga(),
         businessPackageSaga(),
-        employeeScheduleFormSaga(),
-        employeeBreakScheduleFormSaga(),
+        scheduleFormSaga(),
         searchSaga(),
         managerRoleSaga(),
         profileFormSaga(),
@@ -67,6 +67,8 @@ export default function* rootSaga() {
         editClientFormSaga(),
         clientRequisitesSaga(),
         clientOrdersSaga(),
+        employeeScheduleSaga(),
+        settingSalaryFormSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

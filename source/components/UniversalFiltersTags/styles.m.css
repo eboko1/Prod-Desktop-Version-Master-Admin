@@ -1,3 +1,23 @@
+.universalFilters {
+    margin-left: 16px;
+    padding-bottom: 2px;
+    display: flex;
+    overflow: scroll;
+}
+
+.universalFilters::-webkit-scrollbar {
+    width: 5px;
+    height: 1px;
+}
+
+.universalFilters::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+}
+
+/* .universalFilters :global(.ant-tag) {
+    margin-bottom: 10px;
+} */
+
 .tagTooltip:global(.ant-tooltip.ant-tooltip-placement-top) {
     z-index: 1200 !important;
 }

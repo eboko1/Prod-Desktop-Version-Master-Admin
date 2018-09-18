@@ -33,7 +33,7 @@ const RadioGroup = Radio.Group;
 const mapStateToProps = state => ({
     stats:         state.orders.stats,
     filter:        state.orders.filter,
-    orderComments: state.forms.universalFiltersForm.orderComments,
+    orderComments: state.forms.universalFiltersForm.filters.orderComments,
     currentStatus: _.get(state, 'router.location.state.status'),
 });
 
@@ -60,6 +60,13 @@ export default class OrdersFilterContainer extends Component {
         this.handleOrdersSearch = _.debounce(value => {
             const { setOrdersSearchFilter, fetchOrders, filter } = this.props;
             setOrdersSearchFilter(value);
+            fetchOrders({ page: 1, ...filter });
+        }, 1000);
+
+        this.handleReviewSlider = _.debounce(value => {
+            const { setOrdersNPSFilter, fetchOrders, filter } = this.props;
+
+            setOrdersNPSFilter({ minNps: value[ 0 ], maxNps: value[ 1 ] });
             fetchOrders({ page: 1, ...filter });
         }, 1000);
     }
@@ -93,13 +100,6 @@ export default class OrdersFilterContainer extends Component {
             }
         }
     }
-
-    handleReviewSlider = value => {
-        const { setOrdersNPSFilter, fetchOrders, filter } = this.props;
-
-        setOrdersNPSFilter({ minNps: value[ 0 ], maxNps: value[ 1 ] });
-        fetchOrders({ page: 1, ...filter });
-    };
 
     handleCancelReasonSelect = value => {
         const { setOrdersCancelReasonFilter, fetchOrders, filter } = this.props;

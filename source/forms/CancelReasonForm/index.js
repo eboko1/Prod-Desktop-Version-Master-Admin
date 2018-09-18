@@ -73,7 +73,9 @@ export class CancelReasonForm extends Component {
                 { orderComments && (
                     <DecoratedSelect
                         formItem
-                        label={ <FormattedMessage id='cancel_reason.select_cancel_reason' /> }
+                        label={
+                            <FormattedMessage id='cancel_reason.select_cancel_reason' />
+                        }
                         field='cancelReason'
                         getFieldDecorator={ getFieldDecorator }
                         getPopupContainer={ trigger => trigger.parentNode }
@@ -95,7 +97,9 @@ export class CancelReasonForm extends Component {
                 <DecoratedTextArea
                     field='cancelComment'
                     getFieldDecorator={ getFieldDecorator }
-                    placeholder={ formatMessage({ id: 'cancel_reason.other_cancel_reason'}) }
+                    placeholder={ formatMessage({
+                        id: 'cancel_reason.other_cancel_reason',
+                    }) }
                     rows={ 4 }
                     autosize={ { minRows: 2, maxRows: 6 } }
                 />

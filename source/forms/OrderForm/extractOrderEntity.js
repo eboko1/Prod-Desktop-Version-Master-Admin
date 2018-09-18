@@ -90,27 +90,31 @@ export function convertFieldsValuesToDbEntity(
     const orderDuration = _.get(orderFields, 'duration');
 
     const order = {
-        clientId:            _.get(orderFields, 'selectedClient.clientId'),
-        clientVehicleId:     _.get(orderFields, 'clientVehicle'),
-        businessRequisiteId: _.get(orderFields, 'requisite'),
-        managerId:           _.get(orderFields, 'manager'),
-        duration:            orderDuration ? Math.max(orderDuration, 0.5) : orderDuration,
-        clientPhone:         _.get(orderFields, 'clientPhone'),
-        paymentMethod:       _.get(orderFields, 'paymentMethod'),
-        clientRequisiteId:   _.get(orderFields, 'clientRequisite'),
+        clientId:                    _.get(orderFields, 'selectedClient.clientId'),
+        clientVehicleId:             _.get(orderFields, 'clientVehicle'),
+        businessRequisiteId:         _.get(orderFields, 'requisite'),
+        managerId:                   _.get(orderFields, 'manager'),
+        duration:                    orderDuration ? Math.max(orderDuration, 0.5) : orderDuration,
+        clientPhone:                 _.get(orderFields, 'clientPhone'),
+        paymentMethod:               _.get(orderFields, 'paymentMethod'),
+        clientRequisiteId:           _.get(orderFields, 'clientRequisite'),
         status,
         beginDatetime,
         services,
         details,
-        employeeId:          _.get(orderFields, 'employee'),
-        stationNum:          _.get(orderFields, 'station'),
-        detailsDiscount:     _.get(orderFields, 'detailsDiscount'),
-        servicesDiscount:    _.get(orderFields, 'servicesDiscount'),
-        odometerValue:       _.get(orderFields, 'odometerValue'),
-        recommendation:      _.get(orderFields, 'recommendation'),
-        vehicleCondition:    _.get(orderFields, 'vehicleCondition'),
-        businessComment:     _.get(orderFields, 'businessComment'),
-        comment:             _.get(orderFields, 'comment'),
+        appurtenanciesResponsibleId: _.get(
+            orderFields,
+            'appurtenanciesResponsible',
+        ),
+        employeeId:       _.get(orderFields, 'employee'),
+        stationNum:       _.get(orderFields, 'station'),
+        detailsDiscount:  _.get(orderFields, 'detailsDiscount'),
+        servicesDiscount: _.get(orderFields, 'servicesDiscount'),
+        odometerValue:    _.get(orderFields, 'odometerValue'),
+        recommendation:   _.get(orderFields, 'recommendation'),
+        vehicleCondition: _.get(orderFields, 'vehicleCondition'),
+        businessComment:  _.get(orderFields, 'businessComment'),
+        comment:          _.get(orderFields, 'comment'),
     };
 
     const orderClearedFields = _.mapValues(
@@ -147,20 +151,29 @@ export function convertFieldsValuesToDbEntity(
     );
 }
 
-export const requiredFieldsOnStatuses = {
-    invite: [ 'clientVehicle', 'manager', 'clientPhone' ],
-    call:   [ 'clientPhone', 'manager' ],
+export const requiredFieldsOnStatuses = values => {
+    const statuses = {
+        invite: [ 'clientVehicle', 'manager', 'clientPhone' ],
+        call:   [ 'clientPhone', 'manager' ],
 
-    not_complete: [ 'manager' ],
-    required:     [ 'manager' ],
+        not_complete: [ 'manager' ],
+        required:     [ 'manager' ],
 
-    reserve: [ 'beginDate', 'beginTime', 'manager' ],
-    approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone' ],
+        reserve: [ 'beginDate', 'beginTime', 'manager' ],
+        approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone' ],
 
-    redundant: [],
-    cancel:    [],
+        redundant: [],
+        cancel:    [],
 
-    progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+        progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
 
-    success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+        success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+    };
+
+    if (values.beginDate || values.beginTime) {
+        return _.mapValues(statuses, fields =>
+            _.uniq([ ...fields, 'beginDate', 'beginTime' ]));
+    }
+
+    return statuses;
 };

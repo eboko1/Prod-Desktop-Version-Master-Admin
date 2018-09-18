@@ -246,9 +246,12 @@ export class AbstractClientForm extends Component {
                         <ArrayInput
                             optional
                             initialValue={
-                                _.get(client, 'emails') &&
-                                _.isArray(client, 'emails')
-                                    ? _.get(client, 'emails').filter(Boolean)
+                                _.get(client, 'emails')
+                                    ? _.isArray(client.emails)
+                                        ? _.get(client, 'emails').filter(
+                                            Boolean,
+                                        )
+                                        : void 0
                                     : void 0
                             }
                             rules={ [

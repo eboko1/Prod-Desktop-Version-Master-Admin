@@ -6,7 +6,9 @@
         "add-business-package-form.expiration_datetime_error": "Expiration date is required",
         "add-business-package-form.business": "Business",
         "add-business-package-form.package": "Package",
-        "add-business-package-form.create": "Create"
+        "add-business-package-form.create": "Create",
+        "add-business-package-form.amount": "Amount",
+        "add-business-package-form.comment": "Comment"
     },
     "ru": {
         "add-business-package-form.activation_datetime": "Дата начала",
@@ -15,7 +17,9 @@
         "add-business-package-form.expiration_datetime_error": "Обязательное поле",
         "add-business-package-form.business": "Бизнес",
         "add-business-package-form.package": "Пакет",
-        "add-business-package-form.create": "Создать"
+        "add-business-package-form.create": "Создать",
+        "add-business-package-form.amount": "Сумма",
+        "add-business-package-form.comment": "Комментарий"
     },
     "uk": {
         "add-business-package-form.activation_datetime": "Дата початку",
@@ -24,6 +28,8 @@
         "add-business-package-form.expiration_datetime_error": "Обов'язкове поле",
         "add-business-package-form.business": "Бізнес",
         "add-business-package-form.package": "Пакет",
-        "add-business-package-form.create": "Створити"
+        "add-business-package-form.create": "Створити",
+        "add-business-package-form.amount": "Сума",
+        "add-business-package-form.comment": "Коментар"
     }
 }

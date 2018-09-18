@@ -5,7 +5,9 @@
 }
 
 .countsContainer {
+    display: flex;
     margin-bottom: 2em;
+    justify-content: space-around;
 }
 
 .countTitle {

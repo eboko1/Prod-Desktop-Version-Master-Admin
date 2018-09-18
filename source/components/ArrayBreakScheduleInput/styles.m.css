@@ -1,37 +1,26 @@
-.CheckboxBlock {
-    display: flex;
-    flex-wrap: wrap;
+.scheduleBreakIcon {
+    font-size: 20px;
+    cursor: pointer;
 }
-.CheckboxBlock .ant-input {
-    display: none;
-}
-.CheckboxBlock label {
-    display: flex;
-    flex-direction: column;
 
-    align-items: center;
-}
-.Hours {
+.newScheduleBreak {
     display: flex;
-    justify-content: space-around;
     align-items: center;
+    margin: 24px auto;
 }
-.InputBlock {
-    display: none;
+
+.scheduleType {
+    width: 100%;
 }
-.InputNote {
-    width: 40%;
+
+.breakScheduleFormItem {
+    margin-bottom: 0;
 }
-.MainBlock {
-    padding: 24px;
-    background: #fbfbfb;
-    border: 1px solid #d9d9d9;
-    border-radius: 6px;
-    margin-bottom: 10px;
+
+.newBreakScheduleRow {
+    background-color: rgba(11, 127, 0, 0.28);
 }
-.AddButton {
-    margin-right: 10px;
-}
-.Select {
-    min-width: 150px;
+
+.editedBreakScheduleRow {
+    background-color: rgba(255, 45, 45, 0.28);
 }

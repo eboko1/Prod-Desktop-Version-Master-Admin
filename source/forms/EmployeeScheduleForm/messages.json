@@ -7,7 +7,9 @@
         "fri": "Fri",
         "sat": "Sat",
         "sun": "Sun",
-        "add_non_working_day": "Add non working day"
+        "add_non_working_day": "Add non working day",
+        "working_days": "Work Schedule",
+        "non_working_days": "Day-offs Schedule"
     },
     "ru": {
         "mon": "Пн",
@@ -17,7 +19,9 @@
         "fri": "Пт",
         "sat": "Сб",
         "sun": "Вс",
-        "add_non_working_day": "Добавить нерабочий день"
+        "add_non_working_day": "Добавить нерабочий день",
+        "working_days": "Расписание",
+        "non_working_days": "Выходные"
     },
     "uk": {
         "mon": "Пн",
@@ -27,6 +31,8 @@
         "fri": "Пт",
         "sat": "Сб",
         "sun": "Вс",
-        "add_non_working_day": "Добавити неробочий день"
+        "add_non_working_day": "Добавити неробочий день",
+        "working_days": "Розклад",
+        "non_working_days": "Вихідні"
     }
 }

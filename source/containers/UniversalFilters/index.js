@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Button } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -11,11 +10,10 @@ import {
 } from 'core/forms/universalFiltersForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Catcher } from 'commons';
+import { Catcher, StyledButton } from 'commons';
 import { UniversalFiltersModal } from 'modals';
 import { UniversalFiltersTags } from 'components';
-import { permissions, isForbidden } from 'utils';
-import { withReduxForm2 } from 'utils';
+import { permissions, isForbidden, withReduxForm2 } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -24,7 +22,24 @@ const universalLinkedFields = Object.freeze({
     notVisitRange: [ 'notVisit', 'notVisitDays' ],
 });
 
-const tagFields = Object.freeze([ 'createDate', 'beginDate', 'ordersGreater', 'ordersLower', 'managers', 'employee', 'service', 'models', 'make', 'creationReasons', 'cancelReasons', 'year', 'odometerLower', 'odometerGreater' ]);
+/* eslint-disable array-element-newline */
+const tagFields = Object.freeze([
+    'createDate',
+    'beginDate',
+    'ordersGreater',
+    'ordersLower',
+    'managers',
+    'employee',
+    'service',
+    'models',
+    'make',
+    'creationReasons',
+    'cancelReasons',
+    'year',
+    'odometerLower',
+    'odometerGreater',
+]);
+/* eslint-enable array-element-newline */
 
 @injectIntl
 @withReduxForm2({
@@ -44,7 +59,7 @@ export default class UniversalFilters extends Component {
     // Contains: modal, show button, tags
     // Modal contains: form
 
-    showUniversalFiltersModal = () => {
+    _showUniversalFiltersModal = () => {
         this.props.setModal(MODALS.UNIVERSAL_FILTERS);
         this.props.fetchUniversalFiltersForm();
     };
@@ -71,13 +86,13 @@ export default class UniversalFilters extends Component {
         return (
             <Catcher>
                 <section className={ Styles.filters }>
-                    <Button
-                        type='primary'
+                    <StyledButton
+                        type='secondary'
                         disabled={ areFiltersDisabled }
-                        onClick={ () => this.showUniversalFiltersModal() }
+                        onClick={ this._showUniversalFiltersModal }
                     >
                         <FormattedMessage id='universal-filters-container.filter' />
-                    </Button>
+                    </StyledButton>
                     <UniversalFiltersTags
                         universalLinkedFields={ universalLinkedFields }
                         tagFields={ tagFields }

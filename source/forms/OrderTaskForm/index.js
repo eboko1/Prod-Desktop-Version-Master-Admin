@@ -2,7 +2,8 @@
 import React, { Component } from 'react';
 import { Form, Select, Icon, Tooltip } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { v4 } from 'uuid';
+import _ from 'lodash';
+import moment from 'moment';
 
 //proj
 import { onChangeOrderTasksForm } from 'core/forms/orderTaskForm/duck';
@@ -61,8 +62,6 @@ export class OrderTaskForm extends Component {
                         </div>
                         <div>
                             <FormattedMessage id='manager_prepares_cost_estimate' />
-
-
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
@@ -71,8 +70,6 @@ export class OrderTaskForm extends Component {
                         </div>
                         <div>
                             <FormattedMessage id='communication_with_the_client' />
-      
-                            
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
@@ -81,12 +78,12 @@ export class OrderTaskForm extends Component {
                         </div>
                         <div>
                             <FormattedMessage id='all_agreed' />
-
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='acceptance' />:</div>
+                            <FormattedMessage id='acceptance' />:
+                        </div>
                         <div>
                             <FormattedMessage id='manager_accepts_cars' />
                         </div>
@@ -97,7 +94,6 @@ export class OrderTaskForm extends Component {
                         </div>
                         <div>
                             <FormattedMessage id='passes_car_diagnostics' />
-
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
@@ -106,14 +102,11 @@ export class OrderTaskForm extends Component {
                         </div>
                         <div>
                             <FormattedMessage id='auto_waiting_for_repair' />
-
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='waiting_for_spare_parts' />
-
-                            :
+                            <FormattedMessage id='waiting_for_spare_parts' />:
                         </div>
                         <div>
                             <FormattedMessage id='auto_expects_spare_parts' />
@@ -121,31 +114,32 @@ export class OrderTaskForm extends Component {
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='repairs' />:</div>
+                            <FormattedMessage id='order_task.repairs' />:
+                        </div>
                         <div>
                             <FormattedMessage id='there_is_a_repair' />
-
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='extradition' />:</div>
+                            <FormattedMessage id='extradition' />:
+                        </div>
                         <div>
                             <FormattedMessage id='repair_is_completed' />
-                            
-                            
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='closed' />:</div>
+                            <FormattedMessage id='closed' />:
+                        </div>
                         <div>
                             <FormattedMessage id='repair_is_closed' />
                         </div>
                     </div>
                     <div className={ Styles.infoDirectory }>
                         <div className={ Styles.infoDirectoryName }>
-                            <FormattedMessage id='other' />:</div>
+                            <FormattedMessage id='other' />:
+                        </div>
                         <div>
                             <FormattedMessage id='custom_tasks' />
                         </div>
@@ -161,7 +155,7 @@ export class OrderTaskForm extends Component {
                     this.setState({ toogleDirectory: !toogleDirectory })
                 }
             >
-                Открыть справочник по статусам
+                <FormattedMessage id='order-task-modal.open_status_helper' />
             </span>
         );
 
@@ -184,6 +178,7 @@ export class OrderTaskForm extends Component {
                 <div className={ Styles.statusPanel }>
                     <DecoratedSelect
                         field={ 'status' }
+                        initialValue={ _.get(initialOrderTask, 'status') }
                         showSearch
                         formItem
                         hasFeedback
@@ -203,10 +198,10 @@ export class OrderTaskForm extends Component {
                         ] }
                         getPopupContainer={ trigger => trigger.parentNode }
                     >
-                        { progressStatusOptions.map(({ id, value }) => {
+                        { progressStatusOptions.map(({ id }) => {
                             return (
-                                <Option value={ id } key={ v4() }>
-                                    { value }
+                                <Option value={ id } key={ String(id) }>
+                                    <FormattedMessage id={ id } />
                                 </Option>
                             );
                         }) }
@@ -229,6 +224,7 @@ export class OrderTaskForm extends Component {
                         <DecoratedSelect
                             field={ 'priority' }
                             showSearch
+                            initialValue={ _.get(initialOrderTask, 'priority') }
                             formItem
                             hasFeedback
                             label={ <FormattedMessage id='priority' /> }
@@ -239,10 +235,10 @@ export class OrderTaskForm extends Component {
                             }
                             getPopupContainer={ trigger => trigger.parentNode }
                         >
-                            { priorityOptions.map(({ id, value }) => {
+                            { priorityOptions.map(({ id }) => {
                                 return (
-                                    <Option value={ id } key={ v4() }>
-                                        { value }
+                                    <Option value={ id } key={ String(id) }>
+                                        <FormattedMessage id={ id } />
                                     </Option>
                                 );
                             }) }
@@ -252,6 +248,7 @@ export class OrderTaskForm extends Component {
                             showSearch
                             formItem
                             hasFeedback
+                            initialValue={ _.get(initialOrderTask, 'stationNum') }
                             className={ Styles.selectMargin }
                             label={ <FormattedMessage id='stationName' /> }
                             getFieldDecorator={ getFieldDecorator }
@@ -263,7 +260,7 @@ export class OrderTaskForm extends Component {
                         >
                             { stations.map(({ name, num }) => {
                                 return (
-                                    <Option value={ num } key={ v4() }>
+                                    <Option value={ num } key={ String(num) }>
                                         { name }
                                     </Option>
                                 );
@@ -271,6 +268,10 @@ export class OrderTaskForm extends Component {
                         </DecoratedSelect>
                         <DecoratedSelect
                             field={ 'responsible' }
+                            initialValue={ _.get(
+                                initialOrderTask,
+                                'responsibleId',
+                            ) }
                             showSearch
                             formItem
                             hasFeedback
@@ -294,7 +295,7 @@ export class OrderTaskForm extends Component {
                             { managers.map(
                                 ({ managerName, managerSurname, id }) => {
                                     return (
-                                        <Option value={ id } key={ v4() }>
+                                        <Option value={ id } key={ String(id) }>
                                             { `${managerName} ${managerSurname}` }
                                         </Option>
                                     );
@@ -304,6 +305,16 @@ export class OrderTaskForm extends Component {
                         <div className={ Styles.dateTimePickerBlock }>
                             <DecoratedDatePicker
                                 field='deadlineDate'
+                                initialValue={
+                                    _.get(initialOrderTask, 'deadlineDate')
+                                        ? moment(
+                                            _.get(
+                                                initialOrderTask,
+                                                'deadlineDate',
+                                            ),
+                                        )
+                                        : void 0
+                                }
                                 label={ <FormattedMessage id='deadlineDate' /> }
                                 formItem
                                 formatMessage={ formatMessage }
@@ -322,6 +333,16 @@ export class OrderTaskForm extends Component {
                                 allowEmpty={ false }
                                 minuteStep={ 30 }
                                 field='deadlineTime'
+                                initialValue={
+                                    _.get(initialOrderTask, 'deadlineDate')
+                                        ? moment(
+                                            _.get(
+                                                initialOrderTask,
+                                                'deadlineDate',
+                                            ),
+                                        )
+                                        : void 0
+                                }
                                 label={ <FormattedMessage id='deadlineTime' /> }
                                 formItem
                                 formatMessage={ formatMessage }
@@ -340,6 +361,7 @@ export class OrderTaskForm extends Component {
                         </div>
                         <DecoratedTextArea
                             field='comment'
+                            initialValue={ _.get(initialOrderTask, 'comment') }
                             label={ <FormattedMessage id='comment' /> }
                             placeholder={ formatMessage({
                                 id: 'order_task_modal.comment_placeholder',

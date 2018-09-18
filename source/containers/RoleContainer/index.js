@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Button, Table, Icon, Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
+import { v4 } from 'uuid';
 
 // proj
 import {
@@ -17,7 +18,7 @@ import {
 
 import { Catcher } from 'commons';
 import { RoleForm, AddRoleForm } from 'forms';
-
+import { permissions } from 'utils';
 // own
 import Styles from './styles.m.css';
 
@@ -59,7 +60,7 @@ export default class RoleContainer extends Component {
                 dataIndex: 'grants',
                 width:     '30%',
                 render:    field =>
-                    field
+                    _.intersection(field, _.values(permissions))
                         .map(grant =>
                             this.props.intl.formatMessage({
                                 id: `roles.${grant.toLowerCase()}`,
@@ -154,7 +155,7 @@ export default class RoleContainer extends Component {
                             <FormattedMessage id='role-container.create_title' />
                         )
                     }
-                    visible={ editRoleId || createRoleForm }
+                    visible={ Boolean(editRoleId || createRoleForm) }
                     onCancel={ () => {
                         this.props.hideForms();
                     } }

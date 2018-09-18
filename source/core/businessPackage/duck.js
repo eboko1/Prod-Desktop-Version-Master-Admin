@@ -173,21 +173,21 @@ export const setShowUpdateBusinessPackageForm = businessPackage => ({
 export const createBusinessPackage = (
     businessId,
     packageId,
-    datetimeRange,
+    fields,
 ) => ({
     type:    CREATE_BUSINESS_PACKAGE,
     payload: {
         businessId,
         packageId,
-        datetimeRange,
+        fields,
     },
 });
 
-export const updateBusinessPackage = (businessPackageId, datetimeRange) => ({
+export const updateBusinessPackage = (businessPackageId, entity) => ({
     type:    UPDATE_BUSINESS_PACKAGE,
     payload: {
         businessPackageId,
-        datetimeRange,
+        entity,
     },
 });
 

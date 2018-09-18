@@ -8,7 +8,12 @@ const Option = Select.Option;
 // proj
 import { onChangeBusinessPackageForm } from 'core/forms/addBusinessPackageForm/duck';
 
-import { DecoratedDatePicker, DecoratedSelect } from 'forms/DecoratedFields';
+import {
+    DecoratedDatePicker,
+    DecoratedSelect,
+    DecoratedTextArea,
+    DecoratedInputNumber,
+} from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 
 // own
@@ -99,6 +104,33 @@ export class AddBusinessPackageForm extends Component {
                     hasFeedback
                     label={
                         <FormattedMessage id='add-business-package-form.expiration_datetime' />
+                    }
+                    getFieldDecorator={ getFieldDecorator }
+                />
+                <DecoratedTextArea
+                    field='comment'
+                    formItem
+                    rules={ [
+                        {
+                            max:     2000,
+                            message: formatMessage({
+                                id: 'field_should_be_below_2000_chars',
+                            }),
+                        },
+                    ] }
+                    getPopupContainer={ trigger => trigger.parentNode }
+                    label={
+                        <FormattedMessage id='add-business-package-form.comment' />
+                    }
+                    getFieldDecorator={ getFieldDecorator }
+                />
+                <DecoratedInputNumber
+                    field='amount'
+                    formItem
+                    style={ { width: '100%' } }
+                    getPopupContainer={ trigger => trigger.parentNode }
+                    label={
+                        <FormattedMessage id='add-business-package-form.amount' />
                     }
                     getFieldDecorator={ getFieldDecorator }
                 />

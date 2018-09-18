@@ -8,19 +8,23 @@ import ArrowsWeekPicker from './ArrowsWeekPicker';
 import ArrowsDatePicker from './ArrowsDatePicker';
 import ArrayInput from './ArrayInput';
 import { OrderStatusIcon, CallStatusIcon } from './StatusIcons';
-import Loader from './Loader';
 import ArrayScheduleInput from './ArrayScheduleInput';
 import ArrayBreakScheduleInput from './ArrayBreakScheduleInput';
 import SettingSalaryTable from './SettingSalaryTable';
-import EmployeeTable from './EmployeeTable';
+import EmployeesTable from './EmployeesTable';
 import LimitedDecoratedSelect from './LimitedDecoratedSelect';
 import ClientFeedbackTab from './ClientFeedbackTab';
 import ClientOrdersTab from './ClientOrdersTab';
-import FormattedDatetime from './FormattedDatetime'
+import FormattedDatetime from './FormattedDatetime';
+import Rating from './Rating';
+import { Like } from './Like';
+import EmployeeFeedback from './EmployeeFeedback';
+import EmployeeStatistics from './EmployeeStatistics';
+import PhoneNumberInput from './PhoneNumberInput';
 
 export {
     SettingSalaryTable,
-    EmployeeTable,
+    EmployeesTable,
     LanguagePad,
     ArrowsNav,
     OrderStatusIcon,
@@ -32,11 +36,15 @@ export {
     ArrowsDatePicker,
     ChangeStatusDropdown,
     ArrayInput,
-    Loader,
     ArrayScheduleInput,
     ArrayBreakScheduleInput,
     LimitedDecoratedSelect,
     ClientFeedbackTab,
     ClientOrdersTab,
     FormattedDatetime,
+    Rating,
+    Like,
+    EmployeeFeedback,
+    EmployeeStatistics,
+    PhoneNumberInput,
 };

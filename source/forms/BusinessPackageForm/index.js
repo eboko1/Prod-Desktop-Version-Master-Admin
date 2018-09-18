@@ -7,7 +7,11 @@ import moment from 'moment';
 // proj
 import { onChangeBusinessPackageForm } from 'core/forms/businessPackageForm/duck';
 
-import { DecoratedDatePicker } from 'forms/DecoratedFields';
+import {
+    DecoratedDatePicker,
+    DecoratedTextArea,
+    DecoratedInputNumber,
+} from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 
 // own
@@ -27,11 +31,12 @@ export class BusinessPackageForm extends Component {
         const {
             activationDatetime,
             expirationDatetime,
+            comment,
+            amount,
             id: businessPackageId,
             businessName,
             packageName,
-        } =
-            businessPackage || {};
+        } = businessPackage || {};
         const { formatMessage } = this.props.intl;
 
         return (
@@ -86,6 +91,35 @@ export class BusinessPackageForm extends Component {
                         hasFeedback
                         label={
                             <FormattedMessage id='business-package-form.expiration_datetime' />
+                        }
+                        getFieldDecorator={ getFieldDecorator }
+                    />
+                    <DecoratedTextArea
+                        field='comment'
+                        formItem
+                        rules={ [
+                            {
+                                max:     2000,
+                                message: formatMessage({
+                                    id: 'field_should_be_below_2000_chars',
+                                }),
+                            },
+                        ] }
+                        initialValue={ comment }
+                        getPopupContainer={ trigger => trigger.parentNode }
+                        label={
+                            <FormattedMessage id='business-package-form.comment' />
+                        }
+                        getFieldDecorator={ getFieldDecorator }
+                    />
+                    <DecoratedInputNumber
+                        field='amount'
+                        formItem
+                        style={ { width: '100%' } }
+                        initialValue={ amount }
+                        getPopupContainer={ trigger => trigger.parentNode }
+                        label={
+                            <FormattedMessage id='business-package-form.amount' />
                         }
                         getFieldDecorator={ getFieldDecorator }
                     />

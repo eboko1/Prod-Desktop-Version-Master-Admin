@@ -2,21 +2,21 @@
     "en": {
         "back-to-list": "back to all employees",
         "employee.general_data": "Total information",
-        "employee.schedule": "Schedule",
+        "add-employee-page.schedule": "Schedule",
         "employee-page.workers": "Workers",
         "employee-page.dismissed": "Dismissed"
     },
     "ru": {
         "back-to-list": "к списку сотрудников",
         "employee.general_data": "Общие данные",
-        "employee.schedule": "График работы",
+        "add-employee-page.schedule": "График работы",
         "employee-page.workers": "Работающие",
         "employee-page.dismissed": "Уволенные"
     },
     "uk": {
         "back-to-list": "до списку працівників",
         "employee.general_data": "Cпільні дані",
-        "employee.schedule": "Графік роботи",
+        "add-employee-page.schedule": "Графік роботи",
         "employee-page.workers": "Робочі",
         "employee-page.dismissed": "Звільнені"
     }

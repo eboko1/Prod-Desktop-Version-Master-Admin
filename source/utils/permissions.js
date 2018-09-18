@@ -8,7 +8,6 @@ const ACCESS_ORDER_DETAILS = 'ACCESS_ORDER_DETAILS';
 const ACCESS_ORDER_HISTORY = 'ACCESS_ORDER_HISTORY';
 const ACCESS_ORDER_SERVICES = 'ACCESS_ORDER_SERVICES';
 const ACCESS_ORDER_STATUS = 'ACCESS_ORDER_STATUS';
-const ACCESS_ORDER_TASKS = 'ACCESS_ORDER_TASKS';
 const CREATE_INVITE_ORDER = 'CREATE_INVITE_ORDER';
 const CREATE_ORDER = 'CREATE_ORDER';
 const GRANT = 'GRANT';
@@ -36,6 +35,9 @@ const FILTER_CLIENTS = 'FILTER_CLIENTS';
 const GET_CLIENTS_BASIC_INFORMATION = 'GET_CLIENTS_BASIC_INFORMATION';
 const GET_CLIENTS_ADDITIONAL_INFORMATION = 'GET_CLIENTS_ADDITIONAL_INFORMATION';
 
+// Tasks
+const GET_ALL_TASKS = 'GET_ALL_TASKS';
+
 export const permissions = Object.freeze({
     ACCESS_ORDER_BODY,
     ACCESS_ORDER_CALLS,
@@ -44,7 +46,6 @@ export const permissions = Object.freeze({
     ACCESS_ORDER_HISTORY,
     ACCESS_ORDER_SERVICES,
     ACCESS_ORDER_STATUS,
-    ACCESS_ORDER_TASKS,
     CREATE_INVITE_ORDER,
     CREATE_ORDER,
     GRANT,
@@ -68,14 +69,46 @@ export const permissions = Object.freeze({
     FILTER_CLIENTS,
     GET_CLIENTS_BASIC_INFORMATION,
     GET_CLIENTS_ADDITIONAL_INFORMATION,
+
+    GET_ALL_TASKS,
 });
+
+export const DASHBOARD_PERMISSIONS = 'DASHBOARD_PERMISSIONS';
+export const ORDERS_PERMISSIONS = 'ORDERS_PERMISSIONS';
+export const CLIENTS_PERMISSIONS = 'CLIENTS_PERMISSIONS';
+export const TASKS_PERMISSIONS = 'TASKS_PERMISSIONS';
+export const EMPLOYEES_PERMISSIONS = 'EMPLOYEES_PERMISSIONS';
+
+export const groupedPermissions = {
+    [ DASHBOARD_PERMISSIONS ]: [ ACCESS_DASHBOARD, EDIT_DASHBOARD_ORDER, OPEN_DASHBOARD_ORDER, CREATE_DASHBOARD_ORDER ],
+    [ ORDERS_PERMISSIONS ]:    [ ACCESS_ORDER_BODY, ACCESS_ORDER_CALLS, ACCESS_ORDER_COMMENTS, ACCESS_ORDER_DETAILS, ACCESS_ORDER_HISTORY, ACCESS_ORDER_SERVICES, ACCESS_ORDER_STATUS, CREATE_INVITE_ORDER, CREATE_ORDER, PRINT_ORDERS, SHOW_FILTERS, SHOW_ORDERS, UPDATE_SUCCESS_ORDER ],
+    [ CLIENTS_PERMISSIONS ]:   [ GET_CLIENTS, CREATE_EDIT_DELETE_CLIENTS, CREATE_EDIT_DELETE_CLIENT_VEHICLES, FILTER_CLIENTS, GET_CLIENTS_BASIC_INFORMATION, GET_CLIENTS_ADDITIONAL_INFORMATION ],
+    [ TASKS_PERMISSIONS ]:     [ GET_ALL_TASKS ],
+    [ EMPLOYEES_PERMISSIONS ]: [ GET_EMPLOYEES, CREATE_EDIT_DELETE_EMPLOYEES, EMPLOYEES_SALARIES ],
+};
 
 export const isForbidden = ({ isAdmin, scope }, grant) =>
     !isAdmin && !(_.isArray(scope) && scope.includes(grant));
 
 export const isAdmin = ({ isAdmin }) => isAdmin;
 
-export const rolesOptionValues = intl => ({
+export const getGroupsLabels = intl => ({
+    [ DASHBOARD_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.dashboard_permissions',
+    }),
+    [ TASKS_PERMISSIONS ]:   intl.formatMessage({ id: 'roles.tasks_permissions' }),
+    [ CLIENTS_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.clients_permissions',
+    }),
+    [ EMPLOYEES_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.employees_permissions',
+    }),
+    [ ORDERS_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.orders_permissions',
+    }),
+});
+
+export const getPermissionsLabels = intl => ({
     [ ACCESS_ORDER_BODY ]:  intl.formatMessage({ id: 'roles.access_order_body' }),
     [ ACCESS_ORDER_CALLS ]: intl.formatMessage({
         id: 'roles.access_order_calls',
@@ -94,9 +127,6 @@ export const rolesOptionValues = intl => ({
     }),
     [ ACCESS_ORDER_STATUS ]: intl.formatMessage({
         id: 'roles.access_order_status',
-    }),
-    [ ACCESS_ORDER_TASKS ]: intl.formatMessage({
-        id: 'roles.access_order_tasks',
     }),
     [ CREATE_INVITE_ORDER ]: intl.formatMessage({
         id: 'roles.create_invite_order',
@@ -145,5 +175,9 @@ export const rolesOptionValues = intl => ({
     }),
     [ GET_CLIENTS_ADDITIONAL_INFORMATION ]: intl.formatMessage({
         id: 'roles.get_clients_additional_information',
+    }),
+
+    [ GET_ALL_TASKS ]: intl.formatMessage({
+        id: 'roles.get_all_tasks',
     }),
 });

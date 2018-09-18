@@ -4,6 +4,7 @@ import { routerReducer as router } from 'react-router-redux';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
 import { LOCATION_CHANGE } from 'react-router-redux';
+import _ from 'lodash';
 
 // proj
 import intl from 'core/intl/reducer';
@@ -13,9 +14,9 @@ import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
-import employeeReducer, {
-    moduleName as employeeModule,
-} from 'core/employee/duck';
+import employeesReducer, {
+    moduleName as employeesModule,
+} from 'core/employees/duck';
 import orderReducer, { moduleName as orderModule } from 'core/order/duck';
 import modalsReducer, { moduleName as modalsModule } from 'core/modals/duck';
 import packageReducer, { moduleName as packageModule } from 'core/package/duck';
@@ -26,6 +27,9 @@ import managerRoleReducer, {
     moduleName as managerRoleModule,
 } from 'core/managerRole/duck';
 
+import employeeScheduleReducer, {
+    moduleName as employeeScheduleModule,
+} from 'core/employeeSchedule/duck';
 import roleReducer, { moduleName as roleModule } from 'core/role/duck';
 import clientReducer, { moduleName as clientModule } from 'core/client/duck';
 import clientOrdersReducer, {
@@ -54,22 +58,23 @@ const persistedState = {
 
 const appState = {
     forms,
-    [ ordersModule ]:          ordersReducer,
-    [ orderModule ]:           orderReducer,
-    [ modalsModule ]:          modalsReducer,
-    [ dashboardModule ]:       dashboardReducer,
-    [ myTasksModule ]:         myTasksReducer,
-    [ employeeModule ]:        employeeReducer,
-    [ uiModule ]:              uiReducer,
-    [ packageModule ]:         packageReducer,
-    [ roleModule ]:            roleReducer,
-    [ businessPackageModule ]: businessPackageReducer,
-    [ searchModule ]:          searchReducer,
-    [ managerRoleModule ]:     managerRoleReducer,
-    [ clientsModule ]:         clientsReducer,
-    [ clientModule ]:          clientReducer,
-    [ clientRequisiteModule ]: clientRequisiteReducer,
-    [ clientOrdersModule ]:    clientOrdersReducer,
+    [ ordersModule ]:           ordersReducer,
+    [ orderModule ]:            orderReducer,
+    [ modalsModule ]:           modalsReducer,
+    [ dashboardModule ]:        dashboardReducer,
+    [ myTasksModule ]:          myTasksReducer,
+    [ employeesModule ]:        employeesReducer,
+    [ uiModule ]:               uiReducer,
+    [ packageModule ]:          packageReducer,
+    [ roleModule ]:             roleReducer,
+    [ businessPackageModule ]:  businessPackageReducer,
+    [ searchModule ]:           searchReducer,
+    [ managerRoleModule ]:      managerRoleReducer,
+    [ clientsModule ]:          clientsReducer,
+    [ clientModule ]:           clientReducer,
+    [ clientRequisiteModule ]:  clientRequisiteReducer,
+    [ clientOrdersModule ]:     clientOrdersReducer,
+    [ employeeScheduleModule ]: employeeScheduleReducer,
     // [ authModule ]:            authReducer,
     // intl,
     // router,
@@ -78,9 +83,13 @@ const appState = {
 const appReducer = combineReducers({ ...persistedState, ...appState });
 
 const reducer = (state, action) => {
-    let resetedState = state;
+    const { type, payload } = action;
+    let resetedState = null;
 
-    if (action.type === LOCATION_CHANGE) {
+    if (
+        type === LOCATION_CHANGE &&
+        _.get(payload, 'pathname') !== _.get(state, 'router.location.pathname')
+    ) {
         resetedState = Object.keys(persistedState).reduce(
             (resetedState, moduleName) => {
                 resetedState[ moduleName ] = state[ moduleName ];
@@ -91,7 +100,7 @@ const reducer = (state, action) => {
         );
     }
 
-    return appReducer(resetedState, action);
+    return appReducer(resetedState || state, action);
 };
 
 const rootReducer = persistReducer(persistConfig, (state, action) => {

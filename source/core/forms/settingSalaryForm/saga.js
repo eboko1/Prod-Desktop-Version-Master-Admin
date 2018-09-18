@@ -1,7 +1,7 @@
 // vendor
 import { call, put, all, take, takeEvery } from 'redux-saga/effects';
-import moment from 'moment'
 import { saveAs } from 'file-saver';
+import moment from 'moment';
 
 //proj
 import { emitError } from 'core/ui/duck';
@@ -9,100 +9,120 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
-    fetchSalarySuccess,
     FETCH_SALARY,
-    SAVE_SALARY,
-    fetchSalary,
+    FETCH_SALARY_REPORT,
+    FETCH_ANNUAL_SALARY_REPORT,
     DELETE_SALARY,
-    deleteSalarySuccess,
-    FETCH_SALARY_REPORT, fetchSalaryReportSuccess,
+    CREATE_SALARY,
+    UPDATE_SALARY,
 } from './duck';
-import {FETCH_ORDER} from '../../order/duck';
-import {fetchOrderSaga} from '../../order/saga';
 
-export function* fetchSalaries() {
+import {
+    fetchSalarySuccess,
+    fetchSalary,
+    updateSalarySuccess,
+    createSalarySuccess,
+    deleteSalarySuccess,
+    fetchSalaryReportSuccess,
+    fetchAnnualSalaryReportSuccess,
+} from './duck';
+
+export function* fetchSalariesSaga() {
     while (true) {
-        try {
-            yield take(FETCH_SALARY);
-            const data = yield call(fetchAPI, 'GET', 'employees_salaries');
+        const { payload: employeeId } = yield take(FETCH_SALARY);
+        const data = yield call(
+            fetchAPI,
+            'GET',
+            `employees_salaries?employeeId=${employeeId}`,
+        );
 
-            yield put(fetchSalarySuccess(data));
-        } catch (error) {
-            yield put(emitError(error));
-        }
+        yield put(fetchSalarySuccess(data));
     }
 }
 
-export function* saveSalary() {
+export function* createSalarySaga() {
     while (true) {
-        try {
-            const {
-                payload: { salary, id },
-            } = yield take(SAVE_SALARY);
-            let salaryObj = {
-                considerDiscount:
-                    salary.considerDiscount === 'Yes' ? true : false,
-                employeeId:    salary.employeeId,
-                endDate:       salary.endDate,
-                percent:       salary.percent,
-                percentFrom:   salary.percentFrom,
-                period:        salary.period,
-                ratePerPeriod: salary.ratePerPeriod,
-                startDate:     salary.startDate,
-            };
-            const data = yield call(
-                fetchAPI,
-                id !== 'add' ? 'PUT' : 'POST',
-                id !== 'add'
-                    ? `employees_salaries/${id}`
-                    : 'employees_salaries',
-                null,
-                salaryObj,
-            );
+        const {
+            payload: { salary, employeeId },
+        } = yield take(CREATE_SALARY);
+        const payload = { ...salary, employeeId };
 
-            yield put(fetchSalary());
-        } catch (error) {
-            yield put(emitError(error));
-        }
+        yield call(fetchAPI, 'POST', 'employees_salaries', null, payload);
+
+        yield put(createSalarySuccess());
+        yield put(fetchSalary(employeeId));
     }
 }
 
-export function* deleteSalary() {
+export function* updateSalarySaga() {
     while (true) {
-        try {
-            const {
-                payload: { id },
-            } = yield take(DELETE_SALARY);
+        const {
+            payload: { salary, employeeId, salaryId },
+        } = yield take(UPDATE_SALARY);
+        const payload = { ...salary, employeeId };
 
-            const data = yield call(
-                fetchAPI,
-                'DELETE',
-                `employees_salaries/${id}`,
-            );
+        yield call(
+            fetchAPI,
+            'PUT',
+            `employees_salaries/${salaryId}`,
+            null,
+            payload,
+        );
 
-            yield put(deleteSalarySuccess());
-            yield put(fetchSalary());
-        } catch (error) {
-            yield put(emitError(error));
-        }
+        yield put(updateSalarySuccess());
+        yield put(fetchSalary(employeeId));
     }
 }
-export function* fetchSalaryReport({payload: info}) {
 
+export function* deleteSalarySaga() {
+    while (true) {
+        const {
+            payload: { salaryId, employeeId },
+        } = yield take(DELETE_SALARY);
+
+        yield call(fetchAPI, 'DELETE', `employees_salaries/${salaryId}`);
+
+        yield put(deleteSalarySuccess());
+        yield put(fetchSalary(employeeId));
+    }
+}
+
+export function* fetchAnnualSalaryReport({ payload }) {
     try {
-        // const {
-        //     payload: info,
-        // } = yield take(FETCH_SALARY_REPORT);
-        // console.log(info, 'HELLO')
+        const data = yield call(
+            fetchAPI,
+            'GET',
+            '/employees_salaries/annual_report',
+            payload,
+            null,
+            { rawResponse: true },
+        );
+        const reportFile = yield data.blob();
+        const contentDispositionHeader = data.headers.get(
+            'content-disposition',
+        );
+        const fileName = contentDispositionHeader.match(
+            /^attachment; filename="(.*)"/,
+        )[ 1 ];
+        yield saveAs(reportFile, fileName);
+    } catch (error) {
+        yield put(emitError(error));
+    } finally {
+        yield put(fetchAnnualSalaryReportSuccess());
+    }
+}
+
+export function* fetchSalaryReport({ payload }) {
+    try {
         const data = yield call(
             fetchAPI,
             'GET',
             '/employees_salaries/report',
-            {startDate: info[ 0 ].toISOString(), endDate: info[ 1 ].toISOString()},
+            payload,
             null,
             { rawResponse: true },
-            // `/employees_salaries/report?startDate=${ info[ 0 ].toISOString()}&endDate=${info[ 1 ].toISOString()}`,
         );
+
         const reportFile = yield data.blob();
         const contentDispositionHeader = data.headers.get(
             'content-disposition',
@@ -116,9 +136,17 @@ export function* fetchSalaryReport({payload: info}) {
     } finally {
         yield put(fetchSalaryReportSuccess());
     }
-
 }
 
 export function* saga() {
-    yield all([ takeEvery(FETCH_SALARY_REPORT, fetchSalaryReport), call(fetchSalaries), call(saveSalary), call(deleteSalary) ]);
+    /* eslint-disable array-element-newline */
+    yield all([
+        takeEvery(FETCH_SALARY_REPORT, fetchSalaryReport),
+        takeEvery(FETCH_ANNUAL_SALARY_REPORT, fetchAnnualSalaryReport),
+        call(fetchSalariesSaga),
+        call(createSalarySaga),
+        call(updateSalarySaga),
+        call(deleteSalarySaga),
+    ]);
+    /* eslint-enable array-element-newline */
 }

@@ -6,7 +6,6 @@ const prefix = `cpb/${moduleName}`;
 
 export const ON_CHANGE_ROLE_FORM = `${prefix}/ON_CHANGE_ROLE_FORM`;
 
-
 /**
  * Reducer
  * */

@@ -28,7 +28,7 @@ export class ToSuccessForm extends Component {
             resetModal,
             businessName,
         } = this.props;
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
         // const { formatMessage } = this.props.intl;
 
         return (
@@ -38,7 +38,10 @@ export class ToSuccessForm extends Component {
                 </div>
                 <div className={ Styles.submit }>
                     <Button
-                        onClick={ () => handleToSuccessModalSubmit('success') }
+                        onClick={ () => {
+                            const smsMessage = getFieldValue('toSuccess');
+                            handleToSuccessModalSubmit('success', void 0, { smsMessage });
+                        } }
                         className={ Styles.submitButton }
                         type='primary'
                     >

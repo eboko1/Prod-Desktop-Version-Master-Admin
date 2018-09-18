@@ -22,6 +22,10 @@ import { EditClientForm } from './EditClientForm';
 import { AbstractClientForm } from './AbstractClientForm';
 import { RequisiteForm } from './RequisiteForm';
 import { AddRequisiteForm } from './AddRequisiteForm';
+import SettingSalaryForm from './SettingSalaryForm';
+import { ScheduleForm } from './ScheduleForm';
+import { BreakScheduleForm } from './BreakScheduleForm';
+import { SalaryReportForm } from './SalaryReportForm';
 
 export {
     LoginForm,
@@ -48,4 +52,8 @@ export {
     EditClientForm,
     RequisiteForm,
     AddRequisiteForm,
+    SettingSalaryForm,
+    ScheduleForm,
+    BreakScheduleForm,
+    SalaryReportForm,
 };

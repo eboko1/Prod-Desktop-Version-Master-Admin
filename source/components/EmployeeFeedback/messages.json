@@ -1,0 +1,29 @@
+{
+    "en": {
+        "employee-feedback.average_rating": "Average rating",
+        "employee-feedback.feedback": "Feedback",
+        "employee-feedback.order": "Order",
+        "employee-feedback.rating": "Rating",
+        "employee-feedback.comment": "Comment",
+        "employee-feedback.go_to_feedback": "Go to the feedback",
+        "employee-feedback.go_to_order": "Go to the order"
+    },
+    "ru": {
+        "employee-feedback.average_rating": "Средний рейтинг",
+        "employee-feedback.feedback": "Отзыв",
+        "employee-feedback.order": "Заказ",
+        "employee-feedback.rating": "Рейтинг",
+        "employee-feedback.comment": "Комментарий",
+        "employee-feedback.go_to_feedback": "Перейти к отзыву",
+        "employee-feedback.go_to_order": "Перейти к заказу"
+    },
+    "uk": {
+        "employee-feedback.average_rating": "Середній рейтинг",
+        "employee-feedback.feedback": "Відгук",
+        "employee-feedback.order": "Замовлення",
+        "employee-feedback.rating": "Рейтинг",
+        "employee-feedback.comment": "Коментар",
+        "employee-feedback.go_to_feedback": "Перейти до відгуку",
+        "employee-feedback.go_to_order": "Перейти до замовлення"
+    }
+}

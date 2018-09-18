@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Button, Select } from 'antd';
 import _ from 'lodash';
-
 // proj
 import { onChangeRoleForm } from 'core/forms/editRoleForm/duck';
 
@@ -12,11 +11,18 @@ import {
     DecoratedSelect,
     DecoratedCheckbox,
 } from 'forms/DecoratedFields';
-import { withReduxForm, rolesOptionValues } from 'utils';
+import {
+    withReduxForm,
+    getPermissionsLabels,
+    groupedPermissions,
+    getGroupsLabels,
+    permissions,
+} from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
+const OptGroup = Select.OptGroup;
 const Option = Select.Option;
 
 @injectIntl
@@ -29,7 +35,10 @@ const Option = Select.Option;
 export class RoleForm extends Component {
     render() {
         const { role } = this.props;
+        const roleGrants = _.intersection(role.grants, _.values(permissions));
         const { getFieldDecorator, validateFields } = this.props.form;
+        const groupsLabels = getGroupsLabels(this.props.intl);
+        const permissionsLabels = getPermissionsLabels(this.props.intl);
 
         return (
             <Form>
@@ -51,7 +60,7 @@ export class RoleForm extends Component {
                 />
                 <DecoratedSelect
                     field={ 'grants' }
-                    initialValue={ role.grants }
+                    initialValue={ roleGrants }
                     formItem
                     getPopupContainer={ trigger => trigger.parentNode }
                     rules={ [
@@ -69,10 +78,14 @@ export class RoleForm extends Component {
                     mode={ 'multiple' }
                     getFieldDecorator={ getFieldDecorator }
                 >
-                    { _.toPairs(rolesOptionValues(this.props.intl)).map(([ key, value ]) => (
-                        <Option value={ key } key={ key }>
-                            { value }
-                        </Option>
+                    { _.toPairs(groupedPermissions).map(([ name, value ]) => (
+                        <OptGroup label={ groupsLabels[ name ] }>
+                            { value.map(value => (
+                                <Option value={ value } key={ value }>
+                                    { permissionsLabels[ value ] }
+                                </Option>
+                            )) }
+                        </OptGroup>
                     )) }
                 </DecoratedSelect>
                 <DecoratedCheckbox

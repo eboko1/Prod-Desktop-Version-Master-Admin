@@ -8,7 +8,11 @@
         "valid_reason": "Valid reason",
         "sick_leave": "Sick leave",
         "vacation": "Vacation",
-        "save_break_schedules": "Save break schedules"
+        "array-break-schedule.add_break_schedule": "Add day offs",
+        "array-break-schedule.break_type": "Type",
+        "array-break-schedule.comment": "Comment",
+        "array-break-schedule.beginDate": "Begin date",
+        "array-break-schedule.endDate": "End date"
     },
     "ru": {
         "absenteeism": "Прогул",
@@ -18,7 +22,11 @@
         "valid_reason": "Уважительная причина",
         "sick_leave": "Болезнь",
         "vacation": "Отпуск",
-        "save_break_schedules": "Сохранить неробочие дни"
+        "array-break-schedule.add_break_schedule": "Добавить выходные",
+        "array-break-schedule.break_type": "Тип",
+        "array-break-schedule.comment": "Комментарий",
+        "array-break-schedule.beginDate": "Дата начала",
+        "array-break-schedule.endDate": "Дата конца"
     },
     "uk": {
         "absenteeism": "Прогул",
@@ -28,6 +36,11 @@
         "valid_reason": "Поважна причина",
         "sick_leave": "Хвороба",
         "vacation": "Відпустка",
-        "save_break_schedules": "Зберегти неробочі дні"
+        "save_break_schedules": "Зберегти неробочі дні",
+        "array-break-schedule.add_break_schedule": "Додати вихідні",
+        "array-break-schedule.break_type": "Тип",
+        "array-break-schedule.comment": "Коментар",
+        "array-break-schedule.beginDate": "Дата початку",
+        "array-break-schedule.endDate": "Дата кінця"
     }
 }

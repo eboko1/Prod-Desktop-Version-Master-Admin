@@ -1,0 +1,10 @@
+.title {
+    font-size: 24px;
+    margin-right: 24px;
+}
+
+.count {
+    color: var(--secondary);
+    font-size: 24px;
+    font-weight: bold;
+}

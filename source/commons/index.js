@@ -1,10 +1,10 @@
+import { StyledButton } from './_uikit/StyledButton';
 import { LayoutComponent as Layout } from './Layout';
 import Header from './Header';
 import Footer from './Footer';
 import ModuleHeader from './ModuleHeader';
 import Navigation from './Navigation';
 import Spinner from './Spinner';
-import StyledButton from './StyledButton';
 import Catcher from './Catcher';
 import Numeral from './Numeral';
 import {
@@ -13,6 +13,7 @@ import {
     DesktopView,
     ResponsiveView,
 } from './ResponsiveViews';
+import Loader from './Loader';
 
 export {
     Header,
@@ -28,4 +29,5 @@ export {
     TabletView,
     DesktopView,
     ResponsiveView,
+    Loader,
 };

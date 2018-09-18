@@ -318,6 +318,10 @@ export default class OrderFormHeader extends Component {
                     className={ Styles.durationPanelItem }
                     disabled={ this.bodyUpdateIsForbidden() }
                     getFieldDecorator={ getFieldDecorator }
+                    initialValue={ _.get(
+                        fetchedOrder,
+                        'order.appurtenanciesResponsibleId',
+                    ) }
                     placeholder={ formatMessage({
                         id: 'add_order_form.select_appurtenancies_responsible',
                     }) }
@@ -399,15 +403,16 @@ export default class OrderFormHeader extends Component {
                     }) }
                 >
                     <Option value='cash'>
-                        <Icon type='wallet' />
+                        <Icon type='wallet' />{ ' ' }
                         <FormattedMessage id='add_order_form.cash' />
                     </Option>
                     <Option value='noncash'>
-                        <Icon type='credit-card' />
+                        <Icon type='credit-card' />{ ' ' }
                         <FormattedMessage id='add_order_form.non-cash' />
                     </Option>
                     <Option value='visa'>
-                        <Icon type='credit-card' /> Visa
+                        <Icon type='credit-card' />{ ' ' }
+                        <FormattedMessage id='add_order_form.visa' />
                     </Option>
                 </DecoratedSelect>
                 <DecoratedSelect

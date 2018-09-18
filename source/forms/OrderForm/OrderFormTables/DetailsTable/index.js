@@ -221,7 +221,7 @@ class DetailsTable extends Component {
                     this.state.keys.length > 1 &&
                     !editDetailsForbidden && (
                         <Popconfirm
-                            title='Sure to delete?'
+                            title={ <FormattedMessage id='add_order_form.delete_confirm'/> }
                             onConfirm={ () => this._onDelete(key) }
                         >
                             <Icon type='delete' className={ Styles.deleteIcon } />

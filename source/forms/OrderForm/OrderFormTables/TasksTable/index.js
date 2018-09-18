@@ -4,10 +4,12 @@ import { FormattedMessage } from 'react-intl';
 import { Table, Icon, Tooltip } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
+import _ from 'lodash';
 
 // proj
 import { MODALS } from 'core/modals/duck';
 import { Catcher } from 'commons';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -15,7 +17,13 @@ import Styles from './styles.m.css';
 class TasksTable extends Component {
     constructor(props) {
         super(props);
-        const { setModal, initOrderTasksForm, changeModalStatus } = this.props;
+        const {
+            setModal,
+            initOrderTasksForm,
+            changeModalStatus,
+            user,
+        } = this.props;
+        const viewAllTasks = !isForbidden(user, permissions.GET_ALL_TASKS);
 
         this.columns = [
             {
@@ -24,7 +32,10 @@ class TasksTable extends Component {
                 key:       'review',
                 width:     '4%',
                 render:    (text, record) => {
-                    if (record.orderNum) {
+                    if (
+                        record.orderNum &&
+                        (viewAllTasks || user.id === record.responsibleId)
+                    ) {
                         return (
                             <Icon
                                 className={ Styles.editOrderTaskIcon }
@@ -156,7 +167,7 @@ class TasksTable extends Component {
                     </div>
                 ),
             },
-           
+
             {
                 title:     <FormattedMessage id='author' />,
                 dataIndex: 'author',
@@ -188,11 +199,9 @@ class TasksTable extends Component {
 
         return (
             <Catcher>
-                <div                     className={ Styles.table }
-                >
+                <div className={ Styles.table }>
                     <Table
                         className={ Styles.ExpandedTable }
-
                         dataSource={
                             orderTasks.orderTasks
                                 ? [
@@ -210,22 +219,24 @@ class TasksTable extends Component {
                         scroll={ { x: 2000, y: 200 } }
                         columns={ columns }
                         pagination={ false }
-                        expandedRowClassName={ ()=>Styles.ExpandedRow }
-                        expandedRowRender={ ()=>{
-                            return <Table
-                                columns={ columns }
-                                dataSource={ [
-                                    ...orderTasks.orderTasks[ 0 ].history
-                                        .sort(this.sortHistory)
-                                        .map((task, index) => ({
-                                            ...task,
-                                            index,
-                                            key: v4(),
-                                        })),
-                                ] }
-                                pagination={ false }
-                                showHeader={ false }
-                            />
+                        expandedRowClassName={ () => Styles.ExpandedRow }
+                        expandedRowRender={ (record, index) => {
+                            return (
+                                <Table
+                                    columns={ columns }
+                                    dataSource={ [
+                                        ..._.get(orderTasks, [ 'orderTasks', index, 'history' ], [])
+                                            .sort(this.sortHistory)
+                                            .map((task, index) => ({
+                                                ...task,
+                                                index,
+                                                key: v4(),
+                                            })),
+                                    ] }
+                                    pagination={ false }
+                                    showHeader={ false }
+                                />
+                            );
                         } }
                         locale={ {
                             emptyText: <FormattedMessage id='no_data' />,

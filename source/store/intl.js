@@ -30,7 +30,7 @@ import DashboardPage from 'pages/DashboardPage/messages';
 import RolePage from 'pages/RolePage/messages';
 import PackagePage from 'pages/PackagePage/messages';
 import ClientsPage from 'pages/ClientsPage/messages';
-import EmployeePage from 'pages/EmployeePage/messages';
+import EmployeesPage from 'pages/EmployeesPage/messages';
 import AddEmployeePage from 'pages/AddEmployeePage/messages';
 import BusinessPackagePage from 'pages/BusinessPackagePage/messages';
 import ManagerRolePage from 'pages/ManagerRolePage/messages';
@@ -42,7 +42,7 @@ import MyTasksContainer from 'containers/MyTasksContainer/messages';
 import PackageContainer from 'containers/PackageContainer/messages';
 import BusinessPackageContainer from 'containers/BusinessPackageContainer/messages';
 import RoleContainer from 'containers/RoleContainer/messages';
-import SettingSalaryContainer from 'containers/SettingSalaryContainer/messages';
+import SettingSalaryForm from 'forms/SettingSalaryForm/messages';
 import ManagerRoleContainer from 'containers/ManagerRoleContainer/messages';
 import UniversalFiltersContainer from 'containers/UniversalFilters/messages';
 import ClientContainer from 'containers/ClientContainer/messages';
@@ -64,6 +64,7 @@ import BusinessPackageForm from 'forms/BusinessPackageForm/messages';
 import ManagerRoleForm from 'forms/ManagerRoleForm/messages';
 import AddBusinessPackageForm from 'forms/AddBusinessPackageForm/messages';
 import LoginForm from 'forms/LoginForm/messages';
+import SalaryReportForm from 'forms/SalaryReportForm/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
@@ -86,13 +87,15 @@ import StatusIcons from 'components/StatusIcons/messages';
 import StatsCountsPanel from 'components/StatsCountsPanel/messages';
 import ReportsDropdown from 'components/ReportsDropdown/messages';
 import UniversalFiltersTags from 'components/UniversalFiltersTags/messages';
-import EmployeeTable from 'components/EmployeeTable/messages';
+import EmployeesTable from 'components/EmployeesTable/messages';
 import SettingSalaryTable from 'components/SettingSalaryTable/messages';
 import ArrayScheduleInput from 'components/ArrayScheduleInput/messages';
 import ArrayBreakScheduleInput from 'components/ArrayBreakScheduleInput/messages';
 import ChangeStatusDropdown from 'components/ChangeStatusDropdown/messages';
 import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
-import ClientOrdersTab from 'components/ClientOrdersTab/messages'
+import ClientOrdersTab from 'components/ClientOrdersTab/messages';
+import EmployeeFeedback from 'components/EmployeeFeedback/messages';
+import EmployeeStatistics from 'components/EmployeeStatistics/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -115,7 +118,7 @@ const messages = merge.all([
     RolePage,
     PackagePage,
     ClientsPage,
-    EmployeePage,
+    EmployeesPage,
     AddEmployeePage,
     BusinessPackagePage,
     ManagerRolePage,
@@ -126,7 +129,7 @@ const messages = merge.all([
     MyTasksContainer,
     PackageContainer,
     RoleContainer,
-    SettingSalaryContainer,
+    SettingSalaryForm,
     BusinessPackageContainer,
     ManagerRoleContainer,
     UniversalFiltersContainer,
@@ -150,6 +153,7 @@ const messages = merge.all([
     AddBusinessPackageForm,
     ManagerRoleForm,
     LoginForm,
+    SalaryReportForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
@@ -164,7 +168,7 @@ const messages = merge.all([
     ReportsDropdown,
     DecoratedDatePicker,
     CallsTable,
-    EmployeeTable,
+    EmployeesTable,
     EmployeeScheduleForm,
     SettingSalaryTable,
     ArrayScheduleInput,
@@ -172,6 +176,8 @@ const messages = merge.all([
     ChangeStatusDropdown,
     ClientFeedbackTab,
     ClientOrdersTab,
+    EmployeeFeedback,
+    EmployeeStatistics,
 ]);
 /* eslint-enable array-element-newline */
 

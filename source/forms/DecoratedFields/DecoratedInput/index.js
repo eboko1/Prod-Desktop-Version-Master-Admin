@@ -29,7 +29,7 @@ export const DecoratedInput = props => {
     } = props;
 
     const input = getFieldDecorator(field, {
-        ...initialValue ? { initialValue } : {},
+        ...initialValue ? { initialValue } : { initialValue: void 0 },
         rules,
     })(
         <Input

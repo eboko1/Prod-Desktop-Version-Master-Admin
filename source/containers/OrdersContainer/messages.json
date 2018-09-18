@@ -106,7 +106,7 @@
         "orders.creation_date": "Дата Створення",
         "orders.begin_date": "Дата Запису",
         "orders.success_date": "Дата Викон.",
-        "orders.client": "Кліенти",
+        "orders.client": "Клієнти",
         "orders.sum": "Сума",
         "orders.responsible": "Відповідальний",
         "orders.source": "Джерело",

@@ -56,7 +56,7 @@ const mapStateToProps = state => ({
 
 const formItemLayout = {
     labelCol:   { span: 6 },
-    wrapperCol: { span: 14 },
+    wrapperCol: { span: 18 },
 };
 
 const sortOptions = {
@@ -72,73 +72,6 @@ const sortOptions = {
 export default class BusinessPackageContainer extends Component {
     constructor(props) {
         super(props);
-        const { sort, setShowUpdateBusinessPackageForm } = props;
-        const { formatMessage } = props.intl;
-
-        this.columns = [
-            {
-                title: formatMessage({
-                    id: 'business-package-container.business_name',
-                }),
-                dataIndex: 'businessName',
-                sorter:    true,
-                sortOrder: this._handleColumnOrder(sort, 'businessName'),
-                width:     '15%',
-            },
-            {
-                title: formatMessage({
-                    id: 'business-package-container.business_address',
-                }),
-                dataIndex: 'businessAddress',
-                width:     '20%',
-            },
-            {
-                title: formatMessage({
-                    id: 'business-package-container.activation_datetime',
-                }),
-                dataIndex: 'activationDatetime',
-                sorter:    true,
-                sortOrder: this._handleColumnOrder(sort, 'activationDatetime'),
-                width:     '15%',
-                render:    (name, record) =>
-                    moment(record.activationDatetime).format(
-                        'YYYY-MM-DD HH:mm:ss',
-                    ),
-            },
-            {
-                title: formatMessage({
-                    id: 'business-package-container.expiration_datetime',
-                }),
-                dataIndex: 'expirationDatetime',
-                sorter:    true,
-                sortOrder: this._handleColumnOrder(sort, 'expirationDatetime'),
-                width:     '15%',
-                render:    (name, record) =>
-                    moment(record.expirationDatetime).format(
-                        'YYYY-MM-DD HH:mm:ss',
-                    ),
-            },
-            {
-                title: formatMessage({
-                    id: 'business-package-container.package_name',
-                }),
-                dataIndex: 'packageName',
-                sorter:    true,
-                sortOrder: this._handleColumnOrder(sort, 'packageName'),
-                width:     '20%',
-            },
-
-            {
-                width:  '15%',
-                render: record => (
-                    <Icon
-                        className={ Styles.businessEditIcon }
-                        onClick={ () => setShowUpdateBusinessPackageForm(record) }
-                        type='edit'
-                    />
-                ),
-            },
-        ];
     }
 
     componentDidMount() {
@@ -146,7 +79,7 @@ export default class BusinessPackageContainer extends Component {
     }
 
     _handleColumnOrder = (sort, fieldName) =>
-        sort.field === fieldName ? sortOptions[ sort.order ] : false;
+        sort.field === fieldName ? sortOptions[ sort.order ] : void 0;
 
     _handleTableChange = (pagination, filters, sorter) => {
         if (!sorter) {
@@ -176,6 +109,74 @@ export default class BusinessPackageContainer extends Component {
             setFilters,
             setShowCreateBusinessPackageForm,
         } = this.props;
+
+        const { setShowUpdateBusinessPackageForm } = this.props;
+        const { formatMessage } = this.props.intl;
+
+        const columns = [
+            {
+                title: formatMessage({
+                    id: 'business-package-container.business_name',
+                }),
+                dataIndex: 'businessName',
+                sorter:    true,
+                sortOrder: this._handleColumnOrder(this.props.sort, 'businessName'),
+                width:     '15%',
+            },
+            {
+                title: formatMessage({
+                    id: 'business-package-container.business_address',
+                }),
+                dataIndex: 'businessAddress',
+                width:     '20%',
+            },
+            {
+                title: formatMessage({
+                    id: 'business-package-container.activation_datetime',
+                }),
+                dataIndex: 'activationDatetime',
+                sorter:    true,
+                sortOrder: this._handleColumnOrder(this.props.sort, 'activationDatetime'),
+                width:     '15%',
+                render:    (name, record) =>
+                    moment(record.activationDatetime).format(
+                        'YYYY-MM-DD HH:mm:ss',
+                    ),
+            },
+            {
+                title: formatMessage({
+                    id: 'business-package-container.expiration_datetime',
+                }),
+                dataIndex: 'expirationDatetime',
+                sorter:    true,
+                sortOrder: this._handleColumnOrder(this.props.sort, 'expirationDatetime'),
+                width:     '15%',
+                render:    (name, record) =>
+                    moment(record.expirationDatetime).format(
+                        'YYYY-MM-DD HH:mm:ss',
+                    ),
+            },
+            {
+                title: formatMessage({
+                    id: 'business-package-container.package_name',
+                }),
+                dataIndex: 'packageName',
+                sorter:    true,
+                sortOrder: this._handleColumnOrder(this.props.sort, 'packageName'),
+                width:     '20%',
+            },
+
+            {
+                width:  '15%',
+                render: record => (
+                    <Icon
+                        className={ Styles.businessEditIcon }
+                        onClick={ () => setShowUpdateBusinessPackageForm(record) }
+                        type='edit'
+                    />
+                ),
+            },
+        ];
 
         const pagination = {
             pageSize:         25,
@@ -253,7 +254,7 @@ export default class BusinessPackageContainer extends Component {
                     onChange={ this._handleTableChange }
                     pagination={ pagination }
                     dataSource={ businessPackages }
-                    columns={ this.columns }
+                    columns={ columns }
                 />
                 <Modal
                     title={

@@ -31,27 +31,49 @@ import Styles from './styles.m.css';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Search = Input.Search;
-const compareOrderTasks = (initialOrderTask, orderTaskEntity) => {
-    if(initialOrderTask===null){ return true }
 
-    return (
-        initialOrderTask.responsibleId !== orderTaskEntity.responsible.value ||
-        initialOrderTask.priority !== orderTaskEntity.priority.value ||
-        initialOrderTask.status !== orderTaskEntity.status.value ||
-        initialOrderTask.comment !== orderTaskEntity.comment.value ||
-        moment(initialOrderTask.deadlineDate).format('HH:mm') !==
-            moment(orderTaskEntity.deadlineTime.value).format('HH:mm') ||
-        moment(initialOrderTask.deadlineDate).format() !==
-            moment(orderTaskEntity.deadlineDate.value).format() ||
-        initialOrderTask.stationNum !== orderTaskEntity.stationName.value
-    );
+const compareOrderTasks = (initialOrderTask, orderTask) => {
+    if (!initialOrderTask) {
+        return true;
+    }
+
+    const initialOrderTaskEntity = {
+        responsibleId: initialOrderTask.responsibleId,
+        priority:      initialOrderTask.priority,
+        status:        initialOrderTask.status,
+        comment:       initialOrderTask.comment,
+        time:          initialOrderTask.deadlineDate
+            ? moment(initialOrderTask.deadlineDate).format('HH:mm')
+            : void 0,
+        date: initialOrderTask.deadlineDate
+            ? moment(initialOrderTask.deadlineDate).format('YYYY-MM-DD')
+            : void 0,
+        stationNum: initialOrderTask.stationNum,
+    };
+
+    const orderTaskEntity = {
+        responsibleId: orderTask.responsible,
+        priority:      orderTask.priority,
+        status:        orderTask.status,
+        comment:       orderTask.comment,
+        time:          orderTask.deadlineTime
+            ? moment(orderTask.deadlineTime).format('HH:mm')
+            : void 0,
+        date: orderTask.deadlineDate
+            ? moment(orderTask.deadlineDate).format('YYYY-MM-DD')
+            : void 0,
+        stationNum: orderTask.stationName,
+    };
+
+    return !_.isEqual(_.omitBy(orderTaskEntity, _.isNil), _.omitBy(initialOrderTaskEntity, _.isNil));
 };
+
 const mapStateToProps = state => {
     return {
         myTasks:          state.myTasksContainer.myTasks,
         page:             state.myTasksContainer.page,
         modal:            state.modals.modal,
-        orderTaskEntity:  state.forms.orderTaskForm.fields,
+        // orderTaskEntity:  state.forms.orderTaskForm.fields,
         initialOrderTask: state.forms.orderTaskForm.initialOrderTask,
         orderTaskId:      state.forms.orderTaskForm.taskId,
         activeOrder:      state.myTasksContainer.activeOrder,
@@ -87,7 +109,7 @@ class MyTasksPage extends Component {
         this.handleOrdersSearch = _.debounce(value => {
             const { setMyTasksSearchFilter, fetchMyTasks, filter } = this.props;
             setMyTasksSearchFilter(value);
-            fetchMyTasks( filter );
+            fetchMyTasks(filter);
         }, 1000);
     }
     state = {
@@ -108,16 +130,14 @@ class MyTasksPage extends Component {
     };
 
     saveOrderTask = () => {
-        const { orderTaskEntity, orderTaskId, initialOrderTask } = this.props;
+        const { orderTaskId, initialOrderTask } = this.props;
         const form = this.orderTaskFormRef.props.form;
         let myTasks = 'mytasks';
-        form.validateFields(err => {
+        form.validateFields((err, values) => {
             if (!err) {
-
-                if (compareOrderTasks(initialOrderTask, orderTaskEntity)) {
-
+                if (compareOrderTasks(initialOrderTask, values)) {
                     this.props.saveOrderTask(
-                        orderTaskEntity,
+                        values,
                         this.props.activeOrder,
                         orderTaskId,
                         myTasks,
@@ -182,7 +202,6 @@ class MyTasksPage extends Component {
             activeOrder,
             activeVehicle,
             orderTaskId,
-            orderTaskEntity,
             progressStatusOptions,
             priorityOptions,
             spinner,
@@ -207,7 +226,6 @@ class MyTasksPage extends Component {
                 controls={
                     <div className={ Styles.controls }>
                         { !isMobile && headerControls }
-                 
                     </div>
                 }
             >
@@ -247,7 +265,6 @@ class MyTasksPage extends Component {
                 </div>
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }
-                    orderTaskEntity={ orderTaskEntity }
                     initialOrderTask={ initialOrderTask }
                     priorityOptions={ priorityOptions }
                     progressStatusOptions={ progressStatusOptions }
@@ -257,7 +274,6 @@ class MyTasksPage extends Component {
                     orderTaskId={ orderTaskId }
                     orderId={ activeOrder }
                     activeVehicle={ activeVehicle }
-                    
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
                     stations={ myTasks && myTasks.stations || [] }
                     managers={ myTasks && myTasks.managers || [] }

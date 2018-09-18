@@ -35,15 +35,20 @@ export const DecoratedInputNumber = props => {
         placeholder,
         icon,
         iconType,
+
+        cnStyles,
     } = props;
 
     const defaultValue = [ initValue, initialValue ].find(_.isNumber);
 
     const inputNumber = getFieldDecorator(field, {
         rules,
-        ..._.isNumber(defaultValue) ? { initialValue: defaultValue } : {},
+        ..._.isNumber(defaultValue)
+            ? { initialValue: defaultValue }
+            : { initialValue: void 0 },
     })(
         <InputNumber
+            className={ cnStyles }
             min={ min }
             max={ max }
             style={ style }

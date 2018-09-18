@@ -4,11 +4,11 @@
     white-space: nowrap;
 }
 
-.recommendationIcon{
+.recommendationIcon {
     font-size: 28px;
     color: var(--primary);
 }
 
-.ratingStars{
+.ratingStars {
     color: var(--secondary);
 }

@@ -18,17 +18,17 @@ export function* saveNewOrderTask() {
                 SAVE_ORDER_TASK,
             );
             let obj = {
-                comment:       payload.comment.value,
-                priority:      payload.priority.value,
-                responsibleId: payload.responsible.value,
-                status:        payload.status.value,
-                stationNum:    payload.stationName.value,
+                comment:       payload.comment,
+                priority:      payload.priority,
+                responsibleId: payload.responsible,
+                status:        payload.status,
+                stationNum:    payload.stationName,
             };
-            if (payload.deadlineDate.value) {
+            if (payload.deadlineDate) {
                 obj.deadlineDate = moment(
-                    `${moment(payload.deadlineDate.value).format(
+                    `${moment(payload.deadlineDate).format(
                         'YYYY-MM-DD',
-                    )} ${payload.deadlineTime.value?moment(payload.deadlineTime.value).format('HH:mm'):'00:00'}`,
+                    )} ${payload.deadlineTime?moment(payload.deadlineTime).format('HH:mm'):'00:00'}`,
                 ).format();
             }
             let data;
