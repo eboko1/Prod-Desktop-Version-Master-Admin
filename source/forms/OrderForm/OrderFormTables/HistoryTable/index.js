@@ -44,13 +44,7 @@ export default class HistoryTable extends Component {
                             { text }
                             <OrderStatusIcon status={ record.status } />
                         </Link>
-                        <div
-                            style={ {
-                                whiteSpace:   'nowrap',
-                                overflow:     'hidden',
-                                textOverflow: 'ellipsis',
-                            } }
-                        >
+                        <div>
                             { record.serviceNames
                                 .map(serviceName => serviceName)
                                 .join(', ') }
