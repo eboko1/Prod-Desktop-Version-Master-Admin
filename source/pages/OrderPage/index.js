@@ -42,30 +42,46 @@ import {
     requiredFieldsOnStatuses,
 } from 'forms/OrderForm/extractOrderEntity';
 
-const compareOrderTasks = (initialOrderTask, orderTaskEntity) => {
+const compareOrderTasks = (initialOrderTask, orderTask) => {
     if (!initialOrderTask) {
-        console.warn(' compareOrderTasks failed with initialOrderTask !');
-
-        return false;
+        return true;
     }
 
-    return (
-        initialOrderTask.responsibleId !== orderTaskEntity.responsible.value ||
-        initialOrderTask.priority !== orderTaskEntity.priority.value ||
-        initialOrderTask.status !== orderTaskEntity.status.value ||
-        initialOrderTask.comment !== orderTaskEntity.comment.value ||
-        moment(initialOrderTask.deadlineDate).format('HH:mm') !==
-            moment(orderTaskEntity.deadlineTime.value).format('HH:mm') ||
-        moment(initialOrderTask.deadlineDate).format() !==
-            moment(orderTaskEntity.deadlineDate.value).format() ||
-        initialOrderTask.stationNum !== orderTaskEntity.stationName.value
-    );
+    const initialOrderTaskEntity = {
+        responsibleId: initialOrderTask.responsibleId,
+        priority:      initialOrderTask.priority,
+        status:        initialOrderTask.status,
+        comment:       initialOrderTask.comment,
+        time:          initialOrderTask.deadlineDate
+            ? moment(initialOrderTask.deadlineDate).format('HH:mm')
+            : void 0,
+        date: initialOrderTask.deadlineDate
+            ? moment(initialOrderTask.deadlineDate).format('YYYY-MM-DD')
+            : void 0,
+        stationNum: initialOrderTask.stationNum,
+    };
+
+    const orderTaskEntity = {
+        responsibleId: orderTask.responsible,
+        priority:      orderTask.priority,
+        status:        orderTask.status,
+        comment:       orderTask.comment,
+        time:          orderTask.deadlineTime
+            ? moment(orderTask.deadlineTime).format('HH:mm')
+            : void 0,
+        date: orderTask.deadlineDate
+            ? moment(orderTask.deadlineDate).format('YYYY-MM-DD')
+            : void 0,
+        stationNum: orderTask.stationName,
+    };
+
+    return !_.isEqual(_.omitBy(orderTaskEntity, _.isNil), _.omitBy(initialOrderTaskEntity, _.isNil));
 };
 
 const mapStateToProps = state => {
     return {
         isMobile:              state.ui.views.isMobile,
-        orderTaskEntity:       state.forms.orderTaskForm.fields,
+        // orderTaskEntity:       state.forms.orderTaskForm.fields,
         initialOrderTask:      state.forms.orderTaskForm.initialOrderTask,
         orderTaskId:           state.forms.orderTaskForm.taskId,
         priorityOptions:       state.forms.orderTaskForm.priorityOptions,
@@ -179,7 +195,7 @@ class OrderPage extends Component {
             saveOrderTask,
             resetModal,
             resetOrderTasksForm,
-            orderTaskEntity,
+            // orderTaskEntity,
             orderTaskId,
             orderTasks,
             initialOrderTask,
@@ -188,16 +204,16 @@ class OrderPage extends Component {
 
         const form = this.orderTaskFormRef.props.form;
 
-        form.validateFields(err => {
+        form.validateFields((err, values) => {
             if (!err) {
                 if (orderTasks.orderTasks.length >= 1) {
-                    if (compareOrderTasks(initialOrderTask, orderTaskEntity)) {
-                        saveOrderTask(orderTaskEntity, params.id, orderTaskId);
+                    if (compareOrderTasks(initialOrderTask, values)) {
+                        saveOrderTask(values, params.id, orderTaskId);
                     }
                     resetModal();
                     resetOrderTasksForm();
                 } else {
-                    saveOrderTask(orderTaskEntity, params.id, orderTaskId);
+                    saveOrderTask(values, params.id, orderTaskId);
                     resetModal();
                     resetOrderTasksForm();
                 }

@@ -29,7 +29,7 @@ export const DecoratedSlider = props => {
     } = props;
 
     const slider = getFieldDecorator(field, {
-        ...initDuration ? { initialValue: initDuration } : {},
+        ...initDuration ? { initialValue: initDuration } : { initialValue: void 0 },
         rules,
     })(
         <Slider

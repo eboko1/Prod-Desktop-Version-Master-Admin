@@ -17,15 +17,7 @@ export const CHANGE_MODAL_STATUS = `${prefix}/CHANGE_MODAL_STATUS`;
  * */
 
 const ReducerState = {
-    fields: {
-        status:       { value: void 0, name: 'status' },
-        priority:     { value: void 0, name: 'priority' },
-        responsible:  { value: void 0, name: 'responsible' },
-        stationName:  { value: void 0, name: 'stationName' },
-        deadlineDate: { value: void 0, name: 'deadlineDate' },
-        deadlineTime: { value: void 0, name: 'deadlineTime' },
-        comment:      { value: void 0, name: 'comment' },
-    },
+    fields: {},
     initialOrderTask:      null,
     progressStatusOptions: [
         {
@@ -123,54 +115,7 @@ export default function reducer(state = ReducerState, action) {
         case INIT_ORDER_TASKS_FORM:
             return {
                 ...state,
-                fields: {
-                    status: {
-                        value:   payload.status,
-                        name:    'status',
-                        dirty:   false,
-                        touched: true,
-                    },
-                    priority: {
-                        value:   payload.priority,
-                        name:    'priority',
-                        dirty:   false,
-                        touched: true,
-                    },
-                    responsible: {
-                        value:   payload.responsibleId,
-                        name:    'responsible',
-                        dirty:   false,
-                        touched: true,
-                    },
-                    stationName: {
-                        value:   payload.stationNum,
-                        name:    'stationName',
-                        dirty:   false,
-                        touched: true,
-                    },
-                    deadlineTime: {
-                        value: payload.deadlineDate
-                            ? moment(payload.deadlineDate)
-                            : payload.deadlineDate,
-                        name:    'deadlineTime',
-                        dirty:   false,
-                        touched: true,
-                    },
-                    deadlineDate: {
-                        value: payload.deadlineDate
-                            ? moment(payload.deadlineDate)
-                            : payload.deadlineDate,
-                        name:    'deadlineDate',
-                        dirty:   false,
-                        touched: true,
-                    },
-                    comment: {
-                        value:   payload.comment,
-                        name:    'comment',
-                        dirty:   false,
-                        touched: true,
-                    },
-                },
+                fields: {},
                 taskId:           payload.id,
                 initialOrderTask: payload,
             };
