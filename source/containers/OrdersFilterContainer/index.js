@@ -33,7 +33,7 @@ const RadioGroup = Radio.Group;
 const mapStateToProps = state => ({
     stats:         state.orders.stats,
     filter:        state.orders.filter,
-    orderComments: state.forms.universalFiltersForm.orderComments,
+    orderComments: state.forms.universalFiltersForm.filters.orderComments,
     currentStatus: _.get(state, 'router.location.state.status'),
 });
 
