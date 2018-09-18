@@ -42,7 +42,7 @@ export class SalaryReportForm extends Component {
 
         return (
             <div>
-                <Tabs type='card'>
+                <Tabs>
                     <TabPane
                         tab={ this.props.intl.formatMessage({
                             id: 'salary-report-form.period_report_title',

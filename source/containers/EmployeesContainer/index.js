@@ -11,6 +11,7 @@ import {
     setEmployeesStatus,
 } from 'core/employees/duck';
 import { initEmployeeForm } from 'core/forms/employeeForm/duck';
+import { permissions, isForbidden } from 'utils';
 
 import { Catcher } from 'commons';
 import { EmployeesTable } from 'components';
@@ -59,16 +60,44 @@ export default class EmployeesContainer extends Component {
 
         return (
             <Catcher>
-                <SalaryReportForm />
-                <EmployeesTable
-                    user={ user }
-                    deleteEmployee={ deleteEmployee }
-                    initEmployeeForm={ initEmployeeForm }
-                    employees={ employees }
-                    status={ status }
-                    setEmployeesStatus={ setEmployeesStatus }
-                    fetchEmployees={ fetchEmployees }
-                />
+                { isForbidden(user, permissions.EMPLOYEES_SALARIES) ? (
+                    <EmployeesTable
+                        user={ user }
+                        deleteEmployee={ deleteEmployee }
+                        initEmployeeForm={ initEmployeeForm }
+                        employees={ employees }
+                        status={ status }
+                        setEmployeesStatus={ setEmployeesStatus }
+                        fetchEmployees={ fetchEmployees }
+                    />
+                ) : (
+                    <Tabs type='cards'>
+                        <TabPane
+                            tab={ this.props.intl.formatMessage({
+                                id: 'navigation.employees',
+                            }) }
+                            key='1'
+                        >
+                            <EmployeesTable
+                                user={ user }
+                                deleteEmployee={ deleteEmployee }
+                                initEmployeeForm={ initEmployeeForm }
+                                employees={ employees }
+                                status={ status }
+                                setEmployeesStatus={ setEmployeesStatus }
+                                fetchEmployees={ fetchEmployees }
+                            />
+                        </TabPane>
+                        <TabPane
+                            tab={ this.props.intl.formatMessage({
+                                id: 'setting-salary.report_title',
+                            }) }
+                            key='2'
+                        >
+                            <SalaryReportForm />
+                        </TabPane>
+                    </Tabs>
+                ) }
             </Catcher>
         );
     }
