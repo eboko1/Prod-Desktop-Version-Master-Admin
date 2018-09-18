@@ -27,21 +27,48 @@ export const DELETE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS = `${prefix}/DELETE_EMPLOYEE
  * */
 
 const ReducerState = {
-    schedule:       null,
-    nonWorkingDays: null,
+    schedule:       [],
+    nonWorkingDays: [],
+    loadings:       false,
 };
 
 /* eslint-disable complexity */
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
+    const crudActions = [ CREATE_BREAK_EMPLOYEE_SCHEDULE, CREATE_EMPLOYEE_SCHEDULE, UPDATE_EMPLOYEE_SCHEDULE, UPDATE_BREAK_EMPLOYEE_SCHEDULE, CREATE_EMPLOYEE_SCHEDULE, CREATE_BREAK_EMPLOYEE_SCHEDULE ];
+    const crudSuccessActions = [ CREATE_EMPLOYEE_SCHEDULE, CREATE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS, UPDATE_EMPLOYEE_SCHEDULE_SUCCESS, DELETE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS, CREATE_EMPLOYEE_SCHEDULE_SUCCESS, CREATE_EMPLOYEE_BREAK_SCHEDULE_SUCCESS ];
+    if (crudActions.includes(type)) {
+        return {
+            ...state,
+            loading: true,
+        };
+    }
+
+    if (crudSuccessActions.includes(type)) {
+        return {
+            ...state,
+            loading: false,
+        };
+    }
+
     switch (type) {
+        case FETCH_EMPLOYEE_SCHEDULE:
+            return {
+                ...state,
+                schedule:       [],
+                nonWorkingDays: [],
+                loading:        true,
+            };
+
         case FETCH_EMPLOYEE_SCHEDULE_SUCCESS:
             return {
                 ...state,
                 schedule:       payload.schedule,
                 nonWorkingDays: payload.nonWorkingDays,
+                loading:        false,
             };
+
         default:
             return state;
     }

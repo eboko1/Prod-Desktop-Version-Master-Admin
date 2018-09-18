@@ -67,6 +67,7 @@ export default class SettingSalaryForm extends Component {
             user,
             form,
             fields,
+            loading,
         } = this.props;
 
         return (
@@ -75,6 +76,7 @@ export default class SettingSalaryForm extends Component {
                     <SalaryReportForm employeesIds={ [ employeeId ] } />
                 ) }
                 <SettingSalaryTable
+                    loading={ loading }
                     fields={ fields }
                     form={ form }
                     user={ user }

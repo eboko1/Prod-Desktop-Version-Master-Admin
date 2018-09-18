@@ -83,7 +83,7 @@ class ArrayBreakScheduleInput extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { initialBreakSchedule, forbiddenUpdate } = this.props;
+        const { initialBreakSchedule, forbiddenUpdate, loading } = this.props;
         const { formatMessage } = this.props.intl;
 
         const getDateTitle = (key, title) => {
@@ -172,7 +172,7 @@ class ArrayBreakScheduleInput extends Component {
                             onClick={ () => {
                                 const callback = entity => {
                                     const initialEntity =
-                                        initialBreakSchedule[ key ];
+                                        _.get(initialBreakSchedule, [ key ]);
 
                                     if (initialEntity) {
                                         const { id } = initialEntity;
@@ -188,7 +188,7 @@ class ArrayBreakScheduleInput extends Component {
                                 this.getBreakScheduleData(key, callback);
                             } }
                         />{ ' ' }
-                        { initialBreakSchedule[ key ] && (
+                        { _.get(initialBreakSchedule, [ key ]) && (
                             <Icon
                                 type='delete'
                                 className={ Styles.scheduleBreakIcon }
@@ -210,9 +210,10 @@ class ArrayBreakScheduleInput extends Component {
         return (
             <Catcher>
                 <Table
+                    loading={ loading }
                     rowClassName={ ({ key }) => {
                         const wasEdited = _.get(this.props.fields, [ 'schedule', key ]);
-                        const exists = initialBreakSchedule[ key ];
+                        const exists = _.get(initialBreakSchedule, [ key ]);
 
                         if (!exists) {
                             return Styles.newBreakScheduleRow;

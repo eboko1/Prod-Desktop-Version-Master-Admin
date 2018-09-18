@@ -64,6 +64,7 @@ export default class SettingSalaryTable extends Component {
             createSalary,
             updateSalary,
             deleteSalary,
+            loading,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { keys } = this.state;
@@ -81,6 +82,7 @@ export default class SettingSalaryTable extends Component {
         return (
             <Catcher>
                 <Table
+                    loading={ loading }
                     rowClassName={ ({ key }) => {
                         const wasEdited = _.get(this.props.fields, [ 'settingSalaries', key ]);
                         const exists = _.get(initialSettingSalaries, [ key ]);

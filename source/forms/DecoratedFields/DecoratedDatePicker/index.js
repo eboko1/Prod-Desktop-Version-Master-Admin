@@ -36,6 +36,7 @@ export const DecoratedDatePicker = props => {
         allowClear,
 
         onChange,
+        cnStyles,
     } = props;
 
     // const locale = {
@@ -97,6 +98,7 @@ export const DecoratedDatePicker = props => {
                 format={ format }
                 getCalendarContainer={ getCalendarContainer }
                 allowClear={ allowClear }
+                className={ cnStyles }
             />
         ) : (
             <DatePicker

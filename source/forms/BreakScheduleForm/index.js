@@ -22,7 +22,13 @@ import { withReduxForm2 } from 'utils';
 })
 export class BreakScheduleForm extends Component {
     render() {
-        const { initialBreakSchedule, form, intl, fields } = this.props;
+        const {
+            initialBreakSchedule,
+            form,
+            intl,
+            fields,
+            loading,
+        } = this.props;
         const {
             updateBreakSchedule,
             createBreakSchedule,
@@ -33,6 +39,7 @@ export class BreakScheduleForm extends Component {
 
         return (
             <ArrayBreakScheduleInput
+                loading={ loading }
                 fields={ fields }
                 forbiddenUpdate={ forbiddenUpdate }
                 resetFields={ resetFields }

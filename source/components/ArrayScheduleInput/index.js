@@ -61,7 +61,7 @@ export default class ArrayScheduleInput extends Component {
 
     render() {
         const { getFieldDecorator } = this.props.form;
-        const { initialSchedule, forbiddenUpdate } = this.props;
+        const { initialSchedule, forbiddenUpdate, loading } = this.props;
         const { formatMessage } = this.props.intl;
 
         const getHourTitle = (key, title) => {
@@ -141,7 +141,7 @@ export default class ArrayScheduleInput extends Component {
                             className={ Styles.scheduleIcon }
                             onClick={ () => {
                                 const callback = entity => {
-                                    const initialEntity = initialSchedule[ key ];
+                                    const initialEntity = _.get(initialSchedule, [ key ]);
                                     if (initialEntity) {
                                         const { id } = initialEntity;
                                         this.props.updateSchedule(id, entity);
@@ -153,7 +153,7 @@ export default class ArrayScheduleInput extends Component {
                                 this.getScheduleData(key, callback);
                             } }
                         />{ ' ' }
-                        { initialSchedule[ key ] && (
+                        { _.get(initialSchedule, [ key ]) && (
                             <Icon
                                 type='delete'
                                 className={ Styles.scheduleIcon }
@@ -175,9 +175,10 @@ export default class ArrayScheduleInput extends Component {
         return (
             <Catcher>
                 <Table
+                    loading={ loading }
                     rowClassName={ ({ key }) => {
                         const wasEdited = _.get(this.props.fields, [ 'schedule', key ]);
-                        const exists = initialSchedule[ key ];
+                        const exists = _.get(initialSchedule, [ key ]);
 
                         if (!exists) {
                             return Styles.newScheduleRow;

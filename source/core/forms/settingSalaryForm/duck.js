@@ -32,11 +32,28 @@ const ReducerState = {
         settingSalaries: [],
     },
     salaries: [],
+    loading:  false,
 };
 
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
+
+    const crudActions = [ CREATE_SALARY, UPDATE_SALARY, DELETE_SALARY ];
+    const crudSuccessActions = [ CREATE_SALARY_SUCCESS, UPDATE_SALARY_SUCCESS, DELETE_SALARY_SUCCESS ];
+    if (crudActions.includes(type)) {
+        return {
+            ...state,
+            loading: true,
+        };
+    }
+
+    if (crudSuccessActions.includes(type)) {
+        return {
+            ...state,
+            loading: false,
+        };
+    }
 
     switch (type) {
         case FETCH_SALARY:
@@ -44,12 +61,14 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 salaries: [],
                 fields:   {},
+                loading:  true,
             };
 
         case FETCH_SALARY_SUCCESS:
             return {
                 ...state,
                 salaries: payload,
+                loading:  false,
             };
 
         case ON_CHANGE_SETTING_SALARY_FORM:

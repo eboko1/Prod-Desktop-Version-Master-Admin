@@ -49,8 +49,10 @@ export class SalaryReportForm extends Component {
                         }) }
                         key='1'
                     >
-                        <Form layout='inline'>
+                        <Row type='flex' align='column'>
+                            <Col span='10'>
                             <DecoratedDatePicker
+                                cnStyles={ Styles.salaryReportSelect }
                                 field='filterRangeDate'
                                 ranges
                                 label={ null }
@@ -59,7 +61,8 @@ export class SalaryReportForm extends Component {
                                 getFieldDecorator={ form.getFieldDecorator }
                                 format='YYYY-MM-DD'
                             />
-                            <FormItem>
+                            </Col>
+                            <Col span='8'>
                                 <Button
                                     type='primary'
                                     disabled={
@@ -81,8 +84,8 @@ export class SalaryReportForm extends Component {
                                 >
                                     <FormattedMessage id='setting-salary.calculate' />
                                 </Button>
-                            </FormItem>
-                        </Form>
+                            </Col>
+                        </Row>
                     </TabPane>
                     <TabPane
                         tab={ this.props.intl.formatMessage({
@@ -139,7 +142,6 @@ export class SalaryReportForm extends Component {
                         </Row>
                     </TabPane>
                 </Tabs>
-                <br />
             </div>
         );
     }
