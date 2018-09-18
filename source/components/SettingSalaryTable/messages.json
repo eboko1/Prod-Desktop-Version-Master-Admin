@@ -54,11 +54,11 @@
         "DAY": "День",
         "WEEK": "Неделя",
         "MONTH": "Месяц",
-        "ORDER": "Заказ",
-        "ORDER_HOURS": "Часы заказа",
-        "ORDER_SERVICES": "Сервисы заказа",
-        "SPARE_PARTS_PROFIT": "Запасные части прибыли",
-        "ORDER_PROFIT": "Прибыль заказа"
+        "ORDER": "Общая сумма н/з",
+        "ORDER_HOURS": "Сумма н/ч",
+        "ORDER_SERVICES": "Сумма работ в н/з",
+        "SPARE_PARTS_PROFIT": "Прибыль по з/ч",
+        "ORDER_PROFIT": "Прибыль по н/з"
     },
     "uk": {
         "employee-table.photo": "Фото",
@@ -85,10 +85,10 @@
         "DAY": "День",
         "WEEK": "Тиждень",
         "MONTH": "Місяць",
-        "ORDER": "Замовлення",
-        "ORDER_HOURS": "Часи замовлення",
-        "ORDER_SERVICES": "Сервіси замовлення",
-        "SPARE_PARTS_PROFIT": "Запасні частини прибутку",
-        "ORDER_PROFIT": "Прибуток замовлення"
+        "ORDER": "Загальна сума н/з",
+        "ORDER_HOURS": "Сума н/г",
+        "ORDER_SERVICES": "Сума робіт в н/з",
+        "SPARE_PARTS_PROFIT": "Прибуток по з/ч",
+        "ORDER_PROFIT": "Прибуток по н/з"
     }
 }
