@@ -56,9 +56,9 @@ class EditEmployeePage extends Component {
 
     saveEmployee = () => {
         const form = this.employeeFormRef.props.form;
-        form.validateFields(err => {
+        form.validateFields((err, values)  => {
             if (!err) {
-                this.props.saveEmployee(this.props.employeesData);
+                this.props.saveEmployee(values);
             }
         });
     };

@@ -31,7 +31,6 @@ let cx = classNames.bind(Styles);
 
 const mapStateToProps = state => ({
     employees:       state.employees.employees,
-    employeesData:   state.forms.employeeForm.fields,
     employeeName:    state.forms.employeeForm.employeeName,
     initialEmployee: state.forms.employeeForm.initialEmployee,
     user:            state.auth,
@@ -58,7 +57,8 @@ export default class EditEmployeePage extends Component {
     }
 
     fireEmployee = () => {
-        const { employeesData } = this.props;
+        const form = this.employeeFormRef.props.form;
+        const employeesData = form.getFieldsValue();
         const id = this.props.match.params.id;
         this.props.fireEmployee(employeesData, id, moment());
     };
@@ -69,11 +69,10 @@ export default class EditEmployeePage extends Component {
 
     saveEmployee = () => {
         const form = this.employeeFormRef.props.form;
-        form.validateFields(err => {
+        form.validateFields((err, values) => {
             if (!err) {
-                const { employeesData } = this.props;
                 const id = this.props.match.params.id;
-                this.props.saveEmployee(employeesData, id);
+                this.props.saveEmployee(values, id);
             }
         });
     };

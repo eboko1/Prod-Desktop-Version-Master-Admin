@@ -3,20 +3,19 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Button } from 'antd';
 import moment from 'moment';
+import _ from 'lodash';
 
 //proj
 import { onChangeEmployeeForm } from 'core/forms/employeeForm/duck';
 
-import {
-    DecoratedInputPhone,
-    DecoratedInput,
-    DecoratedDatePicker,
-} from 'forms/DecoratedFields';
+import { PhoneNumberInput } from 'components';
+import { DecoratedInput, DecoratedDatePicker } from 'forms/DecoratedFields';
 import { withReduxForm2, permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
+const FormItem = Form.Item;
 const formItemLayout = {
     labelCol: {
         xs:  { span: 24 },
@@ -65,7 +64,7 @@ export class EmployeeForm extends Component {
                         }) }
                         formItem
                         formItemLayout={ formItemLayout }
-                        initialValue={ initialEmployee && initialEmployee.name }
+                        initialValue={  _.get(initialEmployee, 'name') }
                         rules={ [
                             {
                                 required: true,
@@ -86,9 +85,7 @@ export class EmployeeForm extends Component {
                         }) }
                         formItem
                         formItemLayout={ formItemLayout }
-                        initialValue={
-                            initialEmployee && initialEmployee.surname
-                        }
+                        initialValue={ _.get(initialEmployee, 'surname') }
                         rules={ [
                             {
                                 required: true,
@@ -101,64 +98,21 @@ export class EmployeeForm extends Component {
                         getPopupContainer={ trigger => trigger.parentNode }
                         getFieldDecorator={ getFieldDecorator }
                     />
-                    <DecoratedInputPhone
-                        field='phone'
+                    <FormItem
                         label={ <FormattedMessage id='employee.phone' /> }
-                        placeholder={ formatMessage({
-                            id: 'employee.phone_placeholder',
-                        }) }
-                        formItem
-                        formItemLayout={ formItemLayout }
-                        initialValue={ initialEmployee && initialEmployee.phone }
-                        rules={ [
-                            {
-                                required: true,
-                                message:  formatMessage({
-                                    id: 'required_field',
-                                }),
-                            },
-                            {
-                                validator: (rule, value, callback) => {
-                                    let reg = /^\d+$/;
-                                    if (reg.test(value)) {
-                                        callback();
-                                    } else {
-                                        callback(
-                                            new Error(
-                                                formatMessage({
-                                                    id: 'employee.only_numbers',
-                                                }),
-                                            ),
-                                        );
-                                    }
-
-                                    return true;
-                                },
-                                message: '',
-                            },
-                            {
-                                validator: (rule, value, callback) => {
-                                    if (value && value.length === 10) {
-                                        callback();
-                                    } else {
-                                        callback(
-                                            new Error(
-                                                formatMessage({
-                                                    id: 'employee.full_phone',
-                                                }),
-                                            ),
-                                        );
-                                    }
-
-                                    return true;
-                                },
-                                message: '',
-                            },
-                        ] }
+                        { ...formItemLayout }
                         className={ Styles.selectMargin }
-                        getPopupContainer={ trigger => trigger.parentNode }
-                        getFieldDecorator={ getFieldDecorator }
-                    />
+                    >
+                        <PhoneNumberInput
+                            intl={ this.props.intl }
+                            fieldName='phone'
+                            fieldTitle={
+                                <FormattedMessage id='employee.phone' />
+                            }
+                            initialPhoneNumber={ _.get(initialEmployee, 'phone') }
+                            form={ this.props.form }
+                        />
+                    </FormItem>
                     <DecoratedInput
                         field='email'
                         label={ <FormattedMessage id='employee.email' /> }
@@ -167,7 +121,7 @@ export class EmployeeForm extends Component {
                         }) }
                         formItem
                         formItemLayout={ formItemLayout }
-                        initialValue={ initialEmployee && initialEmployee.email }
+                        initialValue={ _.get(initialEmployee, 'email') }
                         autosize={ { minRows: 2, maxRows: 6 } }
                         rules={ [
                             {
@@ -210,9 +164,7 @@ export class EmployeeForm extends Component {
                         }) }
                         formItem
                         formItemLayout={ formItemLayout }
-                        initialValue={
-                            initialEmployee && initialEmployee.jobTitle
-                        }
+                        initialValue={ _.get(initialEmployee, 'jobTitle') }
                         autosize={ { minRows: 2, maxRows: 6 } }
                         rules={ [
                             {

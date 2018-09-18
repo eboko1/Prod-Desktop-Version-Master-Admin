@@ -35,6 +35,8 @@ export const DecoratedInputNumber = props => {
         placeholder,
         icon,
         iconType,
+
+        cnStyles,
     } = props;
 
     const defaultValue = [ initValue, initialValue ].find(_.isNumber);
@@ -46,6 +48,7 @@ export const DecoratedInputNumber = props => {
             : { initialValue: void 0 },
     })(
         <InputNumber
+            className={ cnStyles }
             min={ min }
             max={ max }
             style={ style }

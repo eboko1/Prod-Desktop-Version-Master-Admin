@@ -57,62 +57,7 @@ export default function reducer(state = ReducerState, action) {
 
             return {
                 ...state,
-                fields: {
-                    email: {
-                        value: payload.email||'',
-                        name:  'email',
-
-                    },
-                    phone: {
-                        value: payload.phone,
-                        name:  'phone',
-
-                    },
-                    enabled: {
-                        value: payload.enabled,
-                        name:  'enabled',
-
-                    },
-                    hireDate: {
-                        value: moment(payload.hireDate),
-                        name:  'hireDate',
-
-                    },
-                    jobTitle: {
-                        value: payload.jobTitle,
-                        name:  'jobTitle',
-
-                    },
-                    name: {
-                        value:   payload.name,
-                        name:    'name',
-                        touched: true,
-                    },
-                    sendSmsCancelOrder: {
-                        value:   payload.sendSmsCancelOrder,
-                        name:    'sendSmsCancelOrder',
-                        dirty:   false,
-                        touched: true,
-                    },
-                    sendSmsManualOrder: {
-                        value:   payload.sendSmsManualOrder,
-                        name:    'sendSmsManualOrder',
-                        dirty:   false,
-                        touched: true,
-                    },
-                    sendSmsNewOrder: {
-                        value:   payload.sendSmsNewOrder,
-                        name:    'sendSmsNewOrder',
-                        dirty:   false,
-                        touched: true,
-                    },
-                    surname: {
-                        value:   payload.surname,
-                        name:    'surname',
-                        touched: true,
-                    },
-    
-                },
+                fields: {},
                 initialEmployee: payload,
                 employeeName:    `${payload.surname} ${payload.name}`,
             };

@@ -20,6 +20,7 @@ import Rating from './Rating';
 import { Like } from './Like';
 import EmployeeFeedback from './EmployeeFeedback';
 import EmployeeStatistics from './EmployeeStatistics';
+import PhoneNumberInput from './PhoneNumberInput';
 
 export {
     SettingSalaryTable,
@@ -45,4 +46,5 @@ export {
     Like,
     EmployeeFeedback,
     EmployeeStatistics,
+    PhoneNumberInput,
 };
