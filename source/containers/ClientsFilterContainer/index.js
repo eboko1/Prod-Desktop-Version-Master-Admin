@@ -39,8 +39,9 @@ export default class OrdersFilterContainer extends Component {
     constructor(props) {
         super(props);
         this.handleClientsSearch = _.debounce(value => {
-            const { setClientsSearchFilter, fetchClients, filter } = this.props;
+            const { setClientsSearchFilter, fetchClients, filter, setSearchQuery } = this.props;
             setClientsSearchFilter(value);
+            setSearchQuery(value);
             fetchClients({ sort: { page: 1 }, ...filter });
         }, 1000);
     }
