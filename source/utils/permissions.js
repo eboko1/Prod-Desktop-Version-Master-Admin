@@ -38,6 +38,9 @@ const GET_CLIENTS_ADDITIONAL_INFORMATION = 'GET_CLIENTS_ADDITIONAL_INFORMATION';
 // Tasks
 const GET_ALL_TASKS = 'GET_ALL_TASKS';
 
+// Other
+const DEMO = 'DEMO';
+
 export const permissions = Object.freeze({
     ACCESS_ORDER_BODY,
     ACCESS_ORDER_CALLS,
@@ -71,6 +74,8 @@ export const permissions = Object.freeze({
     GET_CLIENTS_ADDITIONAL_INFORMATION,
 
     GET_ALL_TASKS,
+
+    DEMO,
 });
 
 export const DASHBOARD_PERMISSIONS = 'DASHBOARD_PERMISSIONS';
@@ -78,6 +83,7 @@ export const ORDERS_PERMISSIONS = 'ORDERS_PERMISSIONS';
 export const CLIENTS_PERMISSIONS = 'CLIENTS_PERMISSIONS';
 export const TASKS_PERMISSIONS = 'TASKS_PERMISSIONS';
 export const EMPLOYEES_PERMISSIONS = 'EMPLOYEES_PERMISSIONS';
+export const OTHER_PERMISSIONS = 'OTHER_PERMISSIONS';
 
 export const groupedPermissions = {
     [ DASHBOARD_PERMISSIONS ]: [ ACCESS_DASHBOARD, EDIT_DASHBOARD_ORDER, OPEN_DASHBOARD_ORDER, CREATE_DASHBOARD_ORDER ],
@@ -85,6 +91,7 @@ export const groupedPermissions = {
     [ CLIENTS_PERMISSIONS ]:   [ GET_CLIENTS, CREATE_EDIT_DELETE_CLIENTS, CREATE_EDIT_DELETE_CLIENT_VEHICLES, FILTER_CLIENTS, GET_CLIENTS_BASIC_INFORMATION, GET_CLIENTS_ADDITIONAL_INFORMATION ],
     [ TASKS_PERMISSIONS ]:     [ GET_ALL_TASKS ],
     [ EMPLOYEES_PERMISSIONS ]: [ GET_EMPLOYEES, CREATE_EDIT_DELETE_EMPLOYEES, EMPLOYEES_SALARIES ],
+    [ OTHER_PERMISSIONS ]:     [ DEMO ],
 };
 
 export const isForbidden = ({ isAdmin, scope }, grant) =>
@@ -105,6 +112,9 @@ export const getGroupsLabels = intl => ({
     }),
     [ ORDERS_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.orders_permissions',
+    }),
+    [ OTHER_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.other_permissions',
     }),
 });
 
@@ -179,5 +189,8 @@ export const getPermissionsLabels = intl => ({
 
     [ GET_ALL_TASKS ]: intl.formatMessage({
         id: 'roles.get_all_tasks',
+    }),
+    [ DEMO ]: intl.formatMessage({
+        id: 'roles.demo',
     }),
 });

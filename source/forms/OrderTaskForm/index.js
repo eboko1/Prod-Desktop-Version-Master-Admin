@@ -261,7 +261,7 @@ export class OrderTaskForm extends Component {
                             { stations.map(({ name, num }) => {
                                 return (
                                     <Option value={ num } key={ String(num) }>
-                                        { name }
+                                        { name || num }
                                     </Option>
                                 );
                             }) }

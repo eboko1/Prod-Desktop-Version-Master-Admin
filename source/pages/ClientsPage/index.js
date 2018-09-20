@@ -16,7 +16,7 @@ import {
     UniversalFilters,
 } from 'containers';
 import { permissions, isForbidden } from 'utils';
-import { setUniversalFilters } from 'core/clients/duck';
+import { setUniversalFilters, setSearchQuery } from 'core/clients/duck';
 
 // own
 import Styles from './styles.m.css';
@@ -28,6 +28,7 @@ const mapStateToProps = state => ({
     user:              state.auth,
     stats:             state.clients.stats,
     universalFilter:   state.clients.universalFilter,
+    searchQuery:       state.clients.searchQuery,
 });
 
 const mapDispatchToProps = {
@@ -35,6 +36,7 @@ const mapDispatchToProps = {
     resetModal,
     fetchUniversalFiltersForm,
     setUniversalFilters,
+    setSearchQuery,
 };
 
 @connect(
@@ -51,6 +53,7 @@ export default class ClientsPage extends Component {
             addClientFormData,
             collapsed,
             stats,
+            setSearchQuery,
         } = this.props;
 
         return (
@@ -77,7 +80,7 @@ export default class ClientsPage extends Component {
                     className={ `${Styles.filters} ${collapsed &&
                         Styles.filtersCollapsed}` }
                 >
-                    <ClientsFilterContainer />
+                    <ClientsFilterContainer setSearchQuery={ setSearchQuery } />
                     <UniversalFilters
                         areFiltersDisabled={ isForbidden(
                             this.props.user,
@@ -92,7 +95,7 @@ export default class ClientsPage extends Component {
                     <ClientsContainer />
                 </section>
                 <AddClientModal
-                    // searchQuery={ form.getFieldValue('searchClientQuery') }
+                    searchQuery={ this.props.searchQuery }
                     wrappedComponentRef={ this.clientsPageRef }
                     visible={ modal }
                     resetModal={ resetModal }

@@ -20,6 +20,8 @@ export const INVITE_CLIENTS_SUCCESS = `${prefix}/INVITE_CLIENTS_SUCCESS`;
 export const SET_INVITE = `${prefix}/SET_INVITE`;
 export const CREATE_INVITE = `${prefix}/CREATE_INVITE`;
 
+export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
+
 /**
  * Reducer
  * */
@@ -28,6 +30,7 @@ const ReducerState = {
     clients:         [],
     filter:          {},
     sort:            { page: 1, order: 'asc' },
+    searchQuery:     '',
     universalFilter: {},
     invite:          {
         client:          null,
@@ -82,6 +85,12 @@ export default function reducer(state = ReducerState, action) {
                     ...state.filter,
                     query: payload,
                 },
+            };
+
+        case SET_SEARCH_QUERY:
+            return {
+                ...state,
+                searchQuery: payload,
             };
 
         case INVITE_CLIENTS_SUCCESS:
@@ -156,4 +165,9 @@ export const createInvite = invite => ({
 export const setUniversalFilters = universalFilters => ({
     type:    SET_UNIVERSAL_FILTERS,
     payload: universalFilters,
+});
+
+export const setSearchQuery = searchQuery => ({
+    type:    SET_SEARCH_QUERY,
+    payload: searchQuery,
 });
