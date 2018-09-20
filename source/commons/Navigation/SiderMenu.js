@@ -124,7 +124,10 @@ export default class SiderMenu extends Component {
                         }
 
                         return (
-                            <Menu.Item key={ key }>
+                            <Menu.Item
+                                key={ key }
+                                disabled={ disabled && disabled(user) }
+                            >
                                 <Link to={ link }>
                                     <Icon type={ iconType } />
                                     <FormattedMessage id={ name } />

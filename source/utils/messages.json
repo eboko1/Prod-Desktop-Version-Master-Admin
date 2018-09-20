@@ -91,6 +91,7 @@
         "roles.get_clients_basic_information": "Get client (basic)",
         "roles.get_clients_additional_information": "Get client (advanced)",
         "roles.get_all_tasks": "Access all tasks",
+        "roles.demo": "Demo",
         "horse_power": "h.p.",
         "select_manager": "Choose manager",
         "my_tasks": "My tasks",
@@ -98,7 +99,8 @@
         "roles.tasks_permissions": "Tasks",
         "roles.clients_permissions": "Clients",
         "roles.employees_permissions": "Employees",
-        "roles.orders_permissions": "Orders"
+        "roles.orders_permissions": "Orders",
+        "roles.other_permissions": "Other"
     },
     "ru": {
         "currency": "грн.",
@@ -192,6 +194,7 @@
         "roles.get_clients_basic_information": "Информация клиента (основная)",
         "roles.get_clients_additional_information": "Информация клиента (дополнительная)",
         "roles.get_all_tasks": "Доступ ко всем задачам",
+        "roles.demo": "Демо",
         "horse_power": "л.с.",
         "select_manager": "Выберите менеджера",
         "my_tasks": "Мои задачи",
@@ -199,7 +202,8 @@
         "roles.tasks_permissions": "Задачи",
         "roles.clients_permissions": "Клиенты",
         "roles.employees_permissions": "Работники",
-        "roles.orders_permissions": "Заказы"
+        "roles.orders_permissions": "Заказы",
+        "roles.other_permissions": "Другое"
     },
     "uk": {
         "currency": "грн.",
@@ -293,6 +297,7 @@
         "roles.get_clients_basic_information": "Інформація клієнта (основна)",
         "roles.get_clients_additional_information": "Інформація клієнта (додаткова)",
         "roles.get_all_tasks": "Доступ до всіх задач",
+        "roles.demo": "Демо",
         "horse_power": "к.с.",
         "select_manager": "Виберіть менеджера",
         "my_tasks": "Мої задачі",
@@ -300,6 +305,7 @@
         "roles.tasks_permissions": "Задачі",
         "roles.clients_permissions": "Клієнти",
         "roles.employees_permissions": "Працівники",
-        "roles.orders_permissions": "Замовлення"
+        "roles.orders_permissions": "Замовлення",
+        "roles.other_permissions": "Інше"
     }
 }
