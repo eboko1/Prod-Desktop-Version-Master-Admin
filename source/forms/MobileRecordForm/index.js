@@ -51,8 +51,8 @@ const formItemLayout = {
 })
 export class MobileRecordForm extends Component {
     fetchAvailableHours(station, date) {
-        this.props.form.resetFields([ 'beginTime' ]); // TODO doesn't work
-        this.props.fetchAvailableHours(station, date);
+        this.props.form.resetFields([ 'beginTime' ]);
+        this.props.fetchAvailableHours(station, date, _.get(this.props, 'order.id'));
     }
 
     render() {
@@ -227,7 +227,7 @@ export class MobileRecordForm extends Component {
                             'beginDate',
                         );
                         if (beginDate) {
-                            this.props.fetchAvailableHours(value, beginDate);
+                            this.fetchAvailableHours(value, beginDate);
                         }
                     } }
                     optionValue='num'
@@ -247,7 +247,7 @@ export class MobileRecordForm extends Component {
                             'station',
                         );
                         if (station) {
-                            this.props.fetchAvailableHours(station, value);
+                            this.fetchAvailableHours(station, value);
                         }
                     } }
                     { ...formItemLayout }

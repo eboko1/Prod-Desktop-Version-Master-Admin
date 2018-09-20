@@ -349,9 +349,9 @@ export const createInviteOrderSuccess = response => ({
     payload: response,
 });
 
-export const fetchAvailableHours = (station, date) => ({
+export const fetchAvailableHours = (station, date, orderId) => ({
     type: FETCH_AVAILABLE_HOURS,
-    payload: { station, date },
+    payload: { station, date, orderId },
 });
 
 export const fetchAvailableHoursSuccess = availableHours => ({

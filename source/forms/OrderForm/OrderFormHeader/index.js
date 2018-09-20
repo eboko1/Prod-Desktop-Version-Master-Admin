@@ -68,6 +68,11 @@ export default class OrderFormHeader extends Component {
         return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
     }
 
+    fetchAvailableHours(station, date) {
+        this.props.form.resetFields([ 'beginTime' ]);
+        this.props.fetchAvailableHours(station, date, this.props.orderId);
+    }
+
     render() {
         const dateBlock = this._renderDateBlock();
         const masterBlock = this._renderMasterBlock();
@@ -169,6 +174,14 @@ export default class OrderFormHeader extends Component {
                     format={ 'YYYY-MM-DD' } // HH:mm
                     showTime={ false }
                     initialValue={ momentBeginDatetime }
+                    onChange={ value => {
+                        const station = this.props.form.getFieldValue(
+                            'station',
+                        );
+                        if (station) {
+                            this.fetchAvailableHours(station, value);
+                        }
+                    } }
                 />
                 <DecoratedSelect
                     field='station'
@@ -190,6 +203,14 @@ export default class OrderFormHeader extends Component {
                     placeholder={ formatMessage({
                         id: 'add_order_form.select_station',
                     }) }
+                    onSelect={ value => {
+                        const beginDate = this.props.form.getFieldValue(
+                            'beginDate',
+                        );
+                        if (beginDate) {
+                            this.fetchAvailableHours(value, beginDate);
+                        }
+                    } }
                     disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={
                         _.get(fetchedOrder, 'order.stationNum') ||
@@ -208,14 +229,40 @@ export default class OrderFormHeader extends Component {
                 </DecoratedSelect>
                 <DecoratedTimePicker
                     formItem
+                    disabled={
+                        this.bodyUpdateIsForbidden() ||
+                        !this.props.form.getFieldValue('beginDate') ||
+                        !this.props.form.getFieldValue('station')
+                    }
                     formItemLayout={ formHeaderItemLayout }
-                    disabled={ this.bodyUpdateIsForbidden() }
                     defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                     field='beginTime'
                     hasFeedback
-                    disabledHours={ disabledHours }
-                    disabledMinutes={ disabledMinutes }
-                    disabledSeconds={ disabledSeconds }
+                    disabledHours={ () => {
+                        const availableHours = this.props.availableHours || [];
+
+                        return _.difference(
+                            Array(24)
+                                .fill(1)
+                                .map((value, index) => index),
+                            availableHours.map(availableHour =>
+                                Number(moment(availableHour).format('HH'))),
+                        );
+                    } }
+                    disabledMinutes={ hour => {
+                        const availableHours = this.props.availableHours || [];
+
+                        const availableMinutes = availableHours
+                            .map(availableHour => moment(availableHour))
+                            .filter(
+                                availableHour =>
+                                    Number(availableHour.format('HH')) === hour,
+                            )
+                            .map(availableHour =>
+                                Number(availableHour.format('mm')));
+
+                        return _.difference([ 0, 30 ], availableMinutes);
+                    } }
                     label={ <FormattedMessage id='time' /> }
                     formatMessage={ formatMessage }
                     className={ Styles.datePanelItem }
