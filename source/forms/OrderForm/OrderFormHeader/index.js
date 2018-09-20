@@ -190,9 +190,6 @@ export default class OrderFormHeader extends Component {
                     placeholder={ formatMessage({
                         id: 'add_order_form.select_station',
                     }) }
-                    options={ stations }
-                    optionValue='num'
-                    optionLabel='name'
                     disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={
                         _.get(fetchedOrder, 'order.stationNum') ||
@@ -200,7 +197,15 @@ export default class OrderFormHeader extends Component {
                             ? void 0
                             : _.get(location, 'state.stationNum'))
                     }
-                />
+                >
+                    { stations.map(({ name, num }) => {
+                        return (
+                            <Option value={ num } key={ String(num) }>
+                                { name || String(num) }
+                            </Option>
+                        );
+                    }) }
+                </DecoratedSelect>
                 <DecoratedTimePicker
                     formItem
                     formItemLayout={ formHeaderItemLayout }
