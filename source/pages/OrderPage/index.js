@@ -75,7 +75,10 @@ const compareOrderTasks = (initialOrderTask, orderTask) => {
         stationNum: orderTask.stationName,
     };
 
-    return !_.isEqual(_.omitBy(orderTaskEntity, _.isNil), _.omitBy(initialOrderTaskEntity, _.isNil));
+    return !_.isEqual(
+        _.omitBy(orderTaskEntity, _.isNil),
+        _.omitBy(initialOrderTaskEntity, _.isNil),
+    );
 };
 
 const mapStateToProps = state => {
@@ -161,7 +164,9 @@ class OrderPage extends Component {
     _onStatusChange = (status, redirectStatus, options) => {
         const { allServices, allDetails, selectedClient, history } = this.props;
         const form = this.orderFormRef.props.form;
-        const requiredFields = requiredFieldsOnStatuses(form.getFieldsValue())[ status ];
+        const requiredFields = requiredFieldsOnStatuses(form.getFieldsValue())[
+            status
+        ];
         const { id } = this.props.match.params;
 
         form.validateFields(requiredFields, err => {
@@ -237,11 +242,7 @@ class OrderPage extends Component {
         const form = this.orderFormRef.props.form;
 
         const orderData = form.getFieldsValue();
-
-        const orderFormEntity = {
-            selectedClient,
-            ...orderData,
-        };
+        const orderFormEntity = { selectedClient, ...orderData };
 
         const orderEntity = convertFieldsValuesToDbEntity(
             orderFormEntity,
@@ -264,6 +265,14 @@ class OrderPage extends Component {
             .toPairs()
             .value();
 
+        const servicesLengthsEqual =
+            _.get(orderEntity, 'services', []).length ===
+            (fetchedOrder.orderServices || []).length;
+
+        const detailsLengthsEqual =
+            _.get(orderEntity, 'details', []).length ===
+            (fetchedOrder.orderDetails || []).length;
+
         const areInputValuesEqual = (originValue, fieldValue) => {
             return !originValue && !fieldValue || originValue === fieldValue;
         };
@@ -279,6 +288,8 @@ class OrderPage extends Component {
 
         const ordersAreSame =
             identicalOrders &&
+            servicesLengthsEqual &&
+            detailsLengthsEqual &&
             !fields.services.length &&
             !fields.details.length;
 
@@ -397,16 +408,16 @@ class OrderPage extends Component {
         ) : (
             <Layout
                 title={
-                    !status || !num ?
+                    !status || !num ? 
                         ''
-                        :
+                        : 
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-
+                    
                 }
                 description={
                     <>
