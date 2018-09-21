@@ -9,7 +9,7 @@
         "employee-table.filter.all": "All",
         "employee-table.working": "Working",
         "employee-table.filter.fired": "Fired",
-        "employee-table.filter.fired": "Working"
+        "employee-table.filter.working": "Working"
     },
     "ru": {
         "employee-table.photo": "Фото",
