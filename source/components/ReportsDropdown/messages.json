@@ -1,11 +1,11 @@
 {
     "en": {
-        "calculationReport": "Calculation",
-        "businessOrderReport": "Business Order Report",
+        "calculationReport": "Repair estimate",
+        "businessOrderReport": "Work order",
         "clientOrderReport": "Client Order Report",
-        "diagnosticsActReport": "Diagnostics Act Report",
-        "actOfAcceptanceReport": "Act Of Acceptance Report",
-        "completedWorkReport": "Completed Work Report",
+        "diagnosticsActReport": "Diagnostics report",
+        "actOfAcceptanceReport": "Transfer report",
+        "completedWorkReport": "Purchase order",
         "invoiceReport": "Invoice"
     },
     "ru": {
