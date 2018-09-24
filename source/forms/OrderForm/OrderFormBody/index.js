@@ -331,13 +331,13 @@ export default class OrderFormBody extends Component {
                             <div className={ Styles.comboField }>
                                 { _.get(selectedVehicle, 'number') && (
                                     <div>
-                                        Номер:{ ' ' }
+                                        <FormattedMessage id='add_client_form.number' />:{ ' ' }
                                         { _.get(selectedVehicle, 'number') }
                                     </div>
                                 ) }
                                 { _.get(selectedVehicle, 'vin') && (
                                     <div>
-                                        VIN: { _.get(selectedVehicle, 'vin') }
+                                        <FormattedMessage id='add_client_form.vin' />: { _.get(selectedVehicle, 'vin') }
                                     </div>
                                 ) }
                             </div>

@@ -6,7 +6,7 @@
         "order-status.call": "Call",
         "order-status.not_complete": "New",
         "order-status.reserve": "Reserve",
-        "order-status.required": "Required",
+        "order-status.required": "Postponed",
         "order-status.approve": "Approve",
         "order-status.progress": "Repair",
         "order-status.success": "Success",
