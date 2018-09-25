@@ -1,7 +1,7 @@
 {
     "en": {
         "orders-filter.search_placeholder":
-            "Search by number, client, master, phone, auto...",
+            "Search by number, client, mechanic, phone, car...",
         "orders-filter.filter_by_refusal_reason": "Filter by 'Refusal reason'"
     },
     "ru": {

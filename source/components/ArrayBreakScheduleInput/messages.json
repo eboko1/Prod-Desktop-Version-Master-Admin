@@ -11,8 +11,8 @@
         "array-break-schedule.add_break_schedule": "Add day offs",
         "array-break-schedule.break_type": "Type",
         "array-break-schedule.comment": "Comment",
-        "array-break-schedule.beginDate": "Begin date",
-        "array-break-schedule.endDate": "End date"
+        "array-break-schedule.beginDate": "From",
+        "array-break-schedule.endDate": "To"
     },
     "ru": {
         "absenteeism": "Прогул",

@@ -236,7 +236,7 @@ export default class OrderFormTabs extends Component {
                         ] }
                         placeholder={ formatMessage({
                             id:             'add_order_form.business_comment',
-                            defaultMessage: 'Business comment',
+                            defaultMessage: 'Work Order comments',
                         }) }
                         autosize={ { minRows: 2, maxRows: 6 } }
                     />
@@ -263,7 +263,7 @@ export default class OrderFormTabs extends Component {
                         ] }
                         placeholder={ formatMessage({
                             id:             'add_order_form.service_recommendations',
-                            defaultMessage: 'Service recommendations',
+                            defaultMessage: 'Garage recommendations',
                         }) }
                         autosize={ { minRows: 2, maxRows: 6 } }
                     />
