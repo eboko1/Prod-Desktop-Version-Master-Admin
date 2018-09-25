@@ -148,7 +148,7 @@ class ArrayBreakScheduleInput extends Component {
                     ] }
                     initialValue={ _.get(initialBreakSchedule, [ key, 'type' ]) }
                 >
-                    { [ 'absenteeism', 'holiday', 'cant_work', 'legal_holiday', 'valid_reason', 'sick_leave', 'vacation' ].map(item => {
+                    { [ 'holiday', 'vacation', 'sick_leave', 'legal_holiday', 'absenteeism', 'cant_work' ].map(item => {
                         return (
                             <Option value={ item } key={ item }>
                                 <FormattedMessage id={ item } />
