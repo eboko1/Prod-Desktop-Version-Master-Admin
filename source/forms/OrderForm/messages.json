@@ -3,7 +3,7 @@
         "add_order_form.enrollment_date": "Appointment date",
         "add_order_form.select_date": "Provide date",
         "add_order_form.station": "Working place",
-        "add_order_form.select_station": "Select Working Place",
+        "add_order_form.select_station": "Select working place",
         "add_order_form.manager": "Service Advisor",
         "add_order_form.client": "Client",
         "add_order_form.search_client": "Search client",
