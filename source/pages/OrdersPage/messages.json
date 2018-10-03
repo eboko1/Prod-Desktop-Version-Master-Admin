@@ -8,7 +8,7 @@
         "orders-page.week": "This Week",
         "orders-page.month": "This Month",
         "orders-page.add_appointment": "Add Application",
-        "orders-page.invite_to_service": "Invite To Service Station"
+        "orders-page.invite_to_service": "Invite to next visit"
     },
     "ru": {
         "orders-page.title": "Заказы",

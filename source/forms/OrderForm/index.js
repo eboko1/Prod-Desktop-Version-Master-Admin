@@ -8,6 +8,7 @@ import _ from 'lodash';
 import {
     onChangeOrderForm,
     setClientSelection,
+    fetchAvailableHours,
 } from 'core/forms/orderForm/duck';
 import { resetModal } from 'core/modals/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
@@ -32,6 +33,7 @@ import Styles from './styles.m.css';
         setClientSelection,
         initOrderTasksForm,
         resetModal,
+        fetchAvailableHours,
     },
     mapStateToProps: state => ({
         modal:                  state.modals.modal,

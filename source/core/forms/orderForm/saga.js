@@ -254,12 +254,13 @@ export function* fetchAvailableHoursSaga() {
     while (true) {
         try {
             const {
-                payload: { station, date },
+                payload: { station, date, orderId },
             } = yield take(FETCH_AVAILABLE_HOURS);
 
             const data = yield call(fetchAPI, 'GET', 'dashboard/free_hours', {
                 stationNum: station,
                 date:       date.toISOString(),
+                orderId,
             });
 
             yield put(fetchAvailableHoursSuccess(data));

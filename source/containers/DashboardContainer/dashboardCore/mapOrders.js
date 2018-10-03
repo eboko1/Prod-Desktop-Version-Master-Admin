@@ -1,7 +1,5 @@
 import _ from 'lodash';
-import moment from 'moment-timezone';
-
-const TIMEZONE = 'Europe/Kiev';
+import moment from 'moment';
 
 const mapOrders = (beginHour, maxRows, orders) =>
     _(orders)
@@ -10,7 +8,7 @@ const mapOrders = (beginHour, maxRows, orders) =>
             const { duration, beginDatetime } = order;
             const numberOfHalfHours = Math.ceil((duration || 0.5) * 2);
 
-            const momentBeginDatetime = moment(beginDatetime).tz(TIMEZONE);
+            const momentBeginDatetime = moment(beginDatetime);
 
             const beginHours = momentBeginDatetime.hours();
             const beginMinutes = momentBeginDatetime.minutes();

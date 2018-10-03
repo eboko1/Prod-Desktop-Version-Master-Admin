@@ -2,7 +2,7 @@
     "en": {
         "order_status_icon.new": "New",
         "order_status_icon.a_call": "Call",
-        "order_status_icon.reserve": "Reserve",
+        "order_status_icon.reserve": "Reservation",
         "order_status_icon.questionable": "Questionable",
         "order_status_icon.repair": "Repair",
         "order_status_icon.record": "Record",
