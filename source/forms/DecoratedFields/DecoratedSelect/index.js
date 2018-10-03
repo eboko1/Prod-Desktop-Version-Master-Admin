@@ -3,7 +3,6 @@ import React from 'react';
 import { Select, Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
-import _ from 'lodash';
 
 // own
 const Option = Select.Option;
@@ -90,7 +89,7 @@ export const DecoratedSelect = props => {
             onSelect={ onSelect }
             placeholder={ placeholder }
             notFoundContent={
-                notFoundContent ?
+                notFoundContent ? 
                     notFoundContent
                     : (
                         <FormattedMessage id='no_data' />
@@ -140,7 +139,7 @@ export const DecoratedSelect = props => {
         >
             { select }
         </FormItem>
-    ) :
+    ) : 
         select
     ;
 };

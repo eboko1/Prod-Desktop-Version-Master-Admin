@@ -149,6 +149,7 @@ const ordersPuzzle = (data, maxRow) => {
         outer: for (const input of sortedInputData) {
             const { position, quantity, options } = input;
             maxRows = Math.max(maxRows, position + quantity);
+            /* eslint-disable id-length */
             for (let i = 0; i < maxBlocks; i++) {
                 const overlappingBlocks = countOtherBlocks(
                     position,

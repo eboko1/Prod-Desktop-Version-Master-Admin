@@ -126,13 +126,8 @@ export default class OrderFormHeader extends Component {
         const { getFieldDecorator, getFieldValue } = this.props.form;
 
         const beginDate = getFieldValue('beginDate');
-        const {
-            disabledDate,
-            disabledHours,
-            disabledMinutes,
-            disabledSeconds,
-            beginTime,
-        } = getDateTimeConfig(moment(beginDate), schedule);
+        // disabledHours, disabledMinutes, disabledSeconds
+        const { disabledDate, beginTime } = getDateTimeConfig(moment(beginDate), schedule);
 
         const beginDatetime =
             _.get(fetchedOrder, 'order.beginDatetime') ||

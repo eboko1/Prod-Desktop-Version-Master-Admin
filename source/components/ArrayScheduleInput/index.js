@@ -1,16 +1,15 @@
 // vendor
 import React, { Component } from 'react';
-import { Icon, Col, Form, Table } from 'antd';
+import { Icon, Col, Table } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
 // proj
 import { DecoratedCheckbox, DecoratedTimePicker } from 'forms/DecoratedFields';
-import { Catcher, StyledButton } from 'commons';
+import { Catcher } from 'commons';
 
 // own
 import Styles from './styles.m.css';
-const FormItem = Form.Item;
 
 @injectIntl
 export default class ArrayScheduleInput extends Component {

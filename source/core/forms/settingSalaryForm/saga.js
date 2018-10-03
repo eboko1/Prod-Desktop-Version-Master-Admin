@@ -1,7 +1,6 @@
 // vendor
 import { call, put, all, take, takeEvery } from 'redux-saga/effects';
 import { saveAs } from 'file-saver';
-import moment from 'moment';
 
 //proj
 import { emitError } from 'core/ui/duck';

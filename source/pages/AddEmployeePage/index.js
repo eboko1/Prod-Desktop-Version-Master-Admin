@@ -14,7 +14,7 @@ import {
 } from 'core/forms/employeeForm/duck';
 
 import { Layout } from 'commons';
-import { EmployeeForm, EmployeeScheduleForm } from 'forms';
+import { EmployeeForm } from 'forms';
 import book from 'routes/book';
 
 // own
@@ -56,7 +56,7 @@ class EditEmployeePage extends Component {
 
     saveEmployee = () => {
         const form = this.employeeFormRef.props.form;
-        form.validateFields((err, values)  => {
+        form.validateFields((err, values) => {
             if (!err) {
                 this.props.saveEmployee(values);
             }

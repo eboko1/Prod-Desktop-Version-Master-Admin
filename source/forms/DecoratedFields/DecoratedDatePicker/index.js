@@ -20,7 +20,7 @@ export const DecoratedDatePicker = props => {
         hasFeedback,
         formItemLayout,
 
-        formatMessage,
+        // formatMessage,
         ranges,
         getFieldDecorator,
         rules,
@@ -31,7 +31,7 @@ export const DecoratedDatePicker = props => {
         disabledDate,
         disabledTime,
         getCalendarContainer,
-        placeholder,
+        // placeholder,
         initialValue,
         allowClear,
 

@@ -225,7 +225,7 @@ class OrderPage extends Component {
             }
         });
     };
-
+    /* eslint-disable complexity */
     _close = () => {
         const {
             selectedClient,
@@ -233,10 +233,7 @@ class OrderPage extends Component {
             allServices,
             allDetails,
             fetchedOrder,
-            returnToOrdersPage,
             setModal,
-            history,
-            order: { status },
         } = this.props;
 
         const form = this.orderFormRef.props.form;

@@ -9,9 +9,6 @@ import { onChangePackageForm } from 'core/forms/addPackageForm/duck';
 import { DecoratedInput } from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 
-// own
-import Styles from './styles.m.css';
-
 @injectIntl
 @withReduxForm({
     name:    'addPackageForm',

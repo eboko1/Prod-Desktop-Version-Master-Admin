@@ -152,6 +152,7 @@ export function convertFieldsValuesToDbEntity(
 }
 
 export const requiredFieldsOnStatuses = values => {
+    /* eslint-disable camelcase */
     const statuses = {
         invite: [ 'clientVehicle', 'manager', 'clientPhone' ],
         call:   [ 'clientPhone', 'manager' ],

@@ -1,17 +1,11 @@
 // vendor
 import React, { Component } from 'react';
-import { Modal, Input, Select } from 'antd';
+import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { v4 } from 'uuid';
 
 // proj
 import { MODALS } from 'core/modals/duck';
-
 import { CancelReasonForm } from 'forms';
-
-// own
-import Styles from './styles.m.css';
-
 export default class CancelResonModal extends Component {
     render() {
         const {

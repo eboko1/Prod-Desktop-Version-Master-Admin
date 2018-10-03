@@ -33,6 +33,7 @@ function hideTasks(orderTasks, managerId) {
 }
 
 export default class OrderFormTabs extends Component {
+    /* eslint-disable complexity */
     render() {
         const {
             addOrderForm,

@@ -260,8 +260,7 @@ class OrdersContainer extends Component {
     render() {
         const { orders } = this.props;
         const { formatMessage } = this.props.intl;
-        const { status, loading, activeRoute, selectedRowKeys } = this.state;
-        // const { status, loading, selectedRowKeys } = this.state;
+        const { activeRoute, selectedRowKeys } = this.state;
 
         const columns = columnsConfig(
             this.state.invited,
@@ -306,8 +305,6 @@ class OrdersContainer extends Component {
                 this.props.fetchOrders(this.props.filter);
             },
         };
-
-        const hasSelected = selectedRowKeys.length > 0;
 
         return (
             <Catcher>

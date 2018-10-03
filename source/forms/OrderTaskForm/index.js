@@ -30,7 +30,7 @@ export class OrderTaskForm extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            toogleDirectory: false,
+            toggleDirectory: false,
         };
     }
 
@@ -44,15 +44,14 @@ export class OrderTaskForm extends Component {
             stations,
             managers,
             initialOrderTask,
-            orderTasks,
             activeVehicle,
         } = this.props;
-        const { toogleDirectory } = this.state;
+        const { toggleDirectory } = this.state;
 
         const textDirectory = (
             <div className={ Styles.directory }>
                 <Icon
-                    onClick={ () => this.setState({ toogleDirectory: false }) }
+                    onClick={ () => this.setState({ toggleDirectory: false }) }
                     type='close-circle-o '
                 />
                 <div className={ Styles.info }>
@@ -152,7 +151,7 @@ export class OrderTaskForm extends Component {
             <span
                 className={ Styles.statusTooltip }
                 onClick={ () =>
-                    this.setState({ toogleDirectory: !toogleDirectory })
+                    this.setState({ toggleDirectory: !toggleDirectory })
                 }
             >
                 <FormattedMessage id='order-task-modal.open_status_helper' />
@@ -217,7 +216,7 @@ export class OrderTaskForm extends Component {
                         />
                     </Tooltip>
                 </div>
-                { toogleDirectory ? (
+                { toggleDirectory ? (
                     <div>{ textDirectory }</div>
                 ) : (
                     <div>

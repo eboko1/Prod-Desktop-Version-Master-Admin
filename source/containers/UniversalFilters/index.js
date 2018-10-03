@@ -13,7 +13,7 @@ import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { Catcher, StyledButton } from 'commons';
 import { UniversalFiltersModal } from 'modals';
 import { UniversalFiltersTags } from 'components';
-import { permissions, isForbidden, withReduxForm2 } from 'utils';
+import { withReduxForm2 } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -71,7 +71,6 @@ export default class UniversalFilters extends Component {
 
     render() {
         const {
-            user,
             resetModal,
             universalFiltersModal,
             setUniversalFilter,

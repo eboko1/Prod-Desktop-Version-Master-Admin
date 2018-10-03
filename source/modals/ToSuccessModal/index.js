@@ -1,15 +1,11 @@
 // vendor
 import React, { Component } from 'react';
-import { Modal, Button, Checkbox } from 'antd';
+import { Modal } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 // proj
 import { MODALS } from 'core/modals/duck';
-
 import { ToSuccessForm } from 'forms';
-
-// own
-// import Styles from './styles.m.css';
 
 export default class ToSuccessModal extends Component {
     render() {

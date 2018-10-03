@@ -8,11 +8,7 @@ import { fetchAPI } from 'utils';
 // own
 import { fetchClientOrdersSuccess } from './duck';
 
-import {
-    FETCH_CLIENT_ORDERS,
-} from './duck';
-import _ from "lodash";
-import {spreadProp} from "ramda-adjunct";
+import { FETCH_CLIENT_ORDERS } from './duck';
 
 const selectFilter = ({ clientOrders: { filter, sort } }) => ({
     sort,
@@ -33,14 +29,18 @@ export function* fetchClientOrdersSaga() {
             } = yield select(selectFilter);
             const filters = { ...filter, sortField, sortOrder };
 
-            const data = yield call(fetchAPI, 'GET', `orders/client/${clientId}`, filters);
+            const data = yield call(
+                fetchAPI,
+                'GET',
+                `orders/client/${clientId}`,
+                filters,
+            );
             yield put(fetchClientOrdersSuccess(data));
         } finally {
             yield put(setClientOrdersFetchingState(false));
         }
     }
 }
-
 
 export function* saga() {
     yield all([ call(fetchClientOrdersSaga) ]);

@@ -10,7 +10,6 @@ import {
     DecoratedSelect,
     DecoratedInputNumber,
     DecoratedCheckbox,
-    DecoratedSlider,
 } from 'forms/DecoratedFields';
 import { permissions, isForbidden } from 'utils';
 
@@ -281,13 +280,13 @@ class ServicesTable extends Component {
     };
 
     render() {
-        const { getFieldDecorator, fetchedOrder } = this.props;
+        // const { getFieldDecorator, fetchedOrder } = this.props;
         const { keys } = this.state;
 
-        const editBodyForbidden = isForbidden(
-            this.props.user,
-            permissions.ACCESS_ORDER_BODY,
-        );
+        // const editBodyForbidden = isForbidden(
+        //     this.props.user,
+        //     permissions.ACCESS_ORDER_BODY,
+        // );
 
         const columns = this.columns;
 

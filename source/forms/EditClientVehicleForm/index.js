@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
-import { Button, List, Form, Row, Col, Select, notification, Icon } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { List, Form, Row, Col, notification, Icon } from 'antd';
+import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
@@ -16,9 +16,6 @@ import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
-
-const FormItem = Form.Item;
-const Option = Select.Option;
 
 const openNotificationWithIcon = (type, message, description) => {
     notification[ type ]({

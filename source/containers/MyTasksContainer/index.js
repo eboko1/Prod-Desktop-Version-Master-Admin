@@ -91,7 +91,7 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='comment' />,
                 dataIndex: 'comment',
                 width:     '7%',
-                render:    (text, record) => (
+                render:    (text) => (
                     <div>
                         <Tooltip
                             placement='bottomLeft'
@@ -107,7 +107,7 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='status' />,
                 dataIndex: 'status',
                 width:     '7%',
-                render:    (text, record) => {
+                render:    (text) => {
                     return text ? <FormattedMessage id={ text } /> : '';
                 },
                 sorter: true,
@@ -116,7 +116,7 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='priority' />,
                 dataIndex: 'priority',
                 width:     '6%',
-                render:    (text, record) => {
+                render:    (text) => {
                     return text ? <FormattedMessage id={ text } /> : null;
                 },
                 sorter: true,
@@ -125,7 +125,7 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='urgency' />,
                 dataIndex: 'urgency',
                 width:     '7%',
-                render:    (text, record) => {
+                render:    (text) => {
                     return text ? <FormattedMessage id={ text } /> : null;
                 },
                 sorter: true,
@@ -168,7 +168,7 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='startDate' />,
                 dataIndex: 'startDate',
                 width:     '7%',
-                render:    (text, record) => (
+                render:    (text) => (
                     <div>
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
                     </div>
@@ -180,7 +180,7 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='deadlineDate' />,
                 dataIndex: 'deadlineDate',
                 width:     '7%',
-                render:    (text, record) => (
+                render:    (text) => (
                     <div>
                         { ' ' }
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
@@ -192,7 +192,7 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='duration' />,
                 dataIndex: 'duration',
                 width:     '9%',
-                render:    (text, record) => {
+                render:    (text) => {
                     // let durationText = moment.duration(text, 'seconds');
                     // let duration = moment
                     //     .utc(durationText.asMilliseconds())
@@ -214,7 +214,7 @@ export default class MyTasksContainer extends Component {
                 title:     <FormattedMessage id='endDate' />,
                 dataIndex: 'endDate',
                 width:     '7%',
-                render:    (text, record) => (
+                render:    (text) => (
                     <div>
                         { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
                     </div>
@@ -260,7 +260,6 @@ export default class MyTasksContainer extends Component {
             setMyTasksSortFieldFilter,
             setMyTasksSortOrderFilter,
             fetchMyTasks,
-            filter,
         } = this.props;
 
         if (!sorter) {

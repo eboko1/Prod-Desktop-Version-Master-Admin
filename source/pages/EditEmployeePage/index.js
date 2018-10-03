@@ -121,7 +121,7 @@ export default class EditEmployeePage extends Component {
     }
 
     _renderEmployeeTabs = () => {
-        const { user, initialEmployee, initialSchedule } = this.props;
+        const { user, initialEmployee } = this.props;
         const employeeId = this.props.match.params.id;
 
         return (

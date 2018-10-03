@@ -1,5 +1,5 @@
 //vendor
-import { PURGE, REHYDRATE } from 'redux-persist';
+import { PURGE } from 'redux-persist'; //REHYDRATE
 /**
  * Constants
  **/

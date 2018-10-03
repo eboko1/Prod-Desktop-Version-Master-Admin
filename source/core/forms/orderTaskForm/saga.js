@@ -17,6 +17,7 @@ export function* saveNewOrderTask() {
             const { payload, id, taskId, myTasks } = yield take(
                 SAVE_ORDER_TASK,
             );
+            let data; // eslint-disable-line
             let obj = {
                 comment:       payload.comment,
                 priority:      payload.priority,
@@ -24,14 +25,17 @@ export function* saveNewOrderTask() {
                 status:        payload.status,
                 stationNum:    payload.stationName,
             };
+
             if (payload.deadlineDate) {
                 obj.deadlineDate = moment(
-                    `${moment(payload.deadlineDate).format(
-                        'YYYY-MM-DD',
-                    )} ${payload.deadlineTime?moment(payload.deadlineTime).format('HH:mm'):'00:00'}`,
+                    `${moment(payload.deadlineDate).format('YYYY-MM-DD')} ${
+                        payload.deadlineTime
+                            ? moment(payload.deadlineTime).format('HH:mm')
+                            : '00:00'
+                    }`,
                 ).format();
             }
-            let data;
+
             if (!taskId) {
                 data = yield call(
                     fetchAPI,
@@ -51,6 +55,7 @@ export function* saveNewOrderTask() {
             }
 
             yield put(saveOrderTaskSuccess(data));
+
             if (myTasks) {
                 yield put(fetchMyTasks());
             } else {

@@ -7,7 +7,7 @@ import { images } from 'utils';
 
 // own
 import Styles from './styles.m.css';
-import {FormattedMessage} from "react-intl";
+import { FormattedMessage } from 'react-intl';
 
 class Footer extends Component {
     static defaultProps = {
@@ -24,12 +24,16 @@ class Footer extends Component {
                     Styles.footerCollapsed}` }
             >
                 <div className={ Styles.contacts }>
-                    <FormattedMessage id='footer.support'/>:&nbsp;
-                    <a href='tel:380442994556'>+38(044)299-45-56</a>,&nbsp;
-                    <a href='tel:380504216648'>+38(050)421-66-48</a>&nbsp;
-                    <FormattedMessage id='or'/>
+                    <FormattedMessage id='footer.support' />
+                    :&nbsp;
+                    <a href='tel:380442994556'>+38(044)299-45-56</a>
+                    ,&nbsp;
+                    <a href='tel:380504216648'>+38(050)421-66-48</a>
                     &nbsp;
-                    <a href='mailto:support@cb24.eu'>support@cb24.eu</a>&nbsp;
+                    <FormattedMessage id='or' />
+                    &nbsp;
+                    <a href='mailto:support@cb24.eu'>support@cb24.eu</a>
+                    &nbsp;
                 </div>
                 <div className={ Styles.copyright }>
                     <img

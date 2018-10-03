@@ -1,7 +1,6 @@
 // vendor
 import React from 'react';
-import { Form, TimePicker, Button } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { Form, TimePicker } from 'antd';
 // import moment from 'moment';
 
 // own

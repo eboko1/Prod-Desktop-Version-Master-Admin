@@ -25,25 +25,26 @@ const Option = Select.Option;
 
 let cx = classNames.bind(Styles);
 
-const formBodyItemLayout = {
-    labelCol: {
-        xs:  { span: 24 },
-        sm:  { span: 24 },
-        md:  { span: 24 },
-        lg:  { span: 24 },
-        xl:  { span: 24 },
-        xxl: { span: 9 },
-    },
-    wrapperCol: {
-        xs:  { span: 24 },
-        sm:  { span: 24 },
-        md:  { span: 24 },
-        lg:  { span: 24 },
-        xl:  { span: 24 },
-        xxl: { span: 15 },
-    },
-    colon: false,
-};
+// TODO: global formsLayout
+// const formBodyItemLayout = {
+//     labelCol: {
+//         xs:  { span: 24 },
+//         sm:  { span: 24 },
+//         md:  { span: 24 },
+//         lg:  { span: 24 },
+//         xl:  { span: 24 },
+//         xxl: { span: 9 },
+//     },
+//     wrapperCol: {
+//         xs:  { span: 24 },
+//         sm:  { span: 24 },
+//         md:  { span: 24 },
+//         lg:  { span: 24 },
+//         xl:  { span: 24 },
+//         xxl: { span: 15 },
+//     },
+//     colon: false,
+// };
 
 const formVerticalLayout = {
     labelCol: {

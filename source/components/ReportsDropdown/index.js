@@ -31,7 +31,7 @@ class ReportsDropdown extends React.Component {
         }
 
         const statusToReportsMap = {
-            not_complete: [ CALCULATION_REPORT ],
+            not_complete: [ CALCULATION_REPORT ], // eslint-disable-line camelcase
             required:     [ CALCULATION_REPORT ],
             reserve:      [ INVOICE_REPORT, COMPLETED_WORK_REPORT, CALCULATION_REPORT, ACT_OF_ACCEPTANCE_REPORT, DIAGNOSTICS_ACT_REPORT, BUSINESS_ORDER_REPORT ],
             call:         [ CALCULATION_REPORT ],

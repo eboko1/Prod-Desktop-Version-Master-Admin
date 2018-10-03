@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Form, Tabs } from 'antd';
+import { Tabs } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 
@@ -18,11 +18,6 @@ import { ScheduleForm, BreakScheduleForm } from 'forms';
 import { permissions, isForbidden } from 'utils';
 
 // own
-
-import Styles from './styles.m.css';
-
-// own
-const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({

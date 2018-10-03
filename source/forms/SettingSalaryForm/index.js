@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form } from 'antd';
+import { injectIntl } from 'react-intl';
 
 // proj
 import {
@@ -19,10 +18,6 @@ import { SettingSalaryTable } from 'components';
 import { SalaryReportForm } from 'forms';
 import { withReduxForm2 } from 'utils';
 import { permissions, isForbidden } from 'utils';
-
-// own
-import Styles from './styles.m.css';
-const FormItem = Form.Item;
 
 const mapStateToProps = state => ({
     user: state.auth,

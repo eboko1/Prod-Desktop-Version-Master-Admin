@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { Button, Table, Icon, Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
-import { v4 } from 'uuid';
 
 // proj
 import {
@@ -38,7 +37,10 @@ const mapStateToProps = state => ({
 });
 
 @injectIntl
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class RoleContainer extends Component {
     constructor(props) {
         super(props);

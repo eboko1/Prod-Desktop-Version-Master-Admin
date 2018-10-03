@@ -58,7 +58,7 @@ function duplicate(clients) {
                 return client;
             }
 
-            return vehicles.map((v, index) => {
+            return vehicles.map((vehicle, index) => {
                 const duplicatedVehicles = _.cloneDeep(vehicles);
                 duplicatedVehicles.splice(index, 1);
 
@@ -114,7 +114,7 @@ const ReducerState = createDefaultState();
 
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
-    const { type, payload, meta } = action;
+    const { type, payload } = action;
     /* eslint-disable */
     switch (type) {
         case FETCH_ORDER_FORM_SUCCESS:

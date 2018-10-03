@@ -3,14 +3,14 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Table, Icon, Rate, Radio } from 'antd';
+import { Table, Rate, Radio } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
 
 // proj
 import { Catcher } from 'commons';
 import book from 'routes/book';
-import { permissions, isForbidden } from 'utils';
+// import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -83,7 +83,7 @@ export default class EmployeesTable extends Component {
                 title:  '',
                 key:    'delete',
                 width:  'auto%',
-                render: (text, record) => {
+                render: () => {
                     return null;
                     // return (
                     //     !isForbidden(

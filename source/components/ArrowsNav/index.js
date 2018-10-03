@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Steps, Button, Icon } from 'antd';
+import { Steps, Icon } from 'antd';
 
 import Styles from './styles.m.css';
 import './arrowNav.css';

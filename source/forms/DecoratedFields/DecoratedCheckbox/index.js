@@ -1,7 +1,6 @@
 // vendor
 import React from 'react';
 import { Checkbox, Form } from 'antd';
-import _ from 'lodash';
 
 // own
 const FormItem = Form.Item;

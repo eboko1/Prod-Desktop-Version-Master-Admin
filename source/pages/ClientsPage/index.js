@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { Button } from 'antd';
 
 // proj
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -46,7 +45,6 @@ const mapDispatchToProps = {
 export default class ClientsPage extends Component {
     render() {
         const {
-            user,
             modal,
             setModal,
             resetModal,
