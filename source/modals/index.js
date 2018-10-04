@@ -6,6 +6,7 @@ import ToSuccessModal from './ToSuccessModal';
 import ConfirmOrderExitModal from './ConfirmOrderExitModal';
 import OrderTaskModal from './OrderTaskModal';
 import SwitchBusinessModal from './SwitchBusinessModal';
+import UniversalChartModal from './UniversalChartModal';
 
 export {
     UniversalFiltersModal,
@@ -16,4 +17,5 @@ export {
     ConfirmOrderExitModal,
     OrderTaskModal,
     SwitchBusinessModal,
+    UniversalChartModal,
 };

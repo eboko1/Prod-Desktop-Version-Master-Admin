@@ -18,8 +18,6 @@ import global from 'utils/messages';
 // commons
 import Header from 'commons/Header/messages';
 import Navigation from 'commons/Navigation/messages';
-import LanguagePad from 'components/LanguagePad/messages';
-
 // pages
 import ExceptionPage from 'pages/ExceptionPage/messages';
 import ProfilePage from 'pages/ProfilePage/messages';
@@ -32,6 +30,10 @@ import PackagePage from 'pages/PackagePage/messages';
 import ClientsPage from 'pages/ClientsPage/messages';
 import EmployeesPage from 'pages/EmployeesPage/messages';
 import AddEmployeePage from 'pages/AddEmployeePage/messages';
+import ChartPage from 'pages/ChartPage/messages';
+import ReviewsPage from 'pages/ReviewsPage/messages';
+import ReviewPage from 'pages/ReviewPage/messages';
+import CallsPage from 'pages/CallsPage/messages';
 import BusinessPackagePage from 'pages/BusinessPackagePage/messages';
 import ManagerRolePage from 'pages/ManagerRolePage/messages';
 
@@ -106,7 +108,6 @@ const messages = merge.all([
     // commons
     Navigation,
     Header,
-    LanguagePad,
     Footer,
     // pages
     ProfilePage,
@@ -120,9 +121,12 @@ const messages = merge.all([
     ClientsPage,
     EmployeesPage,
     AddEmployeePage,
+    ChartPage,
+    ReviewsPage,
+    ReviewPage,
+    CallsPage,
     BusinessPackagePage,
     ManagerRolePage,
-    ClientsContainer,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -133,6 +137,7 @@ const messages = merge.all([
     BusinessPackageContainer,
     ManagerRoleContainer,
     UniversalFiltersContainer,
+    ClientsContainer,
     ClientContainer,
     ClientRequisitesContainer,
     // forms

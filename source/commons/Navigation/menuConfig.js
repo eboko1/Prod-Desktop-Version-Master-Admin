@@ -31,7 +31,7 @@ export default {
                 },
             ],
         },
-        /* Catalog submenu */
+        /* Reference Book submenu */
         {
             key:      'catalog',
             iconType: 'contacts',
@@ -61,39 +61,45 @@ export default {
             items:    [
                 {
                     key:      '/control-panel',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.controlPanel,
-                    name:     'navigation.control_panel',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.controlPanel,
+                    name: 'navigation.control_panel',
                 },
                 {
-                    key:      '/indicators',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.indicators,
-                    name:     'navigation.service_indicators',
+                    key:      '/chart',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.chart,
+                    name: 'navigation.service_indicators',
                 },
                 {
                     key:      '/funel',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.funel,
-                    name:     'navigation.funnel',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.funel,
+                    name: 'navigation.funnel',
                 },
                 {
-                    key:      '/reviews',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.reviews,
-                    name:     'navigation.feedback',
+                    key:      '/feedback',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.feedback,
+                    name: 'navigation.feedback',
                 },
                 {
                     key:      '/statistics',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.statistics,
-                    name:     'navigation.statistics',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.statistics,
+                    name: 'navigation.statistics',
                 },
                 {
-                    key:      '/statistics/calls',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.statisticsCalls,
-                    name:     'navigation.call_statistics',
+                    key:      '/calls',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.calls,
+                    name: 'navigation.call_statistics',
                 },
             ],
         },
@@ -105,63 +111,73 @@ export default {
             items:    [
                 {
                     key:      '/settings',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settings,
-                    name:     'navigation.main_settings',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settings,
+                    name: 'navigation.main_settings',
                 },
                 {
                     key:      '/requisites',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settingsRequisites,
-                    name:     'navigation.requisites',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settingsRequisites,
+                    name: 'navigation.requisites',
                 },
                 {
                     key:      '/prices',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settingsSpecialization,
-                    name:     'navigation.specialization_and_prices',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settingsSpecialization,
+                    name: 'navigation.specialization_and_prices',
                 },
                 {
                     key:      '/services',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settingsServices,
-                    name:     'navigation.services',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settingsServices,
+                    name: 'navigation.services',
                 },
                 {
                     key:      '/stocks',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settingsOffers,
-                    name:     'navigation.special_offers',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settingsOffers,
+                    name: 'navigation.special_offers',
                 },
                 {
                     key:      '/news',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settingsNews,
-                    name:     'navigation.news',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settingsNews,
+                    name: 'navigation.news',
                 },
                 {
                     key:      '/articles',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settingsArticles,
-                    name:     'navigation.articles',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settingsArticles,
+                    name: 'navigation.articles',
                 },
                 {
                     key:      '/media',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settingsGallery,
-                    name:     'navigation.media_files',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settingsGallery,
+                    name: 'navigation.media_files',
                 },
                 {
                     key:      '/managers',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settingsManagers,
-                    name:     'navigation.managers',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settingsManagers,
+                    name: 'navigation.managers',
                 },
                 {
                     key:      '/notice',
-                    disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link:     book.oldApp.settingsNotifications,
-                    name:     'navigation.notifications',
+                    disabled: user =>
+                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.oldApp.settingsNotifications,
+                    name: 'navigation.notifications',
                 },
             ],
         },
@@ -195,9 +211,10 @@ export default {
         {
             key:      '/suggest-idea',
             iconType: 'bulb',
-            disabled: user => !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-            link:     book.oldApp.feedback,
-            name:     'navigation.suggest_idea',
+            disabled: user =>
+                !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+            link: book.oldApp.feedback,
+            name: 'navigation.suggest_idea',
         },
     ],
 

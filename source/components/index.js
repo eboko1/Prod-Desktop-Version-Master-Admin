@@ -1,4 +1,3 @@
-import LanguagePad from './LanguagePad';
 import ArrowsNav from './ArrowsNav';
 import ReportsDropdown from './ReportsDropdown';
 import StatsCountsPanel from './StatsCountsPanel';
@@ -21,11 +20,11 @@ import { Like } from './Like';
 import EmployeeFeedback from './EmployeeFeedback';
 import EmployeeStatistics from './EmployeeStatistics';
 import PhoneNumberInput from './PhoneNumberInput';
+import UniversalChart from './UniversalChart';
 
 export {
     SettingSalaryTable,
     EmployeesTable,
-    LanguagePad,
     ArrowsNav,
     OrderStatusIcon,
     CallStatusIcon,
@@ -47,4 +46,5 @@ export {
     EmployeeFeedback,
     EmployeeStatistics,
     PhoneNumberInput,
+    UniversalChart,
 };
