@@ -1,7 +1,9 @@
 // vendor
 import React, { Component } from 'react';
+import { injectIntl } from 'react-intl';
 import numeral from 'numeral';
 import {
+    Text,
     LineChart,
     Line,
     XAxis,
@@ -11,65 +13,100 @@ import {
     Legend,
     ResponsiveContainer,
 } from 'recharts';
+import _ from 'lodash';
 
+// own
+import { chartMode } from './chartConfig';
+
+@injectIntl
 export default class UniversalChart extends Component {
-    render() {
-        const { data, label } = this.props;
+    _tooltip = (value, mode) => {
+        const { formatMessage } = this.props.intl;
 
-        const lineLabel = label => label.substring(0, label.indexOf('('));
+        return `${numeral(value).format('0,0[]00')} (${formatMessage({
+            id: chartMode[ mode ].type,
+        })})`;
+    };
+
+    // ctx: CanvasRenderingContext2D;
+
+    measureText(text) {
+        console.log('→ text', text);
+        console.log('→ this.ctx', this.ctx);
+        if (!this.ctx) {
+            this.ctx = document.createElement('canvas').getContext('2d');
+            this.ctx.font = '12px "Helvetica Neue"';
+        }
+        console.log(
+            '→ this.ctx.measureText(text).width',
+            this.ctx.measureText(text).width,
+        );
+
+        return this.ctx.measureText(text).width;
+    }
+
+    render() {
+        const { data, mode } = this.props;
+        const { formatMessage } = this.props.intl;
+        // const layout = 'vertical';
+        // const { x, y, stroke, payload } = this.props;
+        let leftMargin = 0;
+        // if (layout === 'vertical') {
+        for (const value of data) {
+            const textWidth = this.measureText(value.name);
+            console.log('→ textWidth', textWidth);
+            if (textWidth > leftMargin) {
+                leftMargin = textWidth;
+            }
+        }
+
+        // We have pixel-perfect measurements for the width of our labels, but we also need to account for the default spacing.
+        leftMargin = Math.max(0, leftMargin - 50);
+        // }
 
         return (
             <ResponsiveContainer width='100%' height={ 500 }>
-                <LineChart data={ data }>
-                    <XAxis dataKey='begin_date' />
+                <LineChart
+                    data={ data }
+                    // margin={ { left: leftMargin } }
+                    margin={ { top: 10, right: 40, left: 50, bottom: 5 } }
+                >
+                    <XAxis dataKey='startDate' />
                     <YAxis
-                        tickFormatter={ value =>
-                            numeral(value).format('0,0[.]00')
+                        // width={ 100 }
+                        // tick={
+                        //     <Text
+                        //         style={ { fontSize: 12 } }
+                        //         width={ 80 }
+                        //         textAnchor='middle'
+                        //         scaleToFit
+                        //     >
+                        //         { numeral(data.startDate).format('0,0[.]00') }
+                        //     </Text>
+                        // }
+                        tickFormatter={
+                            value => numeral(value).format('0,0[.]00')
+                            // value => (
+                            //     <Text
+                            //         style={ { fontSize: 12 } }
+                            //         width={ 80 }
+                            //         textAnchor='middle'
+                            //         scaleToFit
+                            //     >
+                            //         { numeral(value).format('0,0[.]00') }
+                            //     </Text>
+                            // )
                         }
                     />
                     <CartesianGrid strokeDasharray='3 3' />
-                    <Tooltip
-                        formatter={ (value, name) => {
-                            const index = name.substring(
-                                name.indexOf('('),
-                                name.length,
-                            );
-                            if (label.includes('грн')) {
-                                return (
-                                    numeral(value).format('0,0[.]00') + ' (грн)'
-                                );
-                            } else if (label.includes('%')) {
-                                return (
-                                    numeral(value).format('0,0[.]00') + ' (%)'
-                                );
-                            } else if (label.includes('шт')) {
-                                return (
-                                    numeral(value).format('0,0[.]00') + ' (шт)'
-                                );
-                            } else if (label.includes('мин')) {
-                                return (
-                                    numeral(value).format('0,0[.]00') + ' (мин)'
-                                );
-                            } else if (label.includes('хв')) {
-                                return (
-                                    numeral(value).format('0,0[.]00') + ' (хв)'
-                                );
-                            } else if (label.includes('авто')) {
-                                return (
-                                    numeral(value).format('0,0[.]00') +
-                                    ' (авто)'
-                                );
-                            }
-
-                            return numeral(value).format('0,0[.]00');
-                        } }
-                    />
+                    <Tooltip formatter={ value => this._tooltip(value, mode) } />
                     <Legend
                         iconType='line'
-                        iconSize={ 14 }
+                        // iconSize={ 14 }
+                        verticalAlign='bottom'
                         payload={ [
                             {
-                                value: `${label}`,
+                                value: formatMessage({ id: mode }),
                                 type:  'line',
                                 id:    'ID01',
                             },
@@ -77,7 +114,7 @@ export default class UniversalChart extends Component {
                     />
                     <Line
                         type='monotone'
-                        name={ lineLabel(label) }
+                        name={ formatMessage({ id: mode }) }
                         dataKey='score'
                         stroke='#39B89F'
                         strokeWidth={ 4 }

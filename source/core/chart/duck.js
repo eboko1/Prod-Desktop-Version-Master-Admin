@@ -1,3 +1,6 @@
+// vendor
+import moment from 'moment';
+
 /**
  * Constants
  * */
@@ -12,8 +15,12 @@ export const FETCH_CHART_SUCCESS = `${prefix}/FETCH_CHART_SUCCESS`;
  * */
 
 const ReducerState = {
-    chart:  {},
-    filter: {},
+    chartData: [],
+    filter:    {
+        period: 'month',
+        date:   moment(),
+        mode:   'SALES',
+    },
 };
 
 export default function reducer(state = ReducerState, action) {

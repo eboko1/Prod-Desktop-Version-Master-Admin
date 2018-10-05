@@ -1,14 +1,17 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
+import { Button } from 'antd';
 import moment from 'moment';
 
 // proj
 import { fetchChart } from 'core/chart/duck';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Catcher } from 'commons';
 import { UniversalChart } from 'components';
+import { UniversalChartModal } from 'modals';
 
 // own
 // import Styles from './styles.m.css';
@@ -16,10 +19,13 @@ import { UniversalChart } from 'components';
 const mapStateToProps = state => ({
     chart:  state.chart,
     filter: state.chart.filter,
+    modal:  state.modals.modal,
 });
 
 const mapDispatchToProps = {
     fetchChart,
+    setModal,
+    resetModal,
 };
 
 @injectIntl
@@ -46,16 +52,24 @@ export default class ChartContainer extends Component {
     }
 
     render() {
-        const { chartData, label } = this.props;
+        const { chartData, filter } = this.props;
 
         return (
             <Catcher>
-                <div>Показать</div>
-                <UniversalChart
-                    data={ chartData }
-                    label={ label || 'test label' }
+                <Button
+                    style={ { width: '25%', margin: '12px auto' } }
+                    type='primary'
+                    onClick={ () => this.props.setModal(MODALS.UNIVERSAL_CHART) }
+                >
+                    Отображать: { filter.mode }
+                    { /* <FormattedMessage id='' /> */ }
+                </Button>
+                <UniversalChart data={ chartData } mode={ filter.mode } />
+                <UniversalChartModal
+                    // wrappedComponentRef={ this.saveChartRef }
+                    visible={ this.props.modal }
+                    resetModal={ this.props.resetModal }
                 />
-                { /* <ChartModal /> */ }
             </Catcher>
         );
     }
