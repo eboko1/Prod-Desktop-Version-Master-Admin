@@ -83,6 +83,7 @@ import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
 import OrderTaskModal from 'modals/OrderTaskModal/messages';
 import AddClientModal from 'modals/AddClientModal/messages';
 import InviteModal from 'modals/InviteModal/messages';
+import UniversalChartModal from 'modals/UniversalChartModal/messages';
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -164,6 +165,7 @@ const messages = merge.all([
     AddClientModal,
     InviteModal,
     OrderTaskModal,
+    UniversalChartModal,
     // components
     StatusIcons,
     OrderFormTables,

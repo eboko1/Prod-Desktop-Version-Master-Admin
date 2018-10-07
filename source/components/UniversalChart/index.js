@@ -30,7 +30,7 @@ export default class UniversalChart extends Component {
 
     // ctx: CanvasRenderingContext2D;
 
-    measureText(text) {
+    _measureText = text => {
         console.log('→ text', text);
         console.log('→ this.ctx', this.ctx);
         if (!this.ctx) {
@@ -43,7 +43,7 @@ export default class UniversalChart extends Component {
         );
 
         return this.ctx.measureText(text).width;
-    }
+    };
 
     render() {
         const { data, mode } = this.props;
@@ -53,7 +53,7 @@ export default class UniversalChart extends Component {
         let leftMargin = 0;
         // if (layout === 'vertical') {
         for (const value of data) {
-            const textWidth = this.measureText(value.name);
+            const textWidth = this._measureText(value.name);
             console.log('→ textWidth', textWidth);
             if (textWidth > leftMargin) {
                 leftMargin = textWidth;
@@ -116,7 +116,7 @@ export default class UniversalChart extends Component {
                         type='monotone'
                         name={ formatMessage({ id: mode }) }
                         dataKey='score'
-                        stroke='#39B89F'
+                        stroke='#51cd66'
                         strokeWidth={ 4 }
                         activeDot={ { r: 10 } }
                     />

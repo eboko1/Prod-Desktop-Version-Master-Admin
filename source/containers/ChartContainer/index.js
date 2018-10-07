@@ -61,12 +61,17 @@ export default class ChartContainer extends Component {
                     type='primary'
                     onClick={ () => this.props.setModal(MODALS.UNIVERSAL_CHART) }
                 >
-                    Отображать: { filter.mode }
-                    { /* <FormattedMessage id='' /> */ }
+                    <FormattedMessage id='universal_chart.show' />:{ ' ' }
+                    <span style={ { fontWeight: 'bold' } }>
+                        <FormattedMessage
+                            id={ `universal-chart.list.item.${filter.mode}` }
+                        />
+                    </span>
                 </Button>
                 <UniversalChart data={ chartData } mode={ filter.mode } />
                 <UniversalChartModal
                     // wrappedComponentRef={ this.saveChartRef }
+                    mode={ filter.mode }
                     visible={ this.props.modal }
                     resetModal={ this.props.resetModal }
                 />
