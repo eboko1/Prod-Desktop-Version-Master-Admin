@@ -1,9 +1,5 @@
 // vendor
-import { createSelector } from 'reselect';
 import moment from 'moment';
-
-// own
-// import { chartPeriod }
 
 /**
  * Constants
@@ -81,39 +77,6 @@ export default function reducer(state = ReducerState, action) {
 export const stateSelector = state => state[ moduleName ];
 export const selectChartFilter = state => state.chart.filter;
 
-export const selectChartDaterange = createSelector(
-    [ stateSelector ],
-    ({ filter: { date, period } }) => {
-        const formatDate = (date, range, period) =>
-            moment(date)
-                .add(range, period)
-                .format('YYYY-MM-DD');
-        console.log('REDUX date', date);
-        const daterange = {
-            month: date => ({
-                startDate: formatDate(date, -13, 'M'),
-                endDate:   formatDate(date, 1, 'M'),
-            }),
-            week: date => ({
-                startDate: formatDate(date, -84, 'd'),
-                endDate:   formatDate(date, 14, 'd'),
-                // startDate: formatDate(date, -12, 'w'),
-                // endDate:   formatDate(date, 2, 'w'),
-            }),
-            day: date => ({
-                startDate: formatDate(date, -7, 'd'),
-                endDate:   formatDate(date, 7, 'd'),
-            }),
-        };
-
-        const { startDate, endDate } = daterange[ period ](date || new Date());
-
-        return {
-            startDate,
-            endDate,
-        };
-    },
-);
 /**
  * Actions
  * */

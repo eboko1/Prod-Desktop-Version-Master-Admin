@@ -18,16 +18,10 @@ let cx = classNames.bind(Styles);
 @injectIntl
 export default class UniversalChartModal extends Component {
     _setUniversalChartMode = mode => {
-        const {
-            setChartMode,
-            fetchChart,
-            resetModal,
-            startDate,
-            endDate,
-        } = this.props;
+        const { setChartMode, fetchChart, resetModal } = this.props;
 
         setChartMode(mode);
-        fetchChart({ startDate, endDate });
+        fetchChart();
         resetModal();
     };
 
@@ -35,8 +29,8 @@ export default class UniversalChartModal extends Component {
         const {
             visible,
             resetModal,
-            intl: { formatMessage },
             mode,
+            intl: { formatMessage },
         } = this.props;
 
         const _listItemStyles = activeMode => {
@@ -65,7 +59,6 @@ export default class UniversalChartModal extends Component {
                             <List
                                 size='small'
                                 bordered
-                                // className={ Styles.switchBusinessList }
                                 locale={ {
                                     emptyText: formatMessage({ id: 'no_data' }),
                                 } }
@@ -94,7 +87,7 @@ export default class UniversalChartModal extends Component {
                                                         })})`}
                                                 </>
                                             }
-                                            // description={ item.address }
+                                            // description={  }
                                         />
                                     </List.Item>
                                 ) }

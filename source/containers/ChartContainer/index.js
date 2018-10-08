@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Button } from 'antd';
-import moment from 'moment';
 
 // proj
 import { fetchChart, setChartMode } from 'core/chart/duck';
@@ -17,9 +16,9 @@ import { UniversalChartModal } from 'modals';
 // import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    chart:  state.chart,
-    filter: state.chart.filter,
-    modal:  state.modals.modal,
+    chart: state.chart,
+    // filter: state.chart.filter,
+    modal: state.modals.modal,
 });
 
 const mapDispatchToProps = {
@@ -62,10 +61,15 @@ export default class ChartContainer extends Component {
                         />
                     </span>
                 </Button>
-                <UniversalChart data={ chartData } mode={ filter.mode } />
+                <UniversalChart
+                    data={ chartData }
+                    mode={ filter.mode }
+                    period={ filter.period }
+                />
                 <UniversalChartModal
                     // wrappedComponentRef={ this.saveChartRef }
                     mode={ filter.mode }
+                    period={ filter.period }
                     visible={ modal }
                     resetModal={ resetModal }
                     setChartMode={ setChartMode }
