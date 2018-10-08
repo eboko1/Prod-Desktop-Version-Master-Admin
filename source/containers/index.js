@@ -13,6 +13,7 @@ import ClientsContainer from './ClientsContainer';
 import ClientsFilterContainer from './ClientsFilterContainer';
 import ClientRequisitesContainer from './ClientRequisitesContainer';
 import ChartContainer from './ChartContainer';
+import ReviewsContainer from './ReviewsContainer';
 
 export {
     OrdersContainer,
@@ -30,4 +31,5 @@ export {
     ClientsFilterContainer,
     ClientRequisitesContainer,
     ChartContainer,
+    ReviewsContainer,
 };

@@ -21,6 +21,9 @@ import EmployeeFeedback from './EmployeeFeedback';
 import EmployeeStatistics from './EmployeeStatistics';
 import PhoneNumberInput from './PhoneNumberInput';
 import UniversalChart from './UniversalChart';
+import ReviewsList from './ReviewsList';
+import ReviewRating from './ReviewRating';
+import NPS from './NPS';
 
 export {
     SettingSalaryTable,
@@ -47,4 +50,7 @@ export {
     EmployeeStatistics,
     PhoneNumberInput,
     UniversalChart,
+    ReviewsList,
+    ReviewRating,
+    NPS,
 };

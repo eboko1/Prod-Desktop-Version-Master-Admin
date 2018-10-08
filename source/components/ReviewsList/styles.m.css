@@ -1,0 +1,4 @@
+.listContent {
+    display: flex;
+    justify-content: space-between;
+}

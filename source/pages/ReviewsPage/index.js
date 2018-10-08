@@ -1,34 +1,13 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Button, Icon } from 'antd';
-import moment from 'moment';
 
 // proj
 import { fetchReviews } from 'core/reviews/duck';
+
 import { Layout, Spinner } from 'commons';
+import { ReviewsContainer } from 'containers';
 
-// import book from 'routes/book';
-
-// own
-//import Styles from './styles.m.css'
-
-const mapStateToProps = state => ({
-    reviews:    state.reviews,
-    isFetching: state.ui.reviewsFetching,
-});
-
-const mapDispatchToProps = {
-    fetchReviews,
-};
-
-// @withRouter
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
 export default class ReviewsPage extends Component {
     componentDidMount() {
         fetchReviews();
@@ -44,7 +23,7 @@ export default class ReviewsPage extends Component {
                 title='Отзывы клиентов'
                 description='Управление отзывами Ваших клиентов'
             >
-                <div>Reviews content</div>
+                <ReviewsContainer />
             </Layout>
         );
     }
