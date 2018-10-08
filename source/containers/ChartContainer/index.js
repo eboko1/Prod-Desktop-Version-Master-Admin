@@ -6,7 +6,7 @@ import { Button } from 'antd';
 import moment from 'moment';
 
 // proj
-import { fetchChart } from 'core/chart/duck';
+import { fetchChart, setChartMode } from 'core/chart/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Catcher } from 'commons';
@@ -24,6 +24,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     fetchChart,
+    setChartMode,
     setModal,
     resetModal,
 };
@@ -34,32 +35,25 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class ChartContainer extends Component {
-    _handleChartOption(e, { value, label }) {
-        const { period, startDate, endDate, type } = this.state;
-
-        this.setState(
-            {
-                chartOption: { label, value },
-            },
-            () =>
-                this._fetchChartData({
-                    startDate,
-                    endDate,
-                    period,
-                    type,
-                }),
-        );
-    }
-
     render() {
-        const { chartData, filter } = this.props;
+        const {
+            chartData,
+            filter,
+            modal,
+            setModal,
+            resetModal,
+            fetchChart,
+            setChartMode,
+            startDate,
+            endDate,
+        } = this.props;
 
         return (
             <Catcher>
                 <Button
-                    style={ { width: '25%', margin: '12px auto' } }
+                    style={ { margin: '12px auto' } }
                     type='primary'
-                    onClick={ () => this.props.setModal(MODALS.UNIVERSAL_CHART) }
+                    onClick={ () => setModal(MODALS.UNIVERSAL_CHART) }
                 >
                     <FormattedMessage id='universal_chart.show' />:{ ' ' }
                     <span style={ { fontWeight: 'bold' } }>
@@ -72,8 +66,12 @@ export default class ChartContainer extends Component {
                 <UniversalChartModal
                     // wrappedComponentRef={ this.saveChartRef }
                     mode={ filter.mode }
-                    visible={ this.props.modal }
-                    resetModal={ this.props.resetModal }
+                    visible={ modal }
+                    resetModal={ resetModal }
+                    setChartMode={ setChartMode }
+                    fetchChart={ fetchChart }
+                    startDate={ startDate }
+                    endDate={ endDate }
                 />
             </Catcher>
         );

@@ -17,19 +17,29 @@ let cx = classNames.bind(Styles);
 
 @injectIntl
 export default class UniversalChartModal extends Component {
+    _setUniversalChartMode = mode => {
+        const {
+            setChartMode,
+            fetchChart,
+            resetModal,
+            startDate,
+            endDate,
+        } = this.props;
+
+        setChartMode(mode);
+        fetchChart({ startDate, endDate });
+        resetModal();
+    };
+
     render() {
         const {
             visible,
             resetModal,
             intl: { formatMessage },
-            setChartMode,
             mode,
         } = this.props;
 
         const _listItemStyles = activeMode => {
-            console.log('→ mode', mode);
-            console.log('→ activemode', activeMode);
-
             return cx({
                 listItem:       true,
                 listItemActive: mode === activeMode,
@@ -64,9 +74,9 @@ export default class UniversalChartModal extends Component {
                                     <List.Item
                                         className={ _listItemStyles(item.mode) }
                                         onClick={ () =>
-                                            setChartMode({
-                                                mode: item.mode,
-                                            })
+                                            this._setUniversalChartMode(
+                                                item.mode,
+                                            )
                                         }
                                     >
                                         <List.Item.Meta

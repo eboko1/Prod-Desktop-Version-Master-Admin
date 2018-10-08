@@ -76,7 +76,7 @@ export default function* rootSaga() {
         scheduleFormSaga(),
         settingSalaryFormSaga(),
         // statistics
-        // chartSaga(),
+        chartSaga(),
         // reviewsSaga(),
         // reviewSaga(),
         // callsSaga(),

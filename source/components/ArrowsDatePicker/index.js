@@ -24,18 +24,24 @@ class ArrowsDatePicker extends Component {
 
     render() {
         const {
-            nextDay, prevDay, onDayChange, date, loading,
+            nextDay,
+            prevDay,
+            onDayChange,
+            date,
+            loading,
             intl: { formatMessage },
         } = this.props;
 
         return (
             <div className={ Styles.container }>
-                <Button
-                    icon='left'
-                    className={ Styles.icon }
-                    onClick={ () => prevDay() }
-                    disabled={ loading }
-                />
+                { prevDay && (
+                    <Button
+                        icon='left'
+                        className={ Styles.icon }
+                        onClick={ () => prevDay() }
+                        disabled={ loading }
+                    />
+                ) }
                 <DatePicker
                     allowClear={ false }
                     className={ Styles.datePicker }
@@ -47,12 +53,14 @@ class ArrowsDatePicker extends Component {
                     format={ 'dddd, DD MMM YYYY' }
                     disabled={ loading }
                 />
-                <Button
-                    icon='right'
-                    className={ Styles.icon }
-                    onClick={ () => nextDay() }
-                    disabled={ loading }
-                />
+                { nextDay && (
+                    <Button
+                        icon='right'
+                        className={ Styles.icon }
+                        onClick={ () => nextDay() }
+                        disabled={ loading }
+                    />
+                ) }
             </div>
         );
     }

@@ -4,8 +4,8 @@ import { injectIntl } from 'react-intl';
 import numeral from 'numeral';
 import {
     Text,
-    LineChart,
-    Line,
+    AreaChart,
+    Area,
     XAxis,
     YAxis,
     CartesianGrid,
@@ -66,12 +66,16 @@ export default class UniversalChart extends Component {
 
         return (
             <ResponsiveContainer width='100%' height={ 500 }>
-                <LineChart
+                <AreaChart
                     data={ data }
                     // margin={ { left: leftMargin } }
-                    margin={ { top: 10, right: 40, left: 50, bottom: 5 } }
+                    margin={ { top: 10, right: 40, left: 50, bottom: 50 } }
                 >
-                    <XAxis dataKey='startDate' />
+                    <XAxis
+                        dataKey='startDate'
+                        tick={ { angle: -35 } }
+                        textAnchor='end'
+                    />
                     <YAxis
                         // width={ 100 }
                         // tick={
@@ -84,8 +88,9 @@ export default class UniversalChart extends Component {
                         //         { numeral(data.startDate).format('0,0[.]00') }
                         //     </Text>
                         // }
+
                         tickFormatter={
-                            value => numeral(value).format('0,0[.]00')
+                            value => numeral(value).format('0,0[]00')
                             // value => (
                             //     <Text
                             //         style={ { fontSize: 12 } }
@@ -100,27 +105,55 @@ export default class UniversalChart extends Component {
                     />
                     <CartesianGrid strokeDasharray='3 3' />
                     <Tooltip formatter={ value => this._tooltip(value, mode) } />
-                    <Legend
+                    { console.log('mode', mode) }
+                    { /* <Legend
                         iconType='line'
                         // iconSize={ 14 }
                         verticalAlign='bottom'
                         payload={ [
                             {
-                                value: formatMessage({ id: mode }),
-                                type:  'line',
-                                id:    'ID01',
+                                value: formatMessage({
+                                    id: `universal-chart.list.item.${mode}`,
+                                }),
+                                type: 'line',
+                                id:   'ID01',
                             },
                         ] }
-                    />
-                    <Line
+                    /> */ }
+                    <defs>
+                        <linearGradient
+                            id='colorPv'
+                            x1='0'
+                            y1='0'
+                            x2='0'
+                            y2='1'
+                        >
+                            <stop
+                                offset='5%'
+                                stopColor='#82ca9d'
+                                stopOpacity={ 0.8 }
+                            />
+                            <stop
+                                offset='95%'
+                                stopColor='#82ca9d'
+                                stopOpacity={ 0 }
+                            />
+                        </linearGradient>
+                    </defs>
+                    <Area
                         type='monotone'
-                        name={ formatMessage({ id: mode }) }
+                        name={ formatMessage({
+                            id: `universal-chart.list.item.${mode}`,
+                        }) }
                         dataKey='score'
                         stroke='#51cd66'
+                        fillOpacity={ 1 }
+                        fill='url(#colorPv)'
                         strokeWidth={ 4 }
+                        dot='#51cd66'
                         activeDot={ { r: 10 } }
                     />
-                </LineChart>
+                </AreaChart>
             </ResponsiveContainer>
         );
     }
