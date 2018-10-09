@@ -1,0 +1,27 @@
+.npsInline {
+    border-radius: 50px;
+    text-align: center;
+    font-size: 18px;
+}
+
+.npsBlock {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+    width: 50px;
+    border-radius: 8px;
+    font-size: 32px;
+}
+
+.npsHigh {
+    background: var(--secondary);
+}
+
+.npsMid {
+    background: var(--approve);
+}
+
+.npsLow {
+    background: var(--not_complete);
+}

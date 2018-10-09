@@ -22,7 +22,7 @@ const Recommendation = ({
                 { like ? (
                     <FormattedMessage id='recommend' />
                 ) : (
-                    <FormattedMessage id='dont_recommend' />
+                    <FormattedMessage id='not_recommend' />
                 ) }
             </span>
         ) }

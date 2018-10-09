@@ -1,13 +1,16 @@
 // vendor
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 // proj
 import { Rating } from 'components';
 
+// own
+import Styles from './styles.m.css';
+
 export default class ReviewRating extends Component {
     render() {
         const {
-            className,
             repairQuality,
             repairDuration,
             comfort,
@@ -15,12 +18,24 @@ export default class ReviewRating extends Component {
         } = this.props;
 
         return (
-            <div className={ className }>
-                <Rating rating={ repairQuality } />
-                <Rating rating={ repairDuration } />
-                <Rating rating={ comfort } />
-                <Rating rating={ serviceQuality } />
-            </div>
+            <ul className={ Styles.reviewRating }>
+                <li>
+                    <FormattedMessage id='reviews-table.repair_quality' />:{ ' ' }
+                    <Rating rating={ repairQuality } />
+                </li>
+                <li>
+                    <FormattedMessage id='reviews-table.repair_duration' />:{ ' ' }
+                    <Rating rating={ repairDuration } />
+                </li>
+                <li>
+                    <FormattedMessage id='reviews-table.comfort' />:
+                    <Rating rating={ comfort } />
+                </li>
+                <li>
+                    <FormattedMessage id='reviews-table.service' />:
+                    <Rating rating={ serviceQuality } />
+                </li>
+            </ul>
         );
     }
 }

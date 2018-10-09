@@ -50,6 +50,7 @@ import UniversalFiltersContainer from 'containers/UniversalFilters/messages';
 import ClientContainer from 'containers/ClientContainer/messages';
 import ClientRequisitesContainer from 'containers/ClientRequisitesContainer/messages';
 import ClientsContainer from 'containers/ClientsContainer/messages';
+import ReviewsContainer from 'containers/ReviewsContainer/messages';
 
 // forms
 import DecoratedDatePicker from 'forms/DecoratedFields/DecoratedDatePicker/messages';
@@ -99,6 +100,7 @@ import ClientFeedbackTab from 'components/ClientFeedbackTab/messages';
 import ClientOrdersTab from 'components/ClientOrdersTab/messages';
 import EmployeeFeedback from 'components/EmployeeFeedback/messages';
 import EmployeeStatistics from 'components/EmployeeStatistics/messages';
+import ReviewsTable from 'components/ReviewsTable/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -141,6 +143,7 @@ const messages = merge.all([
     ClientsContainer,
     ClientContainer,
     ClientRequisitesContainer,
+    ReviewsContainer,
     // forms
     ProfileForm,
     UniversalFiltersForm,
@@ -185,6 +188,7 @@ const messages = merge.all([
     ClientOrdersTab,
     EmployeeFeedback,
     EmployeeStatistics,
+    ReviewsTable,
 ]);
 /* eslint-enable array-element-newline */
 

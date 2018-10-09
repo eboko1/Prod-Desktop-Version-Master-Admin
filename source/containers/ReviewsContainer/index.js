@@ -7,7 +7,7 @@ import { connect } from 'react-redux';
 import { fetchReviews } from 'core/reviews/duck';
 
 import { Catcher } from 'commons';
-import { ReviewsList } from 'components';
+import { ReviewsTable } from 'components';
 
 const mapStateToProps = state => ({
     reviews:        state.reviews.reviews,
@@ -43,7 +43,7 @@ export default class ReviewsContainer extends Component {
 
         return (
             <Catcher>
-                <ReviewsList { ...this.props } />
+                <ReviewsTable { ...this.props } />
             </Catcher>
         );
     }

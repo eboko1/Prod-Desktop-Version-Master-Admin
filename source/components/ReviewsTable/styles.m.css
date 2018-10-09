@@ -1,0 +1,56 @@
+.table :global(.ant-table td) {
+    vertical-align: middle;
+}
+
+.row:nth-child(odd) {
+    background-color: var(--moduleHeader);
+}
+
+.table :global(.ant-table-tbody > .rowComplaint > td:first-child) {
+    border-left: 4px var(--disabled) solid;
+}
+
+.client {
+    text-align: center;
+}
+
+.user {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* .anon {
+    color: var(--primary);
+} */
+
+.userIcon {
+    font-size: 32px;
+    color: var(--primary);
+}
+
+.anonIcon {
+    font-size: 32px;
+}
+
+.reviewLinkIcon {
+    color: var(--secondary);
+    font-size: 32px;
+}
+
+.orderLink {
+    color: var(--link);
+}
+
+.label {
+    font-weight: bold;
+}
+
+.comment {
+    font-style: italic;
+    overflow: hidden;
+    display: -webkit-box;
+    word-break: normal;
+    white-space: pre-wrap;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+}
