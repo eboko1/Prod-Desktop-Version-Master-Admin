@@ -24,6 +24,7 @@ import UniversalChart from './UniversalChart';
 import ReviewsTable from './ReviewsTable';
 import ReviewsStats from './ReviewsStats';
 import ReviewRating from './ReviewRating';
+import ReviewResponse from './ReviewResponse';
 import NPS from './NPS';
 
 export {
@@ -54,5 +55,6 @@ export {
     ReviewsTable,
     ReviewsStats,
     ReviewRating,
+    ReviewResponse,
     NPS,
 };

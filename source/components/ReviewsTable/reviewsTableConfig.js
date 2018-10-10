@@ -123,7 +123,7 @@ export function columnsConfig(formatMessage) {
         // fixed:  'right',
         width:  'auto',
         render: (data, review) => (
-            <Link to={ `${book.review}/${review.id}` }>
+            <Link to={ `${book.feedback}/${review.id}` }>
                 <Icon className={ Styles.reviewLinkIcon } type='edit' />
             </Link>
         ),

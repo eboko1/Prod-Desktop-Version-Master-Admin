@@ -8,12 +8,12 @@ import moment from 'moment';
 
 // proj
 import { fetchReview } from 'core/review/duck';
-import { Layout, Spinner } from 'commons';
 
-// import book from 'routes/book';
+import { Layout, Spinner } from 'commons';
+import { ReviewRating, NPS, Like, ReviewResponse } from 'components';
 
 // own
-//import Styles from './styles.m.css'
+import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
     review:     state.review,
@@ -37,7 +37,18 @@ export default class ReviewPage extends Component {
     render() {
         const { isFetching } = this.props;
 
-        const { anonymous, clientFullname, datetime } = this.props.review;
+        const {
+            anonymous,
+            clientFullname,
+            datetime,
+            nps,
+            recommended,
+            comfort,
+            repairDuration,
+            repairQuality,
+            serviceQuality,
+            text,
+        } = this.props.review;
 
         return isFetching ? (
             <Spinner spin={ isFetching } />
@@ -54,7 +65,18 @@ export default class ReviewPage extends Component {
                 }
                 controls={ <Button>Go back</Button> }
             >
-                <div>Review content</div>
+                <div>
+                    { `NPS ${nps} / 10` }
+                    <NPS nps={ nps } />
+                </div>
+                <ReviewRating
+                    comfort={ comfort }
+                    repairDuration={ repairDuration }
+                    repairQuality={ repairQuality }
+                    serviceQuality={ serviceQuality }
+                />
+                <Like like={ recommended } text />
+                <ReviewResponse text={ text } />
             </Layout>
         );
     }

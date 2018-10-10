@@ -12,7 +12,29 @@ export const FETCH_REVIEW_SUCCESS = `${prefix}/FETCH_REVIEW_SUCCESS`;
  * */
 
 const ReducerState = {
-    review: {},
+    anonymous:       true,
+    clientFullname:  null,
+    clientPhone:     null,
+    comfort:         3,
+    complaint:       null,
+    datetime:        '2018-08-30 16:19:05.559585',
+    employeeId:      null,
+    employeeName:    null,
+    employeeSurname: null,
+    id:              6097,
+    nps:             8,
+    orderId:         null,
+    orderNum:        null,
+    photo:           null,
+    recommended:     false,
+    repairDuration:  2,
+    repairQuality:   10,
+    reply:           null,
+    serviceQuality:  6,
+    text:            'Тестовый комментарий',
+    userId:          null,
+    userVehicle:     null,
+    visitDate:       null,
 };
 
 export default function reducer(state = ReducerState, action) {
