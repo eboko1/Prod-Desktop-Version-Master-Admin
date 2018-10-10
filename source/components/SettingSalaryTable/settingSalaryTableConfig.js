@@ -128,6 +128,7 @@ export function columnsConfig(
                     'ORDER',
                     'ORDER_HOURS',
                     'ORDER_SERVICES',
+                    'SPARE_PARTS',
                     'SPARE_PARTS_PROFIT',
                     'ORDER_PROFIT',
                 ].map(percent => (
