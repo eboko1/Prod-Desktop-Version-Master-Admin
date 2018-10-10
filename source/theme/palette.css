@@ -42,8 +42,9 @@
 
     /* RGB */
     --primaryRGB: 155, 89, 182;
-    --primaryDarkRGB: 117,63,143;
+    --primaryDarkRGB: 117, 63, 143;
     --secondaryRGB: 76, 201, 105;
     --secondaryDarkRGB: 0, 170, 30;
     --linkRGB: 82, 179, 255;
+    --warningRGB: 255, 126, 126;
 }

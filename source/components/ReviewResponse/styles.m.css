@@ -1,0 +1,40 @@
+.reviewResponse {
+    width: 70%;
+}
+
+.block {
+    margin-bottom: 24px;
+}
+
+.response {
+    display: flex;
+    flex-direction: column;
+    margin-left: 5%;
+}
+
+.sendResponse {
+    margin-top: 10px;
+    align-self: center;
+}
+
+.title {
+    font-size: 24px;
+    margin-bottom: 4px;
+}
+
+.complain {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 0 14px 0;
+    /* width: 70%; */
+}
+
+.complainted {
+    background: rgba(var(--warningRGB), 0.3);
+}
+
+.complainBtn {
+    margin: 14px 0 14px 14px;
+    width: 200px;
+}

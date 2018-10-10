@@ -31,10 +31,13 @@ const Recommendation = ({
 
 const Text = styled.div`
     font-size: 18px;
+    display: flex;
+    align-items: center;
 `;
 
 export const Like = styled(Recommendation)`
     display: flex;
+    align-items: center;
     font-size: 28px;
     color: ${props => props.like ? 'var(--enabled)' : 'var(--disabled)'};
 `;

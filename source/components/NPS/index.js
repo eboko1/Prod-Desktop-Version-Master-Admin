@@ -30,7 +30,13 @@ export default class NPS extends Component {
                 npsScale:  mode === 'scale',
             });
 
+        const scale = this._renderNPSscale();
+
         if (_.isNumber(nps)) {
+            if (mode === 'scale') {
+                return scale;
+            }
+
             return (
                 <Link to={ `${book.review}/${reviewId}` }>
                     <div className={ _styles() }>{ Math.round(nps) }</div>
@@ -40,4 +46,40 @@ export default class NPS extends Component {
 
         return null;
     }
+
+    _renderNPSscale = () => {
+        const { nps, label } = this.props;
+
+        const MIN = 0;
+        const MAX = 10;
+
+        const _styles = value =>
+            cx({
+                scaleValue:       true,
+                scaleValueFilled: _.isNumber(nps) && Math.round(nps) >= value,
+            });
+
+        return (
+            <div className={ Styles.npsScale }>
+                { label && (
+                    <span className={ Styles.scaleLabel }>
+                        <span className={ Styles.scaleLabelTitle }>NPS </span>
+                        <span className={ Styles.scaleLabelData }>
+                            { nps } / { MAX }
+                        </span>
+                    </span>
+                ) }
+                <div className={ Styles.scale }>
+                    { Array(MAX - MIN + 1)
+                        .fill()
+                        .map((_void, value) => MIN + value)
+                        .map(item => (
+                            <div key={ item } className={ _styles(item) }>
+                                { item }
+                            </div>
+                        )) }
+                </div>
+            </div>
+        );
+    };
 }

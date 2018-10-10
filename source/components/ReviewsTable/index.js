@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
 import classNames from 'classnames/bind';
+import _ from 'lodash';
 
 //own
 import { columnsConfig } from './reviewsTableConfig.js';
@@ -15,7 +16,7 @@ export default class ReviewsTable extends Component {
     render() {
         const {
             reviews,
-            count,
+            stats,
             filter,
             intl: { formatMessage },
             fetchReviews,
@@ -26,17 +27,15 @@ export default class ReviewsTable extends Component {
         const columns = columnsConfig(formatMessage);
 
         const pagination = {
-            pageSize:         25,
+            pageSize:         10,
             size:             'large',
-            total:            35,
-            // total:            Math.ceil(count / 25) * 25,
+            total:            Math.ceil(_.get(stats, 'total') / 10) * 10,
             hideOnSinglePage: true,
-            current:          1,
-            // current:          filter.page,
-            // onChange:         page => {
-            //     setReviewsPageFilter(page);
-            //     fetchReviews(filter);
-            // },
+            current:          filter.page,
+            onChange:         page => {
+                setReviewsPageFilter(page);
+                fetchReviews();
+            },
         };
 
         const _rowStyles = complaint =>
@@ -45,15 +44,12 @@ export default class ReviewsTable extends Component {
                 rowComplaint: complaint,
             });
 
-        // const content = this._renderListContent();
-
         return (
             <Table
                 size='small'
                 className={ Styles.table }
                 columns={ columns }
                 dataSource={ reviews }
-                // scroll={ scrollConfig() }
                 loading={ reviewsFetching }
                 locale={ {
                     emptyText: <FormattedMessage id='no_data' />,

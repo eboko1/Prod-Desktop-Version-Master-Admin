@@ -13,7 +13,7 @@ import book from 'routes/book';
 // own
 import Styles from './styles.m.css';
 
-export function columnsConfig(formatMessage) {
+export function columnsConfig() {
     const client = {
         title:     <FormattedMessage id='reviews-table.client' />,
         width:     200,
@@ -29,7 +29,9 @@ export function columnsConfig(formatMessage) {
                             type='user-delete'
                             theme='outlined'
                         />
-                        <div className={ Styles.anon }>Anon</div>
+                        <div className={ Styles.anon }>
+                            <FormattedMessage id='reviews-table.anon' />
+                        </div>
                     </div>
                 ) : (
                     <div>
@@ -39,7 +41,7 @@ export function columnsConfig(formatMessage) {
                             theme='outlined'
                         />
                         <div className={ Styles.user }>
-                            { review.clientFullname }
+                            { review.clientName } { review.clientSurname }
                         </div>
                     </div>
                 ) }
@@ -62,20 +64,24 @@ export function columnsConfig(formatMessage) {
                         { review.orderNum }
                     </Link>
                 ) }
-                { review.visitDate && (
+                { review.visitDatetime && (
                     <div>
                         <span className={ Styles.label }>
                             <FormattedMessage id='reviews-table.visit_date' />:{ ' ' }
                         </span>
-                        { moment(review.visitDate).format('YYYY-MM-DD') }
+                        { moment(review.visitDatetime).format('YYYY-MM-DD') }
                     </div>
                 ) }
-                { review.userVehicle && (
+                { (review.vehicleMakeName || review.vehicleModelName) && (
                     <div>
                         <span className={ Styles.label }>
                             <FormattedMessage id='reviews-table.vehicle' />:{ ' ' }
                         </span>
-                        { review.userVehicle }
+                        <span className={ Styles.vehicle }>
+                            { `${review.vehicleMakeName} ${
+                                review.vehicleModelName
+                            } (${review.vehicleYear})` }
+                        </span>
                     </div>
                 ) }
                 <div className={ Styles.comment }>{ review.text }</div>

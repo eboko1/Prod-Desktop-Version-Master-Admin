@@ -32,6 +32,8 @@ const _bgColor = type => {
             return 'var(--primary)';
         case 'secondary':
             return 'var(--secondary)';
+        case 'warning':
+            return 'var(--warning)';
         case 'link':
             return 'var(--link)';
 
@@ -45,6 +47,8 @@ const _textColor = type => {
         case 'primary':
             return 'white';
         case 'secondary':
+            return 'white';
+        case 'warning':
             return 'white';
         case 'link':
             return 'white';
@@ -60,6 +64,8 @@ const _borderColor = type => {
             return 'var(--primary)';
         case 'secondary':
             return 'var(--secondary)';
+        case 'warning':
+            return 'var(--warning)';
         case 'link':
             return 'var(--link)';
 
@@ -74,6 +80,8 @@ const _hoveredColor = (type, alpha) => {
             return 'rgba(var(--primaryRGB), .8)';
         case 'secondary':
             return `rgba(var(--secondaryRGB), ${alpha})}`;
+        case 'warning':
+            return 'rgba(var(--warningRGB), .8)';
         case 'link':
             return 'rgba(var(--linkRGB), .8)';
 
@@ -88,6 +96,8 @@ const _activeColor = type => {
             return 'rgba(var(--primaryDarkRGB), 1)';
         case 'secondary':
             return 'rgba(var(--secondaryDarkRGB), 1)}';
+        case 'warning':
+            return 'rgba(var(--warningRGB), 1)}';
         case 'link':
             return 'rgba(var(--linkRGB), 1)';
 

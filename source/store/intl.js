@@ -101,6 +101,7 @@ import ClientOrdersTab from 'components/ClientOrdersTab/messages';
 import EmployeeFeedback from 'components/EmployeeFeedback/messages';
 import EmployeeStatistics from 'components/EmployeeStatistics/messages';
 import ReviewsTable from 'components/ReviewsTable/messages';
+import ReviewResponse from 'components/ReviewResponse/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -189,6 +190,7 @@ const messages = merge.all([
     EmployeeFeedback,
     EmployeeStatistics,
     ReviewsTable,
+    ReviewResponse,
 ]);
 /* eslint-enable array-element-newline */
 

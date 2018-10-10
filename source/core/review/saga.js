@@ -6,9 +6,7 @@ import { setReviewFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
-import { fetchReviewSuccess } from './duck';
-
-import { FETCH_REVIEW } from './duck';
+import { fetchReviewSuccess, FETCH_REVIEW } from './duck';
 
 export function* fetchReviewSaga() {
     while (true) {
@@ -18,7 +16,7 @@ export function* fetchReviewSaga() {
             } = yield take(FETCH_REVIEW);
             yield put(setReviewFetchingState(true));
 
-            const review = yield call(fetchAPI, 'GET', `review/${id}`);
+            const review = yield call(fetchAPI, 'GET', `reviews/${id}`);
             yield put(fetchReviewSuccess(review));
         } catch (error) {
             yield put(emitError(error));

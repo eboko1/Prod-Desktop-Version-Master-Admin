@@ -1,0 +1,26 @@
+{
+  "en": {
+    "review-response.feedback": "Feedback",
+    "review-response.respond_to_customer": "Respond to customer",
+    "review-response.send_response": "Send response",
+    "review-response.complain_text-1": "Any doubt about this feedback?",
+    "review-response.complain_text-2": "Send complain for verification.",
+    "review-response.complain": "Complain"
+  },
+  "ru": {
+    "review-response.feedback": "Отзыв",
+    "review-response.respond_to_customer": "Ответ клиенту",
+    "review-response.send_response": "Отправить ответ",
+    "review-response.complain_text-1": "Есть сомнение по поводу данного отзыва?",
+    "review-response.complain_text-2": "Отправьте жалобу для проверки",
+    "review-response.complain": "Пожаловаться"
+  },
+  "uk": {
+    "review-response.feedback": "Відгук",
+    "review-response.respond_to_customer": "Відповідь клієнту",
+    "review-response.send_response": "Відправити відповідь",
+    "review-response.complain_text-1": "Є сумніви на рахунок цього відгук?",
+    "review-response.complain_text-2": "Відправте скаргу для перевірки",
+    "review-response.complain": "Поскаржитись"
+  }
+}

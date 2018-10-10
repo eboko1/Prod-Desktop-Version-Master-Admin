@@ -4,13 +4,15 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 
 // proj
-import { fetchReviews } from 'core/reviews/duck';
+import { fetchReviews, setReviewsPageFilter } from 'core/reviews/duck';
 
 import { Catcher, Paper } from 'commons';
 import { ReviewsStats, ReviewsTable } from 'components';
 
 const mapStateToProps = state => ({
     reviews:              state.reviews.reviews,
+    filter:               state.reviews.filter,
+    stats:                state.reviews.stats,
     rating:               state.reviews.rating,
     recommended:          state.reviews.recommended,
     notRecommended:       state.reviews.notRecommended,
@@ -25,6 +27,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
     fetchReviews,
+    setReviewsPageFilter,
 };
 
 // @withRouter
@@ -34,12 +37,14 @@ const mapDispatchToProps = {
 )
 export default class ReviewsContainer extends Component {
     componentDidMount() {
-        fetchReviews();
+        this.props.fetchReviews();
     }
 
     render() {
         const {
             reviews,
+            filter,
+            stats,
             rating,
             recommended,
             notRecommended,
@@ -49,6 +54,8 @@ export default class ReviewsContainer extends Component {
             repairDurationRating,
             comfortRating,
             serviceQualityRating,
+            setReviewsPageFilter,
+            fetchReviews,
         } = this.props;
 
         return (
@@ -67,7 +74,13 @@ export default class ReviewsContainer extends Component {
                     />
                 </Paper>
                 <Paper>
-                    <ReviewsTable reviews={ reviews } />
+                    <ReviewsTable
+                        reviews={ reviews }
+                        filter={ filter }
+                        stats={ stats }
+                        setReviewsPageFilter={ setReviewsPageFilter }
+                        fetchReviews={ fetchReviews }
+                    />
                 </Paper>
             </Catcher>
         );

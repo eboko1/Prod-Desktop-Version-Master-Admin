@@ -110,7 +110,8 @@
     "roles.clients_permissions": "Clients",
     "roles.employees_permissions": "Employees",
     "roles.orders_permissions": "Orders",
-    "roles.other_permissions": "Other"
+    "roles.other_permissions": "Other",
+    "go_back": "Return"
   },
   "ru": {
     "currency": "грн.",
@@ -223,7 +224,8 @@
     "roles.clients_permissions": "Клиенты",
     "roles.employees_permissions": "Работники",
     "roles.orders_permissions": "Заказы",
-    "roles.other_permissions": "Другое"
+    "roles.other_permissions": "Другое",
+    "go_back": "Вернуться назад"
   },
   "uk": {
     "currency": "грн.",
@@ -336,6 +338,7 @@
     "roles.clients_permissions": "Клієнти",
     "roles.employees_permissions": "Працівники",
     "roles.orders_permissions": "Замовлення",
-    "roles.other_permissions": "Інше"
+    "roles.other_permissions": "Інше",
+    "go_back": "Повернутись назад"
   }
 }

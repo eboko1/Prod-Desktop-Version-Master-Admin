@@ -44,7 +44,7 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_REVIEW_SUCCESS:
             return {
                 ...state,
-                review: payload,
+                ...payload,
             };
 
         default:

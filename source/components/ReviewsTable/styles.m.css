@@ -49,6 +49,10 @@
     font-weight: bold;
 }
 
+.vehicle {
+    word-break: normal;
+}
+
 .comment {
     font-style: italic;
     overflow: hidden;
