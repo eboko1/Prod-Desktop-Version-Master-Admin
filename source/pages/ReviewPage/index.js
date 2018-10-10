@@ -93,9 +93,7 @@ export default class ReviewPage extends Component {
                                 <FormattedMessage id='reviews-table.visit_date' />
                                 :{ ' ' }
                             </span>
-                            { moment(visitDatetime).format(
-                                'DD MMMM YYYY, HH:mm',
-                            ) }
+                            { moment(visitDatetime).format('DD MMMM YYYY') }
                         </div>
                         <div className={ Styles.dataRow }>
                             <span className={ Styles.label }>
