@@ -18,18 +18,23 @@ const Recommendation = ({
             theme='outlined'
         />
         { text && (
-            <span className={ textClassName }>
+            <Text className={ textClassName }>
                 { like ? (
                     <FormattedMessage id='recommend' />
                 ) : (
                     <FormattedMessage id='not_recommend' />
                 ) }
-            </span>
+            </Text>
         ) }
     </div>
 );
 
+const Text = styled.div`
+    font-size: 18px;
+`;
+
 export const Like = styled(Recommendation)`
+    display: flex;
     font-size: 28px;
     color: ${props => props.like ? 'var(--enabled)' : 'var(--disabled)'};
 `;

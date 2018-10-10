@@ -35,6 +35,10 @@
 .reviewLinkIcon {
     color: var(--secondary);
     font-size: 32px;
+
+    &:hover {
+        color: var(--primary);
+    }
 }
 
 .orderLink {

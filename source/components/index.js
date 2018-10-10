@@ -22,6 +22,7 @@ import EmployeeStatistics from './EmployeeStatistics';
 import PhoneNumberInput from './PhoneNumberInput';
 import UniversalChart from './UniversalChart';
 import ReviewsTable from './ReviewsTable';
+import ReviewsStats from './ReviewsStats';
 import ReviewRating from './ReviewRating';
 import NPS from './NPS';
 
@@ -51,6 +52,7 @@ export {
     PhoneNumberInput,
     UniversalChart,
     ReviewsTable,
+    ReviewsStats,
     ReviewRating,
     NPS,
 };

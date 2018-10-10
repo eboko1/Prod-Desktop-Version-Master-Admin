@@ -3,16 +3,10 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 // proj
-import { fetchReviews } from 'core/reviews/duck';
-
 import { Layout, Spinner } from 'commons';
 import { ReviewsContainer } from 'containers';
 
 export default class ReviewsPage extends Component {
-    componentDidMount() {
-        fetchReviews();
-    }
-
     render() {
         const { isFetching } = this.props;
 
@@ -20,8 +14,9 @@ export default class ReviewsPage extends Component {
             <Spinner spin={ isFetching } />
         ) : (
             <Layout
-                title='Отзывы клиентов'
-                description='Управление отзывами Ваших клиентов'
+                title={ <FormattedMessage id='reviews-page.title' /> }
+                paper={ false }
+                description={ <FormattedMessage id='reviews-page.description' /> }
             >
                 <ReviewsContainer />
             </Layout>

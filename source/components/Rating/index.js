@@ -12,13 +12,13 @@ export default class Rating extends Component {
     };
 
     render() {
-        const { rating, formatter, allowHalf, className } = this.props;
+        const { rating, formatter, allowHalf, className, color } = this.props;
         const value = rating / formatter;
 
         return (
             <Rate
                 className={ className }
-                style={ { color: 'var(--secondary)' } }
+                style={ { color: color ? color : 'var(--secondary)' } }
                 allowHalf={ allowHalf }
                 disabled
                 defaultValue={ value }

@@ -13,7 +13,16 @@ export const SET_REVIEWS_SORT = `${prefix}/SET_REVIEWS_SORT`;
  * */
 
 const ReducerState = {
-    reviews: [
+    notRecommended:       1,
+    recommended:          2,
+    countReviews:         2,
+    npsRating:            40,
+    rating:               8.2,
+    comfortRating:        9.2,
+    repairDurationRating: 7.4,
+    repairQualityRating:  7.6,
+    serviceQualityRating: 8.4,
+    reviews:              [
         {
             anonymous:      true,
             clientFullname: null,

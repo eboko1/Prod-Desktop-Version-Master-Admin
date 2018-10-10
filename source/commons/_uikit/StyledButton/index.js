@@ -112,5 +112,3 @@ export const StyledButton = styled(Button)`
         background-color: ${props => _activeColor(props.type, 1)};
     }
 `;
-
-export default StyledButton;

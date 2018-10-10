@@ -6,16 +6,21 @@ import { connect } from 'react-redux';
 // proj
 import { fetchReviews } from 'core/reviews/duck';
 
-import { Catcher } from 'commons';
-import { ReviewsTable } from 'components';
+import { Catcher, Paper } from 'commons';
+import { ReviewsStats, ReviewsTable } from 'components';
 
 const mapStateToProps = state => ({
-    reviews:        state.reviews.reviews,
-    repairQuality:  state.reviews.repairQuality,
-    repairDuration: state.reviews.repairDuration,
-    comfort:        state.reviews.comfort,
-    serviceQuality: state.reviews.serviceQuality,
-    isFetching:     state.ui.reviewsFetching,
+    reviews:              state.reviews.reviews,
+    rating:               state.reviews.rating,
+    recommended:          state.reviews.recommended,
+    notRecommended:       state.reviews.notRecommended,
+    npsRating:            state.reviews.npsRating,
+    countReviews:         state.reviews.countReviews,
+    repairQualityRating:  state.reviews.repairQualityRating,
+    repairDurationRating: state.reviews.repairDurationRating,
+    comfortRating:        state.reviews.comfortRating,
+    serviceQualityRating: state.reviews.serviceQualityRating,
+    isFetching:           state.ui.reviewsFetching,
 });
 
 const mapDispatchToProps = {
@@ -33,17 +38,37 @@ export default class ReviewsContainer extends Component {
     }
 
     render() {
-        // const {
-        //     reviews,
-        //     repairQuality,
-        //     repairDuration,
-        //     comfort,
-        //     serviceQuality,
-        // } = this.props;
+        const {
+            reviews,
+            rating,
+            recommended,
+            notRecommended,
+            npsRating,
+            countReviews,
+            repairQualityRating,
+            repairDurationRating,
+            comfortRating,
+            serviceQualityRating,
+        } = this.props;
 
         return (
             <Catcher>
-                <ReviewsTable { ...this.props } />
+                <Paper>
+                    <ReviewsStats
+                        rating={ rating }
+                        recommended={ recommended }
+                        notRecommended={ notRecommended }
+                        npsRating={ npsRating }
+                        countReviews={ countReviews }
+                        repairQualityRating={ repairQualityRating }
+                        repairDurationRating={ repairDurationRating }
+                        comfortRating={ comfortRating }
+                        serviceQualityRating={ serviceQualityRating }
+                    />
+                </Paper>
+                <Paper>
+                    <ReviewsTable reviews={ reviews } />
+                </Paper>
             </Catcher>
         );
     }

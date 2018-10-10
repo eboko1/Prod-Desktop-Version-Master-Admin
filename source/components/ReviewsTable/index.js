@@ -1,11 +1,8 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table, Button } from 'antd';
+import { Table } from 'antd';
 import classNames from 'classnames/bind';
-
-// proj
-import { ReviewRating, NPS } from 'components';
 
 //own
 import { columnsConfig } from './reviewsTableConfig.js';
@@ -22,6 +19,7 @@ export default class ReviewsTable extends Component {
             filter,
             intl: { formatMessage },
             fetchReviews,
+            reviewsFetching,
             setReviewsPageFilter,
         } = this.props;
 
@@ -56,13 +54,13 @@ export default class ReviewsTable extends Component {
                 columns={ columns }
                 dataSource={ reviews }
                 // scroll={ scrollConfig() }
-                loading={ this.props.clientsFetching }
+                loading={ reviewsFetching }
                 locale={ {
                     emptyText: <FormattedMessage id='no_data' />,
                 } }
                 pagination={ pagination }
                 // onChange={ handleTableChange }
-                scroll={ { x: 1360 } }
+                scroll={ { x: 1080 } }
                 rowClassName={ review => _rowStyles(review.complaint) }
             />
         );

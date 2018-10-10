@@ -15,25 +15,26 @@ export default class ReviewRating extends Component {
             repairDuration,
             comfort,
             serviceQuality,
+            color,
         } = this.props;
 
         return (
             <ul className={ Styles.reviewRating }>
                 <li>
                     <FormattedMessage id='reviews-table.repair_quality' />:{ ' ' }
-                    <Rating rating={ repairQuality } />
+                    <Rating rating={ repairQuality } color={ color } />
                 </li>
                 <li>
                     <FormattedMessage id='reviews-table.repair_duration' />:{ ' ' }
-                    <Rating rating={ repairDuration } />
+                    <Rating rating={ repairDuration } color={ color } />
                 </li>
                 <li>
                     <FormattedMessage id='reviews-table.comfort' />:
-                    <Rating rating={ comfort } />
+                    <Rating rating={ comfort } color={ color } />
                 </li>
                 <li>
                     <FormattedMessage id='reviews-table.service' />:
-                    <Rating rating={ serviceQuality } />
+                    <Rating rating={ serviceQuality } color={ color } />
                 </li>
             </ul>
         );
