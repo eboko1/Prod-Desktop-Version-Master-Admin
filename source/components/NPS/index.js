@@ -38,7 +38,7 @@ export default class NPS extends Component {
             }
 
             return (
-                <Link to={ `${book.review}/${reviewId}` }>
+                <Link to={ `${book.feedback}/${reviewId}` }>
                     <div className={ _styles() }>{ Math.round(nps) }</div>
                 </Link>
             );

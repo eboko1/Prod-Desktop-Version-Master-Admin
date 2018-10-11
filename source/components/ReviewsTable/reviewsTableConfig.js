@@ -98,7 +98,7 @@ export function columnsConfig() {
         render:    (nps, review) => {
             if (nps) {
                 return (
-                    <NPS nps={ nps } mode='block'>
+                    <NPS nps={ nps } mode='block' reviewId={ review.id }>
                         { nps }
                     </NPS>
                 );

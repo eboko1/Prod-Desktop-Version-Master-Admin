@@ -12,14 +12,26 @@
     margin-left: 5%;
 }
 
-.sendResponse {
-    margin-top: 10px;
+.send {
+    margin: 10px 0;
     align-self: center;
 }
 
 .title {
     font-size: 24px;
     margin-bottom: 4px;
+}
+
+.feedbackText, .complainText {
+    padding: 4px 11px;
+    min-height: 32px;
+    border: 1px #d9d9d9 solid;
+    border-radius: 4px;
+}
+
+.complainText {
+    margin-top: 10px;
+    border: 1px var(--warning) solid;
 }
 
 .complain {
@@ -30,8 +42,18 @@
     /* width: 70%; */
 }
 
-.complainted {
+.complained {
+    display: flex;
     background: rgba(var(--warningRGB), 0.3);
+    flex-direction: column;
+    padding: 14px;
+    margin-top: 24px;
+}
+
+.closeComplain {
+    cursor: pointer;
+    align-self: flex-end;
+    margin-bottom: 10px;
 }
 
 .complainBtn {

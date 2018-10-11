@@ -1,6 +1,5 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 
 // proj
@@ -22,7 +21,6 @@ const mapStateToProps = state => ({
     repairDurationRating: state.reviews.repairDurationRating,
     comfortRating:        state.reviews.comfortRating,
     serviceQualityRating: state.reviews.serviceQualityRating,
-    isFetching:           state.ui.reviewsFetching,
 });
 
 const mapDispatchToProps = {
@@ -36,10 +34,6 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class ReviewsContainer extends Component {
-    componentDidMount() {
-        this.props.fetchReviews();
-    }
-
     render() {
         const {
             reviews,

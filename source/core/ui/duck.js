@@ -24,6 +24,8 @@ export const SET_PACKAGE_FETCHING_STATE = `${prefix}/SET_PACKAGE_FETCHING_STATE`
 export const SET_BUSINESS_PACKAGE_FETCHING_STATE = `${prefix}/SET_BUSINESS_PACKAGE_FETCHING_STATE`;
 export const SET_MANAGER_ROLE_FETCHING_STATE = `${prefix}/SET_MANAGER_ROLE_FETCHING_STATE`;
 export const SET_ROLE_FETCHING_STATE = `${prefix}/SET_ROLE_FETCHING_STATE`;
+export const SET_REVIEW_REPLY_STATE = `${prefix}/SET_REVIEW_REPLY_STATE`;
+export const SET_REVIEW_COMPLAINT_STATE = `${prefix}/SET_REVIEW_COMPLAINT_STATE`;
 
 export const SET_DASHBOARD_INITALIZING_STATE = `${prefix}/SET_DASHBOARD_INITALIZING_STATE`;
 export const SET_DASHBOARD_FETCHING_STATE = `${prefix}/SET_DASHBOARD_FETCHING_STATE`;
@@ -47,6 +49,8 @@ const ReducerState = {
     clientOrdersFetching:     false,
     reviewsFetching:          false,
     reviewFetching:           false,
+    reviewReplyLoading:       false,
+    reviewComplaintLoading:   false,
     chartFetching:            false,
     callsFetching:            false,
     dashboardInitializing:    false,
@@ -134,6 +138,12 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_CALLS_FETCHING_STATE:
             return { ...state, callsFetching: payload };
+
+        case SET_REVIEW_REPLY_STATE:
+            return { ...state, reviewReplyLoading: payload };
+
+        case SET_REVIEW_COMPLAINT_STATE:
+            return { ...state, reviewComplaintLoading: payload };
 
         default:
             return state;
@@ -229,6 +239,16 @@ export const setReviewsFetchingState = state => ({
 
 export const setReviewFetchingState = state => ({
     type:    SET_REVIEW_FETCHING_STATE,
+    payload: state,
+});
+
+export const setReviewReplyState = state => ({
+    type:    SET_REVIEW_REPLY_STATE,
+    payload: state,
+});
+
+export const setReviewComplaintState = state => ({
+    type:    SET_REVIEW_COMPLAINT_STATE,
     payload: state,
 });
 

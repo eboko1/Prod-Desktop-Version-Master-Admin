@@ -8,7 +8,11 @@ import moment from 'moment';
 import _ from 'lodash';
 
 // proj
-import { fetchReview } from 'core/review/duck';
+import {
+    fetchReview,
+    postReviewReply,
+    postReviewComplain,
+} from 'core/review/duck';
 
 import { Layout, Spinner, GoBack } from 'commons';
 import { ReviewRating, NPS, Like, ReviewResponse } from 'components';
@@ -19,12 +23,16 @@ import book from 'routes/book';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    review:     state.review,
-    isFetching: state.ui.reviewFetching,
+    review:                 state.review,
+    isFetching:             state.ui.reviewFetching,
+    reviewReplyLoading:     state.ui.reviewReplyLoading,
+    reviewComplaintLoading: state.ui.reviewComplaintLoading,
 });
 
 const mapDispatchToProps = {
     fetchReview,
+    postReviewReply,
+    postReviewComplain,
 };
 
 @withRouter
@@ -66,7 +74,10 @@ export default class ReviewPage extends Component {
             employeeSurname,
             employeeId,
             clientPhones,
+            reply,
+            replyText,
             complaint,
+            complaintText,
         } = this.props.review;
 
         return isFetching ? (
@@ -76,7 +87,9 @@ export default class ReviewPage extends Component {
                 title={ `${formatMessage({ id: 'review-page.title' })}: ${
                     anonymous
                         ? formatMessage({ id: 'reviews-table.anon' })
-                        : `${clientName} ${clientSurname}`
+                        : `${!_.isNil(clientName) ? clientName : ''} ${
+                            !_.isNil(clientSurname) ? clientSurname : ''
+                        }`
                 }` }
                 description={
                     <>
@@ -99,7 +112,13 @@ export default class ReviewPage extends Component {
                             <span className={ Styles.label }>
                                 <FormattedMessage id='reviews-table.vehicle' />:{ ' ' }
                             </span>
-                            { `${vehicleMakeName} ${vehicleModelName} (${vehicleYear})` }
+                            { `${
+                                !_.isNil(vehicleMakeName) ? vehicleMakeName : ''
+                            } ${
+                                !_.isNil(vehicleModelName)
+                                    ? vehicleModelName
+                                    : ''
+                            } (${!_.isNil(vehicleYear) ? vehicleYear : ''})` }
                         </div>
                         <div className={ Styles.dataRow }>
                             <span className={ Styles.label }>
@@ -138,7 +157,20 @@ export default class ReviewPage extends Component {
                     <Like like={ recommended } text />
                 </section>
                 <section className={ Styles.response }>
-                    <ReviewResponse text={ text } complaint={ complaint } />
+                    <ReviewResponse
+                        text={ text }
+                        reply={ reply }
+                        replyText={ replyText }
+                        complaint={ complaint }
+                        complaintText={ complaintText }
+                        postReviewReply={ this.props.postReviewReply }
+                        postReviewComplain={ this.props.postReviewComplain }
+                        id={ this.props.match.params.id }
+                        reviewReplyLoading={ this.props.reviewReplyLoading }
+                        reviewComplaintLoading={
+                            this.props.reviewComplaintLoading
+                        }
+                    />
                 </section>
             </Layout>
         );

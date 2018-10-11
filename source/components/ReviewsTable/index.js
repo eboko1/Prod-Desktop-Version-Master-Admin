@@ -27,9 +27,9 @@ export default class ReviewsTable extends Component {
         const columns = columnsConfig(formatMessage);
 
         const pagination = {
-            pageSize:         10,
+            pageSize:         15,
             size:             'large',
-            total:            Math.ceil(_.get(stats, 'total') / 10) * 10,
+            total:            Math.ceil(_.get(stats, 'total') / 15) * 15,
             hideOnSinglePage: true,
             current:          filter.page,
             onChange:         page => {
