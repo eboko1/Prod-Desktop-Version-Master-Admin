@@ -35,6 +35,8 @@ import {
     updateOrderSuccess,
     returnToOrdersPage,
     createInviteOrderSuccess,
+    fetchTecdocSuggestionsSuccess,
+
     CREATE_INVITE_ORDER,
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
@@ -45,7 +47,17 @@ import {
     UPDATE_ORDER,
     RETURN_TO_ORDERS_PAGE,
     FETCH_AVAILABLE_HOURS,
+    FETCH_TECDOC_SUGGESTIONS,
 } from './duck';
+
+export function* fetchTecdocSuggestionsSaga() {
+    while (true) {
+        const { payload: { modificationId, serviceId } } = yield take(FETCH_TECDOC_SUGGESTIONS);
+        const query = { modificationId, serviceId };
+        const suggestions = yield call(fetchAPI, 'GET', 'tecdoc/suggestions', query);
+        yield put(fetchTecdocSuggestionsSuccess(suggestions));
+    }
+}
 
 export function* fetchOrderFormSaga() {
     while (true) {
@@ -274,6 +286,7 @@ export function* fetchAvailableHoursSaga() {
 export function* saga() {
     yield all([
         takeEvery(CREATE_INVITE_ORDER, createInviteOrderSaga),
+        call(fetchTecdocSuggestionsSaga),
         call(fetchOrderTaskSaga),
         call(returnToOrdersPageSaga),
         call(updateOrderSaga),

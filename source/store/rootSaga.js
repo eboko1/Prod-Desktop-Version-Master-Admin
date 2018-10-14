@@ -39,6 +39,7 @@ import { saga as scheduleFormSaga } from 'core/forms/scheduleForm/saga';
 import { saga as profileFormSaga } from 'core/forms/profileForm/saga';
 import { saga as editClientFormSaga } from 'core/forms/editClientForm/saga';
 import { saga as settingSalaryFormSaga } from 'core/forms/settingSalaryForm/saga';
+import { saga as tecDocFormSaga } from 'core/forms/tecDocForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -85,6 +86,7 @@ export default function* rootSaga() {
         rolesSaga(),
         businessPackageSaga(),
         managerRoleSaga(),
+        tecDocFormSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

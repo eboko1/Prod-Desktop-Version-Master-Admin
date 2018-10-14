@@ -223,36 +223,40 @@ export class AddClientVehicleForm extends Component {
                             </DecoratedSelect>
                         ) }
                     </Col>
-                    <Col span={ 3 }>
-                        <DecoratedInput
-                            hasFeedback
-                            formItem
-                            rules={ [
-                                {
-                                    required: true,
-                                    message:  this.props.intl.formatMessage({
-                                        id: 'required_field',
-                                    }),
-                                },
-                            ] }
-                            label={
-                                <FormattedMessage id='add_client_form.number' />
-                            }
-                            getFieldDecorator={ getFieldDecorator }
-                            field='number'
-                        />
-                    </Col>
-                    <Col span={ 3 }>
-                        <DecoratedInput
-                            hasFeedback
-                            formItem
-                            label={
-                                <FormattedMessage id='add_client_form.vin' />
-                            }
-                            getFieldDecorator={ getFieldDecorator }
-                            field='vin'
-                        />
-                    </Col>
+                    { !this.props.onlyVehicles && (
+                        <Col span={ 3 }>
+                            <DecoratedInput
+                                hasFeedback
+                                formItem
+                                rules={ [
+                                    {
+                                        required: true,
+                                        message:  this.props.intl.formatMessage({
+                                            id: 'required_field',
+                                        }),
+                                    },
+                                ] }
+                                label={
+                                    <FormattedMessage id='add_client_form.number' />
+                                }
+                                getFieldDecorator={ getFieldDecorator }
+                                field='number'
+                            />
+                        </Col>
+                    ) }
+                    { !this.props.onlyVehicles && (
+                        <Col span={ 3 }>
+                            <DecoratedInput
+                                hasFeedback
+                                formItem
+                                label={
+                                    <FormattedMessage id='add_client_form.vin' />
+                                }
+                                getFieldDecorator={ getFieldDecorator }
+                                field='vin'
+                            />
+                        </Col>
+                    ) }
                     <Col span={ 4 }>
                         <Row type='flex' justify='end'>
                             <FormItem>
@@ -281,10 +285,27 @@ export class AddClientVehicleForm extends Component {
                                                     .fromPairs()
                                                     .value();
 
+                                                const filter = {
+                                                    id: vehicle.modificationId,
+                                                };
+
+                                                const modif = _.find(
+                                                    modifications,
+                                                    filter,
+                                                );
+
                                                 this.props.resetAddClientVehicleForm();
                                                 this.props.addClientVehicle({
                                                     ...vehicle,
                                                     ...names,
+                                                    ...this.props.tecdoc
+                                                        ? {
+                                                            tecdocId: _.get(
+                                                                modif,
+                                                                'tecdocId',
+                                                            ),
+                                                        }
+                                                        : {},
                                                 });
                                             }
                                         });
