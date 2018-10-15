@@ -373,7 +373,7 @@ class DetailsTable extends Component {
                     const config = [
                         {
                             name:  `details[${globalIndex}][detailName]`,
-                            value: String(suggestion.detailId),
+                            value: suggestion.detailId,
                         },
                         {
                             name:  `details[${globalIndex}][detailCode]`,
@@ -381,9 +381,7 @@ class DetailsTable extends Component {
                         },
                         {
                             name:  `details[${globalIndex}][detailBrandName]`,
-                            value: String(
-                                _.get(suggestion, 'tecdoc[0].brandId'),
-                            ),
+                            value: _.get(suggestion, 'tecdoc[0].brandId'),
                         },
                     ];
 
@@ -392,7 +390,7 @@ class DetailsTable extends Component {
                     );
 
                     return _(config)
-                        .map(({ name, value }) => value && [ name, value ])
+                        .map(({ name, value }) => value && [ name, String(value) ])
                         .filter(Boolean)
                         .fromPairs()
                         .value();
