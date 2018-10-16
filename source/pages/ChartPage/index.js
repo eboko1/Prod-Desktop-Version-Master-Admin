@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Radio } from 'antd';
 
 // proj
 import {
@@ -14,12 +13,10 @@ import {
 
 import { Layout, Spinner } from 'commons';
 import { ChartContainer } from 'containers';
-import { ArrowsDatePicker } from 'components';
+import { DatePickerGroup } from 'components';
 
 // own
 import Styles from './styles.m.css';
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
 
 const mapStateToProps = state => ({
     chartData:  state.chart.chartData,
@@ -61,8 +58,8 @@ export default class ChartPage extends Component {
             isFetching,
             startDate,
             endDate,
+            filter: { date, period },
         } = this.props;
-        const headerControls = this._renderHeaderControls();
 
         return isFetching ? (
             <Spinner spin={ isFetching } />
@@ -70,7 +67,15 @@ export default class ChartPage extends Component {
             <Layout
                 title={ <FormattedMessage id='chart-page.title' /> }
                 description={ <FormattedMessage id='chart-page.description' /> }
-                controls={ headerControls }
+                controls={
+                    <DatePickerGroup
+                        date={ date }
+                        loading={ isFetching }
+                        period={ period }
+                        onDateChange={ this._setChartDate }
+                        onPeriodChange={ this._setChartPeriod }
+                    />
+                }
             >
                 <ChartContainer
                     chartData={ chartData }
@@ -81,41 +86,4 @@ export default class ChartPage extends Component {
             </Layout>
         );
     }
-
-    _renderHeaderControls = () => {
-        const {
-            isFetching,
-            filter: { date, period },
-        } = this.props;
-
-        return (
-            <>
-                <ArrowsDatePicker
-                    date={ date }
-                    onDayChange={ this._setChartDate }
-                    loading={ isFetching }
-                />
-                <RadioGroup value={ period } className={ Styles.filters }>
-                    <RadioButton
-                        value='day'
-                        onClick={ () => this._setChartPeriod('day') }
-                    >
-                        <FormattedMessage id='day' />
-                    </RadioButton>
-                    <RadioButton
-                        value='week'
-                        onClick={ () => this._setChartPeriod('week') }
-                    >
-                        <FormattedMessage id='week' />
-                    </RadioButton>
-                    <RadioButton
-                        value='month'
-                        onClick={ () => this._setChartPeriod('month') }
-                    >
-                        <FormattedMessage id='month' />
-                    </RadioButton>
-                </RadioGroup>
-            </>
-        );
-    };
 }

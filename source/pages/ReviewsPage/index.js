@@ -10,7 +10,7 @@ import { Layout, Spinner } from 'commons';
 import { ReviewsContainer } from 'containers';
 
 const mapStateToProps = state => ({
-    sFetching: state.ui.reviewsFetching,
+    isFetching: state.ui.reviewsFetching,
 });
 
 const mapDispatchToProps = {

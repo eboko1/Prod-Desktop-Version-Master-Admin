@@ -9,18 +9,9 @@ import { Catcher, Paper } from 'commons';
 import { ReviewsStats, ReviewsTable } from 'components';
 
 const mapStateToProps = state => ({
-    reviews:              state.reviews.reviews,
-    filter:               state.reviews.filter,
-    stats:                state.reviews.stats,
-    rating:               state.reviews.rating,
-    recommended:          state.reviews.recommended,
-    notRecommended:       state.reviews.notRecommended,
-    npsRating:            state.reviews.npsRating,
-    countReviews:         state.reviews.countReviews,
-    repairQualityRating:  state.reviews.repairQualityRating,
-    repairDurationRating: state.reviews.repairDurationRating,
-    comfortRating:        state.reviews.comfortRating,
-    serviceQualityRating: state.reviews.serviceQualityRating,
+    reviews: state.reviews.reviews,
+    filter:  state.reviews.filter,
+    stats:   state.reviews.stats,
 });
 
 const mapDispatchToProps = {
@@ -39,15 +30,6 @@ export default class ReviewsContainer extends Component {
             reviews,
             filter,
             stats,
-            rating,
-            recommended,
-            notRecommended,
-            npsRating,
-            countReviews,
-            repairQualityRating,
-            repairDurationRating,
-            comfortRating,
-            serviceQualityRating,
             setReviewsPageFilter,
             fetchReviews,
         } = this.props;
@@ -55,17 +37,7 @@ export default class ReviewsContainer extends Component {
         return (
             <Catcher>
                 <Paper>
-                    <ReviewsStats
-                        rating={ rating }
-                        recommended={ recommended }
-                        notRecommended={ notRecommended }
-                        npsRating={ npsRating }
-                        countReviews={ countReviews }
-                        repairQualityRating={ repairQualityRating }
-                        repairDurationRating={ repairDurationRating }
-                        comfortRating={ comfortRating }
-                        serviceQualityRating={ serviceQualityRating }
-                    />
+                    <ReviewsStats stats={ stats } />
                 </Paper>
                 <Paper>
                     <ReviewsTable

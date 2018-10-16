@@ -50,31 +50,7 @@ export const DecoratedSelect = props => {
         // globalLimit,
     } = props;
 
-    // function LimitedSearch() {
-    //     let globalQuery = null;
-    //     let globalOptions = [];
-    //
-    //     this.handleLimitedSearch = function handleLimitedSearch(
-    //         query,
-    //         optionValue,
-    //     ) {
-    //         if (query !== globalQuery) {
-    //             globalOptions = _.map(children, 'props.children')
-    //                 .filter(value => value.toLowerCase().indexOf(query) !== -1)
-    //                 .slice(0, globalLimit);
-    //             globalQuery = query;
-    //         }
-    //
-    //         return globalOptions.includes(optionValue);
-    //     };
-    // }
-    //
-    // const limitedSearch = new LimitedSearch();
-
-    const select = getFieldDecorator(field, {
-        ...initialValue ? { initialValue } : { initialValue: void 0 },
-        rules,
-    })(
+    const renderSelect = (
         <Select
             mode={ mode }
             disabled={ disabled }
@@ -89,7 +65,7 @@ export const DecoratedSelect = props => {
             onSelect={ onSelect }
             placeholder={ placeholder }
             notFoundContent={
-                notFoundContent ? 
+                notFoundContent ?
                     notFoundContent
                     : (
                         <FormattedMessage id='no_data' />
@@ -126,8 +102,19 @@ export const DecoratedSelect = props => {
                         { option[ optionLabel ] }
                     </Option>
                 )) }
-        </Select>,
+        </Select>
     );
+
+    let select = null;
+
+    if (getFieldDecorator) {
+        select = getFieldDecorator(field, {
+            ...initialValue ? { initialValue } : { initialValue: void 0 },
+            rules,
+        })(renderSelect);
+    } else {
+        select = renderSelect;
+    }
 
     return formItem ? (
         <FormItem
@@ -139,7 +126,28 @@ export const DecoratedSelect = props => {
         >
             { select }
         </FormItem>
-    ) : 
+    ) :
         select
     ;
 };
+
+// function LimitedSearch() {
+//     let globalQuery = null;
+//     let globalOptions = [];
+//
+//     this.handleLimitedSearch = function handleLimitedSearch(
+//         query,
+//         optionValue,
+//     ) {
+//         if (query !== globalQuery) {
+//             globalOptions = _.map(children, 'props.children')
+//                 .filter(value => value.toLowerCase().indexOf(query) !== -1)
+//                 .slice(0, globalLimit);
+//             globalQuery = query;
+//         }
+//
+//         return globalOptions.includes(optionValue);
+//     };
+// }
+//
+// const limitedSearch = new LimitedSearch();

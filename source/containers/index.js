@@ -14,6 +14,7 @@ import ClientsFilterContainer from './ClientsFilterContainer';
 import ClientRequisitesContainer from './ClientRequisitesContainer';
 import ChartContainer from './ChartContainer';
 import ReviewsContainer from './ReviewsContainer';
+import CallsContainer from './CallsContainer';
 
 export {
     OrdersContainer,
@@ -32,4 +33,5 @@ export {
     ClientRequisitesContainer,
     ChartContainer,
     ReviewsContainer,
+    CallsContainer,
 };

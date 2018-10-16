@@ -13,16 +13,16 @@ import Styles from './styles.m.css';
 export default class ReviewsStats extends Component {
     render() {
         const {
-            rating,
+            totalRating,
             npsRating,
             repairQualityRating,
             repairDurationRating,
             comfortRating,
             serviceQualityRating,
-            countReviews,
+            total,
             recommended,
             notRecommended,
-        } = this.props;
+        } = this.props.stats;
 
         return (
             <Catcher>
@@ -31,7 +31,7 @@ export default class ReviewsStats extends Component {
                         <span className={ Styles.title }>
                             <FormattedMessage id='reviews.rating' />
                             <span className={ Styles.titleData }>
-                                { ` ${rating} / 10` }
+                                { ` ${totalRating} / 10` }
                             </span>
                         </span>
                         <ReviewRating
@@ -53,7 +53,7 @@ export default class ReviewsStats extends Component {
                             <li>
                                 <FormattedMessage id='reviews.count_reviews' />
                                 <span className={ Styles.listData }>
-                                    { ` ${countReviews}` }
+                                    { ` ${total}` }
                                 </span>
                             </li>
                             <li>
