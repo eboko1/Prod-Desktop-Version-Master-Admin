@@ -1,0 +1,37 @@
+.callsStatistics {
+    display: flex;
+    justify-content: center;
+}
+
+.pies {
+    display: flex;
+    justify-content: space-between;
+}
+
+.piesRow {
+    display: flex;
+    justify-content: space-between;
+}
+
+.pieChart {
+    justify-content: flex-start;
+}
+
+.column {
+    flex: 0 1 50%;
+    width: 50%;
+}
+
+.barControls {
+    margin: 18px 0;
+}
+
+.controlIcon {
+    font-size: 32px;
+    margin: 0 24px;
+    cursor: pointer;
+}
+
+.controlText {
+    font-size: 14px;
+}

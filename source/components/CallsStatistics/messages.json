@@ -1,0 +1,29 @@
+{
+    "en": {
+        "calls-statistics.total_calls": "Total calls",
+        "calls-statistics.missed": "Missed",
+        "calls-statistics.answered": "Answered",
+        "calls-statistics.busy": "Busy",
+        "calls-statistics.answered_calls_efficiency": "Answered Calls Efficiency",
+        "calls-statistics.missed_calls_percent": "Missed Calls Percent",
+        "calls-statistics.became_your_clients": "Became your clients"
+    },
+    "ru": {
+        "calls-statistics.total_calls": "Звонки на станцию",
+        "calls-statistics.missed": "Пропущено",
+        "calls-statistics.answered": "Принято",
+        "calls-statistics.busy": "Занято",
+        "calls-statistics.answered_calls_efficiency": "Эффективность принятия звонков",
+        "calls-statistics.missed_calls_percent": "Процент пропущенных звонков",
+        "calls-statistics.became_your_clients": "Стали вашими клиентами"
+    },
+    "uk": {
+        "calls-statistics.total_calls": "Дзвінки на станцію",
+        "calls-statistics.missed": "Пропущено",
+        "calls-statistics.answered": "Прийнято",
+        "calls-statistics.busy": "Зайнято",
+        "calls-statistics.answered_calls_efficiency": "Эффективность принятия звонков",
+        "calls-statistics.missed_calls_percent": "Відсоток пропущених дзвінків",
+        "calls-statistics.became_your_clients": "Стали вашими клієнтами"
+    }
+}

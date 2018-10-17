@@ -5,8 +5,7 @@ import { Radio } from 'antd';
 
 // proj
 import { Catcher } from 'commons';
-import { ArrowsDatePicker } from 'components';
-import { RangePickerField } from 'forms/_formkit';
+import { RangePickerField, DatePickerField } from 'forms/_formkit';
 
 // own
 const RadioButton = Radio.Button;
@@ -27,12 +26,20 @@ export default class DatePickerGroup extends Component {
 
         return (
             <Catcher>
-                <RangePickerField
-                    onChange={ onDateChange }
-                    loading={ loading }
-                    startDate={ startDate }
-                    endDate={ endDate }
-                />
+                { !date ? (
+                    <RangePickerField
+                        onChange={ onDateChange }
+                        loading={ loading }
+                        startDate={ startDate }
+                        endDate={ endDate }
+                    />
+                ) : (
+                    <DatePickerField
+                        onChange={ onDateChange }
+                        loading={ loading }
+                        date={ date }
+                    />
+                ) }
                 <RadioGroup value={ period } className={ className }>
                     <RadioButton
                         value='day'

@@ -9,18 +9,15 @@ import { fetchCalls, fetchCallsChart } from 'core/calls/duck';
 
 import { Catcher } from 'commons';
 
-import {
-    CallsTable,
-    CallsStatistics,
-    CallsPieChart,
-    CallsChart,
-} from 'components';
+import { CallsTable, CallsStatistics } from 'components';
 
 // own
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
     calls:  state.calls.calls,
+    stats:  state.calls.stats,
+    chart:  state.calls.chart,
     filter: state.calls.filter,
 });
 
@@ -51,6 +48,8 @@ export default class CallsContainer extends Component {
     /* eslint-enable complexity */
     render() {
         const {
+            stats,
+            chart,
             intl: { formatMessage },
         } = this.props;
 
@@ -63,8 +62,7 @@ export default class CallsContainer extends Component {
                         }) }
                         key='callsChart'
                     >
-                        <CallsStatistics />
-                        <CallsChart />
+                        <CallsStatistics stats={ stats } chart={ chart } />
                     </TabPane>
                     <TabPane
                         tab={ formatMessage({

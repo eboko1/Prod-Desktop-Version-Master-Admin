@@ -26,8 +26,6 @@ import ReviewsStats from './ReviewsStats';
 import ReviewRating from './ReviewRating';
 import ReviewResponse from './ReviewResponse';
 import NPS from './NPS';
-import CallsChart from './CallsChart';
-import { CallsPieChart } from './CallsChart/CallsPieChart';
 import CallsTable from './CallsTable';
 import CallsStatistics from './CallsStatistics';
 import DatePickerGroup from './DatePickerGroup';
@@ -62,8 +60,6 @@ export {
     ReviewRating,
     ReviewResponse,
     NPS,
-    CallsChart,
-    CallsPieChart,
     CallsTable,
     CallsStatistics,
     DatePickerGroup,

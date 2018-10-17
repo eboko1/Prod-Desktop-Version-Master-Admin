@@ -14,8 +14,8 @@ export default class RangePickerField extends Component {
             Today:        [ moment(), moment() ],
             'This Month': [ moment(), moment().endOf('month') ],
         };
-        console.log('→ startDate', startDate);
-        console.log('→ endDate', endDate);
+        // console.log('→ startDate', startDate);
+        // console.log('→ endDate', endDate);
 
         return (
             <RangePicker
