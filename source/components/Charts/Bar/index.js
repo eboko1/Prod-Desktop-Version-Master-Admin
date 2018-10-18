@@ -9,6 +9,7 @@ import {
     CartesianGrid,
     Tooltip,
     Legend,
+    ResponsiveContainer,
     Surface,
     Symbols,
 } from 'recharts';
@@ -21,7 +22,7 @@ import Styles from './styles.m.css';
 @injectIntl
 export default class Bar extends Component {
     static defaultProps = {
-        width:  600,
+        width:  '100%',
         height: 300,
     };
 
@@ -38,34 +39,36 @@ export default class Bar extends Component {
         const { width, height, data, config } = this.props;
 
         return data ? (
-            <BarChart
-                width={ width }
-                height={ height }
-                data={ data }
-                margin={ { top: 5, right: 30, left: 20, bottom: 5 } }
-            >
-                <CartesianGrid strokeDasharray='3 3' />
-                <XAxis dataKey='id' />
-                <YAxis
-                    tickFormatter={ value => numeral(value).format('0,0[]00') }
-                />
-                <Tooltip />
-                <Legend
-                    iconType='rect'
-                    content={ this._renderLegend }
-                    onClick={ this.handleClick }
-                    // payload={ [{ value: 'item id', type: 'line', id: 'ID01' }] }
-                />
-                { _(config.dataKeys)
-                    .map(dataKey => (
-                        <BarColumn
-                            key={ dataKey.name }
-                            dataKey={ dataKey.name }
-                            fill={ dataKey.color }
-                        />
-                    ))
-                    .value() }
-            </BarChart>
+            <ResponsiveContainer width={ width } height={ height }>
+                <BarChart
+                    data={ data }
+                    margin={ { top: 5, right: 30, left: 20, bottom: 5 } }
+                >
+                    <CartesianGrid strokeDasharray='3 3' />
+                    <XAxis dataKey='id' />
+                    <YAxis
+                        tickFormatter={ value =>
+                            numeral(value).format('0,0[]00')
+                        }
+                    />
+                    <Tooltip />
+                    <Legend
+                        iconType='rect'
+                        content={ this._renderLegend }
+                        onClick={ this.handleClick }
+                        // payload={ [{ value: 'item id', type: 'line', id: 'ID01' }] }
+                    />
+                    { _(config.dataKeys)
+                        .map(dataKey => (
+                            <BarColumn
+                                key={ dataKey.name }
+                                dataKey={ dataKey.name }
+                                fill={ dataKey.color }
+                            />
+                        ))
+                        .value() }
+                </BarChart>
+            </ResponsiveContainer>
         ) : null;
     }
 
@@ -91,13 +94,14 @@ export default class Bar extends Component {
                             <Surface
                                 width={ 10 }
                                 height={ 10 }
-                                viewBox='0 0 10 10'
+                                // viewBox='0 0 10 10'
+                                viewBox={ { x: 0, y: 0, width: 10, height: 10 } }
                                 onClick={ this.handleClick }
                             >
                                 <Symbols
                                     cx={ 5 }
                                     cy={ 5 }
-                                    type='circle'
+                                    type='square'
                                     size={ 50 }
                                     fill={ color }
                                     onClick={ this.handleClick }
