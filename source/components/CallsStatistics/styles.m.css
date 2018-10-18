@@ -35,3 +35,19 @@
 .controlText {
     font-size: 14px;
 }
+
+.totalIcon {
+    color: var(--primary);
+}
+
+.answeredIcon {
+    color: var(--secondary);
+}
+
+.missedIcon {
+    color: var(--warning);
+}
+
+.busyIcon {
+    color: var(--approve);
+}

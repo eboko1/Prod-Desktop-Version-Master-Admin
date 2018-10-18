@@ -5,7 +5,12 @@ import { connect } from 'react-redux';
 import { Tabs } from 'antd';
 
 // proj
-import { fetchCalls, fetchCallsChart } from 'core/calls/duck';
+import {
+    fetchCalls,
+    fetchCallsChart,
+    selectCallsChartData,
+    selectCallsPieData,
+} from 'core/calls/duck';
 
 import { Catcher } from 'commons';
 
@@ -15,10 +20,11 @@ import { CallsTable, CallsStatistics } from 'components';
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
-    calls:  state.calls.calls,
-    stats:  state.calls.stats,
-    chart:  state.calls.chart,
-    filter: state.calls.filter,
+    calls:    state.calls.calls,
+    stats:    state.calls.stats,
+    pieStats: [ ...selectCallsPieData(state) ],
+    chart:    [ ...selectCallsChartData(state) ],
+    filter:   state.calls.filter,
 });
 
 const mapDispatchToProps = {
@@ -48,8 +54,9 @@ export default class CallsContainer extends Component {
     /* eslint-enable complexity */
     render() {
         const {
-            stats,
             chart,
+            stats,
+            pieStats,
             intl: { formatMessage },
         } = this.props;
 
@@ -62,7 +69,11 @@ export default class CallsContainer extends Component {
                         }) }
                         key='callsChart'
                     >
-                        <CallsStatistics stats={ stats } chart={ chart } />
+                        <CallsStatistics
+                            stats={ stats }
+                            chart={ chart }
+                            pieStats={ pieStats }
+                        />
                     </TabPane>
                     <TabPane
                         tab={ formatMessage({

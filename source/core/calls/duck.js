@@ -1,5 +1,7 @@
 // vendor
 import moment from 'moment';
+import { createSelector } from 'reselect';
+import _ from 'lodash';
 
 /**
  * Constants
@@ -21,49 +23,10 @@ export const FETCH_CALLS_DATERANGE = `${prefix}/FETCH_CALLS_DATERANGE`;
  * */
 
 const ReducerState = {
-    // calls: [
-    //     {
-    //         businessId:     1174,
-    //         caller:         380506541955,
-    //         channelId:      3,
-    //         date:           '2018-08-14 12:20:24',
-    //         duration:       102,
-    //         id:             49928,
-    //         innerRecipient: null,
-    //         ocr_ctl_id_fk:  49928,
-    //         orders:         [{ order: 99659, status: 'success' }],
-    //         recipient:      380953315145,
-    //         recordingLink:  null,
-    //         redundant:      'f',
-    //         status:         'PROPER',
-    //         tasks:          null,
-    //         tcr_ctl_id_fk:  null,
-    //         type:           'in',
-    //         waiting:        3,
-    //     },
-    //     {
-    //         businessId:     1174,
-    //         caller:         380506541955,
-    //         channelId:      3,
-    //         date:           '2018-08-14 12:19:41',
-    //         duration:       6,
-    //         id:             49927,
-    //         innerRecipient: null,
-    //         ocr_ctl_id_fk:  49927,
-    //         orders:         [{ order: 99658, status: 'cancel' }],
-    //         recipient:      380953315145,
-    //         recordingLink:  null,
-    //         redundant:      'f',
-    //         status:         'NO ANSWER',
-    //         tasks:          null,
-    //         tcr_ctl_id_fk:  null,
-    //         type:           'in',
-    //         waiting:        0,
-    //     },
-    // ],
     channels: [],
     calls:    [],
-    stats:    [],
+    stats:    {},
+    chart:    [],
     filter:   {
         startDate: moment()
             .subtract(3, 'months')
@@ -108,6 +71,23 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state[ moduleName ];
 export const selectCallsFilter = state => state.calls.filter;
+
+export const selectCallsChartData = createSelector(
+    [ stateSelector ],
+    ({ chart }) => chart.map(item => ({ id: item.id, ...item.score })),
+);
+
+export const selectCallsPieData = createSelector(
+    [ stateSelector ],
+    ({ stats }) => {
+        const data = _.pick(stats, [ 'answered', 'notAnswered', 'busy' ]);
+
+        return Object.entries(data).map(([ key, value ]) => ({
+            x: key,
+            y: value,
+        }));
+    },
+);
 
 /**
  * Actions

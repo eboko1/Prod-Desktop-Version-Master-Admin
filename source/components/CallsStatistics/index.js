@@ -1,5 +1,6 @@
 // Core
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 
 // proj
@@ -12,40 +13,42 @@ import Styles from './styles.m.css';
 
 export default class CallsStatistics extends Component {
     render() {
-        const { chart } = this.props;
-
-        const stats = [
-            // {
-            //     x: 'total',
-            //     y: 143,
-            // },
-            {
-                x: 'answered',
-                y: 129,
-            },
-            {
-                x: 'notAnswered',
-                y: 14,
-            },
-            {
-                x: 'busy',
-                y: 0,
-            },
-            // {
-            //     x: 'becameClients',
-            //     y: 17,
-            // },
-        ];
+        const { chart, pieStats } = this.props;
 
         const barControls = this._renderBarControls();
         const piesRow = this._renderPiesRow();
+
+        const barConfig = {
+            dataKeys: [
+                {
+                    name:  'total',
+                    color: 'rgba(155, 89, 182, 0.85)',
+                },
+                {
+                    name:  'answered',
+                    color: 'rgba(81, 205, 102, 0.85)',
+                },
+                {
+                    name:  'notAnswered',
+                    color: 'rgba(255, 126, 126, 0.85)',
+                },
+                {
+                    name:  'busy',
+                    color: 'rgba(82, 179, 255, 0.85)',
+                },
+            ],
+        };
 
         return (
             <Catcher>
                 <div className={ Styles.callsStatistics }>
                     <div className={ Styles.column }>
                         { barControls }
-                        <Bar data={ chart } />
+                        <Bar
+                            data={ chart }
+                            config={ barConfig }
+                            intlCtx='calls-statistics'
+                        />
                     </div>
                     <div className={ Styles.column }>
                         { piesRow }
@@ -54,7 +57,7 @@ export default class CallsStatistics extends Component {
                                 hasLegend
                                 subTitle='Всего'
                                 total={ 143 }
-                                data={ stats }
+                                data={ pieStats }
                                 height={ 248 }
                                 lineWidth={ 4 }
                             />
@@ -70,65 +73,64 @@ export default class CallsStatistics extends Component {
             <div className={ Styles.barControls }>
                 <span className={ `${Styles.controlIcon} ${Styles.totalIcon}` }>
                     <Icon type='bar-chart' theme='outlined' />
-                    <span className={ Styles.controlText }>Общее кол-во</span>
+                    <span className={ Styles.controlText }>
+                        <FormattedMessage id='calls-statistics.total_quantity' />
+                    </span>
                 </span>
                 <span
                     className={ `${Styles.controlIcon} ${Styles.answeredIcon}` }
                 >
                     <Icon type='bar-chart' theme='outlined' />
-                    <span className={ Styles.controlText }>Принятые</span>
+                    <span className={ Styles.controlText }>
+                        <FormattedMessage id='calls-statistics.answered' />
+                    </span>
                 </span>
                 <span className={ `${Styles.controlIcon} ${Styles.missedIcon}` }>
                     <Icon type='bar-chart' theme='outlined' />
-                    <span className={ Styles.controlText }>Пропущенные</span>
+                    <span className={ Styles.controlText }>
+                        <FormattedMessage id='calls-statistics.missed' />
+                    </span>
+                </span>
+                <span className={ `${Styles.controlIcon} ${Styles.busyIcon}` }>
+                    <Icon type='bar-chart' theme='outlined' />
+                    <span className={ Styles.controlText }>
+                        <FormattedMessage id='calls-statistics.busy' />
+                    </span>
                 </span>
             </div>
         );
     };
 
     _renderPiesRow = () => {
+        const { stats } = this.props;
+
         return (
             <div className={ Styles.piesRow }>
                 <MiniPie
-                    hasLegend
+                    label='calls-statistics.answered_calls_efficiency'
                     color={ 'rgb(81, 205, 102)' } // secondary
                     inner={ 0.5 }
                     tooltip={ false }
                     margin={ [ 0, 0, 0, 0 ] }
-                    percent={ 90 }
-                    height={ 90 }
+                    percent={ stats.answered }
                 />
                 <MiniPie
-                    hasLegend
+                    label='calls-statistics.missed_calls_percent'
                     color={ 'rgb(255, 126, 126)' } // warning
                     inner={ 0.5 }
                     tooltip={ false }
                     margin={ [ 0, 0, 0, 0 ] }
-                    percent={ 90 }
-                    height={ 90 }
+                    percent={ stats.notAnswered }
                 />
                 <MiniPie
-                    hasLegend
-                    color={ 'rgb(82, 179, 255)' } // link
+                    label='calls-statistics.became_your_clients'
+                    color={ 'rgb(155, 89, 182)' } // primary
                     inner={ 0.5 }
                     tooltip={ false }
                     margin={ [ 0, 0, 0, 0 ] }
-                    percent={ 90 }
-                    height={ 90 }
+                    percent={ stats.becameClients }
                 />
             </div>
         );
     };
 }
-
-/* <Pie
-    // hasLegend={ false }
-    // total={ 143 }
-    animate={ false }
-    color={ '#BDE4FF' }
-    inner={ 0.55 }
-    tooltip={ false }
-    margin={ [ 0, 0, 0, 0 ] }
-    percent={ 90 }
-    height={ 128 }
-/> */

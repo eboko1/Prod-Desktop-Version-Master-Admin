@@ -2,14 +2,22 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 
-// own
+// proj
 import { Pie } from 'components/Charts';
+
+// own
 import Styles from './styles.m.css';
 
-class MiniPie extends Component {
+export default class MiniPie extends Component {
+    static defaultProps = {
+        height: 90,
+        width:  90,
+    };
+
     render() {
         const {
             hasLegend,
+            label,
             percent,
             height,
             width,
@@ -30,12 +38,12 @@ class MiniPie extends Component {
                     tooltip={ tooltip }
                     margin={ [ 0, 0, 0, 0 ] }
                     percent={ percent }
-                    height={ height || 90 }
-                    width={ width || 90 }
+                    height={ height }
+                    width={ width }
                 />
                 <div>
                     <span className={ Styles.label }>
-                        <FormattedMessage id='add' />
+                        <FormattedMessage id={ label } />
                     </span>
                     <span className={ Styles.value }>{ percent }</span>
                 </div>
@@ -43,5 +51,3 @@ class MiniPie extends Component {
         );
     }
 }
-
-export default MiniPie;

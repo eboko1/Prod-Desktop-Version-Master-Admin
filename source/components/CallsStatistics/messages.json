@@ -3,27 +3,39 @@
         "calls-statistics.total_calls": "Total calls",
         "calls-statistics.missed": "Missed",
         "calls-statistics.answered": "Answered",
+        "calls-statistics.not_answered": "Missed",
+        "calls-statistics.total": "Total",
         "calls-statistics.busy": "Busy",
         "calls-statistics.answered_calls_efficiency": "Answered Calls Efficiency",
         "calls-statistics.missed_calls_percent": "Missed Calls Percent",
-        "calls-statistics.became_your_clients": "Became your clients"
+        "calls-statistics.became_your_clients": "Became your clients",
+        "calls-statistics.total_quantity": "Total quantity",
+        "calls-statistics.all": "All"
     },
     "ru": {
         "calls-statistics.total_calls": "Звонки на станцию",
         "calls-statistics.missed": "Пропущено",
         "calls-statistics.answered": "Принято",
+        "calls-statistics.not_answered": "Пропущено",
+        "calls-statistics.total": "Все",
         "calls-statistics.busy": "Занято",
         "calls-statistics.answered_calls_efficiency": "Эффективность принятия звонков",
         "calls-statistics.missed_calls_percent": "Процент пропущенных звонков",
-        "calls-statistics.became_your_clients": "Стали вашими клиентами"
+        "calls-statistics.became_your_clients": "Стали вашими клиентами",
+        "calls-statistics.total_quantity": "Общее кол-во",
+        "calls-statistics.all": "Все"
     },
     "uk": {
         "calls-statistics.total_calls": "Дзвінки на станцію",
         "calls-statistics.missed": "Пропущено",
         "calls-statistics.answered": "Прийнято",
+        "calls-statistics.not_answered": "Пропущено",
+        "calls-statistics.total": "Всі",
         "calls-statistics.busy": "Зайнято",
         "calls-statistics.answered_calls_efficiency": "Эффективность принятия звонков",
         "calls-statistics.missed_calls_percent": "Відсоток пропущених дзвінків",
-        "calls-statistics.became_your_clients": "Стали вашими клієнтами"
+        "calls-statistics.became_your_clients": "Стали вашими клієнтами",
+        "calls-statistics.total_quantity": "Загальна кіл-ть",
+        "calls-statistics.all": "Всі"
     }
 }

@@ -1,3 +1,4 @@
+// vendor
 import React, { Component } from 'react';
 import { Chart, Tooltip, Geom, Coord } from 'bizcharts';
 import { DataView } from '@antv/data-set';
@@ -6,15 +7,24 @@ import classNames from 'classnames';
 import ReactFitText from 'react-fittext';
 import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
-import autoHeight from '../autoHeight';
-import _ from 'lodash';
 
-import styles from './styles.m.css';
-// import styles from './index.less';
+// own
+import autoHeight from '../autoHeight';
+import Styles from './Styles.m.css';
 
 /* eslint react/no-danger:0 */
 @autoHeight()
 export default class Pie extends Component {
+    static defaultProps = {
+        hasLegend: false,
+        forceFit:  true,
+        percent:   0,
+        inner:     0.75,
+        animate:   true,
+        lineWidth: 1,
+        padding:   [ 12, 0, 12, 0 ],
+    };
+
     state = {
         legendData:  [],
         legendBlock: false,
@@ -24,21 +34,18 @@ export default class Pie extends Component {
     componentDidMount() {
         window.addEventListener('resize', this.resize);
         this.resize();
-
+        // HACK: for initialization pie chart refs for forceFit
+        // setImmediate doesn't provide same result
         setTimeout(() => {
             this.setState({ show: true });
             this.getLegendData();
-        }, 800);
+        }, 1000);
     }
 
     componentDidUpdate(props) {
         const { data } = this.props;
-        console.log('→ 11111 prev props', props.data);
-        console.log('→ 11111 this.props', data);
 
         if (data !== props.data) {
-            // if (!_.isEqual(data, props.data)) {
-            console.log('→ 22222');
             // because of charts data create when rendered
             // so there is a trick for get rendered time
             const { legendData } = this.state;
@@ -68,7 +75,6 @@ export default class Pie extends Component {
 
     // for custom lengend view
     getLegendData = () => {
-        // debugger; // eslint-disable-line
         if (!this.chart) {
             return;
         }
@@ -87,31 +93,28 @@ export default class Pie extends Component {
         this.setState({ legendData });
     };
 
-    handleLegendClick = (item, i) => {
+    handleLegendClick = (item, index) => {
         const newItem = item;
         newItem.checked = !newItem.checked;
 
         const { legendData } = this.state;
-        legendData[ i ] = newItem;
+        legendData[ index ] = newItem;
 
         const filteredLegendData = legendData
-            .filter(l => l.checked)
-            .map(l => l.x);
+            .filter(legend => legend.checked)
+            .map(legend => legend.x);
+
         if (this.chart) {
             this.chart.filter('x', val => filteredLegendData.indexOf(val) > -1);
         }
 
-        this.setState({
-            legendData,
-        });
+        this.setState({ legendData });
     };
 
     // for window resize auto responsive legend
     @Bind()
     @Debounce(300)
     resize() {
-        console.log('→ resize');
-        // debugger; // eslint-disable-line
         const { hasLegend } = this.props;
         if (!hasLegend || !this.root) {
             window.removeEventListener('resize', this.resize);
@@ -133,18 +136,19 @@ export default class Pie extends Component {
             valueFormat,
             subTitle,
             total,
-            hasLegend = false,
+            hasLegend,
             className,
             style,
             height,
             width,
-            forceFit = true,
-            percent = 0,
+            forceFit,
+            percent,
             color,
-            inner = 0.75,
-            animate = true,
+            inner,
+            animate,
             colors,
-            lineWidth = 1,
+            lineWidth,
+            padding,
         } = this.props;
 
         // make props transformable
@@ -156,13 +160,12 @@ export default class Pie extends Component {
         let data = propsData || [];
         let selected = propsSelected;
         let tooltip = propsTooltip;
-        //
 
         const { legendData, legendBlock } = this.state;
 
-        const pieClassName = classNames(styles.pie, className, {
-            [ styles.hasLegend ]:   !!hasLegend,
-            [ styles.legendBlock ]: legendBlock,
+        const pieClassName = classNames(Styles.pie, className, {
+            [ Styles.hasLegend ]:   !!hasLegend,
+            [ Styles.legendBlock ]: legendBlock,
         });
 
         let formatColor; // eslint-disable-line
@@ -201,13 +204,11 @@ export default class Pie extends Component {
 
         const tooltipFormat = [
             'x*percent',
-            (x, p) => ({
+            (x, percent) => ({
                 name:  x,
-                value: `${(p * 100).toFixed(2)}%`,
+                value: `${(percent * 100).toFixed(2)}%`,
             }),
         ];
-
-        const padding = [ 12, 0, 12, 0 ];
 
         const dv = new DataView();
         dv.source(data).transform({
@@ -220,7 +221,7 @@ export default class Pie extends Component {
         return (
             <div ref={ this._handleRoot } className={ pieClassName } style={ style }>
                 <ReactFitText maxFontSize={ 25 }>
-                    <div className={ styles.chart }>
+                    <div className={ Styles.chart }>
                         { this.state.show ? (
                             <Chart
                                 scale={ scale }
@@ -246,7 +247,7 @@ export default class Pie extends Component {
                         ) : null }
 
                         { (subTitle || total) && (
-                            <div className={ styles.total }>
+                            <div className={ Styles.total }>
                                 { subTitle && (
                                     <h4 className='pie-sub-title'>
                                         { subTitle }
@@ -267,33 +268,33 @@ export default class Pie extends Component {
 
                 { hasLegend &&
                     this.state.show && (
-                    <ul className={ styles.legend }>
-                        { legendData.map((item, i) => (
+                    <ul className={ Styles.legend }>
+                        { legendData.map((item, index) => (
                             <li
                                 key={ item.x }
                                 onClick={ () =>
-                                    this.handleLegendClick(item, i)
+                                    this.handleLegendClick(item, index)
                                 }
                             >
                                 <span
-                                    className={ styles.dot }
+                                    className={ Styles.dot }
                                     style={ {
                                         backgroundColor: !item.checked
                                             ? '#aaa'
                                             : item.color,
                                     } }
                                 />
-                                <span className={ styles.legendTitle }>
+                                <span className={ Styles.legendTitle }>
                                     { item.x }
                                 </span>
                                 <Divider type='vertical' />
-                                <span className={ styles.percent }>
+                                <span className={ Styles.percent }>
                                     { `${(isNaN(item.percent)
                                         ? 0
                                         : item.percent * 100
                                     ).toFixed(2)}%` }
                                 </span>
-                                <span className={ styles.value }>
+                                <span className={ Styles.value }>
                                     { valueFormat
                                         ? valueFormat(item.y)
                                         : item.y }
