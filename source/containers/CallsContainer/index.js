@@ -8,6 +8,7 @@ import { Tabs } from 'antd';
 import {
     fetchCalls,
     fetchCallsChart,
+    setCallsChartMode,
     selectCallsChartData,
     selectCallsPieData,
 } from 'core/calls/duck';
@@ -30,6 +31,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchCalls,
     fetchCallsChart,
+    setCallsChartMode,
 };
 
 @injectIntl
@@ -38,10 +40,6 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class CallsContainer extends Component {
-    componentDidMount() {
-        // this.props.fetchCalls();
-    }
-
     _fetchCallsTab = tab => {
         if (tab === 'callsTable') {
             this.props.fetchCalls();
@@ -58,6 +56,7 @@ export default class CallsContainer extends Component {
             stats,
             pieStats,
             intl: { formatMessage },
+            setCallsChartMode,
         } = this.props;
 
         return (
@@ -73,6 +72,7 @@ export default class CallsContainer extends Component {
                             stats={ stats }
                             chart={ chart }
                             pieStats={ pieStats }
+                            setCallsChartMode={ setCallsChartMode }
                         />
                     </TabPane>
                     <TabPane

@@ -20,6 +20,7 @@ export const FETCH_CALLS_CHART_SUCCESS = `${prefix}/FETCH_CALLS_CHART_SUCCESS`;
 
 export const SET_CALLS_DATERANGE = `${prefix}/SET_CALLS_DATERANGE`;
 export const SET_CALLS_PERIOD = `${prefix}/SET_CALLS_PERIOD`;
+export const SET_CALLS_CHART_MODE = `${prefix}/SET_CALLS_CHART_MODE`;
 
 /**
  * Reducer
@@ -36,7 +37,6 @@ const ReducerState = {
             .format('YYYY-MM-DD'),
         endDate: moment().format('YYYY-MM-DD'),
         period:  'month',
-        // statusIn: [ ...all ],
     },
 };
 
@@ -71,6 +71,15 @@ export default function reducer(state = ReducerState, action) {
                 filter: {
                     ...state.filter,
                     period: payload,
+                },
+            };
+
+        case SET_CALLS_CHART_MODE:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    statusIn: [ ...payload ],
                 },
             };
 
@@ -133,4 +142,9 @@ export const setCallsDaterange = daterange => ({
 export const setCallsPeriod = period => ({
     type:    SET_CALLS_PERIOD,
     payload: period,
+});
+
+export const setCallsChartMode = mode => ({
+    type:    SET_CALLS_CHART_MODE,
+    payload: mode,
 });

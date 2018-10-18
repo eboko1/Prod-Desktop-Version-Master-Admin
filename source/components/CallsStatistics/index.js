@@ -1,7 +1,6 @@
 // Core
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Icon } from 'antd';
 
 // proj
 import { Catcher } from 'commons';
@@ -9,13 +8,13 @@ import { Catcher } from 'commons';
 import { Pie, MiniPie, Bar } from 'components/Charts';
 
 // own
+import ChartControls from './ChartControls';
 import Styles from './styles.m.css';
 
 export default class CallsStatistics extends Component {
     render() {
-        const { chart, pieStats, stats } = this.props;
+        const { chart, pieStats, stats, setCallsChartMode } = this.props;
 
-        const barControls = this._renderBarControls();
         const piesRow = this._renderPiesRow();
 
         const barConfig = {
@@ -43,7 +42,8 @@ export default class CallsStatistics extends Component {
             <Catcher>
                 <div className={ Styles.callsStatistics }>
                     <div className={ Styles.column }>
-                        { barControls }
+                        { /* { barControls } */ }
+                        <ChartControls setCallsChartMode={ setCallsChartMode } />
                         <Bar
                             data={ chart }
                             config={ barConfig }
@@ -70,39 +70,6 @@ export default class CallsStatistics extends Component {
             </Catcher>
         );
     }
-
-    _renderBarControls = () => {
-        return (
-            <div className={ Styles.barControls }>
-                <span className={ `${Styles.controlIcon} ${Styles.totalIcon}` }>
-                    <Icon type='bar-chart' theme='outlined' />
-                    <span className={ Styles.controlText }>
-                        <FormattedMessage id='calls-statistics.total_quantity' />
-                    </span>
-                </span>
-                <span
-                    className={ `${Styles.controlIcon} ${Styles.answeredIcon}` }
-                >
-                    <Icon type='bar-chart' theme='outlined' />
-                    <span className={ Styles.controlText }>
-                        <FormattedMessage id='calls-statistics.answered' />
-                    </span>
-                </span>
-                <span className={ `${Styles.controlIcon} ${Styles.missedIcon}` }>
-                    <Icon type='bar-chart' theme='outlined' />
-                    <span className={ Styles.controlText }>
-                        <FormattedMessage id='calls-statistics.missed' />
-                    </span>
-                </span>
-                <span className={ `${Styles.controlIcon} ${Styles.busyIcon}` }>
-                    <Icon type='bar-chart' theme='outlined' />
-                    <span className={ Styles.controlText }>
-                        <FormattedMessage id='calls-statistics.busy' />
-                    </span>
-                </span>
-            </div>
-        );
-    };
 
     _renderPiesRow = () => {
         const { stats } = this.props;

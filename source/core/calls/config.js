@@ -1,3 +1,4 @@
+// ringostat constants
 const callsStatuses = Object.freeze({
     VOICEMAIL:        'VOICEMAIL',
     ANSWERED:         'ANSWERED',
@@ -11,9 +12,9 @@ const callsStatuses = Object.freeze({
     BUSY:             'BUSY',
 });
 
-const answered = [ 'VOICEMAIL', 'ANSWERED', 'REPEATED' ];
-const missed = [ 'NO_EXTENSION', 'FAILED', 'NO_ANSWER', 'CLIENT_NO_ANSWER', 'NO_FORWARD' ];
-const busy = [ 'BUSY' ];
+const answered = [ callsStatuses.ANSWERED, callsStatuses.PROPER, callsStatuses.REPEATED ];
+const missed = [ callsStatuses.NO_ANSWER ];
+const busy = [ callsStatuses.BUSY ];
 
 const all = [ ...answered, ...missed, ...busy ];
 
