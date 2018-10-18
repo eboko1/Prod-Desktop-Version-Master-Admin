@@ -45,9 +45,6 @@ export const FETCH_ORDER_TASK_SUCCESS = `${prefix}/FETCH_ORDER_TASK_SUCCESS`;
 export const FETCH_AVAILABLE_HOURS = `${prefix}/FETCH_AVAILABLE_HOURS`;
 export const FETCH_AVAILABLE_HOURS_SUCCESS = `${prefix}/FETCH_AVAILABLE_HOURS_SUCCESS`;
 
-export const FETCH_TECDOC_SUGGESTIONS = `${prefix}/FETCH_TECDOC_SUGGESTIONS`;
-export const FETCH_TECDOC_SUGGESTIONS_SUCCESS = `${prefix}/FETCH_TECDOC_SUGGESTIONS_SUCCESS`;
-export const CLEAR_TECDOC_SUGGESTIONS = `${prefix}/CLEAR_SUGGESTIONS`;
 /**
  * Reducer
  * */
@@ -108,10 +105,9 @@ const createDefaultState = () => ({
         emails:     [],
         vehicles:   [],
     },
-    order:       {},
-    invited:     false,
-    orderTasks:  [],
-    suggestions: [],
+    order:      {},
+    invited:    false,
+    orderTasks: [],
 });
 
 const ReducerState = createDefaultState();
@@ -217,18 +213,6 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 availableHours: payload,
-            };
-
-        case FETCH_TECDOC_SUGGESTIONS_SUCCESS:
-            return {
-                ...state,
-                suggestions: [ ...state.suggestions, ...payload ]
-            };
-
-        case CLEAR_TECDOC_SUGGESTIONS:
-            return {
-                ...state,
-                suggestions: [],
             };
 
         default:
@@ -373,18 +357,4 @@ export const fetchAvailableHours = (station, date, orderId) => ({
 export const fetchAvailableHoursSuccess = availableHours => ({
     type: FETCH_AVAILABLE_HOURS_SUCCESS,
     payload: availableHours,
-});
-
-export const fetchTecdocSuggestions = (modificationId, serviceId) => ({
-   type: FETCH_TECDOC_SUGGESTIONS,
-   payload: { modificationId, serviceId },
-});
-
-export const fetchTecdocSuggestionsSuccess = suggestions => ({
-    type: FETCH_TECDOC_SUGGESTIONS_SUCCESS,
-    payload: suggestions,
-});
-
-export const clearTecdocSuggestions = () => ({
-    type: CLEAR_TECDOC_SUGGESTIONS,
 });

@@ -78,10 +78,6 @@ import managerRoleReducer, {
     moduleName as managerRole,
 } from './managerRoleForm/duck';
 
-import tecDocReducer, {
-    moduleName as tecDoc
-} from './tecDocForm/duck';
-
 import settingSalaryReducer, {
     moduleName as settingSalary,
 } from './settingSalaryForm/duck';
@@ -122,5 +118,4 @@ export const formsReducer = combineReducers({
     [ addClientRequisite ]:      addClientRequisiteReducer,
     [ editClientRequisite ]:     editClientRequisiteReducer,
     [ salaryReport ]:            salaryReportReducer,
-    [ tecDoc ]:                  tecDocReducer,
 });

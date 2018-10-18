@@ -26,7 +26,6 @@ import SettingSalaryForm from './SettingSalaryForm';
 import { ScheduleForm } from './ScheduleForm';
 import { BreakScheduleForm } from './BreakScheduleForm';
 import { SalaryReportForm } from './SalaryReportForm';
-import { TecDocForm } from './TecDocForm';
 
 export {
     LoginForm,
@@ -57,5 +56,4 @@ export {
     ScheduleForm,
     BreakScheduleForm,
     SalaryReportForm,
-    TecDocForm,
 };
