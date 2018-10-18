@@ -18,4 +18,9 @@ const busy = [ callsStatuses.BUSY ];
 
 const all = [ ...answered, ...missed, ...busy ];
 
-export { callsStatuses, answered, missed, busy, all };
+const config = {
+    answered: [ answered ],
+    missed:   [ missed ],
+};
+
+export { callsStatuses, answered, missed, busy, all, config };

@@ -9,6 +9,7 @@ import {
     fetchCalls,
     fetchCallsChart,
     setCallsChartMode,
+    setCallsTableMode,
     selectCallsChartData,
     selectCallsPieData,
 } from 'core/calls/duck';
@@ -32,6 +33,7 @@ const mapDispatchToProps = {
     fetchCalls,
     fetchCallsChart,
     setCallsChartMode,
+    setCallsTableMode,
 };
 
 @injectIntl
@@ -42,6 +44,7 @@ const mapDispatchToProps = {
 export default class CallsContainer extends Component {
     _fetchCallsTab = tab => {
         if (tab === 'callsTable') {
+            // this.props.setCallsTableMode();
             this.props.fetchCalls();
         }
         if (tab === 'callsChart') {
@@ -52,11 +55,15 @@ export default class CallsContainer extends Component {
     /* eslint-enable complexity */
     render() {
         const {
+            calls,
             chart,
             stats,
             pieStats,
+            filter,
             intl: { formatMessage },
+            fetchCalls,
             setCallsChartMode,
+            setCallsTableMode,
         } = this.props;
 
         return (
@@ -81,7 +88,12 @@ export default class CallsContainer extends Component {
                         }) }
                         key='callsTable'
                     >
-                        <CallsTable { ...this.props } />
+                        <CallsTable
+                            calls={ calls }
+                            filter={ filter }
+                            fetchCalls={ fetchCalls }
+                            setCallsTableMode={ setCallsTableMode }
+                        />
                     </TabPane>
                 </Tabs>
             </Catcher>

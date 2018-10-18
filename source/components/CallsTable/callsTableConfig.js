@@ -2,61 +2,93 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Icon } from 'antd';
+import { Icon, Button } from 'antd';
 import moment from 'moment';
 
 // proj
 import book from 'routes/book';
 
 // // own
-// import Styles from './styles.m.css';
+import Styles from './styles.m.css';
 
-export function columnsConfig() {
+export function columnsConfig(formatMessage, showPhone, phones) {
     const date = {
         title:     <FormattedMessage id='calls-table.date' />,
-        width:     200,
+        width:     95,
         dataIndex: 'date',
         key:       'date',
-        render:    date => <div>{ moment(date).format('YYYY-MM-DD HH:mm') }</div>,
+        render:    date => (
+            <div className={ Styles.datetime }>
+                { moment(date).format('YYYY-MM-DD HH:mm') }
+            </div>
+        ),
     };
 
     const status = {
         title:     <FormattedMessage id='calls-table.status' />,
-        width:     400,
+        width:     70,
         dataIndex: 'status',
         key:       'status',
-        render:    status => <div>{ status } icon</div>,
+        render:    status => (
+            <Icon
+                style={ {
+                    color: `${
+                        status === 'ANSWERED'
+                            ? 'var(--secondary)'
+                            : 'var(--warning)'
+                    }`,
+                    fontSize: 24,
+                } }
+                type={ status === 'ANSWERED' ? 'check-circle' : 'close-circle' }
+                // theme='outlined'
+            />
+        ),
     };
 
     const order = {
         title:     <FormattedMessage id='calls-table.order' />,
-        dataIndex: 'order',
-        key:       'order',
-        width:     '150',
-        render:    order => <Link to={ `${book.order}/${order}` }>order</Link>,
+        dataIndex: 'orderId',
+        key:       'orderId',
+        width:     80,
+        render:    orderId => (
+            <Link className={ Styles.orderLink } to={ `${book.order}/${orderId}` }>
+                #{ orderId }
+            </Link>
+        ),
     };
 
     const caller = {
         title:     <FormattedMessage id='calls-table.caller' />,
-        width:     100,
+        width:     160,
         dataIndex: 'caller',
         key:       'caller',
-        render:    caller => {
-            <div>{ caller } phonetoggle</div>;
-        },
+        render:    (caller, row, index) =>
+            phones.includes(index) ? (
+                <a href={ `tel:${caller}` } className={ Styles.orderLink }>
+                    { caller }
+                </a>
+            ) : (
+                <Button type='primary' onClick={ () => showPhone(index) }>
+                    { caller }
+                </Button>
+            ),
     };
 
     const recipient = {
         title:     <FormattedMessage id='calls-table.recipient' />,
-        width:     300,
+        width:     160,
         dataIndex: 'recipient',
         key:       'recipient',
-        render:    recipient => <div>{ recipient }</div>,
+        render:    recipient => (
+            <a href={ `tel:${recipient}` } className={ Styles.orderLink }>
+                { recipient }
+            </a>
+        ),
     };
 
     const waiting = {
         title:     <FormattedMessage id='calls-table.waiting' />,
-        width:     80,
+        width:     140,
         dataIndex: 'waiting',
         key:       'waiting',
         render:    waiting => <div>{ waiting }</div>,
@@ -64,7 +96,7 @@ export function columnsConfig() {
 
     const duration = {
         title:     <FormattedMessage id='calls-table.duration' />,
-        width:     80,
+        width:     140,
         dataIndex: 'duration',
         key:       'duration',
         render:    duration => <div>{ duration }</div>,
@@ -72,7 +104,7 @@ export function columnsConfig() {
 
     const innerRecipient = {
         title:     <FormattedMessage id='calls-table.innerRecipient' />,
-        width:     80,
+        width:     140,
         dataIndex: 'innerRecipient',
         key:       'innerRecipient',
         render:    innerRecipient => <div>{ innerRecipient }</div>,

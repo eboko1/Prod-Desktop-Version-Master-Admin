@@ -12,6 +12,7 @@ import {
 import { fetchAPI } from 'utils';
 
 // own
+import { config } from './config';
 import {
     selectCallsFilter,
     fetchCallsSuccess,
@@ -30,7 +31,8 @@ export function* fetchCallsSaga() {
             const queries = {
                 startDate: moment(filter.startDate).format('YYYY-MM-DD'),
                 endDate:   moment(filter.endDate).format('YYYY-MM-DD'),
-                ..._.omit(filter, [ 'period' ]),
+                statusIn:  config[ filter.mode ],
+                // ..._.omit(filter, [ 'period', 'mode' ]),
             };
 
             const data = yield call(fetchAPI, 'GET', 'calls', queries);
@@ -49,13 +51,12 @@ export function* fetchCallsChartSaga() {
             yield take(FETCH_CALLS_CHART);
             yield put(setCallsChartFetchingState(true));
             const filter = yield select(selectCallsFilter);
-            // const queries = {
-            //     startDate: moment(filter.startDate).format('YYYY-MM-DD'),
-            //     endDate:   moment(filter.endDate).format('YYYY-MM-DD'),
-            //     filter
-            // };
+            const queries = {
+                startDate: moment(filter.startDate).format('YYYY-MM-DD'),
+                endDate:   moment(filter.endDate).format('YYYY-MM-DD'),
+            };
             console.log('→ filter', filter);
-            const data = yield call(fetchAPI, 'GET', 'calls/chart', filter);
+            const data = yield call(fetchAPI, 'GET', 'calls/chart', queries);
             yield put(fetchCallsChartSuccess(data));
         } catch (error) {
             yield put(emitError(error));

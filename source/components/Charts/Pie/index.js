@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Chart, Tooltip, Geom, Coord } from 'bizcharts';
 import { DataView } from '@antv/data-set';
 import { Divider } from 'antd';
@@ -8,12 +8,14 @@ import classNames from 'classnames';
 import ReactFitText from 'react-fittext';
 import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
+import _ from 'lodash';
 
 // own
 import autoHeight from '../autoHeight';
 import Styles from './Styles.m.css';
 
 /* eslint react/no-danger:0 */
+@injectIntl
 @autoHeight()
 export default class Pie extends Component {
     static defaultProps = {
@@ -70,8 +72,8 @@ export default class Pie extends Component {
         this.chart = chart;
     };
 
-    _handleRoot = n => {
-        this.root = n;
+    _handleRoot = node => {
+        this.root = node;
     };
 
     // for custom lengend view
@@ -151,6 +153,7 @@ export default class Pie extends Component {
             lineWidth,
             padding,
             intlCtx,
+            intl: { formatMessage },
         } = this.props;
 
         // make props transformable
@@ -207,7 +210,7 @@ export default class Pie extends Component {
         const tooltipFormat = [
             'x*percent',
             (x, percent) => ({
-                name:  x,
+                name:  formatMessage({ id: `${intlCtx}.${_.snakeCase(x)}` }),
                 value: `${(percent * 100).toFixed(2)}%`,
             }),
         ];
