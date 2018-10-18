@@ -21,6 +21,7 @@ import { DatePickerGroup } from 'components';
 const Option = Select.Option;
 
 const mapStateToProps = state => ({
+    tab:           state.calls.tab,
     calls:         state.calls.calls,
     channels:      state.calls.channels,
     filter:        state.calls.filter,
@@ -41,9 +42,15 @@ const mapDispatchToProps = {
 )
 export default class CallsPage extends Component {
     _setCallsDaterange = daterange => {
-        console.log('→ daterange', daterange);
-        this.props.setCallsDaterange(daterange);
-        this.props.fetchCallsChart();
+        const { tab, setCallsDaterange, fetchCallsChart } = this.props;
+        setCallsDaterange(daterange);
+
+        if (tab === 'callsTable') {
+            fetchCalls();
+        }
+        if (tab === 'callsChart') {
+            fetchCallsChart();
+        }
     };
 
     _setCallsPeriod = period => {
@@ -57,6 +64,7 @@ export default class CallsPage extends Component {
 
     render() {
         const {
+            tab,
             channels,
             callsFetching,
             filter: { startDate, endDate, period },
@@ -77,7 +85,7 @@ export default class CallsPage extends Component {
                             period={ period }
                             onDaterangeChange={ this._setCallsDaterange }
                             onPeriodChange={ this._setCallsPeriod }
-                            // periodGroup={ }
+                            periodGroup={ tab !== 'callsTable' }
                         />
                         {channels && (
                             <DecoratedSelect>

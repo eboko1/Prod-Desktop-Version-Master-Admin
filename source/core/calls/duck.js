@@ -18,6 +18,7 @@ export const FETCH_CALLS_SUCCESS = `${prefix}/FETCH_CALLS_SUCCESS`;
 export const FETCH_CALLS_CHART = `${prefix}/FETCH_CALLS_CHART`;
 export const FETCH_CALLS_CHART_SUCCESS = `${prefix}/FETCH_CALLS_CHART_SUCCESS`;
 
+export const SET_CALLS_TAB = `${prefix}/SET_CALLS_TAB`;
 export const SET_CALLS_DATERANGE = `${prefix}/SET_CALLS_DATERANGE`;
 export const SET_CALLS_PERIOD = `${prefix}/SET_CALLS_PERIOD`;
 export const SET_CALLS_CHART_MODE = `${prefix}/SET_CALLS_CHART_MODE`;
@@ -29,6 +30,7 @@ export const SET_CALLS_PAGE_FILTER = `${prefix}/SET_CALLS_PAGE_FILTER`;
  * */
 
 const ReducerState = {
+    tab:      'callsChart',
     channels: [],
     calls:    [],
     stats:    {},
@@ -58,6 +60,12 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 ...payload,
+            };
+
+        case SET_CALLS_TAB:
+            return {
+                ...state,
+                tab: payload,
             };
 
         case SET_CALLS_DATERANGE:
@@ -157,6 +165,11 @@ export const fetchCallsChart = () => ({
 export const fetchCallsChartSuccess = data => ({
     type:    FETCH_CALLS_CHART_SUCCESS,
     payload: data,
+});
+
+export const setCallsTab = tab => ({
+    type:    SET_CALLS_TAB,
+    payload: tab,
 });
 
 export const setCallsDaterange = daterange => ({

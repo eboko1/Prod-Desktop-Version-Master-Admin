@@ -8,6 +8,7 @@ import { Tabs } from 'antd';
 import {
     fetchCalls,
     fetchCallsChart,
+    setCallsTab,
     setCallsChartMode,
     setCallsTableMode,
     setCallsPageFilter,
@@ -33,6 +34,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchCalls,
     fetchCallsChart,
+    setCallsTab,
     setCallsChartMode,
     setCallsTableMode,
     setCallsPageFilter,
@@ -44,12 +46,13 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class CallsContainer extends Component {
-    _fetchCallsTab = tab => {
+    _handleTab = tab => {
         if (tab === 'callsTable') {
-            // this.props.setCallsTableMode();
+            this.props.setCallsTab('callsTable');
             this.props.fetchCalls();
         }
         if (tab === 'callsChart') {
+            this.props.setCallsTab('callsChart');
             this.props.fetchCallsChart();
         }
     };
@@ -71,7 +74,7 @@ export default class CallsContainer extends Component {
 
         return (
             <Catcher>
-                <Tabs type='cards' onTabClick={ tab => this._fetchCallsTab(tab) }>
+                <Tabs type='cards' onTabClick={ tab => this._handleTab(tab) }>
                     <TabPane
                         tab={ formatMessage({
                             id: 'calls-page.statistics',
