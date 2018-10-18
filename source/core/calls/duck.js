@@ -21,6 +21,7 @@ export const FETCH_CALLS_CHART_SUCCESS = `${prefix}/FETCH_CALLS_CHART_SUCCESS`;
 export const SET_CALLS_TAB = `${prefix}/SET_CALLS_TAB`;
 export const SET_CALLS_DATERANGE = `${prefix}/SET_CALLS_DATERANGE`;
 export const SET_CALLS_PERIOD = `${prefix}/SET_CALLS_PERIOD`;
+export const SET_CALLS_CHANNEL_ID = `${prefix}/SET_CALLS_CHANNEL_ID`;
 export const SET_CALLS_CHART_MODE = `${prefix}/SET_CALLS_CHART_MODE`;
 export const SET_CALLS_TABLE_MODE = `${prefix}/SET_CALLS_TABLE_MODE`;
 export const SET_CALLS_PAGE_FILTER = `${prefix}/SET_CALLS_PAGE_FILTER`;
@@ -36,6 +37,7 @@ const ReducerState = {
     stats:    {},
     chart:    [],
     filter:   {
+        channelId: null,
         startDate: moment()
             .subtract(3, 'months')
             .format('YYYY-MM-DD'),
@@ -85,6 +87,15 @@ export default function reducer(state = ReducerState, action) {
                 filter: {
                     ...state.filter,
                     period: payload,
+                },
+            };
+
+        case SET_CALLS_CHANNEL_ID:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    channelId: payload,
                 },
             };
 
@@ -180,6 +191,11 @@ export const setCallsDaterange = daterange => ({
 export const setCallsPeriod = period => ({
     type:    SET_CALLS_PERIOD,
     payload: period,
+});
+
+export const setCallsChannelId = channelId => ({
+    type:    SET_CALLS_CHANNEL_ID,
+    payload: channelId,
 });
 
 export const setCallsChartMode = mode => ({

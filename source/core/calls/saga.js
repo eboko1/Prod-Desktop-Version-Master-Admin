@@ -33,6 +33,7 @@ export function* fetchCallsSaga() {
                 endDate:   moment(filter.endDate).format('YYYY-MM-DD'),
                 statusIn:  config[ filter.mode ],
                 page:      filter.page,
+                channelId: filter.channelId,
                 // ..._.omit(filter, [ 'period', 'mode' ]),
             };
 
@@ -55,6 +56,7 @@ export function* fetchCallsChartSaga() {
             const queries = {
                 startDate: moment(filter.startDate).format('YYYY-MM-DD'),
                 endDate:   moment(filter.endDate).format('YYYY-MM-DD'),
+                channelId: filter.channelId,
             };
 
             const data = yield call(fetchAPI, 'GET', 'calls/chart', queries);

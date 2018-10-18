@@ -10,6 +10,7 @@ import {
     fetchCallsChart,
     setCallsDaterange,
     setCallsPeriod,
+    setCallsChannelId,
 } from 'core/calls/duck';
 
 import { Layout, Spinner } from 'commons';
@@ -18,6 +19,7 @@ import { DecoratedSelect } from 'forms/DecoratedFields';
 import { DatePickerGroup } from 'components';
 
 // own
+import Styles from './styles.m.css';
 const Option = Select.Option;
 
 const mapStateToProps = state => ({
@@ -33,6 +35,7 @@ const mapDispatchToProps = {
     fetchCallsChart,
     setCallsDaterange,
     setCallsPeriod,
+    setCallsChannelId,
 };
 
 // @withRouter
@@ -41,6 +44,10 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class CallsPage extends Component {
+    componentDidMount() {
+        this.props.fetchCallsChart();
+    }
+
     _setCallsDaterange = daterange => {
         const { tab, setCallsDaterange, fetchCallsChart } = this.props;
         setCallsDaterange(daterange);
@@ -58,9 +65,34 @@ export default class CallsPage extends Component {
         this.props.fetchCallsChart();
     };
 
-    componentDidMount() {
-        this.props.fetchCallsChart();
-    }
+    _setCallsChannelId = channelId => {
+        const {
+            tab,
+            setCallsChannelId,
+            fetchCalls,
+            fetchCallsChart,
+        } = this.props;
+
+        if (channelId === 'ALL') {
+            setCallsChannelId(null);
+            if (tab === 'callsTable') {
+                fetchCalls();
+            }
+            if (tab === 'callsChart') {
+                fetchCallsChart();
+            }
+        }
+
+        if (channelId !== 'ALL') {
+            setCallsChannelId(channelId);
+            if (tab === 'callsTable') {
+                fetchCalls();
+            }
+            if (tab === 'callsChart') {
+                fetchCallsChart();
+            }
+        }
+    };
 
     render() {
         const {
@@ -88,13 +120,20 @@ export default class CallsPage extends Component {
                             periodGroup={ tab !== 'callsTable' }
                         />
                         {channels && (
-                            <DecoratedSelect>
+                            <Select
+                                defaultValue='ALL'
+                                className={ Styles.channels }
+                                onChange={ this._setCallsChannelId }
+                            >
+                                <Option value='ALL'>
+                                    <FormattedMessage id='all' />
+                                </Option>
                                 { channels.map(({ id, name }) => (
                                     <Option key={ id } value={ id }>
                                         { name }
                                     </Option>
                                 )) }
-                            </DecoratedSelect>
+                            </Select>
                         )}
                     </>
                 }
@@ -103,4 +142,14 @@ export default class CallsPage extends Component {
             </Layout>
         );
     }
+}
+
+{
+    /* <DecoratedSelect cnStyles={ Styles.channels }>
+    { channels.map(({ id, name }) => (
+         <Option key={ id } value={ id }>
+             { name }
+         </Option>
+     )) }
+ </DecoratedSelect> */
 }

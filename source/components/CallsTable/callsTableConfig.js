@@ -55,7 +55,7 @@ export function columnsConfig(formatMessage, showPhone, phones) {
         width:     80,
         render:    orderId => (
             <Link className={ Styles.orderLink } to={ `${book.order}/${orderId}` }>
-                #{ orderId }
+                { orderId }
             </Link>
         ),
     };
