@@ -1,0 +1,23 @@
+{
+  "en": {
+    "partsSuggestions.title": "Parts suggestion",
+    "partsSuggestions.attributes": "Additional information",
+    "partsSuggestions.description": "Description",
+    "partsSuggestions.supplierName": "Supplier",
+    "partsSuggestions.detailCode": "Number"
+  },
+  "ru": {
+    "partsSuggestions.title": "Рекомендации запчастей",
+    "partsSuggestions.attributes": "Дополнительная информация",
+    "partsSuggestions.description": "Описание",
+    "partsSuggestions.supplierName": "Производитель",
+    "partsSuggestions.detailCode": "Код"
+  },
+  "uk": {
+    "partsSuggestions.title": "Рекомендації деталей",
+    "partsSuggestions.attributes": "Додаткова інформація",
+    "partsSuggestions.description": "Опис",
+    "partsSuggestions.supplierName": "Виробник",
+    "partsSuggestions.detailCode": "Номер"
+  }
+}
