@@ -26,6 +26,7 @@ export default class RangePickerField extends Component {
                 // value={ [ moment(startDate).format('YYYY-MM-DD'), moment(endDate).format('YYYY-MM-DD') ] }
                 value={ [ moment(startDate, 'YYYY-MM-DD'), moment(endDate, 'YYYY-MM-DD') ] }
                 format={ 'YYYY-MM-DD' }
+                onCalendarChange={ unicorn => console.log('aaas', unicorn) }
             />
         );
     }

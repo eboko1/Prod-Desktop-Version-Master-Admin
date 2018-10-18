@@ -3,6 +3,9 @@ import moment from 'moment';
 import { createSelector } from 'reselect';
 import _ from 'lodash';
 
+// own
+import { all } from './config.js';
+
 /**
  * Constants
  * */
@@ -15,8 +18,8 @@ export const FETCH_CALLS_SUCCESS = `${prefix}/FETCH_CALLS_SUCCESS`;
 export const FETCH_CALLS_CHART = `${prefix}/FETCH_CALLS_CHART`;
 export const FETCH_CALLS_CHART_SUCCESS = `${prefix}/FETCH_CALLS_CHART_SUCCESS`;
 
-export const FETCH_CALLS_DATERANGE = `${prefix}/FETCH_CALLS_DATERANGE`;
-// export const FETCH_CALLS_DATERANGE_SUCCESS = `${prefix}/FETCH_CALLS_DATERANGE_SUCCESS`;
+export const SET_CALLS_DATERANGE = `${prefix}/SET_CALLS_DATERANGE`;
+export const SET_CALLS_PERIOD = `${prefix}/SET_CALLS_PERIOD`;
 
 /**
  * Reducer
@@ -33,6 +36,7 @@ const ReducerState = {
             .format('YYYY-MM-DD'),
         endDate: moment().format('YYYY-MM-DD'),
         period:  'month',
+        // statusIn: [ ...all ],
     },
 };
 
@@ -52,11 +56,21 @@ export default function reducer(state = ReducerState, action) {
                 ...payload,
             };
 
-        case FETCH_CALLS_DATERANGE:
+        case SET_CALLS_DATERANGE:
             return {
                 ...state,
                 filter: {
+                    ...state.filter,
                     ...payload,
+                },
+            };
+
+        case SET_CALLS_PERIOD:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    period: payload,
                 },
             };
 
@@ -111,7 +125,12 @@ export const fetchCallsChartSuccess = data => ({
     payload: data,
 });
 
-export const fetchCallsDaterange = daterange => ({
-    type:    FETCH_CALLS_DATERANGE,
+export const setCallsDaterange = daterange => ({
+    type:    SET_CALLS_DATERANGE,
     payload: daterange,
+});
+
+export const setCallsPeriod = period => ({
+    type:    SET_CALLS_PERIOD,
+    payload: period,
 });

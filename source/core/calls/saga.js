@@ -49,12 +49,13 @@ export function* fetchCallsChartSaga() {
             yield take(FETCH_CALLS_CHART);
             yield put(setCallsChartFetchingState(true));
             const filter = yield select(selectCallsFilter);
-            const queries = {
-                startDate: moment(filter.startDate).format('YYYY-MM-DD'),
-                endDate:   moment(filter.endDate).format('YYYY-MM-DD'),
-            };
-
-            const data = yield call(fetchAPI, 'GET', 'calls/chart', queries);
+            // const queries = {
+            //     startDate: moment(filter.startDate).format('YYYY-MM-DD'),
+            //     endDate:   moment(filter.endDate).format('YYYY-MM-DD'),
+            //     filter
+            // };
+            console.log('→ filter', filter);
+            const data = yield call(fetchAPI, 'GET', 'calls/chart', filter);
             yield put(fetchCallsChartSuccess(data));
         } catch (error) {
             yield put(emitError(error));

@@ -11,4 +11,10 @@ const callsStatuses = Object.freeze({
     BUSY:             'BUSY',
 });
 
-export { callsStatuses };
+const answered = [ 'VOICEMAIL', 'ANSWERED', 'REPEATED' ];
+const missed = [ 'NO_EXTENSION', 'FAILED', 'NO_ANSWER', 'CLIENT_NO_ANSWER', 'NO_FORWARD' ];
+const busy = [ 'BUSY' ];
+
+const all = [ ...answered, ...missed, ...busy ];
+
+export { callsStatuses, answered, missed, busy, all };

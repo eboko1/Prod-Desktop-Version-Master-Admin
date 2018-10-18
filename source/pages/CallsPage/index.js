@@ -11,11 +11,12 @@ import {
     fetchCalls,
     fetchCallsChart,
     setCallsDaterange,
+    setCallsPeriod,
 } from 'core/calls/duck';
 
 import { Layout, Spinner } from 'commons';
 import { CallsContainer } from 'containers';
-import { DecoratedDatePicker, DecoratedSelect } from 'forms/DecoratedFields';
+import { DecoratedSelect } from 'forms/DecoratedFields';
 import { DatePickerGroup } from 'components';
 
 // import book from 'routes/book';
@@ -36,6 +37,7 @@ const mapDispatchToProps = {
     fetchCalls,
     fetchCallsChart,
     setCallsDaterange,
+    setCallsPeriod,
 };
 
 // @withRouter
@@ -46,12 +48,12 @@ const mapDispatchToProps = {
 export default class CallsPage extends Component {
     _setCallsDaterange = daterange => {
         this.props.setCallsDaterange(daterange);
-        this.props.fetchCalls();
+        this.props.fetchCallsChart();
     };
 
     _setCallsPeriod = period => {
         this.props.setCallsPeriod(period);
-        this.props.fetchCalls();
+        this.props.fetchCallsChart();
     };
 
     componentDidMount() {
@@ -78,8 +80,8 @@ export default class CallsPage extends Component {
                             endDate={ endDate }
                             loading={ callsFetching }
                             period={ period }
-                            onDateChange={ this._setChartDate }
-                            onPeriodChange={ this._setChartPeriod }
+                            onDateChange={ this._setCallsDate }
+                            onPeriodChange={ this._setCallsPeriod }
                         />
                         {channels && (
                             <DecoratedSelect>

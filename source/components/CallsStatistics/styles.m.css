@@ -11,6 +11,7 @@
 .piesRow {
     display: flex;
     justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 .pieChart {
@@ -24,6 +25,10 @@
 
 .barControls {
     margin: 18px 0;
+    display: flex;
+    white-space: nowrap;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
 .controlIcon {
