@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Chart, Tooltip, Geom, Coord } from 'bizcharts';
 import { DataView } from '@antv/data-set';
 import { Divider } from 'antd';
@@ -149,6 +150,7 @@ export default class Pie extends Component {
             colors,
             lineWidth,
             padding,
+            intlCtx,
         } = this.props;
 
         // make props transformable
@@ -249,7 +251,7 @@ export default class Pie extends Component {
                         { (subTitle || total) && (
                             <div className={ Styles.total }>
                                 { subTitle && (
-                                    <h4 className='pie-sub-title'>
+                                    <h4 className={ Styles.pieSubTitle }>
                                         { subTitle }
                                     </h4>
                                 ) }
@@ -285,7 +287,11 @@ export default class Pie extends Component {
                                     } }
                                 />
                                 <span className={ Styles.legendTitle }>
-                                    { item.x }
+                                    <FormattedMessage
+                                        id={ `${intlCtx}.${_.snakeCase(
+                                            item.x,
+                                        )}` }
+                                    />
                                 </span>
                                 <Divider type='vertical' />
                                 <span className={ Styles.percent }>

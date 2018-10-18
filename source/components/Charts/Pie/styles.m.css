@@ -67,6 +67,11 @@
     margin-bottom: 8px;
 }
 
+.pieSubTitle > span {
+    font-size: 18px;
+    font-weight: bold;
+}
+
 .total {
     position: absolute;
     left: 50%;

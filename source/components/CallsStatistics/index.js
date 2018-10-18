@@ -13,7 +13,7 @@ import Styles from './styles.m.css';
 
 export default class CallsStatistics extends Component {
     render() {
-        const { chart, pieStats } = this.props;
+        const { chart, pieStats, stats } = this.props;
 
         const barControls = this._renderBarControls();
         const piesRow = this._renderPiesRow();
@@ -34,7 +34,7 @@ export default class CallsStatistics extends Component {
                 },
                 {
                     name:  'busy',
-                    color: 'rgba(82, 179, 255, 0.85)',
+                    color: 'rgba(251, 158, 62, 0.85)',
                 },
             ],
         };
@@ -55,11 +55,14 @@ export default class CallsStatistics extends Component {
                         <div className={ Styles.pieChart }>
                             <Pie
                                 hasLegend
-                                subTitle='Всего'
-                                total={ 143 }
+                                subTitle={
+                                    <FormattedMessage id='calls-statistics.all' />
+                                }
+                                total={ stats.total }
                                 data={ pieStats }
                                 height={ 248 }
                                 lineWidth={ 4 }
+                                intlCtx='calls-statistics'
                             />
                         </div>
                     </div>
@@ -109,25 +112,16 @@ export default class CallsStatistics extends Component {
                 <MiniPie
                     label='calls-statistics.answered_calls_efficiency'
                     color={ 'rgb(81, 205, 102)' } // secondary
-                    inner={ 0.5 }
-                    tooltip={ false }
-                    margin={ [ 0, 0, 0, 0 ] }
                     percent={ stats.answered }
                 />
                 <MiniPie
                     label='calls-statistics.missed_calls_percent'
                     color={ 'rgb(255, 126, 126)' } // warning
-                    inner={ 0.5 }
-                    tooltip={ false }
-                    margin={ [ 0, 0, 0, 0 ] }
                     percent={ stats.notAnswered }
                 />
                 <MiniPie
                     label='calls-statistics.became_your_clients'
                     color={ 'rgb(155, 89, 182)' } // primary
-                    inner={ 0.5 }
-                    tooltip={ false }
-                    margin={ [ 0, 0, 0, 0 ] }
                     percent={ stats.becameClients }
                 />
             </div>
