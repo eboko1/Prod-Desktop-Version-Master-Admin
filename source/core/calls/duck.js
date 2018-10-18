@@ -65,8 +65,9 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 filter: {
                     ...state.filter,
-                    ...payload,
-                    page: 1,
+                    startDate: payload[ 0 ].format('YYYY-MM-DD'),
+                    endDate:   payload[ 1 ].format('YYYY-MM-DD'),
+                    page:      1,
                 },
             };
 

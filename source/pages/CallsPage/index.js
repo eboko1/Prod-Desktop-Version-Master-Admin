@@ -1,10 +1,8 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Select } from 'antd';
-import moment from 'moment';
 
 // proj
 import {
@@ -19,11 +17,7 @@ import { CallsContainer } from 'containers';
 import { DecoratedSelect } from 'forms/DecoratedFields';
 import { DatePickerGroup } from 'components';
 
-// import book from 'routes/book';
-
 // own
-// import Styles from './styles.m.css'
-import { callsStatuses } from 'core/calls/config';
 const Option = Select.Option;
 
 const mapStateToProps = state => ({
@@ -47,6 +41,7 @@ const mapDispatchToProps = {
 )
 export default class CallsPage extends Component {
     _setCallsDaterange = daterange => {
+        console.log('→ daterange', daterange);
         this.props.setCallsDaterange(daterange);
         this.props.fetchCallsChart();
     };
@@ -80,8 +75,9 @@ export default class CallsPage extends Component {
                             endDate={ endDate }
                             loading={ callsFetching }
                             period={ period }
-                            onDateChange={ this._setCallsDate }
+                            onDaterangeChange={ this._setCallsDaterange }
                             onPeriodChange={ this._setCallsPeriod }
+                            // periodGroup={ }
                         />
                         {channels && (
                             <DecoratedSelect>

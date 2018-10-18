@@ -12,6 +12,10 @@ const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 
 export default class DatePickerGroup extends Component {
+    static defaultProps = {
+        periodGroup: true,
+    };
+
     render() {
         const {
             date,
@@ -19,16 +23,18 @@ export default class DatePickerGroup extends Component {
             period,
             className,
             onDateChange,
+            onDaterangeChange,
             onPeriodChange,
             startDate,
             endDate,
+            periodGroup,
         } = this.props;
 
         return (
             <Catcher>
                 { !date ? (
                     <RangePickerField
-                        onChange={ onDateChange }
+                        onChange={ onDaterangeChange }
                         loading={ loading }
                         startDate={ startDate }
                         endDate={ endDate }
@@ -40,26 +46,28 @@ export default class DatePickerGroup extends Component {
                         date={ date }
                     />
                 ) }
-                <RadioGroup value={ period } className={ className }>
-                    <RadioButton
-                        value='day'
-                        onClick={ () => onPeriodChange('day') }
-                    >
-                        <FormattedMessage id='day' />
-                    </RadioButton>
-                    <RadioButton
-                        value='week'
-                        onClick={ () => onPeriodChange('week') }
-                    >
-                        <FormattedMessage id='week' />
-                    </RadioButton>
-                    <RadioButton
-                        value='month'
-                        onClick={ () => onPeriodChange('month') }
-                    >
-                        <FormattedMessage id='month' />
-                    </RadioButton>
-                </RadioGroup>
+                { periodGroup && (
+                    <RadioGroup value={ period } className={ className }>
+                        <RadioButton
+                            value='day'
+                            onClick={ () => onPeriodChange('day') }
+                        >
+                            <FormattedMessage id='day' />
+                        </RadioButton>
+                        <RadioButton
+                            value='week'
+                            onClick={ () => onPeriodChange('week') }
+                        >
+                            <FormattedMessage id='week' />
+                        </RadioButton>
+                        <RadioButton
+                            value='month'
+                            onClick={ () => onPeriodChange('month') }
+                        >
+                            <FormattedMessage id='month' />
+                        </RadioButton>
+                    </RadioGroup>
+                ) }
             </Catcher>
         );
     }
