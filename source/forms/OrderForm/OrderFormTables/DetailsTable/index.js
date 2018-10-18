@@ -383,6 +383,10 @@ class DetailsTable extends Component {
                             name:  `details[${globalIndex}][detailBrandName]`,
                             value: _.get(suggestion, 'tecdoc[0].brandId'),
                         },
+                        {
+                            name:  `details[${globalIndex}][detailCount]`,
+                            value: _.get(suggestion, 'quantity'),
+                        },
                     ];
 
                     config.forEach(
