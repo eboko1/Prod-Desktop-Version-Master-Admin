@@ -10,6 +10,7 @@ import {
     fetchCallsChart,
     setCallsChartMode,
     setCallsTableMode,
+    setCallsPageFilter,
     selectCallsChartData,
     selectCallsPieData,
 } from 'core/calls/duck';
@@ -34,6 +35,7 @@ const mapDispatchToProps = {
     fetchCallsChart,
     setCallsChartMode,
     setCallsTableMode,
+    setCallsPageFilter,
 };
 
 @injectIntl
@@ -64,6 +66,7 @@ export default class CallsContainer extends Component {
             fetchCalls,
             setCallsChartMode,
             setCallsTableMode,
+            setCallsPageFilter,
         } = this.props;
 
         return (
@@ -90,9 +93,11 @@ export default class CallsContainer extends Component {
                     >
                         <CallsTable
                             calls={ calls }
+                            stats={ stats }
                             filter={ filter }
                             fetchCalls={ fetchCalls }
                             setCallsTableMode={ setCallsTableMode }
+                            setCallsPageFilter={ setCallsPageFilter }
                         />
                     </TabPane>
                 </Tabs>

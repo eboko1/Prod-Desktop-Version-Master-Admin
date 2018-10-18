@@ -4,7 +4,7 @@ import { createSelector } from 'reselect';
 import _ from 'lodash';
 
 // own
-import { config } from './config.js';
+// import { config } from './config.js';
 
 /**
  * Constants
@@ -22,6 +22,7 @@ export const SET_CALLS_DATERANGE = `${prefix}/SET_CALLS_DATERANGE`;
 export const SET_CALLS_PERIOD = `${prefix}/SET_CALLS_PERIOD`;
 export const SET_CALLS_CHART_MODE = `${prefix}/SET_CALLS_CHART_MODE`;
 export const SET_CALLS_TABLE_MODE = `${prefix}/SET_CALLS_TABLE_MODE`;
+export const SET_CALLS_PAGE_FILTER = `${prefix}/SET_CALLS_PAGE_FILTER`;
 
 /**
  * Reducer
@@ -39,6 +40,7 @@ const ReducerState = {
         endDate: moment().format('YYYY-MM-DD'),
         period:  'month',
         mode:    'answered',
+        page:    1,
     },
 };
 
@@ -64,6 +66,7 @@ export default function reducer(state = ReducerState, action) {
                 filter: {
                     ...state.filter,
                     ...payload,
+                    page: 1,
                 },
             };
 
@@ -91,6 +94,16 @@ export default function reducer(state = ReducerState, action) {
                 filter: {
                     ...state.filter,
                     mode: payload,
+                    page: 1,
+                },
+            };
+
+        case SET_CALLS_PAGE_FILTER:
+            return {
+                ...state,
+                filter: {
+                    ...state.filter,
+                    page: payload,
                 },
             };
 
@@ -163,4 +176,9 @@ export const setCallsChartMode = mode => ({
 export const setCallsTableMode = mode => ({
     type:    SET_CALLS_TABLE_MODE,
     payload: mode,
+});
+
+export const setCallsPageFilter = page => ({
+    type:    SET_CALLS_PAGE_FILTER,
+    payload: page,
 });

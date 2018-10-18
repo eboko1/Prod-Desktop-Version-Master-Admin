@@ -10,7 +10,8 @@
         "calls-table.innerRecipient": "Inner Recipient",
         "calls-table.record": "Record",
         "calls-table.answered": "Answered",
-        "calls-table.missed": "Missed"
+        "calls-table.missed": "Missed",
+        "calls-table.no_record": "No record"
     },
     "ru": {
         "calls-table.date": "Дата",
@@ -23,7 +24,8 @@
         "calls-table.innerRecipient": "С кем соединен",
         "calls-table.record": "Запись",
         "calls-table.answered": "Принятые",
-        "calls-table.missed": "Пропущенные"
+        "calls-table.missed": "Пропущенные",
+        "calls-table.no_record": "Нет записи"
     },
     "uk": {
         "calls-table.date": "Дата",
@@ -36,6 +38,7 @@
         "calls-table.innerRecipient": "З ким з'єднанний",
         "calls-table.record": "Запис",
         "calls-table.answered": "Прийняті",
-        "calls-table.missed": "Пропущені"
+        "calls-table.missed": "Пропущені",
+        "calls-table.no_record": "Немає запису"
     }
 }

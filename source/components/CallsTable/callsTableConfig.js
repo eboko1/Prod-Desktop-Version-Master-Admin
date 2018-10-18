@@ -6,6 +6,7 @@ import { Icon, Button } from 'antd';
 import moment from 'moment';
 
 // proj
+import { answered } from 'core/calls/config';
 import book from 'routes/book';
 
 // // own
@@ -33,13 +34,15 @@ export function columnsConfig(formatMessage, showPhone, phones) {
             <Icon
                 style={ {
                     color: `${
-                        status === 'ANSWERED'
+                        answered.includes(status)
                             ? 'var(--secondary)'
                             : 'var(--warning)'
                     }`,
                     fontSize: 24,
                 } }
-                type={ status === 'ANSWERED' ? 'check-circle' : 'close-circle' }
+                type={
+                    answered.includes(status) ? 'check-circle' : 'close-circle'
+                }
                 // theme='outlined'
             />
         ),
@@ -69,7 +72,7 @@ export function columnsConfig(formatMessage, showPhone, phones) {
                 </a>
             ) : (
                 <Button type='primary' onClick={ () => showPhone(index) }>
-                    { caller }
+                    <FormattedMessage id='show' />
                 </Button>
             ),
     };

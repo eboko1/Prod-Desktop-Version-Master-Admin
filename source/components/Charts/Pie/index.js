@@ -11,8 +11,8 @@ import Bind from 'lodash-decorators/bind';
 import _ from 'lodash';
 
 // own
-import autoHeight from '../autoHeight';
-import Styles from './Styles.m.css';
+import autoHeight from '../autoHeight.js';
+import Styles from './styles.m.css';
 
 /* eslint react/no-danger:0 */
 @injectIntl

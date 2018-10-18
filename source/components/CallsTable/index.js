@@ -54,8 +54,9 @@ export default class CallsTable extends Component {
             hideOnSinglePage: true,
             current:          filter.page,
             onChange:         page => {
-                setCallsPageFilter(page);
-                fetchCalls();
+                this.props.setCallsPageFilter(page);
+                this.setState({ visiblePhones: [] });
+                this.props.fetchCalls();
             },
         };
 
