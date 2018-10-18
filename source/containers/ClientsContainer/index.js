@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Table, Modal, Select, Form, Button } from 'antd';
+import { v4 } from 'uuid';
 import _ from 'lodash';
 
 // proj
@@ -21,7 +22,6 @@ import { Catcher } from 'commons';
 // own
 import { columnsConfig } from './clientsTableConfig';
 import Styles from './styles.m.css';
-import { v4 } from 'uuid';
 
 const Option = Select.Option;
 const FormItem = Form.Item;

@@ -39,8 +39,6 @@ export default class DashboardEmptyCell extends Component {
 
     render() {
         const {
-            x,
-            y,
             globalPosition,
             connectDropTarget,
             isOver,

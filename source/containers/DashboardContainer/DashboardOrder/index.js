@@ -38,7 +38,7 @@ export default class DashboardOrder extends Component {
     _resizeOrder = (event, direction, ref, delta) => {
         // step in 30 equal with dashboard ROW_HEIGHT / minutes in one hour
         const {
-            options: { duration },
+            options: { duration }, // eslint-disable-line
             id,
             dropOrder,
         } = this.props;
@@ -52,16 +52,12 @@ export default class DashboardOrder extends Component {
 
     render() {
         const {
-            history,
-            isDragging,
             x,
             y,
             columns,
             rows,
-            id,
             status,
             dashboardRef,
-            options,
             user,
             // hideSourceOnDrag,
         } = this.props;

@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Icon, Form, Select, Table } from 'antd';
+import { Icon, Select, Table } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
@@ -15,7 +15,6 @@ import { Catcher } from 'commons';
 
 // own
 import Styles from './styles.m.css';
-const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl

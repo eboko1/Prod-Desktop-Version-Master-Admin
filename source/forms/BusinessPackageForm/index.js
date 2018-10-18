@@ -14,9 +14,6 @@ import {
 } from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 
-// own
-import Styles from './styles.m.css';
-
 @injectIntl
 @withReduxForm({
     name:    'businessPackageForm',

@@ -54,10 +54,9 @@ export default function reducer(state = ReducerState, action) {
 
         case INIT_EMPLOYEE_FORM:
         case FETCH_EMPLOYEE_BY_ID_SUCCESS:
-
             return {
                 ...state,
-                fields: {},
+                fields:          {},
                 initialEmployee: payload,
                 employeeName:    `${payload.surname} ${payload.name}`,
             };
@@ -114,10 +113,9 @@ export const fireEmployeeSuccess = data => ({
     type:    FIRE_EMPLOYEE_SUCCESS,
     payload: data,
 });
-export const fetchEmployeeById = (id) => ({
+export const fetchEmployeeById = id => ({
     type:    FETCH_EMPLOYEE_BY_ID,
     payload: id,
-
 });
 export const fetchEmployeeByIdSuccess = data => ({
     type:    FETCH_EMPLOYEE_BY_ID_SUCCESS,

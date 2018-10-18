@@ -3,7 +3,6 @@
  * */
 export const moduleName = 'orderTaskForm';
 const prefix = `cpb/${moduleName}`;
-import moment from 'moment';
 export const ON_CHANGE_ORDER_TASKS_FORM = `${prefix}/ON_CHANGE_ORDER_TASKS_FORM`;
 export const INIT_ORDER_TASKS_FORM = `${prefix}/INIT_ORDER_TASKS_FORM`;
 export const RESET_ORDER_TASKS_FORM = `${prefix}/RESET_ORDER_TASKS_FORM`;
@@ -17,7 +16,7 @@ export const CHANGE_MODAL_STATUS = `${prefix}/CHANGE_MODAL_STATUS`;
  * */
 
 const ReducerState = {
-    fields: {},
+    fields:                {},
     initialOrderTask:      null,
     progressStatusOptions: [
         {
@@ -115,7 +114,7 @@ export default function reducer(state = ReducerState, action) {
         case INIT_ORDER_TASKS_FORM:
             return {
                 ...state,
-                fields: {},
+                fields:           {},
                 taskId:           payload.id,
                 initialOrderTask: payload,
             };

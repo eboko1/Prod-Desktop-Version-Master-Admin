@@ -31,19 +31,19 @@ import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
-        stations:          state.forms.orderForm.stations,
-        vehicles:          state.forms.orderForm.vehicles,
-        employees:         state.forms.orderForm.employees,
-        managers:          state.forms.orderForm.managers,
-        allDetails:        state.forms.orderForm.allDetails,
-        allServices:       state.forms.orderForm.allServices,
-        requisites:        state.forms.orderForm.requisites,
-        modal:             state.modals.modal,
-        addClientFormData: state.forms.addClientForm.data,
-        spinner:           state.ui.orderFetching,
-        createStatus:      state.forms.orderForm.createStatus,
-        selectedClient:    state.forms.orderForm.selectedClient,
-        user:              state.auth,
+        stations:       state.forms.orderForm.stations,
+        vehicles:       state.forms.orderForm.vehicles,
+        employees:      state.forms.orderForm.employees,
+        managers:       state.forms.orderForm.managers,
+        allDetails:     state.forms.orderForm.allDetails,
+        allServices:    state.forms.orderForm.allServices,
+        requisites:     state.forms.orderForm.requisites,
+        modal:          state.modals.modal,
+        // addClientFormData: state.forms.addClientForm.data,
+        spinner:        state.ui.orderFetching,
+        createStatus:   state.forms.orderForm.createStatus,
+        selectedClient: state.forms.orderForm.selectedClient,
+        user:           state.auth,
     };
 };
 
@@ -85,8 +85,9 @@ class AddOrderPage extends Component {
             user,
             history,
         } = this.props;
-        const requiredFields =
-            requiredFieldsOnStatuses(form.getFieldsValue())[ this.props.createStatus ];
+        const requiredFields = requiredFieldsOnStatuses(form.getFieldsValue())[
+            this.props.createStatus
+        ];
 
         form.validateFields(requiredFields, err => {
             if (!err) {
@@ -129,7 +130,7 @@ class AddOrderPage extends Component {
     _setCreateStatus = status => this.props.setCreateStatus(status);
 
     render() {
-        const { modal, addClientFormData, createStatus, spinner } = this.props;
+        const { modal, createStatus, spinner } = this.props;
 
         return spinner ? (
             <Spinner spin={ spinner } />

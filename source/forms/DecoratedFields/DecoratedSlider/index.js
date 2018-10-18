@@ -16,11 +16,9 @@ export const DecoratedSlider = props => {
         formItemLayout,
 
         getFieldDecorator,
-        setFieldsValue,
         disabled,
         rules,
         field,
-        initialValue,
         initDuration,
 
         step,
@@ -29,7 +27,9 @@ export const DecoratedSlider = props => {
     } = props;
 
     const slider = getFieldDecorator(field, {
-        ...initDuration ? { initialValue: initDuration } : { initialValue: void 0 },
+        ...initDuration
+            ? { initialValue: initDuration }
+            : { initialValue: void 0 },
         rules,
     })(
         <Slider

@@ -9,17 +9,24 @@ export const SET_VIEW = `${prefix}/SET_VIEW`;
 export const SET_AUTH_FETCHING_STATE = `${prefix}/SET_AUTH_FETCHING_STATE`;
 export const SET_PROFILE_UPDATING_STATE = `${prefix}/SET_PROFILE_UPDATING_STATE`;
 
+export const SET_SEARCH_BUSINESSES_FETCHING_STATE = `${prefix}/SET_SEARCH_BUSINESSES_FETCHING_STATE`;
 export const SET_ORDERS_FETCHING_STATE = `${prefix}/SET_ORDERS_FETCHING_STATE`;
-export const SET_MY_TASKS_FETCHING_STATE = `${prefix}/SET_MY_TASKS_FETCHING_STATE`;
 export const SET_ORDER_FETCHING_STATE = `${prefix}/SET_ORDER_FETCHING_STATE`;
+export const SET_MY_TASKS_FETCHING_STATE = `${prefix}/SET_MY_TASKS_FETCHING_STATE`;
+export const SET_CLIENT_FETCHING_STATE = `${prefix}/SET_CLIENT_FETCHING_STATE`;
+export const SET_CLIENTS_FETCHING_STATE = `${prefix}/SET_CLIENTS_FETCHING_STATE`;
+export const SET_CLIENT_ORDERS_FETCHING_STATE = `${prefix}/SET_CLIENT_ORDERS_FETCHING_STATE`;
+export const SET_REVIEWS_FETCHING_STATE = `${prefix}/SET_REVIEWS_FETCHING_STATE`;
+export const SET_REVIEW_FETCHING_STATE = `${prefix}/SET_REVIEW_FETCHING_STATE`;
+export const SET_CHART_FETCHING_STATE = `${prefix}/SET_CHART_FETCHING_STATE`;
+export const SET_CALLS_FETCHING_STATE = `${prefix}/SET_CALLS_FETCHING_STATE`;
+export const SET_CALLS_CHART_FETCHING_STATE = `${prefix}/SET_CALLS_CHART_FETCHING_STATE`;
 export const SET_PACKAGE_FETCHING_STATE = `${prefix}/SET_PACKAGE_FETCHING_STATE`;
 export const SET_BUSINESS_PACKAGE_FETCHING_STATE = `${prefix}/SET_BUSINESS_PACKAGE_FETCHING_STATE`;
 export const SET_MANAGER_ROLE_FETCHING_STATE = `${prefix}/SET_MANAGER_ROLE_FETCHING_STATE`;
 export const SET_ROLE_FETCHING_STATE = `${prefix}/SET_ROLE_FETCHING_STATE`;
-export const SET_CLIENT_FETCHING_STATE = `${prefix}/SET_CLIENT_FETCHING_STATE`;
-export const SET_CLIENT_ORDERS_FETCHING_STATE = `${prefix}/SET_CLIENT_ORDERS_FETCHING_STATE`;
-export const SET_SEARCH_BUSINESSES_FETCHING_STATE = `${prefix}/SET_SEARCH_BUSINESSES_FETCHING_STATE`;
-export const SET_CLIENTS_FETCHING_STATE = `${prefix}/SET_CLIENTS_FETCHING_STATE`;
+export const SET_REVIEW_REPLY_STATE = `${prefix}/SET_REVIEW_REPLY_STATE`;
+export const SET_REVIEW_COMPLAINT_STATE = `${prefix}/SET_REVIEW_COMPLAINT_STATE`;
 
 export const SET_DASHBOARD_INITALIZING_STATE = `${prefix}/SET_DASHBOARD_INITALIZING_STATE`;
 export const SET_DASHBOARD_FETCHING_STATE = `${prefix}/SET_DASHBOARD_FETCHING_STATE`;
@@ -39,6 +46,15 @@ const ReducerState = {
     orderFetching:            false,
     myTasksFetching:          false,
     clientsFetching:          false,
+    clientFetching:           false,
+    clientOrdersFetching:     false,
+    reviewsFetching:          false,
+    reviewFetching:           false,
+    reviewReplyLoading:       false,
+    reviewComplaintLoading:   false,
+    chartFetching:            false,
+    callsFetching:            false,
+    callsChartFetching:       false,
     dashboardInitializing:    false,
     dashboardFetching:        false,
     searchBusinessesFetching: false,
@@ -46,8 +62,6 @@ const ReducerState = {
     businessPackageFetching:  false,
     managerRoleFetching:      false,
     roleFetching:             false,
-    clientFetching:           false,
-    clientOrdersFetching:     false,
     collapsed:                false,
     views:                    {},
     error:                    null,
@@ -114,6 +128,27 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_CLIENT_ORDERS_FETCHING_STATE:
             return { ...state, clientOrdersFetching: payload };
+
+        case SET_REVIEWS_FETCHING_STATE:
+            return { ...state, reviewsFetching: payload };
+
+        case SET_REVIEW_FETCHING_STATE:
+            return { ...state, reviewFetching: payload };
+
+        case SET_CHART_FETCHING_STATE:
+            return { ...state, chartFetching: payload };
+
+        case SET_CALLS_FETCHING_STATE:
+            return { ...state, callsFetching: payload };
+
+        case SET_CALLS_CHART_FETCHING_STATE:
+            return { ...state, callsChartFetching: payload };
+
+        case SET_REVIEW_REPLY_STATE:
+            return { ...state, reviewReplyLoading: payload };
+
+        case SET_REVIEW_COMPLAINT_STATE:
+            return { ...state, reviewComplaintLoading: payload };
 
         default:
             return state;
@@ -187,6 +222,11 @@ export const setRoleFetchingState = state => ({
     payload: state,
 });
 
+export const setClientsFetchingState = state => ({
+    type:    SET_CLIENTS_FETCHING_STATE,
+    payload: state,
+});
+
 export const setClientFetchingState = state => ({
     type:    SET_CLIENT_FETCHING_STATE,
     payload: state,
@@ -197,13 +237,43 @@ export const setClientOrdersFetchingState = state => ({
     payload: state,
 });
 
-export const setSearchBusinessesFetchingState = state => ({
-    type:    SET_SEARCH_BUSINESSES_FETCHING_STATE,
+export const setReviewsFetchingState = state => ({
+    type:    SET_REVIEWS_FETCHING_STATE,
     payload: state,
 });
 
-export const setClientsFetchingState = state => ({
-    type:    SET_CLIENTS_FETCHING_STATE,
+export const setReviewFetchingState = state => ({
+    type:    SET_REVIEW_FETCHING_STATE,
+    payload: state,
+});
+
+export const setReviewReplyState = state => ({
+    type:    SET_REVIEW_REPLY_STATE,
+    payload: state,
+});
+
+export const setReviewComplaintState = state => ({
+    type:    SET_REVIEW_COMPLAINT_STATE,
+    payload: state,
+});
+
+export const setChartFetchingState = state => ({
+    type:    SET_CHART_FETCHING_STATE,
+    payload: state,
+});
+
+export const setCallsFetchingState = state => ({
+    type:    SET_CALLS_FETCHING_STATE,
+    payload: state,
+});
+
+export const setCallsChartFetchingState = state => ({
+    type:    SET_CALLS_CHART_FETCHING_STATE,
+    payload: state,
+});
+
+export const setSearchBusinessesFetchingState = state => ({
+    type:    SET_SEARCH_BUSINESSES_FETCHING_STATE,
     payload: state,
 });
 

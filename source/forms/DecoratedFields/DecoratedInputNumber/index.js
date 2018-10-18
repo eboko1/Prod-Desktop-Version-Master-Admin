@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { InputNumber, Icon, Form } from 'antd';
+import { InputNumber, Form } from 'antd';
 import _ from 'lodash';
 
 // own
@@ -33,8 +33,6 @@ export const DecoratedInputNumber = props => {
         style,
 
         placeholder,
-        icon,
-        iconType,
 
         cnStyles,
     } = props;

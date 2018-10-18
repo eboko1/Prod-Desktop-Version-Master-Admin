@@ -188,7 +188,7 @@ export function* onChangeOrderFormSaga() {
     while (true) {
         try {
             const {
-                meta: { form, field },
+                meta: { field }, // form
                 payload,
             } = yield take(ON_CHANGE_ORDER_FORM);
 

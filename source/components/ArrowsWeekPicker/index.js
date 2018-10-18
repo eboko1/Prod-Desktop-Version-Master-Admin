@@ -1,7 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { DatePicker, Icon, Button } from 'antd';
-import moment from 'moment';
+import { DatePicker, Button } from 'antd';
 import { injectIntl } from 'react-intl';
 
 // own
@@ -39,9 +38,11 @@ class ArrowsWeekPicker extends Component {
                     disabled={ loading }
                 />
                 <div className={ Styles.weekDays }>
-                    ({ `${startDate.format('MM-DD')} ~ ${endDate.format(
+                    (
+                    { `${startDate.format('MM-DD')} ~ ${endDate.format(
                         'MM-DD',
-                    )}` })
+                    )}` }
+                    )
                 </div>
                 <Button
                     icon='right'

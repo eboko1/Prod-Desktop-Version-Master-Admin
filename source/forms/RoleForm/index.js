@@ -20,8 +20,6 @@ import {
 } from 'utils';
 
 // own
-import Styles from './styles.m.css';
-
 const OptGroup = Select.OptGroup;
 const Option = Select.Option;
 

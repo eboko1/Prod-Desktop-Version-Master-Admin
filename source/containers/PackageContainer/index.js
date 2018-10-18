@@ -48,7 +48,10 @@ const openNotificationWithIcon = (type, message, description) => {
 };
 
 @injectIntl
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class PackageContainer extends Component {
     constructor(props) {
         super(props);
@@ -127,7 +130,7 @@ export default class PackageContainer extends Component {
             updatePackage,
             createPackage,
             errors,
-            setCreatePackage,
+            // setCreatePackage,
         } = this.props;
 
         if (errors.length) {

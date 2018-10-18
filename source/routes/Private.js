@@ -14,12 +14,16 @@ import {
     PackagePage,
     RolePage,
     ClientsPage,
+    ClientPage,
     EmployeesPage,
     AddEmployeePage,
     EditEmployeePage,
+    ChartPage,
+    ReviewsPage,
+    ReviewPage,
+    CallsPage,
     BusinessPackagePage,
     ManagerRolePage,
-    ClientPage,
 } from 'pages';
 import book from './book';
 
@@ -45,6 +49,11 @@ export default class Private extends Component {
                 <Route exact component={ ClientsPage } path={ book.clients } />
                 <Route
                     exact
+                    render={ props => <ClientPage { ...props } /> }
+                    path={ book.clientId }
+                />
+                <Route
+                    exact
                     component={ EmployeesPage }
                     path={ book.employeesPage }
                 />
@@ -55,14 +64,18 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    render={ props => <ClientPage { ...props } /> }
-                    path={ book.clientId }
-                />
-                <Route
-                    exact
                     component={ EditEmployeePage }
                     path={ book.editEmployee }
                 />
+                { /* Statistics */ }
+                <Route exact component={ ChartPage } path={ book.chart } />
+                <Route exact component={ ReviewsPage } path={ book.feedback } />
+                <Route
+                    exact
+                    render={ props => <ReviewPage { ...props } /> }
+                    path={ book.feedbackId }
+                />
+                <Route exact component={ CallsPage } path={ book.calls } />
                 { /* Roles */ }
                 <Route exact component={ PackagePage } path={ book.packagePage } />
                 <Route exact component={ RolePage } path={ book.rolePage } />

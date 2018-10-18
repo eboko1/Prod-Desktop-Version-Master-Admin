@@ -61,7 +61,7 @@ const orderSource = {
         }
 
         if (!didDrop) {
-            console.warn(`Order ${id} didn\'t dropped`);
+            console.warn(`Order ${id} didn\'t dropped`); // eslint-disable-line
         }
     },
 };

@@ -1,0 +1,23 @@
+{
+  "en": {
+    "reviews.rating": "Rating of the company",
+    "reviews.nps_rating": "NPS of the company",
+    "reviews.count_reviews": "Feedback",
+    "reviews.count_recommended": "Recommended",
+    "reviews.count_not_recommended": "Not Recommended"
+  },
+  "ru": {
+    "reviews.rating": "Общий рейтинг компании",
+    "reviews.nps_rating": "Общий NPS компании",
+    "reviews.count_reviews": "Всего отзывов",
+    "reviews.count_recommended": "Рекомендуют",
+    "reviews.count_not_recommended": "Не рекомендуют"
+  },
+  "uk": {
+    "reviews.rating": "Загальний рейтинг компании",
+    "reviews.nps_rating": "Загальний NPS компании",
+    "reviews.count_reviews": "Всього відгуків",
+    "reviews.count_recommended": "Рекомендують",
+    "reviews.count_not_recommended": "Не рекомендують"
+  }
+}

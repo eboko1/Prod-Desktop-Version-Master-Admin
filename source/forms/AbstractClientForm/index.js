@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { Form, Select, Row, Col, notification } from 'antd';
+import { Form, Row, Col, notification } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 import {
@@ -13,9 +13,6 @@ import {
 
 import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
 import { ArrayInput } from 'components';
-
-const FormItem = Form.Item;
-const Option = Select.Option;
 
 const openNotificationWithIcon = (type, message, description) => {
     notification[ type ]({

@@ -18,7 +18,6 @@ import { EmployeesTable } from 'components';
 import { SalaryReportForm } from 'forms';
 
 // own
-import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({

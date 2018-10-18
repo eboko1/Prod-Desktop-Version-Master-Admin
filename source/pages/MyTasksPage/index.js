@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import MyTasksContainer from 'containers/MyTasksContainer';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
-import { Button, Radio, Input } from 'antd';
+import { Radio, Input } from 'antd';
 import _ from 'lodash';
 import moment from 'moment';
+
 // proj
 import {
     resetOrderTasksForm,
@@ -24,9 +24,8 @@ import {
     setMyTasksSearchFilter,
     setMyTasksStatusFilter,
 } from 'core/myTasks/duck';
-import { withResponsive, getDaterange } from 'utils';
-import book from 'routes/book';
-import { setModal, MODALS, resetModal } from 'core/modals/duck';
+import { getDaterange } from 'utils';
+import { setModal, resetModal } from 'core/modals/duck';
 import Styles from './styles.m.css';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
@@ -106,26 +105,31 @@ const mapDispatchToProps = {
 class MyTasksPage extends Component {
     constructor(props) {
         super(props);
+
         this.handleOrdersSearch = _.debounce(value => {
             const { setMyTasksSearchFilter, fetchMyTasks, filter } = this.props;
             setMyTasksSearchFilter(value);
             fetchMyTasks(filter);
         }, 1000);
+
+        this.state = {
+            button: 'all',
+        }
     }
-    state = {
-        button: 'all',
-    };
-    selectStatus(ev) {
+
+    componentDidMount() {
+        const { filter, fetchMyTasks } = this.props;
+        fetchMyTasks(filter, true);
+    }
+
+    _selectStatus(ev) {
         const { setMyTasksStatusFilter, fetchMyTasks, filter } = this.props;
 
         setMyTasksStatusFilter(ev.target.value);
         fetchMyTasks(filter);
     }
-    componentDidMount() {
-        const { filter, fetchMyTasks } = this.props;
-        fetchMyTasks(filter, true);
-    }
-    saveOrderTaskFormRef = formRef => {
+
+    _saveOrderTaskFormRef = formRef => {
         this.orderTaskFormRef = formRef;
     };
 
@@ -151,6 +155,7 @@ class MyTasksPage extends Component {
             }
         });
     };
+
     _handleRadioDaterange = event => {
         const { fetchMyTasks, filter, setMyTasksDaterangeFilter } = this.props;
         const daterange = event.target.value;
@@ -164,7 +169,6 @@ class MyTasksPage extends Component {
         fetchMyTasks(filter);
     };
     _renderHeaderContorls = () => {
-        const { filter } = this.props;
         const { button } = this.state;
 
         return (
@@ -206,8 +210,6 @@ class MyTasksPage extends Component {
             priorityOptions,
             spinner,
             filter,
-            resetData,
-            setModal,
             isMobile,
             intl,
             setMyTasksSortOrderFilter,
@@ -241,7 +243,7 @@ class MyTasksPage extends Component {
                         }
                     />
                     <RadioGroup
-                        onChange={ ev => this.selectStatus(ev) }
+                        onChange={ ev => this._selectStatus(ev) }
                         className={ Styles.buttonFilterGroup }
                         defaultValue={ filter.status }
                     >
@@ -264,7 +266,7 @@ class MyTasksPage extends Component {
                     />
                 </div>
                 <OrderTaskModal
-                    wrappedComponentRef={ this.saveOrderTaskFormRef }
+                    wrappedComponentRef={ this._saveOrderTaskFormRef }
                     initialOrderTask={ initialOrderTask }
                     priorityOptions={ priorityOptions }
                     progressStatusOptions={ progressStatusOptions }

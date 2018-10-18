@@ -2,8 +2,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
-import { Icon } from 'antd';
 
 // proj
 import { fetchPackages } from 'core/package/duck';
@@ -22,7 +20,10 @@ const mapDispatchToProps = {
     fetchPackages,
 };
 
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class PackagePage extends Component {
     componentDidMount() {
         this.props.fetchPackages();

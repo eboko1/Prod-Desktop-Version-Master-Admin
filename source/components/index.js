@@ -1,4 +1,3 @@
-import LanguagePad from './LanguagePad';
 import ArrowsNav from './ArrowsNav';
 import ReportsDropdown from './ReportsDropdown';
 import StatsCountsPanel from './StatsCountsPanel';
@@ -21,11 +20,19 @@ import { Like } from './Like';
 import EmployeeFeedback from './EmployeeFeedback';
 import EmployeeStatistics from './EmployeeStatistics';
 import PhoneNumberInput from './PhoneNumberInput';
+import UniversalChart from './UniversalChart';
+import ReviewsTable from './ReviewsTable';
+import ReviewsStats from './ReviewsStats';
+import ReviewRating from './ReviewRating';
+import ReviewResponse from './ReviewResponse';
+import NPS from './NPS';
+import CallsTable from './CallsTable';
+import CallsStatistics from './CallsStatistics';
+import DatePickerGroup from './DatePickerGroup';
 
 export {
     SettingSalaryTable,
     EmployeesTable,
-    LanguagePad,
     ArrowsNav,
     OrderStatusIcon,
     CallStatusIcon,
@@ -47,4 +54,13 @@ export {
     EmployeeFeedback,
     EmployeeStatistics,
     PhoneNumberInput,
+    UniversalChart,
+    ReviewsTable,
+    ReviewsStats,
+    ReviewRating,
+    ReviewResponse,
+    NPS,
+    CallsTable,
+    CallsStatistics,
+    DatePickerGroup,
 };

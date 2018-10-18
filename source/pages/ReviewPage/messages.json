@@ -1,0 +1,20 @@
+{
+  "en": {
+    "review-page.title": "Customer feedback",
+    "review-page.description": "Date",
+    "review.order": "Order",
+    "review.master": "Maser"
+  },
+  "ru": {
+    "review-page.title": "Отзыв клиента",
+    "review-page.description": "Дата",
+    "review.order": "Заказ",
+    "review.master": "Мастер"
+  },
+  "uk": {
+    "review-page.title": "Відгук клієнтів",
+    "review-page.description": "Дата",
+    "review.order": "Замовлення",
+    "review.master": "Майстер"
+  }
+}

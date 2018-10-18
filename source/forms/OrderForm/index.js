@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Form } from 'antd';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 //proj
@@ -108,7 +108,7 @@ export class OrderForm extends Component {
         const {
             count: countServices,
             price: priceServices,
-            totalHours,
+            // totalHours,
         } = servicesStats(form.getFieldsValue().services || [], allServices);
 
         const comments = form.getFieldsValue([ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);

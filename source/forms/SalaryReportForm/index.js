@@ -1,7 +1,7 @@
 //vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Button, Select, Tabs, Row, Col } from 'antd';
+import { Button, Select, Tabs, Row, Col } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -16,7 +16,6 @@ import { withReduxForm } from 'utils';
 // own
 import Styles from './styles.m.css';
 
-const FormItem = Form.Item;
 const Option = Select.Option;
 const TabPane = Tabs.TabPane;
 
@@ -51,16 +50,16 @@ export class SalaryReportForm extends Component {
                     >
                         <Row type='flex' align='column'>
                             <Col span='10'>
-                            <DecoratedDatePicker
-                                cnStyles={ Styles.salaryReportSelect }
-                                field='filterRangeDate'
-                                ranges
-                                label={ null }
-                                formItem
-                                formatMessage={ intl.formatMessage }
-                                getFieldDecorator={ form.getFieldDecorator }
-                                format='YYYY-MM-DD'
-                            />
+                                <DecoratedDatePicker
+                                    cnStyles={ Styles.salaryReportSelect }
+                                    field='filterRangeDate'
+                                    ranges
+                                    label={ null }
+                                    formItem
+                                    formatMessage={ intl.formatMessage }
+                                    getFieldDecorator={ form.getFieldDecorator }
+                                    format='YYYY-MM-DD'
+                                />
                             </Col>
                             <Col span='8'>
                                 <Button

@@ -1,8 +1,12 @@
 {
-    "rootDir": "../",
-    "projects": [
-        "<rootDir>/jest/jest.test.config.json",
-        "<rootDir>/jest/jest.eslint.config.json",
-        "<rootDir>/jest/jest.stylelint.config.json"
-    ]
+  "rootDir": "../",
+  "projects": [
+    "<rootDir>/jest/jest.test.config.json",
+    "<rootDir>/jest/jest.eslint.config.json",
+    "<rootDir>/jest/jest.stylelint.config.json"
+  ],
+  "globals": {
+    "__LOCAL__": true,
+    "__DEV__": true
+  }
 }

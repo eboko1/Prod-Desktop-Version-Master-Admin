@@ -15,6 +15,10 @@ import EditEmployeePage from './EditEmployeePage';
 import BusinessPackagePage from './BusinessPackagePage';
 import ManagerRolePage from './ManagerRolePage';
 import ClientPage from './ClientPage';
+import ReviewsPage from './ReviewsPage';
+import ReviewPage from './ReviewPage';
+import CallsPage from './CallsPage';
+import ChartPage from './ChartPage';
 
 export {
     DashboardPage,
@@ -27,11 +31,15 @@ export {
     MyTasksPage,
     PackagePage,
     RolePage,
-    ClientsPage,
     EmployeesPage,
     AddEmployeePage,
     EditEmployeePage,
     BusinessPackagePage,
     ManagerRolePage,
+    ClientsPage,
     ClientPage,
+    ReviewsPage,
+    ReviewPage,
+    CallsPage,
+    ChartPage,
 };

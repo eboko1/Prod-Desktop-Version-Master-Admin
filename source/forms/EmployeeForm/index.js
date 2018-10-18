@@ -64,7 +64,7 @@ export class EmployeeForm extends Component {
                         }) }
                         formItem
                         formItemLayout={ formItemLayout }
-                        initialValue={  _.get(initialEmployee, 'name') }
+                        initialValue={ _.get(initialEmployee, 'name') }
                         rules={ [
                             {
                                 required: true,
@@ -132,8 +132,8 @@ export class EmployeeForm extends Component {
                             },
                             {
                                 validator: (rule, value, callback) => {
-                                    let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
+                                    let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; // eslint-disable-line
+                                    /* eslint-disable */
                                     if (re.test(value)) {
                                         callback();
                                     } else {
@@ -141,12 +141,13 @@ export class EmployeeForm extends Component {
                                             new Error(
                                                 formatMessage({
                                                     id:
-                                                        'employee.enter_correct_email',
+                                                        "employee.enter_correct_email",
                                                 }),
                                             ),
                                         );
                                     }
 
+                                    /* eslint-enable */
                                     return true;
                                 },
                                 message: '',

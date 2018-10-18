@@ -102,14 +102,6 @@
     background: var(--not_complete);
 }
 
-/* {
-    & table::-webkit-scrollbar {
-        width: 5px;
-    }
-
-    & 
-} */
-
 .ordersTable table::-webkit-scrollbar-thumb {
     background-color: var(--primary);
 }

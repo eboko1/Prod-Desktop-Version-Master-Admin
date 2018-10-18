@@ -38,6 +38,10 @@ import clientOrdersReducer, {
 import clientRequisiteReducer, {
     moduleName as clientRequisiteModule,
 } from 'core/clientRequisite/duck';
+import chartReducer, { moduleName as chartModule } from 'core/chart/duck';
+import reviewsReducer, { moduleName as reviewsModule } from 'core/reviews/duck';
+import reviewReducer, { moduleName as reviewModule } from 'core/review/duck';
+import callsReducer, { moduleName as callsModule } from 'core/calls/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
@@ -74,6 +78,10 @@ const appState = {
     [ clientModule ]:           clientReducer,
     [ clientRequisiteModule ]:  clientRequisiteReducer,
     [ clientOrdersModule ]:     clientOrdersReducer,
+    [ chartModule ]:            chartReducer,
+    [ reviewsModule ]:          reviewsReducer,
+    [ reviewModule ]:           reviewReducer,
+    [ callsModule ]:            callsReducer,
     [ employeeScheduleModule ]: employeeScheduleReducer,
     // [ authModule ]:            authReducer,
     // intl,

@@ -67,7 +67,7 @@ export default function reducer(state = ReducerState, action) {
                 fields:   {},
                 vehicles: [],
             };
-
+        /* eslint-disable no-case-declarations */
         case REMOVE_CLIENT_VEHICLE:
             const newVehicles = [ ...state.vehicles ];
             newVehicles.splice(payload, 1);

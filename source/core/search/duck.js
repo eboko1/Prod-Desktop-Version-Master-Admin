@@ -16,8 +16,6 @@ export const FETCH_MANAGERS_SUCCESS = `${prefix}/FETCH_MANAGERS_SUCCESS`;
  * Reducer
  * */
 
-let errorId = 1;
-
 const ReducerState = {
     errors:               [],
     businesses:           [],

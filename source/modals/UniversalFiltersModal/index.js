@@ -24,7 +24,6 @@ export default class UniversalFiltersModal extends Component {
 
             // Actions
             resetModal,
-            hideModal,
 
             // Filters
             vehicleMakes,

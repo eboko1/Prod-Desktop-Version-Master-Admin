@@ -1,0 +1,20 @@
+{
+  "en": {
+    "calls-page.title": "Calls",
+    "calls-page.description": "Your service calls statistics",
+    "calls-page.statistics": "Statistics",
+    "calls-page.calls": "Calls"
+  },
+  "ru": {
+    "calls-page.title": "Звонки",
+    "calls-page.description": "Статистика звонков на Вашу станцию",
+    "calls-page.statistics": "Статистика",
+    "calls-page.calls": "Звонки"
+  },
+  "uk": {
+    "calls-page.title": "Дзвінки",
+    "calls-page.description": "Статистика дзвінків на Вашу станцію",
+    "calls-page.statistics": "Статистика",
+    "calls-page.calls": "Дзвінки"
+  }
+}

@@ -1,8 +1,0 @@
-.downloadFile {
-    display: flex;
-    align-items: center;
-
-    &  button {
-        margin-left: 24px;
-    }
-}

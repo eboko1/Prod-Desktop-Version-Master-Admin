@@ -13,6 +13,10 @@ import { saga as orderSaga } from 'core/order/saga';
 import { saga as searchSaga } from 'core/search/saga';
 import { saga as clientsSaga } from 'core/clients/saga';
 import { saga as employeeScheduleSaga } from 'core/employeeSchedule/saga';
+import { saga as chartSaga } from 'core/chart/saga';
+import { saga as reviewsSaga } from 'core/reviews/saga';
+import { saga as reviewSaga } from 'core/review/saga';
+import { saga as callsSaga } from 'core/calls/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
@@ -39,36 +43,48 @@ import { saga as settingSalaryFormSaga } from 'core/forms/settingSalaryForm/saga
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
     yield all([
+        // global
         intl.updateIntlWatcher(),
         authSaga(),
         uiSaga(),
+        // login
+        loginFormSaga(),
+        // commons
+        universalFiltersFormSaga(),
+        profileFormSaga(),
+        switchBusinessSaga(),
+        searchSaga(),
+        addClientVehicleSaga(),
+        //
+        // operations
+        dashboardSaga(),
         ordersSaga(),
         orderSaga(),
-        clientsSaga(),
-        universalFiltersFormSaga(),
         orderFormSaga(),
-        addClientFormSaga(),
-        dashboardSaga(),
-        loginFormSaga(),
-        orderTaskFormSaga(),
         myTasksContainerSaga(),
-        packagesSaga(),
-        rolesSaga(),
-        switchBusinessSaga(),
+        // reference book
+        clientsSaga(),
+        clientSaga(),
+        addClientFormSaga(),
+        editClientFormSaga(),
+        clientOrdersSaga(),
+        clientRequisitesSaga(),
+        orderTaskFormSaga(),
         employeesSaga(),
         employeeFormSaga(),
-        businessPackageSaga(),
-        scheduleFormSaga(),
-        searchSaga(),
-        managerRoleSaga(),
-        profileFormSaga(),
-        clientSaga(),
-        addClientVehicleSaga(),
-        editClientFormSaga(),
-        clientRequisitesSaga(),
-        clientOrdersSaga(),
         employeeScheduleSaga(),
+        scheduleFormSaga(),
         settingSalaryFormSaga(),
+        // statistics
+        chartSaga(),
+        reviewsSaga(),
+        reviewSaga(),
+        callsSaga(),
+        // settings
+        packagesSaga(),
+        rolesSaga(),
+        businessPackageSaga(),
+        managerRoleSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

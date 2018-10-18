@@ -22,7 +22,6 @@ class DiscountPanel extends Component {
             fetchedOrder,
             forbidden,
         } = this.props;
-        const { formatMessage } = this.props.intl;
 
         const discount = this.props.form.getFieldValue(discountFieldName);
 

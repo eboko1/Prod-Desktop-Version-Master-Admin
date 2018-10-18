@@ -6,49 +6,64 @@ const OLD_APP_URL = __OLD_APP_URL__;
 const book = Object.freeze({
     // Public
     login:               '/login',
+    exception:           '/exception',
+    exceptionStatusCode: '/exception/:statusCode',
     // Private
     profile:             '/profile',
     dashboard:           '/dashboard',
     myTasksPage:         '/mytasks',
-    employeesPage:       '/employees',
-    addEmployee:         '/employees/add',
-    editEmployee:        '/employees/:id',
-    packagePage:         '/packages',
-    businessPackagePage: '/businesses/packages',
-    managerRolePage:     '/managers/roles',
-    rolePage:            '/packages/:id',
-
+    //
     // Orders
+    //
     orders:              '/orders',
     ordersByStatuses:    '/orders/:ordersStatuses',
     ordersAppointments:  '/orders/appointments',
     // Order
     order:               '/order',
     orderId:             '/order/:id',
-    // Clients
-    clients:             '/clients',
-    client:              '/client',
-    clientId:            '/client/:id',
     // AddOrder
     addOrder:            '/add',
     // reports
     reports:             '/orders/reports',
-    // Exception
-    exception:           '/exception',
-    exceptionStatusCode: '/exception/:statusCode',
+    //
+    // Reference book
+    //
+    // Clients
+    clients:             '/clients',
+    client:              '/client',
+    clientId:            '/client/:id',
+    // Employees
+    employeesPage:       '/employees',
+    addEmployee:         '/employees/add',
+    // TODO: employeeId
+    editEmployee:        '/employees/:id',
+    //
+    // Statistics
+    //
+    chart:               '/chart',
+    feedback:            '/feedback',
+    feedbackId:          '/feedback/:id',
+    calls:               '/calls',
+    //
+    // Settings
+    //
+    packagePage:         '/packages',
+    businessPackagePage: '/businesses/packages',
+    managerRolePage:     '/managers/roles',
+    rolePage:            '/packages/:id',
 
     oldApp: {
         // link to my.cb24.eu
-        dashboard:              `${OLD_APP_URL}/dashboard`,
+        // dashboard:              `${OLD_APP_URL}/dashboard`,
         tasks:                  `${OLD_APP_URL}/tasks`,
-        clients:                `${OLD_APP_URL}/clients`,
-        employees:              `${OLD_APP_URL}/employees`,
+        // clients:                `${OLD_APP_URL}/clients`,
+        // employees:              `${OLD_APP_URL}/employees`,
         controlPanel:           `${OLD_APP_URL}/control-panel`,
-        indicators:             `${OLD_APP_URL}/universal-chart`,
+        // indicators:             `${OLD_APP_URL}/universal-chart`,
         funel:                  `${OLD_APP_URL}/funel`,
-        reviews:                `${OLD_APP_URL}/reviews`,
+        // reviews:                `${OLD_APP_URL}/reviews`,
         statistics:             `${OLD_APP_URL}/statistics`,
-        statisticsCalls:        `${OLD_APP_URL}/statistics/calls`,
+        // statisticsCalls:        `${OLD_APP_URL}/statistics/calls`,
         settings:               `${OLD_APP_URL}/settings`,
         settingsRequisites:     `${OLD_APP_URL}/requisites`,
         settingsSpecialization: `${OLD_APP_URL}/settings/specialization`,

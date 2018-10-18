@@ -1,13 +1,5 @@
 // vendor
-import {
-    call,
-    put,
-    all,
-    take,
-    takeEvery,
-    takeLatest,
-} from 'redux-saga/effects';
-import nprogress from 'nprogress';
+import { call, put, all, take } from 'redux-saga/effects';
 
 //proj
 import { emitError } from 'core/ui/duck';

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { Input } from 'antd';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
@@ -39,7 +39,12 @@ export default class OrdersFilterContainer extends Component {
     constructor(props) {
         super(props);
         this.handleClientsSearch = _.debounce(value => {
-            const { setClientsSearchFilter, fetchClients, filter, setSearchQuery } = this.props;
+            const {
+                setClientsSearchFilter,
+                fetchClients,
+                filter,
+                setSearchQuery,
+            } = this.props;
             setClientsSearchFilter(value);
             setSearchQuery(value);
             fetchClients({ sort: { page: 1 }, ...filter });
@@ -51,14 +56,12 @@ export default class OrdersFilterContainer extends Component {
     }
 
     render() {
-        const { stats, intl } = this.props;
-
         return (
             <Catcher>
                 <div className={ Styles.filter }>
                     <Search
                         className={ Styles.search }
-                        placeholder={ intl.formatMessage({
+                        placeholder={ this.props.intl.formatMessage({
                             id: 'orders-filter.search_placeholder',
                         }) }
                         onChange={ ({ target: { value } }) =>

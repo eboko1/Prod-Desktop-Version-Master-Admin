@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Icon, Button, Row, Col, Form, Select } from 'antd';
+import { Row, Col, Form, Select } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -34,11 +34,13 @@ class PhoneNumberInput extends Component {
 
     getMask(initialPhoneNumber) {
         const phoneNumber = this.getPreparedPhoneNumber(initialPhoneNumber);
+        /* eslint-disable */
         const maskConfig = _(masks)
             .toPairs()
-            .find(([ country, mask ]) =>
-                phoneNumber.startsWith(mask.replace(/[^\d]/g, '')));
-
+            .find(([country, mask]) =>
+                phoneNumber.startsWith(mask.replace(/[^\d]/g, "")),
+            );
+        /* eslint-enable */
         if (maskConfig) {
             return _.first(maskConfig);
         }
