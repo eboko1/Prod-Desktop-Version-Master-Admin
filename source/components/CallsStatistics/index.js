@@ -5,7 +5,7 @@ import { FormattedMessage } from 'react-intl';
 // proj
 import { Catcher } from 'commons';
 
-import { Pie, MiniPie, Bar } from 'components/Charts';
+import { Pie, MiniPie, Line } from 'components/Charts';
 
 // own
 import ChartControls from './ChartControls';
@@ -13,7 +13,13 @@ import Styles from './styles.m.css';
 
 export default class CallsStatistics extends Component {
     render() {
-        const { chart, pieStats, stats, setCallsChartMode } = this.props;
+        const {
+            chart,
+            pieStats,
+            stats,
+            setCallsChartMode,
+            fetchCallsChart,
+        } = this.props;
 
         const piesRow = this._renderPiesRow();
 
@@ -42,9 +48,12 @@ export default class CallsStatistics extends Component {
             <Catcher>
                 <div className={ Styles.callsStatistics }>
                     <div className={ Styles.column }>
-                        { /* { barControls } */ }
-                        <ChartControls setCallsChartMode={ setCallsChartMode } />
-                        <Bar
+                        <ChartControls
+                            setCallsChartMode={ setCallsChartMode }
+                            fetchCallsChart={ fetchCallsChart }
+                        />
+                        <Line
+                            height={ 360 }
                             data={ chart }
                             config={ barConfig }
                             intlCtx='calls-statistics'

@@ -53,10 +53,16 @@ export function* fetchCallsChartSaga() {
             yield take(FETCH_CALLS_CHART);
             yield put(setCallsChartFetchingState(true));
             const filter = yield select(selectCallsFilter);
+
             const queries = {
-                startDate: moment(filter.startDate).format('YYYY-MM-DD'),
-                endDate:   moment(filter.endDate).format('YYYY-MM-DD'),
-                channelId: filter.channelId,
+                startDate:   moment(filter.startDate).format('YYYY-MM-DD'),
+                endDate:     moment(filter.endDate).format('YYYY-MM-DD'),
+                channelId:   filter.channelId,
+                statusNotIn: Object.keys(filter.chartModes)
+                    .filter(
+                        key => filter.chartModes[ key ],
+                    ) /* eslint-disable-line */
+                    .map(mode => config[ mode ]),
             };
 
             const data = yield call(fetchAPI, 'GET', 'calls/chart', queries);

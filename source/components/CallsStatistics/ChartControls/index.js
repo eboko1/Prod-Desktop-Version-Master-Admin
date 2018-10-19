@@ -3,33 +3,35 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 
-// proj
-import { answered, missed, busy, all } from 'core/calls/config';
-
 // own
 import Styles from '../styles.m.css';
 
 export default class ChartControls extends Component {
     state = {
-        all:      all,
-        answered: answered,
-        missed:   missed,
-        busy:     busy,
+        // all:      false,
+        answered: false,
+        missed:   false,
+        busy:     false,
     };
 
     _setChartModes = mode => {
         this.setState(state => ({ [ mode ]: !state[ mode ] }));
-
-        this.props.setCallsChartMode(mode);
-        this.props.fetchCallsChart();
     };
+
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState !== this.state) {
+            this.props.setCallsChartMode(this.state);
+            this.props.fetchCallsChart();
+        }
+    }
 
     render() {
         return (
             <div className={ Styles.barControls }>
                 <span
-                    className={ `${Styles.controlIcon} ${Styles.totalIcon}` }
-                    onClick={ () => this._setChartModes('all') }
+                    className={ `${Styles.controlIcon} ${Styles.totalIcon} ${this
+                        .state.all && Styles.disabledIcon}` }
+                    // onClick={ () => this._setChartModes('all') }
                 >
                     <Icon type='bar-chart' theme='outlined' />
                     <span className={ Styles.controlText }>
@@ -37,7 +39,9 @@ export default class ChartControls extends Component {
                     </span>
                 </span>
                 <span
-                    className={ `${Styles.controlIcon} ${Styles.answeredIcon}` }
+                    className={ `${Styles.controlIcon} ${
+                        Styles.answeredIcon
+                    } ${this.state.answered && Styles.disabledIcon}` }
                     onClick={ () => this._setChartModes('answered') }
                 >
                     <Icon type='bar-chart' theme='outlined' />
@@ -46,7 +50,9 @@ export default class ChartControls extends Component {
                     </span>
                 </span>
                 <span
-                    className={ `${Styles.controlIcon} ${Styles.missedIcon}` }
+                    className={ `${Styles.controlIcon} ${
+                        Styles.missedIcon
+                    } ${this.state.missed && Styles.disabledIcon}` }
                     onClick={ () => this._setChartModes('missed') }
                 >
                     <Icon type='bar-chart' theme='outlined' />
@@ -55,7 +61,8 @@ export default class ChartControls extends Component {
                     </span>
                 </span>
                 <span
-                    className={ `${Styles.controlIcon} ${Styles.busyIcon}` }
+                    className={ `${Styles.controlIcon} ${Styles.busyIcon} ${this
+                        .state.busy && Styles.disabledIcon}` }
                     onClick={ () => this._setChartModes('busy') }
                 >
                     <Icon type='bar-chart' theme='outlined' />

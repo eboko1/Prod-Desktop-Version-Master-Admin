@@ -41,10 +41,11 @@ const ReducerState = {
         startDate: moment()
             .subtract(3, 'months')
             .format('YYYY-MM-DD'),
-        endDate: moment().format('YYYY-MM-DD'),
-        period:  'month',
-        mode:    'answered',
-        page:    1,
+        endDate:    moment().format('YYYY-MM-DD'),
+        period:     'month',
+        mode:       'answered',
+        page:       1,
+        chartModes: {},
     },
 };
 
@@ -104,7 +105,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 filter: {
                     ...state.filter,
-                    statusIn: [ ...payload ],
+                    chartModes: payload,
                 },
             };
 
