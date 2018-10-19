@@ -19,8 +19,10 @@ const busy = [ callsStatuses.BUSY ];
 const all = [ ...answered, ...missed, ...busy ];
 
 const config = {
+    all:      [ all ],
     answered: [ answered ],
     missed:   [ missed ],
+    busy:     [ busy ],
 };
 
 export { callsStatuses, answered, missed, busy, all, config };

@@ -70,6 +70,7 @@ export default class CallsContainer extends Component {
             setCallsChartMode,
             setCallsTableMode,
             setCallsPageFilter,
+            fetchCallsChart,
         } = this.props;
 
         return (
@@ -86,6 +87,7 @@ export default class CallsContainer extends Component {
                             chart={ chart }
                             pieStats={ pieStats }
                             setCallsChartMode={ setCallsChartMode }
+                            fetchCallsChart={ fetchCallsChart }
                         />
                     </TabPane>
                     <TabPane

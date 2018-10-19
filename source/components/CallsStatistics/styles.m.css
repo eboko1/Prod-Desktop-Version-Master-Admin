@@ -43,6 +43,7 @@
 
 .totalIcon {
     color: var(--primary);
+    cursor: not-allowed;
 }
 
 .answeredIcon {
@@ -55,4 +56,8 @@
 
 .busyIcon {
     color: var(--approve);
+}
+/* should go after all Icons styles */
+.disabledIcon {
+    color: var(--lightGray);
 }
