@@ -48,7 +48,8 @@
         "add_order_form.appointment_details": "Appointment Details:",
         "add_order_form.save_appointment": "Save Appointment",
         "add_order_form.no_model": "Model not specified",
-        "add_order_form.delete_confirm": "Sure to delete?"
+        "add_order_form.delete_confirm": "Sure to delete?",
+        "add_order_form.delivery_date": "Delivery date"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -99,7 +100,8 @@
         "add_order_form.appointment_details": "Записать на:",
         "add_order_form.save_appointment": "Записать",
         "add_order_form.no_model": "Модель не указана",
-        "add_order_form.delete_confirm": "Удалить?"
+        "add_order_form.delete_confirm": "Удалить?",
+        "add_order_form.delivery_date": "Дата выдачи"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -150,6 +152,7 @@
         "add_order_form.appointment_details": "Записати на:",
         "add_order_form.save_appointment": "Записати",
         "add_order_form.no_model": "Модель не вказана",
-        "add_order_form.delete_confirm": "Видалити?"
+        "add_order_form.delete_confirm": "Видалити?",
+        "add_order_form.delivery_date": "Дата видачі"
     }
 }

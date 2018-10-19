@@ -97,26 +97,125 @@ export default class OrderFormHeader extends Component {
         const { formatMessage } = this.props.intl;
 
         return (
-            <DecoratedSlider
-                field='duration'
-                formItem
-                formItemLayout={ formHorizontalItemLayout }
-                className={ Styles.duration }
-                colon={ false }
-                disabled={ this.bodyUpdateIsForbidden() }
-                initDuration={
-                    _.get(fetchedOrder, 'order.duration') || totalHours
-                }
-                label={ `${formatMessage({
-                    id: 'add_order_form.duration',
-                })} (${getFieldValue('duration')}${formatMessage({
-                    id: 'add_order_form.hours_shortcut',
-                })})` }
-                getFieldDecorator={ getFieldDecorator }
-                min={ 0 }
-                step={ 0.5 }
-                max={ 8 }
-            />
+            <div>
+                <DecoratedSlider
+                    field='duration'
+                    formItem
+                    formItemLayout={ formHorizontalItemLayout }
+                    className={ Styles.duration }
+                    colon={ false }
+                    disabled={ this.bodyUpdateIsForbidden() }
+                    initDuration={
+                        _.get(fetchedOrder, 'order.duration') || totalHours
+                    }
+                    label={ `${formatMessage({
+                        id: 'add_order_form.duration',
+                    })} (${getFieldValue('duration')}${formatMessage({
+                        id: 'add_order_form.hours_shortcut',
+                    })})` }
+                    getFieldDecorator={ getFieldDecorator }
+                    min={ 0 }
+                    step={ 0.5 }
+                    max={ 8 }
+                />
+                <div>
+                    <DecoratedDatePicker
+                        getFieldDecorator={ getFieldDecorator }
+                        disabled={ this.bodyUpdateIsForbidden() }
+                        field='beginDate'
+                        hasFeedback
+                        formItem
+                        formItemLayout={ formHeaderItemLayout }
+                        formatMessage={ formatMessage }
+                        label={
+                            <FormattedMessage id='add_order_form.delivery_date' />
+                        }
+                        colon={ false }
+                        className={ Styles.datePanelItem }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id: 'add_order_form.select_date',
+                        }) }
+                        disabledDate={ disabledDate }
+                        format={ 'YYYY-MM-DD' } // HH:mm
+                        showTime={ false }
+                        initialValue={ momentBeginDatetime }
+                        onChange={ value => {
+                            const station = this.props.form.getFieldValue(
+                                'station',
+                            );
+                            if (station) {
+                                this.fetchAvailableHours(station, value);
+                            }
+                        } }
+                    />
+
+                    <DecoratedTimePicker
+                        formItem
+                        disabled={
+                            this.bodyUpdateIsForbidden() ||
+                            !this.props.form.getFieldValue('beginDate') ||
+                            !this.props.form.getFieldValue('station')
+                        }
+                        formItemLayout={ formHeaderItemLayout }
+                        defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
+                        field='beginTime'
+                        hasFeedback
+                        disabledHours={ () => {
+                            const availableHours =
+                                this.props.availableHours || [];
+
+                            return _.difference(
+                                Array(24)
+                                    .fill(1)
+                                    .map((value, index) => index),
+                                availableHours.map(availableHour =>
+                                    Number(moment(availableHour).format('HH'))),
+                            );
+                        } }
+                        disabledMinutes={ hour => {
+                            const availableHours =
+                                this.props.availableHours || [];
+
+                            const availableMinutes = availableHours
+                                .map(availableHour => moment(availableHour))
+                                .filter(
+                                    availableHour =>
+                                        Number(availableHour.format('HH')) ===
+                                        hour,
+                                )
+                                .map(availableHour =>
+                                    Number(availableHour.format('mm')));
+
+                            return _.difference([ 0, 30 ], availableMinutes);
+                        } }
+                        label={ <FormattedMessage id='time' /> }
+                        formatMessage={ formatMessage }
+                        className={ Styles.datePanelItem }
+                        getFieldDecorator={ getFieldDecorator }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'add_order_form.please_provide_time',
+                                }),
+                            },
+                        ] }
+                        placeholder={ formatMessage({
+                            id: 'add_order_form.provide_time',
+                        }) }
+                        minuteStep={ 30 }
+                        initialValue={ momentBeginDatetime }
+                    />
+                </div>
+            </div>
         );
     };
 
@@ -127,7 +226,10 @@ export default class OrderFormHeader extends Component {
 
         const beginDate = getFieldValue('beginDate');
         // disabledHours, disabledMinutes, disabledSeconds
-        const { disabledDate, beginTime } = getDateTimeConfig(moment(beginDate), schedule);
+        const { disabledDate, beginTime } = getDateTimeConfig(
+            moment(beginDate),
+            schedule,
+        );
 
         const beginDatetime =
             _.get(fetchedOrder, 'order.beginDatetime') ||
@@ -178,6 +280,7 @@ export default class OrderFormHeader extends Component {
                         }
                     } }
                 />
+
                 <DecoratedSelect
                     field='station'
                     rules={ [
@@ -222,6 +325,7 @@ export default class OrderFormHeader extends Component {
                         );
                     }) }
                 </DecoratedSelect>
+
                 <DecoratedTimePicker
                     formItem
                     disabled={
