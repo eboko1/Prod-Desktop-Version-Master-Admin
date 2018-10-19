@@ -58,6 +58,7 @@ export function* fetchCallsChartSaga() {
                 startDate:   moment(filter.startDate).format('YYYY-MM-DD'),
                 endDate:     moment(filter.endDate).format('YYYY-MM-DD'),
                 channelId:   filter.channelId,
+                period:      filter.period,
                 statusNotIn: Object.keys(filter.chartModes)
                     .filter(
                         key => filter.chartModes[ key ],
