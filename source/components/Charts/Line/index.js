@@ -61,7 +61,7 @@ export default class Line extends Component {
                                 key={ dataKey.name }
                                 dataKey={ dataKey.name }
                                 fill={ dataKey.color }
-                                // type='monotone'
+                                type='monotone'
                                 name={ formatMessage({
                                     id: `${intlCtx}.${_.snakeCase(
                                         dataKey.name,
@@ -69,7 +69,7 @@ export default class Line extends Component {
                                 }) }
                                 stroke={ dataKey.color }
                                 strokeWidth={ 4 }
-                                activeDot={ { r: 10 } }
+                                activeDot={{ r: 10 }} // eslint-disable-line
                             />
                         ))
                         .value() }
