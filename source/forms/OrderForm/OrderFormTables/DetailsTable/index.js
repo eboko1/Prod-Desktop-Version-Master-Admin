@@ -464,7 +464,7 @@ class DetailsTable extends Component {
                 ];
 
                 return _(config)
-                    .map(({ name, value }) => value && [ name, String(value) ])
+                    .map(({ name, value }) => value && [ name, value ? String(value) : void 0 ])
                     .filter(Boolean)
                     .fromPairs()
                     .value();
@@ -498,7 +498,7 @@ class DetailsTable extends Component {
                     const config = [
                         {
                             name:  `details[${globalIndex}][detailName]`,
-                            value: String(suggestion.detailId),
+                            value: suggestion.detailId,
                         },
                         {
                             name:  `details[${globalIndex}][detailCode]`,
@@ -506,9 +506,7 @@ class DetailsTable extends Component {
                         },
                         {
                             name:  `details[${globalIndex}][detailBrandName]`,
-                            value: String(
-                                _.get(suggestion, 'tecdoc[0].brandId'),
-                            ),
+                            value: _.get(suggestion, 'tecdoc[0].brandId'),
                         },
                         {
                             name:  `details[${globalIndex}][detailCount]`,
@@ -526,7 +524,7 @@ class DetailsTable extends Component {
 
                     return _(config)
                         .map(
-                            ({ name, value }) => value && [ name, String(value) ],
+                            ({ name, value }) => value && [ name, value ? String(value) : void 0 ],
                         )
                         .filter(Boolean)
                         .fromPairs()
