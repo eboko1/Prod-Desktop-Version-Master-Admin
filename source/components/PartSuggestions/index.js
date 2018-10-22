@@ -40,9 +40,7 @@ export default class PartSuggestions extends Component {
                                 )
                             }
                             width={ 75 }
-                            src={ `http://139.59.159.72:4100/images/${
-                                image.supplierId
-                            }/${image.pictureName}` }
+                            src={ `${__TECDOC_IMAGES_URL__}/${image.supplierId}/${image.pictureName}` }
                         />
                     ) : (
                         <div>No photo</div>

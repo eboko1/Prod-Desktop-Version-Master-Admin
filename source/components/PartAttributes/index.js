@@ -59,9 +59,13 @@ export default class PartAttributes extends Component {
                             autoplay
                         >
                             { images.map(({ pictureName, supplierId }) => (
-                                <div className={ Styles.attributesCarouselSlide }>
+                                <div
+                                    className={
+                                        Styles.attributesCarouselSlide
+                                    }
+                                >
                                     <img
-                                        src={ `http://139.59.159.72:4100/images/${supplierId}/${pictureName}` }
+                                        src={ `${__TECDOC_IMAGES_URL__}/${supplierId}/${pictureName}` }
                                     />
                                 </div>
                             )) }
