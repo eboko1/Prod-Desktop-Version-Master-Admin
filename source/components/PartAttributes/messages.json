@@ -1,23 +1,17 @@
 {
   "en": {
-    "partsSuggestions.title": "Parts suggestion",
-    "partsSuggestions.attributes": "Additional information",
-    "partsSuggestions.description": "Description",
-    "partsSuggestions.supplierName": "Supplier",
-    "partsSuggestions.detailCode": "Number"
+    "partAttributes.detailCode": "Part number",
+    "partAttributes.brandName": "Supplier",
+    "partAttributes.title": "Part information"
   },
   "ru": {
-    "partsSuggestions.title": "Рекомендации запчастей",
-    "partsSuggestions.attributes": "Дополнительная информация",
-    "partsSuggestions.description": "Описание",
-    "partsSuggestions.supplierName": "Производитель",
-    "partsSuggestions.detailCode": "Код"
+    "partAttributes.detailCode": "Код детали",
+    "partAttributes.brandName": "Производитель",
+    "partAttributes.title": "Информация о запчасти"
   },
   "uk": {
-    "partsSuggestions.title": "Рекомендації деталей",
-    "partsSuggestions.attributes": "Додаткова інформація",
-    "partsSuggestions.description": "Опис",
-    "partsSuggestions.supplierName": "Виробник",
-    "partsSuggestions.detailCode": "Номер"
+    "partAttributes.detailCode": "Код деталі",
+    "partAttributes.brandName": "Виробник",
+    "partAttributes.title": "Інформація про деталь"
   }
 }

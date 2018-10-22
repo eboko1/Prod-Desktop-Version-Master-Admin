@@ -1,6 +1,8 @@
-.filters {
+.actionContainer {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: white;
+    flex-wrap: wrap;
+}
+
+.actionItem {
+    margin: 0 2px;
 }

@@ -1,47 +1,16 @@
 // vendor
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
 import { PartAttributes, PartSuggestions } from 'components';
-import {
-    fetchPartAttributes,
-    fetchSuggestionParts,
-    fetchCrossParts,
-    clearPartAttributes,
-    clearSuggestionParts,
-    clearCrossParts,
-} from 'core/tecDocActions/duck';
 
 // own
 import Styles from './styles.m.css';
 
-const mapDispatchToProps = {
-    fetchPartAttributes,
-    fetchSuggestionParts,
-    fetchCrossParts,
-    clearPartAttributes,
-    clearSuggestionParts,
-    clearCrossParts,
-};
-
-const mapStateToProps = state => ({
-    suggestions:         state.tecDocActions.suggestions,
-    crosses:             state.tecDocActions.crosses,
-    attributes:          state.tecDocActions.attributes,
-    selectedAttributes:  state.tecDocActions.selectedAttributes,
-    selectedSuggestions: state.tecDocActions.selectedSuggestions,
-    selectedCrosses:     state.tecDocActions.selectedCrosses,
-});
-
 @injectIntl
-@connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)
-export default class TecDocModalsContainer extends Component {
+export default class TecDocModals extends Component {
     extractRelevantTecDocData() {
         const {
             crosses: allCrosses,
@@ -65,7 +34,7 @@ export default class TecDocModalsContainer extends Component {
             modificationId: crossesModificationId,
         } = selectedCrosses || {};
 
-        const attributes =
+        const attributesEntity =
             attributesPartCode &&
             attributesSupplierId &&
             _.chain(allAttributes)
@@ -73,8 +42,10 @@ export default class TecDocModalsContainer extends Component {
                     partCode:   attributesPartCode,
                     supplierId: attributesSupplierId,
                 })
-                .get('attributes')
                 .value();
+
+        const attributes = _.get(attributesEntity, 'attributes');
+        const images = _.get(attributesEntity, 'images');
 
         const suggestions =
             suggestionsProductId &&
@@ -98,21 +69,26 @@ export default class TecDocModalsContainer extends Component {
                 .get('crosses')
                 .value();
 
-        return { crosses, suggestions, attributes };
+        return { crosses, suggestions, attributes, images };
     }
 
     render() {
         const { selectedAttributes } = this.props;
+        const { partCode: detailCode } = selectedAttributes || {};
 
         const {
             fetchPartAttributes,
             clearPartAttributes,
             clearSuggestionParts,
             clearCrossParts,
+            onSelect,
+            product,
+            supplier,
         } = this.props;
 
         const {
             attributes,
+            images,
             crosses,
             suggestions,
         } = this.extractRelevantTecDocData();
@@ -120,18 +96,24 @@ export default class TecDocModalsContainer extends Component {
         return (
             <div>
                 <PartAttributes
+                    product={ product }
+                    images={ images }
+                    supplier={ supplier }
+                    detailCode={ detailCode }
                     attributes={ attributes }
-                    showModal={ Boolean(attributes) }
+                    showModal={ Boolean(selectedAttributes) }
                     hideModal={ clearPartAttributes }
                 />
                 <PartSuggestions
                     fetchPartAttributes={ fetchPartAttributes }
+                    onSelect={ onSelect }
                     suggestions={ suggestions }
                     showModal={ Boolean(suggestions) && !selectedAttributes }
                     hideModal={ clearSuggestionParts }
                 />
                 <PartSuggestions
                     fetchPartAttributes={ fetchPartAttributes }
+                    onSelect={ onSelect }
                     suggestions={ crosses }
                     showModal={ Boolean(crosses) && !selectedAttributes }
                     hideModal={ clearCrossParts }

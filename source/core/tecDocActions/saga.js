@@ -1,71 +1,99 @@
 // vendor
-import { call, put, all, take } from 'redux-saga/effects';
+import { call, put, all, take, select } from 'redux-saga/effects';
+import _ from 'lodash';
 
 //proj
-import { emitError, setRoleFetchingState } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
-import { fetchRoles, fetchRolesSuccess, fetchRolesError } from './duck';
+import {
+    fetchPartAttributesSuccess,
+    fetchSuggestionPartsSuccess,
+    fetchCrossPartsSuccess,
+} from './duck';
+import {
+    FETCH_PART_ATTRIBUTES,
+    FETCH_SUGGESTION_PARTS,
+    FETCH_CROSS_PARTS,
+} from './duck';
 
-import { CREATE_ROLE, UPDATE_ROLE, DELETE_ROLE, FETCH_ROLES } from './duck';
+const selectAttributes = state => state.tecDocActions.attributes;
+const selectSuggestions = state => state.tecDocActions.suggestions;
+const selectCrosses = state => state.tecDocActions.crosses;
 
-export function* fetchRolesSaga() {
+export function* fetchPartAttributesSaga() {
     while (true) {
-        try {
-            const {
-                payload: { id },
-            } = yield take(FETCH_ROLES);
-            yield put(setRoleFetchingState(true));
+        const {
+            payload: { supplierId, partCode: partNumber },
+        } = yield take(FETCH_PART_ATTRIBUTES);
 
-            const data = yield call(fetchAPI, 'GET', `managers/roles/${id}`);
+        const query = { partNumber, supplierId };
+        const findQuery = { partCode: partNumber, supplierId };
 
-            yield put(fetchRolesSuccess(data));
-        } catch (error) {
-            yield put(emitError(error));
-            yield put(fetchRolesError);
-        } finally {
-            yield put(setRoleFetchingState(false));
+        const allAttributes = yield select(selectAttributes);
+        let attributes = _.chain(allAttributes).find(findQuery).get('attributes').value();
+        if (!attributes) {
+            attributes = yield call(
+                fetchAPI,
+                'GET',
+                'tecdoc/attributes',
+                query,
+                void 0,
+            );
         }
+
+        yield put(fetchPartAttributesSuccess(partNumber, supplierId, attributes));
     }
 }
 
-export function* updateRoleSaga() {
+export function* fetchSuggestionPartsSaga() {
     while (true) {
         const {
-            payload: { packageId, id, entity },
-        } = yield take(UPDATE_ROLE);
-        const payload = { ...entity, enabled: true };
-        yield call(fetchAPI, 'PUT', `managers/roles/${id}`, null, payload);
+            payload: { productId, modificationId },
+        } = yield take(FETCH_SUGGESTION_PARTS);
 
-        yield put(fetchRoles(packageId));
+        const query = { productId, modificationId };
+        const allSuggestions = yield select(selectSuggestions);
+        let suggestions = _.chain(allSuggestions).find(query).get('suggestions').value();
+
+        if (!suggestions) {
+            suggestions = yield call(
+                fetchAPI,
+                'GET',
+                'tecdoc/products/parts/suggest',
+                query,
+                void 0,
+            );
+        }
+
+        yield put(fetchSuggestionPartsSuccess(productId, modificationId, suggestions));
     }
 }
 
-export function* createRoleSaga() {
+export function* fetchCrossPartsSaga() {
     while (true) {
         const {
-            payload: { packageId, entity },
-        } = yield take(CREATE_ROLE);
-        const payload = { ...entity, enabled: true, packageId };
+            payload: { productId, modificationId },
+        } = yield take(FETCH_CROSS_PARTS);
 
-        yield call(fetchAPI, 'POST', 'managers/roles', null, payload);
+        const query = { productId, modificationId };
+        const allCrosses = yield select(selectCrosses);
+        let crosses = _.chain(allCrosses).find(query).get('crosses').value();
 
-        yield put(fetchRoles(packageId));
-    }
-}
+        if (!crosses) {
+            crosses = yield call(
+                fetchAPI,
+                'GET',
+                'tecdoc/products/parts',
+                query,
+                void 0,
+            );
+        }
 
-export function* deleteRoleSaga() {
-    while (true) {
-        const {
-            payload: { packageId, id },
-        } = yield take(DELETE_ROLE);
-        yield call(fetchAPI, 'DELETE', `managers/roles/${id}`);
-
-        yield put(fetchRoles(packageId));
+        yield put(fetchCrossPartsSuccess(productId, modificationId, crosses));
     }
 }
 
 export function* saga() {
-    yield all([ call(fetchRolesSaga), call(updateRoleSaga), call(createRoleSaga), call(deleteRoleSaga) ]);
+    yield all([ call(fetchPartAttributesSaga), call(fetchSuggestionPartsSaga), call(fetchCrossPartsSaga) ]);
 }

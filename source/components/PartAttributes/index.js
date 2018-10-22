@@ -1,58 +1,82 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
-import { Radio } from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Modal, List, Carousel } from 'antd';
 
 // proj
 import { Catcher } from 'commons';
-import { ArrowsDatePicker } from 'components';
-import { RangePickerField } from 'forms/_formkit';
 
 // own
-const RadioButton = Radio.Button;
-const RadioGroup = Radio.Group;
+import Styles from './styles.m.css';
 
-export default class DatePickerGroup extends Component {
+@injectIntl
+export default class PartAttributes extends Component {
     render() {
         const {
-            date,
-            loading,
-            period,
-            className,
-            onDateChange,
-            onPeriodChange,
-            startDate,
-            endDate,
+            attributes: initAttributes,
+            hideModal,
+            showModal,
+            supplier,
+            detailCode,
+            images,
         } = this.props;
+        const { formatMessage } = this.props.intl;
+
+        const detailCodeAttribute = detailCode
+            ? {
+                value:       detailCode,
+                description: formatMessage({
+                    id: 'partAttributes.detailCode',
+                }),
+            }
+            : null;
+        const supplierAttribute = supplier
+            ? {
+                value:       supplier.brandName,
+                description: formatMessage({
+                    id: 'partAttributes.brandName',
+                }),
+            }
+            : null;
+        const attributes = initAttributes
+            ? [ detailCodeAttribute, supplierAttribute, ...initAttributes ].filter(Boolean)
+            : [];
 
         return (
             <Catcher>
-                <RangePickerField
-                    onChange={ onDateChange }
-                    loading={ loading }
-                    startDate={ startDate }
-                    endDate={ endDate }
-                />
-                <RadioGroup value={ period } className={ className }>
-                    <RadioButton
-                        value='day'
-                        onClick={ () => onPeriodChange('day') }
-                    >
-                        <FormattedMessage id='day' />
-                    </RadioButton>
-                    <RadioButton
-                        value='week'
-                        onClick={ () => onPeriodChange('week') }
-                    >
-                        <FormattedMessage id='week' />
-                    </RadioButton>
-                    <RadioButton
-                        value='month'
-                        onClick={ () => onPeriodChange('month') }
-                    >
-                        <FormattedMessage id='month' />
-                    </RadioButton>
-                </RadioGroup>
+                <Modal
+                    title={ <FormattedMessage id='partAttributes.title' /> }
+                    cancelText={ <FormattedMessage id='cancel' /> }
+                    visible={ showModal }
+                    onOk={ () => hideModal() }
+                    onCancel={ () => hideModal() }
+                    footer={ null }
+                >
+                    { images &&
+                        attributes && (
+                        <Carousel
+                            className={ Styles.attributesCarousel }
+                            autoplay
+                        >
+                            { images.map(({ pictureName, supplierId }) => (
+                                <div className={ Styles.attributesCarouselSlide }>
+                                    <img
+                                        src={ `http://139.59.159.72:4100/images/${supplierId}/${pictureName}` }
+                                    />
+                                </div>
+                            )) }
+                        </Carousel>
+                    ) }
+                    <List
+                        bordered
+                        dataSource={ attributes }
+                        renderItem={ item => (
+                            <List.Item>
+                                { `${item.description}: ${item.value}` }
+                            </List.Item>
+                        ) }
+                    />
+                </Modal>
             </Catcher>
         );
     }

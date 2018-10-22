@@ -9,3 +9,11 @@
         color: var(--not_complete);
     }
 }
+
+.multipleSuggest {
+    color: darkred;
+}
+
+.multipleSuggest :global(.ant-input) {
+    color: darkred;
+}

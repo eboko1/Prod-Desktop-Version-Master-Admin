@@ -1,96 +1,91 @@
 /**
  * Constants
  * */
-export const moduleName = 'roles';
+export const moduleName = 'tecDocActions';
 const prefix = `cpb/${moduleName}`;
 
-export const FETCH_ROLES = `${prefix}/FETCH_ROLES`;
-export const FETCH_ROLES_SUCCESS = `${prefix}/FETCH_ROLES_SUCCESS`;
-export const FETCH_ROLES_ERROR = `${prefix}/FETCH_ROLES_ERROR`;
+export const FETCH_PART_ATTRIBUTES = `${prefix}/FETCH_PART_ATTRIBUTES`;
+export const FETCH_PART_ATTRIBUTES_SUCCESS = `${prefix}/FETCH_PART_ATTRIBUTES_SUCCESS`;
+export const CLEAR_PART_ATTRIBUTES = `${prefix}/CLEAR_PART_ATTRIBUTES`;
 
-export const SET_EDIT_ROLE_ID = `${prefix}/SET_EDIT_ROLE_ID`;
-export const SET_CREATE_ROLE = `${prefix}/SET_CREATE_ROLE`;
+export const FETCH_SUGGESTION_PARTS = `${prefix}/FETCH_SUGGESTION_PARTS`;
+export const FETCH_SUGGESTION_PARTS_SUCCESS = `${prefix}/FETCH_SUGGESTION_PARTS_SUCCESS`;
+export const CLEAR_SUGGESTION_PARTS = `${prefix}/CLEAR_SUGGESTION_PARTS`;
 
-export const ON_CHANGE_ROLE_FORM = `${prefix}/ON_CHANGE_ROLE_FORM`;
+export const FETCH_CROSS_PARTS = `${prefix}/FETCH_CROSS_PARTS`;
+export const FETCH_CROSS_PARTS_SUCCESS = `${prefix}/FETCH_CROSS_PARTS_SUCCESS`;
+export const CLEAR_CROSS_PARTS = `${prefix}/CLEAR_CROSS_PARTS`;
 
-export const UPDATE_ROLE = `${prefix}/UPDATE_ROLE`;
-export const CREATE_ROLE = `${prefix}/CREATE_ROLE`;
-export const DELETE_ROLE = `${prefix}/DELETE_ROLE`;
-
-export const HIDE_FORMS = `${prefix}/HIDE_FORMS`;
+export const SET_OPERATION_INDEX = `${prefix}/SET_OPERATION_INDEX`;
 
 /**
  * Reducer
  * */
 
 const ReducerState = {
-    fields:         {},
-    editRoleId:     null,
-    createRoleForm: false,
-    roles:          [],
+    operationIndex:      null,
+    attributes:          [],
+    suggestions:         [],
+    crosses:             [],
+    selectedAttributes:  null,
+    selectedSuggestions: null,
+    selectedCrosses:     null,
 };
 
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case ON_CHANGE_ROLE_FORM:
+        case FETCH_PART_ATTRIBUTES_SUCCESS:
             return {
                 ...state,
-                fields: {
-                    ...state.fields,
-                    ...payload,
+                attributes:         [ ...state.attributes, payload ],
+                selectedAttributes: {
+                    partCode:   payload.partCode,
+                    supplierId: payload.supplierId,
                 },
             };
-        case FETCH_ROLES:
+
+        case CLEAR_PART_ATTRIBUTES:
             return {
                 ...state,
-                editRoleId:     void 0,
-                createRoleForm: false,
+                selectedAttributes: null,
             };
 
-        case FETCH_ROLES_SUCCESS:
+        case FETCH_SUGGESTION_PARTS_SUCCESS:
             return {
                 ...state,
-                roles: payload,
+                suggestions:         [ ...state.suggestions, payload ],
+                selectedSuggestions: {
+                    productId:      payload.productId,
+                    modificationId: payload.modificationId,
+                },
+            };
+        case CLEAR_SUGGESTION_PARTS:
+            return {
+                ...state,
+                selectedSuggestions: null,
             };
 
-        case FETCH_ROLES_ERROR:
+        case FETCH_CROSS_PARTS_SUCCESS:
             return {
                 ...state,
+                crosses:         [ ...state.crosses, payload ],
+                selectedCrosses: {
+                    productId:      payload.productId,
+                    modificationId: payload.modificationId,
+                },
+            };
+        case CLEAR_CROSS_PARTS:
+            return {
+                ...state,
+                selectedCrosses: null,
             };
 
-        case SET_EDIT_ROLE_ID:
+        case SET_OPERATION_INDEX:
             return {
                 ...state,
-                editRoleId:     payload,
-                createRoleForm: false,
-            };
-
-        case SET_CREATE_ROLE:
-            return {
-                ...state,
-                editRoleId:     void 0,
-                createRoleForm: true,
-            };
-
-        case UPDATE_ROLE:
-            return {
-                ...state,
-                editRoleId: null,
-            };
-
-        case CREATE_ROLE:
-            return {
-                ...state,
-                createRoleForm: false,
-            };
-
-        case HIDE_FORMS:
-            return {
-                ...state,
-                editRoleId:     void 0,
-                createRoleForm: false,
+                operationIndex: payload,
             };
 
         default:
@@ -98,50 +93,57 @@ export default function reducer(state = ReducerState, action) {
     }
 }
 
-export const setCreateRoleForm = create => ({
-    type:    SET_CREATE_ROLE,
-    payload: create,
+export const fetchPartAttributes = (partCode, supplierId) => ({
+    type:    FETCH_PART_ATTRIBUTES,
+    payload: { partCode, supplierId },
 });
 
-export const setEditRoleId = roleId => ({
-    type:    SET_EDIT_ROLE_ID,
-    payload: roleId,
+export const fetchSuggestionParts = (productId, modificationId) => ({
+    type:    FETCH_SUGGESTION_PARTS,
+    payload: { productId, modificationId },
 });
 
-export const fetchRoles = id => ({
-    type:    FETCH_ROLES,
-    payload: { id },
+export const fetchCrossParts = (productId, modificationId) => ({
+    type:    FETCH_CROSS_PARTS,
+    payload: { productId, modificationId },
 });
 
-export const fetchRolesSuccess = data => ({
-    type:    FETCH_ROLES_SUCCESS,
-    payload: data,
+export const fetchPartAttributesSuccess = (
+    partCode,
+    supplierId,
+    { attributes, images },
+) => ({
+    type:    FETCH_PART_ATTRIBUTES_SUCCESS,
+    payload: { partCode, supplierId, attributes, images },
 });
 
-export const fetchRolesError = () => ({
-    type: FETCH_ROLES_ERROR,
+export const fetchSuggestionPartsSuccess = (
+    productId,
+    modificationId,
+    suggestions,
+) => ({
+    type:    FETCH_SUGGESTION_PARTS_SUCCESS,
+    payload: { productId, modificationId, suggestions },
 });
 
-export const onChangeRoleForm = update => ({
-    type:    ON_CHANGE_ROLE_FORM,
-    payload: update,
+export const fetchCrossPartsSuccess = (productId, modificationId, crosses) => ({
+    type:    FETCH_CROSS_PARTS_SUCCESS,
+    payload: { productId, modificationId, crosses },
 });
 
-export const updateRole = (packageId, id, entity) => ({
-    type:    UPDATE_ROLE,
-    payload: { packageId, id, entity },
+export const clearPartAttributes = () => ({
+    type: CLEAR_PART_ATTRIBUTES,
 });
 
-export const createRole = (packageId, entity) => ({
-    type:    CREATE_ROLE,
-    payload: { packageId, entity },
+export const clearSuggestionParts = () => ({
+    type: CLEAR_SUGGESTION_PARTS,
 });
 
-export const deleteRole = (packageId, id) => ({
-    type:    DELETE_ROLE,
-    payload: { packageId, id },
+export const clearCrossParts = () => ({
+    type: CLEAR_CROSS_PARTS,
 });
 
-export const hideForms = () => ({
-    type: HIDE_FORMS,
+export const setOperationIndex = operationIndex => ({
+    type:    SET_OPERATION_INDEX,
+    payload: operationIndex,
 });

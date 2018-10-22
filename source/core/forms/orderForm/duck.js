@@ -1,5 +1,6 @@
 // vendor
 import { createSelector } from 'reselect';
+import { v4 } from 'uuid';
 import _ from 'lodash';
 
 /**
@@ -48,6 +49,10 @@ export const FETCH_AVAILABLE_HOURS_SUCCESS = `${prefix}/FETCH_AVAILABLE_HOURS_SU
 export const FETCH_TECDOC_SUGGESTIONS = `${prefix}/FETCH_TECDOC_SUGGESTIONS`;
 export const FETCH_TECDOC_SUGGESTIONS_SUCCESS = `${prefix}/FETCH_TECDOC_SUGGESTIONS_SUCCESS`;
 export const CLEAR_TECDOC_SUGGESTIONS = `${prefix}/CLEAR_SUGGESTIONS`;
+
+export const FETCH_TECDOC_DETAILS_SUGGESTIONS = `${prefix}/FETCH_TECDOC_DETAILS_SUGGESTIONS`;
+export const FETCH_TECDOC_DETAILS_SUGGESTIONS_SUCCESS = `${prefix}/FETCH_TECDOC_DETAILS_SUGGESTIONS_SUCCESS`;
+export const CLEAR_TECDOC_DETAILS_SUGGESTIONS = `${prefix}/CLEAR_TECDOC_DETAILS_SUGGESTIONS`;
 /**
  * Reducer
  * */
@@ -108,10 +113,13 @@ const createDefaultState = () => ({
         emails:     [],
         vehicles:   [],
     },
-    order:       {},
-    invited:     false,
-    orderTasks:  [],
-    suggestions: [],
+    order:                     {},
+    invited:                   false,
+    orderTasks:                [],
+    suggestions:               [],
+    suggestionsHistory:        [],
+    detailsSuggestions:        [],
+    detailsSuggestionsHistory: [],
 });
 
 const ReducerState = createDefaultState();
@@ -220,15 +228,43 @@ export default function reducer(state = ReducerState, action) {
             };
 
         case FETCH_TECDOC_SUGGESTIONS_SUCCESS:
+            const suggestionsWithId = payload.map(suggestion => ({
+                id: v4(),
+                ...suggestion,
+            }));
+
             return {
                 ...state,
-                suggestions: [ ...state.suggestions, ...payload ]
+                suggestions: [...state.suggestions, ...suggestionsWithId],
+                suggestionsHistory: [
+                    ...state.suggestions,
+                    ...suggestionsWithId,
+                ],
             };
 
         case CLEAR_TECDOC_SUGGESTIONS:
             return {
                 ...state,
                 suggestions: [],
+            };
+
+        case FETCH_TECDOC_DETAILS_SUGGESTIONS_SUCCESS:
+            return {
+                ...state,
+                detailsSuggestions: [
+                    ...state.detailsSuggestions,
+                    { key: payload.key, suggestions: payload.suggestions },
+                ],
+                detailsSuggestionsHistory: [
+                    ...state.detailsSuggestions,
+                    { key: payload.key, suggestions: payload.suggestions },
+                ],
+            };
+
+        case CLEAR_TECDOC_DETAILS_SUGGESTIONS:
+            return {
+                ...state,
+                detailsSuggestions: [],
             };
 
         default:
@@ -376,8 +412,8 @@ export const fetchAvailableHoursSuccess = availableHours => ({
 });
 
 export const fetchTecdocSuggestions = (modificationId, serviceId) => ({
-   type: FETCH_TECDOC_SUGGESTIONS,
-   payload: { modificationId, serviceId },
+    type: FETCH_TECDOC_SUGGESTIONS,
+    payload: { modificationId, serviceId },
 });
 
 export const fetchTecdocSuggestionsSuccess = suggestions => ({
@@ -387,4 +423,22 @@ export const fetchTecdocSuggestionsSuccess = suggestions => ({
 
 export const clearTecdocSuggestions = () => ({
     type: CLEAR_TECDOC_SUGGESTIONS,
+});
+
+export const fetchTecdocDetailsSuggestions = (
+    modificationId,
+    productId,
+    key,
+) => ({
+    type: FETCH_TECDOC_DETAILS_SUGGESTIONS,
+    payload: { modificationId, productId, key },
+});
+
+export const fetchTecdocDetailsSuggestionsSuccess = (suggestions, key) => ({
+    type: FETCH_TECDOC_DETAILS_SUGGESTIONS_SUCCESS,
+    payload: { suggestions, key },
+});
+
+export const clearTecdocDetailsSuggestions = () => ({
+    type: CLEAR_TECDOC_DETAILS_SUGGESTIONS,
 });

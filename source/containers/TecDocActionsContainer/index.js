@@ -1,122 +1,136 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
+import { Button } from 'antd';
 import _ from 'lodash';
 
 // proj
-import {
-    onChangeUniversalFiltersForm,
-    fetchUniversalFiltersForm,
-} from 'core/forms/universalFiltersForm/duck';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
-
 import { Catcher, StyledButton } from 'commons';
-import { UniversalFiltersModal } from 'modals';
-import { UniversalFiltersTags } from 'components';
-import { withReduxForm2 } from 'utils';
+import { TecDocModals } from 'components';
+import {
+    fetchPartAttributes,
+    fetchSuggestionParts,
+    fetchCrossParts,
+    clearPartAttributes,
+    clearSuggestionParts,
+    clearCrossParts,
+    setOperationIndex,
+} from 'core/tecDocActions/duck';
 
 // own
 import Styles from './styles.m.css';
 
-const universalLinkedFields = Object.freeze({
-    notVisitRange: [ 'notVisit', 'notVisitDays' ],
+const mapDispatchToProps = {
+    fetchPartAttributes,
+    fetchSuggestionParts,
+    fetchCrossParts,
+    clearPartAttributes,
+    clearSuggestionParts,
+    clearCrossParts,
+    setOperationIndex,
+};
+
+const mapStateToProps = state => ({
+    suggestions:         state.tecDocActions.suggestions,
+    crosses:             state.tecDocActions.crosses,
+    attributes:          state.tecDocActions.attributes,
+    selectedAttributes:  state.tecDocActions.selectedAttributes,
+    selectedSuggestions: state.tecDocActions.selectedSuggestions,
+    selectedCrosses:     state.tecDocActions.selectedCrosses,
+    operationIndex:      state.tecDocActions.operationIndex,
 });
 
-/* eslint-disable array-element-newline */
-const tagFields = Object.freeze([
-    'createDate',
-    'beginDate',
-    'ordersGreater',
-    'ordersLower',
-    'managers',
-    'employee',
-    'service',
-    'models',
-    'make',
-    'creationReasons',
-    'cancelReasons',
-    'year',
-    'odometerLower',
-    'odometerGreater',
-]);
-/* eslint-enable array-element-newline */
-
 @injectIntl
-@withReduxForm2({
-    name:    'universalFiltersForm',
-    actions: {
-        change: onChangeUniversalFiltersForm,
-        fetchUniversalFiltersForm,
-        setModal,
-        resetModal,
-    },
-    mapStateToProps: state => ({
-        universalFiltersModal: state.modals.modal,
-        user:                  state.auth,
-    }),
-})
-export default class UniversalFilters extends Component {
-    // Contains: modal, show button, tags
-    // Modal contains: form
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
+export default class TecDocActionsContainer extends Component {
+    getSupplier() {
+        const { brandId, brands } = this.props;
 
-    _showUniversalFiltersModal = () => {
-        this.props.setModal(MODALS.UNIVERSAL_FILTERS);
-        this.props.fetchUniversalFiltersForm();
-    };
+        return brandId
+            ? _.chain(brands)
+                .find({ brandId })
+                .value()
+            : null;
+    }
 
-    clearFilters = fieldNames => {
-        this.props.form.resetFields(fieldNames);
-        this.props.setUniversalFilter(this.props.form.getFieldsValue());
-    };
+    getProduct() {
+        const { detailId, details } = this.props;
+
+        return detailId
+            ? _.chain(details)
+                .find({ detailId })
+                .value()
+            : null;
+    }
 
     render() {
         const {
-            resetModal,
-            universalFiltersModal,
-            setUniversalFilter,
-            stats,
-            form,
-            filters,
-            areFiltersDisabled,
+            detailCode,
+            modificationId,
+            index,
+            operationIndex,
         } = this.props;
 
-        const formFilters = form.getFieldsValue();
+        const product = this.getProduct();
+        const supplier = this.getSupplier();
+        const productId = _.get(product, 'productId');
+        const supplierId = _.get(supplier, 'supplierId');
+
+        const {
+            fetchPartAttributes,
+            fetchSuggestionParts,
+            fetchCrossParts,
+            setOperationIndex,
+        } = this.props;
+
+        const areAttributesForbidden = !detailCode || !supplierId;
+        const areSuggestionsForbidden = !productId || !modificationId;
+        const areCrossesForbidden = !productId || !modificationId;
 
         return (
             <Catcher>
-                <section className={ Styles.filters }>
-                    <StyledButton
-                        type='secondary'
-                        disabled={ areFiltersDisabled }
-                        onClick={ this._showUniversalFiltersModal }
-                    >
-                        <FormattedMessage id='universal-filters-container.filter' />
-                    </StyledButton>
-                    <UniversalFiltersTags
-                        universalLinkedFields={ universalLinkedFields }
-                        tagFields={ tagFields }
-                        filter={ formFilters }
-                        clearUniversalFilters={ this.clearFilters }
+                { index === operationIndex && (
+                    <TecDocModals
+                        product={ product }
+                        supplier={ supplier }
+                        { ...this.props }
                     />
-                </section>
-                <UniversalFiltersModal
-                    { ...filters }
-                    setUniversalFilter={ setUniversalFilter }
-                    form={ form }
-                    stats={ stats }
-                    visible={ universalFiltersModal }
-                    hideModal={ () => resetModal() }
-                    resetModal={ () => {
-                        if (_.isEqual(this.props.universalFilter, {})) {
-                            this.props.form.resetFields();
-                        } else {
-                            this.props.form.setFieldsValue(
-                                this.props.universalFilter,
-                            );
-                        }
-                        resetModal();
-                    } }
-                />
+                ) }
+                <div className={ Styles.actionContainer }>
+                    <Button
+                        className={ Styles.actionItem }
+                        disabled={ areAttributesForbidden }
+                        icon='bars'
+                        onClick={ () => {
+                            setOperationIndex(index);
+                            fetchPartAttributes(detailCode, supplierId);
+                        } }
+                    />
+                    <StyledButton
+                        className={ Styles.actionItem }
+                        disabled={ areSuggestionsForbidden }
+                        icon='swap'
+                        type='secondary'
+                        onClick={ () => {
+                            setOperationIndex(index);
+                            fetchSuggestionParts(productId, modificationId);
+                        } }
+                    />
+                    <StyledButton
+                        className={ Styles.actionItem }
+                        disabled={ areCrossesForbidden }
+                        type='warning'
+                        icon='swap'
+                        onClick={ () => {
+                            setOperationIndex(index);
+                            fetchCrossParts(productId, modificationId);
+                        } }
+                    />
+                </div>
             </Catcher>
         );
     }

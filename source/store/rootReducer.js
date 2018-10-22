@@ -42,6 +42,7 @@ import chartReducer, { moduleName as chartModule } from 'core/chart/duck';
 import reviewsReducer, { moduleName as reviewsModule } from 'core/reviews/duck';
 import reviewReducer, { moduleName as reviewModule } from 'core/review/duck';
 import callsReducer, { moduleName as callsModule } from 'core/calls/duck';
+import tecDocActionsReducer, { moduleName as tecDocActionsModule } from 'core/tecDocActions/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
@@ -83,6 +84,7 @@ const appState = {
     [ reviewModule ]:           reviewReducer,
     [ callsModule ]:            callsReducer,
     [ employeeScheduleModule ]: employeeScheduleReducer,
+    [ tecDocActionsModule ]:    tecDocActionsReducer,
     // [ authModule ]:            authReducer,
     // intl,
     // router,
