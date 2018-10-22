@@ -1,6 +1,8 @@
+// vendor
 import _ from 'lodash';
 import moment from 'moment';
 
+// proj
 import { permissions, isForbidden } from 'utils';
 
 export function convertFieldsValuesToDbEntity(
@@ -71,14 +73,30 @@ export function convertFieldsValuesToDbEntity(
     const beginDate = _.get(orderFields, 'beginDate');
     const beginTime = _.get(orderFields, 'beginTime');
 
+    const deliveryDate = _.get(orderFields, 'deliveryDate');
+    const deliveryTime = _.get(orderFields, 'deliveryTime');
+
     const dayPart =
         beginDate &&
         moment(beginDate)
             .utc()
             .format('YYYY-MM-DD');
+
     const hourPart =
         beginTime &&
         moment(beginTime)
+            .utc()
+            .format('HH:mm');
+
+    const deliveryDayPart =
+        deliveryDate &&
+        moment(deliveryDate)
+            .utc()
+            .format('YYYY-MM-DD');
+
+    const deliveryHourPart =
+        deliveryTime &&
+        moment(deliveryTime)
             .utc()
             .format('HH:mm');
 
@@ -86,6 +104,11 @@ export function convertFieldsValuesToDbEntity(
         dayPart &&
         hourPart &&
         moment(`${dayPart}T${hourPart}:00.000Z`).toISOString();
+
+    const deliveryDatetime =
+        deliveryDayPart &&
+        deliveryHourPart &&
+        moment(`${deliveryDayPart}T${deliveryHourPart}:00.000Z`).toISOString();
 
     const orderDuration = _.get(orderFields, 'duration');
 
@@ -100,6 +123,7 @@ export function convertFieldsValuesToDbEntity(
         clientRequisiteId:           _.get(orderFields, 'clientRequisite'),
         status,
         beginDatetime,
+        deliveryDatetime,
         services,
         details,
         appurtenanciesResponsibleId: _.get(
@@ -160,15 +184,15 @@ export const requiredFieldsOnStatuses = values => {
         not_complete: [ 'manager' ],
         required:     [ 'manager' ],
 
-        reserve: [ 'beginDate', 'beginTime', 'manager', 'station' ],
-        approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'station' ],
+        reserve: [ 'beginDate', 'beginTime', 'manager', 'station', 'deliveryDatetime' ],
+        approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'station', 'deliveryDatetime' ],
 
         redundant: [],
         cancel:    [],
 
-        progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+        progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDatetime' ],
 
-        success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+        success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDatetime' ],
     };
 
     if (values.beginDate || values.beginTime) {

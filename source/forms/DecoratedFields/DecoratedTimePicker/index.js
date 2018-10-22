@@ -67,7 +67,7 @@ export const DecoratedTimePicker = props => {
         >
             { timePicker }
         </FormItem>
-    ) : 
+    ) :
         timePicker
     ;
 };

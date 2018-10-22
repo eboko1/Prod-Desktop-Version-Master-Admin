@@ -45,7 +45,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) => 
+        render:    (_, order) =>
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -105,6 +105,23 @@ export function columnsConfig(
             <div className={ Styles.datetime }>
                 { order.beginDatetime
                     ? moment(order.beginDatetime).format('DD.MM.YYYY HH:mm')
+                    : '-' }
+            </div>
+        ),
+    };
+
+    const deliveryDatetimeCol = {
+        title:     <FormattedMessage id='orders.delivery_date' />,
+        dataIndex: 'deliveryDatetime',
+        key:       'deliveryDatetime',
+        sortOrder:
+            sort.field === 'deliveryDatetime' ? sortOptions[ sort.order ] : false,
+        sorter: true,
+        width:  160,
+        render: (_, order) => (
+            <div className={ Styles.datetime }>
+                { order.deliveryDatetime
+                    ? moment(order.deliveryDatetime).format('DD.MM.YYYY HH:mm')
                     : '-' }
             </div>
         ),
@@ -369,11 +386,11 @@ export function columnsConfig(
 
     switch (activeRoute) {
         case '/orders/appointments':
-            return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, tasksCol, editCol ];
+            return [ indexCol, orderCol, datetimeCol, deliveryDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, tasksCol, editCol ];
 
         case '/orders/approve':
         case '/orders/progress':
-            return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
+            return [ indexCol, orderCol, beginDatetimeCol, deliveryDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
 
         case '/orders/success':
             return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, reviewCol, invitationCol, editCol ];
