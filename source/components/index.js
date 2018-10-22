@@ -29,6 +29,9 @@ import NPS from './NPS';
 import CallsTable from './CallsTable';
 import CallsStatistics from './CallsStatistics';
 import DatePickerGroup from './DatePickerGroup';
+import PartAttributes from './PartAttributes';
+import PartSuggestions from './PartSuggestions';
+import TecDocModals from './TecDocModals';
 
 export {
     SettingSalaryTable,
@@ -63,4 +66,7 @@ export {
     CallsTable,
     CallsStatistics,
     DatePickerGroup,
+    PartAttributes,
+    PartSuggestions,
+    TecDocModals,
 };

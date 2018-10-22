@@ -17,6 +17,7 @@ import { saga as chartSaga } from 'core/chart/saga';
 import { saga as reviewsSaga } from 'core/reviews/saga';
 import { saga as reviewSaga } from 'core/review/saga';
 import { saga as callsSaga } from 'core/calls/saga';
+import { saga as tecDocActionsSaga } from 'core/tecDocActions/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
@@ -87,6 +88,7 @@ export default function* rootSaga() {
         businessPackageSaga(),
         managerRoleSaga(),
         tecDocFormSaga(),
+        tecDocActionsSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

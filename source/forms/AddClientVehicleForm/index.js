@@ -211,6 +211,14 @@ export class AddClientVehicleForm extends Component {
                                         lastFilterAction,
                                     )
                                 }
+                                rules={ [
+                                    {
+                                        required: true,
+                                        message:  this.props.intl.formatMessage({
+                                            id: 'required_field',
+                                        }),
+                                    },
+                                ] }
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }

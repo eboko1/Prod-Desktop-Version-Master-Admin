@@ -1,0 +1,8 @@
+.actionContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.actionItem {
+    margin: 0 2px;
+}

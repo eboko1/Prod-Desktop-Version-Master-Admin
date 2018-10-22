@@ -16,7 +16,12 @@ import nprogress from 'nprogress';
 
 // proj
 import { resetModal, MODALS } from 'core/modals/duck';
-import { setOrderFetchingState, emitError } from 'core/ui/duck';
+import {
+    setOrderFetchingState,
+    setSuggestionsFetchingState,
+    setDetailsSuggestionsFetchingState,
+    emitError,
+} from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 import book from 'routes/book';
 
@@ -36,7 +41,7 @@ import {
     returnToOrdersPage,
     createInviteOrderSuccess,
     fetchTecdocSuggestionsSuccess,
-
+    fetchTecdocDetailsSuggestionsSuccess,
     CREATE_INVITE_ORDER,
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
@@ -48,14 +53,45 @@ import {
     RETURN_TO_ORDERS_PAGE,
     FETCH_AVAILABLE_HOURS,
     FETCH_TECDOC_SUGGESTIONS,
+    FETCH_TECDOC_DETAILS_SUGGESTIONS,
 } from './duck';
+
+export function* fetchTecdocDetailsSuggestionsSaga() {
+    while (true) {
+        const {
+            payload: { modificationId, productId, key },
+        } = yield take(FETCH_TECDOC_DETAILS_SUGGESTIONS);
+        const query = { modificationId, productId };
+        yield put(setDetailsSuggestionsFetchingState(true));
+        const suggestions = yield call(
+            fetchAPI,
+            'GET',
+            'tecdoc/products/parts/suggest',
+            query,
+            void 0,
+        );
+        yield put(fetchTecdocDetailsSuggestionsSuccess(suggestions, key));
+        yield put(setDetailsSuggestionsFetchingState(false));
+    }
+}
 
 export function* fetchTecdocSuggestionsSaga() {
     while (true) {
-        const { payload: { modificationId, serviceId } } = yield take(FETCH_TECDOC_SUGGESTIONS);
+        const {
+            payload: { modificationId, serviceId },
+        } = yield take(FETCH_TECDOC_SUGGESTIONS);
+
         const query = { modificationId, serviceId };
-        const suggestions = yield call(fetchAPI, 'GET', 'tecdoc/suggestions', query);
+
+        yield put(setSuggestionsFetchingState(true));
+        const suggestions = yield call(
+            fetchAPI,
+            'GET',
+            'tecdoc/suggestions',
+            query,
+        );
         yield put(fetchTecdocSuggestionsSuccess(suggestions));
+        yield put(setSuggestionsFetchingState(false));
     }
 }
 
@@ -287,6 +323,7 @@ export function* saga() {
     yield all([
         takeEvery(CREATE_INVITE_ORDER, createInviteOrderSaga),
         call(fetchTecdocSuggestionsSaga),
+        call(fetchTecdocDetailsSuggestionsSaga),
         call(fetchOrderTaskSaga),
         call(returnToOrdersPageSaga),
         call(updateOrderSaga),

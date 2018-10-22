@@ -15,6 +15,7 @@ export const DecoratedInput = props => {
         hasFeedback,
         formItemLayout,
 
+        cnStyles,
         getFieldDecorator,
         disabled,
         rules,
@@ -33,6 +34,7 @@ export const DecoratedInput = props => {
         rules,
     })(
         <Input
+            className={ cnStyles || className }
             prefix={
                 icon ? (
                     <Icon
@@ -45,7 +47,6 @@ export const DecoratedInput = props => {
             }
             style={ style }
             type={ type }
-            className={ className }
             placeholder={ placeholder }
             disabled={ disabled }
             onChange={ onChange }

@@ -10,7 +10,9 @@ import {
     setClientSelection,
     fetchAvailableHours,
     fetchTecdocSuggestions,
+    fetchTecdocDetailsSuggestions,
     clearTecdocSuggestions,
+    clearTecdocDetailsSuggestions,
 } from 'core/forms/orderForm/duck';
 import { resetModal } from 'core/modals/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
@@ -38,12 +40,16 @@ import Styles from './styles.m.css';
         fetchAvailableHours,
         fetchTecdocSuggestions,
         clearTecdocSuggestions,
+        fetchTecdocDetailsSuggestions,
+        clearTecdocDetailsSuggestions,
     },
     mapStateToProps: state => ({
-        modal:                  state.modals.modal,
-        addClientFormData:      state.forms.addClientForm.data,
-        authentificatedManager: state.auth.id,
-        user:                   state.auth,
+        modal:                      state.modals.modal,
+        addClientFormData:          state.forms.addClientForm.data,
+        authentificatedManager:     state.auth.id,
+        user:                       state.auth,
+        suggestionsFetching:        state.ui.suggestionsFetching,
+        detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
     }),
 })
 export class OrderForm extends Component {
@@ -70,10 +76,24 @@ export class OrderForm extends Component {
         this.formRef = formRef;
     };
 
+    _getTecdocId = () => {
+        const { form } = this.props;
+
+        const clientVehicleId = form.getFieldValue('clientVehicle');
+        const vehicles = _.get(this.props, 'selectedClient.vehicles');
+
+        return clientVehicleId && _.isArray(vehicles)
+            ? _.chain(vehicles)
+                .find({ id: clientVehicleId })
+                .get('tecdocId', null)
+                .value()
+            : null;
+    };
+
     render() {
         const { form, allServices } = this.props;
-        this.props.form.getFieldDecorator('services[0].serviceName');
-        this.props.form.getFieldDecorator('details[0].detailName');
+        form.getFieldDecorator('services[0].serviceName');
+        form.getFieldDecorator('details[0].detailName');
 
         const tabs = this._renderTabs();
 
@@ -120,9 +140,14 @@ export class OrderForm extends Component {
         const commentsCollection = _.values(comments);
         const commentsCount = commentsCollection.filter(Boolean).length;
 
+        const tecdocId = this._getTecdocId();
+        const clientVehicleId = form.getFieldValue('clientVehicle');
+
         return (
             <OrderFormTabs
                 { ...this.props }
+                tecdocId={ tecdocId }
+                clientVehicleId={ clientVehicleId }
                 initOrderTasksForm={ this.props.initOrderTasksForm }
                 formatMessage={ formatMessage }
                 getFieldDecorator={ getFieldDecorator }

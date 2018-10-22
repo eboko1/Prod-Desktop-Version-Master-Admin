@@ -27,149 +27,124 @@ class ServicesTable extends Component {
             keys: [ ..._.keys(orderServices), this.uuid++ ],
         };
 
-        this.options = this.props.allServices.map(
-            ({ id, type, serviceName }, index) => (
-                <Option value={ `${type}|${id}` } key={ `allServices-${index}` }>
-                    { serviceName }
+        this.columns = () => {
+            this.options = this.props.allServices.map(
+                ({ id, type, serviceName }, index) => (
+                    <Option
+                        value={ `${type}|${id}` }
+                        key={ `allServices-${index}` }
+                    >
+                        { serviceName }
+                    </Option>
+                ),
+            );
+
+            this.employees = this.props.employees.map(employee => (
+                <Option
+                    value={ employee.id }
+                    key={ `employees-${employee.id}` }
+                    disabled={ employee.disabled }
+                >
+                    { `${employee.name} ${employee.surname}` }
                 </Option>
-            ),
-        );
+            ));
 
-        this.employees = this.props.employees.map(employee => (
-            <Option
-                value={ employee.id }
-                key={ `employees-${employee.id}` }
-                disabled={ employee.disabled }
-            >
-                { `${employee.name} ${employee.surname}` }
-            </Option>
-        ));
+            const {
+                form: { getFieldValue },
+            } = this.props;
 
-        const editServicesForbidden = isForbidden(
-            props.user,
-            permissions.ACCESS_ORDER_SERVICES,
-        );
+            const clientVehicleId = getFieldValue('clientVehicle');
 
-        this.columns = [
-            {
-                title:  <FormattedMessage id='order_form_table.service' />,
-                key:    'service',
-                width:  '30%',
-                render: ({ key }) => {
-                    return (
-                        <DecoratedSelect
-                            disabled={ editServicesForbidden }
-                            onSelect={ item => {
-                                const id = Number(item.replace(/[^\d]/g, ''));
-                                const clientVehicleId = this.props.form.getFieldValue(
-                                    'clientVehicle',
-                                );
-                                const vehicles = _.get(
-                                    this.props,
-                                    'selectedClient.vehicles',
-                                );
+            const editServicesForbidden =
+                isForbidden(props.user, permissions.ACCESS_ORDER_SERVICES) ||
+                !clientVehicleId;
 
-                                if (clientVehicleId && _.isArray(vehicles)) {
-                                    const vehicleQuery = {
-                                        id: clientVehicleId,
-                                    };
-                                    const vehicle = _.find(
-                                        vehicles,
-                                        vehicleQuery,
+            return [
+                {
+                    title:  <FormattedMessage id='order_form_table.service' />,
+                    key:    'service',
+                    width:  '30%',
+                    render: ({ key }) => {
+                        return (
+                            <DecoratedSelect
+                                disabled={ editServicesForbidden }
+                                onSelect={ item => {
+                                    const id = Number(
+                                        item.replace(/[^\d]/g, ''),
                                     );
-                                    const tecdocId = _.get(vehicle, 'tecdocId');
-                                    if (tecdocId && id) {
-                                        this.props.fetchTecdocSuggestions(
-                                            tecdocId,
-                                            id,
-                                        );
-                                    }
-                                }
-                            } }
-                            field={ `services[${key}].serviceName` }
-                            getFieldDecorator={ this.props.getFieldDecorator }
-                            mode={ 'combobox' }
-                            optionLabelProp={ 'children' }
-                            optionFilterProp={ 'children' }
-                            showSearch
-                            cnStyles={ Styles.serviceSelect }
-                            onChange={ value =>
-                                this._handleServiceSelect(key, value)
-                            }
-                            initialValue={ this._getDefaultValue(
-                                key,
-                                'serviceName',
-                            ) }
-                            placeholder={
-                                <FormattedMessage id='order_form_table.service.placeholder' />
-                            }
-                            dropdownMatchSelectWidth={ false }
-                            dropdownStyle={ { width: '70%' } }
-                        >
-                            { this.options }
-                        </DecoratedSelect>
-                    );
-                },
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.price' />,
-                key:    'price',
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        initValue={
-                            this._getDefaultValue(key, 'servicePrice') ||
-                            this._getDefaultPrice(key) ||
-                            0
-                        }
-                        field={ `services[${key}].servicePrice` }
-                        getFieldDecorator={ this.props.getFieldDecorator }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                        min={ 0 }
-                        formatter={ value =>
-                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                        }
-                        parser={ value => `${value}`.replace(/\$\s?|(\s)/g, '') }
-                    />
-                ),
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.count' />,
-                key:    'count',
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        initValue={
-                            this._getDefaultValue(key, 'serviceCount') || 1
-                        }
-                        field={ `services[${key}].serviceCount` }
-                        getFieldDecorator={ this.props.getFieldDecorator }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                        min={ 0.1 }
-                        step={ 0.1 }
-                        formatter={ value =>
-                            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                        }
-                        parser={ value => `${value}`.replace(/\$\s?|(\s)/g, '') }
-                    />
-                ),
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.sum' />,
-                key:    'sum',
-                render: ({ key }) => {
-                    const services = this.props.form.getFieldValue('services');
-                    const value =
-                        services[ key ].servicePrice * services[ key ].serviceCount;
+                                    const clientVehicleId = this.props.form.getFieldValue(
+                                        'clientVehicle',
+                                    );
+                                    const vehicles = _.get(
+                                        this.props,
+                                        'selectedClient.vehicles',
+                                    );
 
-                    return (
-                        <InputNumber
-                            className={ Styles.sum }
-                            disabled
-                            defaultValue={ 0 }
-                            value={ value }
+                                    if (
+                                        clientVehicleId &&
+                                        _.isArray(vehicles)
+                                    ) {
+                                        const vehicleQuery = {
+                                            id: clientVehicleId,
+                                        };
+                                        const vehicle = _.find(
+                                            vehicles,
+                                            vehicleQuery,
+                                        );
+                                        const tecdocId = _.get(
+                                            vehicle,
+                                            'tecdocId',
+                                        );
+                                        if (tecdocId && id) {
+                                            this.props.fetchTecdocSuggestions(
+                                                tecdocId,
+                                                id,
+                                            );
+                                        }
+                                    }
+                                } }
+                                field={ `services[${key}].serviceName` }
+                                getFieldDecorator={ this.props.getFieldDecorator }
+                                mode={ 'combobox' }
+                                optionLabelProp={ 'children' }
+                                optionFilterProp={ 'children' }
+                                showSearch
+                                cnStyles={ Styles.serviceSelect }
+                                onChange={ value =>
+                                    this._handleServiceSelect(key, value)
+                                }
+                                initialValue={ this._getDefaultValue(
+                                    key,
+                                    'serviceName',
+                                ) }
+                                placeholder={
+                                    <FormattedMessage id='order_form_table.service.placeholder' />
+                                }
+                                dropdownMatchSelectWidth={ false }
+                                dropdownStyle={ { width: '70%' } }
+                            >
+                                { this.options }
+                            </DecoratedSelect>
+                        );
+                    },
+                },
+                {
+                    title:  <FormattedMessage id='order_form_table.price' />,
+                    key:    'price',
+                    render: ({ key }) => (
+                        <DecoratedInputNumber
+                            initValue={
+                                this._getDefaultValue(key, 'servicePrice') ||
+                                this._getDefaultPrice(key) ||
+                                0
+                            }
+                            field={ `services[${key}].servicePrice` }
+                            getFieldDecorator={ this.props.getFieldDecorator }
+                            disabled={
+                                this._isFieldDisabled(key) ||
+                                editServicesForbidden
+                            }
+                            min={ 0 }
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -177,68 +152,126 @@ class ServicesTable extends Component {
                                 `${value}`.replace(/\$\s?|(\s)/g, '')
                             }
                         />
-                    );
+                    ),
                 },
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.master' />,
-                key:    'employeeId',
-                render: ({ key }) => {
-                    return (
-                        <DecoratedSelect
-                            field={ `services[${key}].employeeId` }
-                            initialValue={
-                                this._getDefaultValue(key, 'employeeId') ||
-                                this.props.form.getFieldValue('employee')
+                {
+                    title:  <FormattedMessage id='order_form_table.count' />,
+                    key:    'count',
+                    render: ({ key }) => (
+                        <DecoratedInputNumber
+                            initValue={
+                                this._getDefaultValue(key, 'serviceCount') || 1
                             }
+                            field={ `services[${key}].serviceCount` }
                             getFieldDecorator={ this.props.getFieldDecorator }
                             disabled={
                                 this._isFieldDisabled(key) ||
                                 editServicesForbidden
                             }
-                        >
-                            { this.employees }
-                        </DecoratedSelect>
-                    );
+                            min={ 0.1 }
+                            step={ 0.1 }
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
+                        />
+                    ),
                 },
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.own_detail' />,
-                key:    'ownDetail',
-                render: ({ key }) => (
-                    <DecoratedCheckbox
-                        initValue={ this._getDefaultValue(key, 'ownDetail') }
-                        field={ `services[${key}].ownDetail` }
-                        getFieldDecorator={ this.props.getFieldDecorator }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                    />
-                ),
-            },
-            {
-                title:  '',
-                key:    'delete',
-                render: ({ key }) => {
-                    return (
-                        this.state.keys.length > 1 &&
-                        !editServicesForbidden && (
-                            <Popconfirm
-                                title={
-                                    <FormattedMessage id='add_order_form.delete_confirm' />
+                {
+                    title:  <FormattedMessage id='order_form_table.sum' />,
+                    key:    'sum',
+                    render: ({ key }) => {
+                        const services = this.props.form.getFieldValue(
+                            'services',
+                        );
+                        const value =
+                            services[ key ].servicePrice *
+                            services[ key ].serviceCount;
+
+                        return (
+                            <InputNumber
+                                className={ Styles.sum }
+                                disabled
+                                defaultValue={ 0 }
+                                value={ value }
+                                formatter={ value =>
+                                    `${value}`.replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ' ',
+                                    )
                                 }
-                                onConfirm={ () => this._onDelete(key) }
-                            >
-                                <Icon
-                                    type='delete'
-                                    className={ Styles.deleteIcon }
-                                />
-                            </Popconfirm>
-                        )
-                    );
+                                parser={ value =>
+                                    `${value}`.replace(/\$\s?|(\s)/g, '')
+                                }
+                            />
+                        );
+                    },
                 },
-            },
-        ];
+                {
+                    title:  <FormattedMessage id='order_form_table.master' />,
+                    key:    'employeeId',
+                    render: ({ key }) => {
+                        return (
+                            <DecoratedSelect
+                                field={ `services[${key}].employeeId` }
+                                initialValue={
+                                    this._getDefaultValue(key, 'employeeId') ||
+                                    this.props.form.getFieldValue('employee')
+                                }
+                                getFieldDecorator={ this.props.getFieldDecorator }
+                                disabled={
+                                    this._isFieldDisabled(key) ||
+                                    editServicesForbidden
+                                }
+                            >
+                                { this.employees }
+                            </DecoratedSelect>
+                        );
+                    },
+                },
+                {
+                    title: (
+                        <FormattedMessage id='order_form_table.own_detail' />
+                    ),
+                    key:    'ownDetail',
+                    render: ({ key }) => (
+                        <DecoratedCheckbox
+                            initValue={ this._getDefaultValue(key, 'ownDetail') }
+                            field={ `services[${key}].ownDetail` }
+                            getFieldDecorator={ this.props.getFieldDecorator }
+                            disabled={
+                                this._isFieldDisabled(key) ||
+                                editServicesForbidden
+                            }
+                        />
+                    ),
+                },
+                {
+                    title:  '',
+                    key:    'delete',
+                    render: ({ key }) => {
+                        return (
+                            this.state.keys.length > 1 &&
+                            !editServicesForbidden && (
+                                <Popconfirm
+                                    title={
+                                        <FormattedMessage id='add_order_form.delete_confirm' />
+                                    }
+                                    onConfirm={ () => this._onDelete(key) }
+                                >
+                                    <Icon
+                                        type='delete'
+                                        className={ Styles.deleteIcon }
+                                    />
+                                </Popconfirm>
+                            )
+                        );
+                    },
+                },
+            ];
+        };
     }
 
     _isFieldDisabled = key =>
@@ -315,7 +348,7 @@ class ServicesTable extends Component {
         //     permissions.ACCESS_ORDER_BODY,
         // );
 
-        const columns = this.columns;
+        const columns = this.columns();
 
         return (
             <Catcher>
