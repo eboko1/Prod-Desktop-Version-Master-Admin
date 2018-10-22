@@ -104,23 +104,6 @@ class DetailsTable extends Component {
                     render: ({ key }) => {
                         return (
                             <LimitedDecoratedSelect
-                                onSelect={ value => {
-                                    const detail = _.find(details, {
-                                        detailId: Number(value),
-                                    });
-                                    const productId = _.get(
-                                        detail,
-                                        'productId',
-                                    );
-
-                                    if (productId && modificationId) {
-                                        this.props.fetchTecdocDetailsSuggestions(
-                                            modificationId,
-                                            productId,
-                                            key,
-                                        );
-                                    }
-                                } }
                                 cnStyles={
                                     getFieldValue(
                                         `details[${key}][multipleSuggestions]`,
@@ -137,7 +120,11 @@ class DetailsTable extends Component {
                                 optionLabelProp={ 'children' }
                                 showSearch
                                 onChange={ value =>
-                                    this._handleDetailSelect(key, value)
+                                    this._handleDetailSelect(
+                                        key,
+                                        value,
+                                        modificationId,
+                                    )
                                 }
                                 initialValue={ this._getDefaultValue(
                                     key,
@@ -423,12 +410,24 @@ class DetailsTable extends Component {
         return actions[ fieldName ];
     };
 
-    _handleDetailSelect = key => {
+    _handleDetailSelect = (key, value, modificationId) => {
         const { keys } = this.state;
-        const details = this.props.form.getFieldValue('details');
+        const formDetails = this.props.form.getFieldValue('details');
 
-        if (_.last(keys) === key && !details[ key ].detailName) {
+        if (_.last(keys) === key && !formDetails[ key ].detailName) {
             this._handleAdd();
+        }
+
+        const propsDetails = this.props.allDetails.details;
+        const detail = _.find(propsDetails, { detailId: Number(value) });
+        const productId = _.get(detail, 'productId');
+
+        if (productId && modificationId) {
+            this.props.fetchTecdocDetailsSuggestions(
+                modificationId,
+                productId,
+                key,
+            );
         }
     };
 
