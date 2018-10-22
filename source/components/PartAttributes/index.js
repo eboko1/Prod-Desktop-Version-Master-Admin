@@ -77,8 +77,12 @@ export default class PartAttributes extends Component {
                         renderItem={ item => (
                             <List.Item>
                                 { item.description &&
-                                    item.value &&
-                                    `${item.description}: ${item.value}` }
+                                    item.value && (
+                                    <div>
+                                        <a>{ item.description }</a>:{ ' ' }
+                                        { item.value }
+                                    </div>
+                                ) }
                                 { item.description &&
                                     !item.value &&
                                     item.description }

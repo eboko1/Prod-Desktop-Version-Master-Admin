@@ -93,16 +93,16 @@ export default class PartSuggestions extends Component {
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
-                                content={ _.map(
-                                    suggestion.attributes,
-                                    ({ value, description }) => (
+                                content={ _.chain(suggestion.attributes)
+                                    .filter('description')
+                                    .map(({ value, description }) => (
                                         <div>
                                             <p>
                                                 <a>{ description }</a>: { value }
                                             </p>
                                         </div>
-                                    ),
-                                ) }
+                                    ))
+                                    .value() }
                             >
                                 <div
                                     key={
