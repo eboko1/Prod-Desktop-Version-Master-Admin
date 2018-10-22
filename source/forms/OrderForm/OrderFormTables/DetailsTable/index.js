@@ -206,7 +206,9 @@ class DetailsTable extends Component {
                 },
                 {
                     width:  '10%',
-                    title:  'TecDocActions',
+                    title: (
+                        <FormattedMessage id='order_form_table.suggest' />
+                    ),
                     key:    'tecDocActions',
                     render: ({ key }) => {
                         const detailIdFieldName = `details[${key}][detailName]`;

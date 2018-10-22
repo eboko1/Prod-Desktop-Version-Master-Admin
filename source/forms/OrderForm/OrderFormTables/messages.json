@@ -39,7 +39,8 @@
         "comment": "Comment",
         "author": "Author",
         "duration": "Duration",
-        "order_form_table.purchasePrice": "Purchase Price"
+        "order_form_table.purchasePrice": "Purchase Price",
+        "order_form_table.suggest": "Suggest"
     },
     "ru": {
         "order_form_table.confirm_exit": "Хотите сохранить изменения?",
@@ -82,7 +83,8 @@
         "comment": "Комментарий",
         "author": "Автор",
         "duration": "Продолжительность",
-        "order_form_table.purchasePrice": "Закупочная цена"
+        "order_form_table.purchasePrice": "Закупочная цена",
+        "order_form_table.suggest": "Подобрать"
     },
     "uk": {
         "order_form_table.confirm_exit": "Бажаєте зберегти зміни?",
@@ -124,6 +126,7 @@
         "comment": "Коментар",
         "author": "Автор",
         "duration": "Тривалість",
-        "order_form_table.purchasePrice": "Закупочна ціна"
+        "order_form_table.purchasePrice": "Закупочна ціна",
+        "order_form_table.suggest": "Підібрати"
     }
 }
