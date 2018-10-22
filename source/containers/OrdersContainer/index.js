@@ -4,7 +4,9 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { injectIntl, FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
+import classNames from 'classnames/bind';
 import _ from 'lodash';
+import moment from 'moment';
 
 // proj
 import {
@@ -23,6 +25,7 @@ import { InviteModal } from 'modals';
 // own
 import { columnsConfig, rowsConfig, scrollConfig } from './ordersTableConfig';
 import Styles from './styles.m.css';
+let cx = classNames.bind(Styles);
 
 const mapStateToProps = state => ({
     count:          state.orders.count,
@@ -63,6 +66,7 @@ class OrdersContainer extends Component {
             selectedRowKeys:          [],
             cancelReasonModalVisible: false,
             invited:                  [],
+            delayed:                  [],
         };
 
         this.invite = this.invite.bind(this);
@@ -306,6 +310,18 @@ class OrdersContainer extends Component {
             },
         };
 
+        const delayedConfig = [ 'call', 'required', 'not_complete', 'approve' ];
+
+        const _rowClassName = (datetime, status) =>
+            cx({
+                delayedRow:
+                    delayedConfig.includes(status) &&
+                    moment(datetime).diff(moment(), 'days') <= -2,
+                delayedProgressRow:
+                    status === 'progress' &&
+                    moment(datetime).diff(moment(), 'days') <= -1,
+            });
+
         return (
             <Catcher>
                 <div className={ Styles.paper }>
@@ -314,6 +330,9 @@ class OrdersContainer extends Component {
                         className={ Styles.ordersTable }
                         columns={ columns }
                         rowSelection={ rows }
+                        rowClassName={ ({ datetime, status }) =>
+                            _rowClassName(datetime, status)
+                        }
                         dataSource={ orders }
                         scroll={ scrollConfig(activeRoute) }
                         loading={ this.props.ordersFetching }

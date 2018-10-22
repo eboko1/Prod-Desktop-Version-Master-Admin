@@ -117,6 +117,7 @@
     word-break: none;
     white-space: nowrap;
 }
+
 .ordersTable :global(.ant-table-tbody > tr > th) {
     word-break: none;
 }
@@ -142,4 +143,9 @@
     &:hover {
         color: #9b59b6;
     }
+}
+
+.delayedRow,
+.delayedProgressRow {
+    background: rgba(var(--warningRGB), .5);
 }

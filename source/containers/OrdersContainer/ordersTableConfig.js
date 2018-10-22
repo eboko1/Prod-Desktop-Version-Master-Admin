@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Icon, Tooltip, Button } from 'antd';
-import classNames from 'classnames';
+import classNames from 'classnames/bind';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -31,6 +31,7 @@ export function columnsConfig(
         asc:  'ascend',
         desc: 'descend',
     };
+
     const indexCol = {
         title:     '№',
         width:     80,
@@ -45,7 +46,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) =>
+        render:    (_, order) => 
             <>
                 <Link
                     className={ Styles.ordernLink }
