@@ -77,14 +77,19 @@ class FunelContainer extends Component {
                             exact
                             to={ {
                                 pathname: `${book.orders}/appointments`,
-                                state:    { status: 'not_complete,required,call' },
+                                state:    {
+                                    status:
+                                        'not_complete,required,call,reserve',
+                                },
                             } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
                             }
                             onClick={ () =>
-                                this.setStatus('not_complete,required,call')
+                                this.setStatus(
+                                    'not_complete,required,call,reserve',
+                                )
                             }
                         >
                             <FormattedMessage id='appointments' />
@@ -93,7 +98,8 @@ class FunelContainer extends Component {
                                 <Numeral>
                                     { stats.not_complete +
                                         stats.call +
-                                        stats.required }
+                                        stats.required +
+                                        stats.reserve }
                                 </Numeral>
                                 )
                             </span>
@@ -102,21 +108,17 @@ class FunelContainer extends Component {
                             exact
                             to={ {
                                 pathname: `${book.orders}/approve`,
-                                state:    { status: 'approve,reserve' },
+                                state:    { status: 'approve' },
                             } }
                             className={ Styles.funel__tabs__link }
                             activeClassName={
                                 Styles[ 'funel__tabs__link--active' ]
                             }
-                            onClick={ () => this.setStatus('approve,reserve') }
+                            onClick={ () => this.setStatus('approve') }
                         >
                             <FormattedMessage id='records' />
                             <span className={ Styles.count }>
-                                (
-                                <Numeral>
-                                    { stats.approve + stats.reserve }
-                                </Numeral>
-                                )
+                                (<Numeral>{ stats.approve }</Numeral>)
                             </span>
                         </NavLink>
                         <NavLink

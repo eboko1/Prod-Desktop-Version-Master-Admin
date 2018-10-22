@@ -208,17 +208,18 @@ export default class OrdersFilterContainer extends Component {
                             value={ filterStatus }
                         >
                             <RadioButton
-                                value='not_complete,required,call'
+                                value='not_complete,required,call,reserve'
                                 onClick={ () =>
                                     this._setFilterStatus(
-                                        'not_complete,required,call',
+                                        'not_complete,required,call,reserve',
                                     )
                                 }
                             >
                                 <FormattedMessage id='all' /> (
                                 { stats.not_complete +
                                     stats.required +
-                                    stats.call }
+                                    stats.call +
+                                    stats.reserve }
                                 )
                             </RadioButton>
                             <RadioButton
@@ -240,37 +241,17 @@ export default class OrdersFilterContainer extends Component {
                                 { stats.required })
                             </RadioButton>
                             <RadioButton
+                                value='reserve'
+                                onClick={ () => this._setFilterStatus('reserve') }
+                            >
+                                <FormattedMessage id='reserve' /> (
+                                { stats.reserve })
+                            </RadioButton>
+                            <RadioButton
                                 value='call'
                                 onClick={ () => this._setFilterStatus('call') }
                             >
                                 <FormattedMessage id='call' /> ({ stats.call })
-                            </RadioButton>
-                        </RadioGroup>
-                    ) }
-                    { status === 'approve' && (
-                        <RadioGroup value={ filterStatus }>
-                            <RadioButton
-                                value='approve,reserve'
-                                onClick={ () =>
-                                    this._setFilterStatus('approve,reserve')
-                                }
-                            >
-                                <FormattedMessage id='all' />(
-                                { stats.approve + stats.reserve })
-                            </RadioButton>
-                            <RadioButton
-                                value='approve'
-                                onClick={ () => this._setFilterStatus('approve') }
-                            >
-                                <FormattedMessage id='approve' />(
-                                { stats.approve })
-                            </RadioButton>
-                            <RadioButton
-                                value='reserve'
-                                onClick={ () => this._setFilterStatus('reserve') }
-                            >
-                                <FormattedMessage id='reserve' />(
-                                { stats.reserve })
                             </RadioButton>
                         </RadioGroup>
                     ) }
