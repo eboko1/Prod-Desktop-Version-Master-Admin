@@ -59,6 +59,33 @@ class ServicesTable extends Component {
                     return (
                         <DecoratedSelect
                             disabled={ editServicesForbidden }
+                            onSelect={ item => {
+                                const id = Number(item.replace(/[^\d]/g, ''));
+                                const clientVehicleId = this.props.form.getFieldValue(
+                                    'clientVehicle',
+                                );
+                                const vehicles = _.get(
+                                    this.props,
+                                    'selectedClient.vehicles',
+                                );
+
+                                if (clientVehicleId && _.isArray(vehicles)) {
+                                    const vehicleQuery = {
+                                        id: clientVehicleId,
+                                    };
+                                    const vehicle = _.find(
+                                        vehicles,
+                                        vehicleQuery,
+                                    );
+                                    const tecdocId = _.get(vehicle, 'tecdocId');
+                                    if (tecdocId && id) {
+                                        this.props.fetchTecdocSuggestions(
+                                            tecdocId,
+                                            id,
+                                        );
+                                    }
+                                }
+                            } }
                             field={ `services[${key}].serviceName` }
                             getFieldDecorator={ this.props.getFieldDecorator }
                             mode={ 'combobox' }

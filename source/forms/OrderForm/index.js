@@ -9,6 +9,8 @@ import {
     onChangeOrderForm,
     setClientSelection,
     fetchAvailableHours,
+    fetchTecdocSuggestions,
+    clearTecdocSuggestions,
 } from 'core/forms/orderForm/duck';
 import { resetModal } from 'core/modals/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
@@ -34,6 +36,8 @@ import Styles from './styles.m.css';
         initOrderTasksForm,
         resetModal,
         fetchAvailableHours,
+        fetchTecdocSuggestions,
+        clearTecdocSuggestions,
     },
     mapStateToProps: state => ({
         modal:                  state.modals.modal,
