@@ -203,6 +203,7 @@ export default function reducer(state = ReducerState, action) {
                     searching: false,
                 },
             };
+
         case FETCH_ORDER_TASK_SUCCESS:
             return {
                 ...state,

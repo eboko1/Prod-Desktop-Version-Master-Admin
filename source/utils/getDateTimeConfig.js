@@ -1,3 +1,4 @@
+// vendor
 import _ from 'lodash';
 
 const defaultDateTimeConfig = {
@@ -94,5 +95,6 @@ export const getDateTimeConfig = (datetime, availableDateTimeConfigs) => {
         disabledMinutes,
         disabledSeconds,
         beginTime: dateTimeConfig.h24 ? '00:00' : dateTimeConfig.beginTime,
+        endTime:   dateTimeConfig.h24 ? '23:59' : dateTimeConfig.endTime,
     };
 };

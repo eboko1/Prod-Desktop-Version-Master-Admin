@@ -92,12 +92,32 @@ export default class OrderFormHeader extends Component {
     }
 
     _renderDuration = () => {
-        const { fetchedOrder, totalHours } = this.props;
+        const { fetchedOrder, totalHours, location, schedule } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
+        const beginDate = getFieldValue('beginDate');
+
+        const {
+            disabledDate,
+            disabledHours,
+            disabledMinutes,
+            disabledSeconds,
+            beginTime,
+        } = getDateTimeConfig(moment(beginDate), schedule);
+
+        const beginDatetime =
+            _.get(fetchedOrder, 'order.beginDatetime') ||
+            (this.bodyUpdateIsForbidden()
+                ? void 0
+                : _.get(location, 'state.beginDatetime'));
+
+        const momentBeginDatetime = beginDatetime
+            ? moment(beginDatetime)
+            : void 0;
+
         return (
-            <div>
+            <div className={ Styles.durationBlock }>
                 <DecoratedSlider
                     field='duration'
                     formItem
@@ -118,14 +138,15 @@ export default class OrderFormHeader extends Component {
                     step={ 0.5 }
                     max={ 8 }
                 />
-                <div>
+                <div className={ Styles.deliveryBlock }>
                     <DecoratedDatePicker
                         getFieldDecorator={ getFieldDecorator }
                         disabled={ this.bodyUpdateIsForbidden() }
-                        field='beginDate'
+                        field='deliveryDate'
+                        allowClear={ false }
                         hasFeedback
                         formItem
-                        formItemLayout={ formHeaderItemLayout }
+                        formItemLayout={ formHorizontalItemLayout }
                         formatMessage={ formatMessage }
                         label={
                             <FormattedMessage id='add_order_form.delivery_date' />
@@ -156,7 +177,6 @@ export default class OrderFormHeader extends Component {
                             }
                         } }
                     />
-
                     <DecoratedTimePicker
                         formItem
                         disabled={
@@ -164,39 +184,17 @@ export default class OrderFormHeader extends Component {
                             !this.props.form.getFieldValue('beginDate') ||
                             !this.props.form.getFieldValue('station')
                         }
-                        formItemLayout={ formHeaderItemLayout }
+                        disabledHours={ disabledHours }
+                        disabledMinutes={ disabledMinutes }
+                        disabledSeconds={ disabledSeconds }
+                        formItemLayout={ formHorizontalItemLayout }
                         defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
-                        field='beginTime'
+                        field='deliveryTime'
                         hasFeedback
-                        disabledHours={ () => {
-                            const availableHours =
-                                this.props.availableHours || [];
-
-                            return _.difference(
-                                Array(24)
-                                    .fill(1)
-                                    .map((value, index) => index),
-                                availableHours.map(availableHour =>
-                                    Number(moment(availableHour).format('HH'))),
-                            );
-                        } }
-                        disabledMinutes={ hour => {
-                            const availableHours =
-                                this.props.availableHours || [];
-
-                            const availableMinutes = availableHours
-                                .map(availableHour => moment(availableHour))
-                                .filter(
-                                    availableHour =>
-                                        Number(availableHour.format('HH')) ===
-                                        hour,
-                                )
-                                .map(availableHour =>
-                                    Number(availableHour.format('mm')));
-
-                            return _.difference([ 0, 30 ], availableMinutes);
-                        } }
-                        label={ <FormattedMessage id='time' /> }
+                        allowEmpty={ false }
+                        label={
+                            <FormattedMessage id='add_order_form.delivery_time' />
+                        }
                         formatMessage={ formatMessage }
                         className={ Styles.datePanelItem }
                         getFieldDecorator={ getFieldDecorator }
