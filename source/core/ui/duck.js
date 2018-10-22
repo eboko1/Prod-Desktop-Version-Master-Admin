@@ -31,6 +31,9 @@ export const SET_REVIEW_COMPLAINT_STATE = `${prefix}/SET_REVIEW_COMPLAINT_STATE`
 export const SET_DASHBOARD_INITALIZING_STATE = `${prefix}/SET_DASHBOARD_INITALIZING_STATE`;
 export const SET_DASHBOARD_FETCHING_STATE = `${prefix}/SET_DASHBOARD_FETCHING_STATE`;
 
+export const SET_DETAILS_SUGGESTIONS_FETCHING_STATE = `${prefix}/SET_DETAILS_SUGGESTIONS_FETCHING_STATE`;
+export const SET_SUGGESTIONS_FETCHING_STATE = `${prefix}/SET_SUGGESTIONS_FETCHING_STATE`;
+
 export const INITIALIZE = `${prefix}/INITIALIZE`;
 export const SET_COLLAPSED_STATE = `${prefix}/SET_COLLAPSED_STATE`;
 export const EMIT_ERROR = `${prefix}/EMIT_ERROR`;
@@ -39,32 +42,34 @@ export const EMIT_ERROR = `${prefix}/EMIT_ERROR`;
  * Reducer
  **/
 const ReducerState = {
-    initialized:              false,
-    authFetching:             false,
-    profileUpdating:          false,
-    ordersFetching:           false,
-    orderFetching:            false,
-    myTasksFetching:          false,
-    clientsFetching:          false,
-    clientFetching:           false,
-    clientOrdersFetching:     false,
-    reviewsFetching:          false,
-    reviewFetching:           false,
-    reviewReplyLoading:       false,
-    reviewComplaintLoading:   false,
-    chartFetching:            false,
-    callsFetching:            false,
-    callsChartFetching:       false,
-    dashboardInitializing:    false,
-    dashboardFetching:        false,
-    searchBusinessesFetching: false,
-    packageFetching:          false,
-    businessPackageFetching:  false,
-    managerRoleFetching:      false,
-    roleFetching:             false,
-    collapsed:                false,
-    views:                    {},
-    error:                    null,
+    initialized:                false,
+    authFetching:               false,
+    profileUpdating:            false,
+    ordersFetching:             false,
+    orderFetching:              false,
+    myTasksFetching:            false,
+    clientsFetching:            false,
+    clientFetching:             false,
+    clientOrdersFetching:       false,
+    reviewsFetching:            false,
+    reviewFetching:             false,
+    reviewReplyLoading:         false,
+    reviewComplaintLoading:     false,
+    chartFetching:              false,
+    callsFetching:              false,
+    callsChartFetching:         false,
+    dashboardInitializing:      false,
+    dashboardFetching:          false,
+    searchBusinessesFetching:   false,
+    packageFetching:            false,
+    businessPackageFetching:    false,
+    managerRoleFetching:        false,
+    roleFetching:               false,
+    collapsed:                  false,
+    views:                      {},
+    error:                      null,
+    suggestionsFetching:        false,
+    detailsSuggestionsFetching: false,
 };
 
 /* eslint-disable complexity */
@@ -149,6 +154,12 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_REVIEW_COMPLAINT_STATE:
             return { ...state, reviewComplaintLoading: payload };
+
+        case SET_SUGGESTIONS_FETCHING_STATE:
+            return { ...state, suggestionsFetching: payload };
+
+        case SET_DETAILS_SUGGESTIONS_FETCHING_STATE:
+            return { ...state, detailsSuggestionsFetching: payload };
 
         default:
             return state;
@@ -291,4 +302,14 @@ export const emitError = error => ({
     type:    EMIT_ERROR,
     payload: error,
     error:   true,
+});
+
+export const setSuggestionsFetchingState = state => ({
+    type:    SET_SUGGESTIONS_FETCHING_STATE,
+    payload: state,
+});
+
+export const setDetailsSuggestionsFetchingState = state => ({
+    type:    SET_DETAILS_SUGGESTIONS_FETCHING_STATE,
+    payload: state,
 });

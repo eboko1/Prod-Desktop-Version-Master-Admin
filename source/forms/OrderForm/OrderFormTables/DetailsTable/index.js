@@ -544,6 +544,10 @@ class DetailsTable extends Component {
         return (
             <Catcher>
                 <Table
+                    loading={
+                        this.props.detailsSuggestionsFetching ||
+                        this.props.suggestionsFetching
+                    }
                     dataSource={ keys.map(key => ({ key })) }
                     columns={ columns }
                     pagination={ false }

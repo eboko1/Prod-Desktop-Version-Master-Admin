@@ -44,10 +44,12 @@ import Styles from './styles.m.css';
         clearTecdocDetailsSuggestions,
     },
     mapStateToProps: state => ({
-        modal:                  state.modals.modal,
-        addClientFormData:      state.forms.addClientForm.data,
-        authentificatedManager: state.auth.id,
-        user:                   state.auth,
+        modal:                      state.modals.modal,
+        addClientFormData:          state.forms.addClientForm.data,
+        authentificatedManager:     state.auth.id,
+        user:                       state.auth,
+        suggestionsFetching:        state.ui.suggestionsFetching,
+        detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
     }),
 })
 export class OrderForm extends Component {

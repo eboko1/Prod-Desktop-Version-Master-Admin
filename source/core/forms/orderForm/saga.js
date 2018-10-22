@@ -16,7 +16,12 @@ import nprogress from 'nprogress';
 
 // proj
 import { resetModal, MODALS } from 'core/modals/duck';
-import { setOrderFetchingState, emitError } from 'core/ui/duck';
+import {
+    setOrderFetchingState,
+    setSuggestionsFetchingState,
+    setDetailsSuggestionsFetchingState,
+    emitError,
+} from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 import book from 'routes/book';
 
@@ -57,6 +62,7 @@ export function* fetchTecdocDetailsSuggestionsSaga() {
             payload: { modificationId, productId, key },
         } = yield take(FETCH_TECDOC_DETAILS_SUGGESTIONS);
         const query = { modificationId, productId };
+        yield put(setDetailsSuggestionsFetchingState(true));
         const suggestions = yield call(
             fetchAPI,
             'GET',
@@ -65,6 +71,7 @@ export function* fetchTecdocDetailsSuggestionsSaga() {
             void 0,
         );
         yield put(fetchTecdocDetailsSuggestionsSuccess(suggestions, key));
+        yield put(setDetailsSuggestionsFetchingState(false));
     }
 }
 
@@ -73,7 +80,10 @@ export function* fetchTecdocSuggestionsSaga() {
         const {
             payload: { modificationId, serviceId },
         } = yield take(FETCH_TECDOC_SUGGESTIONS);
+
         const query = { modificationId, serviceId };
+
+        yield put(setSuggestionsFetchingState(true));
         const suggestions = yield call(
             fetchAPI,
             'GET',
@@ -81,6 +91,7 @@ export function* fetchTecdocSuggestionsSaga() {
             query,
         );
         yield put(fetchTecdocSuggestionsSuccess(suggestions));
+        yield put(setSuggestionsFetchingState(false));
     }
 }
 
