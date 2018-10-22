@@ -40,10 +40,22 @@ export default class PartSuggestions extends Component {
                                 )
                             }
                             width={ 75 }
-                            src={ `${__TECDOC_IMAGES_URL__}/${image.supplierId}/${image.pictureName}` }
+                            src={ `${__TECDOC_IMAGES_URL__}/${
+                                image.supplierId
+                            }/${image.pictureName}` }
                         />
                     ) : (
-                        <div>No photo</div>
+                        <div
+                            style={ { cursor: 'pointer' } }
+                            onClick={ () =>
+                                fetchPartAttributes(
+                                    suggestion.partNumber,
+                                    suggestion.supplierId,
+                                )
+                            }
+                        >
+                            No photo
+                        </div>
                     );
                 },
             },
@@ -81,16 +93,16 @@ export default class PartSuggestions extends Component {
                                 getPopupContainer={ trigger =>
                                     trigger.parentNode
                                 }
-                                content={ _.map(
-                                    suggestion.attributes,
-                                    ({ value, description }) => (
+                                content={ _.chain(suggestion.attributes)
+                                    .filter('description')
+                                    .map(({ value, description }) => (
                                         <div>
                                             <p>
                                                 <a>{ description }</a>: { value }
                                             </p>
                                         </div>
-                                    ),
-                                ) }
+                                    ))
+                                    .value() }
                             >
                                 <div
                                     key={
