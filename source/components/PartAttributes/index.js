@@ -76,7 +76,13 @@ export default class PartAttributes extends Component {
                         dataSource={ attributes }
                         renderItem={ item => (
                             <List.Item>
-                                { `${item.description}: ${item.value}` }
+                                { item.description &&
+                                    item.value &&
+                                    `${item.description}: ${item.value}` }
+                                { item.description &&
+                                    !item.value &&
+                                    item.description }
+                                { !item.description && item.value }
                             </List.Item>
                         ) }
                     />

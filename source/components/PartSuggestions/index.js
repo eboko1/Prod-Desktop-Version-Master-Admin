@@ -40,10 +40,22 @@ export default class PartSuggestions extends Component {
                                 )
                             }
                             width={ 75 }
-                            src={ `${__TECDOC_IMAGES_URL__}/${image.supplierId}/${image.pictureName}` }
+                            src={ `${__TECDOC_IMAGES_URL__}/${
+                                image.supplierId
+                            }/${image.pictureName}` }
                         />
                     ) : (
-                        <div>No photo</div>
+                        <div
+                            style={ { cursor: 'pointer' } }
+                            onClick={ () =>
+                                fetchPartAttributes(
+                                    suggestion.partNumber,
+                                    suggestion.supplierId,
+                                )
+                            }
+                        >
+                            No photo
+                        </div>
                     );
                 },
             },

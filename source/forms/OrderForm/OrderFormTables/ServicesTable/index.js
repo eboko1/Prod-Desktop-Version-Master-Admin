@@ -56,7 +56,7 @@ class ServicesTable extends Component {
             const clientVehicleId = getFieldValue('clientVehicle');
 
             const editServicesForbidden =
-                isForbidden(props.user, permissions.ACCESS_ORDER_SERVICES) ||
+                isForbidden(this.props.user, permissions.ACCESS_ORDER_SERVICES) ||
                 !clientVehicleId;
 
             return [

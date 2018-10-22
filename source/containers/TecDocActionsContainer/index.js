@@ -48,11 +48,12 @@ const mapStateToProps = state => ({
 )
 export default class TecDocActionsContainer extends Component {
     getSupplier() {
-        const { brandId, brands } = this.props;
+        const { selectedAttributes, brands, brandId } = this.props;
+        const { supplierId } = selectedAttributes || {};
 
-        return brandId
+        return supplierId || brandId
             ? _.chain(brands)
-                .find({ brandId })
+                .find(supplierId ? { supplierId } : { brandId })
                 .value()
             : null;
     }
