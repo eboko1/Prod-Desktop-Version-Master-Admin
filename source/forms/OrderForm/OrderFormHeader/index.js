@@ -390,6 +390,9 @@ export default class OrderFormHeader extends Component {
             authentificatedManager,
         } = this.props;
 
+        const isOwnBusiness =
+            _.find(managers, { id: authentificatedManager }) || void 0;
+
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
@@ -415,7 +418,7 @@ export default class OrderFormHeader extends Component {
                         _.get(fetchedOrder, 'order.managerId') ||
                         (this.bodyUpdateIsForbidden()
                             ? void 0
-                            : authentificatedManager)
+                            : isOwnBusiness && authentificatedManager)
                     }
                     disabled={ this.bodyUpdateIsForbidden() }
                     placeholder={ formatMessage({
