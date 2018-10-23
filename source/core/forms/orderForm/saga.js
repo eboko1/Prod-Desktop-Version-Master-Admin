@@ -212,9 +212,9 @@ export function* returnToOrdersPageSaga() {
             const statusesMap = [
                 {
                     route:    '/orders/appointments',
-                    statuses: [ 'not_complete', 'required', 'call' ],
+                    statuses: [ 'not_complete', 'required', 'reserve', 'call' ],
                 },
-                { route: '/orders/approve', statuses: [ 'approve', 'reserve' ] },
+                { route: '/orders/approve', statuses: [ 'approve' ] },
                 { route: '/orders/progress', statuses: [ 'progress' ] },
                 { route: '/orders/success', statuses: [ 'success' ] },
                 { route: '/orders/reviews', statuses: [ 'review' ] },

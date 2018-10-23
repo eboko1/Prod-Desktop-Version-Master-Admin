@@ -184,8 +184,8 @@ export const requiredFieldsOnStatuses = values => {
         not_complete: [ 'manager' ],
         required:     [ 'manager' ],
 
-        reserve: [ 'beginDate', 'beginTime', 'manager', 'station', 'deliveryDatetime' ],
-        approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'station', 'deliveryDatetime' ],
+        reserve: [ 'beginDate', 'beginTime', 'manager', 'station', 'deliveryDate', 'deliveryTime' ],
+        approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'station', 'deliveryDate', 'deliveryTime' ],
 
         redundant: [],
         cancel:    [],

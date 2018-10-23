@@ -97,15 +97,20 @@ export default class OrderFormHeader extends Component {
         const { formatMessage } = this.props.intl;
 
         const beginDate = getFieldValue('beginDate');
+        const duration = getFieldValue('duration');
 
         const {
-            disabledDate,
             disabledHours,
             disabledMinutes,
             disabledSeconds,
             beginTime,
         } = getDateTimeConfig(moment(beginDate), schedule);
 
+        const disabledDate = date => date && date <= moment(beginDate);
+
+        // // Can not select days before today and today
+        // return current && current < moment().endOf('day');
+        // console.log('→ availableHours', this.props.availableHours);
         const beginDatetime =
             _.get(fetchedOrder, 'order.beginDatetime') ||
             (this.bodyUpdateIsForbidden()
@@ -115,6 +120,25 @@ export default class OrderFormHeader extends Component {
         const momentBeginDatetime = beginDatetime
             ? moment(beginDatetime)
             : void 0;
+
+        const availableHours = disabledHours();
+        console.log('→ disabledHours()', disabledHours());
+        console.log(
+            'availableHours.map(availableHour',
+            availableHours.map(availableHour =>
+                Number(moment(availableHour).format('HH'))),
+        );
+
+        console.log(
+            'aa',
+            _.difference(
+                Array(24)
+                    .fill(1)
+                    .map((value, index) => index),
+                availableHours.map(availableHour =>
+                    Number(moment(availableHour).format('HH'))),
+            ),
+        );
 
         return (
             <div className={ Styles.durationBlock }>
@@ -129,7 +153,7 @@ export default class OrderFormHeader extends Component {
                         _.get(fetchedOrder, 'order.duration') || totalHours
                     }
                     label={ `${formatMessage({
-                        id: 'add_order_form.duration',
+                        id: 'time',
                     })} (${getFieldValue('duration')}${formatMessage({
                         id: 'add_order_form.hours_shortcut',
                     })})` }
@@ -168,25 +192,40 @@ export default class OrderFormHeader extends Component {
                         format={ 'YYYY-MM-DD' } // HH:mm
                         showTime={ false }
                         initialValue={ momentBeginDatetime }
-                        onChange={ value => {
-                            const station = this.props.form.getFieldValue(
-                                'station',
-                            );
-                            if (station) {
-                                this.fetchAvailableHours(station, value);
-                            }
-                        } }
                     />
                     <DecoratedTimePicker
                         formItem
                         disabled={
                             this.bodyUpdateIsForbidden() ||
-                            !this.props.form.getFieldValue('beginDate') ||
-                            !this.props.form.getFieldValue('station')
+                            !this.props.form.getFieldValue('deliveryDate')
                         }
-                        disabledHours={ disabledHours }
-                        disabledMinutes={ disabledMinutes }
-                        disabledSeconds={ disabledSeconds }
+                        // disabledHours={ disabledHours }
+                        // disabledMinutes={ disabledMinutes }
+                        // disabledHours={ () => {
+                        //     const availableHours = disabledHours();
+                        //
+                        //     return _.difference(
+                        //         Array(24)
+                        //             .fill(1)
+                        //             .map((value, index) => index),
+                        //         availableHours.map(availableHour =>
+                        //             Number(moment(availableHour).format('HH'))),
+                        //     );
+                        // } }
+                        disabledMinutes={ hour => {
+                            const disableMinutes = disabledHours
+                                .map(disableHour => moment(disableHour))
+                                .filter(
+                                    disableHour =>
+                                        Number(disableHour.format('HH')) ===
+                                        hour,
+                                )
+                                .map(disableHour =>
+                                    Number(disableHour.format('mm')));
+
+                            return _.difference([ 0, 30 ], disableMinutes);
+                        } }
+                        // disabledSeconds={ disabledSeconds }
                         formItemLayout={ formHorizontalItemLayout }
                         defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                         field='deliveryTime'
