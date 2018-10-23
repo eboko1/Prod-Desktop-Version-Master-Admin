@@ -206,9 +206,7 @@ class DetailsTable extends Component {
                 },
                 {
                     width:  '10%',
-                    title: (
-                        <FormattedMessage id='order_form_table.suggest' />
-                    ),
+                    title:  <FormattedMessage id='order_form_table.suggest' />,
                     key:    'tecDocActions',
                     render: ({ key }) => {
                         const detailIdFieldName = `details[${key}][detailName]`;
@@ -369,6 +367,7 @@ class DetailsTable extends Component {
                     key:    'delete',
                     render: ({ key }) =>
                         this.state.keys.length > 1 &&
+                        _.last(this.state.keys) !== key &&
                         !editDetailsForbidden && (
                             <Popconfirm
                                 title={
@@ -436,6 +435,9 @@ class DetailsTable extends Component {
     _onDelete = redundantKey => {
         const { keys } = this.state;
         this.setState({ keys: keys.filter(key => redundantKey !== key) });
+        this.props.form.setFieldsValue({
+            [ `details[${redundantKey}]` ]: void 0,
+        });
     };
 
     _handleAdd = () => {
@@ -466,7 +468,10 @@ class DetailsTable extends Component {
                 ];
 
                 return _(config)
-                    .map(({ name, value }) => value && [ name, value ? String(value) : void 0 ])
+                    .map(
+                        ({ name, value }) =>
+                            value && [ name, value ? String(value) : void 0 ],
+                    )
                     .filter(Boolean)
                     .fromPairs()
                     .value();
@@ -526,7 +531,8 @@ class DetailsTable extends Component {
 
                     return _(config)
                         .map(
-                            ({ name, value }) => value && [ name, value ? String(value) : void 0 ],
+                            ({ name, value }) =>
+                                value && [ name, value ? String(value) : void 0 ],
                         )
                         .filter(Boolean)
                         .fromPairs()
