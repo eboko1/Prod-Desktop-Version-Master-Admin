@@ -256,6 +256,7 @@ class ServicesTable extends Component {
                     render: ({ key }) => {
                         return (
                             this.state.keys.length > 1 &&
+                            _.last(this.state.keys) !== key &&
                             !editServicesForbidden && (
                                 <Popconfirm
                                     title={
@@ -334,7 +335,9 @@ class ServicesTable extends Component {
     _onDelete = redundantKey => {
         const { keys } = this.state;
         this.setState({ keys: keys.filter(key => redundantKey !== key) });
-        this.props.form.setFieldsValue({ [ `services[${redundantKey}]` ]: void 0 });
+        this.props.form.setFieldsValue({
+            [ `services[${redundantKey}]` ]: void 0,
+        });
     };
 
     _handleAdd = () => {
