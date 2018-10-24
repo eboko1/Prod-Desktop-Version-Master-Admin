@@ -269,6 +269,7 @@ export class AddClientVehicleForm extends Component {
                         <Row type='flex' justify='end'>
                             <FormItem>
                                 <Button
+                                    type='primary'
                                     onClick={ () => {
                                         validateFields((err, values) => {
                                             if (!err) {
