@@ -43,6 +43,7 @@ const mapStateToProps = state => {
         spinner:        state.ui.orderFetching,
         createStatus:   state.forms.orderForm.createStatus,
         selectedClient: state.forms.orderForm.selectedClient,
+        orderHistory:   state.forms.orderForm.history,
         user:           state.auth,
     };
 };
@@ -199,6 +200,7 @@ class AddOrderPage extends Component {
                     setAddClientModal={ this._setAddClientModal }
                     modal={ modal }
                     addOrderForm
+                    orderHistory={ this.props.orderHistory }
                     location={ this.props.history.location }
                 />
             </Layout>

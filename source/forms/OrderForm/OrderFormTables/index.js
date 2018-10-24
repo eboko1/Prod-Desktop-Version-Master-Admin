@@ -6,6 +6,7 @@ import ClientsVehiclesTable from './ClientsVehiclesTable';
 import HistoryTable from './HistoryTable';
 import TasksTable from './TasksTable';
 import CallsTable from './CallsTable';
+import StationsTable from './StationsTable';
 
 export {
     DetailsTable,
@@ -15,5 +16,6 @@ export {
     HistoryTable,
     TasksTable,
     CallsTable,
+    StationsTable,
     ClientsVehiclesTable,
 };

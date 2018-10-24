@@ -305,6 +305,19 @@ export default class OrderFormTabs extends Component {
                         <CallsTable orderCalls={ orderCalls } />
                     </TabPane>
                 ) }
+                <TabPane
+                    forceRender
+                    // disabled={ areCallsForbidden }
+                    tab={
+                        formatMessage({
+                            id: 'order_form_table.stations',
+                        })
+                        // + (areCallsForbidden ? '' : ` (${orderCalls.length})`)
+                    }
+                    key='7'
+                >
+                    { /* <CallsTable orderCalls={ orderCalls } /> */ }
+                </TabPane>
             </Tabs>
         );
     }
