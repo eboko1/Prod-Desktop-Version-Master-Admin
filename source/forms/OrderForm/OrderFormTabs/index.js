@@ -85,7 +85,7 @@ export default class OrderFormTabs extends Component {
             : hideTasks(orderTasks, user.id);
 
         return (
-            <Tabs type='card'>
+            <Tabs type='card' className={ Styles.orderFormsTabs }>
                 { !addOrderForm && (
                     <TabPane
                         forceRender
