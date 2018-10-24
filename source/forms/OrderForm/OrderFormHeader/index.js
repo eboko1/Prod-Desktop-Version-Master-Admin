@@ -57,17 +57,25 @@ export default class OrderFormHeader extends Component {
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        const beginDate = getFieldValue('beginDate');
+        const deliveryDate = getFieldValue('deliveryDate');
+
+        const momentDate = getFieldValue('beginDate');
+        const momentTime = getFieldValue('beginTime');
         const duration = getFieldValue('duration');
+
+        const excludeConfig = [{ momentDate, momentTime, duration }];
 
         const {
             disabledHours,
             disabledMinutes,
             disabledSeconds,
+            disabledDate: dateTimeDisabledDate,
             beginTime,
-        } = getDateTimeConfig(moment(beginDate), schedule);
+        } = getDateTimeConfig(moment(deliveryDate), schedule, excludeConfig);
 
-        const disabledDate = date => date && date <= moment(beginDate);
+        const initialBeginDatetime = moment(momentDate).set({hours: 0, minutes: 0, milliseconds: 0, seconds: 0});
+        const disabledDate = date =>
+            dateTimeDisabledDate(date) || date && date.isSameOrBefore(initialBeginDatetime);
 
         // // Can not select days before today and today
         // return current && current < moment().endOf('day');
@@ -81,25 +89,6 @@ export default class OrderFormHeader extends Component {
         const momentBeginDatetime = beginDatetime
             ? moment(beginDatetime)
             : void 0;
-
-        const availableHours = disabledHours();
-        // console.log('→ disabledHours()', disabledHours());
-        // console.log(
-        //     'availableHours.map(availableHour',
-        //     availableHours.map(availableHour =>
-        //         Number(moment(availableHour).format('HH'))),
-        // );
-        //
-        // console.log(
-        //     'aa',
-        //     _.difference(
-        //         Array(24)
-        //             .fill(1)
-        //             .map((value, index) => index),
-        //         availableHours.map(availableHour =>
-        //             Number(moment(availableHour).format('HH'))),
-        //     ),
-        // );
 
         return (
             <div className={ Styles.durationBlock }>
@@ -159,32 +148,9 @@ export default class OrderFormHeader extends Component {
                         this.bodyUpdateIsForbidden() ||
                         !this.props.form.getFieldValue('deliveryDate')
                     }
-                    // disabledHours={ disabledHours }
-                    // disabledMinutes={ disabledMinutes }
-                    // disabledHours={ () => {
-                    //     const availableHours = disabledHours();
-                    //
-                    //     return _.difference(
-                    //         Array(24)
-                    //             .fill(1)
-                    //             .map((value, index) => index),
-                    //         availableHours.map(availableHour =>
-                    //             Number(moment(availableHour).format('HH'))),
-                    //     );
-                    // } }
-                    disabledMinutes={ hour => {
-                        const disableMinutes = disabledHours
-                            .map(disableHour => moment(disableHour))
-                            .filter(
-                                disableHour =>
-                                    Number(disableHour.format('HH')) === hour,
-                            )
-                            .map(disableHour =>
-                                Number(disableHour.format('mm')));
-
-                        return _.difference([ 0, 30 ], disableMinutes);
-                    } }
-                    // disabledSeconds={ disabledSeconds }
+                    disabledHours={ disabledHours }
+                    disabledMinutes={ disabledMinutes }
+                    disabledSeconds={ disabledSeconds }
                     formItemLayout={ formHeaderItemLayout }
                     defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                     field='deliveryTime'
