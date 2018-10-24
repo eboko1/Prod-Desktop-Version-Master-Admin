@@ -11,7 +11,6 @@ import {
     DecoratedDatePicker,
 } from 'forms/DecoratedFields';
 
-import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
 import { ArrayInput } from 'components';
 
 const openNotificationWithIcon = (type, message, description) => {
@@ -34,7 +33,7 @@ export class AbstractClientForm extends Component {
     }
 
     render() {
-        const { client, vehicles, errors } = this.props;
+        const { client, errors } = this.props;
         const { getFieldDecorator } = this.props.form;
 
         if (errors.length) {
@@ -267,12 +266,6 @@ export class AbstractClientForm extends Component {
                         />
                     </Col>
                 </Row>
-                { vehicles && (
-                    <ClientsVehiclesTable
-                        removeClientVehicle={ this.props.removeClientVehicle }
-                        vehicles={ vehicles }
-                    />
-                ) }
             </Form>
         );
     }
