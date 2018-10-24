@@ -81,8 +81,9 @@ function duplicate(clients) {
 
 const createDefaultState = () => ({
     fields: {
-        services: [],
-        details:  [],
+        services:     [],
+        details:      [],
+        stationLoads: [],
     },
     createStatus:  'not_complete',
     allServices:   [],

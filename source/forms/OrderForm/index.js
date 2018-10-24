@@ -50,6 +50,8 @@ import Styles from './styles.m.css';
         user:                       state.auth,
         suggestionsFetching:        state.ui.suggestionsFetching,
         detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
+        stationLoads:               state.forms.orderForm.stationLoads,
+        schedule:                   state.forms.orderForm.schedule,
     }),
 })
 export class OrderForm extends Component {
@@ -121,7 +123,14 @@ export class OrderForm extends Component {
     }
 
     _renderTabs = () => {
-        const { form, orderTasks, setModal, allServices } = this.props;
+        const {
+            form,
+            orderTasks,
+            setModal,
+            allServices,
+            stationLoads,
+            schedule,
+        } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -159,6 +168,8 @@ export class OrderForm extends Component {
                 priceDetails={ priceDetails }
                 setModal={ setModal }
                 orderTasks={ orderTasks }
+                stationLoads={ stationLoads }
+                schedule={ schedule }
                 commentsCount={ commentsCount }
             />
         );

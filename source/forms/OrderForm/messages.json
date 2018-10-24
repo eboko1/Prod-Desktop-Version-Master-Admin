@@ -52,7 +52,7 @@
         "add_order_form.delivery_date": "Delivery date",
         "add_order_form.delivery_time": "Delivery time",
         "add_order_form.applied_on": "Applied on",
-        "order_form_table.stations": "Posts"
+        "order_form_table.station": "Station"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -107,7 +107,7 @@
         "add_order_form.delivery_date": "Дата выдачи",
         "add_order_form.delivery_time": "Время выдачи",
         "add_order_form.applied_on": "Записан на",
-        "order_form_table.stations": "Посты"
+        "order_form_table.station": "Пост"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -162,6 +162,6 @@
         "add_order_form.delivery_date": "Дата видачі",
         "add_order_form.delivery_time": "Час видачі",
         "add_order_form.applied_on": "Записан на",
-        "order_form_table.stations": "Пости"
+        "order_form_table.station": "Пост"
     }
 }

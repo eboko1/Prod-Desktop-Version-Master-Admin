@@ -250,8 +250,9 @@ class OrderPage extends Component {
         );
         const fetchedOrderEntity = {
             ...fetchedOrder.order,
-            services: fetchedOrder.orderServices || [],
-            details:  fetchedOrder.orderDetails || [],
+            services:     fetchedOrder.orderServices || [],
+            details:      fetchedOrder.orderDetails || [],
+            stationLoads: fetchedOrder.stationLoads || [],
             ..._.get(fetchedOrder, 'client.clientId')
                 ? { clientId: _.get(fetchedOrder, 'client.clientId') }
                 : {},
@@ -268,6 +269,10 @@ class OrderPage extends Component {
 
         const detailsLengthsEqual =
             _.get(orderEntity, 'details', []).length ===
+            (fetchedOrder.orderDetails || []).length;
+
+        const stationLoadsEqual =
+            _.get(orderEntity, 'stationLoads', []).length ===
             (fetchedOrder.orderDetails || []).length;
 
         const areInputValuesEqual = (originValue, fieldValue) => {
@@ -287,8 +292,10 @@ class OrderPage extends Component {
             identicalOrders &&
             servicesLengthsEqual &&
             detailsLengthsEqual &&
+            stationLoadsEqual &&
             !fields.services.length &&
-            !fields.details.length;
+            !fields.details.length &&
+            !fields.stationLoads.length;
 
         if (!canEdit || hideEditButton || ordersAreSame) {
             this._redirect();

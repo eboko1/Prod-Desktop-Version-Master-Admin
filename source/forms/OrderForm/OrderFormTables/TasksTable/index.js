@@ -51,7 +51,7 @@ class TasksTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='status' />,
+                title:     <FormattedMessage id='order_form_table.repair_status' />,
                 dataIndex: 'status',
                 key:       'status',
                 width:     '8%',

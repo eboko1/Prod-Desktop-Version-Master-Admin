@@ -83,23 +83,23 @@ export default class OrderFormHeader extends Component {
             : void 0;
 
         const availableHours = disabledHours();
-        console.log('→ disabledHours()', disabledHours());
-        console.log(
-            'availableHours.map(availableHour',
-            availableHours.map(availableHour =>
-                Number(moment(availableHour).format('HH'))),
-        );
-
-        console.log(
-            'aa',
-            _.difference(
-                Array(24)
-                    .fill(1)
-                    .map((value, index) => index),
-                availableHours.map(availableHour =>
-                    Number(moment(availableHour).format('HH'))),
-            ),
-        );
+        // console.log('→ disabledHours()', disabledHours());
+        // console.log(
+        //     'availableHours.map(availableHour',
+        //     availableHours.map(availableHour =>
+        //         Number(moment(availableHour).format('HH'))),
+        // );
+        //
+        // console.log(
+        //     'aa',
+        //     _.difference(
+        //         Array(24)
+        //             .fill(1)
+        //             .map((value, index) => index),
+        //         availableHours.map(availableHour =>
+        //             Number(moment(availableHour).format('HH'))),
+        //     ),
+        // );
 
         return (
             <div className={ Styles.durationBlock }>

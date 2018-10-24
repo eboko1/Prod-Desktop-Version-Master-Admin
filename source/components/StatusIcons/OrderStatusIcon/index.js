@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import Styles from './styles.m.css';
 
 export default class OrderStatusIcon extends Component {
+    /* eslint-disable complexity */
     getStatusIcon(status) {
         switch (status) {
             case 'not_complete':
@@ -68,6 +69,7 @@ export default class OrderStatusIcon extends Component {
                         />
                     </Tooltip>
                 );
+            case 'TO_DO':
             case 'approve':
                 return (
                     <Tooltip
@@ -98,6 +100,7 @@ export default class OrderStatusIcon extends Component {
                         />
                     </Tooltip>
                 );
+            case 'COMPLETED':
             case 'success':
                 return (
                     <Tooltip

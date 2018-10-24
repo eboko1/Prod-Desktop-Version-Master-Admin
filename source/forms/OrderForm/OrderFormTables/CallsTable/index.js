@@ -27,7 +27,7 @@ class CallsTable extends Component {
                 ),
             },
             {
-                title:     <FormattedMessage id='status' />,
+                title:     <FormattedMessage id='order_form_table.repair_status' />,
                 dataIndex: 'status',
                 key:       'order-calls-status',
                 width:     '10%',
