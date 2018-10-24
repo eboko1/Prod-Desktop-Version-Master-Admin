@@ -16,6 +16,7 @@ import {
 import { MODALS } from 'core/modals/duck';
 
 import { AbstractClientForm, AddClientVehicleForm } from 'forms';
+import { ClientsVehiclesTable } from 'forms/OrderForm/OrderFormTables';
 import { withReduxForm2 } from 'utils';
 
 // own
@@ -40,6 +41,7 @@ export default class AddClientModal extends Component {
             resetModal,
             addClientFormData,
             searchQuery,
+            vehicles,
         } = this.props;
 
         const { getFieldsValue, validateFields } = this.props.form;
@@ -108,14 +110,20 @@ export default class AddClientModal extends Component {
                 } }
                 onCancel={ () => resetModal() }
             >
-                <AddClientVehicleForm
-                    addClientVehicle={ this.props.addClientVehicle }
-                />
                 <AbstractClientForm
                     { ...this.props }
                     wrappedComponentRef={ this.props.wrappedComponentRef }
                     addClientFormData={ addClientFormData }
                 />
+                <AddClientVehicleForm
+                    addClientVehicle={ this.props.addClientVehicle }
+                />
+                { vehicles && (
+                    <ClientsVehiclesTable
+                        removeClientVehicle={ this.props.removeClientVehicle }
+                        vehicles={ vehicles }
+                    />
+                ) }
             </Modal>
         );
     }
