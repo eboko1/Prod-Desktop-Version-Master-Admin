@@ -19,7 +19,6 @@ import Styles from './styles.m.css';
 export default class StationsTable extends Component {
     constructor(props) {
         super(props);
-        console.log('→ stationLoads', props.stationLoads);
         const stationLoads = props.stationLoads || [];
 
         this.uuid = stationLoads.length;
@@ -69,6 +68,7 @@ export default class StationsTable extends Component {
         const {
             fields,
             stationLoads,
+            fetchedOrder,
             intl: { formatMessage },
         } = this.props;
         const { keys } = this.state;
@@ -81,6 +81,7 @@ export default class StationsTable extends Component {
             this._onDelete,
             this._fetchAvailableHours,
             this._bodyUpdateIsForbidden,
+            fetchedOrder,
         );
 
         return (

@@ -1,7 +1,7 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Icon, Select, Tooltip, Button, Popconfirm } from 'antd';
+import { Icon, Select, Popconfirm } from 'antd';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -28,8 +28,27 @@ export function columnsConfig(
     onDelete,
     fetchAvailableHours,
     bodyUpdateIsForbidden,
+    fetchedOrder,
 ) {
     // console.log('→cc  props', props);
+
+    const _getDefaultValue = (key, fieldName) => {
+        const orderStationLoads = (props.stationLoads || [])[ key ];
+        if (!orderStationLoads) {
+            return;
+        }
+
+        const fields = {
+            status:     orderStationLoads.status,
+            beginDate:  moment(orderStationLoads.beginDatetime),
+            beginTime:  moment(orderStationLoads.beginDatetime),
+            stationNum: orderStationLoads.stationNum,
+            duration:   orderStationLoads.duration,
+        };
+
+        return fields[ fieldName ];
+    };
+
     const beginDate = props.form.getFieldValue('beginDate');
 
     const { disabledDate, beginTime } = getDateTimeConfig(
@@ -37,31 +56,36 @@ export function columnsConfig(
         props.schedule,
     );
 
-    const beginDatetime =
-        _.get(props.fetchedOrder, 'order.beginDatetime') ||
-        (bodyUpdateIsForbidden()
-            ? void 0
-            : _.get(location, 'state.beginDatetime'));
-
-    const momentBeginDatetime = beginDatetime ? moment(beginDatetime) : void 0;
+    // const beginDatetime =
+    //     _.get(props.fetchedOrder, 'order.beginDatetime') ||
+    //     (bodyUpdateIsForbidden()
+    //         ? void 0
+    //         : _.get(location, 'state.beginDatetime'));
+    //
+    // const momentBeginDatetime = beginDatetime ? moment(beginDatetime) : void 0;
 
     const statusCol = {
         title:  <FormattedMessage id='status' />,
         key:    'orderStationStatus',
-        width:  '10%',
+        width:  '15%',
         render: ({ key }) => (
-            <DecoratedSelect
-                field={ `stationLoads[${key}].status` }
-                getFieldDecorator={ props.form.getFieldDecorator }
-                initialValue='TO_DO'
-            >
-                <Option value='TO_DO' key='TO_DO'>
-                    <FormattedMessage id='order_form_table.TO_DO' />
-                </Option>
-                <Option value='COMPLETED' key='COMPLETED'>
-                    <FormattedMessage id='order_form_table.COMPLETED' />
-                </Option>
-            </DecoratedSelect>
+            <div className={ Styles.status }>
+                <OrderStatusIcon
+                    status={ _getDefaultValue(key, 'status') || 'TO_DO' }
+                />
+                <DecoratedSelect
+                    field={ `stationLoads[${key}].status` }
+                    getFieldDecorator={ props.form.getFieldDecorator }
+                    initialValue={ _getDefaultValue(key, 'status') || 'TO_DO' }
+                >
+                    <Option value='TO_DO' key='TO_DO'>
+                        <FormattedMessage id='order_form_table.TO_DO' />
+                    </Option>
+                    <Option value='COMPLETED' key='COMPLETED'>
+                        <FormattedMessage id='order_form_table.COMPLETED' />
+                    </Option>
+                </DecoratedSelect>
+            </div>
         ),
     };
 
@@ -81,7 +105,7 @@ export function columnsConfig(
                 format={ 'YYYY-MM-DD' } // HH:mm
                 showTime={ false }
                 allowClear={ false }
-                initialValue={ momentBeginDatetime }
+                initialValue={ _getDefaultValue(key, 'beginDate') }
                 onChange={ value => {
                     const station = props.form.getFieldValue(
                         `stationLoads[${key}].beginDate`,
@@ -97,15 +121,11 @@ export function columnsConfig(
     const stationCol = {
         title:  <FormattedMessage id='order_form_table.station' />,
         key:    'orderStationNum',
-        width:  '10%',
+        width:  '15%',
         render: ({ key }) => (
             <DecoratedSelect
                 field={ `stationLoads[${key}].station` }
                 getFieldDecorator={ props.form.getFieldDecorator }
-                // initialValue={
-                //     _getDefaultValue(key, 'stationNum') ||
-                //     this.props.form.getFieldValue('stationNum')
-                // }
                 rules={ [
                     {
                         required: true,
@@ -125,13 +145,8 @@ export function columnsConfig(
                         fetchAvailableHours(value, beginDate);
                     }
                 } }
-                // disabled={ bodyUpdateIsForbidden() }
-                // initialValue={
-                //     _.get(fetchedOrder, 'order.stationNum') ||
-                //     (this.bodyUpdateIsForbidden()
-                //         ? void 0
-                //         : _.get(location, 'state.stationNum'))
-                // }
+                disabled={ bodyUpdateIsForbidden() }
+                initialValue={ _getDefaultValue(key, 'stationNum') }
             >
                 { props.stations.map(({ name, num }) => {
                     return (
@@ -147,7 +162,7 @@ export function columnsConfig(
     const timeCol = {
         title:  <FormattedMessage id='time' />,
         key:    'orderStationTime',
-        width:  '15%',
+        width:  '10%',
         render: ({ key }) => (
             <DecoratedTimePicker
                 disabled={
@@ -198,7 +213,7 @@ export function columnsConfig(
                     id: 'add_order_form.provide_time',
                 }) }
                 minuteStep={ 30 }
-                initialValue={ momentBeginDatetime }
+                initialValue={ _getDefaultValue(key, 'beginTime') }
                 onChange={ () => handleAdd(key) }
             />
         ),
@@ -226,7 +241,7 @@ export function columnsConfig(
                     .value() }
                 optionValue='value'
                 optionLabel='value'
-                initialValue={ 0.5 }
+                initialValue={ _getDefaultValue(key, 'duration') || 0.5 }
             />
         ),
     };
@@ -234,6 +249,7 @@ export function columnsConfig(
     const deleteCol = {
         title:  '',
         key:    'delete',
+        width:  'auto',
         render: ({ key }) => {
             return (
                 state.keys.length > 2 &&

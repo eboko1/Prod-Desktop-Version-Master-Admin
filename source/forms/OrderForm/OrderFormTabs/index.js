@@ -58,7 +58,7 @@ export default class OrderFormTabs extends Component {
             user,
             fetchOrderForm,
             fetchOrderTask,
-            countStations,
+            stationsCount,
         } = this.props;
 
         const {
@@ -313,7 +313,7 @@ export default class OrderFormTabs extends Component {
                     tab={
                         formatMessage({
                             id: 'order_form_table.station',
-                        }) + ` (${countStations})`
+                        }) + ` (${stationsCount ? stationsCount.length : 0})`
                     }
                     key='7'
                 >

@@ -2,8 +2,14 @@
     padding: 0;
 }
 
+.status {
+    display: flex;
+    align-items: center;
+}
+
 .deleteIcon {
     color: var(--warning);
+    font-size: 24px;
 }
 
 .staticStationLoadsRow {
