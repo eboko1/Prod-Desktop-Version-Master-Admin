@@ -52,9 +52,19 @@ export default class StationsTable extends Component {
         this.setState({ keys: [ ...keys, this.uuid++ ] });
     };
 
+    // _handleAdd = key => {
+    //     const { keys } = this.state;
+    //     const stationLoads = this.props.form.getFieldValue('stationLoads');
+    //
+    //     if (_.last(keys) === key && !stationLoads[ key ].serviceName) {
+    //         this.setState({ keys: [ ...keys, this.uuid++ ] });
+    //     }
+    // };
+
     render() {
         const {
-            orderStationLoads,
+            fields,
+            stationLoads,
             intl: { formatMessage },
         } = this.props;
         const { keys } = this.state;
@@ -67,14 +77,29 @@ export default class StationsTable extends Component {
             this._fetchAvailableHours,
             this._bodyUpdateIsForbidden,
         );
+        console.log('→ props', this.props);
 
         return (
             <Catcher>
                 <Table
-                    // className={ Styles.callsTable }
+                    className={ Styles.stationLoadsTable }
                     // dataSource={ orderStationLoads }
                     dataSource={ keys.map(key => ({ key })) }
                     columns={ columns }
+                    rowClassName={ ({ key }) => {
+                        // const wasEdited = _.get(fields, [ 'stationLoads', key ]);
+                        // const exists = _.get(stationLoads, [ key ]);
+
+                        if (Number(key) === 0) {
+                            return Styles.staticStationLoadsRow;
+                        }
+
+                        // if (!exists) {
+                        //     return Styles.newStationLoadsRow;
+                        // } else if (wasEdited) {
+                        //     return Styles.editedStationLoadsRow;
+                        // }
+                    } }
                     pagination={ false }
                     size='small'
                     locale={ {
