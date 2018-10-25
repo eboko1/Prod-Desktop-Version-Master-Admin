@@ -130,6 +130,7 @@ export class OrderForm extends Component {
             allServices,
             stationLoads,
             schedule,
+            fields,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
@@ -143,6 +144,12 @@ export class OrderForm extends Component {
             price: priceServices,
             // totalHours,
         } = servicesStats(form.getFieldsValue().services || [], allServices);
+        const countStations = fields.stationLoads
+            ? fields.stationLoads.length
+            : 0;
+        // const countStations = _.values(
+        //     form.(['stationLoads']),
+        // ).filter(Boolean).length;
 
         const comments = form.getFieldsValue([ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);
 
@@ -171,6 +178,7 @@ export class OrderForm extends Component {
                 stationLoads={ stationLoads }
                 schedule={ schedule }
                 commentsCount={ commentsCount }
+                countStations={ countStations }
             />
         );
     };

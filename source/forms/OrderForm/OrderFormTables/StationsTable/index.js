@@ -47,9 +47,13 @@ export default class StationsTable extends Component {
         });
     };
 
-    _handleAdd = () => {
+    _handleAdd = key => {
         const { keys } = this.state;
-        this.setState({ keys: [ ...keys, this.uuid++ ] });
+        const stationLoads = this.props.form.getFieldValue('stationLoads');
+
+        if (_.last(keys) === key && !stationLoads[ key ].beginTime) {
+            this.setState({ keys: [ ...keys, this.uuid++ ] });
+        }
     };
 
     // _handleAdd = key => {
@@ -73,11 +77,11 @@ export default class StationsTable extends Component {
             this.props,
             this.state,
             formatMessage,
+            this._handleAdd,
             this._onDelete,
             this._fetchAvailableHours,
             this._bodyUpdateIsForbidden,
         );
-        console.log('→ props', this.props);
 
         return (
             <Catcher>

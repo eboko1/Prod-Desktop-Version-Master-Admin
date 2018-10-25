@@ -30,7 +30,7 @@ export default class OrderFormHeader extends Component {
     }
 
     fetchAvailableHours(station, date) {
-        this.props.form.resetFields([ 'beginTime' ]);
+        this.props.form.resetFields([ 'stationLoads[0].beginTime' ]);
         this.props.fetchAvailableHours(station, date, this.props.orderId);
     }
 
@@ -59,9 +59,9 @@ export default class OrderFormHeader extends Component {
 
         const deliveryDate = getFieldValue('deliveryDate');
 
-        const momentDate = getFieldValue('beginDate');
-        const momentTime = getFieldValue('beginTime');
-        const duration = getFieldValue('duration');
+        const momentDate = getFieldValue('stationLoads[0].beginDate');
+        const momentTime = getFieldValue('stationLoads[0].beginTime');
+        const duration = getFieldValue('stationLoads[0].duration');
 
         const excludeConfig = [{ momentDate, momentTime, duration }];
 
@@ -73,9 +73,15 @@ export default class OrderFormHeader extends Component {
             beginTime,
         } = getDateTimeConfig(moment(deliveryDate), schedule, excludeConfig);
 
-        const initialBeginDatetime = moment(momentDate).set({hours: 0, minutes: 0, milliseconds: 0, seconds: 0});
+        const initialBeginDatetime = moment(momentDate).set({
+            hours:        0,
+            minutes:      0,
+            milliseconds: 0,
+            seconds:      0,
+        });
         const disabledDate = date =>
-            dateTimeDisabledDate(date) || date && date.isSameOrBefore(initialBeginDatetime);
+            dateTimeDisabledDate(date) ||
+            date && date.isSameOrBefore(initialBeginDatetime);
 
         // // Can not select days before today and today
         // return current && current < moment().endOf('day');
@@ -93,7 +99,7 @@ export default class OrderFormHeader extends Component {
         return (
             <div className={ Styles.durationBlock }>
                 <DecoratedSlider
-                    field='duration'
+                    field='stationLoads[0].duration'
                     formItem
                     formItemLayout={ formHeaderItemLayout }
                     className={ `${Styles.duration} ${Styles.deliveryDatetime}` }
@@ -104,7 +110,9 @@ export default class OrderFormHeader extends Component {
                     }
                     label={ `${formatMessage({
                         id: 'time',
-                    })} (${getFieldValue('duration')}${formatMessage({
+                    })} (${getFieldValue(
+                        'stationLoads[0].duration',
+                    )}${formatMessage({
                         id: 'add_order_form.hours_shortcut',
                     })})` }
                     getFieldDecorator={ getFieldDecorator }
@@ -185,7 +193,7 @@ export default class OrderFormHeader extends Component {
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator, getFieldValue } = this.props.form;
 
-        const beginDate = getFieldValue('beginDate');
+        const beginDate = getFieldValue('stationLoads[0].beginDate');
         // disabledHours, disabledMinutes, disabledSeconds
         const { disabledDate, beginTime } = getDateTimeConfig(
             moment(beginDate),
@@ -207,7 +215,8 @@ export default class OrderFormHeader extends Component {
                 <DecoratedDatePicker
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ this.bodyUpdateIsForbidden() }
-                    field='beginDate'
+                    // field='beginDate'
+                    field='stationLoads[0].beginDate'
                     hasFeedback
                     formItem
                     formItemLayout={ formHeaderItemLayout }
@@ -215,6 +224,7 @@ export default class OrderFormHeader extends Component {
                     label={
                         <FormattedMessage id='add_order_form.enrollment_date' />
                     }
+                    allowClear={ false }
                     colon={ false }
                     className={ Styles.datePanelItem }
                     rules={ [
@@ -234,7 +244,7 @@ export default class OrderFormHeader extends Component {
                     initialValue={ momentBeginDatetime }
                     onChange={ value => {
                         const station = this.props.form.getFieldValue(
-                            'station',
+                            'stationLoads[0].station',
                         );
                         if (station) {
                             this.fetchAvailableHours(station, value);
@@ -243,7 +253,7 @@ export default class OrderFormHeader extends Component {
                 />
 
                 <DecoratedSelect
-                    field='station'
+                    field='stationLoads[0].station'
                     rules={ [
                         {
                             required: true,
@@ -264,7 +274,7 @@ export default class OrderFormHeader extends Component {
                     }) }
                     onSelect={ value => {
                         const beginDate = this.props.form.getFieldValue(
-                            'beginDate',
+                            'stationLoads[0].beginDate',
                         );
                         if (beginDate) {
                             this.fetchAvailableHours(value, beginDate);
@@ -291,12 +301,16 @@ export default class OrderFormHeader extends Component {
                     formItem
                     disabled={
                         this.bodyUpdateIsForbidden() ||
-                        !this.props.form.getFieldValue('beginDate') ||
-                        !this.props.form.getFieldValue('station')
+                        !this.props.form.getFieldValue(
+                            'stationLoads[0].beginDate',
+                        ) ||
+                        !this.props.form.getFieldValue(
+                            'stationLoads[0].station',
+                        )
                     }
                     formItemLayout={ formHeaderItemLayout }
                     defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
-                    field='beginTime'
+                    field='stationLoads[0].beginTime'
                     hasFeedback
                     disabledHours={ () => {
                         const availableHours = this.props.availableHours || [];
