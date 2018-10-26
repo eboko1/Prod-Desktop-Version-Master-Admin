@@ -108,14 +108,14 @@ class DashboardContainer extends Component {
                 day={ mode === 'calendar' ? days[ index ] : null }
             >
                 <DashboardHead dashboard={ dashboard } column={ 1 }>
-                    { load.length &&
+                    { load.length && 
                         <>
                             <DashboardTitle>
                                 { mode === 'calendar' ? (
                                     <FormattedMessage
                                         id={ load[ index ].dayName }
                                     />
-                                ) :
+                                ) : 
                                     load[ index ].stationNum
                                 }
                             </DashboardTitle>
@@ -235,7 +235,10 @@ class DashboardContainer extends Component {
                                                     result[ index ].options
                                                         .clientName,
                                             } }
-                                            id={ result[ index ].options.id }
+                                            id={
+                                                result[ index ].options
+                                                    .stationLoadId
+                                            }
                                             status={
                                                 result[ index ].options.status
                                             }

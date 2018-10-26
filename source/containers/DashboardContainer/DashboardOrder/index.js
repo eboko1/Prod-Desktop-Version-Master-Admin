@@ -37,7 +37,7 @@ export default class DashboardOrder extends Component {
         const resizedDuration = (this.state.height + delta.height) / 60;
 
         this.setState({ height: this.state.height + delta.height });
-
+        // id has to be equal for this.props.options.stationLoadId
         dropOrder({ duration: resizedDuration, id });
     };
 
@@ -52,7 +52,6 @@ export default class DashboardOrder extends Component {
             user,
             // hideSourceOnDrag,
         } = this.props;
-
         const { resizing } = this.state;
 
         const canUpdate =
