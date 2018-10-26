@@ -24,6 +24,8 @@ import {
     CallsPage,
     BusinessPackagePage,
     ManagerRolePage,
+    ServicesPage,
+    BrandsPage,
 } from 'pages';
 import book from './book';
 
@@ -89,6 +91,13 @@ export default class Private extends Component {
                     component={ ManagerRolePage }
                     path={ book.managerRolePage }
                 />
+                { /* Administration */ }
+                <Route
+                    exacat
+                    component={ ServicesPage }
+                    path={ book.servicesPage }
+                />
+                <Route exacat component={ BrandsPage } path={ book.brandsPage } />
                 { /* Global */ }
                 <Route exact component={ ProfilePage } path={ book.profile } />
                 <Route

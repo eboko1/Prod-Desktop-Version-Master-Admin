@@ -25,6 +25,9 @@ export const SET_PACKAGE_FETCHING_STATE = `${prefix}/SET_PACKAGE_FETCHING_STATE`
 export const SET_BUSINESS_PACKAGE_FETCHING_STATE = `${prefix}/SET_BUSINESS_PACKAGE_FETCHING_STATE`;
 export const SET_MANAGER_ROLE_FETCHING_STATE = `${prefix}/SET_MANAGER_ROLE_FETCHING_STATE`;
 export const SET_ROLE_FETCHING_STATE = `${prefix}/SET_ROLE_FETCHING_STATE`;
+export const SET_BRANDS_FETCHING_STATE = `${prefix}/SET_BRANDS_FETCHING_STATE`;
+export const SET_SERVICES_FETCHING_STATE = `${prefix}/SET_SERVICES_FETCHING_STATE`;
+
 export const SET_REVIEW_REPLY_STATE = `${prefix}/SET_REVIEW_REPLY_STATE`;
 export const SET_REVIEW_COMPLAINT_STATE = `${prefix}/SET_REVIEW_COMPLAINT_STATE`;
 
@@ -65,6 +68,8 @@ const ReducerState = {
     businessPackageFetching:    false,
     managerRoleFetching:        false,
     roleFetching:               false,
+    brandsFetching:             false,
+    servicesFetching:           false,
     collapsed:                  false,
     views:                      {},
     error:                      null,
@@ -160,6 +165,12 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_DETAILS_SUGGESTIONS_FETCHING_STATE:
             return { ...state, detailsSuggestionsFetching: payload };
+
+        case SET_BRANDS_FETCHING_STATE:
+            return { ...state, brandsFetching: payload };
+
+        case SET_SERVICES_FETCHING_STATE:
+            return { ...state, servicesFetching: payload };
 
         default:
             return state;
@@ -288,6 +299,26 @@ export const setSearchBusinessesFetchingState = state => ({
     payload: state,
 });
 
+export const setSuggestionsFetchingState = state => ({
+    type:    SET_SUGGESTIONS_FETCHING_STATE,
+    payload: state,
+});
+
+export const setDetailsSuggestionsFetchingState = state => ({
+    type:    SET_DETAILS_SUGGESTIONS_FETCHING_STATE,
+    payload: state,
+});
+
+export const setBrandsFetchingState = state => ({
+    type:    SET_BRANDS_FETCHING_STATE,
+    payload: state,
+});
+export const setServicesFetchingState = state => ({
+    type:    SET_SERVICES_FETCHING_STATE,
+    payload: state,
+});
+
+// GLOBALS
 export const setCollapsedState = state => ({
     type:    SET_COLLAPSED_STATE,
     payload: state,
@@ -302,14 +333,4 @@ export const emitError = error => ({
     type:    EMIT_ERROR,
     payload: error,
     error:   true,
-});
-
-export const setSuggestionsFetchingState = state => ({
-    type:    SET_SUGGESTIONS_FETCHING_STATE,
-    payload: state,
-});
-
-export const setDetailsSuggestionsFetchingState = state => ({
-    type:    SET_DETAILS_SUGGESTIONS_FETCHING_STATE,
-    payload: state,
 });

@@ -51,6 +51,11 @@ const book = Object.freeze({
     businessPackagePage: '/businesses/packages',
     managerRolePage:     '/managers/roles',
     rolePage:            '/packages/:id',
+    //
+    // Administration
+    //
+    servicesPage:        '/administration/services',
+    brandsPage:          '/administration/brands',
 
     oldApp: {
         // link to my.cb24.eu

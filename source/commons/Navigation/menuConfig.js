@@ -208,6 +208,27 @@ export default {
                 },
             ],
         },
+        /* Administration submenu */
+        {
+            key:      'administration',
+            iconType: 'database',
+            disabled: user => isForbidden(user, permissions.GRANT),
+            name:     'navigation.administration',
+            items:    [
+                {
+                    key:     '/administration/services',
+                    link:    book.servicesPage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.services-spare_parts',
+                },
+                {
+                    key:     '/administration/brands',
+                    link:    book.brandsPage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.priority_brands',
+                },
+            ],
+        },
         {
             key:      '/suggest-idea',
             iconType: 'bulb',
