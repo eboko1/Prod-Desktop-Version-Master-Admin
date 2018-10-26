@@ -68,8 +68,15 @@ export default class DashboardEmptyCell extends Component {
 export const StyledDashboardEmptyCell = styled.div`
     height: ${ROW_HEIGHT}px;
     grid-column: ${props => `span ${props.column}`};
+    ${
+    '' /* background-color: ${props =>
+        props.globalPosition % 2 ? '#fff' : 'var(--lightGray)'}; */
+}
     background-color: ${props =>
-        props.globalPosition % 2 ? '#fff' : 'var(--lightGray)'};
+        props.globalPosition % 2
+            ? 'rgba(var(--warningRGB), 0.25)'
+            : 'rgba(var(--warningRGB), 0.4)'};
+        ${'' /* background-color: rgba(var(--warningRGB), 0.4); */}
 `;
 
 export const EmptyCellOverlay = styled.div`

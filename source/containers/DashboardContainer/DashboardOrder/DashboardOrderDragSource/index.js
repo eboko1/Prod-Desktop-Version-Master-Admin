@@ -26,11 +26,17 @@ const orderSource = {
     },
 
     beginDrag(props) {
-        return { id: props.id, station: props.options.stationNum };
+        console.log('→ beginDragprops', props);
+
+        return {
+            orderId:   props.orderId,
+            stationId: props.stationId,
+            station:   props.options.stationNum,
+        };
     },
 
     endDrag(props, monitor) {
-        const { id, station } = monitor.getItem();
+        const { orderId, station } = monitor.getItem();
         const didDrop = monitor.didDrop();
 
         if (didDrop) {
@@ -45,7 +51,7 @@ const orderSource = {
                         schedule.beginHour,
                     ).toISOString(),
                     station,
-                    id,
+                    orderId,
                 });
             } else {
                 dropOrder({
@@ -55,13 +61,13 @@ const orderSource = {
                         schedule.beginHour,
                     ).toISOString(),
                     stationNum,
-                    id,
+                    orderId,
                 });
             }
         }
 
         if (!didDrop) {
-            console.warn(`Order ${id} didn\'t dropped`); // eslint-disable-line
+            console.warn(`Order ${orderId} didn\'t dropped`); // eslint-disable-line
         }
     },
 };

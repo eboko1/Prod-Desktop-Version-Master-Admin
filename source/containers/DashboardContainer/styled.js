@@ -104,9 +104,10 @@ export const DashboardAddOrderColumn = styled.div`
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     border-right: 1px solid black;
+    background-color: rgba(var(--warningRGB), 0.25);
 
     & div:nth-child(odd) {
-        background: var(--lightGray);
+        ${'' /* background: var(--lightGray); */} background-color: rgba(var(--warningRGB), 0.3);
     }
 `;
 

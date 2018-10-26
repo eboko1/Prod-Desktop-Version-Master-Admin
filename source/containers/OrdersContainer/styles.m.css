@@ -147,5 +147,5 @@
 
 .delayedRow,
 .delayedProgressRow {
-    background: rgba(var(--warningRGB), .5);
+    background: rgba(var(--warningRGB), .3);
 }

@@ -7,7 +7,6 @@ import { permissions, isForbidden } from 'utils';
 
 // own
 import { ordersStatus } from '../dashboardConfig';
-// import book from 'routes/book';
 
 // own
 import DashboardOrderDragSource from './DashboardOrderDragSource';
@@ -17,15 +16,7 @@ export default class DashboardOrder extends Component {
         resizing: false,
         height:   30,
     };
-    // constructor(props) {
-    //     super(props);
-    //
-    //     // this._resizableRef = React.createRef();
-    // }
 
-    // _getResizableRef = resizable => {
-    //     this.resizableRef = resizable;
-    // };
     componentDidMount() {
         this.setState({
             height: this.resizable.resizable.getBoundingClientRect().height,
