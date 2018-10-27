@@ -146,7 +146,7 @@ export class OrderForm extends Component {
         } = servicesStats(form.getFieldsValue().services || [], allServices);
 
         const stationsCount =
-            form.getFieldsValue().stationLoads || stationLoads || [];
+            (form.getFieldsValue().stationLoads || []).filter(Boolean);
 
         const comments = form.getFieldsValue([ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);
 
