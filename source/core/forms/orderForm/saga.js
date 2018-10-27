@@ -143,7 +143,7 @@ export function* createOrderSaga() {
                 payload: { order, redirectStatus, redirectToDashboard },
             } = yield take(CREATE_ORDER);
             yield call(fetchAPI, 'POST', 'orders', {}, order);
-
+            console.log('* order', order);
             if (redirectToDashboard && redirectStatus) {
                 yield put(replace(book.dashboard));
             }
@@ -304,13 +304,15 @@ export function* fetchAvailableHoursSaga() {
             const {
                 payload: { station, date, orderId },
             } = yield take(FETCH_AVAILABLE_HOURS);
-
+            console.log('* station', station);
+            console.log('* date', date);
+            console.log('* orderId', orderId);
             const data = yield call(fetchAPI, 'GET', 'dashboard/free_hours', {
                 stationNum: station,
                 date:       date.toISOString(),
                 orderId,
             });
-
+            console.log('* data', data);
             yield put(fetchAvailableHoursSuccess(data));
         } catch (error) {
             yield put(emitError(error));

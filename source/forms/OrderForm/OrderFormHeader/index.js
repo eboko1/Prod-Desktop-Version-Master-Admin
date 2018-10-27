@@ -30,6 +30,8 @@ export default class OrderFormHeader extends Component {
     }
 
     fetchAvailableHours(station, date) {
+        console.log('→ ordF Header: station', station);
+        console.log('→ ordF Header: date', date);
         this.props.form.resetFields([ 'stationLoads[0].beginTime' ]);
         this.props.fetchAvailableHours(station, date, this.props.orderId);
     }

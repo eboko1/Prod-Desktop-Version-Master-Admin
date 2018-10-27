@@ -51,8 +51,13 @@ const formItemLayout = {
 })
 export class MobileRecordForm extends Component {
     fetchAvailableHours(station, date) {
+        console.log('→ mbile station, date', station, date);
         this.props.form.resetFields([ 'beginTime' ]);
-        this.props.fetchAvailableHours(station, date, _.get(this.props, 'order.id'));
+        this.props.fetchAvailableHours(
+            station,
+            date,
+            _.get(this.props, 'order.id'),
+        );
     }
 
     render() {

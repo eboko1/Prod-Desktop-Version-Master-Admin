@@ -108,8 +108,9 @@ export function columnsConfig(
                 initialValue={ _getDefaultValue(key, 'beginDate') }
                 onChange={ value => {
                     const station = props.form.getFieldValue(
-                        `stationLoads[${key}].beginDate`,
+                        `stationLoads[${key}].station`,
                     );
+                    console.log('→ TC DatePicker: station', station);
                     if (station) {
                         fetchAvailableHours(station, value);
                     }
@@ -141,6 +142,7 @@ export function columnsConfig(
                     const beginDate = props.form.getFieldValue(
                         `stationLoads[${key}].beginDate`,
                     );
+                    console.log('→ TC Select: station', value);
                     if (beginDate) {
                         fetchAvailableHours(value, beginDate);
                     }
