@@ -94,6 +94,12 @@ class DetailsTable extends Component {
                 'detailId',
             );
 
+            const detailSelectPlaceholder = clientVehicleId ? (
+                <FormattedMessage id='order_form_table.detail.placeholder' />
+            ) : (
+                <FormattedMessage id='order_form_table.detail.no_vehicle_placeholder' />
+            );
+
             return [
                 {
                     title: (
@@ -130,9 +136,7 @@ class DetailsTable extends Component {
                                     key,
                                     'detailName',
                                 ) }
-                                placeholder={
-                                    <FormattedMessage id='order_form_table.detail.placeholder' />
-                                }
+                                placeholder={ detailSelectPlaceholder }
                                 dropdownMatchSelectWidth={ false }
                                 dropdownStyle={ { width: '70%' } }
                                 defaultValues={ defaultDetails }
