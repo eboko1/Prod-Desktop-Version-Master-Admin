@@ -56,7 +56,8 @@ const ReducerState = {
     endDate: moment()
         .endOf('week')
         .isoWeekday(7),
-    load: [],
+    load:              [],
+    daysWithConflicts: [],
 };
 
 export default function reducer(state = ReducerState, action) {

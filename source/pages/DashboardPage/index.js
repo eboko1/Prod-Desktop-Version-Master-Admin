@@ -27,18 +27,20 @@ import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
-    orders:    state.dashboard.orders.orders,
-    mode:      state.dashboard.mode,
-    stations:  state.dashboard.stations,
-    date:      state.dashboard.date,
-    startDate: state.dashboard.startDate,
-    endDate:   state.dashboard.endDate,
-    schedule:  state.dashboard.schedule,
-    days:      state.dashboard.days,
-    load:      state.dashboard.load,
-    spinner:   state.ui.dashboardInitializing,
-    loading:   state.ui.dashboardFetching,
-    user:      state.auth,
+    orders:            state.dashboard.orders.orders,
+    mode:              state.dashboard.mode,
+    stations:          state.dashboard.stations,
+    date:              state.dashboard.date,
+    startDate:         state.dashboard.startDate,
+    endDate:           state.dashboard.endDate,
+    schedule:          state.dashboard.schedule,
+    days:              state.dashboard.days,
+    load:              state.dashboard.load,
+    daysWithConflicts: state.dashboard.daysWithConflicts,
+
+    spinner: state.ui.dashboardInitializing,
+    loading: state.ui.dashboardFetching,
+    user:    state.auth,
 
     ...selectDasboardData(state),
 });
@@ -197,6 +199,7 @@ class DashboardPage extends Component {
             updateDashboardOrder,
             date,
             user,
+            daysWithConflicts,
         } = this.props;
 
         return loading ? (
@@ -215,6 +218,7 @@ class DashboardPage extends Component {
                 dashboard={ dashboard }
                 linkToDashboardStations={ linkToDashboardStations }
                 updateDashboardOrder={ updateDashboardOrder }
+                daysWithConflicts={ daysWithConflicts }
             />
         );
     };

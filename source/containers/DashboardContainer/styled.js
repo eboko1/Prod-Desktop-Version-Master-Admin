@@ -104,10 +104,16 @@ export const DashboardAddOrderColumn = styled.div`
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     border-right: 1px solid black;
-    background-color: rgba(var(--warningRGB), 0.25);
+    background-color: ${props =>
+        props.daysWithConflicts.includes(props.day)
+            ? 'rgba(var(--warningRGB), 0.3)'
+            : 'white'};
 
     & div:nth-child(odd) {
-        ${'' /* background: var(--lightGray); */} background-color: rgba(var(--warningRGB), 0.3);
+        background-color: ${props =>
+        props.daysWithConflicts.includes(props.day)
+            ? 'rgba(var(--warningRGB), 0.4)' // not 0.5 cuz of overlayed backgrounds
+            : 'var(--lightGray)'};
     }
 `;
 

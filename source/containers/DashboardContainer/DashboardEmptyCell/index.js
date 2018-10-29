@@ -45,6 +45,8 @@ export default class DashboardEmptyCell extends Component {
             canDrop,
             children,
             // className,
+            daysWithConflicts,
+            day,
         } = this.props;
 
         // console.log('→ EmptyCell globalPosition', globalPosition);
@@ -53,6 +55,8 @@ export default class DashboardEmptyCell extends Component {
         return (
             <StyledDashboardEmptyCell
                 // className={ className }
+                day={ day }
+                daysWithConflicts={ daysWithConflicts }
                 globalPosition={ globalPosition }
                 innerRef={ cell => connectDropTarget(cell) }
             >
@@ -68,15 +72,14 @@ export default class DashboardEmptyCell extends Component {
 export const StyledDashboardEmptyCell = styled.div`
     height: ${ROW_HEIGHT}px;
     grid-column: ${props => `span ${props.column}`};
-    ${
-    '' /* background-color: ${props =>
-        props.globalPosition % 2 ? '#fff' : 'var(--lightGray)'}; */
-}
     background-color: ${props =>
-        props.globalPosition % 2
-            ? 'rgba(var(--warningRGB), 0.25)'
-            : 'rgba(var(--warningRGB), 0.4)'};
-        ${'' /* background-color: rgba(var(--warningRGB), 0.4); */}
+        props.daysWithConflicts.includes(props.day)
+            ? props.globalPosition % 2
+                ? 'rgba(var(--warningRGB), 0.3)'
+                : 'rgba(var(--warningRGB), 0.5)'
+            : props.globalPosition % 2
+                ? 'white'
+                : 'var(--lightGray)'};
 `;
 
 export const EmptyCellOverlay = styled.div`
@@ -85,3 +88,20 @@ export const EmptyCellOverlay = styled.div`
     opacity: 0.5;
     background-color: ${props => props.color};
 `;
+
+// background-color: ${props =>
+//     props.globalPosition % 2
+//         ? 'rgba(var(--warningRGB), 0.25)'
+//         : 'rgba(var(--warningRGB), 0.4)'};
+
+//
+// & div:nth-child(odd) {
+//     background-color: ${props =>
+//     props.daysWithConflicts === props.day
+//         ? 'rgba(var(--warningRGB), 0.3)'
+//         : 'gray'};
+// }
+
+// ${
+// '' /* color: ${props => console.log('→ DashboardEmptyCellprops', props)} */
+// }
