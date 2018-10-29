@@ -45,18 +45,21 @@ export default class DashboardEmptyCell extends Component {
             canDrop,
             children,
             // className,
+            mode,
             daysWithConflicts,
             day,
+            stationsWithConflicts,
+            stationNum,
         } = this.props;
-
-        // console.log('→ EmptyCell globalPosition', globalPosition);
-        // const backgroundColor = 'palevioletred';
 
         return (
             <StyledDashboardEmptyCell
                 // className={ className }
-                day={ day }
+                mode={ mode }
                 daysWithConflicts={ daysWithConflicts }
+                stationsWithConflicts={ stationsWithConflicts }
+                day={ day }
+                stationNum={ stationNum }
                 globalPosition={ globalPosition }
                 innerRef={ cell => connectDropTarget(cell) }
             >
@@ -68,18 +71,35 @@ export default class DashboardEmptyCell extends Component {
         );
     }
 }
-
+/* eslint-disable func-names */
 export const StyledDashboardEmptyCell = styled.div`
     height: ${ROW_HEIGHT}px;
     grid-column: ${props => `span ${props.column}`};
-    background-color: ${props =>
-        props.daysWithConflicts.includes(props.day)
-            ? props.globalPosition % 2
+    background-color: ${function({
+        mode,
+        daysWithConflicts,
+        stationsWithConflicts,
+        day,
+        stationNum,
+        globalPosition,
+    }) {
+        if (mode === 'calendar') {
+            if (daysWithConflicts.includes(day)) {
+                return globalPosition % 2
+                    ? 'rgba(var(--warningRGB), 0.3)'
+                    : 'rgba(var(--warningRGB), 0.5)';
+            }
+
+            return globalPosition % 2 ? 'white' : 'var(--lightGray)';
+        }
+        if (stationsWithConflicts.includes(stationNum)) {
+            return globalPosition % 2
                 ? 'rgba(var(--warningRGB), 0.3)'
-                : 'rgba(var(--warningRGB), 0.5)'
-            : props.globalPosition % 2
-                ? 'white'
-                : 'var(--lightGray)'};
+                : 'rgba(var(--warningRGB), 0.5)';
+        }
+
+        return globalPosition % 2 ? 'white' : 'var(--lightGray)';
+    }};
 `;
 
 export const EmptyCellOverlay = styled.div`
@@ -105,3 +125,49 @@ export const EmptyCellOverlay = styled.div`
 // ${
 // '' /* color: ${props => console.log('→ DashboardEmptyCellprops', props)} */
 // }
+
+//
+// background-color: ${({
+//     mode,
+//     daysWithConflicts,
+//     stationsWithConflicts,
+//     day,
+//     stationNum,
+// }) =>
+//     mode === 'calendar'
+//         ? daysWithConflicts.includes(day)
+//             ? 'rgba(var(--warningRGB), 0.3)'
+//             : 'white'
+//         : stationsWithConflicts.includes(stationNum)
+//             ? 'rgba(var(--warningRGB), 0.3)'
+//             : 'white'};
+
+// background-color: ${props =>
+//     props.daysWithConflicts.includes(props.day) &&
+//     props.stationsWithConflicts.includes(props.stationNum)
+//         ? props.globalPosition % 2
+//             ? 'rgba(var(--warningRGB), 0.3)'
+//             : 'rgba(var(--warningRGB), 0.5)'
+//         : props.globalPosition % 2
+//             ? 'white'
+//             : 'var(--lightGray)'};
+
+// ? daysWithConflicts.includes(day)
+//         ? props.globalPosition % 2
+//             ? 'rgba(var(--warningRGB), 0.3)'
+//             : 'rgba(var(--warningRGB), 0.5)'
+//         :
+// : stationsWithConflicts.includes(stationNum)
+//     ? props.globalPosition % 2
+//         ? 'rgba(var(--warningRGB), 0.3)'
+//         : 'rgba(var(--warningRGB), 0.5)'};
+
+// background-color: ${props =>
+//     props.daysWithConflicts.includes(props.day) &&
+//     props.stationsWithConflicts.includes(props.stationNum)
+//         ? props.globalPosition % 2
+//             ? 'rgba(var(--warningRGB), 0.3)'
+//             : 'rgba(var(--warningRGB), 0.5)'
+//         : props.globalPosition % 2
+//             ? 'white'
+//             : 'var(--lightGray)'};

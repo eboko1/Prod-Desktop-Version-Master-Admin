@@ -163,6 +163,7 @@ class DashboardContainer extends Component {
             mode,
             user,
             daysWithConflicts,
+            stationsWithConflicts,
         } = this.props;
         // const { hideSourceOnDrag } = this.state;
 
@@ -211,6 +212,9 @@ class DashboardContainer extends Component {
                                             daysWithConflicts={
                                                 daysWithConflicts
                                             }
+                                            stationsWithConflicts={
+                                                stationsWithConflicts
+                                            }
                                             mode={ mode }
                                             day={
                                                 dashboardMode
@@ -218,11 +222,12 @@ class DashboardContainer extends Component {
                                                     : date.format('YYYY-MM-DD')
                                             }
                                             stationNum={
-                                                !dashboardMode &&
-                                                _.get(
-                                                    stations,
-                                                    `[${column}].num`,
-                                                )
+                                                !dashboardMode
+                                                    ? _.get(
+                                                        stations,
+                                                        `[${column}].num`,
+                                                    )
+                                                    : column + 1
                                             }
                                             { ...order }
                                         />
@@ -291,7 +296,10 @@ class DashboardContainer extends Component {
             mode,
             user,
             daysWithConflicts,
+            stationsWithConflicts,
         } = this.props;
+
+        const dashboardMode = mode === 'calendar';
 
         const setBeginDateitme = index => {
             if (mode !== 'calendar') {
@@ -314,6 +322,11 @@ class DashboardContainer extends Component {
                 dashboard={ dashboard }
                 day={ day }
                 daysWithConflicts={ daysWithConflicts }
+                stationsWithConflicts={ stationsWithConflicts }
+                mode={ mode }
+                stationNum={
+                    !dashboardMode && _.get(stations, `[${column}].num`)
+                }
             >
                 { [ ...Array(dashboard.rows).keys() ].map((_, index) => (
                     <DashboardAddOrderCell key={ index }>

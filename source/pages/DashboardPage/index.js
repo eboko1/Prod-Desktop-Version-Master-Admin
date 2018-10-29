@@ -27,16 +27,17 @@ import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
-    orders:            state.dashboard.orders.orders,
-    mode:              state.dashboard.mode,
-    stations:          state.dashboard.stations,
-    date:              state.dashboard.date,
-    startDate:         state.dashboard.startDate,
-    endDate:           state.dashboard.endDate,
-    schedule:          state.dashboard.schedule,
-    days:              state.dashboard.days,
-    load:              state.dashboard.load,
-    daysWithConflicts: state.dashboard.daysWithConflicts,
+    orders:                state.dashboard.orders.orders,
+    mode:                  state.dashboard.mode,
+    stations:              state.dashboard.stations,
+    date:                  state.dashboard.date,
+    startDate:             state.dashboard.startDate,
+    endDate:               state.dashboard.endDate,
+    schedule:              state.dashboard.schedule,
+    days:                  state.dashboard.days,
+    load:                  state.dashboard.load,
+    daysWithConflicts:     state.dashboard.daysWithConflicts,
+    stationsWithConflicts: state.dashboard.stationsWithConflicts,
 
     spinner: state.ui.dashboardInitializing,
     loading: state.ui.dashboardFetching,
@@ -200,6 +201,7 @@ class DashboardPage extends Component {
             date,
             user,
             daysWithConflicts,
+            stationsWithConflicts,
         } = this.props;
 
         return loading ? (
@@ -219,6 +221,7 @@ class DashboardPage extends Component {
                 linkToDashboardStations={ linkToDashboardStations }
                 updateDashboardOrder={ updateDashboardOrder }
                 daysWithConflicts={ daysWithConflicts }
+                stationsWithConflicts={ stationsWithConflicts }
             />
         );
     };

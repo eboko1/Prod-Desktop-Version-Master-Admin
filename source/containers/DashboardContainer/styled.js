@@ -97,6 +97,7 @@ export const DashboardContentBox = styled.div`
     grid-row: ${props => `span ${props.rows}`};
 `;
 
+/* eslint-disable func-names */
 export const DashboardAddOrderColumn = styled.div`
     display: grid;
     grid-template-rows: ${props =>
@@ -104,17 +105,58 @@ export const DashboardAddOrderColumn = styled.div`
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     border-right: 1px solid black;
-    background-color: ${props =>
-        props.daysWithConflicts.includes(props.day)
-            ? 'rgba(var(--warningRGB), 0.3)'
-            : 'white'};
+    background-color: ${function({
+        mode,
+        daysWithConflicts,
+        stationsWithConflicts,
+        day,
+        stationNum,
+        globalPosition,
+    }) {
+        if (mode === 'calendar') {
+            if (daysWithConflicts.includes(day)) {
+                return globalPosition % 2
+                    ? 'rgba(var(--warningRGB), 0.3)'
+                    : 'rgba(var(--warningRGB), 0.4)';
+            }
+
+            return 'white';
+        }
+        if (stationsWithConflicts.includes(stationNum)) {
+            return globalPosition % 2
+                ? 'rgba(var(--warningRGB), 0.3)'
+                : 'rgba(var(--warningRGB), 0.4)';
+        }
+
+        return 'white';
+    }};
 
     & div:nth-child(odd) {
-        background-color: ${props =>
-        props.daysWithConflicts.includes(props.day)
-            ? 'rgba(var(--warningRGB), 0.4)' // not 0.5 cuz of overlayed backgrounds
-            : 'var(--lightGray)'};
-    }
+        background-color: ${function({
+        mode,
+        daysWithConflicts,
+        stationsWithConflicts,
+        day,
+        stationNum,
+        globalPosition,
+    }) {
+        if (mode === 'calendar') {
+            if (daysWithConflicts.includes(day)) {
+                return globalPosition % 2
+                    ? 'rgba(var(--warningRGB), 0.3)'
+                    : 'rgba(var(--warningRGB), 0.4)'; // not 0.5 cuz of overlayed backgrounds
+            }
+
+            return 'var(--lightGray)';
+        }
+        if (stationsWithConflicts.includes(stationNum)) {
+            return globalPosition % 2
+                ? 'rgba(var(--warningRGB), 0.3)'
+                : 'rgba(var(--warningRGB), 0.4)';
+        }
+
+        return 'var(--lightGray)';
+    }}};
 `;
 
 export const DashboardHead = styled.div`
