@@ -56,7 +56,7 @@ export class AddClientVehicleForm extends Component {
         return (
             <Form>
                 <Row gutter={ 8 } type='flex' align='bottom'>
-                    <Col span={ 3 }>
+                    <Col span={ 3 + (this.props.onlyVehicles ? 1 : 0) }>
                         { years && (
                             <DecoratedSelect
                                 field={ 'year' }
@@ -98,7 +98,7 @@ export class AddClientVehicleForm extends Component {
                             </DecoratedSelect>
                         ) }
                     </Col>
-                    <Col span={ 3 }>
+                    <Col span={ 3 + (this.props.onlyVehicles ? 1 : 0) }>
                         { years && (
                             <DecoratedSelect
                                 field='makeId'
@@ -145,7 +145,7 @@ export class AddClientVehicleForm extends Component {
                             </DecoratedSelect>
                         ) }
                     </Col>
-                    <Col span={ 4 }>
+                    <Col span={ 4 + (this.props.onlyVehicles ? 1 : 0) }>
                         { years && (
                             <DecoratedSelect
                                 field='modelId'
@@ -192,7 +192,7 @@ export class AddClientVehicleForm extends Component {
                             </DecoratedSelect>
                         ) }
                     </Col>
-                    <Col span={ 4 }>
+                    <Col span={ 4 + (this.props.onlyVehicles ? 2 : 0) }>
                         { years && (
                             <DecoratedSelect
                                 field={ 'modificationId' }
@@ -265,7 +265,7 @@ export class AddClientVehicleForm extends Component {
                             />
                         </Col>
                     ) }
-                    <Col span={ 4 }>
+                    <Col span={ 4 + (this.props.onlyVehicles ? 1 : 0) }>
                         <Row type='flex' justify='end'>
                             <FormItem>
                                 <Button

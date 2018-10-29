@@ -61,6 +61,12 @@ class ServicesTable extends Component {
                     permissions.ACCESS_ORDER_SERVICES,
                 ) || !clientVehicleId;
 
+            const serviceSelectPlaceholder = clientVehicleId ? (
+                <FormattedMessage id='order_form_table.service.placeholder' />
+            ) : (
+                <FormattedMessage id='order_form_table.service.no_vehicle_placeholder' />
+            );
+
             return [
                 {
                     title:  <FormattedMessage id='order_form_table.service' />,
@@ -119,9 +125,7 @@ class ServicesTable extends Component {
                                     key,
                                     'serviceName',
                                 ) }
-                                placeholder={
-                                    <FormattedMessage id='order_form_table.service.placeholder' />
-                                }
+                                placeholder={ serviceSelectPlaceholder }
                                 dropdownMatchSelectWidth={ false }
                                 dropdownStyle={ { width: '70%' } }
                             >
