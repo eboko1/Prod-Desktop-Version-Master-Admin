@@ -181,7 +181,6 @@ export function* updateDashboardOrderSaga() {
         try {
             const { payload: order } = yield take(UPDATE_DASHBOARD_ORDER);
             yield nprogress.start();
-
             yield call(
                 fetchAPI,
                 'PUT',
