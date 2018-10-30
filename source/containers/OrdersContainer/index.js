@@ -312,14 +312,14 @@ class OrdersContainer extends Component {
 
         const delayedConfig = [ 'call', 'required', 'not_complete', 'reserve', 'approve' ];
 
-        const _rowClassName = (datetime, status) =>
+        const _rowClassName = (beginDatetime, status) =>
             cx({
                 delayedRow:
                     delayedConfig.includes(status) &&
-                    moment(datetime).diff(moment(), 'days') <= -2,
+                    moment(beginDatetime).diff(moment(), 'days') <= -2,
                 delayedProgressRow:
                     status === 'progress' &&
-                    moment(datetime).diff(moment(), 'days') <= -1,
+                    moment(beginDatetime).diff(moment(), 'days') <= -1,
             });
 
         return (
@@ -330,8 +330,8 @@ class OrdersContainer extends Component {
                         className={ Styles.ordersTable }
                         columns={ columns }
                         rowSelection={ rows }
-                        rowClassName={ ({ datetime, status }) =>
-                            _rowClassName(datetime, status)
+                        rowClassName={ ({ beginDatetime, status }) =>
+                            _rowClassName(beginDatetime, status)
                         }
                         dataSource={ orders }
                         scroll={ scrollConfig(activeRoute) }
