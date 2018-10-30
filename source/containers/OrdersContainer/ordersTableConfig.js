@@ -46,7 +46,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) => 
+        render:    (_, order) =>
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -387,7 +387,7 @@ export function columnsConfig(
 
     switch (activeRoute) {
         case '/orders/appointments':
-            return [ indexCol, orderCol, datetimeCol, deliveryDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, tasksCol, editCol ];
+            return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, tasksCol, editCol ];
 
         case '/orders/approve':
         case '/orders/progress':
@@ -397,7 +397,7 @@ export function columnsConfig(
             return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, reviewCol, invitationCol, editCol ];
 
         case '/orders/cancel':
-            return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, invitationCol, editCol ];
+            return [ indexCol, orderCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, invitationCol, editCol ];
 
         case '/orders/reviews':
             return [ indexCol, orderCol, reviewCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
@@ -442,7 +442,7 @@ export function scrollConfig(activeRoute) {
         case '/orders/invitations':
             return { x: 1260, y: '50vh' }; //1400
         case 'orders/cancel':
-            return { x: 1560, y: '50vh' }; //1640
+            return { x: 1400, y: '50vh' }; //1640 // -160 second date
         default:
             return { x: 1540, y: '50vh' }; //1640
     }
