@@ -31,7 +31,7 @@ import {
 import { Catcher } from 'commons';
 import { ServicesForm } from 'forms';
 
-import { ServicesTable } from 'components/tables';
+import { ServicesTable } from 'components/Tables';
 
 // own
 // import Styles from './styles.m.css';
