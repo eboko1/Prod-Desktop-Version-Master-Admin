@@ -73,10 +73,8 @@ export function* createServiceSaga() {
 
 export function* deleteServiceSaga() {
     while (true) {
-        const {
-            payload: { id },
-        } = yield take(DELETE_SERVICE);
-        yield call(fetchAPI, 'DELETE', `services/parts/suggestions${id}`);
+        const { payload: id } = yield take(DELETE_SERVICE);
+        yield call(fetchAPI, 'DELETE', `services/parts/suggestions/${id}`);
 
         yield put(fetchServices());
     }

@@ -8,6 +8,7 @@ import { fetchServices } from 'core/forms/servicesForm/duck';
 
 import { Layout, Spinner } from 'commons';
 import { ServicesForm } from 'forms';
+import { ServicesContainer } from 'containers';
 
 const mapStateToProps = state => ({
     isFetching: state.ui.servicesFetching,
@@ -35,7 +36,7 @@ export default class ServicesPage extends Component {
                     <FormattedMessage id='navigation.services-spare_parts' />
                 }
             >
-                <ServicesForm />
+                <ServicesContainer />
             </Layout>
         );
     }

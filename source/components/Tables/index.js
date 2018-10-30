@@ -1,4 +1,4 @@
-import BrandsTable from './BrandsTable';
+// import BrandsTable from './BrandsTable';
 import ServicesTable from './ServicesTable';
 
-export { BrandsTable, ServicesTable };
+export { ServicesTable };

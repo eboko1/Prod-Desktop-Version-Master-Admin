@@ -38,39 +38,9 @@ import { withReduxForm2 } from 'utils';
 })
 export class ServicesForm extends Component {
     render() {
-        const {
-            initialService,
-            form,
-            intl,
-            fields,
-            loading,
-            filters,
-
-            updateService,
-            createService,
-            deleteService,
-            resetFields,
-        } = this.props;
-        console.log('→ ServiceForm props', this.props);
-
         return (
             <Catcher>
-                { /* <BusinessSearchField
-                // businessId={ filters.businessId }
-                // onSelect={ businessId => selectBusiness({ businessId }) }
-                /> */ }
-                <ArrayServiceInput
-                    { ...this.props }
-                    // loading={ loading }
-                    // fields={ fields }
-                    // resetFields={ resetFields }
-                    // updateService={ updateService }
-                    // createService={ createService }
-                    // deleteService={ deleteService }
-                    // initialService={ initialService }
-                    // form={ form }
-                    // intl={ intl }
-                />
+                <ArrayServiceInput { ...this.props } />
             </Catcher>
         );
     }

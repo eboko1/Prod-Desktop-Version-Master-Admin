@@ -25,7 +25,7 @@ export function columnsConfig(
     handleDelete,
     getServiceData,
 ) {
-    console.log('→ config props', props);
+    // console.log('→ config props', props);
 
     const _getDefaultValue = (key, fieldName) => {
         const services = (props.services || [])[ key ];
@@ -42,7 +42,7 @@ export function columnsConfig(
         return fields[ fieldName ];
     };
     const serviceCol = {
-        title:  'Service',
+        title:  'Работа',
         key:    'service',
         width:  '15%',
         render: (text, { key }) => (
@@ -64,7 +64,7 @@ export function columnsConfig(
     };
 
     const detailsCol = {
-        title:  'Details',
+        title:  'Запчасти',
         key:    'details',
         width:  '15%',
         render: (text, { key }) => (
@@ -92,7 +92,7 @@ export function columnsConfig(
     };
 
     const quantityCol = {
-        title:  'Quantity',
+        title:  'Кол-во',
         key:    'quantity',
         width:  '10%',
         render: (text, { key }) => (
@@ -146,7 +146,7 @@ export function columnsConfig(
                     //     this._getServiceData(key, callback);
                     // } }
                 />
-                <Icon
+                { /* <Icon
                     type='delete'
                     className={ Styles.deleteIcon }
                     onClick={ () => {
@@ -156,7 +156,7 @@ export function columnsConfig(
                         }
                         props.resetFields();
                     } }
-                />
+                /> */ }
             </div>
         ),
     };

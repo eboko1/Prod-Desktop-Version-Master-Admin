@@ -5,6 +5,7 @@
 .saveIcon {
     font-size: 20px;
     cursor: pointer;
+    color: var(--secondary);
 }
 
 .newScheduleBreak {
