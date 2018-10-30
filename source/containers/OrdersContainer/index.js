@@ -318,9 +318,8 @@ class OrdersContainer extends Component {
                     delayedConfig.includes(status) &&
                     moment(beginDatetime).diff(moment(), 'days') <= -2,
                 delayedProgressRow:
-                    status === 'progress' && deliveryDatetime
-                        ? moment(deliveryDatetime).diff(moment(), 'days') <= -1
-                        : true,
+                    status === 'progress' &&
+                    moment(deliveryDatetime).diff(moment(), 'days') <= -1,
             });
 
         return (
