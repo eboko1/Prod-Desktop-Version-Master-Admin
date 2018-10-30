@@ -32,8 +32,6 @@ export default class StationsTable extends Component {
 
     _fetchAvailableHours = (station, date) => {
         const { form, fetchAvailableHours, orderId } = this.props;
-        console.log('→ ordF Table: station', station);
-        console.log('→ ordF Table: station', date);
         form.resetFields([ 'stationLoads[0].beginTime' ]);
         fetchAvailableHours(station, date, orderId);
     };

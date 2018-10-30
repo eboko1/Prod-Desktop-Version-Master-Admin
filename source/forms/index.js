@@ -27,6 +27,7 @@ import { ScheduleForm } from './ScheduleForm';
 import { BreakScheduleForm } from './BreakScheduleForm';
 import { SalaryReportForm } from './SalaryReportForm';
 import { TecDocForm } from './TecDocForm';
+import { ServicesForm } from './ServicesForm';
 
 export {
     LoginForm,
@@ -58,4 +59,5 @@ export {
     BreakScheduleForm,
     SalaryReportForm,
     TecDocForm,
+    ServicesForm,
 };

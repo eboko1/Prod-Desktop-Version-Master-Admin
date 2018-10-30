@@ -18,12 +18,15 @@ import {
 export function* fetchServicesSaga() {
     while (true) {
         try {
-            const {
-                payload: { id },
-            } = yield take(FETCH_SERVICES);
+            yield take(FETCH_SERVICES);
             yield put(setServicesFetchingState(true));
 
-            const data = yield call(fetchAPI, 'GET', `managers/services/${id}`);
+            const data = yield call(
+                fetchAPI,
+                'GET',
+                'services/parts/suggestions',
+                // filters,
+            );
 
             yield put(fetchServicesSuccess(data));
         } catch (error) {

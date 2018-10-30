@@ -1,18 +1,31 @@
 // vendor
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
-import { Icon } from 'antd';
 
 // proj
+import { fetchServices } from 'core/forms/servicesForm/duck';
 
 import { Layout, Spinner } from 'commons';
-// import { RoleContainer } from 'containers';
-import book from 'routes/book';
+import { ServicesForm } from 'forms';
 
-export default class Services extends Component {
+const mapStateToProps = state => ({
+    isFetching: state.ui.servicesFetching,
+});
+
+const mapDispatchToProps = { fetchServices };
+
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
+export default class ServicesPage extends Component {
+    componentDidMount() {
+        this.props.fetchServices();
+    }
+
     render() {
-        const { isFetching, roles, match } = this.props;
+        const { isFetching } = this.props;
 
         return isFetching ? (
             <Spinner spin={ isFetching } />
@@ -21,7 +34,9 @@ export default class Services extends Component {
                 title={
                     <FormattedMessage id='navigation.services-spare_parts' />
                 }
-            />
+            >
+                <ServicesForm />
+            </Layout>
         );
     }
 }

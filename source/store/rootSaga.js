@@ -41,6 +41,7 @@ import { saga as profileFormSaga } from 'core/forms/profileForm/saga';
 import { saga as editClientFormSaga } from 'core/forms/editClientForm/saga';
 import { saga as settingSalaryFormSaga } from 'core/forms/settingSalaryForm/saga';
 import { saga as tecDocFormSaga } from 'core/forms/tecDocForm/saga';
+import { saga as servicesFormSaga } from 'core/forms/servicesForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -89,6 +90,8 @@ export default function* rootSaga() {
         managerRoleSaga(),
         tecDocFormSaga(),
         tecDocActionsSaga(),
+        // administration
+        servicesFormSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

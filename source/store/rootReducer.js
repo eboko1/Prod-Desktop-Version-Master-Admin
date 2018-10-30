@@ -42,7 +42,9 @@ import chartReducer, { moduleName as chartModule } from 'core/chart/duck';
 import reviewsReducer, { moduleName as reviewsModule } from 'core/reviews/duck';
 import reviewReducer, { moduleName as reviewModule } from 'core/review/duck';
 import callsReducer, { moduleName as callsModule } from 'core/calls/duck';
-import tecDocActionsReducer, { moduleName as tecDocActionsModule } from 'core/tecDocActions/duck';
+import tecDocActionsReducer, {
+    moduleName as tecDocActionsModule,
+} from 'core/tecDocActions/duck';
 
 import dashboardReducer, {
     moduleName as dashboardModule,
@@ -63,28 +65,28 @@ const persistedState = {
 
 const appState = {
     forms,
-    [ ordersModule ]:           ordersReducer,
-    [ orderModule ]:            orderReducer,
-    [ modalsModule ]:           modalsReducer,
-    [ dashboardModule ]:        dashboardReducer,
-    [ myTasksModule ]:          myTasksReducer,
-    [ employeesModule ]:        employeesReducer,
-    [ uiModule ]:               uiReducer,
-    [ packageModule ]:          packageReducer,
-    [ roleModule ]:             roleReducer,
     [ businessPackageModule ]:  businessPackageReducer,
-    [ searchModule ]:           searchReducer,
-    [ managerRoleModule ]:      managerRoleReducer,
-    [ clientsModule ]:          clientsReducer,
-    [ clientModule ]:           clientReducer,
-    [ clientRequisiteModule ]:  clientRequisiteReducer,
-    [ clientOrdersModule ]:     clientOrdersReducer,
-    [ chartModule ]:            chartReducer,
-    [ reviewsModule ]:          reviewsReducer,
-    [ reviewModule ]:           reviewReducer,
     [ callsModule ]:            callsReducer,
+    [ chartModule ]:            chartReducer,
+    [ clientModule ]:           clientReducer,
+    [ clientOrdersModule ]:     clientOrdersReducer,
+    [ clientRequisiteModule ]:  clientRequisiteReducer,
+    [ clientsModule ]:          clientsReducer,
+    [ dashboardModule ]:        dashboardReducer,
     [ employeeScheduleModule ]: employeeScheduleReducer,
+    [ employeesModule ]:        employeesReducer,
+    [ managerRoleModule ]:      managerRoleReducer,
+    [ modalsModule ]:           modalsReducer,
+    [ myTasksModule ]:          myTasksReducer,
+    [ orderModule ]:            orderReducer,
+    [ ordersModule ]:           ordersReducer,
+    [ packageModule ]:          packageReducer,
+    [ reviewModule ]:           reviewReducer,
+    [ reviewsModule ]:          reviewsReducer,
+    [ roleModule ]:             roleReducer,
+    [ searchModule ]:           searchReducer,
     [ tecDocActionsModule ]:    tecDocActionsReducer,
+    [ uiModule ]:               uiReducer,
     // [ authModule ]:            authReducer,
     // intl,
     // router,

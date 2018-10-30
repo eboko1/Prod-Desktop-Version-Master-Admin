@@ -78,9 +78,7 @@ import managerRoleReducer, {
     moduleName as managerRole,
 } from './managerRoleForm/duck';
 
-import tecDocReducer, {
-    moduleName as tecDoc
-} from './tecDocForm/duck';
+import tecDocReducer, { moduleName as tecDoc } from './tecDocForm/duck';
 
 import settingSalaryReducer, {
     moduleName as settingSalary,
@@ -94,33 +92,38 @@ import editClientReducer, {
     moduleName as editClient,
 } from 'core/forms/editClientForm/duck';
 
+import servicesReducer, {
+    moduleName as services,
+} from 'core/forms/servicesForm/duck';
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
-    [ order ]:                   orderReducer,
-    [ addClient ]:               addClientReducer,
-    [ universalFilters ]:        universalFiltersReducer,
-    [ cancelReason ]:            cancelReasonReducer,
-    [ toSuccess ]:               toSuccessReducer,
-    [ login ]:                   loginReducer,
-    [ orderTask ]:               orderTaskReducer,
-    [ addPackage ]:              addPackageReducer,
-    [ editPackage ]:             editPackageReducer,
-    [ addRole ]:                 addRoleReducer,
-    [ editRole ]:                editRoleReducer,
-    [ switchBusiness ]:          switchBusinessReducer,
-    [ employeeFormModule ]:      employeeFormReducer,
-    [ scheduleFormModule ]:      scheduleFormReducer,
-    [ breakScheduleFormModule ]: breakScheduleFormReducer,
-    [ settingSalary ]:           settingSalaryReducer,
     [ addBusinessPackage ]:      addBusinessPackageReducer,
-    [ businessPackage ]:         businessPackageReducer,
-    [ managerRole ]:             managerRoleReducer,
-    [ profile ]:                 profileReducer,
-    [ addClientVehicle ]:        addClientVehicleReducer,
-    [ editClientVehicle ]:       editClientVehicleReducer,
-    [ editClient ]:              editClientReducer,
+    [ addClient ]:               addClientReducer,
     [ addClientRequisite ]:      addClientRequisiteReducer,
+    [ addClientVehicle ]:        addClientVehicleReducer,
+    [ addPackage ]:              addPackageReducer,
+    [ addRole ]:                 addRoleReducer,
+    [ breakScheduleFormModule ]: breakScheduleFormReducer,
+    [ businessPackage ]:         businessPackageReducer,
+    [ cancelReason ]:            cancelReasonReducer,
+    [ editClient ]:              editClientReducer,
     [ editClientRequisite ]:     editClientRequisiteReducer,
+    [ editClientVehicle ]:       editClientVehicleReducer,
+    [ editPackage ]:             editPackageReducer,
+    [ editRole ]:                editRoleReducer,
+    [ employeeFormModule ]:      employeeFormReducer,
+    [ login ]:                   loginReducer,
+    [ managerRole ]:             managerRoleReducer,
+    [ order ]:                   orderReducer,
+    [ orderTask ]:               orderTaskReducer,
+    [ profile ]:                 profileReducer,
     [ salaryReport ]:            salaryReportReducer,
+    [ scheduleFormModule ]:      scheduleFormReducer,
+    [ services ]:                servicesReducer,
+    [ settingSalary ]:           settingSalaryReducer,
+    [ switchBusiness ]:          switchBusinessReducer,
     [ tecDoc ]:                  tecDocReducer,
+    [ toSuccess ]:               toSuccessReducer,
+    [ universalFilters ]:        universalFiltersReducer,
 });
