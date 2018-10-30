@@ -1,3 +1,5 @@
+import { createSelector } from 'reselect';
+
 /**
  * Constants
  * */
@@ -21,12 +23,19 @@ export const SET_FILTERS = `${prefix}/SET_FILTERS`;
  * */
 
 const ReducerState = {
-    fields:  {},
-    filters: {},
-    stats:   {
-        count: '0',
+    fields:   {},
+    filters:  {},
+    services: {
+        servicesPartsSuggestions: {
+            stats: {
+                count: '0',
+            },
+            list: [],
+        },
+        services: [],
+        details:  [],
+        brands:   [],
     },
-    list: [],
     // "id": 1,
     // "serviceId": 110136,
     // "detailId": 104,
@@ -85,6 +94,44 @@ export default function reducer(state = ReducerState, action) {
     }
 }
 
+/**
+ * Selectors
+ * */
+
+export const stateSelector = state => state.forms[ moduleName ];
+
+export const selectServicesSuggestionsList = state =>
+    state.forms.servicesForm.servicesPartsSuggestions.list;
+
+export const selectServicesSuggestionsStats = state =>
+    state.forms.servicesForm.servicesPartsSuggestions.stats;
+
+export const selectServicesOptions = state =>
+    state.forms.servicesForm.services.services;
+
+export const selectDetailsOptions = state =>
+    state.forms.servicesForm.services.details;
+
+export const selectBrandsOptions = state =>
+    state.forms.servicesForm.services.brands;
+
+// const getDashboard = state => state.dashboard;
+
+export const selectDasboardData = createSelector(
+    [ stateSelector ],
+    properties => {
+        console.log('→ properties', properties);
+
+        return {
+            properties,
+        };
+    },
+);
+
+/**
+ * Actions
+ * */
+
 export const onChangeServicesForm = update => ({
     type:    ON_CHANGE_SERVICES_FORM,
     payload: update,
@@ -103,14 +150,14 @@ export const fetchServicesSuccess = data => ({
     payload: data,
 });
 
-export const createService = (brandId, entity) => ({
+export const createService = suggestion => ({
     type:    CREATE_SERVICE,
-    payload: { brandId, entity },
+    payload: suggestion,
 });
 
-export const updateService = (brandId, entity) => ({
+export const updateService = suggestion => ({
     type:    UPDATE_SERVICE,
-    payload: { brandId, entity },
+    payload: suggestion,
 });
 
 export const deleteService = id => ({

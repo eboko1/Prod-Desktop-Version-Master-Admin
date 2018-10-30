@@ -45,11 +45,13 @@ export default class ArrayServiceInput extends Component {
     }
 
     _getServiceData = (key, callback) => {
-        // const { form } = this.props;
-        // form.validateFields([ `service[${key}]` ], err => {
-        //     if (err) {
-        //         return;
-        //     }
+        const { form } = this.props;
+        form.validateFields([ `service[${key}]` ], err => {
+            if (err) {
+                return; // eslint-disable-line
+            }
+        });
+
         // const service = form.getFieldValue(`service[${key}]`);
         // const serviceWithParsedHours = _.mapValues(
         //     service,
@@ -91,6 +93,7 @@ export default class ArrayServiceInput extends Component {
             this._handleAdd,
             // this._handleUpdate,
             this._onDelete,
+            this._getServiceData,
         );
 
         return (

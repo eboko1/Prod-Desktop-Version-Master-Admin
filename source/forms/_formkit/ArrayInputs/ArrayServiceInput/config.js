@@ -21,21 +21,22 @@ export function columnsConfig(
     props,
     state,
     handleAdd,
-    handleUpdate,
+    // handleUpdate,
     handleDelete,
+    getServiceData,
 ) {
-    // console.log('→cc  props', props);
+    console.log('→ config props', props);
 
     const _getDefaultValue = (key, fieldName) => {
-        const services = (props.services || [])[ fieldName ];
+        const services = (props.services || [])[ key ];
         if (!services) {
             return;
         }
 
         const fields = {
-            service:  services.service,
-            detail:   services.detail,
-            quantity: services.duration,
+            serviceId: services.serviceId,
+            detailId:  services.detailId,
+            quantity:  services.duration,
         };
 
         return fields[ fieldName ];
@@ -45,11 +46,20 @@ export function columnsConfig(
         key:    'service',
         width:  '15%',
         render: (text, { key }) => (
-            <DecoratedInput
-                field={ `service[${key}][service]` }
+            <DecoratedSelect
+                cnStyles={ Styles.select }
+                field={ `service[${key}][serviceId]` }
                 getFieldDecorator={ props.form.getFieldDecorator }
-                initialValue={ _getDefaultValue('service') }
-            />
+                initialValue={ _getDefaultValue(key, 'serviceId') }
+                dropdownMatchSelectWidth={ false }
+                dropdownStyle={ { width: '50%' } }
+            >
+                { props.services.services.map(({ serviceId, serviceName }) => (
+                    <Option value={ serviceId } key={ serviceId }>
+                        { serviceName }
+                    </Option>
+                )) }
+            </DecoratedSelect>
         ),
     };
 
@@ -59,8 +69,8 @@ export function columnsConfig(
         width:  '15%',
         render: (text, { key }) => (
             <DecoratedSelect
-                cnStyles={ Styles.serviceType }
-                field={ `service[${key}][detail]` }
+                cnStyles={ Styles.select }
+                field={ `service[${key}][detailId]` }
                 getFieldDecorator={ props.form.getFieldDecorator }
                 rules={ [
                     {
@@ -68,14 +78,15 @@ export function columnsConfig(
                         message:  'Type is required',
                     },
                 ] }
-                initialValue={ _getDefaultValue('detail') }
+                initialValue={ _getDefaultValue(key, 'detailId') }
+                dropdownMatchSelectWidth={ false }
+                dropdownStyle={ { width: '50%' } }
             >
-                <Option value={ 'test' } key={ 'test1' }>
-                    test
-                </Option>
-                <Option value={ 'mock' } key={ 'mock1' }>
-                    mock
-                </Option>
+                { props.services.details.map(({ detailId, detailName }) => (
+                    <Option value={ detailId } key={ detailId }>
+                        { detailName }
+                    </Option>
+                )) }
             </DecoratedSelect>
         ),
     };
@@ -88,7 +99,7 @@ export function columnsConfig(
             <DecoratedInputNumber
                 field={ `service[${key}][quantity]` }
                 getFieldDecorator={ props.form.getFieldDecorator }
-                initialValue={ _getDefaultValue('quantity') }
+                initialValue={ _getDefaultValue(key, 'quantity') }
             />
         ),
     };
@@ -99,31 +110,49 @@ export function columnsConfig(
         width:  'auto',
         render: (text, { key }) => (
             <div>
-                { /* <Icon
+                <Icon
                     type='save'
                     className={ Styles.saveIcon }
+                    // onClick={ () => console.log('→ click') }
                     onClick={ () => {
-                        const callback = entity => {
-                            const initialEntity = _.get(initialService, [ key ]);
-
-                            if (initialEntity) {
-                                const { id } = initialEntity;
-                                props.updateService(id, entity);
-                            } else {
-                                props.createService(entity);
-                            }
-                            props.resetFields();
-                        };
-                        this._getServiceData(key, callback);
+                        props.createService({
+                            ...props.form.getFieldValue(`service[${key}]`),
+                        });
+                        // const callback = entity => {
+                        //     const initialEntity = _getDefaultValue(key);
+                        //     console.log('→ initialEntity', initialEntity);
+                        //     if (initialEntity) {
+                        //         const { serviceId } = initialEntity;
+                        //         props.updateService(serviceId, entity);
+                        //     } else {
+                        //         props.createService(entity);
+                        //     }
+                        //     props.resetFields();
+                        // };
+                        // getServiceData(key, callback);
                     } }
-                /> */ }
+                    // onClick={ () => {
+                    //     const callback = entity => {
+                    //         const initialEntity = _.get(initialService, [ key ]);
+                    //
+                    //         if (initialEntity) {
+                    //             const { id } = initialEntity;
+                    //             props.updateService(id, entity);
+                    //         } else {
+                    //             props.createService(entity);
+                    //         }
+                    //         props.resetFields();
+                    //     };
+                    //     this._getServiceData(key, callback);
+                    // } }
+                />
                 <Icon
                     type='delete'
                     className={ Styles.deleteIcon }
                     onClick={ () => {
-                        const id = _getDefaultValue(key, 'id');
-                        if (id) {
-                            props.deleteService(id);
+                        const service = _getDefaultValue(key, 'service');
+                        if (service) {
+                            props.deleteService(service);
                         }
                         props.resetFields();
                     } }

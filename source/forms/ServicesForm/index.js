@@ -10,6 +10,7 @@ import {
     updateService,
     deleteService,
     resetFields,
+    stateSelector,
 } from 'core/forms/servicesForm/duck';
 // import { selectBusiness } from 'core/form/servicesForm/duck';
 
@@ -31,6 +32,9 @@ import { withReduxForm2 } from 'utils';
         deleteService,
         // selectBusiness,
     },
+    mapStateToProps: state => ({
+        ...stateSelector(state),
+    }),
 })
 export class ServicesForm extends Component {
     render() {
@@ -47,7 +51,7 @@ export class ServicesForm extends Component {
             deleteService,
             resetFields,
         } = this.props;
-        console.log('→ props', this.props);
+        console.log('→ ServiceForm props', this.props);
 
         return (
             <Catcher>
@@ -56,15 +60,16 @@ export class ServicesForm extends Component {
                 // onSelect={ businessId => selectBusiness({ businessId }) }
                 /> */ }
                 <ArrayServiceInput
-                    loading={ loading }
-                    fields={ fields }
-                    resetFields={ resetFields }
-                    updateService={ updateService }
-                    createService={ createService }
-                    deleteService={ deleteService }
-                    initialService={ initialService }
-                    form={ form }
-                    intl={ intl }
+                    { ...this.props }
+                    // loading={ loading }
+                    // fields={ fields }
+                    // resetFields={ resetFields }
+                    // updateService={ updateService }
+                    // createService={ createService }
+                    // deleteService={ deleteService }
+                    // initialService={ initialService }
+                    // form={ form }
+                    // intl={ intl }
                 />
             </Catcher>
         );

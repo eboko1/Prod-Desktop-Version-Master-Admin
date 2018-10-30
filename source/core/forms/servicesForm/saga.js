@@ -40,36 +40,45 @@ export function* fetchServicesSaga() {
 export function* updateServiceSaga() {
     while (true) {
         const {
-            payload: { packageId, id, entity },
+            payload: { id, suggestion },
         } = yield take(UPDATE_SERVICE);
-        const payload = { ...entity, enabled: true };
-        yield call(fetchAPI, 'PUT', `managers/services/${id}`, null, payload);
+        yield call(
+            fetchAPI,
+            'GET',
+            `services/parts/suggestions${id}`,
+            // filters,
+            null,
+            suggestion,
+        );
 
-        yield put(fetchServices(packageId));
+        yield put(fetchServices());
     }
 }
 
 export function* createServiceSaga() {
     while (true) {
-        const {
-            payload: { packageId, entity },
-        } = yield take(CREATE_SERVICE);
-        const payload = { ...entity, enabled: true, packageId };
+        const { payload: suggestion } = yield take(CREATE_SERVICE);
+        console.log('* createServiceSaga', suggestion);
+        yield call(
+            fetchAPI,
+            'POST',
+            'services/parts/suggestions',
+            null,
+            suggestion,
+        );
 
-        yield call(fetchAPI, 'POST', 'managers/services', null, payload);
-
-        yield put(fetchServices(packageId));
+        yield put(fetchServices());
     }
 }
 
 export function* deleteServiceSaga() {
     while (true) {
         const {
-            payload: { packageId, id },
+            payload: { id },
         } = yield take(DELETE_SERVICE);
-        yield call(fetchAPI, 'DELETE', `managers/services/${id}`);
+        yield call(fetchAPI, 'DELETE', `services/parts/suggestions${id}`);
 
-        yield put(fetchServices(packageId));
+        yield put(fetchServices());
     }
 }
 
