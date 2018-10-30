@@ -99,6 +99,7 @@ export default class ArrayServiceInput extends Component {
         return (
             <Catcher>
                 <Table
+                    style={ { marginBottom: 24 } }
                     loading={ loading }
                     rowClassName={ ({ key }) => {
                         const wasEdited = _.get(this.props.fields, [ 'service', key ]);

@@ -118,6 +118,7 @@ export function columnsConfig(
                         props.createService({
                             ...props.form.getFieldValue(`service[${key}]`),
                         });
+                        props.resetFields();
                         // const callback = entity => {
                         //     const initialEntity = _getDefaultValue(key);
                         //     console.log('→ initialEntity', initialEntity);
