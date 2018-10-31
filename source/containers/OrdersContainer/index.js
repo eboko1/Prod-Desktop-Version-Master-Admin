@@ -314,9 +314,11 @@ class OrdersContainer extends Component {
 
         const _rowClassName = (beginDatetime, deliveryDatetime, status) =>
             cx({
-                delayedRow:
-                    delayedConfig.includes(status) &&
-                    moment(beginDatetime).diff(moment(), 'days') <= -2,
+                delayedRow: delayedConfig.includes(status)
+                    ? beginDatetime
+                        ? moment(beginDatetime).diff(moment(), 'days') <= -2
+                        : true
+                    : false,
                 delayedProgressRow:
                     status === 'progress'
                         ? deliveryDatetime
