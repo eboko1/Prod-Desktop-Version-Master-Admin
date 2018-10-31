@@ -10,7 +10,6 @@ import moment from 'moment';
 // import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
 import {
     onChangeOrderForm,
-    fetchAvailableHours,
 } from 'core/forms/orderForm/duck';
 
 import {
@@ -46,19 +45,9 @@ const formItemLayout = {
     debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
     actions:         {
         change: onChangeOrderForm,
-        fetchAvailableHours,
     },
 })
 export class MobileRecordForm extends Component {
-    fetchAvailableHours(station, date) {
-        console.log('→ mbile station, date', station, date);
-        this.props.form.resetFields([ 'beginTime' ]);
-        this.props.fetchAvailableHours(
-            station,
-            date,
-            _.get(this.props, 'order.id'),
-        );
-    }
 
     render() {
         const {
@@ -227,14 +216,6 @@ export class MobileRecordForm extends Component {
                         <FormattedMessage id='add_order_form.select_station' />
                     }
                     options={ stations }
-                    onSelect={ value => {
-                        const beginDate = this.props.form.getFieldValue(
-                            'beginDate',
-                        );
-                        if (beginDate) {
-                            this.fetchAvailableHours(value, beginDate);
-                        }
-                    } }
                     optionValue='num'
                     optionLabel='name'
                 />
@@ -247,14 +228,6 @@ export class MobileRecordForm extends Component {
                     getFieldDecorator={ getFieldDecorator }
                     formatMessage={ formatMessage }
                     allowClear={ false }
-                    onChange={ value => {
-                        const station = this.props.form.getFieldValue(
-                            'station',
-                        );
-                        if (station) {
-                            this.fetchAvailableHours(station, value);
-                        }
-                    } }
                     { ...formItemLayout }
                 />
                 <DecoratedTimePicker
@@ -268,7 +241,7 @@ export class MobileRecordForm extends Component {
                         !this.props.form.getFieldValue('station')
                     }
                     disabledHours={ () => {
-                        const availableHours = this.props.availableHours || [];
+                        const availableHours = _.get(this.props.availableHours, '0', []);
 
                         return _.difference(
                             Array(24)
@@ -279,7 +252,7 @@ export class MobileRecordForm extends Component {
                         );
                     } }
                     disabledMinutes={ hour => {
-                        const availableHours = this.props.availableHours || [];
+                        const availableHours = _.get(this.props.availableHours, '0', []);
 
                         const availableMinutes = availableHours
                             .map(availableHour => moment(availableHour))

@@ -30,11 +30,12 @@ export default class StationsTable extends Component {
     _bodyUpdateIsForbidden = () =>
         isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
 
-    _fetchAvailableHours = (station, date) => {
-        const { form, fetchAvailableHours, orderId } = this.props;
-        form.resetFields([ 'stationLoads[0].beginTime' ]);
-        fetchAvailableHours(station, date, orderId);
-    };
+    componentDidUpdate() {
+        const loads = this.props.form.getFieldValue('stationLoads');
+        if (!loads.some(load => _.values(load).some(_.isNil))) {
+            this._handleAdd();
+        }
+    }
 
     _onDelete = redundantKey => {
         const { keys } = this.state;
@@ -45,13 +46,9 @@ export default class StationsTable extends Component {
         });
     };
 
-    _handleAdd = key => {
+    _handleAdd = () => {
         const { keys } = this.state;
-        const stationLoads = this.props.form.getFieldValue('stationLoads');
-
-        if (_.last(keys) === key && !stationLoads[ key ].beginTime) {
-            this.setState({ keys: [ ...keys, this.uuid++ ] });
-        }
+        this.setState({ keys: [ ...keys, this.uuid++ ] });
     };
 
     // _handleAdd = key => {
@@ -76,9 +73,7 @@ export default class StationsTable extends Component {
             this.props,
             this.state,
             formatMessage,
-            this._handleAdd,
             this._onDelete,
-            this._fetchAvailableHours,
             this._bodyUpdateIsForbidden,
             fetchedOrder,
         );

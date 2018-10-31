@@ -29,13 +29,6 @@ export default class OrderFormHeader extends Component {
         return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
     }
 
-    fetchAvailableHours(station, date) {
-        console.log('→ ordF Header: station', station);
-        console.log('→ ordF Header: date', date);
-        this.props.form.resetFields([ 'stationLoads[0].beginTime' ]);
-        this.props.fetchAvailableHours(station, date, this.props.orderId);
-    }
-
     render() {
         const dateBlock = this._renderDateBlock();
         const masterBlock = this._renderMasterBlock();
@@ -244,14 +237,6 @@ export default class OrderFormHeader extends Component {
                     format={ 'YYYY-MM-DD' } // HH:mm
                     showTime={ false }
                     initialValue={ momentBeginDatetime }
-                    onChange={ value => {
-                        const station = this.props.form.getFieldValue(
-                            'stationLoads[0].station',
-                        );
-                        if (station) {
-                            this.fetchAvailableHours(station, value);
-                        }
-                    } }
                 />
 
                 <DecoratedSelect
@@ -274,14 +259,6 @@ export default class OrderFormHeader extends Component {
                     placeholder={ formatMessage({
                         id: 'add_order_form.select_station',
                     }) }
-                    onSelect={ value => {
-                        const beginDate = this.props.form.getFieldValue(
-                            'stationLoads[0].beginDate',
-                        );
-                        if (beginDate) {
-                            this.fetchAvailableHours(value, beginDate);
-                        }
-                    } }
                     disabled={ this.bodyUpdateIsForbidden() }
                     initialValue={
                         _.get(fetchedOrder, 'order.stationNum') ||
@@ -315,7 +292,7 @@ export default class OrderFormHeader extends Component {
                     field='stationLoads[0].beginTime'
                     hasFeedback
                     disabledHours={ () => {
-                        const availableHours = this.props.availableHours || [];
+                        const availableHours = _.get(this.props.availableHours, '0', []);
 
                         return _.difference(
                             Array(24)
@@ -326,7 +303,7 @@ export default class OrderFormHeader extends Component {
                         );
                     } }
                     disabledMinutes={ hour => {
-                        const availableHours = this.props.availableHours || [];
+                        const availableHours = _.get(this.props.availableHours, '0', []);
 
                         const availableMinutes = availableHours
                             .map(availableHour => moment(availableHour))

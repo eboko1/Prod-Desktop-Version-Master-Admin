@@ -24,9 +24,7 @@ export function columnsConfig(
     props,
     state,
     formatMessage,
-    handleAdd,
     onDelete,
-    fetchAvailableHours,
     bodyUpdateIsForbidden,
     fetchedOrder,
 ) {
@@ -49,10 +47,18 @@ export function columnsConfig(
         return fields[ fieldName ];
     };
 
-    const beginDate = props.form.getFieldValue('beginDate');
+    const initialStationNum = props.form.getFieldValue(
+        'stationLoads[0].station',
+    );
+    const initialBeginDate = props.form.getFieldValue(
+        'stationLoads[0].beginDate',
+    );
+    const initialBeginTime = props.form.getFieldValue(
+        'stationLoads[0].beginTime',
+    );
 
     const { disabledDate, beginTime } = getDateTimeConfig(
-        moment(beginDate),
+        moment(),
         props.schedule,
     );
 
@@ -105,16 +111,10 @@ export function columnsConfig(
                 format={ 'YYYY-MM-DD' } // HH:mm
                 showTime={ false }
                 allowClear={ false }
-                initialValue={ _getDefaultValue(key, 'beginDate') }
-                onChange={ value => {
-                    const station = props.form.getFieldValue(
-                        `stationLoads[${key}].station`,
-                    );
-                    console.log('→ TC DatePicker: station', station);
-                    if (station) {
-                        fetchAvailableHours(station, value);
-                    }
-                } }
+                initialValue={
+                    _getDefaultValue(key, 'beginDate') ||
+                    (key === 0 ? initialBeginDate : void 0)
+                }
             />
         ),
     };
@@ -138,17 +138,11 @@ export function columnsConfig(
                 placeholder={ formatMessage({
                     id: 'add_order_form.select_station',
                 }) }
-                onSelect={ value => {
-                    const beginDate = props.form.getFieldValue(
-                        `stationLoads[${key}].beginDate`,
-                    );
-                    console.log('→ TC Select: station', value);
-                    if (beginDate) {
-                        fetchAvailableHours(value, beginDate);
-                    }
-                } }
                 disabled={ bodyUpdateIsForbidden() }
-                initialValue={ _getDefaultValue(key, 'stationNum') }
+                initialValue={
+                    _getDefaultValue(key, 'stationNum') ||
+                    (key === 0 ? initialStationNum : void 0)
+                }
             >
                 { props.stations.map(({ name, num }) => {
                     return (
@@ -177,7 +171,7 @@ export function columnsConfig(
                 defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                 field={ `stationLoads[${key}].beginTime` }
                 disabledHours={ () => {
-                    const availableHours = props.availableHours || [];
+                    const availableHours = _.get(props.availableHours, String(key), []);
 
                     return _.difference(
                         Array(24)
@@ -188,7 +182,7 @@ export function columnsConfig(
                     );
                 } }
                 disabledMinutes={ hour => {
-                    const availableHours = props.availableHours || [];
+                    const availableHours = _.get(props.availableHours, String(key), []);
 
                     const availableMinutes = availableHours
                         .map(availableHour => moment(availableHour))
@@ -215,8 +209,10 @@ export function columnsConfig(
                     id: 'add_order_form.provide_time',
                 }) }
                 minuteStep={ 30 }
-                initialValue={ _getDefaultValue(key, 'beginTime') }
-                onChange={ () => handleAdd(key) }
+                initialValue={
+                    _getDefaultValue(key, 'beginTime') ||
+                    (key === 0 ? initialBeginTime : void 0)
+                }
             />
         ),
     };
