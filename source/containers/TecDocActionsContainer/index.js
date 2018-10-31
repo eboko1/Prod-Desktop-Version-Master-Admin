@@ -105,7 +105,7 @@ export default class TecDocActionsContainer extends Component {
                     <Button
                         className={ Styles.actionItem }
                         disabled={ areAttributesForbidden }
-                        icon='bars'
+                        icon='check'
                         onClick={ () => {
                             setOperationIndex(index);
                             fetchPartAttributes(detailCode, supplierId);
@@ -114,7 +114,7 @@ export default class TecDocActionsContainer extends Component {
                     <StyledButton
                         className={ Styles.actionItem }
                         disabled={ areSuggestionsForbidden }
-                        icon='swap'
+                        icon='question'
                         type='secondary'
                         onClick={ () => {
                             setOperationIndex(index);

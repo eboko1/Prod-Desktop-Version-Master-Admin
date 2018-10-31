@@ -165,6 +165,15 @@ export default class PartSuggestions extends Component {
             },
         ];
 
+        const pagination = {
+            pageSize:         6,
+            hideOnSinglePage: true,
+            size:             'large',
+            // total:            Math.ceil(this.props.count / 25) * 25,
+            // current:          this.props.page,
+            // onChange:         page => this.props.setPage(page),
+        };
+
         return (
             <Catcher>
                 <Modal
@@ -177,7 +186,7 @@ export default class PartSuggestions extends Component {
                 >
                     { suggestions && (
                         <Table
-                            pagination={ { pageSize: 6 } }
+                            pagination={ pagination }
                             dataSource={ suggestions }
                             columns={ this.columns }
                         />

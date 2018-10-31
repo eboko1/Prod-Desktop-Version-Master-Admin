@@ -15,7 +15,6 @@ import {
 
 import { Layout, Spinner } from 'commons';
 import { CallsContainer } from 'containers';
-import { DecoratedSelect } from 'forms/DecoratedFields';
 import { DatePickerGroup } from 'components';
 
 // own
@@ -142,14 +141,4 @@ export default class CallsPage extends Component {
             </Layout>
         );
     }
-}
-
-{
-    /* <DecoratedSelect cnStyles={ Styles.channels }>
-    { channels.map(({ id, name }) => (
-         <Option key={ id } value={ id }>
-             { name }
-         </Option>
-     )) }
- </DecoratedSelect> */
 }
