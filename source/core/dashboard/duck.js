@@ -32,6 +32,9 @@ export const LINK_TO_DASHBOARD_STATIONS = `${prefix}/LINK_TO_DASHBOARD_STATIONS`
 export const UPDATE_DASHBOARD_ORDER = `${prefix}/UPDATE_DASHBOARD_ORDER`;
 export const UPDATE_DASHBOARD_ORDER_SUCCESS = `${prefix}/UPDATE_DASHBOARD_ORDER_SUCCESS`;
 
+export const TRANSFER_OUTDATED_REPAIRS = `${prefix}/TRANSFER_OUTDATED_REPAIRS`;
+export const TRANSFER_OUTDATED_REPAIRS_SUCCESS = `${prefix}/TRANSFER_OUTDATED_REPAIRS_SUCCESS`;
+
 /**
  * Reducer
  * */
@@ -53,7 +56,9 @@ const ReducerState = {
     endDate: moment()
         .endOf('week')
         .isoWeekday(7),
-    load: [],
+    load:                  [],
+    daysWithConflicts:     [],
+    stationsWithConflicts: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -220,6 +225,14 @@ export const updateDashboardOrder = order => ({
 
 export const updateDashboardOrderSuccess = () => ({
     type: UPDATE_DASHBOARD_ORDER_SUCCESS,
+});
+
+export const transferOutdateRepairs = () => ({
+    type: TRANSFER_OUTDATED_REPAIRS,
+});
+
+export const transferOutdateRepairsSuccess = () => ({
+    type: TRANSFER_OUTDATED_REPAIRS_SUCCESS,
 });
 
 export const refreshDashboard = () => ({

@@ -27,7 +27,7 @@ export default async function fetchAPI(
     endpoint,
     query,
     body,
-    { rawResponse, handleErrorInternally } = {},
+    { rawResponse, handleErrorInternally, url, noAuth, headers } = {},
 ) {
     const endpointC = trim(endpoint, "/"); // trim all spaces and '/'
     const handler = endpointC ? `/${endpointC}` : ""; // be sure that after api will be only one /
@@ -37,7 +37,7 @@ export default async function fetchAPI(
 
     const request = {
         method: methodU,
-        headers: {
+        headers: headers ? headers : {
             "content-type": "application/json",
             "Cache-Control": "no-cache",
             "Access-Control-Request-Headers": "*",
@@ -47,7 +47,7 @@ export default async function fetchAPI(
 
     const token = getToken();
 
-    if (token) {
+    if (!noAuth && token) {
         Object.assign(request.headers, {
             Authorization: `${token}`,
         });
@@ -59,7 +59,7 @@ export default async function fetchAPI(
 
     // async function response() {
     const response = await fetch.apply(null, [
-        `${apiC}${handler}${
+        `${url || apiC}${handler}${
             queryString ? `?${queryString}` : ""
         }`,
         request,

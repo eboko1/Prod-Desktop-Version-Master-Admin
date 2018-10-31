@@ -4,7 +4,9 @@
         "order_form_table.confirm_exit_without_changes": "No",
         "order_form_table.confirm_exit": "Do you want to save your changes?",
         "order_form_table.service.placeholder": "Enter labor name",
+        "order_form_table.service.no_vehicle_placeholder": "Select vehicle first",
         "order_form_table.detail.placeholder": "Enter spare part name",
+        "order_form_table.detail.no_vehicle_placeholder": "Select vehicle first",
         "order_form_table.brand.placeholder": "Select brand",
         "order_form_table.duration": "Duration",
         "order_form_table.master": "Mechanic",
@@ -39,14 +41,19 @@
         "comment": "Comment",
         "author": "Author",
         "duration": "Duration",
-        "order_form_table.purchasePrice": "Purchase Price"
+        "order_form_table.purchasePrice": "Purchase Price",
+        "order_form_table.suggest": "Suggest",
+        "order_form_table.TO_DO": "Approve",
+        "order_form_table.COMPLETED": "Done"
     },
     "ru": {
         "order_form_table.confirm_exit": "Хотите сохранить изменения?",
         "order_form_table.confirm_exit_without_changes": "Нет",
         "order_form_table.employee": "Сотрудник",
         "order_form_table.service.placeholder": "Выберете услугу",
+        "order_form_table.service.no_vehicle_placeholder": "Для выбора работы необходимо добавить авто",
         "order_form_table.detail.placeholder": "Выберете деталь",
+        "order_form_table.detail.no_vehicle_placeholder": "Для выбора детали необходимо добавить авто",
         "order_form_table.brand.placeholder": "Выберете бренд",
         "order_form_table.duration": "Продолжительность",
         "order_form_table.master": "Слесарь-Механик",
@@ -69,7 +76,7 @@
         "order_form_table.own_detail": "Свои",
         "order_form_table.recommendation": "Рекомендации",
         "order_form_table.cancel_reason": "Причина отмены",
-        "status": "Статус ремонта",
+        "order_form_table.repair_status": "Статус ремонта",
         "urgency": "Срочность",
         "priority": "Приоритет",
         "responsible": "Ответственный",
@@ -82,14 +89,19 @@
         "comment": "Комментарий",
         "author": "Автор",
         "duration": "Продолжительность",
-        "order_form_table.purchasePrice": "Закупочная цена"
+        "order_form_table.purchasePrice": "Закупочная цена",
+        "order_form_table.suggest": "Подобрать",
+        "order_form_table.TO_DO": "Запись",
+        "order_form_table.COMPLETED": "Выполнено"
     },
     "uk": {
         "order_form_table.confirm_exit": "Бажаєте зберегти зміни?",
         "order_form_table.confirm_exit_without_changes": "Ні",
         "order_form_table.employee": "Співробітник",
         "order_form_table.service.placeholder": "Виберіть послугу",
+        "order_form_table.service.no_vehicle_placeholder": "Для вибору послуги потрібно додати авто",
         "order_form_table.detail.placeholder": "Виберіть деталь",
+        "order_form_table.detail.no_vehicle_placeholder": "Для вибору деталі потрібно додати авто",
         "order_form_table.brand.placeholder": "Виберіть бренд",
         "order_form_table.duration": "Тривалість",
         "order_form_table.master": "Слесарь-Механік",
@@ -124,6 +136,9 @@
         "comment": "Коментар",
         "author": "Автор",
         "duration": "Тривалість",
-        "order_form_table.purchasePrice": "Закупочна ціна"
+        "order_form_table.purchasePrice": "Закупочна ціна",
+        "order_form_table.suggest": "Підібрати",
+        "order_form_table.TO_DO": "Запис",
+        "order_form_table.COMPLETED": "Виконано"
     }
 }

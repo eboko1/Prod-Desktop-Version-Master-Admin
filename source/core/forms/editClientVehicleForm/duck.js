@@ -6,6 +6,8 @@ const prefix = `cpb/${moduleName}`;
 
 export const ON_CHANGE_CLIENT_VEHICLE_FORM = `${prefix}/ON_CHANGE_CLIENT_VEHICLE_FORM`;
 export const SET_EDITABLE_ITEM = `${prefix}/SET_EDITABLE_ITEM`;
+export const SET_EDIT_VEHICLE = `${prefix}/SET_EDIT_VEHICLE`;
+export const SET_SELECTED_VEHICLE = `${prefix}/SET_SELECTED_VEHICLE`;
 
 export const ADD_ERROR = `${prefix}/ADD_ERROR`;
 export const HANDLE_ERROR = `${prefix}/HANDLE_ERROR`;
@@ -15,9 +17,11 @@ export const HANDLE_ERROR = `${prefix}/HANDLE_ERROR`;
 let errorId = 1;
 
 const ReducerState = {
-    errors:       [],
-    fields:       {},
-    editableItem: null,
+    errors:          [],
+    fields:          {},
+    editableItem:    null,
+    editVehicle:     false,
+    selectedVehicle: null,
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -47,7 +51,22 @@ export default function reducer(state = ReducerState, action) {
         case SET_EDITABLE_ITEM:
             return {
                 ...state,
-                editableItem: payload,
+                editableItem:    payload,
+                editVehicle:     false,
+                selectedVehicle: null,
+            };
+
+        case SET_EDIT_VEHICLE:
+            return {
+                ...state,
+                editVehicle: payload,
+            };
+
+        case SET_SELECTED_VEHICLE:
+            return {
+                ...state,
+                selectedVehicle: payload,
+                editVehicle:     false,
             };
 
         default:
@@ -74,4 +93,14 @@ export const addError = error => ({
 export const handleError = id => ({
     type:    HANDLE_ERROR,
     payload: id,
+});
+
+export const setEditVehicle = edit => ({
+    type:    SET_EDIT_VEHICLE,
+    payload: edit,
+});
+
+export const setSelectedVehicle = vehicle => ({
+    type:    SET_SELECTED_VEHICLE,
+    payload: vehicle,
 });

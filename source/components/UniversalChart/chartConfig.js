@@ -13,7 +13,7 @@ export const chartMode = Object.freeze({
     PROGRESS:             { mode: 'PROGRESS', type: 'pc' }, // Кол-во Ремонтов (шт)
     STACK_CALLS:          { mode: 'STACK_CALLS', type: 'pc' }, // Зависшие “Новые” (шт.)
     APPOINTMENTS:         { mode: 'APPOINTMENTS', type: 'auto' }, // Загрузка постов (авто)
-    CALLS_REACTION:       { mode: 'APPOINTMENTS' }, // Ø реакция на звонки
+    CALLS_REACTION:       { mode: 'CALLS_REACTION', type: 'min' }, // Ø реакция на звонки
 });
 
 export const chartList = Object.freeze({

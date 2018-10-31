@@ -14,8 +14,6 @@ import {
 } from './ResponsiveViews';
 import Loader from './Loader';
 
-// utils entry point
-
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
 export * from './_uikit';

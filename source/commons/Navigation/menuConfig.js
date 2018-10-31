@@ -181,12 +181,12 @@ export default {
                 },
             ],
         },
-        /* Roles submenu */
+        /* Administration submenu */
         {
-            key:      'roles',
-            iconType: 'book',
+            key:      'administration',
+            iconType: 'database',
             disabled: user => isForbidden(user, permissions.GRANT),
-            name:     'navigation.roles',
+            name:     'navigation.administration',
             items:    [
                 {
                     key:     '/packages',
@@ -205,6 +205,18 @@ export default {
                     link:    book.managerRolePage,
                     visible: user => !isForbidden(user, permissions.GRANT),
                     name:    'navigation.manager_roles',
+                },
+                {
+                    key:     '/administration/services',
+                    link:    book.servicesPage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.services-spare_parts',
+                },
+                {
+                    key:     '/administration/brands',
+                    link:    book.brandsPage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.priority_brands',
                 },
             ],
         },

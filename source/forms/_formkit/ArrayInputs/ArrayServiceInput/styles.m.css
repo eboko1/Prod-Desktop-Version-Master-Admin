@@ -1,0 +1,31 @@
+.select {
+    width: 100%;
+}
+
+.saveIcon {
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--secondary);
+}
+
+.newScheduleBreak {
+    display: flex;
+    align-items: center;
+    margin: 24px auto;
+}
+
+.scheduleType {
+    width: 100%;
+}
+
+.breakScheduleFormItem {
+    margin-bottom: 0;
+}
+
+.newBreakScheduleRow {
+    background-color: rgba(11, 127, 0, 0.28);
+}
+
+.editedBreakScheduleRow {
+    background-color: rgba(255, 45, 45, 0.28);
+}

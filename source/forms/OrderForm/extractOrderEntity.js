@@ -1,6 +1,8 @@
+// vendor
 import _ from 'lodash';
 import moment from 'moment';
 
+// proj
 import { permissions, isForbidden } from 'utils';
 
 export function convertFieldsValuesToDbEntity(
@@ -68,17 +70,33 @@ export function convertFieldsValuesToDbEntity(
         })
         .value();
 
-    const beginDate = _.get(orderFields, 'beginDate');
-    const beginTime = _.get(orderFields, 'beginTime');
+    const beginDate = _.get(orderFields, 'stationLoads[0].beginDate');
+    const beginTime = _.get(orderFields, 'stationLoads[0].beginTime');
+
+    const deliveryDate = _.get(orderFields, 'deliveryDate');
+    const deliveryTime = _.get(orderFields, 'deliveryTime');
 
     const dayPart =
         beginDate &&
         moment(beginDate)
             .utc()
             .format('YYYY-MM-DD');
+
     const hourPart =
         beginTime &&
         moment(beginTime)
+            .utc()
+            .format('HH:mm');
+
+    const deliveryDayPart =
+        deliveryDate &&
+        moment(deliveryDate)
+            .utc()
+            .format('YYYY-MM-DD');
+
+    const deliveryHourPart =
+        deliveryTime &&
+        moment(deliveryTime)
             .utc()
             .format('HH:mm');
 
@@ -87,7 +105,44 @@ export function convertFieldsValuesToDbEntity(
         hourPart &&
         moment(`${dayPart}T${hourPart}:00.000Z`).toISOString();
 
-    const orderDuration = _.get(orderFields, 'duration');
+    const deliveryDatetime =
+        deliveryDayPart &&
+        deliveryHourPart &&
+        moment(`${deliveryDayPart}T${deliveryHourPart}:00.000Z`).toISOString();
+
+    const orderDuration = _.get(orderFields, 'stationLoads[0].duration');
+
+    const stationLoadsEntity = _.get(orderFields, 'stationLoads')
+        .filter(
+            ({ beginDate, beginTime, station }) =>
+                ![ beginDate, beginTime, station ].some(_.isNil),
+        )
+        .map(obj => {
+            const dayPart =
+                obj.beginDate &&
+                moment(obj.beginDate)
+                    .utc()
+                    .format('YYYY-MM-DD');
+
+            const hourPart =
+                obj.beginTime &&
+                moment(obj.beginTime)
+                    .utc()
+                    .format('HH:mm');
+
+            const beginDatetime =
+                dayPart &&
+                hourPart &&
+                moment(`${dayPart}T${hourPart}:00.000Z`).toISOString();
+
+            return {
+                ..._.omit(obj, [ 'beginDate', 'beginTime', 'station' ]),
+                stationNum: obj.station,
+                beginDatetime,
+            };
+        });
+
+    const stationLoads = _.each(stationLoadsEntity);
 
     const order = {
         clientId:                    _.get(orderFields, 'selectedClient.clientId'),
@@ -100,14 +155,16 @@ export function convertFieldsValuesToDbEntity(
         clientRequisiteId:           _.get(orderFields, 'clientRequisite'),
         status,
         beginDatetime,
+        deliveryDatetime,
         services,
         details,
+        stationLoads,
         appurtenanciesResponsibleId: _.get(
             orderFields,
             'appurtenanciesResponsible',
         ),
         employeeId:       _.get(orderFields, 'employee'),
-        stationNum:       _.get(orderFields, 'station'),
+        stationNum:       _.get(orderFields, 'stationLoads[0].station'),
         detailsDiscount:  _.get(orderFields, 'detailsDiscount'),
         servicesDiscount: _.get(orderFields, 'servicesDiscount'),
         odometerValue:    _.get(orderFields, 'odometerValue'),
@@ -160,20 +217,20 @@ export const requiredFieldsOnStatuses = values => {
         not_complete: [ 'manager' ],
         required:     [ 'manager' ],
 
-        reserve: [ 'beginDate', 'beginTime', 'manager', 'station' ],
-        approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'station' ],
+        reserve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'station', 'deliveryDate', 'deliveryTime' ],
+        approve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'station', 'deliveryDate', 'deliveryTime' ],
 
         redundant: [],
         cancel:    [],
 
-        progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+        progress: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDate', 'deliveryTime' ],
 
-        success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station' ],
+        success: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDate', 'deliveryTime' ],
     };
 
-    if (values.beginDate || values.beginTime) {
+    if (values[ 'stationLoads[0].beginTime' ] || values [ 'stationLoads[0].beginDate' ]) {
         return _.mapValues(statuses, fields =>
-            _.uniq([ ...fields, 'beginDate', 'beginTime' ]));
+            _.uniq([ ...fields, 'stationLoads[0].beginTime', 'stationLoads[0].beginDate' ]));
     }
 
     return statuses;

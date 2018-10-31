@@ -21,6 +21,7 @@ import {
     setDashboardDate,
     setDashboardMode,
     updateDashboardOrderSuccess,
+    transferOutdateRepairsSuccess,
     refreshDashboard,
     INIT_DASHBOARD,
     SET_DASHBOARD_MODE,
@@ -29,6 +30,7 @@ import {
     LINK_TO_DASHBOARD_STATIONS,
     UPDATE_DASHBOARD_ORDER,
     REFRESH_DASHBOARD,
+    TRANSFER_OUTDATED_REPAIRS,
     // selectDashboardMode,
     selectDashboardDate,
     selectDashboardMode,
@@ -182,12 +184,30 @@ export function* updateDashboardOrderSaga() {
             yield call(
                 fetchAPI,
                 'PUT',
-                `orders/${order.id}`,
+                `/stations/loads/${order.stationLoadId}`,
                 {},
-                _.omit(order, [ 'id' ]),
+                _.omit(order, [ 'stationLoadId' ]),
             );
 
             yield put(updateDashboardOrderSuccess());
+            yield put(refreshDashboard());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* transferOutdateRepairsSaga() {
+    while (true) {
+        try {
+            yield take(TRANSFER_OUTDATED_REPAIRS);
+            yield nprogress.start();
+
+            yield call(fetchAPI, 'POST', '/reschedule/orders');
+
+            yield put(transferOutdateRepairsSuccess());
             yield put(refreshDashboard());
         } catch (error) {
             yield put(emitError(error));
@@ -207,6 +227,7 @@ export function* saga() {
         call(setDashboardModeSaga),
         call(linkToDashboardStationsSaga),
         call(updateDashboardOrderSaga),
+        call(transferOutdateRepairsSaga),
     ]);
 }
 /* eslint-enable array-element-newline */

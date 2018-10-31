@@ -26,11 +26,17 @@ const orderSource = {
     },
 
     beginDrag(props) {
-        return { id: props.id, station: props.options.stationNum };
+        return {
+            stationLoadId: props.options.stationLoadId,
+            orderId:       props.options.orderId,
+            station:       props.options.stationNum,
+        };
     },
-
+    // keep station and stationNum separate naming here
+    // they both received by different sources for a certain purpouse
+    // it is happening because of realisation approach of 'dashboard columns'
     endDrag(props, monitor) {
-        const { id, station } = monitor.getItem();
+        const { stationLoadId, station } = monitor.getItem();
         const didDrop = monitor.didDrop();
 
         if (didDrop) {
@@ -45,7 +51,7 @@ const orderSource = {
                         schedule.beginHour,
                     ).toISOString(),
                     station,
-                    id,
+                    stationLoadId,
                 });
             } else {
                 dropOrder({
@@ -55,13 +61,13 @@ const orderSource = {
                         schedule.beginHour,
                     ).toISOString(),
                     stationNum,
-                    id,
+                    stationLoadId,
                 });
             }
         }
 
         if (!didDrop) {
-            console.warn(`Order ${id} didn\'t dropped`); // eslint-disable-line
+            console.warn(`Station Load ${stationLoadId} didn\'t drop`); // eslint-disable-line
         }
     },
 };
@@ -110,7 +116,6 @@ export default class DashboardOrderDragSource extends Component {
             y,
             columns,
             rows,
-            id,
             status,
             dashboardRef,
             options,
@@ -124,7 +129,7 @@ export default class DashboardOrderDragSource extends Component {
             !isForbidden(user, permissions.SHOW_ORDERS);
 
         const openOrder = () =>
-            history.push(`${book.order}/${id}`, {
+            history.push(`${book.order}/${options.orderId}`, {
                 fromDashboard: true,
             });
 

@@ -3,7 +3,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import { Icon, Tooltip, Button } from 'antd';
-import classNames from 'classnames';
+import classNames from 'classnames/bind';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -31,6 +31,7 @@ export function columnsConfig(
         asc:  'ascend',
         desc: 'descend',
     };
+
     const indexCol = {
         title:     '№',
         width:     80,
@@ -105,6 +106,23 @@ export function columnsConfig(
             <div className={ Styles.datetime }>
                 { order.beginDatetime
                     ? moment(order.beginDatetime).format('DD.MM.YYYY HH:mm')
+                    : '-' }
+            </div>
+        ),
+    };
+
+    const deliveryDatetimeCol = {
+        title:     <FormattedMessage id='orders.delivery_date' />,
+        dataIndex: 'deliveryDatetime',
+        key:       'deliveryDatetime',
+        // sortOrder:
+        //     sort.field === 'deliveryDatetime' ? sortOptions[ sort.order ] : false,
+        // sorter: true,
+        width:     160,
+        render:    (_, order) => (
+            <div className={ Styles.datetime }>
+                { order.deliveryDatetime
+                    ? moment(order.deliveryDatetime).format('DD.MM.YYYY HH:mm')
                     : '-' }
             </div>
         ),
@@ -373,13 +391,13 @@ export function columnsConfig(
 
         case '/orders/approve':
         case '/orders/progress':
-            return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
+            return [ indexCol, orderCol, beginDatetimeCol, deliveryDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
 
         case '/orders/success':
             return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, reviewCol, invitationCol, editCol ];
 
         case '/orders/cancel':
-            return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, invitationCol, editCol ];
+            return [ indexCol, orderCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, invitationCol, editCol ];
 
         case '/orders/reviews':
             return [ indexCol, orderCol, reviewCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
@@ -424,7 +442,7 @@ export function scrollConfig(activeRoute) {
         case '/orders/invitations':
             return { x: 1260, y: '50vh' }; //1400
         case 'orders/cancel':
-            return { x: 1560, y: '50vh' }; //1640
+            return { x: 1400, y: '50vh' }; //1640 // -160 second date
         default:
             return { x: 1540, y: '50vh' }; //1640
     }

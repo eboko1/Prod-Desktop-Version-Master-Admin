@@ -10,6 +10,9 @@ import Debounce from 'lodash-decorators/debounce';
 import Bind from 'lodash-decorators/bind';
 import _ from 'lodash';
 
+// proj
+import { Numeral } from 'commons';
+
 // own
 import autoHeight from 'components/Charts/autoheight.js';
 import Styles from './styles.m.css';
@@ -261,9 +264,11 @@ export default class Pie extends Component {
                                 { /* eslint-disable-next-line */ }
                                 {total && (
                                     <div className='pie-stat'>
-                                        { typeof total === 'function'
-                                            ? total()
-                                            : total }
+                                        { typeof total === 'function' ? (
+                                            <Numeral>{ total() }</Numeral>
+                                        ) : (
+                                            <Numeral>{ total }</Numeral>
+                                        ) }
                                     </div>
                                 ) }
                             </div>
@@ -301,13 +306,14 @@ export default class Pie extends Component {
                                     { `${(isNaN(item.percent)
                                         ? 0
                                         : item.percent * 100
-                                    ).toFixed(2)}%` }
+                                    ).toFixed(0)}%` }
                                 </span>
-                                <span className={ Styles.value }>
+                                <Divider type='vertical' />
+                                <Numeral className={ Styles.value }>
                                     { valueFormat
                                         ? valueFormat(item.y)
                                         : item.y }
-                                </span>
+                                </Numeral>
                             </li>
                         )) }
                     </ul>

@@ -24,8 +24,7 @@ import {
     UniversalFilters,
 } from 'containers';
 import book from 'routes/book';
-import { withResponsive, getDaterange } from 'utils';
-import { permissions, isForbidden } from 'utils';
+import { withResponsive, getDaterange, permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';

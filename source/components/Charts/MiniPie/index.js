@@ -5,6 +5,8 @@ import { FormattedMessage } from 'react-intl';
 // proj
 import { Pie } from 'components/Charts';
 
+import { Numeral } from 'commons';
+
 // own
 import Styles from './styles.m.css';
 
@@ -50,7 +52,7 @@ export default class MiniPie extends Component {
                     <span className={ Styles.label }>
                         <FormattedMessage id={ label } />
                     </span>
-                    <span className={ Styles.value }>{ percent }</span>
+                    <Numeral className={ Styles.value }>{ percent }</Numeral>
                 </div>
             </div>
         );

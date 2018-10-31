@@ -104,6 +104,9 @@ import ReviewsTable from 'components/ReviewsTable/messages';
 import ReviewResponse from 'components/ReviewResponse/messages';
 import StatisticsCallsTable from 'components/CallsTable/messages';
 import CallsStatistics from 'components/CallsStatistics/messages';
+import PartSuggestions from 'components/PartSuggestions/messages';
+import PartAttributes from 'components/PartAttributes/messages';
+
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -195,6 +198,8 @@ const messages = merge.all([
     ReviewResponse,
     StatisticsCallsTable,
     CallsStatistics,
+    PartSuggestions,
+    PartAttributes,
 ]);
 /* eslint-enable array-element-newline */
 

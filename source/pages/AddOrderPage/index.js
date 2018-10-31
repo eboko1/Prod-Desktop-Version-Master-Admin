@@ -31,19 +31,21 @@ import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
-        stations:       state.forms.orderForm.stations,
-        vehicles:       state.forms.orderForm.vehicles,
-        employees:      state.forms.orderForm.employees,
-        managers:       state.forms.orderForm.managers,
-        allDetails:     state.forms.orderForm.allDetails,
-        allServices:    state.forms.orderForm.allServices,
-        requisites:     state.forms.orderForm.requisites,
-        modal:          state.modals.modal,
+        stations:          state.forms.orderForm.stations,
+        vehicles:          state.forms.orderForm.vehicles,
+        employees:         state.forms.orderForm.employees,
+        managers:          state.forms.orderForm.managers,
+        allDetails:        state.forms.orderForm.allDetails,
+        allServices:       state.forms.orderForm.allServices,
+        requisites:        state.forms.orderForm.requisites,
+        modal:             state.modals.modal,
         // addClientFormData: state.forms.addClientForm.data,
-        spinner:        state.ui.orderFetching,
-        createStatus:   state.forms.orderForm.createStatus,
-        selectedClient: state.forms.orderForm.selectedClient,
-        user:           state.auth,
+        spinner:           state.ui.orderFetching,
+        createStatus:      state.forms.orderForm.createStatus,
+        selectedClient:    state.forms.orderForm.selectedClient,
+        orderHistory:      state.forms.orderForm.history,
+        orderStationLoads: state.forms.orderForm.stationLoads,
+        user:              state.auth,
     };
 };
 
@@ -199,6 +201,8 @@ class AddOrderPage extends Component {
                     setAddClientModal={ this._setAddClientModal }
                     modal={ modal }
                     addOrderForm
+                    orderHistory={ this.props.orderHistory }
+                    orderStationLoads={ this.props.orderStationLoads }
                     location={ this.props.history.location }
                 />
             </Layout>

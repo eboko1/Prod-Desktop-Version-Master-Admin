@@ -56,6 +56,7 @@ export default class UniversalChartModal extends Component {
                                     id={ `universal_chart.list.title.${key}` }
                                 />
                             </div>
+                            { console.log('→ key', key) }
                             <List
                                 size='small'
                                 bordered
@@ -72,6 +73,7 @@ export default class UniversalChartModal extends Component {
                                             )
                                         }
                                     >
+                                        { console.log('→ item.mode', item.mode) }
                                         <List.Item.Meta
                                             className={ Styles.chartListItem }
                                             title={

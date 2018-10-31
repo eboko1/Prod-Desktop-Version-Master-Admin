@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
-import { Tabs } from 'antd';
+import { Tabs, Button } from 'antd';
 import moment from 'moment';
 
 // proj
@@ -15,6 +15,7 @@ import {
     setDashboardMode,
     selectDasboardData,
     updateDashboardOrder,
+    transferOutdateRepairs,
 } from 'core/dashboard/duck';
 
 import { Layout, Spinner, Loader } from 'commons';
@@ -26,18 +27,21 @@ import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
-    orders:    state.dashboard.orders.orders,
-    mode:      state.dashboard.mode,
-    stations:  state.dashboard.stations,
-    date:      state.dashboard.date,
-    startDate: state.dashboard.startDate,
-    endDate:   state.dashboard.endDate,
-    schedule:  state.dashboard.schedule,
-    days:      state.dashboard.days,
-    load:      state.dashboard.load,
-    spinner:   state.ui.dashboardInitializing,
-    loading:   state.ui.dashboardFetching,
-    user:      state.auth,
+    orders:                state.dashboard.orders.orders,
+    mode:                  state.dashboard.mode,
+    stations:              state.dashboard.stations,
+    date:                  state.dashboard.date,
+    startDate:             state.dashboard.startDate,
+    endDate:               state.dashboard.endDate,
+    schedule:              state.dashboard.schedule,
+    days:                  state.dashboard.days,
+    load:                  state.dashboard.load,
+    daysWithConflicts:     state.dashboard.daysWithConflicts,
+    stationsWithConflicts: state.dashboard.stationsWithConflicts,
+
+    spinner: state.ui.dashboardInitializing,
+    loading: state.ui.dashboardFetching,
+    user:    state.auth,
 
     ...selectDasboardData(state),
 });
@@ -50,6 +54,7 @@ const mapDispatchToProps = {
     setDashboardMode,
     linkToDashboardStations,
     updateDashboardOrder,
+    transferOutdateRepairs,
 };
 
 @connect(
@@ -106,6 +111,8 @@ class DashboardPage extends Component {
 
     _setDashboardMode = mode => this.props.setDashboardMode(mode);
 
+    _transferOutdateRepairs = () => this.props.transferOutdateRepairs();
+
     render() {
         const { startDate, endDate, date, mode, spinner, loading } = this.props;
 
@@ -119,6 +126,14 @@ class DashboardPage extends Component {
                 title={ <FormattedMessage id='dashboard-page.title' /> }
                 description={
                     <FormattedMessage id='dashboard-page.description' />
+                }
+                controls={
+                    <Button
+                        type='primary'
+                        onClick={ () => this._transferOutdateRepairs() }
+                    >
+                        <FormattedMessage id='dashboard-page.transfer_outdated_repairs' />
+                    </Button>
                 }
             >
                 <section className={ Styles.dashboardPage }>
@@ -185,6 +200,8 @@ class DashboardPage extends Component {
             updateDashboardOrder,
             date,
             user,
+            daysWithConflicts,
+            stationsWithConflicts,
         } = this.props;
 
         return loading ? (
@@ -203,6 +220,8 @@ class DashboardPage extends Component {
                 dashboard={ dashboard }
                 linkToDashboardStations={ linkToDashboardStations }
                 updateDashboardOrder={ updateDashboardOrder }
+                daysWithConflicts={ daysWithConflicts }
+                stationsWithConflicts={ stationsWithConflicts }
             />
         );
     };

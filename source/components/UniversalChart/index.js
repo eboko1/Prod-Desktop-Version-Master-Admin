@@ -21,9 +21,8 @@ export default class UniversalChart extends Component {
     _tooltip = (value, mode) => {
         const { formatMessage } = this.props.intl;
 
-        return `${numeral(value).format('0,0[]00')} (${formatMessage({
-            id: chartMode[ mode ].type,
-        })})`;
+        return `${numeral(value).format('0,0[]00')}${chartMode[ mode ].type &&
+            ` (${formatMessage({ id: chartMode[ mode ].type })})`}`;
     };
 
     render() {

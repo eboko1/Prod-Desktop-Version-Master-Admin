@@ -17,6 +17,7 @@ import {
     TasksTable,
     HistoryTable,
     CallsTable,
+    StationsTable,
 } from '../OrderFormTables';
 import Styles from './styles.m.css';
 const TabPane = Tabs.TabPane;
@@ -57,6 +58,7 @@ export default class OrderFormTabs extends Component {
             user,
             fetchOrderForm,
             fetchOrderTask,
+            stationsCount,
         } = this.props;
 
         const {
@@ -85,7 +87,7 @@ export default class OrderFormTabs extends Component {
             : hideTasks(orderTasks, user.id);
 
         return (
-            <Tabs type='card'>
+            <Tabs type='card' className={ Styles.orderFormsTabs }>
                 { !addOrderForm && (
                     <TabPane
                         forceRender
@@ -305,6 +307,21 @@ export default class OrderFormTabs extends Component {
                         <CallsTable orderCalls={ orderCalls } />
                     </TabPane>
                 ) }
+                <TabPane
+                    forceRender
+                    // disabled={ areCallsForbidden }
+                    tab={
+                        formatMessage({
+                            id: 'order_form_table.station',
+                        }) + ` (${stationsCount ? stationsCount.length : 0})`
+                    }
+                    key='7'
+                >
+                    <StationsTable
+                        { ...this.props }
+                        // stationLoads={ stationLoads }
+                    />
+                </TabPane>
             </Tabs>
         );
     }

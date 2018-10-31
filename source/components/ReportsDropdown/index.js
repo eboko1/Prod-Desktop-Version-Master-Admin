@@ -30,15 +30,16 @@ class ReportsDropdown extends React.Component {
             return [];
         }
 
+        const all = [ ACT_OF_ACCEPTANCE_REPORT, BUSINESS_ORDER_REPORT, CALCULATION_REPORT, CLIENT_ORDER_REPORT, COMPLETED_WORK_REPORT, DIAGNOSTICS_ACT_REPORT, INVOICE_REPORT ];
+
         const statusToReportsMap = {
             not_complete: [ CALCULATION_REPORT ], // eslint-disable-line camelcase
             required:     [ CALCULATION_REPORT ],
-            reserve:      [ INVOICE_REPORT, COMPLETED_WORK_REPORT, CALCULATION_REPORT, ACT_OF_ACCEPTANCE_REPORT, DIAGNOSTICS_ACT_REPORT, BUSINESS_ORDER_REPORT ],
+            reserve:      [ CALCULATION_REPORT ],
             call:         [ CALCULATION_REPORT ],
-            approve:      [ INVOICE_REPORT, COMPLETED_WORK_REPORT, CALCULATION_REPORT, ACT_OF_ACCEPTANCE_REPORT, DIAGNOSTICS_ACT_REPORT, BUSINESS_ORDER_REPORT ],
-            progress:     [ INVOICE_REPORT, COMPLETED_WORK_REPORT, ACT_OF_ACCEPTANCE_REPORT, DIAGNOSTICS_ACT_REPORT, BUSINESS_ORDER_REPORT ],
-            success:      [ CLIENT_ORDER_REPORT, COMPLETED_WORK_REPORT, CALCULATION_REPORT ],
-            review:       [ CLIENT_ORDER_REPORT ],
+            approve:      all,
+            progress:     all,
+            success:      [ CALCULATION_REPORT, CLIENT_ORDER_REPORT, COMPLETED_WORK_REPORT, INVOICE_REPORT ],
             invite:       [ CALCULATION_REPORT ],
             cancel:       [ CALCULATION_REPORT ],
         };

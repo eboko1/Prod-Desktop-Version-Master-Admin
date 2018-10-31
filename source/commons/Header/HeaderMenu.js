@@ -7,7 +7,7 @@ import { FormattedMessage } from 'react-intl';
 
 // proj
 import { selectAdmin } from 'core/auth/duck';
-import { setBusiness } from 'core/forms/switchBusinessForm/duck'
+import { setBusiness } from 'core/forms/switchBusinessForm/duck';
 import { setModal, MODALS } from 'core/modals/duck';
 
 import { SwitchBusinessModal } from 'modals';
@@ -27,7 +27,10 @@ const mapDispatch = {
     setModal,
 };
 
-@connect(mapStateToProps, mapDispatch)
+@connect(
+    mapStateToProps,
+    mapDispatch,
+)
 export default class HeaderMenu extends Component {
     render() {
         const { isMobile } = this.props;
@@ -59,19 +62,21 @@ export default class HeaderMenu extends Component {
                     type='poweroff'
                     onClick={ logout }
                 />
-                <SwitchBusinessModal
-                    setBusiness={ this.props.setBusiness }
-                />
+                <SwitchBusinessModal setBusiness={ this.props.setBusiness } />
             </div>
         );
     };
 
     _renderOpenYourSite = () => {
-        const { isAdmin, setModal } = this.props;
+        const {
+            isAdmin,
+            setModal,
+            user: { businessesAccess },
+        } = this.props;
 
         return (
             <div className={ Styles.headerWeb }>
-                { isAdmin && (
+                { (isAdmin || businessesAccess) && (
                     <Icon
                         type='home'
                         className={ Styles.homeIcon }

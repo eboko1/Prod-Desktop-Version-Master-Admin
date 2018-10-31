@@ -9,6 +9,10 @@ import {
     onChangeOrderForm,
     setClientSelection,
     fetchAvailableHours,
+    fetchTecdocSuggestions,
+    fetchTecdocDetailsSuggestions,
+    clearTecdocSuggestions,
+    clearTecdocDetailsSuggestions,
 } from 'core/forms/orderForm/duck';
 import { resetModal } from 'core/modals/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
@@ -34,12 +38,20 @@ import Styles from './styles.m.css';
         initOrderTasksForm,
         resetModal,
         fetchAvailableHours,
+        fetchTecdocSuggestions,
+        clearTecdocSuggestions,
+        fetchTecdocDetailsSuggestions,
+        clearTecdocDetailsSuggestions,
     },
     mapStateToProps: state => ({
-        modal:                  state.modals.modal,
-        addClientFormData:      state.forms.addClientForm.data,
-        authentificatedManager: state.auth.id,
-        user:                   state.auth,
+        modal:                      state.modals.modal,
+        addClientFormData:          state.forms.addClientForm.data,
+        authentificatedManager:     state.auth.id,
+        user:                       state.auth,
+        suggestionsFetching:        state.ui.suggestionsFetching,
+        detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
+        stationLoads:               state.forms.orderForm.stationLoads,
+        schedule:                   state.forms.orderForm.schedule,
     }),
 })
 export class OrderForm extends Component {
@@ -52,24 +64,69 @@ export class OrderForm extends Component {
         this.setState({ initialized: true });
     }
 
-    // TODO BODYA
-    componentDidUpdate(prevProps, prevState) {
-        const { formValues: prevFormValues } = prevState;
+    componentDidUpdate() {
+        const { orderId } = this.props;
+        const { formValues: prevFormValues } = this.state;
         const formValues = this.props.form.getFieldsValue();
 
         if (!_.isEqual(formValues, prevFormValues)) {
             this.setState({ formValues });
         }
+
+        _.each(formValues.stationLoads, (stationLoad, index) => {
+            const prevStationLoad = _.get(prevFormValues.stationLoads, index);
+            const prevStationHoursFields = _.pick(prevStationLoad, [ 'beginDate', 'station' ]);
+            const stationHoursFields = _.pick(stationLoad, [ 'beginDate', 'station' ]);
+
+            if (
+                stationHoursFields &&
+                !_.isEqual(prevStationHoursFields, stationHoursFields)
+            ) {
+                const { station, beginDate } = stationHoursFields;
+                const {
+                    station: prevStation,
+                    beginDate: prevBeginDate,
+                } = prevStationHoursFields;
+                if (![ station, beginDate ].some(_.isNil)) {
+                    this.props.fetchAvailableHours(
+                        station,
+                        beginDate,
+                        orderId,
+                        index,
+                    );
+
+                    if (![ prevStation, prevBeginDate ].some(_.isNil)) {
+                        this.props.form.setFieldsValue({
+                            [ `stationLoads[${index}].beginTime` ]: void 0,
+                        });
+                    }
+                }
+            }
+        });
     }
 
     _saveFormRef = formRef => {
         this.formRef = formRef;
     };
 
+    _getTecdocId = () => {
+        const { form } = this.props;
+
+        const clientVehicleId = form.getFieldValue('clientVehicle');
+        const vehicles = _.get(this.props, 'selectedClient.vehicles');
+
+        return clientVehicleId && _.isArray(vehicles)
+            ? _.chain(vehicles)
+                .find({ id: clientVehicleId })
+                .get('tecdocId', null)
+                .value()
+            : null;
+    };
+
     render() {
         const { form, allServices } = this.props;
-        this.props.form.getFieldDecorator('services[0].serviceName');
-        this.props.form.getFieldDecorator('details[0].detailName');
+        form.getFieldDecorator('services[0].serviceName');
+        form.getFieldDecorator('details[0].detailName');
 
         const tabs = this._renderTabs();
 
@@ -97,7 +154,15 @@ export class OrderForm extends Component {
     }
 
     _renderTabs = () => {
-        const { form, orderTasks, setModal, allServices } = this.props;
+        const {
+            form,
+            orderTasks,
+            setModal,
+            allServices,
+            stationLoads,
+            schedule,
+            fields,
+        } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
@@ -111,14 +176,23 @@ export class OrderForm extends Component {
             // totalHours,
         } = servicesStats(form.getFieldsValue().services || [], allServices);
 
+        const stationsCount = (form.getFieldsValue().stationLoads || [])
+            .filter(Boolean)
+            .filter(value => !_.values(value).some(_.isNil));
+
         const comments = form.getFieldsValue([ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);
 
         const commentsCollection = _.values(comments);
         const commentsCount = commentsCollection.filter(Boolean).length;
 
+        const tecdocId = this._getTecdocId();
+        const clientVehicleId = form.getFieldValue('clientVehicle');
+
         return (
             <OrderFormTabs
                 { ...this.props }
+                tecdocId={ tecdocId }
+                clientVehicleId={ clientVehicleId }
                 initOrderTasksForm={ this.props.initOrderTasksForm }
                 formatMessage={ formatMessage }
                 getFieldDecorator={ getFieldDecorator }
@@ -130,7 +204,10 @@ export class OrderForm extends Component {
                 priceDetails={ priceDetails }
                 setModal={ setModal }
                 orderTasks={ orderTasks }
+                stationLoads={ stationLoads }
+                schedule={ schedule }
                 commentsCount={ commentsCount }
+                stationsCount={ stationsCount }
             />
         );
     };

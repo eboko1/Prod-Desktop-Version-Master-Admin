@@ -32,6 +32,7 @@ export const DecoratedTimePicker = props => {
         allowEmpty,
         initialValue,
         defaultOpenValue,
+        onChange,
     } = props;
 
     const timePicker = getFieldDecorator(field, {
@@ -54,6 +55,7 @@ export const DecoratedTimePicker = props => {
             minuteStep={ minuteStep }
             inputReadOnly={ inputReadOnly }
             allowEmpty={ allowEmpty }
+            onChange={ onChange }
         />,
     );
 
@@ -67,7 +69,7 @@ export const DecoratedTimePicker = props => {
         >
             { timePicker }
         </FormItem>
-    ) : 
+    ) :
         timePicker
     ;
 };

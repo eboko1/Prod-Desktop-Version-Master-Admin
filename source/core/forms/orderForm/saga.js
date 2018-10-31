@@ -16,7 +16,12 @@ import nprogress from 'nprogress';
 
 // proj
 import { resetModal, MODALS } from 'core/modals/duck';
-import { setOrderFetchingState, emitError } from 'core/ui/duck';
+import {
+    setOrderFetchingState,
+    setSuggestionsFetchingState,
+    setDetailsSuggestionsFetchingState,
+    emitError,
+} from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 import book from 'routes/book';
 
@@ -35,6 +40,8 @@ import {
     updateOrderSuccess,
     returnToOrdersPage,
     createInviteOrderSuccess,
+    fetchTecdocSuggestionsSuccess,
+    fetchTecdocDetailsSuggestionsSuccess,
     CREATE_INVITE_ORDER,
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
@@ -45,7 +52,48 @@ import {
     UPDATE_ORDER,
     RETURN_TO_ORDERS_PAGE,
     FETCH_AVAILABLE_HOURS,
+    FETCH_TECDOC_SUGGESTIONS,
+    FETCH_TECDOC_DETAILS_SUGGESTIONS,
 } from './duck';
+
+export function* fetchTecdocDetailsSuggestionsSaga() {
+    while (true) {
+        const {
+            payload: { modificationId, productId, key },
+        } = yield take(FETCH_TECDOC_DETAILS_SUGGESTIONS);
+        const query = { modificationId, productId };
+        yield put(setDetailsSuggestionsFetchingState(true));
+        const suggestions = yield call(
+            fetchAPI,
+            'GET',
+            'tecdoc/products/parts/suggest',
+            query,
+            void 0,
+        );
+        yield put(fetchTecdocDetailsSuggestionsSuccess(suggestions, key));
+        yield put(setDetailsSuggestionsFetchingState(false));
+    }
+}
+
+export function* fetchTecdocSuggestionsSaga() {
+    while (true) {
+        const {
+            payload: { modificationId, serviceId },
+        } = yield take(FETCH_TECDOC_SUGGESTIONS);
+
+        const query = { modificationId, serviceId };
+
+        yield put(setSuggestionsFetchingState(true));
+        const suggestions = yield call(
+            fetchAPI,
+            'GET',
+            'tecdoc/suggestions',
+            query,
+        );
+        yield put(fetchTecdocSuggestionsSuccess(suggestions));
+        yield put(setSuggestionsFetchingState(false));
+    }
+}
 
 export function* fetchOrderFormSaga() {
     while (true) {
@@ -54,18 +102,6 @@ export function* fetchOrderFormSaga() {
             yield put(setOrderFetchingState(true));
 
             const data = yield call(fetchAPI, 'GET', `orders/${id}`);
-
-            if (
-                _.get(data, 'order.beginDatetime') &&
-                _.get(data, 'order.stationNum')
-            ) {
-                yield put(
-                    fetchAvailableHours(
-                        data.order.stationNum,
-                        moment(data.order.beginDatetime),
-                    ),
-                );
-            }
             yield put(fetchOrderFormSuccess(data));
         } catch (error) {
             yield put(emitError(error));
@@ -95,7 +131,6 @@ export function* createOrderSaga() {
                 payload: { order, redirectStatus, redirectToDashboard },
             } = yield take(CREATE_ORDER);
             yield call(fetchAPI, 'POST', 'orders', {}, order);
-
             if (redirectToDashboard && redirectStatus) {
                 yield put(replace(book.dashboard));
             }
@@ -164,9 +199,9 @@ export function* returnToOrdersPageSaga() {
             const statusesMap = [
                 {
                     route:    '/orders/appointments',
-                    statuses: [ 'not_complete', 'required', 'call' ],
+                    statuses: [ 'not_complete', 'required', 'reserve', 'call' ],
                 },
-                { route: '/orders/approve', statuses: [ 'approve', 'reserve' ] },
+                { route: '/orders/approve', statuses: [ 'approve' ] },
                 { route: '/orders/progress', statuses: [ 'progress' ] },
                 { route: '/orders/success', statuses: [ 'success' ] },
                 { route: '/orders/reviews', statuses: [ 'review' ] },
@@ -254,16 +289,14 @@ export function* fetchAvailableHoursSaga() {
     while (true) {
         try {
             const {
-                payload: { station, date, orderId },
+                payload: { station, date, orderId, key },
             } = yield take(FETCH_AVAILABLE_HOURS);
-
             const data = yield call(fetchAPI, 'GET', 'dashboard/free_hours', {
                 stationNum: station,
                 date:       date.toISOString(),
                 orderId,
             });
-
-            yield put(fetchAvailableHoursSuccess(data));
+            yield put(fetchAvailableHoursSuccess(data, key));
         } catch (error) {
             yield put(emitError(error));
         }
@@ -274,6 +307,8 @@ export function* fetchAvailableHoursSaga() {
 export function* saga() {
     yield all([
         takeEvery(CREATE_INVITE_ORDER, createInviteOrderSaga),
+        call(fetchTecdocSuggestionsSaga),
+        call(fetchTecdocDetailsSuggestionsSaga),
         call(fetchOrderTaskSaga),
         call(returnToOrdersPageSaga),
         call(updateOrderSaga),

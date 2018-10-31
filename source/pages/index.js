@@ -19,6 +19,8 @@ import ReviewsPage from './ReviewsPage';
 import ReviewPage from './ReviewPage';
 import CallsPage from './CallsPage';
 import ChartPage from './ChartPage';
+import BrandsPage from './BrandsPage';
+import ServicesPage from './ServicesPage';
 
 export {
     DashboardPage,
@@ -42,4 +44,6 @@ export {
     ReviewPage,
     CallsPage,
     ChartPage,
+    BrandsPage,
+    ServicesPage,
 };

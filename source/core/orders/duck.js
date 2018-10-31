@@ -40,7 +40,7 @@ const ReducerState = {
     daterange:       'all',
     filter:          {
         page:          1,
-        status:        'not_complete,required,call',
+        status:        'not_complete,required,call,reserve',
         query:         '',
         daterange:     {},
         minNps:        void 0,

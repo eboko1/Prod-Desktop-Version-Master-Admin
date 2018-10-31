@@ -1,0 +1,15 @@
+.attributesCarousel {
+    text-align: center;
+    overflow: hidden;
+    height: 250px;
+}
+
+.attributesCarouselSlide {
+    color: #000;
+}
+
+.attributesCarouselSlide img {
+    display: block;
+    margin: 0 auto;
+    max-height: 250px;
+}

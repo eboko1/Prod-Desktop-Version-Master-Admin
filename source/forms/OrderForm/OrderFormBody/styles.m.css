@@ -9,14 +9,9 @@
     justify-content: space-between;
 }
 
-.clientData {
-    border-bottom: 2px solid var(--lightGray);
-}
-
 .client {
     display: flex;
     align-items: center;
-    border-top: 2px solid var(--lightGray);
     width: 45%;
 }
 
@@ -46,7 +41,7 @@
     cursor: pointer;
     color: var(--primary);
     font-weight: bold;
-    margin-left: 10px;
+    margin: 20px 0 0 10px;
 }
 
 .iconsCol {

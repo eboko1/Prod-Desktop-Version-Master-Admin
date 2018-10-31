@@ -81,3 +81,8 @@ a {
 .bg-success {
     background-color: var(--secondary);
 }
+
+.ant-table-thead > tr > th,
+.ant-table-tbody > tr > td {
+    padding: 4px;
+}

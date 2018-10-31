@@ -17,14 +17,6 @@ import _ from 'lodash';
 
 @injectIntl
 export default class Line extends Component {
-    // _tooltip = (value, mode) => {
-    //     const { formatMessage } = this.props.intl;
-    //
-    //     return `${numeral(value).format('0,0[]00')} (${formatMessage({
-    //         id: chartMode[ mode ].type,
-    //     })})`;
-    // };
-
     static defaultProps = {
         height: 300,
     };
@@ -48,13 +40,10 @@ export default class Line extends Component {
                             numeral(value).format('0,0[]00')
                         }
                     />
-                    <Tooltip />
-                    { /* <Tooltip formatter={ value => this._tooltip(value, mode) } /> */ }
-                    <Legend
-                        iconType='rect'
-                        content={ this._renderLegend }
-                        // onClick={ this.handleClick }
+                    <Tooltip
+                        formatter={ value => numeral(value).format('0,0[]00') }
                     />
+                    <Legend iconType='rect' content={ this._renderLegend } />
                     { _(config.dataKeys)
                         .map(dataKey => (
                             <RechartLine

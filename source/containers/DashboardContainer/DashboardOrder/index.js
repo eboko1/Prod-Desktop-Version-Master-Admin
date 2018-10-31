@@ -7,7 +7,6 @@ import { permissions, isForbidden } from 'utils';
 
 // own
 import { ordersStatus } from '../dashboardConfig';
-// import book from 'routes/book';
 
 // own
 import DashboardOrderDragSource from './DashboardOrderDragSource';
@@ -17,15 +16,7 @@ export default class DashboardOrder extends Component {
         resizing: false,
         height:   30,
     };
-    // constructor(props) {
-    //     super(props);
-    //
-    //     // this._resizableRef = React.createRef();
-    // }
 
-    // _getResizableRef = resizable => {
-    //     this.resizableRef = resizable;
-    // };
     componentDidMount() {
         this.setState({
             height: this.resizable.resizable.getBoundingClientRect().height,
@@ -38,16 +29,14 @@ export default class DashboardOrder extends Component {
     _resizeOrder = (event, direction, ref, delta) => {
         // step in 30 equal with dashboard ROW_HEIGHT / minutes in one hour
         const {
-            options: { duration }, // eslint-disable-line
-            id,
+            options: { duration, stationLoadId }, // eslint-disable-line
             dropOrder,
         } = this.props;
-
         const resizedDuration = (this.state.height + delta.height) / 60;
 
         this.setState({ height: this.state.height + delta.height });
-
-        dropOrder({ duration: resizedDuration, id });
+        // id has to be equal for this.props.options.stationLoadId
+        dropOrder({ duration: resizedDuration, stationLoadId });
     };
 
     render() {
@@ -61,7 +50,6 @@ export default class DashboardOrder extends Component {
             user,
             // hideSourceOnDrag,
         } = this.props;
-
         const { resizing } = this.state;
 
         const canUpdate =

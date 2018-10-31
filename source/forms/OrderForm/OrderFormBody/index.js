@@ -20,51 +20,17 @@ import { permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
+import {
+    formHeaderItemLayout,
+    formVerticalLayout,
+    formCommentLayout,
+    fromExpandedCommentLayot,
+    formRecommendationLayout,
+} from '../layouts';
 import { ClientsSearchTable } from './../OrderFormTables';
 const Option = Select.Option;
 
 let cx = classNames.bind(Styles);
-
-// TODO: global formsLayout
-// const formBodyItemLayout = {
-//     labelCol: {
-//         xs:  { span: 24 },
-//         sm:  { span: 24 },
-//         md:  { span: 24 },
-//         lg:  { span: 24 },
-//         xl:  { span: 24 },
-//         xxl: { span: 9 },
-//     },
-//     wrapperCol: {
-//         xs:  { span: 24 },
-//         sm:  { span: 24 },
-//         md:  { span: 24 },
-//         lg:  { span: 24 },
-//         xl:  { span: 24 },
-//         xxl: { span: 15 },
-//     },
-//     colon: false,
-// };
-
-const formVerticalLayout = {
-    labelCol: {
-        xs:  { span: 24 },
-        sm:  { span: 24 },
-        md:  { span: 24 },
-        lg:  { span: 24 },
-        xl:  { span: 24 },
-        xxl: { span: 24 },
-    },
-    wrapperCol: {
-        xs:  { span: 24 },
-        sm:  { span: 24 },
-        md:  { span: 24 },
-        lg:  { span: 24 },
-        xl:  { span: 24 },
-        xxl: { span: 24 },
-    },
-    colon: false,
-};
 
 export default class OrderFormBody extends Component {
     bodyUpdateIsForbidden() {
@@ -332,13 +298,14 @@ export default class OrderFormBody extends Component {
                             <div className={ Styles.comboField }>
                                 { _.get(selectedVehicle, 'number') && (
                                     <div>
-                                        <FormattedMessage id='add_client_form.number' />:{ ' ' }
-                                        { _.get(selectedVehicle, 'number') }
+                                        <FormattedMessage id='add_client_form.number' />
+                                        : { _.get(selectedVehicle, 'number') }
                                     </div>
                                 ) }
                                 { _.get(selectedVehicle, 'vin') && (
                                     <div>
-                                        <FormattedMessage id='add_client_form.vin' />: { _.get(selectedVehicle, 'vin') }
+                                        <FormattedMessage id='add_client_form.vin' />
+                                        : { _.get(selectedVehicle, 'vin') }
                                     </div>
                                 ) }
                             </div>
@@ -447,6 +414,11 @@ export default class OrderFormBody extends Component {
                 <DecoratedTextArea
                     className={ commentStyles }
                     formItem
+                    formItemLayout={
+                        prevRecommendation
+                            ? formCommentLayout
+                            : fromExpandedCommentLayot
+                    }
                     colon={ false }
                     label={
                         <FormattedMessage id='add_order_form.client_comments' />
@@ -473,6 +445,7 @@ export default class OrderFormBody extends Component {
                     <DecoratedTextArea
                         className={ Styles.comment }
                         formItem
+                        formItemLayout={ formRecommendationLayout }
                         colon={ false }
                         label={
                             <FormattedMessage id='add_order_form.prev_order_recommendations' />

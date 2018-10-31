@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import {FormattedMessage} from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { Menu, Dropdown, Icon } from 'antd';
 import _ from 'lodash';
 import { permissions, isForbidden } from 'utils';
@@ -67,8 +67,8 @@ class ChangeStatusDropdown extends React.Component {
             };
 
             const statuses = [ changeToReserve, changeToRequired, changeToNotComplete, changeToApprove, changeToProgress, changeToSuccess ];
-            const appointments = [ 'required', 'not_complete' ];
-            const approves = [ 'approve', 'reserve' ];
+            const appointments = [ 'required', 'not_complete', 'reserve' ];
+            const approves = [ 'approve' ];
             const statusesChain = [[ 'call', 'invite' ], appointments, approves, 'progress', 'success' ];
 
             const statusIndex = _.findIndex(
@@ -124,9 +124,11 @@ class ChangeStatusDropdown extends React.Component {
                 <Dropdown overlay={ menu }>
                     <div className={ Styles.dropdownTitle }>
                         <Icon type='swap' className={ Styles.dropdownTitleIcon } />
-                        { !isMobile && <span>
-                            <FormattedMessage id='change_status_dropdown.change_status' />
-                        </span> }
+                        { !isMobile && (
+                            <span>
+                                <FormattedMessage id='change_status_dropdown.change_status' />
+                            </span>
+                        ) }
                     </div>
                 </Dropdown>
             ) : null;
