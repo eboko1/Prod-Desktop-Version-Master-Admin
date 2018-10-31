@@ -217,20 +217,20 @@ export const requiredFieldsOnStatuses = values => {
         not_complete: [ 'manager' ],
         required:     [ 'manager' ],
 
-        reserve: [ 'beginDate', 'beginTime', 'manager', 'station', 'deliveryDate', 'deliveryTime' ],
-        approve: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'station', 'deliveryDate', 'deliveryTime' ],
+        reserve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'station', 'deliveryDate', 'deliveryTime' ],
+        approve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'station', 'deliveryDate', 'deliveryTime' ],
 
         redundant: [],
         cancel:    [],
 
-        progress: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDatetime' ],
+        progress: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDate', 'deliveryTime' ],
 
-        success: [ 'beginDate', 'beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDatetime' ],
+        success: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDate', 'deliveryTime' ],
     };
 
-    if (values.beginDate || values.beginTime) {
+    if (values[ 'stationLoads[0].beginTime' ] || values [ 'stationLoads[0].beginDate' ]) {
         return _.mapValues(statuses, fields =>
-            _.uniq([ ...fields, 'beginDate', 'beginTime' ]));
+            _.uniq([ ...fields, 'stationLoads[0].beginTime', 'stationLoads[0].beginDate' ]));
     }
 
     return statuses;
