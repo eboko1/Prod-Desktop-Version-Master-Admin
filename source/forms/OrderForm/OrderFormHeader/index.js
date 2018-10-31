@@ -78,19 +78,6 @@ export default class OrderFormHeader extends Component {
             dateTimeDisabledDate(date) ||
             date && date.isSameOrBefore(initialBeginDatetime);
 
-        // // Can not select days before today and today
-        // return current && current < moment().endOf('day');
-        // console.log('→ availableHours', this.props.availableHours);
-        const beginDatetime =
-            _.get(fetchedOrder, 'order.beginDatetime') ||
-            (this.bodyUpdateIsForbidden()
-                ? void 0
-                : _.get(location, 'state.beginDatetime'));
-
-        const momentBeginDatetime = beginDatetime
-            ? moment(beginDatetime)
-            : void 0;
-
         return (
             <div className={ Styles.durationBlock }>
                 <DecoratedSlider
@@ -143,7 +130,6 @@ export default class OrderFormHeader extends Component {
                     disabledDate={ disabledDate }
                     format={ 'YYYY-MM-DD' } // HH:mm
                     showTime={ false }
-                    initialValue={ momentBeginDatetime }
                 />
                 <DecoratedTimePicker
                     formItem
@@ -177,7 +163,6 @@ export default class OrderFormHeader extends Component {
                         id: 'add_order_form.provide_time',
                     }) }
                     minuteStep={ 30 }
-                    initialValue={ momentBeginDatetime }
                 />
             </div>
         );

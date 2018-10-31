@@ -97,8 +97,11 @@ const mapConfigToRange = (datetimes = []) => {
 
             const begin = mergeDateTime(momentDate, momentTime);
             const end = addDuration(begin.clone(), duration);
+            const zero = begin
+                .clone()
+                .set({ hours: 0, minutes: 0, seconds: 0, milliseconds: 0 });
 
-            return { begin, end };
+            return { begin: zero, end };
         })
         .filter(Boolean);
 };
