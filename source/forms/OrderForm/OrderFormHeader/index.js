@@ -78,6 +78,11 @@ export default class OrderFormHeader extends Component {
             dateTimeDisabledDate(date) ||
             date && date.isSameOrBefore(initialBeginDatetime);
 
+        const initialDeliveryDatetime = _.get(
+            fetchedOrder,
+            'order.deliveryDatetime',
+        );
+
         return (
             <div className={ Styles.durationBlock }>
                 <DecoratedSlider
@@ -130,6 +135,11 @@ export default class OrderFormHeader extends Component {
                     disabledDate={ disabledDate }
                     format={ 'YYYY-MM-DD' } // HH:mm
                     showTime={ false }
+                    initialValue={
+                        initialDeliveryDatetime
+                            ? moment(initialDeliveryDatetime)
+                            : void 0
+                    }
                 />
                 <DecoratedTimePicker
                     formItem
@@ -162,6 +172,11 @@ export default class OrderFormHeader extends Component {
                     placeholder={ formatMessage({
                         id: 'add_order_form.provide_time',
                     }) }
+                    initialValue={
+                        initialDeliveryDatetime
+                            ? moment(initialDeliveryDatetime)
+                            : void 0
+                    }
                     minuteStep={ 30 }
                 />
             </div>
@@ -277,7 +292,11 @@ export default class OrderFormHeader extends Component {
                     field='stationLoads[0].beginTime'
                     hasFeedback
                     disabledHours={ () => {
-                        const availableHours = _.get(this.props.availableHours, '0', []);
+                        const availableHours = _.get(
+                            this.props.availableHours,
+                            '0',
+                            [],
+                        );
 
                         return _.difference(
                             Array(24)
@@ -288,7 +307,11 @@ export default class OrderFormHeader extends Component {
                         );
                     } }
                     disabledMinutes={ hour => {
-                        const availableHours = _.get(this.props.availableHours, '0', []);
+                        const availableHours = _.get(
+                            this.props.availableHours,
+                            '0',
+                            [],
+                        );
 
                         const availableMinutes = availableHours
                             .map(availableHour => moment(availableHour))
