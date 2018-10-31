@@ -83,6 +83,10 @@ export class OrderForm extends Component {
                 !_.isEqual(prevStationHoursFields, stationHoursFields)
             ) {
                 const { station, beginDate } = stationHoursFields;
+                const {
+                    station: prevStation,
+                    beginDate: prevBeginDate,
+                } = prevStationHoursFields;
                 if (![ station, beginDate ].some(_.isNil)) {
                     this.props.fetchAvailableHours(
                         station,
@@ -90,6 +94,12 @@ export class OrderForm extends Component {
                         orderId,
                         index,
                     );
+
+                    if (![ prevStation, prevBeginDate ].some(_.isNil)) {
+                        this.props.form.setFieldsValue({
+                            [ `stationLoads[${index}].beginTime` ]: void 0,
+                        });
+                    }
                 }
             }
         });
