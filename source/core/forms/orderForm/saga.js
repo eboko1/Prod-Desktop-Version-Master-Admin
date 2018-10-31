@@ -102,18 +102,6 @@ export function* fetchOrderFormSaga() {
             yield put(setOrderFetchingState(true));
 
             const data = yield call(fetchAPI, 'GET', `orders/${id}`);
-
-            if (
-                _.get(data, 'order.beginDatetime') &&
-                _.get(data, 'order.stationNum')
-            ) {
-                yield put(
-                    fetchAvailableHours(
-                        data.order.stationNum,
-                        moment(data.order.beginDatetime),
-                    ),
-                );
-            }
             yield put(fetchOrderFormSuccess(data));
         } catch (error) {
             yield put(emitError(error));
@@ -143,7 +131,6 @@ export function* createOrderSaga() {
                 payload: { order, redirectStatus, redirectToDashboard },
             } = yield take(CREATE_ORDER);
             yield call(fetchAPI, 'POST', 'orders', {}, order);
-            console.log('* order', order);
             if (redirectToDashboard && redirectStatus) {
                 yield put(replace(book.dashboard));
             }
@@ -302,18 +289,14 @@ export function* fetchAvailableHoursSaga() {
     while (true) {
         try {
             const {
-                payload: { station, date, orderId },
+                payload: { station, date, orderId, key },
             } = yield take(FETCH_AVAILABLE_HOURS);
-            console.log('* station', station);
-            console.log('* date', date);
-            console.log('* orderId', orderId);
             const data = yield call(fetchAPI, 'GET', 'dashboard/free_hours', {
                 stationNum: station,
                 date:       date.toISOString(),
                 orderId,
             });
-            console.log('* data', data);
-            yield put(fetchAvailableHoursSuccess(data));
+            yield put(fetchAvailableHoursSuccess(data, key));
         } catch (error) {
             yield put(emitError(error));
         }

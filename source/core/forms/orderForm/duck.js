@@ -227,7 +227,7 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_AVAILABLE_HOURS_SUCCESS:
             return {
                 ...state,
-                availableHours: payload,
+                availableHours: { ...state.availableHours, [ payload.key ]: payload.availableHours },
             };
 
         case FETCH_TECDOC_SUGGESTIONS_SUCCESS:
@@ -404,14 +404,14 @@ export const createInviteOrderSuccess = response => ({
     payload: response,
 });
 
-export const fetchAvailableHours = (station, date, orderId) => ({
+export const fetchAvailableHours = (station, date, orderId, key) => ({
     type: FETCH_AVAILABLE_HOURS,
-    payload: { station, date, orderId },
+    payload: { station, date, orderId, key },
 });
 
-export const fetchAvailableHoursSuccess = availableHours => ({
+export const fetchAvailableHoursSuccess = (availableHours, key) => ({
     type: FETCH_AVAILABLE_HOURS_SUCCESS,
-    payload: availableHours,
+    payload: { availableHours, key },
 });
 
 export const fetchTecdocSuggestions = (modificationId, serviceId) => ({

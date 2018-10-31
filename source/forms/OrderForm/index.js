@@ -64,14 +64,45 @@ export class OrderForm extends Component {
         this.setState({ initialized: true });
     }
 
-    // TODO BODYA (antd rc-forms q)
-    componentDidUpdate(prevProps, prevState) {
-        const { formValues: prevFormValues } = prevState;
+    componentDidUpdate() {
+        const { orderId } = this.props;
+        const { formValues: prevFormValues } = this.state;
         const formValues = this.props.form.getFieldsValue();
 
         if (!_.isEqual(formValues, prevFormValues)) {
             this.setState({ formValues });
         }
+
+        _.each(formValues.stationLoads, (stationLoad, index) => {
+            const prevStationLoad = _.get(prevFormValues.stationLoads, index);
+            const prevStationHoursFields = _.pick(prevStationLoad, [ 'beginDate', 'station' ]);
+            const stationHoursFields = _.pick(stationLoad, [ 'beginDate', 'station' ]);
+
+            if (
+                stationHoursFields &&
+                !_.isEqual(prevStationHoursFields, stationHoursFields)
+            ) {
+                const { station, beginDate } = stationHoursFields;
+                const {
+                    station: prevStation,
+                    beginDate: prevBeginDate,
+                } = prevStationHoursFields;
+                if (![ station, beginDate ].some(_.isNil)) {
+                    this.props.fetchAvailableHours(
+                        station,
+                        beginDate,
+                        orderId,
+                        index,
+                    );
+
+                    if (![ prevStation, prevBeginDate ].some(_.isNil)) {
+                        this.props.form.setFieldsValue({
+                            [ `stationLoads[${index}].beginTime` ]: void 0,
+                        });
+                    }
+                }
+            }
+        });
     }
 
     _saveFormRef = formRef => {
