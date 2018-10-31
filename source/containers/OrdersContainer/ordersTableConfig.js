@@ -46,7 +46,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) =>
+        render:    (_, order) => 
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -115,11 +115,11 @@ export function columnsConfig(
         title:     <FormattedMessage id='orders.delivery_date' />,
         dataIndex: 'deliveryDatetime',
         key:       'deliveryDatetime',
-        sortOrder:
-            sort.field === 'deliveryDatetime' ? sortOptions[ sort.order ] : false,
-        sorter: true,
-        width:  160,
-        render: (_, order) => (
+        // sortOrder:
+        //     sort.field === 'deliveryDatetime' ? sortOptions[ sort.order ] : false,
+        // sorter: true,
+        width:     160,
+        render:    (_, order) => (
             <div className={ Styles.datetime }>
                 { order.deliveryDatetime
                     ? moment(order.deliveryDatetime).format('DD.MM.YYYY HH:mm')
