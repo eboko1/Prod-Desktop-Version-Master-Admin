@@ -210,15 +210,15 @@ export function convertFieldsValuesToDbEntity(
 
 export const requiredFieldsOnStatuses = values => {
     /* eslint-disable camelcase */
-    const statuses = {
+    let statuses = {
         invite: [ 'clientVehicle', 'manager', 'clientPhone' ],
         call:   [ 'clientPhone', 'manager' ],
 
         not_complete: [ 'manager' ],
         required:     [ 'manager' ],
 
-        reserve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'station', 'deliveryDate', 'deliveryTime' ],
-        approve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'station', 'deliveryDate', 'deliveryTime' ],
+        reserve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'station' ],
+        approve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'station' ],
 
         redundant: [],
         cancel:    [],
@@ -229,8 +229,13 @@ export const requiredFieldsOnStatuses = values => {
     };
 
     if (values[ 'stationLoads[0].beginTime' ] || values [ 'stationLoads[0].beginDate' ]) {
-        return _.mapValues(statuses, fields =>
+        statuses = _.mapValues(statuses, fields =>
             _.uniq([ ...fields, 'stationLoads[0].beginTime', 'stationLoads[0].beginDate' ]));
+    }
+
+    if (values.deliveryDate || values.deliveryTime) {
+        statuses = _.mapValues(statuses, fields =>
+            _.uniq([ ...fields, 'deliveryDate', 'deliveryTime' ]));
     }
 
     return statuses;
