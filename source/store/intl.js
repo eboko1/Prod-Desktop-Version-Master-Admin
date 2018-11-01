@@ -85,6 +85,7 @@ import OrderTaskModal from 'modals/OrderTaskModal/messages';
 import AddClientModal from 'modals/AddClientModal/messages';
 import InviteModal from 'modals/InviteModal/messages';
 import UniversalChartModal from 'modals/UniversalChartModal/messages';
+import ConfirmRescheduleModal from 'modals/ConfirmRescheduleModal/messages';
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -106,7 +107,6 @@ import StatisticsCallsTable from 'components/CallsTable/messages';
 import CallsStatistics from 'components/CallsStatistics/messages';
 import PartSuggestions from 'components/PartSuggestions/messages';
 import PartAttributes from 'components/PartAttributes/messages';
-
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -175,6 +175,7 @@ const messages = merge.all([
     InviteModal,
     OrderTaskModal,
     UniversalChartModal,
+    ConfirmRescheduleModal,
     // components
     StatusIcons,
     OrderFormTables,
