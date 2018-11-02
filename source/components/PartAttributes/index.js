@@ -42,6 +42,8 @@ export default class PartAttributes extends Component {
             ? [ detailCodeAttribute, supplierAttribute, ...initAttributes ].filter(Boolean)
             : [];
 
+        const hasImages = Boolean(images && images.length);
+
         return (
             <Catcher>
                 <Modal
@@ -53,24 +55,30 @@ export default class PartAttributes extends Component {
                     footer={ null }
                 >
                     { images &&
-                        attributes && (
-                        <Carousel
-                            className={ Styles.attributesCarousel }
-                            autoplay
-                        >
-                            { images.map(({ pictureName, supplierId }) => (
-                                <div
-                                    className={
-                                        Styles.attributesCarouselSlide
-                                    }
-                                >
-                                    <img
-                                        src={ `${__TECDOC_IMAGES_URL__}/${supplierId}/${pictureName}` }
-                                    />
-                                </div>
-                            )) }
-                        </Carousel>
-                    ) }
+                        attributes &&
+                        (hasImages ? (
+                            <Carousel
+                                className={ Styles.attributesCarousel }
+                                autoplay
+                            >
+                                { images.map(({ pictureName, supplierId }) => (
+                                    <div
+                                        className={
+                                            Styles.attributesCarouselSlide
+                                        }
+                                    >
+                                        <img
+                                            onError={ e => {
+                                                e.target.onerror = null;
+                                                e.target.src =
+                                                    `${__TECDOC_IMAGES_URL__}/not_found.png`;
+                                            } }
+                                            src={ `${__TECDOC_IMAGES_URL__}/${supplierId}/${pictureName}` }
+                                        />
+                                    </div>
+                                )) }
+                            </Carousel>
+                        ) : null) }
                     <List
                         bordered
                         dataSource={ attributes }
