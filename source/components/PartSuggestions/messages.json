@@ -5,7 +5,8 @@
     "partsSuggestions.description": "Description",
     "partsSuggestions.supplierName": "Supplier",
     "partsSuggestions.detailCode": "Number",
-    "partsSuggestions.apply": "Apply"
+    "partsSuggestions.apply": "Apply",
+    "partsSuggestions.photo": "Photo"
   },
   "ru": {
     "partsSuggestions.title": "Рекомендации запчастей",
@@ -13,7 +14,8 @@
     "partsSuggestions.description": "Описание",
     "partsSuggestions.supplierName": "Производитель",
     "partsSuggestions.detailCode": "Код",
-    "partsSuggestions.apply": "Заменить"
+    "partsSuggestions.apply": "Заменить",
+    "partsSuggestions.photo": "Фото"
   },
   "uk": {
     "partsSuggestions.title": "Рекомендації деталей",
@@ -21,6 +23,7 @@
     "partsSuggestions.description": "Опис",
     "partsSuggestions.supplierName": "Виробник",
     "partsSuggestions.detailCode": "Номер",
-    "partsSuggestions.apply": "Замінити"
+    "partsSuggestions.apply": "Замінити",
+    "partsSuggestions.photo": "Фото"
   }
 }

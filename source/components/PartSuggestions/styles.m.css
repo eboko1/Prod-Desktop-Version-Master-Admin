@@ -18,3 +18,7 @@
     text-align: justify;
 }
 
+.tecdocTable :global(.ant-table tr td) {
+    vertical-align: top;
+}
+
