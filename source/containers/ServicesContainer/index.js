@@ -3,30 +3,9 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import { Form, Button, Table, Icon, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
-import moment from 'moment';
 
 // proj
-// import {
-//     fetchServices,
-//     createService,
-//     updateService,
-//     setSort,
-//     setPage,
-//     setFilters,
-//     hideForms,
-//     setShowCreateServiceForm,
-//     setShowUpdateServiceForm,
-// } from 'core/services/duck';
-
-import {
-    fetchServices,
-    createService,
-    updateService,
-    deleteService,
-    resetFields,
-    stateSelector,
-} from 'core/forms/servicesForm/duck';
+import { stateSelector, setFilters } from 'core/servicesSuggestions/duck';
 
 import { Catcher } from 'commons';
 import { ServicesForm } from 'forms';
@@ -37,30 +16,13 @@ import { ServicesTable } from 'components/Tables';
 // import Styles from './styles.m.css';
 
 const mapDispatchToProps = {
-    fetchServices,
-    createService,
-    updateService,
-    deleteService,
-    resetFields,
-    stateSelector,
+    setFilters,
 };
 
 const mapStateToProps = state => ({
-    suggestionsList:
-        _.get(
-            state.forms.servicesForm.services.servicesPartsSuggestions,
-            'list',
-        ) || [],
-    // errors:                state.services.errors,
-    // sort:                  state.services.sort,
-    // filters:               state.services.filters,
-    // page:                  state.services.page,
+    ...stateSelector(state),
 });
 
-// const formItemLayout = {
-//     labelCol:   { span: 6 },
-//     wrapperCol: { span: 18 },
-// };
 //
 // const sortOptions = {
 //     asc:  'ascend',
@@ -94,15 +56,24 @@ export default class ServiceContainer extends Component {
     //     }
     // };
     render() {
-        const { suggestionsList, deleteService } = this.props;
+        const {
+            deleteService,
+            setFilters,
+            servicesPartsSuggestions: {
+                stats: { count },
+                list,
+            },
+        } = this.props;
 
         return (
             <Catcher>
                 <ServicesForm />
-                { suggestionsList ? (
+                { list ? (
                     <ServicesTable
-                        data={ suggestionsList }
+                        data={ list }
                         deleteService={ deleteService }
+                        setFilters={ setFilters }
+                        count={ count }
                     />
                 ) : null }
             </Catcher>

@@ -7,7 +7,7 @@ import { DecoratedCheckbox } from './DecoratedCheckbox';
 import { DecoratedTimePicker } from './DecoratedTimePicker';
 import { DecoratedSlider } from './DecoratedSlider';
 import { DecoratedInputPhone } from './DecoratedInputPhone';
-
+import LimitedDecoratedSelect from './LimitedDecoratedSelect';
 
 export {
     DecoratedSelect,
@@ -19,4 +19,5 @@ export {
     DecoratedTimePicker,
     DecoratedSlider,
     DecoratedInputPhone,
+    LimitedDecoratedSelect,
 };

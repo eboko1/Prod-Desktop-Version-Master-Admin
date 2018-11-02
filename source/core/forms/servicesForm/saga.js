@@ -3,39 +3,10 @@ import { call, put, all, take } from 'redux-saga/effects';
 
 //proj
 import { emitError, setServicesFetchingState } from 'core/ui/duck';
+import { fetchServicesSuggestions } from 'core/servicesSuggestions/duck';
 import { fetchAPI } from 'utils';
 
-// own
-import { fetchServices, fetchServicesSuccess } from './duck';
-
-import {
-    CREATE_SERVICE,
-    UPDATE_SERVICE,
-    DELETE_SERVICE,
-    FETCH_SERVICES,
-} from './duck';
-
-export function* fetchServicesSaga() {
-    while (true) {
-        try {
-            yield take(FETCH_SERVICES);
-            yield put(setServicesFetchingState(true));
-
-            const data = yield call(
-                fetchAPI,
-                'GET',
-                'services/parts/suggestions',
-                // filters,
-            );
-
-            yield put(fetchServicesSuccess(data));
-        } catch (error) {
-            yield put(emitError(error));
-        } finally {
-            yield put(setServicesFetchingState(false));
-        }
-    }
-}
+import { CREATE_SERVICE, UPDATE_SERVICE, DELETE_SERVICE } from './duck';
 
 export function* updateServiceSaga() {
     while (true) {
@@ -51,7 +22,7 @@ export function* updateServiceSaga() {
             suggestion,
         );
 
-        yield put(fetchServices());
+        yield put(fetchServicesSuggestions());
     }
 }
 
@@ -67,19 +38,23 @@ export function* createServiceSaga() {
             suggestion,
         );
 
-        yield put(fetchServices());
+        yield put(fetchServicesSuggestions());
     }
 }
 
 export function* deleteServiceSaga() {
     while (true) {
-        const { payload: id } = yield take(DELETE_SERVICE);
-        yield call(fetchAPI, 'DELETE', `services/parts/suggestions/${id}`);
+        const { payload: suggestionId } = yield take(DELETE_SERVICE);
+        yield call(
+            fetchAPI,
+            'DELETE',
+            `services/parts/suggestions/${suggestionId}`,
+        );
 
-        yield put(fetchServices());
+        yield put(fetchServicesSuggestions());
     }
 }
 
 export function* saga() {
-    yield all([ call(fetchServicesSaga), call(updateServiceSaga), call(createServiceSaga), call(deleteServiceSaga) ]);
+    yield all([ call(updateServiceSaga), call(createServiceSaga), call(deleteServiceSaga) ]);
 }

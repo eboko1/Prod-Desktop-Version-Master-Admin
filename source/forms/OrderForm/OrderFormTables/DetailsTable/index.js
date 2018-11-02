@@ -2,17 +2,20 @@
 import React, { Component } from 'react';
 import { Table, InputNumber, Icon, Popconfirm, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
-import { DecoratedInput, DecoratedInputNumber } from 'forms/DecoratedFields';
 import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
 import { TecDocActionsContainer } from 'containers';
-import { LimitedDecoratedSelect } from 'components';
+import {
+    DecoratedInput,
+    DecoratedInputNumber,
+    LimitedDecoratedSelect,
+} from 'forms/DecoratedFields';
 import { permissions, isForbidden } from 'utils';
+
 // own
 import Styles from './styles.m.css';
-
 const Option = Select.Option;
 
 const extractId = (getFieldValue, name) => {
@@ -38,7 +41,7 @@ const requiredLimitedOptions = (
     );
 };
 
-class DetailsTable extends Component {
+export default class DetailsTable extends Component {
     constructor(props) {
         super(props);
 
@@ -568,5 +571,3 @@ class DetailsTable extends Component {
         );
     }
 }
-
-export default DetailsTable;
