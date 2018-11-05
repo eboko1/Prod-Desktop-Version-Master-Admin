@@ -69,7 +69,7 @@ export default class EditableTable extends Component {
                 ...col,
                 onCell: record => {
                     // console.log('→ col222', col);
-                    // console.log('→ record', record);
+                    // console.log('→ record!!!', record);
 
                     return {
                         record,
@@ -77,6 +77,8 @@ export default class EditableTable extends Component {
                         dataIndex:  col.dataIndex,
                         title:      col.title,
                         handleSave: this._handleSave,
+                        details:    col.details,
+                        cellType:   col.cellType,
                     };
                 },
             };

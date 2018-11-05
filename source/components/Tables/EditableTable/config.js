@@ -18,6 +18,7 @@ import { OrderStatusIcon } from 'components';
 import { getDateTimeConfig } from 'utils';
 
 // own
+import { cellType } from './EditableCell/cellConfig.js';
 import Styles from './styles.m.css';
 const Option = Select.Option;
 
@@ -43,11 +44,15 @@ export function columnsConfig(
     };
     const detailNameCol = {
         title:     'Наименование ЗЧ',
-        dataIndex: 'detailName',
+        dataIndex: 'detailId',
         // key:       v4(),
         width:     '20%',
         editable:  true,
+        cellType:  `${cellType.LIMITED_SELECT}`,
+        details:   props.details,
+        render:    (datailId, { detailName }) => detailName,
     };
+    // console.log('→ CONFIG cellType', cellType);
     const quantityCol = {
         title:     'КОЛ-ВО',
         dataIndex: 'quantity',
@@ -59,6 +64,7 @@ export function columnsConfig(
         // ),
         width:     '10%',
         editable:  true,
+        cellType:  `${cellType.NUMERAL}`,
         // record:    (text, { key }) => (
         //     <DecoratedInputNumber
         //         field={ `service[${key}][quantity]` }

@@ -72,6 +72,7 @@ export default class ServiceContainer extends Component {
             updateService,
             deleteService,
             setFilters,
+            details,
             servicesPartsSuggestions: {
                 stats: { count },
                 list,
@@ -93,6 +94,7 @@ export default class ServiceContainer extends Component {
                             deleteService={ deleteService }
                             setFilters={ setFilters }
                             count={ count }
+                            details={ details }
                         />
                     </Paper>
                 ) : null }

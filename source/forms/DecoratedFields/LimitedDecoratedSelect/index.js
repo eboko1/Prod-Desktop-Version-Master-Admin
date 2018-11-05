@@ -17,7 +17,6 @@ export default class LimitedDecoratedSelect extends Component {
 
     render() {
         const { children, defaultValues } = this.props;
-        console.log('→ children', children);
         const { search } = this.state;
         const requiredOptions = children
             ? children.filter(({ props: { children } }) =>

@@ -75,6 +75,7 @@ export class ServicesForm extends Component {
                         optionLabelProp={ 'children' }
                         optionFilterProp={ 'children' }
                         showSearch
+                        placeholder={ 'Выберете работу' }
                     >
                         { services.map(({ serviceId, serviceName }) => (
                             <Option value={ String(serviceId) } key={ serviceId }>
@@ -100,7 +101,7 @@ export class ServicesForm extends Component {
                         //     this._handleDetailSelect(key, value, modificationId)
                         // }
                         // initialValue={ this._getDefaultValue(key, 'detailName') }
-                        // placeholder={ detailSelectPlaceholder }
+                        placeholder={ 'Выберете деталь' }
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '50%' } }
                         // defaultValues={ defaultDetails }
@@ -112,6 +113,7 @@ export class ServicesForm extends Component {
                         )) }
                     </LimitedDecoratedSelect>
                     <DecoratedInputNumber
+                        placeholder={ 'кол-во' }
                         cnStyles={ Styles.quantity }
                         field={ 'quantity' }
                         getFieldDecorator={ getFieldDecorator }
