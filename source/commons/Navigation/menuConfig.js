@@ -60,13 +60,6 @@ export default {
             name:     'navigation.reports',
             items:    [
                 {
-                    key:      '/control-panel',
-                    disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link: book.oldApp.controlPanel,
-                    name: 'navigation.control_panel',
-                },
-                {
                     key:      '/chart',
                     disabled: user =>
                         !isForbidden(user, permissions.DEMO) && !isAdmin(user),
@@ -74,25 +67,11 @@ export default {
                     name: 'navigation.service_indicators',
                 },
                 {
-                    key:      '/funel',
-                    disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link: book.oldApp.funel,
-                    name: 'navigation.funnel',
-                },
-                {
                     key:      '/feedback',
                     disabled: user =>
                         !isForbidden(user, permissions.DEMO) && !isAdmin(user),
                     link: book.feedback,
                     name: 'navigation.feedback',
-                },
-                {
-                    key:      '/statistics',
-                    disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
-                    link: book.oldApp.statistics,
-                    name: 'navigation.statistics',
                 },
                 {
                     key:      '/calls',
