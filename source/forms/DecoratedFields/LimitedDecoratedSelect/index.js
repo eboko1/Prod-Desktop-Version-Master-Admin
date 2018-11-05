@@ -5,16 +5,23 @@ import _ from 'lodash';
 // proj
 import { DecoratedSelect } from 'forms/DecoratedFields';
 
-class LimitedDecoratedSelect extends Component {
+export default class LimitedDecoratedSelect extends Component {
+    static defaultProps = {
+        children:      [],
+        defaultValues: [],
+    };
+
     state = {
         search: null,
     };
 
     render() {
-        const { children, defaultValues = [] } = this.props;
+        const { children, defaultValues } = this.props;
         const { search } = this.state;
-        const requiredOptions = children.filter(({ props: { children } }) =>
-            defaultValues.includes(children));
+        const requiredOptions = children
+            ? children.filter(({ props: { children } }) =>
+                defaultValues.includes(children))
+            : [];
 
         const limitedChildren = !search
             ? _.uniq([ ...children.slice(0, 100), ...requiredOptions ])
@@ -25,14 +32,18 @@ class LimitedDecoratedSelect extends Component {
                 )
                 .slice(0, 100);
 
-        return (
+        return children ? (
             <DecoratedSelect
                 { ...this.props }
                 children={ limitedChildren }
-                onSearch={ search => this.setState({ search: _.isString(search) ? search.toLowerCase() : search }) }
+                onSearch={ search =>
+                    this.setState({
+                        search: _.isString(search)
+                            ? search.toLowerCase()
+                            : search,
+                    })
+                }
             />
-        );
+        ) : null;
     }
 }
-
-export default LimitedDecoratedSelect;

@@ -1,82 +1,113 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon } from 'antd';
+import { Form, Table, Icon } from 'antd';
 import moment from 'moment';
 
 // proj
+import { DecoratedInputNumber } from 'forms/DecoratedFields';
+
+// own
+import { columnsConfig } from './config.js';
+import Styles from './styles.m.css';
+
+const EditableContext = React.createContext();
+
+const EditableRow = ({ form, index, ...props }) => (
+    <EditableContext.Provider value={ form }>
+        <tr { ...props } />
+    </EditableContext.Provider>
+);
+
+const EditableFormRow = Form.create()(EditableRow);
 
 export default class ServicesTable extends Component {
-    constructor(props) {
-        super(props);
-        //
-        // const {
-        //     intl: { formatMessage },
-        // } = this.props;
+    state = {
+        editing: false,
+    };
 
-        this.columns = [
-            {
-                title:     'Наименование работы',
-                dataIndex: 'servicename',
-                sorter:    true,
-                // sortOrder: this._handleColumnOrder(
-                //     this.props.sort,
-                //     'servicename',
-                // ),
-                width:     '15%',
-            },
-            {
-                title:     'Наименование ЗЧ',
-                dataIndex: 'detailname',
-                width:     '20%',
-            },
-            {
-                title:     'Кол-во',
-                dataIndex: 'quantity',
-                sorter:    true,
-                // sortOrder: this._handleColumnOrder(
-                //     this.props.sort,
-                //     'detailname',
-                // ),
-                width:     '10%',
-            },
-
-            {
-                width:  '15%',
-                render: (text, record) => (
-                    <Icon
-                        type='delete'
-                        style={ {
-                            fontSize: '18px',
-                            color:    'var(--warning)',
-                            cursor:   'pointer',
-                        } }
-                        onClick={ () => {
-                            props.deleteService(record.id);
-                        } }
-                    />
-                ),
-            },
-        ];
+    componentDidMount() {
+        if (this.props.editable) {
+            document.addEventListener('click', this.handleClickOutside, true);
+        }
     }
 
+    componentWillUnmount() {
+        if (this.props.editable) {
+            document.removeEventListener(
+                'click',
+                this.handleClickOutside,
+                true,
+            );
+        }
+    }
+
+    _toggleEdit = () => {
+        const editing = !this.state.editing;
+        this.setState({ editing }, () => {
+            if (editing) {
+                this.input.focus();
+            }
+        });
+    };
+
+    _handleClickOutside = e => {
+        const { editing } = this.state;
+        if (
+            editing &&
+            this.cell !== e.target &&
+            !this.cell.contains(e.target)
+        ) {
+            this.save();
+        }
+    };
+
+    _save = () => {
+        const { record, handleSave } = this.props;
+        this.form.validateFields((error, values) => {
+            if (error) {
+                return;
+            }
+            this.toggleEdit();
+            handleSave({ ...record, ...values });
+        });
+    };
+
     render() {
-        const { data, count, setPage } = this.props;
+        const { data, count, setFilter } = this.props;
+        console.log('→ TABLE this.props', this.props);
+
+        const components = {
+            body: {
+                row:  EditableFormRow,
+                cell: EditableCell,
+            },
+        };
 
         const pagination = {
             pageSize:         25,
             size:             'large',
             total:            Math.ceil(count / 25) * 25,
             hideOnSinglePage: true,
-            current:          this.props.page,
-            onChange:         page => setPage(page),
+            // current:          this.props.page,
+            onChange:         page => setFilter({ page }),
         };
+
+        const columns = columnsConfig(this.props, this.state);
 
         return (
             <Table
+                components={ components }
                 size='small'
                 pagination={ pagination }
                 dataSource={ data }
-                columns={ this.columns }
+                columns={ columns }
+                defaultExpandAllRows
+                childrenColumnName='details'
+                rowClassName={ () => Styles.editableRow }
+                // expandedRowRender={ (record, index, indent, expanded) => {
+                //     console.log('→ record', record);
+                //     console.log('→ expanded', expanded);
+                // } }
             />
         );
     }

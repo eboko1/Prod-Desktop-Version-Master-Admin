@@ -27,7 +27,7 @@ import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import book from 'routes/book';
 
 import { Layout, Spinner, MobileView, ResponsiveView } from 'commons';
-import { BREAKPOINTS } from 'utils';
+import { BREAKPOINTS, extractFieldsConfigs } from 'utils';
 import { OrderForm, MobileRecordForm } from 'forms';
 import { ReportsDropdown, ChangeStatusDropdown } from 'components';
 import {
@@ -227,75 +227,13 @@ class OrderPage extends Component {
     };
     /* eslint-disable complexity */
     _close = () => {
-        const {
-            selectedClient,
-            fields,
-            allServices,
-            allDetails,
-            fetchedOrder,
-            setModal,
-        } = this.props;
+        const { setModal } = this.props;
 
-        const form = this.orderFormRef.props.form;
-
-        const orderData = form.getFieldsValue();
-        const orderFormEntity = { selectedClient, ...orderData };
-
-        const orderEntity = convertFieldsValuesToDbEntity(
-            orderFormEntity,
-            allServices,
-            allDetails,
-            void 0,
-            this.props.user,
-        );
-        const fetchedOrderEntity = {
-            ...fetchedOrder.order,
-            services:     fetchedOrder.orderServices || [],
-            details:      fetchedOrder.orderDetails || [],
-            stationLoads: fetchedOrder.stationLoads || [],
-            ..._.get(fetchedOrder, 'client.clientId')
-                ? { clientId: _.get(fetchedOrder, 'client.clientId') }
-                : {},
-        };
-
-        const compareFields = _(orderEntity)
-            .omit([ 'services', 'details', 'status' ])
-            .toPairs()
-            .value();
-
-        const servicesLengthsEqual =
-            _.get(orderEntity, 'services', []).length ===
-            (fetchedOrder.orderServices || []).length;
-
-        const detailsLengthsEqual =
-            _.get(orderEntity, 'details', []).length ===
-            (fetchedOrder.orderDetails || []).length;
-
-        const stationLoadsEqual =
-            _.get(orderEntity, 'stationLoads', []).length ===
-            (fetchedOrder.orderDetails || []).length;
-
-        const areInputValuesEqual = (originValue, fieldValue) => {
-            return !originValue && !fieldValue || originValue === fieldValue;
-        };
-
-        const identicalOrders = _.reduce(
-            compareFields,
-            (prev, [ field, value ]) =>
-                prev && areInputValuesEqual(fetchedOrderEntity[ field ], value),
-            true,
-        );
+        const fields = this.orderFormRef.props.fields;
+        const configs = extractFieldsConfigs(fields);
+        const ordersAreSame = !_.keys(configs).length;
 
         const { canEdit, hideEditButton } = this.getSecurityConfig();
-
-        const ordersAreSame =
-            identicalOrders &&
-            servicesLengthsEqual &&
-            detailsLengthsEqual &&
-            stationLoadsEqual &&
-            !fields.services.length &&
-            !fields.details.length &&
-            !fields.stationLoads.length;
 
         if (!canEdit || hideEditButton || ordersAreSame) {
             this._redirect();

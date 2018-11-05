@@ -4,17 +4,16 @@ import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 
 // proj
-import { fetchServices } from 'core/forms/servicesForm/duck';
+import { fetchServicesSuggestions } from 'core/servicesSuggestions/duck';
 
 import { Layout, Spinner } from 'commons';
-import { ServicesForm } from 'forms';
 import { ServicesContainer } from 'containers';
 
 const mapStateToProps = state => ({
-    isFetching: state.ui.servicesFetching,
+    isFetching: state.ui.suggestionsFetching,
 });
 
-const mapDispatchToProps = { fetchServices };
+const mapDispatchToProps = { fetchServicesSuggestions };
 
 @connect(
     mapStateToProps,
@@ -22,7 +21,7 @@ const mapDispatchToProps = { fetchServices };
 )
 export default class ServicesPage extends Component {
     componentDidMount() {
-        this.props.fetchServices();
+        this.props.fetchServicesSuggestions();
     }
 
     render() {
@@ -35,8 +34,10 @@ export default class ServicesPage extends Component {
                 title={
                     <FormattedMessage id='navigation.services-spare_parts' />
                 }
+                paper={ false }
+                // controls={ <BusinessSearchField /> }
             >
-                <ServicesContainer />
+                <ServicesContainer isFetching={ isFetching } />
             </Layout>
         );
     }

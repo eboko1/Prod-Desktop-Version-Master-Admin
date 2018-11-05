@@ -105,10 +105,9 @@ export function convertFieldsValuesToDbEntity(
         hourPart &&
         moment(`${dayPart}T${hourPart}:00.000Z`).toISOString();
 
-    const deliveryDatetime =
-        deliveryDayPart &&
-        deliveryHourPart &&
-        moment(`${deliveryDayPart}T${deliveryHourPart}:00.000Z`).toISOString();
+    const deliveryDatetime = deliveryDayPart && deliveryHourPart
+        ? moment(`${deliveryDayPart}T${deliveryHourPart}:00.000Z`).toISOString() // eslint-disable-next-line no-extra-parens
+        : (status === 'success' ? moment(new Date()).toISOString() : null);
 
     const orderDuration = _.get(orderFields, 'stationLoads[0].duration');
 
@@ -210,27 +209,32 @@ export function convertFieldsValuesToDbEntity(
 
 export const requiredFieldsOnStatuses = values => {
     /* eslint-disable camelcase */
-    const statuses = {
+    let statuses = {
         invite: [ 'clientVehicle', 'manager', 'clientPhone' ],
         call:   [ 'clientPhone', 'manager' ],
 
         not_complete: [ 'manager' ],
         required:     [ 'manager' ],
 
-        reserve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'station', 'deliveryDate', 'deliveryTime' ],
-        approve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'station', 'deliveryDate', 'deliveryTime' ],
+        reserve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'station' ],
+        approve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'station' ],
 
         redundant: [],
         cancel:    [],
 
         progress: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDate', 'deliveryTime' ],
 
-        success: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDate', 'deliveryTime' ],
+        success: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station'],
     };
 
     if (values[ 'stationLoads[0].beginTime' ] || values [ 'stationLoads[0].beginDate' ]) {
-        return _.mapValues(statuses, fields =>
+        statuses = _.mapValues(statuses, fields =>
             _.uniq([ ...fields, 'stationLoads[0].beginTime', 'stationLoads[0].beginDate' ]));
+    }
+
+    if (values.deliveryDate || values.deliveryTime) {
+        statuses = _.mapValues(statuses, fields =>
+            _.uniq([ ...fields, 'deliveryDate', 'deliveryTime' ]));
     }
 
     return statuses;

@@ -15,6 +15,8 @@ export const DecoratedInputNumber = props => {
         className,
         hasFeedback,
         formItemLayout,
+        innerRef,
+        onPressEnter,
 
         getFieldDecorator,
         disabled,
@@ -55,6 +57,8 @@ export const DecoratedInputNumber = props => {
             placeholder={ placeholder }
             formatter={ formatter }
             parser={ parser }
+            ref={ innerRef }
+            onKeyDown={ e => e.key === 'Enter' && onPressEnter() }
         />,
     );
 

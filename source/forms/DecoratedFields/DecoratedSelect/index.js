@@ -15,8 +15,10 @@ export const DecoratedSelect = props => {
         label,
         colon,
         className,
+        style,
         hasFeedback,
         formItemLayout,
+        innerRef,
 
         // DecoratedField
         children,
@@ -57,6 +59,7 @@ export const DecoratedSelect = props => {
             showSearch={ showSearch }
             allowClear={ allowClear }
             className={ cnStyles }
+            ref={ innerRef }
             labelInValue={ labelInValue }
             optionLabelProp={ optionLabelProp }
             // onChange={ value => this.handleServiceSelect(record.key, value) }
@@ -122,6 +125,7 @@ export const DecoratedSelect = props => {
             hasFeedback={ hasFeedback }
             colon={ colon }
             className={ className }
+            style={ style }
             { ...formItemLayout }
         >
             { select }

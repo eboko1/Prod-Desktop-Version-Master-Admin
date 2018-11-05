@@ -17,10 +17,12 @@ import {
     updateDashboardOrder,
     transferOutdateRepairs,
 } from 'core/dashboard/duck';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Spinner, Loader } from 'commons';
 import { ArrowsWeekPicker, ArrowsDatePicker } from 'components';
 import { DashboardContainer } from 'containers';
+import { ConfirmRescheduleModal } from 'modals';
 
 // own
 import Styles from './styles.m.css';
@@ -38,6 +40,7 @@ const mapStateToProps = state => ({
     load:                  state.dashboard.load,
     daysWithConflicts:     state.dashboard.daysWithConflicts,
     stationsWithConflicts: state.dashboard.stationsWithConflicts,
+    modal:                 state.modals.modal,
 
     spinner: state.ui.dashboardInitializing,
     loading: state.ui.dashboardFetching,
@@ -55,6 +58,8 @@ const mapDispatchToProps = {
     linkToDashboardStations,
     updateDashboardOrder,
     transferOutdateRepairs,
+    setModal,
+    resetModal,
 };
 
 @connect(
@@ -130,7 +135,10 @@ class DashboardPage extends Component {
                 controls={
                     <Button
                         type='primary'
-                        onClick={ () => this._transferOutdateRepairs() }
+                        // onClick={ () => this._transferOutdateRepairs() }
+                        onClick={ () =>
+                            this.props.setModal(MODALS.CONFIRM_RESCHEDULE)
+                        }
                     >
                         <FormattedMessage id='dashboard-page.transfer_outdated_repairs' />
                     </Button>
@@ -206,24 +214,32 @@ class DashboardPage extends Component {
 
         return loading ? (
             <Loader loading={ loading } />
-        ) : (
-            <DashboardContainer
-                user={ user }
-                mode={ mode }
-                date={ date }
-                days={ days }
-                stations={ stations }
-                orders={ orders }
-                load={ load }
-                schedule={ schedule }
-                time={ time }
-                dashboard={ dashboard }
-                linkToDashboardStations={ linkToDashboardStations }
-                updateDashboardOrder={ updateDashboardOrder }
-                daysWithConflicts={ daysWithConflicts }
-                stationsWithConflicts={ stationsWithConflicts }
-            />
-        );
+        ) :
+            <>
+                <DashboardContainer
+                    user={ user }
+                    mode={ mode }
+                    date={ date }
+                    days={ days }
+                    stations={ stations }
+                    orders={ orders }
+                    load={ load }
+                    schedule={ schedule }
+                    time={ time }
+                    dashboard={ dashboard }
+                    linkToDashboardStations={ linkToDashboardStations }
+                    updateDashboardOrder={ updateDashboardOrder }
+                    daysWithConflicts={ daysWithConflicts }
+                    stationsWithConflicts={ stationsWithConflicts }
+                />
+                <ConfirmRescheduleModal
+                    // wrappedComponentRef={ this.saveFormRef }
+                    visible={ this.props.modal }
+                    confirm={ this._transferOutdateRepairs }
+                    reset={ this.props.resetModal }
+                />
+            </>
+        ;
     };
 }
 

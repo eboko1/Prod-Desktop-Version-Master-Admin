@@ -3,64 +3,36 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 // import { Form, Button, Table, Icon, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import _ from 'lodash';
-import moment from 'moment';
 
 // proj
-// import {
-//     fetchServices,
-//     createService,
-//     updateService,
-//     setSort,
-//     setPage,
-//     setFilters,
-//     hideForms,
-//     setShowCreateServiceForm,
-//     setShowUpdateServiceForm,
-// } from 'core/services/duck';
-
+import { stateSelector, setFilters } from 'core/servicesSuggestions/duck';
 import {
-    fetchServices,
     createService,
     updateService,
     deleteService,
-    resetFields,
-    stateSelector,
 } from 'core/forms/servicesForm/duck';
 
 import { Catcher } from 'commons';
+import { Paper } from 'commons/_uikit';
 import { ServicesForm } from 'forms';
 
-import { ServicesTable } from 'components/Tables';
+import { ServicesTable, EditableTable } from 'components/Tables';
 
 // own
 // import Styles from './styles.m.css';
 
 const mapDispatchToProps = {
-    fetchServices,
+    setFilters,
     createService,
     updateService,
     deleteService,
-    resetFields,
-    stateSelector,
 };
 
 const mapStateToProps = state => ({
-    suggestionsList:
-        _.get(
-            state.forms.servicesForm.services.servicesPartsSuggestions,
-            'list',
-        ) || [],
-    // errors:                state.services.errors,
-    // sort:                  state.services.sort,
-    // filters:               state.services.filters,
-    // page:                  state.services.page,
+    loading: state.ui.suggestionsLoading,
+    ...stateSelector(state),
 });
 
-// const formItemLayout = {
-//     labelCol:   { span: 6 },
-//     wrapperCol: { span: 18 },
-// };
 //
 // const sortOptions = {
 //     asc:  'ascend',
@@ -94,16 +66,40 @@ export default class ServiceContainer extends Component {
     //     }
     // };
     render() {
-        const { suggestionsList, deleteService } = this.props;
+        const {
+            loading,
+            createService,
+            updateService,
+            deleteService,
+            setFilters,
+            details,
+            filters,
+            servicesPartsSuggestions: {
+                stats: { count },
+                list,
+            },
+        } = this.props;
+        console.log('→ CONTAthis.props', this.props);
 
         return (
             <Catcher>
-                <ServicesForm />
-                { suggestionsList ? (
-                    <ServicesTable
-                        data={ suggestionsList }
-                        deleteService={ deleteService }
-                    />
+                <Paper>
+                    <ServicesForm />
+                </Paper>
+                { list ? (
+                    <Paper>
+                        <EditableTable
+                            loading={ loading }
+                            data={ list }
+                            createService={ createService }
+                            updateService={ updateService }
+                            deleteService={ deleteService }
+                            setFilters={ setFilters }
+                            count={ count }
+                            details={ details }
+                            filters={ filters }
+                        />
+                    </Paper>
                 ) : null }
             </Catcher>
         );

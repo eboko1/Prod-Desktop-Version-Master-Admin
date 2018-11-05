@@ -24,7 +24,7 @@ export const Paper = styled(StyledPaper)`
 Paper.defaultProps = {
     margin:          '24px 16px',
     padding:         '10px',
-    minHeight:       '80px',
+    minHeight:       '50px',
     overflow:        'initial',
     backgroundColor: 'rgb(255, 255, 255)',
 };

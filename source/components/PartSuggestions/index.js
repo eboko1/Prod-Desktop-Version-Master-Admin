@@ -24,7 +24,7 @@ export default class PartSuggestions extends Component {
 
         this.columns = [
             {
-                title:  <FormattedMessage id='partsSuggestions.detailCode' />,
+                title:  <FormattedMessage id='partsSuggestions.photo' />,
                 key:    'photo',
                 width:  '10%',
                 render: suggestion => {
@@ -39,6 +39,11 @@ export default class PartSuggestions extends Component {
                                     suggestion.supplierId,
                                 )
                             }
+                            onError={ e => {
+                                e.target.onerror = null;
+                                e.target.src =
+                                    `${__TECDOC_IMAGES_URL__}/not_found.png`;
+                            } }
                             width={ 75 }
                             src={ `${__TECDOC_IMAGES_URL__}/${
                                 image.supplierId
@@ -54,7 +59,10 @@ export default class PartSuggestions extends Component {
                                 )
                             }
                         >
-                            No photo
+                            <img
+                                width={ 75 }
+                                src={ `${__TECDOC_IMAGES_URL__}/not_found.png` }
+                            />
                         </div>
                     );
                 },
@@ -186,6 +194,8 @@ export default class PartSuggestions extends Component {
                 >
                     { suggestions && (
                         <Table
+                            // style={ { verticalAlign: 'top' } }
+                            className={ Styles.tecdocTable }
                             pagination={ pagination }
                             dataSource={ suggestions }
                             columns={ this.columns }

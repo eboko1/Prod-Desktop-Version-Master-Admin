@@ -26,7 +26,6 @@ export const SET_BUSINESS_PACKAGE_FETCHING_STATE = `${prefix}/SET_BUSINESS_PACKA
 export const SET_MANAGER_ROLE_FETCHING_STATE = `${prefix}/SET_MANAGER_ROLE_FETCHING_STATE`;
 export const SET_ROLE_FETCHING_STATE = `${prefix}/SET_ROLE_FETCHING_STATE`;
 export const SET_BRANDS_FETCHING_STATE = `${prefix}/SET_BRANDS_FETCHING_STATE`;
-export const SET_SERVICES_FETCHING_STATE = `${prefix}/SET_SERVICES_FETCHING_STATE`;
 
 export const SET_REVIEW_REPLY_STATE = `${prefix}/SET_REVIEW_REPLY_STATE`;
 export const SET_REVIEW_COMPLAINT_STATE = `${prefix}/SET_REVIEW_COMPLAINT_STATE`;
@@ -36,6 +35,7 @@ export const SET_DASHBOARD_FETCHING_STATE = `${prefix}/SET_DASHBOARD_FETCHING_ST
 
 export const SET_DETAILS_SUGGESTIONS_FETCHING_STATE = `${prefix}/SET_DETAILS_SUGGESTIONS_FETCHING_STATE`;
 export const SET_SUGGESTIONS_FETCHING_STATE = `${prefix}/SET_SUGGESTIONS_FETCHING_STATE`;
+export const SET_SUGGESTIONS_LOADING_STATE = `${prefix}/SET_SUGGESTIONS_LOADING_STATE`;
 
 export const INITIALIZE = `${prefix}/INITIALIZE`;
 export const SET_COLLAPSED_STATE = `${prefix}/SET_COLLAPSED_STATE`;
@@ -69,11 +69,11 @@ const ReducerState = {
     managerRoleFetching:        false,
     roleFetching:               false,
     brandsFetching:             false,
-    servicesFetching:           false,
     collapsed:                  false,
     views:                      {},
     error:                      null,
     suggestionsFetching:        false,
+    suggestionsLoading:         false,
     detailsSuggestionsFetching: false,
 };
 
@@ -163,14 +163,14 @@ export default function reducer(state = ReducerState, action) {
         case SET_SUGGESTIONS_FETCHING_STATE:
             return { ...state, suggestionsFetching: payload };
 
+        case SET_SUGGESTIONS_LOADING_STATE:
+            return { ...state, suggestionsLoading: payload };
+
         case SET_DETAILS_SUGGESTIONS_FETCHING_STATE:
             return { ...state, detailsSuggestionsFetching: payload };
 
         case SET_BRANDS_FETCHING_STATE:
             return { ...state, brandsFetching: payload };
-
-        case SET_SERVICES_FETCHING_STATE:
-            return { ...state, servicesFetching: payload };
 
         default:
             return state;
@@ -313,8 +313,13 @@ export const setBrandsFetchingState = state => ({
     type:    SET_BRANDS_FETCHING_STATE,
     payload: state,
 });
-export const setServicesFetchingState = state => ({
-    type:    SET_SERVICES_FETCHING_STATE,
+
+export const setSuggestionsFetching = state => ({
+    type:    SET_SUGGESTIONS_FETCHING_STATE,
+    payload: state,
+});
+export const setSuggestionsLoading = state => ({
+    type:    SET_SUGGESTIONS_LOADING_STATE,
     payload: state,
 });
 

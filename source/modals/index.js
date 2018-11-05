@@ -7,6 +7,7 @@ import ConfirmOrderExitModal from './ConfirmOrderExitModal';
 import OrderTaskModal from './OrderTaskModal';
 import SwitchBusinessModal from './SwitchBusinessModal';
 import UniversalChartModal from './UniversalChartModal';
+import ConfirmRescheduleModal from './ConfirmRescheduleModal';
 
 export {
     UniversalFiltersModal,
@@ -18,4 +19,5 @@ export {
     OrderTaskModal,
     SwitchBusinessModal,
     UniversalChartModal,
+    ConfirmRescheduleModal,
 };

@@ -14,6 +14,8 @@ export const DecoratedInput = props => {
         className,
         hasFeedback,
         formItemLayout,
+        innerRef,
+        onPressEnter,
 
         cnStyles,
         getFieldDecorator,
@@ -50,6 +52,8 @@ export const DecoratedInput = props => {
             placeholder={ placeholder }
             disabled={ disabled }
             onChange={ onChange }
+            ref={ innerRef }
+            onPressEnter={ onPressEnter }
         />,
     );
 

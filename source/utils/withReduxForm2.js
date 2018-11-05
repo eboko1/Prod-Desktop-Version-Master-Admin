@@ -5,30 +5,7 @@ import { connect } from 'react-redux';
 import _ from 'lodash';
 
 // proj
-import { getDisplayName } from 'utils';
-
-const isField = value =>
-    _.isObject(value) && _.has(value, 'value') && _.isString(value.name);
-
-const extractFieldsConfigs = config => {
-    // TODO lodash
-    return _(config)
-        .values()
-        .filter(Boolean)
-        .map(value => {
-            if (isField(value)) {
-                return [ value ];
-            } else if (_.isObject(value)) {
-                return _.values(extractFieldsConfigs(value));
-            }
-
-            return [];
-        })
-        .flatten()
-        .map(value => [ value.name, value ])
-        .fromPairs()
-        .value();
-};
+import { getDisplayName, extractFieldsConfigs, isField } from 'utils';
 
 const change = (props, fields) => {
     props.change(fields, {

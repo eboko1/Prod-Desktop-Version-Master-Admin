@@ -1,5 +1,3 @@
-import { createSelector } from 'reselect';
-
 /**
  * Constants
  * */
@@ -24,25 +22,9 @@ export const SET_FILTERS = `${prefix}/SET_FILTERS`;
 
 const ReducerState = {
     fields:   {},
-    filters:  {},
-    services: {
-        servicesPartsSuggestions: {
-            stats: {
-                count: '0',
-            },
-            list: [],
-        },
-        services: [],
-        details:  [],
-        brands:   [],
-    },
-    // "id": 1,
-    // "serviceId": 110136,
-    // "detailId": 104,
-    // "createdAt": "2018-10-29T13:47:12.832Z",
-    // "quantity": 1,
-    // "servicename": "Экспресс мойка кузова",
-    // "detailname": "Вилка сцепления / тяга"
+    services: [],
+    details:  [],
+    brands:   [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -117,16 +99,15 @@ export const selectBrandsOptions = state =>
 
 // const getDashboard = state => state.dashboard;
 
-export const selectDasboardData = createSelector(
-    [ stateSelector ],
-    properties => {
-        console.log('→ properties', properties);
-
-        return {
-            properties,
-        };
-    },
-);
+// export const selectDasboardData = createSelector(
+//     [ stateSelector ],
+//     properties => {
+//
+//         return {
+//             properties,
+//         };
+//     },
+// );
 
 /**
  * Actions
@@ -135,19 +116,6 @@ export const selectDasboardData = createSelector(
 export const onChangeServicesForm = update => ({
     type:    ON_CHANGE_SERVICES_FORM,
     payload: update,
-});
-
-export const fetchServices = () => ({
-    type: FETCH_SERVICES,
-});
-// export const fetchServices = businessId => ({
-//     type:    FETCH_SERVICES,
-//     payload: businessId,
-// });
-
-export const fetchServicesSuccess = data => ({
-    type:    FETCH_SERVICES_SUCCESS,
-    payload: data,
 });
 
 export const createService = suggestion => ({
