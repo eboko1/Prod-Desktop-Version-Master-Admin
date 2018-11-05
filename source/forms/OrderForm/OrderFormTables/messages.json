@@ -43,8 +43,8 @@
         "duration": "Duration",
         "order_form_table.purchasePrice": "Purchase Price",
         "order_form_table.suggest": "Suggest",
-        "order_form_table.TO_DO": "Approve",
-        "order_form_table.COMPLETED": "Done"
+        "order_form_table.TO_DO": "Open",
+        "order_form_table.COMPLETED": "Closed"
     },
     "ru": {
         "order_form_table.confirm_exit": "Хотите сохранить изменения?",
@@ -91,8 +91,8 @@
         "duration": "Продолжительность",
         "order_form_table.purchasePrice": "Закупочная цена",
         "order_form_table.suggest": "Подобрать",
-        "order_form_table.TO_DO": "Запись",
-        "order_form_table.COMPLETED": "Выполнено"
+        "order_form_table.TO_DO": "Открыто",
+        "order_form_table.COMPLETED": "Закрыто"
     },
     "uk": {
         "order_form_table.confirm_exit": "Бажаєте зберегти зміни?",
@@ -138,7 +138,7 @@
         "duration": "Тривалість",
         "order_form_table.purchasePrice": "Закупочна ціна",
         "order_form_table.suggest": "Підібрати",
-        "order_form_table.TO_DO": "Запис",
-        "order_form_table.COMPLETED": "Виконано"
+        "order_form_table.TO_DO": "Відкрито",
+        "order_form_table.COMPLETED": "Закрито"
     }
 }

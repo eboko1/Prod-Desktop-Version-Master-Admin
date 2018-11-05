@@ -111,7 +111,6 @@ export default class OrderFormHeader extends Component {
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ this.bodyUpdateIsForbidden() }
                     field='deliveryDate'
-                    allowClear={ false }
                     hasFeedback
                     formItem
                     formItemLayout={ formHeaderItemLayout }
@@ -154,7 +153,6 @@ export default class OrderFormHeader extends Component {
                     defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                     field='deliveryTime'
                     hasFeedback
-                    allowEmpty={ false }
                     label={
                         <FormattedMessage id='add_order_form.delivery_time' />
                     }
