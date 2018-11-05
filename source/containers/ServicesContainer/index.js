@@ -6,17 +6,25 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
 import { stateSelector, setFilters } from 'core/servicesSuggestions/duck';
+import {
+    createService,
+    updateService,
+    deleteService,
+} from 'core/forms/servicesForm/duck';
 
 import { Catcher } from 'commons';
 import { ServicesForm } from 'forms';
 
-import { ServicesTable } from 'components/Tables';
+import { ServicesTable, EditableTable } from 'components/Tables';
 
 // own
 // import Styles from './styles.m.css';
 
 const mapDispatchToProps = {
     setFilters,
+    createService,
+    updateService,
+    deleteService,
 };
 
 const mapStateToProps = state => ({
@@ -69,8 +77,10 @@ export default class ServiceContainer extends Component {
             <Catcher>
                 <ServicesForm />
                 { list ? (
-                    <ServicesTable
+                    <EditableTable
                         data={ list }
+                        createService={ createService }
+                        handleSave={ updateService }
                         deleteService={ deleteService }
                         setFilters={ setFilters }
                         count={ count }
