@@ -73,11 +73,13 @@ export default class ServiceContainer extends Component {
             deleteService,
             setFilters,
             details,
+            filters,
             servicesPartsSuggestions: {
                 stats: { count },
                 list,
             },
         } = this.props;
+        console.log('→ CONTAthis.props', this.props);
 
         return (
             <Catcher>
@@ -95,6 +97,7 @@ export default class ServiceContainer extends Component {
                             setFilters={ setFilters }
                             count={ count }
                             details={ details }
+                            filters={ filters }
                         />
                     </Paper>
                 ) : null }

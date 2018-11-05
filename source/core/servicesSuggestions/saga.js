@@ -1,13 +1,12 @@
 // vendor
-import { call, put, all, take } from 'redux-saga/effects';
+import { call, put, all, take, select } from 'redux-saga/effects';
 
 //proj
 import { emitError, setSuggestionsFetching } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
-import { fetchServicesSuggestionsSuccess } from './duck';
-
+import { fetchServicesSuggestionsSuccess, selectFilters } from './duck';
 import { FETCH_SERVICES_SUGGESTIONS } from './duck';
 
 export function* fetchServicesSaga() {
@@ -16,11 +15,13 @@ export function* fetchServicesSaga() {
             yield take(FETCH_SERVICES_SUGGESTIONS);
             yield put(setSuggestionsFetching(true));
 
+            const filters = yield select(selectFilters);
+
             const data = yield call(
                 fetchAPI,
                 'GET',
                 'services/parts/suggestions',
-                // filters,
+                filters,
             );
             // const dataSource = data.servicesPartsSuggestions.list.map(
             //     suggestion => {

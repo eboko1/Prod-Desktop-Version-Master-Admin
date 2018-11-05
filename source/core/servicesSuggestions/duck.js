@@ -61,6 +61,8 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state[ moduleName ];
 
+export const selectFilters = state => state.servicesSuggestions.filters;
+
 export const selectServicesSuggestions = state =>
     state.servicesSuggestions.servicesPartsSuggestions;
 
@@ -69,18 +71,6 @@ export const selectServicesSuggestionsOptions = state => ({
     details:  state.servicesSuggestions.details,
     services: state.servicesSuggestions.services,
 });
-
-// const getDashboard = state => state.dashboard;
-
-// export const selectDasboardData = createSelector(
-//     [ stateSelector ],
-//     properties => {
-//
-//         return {
-//             properties,
-//         };
-//     },
-// );
 
 /**
  * Actions
@@ -96,6 +86,6 @@ export const fetchServicesSuggestionsSuccess = data => ({
 });
 
 export const setFilters = filters => ({
-    types:   SET_FILTERS,
+    type:    SET_FILTERS,
     payload: filters,
 });

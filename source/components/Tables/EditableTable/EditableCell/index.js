@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Input, Button, Popconfirm, Form, Select } from 'antd';
+import { Form, Select } from 'antd';
 
 // proj
 import {
@@ -13,7 +13,7 @@ import {
 // own
 import { cellType } from './cellConfig';
 import Styles from '../styles.m.css';
-const FormItem = Form.Item;
+// const FormItem = Form.Item;
 const Option = Select.Option;
 
 export const EditableContext = React.createContext();
@@ -100,7 +100,7 @@ export class EditableCell extends Component {
                             this.form = form;
                             // console.log('→ record', record);
 
-                            return editing ? 
+                            return editing ?
                                 this._renderCell(form)
                                 : (
                                 // <FormItem style={ { margin: 0 } }>
@@ -129,7 +129,7 @@ export class EditableCell extends Component {
                                 );
                         } }
                     </EditableContext.Consumer>
-                ) : 
+                ) :
                     restProps.children
                 }
             </td>
