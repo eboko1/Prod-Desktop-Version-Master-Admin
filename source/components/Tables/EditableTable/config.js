@@ -33,7 +33,7 @@ export function columnsConfig(
     const serviceNameCol = {
         title:     'Наименование работы',
         dataIndex: 'serviceName',
-        key:       v4(),
+        // key:       v4(),
         // sorter:    true,
         // sortOrder: this._handleColumnOrder(
         //     this.props.sort,
@@ -44,14 +44,14 @@ export function columnsConfig(
     const detailNameCol = {
         title:     'Наименование ЗЧ',
         dataIndex: 'detailName',
-        key:       v4(),
+        // key:       v4(),
         width:     '20%',
         editable:  true,
     };
     const quantityCol = {
-        title:     'Кол-во',
+        title:     'КОЛ-ВО',
         dataIndex: 'quantity',
-        key:       v4(),
+        // key:       v4(),
         // sorter:    true,
         // sortOrder: this._handleColumnOrder(
         //     this.props.sort,
@@ -69,9 +69,10 @@ export function columnsConfig(
     };
 
     const deleteCol = {
-        width:  '15%',
-        key:    v4(),
-        render: (text, { serviceId, suggestionId }) =>
+        width:     '15%',
+        dataIndex: 'delete',
+        // key:    v4(),
+        render:    (text, { serviceId, suggestionId }) =>
             !serviceId && (
                 <Popconfirm
                     title='Sure to delete?'

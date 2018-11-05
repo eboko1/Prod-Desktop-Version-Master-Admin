@@ -13,6 +13,7 @@ import {
 } from 'core/forms/servicesForm/duck';
 
 import { Catcher } from 'commons';
+import { Paper } from 'commons/_uikit';
 import { ServicesForm } from 'forms';
 
 import { ServicesTable, EditableTable } from 'components/Tables';
@@ -28,6 +29,7 @@ const mapDispatchToProps = {
 };
 
 const mapStateToProps = state => ({
+    loading: state.ui.suggestionsLoading,
     ...stateSelector(state),
 });
 
@@ -65,6 +67,9 @@ export default class ServiceContainer extends Component {
     // };
     render() {
         const {
+            loading,
+            createService,
+            updateService,
             deleteService,
             setFilters,
             servicesPartsSuggestions: {
@@ -75,16 +80,21 @@ export default class ServiceContainer extends Component {
 
         return (
             <Catcher>
-                <ServicesForm />
+                <Paper>
+                    <ServicesForm />
+                </Paper>
                 { list ? (
-                    <EditableTable
-                        data={ list }
-                        createService={ createService }
-                        handleSave={ updateService }
-                        deleteService={ deleteService }
-                        setFilters={ setFilters }
-                        count={ count }
-                    />
+                    <Paper>
+                        <EditableTable
+                            loading={ loading }
+                            data={ list }
+                            createService={ createService }
+                            updateService={ updateService }
+                            deleteService={ deleteService }
+                            setFilters={ setFilters }
+                            count={ count }
+                        />
+                    </Paper>
                 ) : null }
             </Catcher>
         );

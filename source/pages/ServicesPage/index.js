@@ -10,7 +10,7 @@ import { Layout, Spinner } from 'commons';
 import { ServicesContainer } from 'containers';
 
 const mapStateToProps = state => ({
-    isFetching: state.ui.servicesFetching,
+    isFetching: state.ui.suggestionsFetching,
 });
 
 const mapDispatchToProps = { fetchServicesSuggestions };
@@ -34,9 +34,10 @@ export default class ServicesPage extends Component {
                 title={
                     <FormattedMessage id='navigation.services-spare_parts' />
                 }
+                paper={ false }
                 // controls={ <BusinessSearchField /> }
             >
-                <ServicesContainer />
+                <ServicesContainer isFetching={ isFetching } />
             </Layout>
         );
     }

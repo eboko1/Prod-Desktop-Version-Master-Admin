@@ -87,7 +87,6 @@ export class EditableCell extends Component {
                     <EditableContext.Consumer>
                         { form => {
                             this.form = form;
-                            console.log('→ form', form);
 
                             return editing ? (
                                 <FormItem style={ { margin: 0 } }>

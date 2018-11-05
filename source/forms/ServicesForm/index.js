@@ -28,6 +28,7 @@ import {
 import { withReduxForm2 } from 'utils';
 
 // own
+import Styles from './styles.m.css';
 const Option = Select.Option;
 
 @injectIntl
@@ -62,10 +63,9 @@ export class ServicesForm extends Component {
 
         return (
             <Catcher>
-                <Form layout='horizontal'>
-                    { /* <BusinessSearchField /> */ }
+                <Form layout='horizontal' className={ Styles.form }>
                     <DecoratedSelect
-                        // cnStyles={ Styles.select }
+                        cnStyles={ Styles.servicesSelect }
                         field={ 'serviceId' }
                         getFieldDecorator={ getFieldDecorator }
                         // initialValue={ _getDefaultValue(key, 'serviceId') }
@@ -83,6 +83,7 @@ export class ServicesForm extends Component {
                         )) }
                     </DecoratedSelect>
                     <LimitedDecoratedSelect
+                        cnStyles={ Styles.detailsSelect }
                         // cnStyles={
                         //     getFieldValue(
                         //         `details[${key}][multipleSuggestions]`,
@@ -111,13 +112,14 @@ export class ServicesForm extends Component {
                         )) }
                     </LimitedDecoratedSelect>
                     <DecoratedInputNumber
+                        cnStyles={ Styles.quantity }
                         field={ 'quantity' }
                         getFieldDecorator={ getFieldDecorator }
                         // initialValue={ _getDefaultValue(key, 'quantity') }
                     />
                     <Icon
                         type='save'
-                        // className={ Styles.saveIcon }
+                        className={ Styles.saveIcon }
                         onClick={ () => {
                             createService({
                                 ...form.getFieldsValue([ 'serviceId', 'detailId', 'quantity' ]),
