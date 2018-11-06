@@ -8,6 +8,9 @@ export const FETCH_PACKAGES = `${prefix}/FETCH_PACKAGES`;
 export const FETCH_PACKAGES_SUCCESS = `${prefix}/FETCH_PACKAGES_SUCCESS`;
 export const FETCH_PACKAGES_ERROR = `${prefix}/FETCH_PACKAGES_ERROR`;
 
+export const FETCH_ROLES = `${prefix}/FETCH_ROLES`;
+export const FETCH_ROLES_SUCCESS = `${prefix}/FETCH_ROLES_SUCCESS`;
+
 export const SET_EDIT_PACKAGE_ID = `${prefix}/SET_EDIT_PACKAGE_ID`;
 export const SET_CREATE_PACKAGE = `${prefix}/SET_CREATE_PACKAGE`;
 
@@ -32,6 +35,7 @@ const ReducerState = {
     editPackageId:     null,
     createPackageForm: false,
     packages:          [],
+    roles:             [],
 };
 
 /* eslint-disable complexity */
@@ -52,6 +56,12 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 editPackageId:     void 0,
                 createPackageForm: false,
+            };
+
+        case FETCH_ROLES_SUCCESS:
+            return {
+                ...state,
+                roles: payload,
             };
 
         case FETCH_PACKAGES_SUCCESS:
@@ -134,6 +144,15 @@ export const fetchPackagesSuccess = data => ({
 
 export const fetchPackagesError = () => ({
     type: FETCH_PACKAGES_ERROR,
+});
+
+export const fetchRoles = () => ({
+    type: FETCH_ROLES,
+});
+
+export const fetchRolesSuccess = data => ({
+    type:    FETCH_ROLES_SUCCESS,
+    payload: data,
 });
 
 export const onChangePackageForm = update => ({

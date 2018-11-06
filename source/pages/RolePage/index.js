@@ -24,11 +24,11 @@ const mapDispatchToProps = {
 @connect(mapStateToProps, mapDispatchToProps)
 export default class RolePage extends Component {
     componentDidMount() {
-        this.props.fetchRoles(this.props.match.params.id);
+        this.props.fetchRoles();
     }
 
     render() {
-        const { isFetching, roles, match } = this.props;
+        const { isFetching, roles } = this.props;
 
         return isFetching ? (
             <Spinner spin={ isFetching } />
@@ -42,7 +42,7 @@ export default class RolePage extends Component {
                     </Link>
                 }
             >
-                <RoleContainer packageId={ match.params.id } roles={ roles } />
+                <RoleContainer roles={ roles } />
             </Layout>
         );
     }

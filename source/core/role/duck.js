@@ -108,9 +108,8 @@ export const setEditRoleId = roleId => ({
     payload: roleId,
 });
 
-export const fetchRoles = id => ({
-    type:    FETCH_ROLES,
-    payload: { id },
+export const fetchRoles = () => ({
+    type: FETCH_ROLES,
 });
 
 export const fetchRolesSuccess = data => ({
@@ -127,19 +126,19 @@ export const onChangeRoleForm = update => ({
     payload: update,
 });
 
-export const updateRole = (packageId, id, entity) => ({
+export const updateRole = (id, entity) => ({
     type:    UPDATE_ROLE,
-    payload: { packageId, id, entity },
+    payload: { id, entity },
 });
 
-export const createRole = (packageId, entity) => ({
+export const createRole = entity => ({
     type:    CREATE_ROLE,
-    payload: { packageId, entity },
+    payload: { entity },
 });
 
-export const deleteRole = (packageId, id) => ({
+export const deleteRole = id => ({
     type:    DELETE_ROLE,
-    payload: { packageId, id },
+    payload: { id },
 });
 
 export const hideForms = () => ({

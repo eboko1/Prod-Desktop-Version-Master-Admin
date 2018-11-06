@@ -33,6 +33,9 @@ const Option = Select.Option;
 export class RoleForm extends Component {
     render() {
         const { role } = this.props;
+        if (!role) {
+            return null;
+        }
         const roleGrants = _.intersection(role.grants, _.values(permissions));
         const { getFieldDecorator, validateFields } = this.props.form;
         const groupsLabels = getGroupsLabels(this.props.intl);
@@ -106,7 +109,7 @@ export class RoleForm extends Component {
                     onClick={ () =>
                         validateFields(
                             (err, values) =>
-                                !err && this.props.updateRole(role.id, values),
+                                !err && this.props.updateRole(role.roleId, values),
                         )
                     }
                 >

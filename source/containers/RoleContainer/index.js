@@ -94,7 +94,7 @@ export default class RoleContainer extends Component {
                 render: record => (
                     <Icon
                         color='red'
-                        onClick={ () => this.props.setEditRoleId(record.id) }
+                        onClick={ () => this.props.setEditRoleId(record.roleId) }
                         className={ Styles.editRoleIcon }
                         type='edit'
                     />
@@ -106,10 +106,7 @@ export default class RoleContainer extends Component {
                 render: record => (
                     <Icon
                         onClick={ () =>
-                            this.props.deleteRole(
-                                this.props.packageId,
-                                record.id,
-                            )
+                            this.props.deleteRole(record.roleId)
                         }
                         className={ Styles.deleteRoleIcon }
                         type='delete'
@@ -126,17 +123,16 @@ export default class RoleContainer extends Component {
             editRoleId,
             updateRole,
             createRole,
-            packageId,
         } = this.props;
 
         // TODO reselect
         const roleRows = roles.map((item, index) => ({
             ...item,
             index,
-            key: item.id,
+            key: item.roleId,
         }));
 
-        const initRole = editRoleId && _.find(roles, { id: editRoleId });
+        const initRole = editRoleId && _.find(roles, { roleId: editRoleId });
 
         return (
             <Catcher>
@@ -167,12 +163,12 @@ export default class RoleContainer extends Component {
                         <RoleForm
                             editRoleId={ editRoleId }
                             role={ initRole }
-                            updateRole={ updateRole.bind(null, packageId) }
+                            updateRole={ updateRole }
                         />
                     ) ||
                         createRoleForm && (
                             <AddRoleForm
-                                createRole={ createRole.bind(null, packageId) }
+                                createRole={ createRole }
                             />
                         ) }
                 </Modal>

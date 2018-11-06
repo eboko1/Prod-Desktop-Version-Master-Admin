@@ -174,6 +174,12 @@ export default {
                     name:    'navigation.package',
                 },
                 {
+                    key:     '/roles',
+                    link:    book.rolePage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.roles',
+                },
+                {
                     key:     '/businesses/packages',
                     link:    book.businessPackagePage,
                     visible: user => isAdmin(user),
