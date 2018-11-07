@@ -32,6 +32,8 @@ export default class BusinessSearchField extends Component {
 
         return (
             <Select
+                placeholder={ this.props.intl.formatMessage({id: 'business_placeholder'}) }
+                style={ this.props.selectStyles }
                 showSearch
                 allowClear
                 filterOption={ false }

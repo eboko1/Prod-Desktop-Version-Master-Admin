@@ -1,15 +1,31 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table, Modal, Select, Form, Button, Icon, InputNumber } from 'antd';
+import {
+    Table,
+    Modal,
+    Select,
+    Form,
+    Button,
+    Icon,
+    InputNumber,
+    Col,
+    Row,
+} from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
 
 // proj
 import {
+    BusinessSearchField,
+    SupplierSearchField,
+    ProductSearchField,
+} from 'forms/_formkit';
+import {
     onChangeBrandsForm,
     fetchPriorityBrands,
     setSort,
+    setFilter,
     setSearchSuppliers,
     setSearchBusinesses,
     setSearchProducts,
@@ -23,7 +39,7 @@ import { setModal, resetModal } from 'core/modals/duck';
 import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
 import { withReduxForm } from 'utils';
 import { Catcher } from 'commons';
-import Styles from '../../containers/ManagerRoleContainer/styles.m.css';
+import Styles from './styles.m.css';
 
 // own
 
@@ -51,6 +67,7 @@ const sortOptions = {
         createPriorityBrand,
         setModal,
         resetModal,
+        setFilter,
     },
 })
 export class BrandsForm extends Component {
@@ -283,6 +300,36 @@ export class BrandsForm extends Component {
 
         return (
             <Catcher>
+                <Row type='flex' align='inline' gutter={ 24 }>
+                    <Col span={ 8 }>
+                        <BusinessSearchField
+                            selectStyles={ { width: '100%' } }
+                            onSelect={ businessId =>
+                                this.props.setFilter({ businessId })
+                            }
+                            businessId={ this.props.filter.businessId }
+                        />
+                    </Col>
+                    <Col span={ 8 }>
+                        <ProductSearchField
+                            selectStyles={ { width: '100%' } }
+                            onSelect={ productId =>
+                                this.props.setFilter({ productId })
+                            }
+                            productId={ this.props.filter.productId }
+                        />
+                    </Col>
+                    <Col span={ 8 }>
+                        <SupplierSearchField
+                            selectStyles={ { width: '100%' } }
+                            onSelect={ supplierId =>
+                                this.props.setFilter({ supplierId })
+                            }
+                            supplierId={ this.props.filter.supplierId }
+                        />
+                    </Col>
+                </Row>
+                <br/>
                 <Table
                     size='small'
                     columns={ columns }

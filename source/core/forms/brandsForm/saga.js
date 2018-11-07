@@ -33,6 +33,7 @@ import {
     UPDATE_PRIORITY_BRAND,
     DELETE_PRIORITY_BRAND,
     SET_SORT,
+    SET_FILTER,
 } from './duck';
 
 export function* setSortSaga() {
@@ -44,6 +45,7 @@ export function* fetchPriorityBrandsSaga() {
         yield put(setBrandsFetchingState(true));
 
         const sort = yield select(state => state.forms.brandsForm.sort);
+        const filter = yield select(state => state.forms.brandsForm.filter);
         const page = _.get(sort, 'page', 1);
         const sortOrder = _.get(sort, 'order', void 0);
         const sortField = _.get(sort, 'field', void 0);
@@ -52,7 +54,7 @@ export function* fetchPriorityBrandsSaga() {
             fetchAPI,
             'GET',
             '/tecdoc/product/supplier/priorities',
-            { page, sortOrder, sortField },
+            { page, sortOrder, sortField, ...filter },
         );
 
         yield put(
@@ -125,5 +127,5 @@ export function* createPriorityBrandSaga({ payload: entity }) {
 }
 
 export function* saga() {
-    yield all([ takeEvery(SET_SORT, setSortSaga), takeEvery(CREATE_PRIORITY_BRAND, createPriorityBrandSaga), takeEvery(UPDATE_PRIORITY_BRAND, updatePriorityBrandSaga), takeEvery(DELETE_PRIORITY_BRAND, deletePriorityBrandSaga), call(fetchPriorityBrandsSaga), takeLatest(SET_SEARCH_SUPPLIERS, searchSuppliersSaga), takeLatest(SET_SEARCH_BUSINESSES, searchBusinessesSaga), takeLatest(SET_SEARCH_PRODUCTS, searchProductsSaga) ]);
+    yield all([ takeEvery([ SET_SORT, SET_FILTER ], setSortSaga), takeEvery(CREATE_PRIORITY_BRAND, createPriorityBrandSaga), takeEvery(UPDATE_PRIORITY_BRAND, updatePriorityBrandSaga), takeEvery(DELETE_PRIORITY_BRAND, deletePriorityBrandSaga), call(fetchPriorityBrandsSaga), takeLatest(SET_SEARCH_SUPPLIERS, searchSuppliersSaga), takeLatest(SET_SEARCH_BUSINESSES, searchBusinessesSaga), takeLatest(SET_SEARCH_PRODUCTS, searchProductsSaga) ]);
 }
