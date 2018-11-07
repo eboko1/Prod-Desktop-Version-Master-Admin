@@ -16,7 +16,7 @@ export function columnsConfig(formatMessage, showPhone, phones) {
     const date = {
         title:     <FormattedMessage id='calls-table.date' />,
         width:     95,
-        dataIndex: 'date',
+        dataIndex: 'datetime',
         key:       'date',
         render:    date => (
             <div className={ Styles.datetime }>
