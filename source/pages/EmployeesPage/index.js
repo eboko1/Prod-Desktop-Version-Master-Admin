@@ -26,17 +26,17 @@ export default class EmployeesPage extends Component {
                     <FormattedMessage id='employee-page.description' />
                 }
                 controls={
-                    <Button
-                        type='primary'
-                        disabled={ isForbidden(
-                            this.props.user,
-                            permissions.CREATE_EDIT_DELETE_EMPLOYEES,
-                        ) }
-                    >
-                        <Link to={ book.addEmployee }>
+                    <Link to={ book.addEmployee }>
+                        <Button
+                            type='primary'
+                            disabled={ isForbidden(
+                                this.props.user,
+                                permissions.CREATE_EDIT_DELETE_EMPLOYEES,
+                            ) }
+                        >
                             <FormattedMessage id='employee-page.add_employee' />
-                        </Link>
-                    </Button>
+                        </Button>
+                    </Link>
                 }
             >
                 <EmployeesContainer />
