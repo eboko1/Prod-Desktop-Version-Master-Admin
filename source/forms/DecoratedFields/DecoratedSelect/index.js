@@ -19,6 +19,7 @@ export const DecoratedSelect = props => {
         hasFeedback,
         formItemLayout,
         innerRef,
+        onPressEnter,
 
         // DecoratedField
         children,
@@ -77,6 +78,7 @@ export const DecoratedSelect = props => {
             getPopupContainer={ getPopupContainer }
             dropdownMatchSelectWidth={ dropdownMatchSelectWidth }
             dropdownStyle={ dropdownStyle }
+            onInputKeyDown={ e => e.key === 'Enter' && onPressEnter() }
             optionFilterProp={ optionFilterProp ? optionFilterProp : 'children' }
             filterOption={
                 filterOption

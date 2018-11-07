@@ -51,9 +51,9 @@ export default class EditableTable extends Component {
                         editable:   col.editable,
                         dataIndex:  col.dataIndex,
                         title:      col.title,
-                        handleSave: this._handleSave,
                         details:    col.details,
                         cellType:   col.cellType,
+                        handleSave: this._handleSave,
                     };
                 },
             };
