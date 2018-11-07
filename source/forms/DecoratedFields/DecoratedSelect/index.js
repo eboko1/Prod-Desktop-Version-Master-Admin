@@ -50,6 +50,7 @@ export const DecoratedSelect = props => {
         dropdownStyle,
 
         initialValue,
+        onFocus,
         // globalLimit,
     } = props;
 
@@ -79,6 +80,7 @@ export const DecoratedSelect = props => {
             dropdownMatchSelectWidth={ dropdownMatchSelectWidth }
             dropdownStyle={ dropdownStyle }
             onInputKeyDown={ e => e.key === 'Enter' && onPressEnter() }
+            onFocus={ onFocus }
             optionFilterProp={ optionFilterProp ? optionFilterProp : 'children' }
             filterOption={
                 filterOption
