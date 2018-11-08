@@ -45,6 +45,7 @@ export default class PartAttributes extends Component {
                     {
                         value: (
                             <a
+                                style={ { color: 'red ' } }
                                 target='_blank'
                                 rel='noopener noreferrer'
                                 href={ 'https://kyb-europe.com/rus/qr/' }
@@ -57,6 +58,7 @@ export default class PartAttributes extends Component {
                     {
                         value: (
                             <a
+                                style={ { color: 'red ' } }
                                 target='_blank'
                                 rel='noopener noreferrer'
                                 href={
