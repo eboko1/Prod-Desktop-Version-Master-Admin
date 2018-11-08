@@ -38,8 +38,40 @@ export default class PartAttributes extends Component {
                 }),
             }
             : null;
+
+        const supplierAdditionalAttributes =
+            supplier && supplier.supplierId === 85
+                ? [
+                    {
+                        value: (
+                            <a
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                href={ 'https://kyb-europe.com/rus/qr/' }
+                            >
+                                  Перейти
+                            </a>
+                        ),
+                        description: 'Техническая информация по установке',
+                    },
+                    {
+                        value: (
+                            <a
+                                target='_blank'
+                                rel='noopener noreferrer'
+                                href={
+                                    'https://kyb-europe.com/rus/izobrazheniya-360/'
+                                }
+                            >
+                                  Перейти
+                            </a>
+                        ),
+                        description: '3-D изображение запчасти',
+                    },
+                ]
+                : [];
         const attributes = initAttributes
-            ? [ detailCodeAttribute, supplierAttribute, ...initAttributes ].filter(Boolean)
+            ? [ detailCodeAttribute, supplierAttribute, ...initAttributes, ...supplierAdditionalAttributes ].filter(Boolean)
             : [];
 
         const hasImages = Boolean(images && images.length);
@@ -70,8 +102,7 @@ export default class PartAttributes extends Component {
                                         <img
                                             onError={ e => {
                                                 e.target.onerror = null;
-                                                e.target.src =
-                                                    `${__TECDOC_IMAGES_URL__}/not_found.png`;
+                                                e.target.src = `${__TECDOC_IMAGES_URL__}/not_found.png`;
                                             } }
                                             src={ `${__TECDOC_IMAGES_URL__}/${supplierId}/${pictureName}` }
                                         />
