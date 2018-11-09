@@ -233,7 +233,7 @@ export class BrandsForm extends Component {
                                     }),
                                 },
                             ] }
-                            initialValue={ item.priority || void 0 }
+                            initialValue={ _.isNil(item.priority) ? void 0 : item.priority }
                         />
                     );
                 },
