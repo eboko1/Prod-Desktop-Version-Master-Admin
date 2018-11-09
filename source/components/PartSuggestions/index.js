@@ -79,6 +79,7 @@ export default class PartSuggestions extends Component {
                 filters:   _(suggestions)
                     .map('supplierName')
                     .uniq()
+                    .sort()
                     .map(name => ({
                         text:  name,
                         value: name,
