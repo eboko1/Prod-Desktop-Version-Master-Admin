@@ -54,8 +54,8 @@ export class AddBusinessPackageForm extends Component {
                     }
                     showSearch
                 >
-                    { this.props.rolesPackages.map(({ id, name }) => (
-                        <Option key={ id } value={ id }>
+                    { this.props.rolesPackages.map(({ packageId, name }) => (
+                        <Option key={ packageId } value={ packageId }>
                             { name }
                         </Option>
                     )) }

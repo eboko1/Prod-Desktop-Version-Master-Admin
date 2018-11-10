@@ -50,7 +50,7 @@ const book = Object.freeze({
     packagePage:         '/packages',
     businessPackagePage: '/businesses/packages',
     managerRolePage:     '/managers/roles',
-    rolePage:            '/packages/:id',
+    rolePage:            '/roles',
     //
     // Administration
     //

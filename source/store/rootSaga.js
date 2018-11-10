@@ -43,6 +43,7 @@ import { saga as editClientFormSaga } from 'core/forms/editClientForm/saga';
 import { saga as settingSalaryFormSaga } from 'core/forms/settingSalaryForm/saga';
 import { saga as tecDocFormSaga } from 'core/forms/tecDocForm/saga';
 import { saga as servicesFormSaga } from 'core/forms/servicesForm/saga';
+import { saga as brandsSaga } from 'core/forms/brandsForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -94,6 +95,7 @@ export default function* rootSaga() {
         // administration
         servicesFormSaga(),
         servicesSuggestions(),
+        brandsSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

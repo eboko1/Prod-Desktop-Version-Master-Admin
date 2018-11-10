@@ -214,8 +214,8 @@ export default class BusinessPackageContainer extends Component {
                             value={ filters.packageId || void 0 }
                             showSearch
                         >
-                            { rolesPackages.map(({ id, name }) => (
-                                <Option key={ id } value={ id }>
+                            { rolesPackages.map(({ packageId, name }) => (
+                                <Option key={ packageId } value={ packageId }>
                                     { name }
                                 </Option>
                             )) }

@@ -10,6 +10,7 @@ import {
     fetchPackages,
     fetchPackagesSuccess,
     fetchPackagesError,
+    fetchRolesSuccess,
     hideForms,
     addError,
 } from './duck';
@@ -28,7 +29,9 @@ export function* fetchPackagesSaga() {
             yield put(setPackageFetchingState(true));
 
             const data = yield call(fetchAPI, 'GET', 'managers/packages');
+            const roles = yield call(fetchAPI, 'GET', 'managers/roles');
 
+            yield put(fetchRolesSuccess(roles));
             yield put(fetchPackagesSuccess(data));
         } catch (error) {
             yield put(emitError(error));

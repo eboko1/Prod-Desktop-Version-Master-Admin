@@ -69,13 +69,17 @@ export class EditableCell extends Component {
 
     _save = () => {
         const { record, handleSave } = this.props;
-        console.log('→ SAVErecord', record);
         this.form.validateFields((error, values) => {
             if (error) {
                 return;
             }
+            const cellValue = Number(Object.values(values)[ 0 ]);
+
             this._toggleEdit();
-            handleSave({ ...record, ...values });
+
+            cellValue
+                ? handleSave({ ...record, detailId: cellValue })
+                : handleSave({ ...record });
         });
     };
 
@@ -139,7 +143,6 @@ export class EditableCell extends Component {
     _renderCell = form => {
         const { title, record, dataIndex, details } = this.props;
         const { getFieldDecorator } = form;
-        console.log('→ CELL record', record);
         switch (this.props.cellType) {
             case cellType.NUMERAL:
                 return (
@@ -190,7 +193,7 @@ export class EditableCell extends Component {
                         innerRef={node => (this.input = node)} // eslint-disable-line
                         getPopupContainer={node => (this.input = node)} // eslint-disable-line
                         allowClear
-                        onSelect={ () => this._save() }
+                        onPressEnter={ () => this._save() }
                     >
                         { details.map(({ detailId, detailName }) => (
                             <Option value={ String(detailId) } key={ detailId }>

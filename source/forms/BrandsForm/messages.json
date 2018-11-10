@@ -1,0 +1,20 @@
+{
+    "en": {
+        "brands.business_name": "Business",
+        "brands.product_name": "Product",
+        "brands.supplier_name": "Supplier",
+        "brands.priority": "Priority"
+    },
+    "ru": {
+        "brands.business_name": "Бизнес",
+        "brands.product_name": "Деталь",
+        "brands.supplier_name": "Производитель",
+        "brands.priority": "Приоритет"
+    },
+    "ua": {
+        "brands.business_name": "Бізнес",
+        "brands.product_name": "Деталь",
+        "brands.supplier_name": "Виробник",
+        "brands.priority": "Пріоритет"
+    }
+}

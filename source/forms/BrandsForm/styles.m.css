@@ -1,0 +1,28 @@
+
+.brandDeleteIcon {
+    font-size: 24px;
+    cursor: pointer;
+    color: red;
+}
+
+.brandsSelect {
+    width: 100%;
+}
+
+.brandsFormItem {
+    margin-bottom: 0;
+}
+
+.newBrandRow {
+    background-color: #90EE90;
+}
+
+.editedBrandRow {
+    background-color: #fff1f3;
+}
+
+.brandSaveIcon {
+    font-size: 24px;
+    cursor: pointer;
+    color: green;
+}

@@ -5,6 +5,7 @@ import exception500 from 'theme/images/exceptions/500.svg';
 // Logos
 import carbookLogo from 'theme/images/carbookLogo.png';
 import ecatLogo from 'theme/images/logos/ecatLogo.png';
+import kybLogo from 'theme/images/logos/kyb.png';
 // Funel
 import funelArrowCurvedLeft from 'theme/images/funel/funel_arrow-curved-left.svg';
 import funelArrowCurvedRight from 'theme/images/funel/funel_arrow-curved-right.svg';
@@ -17,6 +18,7 @@ export default {
     // Logos
     carbookLogo,
     ecatLogo,
+    kybLogo,
     // Funel
     funelArrowCurvedLeft,
     funelArrowCurvedRight,

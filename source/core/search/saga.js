@@ -10,9 +10,18 @@ import {
     setIsFetchingBusinesses,
     fetchManagersSuccess,
     setIsFetchingManagers,
+    fetchSuppliersSuccess,
+    setIsFetchingSuppliers,
+    fetchProductsSuccess,
+    setIsFetchingProducts,
 } from './duck';
 
-import { SET_BUSINESS_SEARCH_QUERY, SET_MANAGER_SEARCH_QUERY } from './duck';
+import {
+    SET_BUSINESS_SEARCH_QUERY,
+    SET_MANAGER_SEARCH_QUERY,
+    SET_SUPPLIER_SEARCH_QUERY,
+    SET_PRODUCT_SEARCH_QUERY,
+} from './duck';
 
 function* handleBusinessesSearchSaga({ payload: query }) {
     yield delay(1000);
@@ -38,6 +47,38 @@ function* handleManagersSearchSaga({ payload: query }) {
     yield put(setIsFetchingManagers(false));
 }
 
+function* handleSuppliersSearchSaga({ payload: query }) {
+    yield delay(1000);
+
+    yield put(setIsFetchingSuppliers(true));
+    const { suppliers } = yield call(
+        fetchAPI,
+        'GET',
+        '/tecdoc/suppliers/search',
+        {
+            query,
+        },
+    );
+    yield put(fetchSuppliersSuccess(suppliers));
+    yield put(setIsFetchingSuppliers(false));
+}
+
+function* handleProductsSearchSaga({ payload: query }) {
+    yield delay(1000);
+
+    yield put(setIsFetchingProducts(true));
+    const { products } = yield call(
+        fetchAPI,
+        'GET',
+        '/tecdoc/products/search',
+        {
+            query,
+        },
+    );
+    yield put(fetchProductsSuccess(products));
+    yield put(setIsFetchingProducts(false));
+}
+
 export function* saga() {
-    yield all([ takeLatest(SET_BUSINESS_SEARCH_QUERY, handleBusinessesSearchSaga), takeLatest(SET_MANAGER_SEARCH_QUERY, handleManagersSearchSaga) ]);
+    yield all([ takeLatest(SET_PRODUCT_SEARCH_QUERY, handleProductsSearchSaga), takeLatest(SET_SUPPLIER_SEARCH_QUERY, handleSuppliersSearchSaga), takeLatest(SET_BUSINESS_SEARCH_QUERY, handleBusinessesSearchSaga), takeLatest(SET_MANAGER_SEARCH_QUERY, handleManagersSearchSaga) ]);
 }

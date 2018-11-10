@@ -41,8 +41,7 @@ export default class PartSuggestions extends Component {
                             }
                             onError={ e => {
                                 e.target.onerror = null;
-                                e.target.src =
-                                    `${__TECDOC_IMAGES_URL__}/not_found.png`;
+                                e.target.src = `${__TECDOC_IMAGES_URL__}/not_found.png`;
                             } }
                             width={ 75 }
                             src={ `${__TECDOC_IMAGES_URL__}/${
@@ -80,6 +79,7 @@ export default class PartSuggestions extends Component {
                 filters:   _(suggestions)
                     .map('supplierName')
                     .uniq()
+                    .sort()
                     .map(name => ({
                         text:  name,
                         value: name,
@@ -155,21 +155,34 @@ export default class PartSuggestions extends Component {
             {
                 key:    'ecat',
                 width:  '10%',
-                render: suggestion => (
-                    <a
-                        target='_blank'
-                        rel='noopener noreferrer'
-                        href={ `https://maxi.ecat.ua/products/search/${
-                            suggestion.partNumber
-                        }/type:article+customerNo:none` }
-                    >
-                        <img
-                            className={ Styles.logo }
-                            src={ images.ecatLogo }
-                            alt='logo'
-                        />
-                    </a>
-                ),
+                render: suggestion =>
+                    suggestion.supplierId === 85 ? (
+                        <a
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            href={ 'http://kyb-europe.com/rus/katalog/' }
+                        >
+                            <img
+                                className={ Styles.logo }
+                                src={ images.kybLogo }
+                                alt='logo'
+                            />
+                        </a>
+                    ) : (
+                        <a
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            href={ `https://maxi.ecat.ua/products/search/${
+                                suggestion.partNumber
+                            }/type:article+customerNo:none` }
+                        >
+                            <img
+                                className={ Styles.logo }
+                                src={ images.ecatLogo }
+                                alt='logo'
+                            />
+                        </a>
+                    ),
             },
         ];
 

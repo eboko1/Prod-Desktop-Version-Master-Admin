@@ -17,6 +17,9 @@ import businessPackageReducer, {
 import editPackageReducer, {
     moduleName as editPackage,
 } from './editPackageForm/duck';
+import brandsReducer, {
+    moduleName as brands
+} from './brandsForm/duck';
 
 import addRoleReducer, { moduleName as addRole } from './addRoleForm/duck';
 import editRoleReducer, { moduleName as editRole } from './editRoleForm/duck';
@@ -126,4 +129,5 @@ export const formsReducer = combineReducers({
     [ tecDoc ]:                  tecDocReducer,
     [ toSuccess ]:               toSuccessReducer,
     [ universalFilters ]:        universalFiltersReducer,
+    [ brands ]:                  brandsReducer,
 });

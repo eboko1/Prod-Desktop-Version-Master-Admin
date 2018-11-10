@@ -16,7 +16,6 @@ import {
     deleteService,
     resetFields,
 } from 'core/forms/servicesForm/duck';
-// import { selectBusiness } from 'core/form/servicesForm/duck';
 
 import { Catcher } from 'commons';
 import {
@@ -24,7 +23,6 @@ import {
     DecoratedSelect,
     LimitedDecoratedSelect,
 } from 'forms/DecoratedFields';
-// import { BusinessSearchField } from 'forms/_formkit';
 import { withReduxForm2 } from 'utils';
 
 // own
@@ -41,7 +39,6 @@ const Option = Select.Option;
         createService,
         updateService,
         deleteService,
-        // selectBusiness,
     },
     mapStateToProps: state => ({
         ...selectServicesSuggestionsOptions(state),
@@ -59,7 +56,11 @@ export class ServicesForm extends Component {
             services,
             details,
         } = this.props;
-        const { getFieldDecorator } = this.props.form;
+        const {
+            getFieldDecorator,
+            getFieldsValue,
+            validateFields,
+        } = this.props.form;
 
         return (
             <Catcher>
@@ -76,6 +77,12 @@ export class ServicesForm extends Component {
                         optionFilterProp={ 'children' }
                         showSearch
                         placeholder={ 'Выберете работу' }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  'serviceId is required!',
+                            },
+                        ] }
                     >
                         { services.map(({ serviceId, serviceName }) => (
                             <Option value={ String(serviceId) } key={ serviceId }>
@@ -104,7 +111,12 @@ export class ServicesForm extends Component {
                         placeholder={ 'Выберете деталь' }
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '50%' } }
-                        // defaultValues={ defaultDetails }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  'detailId is required!',
+                            },
+                        ] }
                     >
                         { details.map(({ detailId, detailName }) => (
                             <Option value={ String(detailId) } key={ detailId }>
@@ -117,16 +129,27 @@ export class ServicesForm extends Component {
                         cnStyles={ Styles.quantity }
                         field={ 'quantity' }
                         getFieldDecorator={ getFieldDecorator }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  'quantity is required!',
+                            },
+                        ] }
                         // initialValue={ _getDefaultValue(key, 'quantity') }
                     />
                     <Icon
                         type='save'
                         className={ Styles.saveIcon }
                         onClick={ () => {
-                            createService({
-                                ...form.getFieldsValue([ 'serviceId', 'detailId', 'quantity' ]),
+                            validateFields((error, values) => {
+                                if (error) {
+                                    return; // eslint-disable-line
+                                }
+                                createService({
+                                    ...getFieldsValue([ 'serviceId', 'detailId', 'quantity' ]),
+                                });
+                                resetFields();
                             });
-                            resetFields();
                         } }
                     />
                 </Form>

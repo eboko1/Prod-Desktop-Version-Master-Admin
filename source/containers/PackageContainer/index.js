@@ -38,6 +38,7 @@ const mapStateToProps = state => ({
     createPackageForm: state.packages.createPackageForm,
     packages:          state.packages.packages,
     errors:            state.packages.errors,
+    roles:             state.packages.roles,
 });
 
 const openNotificationWithIcon = (type, message, description) => {
@@ -102,7 +103,7 @@ export default class PackageContainer extends Component {
                 width:  '15%',
                 render: record => (
                     <Icon
-                        onClick={ () => this.props.setEditPackageId(record.id) }
+                        onClick={ () => this.props.setEditPackageId(record.packageId) }
                         className={ Styles.editPackageIcon }
                         type='edit'
                     />
@@ -113,7 +114,7 @@ export default class PackageContainer extends Component {
                 width:  '15%',
                 render: record => (
                     <Icon
-                        onClick={ () => this.props.deletePackage(record.id) }
+                        onClick={ () => this.props.deletePackage(record.packageId) }
                         className={ Styles.deletePackageIcon }
                         type='delete'
                     />
@@ -130,6 +131,7 @@ export default class PackageContainer extends Component {
             updatePackage,
             createPackage,
             errors,
+            roles,
             // setCreatePackage,
         } = this.props;
 
@@ -156,11 +158,11 @@ export default class PackageContainer extends Component {
         const packageRows = packages.map((packageEntity, index) => ({
             ...packageEntity,
             index,
-            key: packageEntity.id,
+            key: packageEntity.packageId,
         }));
 
-        const initPackageName =
-            editPackageId && _.find(packages, { id: editPackageId }).name;
+        const initPackage = editPackageId && _.find(packages, { packageId: editPackageId });
+        const initPackageName = _.get(initPackage, 'name');
 
         return (
             <Catcher>
@@ -194,13 +196,15 @@ export default class PackageContainer extends Component {
                 >
                     { editPackageId && (
                         <PackageForm
+                            roles={ roles }
+                            initPackage={ initPackage }
                             editPackageId={ editPackageId }
                             initPackageName={ initPackageName }
                             updatePackage={ updatePackage }
                         />
                     ) ||
                         createPackageForm && (
-                            <AddPackageForm createPackage={ createPackage } />
+                            <AddPackageForm roles={ roles } createPackage={ createPackage } />
                         ) }
                 </Modal>
             </Catcher>
