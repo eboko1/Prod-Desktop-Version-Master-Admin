@@ -350,6 +350,7 @@ export class BrandsForm extends Component {
                 <br />
                 <Table
                     size='small'
+                    rowKey={ record => record.id }
                     columns={ columns }
                     dataSource={ [{ id: -1 }, ...list ] }
                     loading={ this.props.brandsFetching }
