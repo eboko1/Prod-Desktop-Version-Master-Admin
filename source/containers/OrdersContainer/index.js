@@ -337,12 +337,12 @@ class OrdersContainer extends Component {
                         columns={ columns }
                         rowSelection={ rows }
                         rowClassName={ ({
-                            beginDatetime,
+                            datetime,
                             deliveryDatetime,
                             status,
                         }) =>
                             _rowClassName(
-                                beginDatetime,
+                                datetime,
                                 deliveryDatetime,
                                 status,
                             )
