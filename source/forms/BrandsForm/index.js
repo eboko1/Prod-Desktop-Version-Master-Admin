@@ -1,18 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import {
-    Table,
-    Modal,
-    Select,
-    Form,
-    Button,
-    Icon,
-    InputNumber,
-    Col,
-    Row,
-} from 'antd';
-import { v4 } from 'uuid';
+import { Table, Select, Form, Icon, Col, Row, notification } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -34,14 +23,20 @@ import {
     deletePriorityBrand,
     createPriorityBrand,
 } from 'core/forms/brandsForm/duck';
+import { handleError } from 'core/ui/duck';
 import { setModal, resetModal } from 'core/modals/duck';
 
 import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
-import { withReduxForm } from 'utils';
+import {
+    withReduxForm,
+    handleCurrentDuckErrors,
+    getCurrentDuckErrors,
+} from 'utils';
 import { Catcher } from 'commons';
 import Styles from './styles.m.css';
 
 // own
+import getErrorConfigs from './error_configs';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -68,9 +63,19 @@ const sortOptions = {
         setModal,
         resetModal,
         setFilter,
+        handleError,
     },
+    mapStateToProps: state => ({
+        errors: state.ui.errors,
+    }),
 })
 export class BrandsForm extends Component {
+    constructor(props) {
+        super(props);
+        this._source = 'brandsForm';
+        this._errorConfigs = getErrorConfigs(props.intl);
+    }
+
     componentDidMount() {
         this.props.fetchPriorityBrands();
     }
@@ -93,7 +98,18 @@ export class BrandsForm extends Component {
     render() {
         const {
             form: { getFieldDecorator, validateFields },
+            errors,
+            intl,
+            handleError,
         } = this.props;
+
+        const duckErrors = getCurrentDuckErrors(
+            errors,
+            this._errorConfigs,
+            this._source,
+        );
+        handleCurrentDuckErrors(notification, duckErrors, intl, handleError);
+
         const priorityBrands = this.props.priorityBrands;
         const count = _.get(priorityBrands, [ 'stats', 'count' ], 0);
         const list = _.get(priorityBrands, [ 'list' ], []);
@@ -233,7 +249,9 @@ export class BrandsForm extends Component {
                                     }),
                                 },
                             ] }
-                            initialValue={ _.isNil(item.priority) ? void 0 : item.priority }
+                            initialValue={
+                                _.isNil(item.priority) ? void 0 : item.priority
+                            }
                         />
                     );
                 },
@@ -329,7 +347,7 @@ export class BrandsForm extends Component {
                         />
                     </Col>
                 </Row>
-                <br/>
+                <br />
                 <Table
                     size='small'
                     columns={ columns }
