@@ -31,6 +31,7 @@ import DatePickerGroup from './DatePickerGroup';
 import PartAttributes from './PartAttributes';
 import PartSuggestions from './PartSuggestions';
 import TecDocModals from './TecDocModals';
+import VehicleNumberHistory from './VehicleNumberHistory';
 
 export {
     SettingSalaryTable,
@@ -67,4 +68,5 @@ export {
     PartAttributes,
     PartSuggestions,
     TecDocModals,
+    VehicleNumberHistory,
 };

@@ -117,7 +117,15 @@
         "go_back": "Return",
         "product_placeholder": "Select product",
         "supplier_placeholder": "Select supplier",
-        "business_placeholder": "Select business"
+        "business_placeholder": "Select business",
+        "dReg": "Date",
+        "makeYear": "Year",
+        "brand": "Brand",
+        "model": "Model",
+        "fuel": "Fuel",
+        "body": "Body",
+        "nRegNew": "Number",
+        "operName": "Operation"
     },
     "ru": {
         "currency": "грн.",
@@ -237,7 +245,15 @@
         "go_back": "Вернуться назад",
         "product_placeholder": "Выбрать деталь",
         "supplier_placeholder": "Выбрать производителя",
-        "business_placeholder": "Выбрать бизнес"
+        "business_placeholder": "Выбрать бизнес",
+        "dReg": "Дата",
+        "makeYear": "Год",
+        "brand": "Бренд",
+        "model": "Модель",
+        "fuel": "Топливо",
+        "body": "Кузов",
+        "nRegNew": "Номер",
+        "operName": "Операция"
     },
     "uk": {
         "currency": "грн.",
@@ -357,6 +373,14 @@
         "go_back": "Повернутись назад",
         "product_placeholder": "Вибрати деталь",
         "supplier_placeholder": "Вибрати виробника",
-        "business_placeholder": "Вибрати бізнес"
+        "business_placeholder": "Вибрати бізнес",
+        "dReg": "Дата",
+        "makeYear": "Рік",
+        "brand": "Бренд",
+        "model": "Модель",
+        "fuel": "Пальне",
+        "body": "Кузов",
+        "nRegNew": "Номер",
+        "operName": "Операція"
     }
 }
