@@ -17,3 +17,4 @@ export { getDaterange } from './getDaterange';
 export { getDateTimeConfig } from './getDateTimeConfig';
 export { permissions, isForbidden, isAdmin, getPermissionsLabels, groupedPermissions, getGroupsLabels } from './permissions';
 export { isField, extractFieldsConfigs } from './antdHelpers';
+export { getCurrentDuckErrors, handleCurrentDuckErrors, toDuckError } from './errorHandler';

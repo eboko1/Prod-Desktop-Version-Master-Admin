@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 // proj
 import { withReduxForm2 } from 'utils';
-
+import { VehicleNumberHistory } from 'components';
 import {
     MAKE_VEHICLES_INFO_FILTER_TYPE,
     YEAR_VEHICLES_INFO_FILTER_TYPE,
@@ -233,23 +233,40 @@ export class AddClientVehicleForm extends Component {
                     </Col>
                     { !this.props.onlyVehicles && (
                         <Col span={ 3 }>
-                            <DecoratedInput
-                                hasFeedback
-                                formItem
-                                rules={ [
-                                    {
-                                        required: true,
-                                        message:  this.props.intl.formatMessage({
-                                            id: 'required_field',
-                                        }),
-                                    },
-                                ] }
-                                label={
-                                    <FormattedMessage id='add_client_form.number' />
-                                }
-                                getFieldDecorator={ getFieldDecorator }
-                                field='number'
-                            />
+                            <Row
+                                type='flex'
+                                justify='space-between'
+                                align='bottom'
+                            >
+                                <Col span={ 18 }>
+                                    <DecoratedInput
+                                        hasFeedback
+                                        formItem
+                                        rules={ [
+                                            {
+                                                required: true,
+                                                message:  this.props.intl.formatMessage(
+                                                    {
+                                                        id: 'required_field',
+                                                    },
+                                                ),
+                                            },
+                                        ] }
+                                        label={
+                                            <FormattedMessage id='add_client_form.number' />
+                                        }
+                                        getFieldDecorator={ getFieldDecorator }
+                                        field='number'
+                                    />
+                                </Col>
+                                <Col span={ 6 }>
+                                    <FormItem>
+                                        <VehicleNumberHistory
+                                            vehicleNumber={ vehicle.number }
+                                        />
+                                    </FormItem>
+                                </Col>
+                            </Row>
                         </Col>
                     ) }
                     { !this.props.onlyVehicles && (

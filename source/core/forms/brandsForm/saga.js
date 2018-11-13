@@ -12,8 +12,8 @@ import {
 import _ from 'lodash';
 
 //proj
-import { setBrandsFetchingState } from 'core/ui/duck';
-import { fetchAPI } from 'utils';
+import { setBrandsFetchingState, addError } from 'core/ui/duck';
+import { fetchAPI, toDuckError } from 'utils';
 
 // own
 import {
@@ -104,25 +104,37 @@ export function* deletePriorityBrandSaga({ payload: id }) {
 
 export function* updatePriorityBrandSaga({ payload: { id, entity } }) {
     yield put(setBrandsFetchingState(true));
-    yield call(
-        fetchAPI,
-        'PUT',
-        `/tecdoc/product/supplier/priorities/${id}`,
-        void 0,
-        entity,
-    );
+    try {
+        yield call(
+            fetchAPI,
+            'PUT',
+            `/tecdoc/product/supplier/priorities/${id}`,
+            void 0,
+            entity,
+            { handleErrorInternally: true },
+        );
+    } catch (err) {
+        const duckError = toDuckError(err, 'brandsForm');
+        yield put(addError(duckError));
+    }
     yield put(fetchPriorityBrands());
 }
 
 export function* createPriorityBrandSaga({ payload: entity }) {
     yield put(setBrandsFetchingState(true));
-    yield call(
-        fetchAPI,
-        'POST',
-        '/tecdoc/product/supplier/priorities',
-        void 0,
-        entity,
-    );
+    try {
+        yield call(
+            fetchAPI,
+            'POST',
+            '/tecdoc/product/supplier/priorities',
+            void 0,
+            entity,
+            { handleErrorInternally: true },
+        );
+    } catch (err) {
+        const duckError = toDuckError(err, 'brandsForm');
+        yield put(addError(duckError));
+    }
     yield put(fetchPriorityBrands());
 }
 

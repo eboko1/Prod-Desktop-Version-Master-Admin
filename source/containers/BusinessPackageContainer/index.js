@@ -52,6 +52,7 @@ const mapStateToProps = state => ({
     page:             state.businessPackage.page,
     isFetching:       state.ui.businessPackageFetching,
     businesses:       state.search.businesses,
+    count:            Number(state.count || 0),
 });
 
 const formItemLayout = {
@@ -90,9 +91,7 @@ export default class BusinessPackageContainer extends Component {
             order: sorter.order === 'ascend' ? 'asc' : 'desc',
         };
 
-        if (!_.isEqual(sort, this.props.sort)) {
-            this.props.setSort(sort);
-        }
+        this.props.setSort(sort);
     };
 
     render() {
@@ -120,8 +119,11 @@ export default class BusinessPackageContainer extends Component {
                 }),
                 dataIndex: 'businessName',
                 sorter:    true,
-                sortOrder: this._handleColumnOrder(this.props.sort, 'businessName'),
-                width:     '15%',
+                sortOrder: this._handleColumnOrder(
+                    this.props.sort,
+                    'businessName',
+                ),
+                width: '15%',
             },
             {
                 title: formatMessage({
@@ -136,9 +138,12 @@ export default class BusinessPackageContainer extends Component {
                 }),
                 dataIndex: 'activationDatetime',
                 sorter:    true,
-                sortOrder: this._handleColumnOrder(this.props.sort, 'activationDatetime'),
-                width:     '15%',
-                render:    (name, record) =>
+                sortOrder: this._handleColumnOrder(
+                    this.props.sort,
+                    'activationDatetime',
+                ),
+                width:  '15%',
+                render: (name, record) =>
                     moment(record.activationDatetime).format(
                         'YYYY-MM-DD HH:mm:ss',
                     ),
@@ -149,9 +154,12 @@ export default class BusinessPackageContainer extends Component {
                 }),
                 dataIndex: 'expirationDatetime',
                 sorter:    true,
-                sortOrder: this._handleColumnOrder(this.props.sort, 'expirationDatetime'),
-                width:     '15%',
-                render:    (name, record) =>
+                sortOrder: this._handleColumnOrder(
+                    this.props.sort,
+                    'expirationDatetime',
+                ),
+                width:  '15%',
+                render: (name, record) =>
                     moment(record.expirationDatetime).format(
                         'YYYY-MM-DD HH:mm:ss',
                     ),
@@ -162,8 +170,11 @@ export default class BusinessPackageContainer extends Component {
                 }),
                 dataIndex: 'packageName',
                 sorter:    true,
-                sortOrder: this._handleColumnOrder(this.props.sort, 'packageName'),
-                width:     '20%',
+                sortOrder: this._handleColumnOrder(
+                    this.props.sort,
+                    'packageName',
+                ),
+                width: '20%',
             },
 
             {
