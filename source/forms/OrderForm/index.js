@@ -30,9 +30,9 @@ import Styles from './styles.m.css';
 
 @injectIntl
 @withReduxForm2({
-    name:            'orderForm',
-    debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
-    actions:         {
+    name:    'orderForm',
+    // debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
+    actions: {
         change: onChangeOrderForm,
         setClientSelection,
         initOrderTasksForm,
@@ -124,26 +124,117 @@ export class OrderForm extends Component {
     };
 
     render() {
-        const { form, allServices } = this.props;
-        form.getFieldDecorator('services[0].serviceName');
-        form.getFieldDecorator('details[0].detailName');
+        const {
+            authentificatedManager,
+            form,
+            allServices,
+            orderHistory,
+            orderId,
+            searchClientsResult,
+            setClientSelection,
+            selectedClient,
+            order,
+            setAddClientModal,
+            schedule,
+            stations,
+            fetchedOrder,
+            availableHours,
+            managers,
+            employees,
+            requisites,
+            user,
+            location,
+        } = this.props;
+        this.formFieldsValues = _.cloneDeep(form.getFieldsValue());
+        const formFieldsValues = this.formFieldsValues;
 
         const tabs = this._renderTabs();
 
         const { totalHours } = servicesStats(
-            form.getFieldsValue().services || [],
+            _.get(formFieldsValues, 'services', []),
             allServices,
         );
+        const clientVehicle = _.get(formFieldsValues, 'clientVehicle');
+        const clientPhone = _.get(formFieldsValues, 'clientPhone');
+        const clientEmail = _.get(formFieldsValues, 'clientEmail');
+        const searchClientQuery = _.get(formFieldsValues, 'searchClientQuery');
+
+        const zeroStationLoadBeginDate = _.get(
+            formFieldsValues,
+            'stationLoads[0].beginDate',
+        );
+        const zeroStationLoadBeginTime = _.get(
+            formFieldsValues,
+            'stationLoads[0].beginTime',
+        );
+        const zeroStationLoadStation = _.get(
+            formFieldsValues,
+            'stationLoads[0].station',
+        );
+        const zeroStationLoadDuration = _.get(
+            formFieldsValues,
+            'stationLoads[0].duration',
+        );
+        const deliveryDate = _.get(formFieldsValues, 'deliveryDate');
+
+        const orderFormBodyFields = _.pick(formFieldsValues, [ 'comment', 'odometerValue', 'clientVehicle', 'clientRequisite', 'clientEmail', 'clientPhone', 'searchClientQuery' ]);
+        const orderFormHeaderFields = _.pick(formFieldsValues, [ 'stationLoads[0].beginTime', 'stationLoads[0].station', 'stationLoads[0].beginDate', 'stationLoads[0].duration', 'deliveryDate', 'deliveryTime', 'manager', 'employee', 'appurtenanciesResponsible', 'paymentMethod', 'requisite' ]);
+
+        const formFieldsValue = this.formFieldsValues;
+
+        const { price: priceDetails } = detailsStats(_.get(formFieldsValue, 'details', []));
+        const { price: priceServices } = servicesStats(_.get(formFieldsValue, 'services', []), allServices);
+        const servicesDiscount = _.get(formFieldsValue, 'servicesDiscount', 0);
+        const detailsDiscount = _.get(formFieldsValue, 'detailsDiscount', 0);
 
         return (
             <Form className={ Styles.form } layout='horizontal'>
-                <OrderFormHeader { ...this.props } totalHours={ totalHours } />
-                <OrderFormBody { ...this.props } />
+                <OrderFormHeader
+                    priceServices={ priceServices }
+                    priceDetails={ priceDetails }
+                    detailsDiscount={ detailsDiscount }
+                    servicesDiscount={ servicesDiscount }
+                    location={ location }
+                    authentificatedManager={ authentificatedManager }
+                    fields={ orderFormHeaderFields }
+                    deliveryDate={ deliveryDate }
+                    zeroStationLoadBeginDate={ zeroStationLoadBeginDate }
+                    zeroStationLoadBeginTime={ zeroStationLoadBeginTime }
+                    zeroStationLoadDuration={ zeroStationLoadDuration }
+                    zeroStationLoadStation={ zeroStationLoadStation }
+                    fetchedOrder={ fetchedOrder }
+                    schedule={ schedule }
+                    form={ form }
+                    stations={ stations }
+                    availableHours={ availableHours }
+                    managers={ managers }
+                    employees={ employees }
+                    allServices={ allServices }
+                    requisites={ requisites }
+                    user={ user }
+                    totalHours={ totalHours }
+                />
+                <OrderFormBody
+                    location={ location }
+                    fields={ orderFormBodyFields }
+                    searchClientQuery={ searchClientQuery }
+                    clientVehicle={ clientVehicle }
+                    clientPhone={ clientPhone }
+                    clientEmail={ clientEmail }
+                    orderHistory={ orderHistory }
+                    orderId={ orderId }
+                    searchClientsResult={ searchClientsResult }
+                    setClientSelection={ setClientSelection }
+                    fetchedOrder={ fetchedOrder }
+                    selectedClient={ selectedClient }
+                    form={ form }
+                    user={ user }
+                    order={ order }
+                    setAddClientModal={ setAddClientModal }
+                />
                 { tabs }
                 <AddClientModal
-                    searchQuery={ this.props.form.getFieldValue(
-                        'searchClientQuery',
-                    ) }
+                    searchQuery={ searchClientQuery }
                     wrappedComponentRef={ this._saveFormRef }
                     visible={ this.props.modal }
                     resetModal={ this.props.resetModal }
@@ -157,55 +248,136 @@ export class OrderForm extends Component {
         const {
             form,
             orderTasks,
-            setModal,
             allServices,
-            stationLoads,
             schedule,
-            fields,
+            stationLoads,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
+        const formFieldsValue = this.formFieldsValues;
 
         const { count: countDetails, price: priceDetails } = detailsStats(
-            form.getFieldsValue().details || [],
+            _.get(formFieldsValue, 'details', []),
         );
 
         const {
             count: countServices,
             price: priceServices,
             // totalHours,
-        } = servicesStats(form.getFieldsValue().services || [], allServices);
+        } = servicesStats(_.get(formFieldsValue, 'services', []), allServices);
 
-        const stationsCount = (form.getFieldsValue().stationLoads || [])
+        const stationsCount = _.get(formFieldsValue, 'stationLoads', [])
             .filter(Boolean)
             .filter(value => !_.values(value).some(_.isNil));
 
-        const comments = form.getFieldsValue([ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);
+        const comments = _.pick(formFieldsValue, [ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);
 
         const commentsCollection = _.values(comments);
         const commentsCount = commentsCollection.filter(Boolean).length;
 
         const tecdocId = this._getTecdocId();
-        const clientVehicleId = form.getFieldValue('clientVehicle');
+        const clientVehicleId = _.get(formFieldsValue, 'clientVehicle');
+
+        const {
+            setModal,
+            fetchOrderForm,
+            fetchOrderTask,
+            fetchTecdocSuggestions,
+            fetchTecdocDetailsSuggestions,
+            clearTecdocSuggestions,
+
+            addOrderForm,
+            detailsSuggestionsFetching,
+            suggestionsFetching,
+
+            orderCalls,
+            orderHistory,
+            orderServices,
+            orderDetails,
+            // allServices,
+            allDetails,
+            employees,
+            selectedClient,
+            detailsSuggestions,
+            suggestions,
+            fetchedOrder,
+            user,
+            stations,
+            availableHours,
+
+            changeModalStatus,
+        } = this.props;
+
+        const formFieldsValues = this.formFieldsValues;
+        const orderFormTabsFields = _.pick(formFieldsValues, [ 'comment', 'vehicleCondition', 'businessComment', 'recommendation', 'stationLoads', 'services', 'clientVehicle', 'employee', 'details', 'servicesDiscount', 'detailsDiscount' ]);
+
+        const zeroStationLoadBeginDate = _.get(
+            formFieldsValues,
+            'stationLoads[0].beginDate',
+        );
+
+        const zeroStationLoadBeginTime = _.get(
+            formFieldsValues,
+            'stationLoads[0].beginTime',
+        );
+
+        const zeroStationLoadStation = _.get(
+            formFieldsValues,
+            'stationLoads[0].station',
+        );
+
+        const zeroStationLoadDuration = _.get(
+            formFieldsValues,
+            'stationLoads[0].duration',
+        );
 
         return (
             <OrderFormTabs
-                { ...this.props }
+                zeroStationLoadBeginDate={ zeroStationLoadBeginDate }
+                zeroStationLoadBeginTime={ zeroStationLoadBeginTime }
+                zeroStationLoadDuration={ zeroStationLoadDuration }
+                zeroStationLoadStation={ zeroStationLoadStation }
+                fields={ orderFormTabsFields }
+                details={ orderFormTabsFields.details || [] }
+                services={ orderFormTabsFields.services || [] }
+                fetchOrderForm={ fetchOrderForm }
+                fetchOrderTask={ fetchOrderTask }
+                fetchTecdocSuggestions={ fetchTecdocSuggestions }
+                fetchTecdocDetailsSuggestions={ fetchTecdocDetailsSuggestions }
+                clearTecdocDetailsSuggestions={ clearTecdocDetailsSuggestions }
+                clearTecdocSuggestions={ clearTecdocSuggestions }
+                addOrderForm={ addOrderForm }
+                detailsSuggestionsFetching={ detailsSuggestionsFetching }
+                suggestionsFetching={ suggestionsFetching }
+                orderCalls={ orderCalls }
+                orderHistory={ orderHistory }
+                orderServices={ orderServices }
+                orderDetails={ orderDetails }
+                allServices={ allServices }
+                allDetails={ allDetails }
+                employees={ employees }
+                selectedClient={ selectedClient }
+                detailsSuggestions={ detailsSuggestions }
+                suggestions={ suggestions }
+                fetchedOrder={ fetchedOrder }
+                user={ user }
+                stations={ stations }
+                availableHours={ availableHours }
+                changeModalStatus={ changeModalStatus }
                 tecdocId={ tecdocId }
                 clientVehicleId={ clientVehicleId }
                 initOrderTasksForm={ this.props.initOrderTasksForm }
                 formatMessage={ formatMessage }
                 getFieldDecorator={ getFieldDecorator }
                 form={ form }
-                // totalHours={ totalHours }
-                countServices={ countServices }
-                countDetails={ countDetails }
-                priceServices={ priceServices }
-                priceDetails={ priceDetails }
                 setModal={ setModal }
                 orderTasks={ orderTasks }
                 stationLoads={ stationLoads }
                 schedule={ schedule }
+                priceServices={ priceServices }
+                priceDetails={ priceDetails }
+                countServices={ countServices }
+                countDetails={ countDetails }
                 commentsCount={ commentsCount }
                 stationsCount={ stationsCount }
             />

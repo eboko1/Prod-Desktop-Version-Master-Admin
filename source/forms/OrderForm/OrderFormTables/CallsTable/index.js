@@ -82,6 +82,10 @@ class CallsTable extends Component {
         ];
     }
 
+    shouldComponentUpdate(nextProps) {
+        return this.props.orderCalls !== nextProps.orderCalls;
+    }
+
     render() {
         const { orderCalls } = this.props;
         const columns = this.columns;

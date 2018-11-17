@@ -80,7 +80,7 @@ export default class ArrayScheduleInput extends Component {
                         <DecoratedCheckbox
                             field={ `schedule[${record.key}][${day}]` }
                             getFieldDecorator={ getFieldDecorator }
-                            initValue={ _.get(initialSchedule, [ record.key, day ]) }
+                            initialValue={ _.get(initialSchedule, [ record.key, day ]) }
                         />
                     </Col>
                 ),

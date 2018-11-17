@@ -95,6 +95,10 @@ export default class HistoryTable extends Component {
         ];
     }
 
+    shouldComponentUpdate(nextProps) {
+        return this.props.orderHistory !== nextProps.orderHistory;
+    }
+
     render() {
         const { orderHistory } = this.props;
         const columns = this.columns;

@@ -1,52 +1,68 @@
 // vendor
 import React from 'react';
 import { Input, Form } from 'antd';
+import _ from 'lodash';
 
 // own
 const { TextArea } = Input;
 const FormItem = Form.Item;
 
-export const DecoratedTextArea = props => {
-    const {
-        //FormItem
-        formItem,
-        label,
-        colon,
-        className,
-        hasFeedback,
-        formItemLayout,
+export default class DecoratedTextArea extends React.PureComponent {
+    render() {
+        const {
+            //FormItem
+            formItem,
+            label,
+            colon,
+            className,
+            hasFeedback,
+            formItemLayout,
 
-        getFieldDecorator,
-        rules,
-        field,
-        disabled,
-        placeholder,
-        autosize,
-        initialValue,
-    } = props;
+            getFieldDecorator,
+            rules,
+            field,
+            disabled,
+            placeholder,
+            autosize,
+            initialValue,
 
-    const textArea = getFieldDecorator(field, {
-        rules,
-        ...initialValue ? { initialValue } : { initialValue: void 0 },
-    })(
-        <TextArea
-            disabled={ disabled }
-            placeholder={ placeholder }
-            autosize={ autosize } //{ minRows: 2, maxRows: 6 }
-        />,
-    );
+            fieldValue,
+            defaultGetValueProps,
+        } = this.props;
 
-    return formItem ? (
-        <FormItem
-            label={ label }
-            hasFeedback={ hasFeedback }
-            colon={ colon }
-            className={ className }
-            { ...formItemLayout }
-        >
+        const textArea = getFieldDecorator(field, {
+            ...defaultGetValueProps
+                ? {
+                    getValueProps: () => ({
+                        value: _.find(
+                            [ fieldValue, initialValue ],
+                            value => !_.isNil(value),
+                        ),
+                    }),
+                }
+                : {},
+            rules,
+            ...initialValue ? { initialValue } : { initialValue: void 0 },
+        })(
+            <TextArea
+                disabled={ disabled }
+                placeholder={ placeholder }
+                autosize={ autosize } //{ minRows: 2, maxRows: 6 }
+            />,
+        );
+
+        return formItem ? (
+            <FormItem
+                label={ label }
+                hasFeedback={ hasFeedback }
+                colon={ colon }
+                className={ className }
+                { ...formItemLayout }
+            >
+                { textArea }
+            </FormItem>
+        ) : 
             { textArea }
-        </FormItem>
-    ) : 
-        textArea
-    ;
-};
+        ;
+    }
+}

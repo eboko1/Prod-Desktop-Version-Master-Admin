@@ -17,6 +17,7 @@ import { getDateTimeConfig } from 'utils';
 
 // own
 import Styles from './styles.m.css';
+import OrderFormTabs from '../../OrderFormTabs';
 const Option = Select.Option;
 
 /* eslint-disable complexity */
@@ -47,15 +48,9 @@ export function columnsConfig(
         return fields[ fieldName ];
     };
 
-    const initialStationNum = props.form.getFieldValue(
-        'stationLoads[0].station',
-    );
-    const initialBeginDate = props.form.getFieldValue(
-        'stationLoads[0].beginDate',
-    );
-    const initialBeginTime = props.form.getFieldValue(
-        'stationLoads[0].beginTime',
-    );
+    const initialStationNum = props.zeroStationLoadStation;
+    const initialBeginDate = props.zeroStationLoadBeginDate;
+    const initialBeginTime = props.zeroStationLoadBeginTime;
 
     const { disabledDate, beginTime } = getDateTimeConfig(
         moment(),
@@ -80,6 +75,7 @@ export function columnsConfig(
                     status={ _getDefaultValue(key, 'status') || 'TO_DO' }
                 />
                 <DecoratedSelect
+                    fields={ props.fields }
                     field={ `stationLoads[${key}].status` }
                     getFieldDecorator={ props.form.getFieldDecorator }
                     initialValue={ _getDefaultValue(key, 'status') || 'TO_DO' }
@@ -101,7 +97,8 @@ export function columnsConfig(
         width:  '15%',
         render: ({ key }) => (
             <DecoratedDatePicker
-                getFieldDecorator={ props.getFieldDecorator }
+                fields={ props.fields }
+                getFieldDecorator={ props.form.getFieldDecorator }
                 field={ `stationLoads[${key}].beginDate` }
                 formatMessage={ formatMessage }
                 placeholder={ formatMessage({
@@ -125,6 +122,7 @@ export function columnsConfig(
         width:  '15%',
         render: ({ key }) => (
             <DecoratedSelect
+                fields={ props.fields }
                 field={ `stationLoads[${key}].station` }
                 getFieldDecorator={ props.form.getFieldDecorator }
                 rules={ [
@@ -161,17 +159,21 @@ export function columnsConfig(
         width:  '10%',
         render: ({ key }) => (
             <DecoratedTimePicker
+                fields={ props.fields }
+                additionalData={ _.get(props.availableHours, String(key), []) }
                 disabled={
                     bodyUpdateIsForbidden() ||
-                    !props.form.getFieldValue(
-                        `stationLoads[${key}].beginDate`,
-                    ) ||
-                    !props.form.getFieldValue(`stationLoads[${key}].station`)
+                    !_.get(props, [ 'fields', 'stationLoads', key, 'beginDate' ]) ||
+                    !_.get(props, [ 'fields', 'stationLoads', key, 'station' ])
                 }
                 defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                 field={ `stationLoads[${key}].beginTime` }
                 disabledHours={ () => {
-                    const availableHours = _.get(props.availableHours, String(key), []);
+                    const availableHours = _.get(
+                        props.availableHours,
+                        String(key),
+                        [],
+                    );
 
                     return _.difference(
                         Array(24)
@@ -182,7 +184,11 @@ export function columnsConfig(
                     );
                 } }
                 disabledMinutes={ hour => {
-                    const availableHours = _.get(props.availableHours, String(key), []);
+                    const availableHours = _.get(
+                        props.availableHours,
+                        String(key),
+                        [],
+                    );
 
                     const availableMinutes = availableHours
                         .map(availableHour => moment(availableHour))
@@ -223,6 +229,7 @@ export function columnsConfig(
         width:  '15%',
         render: ({ key }) => (
             <DecoratedSelect
+                fields={ props.fields }
                 field={ `stationLoads[${key}].duration` }
                 getFieldDecorator={ props.form.getFieldDecorator }
                 options={ _(Array.from(Array(9).keys()))

@@ -81,7 +81,7 @@ export class AddRoleForm extends Component {
                     )) }
                 </DecoratedSelect>
                 <DecoratedCheckbox
-                    initValue={ false }
+                    initialValue={ false }
                     field={ 'grantOther' }
                     formItem
                     colon={ false }
