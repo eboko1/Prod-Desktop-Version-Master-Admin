@@ -12,7 +12,7 @@ import {
     DecoratedInputNumber,
     LimitedDecoratedSelect,
 } from 'forms/DecoratedFields';
-import { permissions, isForbidden, cachedInvoke } from 'utils';
+import { permissions, isForbidden, CachedInvoke } from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -72,9 +72,9 @@ export default class DetailsTable extends Component {
 
         const orderDetails = props.orderDetails || [];
         this.uuid = orderDetails.length;
-        
+
         this._localizationMap = {};
-        this._getCachedResult = cachedInvoke();
+        this._cachedInvoke = new CachedInvoke();
 
         this.state = {
             keys: [ ..._.keys(orderDetails), this.uuid++ ],
@@ -134,7 +134,7 @@ export default class DetailsTable extends Component {
                                 .value(),
                         ].filter(Boolean);
                         const args = [ detailArray, 'detailName', 'detailName', details, 'detailId' ];
-                        const defaultDetails = this._getCachedResult(
+                        const defaultDetails = this._cachedInvoke.getCachedResult(
                             func,
                             args,
                         );
@@ -163,7 +163,7 @@ export default class DetailsTable extends Component {
                                 mode={ 'combobox' }
                                 optionLabelProp={ 'children' }
                                 showSearch
-                                onChange={ this._getCachedResult(
+                                onChange={ this._cachedInvoke.getCachedResult(
                                     Function.prototype.bind,
                                     [ null, key, modificationId ],
                                     this._handleDetailSelect,
@@ -194,7 +194,10 @@ export default class DetailsTable extends Component {
                                 .value(),
                         ].filter(Boolean);
                         const args = [ brandArray, 'detailBrandName', 'brandName', brands, 'brandId' ];
-                        const defaultBrands = this._getCachedResult(func, args);
+                        const defaultBrands = this._cachedInvoke.getCachedResult(
+                            func,
+                            args,
+                        ); 
 
                         return (
                             <LimitedDecoratedSelect

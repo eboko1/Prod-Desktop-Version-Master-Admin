@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Form } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
+import moment from 'moment';
 
 //proj
 import {
@@ -19,7 +20,7 @@ import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 
 import { AddClientModal } from 'modals';
 
-import { withReduxForm2 } from 'utils';
+import { withReduxForm2, isForbidden, permissions } from 'utils';
 
 // own
 import OrderFormHeader from './OrderFormHeader';
@@ -63,6 +64,9 @@ export class OrderForm extends Component {
         // TODO in order to fix late getFieldDecorator invoke for services
         this.setState({ initialized: true });
     }
+
+    bodyUpdateIsForbidden = () =>
+        isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
 
     componentDidUpdate() {
         const { orderId } = this.props;
@@ -314,38 +318,33 @@ export class OrderForm extends Component {
 
             changeModalStatus,
             errors,
+            location,
         } = this.props;
 
         const formFieldsValues = this.formFieldsValues;
         const orderFormTabsFields = _.pick(formFieldsValues, [ 'comment', 'vehicleCondition', 'businessComment', 'recommendation', 'stationLoads', 'services', 'clientVehicle', 'employee', 'details', 'servicesDiscount', 'detailsDiscount' ]);
 
-        const zeroStationLoadBeginDate = _.get(
-            formFieldsValues,
-            'stationLoads[0].beginDate',
-        );
+        const beginDatetime =
+            _.get(fetchedOrder, 'order.beginDatetime') ||
+            (this.bodyUpdateIsForbidden()
+                ? void 0
+                : _.get(location, 'state.beginDatetime'));
 
-        const zeroStationLoadBeginTime = _.get(
-            formFieldsValues,
-            'stationLoads[0].beginTime',
-        );
+        const initialBeginDatetime = beginDatetime
+            ? moment(beginDatetime).toISOString()
+            : void 0;
 
-        const zeroStationLoadStation = _.get(
-            formFieldsValues,
-            'stationLoads[0].station',
-        );
-
-        const zeroStationLoadDuration = _.get(
-            formFieldsValues,
-            'stationLoads[0].duration',
-        );
+        const initialStation =
+            _.get(fetchedOrder, 'order.stationNum') ||
+            (this.bodyUpdateIsForbidden()
+                ? void 0
+                : _.get(location, 'state.stationNum'));
 
         return (
             <OrderFormTabs
                 errors={ errors }
-                zeroStationLoadBeginDate={ zeroStationLoadBeginDate }
-                zeroStationLoadBeginTime={ zeroStationLoadBeginTime }
-                zeroStationLoadDuration={ zeroStationLoadDuration }
-                zeroStationLoadStation={ zeroStationLoadStation }
+                initialBeginDatetime={ initialBeginDatetime }
+                initialStation={ initialStation }
                 fields={ orderFormTabsFields }
                 details={ orderFormTabsFields.details || [] }
                 services={ orderFormTabsFields.services || [] }

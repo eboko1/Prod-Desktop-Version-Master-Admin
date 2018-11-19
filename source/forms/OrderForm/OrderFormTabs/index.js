@@ -107,10 +107,8 @@ export default class OrderFormTabs extends Component {
             //fields
             services,
             details,
-            zeroStationLoadBeginDate,
-            zeroStationLoadBeginTime,
-            zeroStationLoadDuration,
-            zeroStationLoadStation,
+            initialStation,
+            initialBeginDatetime,
 
             // stats
             priceDetails,
@@ -405,10 +403,8 @@ export default class OrderFormTabs extends Component {
                 >
                     <StationsTable
                         errors={ errors }
-                        zeroStationLoadBeginDate={ zeroStationLoadBeginDate }
-                        zeroStationLoadBeginTime={ zeroStationLoadBeginTime }
-                        zeroStationLoadDuration={ zeroStationLoadDuration }
-                        zeroStationLoadStation={ zeroStationLoadStation }
+                        initialBeginDatetime={ initialBeginDatetime }
+                        initialStation={ initialStation }
                         fields={ stationLoadsFieldsProps }
                         form={ form }
                         schedule={ schedule }

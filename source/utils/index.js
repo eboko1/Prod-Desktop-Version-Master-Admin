@@ -32,4 +32,4 @@ export {
     handleCurrentDuckErrors,
     toDuckError,
 } from './errorHandler';
-export { default as cachedInvoke } from './cachedInvoke';
+export { default as CachedInvoke } from './cachedInvoke';

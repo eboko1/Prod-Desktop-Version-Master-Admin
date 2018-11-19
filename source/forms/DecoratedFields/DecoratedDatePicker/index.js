@@ -40,13 +40,7 @@ export class DecoratedDatePicker extends React.PureComponent {
 
             onChange,
             cnStyles,
-
-            defaultGetValueProps,
-            fieldValue: initialFieldValue,
         } = this.props;
-        const fieldValue = _.isString(initialFieldValue)
-            ? moment(initialFieldValue)
-            : initialFieldValue;
         const initialValue = _.isString(initialInitialValue)
             ? moment(initialInitialValue)
             : initialInitialValue;
@@ -84,16 +78,6 @@ export class DecoratedDatePicker extends React.PureComponent {
             datePicker = getFieldDecorator(field, {
                 ...initialValue ? { initialValue } : { initialValue: void 0 },
                 rules,
-                ...defaultGetValueProps
-                    ? {
-                        getValueProps: () => ({
-                            value: _.find(
-                                [ fieldValue ],
-                                value => !_.isNil(value),
-                            ),
-                        }),
-                    }
-                    : {},
             })(ranges ? renderRangePicker : renderDatePicker);
         } else {
             datePicker = ranges ? renderRangePicker : renderDatePicker;

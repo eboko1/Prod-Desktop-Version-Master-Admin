@@ -1,14 +1,16 @@
 import _ from 'lodash';
 
-export default function() {
-    const cachedMap = new Map();
+export default class CachedInvoke {
+    constructor() {
+        this._cachedMap = new Map();
+    }
 
-    return function cache(func, args, context = null) {
-        if (!cachedMap.get(func)) {
-            cachedMap.set(func, []);
+    getCachedResult(func, args, context = null) {
+        if (!this._cachedMap.get(func)) {
+            this._cachedMap.set(func, []);
         }
 
-        const cacheArray = cachedMap.get(func);
+        const cacheArray = this._cachedMap.get(func);
 
         const cachedItem = _.find(cacheArray, ({ itemArgs }) =>
             _.isEqual(itemArgs, args));
@@ -20,5 +22,5 @@ export default function() {
         cacheArray.push({ value, itemArgs: args });
 
         return value;
-    };
+    }
 }

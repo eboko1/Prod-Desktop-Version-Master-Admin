@@ -1,7 +1,6 @@
 // vendor
 import React from 'react';
 import { Input, Form } from 'antd';
-import _ from 'lodash';
 
 // own
 const { TextArea } = Input;
@@ -25,22 +24,9 @@ export default class DecoratedTextArea extends React.PureComponent {
             placeholder,
             autosize,
             initialValue,
-
-            fieldValue,
-            defaultGetValueProps,
         } = this.props;
 
         const textArea = getFieldDecorator(field, {
-            ...defaultGetValueProps
-                ? {
-                    getValueProps: () => ({
-                        value: _.find(
-                            [ fieldValue ],
-                            value => !_.isNil(value),
-                        ),
-                    }),
-                }
-                : {},
             rules,
             ...initialValue ? { initialValue } : { initialValue: void 0 },
         })(
