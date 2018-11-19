@@ -88,7 +88,7 @@ export class DecoratedDatePicker extends React.PureComponent {
                     ? {
                         getValueProps: () => ({
                             value: _.find(
-                                [ fieldValue, initialValue ],
+                                [ fieldValue ],
                                 value => !_.isNil(value),
                             ),
                         }),

@@ -55,10 +55,7 @@ export class DecoratedTimePicker extends React.PureComponent {
             ...defaultGetValueProps
                 ? {
                     getValueProps: () => ({
-                        value: _.find(
-                            [ fieldValue, initialValue ],
-                            value => !_.isNil(value),
-                        ),
+                        value: _.find([ fieldValue ], value => !_.isNil(value)),
                     }),
                 }
                 : {},

@@ -35,7 +35,7 @@ export class DecoratedCheckbox extends React.PureComponent {
                 ? {
                     getValueProps: () => ({
                         value: _.find(
-                            [ fieldValue, initialValue ],
+                            [ fieldValue ],
                             value => !_.isNil(value),
                         ),
                     }),

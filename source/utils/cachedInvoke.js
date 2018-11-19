@@ -3,7 +3,7 @@ import _ from 'lodash';
 export default function() {
     const cachedMap = new Map();
 
-    return (func, args, context = null) => {
+    return function cache(func, args, context = null) {
         if (!cachedMap.get(func)) {
             cachedMap.set(func, []);
         }

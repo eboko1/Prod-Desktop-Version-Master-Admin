@@ -182,9 +182,13 @@ export class OrderForm extends Component {
         const orderFormHeaderFields = _.pick(formFieldsValues, [ 'stationLoads[0].beginTime', 'stationLoads[0].station', 'stationLoads[0].beginDate', 'stationLoads[0].duration', 'deliveryDate', 'deliveryTime', 'manager', 'employee', 'appurtenanciesResponsible', 'paymentMethod', 'requisite' ]);
 
         const formFieldsValue = this.formFieldsValues;
-
-        const { price: priceDetails } = detailsStats(_.get(formFieldsValue, 'details', []));
-        const { price: priceServices } = servicesStats(_.get(formFieldsValue, 'services', []), allServices);
+        const { price: priceDetails } = detailsStats(
+            _.get(formFieldsValue, 'details', []),
+        );
+        const { price: priceServices } = servicesStats(
+            _.get(formFieldsValue, 'services', []),
+            allServices,
+        );
         const servicesDiscount = _.get(formFieldsValue, 'servicesDiscount', 0);
         const detailsDiscount = _.get(formFieldsValue, 'detailsDiscount', 0);
 

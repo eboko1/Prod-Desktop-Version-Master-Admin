@@ -39,7 +39,7 @@ export class DecoratedSlider extends React.PureComponent {
                 ? {
                     getValueProps: () => ({
                         value: _.find(
-                            [ fieldValue, initDuration ],
+                            [ fieldValue ],
                             value => !_.isNil(value),
                         ),
                     }),
