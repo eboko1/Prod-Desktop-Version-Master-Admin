@@ -14,7 +14,7 @@ export { withReduxForm, hasErrors } from './withReduxForm';
 export { withReduxForm2 } from './withReduxForm2';
 export { withResponsive } from './withResponsive';
 export { getDaterange } from './getDaterange';
-export { getDateTimeConfig } from './getDateTimeConfig';
+export { getDateTimeConfig, mergeDateTime, addDuration } from './getDateTimeConfig';
 export {
     permissions,
     isForbidden,

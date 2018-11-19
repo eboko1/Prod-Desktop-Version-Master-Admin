@@ -13,7 +13,13 @@ import {
     DecoratedSlider,
 } from 'forms/DecoratedFields';
 import { Numeral } from 'commons';
-import { getDateTimeConfig, permissions, isForbidden } from 'utils';
+import {
+    getDateTimeConfig,
+    permissions,
+    isForbidden,
+    mergeDateTime,
+    addDuration,
+} from 'utils';
 
 // own
 import { formHeaderItemLayout } from '../layouts';
@@ -105,10 +111,7 @@ export default class OrderFormHeader extends Component {
 
     _getBeginDatetimeConfig() {
         const { schedule } = this.props;
-        const { disabledDate, beginTime } = getDateTimeConfig(
-            void 0,
-            schedule,
-        );
+        const { disabledDate, beginTime } = getDateTimeConfig(void 0, schedule);
 
         return { disabledDate, beginTime };
     }
@@ -144,9 +147,23 @@ export default class OrderFormHeader extends Component {
             milliseconds: 0,
             seconds:      0,
         });
+
         const sameOfBeforeDisabledDate = date =>
             dateTimeDisabledDate(date) ||
             date && date.isSameOrBefore(initialBeginDatetime);
+
+        const initialDeliveryDatetime =
+            zeroStationLoadBeginDate &&
+            zeroStationLoadBeginTime &&
+            zeroStationLoadDuration
+                ? addDuration(
+                    mergeDateTime(
+                        zeroStationLoadBeginDate,
+                        zeroStationLoadBeginTime,
+                    ),
+                    zeroStationLoadDuration,
+                )
+                : void 0;
 
         return {
             disabledHours,
@@ -154,6 +171,7 @@ export default class OrderFormHeader extends Component {
             disabledSeconds,
             disabledDate: sameOfBeforeDisabledDate,
             beginTime,
+            initialDeliveryDatetime,
         };
     }
 
@@ -314,6 +332,7 @@ export default class OrderFormHeader extends Component {
             disabledMinutes,
             disabledSeconds,
             beginTime,
+            initialDeliveryDatetime: calculatedDeliveryDatetime,
         } = this.state.deliveryDatetimeConfig;
 
         const initialDeliveryDatetime = _.get(
@@ -375,7 +394,9 @@ export default class OrderFormHeader extends Component {
                     initialValue={
                         initialDeliveryDatetime
                             ? moment(initialDeliveryDatetime).toISOString()
-                            : void 0
+                            : calculatedDeliveryDatetime
+                                ? calculatedDeliveryDatetime.toISOString()
+                                : void 0
                     }
                 />
                 <DecoratedTimePicker
@@ -413,7 +434,9 @@ export default class OrderFormHeader extends Component {
                     initialValue={
                         initialDeliveryDatetime
                             ? moment(initialDeliveryDatetime).toISOString()
-                            : void 0
+                            : calculatedDeliveryDatetime
+                                ? calculatedDeliveryDatetime.toISOString()
+                                : void 0
                     }
                     minuteStep={ 30 }
                 />
@@ -465,7 +488,7 @@ export default class OrderFormHeader extends Component {
                     hasFeedback
                     formItem
                     formItemLayout={ formHeaderItemLayout }
-                    formatMessage={ formatMessage }
+                    // formatMessage={ formatMessage }
                     label={ this._getLocalization(
                         'add_order_form.enrollment_date',
                     ) }
