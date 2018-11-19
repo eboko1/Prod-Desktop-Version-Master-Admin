@@ -107,6 +107,7 @@ class ServicesTable extends Component {
             form: { getFieldDecorator },
             fields,
             user,
+            errors,
         } = this.props;
 
         const clientVehicleId = _.get(fields, 'clientVehicle');
@@ -134,6 +135,7 @@ class ServicesTable extends Component {
 
                     return (
                         <DecoratedSelect
+                            errors={ errors }
                             defaultGetValueProps
                             fieldValue={ _.get(
                                 fields,
@@ -167,6 +169,7 @@ class ServicesTable extends Component {
                 key:    'price',
                 render: ({ key }) => (
                     <DecoratedInputNumber
+                        errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(
                             fields,
@@ -193,6 +196,7 @@ class ServicesTable extends Component {
                 key:    'count',
                 render: ({ key }) => (
                     <DecoratedInputNumber
+                        errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(
                             fields,
@@ -240,6 +244,7 @@ class ServicesTable extends Component {
                 render: ({ key }) => {
                     return (
                         <DecoratedSelect
+                            errors={ errors }
                             defaultGetValueProps
                             fieldValue={ _.get(
                                 fields,
@@ -266,6 +271,7 @@ class ServicesTable extends Component {
                 key:    'ownDetail',
                 render: ({ key }) => (
                     <DecoratedCheckbox
+                        errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(fields, `services[${key}].ownDetail`) }
                         initialValue={ this._getDefaultValue(key, 'ownDetail') }

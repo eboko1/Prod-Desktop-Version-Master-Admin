@@ -73,15 +73,15 @@ export default class OrderFormHeader extends Component {
         const managersOptions = this._getManagersOptions();
         const employeesOptions = this._getEmployeesOptions();
         const paymentMethodOptions = [
-            <Option value='cash'>
+            <Option value='cash' key='cash'>
                 <Icon type='wallet' />
                 <FormattedMessage id='add_order_form.cash' />
             </Option>,
-            <Option value='noncash'>
+            <Option value='noncash' key='noncash'>
                 <Icon type='credit-card' />
                 <FormattedMessage id='add_order_form.non-cash' />
             </Option>,
-            <Option value='visa'>
+            <Option value='visa' key='visa'>
                 <Icon type='credit-card' />
                 <FormattedMessage id='add_order_form.visa' />
             </Option>,
@@ -104,9 +104,9 @@ export default class OrderFormHeader extends Component {
     }
 
     _getBeginDatetimeConfig() {
-        const { zeroStationLoadBeginDate, schedule } = this.props;
+        const { schedule } = this.props;
         const { disabledDate, beginTime } = getDateTimeConfig(
-            moment(zeroStationLoadBeginDate),
+            void 0,
             schedule,
         );
 
@@ -306,6 +306,7 @@ export default class OrderFormHeader extends Component {
             deliveryDate,
             form: { getFieldDecorator },
             intl: { formatMessage },
+            errors,
         } = this.props;
         const {
             disabledDate,
@@ -323,6 +324,7 @@ export default class OrderFormHeader extends Component {
         return (
             <div className={ Styles.durationBlock }>
                 <DecoratedSlider
+                    errors={ errors }
                     fieldValue={ _.get(fields, 'stationLoads[0].duration') }
                     defaultGetValueProps
                     field='stationLoads[0].duration'
@@ -345,6 +347,7 @@ export default class OrderFormHeader extends Component {
                     max={ 8 }
                 />
                 <DecoratedDatePicker
+                    errors={ errors }
                     defaultGetValueProps
                     fieldValue={
                         _.get(fields, 'deliveryDate')
@@ -376,6 +379,7 @@ export default class OrderFormHeader extends Component {
                     }
                 />
                 <DecoratedTimePicker
+                    errors={ errors }
                     defaultGetValueProps
                     fieldValue={
                         _.get(fields, 'deliveryTime')
@@ -425,6 +429,7 @@ export default class OrderFormHeader extends Component {
             zeroStationLoadBeginDate,
             zeroStationLoadStation,
             fields,
+            errors,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
@@ -444,6 +449,7 @@ export default class OrderFormHeader extends Component {
         return (
             <div className={ Styles.headerCol }>
                 <DecoratedDatePicker
+                    errors={ errors }
                     defaultGetValueProps
                     fieldValue={
                         _.get(fields, 'stationLoads[0].beginDate')
@@ -476,6 +482,7 @@ export default class OrderFormHeader extends Component {
                     initialValue={ momentBeginDatetime }
                 />
                 <DecoratedSelect
+                    errors={ errors }
                     colon={ false }
                     className={ Styles.datePanelItem }
                     getFieldDecorator={ getFieldDecorator }
@@ -501,6 +508,7 @@ export default class OrderFormHeader extends Component {
                     { this.state.stationsOptions }
                 </DecoratedSelect>
                 <DecoratedTimePicker
+                    errors={ errors }
                     defaultGetValueProps
                     fieldValue={
                         _.get(fields, 'stationLoads[0].beginTime')
@@ -546,6 +554,7 @@ export default class OrderFormHeader extends Component {
             managers,
             authentificatedManager,
             fields,
+            errors,
         } = this.props;
 
         const isOwnBusiness =
@@ -558,6 +567,7 @@ export default class OrderFormHeader extends Component {
         return (
             <div className={ Styles.headerCol }>
                 <DecoratedSelect
+                    errors={ errors }
                     fieldValue={ _.get(fields, 'manager') }
                     defaultGetValueProps
                     field='manager'
@@ -583,6 +593,7 @@ export default class OrderFormHeader extends Component {
                     { this.state.managersOptions }
                 </DecoratedSelect>
                 <DecoratedSelect
+                    errors={ errors }
                     formItem
                     fieldValue={ _.get(fields, 'employee') }
                     defaultGetValueProps
@@ -600,6 +611,7 @@ export default class OrderFormHeader extends Component {
                     { this.state.employeesOptions }
                 </DecoratedSelect>
                 <DecoratedSelect
+                    errors={ errors }
                     formItem
                     fieldValue={ _.get(fields, 'appurtenanciesResponsible') }
                     defaultGetValueProps
@@ -633,6 +645,7 @@ export default class OrderFormHeader extends Component {
             priceServices,
             servicesDiscount,
             detailsDiscount,
+            errors,
         } = this.props;
 
         const detailsTotalPrice =
@@ -659,6 +672,7 @@ export default class OrderFormHeader extends Component {
                     </div>
                 </FormItem>
                 <DecoratedSelect
+                    errors={ errors }
                     fieldValue={ _.get(fields, 'paymentMethod') }
                     defaultGetValueProps
                     field='paymentMethod'
@@ -678,6 +692,7 @@ export default class OrderFormHeader extends Component {
                     { this.state.paymentMethodOptions }
                 </DecoratedSelect>
                 <DecoratedSelect
+                    errors={ errors }
                     field='requisite'
                     fieldValue={ _.get(fields, 'requisite') }
                     defaultGetValueProps

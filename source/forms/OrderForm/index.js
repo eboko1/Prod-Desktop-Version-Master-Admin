@@ -144,6 +144,7 @@ export class OrderForm extends Component {
             requisites,
             user,
             location,
+            errors,
         } = this.props;
         this.formFieldsValues = _.cloneDeep(form.getFieldsValue());
         const formFieldsValues = this.formFieldsValues;
@@ -190,6 +191,7 @@ export class OrderForm extends Component {
         return (
             <Form className={ Styles.form } layout='horizontal'>
                 <OrderFormHeader
+                    errors={ errors }
                     priceServices={ priceServices }
                     priceDetails={ priceDetails }
                     detailsDiscount={ detailsDiscount }
@@ -215,6 +217,7 @@ export class OrderForm extends Component {
                     totalHours={ totalHours }
                 />
                 <OrderFormBody
+                    errors={ errors }
                     location={ location }
                     fields={ orderFormBodyFields }
                     searchClientQuery={ searchClientQuery }
@@ -306,6 +309,7 @@ export class OrderForm extends Component {
             availableHours,
 
             changeModalStatus,
+            errors,
         } = this.props;
 
         const formFieldsValues = this.formFieldsValues;
@@ -333,6 +337,7 @@ export class OrderForm extends Component {
 
         return (
             <OrderFormTabs
+                errors={ errors }
                 zeroStationLoadBeginDate={ zeroStationLoadBeginDate }
                 zeroStationLoadBeginTime={ zeroStationLoadBeginTime }
                 zeroStationLoadDuration={ zeroStationLoadDuration }

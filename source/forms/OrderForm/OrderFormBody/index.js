@@ -261,7 +261,7 @@ export default class OrderFormBody extends Component {
 
     _renderClientSearch = () => {
         const { getFieldDecorator } = this.props.form;
-        const { user, fields } = this.props;
+        const { user, fields, errors } = this.props;
         const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
 
         const disabledClientSearch =
@@ -272,6 +272,7 @@ export default class OrderFormBody extends Component {
         return !disabledClientSearch ? (
             <div className={ Styles.client }>
                 <DecoratedInput
+                    errors={ errors }
                     defaultGetValueProps
                     fieldValue={ _.get(fields, 'searchClientQuery') }
                     className={ Styles.clientSearchField }
@@ -307,6 +308,7 @@ export default class OrderFormBody extends Component {
             fetchedOrder,
             fields,
             clientPhone,
+            errors,
         } = this.props;
         const { getFieldDecorator } = this.props.form;
         const hasClient = clientPhone;
@@ -326,6 +328,7 @@ export default class OrderFormBody extends Component {
                             </div>
                         </div>
                         <DecoratedSelect
+                            errors={ errors }
                             defaultGetValueProps
                             fieldValue={ _.get(fields, 'clientPhone') }
                             field='clientPhone'
@@ -368,6 +371,7 @@ export default class OrderFormBody extends Component {
                 </div>
                 <div className={ Styles.clientsInfo }>
                     <DecoratedSelect
+                        errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(fields, 'clientEmail') }
                         field='clientEmail'
@@ -388,6 +392,7 @@ export default class OrderFormBody extends Component {
                         { this.state.clientEmailsOptions }
                     </DecoratedSelect>
                     <DecoratedSelect
+                        errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(fields, 'clientRequisite') }
                         field='clientRequisite'
@@ -422,6 +427,7 @@ export default class OrderFormBody extends Component {
             fetchedOrder,
             fields,
             clientVehicle,
+            errors,
         } = this.props;
         const { getFieldDecorator } = this.props.form;
         const selectedVehicleId = clientVehicle;
@@ -453,6 +459,7 @@ export default class OrderFormBody extends Component {
                             </div>
                         </div>
                         <DecoratedSelect
+                            errors={ errors }
                             defaultGetValueProps
                             fieldValue={ _.get(fields, 'clientVehicle') }
                             field='clientVehicle'
@@ -496,6 +503,7 @@ export default class OrderFormBody extends Component {
                     ) }
                 </div>
                 <DecoratedInputNumber
+                    errors={ errors }
                     defaultGetValueProps
                     field='odometerValue'
                     fieldValue={ _.get(fields, 'odometerValue') }
@@ -518,13 +526,14 @@ export default class OrderFormBody extends Component {
     };
 
     _renderCommentsBlock = () => {
-        const { fetchedOrder, user, fields } = this.props;
+        const { fetchedOrder, user, fields, errors } = this.props;
         const { ACCESS_ORDER_COMMENTS } = permissions;
         const { getFieldDecorator } = this.props.form;
 
         return (
             <div className={ Styles.commentsBlock }>
                 <DecoratedTextArea
+                    errors={ errors }
                     defaultGetValueProps
                     fieldValue={ _.get(fields, 'comment') }
                     className={ this.state.recommendationStyles.value }
@@ -550,6 +559,7 @@ export default class OrderFormBody extends Component {
                 />
                 { this.state.recommendationStyles.prevRecommendation && (
                     <DecoratedTextArea
+                        errors={ errors }
                         className={ Styles.comment }
                         formItem
                         formItemLayout={ formRecommendationLayout }

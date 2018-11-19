@@ -97,7 +97,7 @@ export default class DetailsTable extends Component {
         );
 
         this.columns = () => {
-            const { fields } = this.props;
+            const { fields, errors } = this.props;
             const { details, brands } = this.props.allDetails;
 
             const {
@@ -141,6 +141,7 @@ export default class DetailsTable extends Component {
 
                         return (
                             <LimitedDecoratedSelect
+                                errors={ errors }
                                 defaultGetValueProps
                                 fieldValue={ _.get(
                                     fields,
@@ -197,6 +198,7 @@ export default class DetailsTable extends Component {
 
                         return (
                             <LimitedDecoratedSelect
+                                errors={ errors }
                                 defaultGetValueProps
                                 fieldValue={ _.get(
                                     fields,
@@ -237,6 +239,7 @@ export default class DetailsTable extends Component {
                     key:    'code',
                     render: ({ key }) => (
                         <DecoratedInput
+                            errors={ errors }
                             defaultGetValueProps
                             fieldValue={ _.get(
                                 fields,
@@ -307,6 +310,7 @@ export default class DetailsTable extends Component {
                     key:    'purchasePrice',
                     render: ({ key }) => (
                         <DecoratedInputNumber
+                            errors={ errors }
                             defaultGetValueProps
                             fieldValue={ _.get(
                                 fields,
@@ -336,6 +340,7 @@ export default class DetailsTable extends Component {
                     key:    'price',
                     render: ({ key }) => (
                         <DecoratedInputNumber
+                            errors={ errors }
                             fieldValue={ _.get(
                                 fields,
                                 `details[${key}].detailPrice`,
@@ -363,6 +368,7 @@ export default class DetailsTable extends Component {
                     key:    'count',
                     render: ({ key }) => (
                         <DecoratedInputNumber
+                            errors={ errors }
                             fieldValue={ _.get(
                                 fields,
                                 `details[${key}].detailCount`,
