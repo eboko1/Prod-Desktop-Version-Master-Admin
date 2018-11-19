@@ -14,9 +14,14 @@ const FormItem = Form.Item;
 
 @injectIntl
 class DiscountPanel extends Component {
+
+    shouldComponentUpdate(nextProps) {
+        return !_.isEqual(nextProps, this.props);
+    }
+
     render() {
         const {
-            getFieldDecorator,
+            form: { getFieldDecorator },
             price,
             discountFieldName,
             fetchedOrder,
@@ -58,7 +63,7 @@ class DiscountPanel extends Component {
                     >
                         <InputNumber
                             disabled
-                            value={ this.props.price }
+                            value={ price }
                             min={ 0 }
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')

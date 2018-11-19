@@ -1,15 +1,13 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Popconfirm, Icon } from 'antd';
+import { Table } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import moment from 'moment';
 import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { OrderStatusIcon } from 'components';
 
-import { getDateTimeConfig, permissions, isForbidden } from 'utils';
+import { permissions, isForbidden } from 'utils';
 
 // own
 import { columnsConfig } from './tableConfig.js';
@@ -31,8 +29,11 @@ export default class StationsTable extends Component {
         isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
 
     componentDidUpdate() {
-        const loads = this.props.form.getFieldValue('stationLoads');
-        if (!loads.some(load => _.values(load).some(_.isNil))) {
+        const loads = _.get(this.props.fields, 'stationLoads', []);
+        const propsLoadsLength = loads.length;
+        const keysLength = this.state.keys.length;
+
+        if (propsLoadsLength === keysLength && !loads.some(load => _.values(load).some(_.isNil))) {
             this._handleAdd();
         }
     }
@@ -51,19 +52,12 @@ export default class StationsTable extends Component {
         this.setState({ keys: [ ...keys, this.uuid++ ] });
     };
 
-    // _handleAdd = key => {
-    //     const { keys } = this.state;
-    //     const stationLoads = this.props.form.getFieldValue('stationLoads');
-    //
-    //     if (_.last(keys) === key && !stationLoads[ key ].serviceName) {
-    //         this.setState({ keys: [ ...keys, this.uuid++ ] });
-    //     }
-    // };
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
 
     render() {
         const {
-            fields,
-            stationLoads,
             fetchedOrder,
             intl: { formatMessage },
         } = this.props;

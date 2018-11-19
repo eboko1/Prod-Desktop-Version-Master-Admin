@@ -108,6 +108,7 @@ import StatisticsCallsTable from 'components/CallsTable/messages';
 import CallsStatistics from 'components/CallsStatistics/messages';
 import PartSuggestions from 'components/PartSuggestions/messages';
 import PartAttributes from 'components/PartAttributes/messages';
+import VehicleNumberHistory from 'components/VehicleNumberHistory/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -203,6 +204,7 @@ const messages = merge.all([
     CallsStatistics,
     PartSuggestions,
     PartAttributes,
+    VehicleNumberHistory,
 ]);
 /* eslint-enable array-element-newline */
 

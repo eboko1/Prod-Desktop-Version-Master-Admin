@@ -13,18 +13,6 @@
     background-color: rgba(255, 45, 45, 0.28);
 }
 
-.brandSaveIcon {
-    font-size: 24px;
-    cursor: pointer;
-    color: green;
-}
-
-.brandDeleteIcon {
-    font-size: 24px;
-    cursor: pointer;
-    color: red;
-}
-
 .businessEditIcon {
     font-size: 18px;
     cursor: pointer;
@@ -32,20 +20,4 @@
     &:hover {
         color: var(--primary);
     }
-}
-
-.brandsSelect {
-    width: 100%;
-}
-
-.brandsFormItem {
-    margin-bottom: 0;
-}
-
-.newBrandRow {
-    background-color: #90EE90;
-}
-
-.editedBrandRow {
-    background-color: #fff1f3;
 }

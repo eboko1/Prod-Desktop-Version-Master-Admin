@@ -41,10 +41,17 @@ export const INITIALIZE = `${prefix}/INITIALIZE`;
 export const SET_COLLAPSED_STATE = `${prefix}/SET_COLLAPSED_STATE`;
 export const EMIT_ERROR = `${prefix}/EMIT_ERROR`;
 
+export const ADD_ERROR = `${prefix}/ADD_ERROR`;
+export const HANDLE_ERROR = `${prefix}/HANDLE_ERROR`;
+
 /**
  * Reducer
  **/
+
+let errorId = 1;
+
 const ReducerState = {
+    errors:                     [],
     initialized:                false,
     authFetching:               false,
     profileUpdating:            false,
@@ -171,6 +178,20 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_BRANDS_FETCHING_STATE:
             return { ...state, brandsFetching: payload };
+
+        case ADD_ERROR:
+            return {
+                ...state,
+                errors: !payload
+                    ? state.errors
+                    : [ ...state.errors, { id: errorId++, ...payload }],
+            };
+
+        case HANDLE_ERROR:
+            return {
+                ...state,
+                errors: state.errors.filter(({ id }) => id !== payload),
+            };
 
         default:
             return state;
@@ -338,4 +359,15 @@ export const emitError = error => ({
     type:    EMIT_ERROR,
     payload: error,
     error:   true,
+});
+
+export const addError = error => ({
+    type:    ADD_ERROR,
+    payload: error,
+    error:   true,
+});
+
+export const handleError = id => ({
+    type:    HANDLE_ERROR,
+    payload: id,
 });

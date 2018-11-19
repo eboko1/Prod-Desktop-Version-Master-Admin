@@ -193,6 +193,10 @@ class TasksTable extends Component {
         return 0;
     };
 
+    shouldComponentUpdate(nextProps) {
+        return !_.isEqual(nextProps, this.props);
+    }
+
     render() {
         const { orderTasks } = this.props;
         const columns = this.columns;

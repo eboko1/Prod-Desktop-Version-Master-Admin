@@ -19,6 +19,7 @@ import { saga as reviewSaga } from 'core/review/saga';
 import { saga as callsSaga } from 'core/calls/saga';
 import { saga as tecDocActionsSaga } from 'core/tecDocActions/saga';
 import { saga as servicesSuggestions } from 'core/servicesSuggestions/saga';
+import { saga as vehicleNumberHistorySaga } from 'core/vehicleNumberHistory/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
@@ -96,6 +97,7 @@ export default function* rootSaga() {
         servicesFormSaga(),
         servicesSuggestions(),
         brandsSaga(),
+        vehicleNumberHistorySaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

@@ -1,15 +1,20 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table, Modal, Select, Form, Button, Icon, InputNumber } from 'antd';
-import { v4 } from 'uuid';
+import { Table, Select, Form, Icon, Col, Row, notification } from 'antd';
 import _ from 'lodash';
 
 // proj
 import {
+    BusinessSearchField,
+    SupplierSearchField,
+    ProductSearchField,
+} from 'forms/_formkit';
+import {
     onChangeBrandsForm,
     fetchPriorityBrands,
     setSort,
+    setFilter,
     setSearchSuppliers,
     setSearchBusinesses,
     setSearchProducts,
@@ -18,14 +23,20 @@ import {
     deletePriorityBrand,
     createPriorityBrand,
 } from 'core/forms/brandsForm/duck';
+import { handleError } from 'core/ui/duck';
 import { setModal, resetModal } from 'core/modals/duck';
 
 import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
-import { withReduxForm } from 'utils';
+import {
+    withReduxForm,
+    handleCurrentDuckErrors,
+    getCurrentDuckErrors,
+} from 'utils';
 import { Catcher } from 'commons';
-import Styles from '../../containers/ManagerRoleContainer/styles.m.css';
+import Styles from './styles.m.css';
 
 // own
+import getErrorConfigs from './error_configs';
 
 const Option = Select.Option;
 const FormItem = Form.Item;
@@ -51,9 +62,20 @@ const sortOptions = {
         createPriorityBrand,
         setModal,
         resetModal,
+        setFilter,
+        handleError,
     },
+    mapStateToProps: state => ({
+        errors: state.ui.errors,
+    }),
 })
 export class BrandsForm extends Component {
+    constructor(props) {
+        super(props);
+        this._source = 'brandsForm';
+        this._errorConfigs = getErrorConfigs(props.intl);
+    }
+
     componentDidMount() {
         this.props.fetchPriorityBrands();
     }
@@ -76,7 +98,18 @@ export class BrandsForm extends Component {
     render() {
         const {
             form: { getFieldDecorator, validateFields },
+            errors,
+            intl,
+            handleError,
         } = this.props;
+
+        const duckErrors = getCurrentDuckErrors(
+            errors,
+            this._errorConfigs,
+            this._source,
+        );
+        handleCurrentDuckErrors(notification, duckErrors, intl, handleError);
+
         const priorityBrands = this.props.priorityBrands;
         const count = _.get(priorityBrands, [ 'stats', 'count' ], 0);
         const list = _.get(priorityBrands, [ 'list' ], []);
@@ -216,7 +249,9 @@ export class BrandsForm extends Component {
                                     }),
                                 },
                             ] }
-                            initialValue={ item.priority || void 0 }
+                            initialValue={
+                                _.isNil(item.priority) ? void 0 : item.priority
+                            }
                         />
                     );
                 },
@@ -283,8 +318,39 @@ export class BrandsForm extends Component {
 
         return (
             <Catcher>
+                <Row type='flex' align='inline' gutter={ 24 }>
+                    <Col span={ 8 }>
+                        <BusinessSearchField
+                            selectStyles={ { width: '100%' } }
+                            onSelect={ businessId =>
+                                this.props.setFilter({ businessId })
+                            }
+                            businessId={ this.props.filter.businessId }
+                        />
+                    </Col>
+                    <Col span={ 8 }>
+                        <ProductSearchField
+                            selectStyles={ { width: '100%' } }
+                            onSelect={ productId =>
+                                this.props.setFilter({ productId })
+                            }
+                            productId={ this.props.filter.productId }
+                        />
+                    </Col>
+                    <Col span={ 8 }>
+                        <SupplierSearchField
+                            selectStyles={ { width: '100%' } }
+                            onSelect={ supplierId =>
+                                this.props.setFilter({ supplierId })
+                            }
+                            supplierId={ this.props.filter.supplierId }
+                        />
+                    </Col>
+                </Row>
+                <br />
                 <Table
                     size='small'
+                    rowKey={ record => record.id }
                     columns={ columns }
                     dataSource={ [{ id: -1 }, ...list ] }
                     loading={ this.props.brandsFetching }

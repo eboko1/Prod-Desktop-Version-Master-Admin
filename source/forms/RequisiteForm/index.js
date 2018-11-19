@@ -139,7 +139,7 @@ export class RequisiteForm extends Component {
                     field={ 'enabled' }
                     formItem
                     colon={ false }
-                    initValue={ !!requisite.enabled }
+                    initialValue={ !!requisite.enabled }
                     label={
                         <FormattedMessage id='client_requisites_container.enabled' />
                     }

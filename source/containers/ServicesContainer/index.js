@@ -49,7 +49,6 @@ export default class ServiceContainer extends Component {
                 list,
             },
         } = this.props;
-        console.log('→ CONTAthis.props', this.props);
 
         return (
             <Catcher>

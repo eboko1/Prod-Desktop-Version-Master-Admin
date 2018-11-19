@@ -114,7 +114,18 @@
         "roles.employees_permissions": "Employees",
         "roles.orders_permissions": "Orders",
         "roles.other_permissions": "Other",
-        "go_back": "Return"
+        "go_back": "Return",
+        "product_placeholder": "Select product",
+        "supplier_placeholder": "Select supplier",
+        "business_placeholder": "Select business",
+        "dReg": "Date",
+        "makeYear": "Year",
+        "brand": "Brand",
+        "model": "Model",
+        "fuel": "Fuel",
+        "body": "Body",
+        "nRegNew": "Number",
+        "operName": "Operation"
     },
     "ru": {
         "currency": "грн.",
@@ -231,7 +242,18 @@
         "roles.employees_permissions": "Работники",
         "roles.orders_permissions": "Заказы",
         "roles.other_permissions": "Другое",
-        "go_back": "Вернуться назад"
+        "go_back": "Вернуться назад",
+        "product_placeholder": "Выбрать деталь",
+        "supplier_placeholder": "Выбрать производителя",
+        "business_placeholder": "Выбрать бизнес",
+        "dReg": "Дата",
+        "makeYear": "Год",
+        "brand": "Бренд",
+        "model": "Модель",
+        "fuel": "Топливо",
+        "body": "Кузов",
+        "nRegNew": "Номер",
+        "operName": "Операция"
     },
     "uk": {
         "currency": "грн.",
@@ -348,6 +370,17 @@
         "roles.employees_permissions": "Працівники",
         "roles.orders_permissions": "Замовлення",
         "roles.other_permissions": "Інше",
-        "go_back": "Повернутись назад"
+        "go_back": "Повернутись назад",
+        "product_placeholder": "Вибрати деталь",
+        "supplier_placeholder": "Вибрати виробника",
+        "business_placeholder": "Вибрати бізнес",
+        "dReg": "Дата",
+        "makeYear": "Рік",
+        "brand": "Бренд",
+        "model": "Модель",
+        "fuel": "Пальне",
+        "body": "Кузов",
+        "nRegNew": "Номер",
+        "operName": "Операція"
     }
 }
