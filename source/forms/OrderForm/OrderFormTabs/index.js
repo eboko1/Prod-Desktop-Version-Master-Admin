@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Tabs, Icon, Button } from 'antd';
 import _ from 'lodash';
 
@@ -20,6 +20,7 @@ import {
     StationsTable,
 } from '../OrderFormTables';
 import Styles from './styles.m.css';
+
 const TabPane = Tabs.TabPane;
 
 function hideTasks(orderTasks, managerId) {
@@ -33,32 +34,99 @@ function hideTasks(orderTasks, managerId) {
     return newOrderTasks;
 }
 
+@injectIntl
 export default class OrderFormTabs extends Component {
+    // shouldComponentUpdate(nextProps) {
+    //     console.log('OrderFormTabs.shouldComponentUpdate.this.props', this.props.fields.comment);
+    //     console.log('OrderFormTabs.shouldComponentUpdate.nextProps', nextProps.fields.comment);
+    //     console.log('OrderFormTabs.shouldComponentUpdate', !_.isEqual(nextProps, this.props));
+    //
+    //     return true;
+    // }
+
     /* eslint-disable complexity */
+
+    constructor(props) {
+        super(props);
+        this._localizationMap = {};
+        this.commentsRules = [
+            {
+                max:     2000,
+                message: this.props.intl.formatMessage({
+                    id: 'field_should_be_below_2000_chars',
+                }),
+            },
+        ];
+        this.commentsAutoSize = { minRows: 2, maxRows: 6 };
+    }
+
+    _getLocalization(key) {
+        if (!this._localizationMap[ key ]) {
+            this._localizationMap[ key ] = this.props.intl.formatMessage({
+                id: key,
+            });
+        }
+
+        return this._localizationMap[ key ];
+    }
+
     render() {
         const {
-            addOrderForm,
-            orderTasks,
-            priceServices,
-            countServices,
-            countDetails,
-            formatMessage,
-            getFieldDecorator,
-            orderCalls,
-            orderHistory,
-            defaultDetails,
-            priceDetails,
-            onDetailSearch,
-            onBrandSearch,
             setModal,
-            initOrderTasksForm,
-            changeModalStatus,
-            commentsCount,
-            fetchedOrder,
-            user,
             fetchOrderForm,
             fetchOrderTask,
+            fetchTecdocSuggestions,
+            fetchTecdocDetailsSuggestions,
+            clearTecdocDetailsSuggestions,
+            clearTecdocSuggestions,
+
+            addOrderForm,
+            detailsSuggestionsFetching,
+            suggestionsFetching,
+
+            orderTasks,
+            orderCalls,
+            orderHistory,
+            orderServices,
+            orderDetails,
+            allServices,
+            allDetails,
+            employees,
+            selectedClient,
+            detailsSuggestions,
+            suggestions,
+            fetchedOrder,
+            user,
+            schedule,
+            stations,
+            availableHours,
+            stationLoads,
+            tecdocId,
+            clientVehicleId,
+
+            //fields
+            services,
+            details,
+            initialStation,
+            initialBeginDatetime,
+
+            // stats
+            priceDetails,
+            priceServices,
+            countDetails,
+            countServices,
+            commentsCount,
             stationsCount,
+
+            intl: { formatMessage },
+            form: { getFieldDecorator },
+            form,
+
+            initOrderTasksForm,
+            changeModalStatus,
+
+            fields,
+            errors,
         } = this.props;
 
         const {
@@ -86,6 +154,11 @@ export default class OrderFormTabs extends Component {
             ? orderTasks
             : hideTasks(orderTasks, user.id);
 
+        const servicesTableFieldsProps = _.pick(this.props.fields, [ 'services', 'clientVehicle', 'employee' ]);
+        const detailsTableFieldsProps = _.pick(this.props.fields, [ 'details' ]);
+        const discountTabFieldsProps = _.pick(this.props.fields, [ 'servicesDiscount', 'detailsDiscount' ]);
+        const stationLoadsFieldsProps = _.pick(this.props.fields, [ 'stationLoads' ]);
+
         return (
             <Tabs type='card' className={ Styles.orderFormsTabs }>
                 { !addOrderForm && (
@@ -112,6 +185,7 @@ export default class OrderFormTabs extends Component {
                         ) : null }
 
                         <TasksTable
+                            errors={ errors }
                             user={ user }
                             initOrderTasksForm={ initOrderTasksForm }
                             setModal={ setModal }
@@ -128,12 +202,25 @@ export default class OrderFormTabs extends Component {
                     })} (${countServices})` }
                     key='2'
                 >
-                    <ServicesTable { ...this.props } />
+                    <ServicesTable
+                        errors={ errors }
+                        fields={ servicesTableFieldsProps }
+                        services={ services }
+                        employees={ employees }
+                        form={ form }
+                        allServices={ allServices }
+                        orderServices={ orderServices }
+                        user={ user }
+                        selectedClient={ selectedClient }
+                        fetchTecdocSuggestions={ fetchTecdocSuggestions }
+                    />
                     <DiscountPanel
+                        fields={ discountTabFieldsProps }
+                        form={ form }
                         forbidden={ areServicesForbidden }
                         price={ priceServices }
                         discountFieldName={ 'servicesDiscount' }
-                        { ...this.props }
+                        fetchedOrder={ fetchedOrder }
                     />
                 </TabPane>
                 <TabPane
@@ -145,17 +232,34 @@ export default class OrderFormTabs extends Component {
                     key='3'
                 >
                     <DetailsTable
-                        { ...this.props }
-                        onDetailSearch={ onDetailSearch }
-                        onBrandSearch={ onBrandSearch }
-                        defaultDetail={ defaultDetails }
+                        errors={ errors }
+                        fields={ detailsTableFieldsProps }
+                        details={ details }
+                        tecdocId={ tecdocId }
+                        clientVehicleId={ clientVehicleId }
+                        orderDetails={ orderDetails }
+                        form={ form }
+                        allDetails={ allDetails }
+                        fetchTecdocDetailsSuggestions={
+                            fetchTecdocDetailsSuggestions
+                        }
+                        detailsSuggestions={ detailsSuggestions }
+                        clearTecdocDetailsSuggestions={
+                            clearTecdocDetailsSuggestions
+                        }
+                        clearTecdocSuggestions={ clearTecdocSuggestions }
+                        suggestions={ suggestions }
+                        detailsSuggestionsFetching={ detailsSuggestionsFetching }
+                        suggestionsFetching={ suggestionsFetching }
+                        user={ user }
                     />
                     <DiscountPanel
-                        { ...this.props }
-                        price={ priceDetails }
+                        fields={ discountTabFieldsProps }
+                        form={ form }
                         forbidden={ areDetailsForbidden }
+                        price={ priceDetails }
                         discountFieldName={ 'detailsDiscount' }
-                        getFieldDecorator={ getFieldDecorator }
+                        fetchedOrder={ fetchedOrder }
                     />
                 </TabPane>
                 <TabPane
@@ -168,107 +272,87 @@ export default class OrderFormTabs extends Component {
                     }
                 >
                     <DecoratedTextArea
+                        errors={ errors }
+                        defaultGetValueProps
+                        fieldValue={ _.get(fields, 'comment') }
                         formItem
                         disabled={ areCommentsForbidden }
-                        label={
-                            <FormattedMessage id='add_order_form.client_comments' />
-                        }
+                        label={ this._getLocalization(
+                            'add_order_form.client_comments',
+                        ) }
                         getFieldDecorator={ getFieldDecorator }
                         field='comment'
                         initialValue={ _.get(fetchedOrder, 'order.comment') }
-                        rules={ [
-                            {
-                                max:     2000,
-                                message: formatMessage({
-                                    id: 'field_should_be_below_2000_chars',
-                                }),
-                            },
-                        ] }
-                        placeholder={ formatMessage({
-                            id:             'add_order_form.client_comments',
-                            defaultMessage: 'Client_comments',
-                        }) }
-                        autosize={ { minRows: 2, maxRows: 6 } }
+                        rules={ this.commentsRules }
+                        placeholder={ this._getLocalization(
+                            'add_order_form.client_comments',
+                        ) }
+                        autosize={ this.commentsAutoSize }
                     />
                     <DecoratedTextArea
+                        errors={ errors }
+                        defaultGetValueProps
+                        fieldValue={ _.get(fields, 'vehicleCondition') }
                         formItem
                         disabled={ areCommentsForbidden }
-                        label={
-                            <FormattedMessage id='add_order_form.vehicle_condition' />
-                        }
+                        label={ this._getLocalization(
+                            'add_order_form.vehicle_condition',
+                        ) }
                         getFieldDecorator={ getFieldDecorator }
                         field='vehicleCondition'
                         initialValue={ _.get(
                             fetchedOrder,
                             'order.vehicleCondition',
                         ) }
-                        rules={ [
-                            {
-                                max:     2000,
-                                message: formatMessage({
-                                    id: 'field_should_be_below_2000_chars',
-                                }),
-                            },
-                        ] }
-                        placeholder={ formatMessage({
-                            id:             'add_order_form.vehicle_condition',
-                            defaultMessage: 'Vehicle condition',
-                        }) }
-                        autosize={ { minRows: 2, maxRows: 6 } }
+                        rules={ this.commentsRules }
+                        placeholder={ this._getLocalization(
+                            'add_order_form.vehicle_condition',
+                        ) }
+                        autosize={ this.commentsAutoSize }
                     />
 
                     <DecoratedTextArea
+                        errors={ errors }
+                        defaultGetValueProps
+                        fieldValue={ _.get(fields, 'businessComment') }
                         formItem
                         disabled={ areCommentsForbidden }
-                        label={
-                            <FormattedMessage id='add_order_form.business_comment' />
-                        }
+                        label={ this._getLocalization(
+                            'add_order_form.business_comment',
+                        ) }
                         getFieldDecorator={ getFieldDecorator }
                         field='businessComment'
                         initialValue={ _.get(
                             fetchedOrder,
                             'order.businessComment',
                         ) }
-                        rules={ [
-                            {
-                                max:     2000,
-                                message: formatMessage({
-                                    id: 'field_should_be_below_2000_chars',
-                                }),
-                            },
-                        ] }
-                        placeholder={ formatMessage({
-                            id:             'add_order_form.business_comment',
-                            defaultMessage: 'Work Order comments',
-                        }) }
-                        autosize={ { minRows: 2, maxRows: 6 } }
+                        rules={ this.commentsRules }
+                        placeholder={ this._getLocalization(
+                            'add_order_form.business_comment',
+                        ) }
+                        autosize={ this.commentsAutoSize }
                     />
 
                     <DecoratedTextArea
+                        errors={ errors }
+                        defaultGetValueProps
+                        fieldValue={ _.get(fields, 'recommendation') }
                         formItem
                         disabled={ areCommentsForbidden }
-                        label={
-                            <FormattedMessage id='add_order_form.service_recommendations' />
-                        }
+                        label={ this._getLocalization(
+                            'add_order_form.service_recommendations',
+                        ) }
                         getFieldDecorator={ getFieldDecorator }
                         field='recommendation'
                         initialValue={ _.get(
                             fetchedOrder,
                             'order.recommendation',
                         ) }
-                        rules={ [
-                            {
-                                max:     2000,
-                                message: formatMessage({
-                                    id: 'field_should_be_below_2000_chars',
-                                }),
-                            },
-                        ] }
-                        placeholder={ formatMessage({
-                            id:             'add_order_form.service_recommendations',
-                            defaultMessage: 'Garage recommendations',
-                        }) }
-                        autosize={ { minRows: 2, maxRows: 6 } }
+                        rules={ this.commentsRules }
+                        placeholder={ this._getLocalization(
+                            'add_order_form.service_recommendations',
+                        ) }
+                        autosize={ this.commentsAutoSize }
                     />
                 </TabPane>
                 { !addOrderForm && (
@@ -318,8 +402,16 @@ export default class OrderFormTabs extends Component {
                     key='7'
                 >
                     <StationsTable
-                        { ...this.props }
-                        // stationLoads={ stationLoads }
+                        errors={ errors }
+                        initialBeginDatetime={ initialBeginDatetime }
+                        initialStation={ initialStation }
+                        fields={ stationLoadsFieldsProps }
+                        form={ form }
+                        schedule={ schedule }
+                        stations={ stations }
+                        availableHours={ availableHours }
+                        stationLoads={ stationLoads }
+                        user={ user }
                     />
                 </TabPane>
             </Tabs>

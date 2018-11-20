@@ -144,6 +144,10 @@ class OrderPage extends Component {
         fetchOrderTask(match.params.id);
     }
 
+    state = {
+        errors: void 0,
+    };
+
     saveFormRef = formRef => {
         this.formRef = formRef;
     };
@@ -191,6 +195,8 @@ class OrderPage extends Component {
                     redirectToDashboard,
                     options,
                 });
+            } else {
+                this.setState({ errors: err });
             }
         });
     };
@@ -468,6 +474,7 @@ class OrderPage extends Component {
                     view={ { min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max } }
                 >
                     <OrderForm
+                        errors={ this.state.errors }
                         orderId={ Number(this.props.match.params.id) }
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }

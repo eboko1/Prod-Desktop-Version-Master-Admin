@@ -91,7 +91,7 @@ export class RoleForm extends Component {
                 </DecoratedSelect>
                 <DecoratedCheckbox
                     field={ 'grantOther' }
-                    initValue={ !!role.grantOther }
+                    initialValue={ !!role.grantOther }
                     formItem
                     label={
                         <FormattedMessage id='edit-role-form.grant_other_field' />

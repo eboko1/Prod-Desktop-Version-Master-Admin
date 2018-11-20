@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Table, InputNumber, Icon, Popconfirm, Select } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 
 // proj
@@ -12,27 +12,27 @@ import {
     DecoratedInputNumber,
     LimitedDecoratedSelect,
 } from 'forms/DecoratedFields';
-import { permissions, isForbidden } from 'utils';
+import { permissions, isForbidden, CachedInvoke } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 const Option = Select.Option;
 
-const extractId = (getFieldValue, name) => {
-    const formId = Number(getFieldValue(name));
+const extractId = (details, name) => {
+    const formId = Number(_.get(details, name));
 
     return _.isFinite(formId) ? formId : null;
 };
 
 const requiredLimitedOptions = (
-    form,
+    details,
     formFieldName,
     entityFieldName,
     source,
     sourceFilter,
 ) => {
     return (
-        _(form.getFieldValue('details'))
+        _(details)
             .map(formFieldName)
             .map(name => _.find(source, { [ sourceFilter ]: Number(name) }))
             .map(entityFieldName)
@@ -41,15 +41,53 @@ const requiredLimitedOptions = (
     );
 };
 
+@injectIntl
 export default class DetailsTable extends Component {
+    _formatter = value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+    _parser = value => `${value}`.replace(/\$\s?|(\s)/g, '');
+
+    _getLocalization(key) {
+        if (!this._localizationMap[ key ]) {
+            this._localizationMap[ key ] = this.props.intl.formatMessage({
+                id: key,
+            });
+        }
+
+        return this._localizationMap[ key ];
+    }
+
+    _onTecdocSelect(key, brandId, partNumber) {
+        const fieldsValue = {
+            [ `details[${key}].detailCode` ]:      partNumber,
+            [ `details[${key}].detailBrandName` ]: brandId
+                ? String(brandId)
+                : void 0,
+        };
+
+        this.props.form.setFieldsValue(fieldsValue);
+    }
+
     constructor(props) {
         super(props);
 
         const orderDetails = props.orderDetails || [];
         this.uuid = orderDetails.length;
+
+        this._localizationMap = {};
+        this._cachedInvoke = new CachedInvoke();
+
         this.state = {
             keys: [ ..._.keys(orderDetails), this.uuid++ ],
         };
+
+        this.requiredRule = [
+            {
+                required: true,
+                message:  this.props.intl.formatMessage({
+                    id: 'required_field',
+                }),
+            },
+        ];
 
         this.details = this.props.allDetails.details.map(
             ({ detailId, detailName }) => (
@@ -68,13 +106,14 @@ export default class DetailsTable extends Component {
         );
 
         this.columns = () => {
-            const {
-                form: { getFieldValue },
-                form,
-            } = this.props;
+            const { fields, errors } = this.props;
             const { details, brands } = this.props.allDetails;
 
-            const { clientVehicleId, tecdocId: modificationId } = this.props;
+            const {
+                clientVehicleId,
+                tecdocId: modificationId,
+                details: formDetails,
+            } = this.props;
 
             const editDetailsForbidden =
                 isForbidden(
@@ -82,26 +121,11 @@ export default class DetailsTable extends Component {
                     permissions.ACCESS_ORDER_DETAILS,
                 ) || !clientVehicleId;
 
-            const defaultBrands = requiredLimitedOptions(
-                form,
-                'detailBrandName',
-                'brandName',
-                brands,
-                'brandId',
-            );
-            const defaultDetails = requiredLimitedOptions(
-                form,
-                'detailName',
-                'detailName',
-                details,
-                'detailId',
-            );
-
-            const detailSelectPlaceholder = clientVehicleId ? (
-                <FormattedMessage id='order_form_table.detail.placeholder' />
-            ) : (
-                <FormattedMessage id='order_form_table.detail.no_vehicle_placeholder' />
-            );
+            const detailSelectPlaceholder = clientVehicleId
+                ? this._getLocalization('order_form_table.detail.placeholder')
+                : this._getLocalization(
+                    'order_form_table.detail.no_vehicle_placeholder',
+                );
 
             return [
                 {
@@ -111,37 +135,54 @@ export default class DetailsTable extends Component {
                     width:  '20%',
                     key:    'detail',
                     render: ({ key }) => {
+                        const func = requiredLimitedOptions;
+                        const detailArray = [
+                            _.chain(formDetails)
+                                .get(key)
+                                .pick('detailName')
+                                .value(),
+                        ].filter(Boolean);
+                        const args = [ detailArray, 'detailName', 'detailName', details, 'detailId' ];
+                        const defaultDetails = this._cachedInvoke.getCachedResult(
+                            func,
+                            args,
+                        );
+
                         return (
                             <LimitedDecoratedSelect
+                                errors={ errors }
+                                defaultGetValueProps
+                                fieldValue={ _.get(
+                                    fields,
+                                    `details[${key}].detailName`,
+                                ) }
                                 cnStyles={
-                                    getFieldValue(
-                                        `details[${key}][multipleSuggestions]`,
+                                    _.get(
+                                        formDetails,
+                                        `[${key}].multipleSuggestions`,
                                     )
                                         ? Styles.multipleSuggest
                                         : void 0
                                 }
                                 disabled={ editDetailsForbidden }
-                                field={ `details[${key}][detailName]` }
+                                field={ `details[${key}].detailName` }
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
                                 }
                                 mode={ 'combobox' }
                                 optionLabelProp={ 'children' }
                                 showSearch
-                                onChange={ value =>
-                                    this._handleDetailSelect(
-                                        key,
-                                        value,
-                                        modificationId,
-                                    )
-                                }
+                                onChange={ this._cachedInvoke.getCachedResult(
+                                    Function.prototype.bind,
+                                    [ null, key, modificationId ],
+                                    this._handleDetailSelect,
+                                ) }
                                 initialValue={ this._getDefaultValue(
                                     key,
                                     'detailName',
                                 ) }
                                 placeholder={ detailSelectPlaceholder }
                                 dropdownMatchSelectWidth={ false }
-                                dropdownStyle={ { width: '70%' } }
                                 defaultValues={ defaultDetails }
                             >
                                 { this.details }
@@ -153,33 +194,54 @@ export default class DetailsTable extends Component {
                     title:  <FormattedMessage id='order_form_table.brand' />,
                     width:  '15%',
                     key:    'brand',
-                    render: ({ key }) => (
-                        <LimitedDecoratedSelect
-                            mode={ 'combobox' }
-                            optionLabelProp={ 'children' }
-                            initialValue={
-                                this._getDefaultValue(key, 'detailBrandName') ||
-                                0
-                            }
-                            field={ `details[${key}][detailBrandName]` }
-                            disabled={
-                                this._isFieldDisabled(key) ||
-                                editDetailsForbidden
-                            }
-                            getFieldDecorator={
-                                this.props.form.getFieldDecorator
-                            }
-                            showSearch
-                            placeholder={
-                                <FormattedMessage id='order_form_table.brand.placeholder' />
-                            }
-                            dropdownMatchSelectWidth={ false }
-                            dropdownStyle={ { width: '35%' } }
-                            defaultValues={ defaultBrands }
-                        >
-                            { this.brands }
-                        </LimitedDecoratedSelect>
-                    ),
+                    render: ({ key }) => {
+                        const func = requiredLimitedOptions;
+                        const brandArray = [
+                            _.chain(formDetails)
+                                .get(key)
+                                .pick('detailBrandName')
+                                .value(),
+                        ].filter(Boolean);
+                        const args = [ brandArray, 'detailBrandName', 'brandName', brands, 'brandId' ];
+                        const defaultBrands = this._cachedInvoke.getCachedResult(
+                            func,
+                            args,
+                        );
+
+                        return (
+                            <LimitedDecoratedSelect
+                                errors={ errors }
+                                defaultGetValueProps
+                                fieldValue={ _.get(
+                                    fields,
+                                    `details[${key}].detailBrandName`,
+                                ) }
+                                mode={ 'combobox' }
+                                optionLabelProp={ 'children' }
+                                initialValue={ this._getDefaultValue(
+                                    key,
+                                    'detailBrandName',
+                                ) }
+                                field={ `details[${key}].detailBrandName` }
+                                disabled={
+                                    this._isFieldDisabled(key) ||
+                                    editDetailsForbidden
+                                }
+                                getFieldDecorator={
+                                    this.props.form.getFieldDecorator
+                                }
+                                showSearch
+                                placeholder={ this._getLocalization(
+                                    'order_form_table.brand.placeholder',
+                                ) }
+                                dropdownMatchSelectWidth={ false }
+                                // dropdownStyle={ { width: '35%' } }
+                                defaultValues={ defaultBrands }
+                            >
+                                { this.brands }
+                            </LimitedDecoratedSelect>
+                        );
+                    },
                 },
                 {
                     title: (
@@ -189,9 +251,16 @@ export default class DetailsTable extends Component {
                     key:    'code',
                     render: ({ key }) => (
                         <DecoratedInput
+                            errors={ errors }
+                            defaultGetValueProps
+                            fieldValue={ _.get(
+                                fields,
+                                `details[${key}].detailCode`,
+                            ) }
                             cnStyles={
-                                getFieldValue(
-                                    `details[${key}][multipleSuggestions]`,
+                                _.get(
+                                    formDetails,
+                                    `[${key}].multipleSuggestions`,
                                 )
                                     ? Styles.multipleSuggest
                                     : void 0
@@ -200,7 +269,7 @@ export default class DetailsTable extends Component {
                                 key,
                                 'detailCode',
                             ) }
-                            field={ `details[${key}][detailCode]` }
+                            field={ `details[${key}].detailCode` }
                             disabled={
                                 this._isFieldDisabled(key) ||
                                 editDetailsForbidden
@@ -216,15 +285,15 @@ export default class DetailsTable extends Component {
                     title:  <FormattedMessage id='order_form_table.suggest' />,
                     key:    'tecDocActions',
                     render: ({ key }) => {
-                        const detailIdFieldName = `details[${key}][detailName]`;
-                        const brandIdFieldName = `details[${key}][detailBrandName]`;
+                        const detailIdFieldName = `[${key}].detailName`;
+                        const brandIdFieldName = `[${key}].detailBrandName`;
 
                         const detailId = extractId(
-                            getFieldValue,
+                            formDetails,
                             detailIdFieldName,
                         );
                         const brandId = extractId(
-                            getFieldValue,
+                            formDetails,
                             brandIdFieldName,
                         );
 
@@ -232,20 +301,12 @@ export default class DetailsTable extends Component {
                             <TecDocActionsContainer
                                 detailId={ detailId }
                                 brandId={ brandId }
-                                detailCode={ getFieldValue(
-                                    `details[${key}][detailCode]`,
+                                detailCode={ _.get(
+                                    formDetails,
+                                    `[${key}].detailCode`,
                                 ) }
                                 index={ key }
-                                onSelect={ (brandId, partNumber) => {
-                                    const fieldsValue = {
-                                        [ `details[${key}][detailCode]` ]:      partNumber,
-                                        [ `details[${key}][detailBrandName]` ]: brandId
-                                            ? String(brandId)
-                                            : void 0,
-                                    };
-
-                                    this.props.form.setFieldsValue(fieldsValue);
-                                } }
+                                onSelect={ this._onTecdocSelect.bind(this, key) }
                                 details={ details }
                                 modificationId={ modificationId }
                                 brands={ brands }
@@ -261,11 +322,17 @@ export default class DetailsTable extends Component {
                     key:    'purchasePrice',
                     render: ({ key }) => (
                         <DecoratedInputNumber
+                            errors={ errors }
+                            defaultGetValueProps
+                            fieldValue={ _.get(
+                                fields,
+                                `details[${key}].purchasePrice`,
+                            ) }
                             initialValue={ this._getDefaultValue(
                                 key,
                                 'purchasePrice',
                             ) }
-                            field={ `details[${key}][purchasePrice]` }
+                            field={ `details[${key}].purchasePrice` }
                             disabled={
                                 this._isFieldDisabled(key) ||
                                 editDetailsForbidden
@@ -274,12 +341,8 @@ export default class DetailsTable extends Component {
                                 this.props.form.getFieldDecorator
                             }
                             min={ 0 }
-                            formatter={ value =>
-                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                            }
-                            parser={ value =>
-                                `${value}`.replace(/\$\s?|(\s)/g, '')
-                            }
+                            formatter={ this._formatter }
+                            parser={ this._parser }
                         />
                     ),
                 },
@@ -289,7 +352,19 @@ export default class DetailsTable extends Component {
                     key:    'price',
                     render: ({ key }) => (
                         <DecoratedInputNumber
-                            field={ `details[${key}][detailPrice]` }
+                            className={ Styles.detailsRequiredFormItem }
+                            rules={
+                                !this._isFieldDisabled(key)
+                                    ? this.requiredRule
+                                    : void 0
+                            }
+                            errors={ errors }
+                            formItem
+                            fieldValue={ _.get(
+                                fields,
+                                `details[${key}].detailPrice`,
+                            ) }
+                            field={ `details[${key}].detailPrice` }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
@@ -297,16 +372,12 @@ export default class DetailsTable extends Component {
                                 this._isFieldDisabled(key) ||
                                 editDetailsForbidden
                             }
-                            initValue={
+                            initialValue={
                                 this._getDefaultValue(key, 'detailPrice') || 0
                             }
                             min={ 0 }
-                            formatter={ value =>
-                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                            }
-                            parser={ value =>
-                                `${value}`.replace(/\$\s?|(\s)/g, '')
-                            }
+                            formatter={ this._formatter }
+                            parser={ this._parser }
                         />
                     ),
                 },
@@ -316,7 +387,19 @@ export default class DetailsTable extends Component {
                     key:    'count',
                     render: ({ key }) => (
                         <DecoratedInputNumber
-                            field={ `details[${key}][detailCount]` }
+                            className={ Styles.detailsRequiredFormItem }
+                            rules={
+                                !this._isFieldDisabled(key)
+                                    ? this.requiredRule
+                                    : void 0
+                            }
+                            errors={ errors }
+                            formItem
+                            fieldValue={ _.get(
+                                fields,
+                                `details[${key}].detailCount`,
+                            ) }
+                            field={ `details[${key}].detailCount` }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
@@ -324,17 +407,13 @@ export default class DetailsTable extends Component {
                                 this._isFieldDisabled(key) ||
                                 editDetailsForbidden
                             }
-                            initValue={
+                            initialValue={
                                 this._getDefaultValue(key, 'detailCount') || 1
                             }
                             min={ 0.1 }
                             step={ 0.1 }
-                            formatter={ value =>
-                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                            }
-                            parser={ value =>
-                                `${value}`.replace(/\$\s?|(\s)/g, '')
-                            }
+                            formatter={ this._formatter }
+                            parser={ this._parser }
                         />
                     ),
                 },
@@ -343,11 +422,10 @@ export default class DetailsTable extends Component {
                     width:  '10%',
                     key:    'sum',
                     render: ({ key }) => {
-                        const details = this.props.form.getFieldValue(
-                            'details',
-                        );
+                        const details = this.props.details;
                         const value =
-                            details[ key ].detailPrice * details[ key ].detailCount;
+                            _.get(details, [ key, 'detailPrice' ], 0) *
+                            _.get(details, [ key, 'detailCount' ], 0);
 
                         return (
                             <InputNumber
@@ -355,15 +433,8 @@ export default class DetailsTable extends Component {
                                 disabled
                                 defaultValue={ 0 }
                                 value={ value }
-                                formatter={ value =>
-                                    `${value}`.replace(
-                                        /\B(?=(\d{3})+(?!\d))/g,
-                                        ' ',
-                                    )
-                                }
-                                parser={ value =>
-                                    `${value}`.replace(/\$\s?|(\s)/g, '')
-                                }
+                                formatter={ this._formatter }
+                                parser={ this._parser }
                             />
                         );
                     },
@@ -393,9 +464,6 @@ export default class DetailsTable extends Component {
         };
     }
 
-    _isFieldDisabled = key =>
-        !_.get(this.props.form.getFieldValue('details'), [ key, 'detailName' ]);
-
     _getDefaultValue = (key, fieldName) => {
         const orderDetail = (this.props.orderDetails || [])[ key ];
         if (!orderDetail) {
@@ -418,11 +486,15 @@ export default class DetailsTable extends Component {
         return actions[ fieldName ];
     };
 
-    _handleDetailSelect = (key, value, modificationId) => {
-        const { keys } = this.state;
-        const formDetails = this.props.form.getFieldValue('details');
+    _isFieldDisabled = key => {
+        return !_.get(this.props.details, [ key, 'detailName' ]);
+    };
 
-        if (_.last(keys) === key && !formDetails[ key ].detailName) {
+    _handleDetailSelect = (key, modificationId, value) => {
+        const { keys } = this.state;
+        const formDetails = this.props.details;
+
+        if (_.last(keys) === key && !_.get(formDetails, [ key, 'detailName' ])) {
             this._handleAdd();
         }
 
@@ -438,6 +510,13 @@ export default class DetailsTable extends Component {
             );
         }
     };
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            !_.isEqual(nextProps, this.props) ||
+            !_.isEqual(nextState, this.state)
+        );
+    }
 
     _onDelete = redundantKey => {
         const { keys } = this.state;
@@ -465,11 +544,11 @@ export default class DetailsTable extends Component {
                 const { key, suggestions } = suggestion;
                 const config = [
                     {
-                        name:  `details[${key}][detailCode]`,
+                        name:  `details[${key}].detailCode`,
                         value: _.get(suggestions, '[0].partNumber'),
                     },
                     {
-                        name:  `details[${key}][detailBrandName]`,
+                        name:  `details[${key}].detailBrandName`,
                         value: _.get(suggestions, '[0].brandId'),
                     },
                 ];
@@ -511,23 +590,23 @@ export default class DetailsTable extends Component {
                     const globalIndex = oldUuid + index;
                     const config = [
                         {
-                            name:  `details[${globalIndex}][detailName]`,
+                            name:  `details[${globalIndex}].detailName`,
                             value: suggestion.detailId,
                         },
                         {
-                            name:  `details[${globalIndex}][detailCode]`,
+                            name:  `details[${globalIndex}].detailCode`,
                             value: _.get(suggestion, 'tecdoc[0].partNumber'),
                         },
                         {
-                            name:  `details[${globalIndex}][detailBrandName]`,
+                            name:  `details[${globalIndex}].detailBrandName`,
                             value: _.get(suggestion, 'tecdoc[0].brandId'),
                         },
                         {
-                            name:  `details[${globalIndex}][detailCount]`,
+                            name:  `details[${globalIndex}].detailCount`,
                             value: _.get(suggestion, 'quantity'),
                         },
                         {
-                            name:  `details[${globalIndex}][multipleSuggestions]`,
+                            name:  `details[${globalIndex}].multipleSuggestions`,
                             value: Boolean((suggestion.tecdoc || []).length),
                         },
                     ];

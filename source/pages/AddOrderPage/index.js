@@ -65,6 +65,10 @@ const mapDispatch = {
     mapDispatch,
 )
 class AddOrderPage extends Component {
+    state = {
+        errors: void 0,
+    };
+
     componentDidMount() {
         this.props.fetchAddOrderForm();
     }
@@ -112,6 +116,8 @@ class AddOrderPage extends Component {
                     redirectStatus,
                     redirectToDashboard,
                 });
+            } else {
+                this.setState({ errors: err });
             }
         });
     };
@@ -133,6 +139,7 @@ class AddOrderPage extends Component {
 
     render() {
         const { modal, createStatus, spinner } = this.props;
+        const { errors } = this.state;
 
         return spinner ? (
             <Spinner spin={ spinner } />
@@ -197,6 +204,7 @@ class AddOrderPage extends Component {
                 }
             >
                 <OrderForm
+                    errors={ this.state.errors }
                     wrappedComponentRef={ this.saveOrderFormRef }
                     setAddClientModal={ this._setAddClientModal }
                     modal={ modal }

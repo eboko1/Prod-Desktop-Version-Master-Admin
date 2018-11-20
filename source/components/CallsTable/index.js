@@ -36,9 +36,7 @@ export default class CallsTable extends Component {
             stats,
             filter,
             intl: { formatMessage },
-            fetchCalls,
             callsFetching,
-            setCallsPageFilter,
         } = this.props;
 
         const columns = columnsConfig(

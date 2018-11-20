@@ -68,7 +68,7 @@ const isIntervalDisabled = (
  * @param {Moment} momentTime take time from this arg
  * @returns {Moment} merge date and time
  */
-const mergeDateTime = (momentDate, momentTime) => {
+export const mergeDateTime = (momentDate, momentTime) => {
     const newDate = momentDate.clone();
     const { hours, milliseconds, minutes, seconds } = momentTime.toObject();
 
@@ -81,7 +81,7 @@ const mergeDateTime = (momentDate, momentTime) => {
  * @param {Number} hoursDuration number of hours
  * @returns {Moment} date with added hours
  */
-const addDuration = (momentDate, hoursDuration) => {
+export const addDuration = (momentDate, hoursDuration) => {
     const newDate = momentDate.clone();
     const milliseconds = hoursDuration * 3600 * 1000;
 
