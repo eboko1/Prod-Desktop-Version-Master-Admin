@@ -95,6 +95,15 @@ class ServicesTable extends Component {
         const options = this._getServicesOptions();
         const employeesOptions = this._getEmployeesOptions();
 
+        this.requiredRule = [
+            {
+                required: true,
+                message:  this.props.intl.formatMessage({
+                    id: 'required_field',
+                }),
+            },
+        ];
+
         this.state = {
             keys: [ ..._.keys(orderServices), this.uuid++ ],
             options,
@@ -169,6 +178,8 @@ class ServicesTable extends Component {
                 key:    'price',
                 render: ({ key }) => (
                     <DecoratedInputNumber
+                        className={ Styles.servicesRequiredFormItem }
+                        formItem
                         errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(
@@ -182,6 +193,11 @@ class ServicesTable extends Component {
                         }
                         field={ `services[${key}].servicePrice` }
                         getFieldDecorator={ getFieldDecorator }
+                        rules={
+                            !this._isFieldDisabled(key)
+                                ? this.requiredRule
+                                : void 0
+                        }
                         disabled={
                             this._isFieldDisabled(key) || editServicesForbidden
                         }
@@ -196,6 +212,8 @@ class ServicesTable extends Component {
                 key:    'count',
                 render: ({ key }) => (
                     <DecoratedInputNumber
+                        formItem
+                        className={ Styles.servicesRequiredFormItem }
                         errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(
@@ -206,6 +224,11 @@ class ServicesTable extends Component {
                             this._getDefaultValue(key, 'serviceCount') || 1
                         }
                         field={ `services[${key}].serviceCount` }
+                        rules={
+                            !this._isFieldDisabled(key)
+                                ? this.requiredRule
+                                : void 0
+                        }
                         getFieldDecorator={ getFieldDecorator }
                         disabled={
                             this._isFieldDisabled(key) || editServicesForbidden

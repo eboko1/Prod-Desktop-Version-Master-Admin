@@ -80,6 +80,15 @@ export default class DetailsTable extends Component {
             keys: [ ..._.keys(orderDetails), this.uuid++ ],
         };
 
+        this.requiredRule = [
+            {
+                required: true,
+                message:  this.props.intl.formatMessage({
+                    id: 'required_field',
+                }),
+            },
+        ];
+
         this.details = this.props.allDetails.details.map(
             ({ detailId, detailName }) => (
                 <Option value={ String(detailId) } key={ `allDetails-${detailId}` }>
@@ -197,7 +206,7 @@ export default class DetailsTable extends Component {
                         const defaultBrands = this._cachedInvoke.getCachedResult(
                             func,
                             args,
-                        ); 
+                        );
 
                         return (
                             <LimitedDecoratedSelect
@@ -343,7 +352,14 @@ export default class DetailsTable extends Component {
                     key:    'price',
                     render: ({ key }) => (
                         <DecoratedInputNumber
+                            className={ Styles.detailsRequiredFormItem }
+                            rules={
+                                !this._isFieldDisabled(key)
+                                    ? this.requiredRule
+                                    : void 0
+                            }
                             errors={ errors }
+                            formItem
                             fieldValue={ _.get(
                                 fields,
                                 `details[${key}].detailPrice`,
@@ -371,7 +387,14 @@ export default class DetailsTable extends Component {
                     key:    'count',
                     render: ({ key }) => (
                         <DecoratedInputNumber
+                            className={ Styles.detailsRequiredFormItem }
+                            rules={
+                                !this._isFieldDisabled(key)
+                                    ? this.requiredRule
+                                    : void 0
+                            }
                             errors={ errors }
+                            formItem
                             fieldValue={ _.get(
                                 fields,
                                 `details[${key}].detailCount`,

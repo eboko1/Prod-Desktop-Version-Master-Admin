@@ -210,21 +210,21 @@ export function convertFieldsValuesToDbEntity(
 export const requiredFieldsOnStatuses = values => {
     /* eslint-disable camelcase */
     let statuses = {
-        invite: [ 'clientVehicle', 'manager', 'clientPhone' ],
-        call:   [ 'clientPhone', 'manager' ],
+        invite: [ 'clientVehicle', 'manager', 'clientPhone', 'services', 'details' ],
+        call:   [ 'clientPhone', 'manager', 'services', 'details' ],
 
-        not_complete: [ 'manager' ],
-        required:     [ 'manager' ],
+        not_complete: [ 'manager', 'services', 'details' ],
+        required:     [ 'manager', 'services', 'details' ],
 
-        reserve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'station' ],
-        approve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'station' ],
+        reserve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'station', 'services', 'details' ],
+        approve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'station', 'services', 'details' ],
 
-        redundant: [],
-        cancel:    [],
+        redundant: [ 'services', 'details' ],
+        cancel:    [ 'services', 'details' ],
 
-        progress: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDate', 'deliveryTime' ],
+        progress: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDate', 'deliveryTime', 'services', 'details' ],
 
-        success: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station'],
+        success: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'services', 'details' ],
     };
 
     if (values[ 'stationLoads[0].beginTime' ] || values [ 'stationLoads[0].beginDate' ]) {
