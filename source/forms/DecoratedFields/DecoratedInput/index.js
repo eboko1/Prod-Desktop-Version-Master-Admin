@@ -31,23 +31,10 @@ export class DecoratedInput extends React.PureComponent {
             initialValue,
             style,
             onChange,
-
-            fieldValue,
-            defaultGetValueProps,
         } = this.props;
 
         const input = getFieldDecorator(field, {
             ...initialValue ? { initialValue } : { initialValue: void 0 },
-            ...defaultGetValueProps
-                ? {
-                    getValueProps: () => ({
-                        value: _.find(
-                            [ fieldValue, initialValue ],
-                            value => !_.isNil(value),
-                        ),
-                    }),
-                }
-                : {},
             rules,
         })(
             <Input

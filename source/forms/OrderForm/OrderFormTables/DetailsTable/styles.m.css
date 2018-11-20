@@ -17,3 +17,7 @@
 .multipleSuggest :global(.ant-input) {
     color: darkred;
 }
+
+.detailsRequiredFormItem:global(.ant-row.ant-form-item) {
+    margin-bottom: 0px;
+}

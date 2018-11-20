@@ -28,3 +28,7 @@
 .serviceSelect {
     width: 220px;
 }
+
+.servicesRequiredFormItem:global(.ant-row.ant-form-item) {
+    margin-bottom: 0px;
+}

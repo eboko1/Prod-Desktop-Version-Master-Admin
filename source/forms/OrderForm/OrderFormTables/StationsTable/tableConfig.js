@@ -17,7 +17,6 @@ import { getDateTimeConfig } from 'utils';
 
 // own
 import Styles from './styles.m.css';
-import OrderFormTabs from '../../OrderFormTabs';
 const Option = Select.Option;
 
 /* eslint-disable complexity */
@@ -48,9 +47,8 @@ export function columnsConfig(
         return fields[ fieldName ];
     };
 
-    const initialStationNum = props.zeroStationLoadStation;
-    const initialBeginDate = props.zeroStationLoadBeginDate;
-    const initialBeginTime = props.zeroStationLoadBeginTime;
+    const initialStation = props.initialStation;
+    const initialBeginDatetime = props.initialBeginDatetime;
 
     const { disabledDate, beginTime } = getDateTimeConfig(
         moment(),
@@ -110,7 +108,7 @@ export function columnsConfig(
                 allowClear={ false }
                 initialValue={
                     _getDefaultValue(key, 'beginDate') ||
-                    (key === 0 ? initialBeginDate : void 0)
+                    (key === 0 ? initialBeginDatetime : void 0)
                 }
             />
         ),
@@ -139,7 +137,7 @@ export function columnsConfig(
                 disabled={ bodyUpdateIsForbidden() }
                 initialValue={
                     _getDefaultValue(key, 'stationNum') ||
-                    (key === 0 ? initialStationNum : void 0)
+                    (key === 0 ? initialStation : void 0)
                 }
             >
                 { props.stations.map(({ name, num }) => {
@@ -217,7 +215,7 @@ export function columnsConfig(
                 minuteStep={ 30 }
                 initialValue={
                     _getDefaultValue(key, 'beginTime') ||
-                    (key === 0 ? initialBeginTime : void 0)
+                    (key === 0 ? initialBeginDatetime : void 0)
                 }
             />
         ),

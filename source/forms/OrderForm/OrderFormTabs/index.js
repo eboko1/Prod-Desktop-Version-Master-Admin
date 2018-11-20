@@ -107,10 +107,8 @@ export default class OrderFormTabs extends Component {
             //fields
             services,
             details,
-            zeroStationLoadBeginDate,
-            zeroStationLoadBeginTime,
-            zeroStationLoadDuration,
-            zeroStationLoadStation,
+            initialStation,
+            initialBeginDatetime,
 
             // stats
             priceDetails,
@@ -128,6 +126,7 @@ export default class OrderFormTabs extends Component {
             changeModalStatus,
 
             fields,
+            errors,
         } = this.props;
 
         const {
@@ -186,6 +185,7 @@ export default class OrderFormTabs extends Component {
                         ) : null }
 
                         <TasksTable
+                            errors={ errors }
                             user={ user }
                             initOrderTasksForm={ initOrderTasksForm }
                             setModal={ setModal }
@@ -203,6 +203,7 @@ export default class OrderFormTabs extends Component {
                     key='2'
                 >
                     <ServicesTable
+                        errors={ errors }
                         fields={ servicesTableFieldsProps }
                         services={ services }
                         employees={ employees }
@@ -231,6 +232,7 @@ export default class OrderFormTabs extends Component {
                     key='3'
                 >
                     <DetailsTable
+                        errors={ errors }
                         fields={ detailsTableFieldsProps }
                         details={ details }
                         tecdocId={ tecdocId }
@@ -270,6 +272,7 @@ export default class OrderFormTabs extends Component {
                     }
                 >
                     <DecoratedTextArea
+                        errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(fields, 'comment') }
                         formItem
@@ -287,6 +290,7 @@ export default class OrderFormTabs extends Component {
                         autosize={ this.commentsAutoSize }
                     />
                     <DecoratedTextArea
+                        errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(fields, 'vehicleCondition') }
                         formItem
@@ -308,6 +312,7 @@ export default class OrderFormTabs extends Component {
                     />
 
                     <DecoratedTextArea
+                        errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(fields, 'businessComment') }
                         formItem
@@ -329,6 +334,7 @@ export default class OrderFormTabs extends Component {
                     />
 
                     <DecoratedTextArea
+                        errors={ errors }
                         defaultGetValueProps
                         fieldValue={ _.get(fields, 'recommendation') }
                         formItem
@@ -396,10 +402,9 @@ export default class OrderFormTabs extends Component {
                     key='7'
                 >
                     <StationsTable
-                        zeroStationLoadBeginDate={ zeroStationLoadBeginDate }
-                        zeroStationLoadBeginTime={ zeroStationLoadBeginTime }
-                        zeroStationLoadDuration={ zeroStationLoadDuration }
-                        zeroStationLoadStation={ zeroStationLoadStation }
+                        errors={ errors }
+                        initialBeginDatetime={ initialBeginDatetime }
+                        initialStation={ initialStation }
                         fields={ stationLoadsFieldsProps }
                         form={ form }
                         schedule={ schedule }

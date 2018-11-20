@@ -26,8 +26,6 @@ export class DecoratedSlider extends React.PureComponent {
             step,
             min,
             max,
-            fieldValue,
-            defaultGetValueProps,
         } = this.props;
 
         const slider = getFieldDecorator(field, {
@@ -35,16 +33,6 @@ export class DecoratedSlider extends React.PureComponent {
                 ? { initialValue: initDuration }
                 : { initialValue: void 0 },
             rules,
-            ...defaultGetValueProps
-                ? {
-                    getValueProps: () => ({
-                        value: _.find(
-                            [ fieldValue, initDuration ],
-                            value => !_.isNil(value),
-                        ),
-                    }),
-                }
-                : {},
         })(
             <Slider
                 disabled={ disabled }

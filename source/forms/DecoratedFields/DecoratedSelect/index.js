@@ -53,8 +53,6 @@ export class DecoratedSelect extends React.PureComponent {
 
             initialValue,
             onFocus,
-            fieldValue,
-            defaultGetValueProps,
         } = this.props;
 
         const renderSelect = (
@@ -120,16 +118,6 @@ export class DecoratedSelect extends React.PureComponent {
         let select = null;
         if (getFieldDecorator) {
             select = getFieldDecorator(field, {
-                ...defaultGetValueProps
-                    ? {
-                        getValueProps: () => ({
-                            value: _.find(
-                                [ fieldValue, initialValue ],
-                                value => !_.isNil(value),
-                            ),
-                        }),
-                    }
-                    : {},
                 ...initialValue
                     ? { initialValue: initialValue }
                     : { initialValue: void 0 },

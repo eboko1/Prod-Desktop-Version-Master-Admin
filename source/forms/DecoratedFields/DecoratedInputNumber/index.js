@@ -37,8 +37,6 @@ export class DecoratedInputNumber extends React.PureComponent {
             placeholder,
 
             cnStyles,
-            fieldValue,
-            defaultGetValueProps,
         } = this.props;
 
         const defaultValue = [ initialValue ].find(_.isNumber);
@@ -48,16 +46,6 @@ export class DecoratedInputNumber extends React.PureComponent {
 
         const inputNumber = getFieldDecorator(field, {
             rules,
-            ...defaultGetValueProps
-                ? {
-                    getValueProps: () => ({
-                        value: _.find(
-                            [ fieldValue, initialValue ],
-                            value => !_.isNil(value),
-                        ),
-                    }),
-                }
-                : {},
             initialValue: numberInitialValue,
         })(
             <InputNumber

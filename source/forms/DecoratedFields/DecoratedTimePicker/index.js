@@ -35,16 +35,10 @@ export class DecoratedTimePicker extends React.PureComponent {
             initialValue: initialInitialValue,
             defaultOpenValue: initialDefaultOpenValue,
             onChange,
-
-            defaultGetValueProps,
-            fieldValue: initialFieldValue,
         } = this.props;
         const defaultOpenValue = _.isString(initialDefaultOpenValue)
             ? moment(initialDefaultOpenValue)
             : initialDefaultOpenValue;
-        const fieldValue = _.isString(initialFieldValue)
-            ? moment(initialFieldValue)
-            : initialFieldValue;
         const initialValue = _.isString(initialInitialValue)
             ? moment(initialInitialValue)
             : initialInitialValue;
@@ -52,16 +46,6 @@ export class DecoratedTimePicker extends React.PureComponent {
         const timePicker = getFieldDecorator(field, {
             ...initialValue ? { initialValue } : { initialValue: void 0 },
             rules,
-            ...defaultGetValueProps
-                ? {
-                    getValueProps: () => ({
-                        value: _.find(
-                            [ fieldValue, initialValue ],
-                            value => !_.isNil(value),
-                        ),
-                    }),
-                }
-                : {},
         })(
             <TimePicker
                 defaultOpenValue={ defaultOpenValue }

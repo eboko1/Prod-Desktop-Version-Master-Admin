@@ -23,24 +23,11 @@ export class DecoratedCheckbox extends React.PureComponent {
             initialValue,
             children,
             onChange,
-
-            fieldValue,
-            defaultGetValueProps,
         } = this.props;
 
         const checkbox = getFieldDecorator(field, {
             valuePropName: 'checked',
             initialValue:  Boolean(initialValue),
-            ...defaultGetValueProps
-                ? {
-                    getValueProps: () => ({
-                        value: _.find(
-                            [ fieldValue, initialValue ],
-                            value => !_.isNil(value),
-                        ),
-                    }),
-                }
-                : {},
             rules,
         })(
             <Checkbox disabled={ disabled } onChange={ onChange }>
