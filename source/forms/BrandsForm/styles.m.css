@@ -1,4 +1,3 @@
-
 .brandDeleteIcon {
     font-size: 24px;
     cursor: pointer;
@@ -25,4 +24,8 @@
     font-size: 24px;
     cursor: pointer;
     color: green;
+}
+
+.swapIcon {
+    cursor: pointer;
 }

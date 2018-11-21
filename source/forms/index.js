@@ -29,6 +29,7 @@ import { SalaryReportForm } from './SalaryReportForm';
 import { TecDocForm } from './TecDocForm';
 import { ServicesForm } from './ServicesForm';
 import { BrandsForm } from './BrandsForm';
+import { SetDetailProductForm } from './SetDetailProductForm';
 
 export {
     LoginForm,
@@ -62,4 +63,5 @@ export {
     TecDocForm,
     ServicesForm,
     BrandsForm,
+    SetDetailProductForm,
 };

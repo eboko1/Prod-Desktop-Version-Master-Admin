@@ -17,9 +17,7 @@ import businessPackageReducer, {
 import editPackageReducer, {
     moduleName as editPackage,
 } from './editPackageForm/duck';
-import brandsReducer, {
-    moduleName as brands
-} from './brandsForm/duck';
+import brandsReducer, { moduleName as brands } from './brandsForm/duck';
 
 import addRoleReducer, { moduleName as addRole } from './addRoleForm/duck';
 import editRoleReducer, { moduleName as editRole } from './editRoleForm/duck';
@@ -99,8 +97,13 @@ import servicesReducer, {
     moduleName as services,
 } from 'core/forms/servicesForm/duck';
 
+import setDetailProductReducer, {
+    moduleName as setDetailProduct,
+} from 'core/forms/setDetailProduct/duck';
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
+    [ setDetailProduct ]:        setDetailProductReducer,
     [ addBusinessPackage ]:      addBusinessPackageReducer,
     [ addClient ]:               addClientReducer,
     [ addClientRequisite ]:      addClientRequisiteReducer,

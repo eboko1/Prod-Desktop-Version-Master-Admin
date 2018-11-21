@@ -1,0 +1,23 @@
+{
+    "en": {
+        "detail_product.detail_id": "CB Detail ID",
+        "detail_product.product_id": "TecDoc Product ID",
+        "detail_product.article_number": "TecDoc Article Number",
+        "detail_product.supplier_id": "TecDoc Supplier ID",
+        "detail_product.fetch_product_names": "Fetch product names"
+    },
+    "ru": {
+        "detail_product.detail_id": "CB Деталь",
+        "detail_product.product_id": "TecDoc Деталь",
+        "detail_product.article_number": "TecDoc Номер Артикула",
+        "detail_product.supplier_id": "TecDoc Производитель",
+        "detail_product.fetch_product_names": "Найти названия в TecDoc"
+    },
+    "uk": {
+        "detail_product.detail_id": "CB Деталь",
+        "detail_product.product_id": "TecDoc Деталь",
+        "detail_product.article_number": "TecDoc Номер Артикула",
+        "detail_product.supplier_id": "TecDoc Виробник",
+        "detail_product.fetch_product_names": "Знайти назви в TecDoc"
+    }
+}
