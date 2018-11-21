@@ -122,6 +122,7 @@ class ArrayBreakScheduleInput extends Component {
             width:  '35%',
             render: (text, { key }) => (
                 <DecoratedInput
+                    fields={ this.props.fields }
                     field={ `schedule[${key}][note]` }
                     getFieldDecorator={ getFieldDecorator }
                     initialValue={ _.get(initialBreakSchedule, [ key, 'note' ]) }

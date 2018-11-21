@@ -61,6 +61,7 @@ export function columnsConfig(
         width:     '15%',
         render:    (text, record) => (
             <DecoratedDatePicker
+                fields={ {} }
                 field={ `settingSalaries[${record.key}][startDate]` }
                 // initialValue={ moment(startDate) }
                 initialValue={ getDateTitle(record.key, 'startDate') }
@@ -78,6 +79,7 @@ export function columnsConfig(
         render:    (text, record) => {
             return (
                 <DecoratedDatePicker
+                    fields={ {} }
                     field={ `settingSalaries[${record.key}][endDate]` }
                     initialValue={ getDateTitle(record.key, 'endDate') }
                     format='YYYY-MM-DD'
@@ -95,6 +97,7 @@ export function columnsConfig(
         width:     '10%',
         render:    (text, record) => (
             <DecoratedInputNumber
+                fields={ {} }
                 initialValue={ _.get(initialSettingSalaries, [ record.key, 'ratePerPeriod' ]) }
                 field={ `settingSalaries[${record.key}][ratePerPeriod]` }
                 getFieldDecorator={ getFieldDecorator }
@@ -167,6 +170,7 @@ export function columnsConfig(
         render:    (text, record) => (
             <Row type='flex' align='center'>
                 <DecoratedCheckbox
+                    fields={ {} }
                     field={ `settingSalaries[${record.key}][considerDiscount]` }
                     getFieldDecorator={ getFieldDecorator }
                     initialValue={ _.get(initialSettingSalaries, [ record.key, 'considerDiscount' ]) }
