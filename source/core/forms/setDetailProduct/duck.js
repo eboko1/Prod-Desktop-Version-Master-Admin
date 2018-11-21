@@ -16,6 +16,7 @@ export const FETCH_PRODUCT_NAMES = `${prefix}/FETCH_PRODUCT_NAMES`;
 export const FETCH_PRODUCT_NAMES_SUCCESS = `${prefix}/FETCH_PRODUCT_NAMES_SUCCESS`;
 
 export const SUBMIT_DETAIL_PRODUCT = `${prefix}/SUBMIT_DETAIL_PRODUCT`;
+export const SUBMIT_DETAIL_PRODUCT_SUCCESS = `${prefix}/SUBMIT_DETAIL_PRODUCT_SUCCESS`;
 
 /**
  * Reducer
@@ -69,7 +70,7 @@ export default function reducer(state = ReducerState, action) {
                 products: payload,
             };
 
-        case SUBMIT_DETAIL_PRODUCT:
+        case SUBMIT_DETAIL_PRODUCT_SUCCESS:
             return {
                 ...state,
                 fields:   {},
@@ -96,6 +97,10 @@ export const stateSelector = state => state[ moduleName ];
 export const submitDetailProduct = (detailId, productId) => ({
     type:    SUBMIT_DETAIL_PRODUCT,
     payload: { detailId, productId },
+});
+
+export const submitDetailProductSuccess = () => ({
+    type: SUBMIT_DETAIL_PRODUCT_SUCCESS,
 });
 
 export const fetchDetails = () => ({

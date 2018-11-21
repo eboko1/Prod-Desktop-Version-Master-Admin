@@ -101,8 +101,13 @@ import setDetailProductReducer, {
     moduleName as setDetailProduct,
 } from 'core/forms/setDetailProduct/duck';
 
+import spreadBusinessBrandsReducer, {
+    moduleName as spreadBusinessBrands,
+} from 'core/forms/spreadBusinessBrands/duck';
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
+    [ spreadBusinessBrands ]:    spreadBusinessBrandsReducer,
     [ setDetailProduct ]:        setDetailProductReducer,
     [ addBusinessPackage ]:      addBusinessPackageReducer,
     [ addClient ]:               addClientReducer,

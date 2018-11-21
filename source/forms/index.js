@@ -30,6 +30,7 @@ import { TecDocForm } from './TecDocForm';
 import { ServicesForm } from './ServicesForm';
 import { BrandsForm } from './BrandsForm';
 import { SetDetailProductForm } from './SetDetailProductForm';
+import { SpreadBusinessBrandsForm } from './SpreadBusinessBrandsForm';
 
 export {
     LoginForm,
@@ -64,4 +65,5 @@ export {
     ServicesForm,
     BrandsForm,
     SetDetailProductForm,
+    SpreadBusinessBrandsForm,
 };

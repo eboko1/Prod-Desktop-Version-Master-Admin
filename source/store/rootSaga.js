@@ -46,6 +46,7 @@ import { saga as tecDocFormSaga } from 'core/forms/tecDocForm/saga';
 import { saga as servicesFormSaga } from 'core/forms/servicesForm/saga';
 import { saga as brandsSaga } from 'core/forms/brandsForm/saga';
 import { saga as setDetailProductSaga } from 'core/forms/setDetailProduct/saga';
+import { saga as spreadBusinessSaga } from 'core/forms/spreadBusinessBrands/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -100,6 +101,7 @@ export default function* rootSaga() {
         brandsSaga(),
         vehicleNumberHistorySaga(),
         setDetailProductSaga(),
+        spreadBusinessSaga(),
     ]);
 }
 /* eslint-enable array-element-newline */

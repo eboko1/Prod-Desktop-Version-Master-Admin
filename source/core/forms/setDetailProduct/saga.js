@@ -13,6 +13,7 @@ import {
     fetchDetails,
     fetchDetailsSuccess,
     fetchProductNamesSuccess,
+    submitDetailProductSuccess,
 } from './duck';
 
 export function* submitDetailProductSaga() {
@@ -25,6 +26,7 @@ export function* submitDetailProductSaga() {
             productId,
         });
 
+        yield put(submitDetailProductSuccess());
         yield put(fetchDetails());
     }
 }
