@@ -120,6 +120,7 @@ class ArrayInput extends Component {
                             <DecoratedInputNumber
                                 { ...options }
                                 hasFeedback
+                                fields={ {} }
                                 initialValue={ this._getDefaultValue(key) }
                                 formItem
                                 label={ fieldTitle }
@@ -132,6 +133,7 @@ class ArrayInput extends Component {
                             <DecoratedInput
                                 { ...options }
                                 hasFeedback
+                                fields={ {} }
                                 initialValue={ this._getDefaultValue(key) }
                                 formItem
                                 label={ fieldTitle }

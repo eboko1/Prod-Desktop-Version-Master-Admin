@@ -96,10 +96,16 @@ export class CancelReasonForm extends Component {
                 ) }
                 <DecoratedTextArea
                     field='cancelComment'
+                    formItem
+                    rules={ [
+                        {
+                            max:     2000,
+                            message: formatMessage({
+                                id: 'field_should_be_below_2000_chars',
+                            }),
+                        },
+                    ] }
                     getFieldDecorator={ getFieldDecorator }
-                    placeholder={ formatMessage({
-                        id: 'cancel_reason.other_cancel_reason',
-                    }) }
                     rows={ 4 }
                     autosize={ { minRows: 2, maxRows: 6 } }
                 />
