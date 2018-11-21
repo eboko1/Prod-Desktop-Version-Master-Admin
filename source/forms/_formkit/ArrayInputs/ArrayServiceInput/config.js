@@ -97,6 +97,7 @@ export function columnsConfig(
         width:  '10%',
         render: (text, { key }) => (
             <DecoratedInputNumber
+                fields={ {} }
                 field={ `service[${key}][quantity]` }
                 getFieldDecorator={ props.form.getFieldDecorator }
                 initialValue={ _getDefaultValue(key, 'quantity') }

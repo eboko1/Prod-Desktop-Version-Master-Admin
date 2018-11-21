@@ -201,6 +201,7 @@ export class UniversalFiltersForm extends Component {
                             }
                         >
                             <DecoratedInputNumber
+                                fields={ {} }
                                 field='odometerGreater'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }
@@ -225,6 +226,7 @@ export class UniversalFiltersForm extends Component {
                             }
                         >
                             <DecoratedInputNumber
+                                fields={ {} }
                                 field='odometerLower'
                                 getFieldDecorator={ getFieldDecorator }
                                 placeholder={ formatMessage({
@@ -320,6 +322,7 @@ export class UniversalFiltersForm extends Component {
                             }
                         >
                             <DecoratedInputNumber
+                                fields={ {} }
                                 field='ordersGreater'
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
@@ -341,6 +344,7 @@ export class UniversalFiltersForm extends Component {
                             }
                         >
                             <DecoratedInputNumber
+                                fields={ {} }
                                 field='ordersLower'
                                 getFieldDecorator={ getFieldDecorator }
                                 // style={ { width: 200 } }
@@ -402,6 +406,7 @@ export class UniversalFiltersForm extends Component {
                             }
                         >
                             <DecoratedInputNumber
+                                fields={ {} }
                                 field='notVisitDays'
                                 showSearch
                                 getFieldDecorator={ getFieldDecorator }

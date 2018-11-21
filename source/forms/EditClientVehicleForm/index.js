@@ -170,8 +170,7 @@ export class EditClientVehicleForm extends Component {
                                             onClick={ () =>
                                                 setEditVehicle(true)
                                             }
-                                        >
-                                        </Button>
+                                        />
                                     ) }
                                     { editableItem === index &&
                                         editVehicle && (
@@ -196,6 +195,7 @@ export class EditClientVehicleForm extends Component {
                                 </Col>
                                 <Col span={ 2 }>
                                     <DecoratedCheckbox
+                                        fields={ {} }
                                         field={ `clientVehicles[${index}].enabled` }
                                         initialValue={ !item.disabled }
                                         disabled={ editableItem !== index }
@@ -208,7 +208,9 @@ export class EditClientVehicleForm extends Component {
                                     { editableItem === index ? (
                                         <DecoratedInput
                                             formItem
-                                            className={ Styles.editClientVehicleFormItem }
+                                            className={
+                                                Styles.editClientVehicleFormItem
+                                            }
                                             field={ `clientVehicles[${index}].vehicleNumber` }
                                             initialValue={ item.number }
                                             rules={ [
@@ -235,7 +237,10 @@ export class EditClientVehicleForm extends Component {
                                 <Col span={ 4 }>
                                     { editableItem === index ? (
                                         <DecoratedInput
-                                            className={ Styles.editClientVehicleFormItem }
+                                            fields={ {} }
+                                            className={
+                                                Styles.editClientVehicleFormItem
+                                            }
                                             formItem
                                             field={ `clientVehicles[${index}].vehicleVin` }
                                             initialValue={ item.vin }
