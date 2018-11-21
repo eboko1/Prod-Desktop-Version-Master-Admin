@@ -78,6 +78,7 @@ export default class ArrayScheduleInput extends Component {
                 render: (text, record) => (
                     <Col span={ 12 }>
                         <DecoratedCheckbox
+                            fields={ this.props.fields }
                             field={ `schedule[${record.key}][${day}]` }
                             getFieldDecorator={ getFieldDecorator }
                             initialValue={ _.get(initialSchedule, [ record.key, day ]) }
@@ -119,6 +120,7 @@ export default class ArrayScheduleInput extends Component {
                 width:  '10%',
                 render: (text, record) => (
                     <DecoratedTimePicker
+                        fields={ this.props.fields }
                         field={ `schedule[${record.key}][${name}]` }
                         initialValue={ getHourTitle(record.key, name) }
                         formatMessage={ formatMessage }
@@ -140,7 +142,10 @@ export default class ArrayScheduleInput extends Component {
                             className={ Styles.scheduleIcon }
                             onClick={ () => {
                                 const callback = entity => {
-                                    const initialEntity = _.get(initialSchedule, [ key ]);
+                                    const initialEntity = _.get(
+                                        initialSchedule,
+                                        [ key ],
+                                    );
                                     if (initialEntity) {
                                         const { id } = initialEntity;
                                         this.props.updateSchedule(id, entity);
