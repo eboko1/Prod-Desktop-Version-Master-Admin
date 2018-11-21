@@ -51,6 +51,7 @@ export class SalaryReportForm extends Component {
                         <Row type='flex' align='column'>
                             <Col span='10'>
                                 <DecoratedDatePicker
+                                    fields={ {} }
                                     cnStyles={ Styles.salaryReportSelect }
                                     field='filterRangeDate'
                                     ranges
