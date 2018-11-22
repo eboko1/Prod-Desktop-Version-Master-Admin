@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Form, Select } from 'antd';
+import _ from 'lodash';
 
 // proj
 import {
@@ -13,7 +14,6 @@ import {
 // own
 import { cellType } from './cellConfig';
 import Styles from '../styles.m.css';
-// const FormItem = Form.Item;
 const Option = Select.Option;
 
 export const EditableContext = React.createContext();
@@ -73,13 +73,14 @@ export class EditableCell extends Component {
             if (error) {
                 return;
             }
-            const cellValue = Number(Object.values(values)[ 0 ]);
-
             this._toggleEdit();
-
-            cellValue
-                ? handleSave({ ...record, detailId: cellValue })
-                : handleSave({ ...record });
+            if (Number(values.detailId)) {
+                handleSave({ ...record, ...values });
+            } else if (values.quantity) {
+                handleSave({ ...record, ...values });
+            } else {
+                handleSave({ ...record });
+            }
         });
     };
 
@@ -102,27 +103,10 @@ export class EditableCell extends Component {
                     <EditableContext.Consumer>
                         { form => {
                             this.form = form;
-                            // console.log('→ record', record);
 
-                            return editing ?
+                            return editing ? 
                                 this._renderCell(form)
                                 : (
-                                // <FormItem style={ { margin: 0 } }>
-                                //     { form.getFieldDecorator(dataIndex, {
-                                //         rules: [
-                                //             {
-                                //                 required: true,
-                                //                 message:  `${title} is required.`,
-                                //             },
-                                //         ],
-                                //         initialValue: record[ dataIndex ],
-                                //     })(
-                                //         <Input
-                                //             ref={node => (this.input = node)} // eslint-disable-line
-                                //             onPressEnter={ this._save }
-                                //         />,
-                                //     ) }
-                                // </FormItem>
                                     <div
                                         className={ Styles.editableCellValueWrap }
                                         style={ { paddingRight: 24 } }
@@ -133,7 +117,7 @@ export class EditableCell extends Component {
                                 );
                         } }
                     </EditableContext.Consumer>
-                ) :
+                ) : 
                     restProps.children
                 }
             </td>

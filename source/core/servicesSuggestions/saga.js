@@ -1,5 +1,6 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
+import nprogress from 'nprogress';
 
 //proj
 import { emitError, setSuggestionsFetching } from 'core/ui/duck';
@@ -13,7 +14,8 @@ export function* fetchServicesSaga() {
     while (true) {
         try {
             yield take(FETCH_SERVICES_SUGGESTIONS);
-            yield put(setSuggestionsFetching(true));
+            // yield put(setSuggestionsFetching(true));
+            yield nprogress.start();
 
             const filters = yield select(selectFilters);
 
@@ -44,7 +46,8 @@ export function* fetchServicesSaga() {
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield put(setSuggestionsFetching(false));
+            // yield put(setSuggestionsFetching(false));
+            yield nprogress.done();
         }
     }
 }
