@@ -19,6 +19,35 @@ const Option = Select.Option;
 
 @injectIntl
 class ServicesTable extends Component {
+
+    constructor(props) {
+        super(props);
+
+        const orderServices = props.orderServices || [];
+        this.uuid = orderServices.length;
+
+        this._handleSelectMap = {};
+        this._localizationMap = {};
+
+        const options = this._getServicesOptions();
+        const employeesOptions = this._getEmployeesOptions();
+
+        this.requiredRule = [
+            {
+                required: true,
+                message:  this.props.intl.formatMessage({
+                    id: 'required_field',
+                }),
+            },
+        ];
+
+        this.state = {
+            keys: [ ..._.keys(orderServices), this.uuid++ ],
+            options,
+            employeesOptions,
+        };
+    }
+
     componentDidUpdate(nextProps) {
         if (nextProps.employees !== this.props.employees) {
             const employeesOptions = this._getEmployeesOptions();
@@ -31,9 +60,18 @@ class ServicesTable extends Component {
         }
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            !_.isEqual(nextProps, this.props) ||
+            !_.isEqual(nextState, this.state)
+        );
+    }
+
+    // common formatter & parser for DecoratedInputNumber
     _formatter = value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
     _parser = value => `${value}`.replace(/\$\s?|(\s)/g, '');
 
+    // TODO: move into utils
     _getLocalization(key) {
         if (!this._localizationMap[ key ]) {
             this._localizationMap[ key ] = this.props.intl.formatMessage({
@@ -44,6 +82,7 @@ class ServicesTable extends Component {
         return this._localizationMap[ key ];
     }
 
+    // if selected client car has tecdoc id, we fetch suggestions
     _onServiceSelect = item => {
         const { fields, selectedClient } = this.props;
         const id = Number(item.replace(/[^\d]/g, ''));
@@ -82,36 +121,8 @@ class ServicesTable extends Component {
             </Option>
         ));
     }
-
-    constructor(props) {
-        super(props);
-
-        const orderServices = props.orderServices || [];
-        this.uuid = orderServices.length;
-
-        this._handleSelectMap = {};
-        this._localizationMap = {};
-
-        const options = this._getServicesOptions();
-        const employeesOptions = this._getEmployeesOptions();
-
-        this.requiredRule = [
-            {
-                required: true,
-                message:  this.props.intl.formatMessage({
-                    id: 'required_field',
-                }),
-            },
-        ];
-
-        this.state = {
-            keys: [ ..._.keys(orderServices), this.uuid++ ],
-            options,
-            employeesOptions,
-        };
-    }
-
-    calculateColumns() {
+    //TODO: move into config
+    _calculateColumns() {
         const {
             form: { getFieldDecorator },
             fields,
@@ -347,6 +358,8 @@ class ServicesTable extends Component {
         return _.get(baseService, 'servicePrice');
     };
 
+    // get default value of field
+    // this method returns based on order API response ? response value : initialValue
     _getDefaultValue = (key, fieldName) => {
         const orderService = (this.props.orderServices || [])[ key ];
         const allServices = this.props.allServices;
@@ -394,13 +407,6 @@ class ServicesTable extends Component {
         });
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return (
-            !_.isEqual(nextProps, this.props) ||
-            !_.isEqual(nextState, this.state)
-        );
-    }
-
     _handleAdd = () => {
         const { keys } = this.state;
         this.setState({ keys: [ ...keys, this.uuid++ ] });
@@ -408,7 +414,7 @@ class ServicesTable extends Component {
 
     render() {
         const { keys } = this.state;
-        const columns = this.calculateColumns();
+        const columns = this._calculateColumns();
 
         return (
             <Catcher>

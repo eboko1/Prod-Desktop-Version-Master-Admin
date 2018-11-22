@@ -59,7 +59,7 @@ export default class OrderFormTabs extends Component {
         ];
         this.commentsAutoSize = { minRows: 2, maxRows: 6 };
     }
-
+    // TODO: move into utils
     _getLocalization(key) {
         if (!this._localizationMap[ key ]) {
             this._localizationMap[ key ] = this.props.intl.formatMessage({

@@ -540,8 +540,10 @@ export default class DetailsTable extends Component {
             this.props.detailsSuggestions !== prevProps.detailsSuggestions &&
             this.props.detailsSuggestions.length
         ) {
+            // set detail code and brand after detail select
             const fields = _.map(this.props.detailsSuggestions, suggestion => {
                 const { key, suggestions } = suggestion;
+                // format to antd format
                 const config = [
                     {
                         name:  `details[${key}].detailCode`,
@@ -562,7 +564,7 @@ export default class DetailsTable extends Component {
                     .fromPairs()
                     .value();
             });
-
+            // clear recommendation and set new values
             this.props.clearTecdocDetailsSuggestions();
             setFieldsValue(_.merge(...fields));
         }

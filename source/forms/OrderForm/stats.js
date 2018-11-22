@@ -1,5 +1,6 @@
 import _ from 'lodash';
 
+// function helper for servicesStats & detailsStats
 function calculateStats(entries) {
     const price = entries.reduce(
         (prev, { price, count }) => prev + count * price,
@@ -10,6 +11,7 @@ function calculateStats(entries) {
     return { price, count };
 }
 
+// count sum and total hours for SERVICES tab
 export const servicesStats = (selectedServices, allServices) => {
     const selectedSimpleServices = _(selectedServices)
         .filter(service => _.get(service, 'serviceName'))
@@ -37,6 +39,7 @@ export const servicesStats = (selectedServices, allServices) => {
     };
 };
 
+//  count sum and total hours for DETAILS tab
 export const detailsStats = selectedDetails => {
     const selectedSimpleDetails = _(selectedDetails)
         .values()

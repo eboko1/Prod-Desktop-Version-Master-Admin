@@ -5,6 +5,7 @@ import moment from 'moment';
 // proj
 import { permissions, isForbidden } from 'utils';
 
+/* eslint-disable complexity */
 export function convertFieldsValuesToDbEntity(
     orderFields,
     allServices,
@@ -76,6 +77,7 @@ export function convertFieldsValuesToDbEntity(
     const deliveryDate = _.get(orderFields, 'deliveryDate');
     const deliveryTime = _.get(orderFields, 'deliveryTime');
 
+    // TODO: refactor for utils concatDateTime @yz
     const dayPart =
         beginDate &&
         moment(beginDate)
@@ -105,16 +107,25 @@ export function convertFieldsValuesToDbEntity(
         hourPart &&
         moment(`${dayPart}T${hourPart}:00.000Z`).toISOString();
 
-    const deliveryDatetime = deliveryDayPart && deliveryHourPart
-        ? moment(`${deliveryDayPart}T${deliveryHourPart}:00.000Z`).toISOString() // eslint-disable-next-line no-extra-parens
-        : (status === 'success' ? moment(new Date()).toISOString() : null);
+    const deliveryDatetime =
+        deliveryDayPart && deliveryHourPart
+            ? moment(
+                `${deliveryDayPart}T${deliveryHourPart}:00.000Z`,
+            ).toISOString() // eslint-disable-next-line no-extra-parens
+            : status === 'success'
+                ? moment(new Date()).toISOString()
+                : null;
 
     const orderDuration = _.get(orderFields, 'stationLoads[0].duration');
 
     const stationLoadsEntity = _.get(orderFields, 'stationLoads')
         .filter(
             ({ beginDate, beginTime, station }) =>
-                ![ beginDate, beginTime, station ].some(_.isNil),
+                ![
+                    beginDate,
+                    beginTime,
+                    station,
+                ].some(_.isNil),
         )
         .map(obj => {
             const dayPart =
@@ -135,14 +146,19 @@ export function convertFieldsValuesToDbEntity(
                 moment(`${dayPart}T${hourPart}:00.000Z`).toISOString();
 
             return {
-                ..._.omit(obj, [ 'beginDate', 'beginTime', 'station' ]),
+                ..._.omit(obj, [
+                    'beginDate',
+                    'beginTime',
+                    'station', 
+                ]),
                 stationNum: obj.station,
                 beginDatetime,
             };
         });
 
     const stationLoads = _.each(stationLoadsEntity);
-
+    // TODO: rewrite this method
+    // prepare order to request format
     const order = {
         clientId:                    _.get(orderFields, 'selectedClient.clientId'),
         clientVehicleId:             _.get(orderFields, 'clientVehicle'),
@@ -177,11 +193,16 @@ export function convertFieldsValuesToDbEntity(
         order,
         value => value === '' ? null : value,
     );
-
+    // omit forbidden fields
     const rolesOmitFieldsFunctions = [
         orderEntity =>
             isForbidden(user, permissions.ACCESS_ORDER_COMMENTS)
-                ? _.omit(orderEntity, [ 'recommendation', 'vehicleCondition', 'businessComment', 'comment' ])
+                ? _.omit(orderEntity, [
+                    'recommendation',
+                    'vehicleCondition',
+                    'businessComment',
+                    'comment',
+                ])
                 : orderEntity,
         orderEntity =>
             isForbidden(user, permissions.ACCESS_ORDER_STATUS)
@@ -197,7 +218,17 @@ export function convertFieldsValuesToDbEntity(
                 : orderEntity,
         orderEntity =>
             isForbidden(user, permissions.ACCESS_ORDER_BODY)
-                ? _.pick(orderEntity, [ 'recommendation', 'vehicleCondition', 'businessComment', 'comment', 'status', 'services', 'servicesDiscount', 'details', 'detailsDiscount' ])
+                ? _.pick(orderEntity, [
+                    'recommendation',
+                    'vehicleCondition',
+                    'businessComment',
+                    'comment',
+                    'status',
+                    'services',
+                    'servicesDiscount',
+                    'details',
+                    'detailsDiscount',
+                ])
                 : orderEntity,
     ];
 
@@ -207,34 +238,100 @@ export function convertFieldsValuesToDbEntity(
     );
 }
 
+// required fields list ( Form rules helper)
 export const requiredFieldsOnStatuses = values => {
     /* eslint-disable camelcase */
     let statuses = {
-        invite: [ 'clientVehicle', 'manager', 'clientPhone', 'services', 'details' ],
-        call:   [ 'clientPhone', 'manager', 'services', 'details' ],
+        invite: [
+            'clientVehicle',
+            'manager',
+            'clientPhone',
+            'services',
+            'details',
+        ],
+        call: [
+            'clientPhone',
+            'manager',
+            'services',
+            'details',
+        ],
 
-        not_complete: [ 'manager', 'services', 'details' ],
-        required:     [ 'manager', 'services', 'details' ],
+        not_complete: [
+            'manager',
+            'services',
+            'details', 
+        ],
+        required: [
+            'manager',
+            'services',
+            'details',
+        ],
 
-        reserve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'station', 'services', 'details' ],
-        approve: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'station', 'services', 'details' ],
+        reserve: [
+            'stationLoads[0].beginDate',
+            'stationLoads[0].beginTime',
+            'manager',
+            'station',
+            'services',
+            'details',
+        ],
+        approve: [
+            'stationLoads[0].beginDate',
+            'stationLoads[0].beginTime',
+            'manager',
+            'clientPhone',
+            'station',
+            'services',
+            'details',
+        ],
 
         redundant: [ 'services', 'details' ],
         cancel:    [ 'services', 'details' ],
 
-        progress: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'deliveryDate', 'deliveryTime', 'services', 'details' ],
+        progress: [
+            'stationLoads[0].beginDate',
+            'stationLoads[0].beginTime',
+            'manager',
+            'clientPhone',
+            'clientVehicle',
+            'station',
+            'deliveryDate',
+            'deliveryTime',
+            'services',
+            'details',
+        ],
 
-        success: [ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'manager', 'clientPhone', 'clientVehicle', 'station', 'services', 'details' ],
+        success: [
+            'stationLoads[0].beginDate',
+            'stationLoads[0].beginTime',
+            'manager',
+            'clientPhone',
+            'clientVehicle',
+            'station',
+            'services',
+            'details',
+        ],
     };
 
-    if (values[ 'stationLoads[0].beginTime' ] || values [ 'stationLoads[0].beginDate' ]) {
+    if (
+        values[ 'stationLoads[0].beginTime' ] ||
+        values[ 'stationLoads[0].beginDate' ]
+    ) {
         statuses = _.mapValues(statuses, fields =>
-            _.uniq([ ...fields, 'stationLoads[0].beginTime', 'stationLoads[0].beginDate' ]));
+            _.uniq([
+                ...fields,
+                'stationLoads[0].beginTime',
+                'stationLoads[0].beginDate',
+            ]));
     }
 
     if (values.deliveryDate || values.deliveryTime) {
         statuses = _.mapValues(statuses, fields =>
-            _.uniq([ ...fields, 'deliveryDate', 'deliveryTime' ]));
+            _.uniq([
+                ...fields,
+                'deliveryDate',
+                'deliveryTime',
+            ]));
     }
 
     return statuses;

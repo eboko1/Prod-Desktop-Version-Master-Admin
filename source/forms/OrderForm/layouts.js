@@ -57,7 +57,7 @@ export const formRecommendationLayout = {
     },
     colon: false,
 };
-export const fromExpandedCommentLayot = {
+export const fromExpandedCommentLayout = {
     labelCol: {
         xs:  { span: 24 },
         sm:  { span: 24 },
