@@ -52,7 +52,9 @@
         "add_order_form.delivery_date": "Delivery date",
         "add_order_form.delivery_time": "Delivery time",
         "add_order_form.applied_on": "Applied on",
-        "order_form_table.station": "Station"
+        "order_form_table.station": "Station",
+        "order-form.update_modification_info": "Please update a vehicle modification",
+        "order-form.warning": "Warning"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -107,7 +109,9 @@
         "add_order_form.delivery_date": "Дата выдачи",
         "add_order_form.delivery_time": "Время выдачи",
         "add_order_form.applied_on": "Записан на",
-        "order_form_table.station": "Пост"
+        "order_form_table.station": "Пост",
+        "order-form.update_modification_info": "Обновите, пожалуйста, модификацию автомобиля",
+        "order-form.warning": "Внимание!"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -162,6 +166,8 @@
         "add_order_form.delivery_date": "Дата видачі",
         "add_order_form.delivery_time": "Час видачі",
         "add_order_form.applied_on": "Записан на",
-        "order_form_table.station": "Пост"
+        "order_form_table.station": "Пост",
+        "order-form.update_modification_info": "Оновіть, будь ласка, модифікацію автомобіля",
+        "order-form.warning": "Увага!"
     }
 }

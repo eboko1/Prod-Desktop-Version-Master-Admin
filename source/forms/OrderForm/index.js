@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Form } from 'antd';
+import { Form, notification } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
@@ -60,6 +60,19 @@ export class OrderForm extends Component {
         formValues: {},
     };
 
+    _openNotification = () => {
+        const params = {
+            message: this.props.intl.formatMessage({
+                id: 'order-form.warning',
+            }),
+            description: this.props.intl.formatMessage({
+                id: 'order-form.update_modification_info',
+            }),
+            duration: 0,
+        };
+        notification.open(params);
+    };
+
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
         this.setState({ initialized: true });
@@ -71,6 +84,20 @@ export class OrderForm extends Component {
         // It's providing actual form data for all cases
         const { formValues: prevFormValues } = this.state;
         const formValues = this.props.form.getFieldsValue();
+        const newClientVehicleId = formValues.clientVehicle;
+        const oldClientVehicleId = prevFormValues.clientVehicle;
+
+        if (newClientVehicleId !== oldClientVehicleId && newClientVehicleId) {
+            const newClientVehicle = this._getClientVehicle(newClientVehicleId);
+            if (!newClientVehicle.modificationId) {
+                this._openNotification();
+            } else if (
+                newClientVehicle.bodyType &&
+                !newClientVehicle.tecdocId
+            ) {
+                this._openNotification();
+            }
+        }
 
         if (!_.isEqual(formValues, prevFormValues)) {
             this.setState({ formValues });
@@ -117,6 +144,16 @@ export class OrderForm extends Component {
 
     _bodyUpdateIsForbidden = () =>
         isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
+
+    _getClientVehicle = clientVehicleId => {
+        const vehicles = _.get(this.props, 'selectedClient.vehicles');
+
+        return clientVehicleId && _.isArray(vehicles)
+            ? _.chain(vehicles)
+                .find({ id: clientVehicleId })
+                .value()
+            : null;
+    };
 
     _getTecdocId = () => {
         const { form } = this.props;
