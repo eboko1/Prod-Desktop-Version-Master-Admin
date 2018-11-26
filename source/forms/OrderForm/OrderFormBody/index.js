@@ -23,7 +23,7 @@ import Styles from './styles.m.css';
 import {
     formVerticalLayout,
     formCommentLayout,
-    fromExpandedCommentLayot,
+    fromExpandedCommentLayout,
     formRecommendationLayout,
 } from '../layouts';
 import { ClientsSearchTable } from './../OrderFormTables';
@@ -31,6 +31,8 @@ const Option = Select.Option;
 
 let cx = classNames.bind(Styles);
 
+// TODO: @yan
+// specific label name formating
 function formatVehicleLabel(vehicle, formatMessage) {
     const modelPart = vehicle.model
         ? `${vehicle.make} ${vehicle.model}`
@@ -98,7 +100,7 @@ export default class OrderFormBody extends Component {
         const clientEmailLabel = this._getClientEmailLabel();
         const recommendationStyles = this._getRecommendationStyles();
 
-        // Configute initial state
+        // Configure initial state
         this.state = {
             clientPhonesOptions,
             clientEmailsOptions,
@@ -135,6 +137,13 @@ export default class OrderFormBody extends Component {
             const recommendationStyles = this._getRecommendationStyles();
             this.setState({ recommendationStyles });
         }
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            !_.isEqual(nextProps, this.props) ||
+            !_.isEqual(nextState, this.state)
+        );
     }
 
     _getRecommendationStyles() {
@@ -201,9 +210,20 @@ export default class OrderFormBody extends Component {
         ));
     }
 
+    _getLocalization(key) {
+        if (!this._localizationMap[ key ]) {
+            this._localizationMap[ key ] = this.props.intl.formatMessage({
+                id: key,
+            });
+        }
+
+        return this._localizationMap[ key ];
+    }
+
     bodyUpdateIsForbidden() {
         return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
     }
+
 
     render() {
         const clientSearch = this._renderClientSearch();
@@ -222,23 +242,6 @@ export default class OrderFormBody extends Component {
                 </div>
                 { comments }
             </div>
-        );
-    }
-
-    _getLocalization(key) {
-        if (!this._localizationMap[ key ]) {
-            this._localizationMap[ key ] = this.props.intl.formatMessage({
-                id: key,
-            });
-        }
-
-        return this._localizationMap[ key ];
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return (
-            !_.isEqual(nextProps, this.props) ||
-            !_.isEqual(nextState, this.state)
         );
     }
 
@@ -541,7 +544,7 @@ export default class OrderFormBody extends Component {
                     formItemLayout={
                         this.state.recommendationStyles.prevRecommendation
                             ? formCommentLayout
-                            : fromExpandedCommentLayot
+                            : fromExpandedCommentLayout
                     }
                     colon={ false }
                     label={ this._getLocalization(

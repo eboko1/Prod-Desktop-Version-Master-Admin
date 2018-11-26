@@ -1,7 +1,16 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table, Select, Form, Icon, Col, Row, notification } from 'antd';
+import {
+    Table,
+    Select,
+    Icon,
+    Col,
+    Row,
+    notification,
+    Modal,
+    Button,
+} from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -24,7 +33,8 @@ import {
     createPriorityBrand,
 } from 'core/forms/brandsForm/duck';
 import { handleError } from 'core/ui/duck';
-import { setModal, resetModal } from 'core/modals/duck';
+import { SetDetailProductForm, SpreadBusinessBrandsForm } from 'forms';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
 import {
@@ -39,7 +49,6 @@ import Styles from './styles.m.css';
 import getErrorConfigs from './error_configs';
 
 const Option = Select.Option;
-const FormItem = Form.Item;
 
 const sortOptions = {
     asc:  'ascend',
@@ -67,6 +76,7 @@ const sortOptions = {
     },
     mapStateToProps: state => ({
         errors: state.ui.errors,
+        modal:  state.modals.modal,
     }),
 })
 export class BrandsForm extends Component {
@@ -164,10 +174,14 @@ export class BrandsForm extends Component {
                     { _.uniqBy(
                         [
                             ..._.get(searchResults, [ item.id ], []),
-                            {
-                                [ idField ]: item[ idFieldName ],
-                                name:        item[ valueFieldName ],
-                            },
+                            ...item[ idFieldName ]
+                                ? [
+                                    {
+                                        [ idField ]: item[ idFieldName ],
+                                        name:        item[ valueFieldName ],
+                                    },
+                                ]
+                                : [],
                         ],
                         value => value[ idField ],
                     ).map(({ [ idField ]: id, name }) => (
@@ -319,7 +333,7 @@ export class BrandsForm extends Component {
         return (
             <Catcher>
                 <Row type='flex' align='inline' gutter={ 24 }>
-                    <Col span={ 8 }>
+                    <Col span={ 6 }>
                         <BusinessSearchField
                             selectStyles={ { width: '100%' } }
                             onSelect={ businessId =>
@@ -328,7 +342,7 @@ export class BrandsForm extends Component {
                             businessId={ this.props.filter.businessId }
                         />
                     </Col>
-                    <Col span={ 8 }>
+                    <Col span={ 6 }>
                         <ProductSearchField
                             selectStyles={ { width: '100%' } }
                             onSelect={ productId =>
@@ -337,7 +351,7 @@ export class BrandsForm extends Component {
                             productId={ this.props.filter.productId }
                         />
                     </Col>
-                    <Col span={ 8 }>
+                    <Col span={ 6 }>
                         <SupplierSearchField
                             selectStyles={ { width: '100%' } }
                             onSelect={ supplierId =>
@@ -345,6 +359,30 @@ export class BrandsForm extends Component {
                             }
                             supplierId={ this.props.filter.supplierId }
                         />
+                    </Col>
+                    <Col span={ 3 }>
+                        <Button
+                            icon='swap'
+                            className={ Styles.swapIcon }
+                            onClick={ () =>
+                                this.props.setModal(MODALS.DETAIL_PRODUCT)
+                            }
+                        >
+                            TecDoc
+                        </Button>
+                    </Col>
+                    <Col span={ 3 }>
+                        <Button
+                            icon='copy'
+                            className={ Styles.swapIcon }
+                            onClick={ () =>
+                                this.props.setModal(
+                                    MODALS.SPREAD_BUSINESS_BRANDS,
+                                )
+                            }
+                        >
+                            Copy
+                        </Button>
                     </Col>
                 </Row>
                 <br />
@@ -368,6 +406,22 @@ export class BrandsForm extends Component {
                     } }
                     // onChange={ handleTableChange }
                 />
+                <Modal
+                    title='TecDoc: articles'
+                    visible={ MODALS.DETAIL_PRODUCT === this.props.modal }
+                    onCancel={ () => this.props.resetModal() }
+                    footer={ null }
+                >
+                    <SetDetailProductForm />
+                </Modal>
+                <Modal
+                    title='TecDoc: suppliers'
+                    visible={ MODALS.SPREAD_BUSINESS_BRANDS === this.props.modal }
+                    onCancel={ () => this.props.resetModal() }
+                    footer={ null }
+                >
+                    <SpreadBusinessBrandsForm />
+                </Modal>
             </Catcher>
         );
     }

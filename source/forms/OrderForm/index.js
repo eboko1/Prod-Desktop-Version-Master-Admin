@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Form } from 'antd';
+import { Form, notification } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
@@ -60,23 +60,51 @@ export class OrderForm extends Component {
         formValues: {},
     };
 
+    _openNotification = () => {
+        const params = {
+            message: this.props.intl.formatMessage({
+                id: 'order-form.warning',
+            }),
+            description: this.props.intl.formatMessage({
+                id: 'order-form.update_modification_info',
+            }),
+            duration: 0,
+        };
+        notification.open(params);
+    };
+
     componentDidMount() {
         // TODO in order to fix late getFieldDecorator invoke for services
         this.setState({ initialized: true });
     }
 
-    bodyUpdateIsForbidden = () =>
-        isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
-
     componentDidUpdate() {
         const { orderId } = this.props;
+        // You must set to local state formValues for correct initialValues work
+        // It's providing actual form data for all cases
         const { formValues: prevFormValues } = this.state;
         const formValues = this.props.form.getFieldsValue();
+        const newClientVehicleId = formValues.clientVehicle;
+        const oldClientVehicleId = prevFormValues.clientVehicle;
+
+        if (newClientVehicleId !== oldClientVehicleId && newClientVehicleId) {
+            const newClientVehicle = this._getClientVehicle(newClientVehicleId);
+            if (!newClientVehicle.modificationId) {
+                this._openNotification();
+            } else if (
+                newClientVehicle.bodyType &&
+                !newClientVehicle.tecdocId
+            ) {
+                this._openNotification();
+            }
+        }
 
         if (!_.isEqual(formValues, prevFormValues)) {
             this.setState({ formValues });
         }
-
+        //
+        // for each stationLoad row in stationLoads tab we have to provide extra check
+        // if values is not equal we will fetch available hours for each row
         _.each(formValues.stationLoads, (stationLoad, index) => {
             const prevStationLoad = _.get(prevFormValues.stationLoads, index);
             const prevStationHoursFields = _.pick(prevStationLoad, [ 'beginDate', 'station' ]);
@@ -91,6 +119,7 @@ export class OrderForm extends Component {
                     station: prevStation,
                     beginDate: prevBeginDate,
                 } = prevStationHoursFields;
+                // fetching new availableHours
                 if (![ station, beginDate ].some(_.isNil)) {
                     this.props.fetchAvailableHours(
                         station,
@@ -98,7 +127,7 @@ export class OrderForm extends Component {
                         orderId,
                         index,
                     );
-
+                    // clearing previous form fields values
                     if (![ prevStation, prevBeginDate ].some(_.isNil)) {
                         this.props.form.setFieldsValue({
                             [ `stationLoads[${index}].beginTime` ]: void 0,
@@ -111,6 +140,19 @@ export class OrderForm extends Component {
 
     _saveFormRef = formRef => {
         this.formRef = formRef;
+    };
+
+    _bodyUpdateIsForbidden = () =>
+        isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
+
+    _getClientVehicle = clientVehicleId => {
+        const vehicles = _.get(this.props, 'selectedClient.vehicles');
+
+        return clientVehicleId && _.isArray(vehicles)
+            ? _.chain(vehicles)
+                .find({ id: clientVehicleId })
+                .value()
+            : null;
     };
 
     _getTecdocId = () => {
@@ -150,10 +192,8 @@ export class OrderForm extends Component {
             location,
             errors,
         } = this.props;
-        this.formFieldsValues = _.cloneDeep(form.getFieldsValue());
-        const formFieldsValues = this.formFieldsValues;
 
-        const tabs = this._renderTabs();
+        const formFieldsValues = form.getFieldsValue();
 
         const { totalHours } = servicesStats(
             _.get(formFieldsValues, 'services', []),
@@ -182,19 +222,41 @@ export class OrderForm extends Component {
         );
         const deliveryDate = _.get(formFieldsValues, 'deliveryDate');
 
-        const orderFormBodyFields = _.pick(formFieldsValues, [ 'comment', 'odometerValue', 'clientVehicle', 'clientRequisite', 'clientEmail', 'clientPhone', 'searchClientQuery' ]);
-        const orderFormHeaderFields = _.pick(formFieldsValues, [ 'stationLoads[0].beginTime', 'stationLoads[0].station', 'stationLoads[0].beginDate', 'stationLoads[0].duration', 'deliveryDate', 'deliveryTime', 'manager', 'employee', 'appurtenanciesResponsible', 'paymentMethod', 'requisite' ]);
+        const orderFormBodyFields = _.pick(formFieldsValues, [
+            'comment',
+            'odometerValue',
+            'clientVehicle',
+            'clientRequisite',
+            'clientEmail',
+            'clientPhone',
+            'searchClientQuery',
+        ]);
+        const orderFormHeaderFields = _.pick(formFieldsValues, [
+            'stationLoads[0].beginTime',
+            'stationLoads[0].station',
+            'stationLoads[0].beginDate',
+            'stationLoads[0].duration',
+            'deliveryDate',
+            'deliveryTime',
+            'manager',
+            'employee',
+            'appurtenanciesResponsible',
+            'paymentMethod',
+            'requisite',
+        ]);
 
-        const formFieldsValue = this.formFieldsValues;
         const { price: priceDetails } = detailsStats(
-            _.get(formFieldsValue, 'details', []),
+            _.get(formFieldsValues, 'details', []),
         );
         const { price: priceServices } = servicesStats(
-            _.get(formFieldsValue, 'services', []),
+            _.get(formFieldsValues, 'services', []),
             allServices,
         );
-        const servicesDiscount = _.get(formFieldsValue, 'servicesDiscount', 0);
-        const detailsDiscount = _.get(formFieldsValue, 'detailsDiscount', 0);
+
+        const servicesDiscount = _.get(formFieldsValues, 'servicesDiscount', 0);
+        const detailsDiscount = _.get(formFieldsValues, 'detailsDiscount', 0);
+
+        const tabs = this._renderTabs(formFieldsValues);
 
         return (
             <Form className={ Styles.form } layout='horizontal'>
@@ -255,7 +317,7 @@ export class OrderForm extends Component {
         );
     }
 
-    _renderTabs = () => {
+    _renderTabs = formFieldsValues => {
         const {
             form,
             orderTasks,
@@ -265,29 +327,35 @@ export class OrderForm extends Component {
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
-        const formFieldsValue = this.formFieldsValues;
+
+        const tecdocId = this._getTecdocId();
 
         const { count: countDetails, price: priceDetails } = detailsStats(
-            _.get(formFieldsValue, 'details', []),
+            _.get(formFieldsValues, 'details', []),
         );
 
         const {
             count: countServices,
             price: priceServices,
             // totalHours,
-        } = servicesStats(_.get(formFieldsValue, 'services', []), allServices);
+        } = servicesStats(_.get(formFieldsValues, 'services', []), allServices);
 
-        const stationsCount = _.get(formFieldsValue, 'stationLoads', [])
+        // _.values(value).some(_.isNil) gets only filled rows
+        const stationsCount = _.get(formFieldsValues, 'stationLoads', [])
             .filter(Boolean)
             .filter(value => !_.values(value).some(_.isNil));
 
-        const comments = _.pick(formFieldsValue, [ 'comment', 'businessComment', 'vehicleCondition', 'recommendation' ]);
+        const comments = _.pick(formFieldsValues, [
+            'comment',
+            'businessComment',
+            'vehicleCondition',
+            'recommendation',
+        ]);
 
         const commentsCollection = _.values(comments);
         const commentsCount = commentsCollection.filter(Boolean).length;
 
-        const tecdocId = this._getTecdocId();
-        const clientVehicleId = _.get(formFieldsValue, 'clientVehicle');
+        const clientVehicleId = _.get(formFieldsValues, 'clientVehicle');
 
         const {
             setModal,
@@ -321,12 +389,23 @@ export class OrderForm extends Component {
             location,
         } = this.props;
 
-        const formFieldsValues = this.formFieldsValues;
-        const orderFormTabsFields = _.pick(formFieldsValues, [ 'comment', 'vehicleCondition', 'businessComment', 'recommendation', 'stationLoads', 'services', 'clientVehicle', 'employee', 'details', 'servicesDiscount', 'detailsDiscount' ]);
+        const orderFormTabsFields = _.pick(formFieldsValues, [
+            'comment',
+            'vehicleCondition',
+            'businessComment',
+            'recommendation',
+            'stationLoads',
+            'services',
+            'clientVehicle',
+            'employee',
+            'details',
+            'servicesDiscount',
+            'detailsDiscount',
+        ]);
 
         const beginDatetime =
             _.get(fetchedOrder, 'order.beginDatetime') ||
-            (this.bodyUpdateIsForbidden()
+            (this._bodyUpdateIsForbidden()
                 ? void 0
                 : _.get(location, 'state.beginDatetime'));
 
@@ -336,7 +415,7 @@ export class OrderForm extends Component {
 
         const initialStation =
             _.get(fetchedOrder, 'order.stationNum') ||
-            (this.bodyUpdateIsForbidden()
+            (this._bodyUpdateIsForbidden()
                 ? void 0
                 : _.get(location, 'state.stationNum'));
 

@@ -1,6 +1,7 @@
 // vendor
 import { call, put, all, take } from 'redux-saga/effects';
 import _ from 'lodash';
+import nprogress from 'nprogress';
 
 //proj
 import {
@@ -17,7 +18,8 @@ export function* updateServiceSaga() {
     while (true) {
         try {
             const { payload: suggestion } = yield take(UPDATE_SERVICE);
-            yield put(setSuggestionsLoading(true));
+            // yield put(setSuggestionsLoading(true));
+            yield nprogress.start();
             yield call(
                 fetchAPI,
                 'PUT',
@@ -29,7 +31,8 @@ export function* updateServiceSaga() {
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield put(setSuggestionsLoading(false));
+            yield nprogress.done();
+            // yield put(setSuggestionsLoading(false));
             yield put(fetchServicesSuggestions());
         }
     }

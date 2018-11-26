@@ -27,6 +27,8 @@ import Styles from './styles.m.css';
 const FormItem = Form.Item;
 const Option = Select.Option;
 
+// TODO: move it into utils
+// blocks hours for time picker
 const getAvailableHoursDisabledHours = propsAvailableHours => () => {
     const availableHours = _.get(propsAvailableHours, '0', []);
 
@@ -39,6 +41,8 @@ const getAvailableHoursDisabledHours = propsAvailableHours => () => {
     );
 };
 
+// TODO: move it into utils
+// blocks minutes for time picker
 const getAvailableHoursDisabledMinutes = propsAvailableHours => hour => {
     const availableHours = _.get(propsAvailableHours, '0', []);
 
@@ -59,6 +63,7 @@ export default class OrderFormHeader extends Component {
             intl: { formatMessage },
         } = props;
 
+        // reusable validation rule
         this.requiredRule = [
             {
                 required: true,
@@ -78,6 +83,7 @@ export default class OrderFormHeader extends Component {
         const stationsOptions = this._getStationsOptions();
         const managersOptions = this._getManagersOptions();
         const employeesOptions = this._getEmployeesOptions();
+
         const paymentMethodOptions = [
             <Option value='cash' key='cash'>
                 <Icon type='wallet' />
@@ -92,11 +98,14 @@ export default class OrderFormHeader extends Component {
                 <FormattedMessage id='add_order_form.visa' />
             </Option>,
         ];
+        // TODO: move into utils
+        // <FormatMessage id=''> triggers re-render cuz it is creating new obj
+        // use formatMassage({id: }) instead
         this._localizationMap = {};
 
         const deliveryDatetimeConfig = this._getDeliveryDatetimeConfig();
         const beginDatetimeConfig = this._getBeginDatetimeConfig();
-
+        // we write all data to state to handle updates correctly
         this.state = {
             deliveryDatetimeConfig,
             availableHoursDisabledMinutes,
@@ -175,6 +184,7 @@ export default class OrderFormHeader extends Component {
         };
     }
 
+    // prevent re-renders
     _getLocalization(key) {
         if (!this._localizationMap[ key ]) {
             this._localizationMap[ key ] = this.props.intl.formatMessage({
@@ -222,7 +232,7 @@ export default class OrderFormHeader extends Component {
     componentDidUpdate(prevProps) {
         const oldAvailableHours = _.get(prevProps, [ 'availableHours', '0' ]);
         const newAvailableHours = _.get(this.props, [ 'availableHours', '0' ]);
-
+        // if availableHours has been changed we need to generate new configs
         if (oldAvailableHours !== newAvailableHours) {
             const availableHoursDisabledMinutes = getAvailableHoursDisabledMinutes(
                 this.props.availableHours,
@@ -251,8 +261,16 @@ export default class OrderFormHeader extends Component {
             const employeesOptions = this._getEmployeesOptions();
             this.setState({ employeesOptions });
         }
-
-        const deliveryFields = [ 'schedule', 'zeroStationLoadBeginDate', 'zeroStationLoadBeginTime', 'zeroStationLoadDuration', 'deliveryDate' ];
+        // check all fields related for deliveryDatetime
+        const deliveryFields = [
+            'schedule',
+            'zeroStationLoadBeginDate',
+            'zeroStationLoadBeginTime',
+            'zeroStationLoadDuration',
+            'deliveryDate',
+        ];
+        // check deliveryDatetime depended properties changes
+        // if moment -> toISOString to check moment objects as strings to prevent re-renders
         const deliveryConfigUpdate = deliveryFields.reduce((prev, cur) => {
             const parsedThisProps = moment.isMoment(this.props[ cur ])
                 ? this.props[ cur ].toISOString()
@@ -263,13 +281,14 @@ export default class OrderFormHeader extends Component {
 
             return prev || parsedThisProps !== parsedPrevProps;
         }, false);
-
+        // if deliveryDatetime fields have been updated
+        // get new config and set it to local state to trigger componentUpdate with new config
         if (deliveryConfigUpdate) {
             this.setState({
                 deliveryDatetimeConfig: this._getDeliveryDatetimeConfig(),
             });
         }
-
+        // update check for beginDatetime
         const currentZeroStationLoadBeginDate = this.props
             .zeroStationLoadBeginDate
             ? this.props.zeroStationLoadBeginDate.toISOString()
@@ -287,7 +306,7 @@ export default class OrderFormHeader extends Component {
             });
         }
     }
-
+    // TODO: move into utils
     bodyUpdateIsForbidden() {
         return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
     }
@@ -300,6 +319,7 @@ export default class OrderFormHeader extends Component {
     }
 
     render() {
+        // TODO: decomposite for separate view components
         const dateBlock = this._renderDateBlock();
         const masterBlock = this._renderMasterBlock();
         const totalBlock = this._renderTotalBlock();
