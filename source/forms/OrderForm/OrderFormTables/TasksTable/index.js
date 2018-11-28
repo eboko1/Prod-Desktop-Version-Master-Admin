@@ -51,7 +51,7 @@ class TasksTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.repair_status' />,
+                title:     <FormattedMessage id='status' />,
                 dataIndex: 'status',
                 key:       'status',
                 width:     '8%',
@@ -229,7 +229,11 @@ class TasksTable extends Component {
                                 <Table
                                     columns={ columns }
                                     dataSource={ [
-                                        ..._.get(orderTasks, [ 'orderTasks', index, 'history' ], [])
+                                        ..._.get(
+                                            orderTasks,
+                                            [ 'orderTasks', index, 'history' ],
+                                            [],
+                                        )
                                             .sort(this.sortHistory)
                                             .map((task, index) => ({
                                                 ...task,

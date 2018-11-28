@@ -281,7 +281,7 @@ export default class DetailsTable extends Component {
                     ),
                 },
                 {
-                    width:  '10%',
+                    width:  '12.5%',
                     title:  <FormattedMessage id='order_form_table.suggest' />,
                     key:    'tecDocActions',
                     render: ({ key }) => {
@@ -383,7 +383,7 @@ export default class DetailsTable extends Component {
                 },
                 {
                     title:  <FormattedMessage id='order_form_table.count' />,
-                    width:  '10%',
+                    width:  '7.5%',
                     key:    'count',
                     render: ({ key }) => (
                         <DecoratedInputNumber
@@ -441,7 +441,7 @@ export default class DetailsTable extends Component {
                 },
                 {
                     title:  '',
-                    width:  '5%',
+                    width:  'auto',
                     key:    'delete',
                     render: ({ key }) =>
                         this.state.keys.length > 1 &&
