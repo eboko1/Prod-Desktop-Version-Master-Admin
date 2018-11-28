@@ -6,9 +6,9 @@ import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { images } from 'utils';
 
 // own
+import { getSupplier } from './supplierConfig';
 import Styles from './styles.m.css';
 
 @injectIntl
@@ -103,8 +103,8 @@ export default class PartSuggestions extends Component {
                                 }
                                 content={ _.chain(suggestion.attributes)
                                     .filter('description')
-                                    .map(({ value, description }) => (
-                                        <div>
+                                    .map(({ value, description }, index) => (
+                                        <div key={ `${index}--attr` }>
                                             <p>
                                                 <a>{ description }</a>: { value }
                                             </p>
@@ -155,34 +155,9 @@ export default class PartSuggestions extends Component {
             {
                 key:    'ecat',
                 width:  '10%',
-                render: suggestion =>
-                    suggestion.supplierId === 85 ? (
-                        <a
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            href={ 'http://kyb-europe.com/rus/katalog/' }
-                        >
-                            <img
-                                className={ Styles.logo }
-                                src={ images.kybLogo }
-                                alt='logo'
-                            />
-                        </a>
-                    ) : (
-                        <a
-                            target='_blank'
-                            rel='noopener noreferrer'
-                            href={ `https://maxi.ecat.ua/products/search/${
-                                suggestion.partNumber
-                            }/type:article+customerNo:none` }
-                        >
-                            <img
-                                className={ Styles.logo }
-                                src={ images.ecatLogo }
-                                alt='logo'
-                            />
-                        </a>
-                    ),
+                render: ({ supplierId, partNumber }) => {
+                    return getSupplier(supplierId, partNumber);
+                },
             },
         ];
 
