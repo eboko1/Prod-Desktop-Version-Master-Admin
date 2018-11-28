@@ -15,11 +15,11 @@ import beruLogo from 'theme/images/logos/beruLogo.png';
 import championLogo from 'theme/images/logos/championLogo.png';
 import ferodoLogo from 'theme/images/logos/ferodoLogo.png';
 import goetzeLogo from 'theme/images/logos/goetzeLogo.png';
-import lemforderLogo from 'theme/images/logos/.png';
-import moogLogo from 'theme/images/logos/lemforderLogo.png';
-import remsaLogo from 'theme/images/logos/moogLogo.png';
-import sachsLogo from 'theme/images/logos/remsaLogo.png';
-import twrLogo from 'theme/images/logos/sachsLogo.png';
+import lemforderLogo from 'theme/images/logos/lemforderLogo.png';
+import moogLogo from 'theme/images/logos/moogLogo.png';
+import remsaLogo from 'theme/images/logos/remsaLogo.png';
+import sachsLogo from 'theme/images/logos/sachsLogo.png';
+import twrLogo from 'theme/images/logos/twrLogo.png';
 // Funel
 import funelArrowCurvedLeft from 'theme/images/funel/funel_arrow-curved-left.svg';
 import funelArrowCurvedRight from 'theme/images/funel/funel_arrow-curved-right.svg';
