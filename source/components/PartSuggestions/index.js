@@ -103,8 +103,8 @@ export default class PartSuggestions extends Component {
                                 }
                                 content={ _.chain(suggestion.attributes)
                                     .filter('description')
-                                    .map(({ value, description }) => (
-                                        <div>
+                                    .map(({ value, description }, index) => (
+                                        <div key={ `${index}--attr` }>
                                             <p>
                                                 <a>{ description }</a>: { value }
                                             </p>
@@ -155,8 +155,16 @@ export default class PartSuggestions extends Component {
             {
                 key:    'ecat',
                 width:  '10%',
-                render: ({ supplierId, partNumber }) =>
-                    getSupplier(supplierId, partNumber),
+                render: ({ supplierId, partNumber }) => {
+                    console.log('→ supplierId', supplierId);
+                    console.log('→ partNumber', partNumber);
+                    console.log(
+                        '→ getSupplier',
+                        getSupplier(supplierId, partNumber),
+                    );
+
+                    return getSupplier(supplierId, partNumber);
+                },
             },
         ];
 

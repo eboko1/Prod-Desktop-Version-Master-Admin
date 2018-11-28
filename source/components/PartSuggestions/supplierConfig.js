@@ -31,16 +31,13 @@ const supplierLink = (supplierName, url) => (
 export const getSupplier = (supplierId, partNumber) => {
     switch (supplierId) {
         // KYB
-        case suppliersList.KYB.id:
-            supplierLink(
-                suppliersList.KYB.name,
-                'http://kyb-europe.com/rus/katalog/',
-            );
+        case 85:
+            supplierLink('kyb', 'http://kyb-europe.com/rus/katalog/');
             break;
         // Sidem
-        case suppliersList.SIDEM.id:
+        case 135:
             supplierLink(
-                suppliersList.SIDEM.sidem,
+                'sidem',
                 `https://catalogus.sidem.be/details.asp?sidid=${partNumber}`,
             );
             break;

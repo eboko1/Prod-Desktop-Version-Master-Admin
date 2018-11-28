@@ -192,7 +192,7 @@ export default class DetailsTable extends Component {
                 },
                 {
                     title:  <FormattedMessage id='order_form_table.brand' />,
-                    width:  '15%',
+                    width:  '13%',
                     key:    'brand',
                     render: ({ key }) => {
                         const func = requiredLimitedOptions;
@@ -281,7 +281,7 @@ export default class DetailsTable extends Component {
                     ),
                 },
                 {
-                    width:  '12.5%',
+                    width:  '15%',
                     title:  <FormattedMessage id='order_form_table.suggest' />,
                     key:    'tecDocActions',
                     render: ({ key }) => {
@@ -318,7 +318,7 @@ export default class DetailsTable extends Component {
                     title: (
                         <FormattedMessage id='order_form_table.purchasePrice' />
                     ),
-                    width:  '10%',
+                    width:  '9%',
                     key:    'purchasePrice',
                     render: ({ key }) => (
                         <DecoratedInputNumber
@@ -348,7 +348,7 @@ export default class DetailsTable extends Component {
                 },
                 {
                     title:  <FormattedMessage id='order_form_table.price' />,
-                    width:  '10%',
+                    width:  '9%',
                     key:    'price',
                     render: ({ key }) => (
                         <DecoratedInputNumber
