@@ -15,7 +15,8 @@ import beruLogo from 'theme/images/logos/beruLogo.png';
 import championLogo from 'theme/images/logos/championLogo.png';
 import ferodoLogo from 'theme/images/logos/ferodoLogo.png';
 import goetzeLogo from 'theme/images/logos/goetzeLogo.png';
-import lemforderLogo from 'theme/images/logos/lemforderLogo.png';
+import lemfoerderLogo from 'theme/images/logos/lemfoerderLogo.png';
+import roadhouseLogo from 'theme/images/logos/roadhouseLogo.png';
 import moogLogo from 'theme/images/logos/moogLogo.png';
 import remsaLogo from 'theme/images/logos/remsaLogo.png';
 import sachsLogo from 'theme/images/logos/sachsLogo.png';
@@ -42,7 +43,8 @@ export default {
     championLogo,
     ferodoLogo,
     goetzeLogo,
-    lemforderLogo,
+    lemfoerderLogo,
+    roadhouseLogo,
     moogLogo,
     remsaLogo,
     sachsLogo,
