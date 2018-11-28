@@ -7,16 +7,16 @@ import { images } from 'utils';
 // own
 import Styles from './styles.m.css';
 
-const suppliersList = Object.freeze({
-    KYB: {
-        id:   85,
-        name: 'kyb',
-    },
-    SIDEM: {
-        id:   135,
-        name: 'sidem',
-    },
-});
+// const suppliersList = Object.freeze({
+//     KYB: {
+//         id:   85,
+//         name: 'kyb',
+//     },
+//     SIDEM: {
+//         id:   135,
+//         name: 'sidem',
+//     },
+// });
 
 const supplierLink = (supplierName, url) => (
     <a target='_blank' rel='noopener noreferrer' href={ url }>
@@ -32,46 +32,39 @@ export const getSupplier = (supplierId, partNumber) => {
     switch (supplierId) {
         // KYB
         case 85:
-            supplierLink('kyb', 'http://kyb-europe.com/rus/katalog/');
-            break;
+            return supplierLink('kyb', 'http://kyb-europe.com/rus/katalog/');
         // Sidem
         case 135:
-            supplierLink(
+            return supplierLink(
                 'sidem',
                 `https://catalogus.sidem.be/details.asp?sidid=${partNumber}`,
             );
-            break;
         // Luk
         case 6:
-            supplierLink(
+            return supplierLink(
                 'luk',
                 'https://webcat.schaeffler.com/web/schaeffler/ru_RU/index.xhtml',
             );
-            break;
         case 204:
-            supplierLink(
+            return supplierLink(
                 'ina',
                 'https://webcat.schaeffler.com/web/schaeffler/ru_RU/index.xhtml',
             );
-            break;
         case 192:
-            supplierLink(
+            return supplierLink(
                 'fag',
                 'https://webcat.schaeffler.com/web/schaeffler/ru_RU/index.xhtml',
             );
-            break;
         case 33:
-            supplierLink(
+            return supplierLink(
                 'gates',
                 `https://www.gatesautocat.com/article/${partNumber}`,
             );
-            break;
         // ecat as default
         default:
-            supplierLink(
+            return supplierLink(
                 'ecat',
                 `https://maxi.ecat.ua/products/search/${partNumber}/type:article+customerNo:none`,
             );
-            break;
     }
 };

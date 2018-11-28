@@ -156,13 +156,6 @@ export default class PartSuggestions extends Component {
                 key:    'ecat',
                 width:  '10%',
                 render: ({ supplierId, partNumber }) => {
-                    console.log('→ supplierId', supplierId);
-                    console.log('→ partNumber', partNumber);
-                    console.log(
-                        '→ getSupplier',
-                        getSupplier(supplierId, partNumber),
-                    );
-
                     return getSupplier(supplierId, partNumber);
                 },
             },
