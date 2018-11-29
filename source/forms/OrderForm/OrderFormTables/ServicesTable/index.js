@@ -198,9 +198,12 @@ class ServicesTable extends Component {
                             `services[${key}].servicePrice`,
                         ) }
                         initialValue={
-                            this._getDefaultValue(key, 'servicePrice') ||
-                            this._getDefaultPrice(key) ||
-                            0
+                            _.defaultTo(
+                                _.defaultTo(
+                                    this._getDefaultValue(key, 'servicePrice'),
+                                    this._getDefaultPrice(key),
+                                ), 0,
+                            )
                         }
                         field={ `services[${key}].servicePrice` }
                         getFieldDecorator={ getFieldDecorator }
