@@ -52,7 +52,7 @@ const mapStateToProps = state => ({
     page:             state.businessPackage.page,
     isFetching:       state.ui.businessPackageFetching,
     businesses:       state.search.businesses,
-    count:            Number(state.count || 0),
+    count:            Number(state.businessPackage.count || 0),
 });
 
 const formItemLayout = {
