@@ -1,11 +1,11 @@
 // vendor
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Form, Button } from 'antd';
+import { Form, Button, Card } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
-// import { onChangeLoginForm, login } from 'core/forms/loginForm/duck';
+import { Result } from 'components';
 
 import { DecoratedInput } from 'forms/DecoratedFields';
 // import { withReduxForm2 } from 'utils';
@@ -22,59 +22,39 @@ export class ForgotPassword extends Component {
         goToMail: false,
     };
 
-    _handleConfirmBlur = e => {
-        const value = e.target.value;
-        this.setState({ confirmDirty: this.state.confirmDirty || !!value });
-    };
-
-    _compareToFirstPassword = (rule, value, callback) => {
-        /* eslint-disable */
-        const form = this.props.form;
-        if (value && value !== form.getFieldValue("password")) {
-            callback("Two passwords that you enter is inconsistent!");
-        } else {
-            callback();
-        }
-        /* eslint-enable */
-    };
-
-    _validateToNextPassword = (rule, value, callback) => {
-        const form = this.props.form;
-        if (value && this.state.confirmDirty) {
-            form.validateFields([ 'confirm' ], { force: true });
-        }
-        callback();
-    };
-
     _submit = event => {
         event.preventDefault();
         const { getFieldValue } = this.props.form;
-        console.log('→ this.props', getFieldValue('login'));
-        try {
-            console.log('→ preCall');
 
-            fetchAPI(
-                'POST',
-                '/password/reset/request',
-                null,
-                {
-                    login: getFieldValue('login'),
-                },
-                { handleErrorInternally: true },
-            );
-            console.log('→ postCall');
-        } catch (error) {
-            console.error('error!', error); // eslint-disable line
-            (function() {
-                console.log('→ ERROR', error);
-                message.error('This is a message of error');
-            }());
-            this.setState({ noLogin: true });
-        } finally {
-            console.log('→ finally');
-            this.setState({ goToMail: true });
-        }
+        const onFulfilled = () =>
+            this.setState({
+                goToMail: true,
+            });
+
+        const onRejected = () =>
+            this.setState({
+                noLogin: true,
+            });
+
+        const promise = fetchAPI(
+            'POST',
+            '/password/reset/request',
+            null,
+            {
+                login: getFieldValue('login'),
+            },
+            {
+                rawResponse:           true,
+                handleErrorInternally: true,
+            },
+        );
+
+        promise.then(onFulfilled);
+        promise.then(null, onRejected);
     };
+
+    _backToForm = () => this.setState({ noLogin: false });
+    _backToLogin = () => this.setState({ goToMail: false });
 
     render() {
         const { getFieldDecorator } = this.props.form;
@@ -84,11 +64,13 @@ export class ForgotPassword extends Component {
 
         return (
             <Form className={ Styles.loginForm } onSubmit={ this._submit }>
-                { !noLogin || !goToMail ? 
+                { !(noLogin || goToMail) ? 
                     <>
                         <DecoratedInput
                             formItem
-                            label={ <FormattedMessage id='login_form.login' /> }
+                            label={
+                                <FormattedMessage id='login_form.enter_your_registration_login' />
+                            }
                             field='login'
                             getFieldDecorator={ getFieldDecorator }
                             rules={ [
@@ -108,8 +90,45 @@ export class ForgotPassword extends Component {
                         </Button>
                     </>
                     : null }
-                { noLogin && <div>noLogin</div> }
-                { goToMail && <div>goToMail</div> }
+                { noLogin && (
+                    <Card bordered={ false }>
+                        <Result
+                            type='error'
+                            title={ <FormattedMessage id='login_form.error' /> }
+                            description={
+                                <FormattedMessage id='login_form.no_login_found' />
+                            }
+                            // extra={ extra }
+                            actions={
+                                <Button onClick={ this._backToForm }>
+                                    <FormattedMessage id='login_form.back_to_form' />
+                                </Button>
+                            }
+                            style={ { marginTop: 48, marginBottom: 16 } }
+                        />
+                    </Card>
+                ) }
+                { goToMail && (
+                    <Card bordered={ false }>
+                        <Result
+                            type='success'
+                            title={
+                                <FormattedMessage id='login_form.go_to_mail' />
+                            }
+                            description={
+                                <FormattedMessage id='login_form.go_to_mail_description' />
+                            }
+                            actions={
+                                <Button onClick={ this._backToLogin }>
+                                    <Link to={ book.login }>
+                                        <FormattedMessage id='login_form.back_to_login' />
+                                    </Link>
+                                </Button>
+                            }
+                            style={ { marginTop: 48, marginBottom: 16 } }
+                        />
+                    </Card>
+                ) }
             </Form>
         );
     }

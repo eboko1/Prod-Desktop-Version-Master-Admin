@@ -32,6 +32,7 @@ import PartAttributes from './PartAttributes';
 import PartSuggestions from './PartSuggestions';
 import TecDocModals from './TecDocModals';
 import VehicleNumberHistory from './VehicleNumberHistory';
+import Result from './Result';
 
 export {
     SettingSalaryTable,
@@ -69,4 +70,5 @@ export {
     PartSuggestions,
     TecDocModals,
     VehicleNumberHistory,
+    Result,
 };

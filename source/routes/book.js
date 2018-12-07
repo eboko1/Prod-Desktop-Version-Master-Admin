@@ -7,8 +7,8 @@ const book = Object.freeze({
     // Public
     login:               '/login',
     forgotPassword:      '/forgot-password',
-    newPasswordPage:     '/new-password',
-    newPassword:         '/new-password?=token',
+    // newPasswordPage:     '/new-password',
+    newPassword:         '/new-password',
     exception:           '/exception',
     exceptionStatusCode: '/exception/:statusCode',
     // Private
