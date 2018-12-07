@@ -28,12 +28,12 @@
     --static: rgb(254, 241, 208);
 
     /* Statuses */
-    --not_complete: rgb(255, 126, 126);
-    --required: rgb(255, 126, 126);
-    --reserve: rgb(107, 99, 153);
-    --approve: rgb(251, 158, 62);
-    --progress: rgb(62, 186, 162);
-    --success: rgb(26, 156, 234);
+    --not_complete: rgb(250, 230, 215);
+    --required: rgb(250, 230, 215);
+    --reserve: rgb(235, 225, 245);
+    --approve: rgb(255, 240, 180);
+    --progress: rgb(225, 240, 220);
+    --success: rgb(215, 225, 240);
     --cancel: rgb(198, 198, 198);
     --invite: rgb(143, 56, 48);
 

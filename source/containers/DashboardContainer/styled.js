@@ -156,7 +156,8 @@ export const DashboardAddOrderColumn = styled.div`
         }
 
         return 'var(--lightGray)';
-    }}};
+    }};
+    }
 `;
 
 export const DashboardHead = styled.div`

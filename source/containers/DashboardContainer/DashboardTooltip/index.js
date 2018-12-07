@@ -35,7 +35,7 @@ class TooltipBox extends Component {
                 clientPhone ||
                 vehicleMakeName ||
                 vehicleModelName ||
-                comment ?
+                comment ? 
                     <>
                         <DashboardTooltipClient>
                             { clientName } { clientSurname }
@@ -46,7 +46,7 @@ class TooltipBox extends Component {
                         </DashboardTooltipVehicle>
                         {comment && (
                             <div>
-                                <span style={ { color: 'var(--link)' } }>
+                                <span style={ { color: 'red' } }>
                                     <FormattedMessage id='comment' />:
                                 </span>
                                 <DashboardTooltipComment>
@@ -87,10 +87,10 @@ const DashboardTooltipComment = styled.div`
 `;
 
 const DashboardTooltip = styled(TooltipBox)`
-    background: var(--paletteColor7);
+    background-color: rgb(255, 255, 205);
     border: 1px solid var(--link);
     box-sizing: border-box;
-    color: #fff;
+    color: black;
     flex-direction: column;
     justify-content: space-around;
     max-height: 170px;
@@ -102,11 +102,11 @@ const DashboardTooltip = styled(TooltipBox)`
     z-index: 3000;
     transition: 0.3s all ease-in-out;
     transform: translateX(35%) translateY(calc(-20% - 0.5px)) translateZ(0);
-    translate3d( 0, 0, 0);
+    translate3d: (0, 0, 0);
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
     backface-visibility: hidden;
-    font-weight: bold;
+    /* font-weight: bold; */
     -webkit-font-smoothing: antialiased;
 
     ${'' /* ${DashboardOrder}:hover & {
