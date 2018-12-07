@@ -1,26 +1,29 @@
 {
-    "en": {
-        "login_form.login": "Login",
-        "login_form.login_is_required": "Login is required",
-        "login_form.enter_login": "Enter login",
-        "login_form.password": "Password",
-        "login_form.password_is_required": "Password is required",
-        "login_form.enter_password": "Enter password"
-    },
-    "ru": {
-        "login_form.login": "Логин",
-        "login_form.login_is_required": "Логин обязательный",
-        "login_form.enter_login": "Введите логин",
-        "login_form.password": "Пароль",
-        "login_form.password_is_required": "Пароль обязательный",
-        "login_form.enter_password": "Введите пароль"
-    },
-    "uk": {
-        "login_form.login": "Логін",
-        "login_form.login_is_required": "Логін обов'язковий",
-        "login_form.enter_login": "Введіть логін",
-        "login_form.password": "Пароль",
-        "login_form.password_is_required": "Пароль обов'язковий",
-        "login_form.enter_password": "Введіть пароль"
-    }
+  "en": {
+    "login_form.login": "Login",
+    "login_form.login_is_required": "Login is required",
+    "login_form.enter_login": "Enter login",
+    "login_form.password": "Password",
+    "login_form.password_is_required": "Password is required",
+    "login_form.enter_password": "Enter password",
+    "login_form.forgot_password": "Forgot password?"
+  },
+  "ru": {
+    "login_form.login": "Логин",
+    "login_form.login_is_required": "Логин обязательный",
+    "login_form.enter_login": "Введите логин",
+    "login_form.password": "Пароль",
+    "login_form.password_is_required": "Пароль обязательный",
+    "login_form.enter_password": "Введите пароль",
+    "login_form.forgot_password": "Забыли пароль?"
+  },
+  "uk": {
+    "login_form.login": "Логін",
+    "login_form.login_is_required": "Логін обов'язковий",
+    "login_form.enter_login": "Введіть логін",
+    "login_form.password": "Пароль",
+    "login_form.password_is_required": "Пароль обов'язковий",
+    "login_form.enter_password": "Введіть пароль",
+    "login_form.forgot_password": "Забули пароль?"
+  }
 }

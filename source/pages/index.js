@@ -21,6 +21,8 @@ import CallsPage from './CallsPage';
 import ChartPage from './ChartPage';
 import BrandsPage from './BrandsPage';
 import ServicesPage from './ServicesPage';
+import ForgotPasswordPage from './ForgotPasswordPage';
+import NewPasswordPage from './NewPasswordPage';
 
 export {
     DashboardPage,
@@ -46,4 +48,6 @@ export {
     ChartPage,
     BrandsPage,
     ServicesPage,
+    ForgotPasswordPage,
+    NewPasswordPage,
 };
