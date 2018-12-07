@@ -7,12 +7,14 @@ import { ROW_HEIGHT } from './dashboardConfig';
 // helpers
 const _loadStatus = load => {
     switch (true) {
-        case load >= 80:
-            return 'var(--not_complete)';
-        case load >= 40 && load < 80:
-            return 'var(--approve)';
-        case load < 40:
-            return 'var(--secondary)';
+        case load <= 10:
+            return 'rgb(200, 225, 180)';
+        case load > 10 && load <= 60:
+            return 'rgb(255, 230, 155)';
+        case load > 60 && load <= 80:
+            return 'rgb(250, 175, 175)';
+        case load > 80:
+            return 'rgb(200, 160, 225)';
         default:
             return 'var(--secondary)';
     }
@@ -162,7 +164,7 @@ export const DashboardAddOrderColumn = styled.div`
 
 export const DashboardHead = styled.div`
     height: 50px;
-    color: white;
+    color: black;
     text-align: center;
 `;
 
