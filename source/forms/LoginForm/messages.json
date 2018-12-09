@@ -5,6 +5,7 @@
     "login_form.enter_login": "Enter login",
     "login_form.password": "Password",
     "login_form.password_is_required": "Password is required",
+    "login_form.password_is_required_min": "Password is required (min 6 symbols)",
     "login_form.enter_password": "Enter password",
     "login_form.forgot_password": "Forgot password?",
     "login_form.enter_your_registration_login": "Enter your login",
@@ -16,7 +17,9 @@
     "login_form.password_expired": "Password recovery session is no longer valid. Please try again.",
     "login_form.back_to_form": "Back to form",
     "login_form.back_to_login": "Back to login",
-    "login_form.password_confirmation": "Two passwords that you enter is inconsistent!"
+    "login_form.password_confirmation": "Two passwords that you enter is inconsistent!",
+    "login_form.congratulations": "Congratulations!",
+    "login_form.password_changed": "Your password has been changed."
   },
   "ru": {
     "login_form.login": "Логин",
@@ -24,6 +27,7 @@
     "login_form.enter_login": "Введите логин",
     "login_form.password": "Пароль",
     "login_form.password_is_required": "Пароль обязательный",
+    "login_form.password_is_required_min": "Пароль обязательный (не меньше 6 символов)",
     "login_form.enter_password": "Введите пароль",
     "login_form.forgot_password": "Забыли пароль?",
     "login_form.enter_your_registration_login": "Введите Ваш логин",
@@ -35,7 +39,9 @@
     "login_form.password_expired": "Сессия восстановления пароля более не валидна. Пожалуйста, повторите попытку.",
     "login_form.back_to_form": "Вернуться к форме",
     "login_form.back_to_login": "Вернуться к логину",
-    "login_form.password_confirmation": "Пароли не совпадают!"
+    "login_form.password_confirmation": "Пароли не совпадают!",
+    "login_form.congratulations": "Поздравляем!",
+    "login_form.password_changed": "Ваш пароль был изменен"
   },
   "uk": {
     "login_form.login": "Логін",
@@ -43,6 +49,7 @@
     "login_form.enter_login": "Введіть логін",
     "login_form.password": "Пароль",
     "login_form.password_is_required": "Пароль обов'язковий",
+    "login_form.password_is_required_min": "Пароль обов'язковий (не менше 6 символів)",
     "login_form.enter_password": "Введіть пароль",
     "login_form.forgot_password": "Забули пароль?",
     "login_form.enter_your_registration_login": "Введіть Ваш логін",
@@ -54,6 +61,8 @@
     "login_form.password_expired": "Сессія відновлення паролю більше не придатна. Будь ласка, повторіть спробу.",
     "login_form.back_to_form": "Повернутись до форми",
     "login_form.back_to_login": "Повернутись до логіну",
-    "login_form.password_confirmation": "Паролі не співпадають!"
+    "login_form.password_confirmation": "Паролі не співпадають!",
+    "login_form.congratulations": "Вітаємо!",
+    "login_form.password_changed": "Ваш пароль було зміненно."
   }
 }

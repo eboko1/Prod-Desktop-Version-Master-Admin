@@ -142,8 +142,10 @@ export class NewPassword extends Component {
                                 {
                                     required: true,
                                     message:  formatMessage({
-                                        id: 'login_form.password_is_required',
+                                        id:
+                                            'login_form.password_is_required_min',
                                     }),
+                                    min: 6,
                                 },
                                 {
                                     validator: this._validateToNextPassword,
@@ -164,8 +166,10 @@ export class NewPassword extends Component {
                                 {
                                     required: true,
                                     message:  formatMessage({
-                                        id: 'login_form.password_is_required',
+                                        id:
+                                            'login_form.password_is_required_min',
                                     }),
+                                    min: 6,
                                 },
                                 {
                                     validator: this._compareToFirstPassword,
@@ -205,10 +209,10 @@ export class NewPassword extends Component {
                         <Result
                             type='success'
                             title={
-                                <FormattedMessage id='login_form.go_to_mail' />
+                                <FormattedMessage id='login_form.congratulations' />
                             }
                             description={
-                                <FormattedMessage id='login_form.go_to_mail_description' />
+                                <FormattedMessage id='login_form.password_changed' />
                             }
                             actions={
                                 <Button onClick={ this._backToLogin }>
