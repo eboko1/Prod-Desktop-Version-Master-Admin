@@ -1,4 +1,5 @@
 // vendor
+import { message } from 'antd';
 import { trim, toUpper } from 'lodash/string';
 import { replace } from 'react-router-redux';
 import _ from 'lodash';
@@ -21,7 +22,21 @@ export const API = __API_URL__;
 
 const apiC = trim(API, '/');
 // const apiC = trim(__API_URL__, '/');
-/* eslint-disable */
+
+class ResponseError extends Error {
+    constructor(response, status) {
+        super();
+
+        Error.captureStackTrace(this, this.constructor);
+
+        this.name = this.constructor.name;
+        this.message = 'Response Error';
+        this.response = response;
+        this.status = status || 500;
+    }
+}
+
+/* eslint-disable complexity*/
 export default async function fetchAPI(
     method,
     endpoint,
@@ -29,20 +44,28 @@ export default async function fetchAPI(
     body,
     { rawResponse, handleErrorInternally, url, noAuth, headers } = {},
 ) {
-    const endpointC = trim(endpoint, "/"); // trim all spaces and '/'
-    const handler = endpointC ? `/${endpointC}` : ""; // be sure that after api will be only one /
+    const endpointC = trim(endpoint, '/'); // trim all spaces and '/'
+    const handler = endpointC ? `/${endpointC}` : ''; // be sure that after api will be only one /
     const methodU = toUpper(method);
-    const omittedQuery = _.omitBy(query, (value) => _.isString(value) && _.isEmpty(value));
-    const queryString = qs.stringify(omittedQuery, { skipNulls: true, arrayFormat: 'repeat' });
+    const omittedQuery = _.omitBy(
+        query,
+        value => _.isString(value) && _.isEmpty(value),
+    );
+    const queryString = qs.stringify(omittedQuery, {
+        skipNulls:   true,
+        arrayFormat: 'repeat',
+    });
 
     const request = {
-        method: methodU,
-        headers: headers ? headers : {
-            "content-type": "application/json",
-            "Cache-Control": "no-cache",
-            "Access-Control-Request-Headers": "*",
-            // 'Access-Control-Request-Method':  '*',
-        },
+        method:  methodU,
+        headers: headers
+            ? headers
+            : {
+                'content-type':                   'application/json',
+                'Cache-Control':                  'no-cache',
+                'Access-Control-Request-Headers': '*',
+                // 'Access-Control-Request-Method':  '*',
+            },
     };
 
     const token = getToken();
@@ -53,18 +76,12 @@ export default async function fetchAPI(
         });
     }
 
-    if (methodU === "POST" || methodU === "PUT" || methodU === "DELETE") {
+    if (methodU === 'POST' || methodU === 'PUT' || methodU === 'DELETE') {
         request.body = JSON.stringify(body || {});
     }
 
     // async function response() {
-    const response = await fetch.apply(null, [
-        `${url || apiC}${handler}${
-            queryString ? `?${queryString}` : ""
-        }`,
-        request,
-        ...arguments,
-    ]);
+    const response = await fetch.apply(null, [ `${url || apiC}${handler}${queryString ? `?${queryString}` : ''}`, request, ...arguments ]);
 
     const { status } = response;
     const { dispatch } = store;
@@ -75,6 +92,7 @@ export default async function fetchAPI(
         case status === 400:
             if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/400`));
+
                 return;
             }
             // dispatch(emitError({ message, status }));
@@ -85,39 +103,31 @@ export default async function fetchAPI(
         case status === 403:
             if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/403`));
+
                 return;
             }
             // dispatch(emitError({ message, status }));
+            message.error('Error! 403');
             throw new ResponseError(await response.json(), status);
         case status >= 404 && status < 422:
             if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/404`));
+
                 return;
             }
             // dispatch(emitError({ message, status }));
+            message.error('Error!');
             throw new ResponseError(await response.json(), status);
         case status >= 500 && status <= 504:
             if (!handleErrorInternally) {
                 dispatch(replace(`${book.exception}/500`));
+
                 return;
             }
             // dispatch(emitError({ message, status }));
+            message.error('Error! 500');
             throw new ResponseError(await response.json(), status);
         default:
             throw new ResponseError(await response.json(), status);
-    }
-}
-
-class ResponseError extends Error {
-    constructor(response, status) {
-        super();
-
-        Error.captureStackTrace(this, this.constructor);
-
-        this.name = this.constructor.name;
-
-        this.message = 'Response Error';
-        this.response = response;
-        this.status = status || 500;
     }
 }
