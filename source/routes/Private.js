@@ -26,6 +26,10 @@ import {
     ManagerRolePage,
     ServicesPage,
     BrandsPage,
+    CashSettingsPage,
+    CashAccountingPage,
+    CashOrdersPage,
+    SuppliersPage,
 } from 'pages';
 import book from './book';
 
@@ -68,6 +72,23 @@ export default class Private extends Component {
                     exact
                     component={ EditEmployeePage }
                     path={ book.editEmployee }
+                />
+                <Route exact component={ SuppliersPage } path={ book.suppliers } />
+                { /* Cash */ }
+                <Route
+                    exact
+                    component={ CashSettingsPage }
+                    path={ book.cashSettingsPage }
+                />
+                <Route
+                    exact
+                    component={ CashOrdersPage }
+                    path={ book.cashOrdersPage }
+                />
+                <Route
+                    exact
+                    component={ CashAccountingPage }
+                    path={ book.cashAccountingPage }
                 />
                 { /* Statistics */ }
                 <Route exact component={ ChartPage } path={ book.chart } />
