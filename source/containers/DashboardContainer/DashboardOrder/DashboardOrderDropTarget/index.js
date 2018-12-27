@@ -37,7 +37,7 @@ export default class DashboardOrderDropTarget extends Component {
                 innerRef={ dropTarget => this._getOrderDropTargetRef(dropTarget) }
                 overlayDrop={ isOver && canDrop }
             >
-                { label &&
+                { label && 
                     <>
                         <StyledDashboardOrderDropTargetLabel>
                             { label.vehicleNumber }
@@ -66,7 +66,7 @@ const StyledDashboardOrderDropTarget = styled.div`
 `;
 
 const StyledDashboardOrderDropTargetLabel = styled.div`
-    font-size: 10px;
+    font-size: 11px;
     font-weight: bold;
     white-space: nowrap;
     overflow: hidden;

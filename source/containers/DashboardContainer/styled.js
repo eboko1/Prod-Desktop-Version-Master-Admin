@@ -7,12 +7,14 @@ import { ROW_HEIGHT } from './dashboardConfig';
 // helpers
 const _loadStatus = load => {
     switch (true) {
+        case load < 10:
+            return 'var(--db_progress)';
+        case load >= 10 && load < 60:
+            return 'var(--db_approve)';
+        case load >= 60 && load < 80:
+            return 'var(--db_required)';
         case load >= 80:
-            return 'var(--not_complete)';
-        case load >= 40 && load < 80:
-            return 'var(--approve)';
-        case load < 40:
-            return 'var(--secondary)';
+            return 'var(--db_reserve)';
         default:
             return 'var(--secondary)';
     }
@@ -147,7 +149,7 @@ export const DashboardAddOrderColumn = styled.div`
                     : 'rgba(var(--warningRGB), 0.4)'; // not 0.5 cuz of overlayed backgrounds
             }
 
-            return 'var(--lightGray)';
+            return 'var(--snow)';
         }
         if (stationsWithConflicts.includes(stationNum)) {
             return globalPosition % 2
@@ -155,13 +157,15 @@ export const DashboardAddOrderColumn = styled.div`
                 : 'rgba(var(--warningRGB), 0.4)';
         }
 
-        return 'var(--lightGray)';
-    }}};
+        return 'var(--snow)';
+    }};
+    }
 `;
 
 export const DashboardHead = styled.div`
     height: 50px;
-    color: white;
+    color: black;
+    font-weight: bold;
     text-align: center;
 `;
 
@@ -193,6 +197,6 @@ export const DashboardTimeCell = styled.div`
     font-weight: bold;
 
     &:nth-child(even) {
-        background: var(--lightGray);
+        background: var(--snow);
     }
 `;
