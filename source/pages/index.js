@@ -23,6 +23,10 @@ import BrandsPage from './BrandsPage';
 import ServicesPage from './ServicesPage';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import NewPasswordPage from './NewPasswordPage';
+import CashSettingsPage from './CashSettingsPage';
+import CashOrdersPage from './CashOrdersPage';
+import CashAccountingPage from './CashAccountingPage';
+import SuppliersPage from './SuppliersPage';
 
 export {
     DashboardPage,
@@ -50,4 +54,8 @@ export {
     ServicesPage,
     ForgotPasswordPage,
     NewPasswordPage,
+    CashSettingsPage,
+    CashOrdersPage,
+    CashAccountingPage,
+    SuppliersPage,
 };

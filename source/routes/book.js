@@ -40,6 +40,14 @@ const book = Object.freeze({
     addEmployee:         '/employees/add',
     // TODO: employeeId
     editEmployee:        '/employees/:id',
+    // Suppliers
+    suppliersPage:       '/suppliers',
+    //
+    //  Cash
+    //
+    cashOrders:          '/cash/orders',
+    cashSettings:        '/cash/settings',
+    cashAccounting:      '/cash/accounting',
     //
     // Statistics
     //

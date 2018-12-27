@@ -51,6 +51,41 @@ export default {
                         isForbidden(user, permissions.GET_EMPLOYEES),
                     name: 'navigation.employees',
                 },
+                {
+                    key:  '/suppliers',
+                    link: book.suppliersPage,
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.GET_EMPLOYEES),
+                    name: 'navigation.suppliers',
+                },
+            ],
+        },
+        {
+            key:      'cash',
+            iconType: 'wallet',
+            name:     'navigation.cash',
+            items:    [
+                {
+                    key:  '/cash/settings',
+                    // disabled: user =>
+                    //     !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.cashSettingPage,
+                    name: 'navigation.service_indicators',
+                },
+                {
+                    key:  '/cash/orders',
+                    // disabled: user =>
+                    //     !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.cashOrdersPage,
+                    name: 'navigation.service_indicators',
+                },
+                {
+                    key:  '/cash/accounting',
+                    // disabled: user =>
+                    //     !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    link: book.cashAccountingPage,
+                    name: 'navigation.service_indicators',
+                },
             ],
         },
         /* Statistics submenu */

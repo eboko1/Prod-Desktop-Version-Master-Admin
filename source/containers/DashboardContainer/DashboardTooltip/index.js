@@ -106,7 +106,7 @@ const DashboardTooltip = styled(TooltipBox)`
     -webkit-backface-visibility: hidden;
     -moz-backface-visibility: hidden;
     backface-visibility: hidden;
-    font-weight: bold;
+    /* font-weight: bold; */
     -webkit-font-smoothing: antialiased;
 
     ${'' /* ${DashboardOrder}:hover & {
