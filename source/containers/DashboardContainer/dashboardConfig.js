@@ -9,21 +9,21 @@ const DragItemTypes = Object.freeze({
 const ordersStatus = status => {
     switch (status) {
         case 'reserve':
-            return 'var(--reserve)';
+            return 'var(--db_reserve)';
         case 'not_complete':
-            return 'var(--required)';
+            return 'var(--db_not_complete)';
         case 'required':
-            return 'var(--required)';
+            return 'var(--db_required)';
         case 'approve':
-            return 'var(--approve)';
+            return 'var(--db_approve)';
         case 'progress':
-            return 'var(--progress)';
+            return 'var(--db_progress)';
         case 'success':
-            return 'var(--success)';
+            return 'var(--db_success)';
         case 'cancel':
-            return 'var(--cancel)';
+            return 'var(--db_cancel)';
         case 'invite':
-            return 'var(--invite)';
+            return 'var(--db_invite)';
         default:
             return '#ddd';
     }

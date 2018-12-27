@@ -180,7 +180,7 @@ export default class DashboardOrderDragSource extends Component {
 const StyledDashboardOrder = styled.div`
     position: relative;
     background: ${props => ordersStatus(props.status)};
-    color: white;
+    color: black;
     font-size: 12px;
     cursor: ${props => props.status === 'success' ? 'pointer' : 'move'};
     opacity: ${props => props.isdragging ? 0.5 : 1};
