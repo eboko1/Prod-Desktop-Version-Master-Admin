@@ -38,6 +38,13 @@ const GET_CLIENTS_ADDITIONAL_INFORMATION = 'GET_CLIENTS_ADDITIONAL_INFORMATION';
 // Tasks
 const GET_ALL_TASKS = 'GET_ALL_TASKS';
 
+//Warehouse
+const ACCESS_SUPPLIERS = 'ACCESS_SUPPLIERS';
+
+//Accounting
+const ACCESS_ACCOUNTING = 'ACCESS_ACCOUNTING';
+const EDIT_CASH_ORDERS = 'EDIT_CASH_ORDERS';
+
 // Other
 const DEMO = 'DEMO';
 
@@ -75,6 +82,11 @@ export const permissions = Object.freeze({
 
     GET_ALL_TASKS,
 
+    ACCESS_SUPPLIERS,
+
+    ACCESS_ACCOUNTING,
+    EDIT_CASH_ORDERS,
+
     DEMO,
 });
 
@@ -83,6 +95,8 @@ export const ORDERS_PERMISSIONS = 'ORDERS_PERMISSIONS';
 export const CLIENTS_PERMISSIONS = 'CLIENTS_PERMISSIONS';
 export const TASKS_PERMISSIONS = 'TASKS_PERMISSIONS';
 export const EMPLOYEES_PERMISSIONS = 'EMPLOYEES_PERMISSIONS';
+export const WAREHOUSE_PERMISSIONS = 'WAREHOUSE_PERMISSIONS';
+export const ACCOUNTING_PERMISSIONS = 'ACCOUNTING_PERMISSIONS';
 export const OTHER_PERMISSIONS = 'OTHER_PERMISSIONS';
 
 export const groupedPermissions = {
@@ -91,6 +105,8 @@ export const groupedPermissions = {
     [ CLIENTS_PERMISSIONS ]:   [ GET_CLIENTS, CREATE_EDIT_DELETE_CLIENTS, CREATE_EDIT_DELETE_CLIENT_VEHICLES, FILTER_CLIENTS, GET_CLIENTS_BASIC_INFORMATION, GET_CLIENTS_ADDITIONAL_INFORMATION ],
     [ TASKS_PERMISSIONS ]:     [ GET_ALL_TASKS ],
     [ EMPLOYEES_PERMISSIONS ]: [ GET_EMPLOYEES, CREATE_EDIT_DELETE_EMPLOYEES, EMPLOYEES_SALARIES ],
+    [ WAREHOUSE_PERMISSIONS ]: [ ACCESS_SUPPLIERS ],
+    [ ACCOUNTING_PERMISSIONS ]: [ ACCESS_ACCOUNTING, EDIT_CASH_ORDERS ],
     [ OTHER_PERMISSIONS ]:     [ DEMO ],
 };
 
@@ -109,6 +125,12 @@ export const getGroupsLabels = intl => ({
     }),
     [ EMPLOYEES_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.employees_permissions',
+    }),
+    [ WAREHOUSE_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.warehouse_permissions',
+    }),
+    [ ACCOUNTING_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.accounting_permissions',
     }),
     [ ORDERS_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.orders_permissions',
@@ -190,6 +212,18 @@ export const getPermissionsLabels = intl => ({
     [ GET_ALL_TASKS ]: intl.formatMessage({
         id: 'roles.get_all_tasks',
     }),
+
+    [ ACCESS_SUPPLIERS ]: intl.formatMessage({
+        id: 'roles.access_suppliers',
+    }),
+
+    [ ACCESS_ACCOUNTING ]: intl.formatMessage({
+        id: 'roles.access_accounting',
+    }),
+    [ EDIT_CASH_ORDERS ]: intl.formatMessage({
+        id: 'roles.edit_cash_orders',
+    }),
+
     [ DEMO ]: intl.formatMessage({
         id: 'roles.demo',
     }),
