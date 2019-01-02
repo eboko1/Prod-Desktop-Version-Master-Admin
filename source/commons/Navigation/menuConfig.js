@@ -52,11 +52,10 @@ export default {
                     name: 'navigation.employees',
                 },
                 {
-                    key:  '/suppliers',
-                    link: book.suppliersPage,
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.GET_EMPLOYEES),
-                    name: 'navigation.suppliers',
+                    key:      '/suppliers',
+                    link:     book.suppliersPage,
+                    disabled: user => isForbidden(user, permissions.SUPPLIERS),
+                    name:     'navigation.suppliers',
                 },
             ],
         },
@@ -66,25 +65,25 @@ export default {
             name:     'navigation.cash',
             items:    [
                 {
-                    key:  '/cash/settings',
-                    // disabled: user =>
-                    //     !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    key:      '/cash/settings',
+                    disabled: user =>
+                        isForbidden(user, permissions.CASH_SETTINGS),
                     link: book.cashSettingPage,
-                    name: 'navigation.service_indicators',
+                    name: 'navigation.cash_settings',
                 },
                 {
-                    key:  '/cash/orders',
-                    // disabled: user =>
-                    //     !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    key:      '/cash/orders',
+                    disabled: user =>
+                        isForbidden(user, permissions.CASH_ORDERS),
                     link: book.cashOrdersPage,
-                    name: 'navigation.service_indicators',
+                    name: 'navigation.cash_orders',
                 },
                 {
-                    key:  '/cash/accounting',
-                    // disabled: user =>
-                    //     !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                    key:      '/cash/accounting',
+                    disabled: user =>
+                        isForbidden(user, permissions.CASH_ACCOUNTING),
                     link: book.cashAccountingPage,
-                    name: 'navigation.service_indicators',
+                    name: 'navigation.cash_accounting',
                 },
             ],
         },

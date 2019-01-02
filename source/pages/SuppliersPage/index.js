@@ -11,7 +11,7 @@ export default class SuppliersPage extends Component {
     render() {
         return (
             <Layout
-                title={ <FormattedMessage id='chart-page.title' /> }
+                title={ <FormattedMessage id='navigation.suppliers' /> }
                 description={ <FormattedMessage id='chart-page.description' /> }
             />
         );

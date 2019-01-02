@@ -11,8 +11,8 @@ export default class CashAccountingPage extends Component {
     render() {
         return (
             <Layout
-                title={ <FormattedMessage id='chart-page.title' /> }
-                description={ <FormattedMessage id='chart-page.description' /> }
+                title={ <FormattedMessage id='navigation.cash_accounting' /> }
+                // description={ <FormattedMessage id='chart-page.description' /> }
             />
         );
     }

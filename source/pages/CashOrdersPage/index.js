@@ -10,10 +10,7 @@ import { Layout } from 'commons';
 export default class CashOrdersPage extends Component {
     render() {
         return (
-            <Layout
-                title={ <FormattedMessage id='chart-page.title' /> }
-                description={ <FormattedMessage id='chart-page.description' /> }
-            />
+            <Layout title={ <FormattedMessage id='navigation.cash_orders' /> } />
         );
     }
 }
