@@ -13,13 +13,13 @@ export function columnsConfig(props) {
         width:     '5%',
     };
     const nameCol = {
-        title:     'Название кассы',
+        title:     <FormattedMessage id='cash-table.name' />,
         dataIndex: 'name',
         width:     '45%',
     };
 
     const typeCol = {
-        title:     'Тип',
+        title:     <FormattedMessage id='cash-table.type' />,
         dataIndex: 'type',
         width:     '25%',
         render:    type => (
@@ -28,8 +28,8 @@ export function columnsConfig(props) {
     };
 
     const infoCol = {
-        title:     'Справочник',
-        dataIndex: 'text',
+        title:     <FormattedMessage id='cash-table.description' />,
+        dataIndex: 'description',
         width:     '20%',
     };
 

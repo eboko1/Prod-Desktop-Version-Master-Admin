@@ -1,0 +1,26 @@
+{
+  "en": {
+    "cash-table.name": "Name",
+    "cash-table.type": "Type",
+    "cash-table.description": "Description",
+    "cash-table.sum": "Sum",
+    "cash-table.leftovers": "Leftovers for the period",
+    "cash-table.trace": "Trace for the period"
+  },
+  "ru": {
+    "cash-table.name": "Наименование Кассы",
+    "cash-table.type": "Тип",
+    "cash-table.description": "Описание",
+    "cash-table.sum": "Сумма",
+    "cash-table.leftovers": "Остатки на период",
+    "cash-table.trace": "Движение за период"
+  },
+  "uk": {
+    "cash-table.name": "Назва Каси",
+    "cash-table.type": "Тип",
+    "cash-table.description": "Опис",
+    "cash-table.sum": "Сума",
+    "cash-table.leftovers": "Залишки на період",
+    "cash-table.trace": "Рух за період"
+  }
+}

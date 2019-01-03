@@ -67,7 +67,9 @@ export class CashCreationForm extends Component {
                 <DecoratedInput
                     field='description'
                     formItem
-                    label={ <FormattedMessage id='cash-creation-form.comment' /> }
+                    label={
+                        <FormattedMessage id='cash-creation-form.description' />
+                    }
                     getFieldDecorator={ getFieldDecorator }
                 />
                 <Form.Item>

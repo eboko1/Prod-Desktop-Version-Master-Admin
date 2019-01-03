@@ -33,12 +33,14 @@ export class CashAccountingTable extends Component {
     }
 
     render() {
-        const { cashboxesFetching, cashboxes } = this.props;
+        const { cashboxesFetching, cashboxes, type } = this.props;
 
         return (
             <div className={ Styles.tableWrapper }>
                 <div className={ Styles.tableHead }>
-                    <h3 className={ Styles.tableHeadText }>Остатки\Движ</h3>
+                    <h3 className={ Styles.tableHeadText }>
+                        <FormattedMessage id={ `cash-table.${type}` } />
+                    </h3>
                     <RangePickerField />
                 </div>
                 <Table

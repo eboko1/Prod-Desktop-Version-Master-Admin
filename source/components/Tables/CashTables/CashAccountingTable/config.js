@@ -1,6 +1,6 @@
 // vendor
-// import React from 'react';
-// import { FormattedMessage } from 'react-intl';
+import React from 'react';
+import { FormattedMessage } from 'react-intl';
 
 // own
 
@@ -12,13 +12,13 @@ export function columnsConfig() {
         width:     '5%',
     };
     const nameCol = {
-        title:     'Название кассы',
+        title:     <FormattedMessage id='cash-table.name' />,
         dataIndex: 'name',
         width:     '45%',
     };
 
     const sumCol = {
-        title:     'Сумма',
+        title:     <FormattedMessage id='cash-table.sum' />,
         dataIndex: 'sum',
         width:     '25%',
     };

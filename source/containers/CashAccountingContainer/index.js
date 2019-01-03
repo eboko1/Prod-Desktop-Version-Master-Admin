@@ -27,8 +27,8 @@ export default class CashAccountingContainer extends Component {
                     </Tabs>
                 </ResponsiveView>
                 <ResponsiveView view={ { min: BREAKPOINTS.xxl.min, max: null } }>
-                    <CashAccountingTable />
-                    <CashAccountingTable />
+                    <CashAccountingTable type='leftovers' />
+                    <CashAccountingTable type='trace' />
                 </ResponsiveView>
             </div>
         );
