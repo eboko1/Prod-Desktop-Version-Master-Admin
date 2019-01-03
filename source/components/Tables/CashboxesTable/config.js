@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-// import { FormattedMessage } from 'react-intl';
+import { FormattedMessage } from 'react-intl';
 import { Icon, Popconfirm } from 'antd';
 
 // own
@@ -9,7 +9,7 @@ import { Icon, Popconfirm } from 'antd';
 export function columnsConfig(props) {
     const numberCol = {
         title:     '№',
-        dataIndex: 'number',
+        dataIndex: 'id',
         width:     '5%',
     };
     const nameCol = {
@@ -22,6 +22,9 @@ export function columnsConfig(props) {
         title:     'Тип',
         dataIndex: 'type',
         width:     '25%',
+        render:    type => (
+            <FormattedMessage id={ `cash-creation-form.type-${type}` } />
+        ),
     };
 
     const infoCol = {
@@ -32,10 +35,10 @@ export function columnsConfig(props) {
 
     const deleteCol = {
         width:     'auto',
-        dataIndex: 'id',
+        dataIndex: 'delete',
         render:    id => (
             <Popconfirm
-                title='Sure to delete?'
+                title={ `${<FormattedMessage id='delete' />} ?` }
                 onConfirm={ () => props.deleteCashbox(id) }
             >
                 <Icon
@@ -55,6 +58,6 @@ export function columnsConfig(props) {
         nameCol,
         typeCol,
         infoCol,
-        deleteCol, 
+        deleteCol,
     ];
 }

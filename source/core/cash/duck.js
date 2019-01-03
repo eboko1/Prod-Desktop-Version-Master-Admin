@@ -76,11 +76,12 @@ export const createCashboxSuccess = cashboxes => ({
     type:    CREATE_CASHBOX_SUCCESS,
     payload: cashboxes,
 });
-export const deleteCashbox = () => ({
-    type: DELETE_CASHBOX,
+export const deleteCashbox = id => ({
+    type:    DELETE_CASHBOX,
+    payload: id,
 });
 
-export const deleteCashboxSuccess = cashboxes => ({
+export const deleteCashboxSuccess = cashbox => ({
     type:    DELETE_CASHBOX_SUCCESS,
-    payload: cashboxes,
+    payload: cashbox,
 });
