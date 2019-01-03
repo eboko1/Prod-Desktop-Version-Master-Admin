@@ -1,4 +1,4 @@
-import EditableTable from './EditableTable';
-export { CashboxesTable } from './CashboxesTable';
+export { EditableTable } from './EditableTable';
 
-export { EditableTable };
+export { CashboxesTable } from './CashTables/CashboxesTable';
+export { CashAccountingTable } from './CashTables/CashAccountingTable';

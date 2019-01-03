@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Table } from 'antd';
 
@@ -19,6 +19,7 @@ const mapDispatchToProps = {
     deleteCashbox,
 };
 
+@injectIntl
 @connect(
     mapStateToProps,
     mapDispatchToProps,
@@ -27,7 +28,10 @@ export class CashboxesTable extends Component {
     constructor(props) {
         super(props);
 
-        this.columns = columnsConfig({ deleteCashbox });
+        this.columns = columnsConfig({
+            deleteCashbox,
+            formatMessage: props.intl.formatMessage,
+        });
     }
 
     componentDidMount() {
@@ -43,6 +47,7 @@ export class CashboxesTable extends Component {
                 columns={ this.columns }
                 dataSource={ cashboxes }
                 loading={ cashboxesFetching }
+                pagination={ false }
                 locale={ {
                     emptyText: <FormattedMessage id='no_data' />,
                 } }
