@@ -35,13 +35,13 @@ export default function reducer(state = ReducerState, action) {
         case CREATE_CASHBOX_SUCCESS:
             return {
                 ...state,
-                cashboxes: payload,
+                cashboxes: [ ...state.cashboxes, payload ],
             };
 
         case DELETE_CASHBOX_SUCCESS:
             return {
                 ...state,
-                cashboxes: payload,
+                cashboxes: [ ...state.cashboxes, payload ],
             };
 
         default:

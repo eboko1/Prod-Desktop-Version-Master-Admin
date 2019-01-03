@@ -8,6 +8,7 @@ import { fetchAPI } from 'utils';
 
 // own
 import {
+    fetchCashboxes,
     fetchCashboxesSuccess,
     createCashboxSuccess,
     deleteCashboxSuccess,
@@ -39,15 +40,9 @@ export function* createCashboxSaga() {
             const { payload } = yield take(CREATE_CASHBOX);
             yield nprogress.start();
 
-            const data = yield call(
-                fetchAPI,
-                'POST',
-                'cash_boxes',
-                null,
-                payload,
-            );
+            yield call(fetchAPI, 'POST', 'cash_boxes', null, payload);
 
-            yield put(createCashboxSuccess(data));
+            yield put(fetchCashboxes());
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -61,9 +56,9 @@ export function* deleteCashboxSaga() {
             const { payload: id } = yield take(DELETE_CASHBOX);
             yield nprogress.start();
 
-            const data = yield call(fetchAPI, 'DELETE', `cash_boxes${id}`);
+            yield call(fetchAPI, 'DELETE', `cash_boxes/${id}`);
 
-            yield put(deleteCashboxSuccess(data));
+            yield put(fetchCashboxes());
         } catch (error) {
             yield put(emitError(error));
         } finally {

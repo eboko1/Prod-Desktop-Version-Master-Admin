@@ -29,7 +29,7 @@ export class CashboxesTable extends Component {
         super(props);
 
         this.columns = columnsConfig({
-            deleteCashbox,
+            deleteCashbox: props.deleteCashbox,
             formatMessage: props.intl.formatMessage,
         });
     }

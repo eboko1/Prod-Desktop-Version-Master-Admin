@@ -25,6 +25,7 @@ export class CashCreationForm extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 createCashbox(values);
+                form.resetFields();
             }
         });
     };

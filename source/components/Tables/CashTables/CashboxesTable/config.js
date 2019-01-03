@@ -36,7 +36,7 @@ export function columnsConfig(props) {
     const deleteCol = {
         width:     'auto',
         dataIndex: 'delete',
-        render:    id => (
+        render:    (key, { id }) => (
             <Popconfirm
                 title={ `${props.formatMessage({ id: 'delete' })} ?` }
                 onConfirm={ () => props.deleteCashbox(id) }
