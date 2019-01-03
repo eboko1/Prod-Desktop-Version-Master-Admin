@@ -73,7 +73,11 @@ export default class Private extends Component {
                     component={ EditEmployeePage }
                     path={ book.editEmployee }
                 />
-                <Route exact component={ SuppliersPage } path={ book.suppliers } />
+                <Route
+                    exact
+                    component={ SuppliersPage }
+                    path={ book.suppliersPage }
+                />
                 { /* Cash */ }
                 <Route
                     exact

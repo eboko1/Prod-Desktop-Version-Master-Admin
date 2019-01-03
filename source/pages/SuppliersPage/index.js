@@ -12,7 +12,7 @@ export default class SuppliersPage extends Component {
         return (
             <Layout
                 title={ <FormattedMessage id='navigation.suppliers' /> }
-                description={ <FormattedMessage id='chart-page.description' /> }
+                // description={ <FormattedMessage id='chart-page.description' /> }
             />
         );
     }

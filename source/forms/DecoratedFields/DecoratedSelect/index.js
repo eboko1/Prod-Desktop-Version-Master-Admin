@@ -3,7 +3,6 @@ import React from 'react';
 import { Select, Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
-import _ from 'lodash';
 
 // own
 const Option = Select.Option;

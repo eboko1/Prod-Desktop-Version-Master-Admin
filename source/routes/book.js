@@ -46,7 +46,7 @@ const book = Object.freeze({
     //  Cash
     //
     cashOrdersPage:      '/cash/orders',
-    cashSettingPage:     '/cash/settings',
+    cashSettingsPage:    '/cash/settings',
     cashAccountingPage:  '/cash/accounting',
     //
     // Statistics

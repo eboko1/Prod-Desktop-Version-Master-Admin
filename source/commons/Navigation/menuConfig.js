@@ -54,7 +54,7 @@ export default {
                 {
                     key:      '/suppliers',
                     link:     book.suppliersPage,
-                    disabled: user => isForbidden(user, permissions.SUPPLIERS),
+                    // disabled: user => isForbidden(user, permissions.SUPPLIERS),
                     name:     'navigation.suppliers',
                 },
             ],
@@ -66,22 +66,22 @@ export default {
             items:    [
                 {
                     key:      '/cash/settings',
-                    disabled: user =>
-                        isForbidden(user, permissions.CASH_SETTINGS),
-                    link: book.cashSettingPage,
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.CASH_SETTINGS),
+                    link: book.cashSettingsPage,
                     name: 'navigation.cash_settings',
                 },
                 {
                     key:      '/cash/orders',
-                    disabled: user =>
-                        isForbidden(user, permissions.CASH_ORDERS),
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.CASH_ORDERS),
                     link: book.cashOrdersPage,
                     name: 'navigation.cash_orders',
                 },
                 {
                     key:      '/cash/accounting',
-                    disabled: user =>
-                        isForbidden(user, permissions.CASH_ACCOUNTING),
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.CASH_ACCOUNTING),
                     link: book.cashAccountingPage,
                     name: 'navigation.cash_accounting',
                 },
