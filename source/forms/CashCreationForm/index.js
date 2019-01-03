@@ -19,7 +19,8 @@ const Option = Select.Option;
     { createCashbox },
 )
 export class CashCreationForm extends Component {
-    _submit = () => {
+    _submit = e => {
+        e.preventDefault();
         const { form, createCashbox } = this.props;
         form.validateFields((err, values) => {
             if (!err) {

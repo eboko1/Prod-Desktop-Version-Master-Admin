@@ -10,9 +10,18 @@ import { fetchCashboxes, deleteCashbox } from 'core/cash/duck';
 // own
 import { columnsConfig } from './config';
 
+const mapStateToProps = state => ({
+    cashboxes: state.cash.cashboxes,
+});
+
+const mapDispatchToProps = {
+    fetchCashboxes,
+    deleteCashbox,
+};
+
 @connect(
-    null,
-    { fetchCashboxes, deleteCashbox },
+    mapStateToProps,
+    mapDispatchToProps,
 )
 export class CashboxesTable extends Component {
     constructor(props) {

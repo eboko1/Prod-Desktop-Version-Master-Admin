@@ -10,7 +10,7 @@ const routerMiddleware = createRouterMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
 const middleware = [ thunk, sagaMiddleware, routerMiddleware ];
 
-if (__LOCAL__) {
+if (__LOCAL__ || __DEV__) {
     /**
      * redux-logger заимпортирован черезе require внутри блока if,
      * для того, чтобы он не попал в бандл
