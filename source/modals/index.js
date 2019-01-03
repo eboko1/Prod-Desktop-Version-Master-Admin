@@ -8,6 +8,7 @@ import OrderTaskModal from './OrderTaskModal';
 import SwitchBusinessModal from './SwitchBusinessModal';
 import UniversalChartModal from './UniversalChartModal';
 import ConfirmRescheduleModal from './ConfirmRescheduleModal';
+import SupplierModal from './SupplierModal';
 
 export {
     UniversalFiltersModal,
@@ -20,4 +21,5 @@ export {
     SwitchBusinessModal,
     UniversalChartModal,
     ConfirmRescheduleModal,
+    SupplierModal,
 };

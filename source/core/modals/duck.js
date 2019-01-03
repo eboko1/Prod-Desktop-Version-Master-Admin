@@ -9,6 +9,7 @@ export const RESET_MODAL = `${prefix}/RESET_MODAL`;
 
 export const MODALS = {
     ADD_CLIENT:             'ADD_CLIENT',
+    SUPPLIER:               'SUPPLIER',
     INVITE:                 'INVITE',
     UNIVERSAL_FILTERS:      'UNIVERSAL_FILTERS',
     UNIVERSAL_CHART:        'UNIVERSAL_CHART',
@@ -27,7 +28,8 @@ export const MODALS = {
 // Reducer
 //
 const ReducerState = {
-    modal: '',
+    modal:      '',
+    modalProps: {},
 };
 
 export default function popupsReducer(state = ReducerState, action) {
@@ -37,12 +39,14 @@ export default function popupsReducer(state = ReducerState, action) {
         case SET_MODAL:
             return {
                 ...state,
-                modal: payload,
+                modal:      payload.modal,
+                modalProps: payload.modalProps,
             };
         case RESET_MODAL:
             return {
                 ...state,
-                modal: payload,
+                modal:      payload,
+                modalProps: {},
             };
         default:
             return state;
@@ -51,9 +55,9 @@ export default function popupsReducer(state = ReducerState, action) {
 //
 // Action Creators
 //
-export const setModal = modal => ({
+export const setModal = (modal, modalProps) => ({
     type:    SET_MODAL,
-    payload: modal,
+    payload: { modal, modalProps },
 });
 
 export const resetModal = () => ({

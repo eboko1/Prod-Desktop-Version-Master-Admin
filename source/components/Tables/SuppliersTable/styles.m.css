@@ -1,0 +1,25 @@
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+.deleteClientIcon,
+.editClientIcon {
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.actionsLine {
+    width: 2px;
+    height: 24px;
+    background: var(--lightGray);
+    margin: 0 2px;
+}
+
+.editClientIcon {
+    color: var(--secondary);
+}
+
+.deleteClientIcon {
+    color: var(--required);
+}
