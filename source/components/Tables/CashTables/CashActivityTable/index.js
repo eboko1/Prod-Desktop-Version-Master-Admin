@@ -14,6 +14,7 @@ import { BREAKPOINTS } from 'utils';
 // own
 import { columnsConfig } from './config';
 import Styles from './styles.m.css';
+import moment from 'moment';
 
 const mapStateToProps = state => ({
     data: state.cash.activity,
@@ -38,6 +39,8 @@ export class CashActivityTable extends Component {
         this.props.fetchCashboxesActivity();
     }
 
+    _onDaterangeChange = val => console.log('→ daterange val', val);
+
     render() {
         const { cashboxesFetching, data } = this.props;
 
@@ -51,7 +54,14 @@ export class CashActivityTable extends Component {
                             <FormattedMessage id='cash-table.trace' />
                         </h3>
                     </ResponsiveView>
-                    <RangePickerField />
+                    <RangePickerField
+                        onChange={ this._onDaterangeChange }
+                        // loading={ loading }
+                        startDate={ moment()
+                            .startOf('month')
+                            .format('YYYY-MM-DD hh:mm') }
+                        endDate={ moment().format('YYYY-MM-DD hh:mm') }
+                    />
                 </div>
                 <Table
                     className={ Styles.table }

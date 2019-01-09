@@ -3,11 +3,12 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Table } from 'antd';
+import moment from 'moment';
 
 // proj
 import { fetchCashboxesBalance } from 'core/cash/duck';
 
-import { RangePickerField } from 'forms/_formkit';
+import { DatePickerField } from 'forms/_formkit';
 import { ResponsiveView } from 'commons';
 import { BREAKPOINTS } from 'utils';
 
@@ -38,6 +39,8 @@ export class CashBalanceTable extends Component {
         this.props.fetchCashboxesBalance();
     }
 
+    _handleDatepicker = val => console.log('→ value', val);
+
     render() {
         const { cashboxesFetching, data } = this.props;
 
@@ -51,7 +54,10 @@ export class CashBalanceTable extends Component {
                             <FormattedMessage id='cash-table.leftovers' />
                         </h3>
                     </ResponsiveView>
-                    <RangePickerField />
+                    <DatePickerField
+                        date={ moment() }
+                        onChange={ this._handleDatepicker }
+                    />
                 </div>
                 <Table
                     className={ Styles.table }
