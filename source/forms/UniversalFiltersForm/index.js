@@ -8,6 +8,7 @@ import {
     DecoratedSelect,
     DecoratedDatePicker,
     DecoratedInputNumber,
+    DecoratedTextArea,
 } from 'forms/DecoratedFields';
 
 import { getDaterange } from 'utils';
@@ -218,6 +219,17 @@ export class UniversalFiltersForm extends Component {
                                 optionLabel='serviceName'
                             />
                         </FormItem>
+                        <DecoratedTextArea
+                         fields={ {} }
+                            field='description'
+                            getFieldDecorator={ getFieldDecorator }
+                            formItem
+                            label={ formatMessage({
+                                id: 'cash-order-form.comment',
+                            }) }
+                            // formItemLayout={ formItemLayout }
+                            // className={ Styles.styledFormItem }
+                        />
                     </Col>
                     <Col span={ 3 }>
                         <FormItem

@@ -9,8 +9,8 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_CASHBOXES = `${prefix}/FETCH_CASHBOXES`;
 export const FETCH_CASHBOXES_SUCCESS = `${prefix}/FETCH_CASHBOXES_SUCCESS`;
 
-export const FETCH_CASHBOXES_ORDERS = `${prefix}/FETCH_CASHBOXES_ORDERS`;
-export const FETCH_CASHBOXES_ORDERS_SUCCESS = `${prefix}/FETCH_CASHBOXES_ORDERS_SUCCESS`;
+export const FETCH_CASH_ORDERS = `${prefix}/FETCH_CASH_ORDERS`;
+export const FETCH_CASH_ORDERS_SUCCESS = `${prefix}/FETCH_CASH_ORDERS_SUCCESS`;
 
 export const CREATE_CASHBOX = `${prefix}/CREATE_CASHBOX`;
 export const CREATE_CASHBOX_SUCCESS = `${prefix}/CREATE_CASHBOX_SUCCESS`;
@@ -27,7 +27,7 @@ const ReducerState = {
         totalCount: null,
         increase:   null,
         decrease:   null,
-        // balance:    null,
+        balance:    null,
     },
     cashOrders: [],
 };
@@ -54,6 +54,13 @@ export default function reducer(state = ReducerState, action) {
                 cashboxes: [ ...state.cashboxes, payload ],
             };
 
+        case FETCH_CASH_ORDERS_SUCCESS:
+            return {
+                ...state,
+                cashOrders: payload.list,
+                stats:      payload.stats,
+            };
+
         default:
             return state;
     }
@@ -74,6 +81,7 @@ export const selectCashStats = state => ({
  * Action Creators
  * */
 
+// cashboxes
 export const fetchCashboxes = () => ({
     type: FETCH_CASHBOXES,
 });
@@ -82,6 +90,7 @@ export const fetchCashboxesSuccess = cashboxes => ({
     type:    FETCH_CASHBOXES_SUCCESS,
     payload: cashboxes,
 });
+
 export const createCashbox = cashbox => ({
     type:    CREATE_CASHBOX,
     payload: cashbox,
@@ -91,6 +100,7 @@ export const createCashboxSuccess = cashboxes => ({
     type:    CREATE_CASHBOX_SUCCESS,
     payload: cashboxes,
 });
+
 export const deleteCashbox = id => ({
     type:    DELETE_CASHBOX,
     payload: id,
@@ -99,4 +109,15 @@ export const deleteCashbox = id => ({
 export const deleteCashboxSuccess = cashbox => ({
     type:    DELETE_CASHBOX_SUCCESS,
     payload: cashbox,
+});
+
+// cash orders
+
+export const fetchCashOrders = () => ({
+    type: FETCH_CASH_ORDERS,
+});
+
+export const fetchCashOrdersSuccess = cashOrders => ({
+    type:    FETCH_CASH_ORDERS_SUCCESS,
+    payload: cashOrders,
 });

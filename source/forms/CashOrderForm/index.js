@@ -63,21 +63,20 @@ export class CashOrderForm extends Component {
         this.props.fetchCashboxes();
     }
 
-    _submit = () => {
+    _submit = (event) => {
+        event.preventDefault();
         const { form, createCashOrder, resetModal } = this.props;
 
         form.validateFields((err, values) => {
-            console.log('→ values', values);
             if (!err) {
-                console.log('→ sub');
                 createCashOrder(values);
-                // form.resetFields();
-                // resetModal();
+                form.resetFields();
+                resetModal();
             }
         });
     };
 
-    _setSumType = sumType => this.setState({ sumType });
+    _setSumType = e => this.setState({ sumType: e.target.value });
 
     _setClientSearchType = clientSearchType =>
         this.setState({ clientSearchType });
@@ -89,13 +88,13 @@ export class CashOrderForm extends Component {
             intl: { formatMessage },
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
-        console.log('→ props', this.props);
+
         const counterpartyType = getFieldValue('counterpartyType');
 
         return (
             <Form onSubmit={ this._submit }>
                 <div className={ Styles.cashOrderId }>
-                    { /* <DecoratedInput
+                    <DecoratedInput
                         field='id'
                         initialValue={ nextId }
                         getFieldDecorator={ getFieldDecorator }
@@ -106,7 +105,7 @@ export class CashOrderForm extends Component {
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
                         disabled
-                    /> */ }
+                    />
                 </div>
                 <div className={ Styles.step }>
                     <DecoratedSelect
@@ -119,6 +118,14 @@ export class CashOrderForm extends Component {
                         placeholder={ formatMessage({
                             id: 'cash-order-form.order_type.placeholder',
                         }) }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
                         getPopupContainer={ trigger => trigger.parentNode }
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
@@ -139,6 +146,14 @@ export class CashOrderForm extends Component {
                         placeholder={ formatMessage({
                             id: 'cash-order-form.cashbox.placeholder',
                         }) }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
                         getPopupContainer={ trigger => trigger.parentNode }
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
@@ -154,6 +169,14 @@ export class CashOrderForm extends Component {
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={ formatMessage({ id: 'cash-order-form.date' }) }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
                         formatMessage={ formatMessage }
                         getCalendarContainer={ trigger => trigger.parentNode }
                         format='YYYY-MM-DD HH:mm'
@@ -173,6 +196,14 @@ export class CashOrderForm extends Component {
                         placeholder={ formatMessage({
                             id: 'cash-order-form.counterparty_type.placeholder',
                         }) }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
                         getPopupContainer={ trigger => trigger.parentNode }
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
@@ -188,8 +219,9 @@ export class CashOrderForm extends Component {
                     { this._renderCounterpartyBlock(counterpartyType) }
                 </div>
                 <div className={ Styles.step }>
+                    { console.log('this.state.sumType', this.state.sumType) }
                     <RadioGroup
-                        onChange={ this._setSumType }
+                        onChange={ e => this._setSumType(e) }
                         value={ this.state.sumType }
                     >
                         <Radio value='increase'>
@@ -201,6 +233,7 @@ export class CashOrderForm extends Component {
                     </RadioGroup>
                     { this.state.sumType === 'increase' && (
                         <DecoratedInputNumber
+                            fields={ {} }
                             field='increase'
                             getFieldDecorator={ getFieldDecorator }
                             formItem
@@ -211,10 +244,19 @@ export class CashOrderForm extends Component {
                             formItemLayout={ formItemLayout }
                             className={ Styles.styledFormItem }
                             cnStyles={ Styles.expandedInput }
+                            rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
                         />
                     ) }
                     { this.state.sumType === 'decrease' && (
                         <DecoratedInputNumber
+                            fields={ {} }
                             field='decrease'
                             getFieldDecorator={ getFieldDecorator }
                             formItem
@@ -225,9 +267,18 @@ export class CashOrderForm extends Component {
                             formItemLayout={ formItemLayout }
                             className={ Styles.styledFormItem }
                             cnStyles={ Styles.expandedInput }
+                            rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
                         />
                     ) }
                     <DecoratedTextArea
+                        fields={ {} }
                         field='description'
                         getFieldDecorator={ getFieldDecorator }
                         formItem
@@ -330,11 +381,19 @@ export class CashOrderForm extends Component {
                 //     {
                 //         required: true,
                 //         message:  formatMessage({
-                //             id: 'cash-creation-form.name.validation',
+                //             id: 'required_field',
                 //         }),
                 //     },
                 // ] }
                 getFieldDecorator={ getFieldDecorator }
+                rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
             />
         );
     };
@@ -359,6 +418,14 @@ export class CashOrderForm extends Component {
                 //     },
                 // ] }
                 getFieldDecorator={ getFieldDecorator }
+                rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
             />
         );
     };
@@ -383,6 +450,14 @@ export class CashOrderForm extends Component {
                 //     },
                 // ] }
                 getFieldDecorator={ getFieldDecorator }
+                rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
             />
         );
     };

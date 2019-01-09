@@ -12,9 +12,11 @@ import {
     fetchCashboxesSuccess,
     createCashboxSuccess,
     deleteCashboxSuccess,
+    fetchCashOrdersSuccess,
     FETCH_CASHBOXES,
     CREATE_CASHBOX,
     DELETE_CASHBOX,
+    FETCH_CASH_ORDERS,
 } from './duck';
 
 export function* fetchCashboxesSaga() {
@@ -26,6 +28,23 @@ export function* fetchCashboxesSaga() {
             const data = yield call(fetchAPI, 'GET', 'cash_boxes');
 
             yield put(fetchCashboxesSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* fetchCashOrdersSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_CASH_ORDERS);
+            yield nprogress.start();
+
+            const data = yield call(fetchAPI, 'GET', 'cash_orders');
+
+            yield put(fetchCashOrdersSuccess(data));
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -68,5 +87,10 @@ export function* deleteCashboxSaga() {
 }
 
 export function* saga() {
-    yield all([ call(fetchCashboxesSaga), call(createCashboxSaga), call(deleteCashboxSaga) ]);
+    yield all([
+        call(fetchCashboxesSaga),
+        call(createCashboxSaga),
+        call(deleteCashboxSaga),
+        call(fetchCashOrdersSaga),
+    ]);
 }

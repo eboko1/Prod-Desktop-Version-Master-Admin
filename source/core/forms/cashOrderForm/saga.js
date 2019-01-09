@@ -8,6 +8,7 @@ import {
     takeEvery,
     takeLatest,
 } from 'redux-saga/effects';
+import _ from 'lodash';
 
 //proj
 import { emitError, setCashOrderFetchingState } from 'core/ui/duck';
@@ -47,13 +48,12 @@ export function* createCashOrderSaga() {
     while (true) {
         try {
             const { payload } = yield take(CREATE_CASH_ORDER);
-            console.log('** payload', payload);
-            yield call(fetchAPI, 'POST', 'cash_orders', null, payload, {
-                handleErrorInternally: true,
-            });
+            // console.log('** payload', payload);
+            const cashOrder = _.omit(payload, 'counterpartyType');
+            // console.log('→ cashOrder', cashOrder);
+            yield call(fetchAPI, 'POST', 'cash_orders', null, cashOrder);
         } catch (error) {
-            // yield put(emitError(error));
-            console.log('→ error', error);
+            yield put(emitError(error));
         } finally {
             yield put(createCashOrderSuccess());
         }

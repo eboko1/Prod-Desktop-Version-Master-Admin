@@ -36,6 +36,10 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class CashOrdersPage extends Component {
+    componentDidMount() {
+        this.props.fetchCashOrders();
+    }
+
     render() {
         const {
             collapsed,
@@ -44,7 +48,7 @@ export default class CashOrdersPage extends Component {
             setModal,
             resetModal,
             setCashOrdersFilters,
-            fetchCashOrders,
+            cashOrders,
         } = this.props;
 
         return (
@@ -75,7 +79,7 @@ export default class CashOrdersPage extends Component {
                     <CashOrdersTable
                         totalCount={ _.get(stats, 'totalCount') }
                         setCashOrdersFilters={ setCashOrdersFilters }
-                        fetchCashOrders={ fetchCashOrders }
+                        cashOrders={ cashOrders }
                     />
                 </Paper>
                 <CashOrderModal resetModal={ resetModal } visible={ modal } />
