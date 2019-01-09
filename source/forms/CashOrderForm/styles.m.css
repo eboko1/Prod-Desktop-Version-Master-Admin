@@ -34,3 +34,8 @@
     display: flex;
     align-items: center;
 }
+
+.sumType {
+    display: flex;
+    justify-content: space-around;
+}

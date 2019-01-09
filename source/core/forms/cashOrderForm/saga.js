@@ -17,9 +17,11 @@ import { fetchAPI } from 'utils';
 // own
 import {
     fetchCashOrderNextIdSuccess,
+    fetchCashOrderFormSuccess,
     createCashOrderSuccess,
     // SET_SEARCH_QUERY,
     FETCH_CASH_ORDER_NEXT_ID,
+    FETCH_CASH_ORDER_FORM,
     CREATE_CASH_ORDER,
 } from './duck';
 
@@ -44,6 +46,20 @@ export function* fetchCashOrderNextIdSaga() {
     yield put(setCashOrderFetchingState(false));
 }
 
+export function* fetchCashOrderFormSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(FETCH_CASH_ORDER_FORM);
+            console.log('→ payload', payload);
+            const data = yield call(fetchAPI, 'GET', payload);
+            console.log('** data', data);
+            yield put(fetchCashOrderFormSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
 export function* createCashOrderSaga() {
     while (true) {
         try {
@@ -63,6 +79,6 @@ export function* createCashOrderSaga() {
 export function* saga() {
     yield all([
         // takeLatest(SET_SEARCH_QUERY, handleContractorSearchSaga),
-        call(createCashOrderSaga), takeLatest(FETCH_CASH_ORDER_NEXT_ID, fetchCashOrderNextIdSaga),
+        call(createCashOrderSaga), takeLatest(FETCH_CASH_ORDER_NEXT_ID, fetchCashOrderNextIdSaga), call(fetchCashOrderFormSaga),
     ]);
 }

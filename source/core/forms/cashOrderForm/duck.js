@@ -7,6 +7,9 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_CASH_ORDER_NEXT_ID = `${prefix}/FETCH_CASH_ORDER_NEXT_ID`;
 export const FETCH_CASH_ORDER_NEXT_ID_SUCCESS = `${prefix}/FETCH_CASH_ORDER_NEXT_ID_SUCCESS`;
 
+export const FETCH_CASH_ORDER_FORM = `${prefix}/FETCH_CASH_ORDER_FORM`;
+export const FETCH_CASH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_CASH_ORDER_FORM_SUCCESS`;
+
 export const CREATE_CASH_ORDER = `${prefix}/CREATE_CASH_ORDER`;
 export const CREATE_CASH_ORDER_SUCCESS = `${prefix}/CREATE_CASH_ORDER`;
 
@@ -18,7 +21,8 @@ export const CLEAR_CASH_ORDER_FORM = `${prefix}/CLEAR_CASH_ORDER_FILTER_FORM`;
  * */
 
 const ReducerState = {
-    fields: {},
+    fields:           {},
+    counterpartyList: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -26,8 +30,6 @@ export default function reducer(state = ReducerState, action) {
 
     switch (type) {
         case ON_CHANGE_CASH_ORDER_FORM:
-            console.log('→ payload', payload);
-
             return {
                 ...state,
                 fields: {
@@ -43,6 +45,12 @@ export default function reducer(state = ReducerState, action) {
                     ...state.fields,
                     ...payload,
                 },
+            };
+
+        case FETCH_CASH_ORDER_FORM_SUCCESS:
+            return {
+                ...state,
+                counterpartyList: [ ...payload ],
             };
 
         case CREATE_CASH_ORDER_SUCCESS:
@@ -62,6 +70,9 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state.forms[ moduleName ];
 
+export const selectCounterpartyList = state =>
+    state.forms.cashOrderForm.counterpartyList;
+
 /**
  * Action Creators
  * */
@@ -73,6 +84,16 @@ export const fetchCashOrderNextId = () => ({
 export const fetchCashOrderNextIdSuccess = orderId => ({
     type:    FETCH_CASH_ORDER_NEXT_ID_SUCCESS,
     payload: orderId,
+});
+
+export const fetchCashOrderForm = endpoint => ({
+    type:    FETCH_CASH_ORDER_FORM,
+    payload: endpoint,
+});
+
+export const fetchCashOrderFormSuccess = data => ({
+    type:    FETCH_CASH_ORDER_FORM_SUCCESS,
+    payload: data,
 });
 
 export const createCashOrder = payload => ({

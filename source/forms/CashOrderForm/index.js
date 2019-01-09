@@ -3,13 +3,16 @@ import React, { Component } from 'react';
 import { Form, Select, Button, Radio } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
+import { v4 } from 'uuid';
 
 // proj
 import { fetchCashboxes } from 'core/cash/duck';
 import {
     onChangeCashOrderForm,
     fetchCashOrderNextId,
+    fetchCashOrderForm,
     createCashOrder,
+    selectCounterpartyList,
 } from 'core/forms/cashOrderForm/duck';
 
 import {
@@ -33,6 +36,10 @@ const formItemLayout = {
     wrapperCol: { span: 15 },
 };
 
+const expandedWrapperFormItemLayout = {
+    wrapperCol: { span: 24 },
+};
+
 const reverseFromItemLayout = {
     labelCol:   { span: 15 },
     wrapperCol: { span: 7 },
@@ -44,11 +51,13 @@ const reverseFromItemLayout = {
         change: onChangeCashOrderForm,
         fetchCashboxes,
         fetchCashOrderNextId,
+        fetchCashOrderForm,
         createCashOrder,
     },
     mapStateToProps: state => ({
-        cashboxes: state.cash.cashboxes,
-        nextId:    _.get(state, 'forms.cashOrderForm.fields.nextId'),
+        cashboxes:        state.cash.cashboxes,
+        counterpartyList: selectCounterpartyList(state),
+        nextId:           _.get(state, 'forms.cashOrderForm.fields.nextId'),
     }),
 })
 @injectIntl
@@ -63,7 +72,33 @@ export class CashOrderForm extends Component {
         this.props.fetchCashboxes();
     }
 
-    _submit = (event) => {
+    componentDidUpdate(prevProps) {
+        const {
+            form: { getFieldValue },
+            fetchCashOrderForm,
+        } = this.props;
+        if (
+            prevProps.fields.counterpartyType !==
+            this.props.fields.counterpartyType
+        ) {
+            const counterparty = getFieldValue('counterpartyType');
+
+            switch (counterparty) {
+                case cashOrderCounterpartyTypes.EMPLOYEE:
+                    console.log('→ aaa');
+
+                    return fetchCashOrderForm('employees');
+
+                case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
+                    return fetchCashOrderForm('business_suppliers');
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    _submit = event => {
         event.preventDefault();
         const { form, createCashOrder, resetModal } = this.props;
 
@@ -78,8 +113,18 @@ export class CashOrderForm extends Component {
 
     _setSumType = e => this.setState({ sumType: e.target.value });
 
-    _setClientSearchType = clientSearchType =>
-        this.setState({ clientSearchType });
+    _setClientSearchType = e =>
+        this.setState({ clientSearchType: e.target.value });
+
+    _getClientOrdersOptions() {
+        return _.get(this.props, 'selectedClient.emails', [])
+            .filter(Boolean)
+            .map(email => (
+                <Option value={ email } key={ v4() }>
+                    { email }
+                </Option>
+            ));
+    }
 
     render() {
         const {
@@ -219,8 +264,8 @@ export class CashOrderForm extends Component {
                     { this._renderCounterpartyBlock(counterpartyType) }
                 </div>
                 <div className={ Styles.step }>
-                    { console.log('this.state.sumType', this.state.sumType) }
                     <RadioGroup
+                        className={ Styles.sumType}
                         onChange={ e => this._setSumType(e) }
                         value={ this.state.sumType }
                     >
@@ -245,13 +290,13 @@ export class CashOrderForm extends Component {
                             className={ Styles.styledFormItem }
                             cnStyles={ Styles.expandedInput }
                             rules={ [
-                            {
-                                required: true,
-                                message:  formatMessage({
-                                    id: 'required_field',
-                                }),
-                            },
-                        ] }
+                                {
+                                    required: true,
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
+                                },
+                            ] }
                         />
                     ) }
                     { this.state.sumType === 'decrease' && (
@@ -268,13 +313,13 @@ export class CashOrderForm extends Component {
                             className={ Styles.styledFormItem }
                             cnStyles={ Styles.expandedInput }
                             rules={ [
-                            {
-                                required: true,
-                                message:  formatMessage({
-                                    id: 'required_field',
-                                }),
-                            },
-                        ] }
+                                {
+                                    required: true,
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
+                                },
+                            ] }
                         />
                     ) }
                     <DecoratedTextArea
@@ -301,6 +346,7 @@ export class CashOrderForm extends Component {
 
     _renderClientBlock = () => {
         const {
+            fields,
             form: { getFieldDecorator },
             intl: { formatMessage },
         } = this.props;
@@ -315,7 +361,7 @@ export class CashOrderForm extends Component {
                     }) }
                 >
                     <RadioGroup
-                        onChange={ this._setClientSearchType }
+                        onChange={ e => this._setClientSearchType(e) }
                         value={ this.state.clientSearchType }
                     >
                         <Radio value='client'>
@@ -330,103 +376,111 @@ export class CashOrderForm extends Component {
                         </Radio>
                     </RadioGroup>
                 </Form.Item>
-                <DecoratedSearch
-                    field='clientId'
-                    getFieldDecorator={ getFieldDecorator }
-                    formItem
-                    label={ formatMessage({
-                        id: 'cash-order-form.search',
-                    }) }
-                    placeholder={ formatMessage({
-                        id: 'cash-order-form.search_by_client',
-                    }) }
-                    // onChange={ ({ target: { value } }) =>
-                    //     this.handleOrdersSearch(value)
-                    // }
-                    formItemLayout={ formItemLayout }
-                    className={ Styles.styledFormItem }
-                />
-                <DecoratedSearch
-                    field='orderId'
-                    getFieldDecorator={ getFieldDecorator }
-                    formItem
-                    label={ formatMessage({
-                        id: 'cash-order-form.search',
-                    }) }
-                    placeholder={ formatMessage({
-                        id: 'cash-order-form.search_by_client',
-                    }) }
-                    // onChange={ ({ target: { value } }) =>
-                    //     this.handleOrdersSearch(value)
-                    // }
-                    formItemLayout={ formItemLayout }
-                    className={ Styles.styledFormItem }
-                />
+                {this.state.clientSearchType === 'client' && (
+                    <DecoratedSearch
+                        field='clientId'
+                        getFieldDecorator={ getFieldDecorator }
+                        formItem
+                        label={ formatMessage({
+                            id: 'cash-order-form.search',
+                        }) }
+                        placeholder={ formatMessage({
+                            id: 'cash-order-form.search_by_client',
+                        }) }
+                        formItemLayout={ formItemLayout }
+                        className={ Styles.styledFormItem }
+                    />
+                )}
+                {this.state.clientSearchType === 'order' && (
+                    <DecoratedSearch
+                        field='orderId'
+                        getFieldDecorator={ getFieldDecorator }
+                        formItem
+                        label={ formatMessage({
+                            id: 'cash-order-form.search',
+                        }) }
+                        placeholder={ formatMessage({
+                            id: 'cash-order-form.search_by_client',
+                        }) }
+                        formItemLayout={ formItemLayout }
+                        className={ Styles.styledFormItem }
+                    />
+                )}
             </>
         );
     };
 
     _renderEmployeeBlock = () => {
         const {
+            counterpartyList,
             form: { getFieldDecorator },
             intl: { formatMessage },
         } = this.props;
 
-        return (
-            <DecoratedInput
+        return !_.isEmpty(counterpartyList) ? (
+            <DecoratedSelect
                 field='employeeId'
                 formItem
-                formItemLayout={ formItemLayout }
-                // rules={ [
-                //     {
-                //         required: true,
-                //         message:  formatMessage({
-                //             id: 'required_field',
-                //         }),
-                //     },
-                // ] }
+                placeholder={ formatMessage({
+                    id: 'cash-order-form.select_employee',
+                }) }
+                formItemLayout={ expandedWrapperFormItemLayout }
                 getFieldDecorator={ getFieldDecorator }
+                getPopupContainer={ trigger => trigger.parentNode }
                 rules={ [
-                            {
-                                required: true,
-                                message:  formatMessage({
-                                    id: 'required_field',
-                                }),
-                            },
-                        ] }
-            />
+                    {
+                        required: true,
+                        message:  formatMessage({
+                            id: 'required_field',
+                        }),
+                    },
+                ] }
+            >
+                { counterpartyList.map(({ id, name, disabled }) => (
+                    <Option value={ id } key={ id } disabled={ disabled }>
+                        { name }
+                    </Option>
+                )) }
+            </DecoratedSelect>
+        ) : (
+            <div>{ formatMessage({ id: 'no_data' }) }</div>
         );
     };
 
     _renderSupplierBlock = () => {
         const {
+            counterpartyList,
             form: { getFieldDecorator },
             intl: { formatMessage },
         } = this.props;
 
-        return (
-            <DecoratedInput
-                field='businessSupplierId'
+        return !_.isEmpty(counterpartyList) ? (
+            <DecoratedSelect
+                field='employeeId'
                 formItem
-                formItemLayout={ formItemLayout }
-                // rules={ [
-                //     {
-                //         required: true,
-                //         message:  formatMessage({
-                //             id: 'cash-creation-form.name.validation',
-                //         }),
-                //     },
-                // ] }
+                placeholder={ formatMessage({
+                    id: 'cash-order-form.select_supplier',
+                }) }
+                formItemLayout={ expandedWrapperFormItemLayout }
                 getFieldDecorator={ getFieldDecorator }
+                getPopupContainer={ trigger => trigger.parentNode }
                 rules={ [
-                            {
-                                required: true,
-                                message:  formatMessage({
-                                    id: 'required_field',
-                                }),
-                            },
-                        ] }
-            />
+                    {
+                        required: true,
+                        message:  formatMessage({
+                            id: 'required_field',
+                        }),
+                    },
+                ] }
+            >
+                { counterpartyList.map(({ id, name }) => (
+                    <Option value={ id } key={ id }>
+                        { name }
+                    </Option>
+                )) }
+            </DecoratedSelect>
+        ) : (
+            <div>{ formatMessage({ id: 'no_data' }) }</div>
         );
     };
 
@@ -440,24 +494,16 @@ export class CashOrderForm extends Component {
             <DecoratedInput
                 field='otherCounterparty'
                 formItem
-                formItemLayout={ formItemLayout }
-                // rules={ [
-                //     {
-                //         required: true,
-                //         message:  formatMessage({
-                //             id: 'cash-creation-form.name.validation',
-                //         }),
-                //     },
-                // ] }
+                formItemLayout={ expandedWrapperFormItemLayout }
                 getFieldDecorator={ getFieldDecorator }
                 rules={ [
-                            {
-                                required: true,
-                                message:  formatMessage({
-                                    id: 'required_field',
-                                }),
-                            },
-                        ] }
+                    {
+                        required: true,
+                        message:  formatMessage({
+                            id: 'required_field',
+                        }),
+                    },
+                ] }
             />
         );
     };
