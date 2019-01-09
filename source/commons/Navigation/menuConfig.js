@@ -96,21 +96,21 @@ export default {
                 {
                     key:      '/chart',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_KPI) && !isAdmin(user),
                     link: book.chart,
                     name: 'navigation.service_indicators',
                 },
                 {
                     key:      '/feedback',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_FEEDBACK) && !isAdmin(user),
                     link: book.feedback,
                     name: 'navigation.feedback',
                 },
                 {
                     key:      '/calls',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_CALL_STATISTICS) && !isAdmin(user),
                     link: book.calls,
                     name: 'navigation.call_statistics',
                 },
