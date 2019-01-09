@@ -5,7 +5,13 @@
     "cash-table.description": "Description",
     "cash-table.sum": "Sum",
     "cash-table.leftovers": "Leftovers for the period",
-    "cash-table.trace": "Trace for the period"
+    "cash-table.cashbox_num": "Cashbox #",
+    "cash-table.order_num": "Cashbox order #",
+    "cash-table.date": "Date",
+    "cash-table.conterparty": "Conterparty",
+    "cash-table.order": "Order #",
+    "cash-table.activity": "Increase / Decrease",
+    "cash-table.comment": "Comment"
   },
   "ru": {
     "cash-table.name": "Наименование Кассы",
@@ -13,7 +19,14 @@
     "cash-table.description": "Описание",
     "cash-table.sum": "Сумма",
     "cash-table.leftovers": "Остатки на период",
-    "cash-table.trace": "Движение за период"
+    "cash-table.trace": "Движение за период",
+    "cash-table.cashbox_num": "№ Кассы",
+    "cash-table.order_num": "№ Ордера",
+    "cash-table.date": "Дата",
+    "cash-table.conterparty": "Контрагент",
+    "cash-table.order": "№ Наряд-заказа",
+    "cash-table.activity": "Приход / Расход",
+    "cash-table.comment": "Комментарий"
   },
   "uk": {
     "cash-table.name": "Назва Каси",
@@ -21,6 +34,13 @@
     "cash-table.description": "Опис",
     "cash-table.sum": "Сума",
     "cash-table.leftovers": "Залишки на період",
-    "cash-table.trace": "Рух за період"
+    "cash-table.trace": "Рух за період",
+    "cash-table.cashbox_num": "№ Каси",
+    "cash-table.order_num": "№ Ордера",
+    "cash-table.date": "Дата",
+    "cash-table.conterparty": "Контрагент",
+    "cash-table.order": "№ Замовлення",
+    "cash-table.activity": "Прибуток / Витрата",
+    "cash-table.comment": "Коментар"
   }
 }

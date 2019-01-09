@@ -1,5 +1,6 @@
 import { DecoratedSelect } from './DecoratedSelect';
 import { DecoratedInput } from './DecoratedInput';
+import { DecoratedSearch } from './DecoratedSearch';
 import { DecoratedInputNumber } from './DecoratedInputNumber';
 import DecoratedTextArea from './DecoratedTextArea';
 import { DecoratedDatePicker } from './DecoratedDatePicker';
@@ -20,4 +21,5 @@ export {
     DecoratedSlider,
     DecoratedInputPhone,
     LimitedDecoratedSelect,
+    DecoratedSearch,
 };

@@ -10,6 +10,7 @@ export const RESET_MODAL = `${prefix}/RESET_MODAL`;
 export const MODALS = {
     ADD_CLIENT:             'ADD_CLIENT',
     SUPPLIER:               'SUPPLIER',
+    CASH_ORDER:             'CASH_ORDER',
     INVITE:                 'INVITE',
     UNIVERSAL_FILTERS:      'UNIVERSAL_FILTERS',
     UNIVERSAL_CHART:        'UNIVERSAL_CHART',

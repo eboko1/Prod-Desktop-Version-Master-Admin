@@ -4,6 +4,11 @@
     margin-bottom: 24px;
 }
 
+.extendedStats {
+    display: flex;
+    justify-content: space-between;
+}
+
 .count {
     display: flex;
     flex-direction: column;
@@ -11,4 +16,13 @@
     text-align: center;
     padding: 8px;
     flex: 0 0 15%;
+}
+
+.extendedCounts {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--primary);
+    text-align: center;
+    padding: 8px;
+    flex: 0 1 30%;
 }

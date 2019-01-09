@@ -11,13 +11,24 @@ import Styles from './styles.m.css';
 
 export default class StatsCountsPanel extends Component {
     render() {
-        const { stats } = this.props;
+        const { stats, extendedCounts } = this.props;
 
         return stats ? (
             <Catcher>
-                <div className={ Styles.stats }>
+                <div
+                    className={
+                        extendedCounts ? Styles.extendedStats : Styles.stats
+                    }
+                >
                     { Object.keys(stats).map(key => (
-                        <div className={ Styles.count } key={ v4() }>
+                        <div
+                            className={
+                                extendedCounts
+                                    ? Styles.extendedCounts
+                                    : Styles.count
+                            }
+                            key={ v4() }
+                        >
                             <FormattedMessage
                                 id={ `stats_counts_panel.${key}` }
                             />

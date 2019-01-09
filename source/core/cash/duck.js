@@ -9,6 +9,9 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_CASHBOXES = `${prefix}/FETCH_CASHBOXES`;
 export const FETCH_CASHBOXES_SUCCESS = `${prefix}/FETCH_CASHBOXES_SUCCESS`;
 
+export const FETCH_CASHBOXES_ORDERS = `${prefix}/FETCH_CASHBOXES_ORDERS`;
+export const FETCH_CASHBOXES_ORDERS_SUCCESS = `${prefix}/FETCH_CASHBOXES_ORDERS_SUCCESS`;
+
 export const CREATE_CASHBOX = `${prefix}/CREATE_CASHBOX`;
 export const CREATE_CASHBOX_SUCCESS = `${prefix}/CREATE_CASHBOX_SUCCESS`;
 
@@ -20,6 +23,13 @@ export const DELETE_CASHBOX_SUCCESS = `${prefix}/DELETE_CASHBOX_SUCCESS`;
  * */
 const ReducerState = {
     cashboxes: [],
+    stats:     {
+        totalCount: null,
+        increase:   null,
+        decrease:   null,
+        // balance:    null,
+    },
+    cashOrders: [],
 };
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
@@ -54,6 +64,11 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
+export const selectCashStats = state => ({
+    increase: state.cash.stats.increase,
+    decrease: state.cash.stats.decrease,
+    balance:  Number(state.cash.stats.increase - state.cash.stats.decrease),
+});
 
 /**
  * Action Creators

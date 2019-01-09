@@ -39,7 +39,6 @@ export default class SupplierModal extends Component {
         } = this.props;
 
         const supplierName = _.get(modalProps, 'name');
-        console.log('→ supplierName', supplierName);
 
         return (
             <Modal
