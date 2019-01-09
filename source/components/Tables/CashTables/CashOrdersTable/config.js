@@ -36,7 +36,7 @@ export function columnsConfig(props) {
     const conterpartyCol = {
         title:     <FormattedMessage id='cash-table.conterparty' />,
         dataIndex: 'conterparty',
-        width:     '20%',
+        width:     '10%',
         render:    (
             key,
             { otherCounterparty, clientId, employeeId, businessSupplierId },

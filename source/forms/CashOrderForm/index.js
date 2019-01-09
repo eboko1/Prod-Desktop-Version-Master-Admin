@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Form, Select, Button, Radio } from 'antd';
+import { Form, Select, Button, Radio, Icon } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import { v4 } from 'uuid';
@@ -22,6 +22,7 @@ import {
     DecoratedInputNumber,
     DecoratedDatePicker,
     DecoratedTextArea,
+    DecoratedRadio,
 } from 'forms/DecoratedFields';
 import { withReduxForm2 } from 'utils';
 
@@ -64,6 +65,7 @@ const reverseFromItemLayout = {
 export class CashOrderForm extends Component {
     state = {
         sumType:          'increase',
+        sumTypeRadio:        null,
         clientSearchType: 'client',
     };
 
@@ -74,9 +76,10 @@ export class CashOrderForm extends Component {
 
     componentDidUpdate(prevProps) {
         const {
-            form: { getFieldValue },
+            form: { getFieldValue, setFieldsValue },
             fetchCashOrderForm,
         } = this.props;
+
         if (
             prevProps.fields.counterpartyType !==
             this.props.fields.counterpartyType
@@ -85,8 +88,6 @@ export class CashOrderForm extends Component {
 
             switch (counterparty) {
                 case cashOrderCounterpartyTypes.EMPLOYEE:
-                    console.log('→ aaa');
-
                     return fetchCashOrderForm('employees');
 
                 case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
@@ -111,7 +112,26 @@ export class CashOrderForm extends Component {
         });
     };
 
-    _setSumType = e => this.setState({ sumType: e.target.value });
+    _selectOrderType = (value) => {
+        switch (value) {
+            case cashOrderTypes.INCOME:
+                return this.setState({ sumType: 'increase', sumTypeRadio: true });
+
+            case cashOrderTypes.EXPENSE:
+                return this.setState({ sumType: 'decrease', sumTypeRadio: false });
+
+            case cashOrderTypes.ADJUSTMENT:
+                return this.setState({ sumType: 'increase', sumTypeRadio: true });
+            
+            default:
+                break;
+        }
+    }
+
+    _setSumType = e => {
+        this.setState({ sumType: e.target.value });
+        this.props.form.setFieldsValue({[ 'sumType' ]: e.target.value})
+    }
 
     _setClientSearchType = e =>
         this.setState({ clientSearchType: e.target.value });
@@ -174,6 +194,7 @@ export class CashOrderForm extends Component {
                         getPopupContainer={ trigger => trigger.parentNode }
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
+                        onSelect={ this._selectOrderType }
                     >
                         { Object.values(cashOrderTypes).map(type => (
                             <Option value={ type } key={ type }>
@@ -264,25 +285,33 @@ export class CashOrderForm extends Component {
                     { this._renderCounterpartyBlock(counterpartyType) }
                 </div>
                 <div className={ Styles.step }>
-                    <RadioGroup
-                        className={ Styles.sumType}
-                        onChange={ e => this._setSumType(e) }
-                        value={ this.state.sumType }
-                    >
-                        <Radio value='increase'>
-                            { formatMessage({ id: 'cash-order-form.increase' }) }
-                        </Radio>
-                        <Radio value='decrease'>
-                            { formatMessage({ id: 'cash-order-form.decrease' }) }
-                        </Radio>
-                    </RadioGroup>
+                    { this.state.orderType && (
+                        <DecoratedRadio
+                            field='sumType'
+                            getFieldDecorator={ getFieldDecorator }
+                            cnStyles={ Styles.sumType }
+                            onChange={ e => this._setSumType(e) }
+                            initialValue={ this.state.sumType }
+                        >
+                            <Radio value='increase'>
+                                { formatMessage({ id: 'cash-order-form.increase' }) }
+                            </Radio>
+                            <Radio value='decrease'>
+                                { formatMessage({ id: 'cash-order-form.decrease' }) }
+                            </Radio>
+                        </DecoratedRadio>
+                    ) }
                     { this.state.sumType === 'increase' && (
                         <DecoratedInputNumber
                             fields={ {} }
                             field='increase'
                             getFieldDecorator={ getFieldDecorator }
                             formItem
-                            label={ formatMessage({ id: 'cash-order-form.sum' }) }
+                            label={
+                                <div>
+                                    { formatMessage({ id: 'cash-order-form.sum' }) } <Icon type='caret-up' style={ { color: 'var(--enabled)' } } />
+                                </div>
+                            }
                             placeholder={ formatMessage({
                                 id: 'cash-order-form.sum.placeholder',
                             }) }
@@ -305,7 +334,11 @@ export class CashOrderForm extends Component {
                             field='decrease'
                             getFieldDecorator={ getFieldDecorator }
                             formItem
-                            label={ formatMessage({ id: 'cash-order-form.sum' }) }
+                            label={
+                                <div>
+                                    { formatMessage({ id: 'cash-order-form.sum' }) } <Icon type='caret-down' style={ { color: 'var(--disabled)' } } />
+                                </div>
+                            }
                             placeholder={ formatMessage({
                                 id: 'cash-order-form.sum.placeholder',
                             }) }

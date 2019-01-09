@@ -18,6 +18,12 @@
     align-items: center;
 }
 
+.styledFormItem :global(.ant-form-item-required) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
 .step:nth-child(even) {
     padding-top: 16px;
     margin-bottom: 16px;

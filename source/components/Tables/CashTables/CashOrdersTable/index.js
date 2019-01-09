@@ -41,7 +41,7 @@ export class CashOrdersTable extends Component {
                 locale={ {
                     emptyText: <FormattedMessage id='no_data' />,
                 } }
-                scroll={ { x: 1400 } }
+                scroll={ { x: 1000 } }
             />
         );
     }

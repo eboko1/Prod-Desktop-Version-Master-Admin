@@ -9,6 +9,7 @@ import { DecoratedTimePicker } from './DecoratedTimePicker';
 import { DecoratedSlider } from './DecoratedSlider';
 import { DecoratedInputPhone } from './DecoratedInputPhone';
 import LimitedDecoratedSelect from './LimitedDecoratedSelect';
+import { DecoratedRadio } from './DecoratedRadio';
 
 export {
     DecoratedSelect,
@@ -22,4 +23,5 @@ export {
     DecoratedInputPhone,
     LimitedDecoratedSelect,
     DecoratedSearch,
+    DecoratedRadio,
 };
