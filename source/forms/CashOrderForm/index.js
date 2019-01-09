@@ -65,7 +65,7 @@ const reverseFromItemLayout = {
 export class CashOrderForm extends Component {
     state = {
         sumType:          'increase',
-        sumTypeRadio:        null,
+        sumTypeRadio:     null,
         clientSearchType: 'client',
     };
 
@@ -115,7 +115,7 @@ export class CashOrderForm extends Component {
     _selectOrderType = (value) => {
         switch (value) {
             case cashOrderTypes.INCOME:
-                return this.setState({ sumType: 'increase', sumTypeRadio: true });
+                return this.setState({ sumType: 'increase', sumTypeRadio: false });
 
             case cashOrderTypes.EXPENSE:
                 return this.setState({ sumType: 'decrease', sumTypeRadio: false });
@@ -285,7 +285,7 @@ export class CashOrderForm extends Component {
                     { this._renderCounterpartyBlock(counterpartyType) }
                 </div>
                 <div className={ Styles.step }>
-                    { this.state.orderType && (
+                    { this.state.sumTypeRadio && (
                         <DecoratedRadio
                             field='sumType'
                             getFieldDecorator={ getFieldDecorator }
