@@ -5,49 +5,59 @@ import { connect } from 'react-redux';
 import { Table } from 'antd';
 
 // proj
-import { fetchCashboxes, deleteCashbox } from 'core/cash/duck';
+import { fetchCashboxesBalance } from 'core/cash/duck';
 
 import { RangePickerField } from 'forms/_formkit';
+import { ResponsiveView } from 'commons';
+import { BREAKPOINTS } from 'utils';
 
 // own
 import { columnsConfig } from './config';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    cashboxes: state.cash.cashboxes,
+    data: state.cash.balance,
 });
 
 const mapDispatchToProps = {
-    fetchCashboxes,
+    fetchCashboxesBalance,
 };
 
 @connect(
     mapStateToProps,
     mapDispatchToProps,
 )
-export class CashAccountingTable extends Component {
+export class CashBalanceTable extends Component {
     constructor(props) {
         super(props);
 
         this.columns = columnsConfig();
     }
 
+    componentDidMount() {
+        this.props.fetchCashboxesBalance();
+    }
+
     render() {
-        const { cashboxesFetching, cashboxes, type } = this.props;
+        const { cashboxesFetching, data } = this.props;
 
         return (
             <div className={ Styles.tableWrapper }>
                 <div className={ Styles.tableHead }>
-                    <h3 className={ Styles.tableHeadText }>
-                        <FormattedMessage id={ `cash-table.${type}` } />
-                    </h3>
+                    <ResponsiveView
+                        view={ { min: BREAKPOINTS.xxl.min, max: null } }
+                    >
+                        <h3 className={ Styles.tableHeadText }>
+                            <FormattedMessage id='cash-table.leftovers' />
+                        </h3>
+                    </ResponsiveView>
                     <RangePickerField />
                 </div>
                 <Table
                     className={ Styles.table }
                     size='small'
                     columns={ this.columns }
-                    dataSource={ cashboxes }
+                    dataSource={ data }
                     loading={ cashboxesFetching }
                     pagination={ false }
                     locale={ {

@@ -19,7 +19,7 @@ export function columnsConfig() {
 
     const sumCol = {
         title:     <FormattedMessage id='cash-table.sum' />,
-        dataIndex: 'sum',
+        dataIndex: 'balance',
         width:     '25%',
     };
 

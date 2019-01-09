@@ -1,12 +1,13 @@
 // vendor
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
 import { Tabs } from 'antd';
 
 const TabPane = Tabs.TabPane;
 
 // proj
 import { ResponsiveView } from 'commons';
-import { CashAccountingTable } from 'components';
+import { CashBalanceTable, CashActivityTable } from 'components';
 import { BREAKPOINTS } from 'utils';
 
 // own
@@ -18,17 +19,23 @@ export default class CashAccountingContainer extends Component {
             <div className={ Styles.tables }>
                 <ResponsiveView view={ { min: null, max: BREAKPOINTS.xl.max } }>
                     <Tabs defaultActiveKey='1'>
-                        <TabPane tab='Остатки' key='1'>
-                            <CashAccountingTable />
+                        <TabPane
+                            tab={ <FormattedMessage id='cash-table.leftovers' /> }
+                            key='1'
+                        >
+                            <CashBalanceTable />
                         </TabPane>
-                        <TabPane tab='Движения' key='2'>
-                            <CashAccountingTable />
+                        <TabPane
+                            tab={ <FormattedMessage id='cash-table.trace' /> }
+                            key='2'
+                        >
+                            <CashActivityTable />
                         </TabPane>
                     </Tabs>
                 </ResponsiveView>
                 <ResponsiveView view={ { min: BREAKPOINTS.xxl.min, max: null } }>
-                    <CashAccountingTable type='leftovers' />
-                    <CashAccountingTable type='trace' />
+                    <CashBalanceTable />
+                    <CashActivityTable />
                 </ResponsiveView>
             </div>
         );

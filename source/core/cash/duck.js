@@ -12,6 +12,12 @@ export const FETCH_CASHBOXES_SUCCESS = `${prefix}/FETCH_CASHBOXES_SUCCESS`;
 export const FETCH_CASH_ORDERS = `${prefix}/FETCH_CASH_ORDERS`;
 export const FETCH_CASH_ORDERS_SUCCESS = `${prefix}/FETCH_CASH_ORDERS_SUCCESS`;
 
+export const FETCH_CASHBOXES_BALANCE = `${prefix}/FETCH_CASHBOXES_BALANCE`;
+export const FETCH_CASHBOXES_BALANCE_SUCCESS = `${prefix}/FETCH_CASHBOXES_BALANCE_SUCCESS`;
+
+export const FETCH_CASHBOXES_ACTIVITY = `${prefix}/FETCH_CASHBOXES_ACTIVITY`;
+export const FETCH_CASHBOXES_ACTIVITY_SUCCESS = `${prefix}/FETCH_CASHBOXES_ACTIVITY_SUCCESS`;
+
 export const CREATE_CASHBOX = `${prefix}/CREATE_CASHBOX`;
 export const CREATE_CASHBOX_SUCCESS = `${prefix}/CREATE_CASHBOX_SUCCESS`;
 
@@ -23,6 +29,8 @@ export const DELETE_CASHBOX_SUCCESS = `${prefix}/DELETE_CASHBOX_SUCCESS`;
  * */
 const ReducerState = {
     cashboxes: [],
+    activity:  [],
+    balance:   [],
     stats:     {
         totalCount: null,
         increase:   null,
@@ -40,6 +48,18 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 cashboxes: payload,
+            };
+
+        case FETCH_CASHBOXES_BALANCE_SUCCESS:
+            return {
+                ...state,
+                balance: [ ...payload ],
+            };
+
+        case FETCH_CASHBOXES_ACTIVITY_SUCCESS:
+            return {
+                ...state,
+                activity: [ ...payload ],
             };
 
         case CREATE_CASHBOX_SUCCESS:
@@ -89,6 +109,24 @@ export const fetchCashboxes = () => ({
 export const fetchCashboxesSuccess = cashboxes => ({
     type:    FETCH_CASHBOXES_SUCCESS,
     payload: cashboxes,
+});
+
+export const fetchCashboxesBalance = () => ({
+    type: FETCH_CASHBOXES_BALANCE,
+});
+
+export const fetchCashboxesBalanceSuccess = balance => ({
+    type:    FETCH_CASHBOXES_BALANCE_SUCCESS,
+    payload: balance,
+});
+
+export const fetchCashboxesActivity = () => ({
+    type: FETCH_CASHBOXES_ACTIVITY,
+});
+
+export const fetchCashboxesActivitySuccess = activity => ({
+    type:    FETCH_CASHBOXES_ACTIVITY_SUCCESS,
+    payload: activity,
 });
 
 export const createCashbox = cashbox => ({

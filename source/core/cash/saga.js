@@ -13,7 +13,11 @@ import {
     createCashboxSuccess,
     deleteCashboxSuccess,
     fetchCashOrdersSuccess,
+    fetchCashboxesBalanceSuccess,
+    fetchCashboxesActivitySuccess,
     FETCH_CASHBOXES,
+    FETCH_CASHBOXES_BALANCE,
+    FETCH_CASHBOXES_ACTIVITY,
     CREATE_CASHBOX,
     DELETE_CASHBOX,
     FETCH_CASH_ORDERS,
@@ -28,6 +32,40 @@ export function* fetchCashboxesSaga() {
             const data = yield call(fetchAPI, 'GET', 'cash_boxes');
 
             yield put(fetchCashboxesSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* fetchCashboxesBalanceSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_CASHBOXES_BALANCE);
+            yield nprogress.start();
+
+            const data = yield call(fetchAPI, 'GET', 'cash_boxes/balance');
+
+            yield put(fetchCashboxesBalanceSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* fetchCashboxesActivitySaga() {
+    while (true) {
+        try {
+            yield take(FETCH_CASHBOXES_ACTIVITY);
+            yield nprogress.start();
+
+            const data = yield call(fetchAPI, 'GET', 'cash_boxes/activity');
+
+            yield put(fetchCashboxesActivitySuccess(data));
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -89,6 +127,8 @@ export function* deleteCashboxSaga() {
 export function* saga() {
     yield all([
         call(fetchCashboxesSaga),
+        call(fetchCashboxesBalanceSaga),
+        call(fetchCashboxesActivitySaga),
         call(createCashboxSaga),
         call(deleteCashboxSaga),
         call(fetchCashOrdersSaga),
