@@ -1,3 +1,4 @@
+import _ from 'lodash';
 /**
  * Constants
  * */
@@ -16,12 +17,44 @@ export const CREATE_CASH_ORDER_SUCCESS = `${prefix}/CREATE_CASH_ORDER`;
 export const ON_CHANGE_CASH_ORDER_FORM = `${prefix}/ON_CHANGE_CASH_ORDER_FORM`;
 export const CLEAR_CASH_ORDER_FORM = `${prefix}/CLEAR_CASH_ORDER_FILTER_FORM`;
 
+export const ON_CHANGE_CLIENT_SEARCH_QUERY = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY`;
+export const ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST`;
+export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS`;
+
+export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
+
+function duplicate(clients) {
+    return _.flatten(
+        _.map(clients, client => {
+            const { vehicles } = client;
+            const hasVehicles = _.isArray(vehicles) && vehicles.length;
+            if (!hasVehicles) {
+                return client;
+            }
+
+            return vehicles.map((vehicle, index) => {
+                const duplicatedVehicles = _.cloneDeep(vehicles);
+                duplicatedVehicles.splice(index, 1);
+
+                return {
+                    ...client,
+                    vehicles: [ vehicles[ index ], ...duplicatedVehicles ],
+                };
+            });
+        }),
+    );
+}
+
 /**
  * Reducer
  * */
 
 const ReducerState = {
-    fields:           {},
+    fields:              {},
+    searchClientsResult: {
+        searching: true,
+        clients:   [],
+    },
     counterpartyList: [],
 };
 
@@ -57,6 +90,43 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 fields: {},
+            };
+
+        case ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST:
+            return {
+                ...state,
+                searchClientsResult: {
+                    clients:   [],
+                    searching: true,
+                },
+            };
+
+        case ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS:
+            return {
+                ...state,
+                searchClientsResult: {
+                    clients:   duplicate(payload.clients),
+                    searching: false,
+                },
+            };
+
+        case ON_CLIENT_SELECT:
+            return {
+                ...state,
+                selectedClient:      payload,
+                searchClientsResult: {
+                    clients:   [],
+                    searching: false,
+                },
+                fields: {
+                    ..._.omit(state.fields, [
+                        'clientPhone',
+                        'clientEmail',
+                        'clientVehicle',
+                        'searchClientQuery',
+                        'clientRequisite',
+                    ]),
+                },
             };
 
         default:
@@ -112,4 +182,23 @@ export const onChangeCashOrderForm = fields => ({
 
 export const clearCashOrderForm = () => ({
     type: CLEAR_CASH_ORDER_FORM,
+});
+
+export const setClientSelection = client => ({
+    type:    ON_CLIENT_SELECT,
+    payload: client,
+});
+
+export const onChangeClientSearchQuery = searchQuery => ({
+    type:    ON_CHANGE_CLIENT_SEARCH_QUERY,
+    payload: searchQuery,
+});
+
+export const onChangeClientSearchQueryRequest = () => ({
+    type: ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST,
+});
+
+export const onChangeClientSearchQuerySuccess = data => ({
+    type:    ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS,
+    payload: data,
 });

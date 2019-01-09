@@ -6,6 +6,9 @@ import _ from 'lodash';
 import { v4 } from 'uuid';
 
 // proj
+import {
+    setClientSelection,
+} from 'core/forms/orderForm/duck';
 import { fetchCashboxes } from 'core/cash/duck';
 import {
     onChangeCashOrderForm,
@@ -15,6 +18,7 @@ import {
     selectCounterpartyList,
 } from 'core/forms/cashOrderForm/duck';
 
+import { ClientsSearchTable } from 'forms/OrderForm/OrderFormTables';
 import {
     DecoratedSearch,
     DecoratedSelect,
@@ -54,6 +58,7 @@ const reverseFromItemLayout = {
         fetchCashOrderNextId,
         fetchCashOrderForm,
         createCashOrder,
+        setClientSelection,
     },
     mapStateToProps: state => ({
         cashboxes:        state.cash.cashboxes,
@@ -72,7 +77,9 @@ export class CashOrderForm extends Component {
     componentDidMount() {
         this.props.fetchCashOrderNextId();
         this.props.fetchCashboxes();
+        console.log('→ this.props', this.props);
     }
+
 
     componentDidUpdate(prevProps) {
         const {
@@ -155,6 +162,7 @@ export class CashOrderForm extends Component {
         } = this.props;
 
         const counterpartyType = getFieldValue('counterpartyType');
+ 
 
         return (
             <Form onSubmit={ this._submit }>
@@ -384,6 +392,9 @@ export class CashOrderForm extends Component {
             intl: { formatMessage },
         } = this.props;
 
+        const clientSearch = this._renderClientSearch();
+        const clientSearchTable = this._renderClientSearchTable();
+
         return (
             <>
                 <Form.Item
@@ -409,21 +420,13 @@ export class CashOrderForm extends Component {
                         </Radio>
                     </RadioGroup>
                 </Form.Item>
-                {this.state.clientSearchType === 'client' && (
-                    <DecoratedSearch
-                        field='clientId'
-                        getFieldDecorator={ getFieldDecorator }
-                        formItem
-                        label={ formatMessage({
-                            id: 'cash-order-form.search',
-                        }) }
-                        placeholder={ formatMessage({
-                            id: 'cash-order-form.search_by_client',
-                        }) }
-                        formItemLayout={ formItemLayout }
-                        className={ Styles.styledFormItem }
-                    />
-                )}
+                {this.state.clientSearchType === 'client' && 
+                    <>
+                        {clientSearch}
+                        {clientSearchTable}
+                    </>
+                    
+                }
                 {this.state.clientSearchType === 'order' && (
                     <DecoratedSearch
                         field='orderId'
@@ -440,6 +443,53 @@ export class CashOrderForm extends Component {
                     />
                 )}
             </>
+        );
+    };
+
+    _renderClientSearchTable = () => {
+        const {
+            searchClientsResult: { searching: clientsSearching, clients },
+            setClientSelection,
+            form,
+        } = this.props;
+        
+        // const searchClientQuery = form.getFieldsValue([ 'searchClientQuery' ]);
+        const formFieldsValues = form.getFieldsValue();
+        const searchClientQuery = _.get(formFieldsValues, 'searchClientQuery');
+
+        return (
+            <ClientsSearchTable
+                clientsSearching={ clientsSearching }
+                setClientSelection={ setClientSelection }
+                visible={ searchClientQuery }
+                clients={ clients }
+            />
+        );
+    };
+
+    _renderClientSearch = () => {
+        const { getFieldDecorator } = this.props.form;
+        const { fields, errors, intl: { formatMessage } } = this.props;
+
+        return (
+            <div className={ Styles.client }>
+                <DecoratedInput
+                    field='searchClientQuery'
+                    errors={ errors }
+                    defaultGetValueProps
+                    fieldValue={ _.get(fields, 'searchClientQuery') }
+                    className={ Styles.clientSearchField }
+                    formItem
+                    colon={ false }
+                    label={ formatMessage({
+                        id: 'add_order_form.search_client',
+                    }) }
+                    getFieldDecorator={ getFieldDecorator }
+                    placeholder={ formatMessage({
+                        id: 'add_order_form.search_client.placeholder',
+                    }) }
+                />
+            </div>
         );
     };
 
