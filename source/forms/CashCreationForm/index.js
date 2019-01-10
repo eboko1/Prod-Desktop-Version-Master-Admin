@@ -12,6 +12,11 @@ import { DecoratedInput, DecoratedSelect } from 'forms/DecoratedFields';
 import { cashboxTypes } from './config';
 const Option = Select.Option;
 
+const formItemLayout = {
+    labelCol:   { span: 7 },
+    wrapperCol: { span: 15 },
+};
+
 @injectIntl
 @Form.create()
 @connect(
@@ -38,6 +43,7 @@ export class CashCreationForm extends Component {
                 <DecoratedInput
                     field='name'
                     formItem
+                    formItemLayout={ formItemLayout }
                     rules={ [
                         {
                             required: true,
@@ -53,6 +59,7 @@ export class CashCreationForm extends Component {
                 <DecoratedSelect
                     field='type'
                     formItem
+                    formItemLayout={ formItemLayout }
                     label={ <FormattedMessage id='cash-creation-form.type' /> }
                     getFieldDecorator={ getFieldDecorator }
                     initialValue={ cashboxTypes.CASH }
@@ -68,6 +75,7 @@ export class CashCreationForm extends Component {
                 <DecoratedInput
                     field='description'
                     formItem
+                    formItemLayout={ formItemLayout }
                     label={
                         <FormattedMessage id='cash-creation-form.description' />
                     }

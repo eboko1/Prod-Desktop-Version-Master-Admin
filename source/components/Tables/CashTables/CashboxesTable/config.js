@@ -1,7 +1,7 @@
 // vendor
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
-import { Icon, Popconfirm } from 'antd';
+import { Icon, Popconfirm, Tooltip } from 'antd';
 
 // own
 
@@ -36,21 +36,32 @@ export function columnsConfig(props) {
     const deleteCol = {
         width:     'auto',
         dataIndex: 'delete',
-        render:    (key, { id }) => (
-            <Popconfirm
-                title={ `${props.formatMessage({ id: 'delete' })} ?` }
-                onConfirm={ () => props.deleteCashbox(id) }
-            >
-                <Icon
-                    type='delete'
-                    style={ {
-                        fontSize: '18px',
-                        color:    'var(--warning)',
-                        cursor:   'pointer',
-                    } }
-                />
-            </Popconfirm>
-        ),
+        render:    (key, { id, removable }) =>
+            removable ? (
+                <Popconfirm
+                    title={ `${props.formatMessage({ id: 'delete' })} ?` }
+                    onConfirm={ () => props.deleteCashbox(id) }
+                >
+                    <Icon
+                        type='delete'
+                        style={ {
+                            fontSize: '18px',
+                            color:    'var(--warning)',
+                            cursor:   'pointer',
+                        } }
+                    />
+                </Popconfirm>
+            ) : (
+                <Tooltip
+                    placement='topLeft'
+                    title={
+                        <FormattedMessage id='cash-table_icon.unremovable' />
+                    }
+                    overlayStyle={ { zIndex: 110 } }
+                >
+                    <Icon type='question-circle' />
+                </Tooltip>
+            ),
     };
 
     return [
@@ -58,6 +69,6 @@ export function columnsConfig(props) {
         nameCol,
         typeCol,
         infoCol,
-        deleteCol,
+        deleteCol, 
     ];
 }
