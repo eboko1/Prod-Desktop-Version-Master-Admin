@@ -64,7 +64,6 @@ export class DecoratedSelect extends React.PureComponent {
                 ref={ innerRef }
                 labelInValue={ labelInValue }
                 optionLabelProp={ optionLabelProp }
-                // onChange={ value => this.handleServiceSelect(record.key, value) }
                 onChange={ onChange }
                 onSearch={ onSearch }
                 onSelect={ onSelect }

@@ -4,7 +4,12 @@ import { Form, Select } from 'antd';
 import { injectIntl } from 'react-intl';
 
 // proj
-import { fetchCashboxes, selectCashStats } from 'core/cash/duck';
+import {
+    fetchCashboxes,
+    fetchCashOrders,
+    selectCashStats,
+    setCashOrdersFilters,
+} from 'core/cash/duck';
 import { onChangeCashOrdersFiltersForm } from 'core/forms/cashOrdersFiltersForm/duck';
 
 import { StatsCountsPanel } from 'components';
@@ -24,6 +29,8 @@ const Option = Select.Option;
     actions: {
         change: onChangeCashOrdersFiltersForm,
         fetchCashboxes,
+        fetchCashOrders,
+        setCashOrdersFilters,
     },
     mapStateToProps: state => ({
         cashStats: selectCashStats(state),
@@ -35,6 +42,26 @@ export class CashOrdersFiltersForm extends Component {
     componentDidMount() {
         this.props.fetchCashboxes();
     }
+
+    _onSearch = ({ target: { value } }) => {
+        this.props.setCashOrdersFilters({ query: value });
+        this.props.fetchCashOrders();
+    };
+
+    _onCashboxSelect = value => {
+        this.props.setCashOrdersFilters({ cashBoxId: value });
+        this.props.fetchCashOrders();
+    };
+
+    _onDateRangeChange = value => {
+        const normalizedValue = value.map(date => date.format('YYYY-MM-DD'));
+        const daterange = {
+            startDate: normalizedValue[ 0 ],
+            endDate:   normalizedValue[ 1 ],
+        };
+        this.props.setCashOrdersFilters(daterange);
+        this.props.fetchCashOrders();
+    };
 
     render() {
         const {
@@ -48,24 +75,25 @@ export class CashOrdersFiltersForm extends Component {
             <Form>
                 <div className={ Styles.row }>
                     <DecoratedSearch
+                        fields={ {} }
                         field='query'
                         getFieldDecorator={ getFieldDecorator }
                         className={ Styles.filter }
                         placeholder={ formatMessage({
                             id: 'orders-filter.search_placeholder',
                         }) }
-                        // onChange={ ({ target: { value } }) =>
-                        //     this.handleOrdersSearch(value)
-                        // }
+                        onChange={ this._onSearch }
                     />
                     <DecoratedSelect
                         field='cashBoxId'
-                        // label={ formatMessage({ id: 'add' }) }
+                        // initialValue={}
                         placeholder={ formatMessage({
                             id: 'cash-order-form.cashbox',
                         }) }
                         getFieldDecorator={ getFieldDecorator }
                         cnStyles={ Styles.filter }
+                        onChange={ this._onCashboxSelect }
+                        allowClear
                     >
                         { cashboxes.map(({ id, name }) => (
                             <Option value={ id } key={ id }>
@@ -94,7 +122,8 @@ export class CashOrdersFiltersForm extends Component {
                             }) ]: getDaterange('prevYear', 'ant'),
                         } }
                         // showTime
-                        format='YYYY-MM-DD HH:mm'
+                        format='YYYY-MM-DD'
+                        onChange={ this._onDateRangeChange }
                     />
                 </div>
                 <StatsCountsPanel stats={ cashStats } extendedCounts />

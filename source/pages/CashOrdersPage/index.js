@@ -6,7 +6,11 @@ import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
 
 // proj
-import { setCashOrdersFilters, fetchCashOrders } from 'core/cash/duck';
+import {
+    setCashOrdersFilters,
+    fetchCashOrders,
+    selectCashOrdersFilters,
+} from 'core/cash/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Paper, StyledButton } from 'commons';
@@ -22,6 +26,7 @@ const mapStateToProps = state => ({
     cashOrders: state.cash.cashOrders,
     stats:      state.cash.stats,
     modal:      state.modals.modal,
+    filters:    selectCashOrdersFilters(state),
 });
 
 const mapDispatchToProps = {
@@ -49,6 +54,7 @@ export default class CashOrdersPage extends Component {
             resetModal,
             setCashOrdersFilters,
             cashOrders,
+            filters,
         } = this.props;
 
         return (
@@ -73,6 +79,7 @@ export default class CashOrdersPage extends Component {
                 >
                     <CashOrdersFiltersForm
                         stats={ _.omit(stats, 'totalCount') }
+                        filters={ filters }
                     />
                 </section>
                 <Paper className={ Styles.content }>
@@ -80,6 +87,7 @@ export default class CashOrdersPage extends Component {
                         totalCount={ _.get(stats, 'totalCount') }
                         setCashOrdersFilters={ setCashOrdersFilters }
                         cashOrders={ cashOrders }
+                        filters={ filters }
                     />
                 </Paper>
                 <CashOrderModal resetModal={ resetModal } visible={ modal } />

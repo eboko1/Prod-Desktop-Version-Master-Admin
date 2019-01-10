@@ -23,7 +23,7 @@ export class CashOrdersTable extends Component {
             current:          props.page,
             onChange:         page => {
                 props.setCashOrdersFilters({ page });
-                props.fetchCashOrders(props.filter);
+                props.fetchCashOrders();
             },
         };
     }
