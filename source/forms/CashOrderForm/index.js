@@ -87,10 +87,9 @@ export class CashOrderForm extends Component {
 
     }
 
-
     componentDidUpdate(prevProps) {
         const {
-            form: { getFieldValue, setFieldsValue },
+            form: { getFieldValue },
             fetchCashOrderForm,
         } = this.props;
 

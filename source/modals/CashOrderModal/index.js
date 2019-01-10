@@ -4,6 +4,7 @@ import { Modal } from 'antd';
 
 // proj
 import { MODALS } from 'core/modals/duck';
+
 import { CashOrderForm } from 'forms';
 
 // own
@@ -18,7 +19,7 @@ export default class CashOrderModal extends Component {
                 className={ Styles.modal }
                 visible={ visible === MODALS.CASH_ORDER }
                 footer={ null }
-                onCancel={ () => resetModal() }
+                onCancel={ resetModal }
             >
                 <CashOrderForm resetModal={ resetModal } />
             </Modal>

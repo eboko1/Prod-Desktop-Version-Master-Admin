@@ -11,6 +11,7 @@ import {
     fetchCashOrders,
     selectCashOrdersFilters,
 } from 'core/cash/duck';
+import { clearCashOrderForm } from 'core/forms/cashOrderForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Layout, Paper, StyledButton } from 'commons';
@@ -34,6 +35,7 @@ const mapDispatchToProps = {
     resetModal,
     setCashOrdersFilters,
     fetchCashOrders,
+    clearCashOrderForm,
 };
 
 @connect(
@@ -41,9 +43,24 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class CashOrdersPage extends Component {
+    state = {
+        cashOrderModalMounted: false,
+    };
+
     componentDidMount() {
         this.props.fetchCashOrders();
     }
+
+    _onOpenCashOrderModal = () => {
+        this.props.setModal(MODALS.CASH_ORDER);
+        this.setState({ cashOrderModalMounted: true });
+    };
+
+    _onCloseCashOrderModal = () => {
+        this.props.resetModal();
+        this.props.clearCashOrderForm();
+        this.setState({ cashOrderModalMounted: false });
+    };
 
     render() {
         const {
@@ -53,6 +70,7 @@ export default class CashOrdersPage extends Component {
             setModal,
             resetModal,
             setCashOrdersFilters,
+            clearCashOrderForm,
             cashOrders,
             filters,
         } = this.props;
@@ -65,7 +83,7 @@ export default class CashOrdersPage extends Component {
                         <Icon type='printer' className={ Styles.printIcon } />
                         <StyledButton
                             type='secondary'
-                            onClick={ () => setModal(MODALS.CASH_ORDER) }
+                            onClick={ () => this._onOpenCashOrderModal() }
                         >
                             <FormattedMessage id='add' />
                         </StyledButton>
@@ -90,7 +108,13 @@ export default class CashOrdersPage extends Component {
                         filters={ filters }
                     />
                 </Paper>
-                <CashOrderModal resetModal={ resetModal } visible={ modal } />
+                { this.state.cashOrderModalMounted ? (
+                    <CashOrderModal
+                        resetModal={ this._onCloseCashOrderModal }
+                        visible={ modal }
+                        clearCashOrderForm={ clearCashOrderForm }
+                    />
+                ) : null }
             </Layout>
         );
     }

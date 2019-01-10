@@ -2,7 +2,8 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 
-// own
+// proj
+import { Numeral } from 'commons';
 
 /* eslint-disable complexity */
 export function columnsConfig() {
@@ -21,6 +22,7 @@ export function columnsConfig() {
         title:     <FormattedMessage id='cash-table.sum' />,
         dataIndex: 'balance',
         width:     '25%',
+        render:    key => <Numeral>{ key }</Numeral>,
     };
 
     return [ numberCol, nameCol, sumCol ];

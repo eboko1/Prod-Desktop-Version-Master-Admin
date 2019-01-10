@@ -107,6 +107,9 @@ export default function reducer(state = ReducerState, action) {
                 fields: {},
             };
 
+        case CLEAR_CASH_ORDER_FORM:
+            return ReducerState;
+
         case ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST:
             return {
                 ...state,

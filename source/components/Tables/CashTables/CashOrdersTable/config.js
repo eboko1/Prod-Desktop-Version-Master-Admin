@@ -4,6 +4,8 @@ import { Icon } from 'antd';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
+// proj
+import { Numeral } from 'commons';
 import { FormattedDatetime } from 'components';
 import book from 'routes/book';
 // own
@@ -19,7 +21,7 @@ function renderCounterparty(cashOrder) {
 
         case Boolean(cashOrder.employeeId):
             return (
-                <Link to={ `${book.editEmployee}/${cashOrder.employeeId}` }>
+                <Link to={ `${book.employeesPage}/${cashOrder.employeeId}` }>
                     { cashOrder.employeeName } { cashOrder.employeeSurname }
                 </Link>
             );
@@ -104,14 +106,14 @@ export function columnsConfig(props) {
                 <div
                     style={ { display: 'flex', justifyContent: 'space-around' } }
                 >
-                    + { increase }
+                    + <Numeral>{ increase }</Numeral>
                     <Icon type='caret-up' style={ { color: 'var(--enabled)' } } />
                 </div>
             ) : (
                 <div
                     style={ { display: 'flex', justifyContent: 'space-around' } }
                 >
-                    - { decrease }
+                    - <Numeral>{ decrease }</Numeral>
                     <Icon
                         type='caret-down'
                         style={ { color: 'var(--disabled)' } }
