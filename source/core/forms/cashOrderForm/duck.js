@@ -11,6 +11,11 @@ export const FETCH_CASH_ORDER_NEXT_ID_SUCCESS = `${prefix}/FETCH_CASH_ORDER_NEXT
 export const FETCH_CASH_ORDER_FORM = `${prefix}/FETCH_CASH_ORDER_FORM`;
 export const FETCH_CASH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_CASH_ORDER_FORM_SUCCESS`;
 
+export const FETCH_SELECTED_CLIENT_ORDERS = `${prefix}/FETCH_SELECTED_CLIENT_ORDERS`;
+export const FETCH_SELECTED_CLIENT_ORDERS_SUCCESS = `${prefix}/FETCH_SELECTED_CLIENT_ORDERS_SUCCESS`;
+
+export const SET_SELECTED_CLIENT_ORDERS_FILTERS = `${prefix}/SET_SELECTED_CLIENT_ORDERS_FILTERS`;
+
 export const CREATE_CASH_ORDER = `${prefix}/CREATE_CASH_ORDER`;
 export const CREATE_CASH_ORDER_SUCCESS = `${prefix}/CREATE_CASH_ORDER`;
 
@@ -23,6 +28,8 @@ export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT
 
 export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 export const ON_CLIENT_SELECT_SUCCESS = `${prefix}/ON_CLIENT_SELECT_SUCCESS`;
+
+export const ON_ORDER_SELECT = `${prefix}/ON_ORDER_SELECT`;
 
 function duplicate(clients) {
     return _.flatten(
@@ -57,9 +64,15 @@ const ReducerState = {
         clients:   [],
     },
     counterpartyList: [],
-    selectedClient:   {},
+    selectedClient:   {
+        clientOrders: {},
+        filters:      {
+            page: 1,
+        },
+    },
+    selectedOrder: {},
 };
-
+/* eslint-disable complexity */
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
@@ -115,7 +128,10 @@ export default function reducer(state = ReducerState, action) {
         case ON_CLIENT_SELECT:
             return {
                 ...state,
-                selectedClient:      payload,
+                selectedClient: {
+                    ...state.selectedClient,
+                    ...payload,
+                },
                 searchClientsResult: {
                     clients:   [],
                     searching: false,
@@ -134,7 +150,37 @@ export default function reducer(state = ReducerState, action) {
         case ON_CLIENT_SELECT_SUCCESS:
             return {
                 ...state,
-                selectedClient: { ...state.selectedClient, orders: payload },
+                selectedClient: {
+                    ...state.selectedClient,
+                    clientOrders: payload,
+                },
+            };
+
+        case ON_ORDER_SELECT:
+            return {
+                ...state,
+                selectedOrder: payload,
+            };
+
+        case SET_SELECTED_CLIENT_ORDERS_FILTERS:
+            return {
+                ...state,
+                selectedClient: {
+                    ...state.selectedClient,
+                    filters: {
+                        ...state.selectedClient.filters,
+                        ...payload,
+                    },
+                },
+            };
+
+        case FETCH_SELECTED_CLIENT_ORDERS_SUCCESS:
+            return {
+                ...state,
+                selectedClient: {
+                    ...state.selectedClient,
+                    ...payload,
+                },
             };
 
         default:
@@ -150,6 +196,16 @@ export const stateSelector = state => state.forms[ moduleName ];
 
 export const selectCounterpartyList = state =>
     state.forms.cashOrderForm.counterpartyList;
+
+export const selectClientOrders = state =>
+    state.forms.cashOrderForm.selectedClient.clientOrders;
+
+export const selectClientOrdersFilters = state =>
+    state.forms.cashOrderForm.selectedClient.filters;
+
+export const selectClient = state => state.forms.cashOrderForm.selectedClient;
+
+export const selectOrder = state => state.forms.cashOrderForm.selectedOrder;
 
 /**
  * Action Creators
@@ -198,6 +254,11 @@ export const onClientSelect = client => ({
     payload: client,
 });
 
+export const onOrderSelect = orderId => ({
+    type:    ON_ORDER_SELECT,
+    payload: orderId,
+});
+
 export const onClientSelectSuccess = clientOrders => ({
     type:    ON_CLIENT_SELECT_SUCCESS,
     payload: clientOrders,
@@ -215,4 +276,18 @@ export const onChangeClientSearchQueryRequest = () => ({
 export const onChangeClientSearchQuerySuccess = data => ({
     type:    ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS,
     payload: data,
+});
+
+export const fetchSelectedClientOrders = () => ({
+    type: FETCH_SELECTED_CLIENT_ORDERS,
+});
+
+export const fetchSelectedClientOrdersSuccess = clientOrders => ({
+    type:    FETCH_SELECTED_CLIENT_ORDERS_SUCCESS,
+    payload: clientOrders,
+});
+
+export const setSelectedClientOrdersFilters = filters => ({
+    type:    SET_SELECTED_CLIENT_ORDERS_FILTERS,
+    payload: filters,
 });

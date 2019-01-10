@@ -1,11 +1,43 @@
 // vendor
 import React from 'react';
 import { Icon } from 'antd';
+import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 
 import { FormattedDatetime } from 'components';
-
+import book from 'routes/book';
 // own
+
+function renderCounterparty(cashOrder) {
+    switch (true) {
+        case Boolean(cashOrder.clientId):
+            return (
+                <Link to={ `${book.client}/${cashOrder.clientId}` }>
+                    { cashOrder.clientName } { cashOrder.clientSurname }
+                </Link>
+            );
+
+        case Boolean(cashOrder.employeeId):
+            return (
+                <Link to={ `${book.editEmployee}/${cashOrder.employeeId}` }>
+                    { cashOrder.employeeName } { cashOrder.employeeSurname }
+                </Link>
+            );
+
+        case Boolean(cashOrder.businessSupplierId):
+            return (
+                <Link to={ `${book.suppliersPage}` }>
+                    { cashOrder.businessSupplierName }
+                </Link>
+            );
+
+        case Boolean(cashOrder.otherCounterparty):
+            return <div>{ cashOrder.otherCounterparty }</div>;
+
+        default:
+            return <FormattedMessage id='no_data' />;
+    }
+}
 
 /* eslint-disable complexity */
 export function columnsConfig(props) {
@@ -37,16 +69,21 @@ export function columnsConfig(props) {
         title:     <FormattedMessage id='cash-table.conterparty' />,
         dataIndex: 'conterparty',
         width:     '10%',
-        render:    (
-            key,
-            { otherCounterparty, clientId, employeeId, businessSupplierId },
-        ) => <div>{ otherCounterparty }</div>,
+        render:    (key, cashOrder) => renderCounterparty(cashOrder),
     };
 
     const orderCol = {
         title:     <FormattedMessage id='cash-table.order' />,
-        dataIndex: 'order',
+        dataIndex: 'orderId',
         width:     '10%',
+        render:    orderId => (
+            <Link
+                to={ `${book.order}/${orderId}` }
+                style={ { color: 'var(--link' } }
+            >
+                { orderId }
+            </Link>
+        ),
     };
 
     const activityCol = {

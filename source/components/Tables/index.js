@@ -5,3 +5,6 @@ export { CashboxesTable } from './CashTables/CashboxesTable';
 export { CashOrdersTable } from './CashTables/CashOrdersTable';
 export { CashActivityTable } from './CashTables/CashActivityTable';
 export { CashBalanceTable } from './CashTables/CashBalanceTable';
+export {
+    CashSelectedClientOrdersTable,
+} from './CashTables/CashSelectedClientOrdersTable';

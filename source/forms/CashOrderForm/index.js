@@ -13,10 +13,13 @@ import {
     fetchCashOrderForm,
     createCashOrder,
     selectCounterpartyList,
+    selectClient,
+    selectOrder,
     onClientSelect,
 } from 'core/forms/cashOrderForm/duck';
 
 import { ClientsSearchTable } from 'forms/OrderForm/OrderFormTables';
+import { CashSelectedClientOrdersTable } from 'components';
 import {
     DecoratedSearch,
     DecoratedSelect,
@@ -58,11 +61,17 @@ const reverseFromItemLayout = {
         createCashOrder,
         onClientSelect,
     },
-    mapStateToProps: state => ({
-        cashboxes:        state.cash.cashboxes,
-        counterpartyList: selectCounterpartyList(state),
-        nextId:           _.get(state, 'forms.cashOrderForm.fields.nextId'),
-    }),
+    mapStateToProps: state => {
+
+        return {
+            cashboxes:        state.cash.cashboxes,
+            counterpartyList: selectCounterpartyList(state),
+            nextId:           _.get(state, 'forms.cashOrderForm.fields.nextId'),
+            client:           selectClient(state),
+            orders:           _.get(selectClient(state), 'orders'),
+            order:            selectOrder(state),
+        }
+    },
 })
 @injectIntl
 export class CashOrderForm extends Component {
@@ -75,7 +84,7 @@ export class CashOrderForm extends Component {
     componentDidMount() {
         this.props.fetchCashOrderNextId();
         this.props.fetchCashboxes();
-        console.log('→ this.props', this.props);
+
     }
 
 
@@ -386,12 +395,17 @@ export class CashOrderForm extends Component {
     _renderClientBlock = () => {
         const {
             fields,
+            client: {clientId},
+            order,
             form: { getFieldDecorator },
             intl: { formatMessage },
         } = this.props;
-
+        const orderId = order.id;
         const clientSearch = this._renderClientSearch();
         const clientSearchTable = this._renderClientSearchTable();
+        const clientField = this._renderClientField();
+        const orderField = this._renderOrderField();
+        // const clientOrdersTable = this._renderClientOrdersTable();
 
         return (
             <>
@@ -420,8 +434,11 @@ export class CashOrderForm extends Component {
                 </Form.Item>
                 {this.state.clientSearchType === 'client' && 
                     <>
-                        {clientSearch}
-                        {clientSearchTable}
+                        {Boolean(!clientId) && clientSearch}
+                        {Boolean(!clientId) && clientSearchTable}
+                        {Boolean(clientId) && clientField}
+                        {Boolean(clientId) && Boolean(!orderId) && <CashSelectedClientOrdersTable orders={ this.props.orders }/>}
+                        {Boolean(orderId) && orderField }
                     </>
                     
                 }
@@ -491,6 +508,52 @@ export class CashOrderForm extends Component {
         );
     };
 
+    _renderClientField = () => {
+        const {
+            client: {clientId, name, surname},
+            form: { getFieldDecorator },
+        } = this.props;      
+
+        return (
+            <div className={ Styles.clientField }>
+                <DecoratedInput
+                    field='clientId'
+                    initialValue={ clientId }
+                    getFieldDecorator={ getFieldDecorator } 
+                    cnStyles={ Styles.hiddenField }
+                    disabled
+                />
+                <div>
+                    <span>{ `${ name } ${ surname }` }</span>
+                    <Icon type='close' />
+                </div>
+            </div>
+        )
+    }
+
+    _renderOrderField = () => {
+        const {
+            order: { id, num },
+            form: {getFieldDecorator },
+        } = this.props;      
+
+        return (
+            <div className={ Styles.clientField }>
+                <DecoratedInput
+                    field='orderId'
+                    initialValue={ id }
+                    getFieldDecorator={ getFieldDecorator } 
+                    cnStyles={ Styles.hiddenField }
+                    disabled
+                />
+                <div>
+                    <span>{ num }</span>
+                    <Icon type='close' />
+                </div>
+            </div>
+        )
+    }
+
     _renderEmployeeBlock = () => {
         const {
             counterpartyList,
@@ -537,7 +600,7 @@ export class CashOrderForm extends Component {
 
         return !_.isEmpty(counterpartyList) ? (
             <DecoratedSelect
-                field='employeeId'
+                field='businessSupplierId'
                 formItem
                 placeholder={ formatMessage({
                     id: 'cash-order-form.select_supplier',

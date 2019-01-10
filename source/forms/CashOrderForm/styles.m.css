@@ -41,7 +41,12 @@
     align-items: center;
 }
 
-.sumType {
+.sumType,
+.clientField {
     display: flex;
     justify-content: space-around;
+}
+
+.hiddenField:global(.ant-input-affix-wrapper) {
+    display: none;
 }
