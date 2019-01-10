@@ -12,6 +12,7 @@ import _ from 'lodash';
 
 //proj
 import { emitError, setCashOrderFetchingState } from 'core/ui/duck';
+import { fetchCashOrders } from 'core/cash/duck';
 import { fetchAPI } from 'utils';
 
 // own
@@ -32,7 +33,6 @@ import {
     FETCH_CASH_ORDER_NEXT_ID,
     FETCH_CASH_ORDER_FORM,
     CREATE_CASH_ORDER,
-    CREATE_CASH_ORDER_SUCCESS,
     ON_CHANGE_CASH_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
     ON_CLIENT_SELECT,
@@ -50,7 +50,7 @@ export function* fetchCashOrderNextIdSaga() {
 export function* fetchCashOrderFormSaga() {
     while (true) {
         try {
-            const { payload } = yield take([ FETCH_CASH_ORDER_FORM, CREATE_CASH_ORDER_SUCCESS ]);
+            const { payload } = yield take(FETCH_CASH_ORDER_FORM);
             const data = yield call(fetchAPI, 'GET', payload);
             yield put(fetchCashOrderFormSuccess(data));
         } catch (error) {
@@ -139,6 +139,8 @@ export function* createCashOrderSaga() {
             yield put(createCashOrderSuccess());
         } catch (error) {
             yield put(emitError(error));
+        } finally {
+            yield put(fetchCashOrders());
         }
     }
 }
