@@ -10,11 +10,13 @@ import {
     fetchCashboxesBalance,
     setCashAccountingFilters,
     selectCashAccountingFilters,
+    setCashOrdersFilters,
 } from 'core/cash/duck';
 
+import book from 'routes/book';
 import { DatePickerField } from 'forms/_formkit';
 import { ResponsiveView } from 'commons';
-import { BREAKPOINTS } from 'utils';
+import { BREAKPOINTS, linkTo } from 'utils';
 
 // own
 import { columnsConfig } from './config';
@@ -28,6 +30,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchCashboxesBalance,
     setCashAccountingFilters,
+    setCashOrdersFilters,
 };
 
 @connect(
@@ -48,6 +51,16 @@ export class CashBalanceTable extends Component {
     _handleDatePicker = date => {
         this.props.setCashAccountingFilters({ date });
         this.props.fetchCashboxesBalance();
+    };
+
+    _onRowClick = data => {
+        const { filters, setCashOrdersFilters } = this.props;
+        linkTo(book.cashOrdersPage);
+        setCashOrdersFilters({
+            cashBoxId: data.id,
+            startDate: '2019-01-01',
+            endDate:   filters.endDate,
+        });
     };
 
     render() {
@@ -75,6 +88,9 @@ export class CashBalanceTable extends Component {
                     dataSource={ data }
                     loading={ cashboxesFetching }
                     pagination={ false }
+                    onRow={ record => ({
+                        onClick: () => this._onRowClick(record),
+                    }) }
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }

@@ -1,5 +1,5 @@
 // vendor
-import { replace } from 'react-router-redux';
+import { replace, push, goBack } from 'react-router-redux';
 import store from 'store/store';
 
 // own
@@ -8,6 +8,10 @@ const { dispatch } = store;
 export function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
+
+export const linkBack = () => dispatch(goBack());
+
+export const goTo = (pathname, state) => dispatch(push(pathname, state));
 
 export const linkTo = link => dispatch(replace(link));
 

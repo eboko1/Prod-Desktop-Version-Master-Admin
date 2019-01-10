@@ -92,6 +92,7 @@ export function* fetchCashOrdersSaga() {
             yield take(FETCH_CASH_ORDERS);
             yield nprogress.start();
             const filters = yield select(selectCashOrdersFilters);
+
             const data = yield call(fetchAPI, 'GET', 'cash_orders', filters);
 
             yield put(fetchCashOrdersSuccess(data));

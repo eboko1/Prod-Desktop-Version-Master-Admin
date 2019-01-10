@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Form, Select } from 'antd';
 import { injectIntl } from 'react-intl';
+import moment from 'moment';
 
 // proj
 import {
@@ -9,6 +10,7 @@ import {
     fetchCashOrders,
     selectCashStats,
     setCashOrdersFilters,
+    selectCashOrdersFilters,
 } from 'core/cash/duck';
 import { onChangeCashOrdersFiltersForm } from 'core/forms/cashOrdersFiltersForm/duck';
 
@@ -34,6 +36,7 @@ const Option = Select.Option;
     },
     mapStateToProps: state => ({
         cashStats: selectCashStats(state),
+        filters:   selectCashOrdersFilters(state),
         cashboxes: state.cash.cashboxes,
     }),
 })
@@ -67,6 +70,7 @@ export class CashOrdersFiltersForm extends Component {
         const {
             cashStats,
             cashboxes,
+            filters,
             intl: { formatMessage },
             form: { getFieldDecorator },
         } = this.props;
@@ -86,7 +90,7 @@ export class CashOrdersFiltersForm extends Component {
                     />
                     <DecoratedSelect
                         field='cashBoxId'
-                        // initialValue={}
+                        initialValue={ filters.cashBoxId }
                         placeholder={ formatMessage({
                             id: 'cash-order-form.cashbox',
                         }) }
@@ -103,6 +107,11 @@ export class CashOrdersFiltersForm extends Component {
                     </DecoratedSelect>
                     <DecoratedDatePicker
                         field='daterange'
+                        initialValue={ [ moment(filters.startDate), moment(filters.endDate) ] }
+                        // initialValue={ {
+                        //     startDate: filters.startDate,
+                        //     endDate:   filters.endDate,
+                        // } }
                         getFieldDecorator={ getFieldDecorator }
                         formatMessage={ formatMessage }
                         getCalendarContainer={ trigger => trigger.parentNode }

@@ -9,17 +9,18 @@ import _ from 'lodash';
 import {
     fetchCashboxesActivity,
     setCashAccountingFilters,
+    setCashOrdersFilters,
     selectCashAccountingFilters,
 } from 'core/cash/duck';
 
+import book from 'routes/book';
 import { RangePickerField } from 'forms/_formkit';
 import { ResponsiveView } from 'commons';
-import { BREAKPOINTS } from 'utils';
+import { BREAKPOINTS, linkTo } from 'utils';
 
 // own
 import { columnsConfig } from './config';
 import Styles from './styles.m.css';
-import moment from 'moment';
 
 const mapStateToProps = state => ({
     data:    state.cash.activity,
@@ -29,6 +30,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchCashboxesActivity,
     setCashAccountingFilters,
+    setCashOrdersFilters,
 };
 
 @connect(
@@ -54,6 +56,16 @@ export class CashActivityTable extends Component {
         };
         this.props.setCashAccountingFilters(daterange);
         this.props.fetchCashboxesActivity();
+    };
+
+    _onRowClick = data => {
+        const { filters, setCashOrdersFilters } = this.props;
+        linkTo(book.cashOrdersPage);
+        setCashOrdersFilters({
+            cashBoxId: data.id,
+            startDate: filters.startDate,
+            endDate:   filters.endDate,
+        });
     };
 
     render() {
@@ -83,6 +95,9 @@ export class CashActivityTable extends Component {
                     dataSource={ data }
                     loading={ cashboxesFetching }
                     pagination={ false }
+                    onRow={ record => ({
+                        onClick: () => this._onRowClick(record),
+                    }) }
                     locale={ {
                         emptyText: <FormattedMessage id='no_data' />,
                     } }
