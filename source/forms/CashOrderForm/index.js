@@ -13,7 +13,7 @@ import {
     fetchCashOrderForm,
     createCashOrder,
     selectCounterpartyList,
-    setClientSelection,
+    onClientSelect,
 } from 'core/forms/cashOrderForm/duck';
 
 import { ClientsSearchTable } from 'forms/OrderForm/OrderFormTables';
@@ -56,7 +56,7 @@ const reverseFromItemLayout = {
         fetchCashOrderNextId,
         fetchCashOrderForm,
         createCashOrder,
-        setClientSelection,
+        onClientSelect,
     },
     mapStateToProps: state => ({
         cashboxes:        state.cash.cashboxes,
@@ -447,7 +447,7 @@ export class CashOrderForm extends Component {
     _renderClientSearchTable = () => {
         const {
             searchClientsResult: { searching: clientsSearching, clients },
-            setClientSelection,
+            onClientSelect,
             form,
         } = this.props;
         console.log('→ searchClientsResult', this.props.searchClientsResult);
@@ -458,7 +458,7 @@ export class CashOrderForm extends Component {
         return (
             <ClientsSearchTable
                 clientsSearching={ clientsSearching }
-                setClientSelection={ setClientSelection }
+                setClientSelection={ onClientSelect }
                 visible={ searchClientQuery }
                 clients={ clients }
             />

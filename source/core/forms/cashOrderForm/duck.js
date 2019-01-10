@@ -22,6 +22,7 @@ export const ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_CLIENT
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS`;
 
 export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
+export const ON_CLIENT_SELECT_SUCCESS = `${prefix}/ON_CLIENT_SELECT_SUCCESS`;
 
 function duplicate(clients) {
     return _.flatten(
@@ -56,6 +57,7 @@ const ReducerState = {
         clients:   [],
     },
     counterpartyList: [],
+    selectedClient:   {},
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -129,6 +131,12 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case ON_CLIENT_SELECT_SUCCESS:
+            return {
+                ...state,
+                selectedClient: { ...state.selectedClient, orders: payload },
+            };
+
         default:
             return state;
     }
@@ -185,9 +193,14 @@ export const clearCashOrderForm = () => ({
     type: CLEAR_CASH_ORDER_FORM,
 });
 
-export const setClientSelection = client => ({
+export const onClientSelect = client => ({
     type:    ON_CLIENT_SELECT,
     payload: client,
+});
+
+export const onClientSelectSuccess = clientOrders => ({
+    type:    ON_CLIENT_SELECT_SUCCESS,
+    payload: clientOrders,
 });
 
 export const onChangeClientSearchQuery = searchQuery => ({
