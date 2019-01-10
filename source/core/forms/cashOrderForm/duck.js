@@ -175,9 +175,10 @@ export const createCashOrderSuccess = () => ({
     type: CREATE_CASH_ORDER_SUCCESS,
 });
 
-export const onChangeCashOrderForm = fields => ({
+export const onChangeCashOrderForm = (fields, { form, field }) => ({
     type:    ON_CHANGE_CASH_ORDER_FORM,
     payload: fields,
+    meta:    { form, field },
 });
 
 export const clearCashOrderForm = () => ({

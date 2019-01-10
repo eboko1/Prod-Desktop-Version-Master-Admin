@@ -6,9 +6,6 @@ import _ from 'lodash';
 import { v4 } from 'uuid';
 
 // proj
-import {
-    setClientSelection,
-} from 'core/forms/orderForm/duck';
 import { fetchCashboxes } from 'core/cash/duck';
 import {
     onChangeCashOrderForm,
@@ -16,6 +13,7 @@ import {
     fetchCashOrderForm,
     createCashOrder,
     selectCounterpartyList,
+    setClientSelection,
 } from 'core/forms/cashOrderForm/duck';
 
 import { ClientsSearchTable } from 'forms/OrderForm/OrderFormTables';
@@ -452,7 +450,7 @@ export class CashOrderForm extends Component {
             setClientSelection,
             form,
         } = this.props;
-        
+        console.log('→ searchClientsResult', this.props.searchClientsResult);
         // const searchClientQuery = form.getFieldsValue([ 'searchClientQuery' ]);
         const formFieldsValues = form.getFieldsValue();
         const searchClientQuery = _.get(formFieldsValues, 'searchClientQuery');

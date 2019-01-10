@@ -12,12 +12,14 @@ import {
     fetchCashOrderFormSuccess,
     createCashOrderSuccess,
     //
+    onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
     // SET_SEARCH_QUERY,
     FETCH_CASH_ORDER_NEXT_ID,
     FETCH_CASH_ORDER_FORM,
     CREATE_CASH_ORDER,
+    ON_CHANGE_CASH_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
 } from './duck';
 
@@ -48,6 +50,23 @@ export function* fetchCashOrderFormSaga() {
             const { payload } = yield take(FETCH_CASH_ORDER_FORM);
             const data = yield call(fetchAPI, 'GET', payload);
             yield put(fetchCashOrderFormSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
+export function* onChangeCashOrderFormSaga() {
+    while (true) {
+        try {
+            const {
+                meta: { field }, // form
+                payload,
+            } = yield take(ON_CHANGE_CASH_ORDER_FORM);
+
+            if (field === 'searchClientQuery') {
+                yield put(onChangeClientSearchQuery(payload[ field ].value));
+            }
         } catch (error) {
             yield put(emitError(error));
         }
@@ -91,6 +110,7 @@ export function* saga() {
         // takeLatest(SET_SEARCH_QUERY, handleContractorSearchSaga),
         call(createCashOrderSaga),
         call(fetchCashOrderFormSaga),
+        call(onChangeCashOrderFormSaga),
         takeLatest(FETCH_CASH_ORDER_NEXT_ID, fetchCashOrderNextIdSaga),
         takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
     ]);
