@@ -1,6 +1,8 @@
 // vendor
-import { call, put, all, take } from 'redux-saga/effects';
+import { call, put, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
+import moment from 'moment';
+import _ from 'lodash';
 
 //proj
 import { emitError } from 'core/ui/duck';
@@ -15,6 +17,8 @@ import {
     fetchCashOrdersSuccess,
     fetchCashboxesBalanceSuccess,
     fetchCashboxesActivitySuccess,
+    selectCashOrdersFilters,
+    selectCashAccountingFilters,
     FETCH_CASHBOXES,
     FETCH_CASHBOXES_BALANCE,
     FETCH_CASHBOXES_ACTIVITY,
@@ -45,8 +49,11 @@ export function* fetchCashboxesBalanceSaga() {
         try {
             yield take(FETCH_CASHBOXES_BALANCE);
             yield nprogress.start();
+            const { date } = yield select(selectCashAccountingFilters);
 
-            const data = yield call(fetchAPI, 'GET', 'cash_boxes/balance');
+            const data = yield call(fetchAPI, 'GET', 'cash_boxes/balance', {
+                endDate: moment(date).format('YYYY-MM-DD'),
+            });
 
             yield put(fetchCashboxesBalanceSuccess(data));
         } catch (error) {
@@ -62,9 +69,14 @@ export function* fetchCashboxesActivitySaga() {
         try {
             yield take(FETCH_CASHBOXES_ACTIVITY);
             yield nprogress.start();
+            const filters = yield select(selectCashAccountingFilters);
 
-            const data = yield call(fetchAPI, 'GET', 'cash_boxes/activity');
-
+            const data = yield call(
+                fetchAPI,
+                'GET',
+                'cash_boxes/activity',
+                _.pick(filters, [ 'startDate', 'endDate' ]),
+            );
             yield put(fetchCashboxesActivitySuccess(data));
         } catch (error) {
             yield put(emitError(error));
@@ -79,8 +91,8 @@ export function* fetchCashOrdersSaga() {
         try {
             yield take(FETCH_CASH_ORDERS);
             yield nprogress.start();
-
-            const data = yield call(fetchAPI, 'GET', 'cash_orders');
+            const filters = yield select(selectCashOrdersFilters);
+            const data = yield call(fetchAPI, 'GET', 'cash_orders', filters);
 
             yield put(fetchCashOrdersSuccess(data));
         } catch (error) {

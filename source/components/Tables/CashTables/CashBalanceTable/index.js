@@ -3,10 +3,14 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Table } from 'antd';
-import moment from 'moment';
+import _ from 'lodash';
 
 // proj
-import { fetchCashboxesBalance } from 'core/cash/duck';
+import {
+    fetchCashboxesBalance,
+    setCashAccountingFilters,
+    selectCashAccountingFilters,
+} from 'core/cash/duck';
 
 import { DatePickerField } from 'forms/_formkit';
 import { ResponsiveView } from 'commons';
@@ -17,11 +21,13 @@ import { columnsConfig } from './config';
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    data: state.cash.balance,
+    data:    state.cash.balance,
+    filters: selectCashAccountingFilters(state),
 });
 
 const mapDispatchToProps = {
     fetchCashboxesBalance,
+    setCashAccountingFilters,
 };
 
 @connect(
@@ -39,10 +45,13 @@ export class CashBalanceTable extends Component {
         this.props.fetchCashboxesBalance();
     }
 
-    _handleDatepicker = val => console.log('→ value', val);
+    _handleDatePicker = date => {
+        this.props.setCashAccountingFilters({ date });
+        this.props.fetchCashboxesBalance();
+    };
 
     render() {
-        const { cashboxesFetching, data } = this.props;
+        const { cashboxesFetching, data, filters } = this.props;
 
         return (
             <div className={ Styles.tableWrapper }>
@@ -55,8 +64,8 @@ export class CashBalanceTable extends Component {
                         </h3>
                     </ResponsiveView>
                     <DatePickerField
-                        date={ moment() }
-                        onChange={ this._handleDatepicker }
+                        date={ _.get(filters, 'date') }
+                        onChange={ this._handleDatePicker }
                     />
                 </div>
                 <Table

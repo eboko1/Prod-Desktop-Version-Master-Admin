@@ -1,4 +1,4 @@
-// import { v4 } from 'uuid';
+import moment from 'moment';
 
 /**
  * Constants
@@ -24,6 +24,9 @@ export const CREATE_CASHBOX_SUCCESS = `${prefix}/CREATE_CASHBOX_SUCCESS`;
 export const DELETE_CASHBOX = `${prefix}/DELETE_CASHBOX`;
 export const DELETE_CASHBOX_SUCCESS = `${prefix}/DELETE_CASHBOX_SUCCESS`;
 
+export const SET_CASH_ORDERS_FILTERS = `${prefix}/SET_CASH_ORDERS_FILTERS`;
+export const SET_CASH_ACCOUNTING_FILTERS = `${prefix}/SET_CASH_ACCOUNTING_FILTERS`;
+
 /**
  * Reducer
  * */
@@ -37,7 +40,20 @@ const ReducerState = {
         decrease:   null,
         balance:    null,
     },
-    cashOrders: [],
+    cashOrders:        [],
+    cashOrdersFilters: {
+        startDate: moment().format('YYYY-MM-DD'),
+        endDate:   moment().format('YYYY-MM-DD'),
+        query:     '',
+        page:      1,
+    },
+    cashAccountingFilters: {
+        date:      moment(),
+        startDate: moment()
+            .startOf('month')
+            .format('YYYY-MM-DD'),
+        endDate: moment().format('YYYY-MM-DD'),
+    },
 };
 // eslint-disable-next-line
 export default function reducer(state = ReducerState, action) {
@@ -81,6 +97,24 @@ export default function reducer(state = ReducerState, action) {
                 stats:      payload.stats,
             };
 
+        case SET_CASH_ORDERS_FILTERS:
+            return {
+                ...state,
+                cashOrdersFilters: {
+                    ...state.cashOrdersFilters,
+                    ...payload,
+                },
+            };
+
+        case SET_CASH_ACCOUNTING_FILTERS:
+            return {
+                ...state,
+                cashAccountingFilters: {
+                    ...state.cashAccountingFilters,
+                    ...payload,
+                },
+            };
+
         default:
             return state;
     }
@@ -96,6 +130,10 @@ export const selectCashStats = state => ({
     decrease: state.cash.stats.decrease,
     balance:  Number(state.cash.stats.increase - state.cash.stats.decrease),
 });
+export const selectCashOrdersFilters = state => state.cash.cashOrdersFilters;
+
+export const selectCashAccountingFilters = state =>
+    state.cash.cashAccountingFilters;
 
 /**
  * Action Creators
@@ -147,6 +185,16 @@ export const deleteCashbox = id => ({
 export const deleteCashboxSuccess = cashbox => ({
     type:    DELETE_CASHBOX_SUCCESS,
     payload: cashbox,
+});
+
+export const setCashOrdersFilters = filters => ({
+    type:    SET_CASH_ORDERS_FILTERS,
+    payload: filters,
+});
+
+export const setCashAccountingFilters = filters => ({
+    type:    SET_CASH_ACCOUNTING_FILTERS,
+    payload: filters,
 });
 
 // cash orders

@@ -3,9 +3,14 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Table } from 'antd';
+import _ from 'lodash';
 
 // proj
-import { fetchCashboxesActivity } from 'core/cash/duck';
+import {
+    fetchCashboxesActivity,
+    setCashAccountingFilters,
+    selectCashAccountingFilters,
+} from 'core/cash/duck';
 
 import { RangePickerField } from 'forms/_formkit';
 import { ResponsiveView } from 'commons';
@@ -17,11 +22,13 @@ import Styles from './styles.m.css';
 import moment from 'moment';
 
 const mapStateToProps = state => ({
-    data: state.cash.activity,
+    data:    state.cash.activity,
+    filters: selectCashAccountingFilters(state),
 });
 
 const mapDispatchToProps = {
     fetchCashboxesActivity,
+    setCashAccountingFilters,
 };
 
 @connect(
@@ -39,10 +46,18 @@ export class CashActivityTable extends Component {
         this.props.fetchCashboxesActivity();
     }
 
-    _onDaterangeChange = val => console.log('→ daterange val', val);
+    _onDateRangeChange = value => {
+        const normalizedValue = value.map(date => date.format('YYYY-MM-DD'));
+        const daterange = {
+            startDate: normalizedValue[ 0 ],
+            endDate:   normalizedValue[ 1 ],
+        };
+        this.props.setCashAccountingFilters(daterange);
+        this.props.fetchCashboxesActivity();
+    };
 
     render() {
-        const { cashboxesFetching, data } = this.props;
+        const { cashboxesFetching, data, filters } = this.props;
 
         return (
             <div className={ Styles.tableWrapper }>
@@ -55,12 +70,10 @@ export class CashActivityTable extends Component {
                         </h3>
                     </ResponsiveView>
                     <RangePickerField
-                        onChange={ this._onDaterangeChange }
+                        onChange={ this._onDateRangeChange }
                         // loading={ loading }
-                        startDate={ moment()
-                            .startOf('month')
-                            .format('YYYY-MM-DD hh:mm') }
-                        endDate={ moment().format('YYYY-MM-DD hh:mm') }
+                        startDate={ _.get(filters, 'startDate') }
+                        endDate={ _.get(filters, 'endDate') }
                     />
                 </div>
                 <Table

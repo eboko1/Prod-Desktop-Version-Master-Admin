@@ -18,7 +18,7 @@ export default class CashAccountingContainer extends Component {
         return (
             <div className={ Styles.tables }>
                 <ResponsiveView view={ { min: null, max: BREAKPOINTS.xl.max } }>
-                    <Tabs defaultActiveKey='1'>
+                    <Tabs type='cards' defaultActiveKey='1'>
                         <TabPane
                             tab={ <FormattedMessage id='cash-table.leftovers' /> }
                             key='1'
