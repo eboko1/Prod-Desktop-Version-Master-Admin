@@ -108,10 +108,7 @@ export class CashOrdersFiltersForm extends Component {
                     <DecoratedDatePicker
                         field='daterange'
                         initialValue={ [ moment(filters.startDate), moment(filters.endDate) ] }
-                        // initialValue={ {
-                        //     startDate: filters.startDate,
-                        //     endDate:   filters.endDate,
-                        // } }
+                        allowClear={ false }
                         getFieldDecorator={ getFieldDecorator }
                         formatMessage={ formatMessage }
                         getCalendarContainer={ trigger => trigger.parentNode }

@@ -59,7 +59,7 @@ export class CashBalanceTable extends Component {
         setCashOrdersFilters({
             cashBoxId: data.id,
             startDate: '2019-01-01',
-            endDate:   filters.endDate,
+            endDate:   filters.date.format('YYYY-MM-DD'),
         });
     };
 
