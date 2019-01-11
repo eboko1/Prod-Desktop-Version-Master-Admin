@@ -5,6 +5,7 @@ import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import moment from 'moment';
 import { v4 } from 'uuid';
+import classNames from 'classnames/bind';
 
 // proj
 import { fetchCashboxes } from 'core/cash/duck';
@@ -37,6 +38,7 @@ import { withReduxForm2 } from 'utils';
 // own
 import { cashOrderTypes, cashOrderCounterpartyTypes } from './config.js';
 import Styles from './styles.m.css';
+const cx = classNames.bind(Styles);
 const Option = Select.Option;
 const RadioGroup = Radio.Group;
 
@@ -74,7 +76,7 @@ const reverseFromItemLayout = {
             client:           selectClient(state),
             orders:           _.get(selectClient(state), 'orders'),
             order:            selectOrder(state),
-            activeCashOrder:  state.modals.modalProps.cashOrderEntity,
+            activeCashOrder:  _.get(state, 'modals.modalProps.cashOrderEntity'),
         };
     },
 })
@@ -133,6 +135,7 @@ export class CashOrderForm extends Component {
                 'businessSupplierId',
                 'cashBoxId',
                 'clientId',
+                'orderId',
                 'description',
                 'employeeId',
                 'increase',
@@ -142,15 +145,15 @@ export class CashOrderForm extends Component {
             ]), (value) => !_.isNil(value),
         );
         let counterPartyType = cashOrderCounterpartyTypes.OTHER;
-        if (fieldsMap.clientId) counterPartyType = cashOrderCounterpartyTypes.CLIENT; 
-        if (fieldsMap.employeeId) counterPartyType = cashOrderCounterpartyTypes.EMPLOYEE;
-        if (fieldsMap.businessSupplierId) counterPartyType = cashOrderCounterpartyTypes.BUSINESS_SUPPLIER;
+        // if (fieldsMap.clientId) counterPartyType = cashOrderCounterpartyTypes.CLIENT; 
+        // if (fieldsMap.employeeId) counterPartyType = cashOrderCounterpartyTypes.EMPLOYEE;
+        // if (fieldsMap.businessSupplierId) counterPartyType = cashOrderCounterpartyTypes.BUSINESS_SUPPLIER;
         const normalizedDatetime = moment(fieldsMap.datetime);
-        const sumType = _.get(fieldsMap, 'increase') ? 'increase' : 'decrease';
+        const sumType = !_.isNil(fieldsMap.increase) ? 'increase' : 'decrease';
         const normalizedFieldsMap = {...fieldsMap, sumType, counterPartyType, datetime: normalizedDatetime}
-        // console.log('→ normalizedFieldsMap', normalizedFieldsMap);
+        console.log('→ normalizedFieldsMap', normalizedFieldsMap);
         form.setFieldsValue(normalizedFieldsMap);
-        // this.setState({ sumType });
+        this.setState({ sumType });
     }
 
     _submit = event => {
@@ -209,6 +212,12 @@ export class CashOrderForm extends Component {
             ));
     }
 
+    _hiddenFormItemStyles = (type) =>
+        cx({
+            hiddenFormItem: !type,
+            styledFormItem: true,
+        });
+
     render() {
         const {
             cashboxes,
@@ -221,13 +230,14 @@ export class CashOrderForm extends Component {
 
         const counterpartyType = getFieldValue('counterpartyType');
         const cashOrderId = getFieldValue('id');
+        console.log('→ cashOrderId', cashOrderId );
 
         return (
             <Form onSubmit={ this._submit }>
                 <div className={ Styles.cashOrderId }>
                     <DecoratedInput
                         field='id'
-                        initialValue={ nextId }
+                        initialValue={ nextId || cashOrderId }
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={ formatMessage({
@@ -376,74 +386,74 @@ export class CashOrderForm extends Component {
                             </Radio>
                         </DecoratedRadio>
                     ) }
-                    { this.state.sumType === 'increase' && (
-                        <DecoratedInputNumber
-                            fields={ {} }
-                            field='increase'
-                            getFieldDecorator={ getFieldDecorator }
-                            formItem
-                            label={
-                                <div>
-                                    { formatMessage({
-                                        id: 'cash-order-form.sum',
-                                    }) }{ ' ' }
-                                    <Icon
-                                        type='caret-up'
-                                        style={ { color: 'var(--enabled)' } }
-                                    />
-                                </div>
-                            }
-                            placeholder={ formatMessage({
-                                id: 'cash-order-form.sum.placeholder',
-                            }) }
-                            formItemLayout={ formItemLayout }
-                            className={ Styles.styledFormItem }
-                            cnStyles={ Styles.expandedInput }
-                            rules={ [
-                                {
-                                    required: true,
-                                    message:  formatMessage({
-                                        id: 'required_field',
-                                    }),
-                                },
-                            ] }
-                            disabled={ printMode }
-                        />
-                    ) }
-                    { this.state.sumType === 'decrease' && (
-                        <DecoratedInputNumber
-                            fields={ {} }
-                            field='decrease'
-                            getFieldDecorator={ getFieldDecorator }
-                            formItem
-                            label={
-                                <div>
-                                    { formatMessage({
-                                        id: 'cash-order-form.sum',
-                                    }) }{ ' ' }
-                                    <Icon
-                                        type='caret-down'
-                                        style={ { color: 'var(--disabled)' } }
-                                    />
-                                </div>
-                            }
-                            placeholder={ formatMessage({
-                                id: 'cash-order-form.sum.placeholder',
-                            }) }
-                            formItemLayout={ formItemLayout }
-                            className={ Styles.styledFormItem }
-                            cnStyles={ Styles.expandedInput }
-                            rules={ [
-                                {
-                                    required: true,
-                                    message:  formatMessage({
-                                        id: 'required_field',
-                                    }),
-                                },
-                            ] }
-                            disabled={ printMode }
-                        />
-                    ) }
+                    <DecoratedInputNumber
+                        fields={ {} }
+                        field='increase'
+                        getFieldDecorator={ getFieldDecorator }
+                        formItem
+                        label={
+                            <div>
+                                { formatMessage({
+                                    id: 'cash-order-form.sum',
+                                }) }{ ' ' }
+                                <Icon
+                                    type='caret-up'
+                                    style={ { color: 'var(--enabled)' } }
+                                />
+                            </div>
+                        }
+                        placeholder={ formatMessage({
+                            id: 'cash-order-form.sum.placeholder',
+                        }) }
+                        formItemLayout={ formItemLayout }
+                        // className={ Styles.styledFormItem }
+                        className={ this._hiddenFormItemStyles(this.state.sumType === 'increase') }
+                        cnStyles={ Styles.expandedInput }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
+                        disabled={ printMode }
+                    />
+                    
+                    { console.log('state.sumType', this.state.sumType) }
+                    <DecoratedInputNumber
+                        fields={ {} }
+                        field='decrease'
+                        getFieldDecorator={ getFieldDecorator }
+                        formItem
+                        label={
+                            <div>
+                                { formatMessage({
+                                    id: 'cash-order-form.sum',
+                                }) }{ ' ' }
+                                <Icon
+                                    type='caret-down'
+                                    style={ { color: 'var(--disabled)' } }
+                                />
+                            </div>
+                        }
+                        placeholder={ formatMessage({
+                            id: 'cash-order-form.sum.placeholder',
+                        }) }
+                        formItemLayout={ formItemLayout }
+                        className={ this._hiddenFormItemStyles(this.state.sumType === 'decrease') }
+                        // className={ `${Styles.styledFormItem} ${this.state.sumType === 'decrease' && Styles.hiddenFormItem}` }
+                        cnStyles={ Styles.expandedInput }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
+                        disabled={ printMode }
+                    />
                     <DecoratedTextArea
                         fields={ {} }
                         field='description'

@@ -99,7 +99,7 @@ export default class CashOrdersPage extends Component {
                 title={ <FormattedMessage id='navigation.cash_orders' /> }
                 controls={
                     <div className={ Styles.buttonGroup }>
-                        <Icon type='printer' className={ Styles.printIcon } />
+                        { /* <Icon type='printer' className={ Styles.printIcon } /> */ }
                         <StyledButton
                             type='secondary'
                             onClick={ () => this._onOpenCashOrderModal() }

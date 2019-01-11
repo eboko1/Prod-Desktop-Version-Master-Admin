@@ -50,3 +50,7 @@
 .hiddenField:global(.ant-input-affix-wrapper) {
     display: none;
 }
+
+.hiddenFormItem:global(.ant-form-item) {
+    display: none;
+}
