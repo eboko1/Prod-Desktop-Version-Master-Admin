@@ -30,6 +30,8 @@ import {
     selectClientOrdersFilters,
     //
     fetchSelectedClientOrdersSuccess,
+    //
+    onOrderSearchSuccess,
     FETCH_CASH_ORDER_NEXT_ID,
     FETCH_CASH_ORDER_FORM,
     CREATE_CASH_ORDER,
@@ -38,6 +40,8 @@ import {
     ON_CLIENT_SELECT,
     // ON_CLIENT_SELECT_SUCCESS,
     FETCH_SELECTED_CLIENT_ORDERS,
+    //
+    ON_ORDER_SEARCH,
 } from './duck';
 
 export function* fetchCashOrderNextIdSaga() {
@@ -145,6 +149,22 @@ export function* createCashOrderSaga() {
     }
 }
 
+export function* onOrderSearchSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(ON_ORDER_SEARCH);
+
+            const order = yield call(fetchAPI, 'GET', 'orders', {
+                query: payload,
+            });
+
+            yield put(onOrderSearchSuccess(order));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
 export function* saga() {
     yield all([
         call(createCashOrderSaga),
@@ -152,6 +172,7 @@ export function* saga() {
         call(onChangeCashOrderFormSaga),
         call(handleClientSelectSaga),
         call(fetchSelectedClientOrders),
+        call(onOrderSearchSaga),
         takeLatest(FETCH_CASH_ORDER_NEXT_ID, fetchCashOrderNextIdSaga),
         takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
     ]);

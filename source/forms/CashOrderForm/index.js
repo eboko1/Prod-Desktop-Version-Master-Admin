@@ -16,6 +16,7 @@ import {
     selectClient,
     selectOrder,
     onClientSelect,
+    onOrderSearch,
 } from 'core/forms/cashOrderForm/duck';
 
 import { ClientsSearchTable } from 'forms/OrderForm/OrderFormTables';
@@ -60,6 +61,7 @@ const reverseFromItemLayout = {
         fetchCashOrderForm,
         createCashOrder,
         onClientSelect,
+        onOrderSearch,
     },
     mapStateToProps: state => {
 
@@ -443,6 +445,7 @@ export class CashOrderForm extends Component {
                 }
                 {this.state.clientSearchType === 'order' && (
                     <DecoratedSearch
+                        fields={ {} }
                         field='orderId'
                         getFieldDecorator={ getFieldDecorator }
                         formItem
@@ -452,8 +455,10 @@ export class CashOrderForm extends Component {
                         placeholder={ formatMessage({
                             id: 'cash-order-form.search_by_client',
                         }) }
+                        onSearch={ this.props.onOrderSearch }
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
+                        enterButton
                     />
                 )}
             </>

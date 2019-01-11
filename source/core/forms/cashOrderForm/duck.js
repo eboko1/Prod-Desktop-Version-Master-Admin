@@ -31,6 +31,9 @@ export const ON_CLIENT_SELECT_SUCCESS = `${prefix}/ON_CLIENT_SELECT_SUCCESS`;
 
 export const ON_ORDER_SELECT = `${prefix}/ON_ORDER_SELECT`;
 
+export const ON_ORDER_SEARCH = `${prefix}/ON_ORDER_SEARCH`;
+export const ON_ORDER_SEARCH_SUCCESS = `${prefix}/ON_ORDER_SEARCH_SUCCESS`;
+
 function duplicate(clients) {
     return _.flatten(
         _.map(clients, client => {
@@ -186,6 +189,12 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case ON_ORDER_SEARCH_SUCCESS:
+            return {
+                ...state,
+                selectedOrder: payload,
+            };
+
         default:
             return state;
     }
@@ -293,4 +302,15 @@ export const fetchSelectedClientOrdersSuccess = clientOrders => ({
 export const setSelectedClientOrdersFilters = filters => ({
     type:    SET_SELECTED_CLIENT_ORDERS_FILTERS,
     payload: filters,
+});
+
+// Search by Order
+export const onOrderSearch = orderSearch => ({
+    type:    ON_ORDER_SEARCH,
+    payload: orderSearch,
+});
+
+export const onOrderSearchSuccess = order => ({
+    type:    ON_ORDER_SEARCH_SUCCESS,
+    payload: order,
 });
