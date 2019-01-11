@@ -128,6 +128,20 @@ export function columnsConfig(props) {
         width:     '10%',
     };
 
+    const actionsCol = {
+        dataIndex: 'actions',
+        width:     'auto',
+        render:    (key, cashOrder) => 
+            <>
+                <Icon
+                    type='printer'
+                    onClick={ () => props.openPrint(cashOrder) }
+                />
+                <Icon type='edit' onClick={ () => props.openEdit(cashOrder) } />
+            </>
+        ,
+    };
+
     return [
         numberCol,
         cashOrderCol,
@@ -137,5 +151,6 @@ export function columnsConfig(props) {
         activityCol,
         sumCol,
         descriptionCol,
+        actionsCol,
     ];
 }

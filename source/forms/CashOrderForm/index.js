@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { Form, Select, Button, Radio, Icon } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
+import moment from 'moment';
 import { v4 } from 'uuid';
 
 // proj
@@ -17,6 +18,7 @@ import {
     selectOrder,
     onClientSelect,
     onOrderSearch,
+    printCashOrder,
 } from 'core/forms/cashOrderForm/duck';
 
 import { ClientsSearchTable } from 'forms/OrderForm/OrderFormTables';
@@ -62,6 +64,7 @@ const reverseFromItemLayout = {
         createCashOrder,
         onClientSelect,
         onOrderSearch,
+        printCashOrder,
     },
     mapStateToProps: state => {
         return {
@@ -71,6 +74,7 @@ const reverseFromItemLayout = {
             client:           selectClient(state),
             orders:           _.get(selectClient(state), 'orders'),
             order:            selectOrder(state),
+            activeCashOrder:  state.modals.modalProps.cashOrderEntity,
         };
     },
 })
@@ -83,16 +87,24 @@ export class CashOrderForm extends Component {
     };
 
     componentDidMount() {
-        this.props.fetchCashOrderNextId();
-        this.props.fetchCashboxes();
+
+        if(this.props.editMode || this.props.printMode) {
+            this._setFormFields(this.props.activeCashOrder);
+        }
+        
+        if (!this.props.editMode && !this.props.printMode) {
+            this.props.fetchCashOrderNextId();
+            this.props.fetchCashboxes();
+        }
+
     }
+    
 
     componentDidUpdate(prevProps) {
         const {
             form: { getFieldValue },
             fetchCashOrderForm,
         } = this.props;
-
         if (
             prevProps.fields.counterpartyType !==
             this.props.fields.counterpartyType
@@ -110,6 +122,35 @@ export class CashOrderForm extends Component {
                     break;
             }
         }
+    }
+
+    _setFormFields = (ff) => {
+        const { activeCashOrder, form } = this.props;
+        const fieldsMap = _.pickBy(
+            _.pick(activeCashOrder, [
+                'id',
+                'type',
+                'businessSupplierId',
+                'cashBoxId',
+                'clientId',
+                'description',
+                'employeeId',
+                'increase',
+                'decrease',
+                'otherCounterparty',
+                'datetime',
+            ]), (value) => !_.isNil(value),
+        );
+        let counterPartyType = cashOrderCounterpartyTypes.OTHER;
+        if (fieldsMap.clientId) counterPartyType = cashOrderCounterpartyTypes.CLIENT; 
+        if (fieldsMap.employeeId) counterPartyType = cashOrderCounterpartyTypes.EMPLOYEE;
+        if (fieldsMap.businessSupplierId) counterPartyType = cashOrderCounterpartyTypes.BUSINESS_SUPPLIER;
+        const normalizedDatetime = moment(fieldsMap.datetime);
+        const sumType = _.get(fieldsMap, 'increase') ? 'increase' : 'decrease';
+        const normalizedFieldsMap = {...fieldsMap, sumType, counterPartyType, datetime: normalizedDatetime}
+        // console.log('→ normalizedFieldsMap', normalizedFieldsMap);
+        form.setFieldsValue(normalizedFieldsMap);
+        // this.setState({ sumType });
     }
 
     _submit = event => {
@@ -172,11 +213,14 @@ export class CashOrderForm extends Component {
         const {
             cashboxes,
             nextId,
+            printMode,
+            editMode,
             intl: { formatMessage },
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
 
         const counterpartyType = getFieldValue('counterpartyType');
+        const cashOrderId = getFieldValue('id');
 
         return (
             <Form onSubmit={ this._submit }>
@@ -217,6 +261,7 @@ export class CashOrderForm extends Component {
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
                         onSelect={ this._selectOrderType }
+                        disabled={ printMode }
                     >
                         { Object.values(cashOrderTypes).map(type => (
                             <Option value={ type } key={ type }>
@@ -245,6 +290,7 @@ export class CashOrderForm extends Component {
                         getPopupContainer={ trigger => trigger.parentNode }
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
+                        disabled={ printMode }
                     >
                         { cashboxes.map(({ id, name }) => (
                             <Option value={ id } key={ id }>
@@ -253,7 +299,7 @@ export class CashOrderForm extends Component {
                         )) }
                     </DecoratedSelect>
                     <DecoratedDatePicker
-                        field='date'
+                        field='datetime'
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={ formatMessage({ id: 'cash-order-form.date' }) }
@@ -267,10 +313,11 @@ export class CashOrderForm extends Component {
                         ] }
                         formatMessage={ formatMessage }
                         getCalendarContainer={ trigger => trigger.parentNode }
-                        format='YYYY-MM-DD HH:mm'
+                        format='YYYY-MM-DD'
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
                         cnStyles={ Styles.expandedInput }
+                        disabled={ printMode }
                     />
                 </div>
                 <div className={ Styles.step }>
@@ -295,6 +342,7 @@ export class CashOrderForm extends Component {
                         getPopupContainer={ trigger => trigger.parentNode }
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
+                        disabled={ printMode }
                     >
                         { Object.values(cashOrderCounterpartyTypes).map(type => (
                             <Option value={ type } key={ type }>
@@ -314,6 +362,7 @@ export class CashOrderForm extends Component {
                             cnStyles={ Styles.sumType }
                             onChange={ e => this._setSumType(e) }
                             initialValue={ this.state.sumType }
+                            disabled={ printMode }
                         >
                             <Radio value='increase'>
                                 { formatMessage({
@@ -358,6 +407,7 @@ export class CashOrderForm extends Component {
                                     }),
                                 },
                             ] }
+                            disabled={ printMode }
                         />
                     ) }
                     { this.state.sumType === 'decrease' && (
@@ -391,6 +441,7 @@ export class CashOrderForm extends Component {
                                     }),
                                 },
                             ] }
+                            disabled={ printMode }
                         />
                     ) }
                     <DecoratedTextArea
@@ -401,11 +452,13 @@ export class CashOrderForm extends Component {
                         label={ formatMessage({ id: 'cash-order-form.comment' }) }
                         formItemLayout={ formItemLayout }
                         className={ Styles.styledFormItem }
+                        disabled={ printMode }
                     />
                 </div>
                 <div className={ Styles.buttonGroup }>
-                    <Button icon='printer'>
+                    <Button icon='printer' onClick={ () => this.props.printCashOrder(cashOrderId) }>
                         { formatMessage({ id: 'cash-order-form.print' }) }
+              
                     </Button>
                     <Button type='primary' htmlType='submit'>
                         { formatMessage({ id: 'add' }) }
@@ -417,6 +470,7 @@ export class CashOrderForm extends Component {
     /* eslint-disable complexity */
     _renderClientBlock = () => {
         const {
+            printMode,
             client: { clientId },
             order,
             intl: { formatMessage },
@@ -441,6 +495,7 @@ export class CashOrderForm extends Component {
                     <RadioGroup
                         onChange={ e => this._setClientSearchType(e) }
                         value={ this.state.clientSearchType }
+                        disabled={ printMode }
                     >
                         <Radio value='client'>
                             { formatMessage({
@@ -585,11 +640,11 @@ export class CashOrderForm extends Component {
         } = this.props;
 
         const selectedOrder = _.get(order, 'orders[0]'); // selectedOrder entity
-        console.log('→ selectedOrder', selectedOrder);
+
         const id = _.get(selectedOrder, 'id');
         const num = _.get(selectedOrder, 'num');
         const clientId = _.get(selectedOrder, 'clientId');
-        console.log('→ clientId', clientId);
+
         const clientName = _.get(selectedOrder, 'clientName');
         const clientSurname = _.get(selectedOrder, 'clientSurname');
 
@@ -629,6 +684,7 @@ export class CashOrderForm extends Component {
 
     _renderEmployeeBlock = () => {
         const {
+            printMode,
             counterpartyList,
             form: { getFieldDecorator },
             intl: { formatMessage },
@@ -652,6 +708,7 @@ export class CashOrderForm extends Component {
                         }),
                     },
                 ] }
+                disabled={ printMode }
             >
                 { counterpartyList.map(({ id, name, disabled }) => (
                     <Option value={ id } key={ id } disabled={ disabled }>
@@ -666,6 +723,7 @@ export class CashOrderForm extends Component {
 
     _renderSupplierBlock = () => {
         const {
+            printMode,
             counterpartyList,
             form: { getFieldDecorator },
             intl: { formatMessage },
@@ -689,6 +747,7 @@ export class CashOrderForm extends Component {
                         }),
                     },
                 ] }
+                disabled={ printMode }
             >
                 { counterpartyList.map(({ id, name }) => (
                     <Option value={ id } key={ id }>
@@ -703,6 +762,7 @@ export class CashOrderForm extends Component {
 
     _renderOtherBlock = () => {
         const {
+            printMode,
             form: { getFieldDecorator },
             intl: { formatMessage },
         } = this.props;
@@ -721,6 +781,7 @@ export class CashOrderForm extends Component {
                         }),
                     },
                 ] }
+                disabled={ printMode }
             />
         );
     };

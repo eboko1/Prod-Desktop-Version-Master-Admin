@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Modal } from 'antd';
+import _ from 'lodash';
 
 // proj
 import { MODALS } from 'core/modals/duck';
@@ -12,7 +13,10 @@ import Styles from './styles.m.css';
 
 export default class CashOrderModal extends Component {
     render() {
-        const { visible, resetModal } = this.props;
+        const { visible, resetModal, modalProps, cashOrderEntity } = this.props;
+        console.log('→ MODAL props', this.props);
+        const printMode = _.get(modalProps, 'printMode');
+        const editMode = _.get(modalProps, 'editMode');
 
         return (
             <Modal
@@ -21,7 +25,12 @@ export default class CashOrderModal extends Component {
                 footer={ null }
                 onCancel={ resetModal }
             >
-                <CashOrderForm resetModal={ resetModal } />
+                <CashOrderForm
+                    resetModal={ resetModal }
+                    printMode={ printMode }
+                    editMode={ editMode }
+                    cashOrderEntity={ cashOrderEntity }
+                />
             </Modal>
         );
     }

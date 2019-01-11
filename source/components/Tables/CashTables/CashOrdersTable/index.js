@@ -11,8 +11,9 @@ export class CashOrdersTable extends Component {
         super(props);
 
         this.columns = columnsConfig({
-            // deleteCashbox: props.deleteCashbox,
-            // formatMessage: props.intl.formatMessage,
+            openPrint: props.openPrint,
+            openEdit:  props.openEdit,
+            // cashOrderEntity: this.state.cashOrderEntity,
         });
 
         this.pagination = {
@@ -27,6 +28,8 @@ export class CashOrdersTable extends Component {
             },
         };
     }
+
+    _setCashOrderEntity = cashOrderEntity => this.setState({ cashOrderEntity });
 
     render() {
         const { cashOrders, cashOrdersFetching } = this.props;

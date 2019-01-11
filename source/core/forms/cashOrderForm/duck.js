@@ -8,6 +8,9 @@ const prefix = `cpb/${moduleName}`;
 export const FETCH_CASH_ORDER_NEXT_ID = `${prefix}/FETCH_CASH_ORDER_NEXT_ID`;
 export const FETCH_CASH_ORDER_NEXT_ID_SUCCESS = `${prefix}/FETCH_CASH_ORDER_NEXT_ID_SUCCESS`;
 
+export const FETCH_CASH_ORDER = `${prefix}/FETCH_CASH_ORDER`;
+export const FETCH_CASH_ORDER_SUCCESS = `${prefix}/FETCH_CASH_ORDER_SUCCESS`;
+
 export const FETCH_CASH_ORDER_FORM = `${prefix}/FETCH_CASH_ORDER_FORM`;
 export const FETCH_CASH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_CASH_ORDER_FORM_SUCCESS`;
 
@@ -18,6 +21,12 @@ export const SET_SELECTED_CLIENT_ORDERS_FILTERS = `${prefix}/SET_SELECTED_CLIENT
 
 export const CREATE_CASH_ORDER = `${prefix}/CREATE_CASH_ORDER`;
 export const CREATE_CASH_ORDER_SUCCESS = `${prefix}/CREATE_CASH_ORDER`;
+
+export const EDIT_CASH_ORDER = `${prefix}/EDIT_CASH_ORDER`;
+export const EDIT_CASH_ORDER_SUCCESS = `${prefix}/EDIT_CASH_ORDER_SUCCESS`;
+
+export const PRINT_CASH_ORDER = `${prefix}/PRINT_CASH_ORDER`;
+export const PRINT_CASH_ORDER_SUCCESS = `${prefix}/PRINT_CASH_ORDER_SUCCESS`;
 
 export const ON_CHANGE_CASH_ORDER_FORM = `${prefix}/ON_CHANGE_CASH_ORDER_FORM`;
 export const CLEAR_CASH_ORDER_FORM = `${prefix}/CLEAR_CASH_ORDER_FILTER_FORM`;
@@ -104,6 +113,7 @@ export default function reducer(state = ReducerState, action) {
                 counterpartyList: [ ...payload ],
             };
 
+        case EDIT_CASH_ORDER_SUCCESS:
         case CREATE_CASH_ORDER_SUCCESS:
             return {
                 ...state,
@@ -227,6 +237,15 @@ export const fetchCashOrderNextId = () => ({
     type: FETCH_CASH_ORDER_NEXT_ID,
 });
 
+export const fetchCashOrder = () => ({
+    type: FETCH_CASH_ORDER,
+});
+
+export const fetchCashOrderSuccess = cashOrder => ({
+    type:    FETCH_CASH_ORDER_SUCCESS,
+    payload: cashOrder,
+});
+
 export const fetchCashOrderNextIdSuccess = orderId => ({
     type:    FETCH_CASH_ORDER_NEXT_ID_SUCCESS,
     payload: orderId,
@@ -249,6 +268,15 @@ export const createCashOrder = payload => ({
 
 export const createCashOrderSuccess = () => ({
     type: CREATE_CASH_ORDER_SUCCESS,
+});
+
+export const editCashOrder = id => ({
+    type:    EDIT_CASH_ORDER,
+    payload: id,
+});
+
+export const editCashOrderSuccess = () => ({
+    type: EDIT_CASH_ORDER_SUCCESS,
 });
 
 export const onChangeCashOrderForm = (fields, { form, field }) => ({
@@ -313,4 +341,14 @@ export const onOrderSearch = orderSearch => ({
 export const onOrderSearchSuccess = order => ({
     type:    ON_ORDER_SEARCH_SUCCESS,
     payload: order,
+});
+
+// Print cash order
+export const printCashOrder = id => ({
+    type:    PRINT_CASH_ORDER,
+    payload: id,
+});
+
+export const printCashOrderSuccess = () => ({
+    type: PRINT_CASH_ORDER_SUCCESS,
 });

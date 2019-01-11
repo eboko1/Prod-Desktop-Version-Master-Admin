@@ -27,6 +27,7 @@ const mapStateToProps = state => ({
     cashOrders: state.cash.cashOrders,
     stats:      state.cash.stats,
     modal:      state.modals.modal,
+    modalProps: state.modals.modalProps,
     filters:    selectCashOrdersFilters(state),
 });
 
@@ -62,13 +63,31 @@ export default class CashOrdersPage extends Component {
         this.setState({ cashOrderModalMounted: false });
     };
 
+    _onOpenPrintCashOrderModal = cashOrderEntity => {
+        console.log('→ open printModa cashOrderEntity', cashOrderEntity);
+        this.props.setModal(MODALS.CASH_ORDER, {
+            printMode:       true,
+            editMode:        false,
+            cashOrderEntity: cashOrderEntity,
+        });
+        this.setState({ cashOrderModalMounted: true });
+    };
+
+    _onOpenEditCashOrderModal = cashOrderEntity => {
+        this.props.setModal(MODALS.CASH_ORDER, {
+            editMode:        true,
+            printMode:       false,
+            cashOrderEntity: cashOrderEntity,
+        });
+        this.setState({ cashOrderModalMounted: true });
+    };
+
     render() {
         const {
             collapsed,
             stats,
             modal,
-            setModal,
-            resetModal,
+            modalProps,
             setCashOrdersFilters,
             clearCashOrderForm,
             cashOrders,
@@ -106,6 +125,8 @@ export default class CashOrdersPage extends Component {
                         setCashOrdersFilters={ setCashOrdersFilters }
                         cashOrders={ cashOrders }
                         filters={ filters }
+                        openPrint={ this._onOpenPrintCashOrderModal }
+                        openEdit={ this._onOpenEditCashOrderModal }
                     />
                 </Paper>
                 { this.state.cashOrderModalMounted ? (
@@ -113,6 +134,7 @@ export default class CashOrdersPage extends Component {
                         resetModal={ this._onCloseCashOrderModal }
                         visible={ modal }
                         clearCashOrderForm={ clearCashOrderForm }
+                        modalProps={ modalProps }
                     />
                 ) : null }
             </Layout>

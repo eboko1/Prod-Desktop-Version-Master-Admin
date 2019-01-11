@@ -32,7 +32,6 @@ export default class SupplierModal extends Component {
         const {
             visible,
             resetModal,
-
             modalProps,
             form: { getFieldDecorator },
             intl: { formatMessage },

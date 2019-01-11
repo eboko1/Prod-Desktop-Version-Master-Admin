@@ -8,6 +8,8 @@ import {
     select,
     delay,
 } from 'redux-saga/effects';
+import nprogress from 'nprogress';
+import { saveAs } from 'file-saver';
 import _ from 'lodash';
 
 //proj
@@ -20,6 +22,7 @@ import {
     fetchCashOrderNextIdSuccess,
     fetchCashOrderFormSuccess,
     createCashOrderSuccess,
+    editCashOrderSuccess,
     //
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
@@ -32,9 +35,12 @@ import {
     fetchSelectedClientOrdersSuccess,
     //
     onOrderSearchSuccess,
+    printCashOrderSuccess,
     FETCH_CASH_ORDER_NEXT_ID,
     FETCH_CASH_ORDER_FORM,
     CREATE_CASH_ORDER,
+    EDIT_CASH_ORDER,
+    PRINT_CASH_ORDER,
     ON_CHANGE_CASH_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
     ON_CLIENT_SELECT,
@@ -148,6 +154,59 @@ export function* createCashOrderSaga() {
         }
     }
 }
+export function* editCashOrderSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(EDIT_CASH_ORDER);
+            const cashOrder = _.omit(payload, [ 'counterpartyType', 'sumType' ]);
+            yield call(
+                fetchAPI,
+                'PUT',
+                `cash_orders/${payload.id}`,
+                null,
+                cashOrder,
+            );
+            yield put(editCashOrderSuccess());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield put(fetchCashOrders());
+        }
+    }
+}
+
+export function* printCashOrderSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(PRINT_CASH_ORDER);
+            yield nprogress.start();
+
+            const response = yield call(
+                fetchAPI,
+                'GET',
+                `cash_orders/${payload}/pdf`,
+                null,
+                null,
+                {
+                    rawResponse: true,
+                },
+            );
+            const reportFile = yield response.blob();
+
+            const contentDispositionHeader = response.headers.get(
+                'content-disposition',
+            );
+            const fileName = contentDispositionHeader.match(
+                /^attachment; filename="(.*)"/,
+            )[ 1 ];
+            yield saveAs(reportFile, fileName);
+
+            yield put(printCashOrderSuccess());
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
 
 export function* onOrderSearchSaga() {
     while (true) {
@@ -161,6 +220,8 @@ export function* onOrderSearchSaga() {
             yield put(onOrderSearchSuccess(order));
         } catch (error) {
             yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
         }
     }
 }
@@ -173,6 +234,7 @@ export function* saga() {
         call(handleClientSelectSaga),
         call(fetchSelectedClientOrders),
         call(onOrderSearchSaga),
+        call(printCashOrderSaga),
         takeLatest(FETCH_CASH_ORDER_NEXT_ID, fetchCashOrderNextIdSaga),
         takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
     ]);
