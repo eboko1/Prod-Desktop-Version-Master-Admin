@@ -18,7 +18,12 @@ export default class SiderMenu extends Component {
         const { history, collapsed, isMobile, onCollapse, user } = this.props;
         const defaultOpenKeys = collapsed
             ? []
-            : [ 'operations', 'catalog', 'reports' ];
+            : [
+                'operations',
+                'catalog',
+                'reports',
+                'cash', 
+            ];
         const selected = menuConfig.getSelectedByRoute(
             history.location.pathname,
         );

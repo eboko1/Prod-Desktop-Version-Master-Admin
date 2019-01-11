@@ -57,6 +57,10 @@ import servicesSuggestionsReducer, {
 import vehicleNumberHistoryReducer, {
     moduleName as vehicleNumberHistoryModule,
 } from 'core/vehicleNumberHistory/duck';
+import cashReducer, { moduleName as cashModule } from 'core/cash/duck';
+import suppliersReducer, {
+    moduleName as suppliersModule,
+} from 'core/suppliers/duck';
 
 export const persistConfig = {
     key:       'user',
@@ -94,8 +98,10 @@ const appState = {
     [ searchModule ]:               searchReducer,
     [ servicesSuggestionsModule ]:  servicesSuggestionsReducer,
     [ tecDocActionsModule ]:        tecDocActionsReducer,
-    [ uiModule ]:                   uiReducer,
     [ vehicleNumberHistoryModule ]: vehicleNumberHistoryReducer,
+    [ cashModule ]:                 cashReducer,
+    [ suppliersModule ]:            suppliersReducer,
+    [ uiModule ]:                   uiReducer,
     // [ authModule ]:            authReducer,
     // intl,
     // router,

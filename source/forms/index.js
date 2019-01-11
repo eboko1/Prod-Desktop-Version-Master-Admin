@@ -33,6 +33,9 @@ import { SetDetailProductForm } from './SetDetailProductForm';
 import { SpreadBusinessBrandsForm } from './SpreadBusinessBrandsForm';
 export { ForgotPasswordForm } from './ForgotPasswordForm';
 export { NewPasswordForm } from './NewPasswordForm';
+export { CashCreationForm } from './CashCreationForm';
+export { CashOrdersFiltersForm } from './CashOrdersFiltersForm';
+export { CashOrderForm } from './CashOrderForm';
 
 export {
     LoginForm,

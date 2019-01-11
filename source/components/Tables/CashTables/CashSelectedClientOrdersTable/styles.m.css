@@ -1,0 +1,78 @@
+.orderLink {
+    margin-right: 5px;
+}
+
+.spinner {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.datetime {
+    display: flex;
+    flex-direction: column;
+    width: 75px;
+}
+
+.client {
+    display: flex;
+    flex-direction: column;
+    color: var(--text);
+}
+
+.clientVehicle {
+    color: var(--text4);
+}
+
+.clientPhone {
+    color: var(--link);
+}
+
+.inviteActions {
+    display: flex;
+    justify-content: space-between;
+}
+
+.serviceNames,
+.recommendation,
+.cancelReason {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 188px;
+    /* width 188 + 16*2(padding) = 220px for 220px width orders num col */
+}
+
+.serviceNames {
+    color: var(--text2);
+}
+
+.recommendation {
+    color: var(--secondary);
+}
+
+.cancelReason {
+    color: var(--not_complete);
+}
+
+
+.ordersTable table::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+}
+
+.ordersTable :global(.ant-pagination) {
+    float: none;
+    justify-content: center;
+    display: flex;
+}
+
+.ordersTable :global(.ant-table-thead > tr > th) {
+    text-transform: uppercase;
+    word-break: none;
+    white-space: nowrap;
+}
+
+.ordersTable :global(.ant-table-tbody > tr > th) {
+    word-break: none;
+}

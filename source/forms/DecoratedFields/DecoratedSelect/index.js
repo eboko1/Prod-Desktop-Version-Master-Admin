@@ -3,7 +3,6 @@ import React from 'react';
 import { Select, Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
-import _ from 'lodash';
 
 // own
 const Option = Select.Option;
@@ -65,7 +64,6 @@ export class DecoratedSelect extends React.PureComponent {
                 ref={ innerRef }
                 labelInValue={ labelInValue }
                 optionLabelProp={ optionLabelProp }
-                // onChange={ value => this.handleServiceSelect(record.key, value) }
                 onChange={ onChange }
                 onSearch={ onSearch }
                 onSelect={ onSelect }

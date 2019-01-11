@@ -52,6 +52,7 @@ module.exports = {
                 "core",
                 "ui",
                 "test",
+                "structure",
             ],
         ],
         "scope-case": [2, "always", "kebab-case"],

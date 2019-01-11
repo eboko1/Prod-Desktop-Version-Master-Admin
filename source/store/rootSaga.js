@@ -20,6 +20,8 @@ import { saga as callsSaga } from 'core/calls/saga';
 import { saga as tecDocActionsSaga } from 'core/tecDocActions/saga';
 import { saga as servicesSuggestions } from 'core/servicesSuggestions/saga';
 import { saga as vehicleNumberHistorySaga } from 'core/vehicleNumberHistory/saga';
+import { saga as cashSaga } from 'core/cash/saga';
+import { saga as suppliersSaga } from 'core/suppliers/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
@@ -47,6 +49,8 @@ import { saga as servicesFormSaga } from 'core/forms/servicesForm/saga';
 import { saga as brandsSaga } from 'core/forms/brandsForm/saga';
 import { saga as setDetailProductSaga } from 'core/forms/setDetailProduct/saga';
 import { saga as spreadBusinessSaga } from 'core/forms/spreadBusinessBrands/saga';
+import { saga as cashOrdersFiltersFormSaga } from 'core/forms/cashOrdersFiltersForm/saga';
+import { saga as cashOrderFormSaga } from 'core/forms/cashOrderForm/saga';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -83,6 +87,11 @@ export default function* rootSaga() {
         employeeScheduleSaga(),
         scheduleFormSaga(),
         settingSalaryFormSaga(),
+        suppliersSaga(),
+        // cash
+        cashSaga(),
+        // cashOrdersFiltersFormSaga(),
+        cashOrderFormSaga(),
         // statistics
         chartSaga(),
         reviewsSaga(),

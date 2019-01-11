@@ -7,7 +7,7 @@ import { EditableCell, EditableRow } from './EditableCell';
 import { columnsConfig } from './config.js';
 import Styles from './styles.m.css';
 
-export default class EditableTable extends Component {
+export class EditableTable extends Component {
     state = {
         editing: false,
     };

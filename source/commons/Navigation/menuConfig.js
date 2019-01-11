@@ -51,6 +51,40 @@ export default {
                         isForbidden(user, permissions.GET_EMPLOYEES),
                     name: 'navigation.employees',
                 },
+                {
+                    key:      '/suppliers',
+                    link:     book.suppliersPage,
+                    // disabled: user => isForbidden(user, permissions.SUPPLIERS),
+                    name:     'navigation.suppliers',
+                },
+            ],
+        },
+        {
+            key:      'cash',
+            iconType: 'wallet',
+            name:     'navigation.cash',
+            items:    [
+                {
+                    key:      '/cash/settings',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.CASH_SETTINGS),
+                    link: book.cashSettingsPage,
+                    name: 'navigation.cash_settings',
+                },
+                {
+                    key:      '/cash/orders',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.CASH_ORDERS),
+                    link: book.cashOrdersPage,
+                    name: 'navigation.cash_orders',
+                },
+                {
+                    key:      '/cash/accounting',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.CASH_ACCOUNTING),
+                    link: book.cashAccountingPage,
+                    name: 'navigation.cash_accounting',
+                },
             ],
         },
         /* Statistics submenu */
@@ -62,21 +96,21 @@ export default {
                 {
                     key:      '/chart',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_KPI) && !isAdmin(user),
                     link: book.chart,
                     name: 'navigation.service_indicators',
                 },
                 {
                     key:      '/feedback',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_FEEDBACK) && !isAdmin(user),
                     link: book.feedback,
                     name: 'navigation.feedback',
                 },
                 {
                     key:      '/calls',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_CALL_STATISTICS) && !isAdmin(user),
                     link: book.calls,
                     name: 'navigation.call_statistics',
                 },

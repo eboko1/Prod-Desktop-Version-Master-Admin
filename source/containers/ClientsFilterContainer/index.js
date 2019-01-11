@@ -51,10 +51,6 @@ export default class OrdersFilterContainer extends Component {
         }, 1000);
     }
 
-    componentDidMount() {
-        this.props.fetchUniversalFiltersForm();
-    }
-
     render() {
         return (
             <Catcher>
