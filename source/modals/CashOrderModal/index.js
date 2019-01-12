@@ -14,7 +14,6 @@ import Styles from './styles.m.css';
 export default class CashOrderModal extends Component {
     render() {
         const { visible, resetModal, modalProps, cashOrderEntity } = this.props;
-        console.log('→ MODAL props', this.props);
         const printMode = _.get(modalProps, 'printMode');
         const editMode = _.get(modalProps, 'editMode');
 

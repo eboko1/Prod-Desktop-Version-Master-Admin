@@ -91,10 +91,12 @@ export class CashOrderForm extends Component {
     componentDidMount() {
 
         if(this.props.editMode || this.props.printMode) {
+            console.log('@ action mode');
             this._setFormFields(this.props.activeCashOrder);
         }
         
         if (!this.props.editMode && !this.props.printMode) {
+            console.log('@ createmode');
             this.props.fetchCashOrderNextId();
             this.props.fetchCashboxes();
         }
@@ -406,12 +408,11 @@ export class CashOrderForm extends Component {
                             id: 'cash-order-form.sum.placeholder',
                         }) }
                         formItemLayout={ formItemLayout }
-                        // className={ Styles.styledFormItem }
                         className={ this._hiddenFormItemStyles(this.state.sumType === 'increase') }
                         cnStyles={ Styles.expandedInput }
                         rules={ [
                             {
-                                required: true,
+                                required: this.state.sumType === 'increase',
                                 message:  formatMessage({
                                     id: 'required_field',
                                 }),
@@ -419,8 +420,6 @@ export class CashOrderForm extends Component {
                         ] }
                         disabled={ printMode }
                     />
-                    
-                    { console.log('state.sumType', this.state.sumType) }
                     <DecoratedInputNumber
                         fields={ {} }
                         field='decrease'
@@ -442,11 +441,10 @@ export class CashOrderForm extends Component {
                         }) }
                         formItemLayout={ formItemLayout }
                         className={ this._hiddenFormItemStyles(this.state.sumType === 'decrease') }
-                        // className={ `${Styles.styledFormItem} ${this.state.sumType === 'decrease' && Styles.hiddenFormItem}` }
                         cnStyles={ Styles.expandedInput }
                         rules={ [
                             {
-                                required: true,
+                                required: this.state.sumType === 'decrease',
                                 message:  formatMessage({
                                     id: 'required_field',
                                 }),
@@ -485,12 +483,11 @@ export class CashOrderForm extends Component {
             order,
             intl: { formatMessage },
         } = this.props;
-        const orderId = _.get(order, 'orders[0].id');
+        const orderId = order.id;
         const clientSearch = this._renderClientSearch();
         const clientSearchTable = this._renderClientSearchTable();
         const clientField = this._renderClientField();
-        // const clientOrdersTable = this._renderClientOrdersTable();
-        const orderSearchField = this._renderClientSearch();
+        const orderSearchField = this._renderOrderSearch();
         const orderField = this._renderOrderField();
 
         return (
@@ -549,7 +546,6 @@ export class CashOrderForm extends Component {
             onClientSelect,
             form,
         } = this.props;
-
         const formFieldsValues = form.getFieldsValue();
         const searchClientQuery = _.get(formFieldsValues, 'searchClientQuery');
 
@@ -580,10 +576,6 @@ export class CashOrderForm extends Component {
                     fieldValue={ _.get(fields, 'searchClientQuery') }
                     className={ Styles.clientSearchField }
                     formItem
-                    colon={ false }
-                    label={ formatMessage({
-                        id: 'add_order_form.search_client',
-                    }) }
                     getFieldDecorator={ getFieldDecorator }
                     placeholder={ formatMessage({
                         id: 'add_order_form.search_client.placeholder',
@@ -609,14 +601,14 @@ export class CashOrderForm extends Component {
                     disabled
                 />
                 <div>
-                    <span>{ `${name} ${surname}` }</span>
+                    <span>{ `${name} ${surname ? surname : ''}` }</span>
                     <Icon type='close' />
                 </div>
             </div>
         );
     };
 
-    _renderClientSearch = () => {
+    _renderOrderSearch = () => {
         const {
             onOrderSearch,
             form: { getFieldDecorator },
@@ -629,11 +621,8 @@ export class CashOrderForm extends Component {
                 field='orderId'
                 getFieldDecorator={ getFieldDecorator }
                 formItem
-                label={ formatMessage({
-                    id: 'cash-order-form.search',
-                }) }
                 placeholder={ formatMessage({
-                    id: 'cash-order-form.search_by_client',
+                    id: 'cash-order-form.search_by_order',
                 }) }
                 onSearch={ onOrderSearch }
                 formItemLayout={ formItemLayout }
@@ -645,18 +634,9 @@ export class CashOrderForm extends Component {
 
     _renderOrderField = () => {
         const {
-            order,
+            order: {id, clientId, num, clientName, clientSurname },
             form: { getFieldDecorator },
         } = this.props;
-
-        const selectedOrder = _.get(order, 'orders[0]'); // selectedOrder entity
-
-        const id = _.get(selectedOrder, 'id');
-        const num = _.get(selectedOrder, 'num');
-        const clientId = _.get(selectedOrder, 'clientId');
-
-        const clientName = _.get(selectedOrder, 'clientName');
-        const clientSurname = _.get(selectedOrder, 'clientSurname');
 
         return (
             <>
@@ -682,10 +662,12 @@ export class CashOrderForm extends Component {
                             cnStyles={ Styles.hiddenField }
                             disabled
                         />
-                        <div>
-                            { clientName }
-                            { clientSurname }
-                        </div>
+                        {this.state.clientSearchType !== 'client' && 
+                            <div>
+                                { clientName }
+                                { clientSurname }
+                            </div>
+                        }
                     </>
                 }
             </>
