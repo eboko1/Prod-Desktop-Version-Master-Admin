@@ -90,7 +90,6 @@ export function* handleClientSearchSaga({ payload }) {
     try {
         yield put(onChangeClientSearchQueryRequest());
         yield delay(1000);
-        // console.log('**handleClientSearchSaga ', payload);
         if (payload.length > 2) {
             const data = yield call(fetchAPI, 'GET', 'clients/search', {
                 query: payload,
@@ -213,11 +212,11 @@ export function* onOrderSearchSaga() {
         try {
             const { payload } = yield take(ON_ORDER_SEARCH);
 
-            const order = yield call(fetchAPI, 'GET', 'orders', {
+            const response = yield call(fetchAPI, 'GET', 'orders', {
                 query: payload,
             });
-
-            yield put(onOrderSearchSuccess(order));
+            const selectedOrder = _.get(response, 'orders[0]');
+            yield put(onOrderSearchSuccess(selectedOrder));
         } catch (error) {
             yield put(emitError(error));
         } finally {
