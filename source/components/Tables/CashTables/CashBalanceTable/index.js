@@ -55,7 +55,7 @@ export class CashBalanceTable extends Component {
 
     _onRowClick = data => {
         const { filters, setCashOrdersFilters } = this.props;
-        linkTo(book.cashOrdersPage);
+        linkTo(book.cashFlowPage);
         setCashOrdersFilters({
             cashBoxId: data.id,
             startDate: '2019-01-01',

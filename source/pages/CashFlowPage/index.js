@@ -1,6 +1,5 @@
 // vendor
 import React, { Component } from 'react';
-import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
@@ -43,7 +42,7 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
-export default class CashOrdersPage extends Component {
+export default class CashFlowPage extends Component {
     state = {
         cashOrderModalMounted: false,
     };
@@ -96,7 +95,7 @@ export default class CashOrdersPage extends Component {
 
         return (
             <Layout
-                title={ <FormattedMessage id='navigation.cash_orders' /> }
+                title={ <FormattedMessage id='navigation.flow_of_money' /> }
                 controls={
                     <div className={ Styles.buttonGroup }>
                         { /* <Icon type='printer' className={ Styles.printIcon } /> */ }

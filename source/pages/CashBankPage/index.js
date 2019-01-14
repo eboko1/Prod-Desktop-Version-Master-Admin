@@ -8,11 +8,11 @@ import { CashAccountingContainer } from 'containers';
 
 // own
 
-export default class CashAccountingPage extends Component {
+export default class CashBankPage extends Component {
     render() {
         return (
             <Layout
-                title={ <FormattedMessage id='navigation.cash_accounting' /> }
+                title={ <FormattedMessage id='navigation.cash_bank' /> }
                 // description={ <FormattedMessage id='chart-page.description' /> }
             >
                 <CashAccountingContainer />

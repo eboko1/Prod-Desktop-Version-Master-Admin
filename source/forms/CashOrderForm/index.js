@@ -89,20 +89,17 @@ export class CashOrderForm extends Component {
     };
 
     componentDidMount() {
-
-        if(this.props.editMode || this.props.printMode) {
+        if (this.props.editMode || this.props.printMode) {
             console.log('@ action mode');
             this._setFormFields(this.props.activeCashOrder);
         }
-        
+
         if (!this.props.editMode && !this.props.printMode) {
             console.log('@ createmode');
             this.props.fetchCashOrderNextId();
             this.props.fetchCashboxes();
         }
-
     }
-    
 
     componentDidUpdate(prevProps) {
         const {
@@ -128,7 +125,7 @@ export class CashOrderForm extends Component {
         }
     }
 
-    _setFormFields = (ff) => {
+    _setFormFields = ff => {
         const { activeCashOrder, form } = this.props;
         const fieldsMap = _.pickBy(
             _.pick(activeCashOrder, [
@@ -144,19 +141,25 @@ export class CashOrderForm extends Component {
                 'decrease',
                 'otherCounterparty',
                 'datetime',
-            ]), (value) => !_.isNil(value),
+            ]),
+            value => !_.isNil(value),
         );
         let counterPartyType = cashOrderCounterpartyTypes.OTHER;
-        // if (fieldsMap.clientId) counterPartyType = cashOrderCounterpartyTypes.CLIENT; 
+        // if (fieldsMap.clientId) counterPartyType = cashOrderCounterpartyTypes.CLIENT;
         // if (fieldsMap.employeeId) counterPartyType = cashOrderCounterpartyTypes.EMPLOYEE;
         // if (fieldsMap.businessSupplierId) counterPartyType = cashOrderCounterpartyTypes.BUSINESS_SUPPLIER;
         const normalizedDatetime = moment(fieldsMap.datetime);
         const sumType = !_.isNil(fieldsMap.increase) ? 'increase' : 'decrease';
-        const normalizedFieldsMap = {...fieldsMap, sumType, counterPartyType, datetime: normalizedDatetime}
+        const normalizedFieldsMap = {
+            ...fieldsMap,
+            sumType,
+            counterPartyType,
+            datetime: normalizedDatetime,
+        };
         console.log('→ normalizedFieldsMap', normalizedFieldsMap);
         form.setFieldsValue(normalizedFieldsMap);
         this.setState({ sumType });
-    }
+    };
 
     _submit = event => {
         event.preventDefault();
@@ -214,7 +217,7 @@ export class CashOrderForm extends Component {
             ));
     }
 
-    _hiddenFormItemStyles = (type) =>
+    _hiddenFormItemStyles = type =>
         cx({
             hiddenFormItem: !type,
             styledFormItem: true,
@@ -232,7 +235,7 @@ export class CashOrderForm extends Component {
 
         const counterpartyType = getFieldValue('counterpartyType');
         const cashOrderId = getFieldValue('id');
-        console.log('→ cashOrderId', cashOrderId );
+        console.log('→ cashOrderId', cashOrderId);
 
         return (
             <Form onSubmit={ this._submit }>
@@ -408,7 +411,9 @@ export class CashOrderForm extends Component {
                             id: 'cash-order-form.sum.placeholder',
                         }) }
                         formItemLayout={ formItemLayout }
-                        className={ this._hiddenFormItemStyles(this.state.sumType === 'increase') }
+                        className={ this._hiddenFormItemStyles(
+                            this.state.sumType === 'increase',
+                        ) }
                         cnStyles={ Styles.expandedInput }
                         rules={ [
                             {
@@ -442,7 +447,9 @@ export class CashOrderForm extends Component {
                             id: 'cash-order-form.sum.placeholder',
                         }) }
                         formItemLayout={ formItemLayout }
-                        className={ this._hiddenFormItemStyles(this.state.sumType === 'decrease') }
+                        className={ this._hiddenFormItemStyles(
+                            this.state.sumType === 'decrease',
+                        ) }
                         cnStyles={ Styles.expandedInput }
                         rules={ [
                             {
@@ -466,13 +473,24 @@ export class CashOrderForm extends Component {
                     />
                 </div>
                 <div className={ Styles.buttonGroup }>
-                    <Button icon='printer' onClick={ () => this.props.printCashOrder(cashOrderId) }>
+                    <Button
+                        type={ printMode && 'primary' }
+                        className={ printMode && Styles.printButton }
+                        icon='printer'
+                        onClick={ () => this.props.printCashOrder(cashOrderId) }
+                    >
                         { formatMessage({ id: 'cash-order-form.print' }) }
-              
                     </Button>
-                    <Button type='primary' htmlType='submit'>
-                        { formatMessage({ id: 'add' }) }
-                    </Button>
+                    { printMode || editMode ? null : (
+                        <Button type='primary' htmlType='submit'>
+                            { formatMessage({ id: 'add' }) }
+                        </Button>
+                    ) }
+                    { editMode && (
+                        <Button type='primary' htmlType='submit'>
+                            { formatMessage({ id: 'edit' }) }
+                        </Button>
+                    ) }
                 </div>
             </Form>
         );
@@ -636,7 +654,7 @@ export class CashOrderForm extends Component {
 
     _renderOrderField = () => {
         const {
-            order: {id, clientId, num, clientName, clientSurname },
+            order: { id, clientId, num, clientName, clientSurname },
             form: { getFieldDecorator },
         } = this.props;
 
@@ -664,12 +682,12 @@ export class CashOrderForm extends Component {
                             cnStyles={ Styles.hiddenField }
                             disabled
                         />
-                        {this.state.clientSearchType !== 'client' && 
+                        {this.state.clientSearchType !== 'client' && (
                             <div>
                                 { clientName }
                                 { clientSurname }
                             </div>
-                        }
+                        )}
                     </>
                 }
             </>

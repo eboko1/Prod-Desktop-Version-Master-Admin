@@ -27,8 +27,8 @@ import {
     ServicesPage,
     BrandsPage,
     CashSettingsPage,
-    CashAccountingPage,
-    CashOrdersPage,
+    CashBankPage,
+    CashFlowPage,
     SuppliersPage,
 } from 'pages';
 import book from './book';
@@ -86,13 +86,13 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    component={ CashOrdersPage }
-                    path={ book.cashOrdersPage }
+                    component={ CashFlowPage }
+                    path={ book.cashFlowPage }
                 />
                 <Route
                     exact
-                    component={ CashAccountingPage }
-                    path={ book.cashAccountingPage }
+                    component={ CashBankPage }
+                    path={ book.cashBankPage }
                 />
                 { /* Statistics */ }
                 <Route exact component={ ChartPage } path={ book.chart } />

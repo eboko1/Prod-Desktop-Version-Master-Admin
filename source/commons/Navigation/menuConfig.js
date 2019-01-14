@@ -52,38 +52,31 @@ export default {
                     name: 'navigation.employees',
                 },
                 {
-                    key:      '/suppliers',
-                    link:     book.suppliersPage,
+                    key:  '/suppliers',
+                    link: book.suppliersPage,
                     // disabled: user => isForbidden(user, permissions.SUPPLIERS),
-                    name:     'navigation.suppliers',
+                    name: 'navigation.suppliers',
                 },
             ],
         },
         {
-            key:      'cash',
+            key:      'accounting',
             iconType: 'wallet',
-            name:     'navigation.cash',
+            name:     'navigation.accounting',
             items:    [
                 {
-                    key:      '/cash/settings',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.CASH_SETTINGS),
-                    link: book.cashSettingsPage,
-                    name: 'navigation.cash_settings',
-                },
-                {
-                    key:      '/cash/orders',
+                    key:  '/cash/flow',
                     // disabled: user =>
                     //     isForbidden(user, permissions.CASH_ORDERS),
-                    link: book.cashOrdersPage,
-                    name: 'navigation.cash_orders',
+                    link: book.cashFlowPage,
+                    name: 'navigation.flow_of_money',
                 },
                 {
-                    key:      '/cash/accounting',
+                    key:  '/cash/bank',
                     // disabled: user =>
                     //     isForbidden(user, permissions.CASH_ACCOUNTING),
-                    link: book.cashAccountingPage,
-                    name: 'navigation.cash_accounting',
+                    link: book.cashBankPage,
+                    name: 'navigation.cash_bank',
                 },
             ],
         },
@@ -96,21 +89,24 @@ export default {
                 {
                     key:      '/chart',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_KPI) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_KPI) &&
+                        !isAdmin(user),
                     link: book.chart,
                     name: 'navigation.service_indicators',
                 },
                 {
                     key:      '/feedback',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_FEEDBACK) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_FEEDBACK) &&
+                        !isAdmin(user),
                     link: book.feedback,
                     name: 'navigation.feedback',
                 },
                 {
                     key:      '/calls',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_CALL_STATISTICS) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_CALL_STATISTICS) &&
+                        !isAdmin(user),
                     link: book.calls,
                     name: 'navigation.call_statistics',
                 },
@@ -128,6 +124,13 @@ export default {
                         !isForbidden(user, permissions.DEMO) && !isAdmin(user),
                     link: book.oldApp.settings,
                     name: 'navigation.main_settings',
+                },
+                {
+                    key:  '/cash/settings',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.CASH_SETTINGS),
+                    link: book.cashSettingsPage,
+                    name: 'navigation.cash_settings',
                 },
                 {
                     key:      '/requisites',
