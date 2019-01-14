@@ -1,8 +1,8 @@
 // vendor
-import React, { Component } from 'react';
-import { Icon } from 'antd';
-import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import React, {Component} from 'react';
+import {Icon} from 'antd';
+import {connect} from 'react-redux';
+import {FormattedMessage} from 'react-intl';
 import _ from 'lodash';
 
 // proj
@@ -11,14 +11,14 @@ import {
     fetchCashOrders,
     selectCashOrdersFilters,
 } from 'core/cash/duck';
-import { clearCashOrderForm } from 'core/forms/cashOrderForm/duck';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import {clearCashOrderForm} from 'core/forms/cashOrderForm/duck';
+import {setModal, resetModal, MODALS} from 'core/modals/duck';
 
-import { Layout, Paper, StyledButton } from 'commons';
-import { CashOrderModal } from 'modals';
-import { CashOrdersFiltersForm } from 'forms';
-import { CashOrdersTable } from 'components';
-
+import {Layout, Paper, StyledButton} from 'commons';
+import {CashOrderModal} from 'modals';
+import {CashOrdersFiltersForm} from 'forms';
+import {CashOrdersTable} from 'components';
+import { isForbidden, permissions } from 'utils';
 // own
 import Styles from './styles.m.css';
 
@@ -26,6 +26,7 @@ const mapStateToProps = state => ({
     collapsed:  state.ui.collapsed,
     cashOrders: state.cash.cashOrders,
     stats:      state.cash.stats,
+    user:       state.auth,
     modal:      state.modals.modal,
     modalProps: state.modals.modalProps,
     filters:    selectCashOrdersFilters(state),
@@ -54,13 +55,13 @@ export default class CashFlowPage extends Component {
 
     _onOpenCashOrderModal = () => {
         this.props.setModal(MODALS.CASH_ORDER);
-        this.setState({ cashOrderModalMounted: true });
+        this.setState({cashOrderModalMounted: true});
     };
 
     _onCloseCashOrderModal = () => {
         this.props.resetModal();
         this.props.clearCashOrderForm();
-        this.setState({ cashOrderModalMounted: false });
+        this.setState({cashOrderModalMounted: false});
     };
 
     _onOpenPrintCashOrderModal = cashOrderEntity => {
@@ -70,7 +71,7 @@ export default class CashFlowPage extends Component {
             editMode:        false,
             cashOrderEntity: cashOrderEntity,
         });
-        this.setState({ cashOrderModalMounted: true });
+        this.setState({cashOrderModalMounted: true});
     };
 
     _onOpenEditCashOrderModal = cashOrderEntity => {
@@ -79,7 +80,7 @@ export default class CashFlowPage extends Component {
             printMode:       false,
             cashOrderEntity: cashOrderEntity,
         });
-        this.setState({ cashOrderModalMounted: true });
+        this.setState({cashOrderModalMounted: true});
     };
 
     render() {
@@ -92,19 +93,22 @@ export default class CashFlowPage extends Component {
             clearCashOrderForm,
             cashOrders,
             filters,
+            user,
         } = this.props;
+
+        const canEditCashOrders = !isForbidden(user, permissions.EDIT_CASH_ORDERS);
 
         return (
             <Layout
-                title={ <FormattedMessage id='navigation.flow_of_money' /> }
+                title={ <FormattedMessage id='navigation.flow_of_money'/> }
                 controls={
                     <div className={ Styles.buttonGroup }>
-                        <Icon type='printer' className={ Styles.printIcon } />
+                        <Icon type='printer' className={ Styles.printIcon }/>
                         <StyledButton
                             type='secondary'
                             onClick={ () => this._onOpenCashOrderModal() }
                         >
-                            <FormattedMessage id='add' />
+                            <FormattedMessage id='add'/>
                         </StyledButton>
                     </div>
                 }
@@ -112,7 +116,7 @@ export default class CashFlowPage extends Component {
             >
                 <section
                     className={ `${Styles.filters} ${collapsed &&
-                        Styles.filtersCollapsed}` }
+                    Styles.filtersCollapsed}` }
                 >
                     <CashOrdersFiltersForm
                         stats={ _.omit(stats, 'totalCount') }
@@ -126,7 +130,8 @@ export default class CashFlowPage extends Component {
                         cashOrders={ cashOrders }
                         filters={ filters }
                         openPrint={ this._onOpenPrintCashOrderModal }
-                        openEdit={ this._onOpenEditCashOrderModal }
+                        // eslint-disable-next-line no-empty-function
+                        openEdit={ canEditCashOrders ? this._onOpenEditCashOrderModal : null }
                     />
                 </Paper>
                 { this.state.cashOrderModalMounted ? (
