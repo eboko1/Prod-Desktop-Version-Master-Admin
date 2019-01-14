@@ -13,12 +13,14 @@ import {
     DecoratedSlider,
 } from 'forms/DecoratedFields';
 import { Numeral } from 'commons';
+import book from 'routes/book';
 import {
     getDateTimeConfig,
     permissions,
     isForbidden,
     mergeDateTime,
     addDuration,
+    goTo
 } from 'utils';
 
 // own
@@ -690,6 +692,7 @@ export default class OrderFormHeader extends Component {
             detailsDiscount,
             errors,
             cashSum,
+            cashFlowFilters,
         } = this.props;
 
         const detailsTotalPrice =
@@ -709,8 +712,8 @@ export default class OrderFormHeader extends Component {
                                 className={ Styles.sumNumeral }
                                 nullText='0'
                                 currency={ this.props.intl.formatMessage({
-                                id: 'currency',
-                            }) }
+                                    id: 'currency',
+                                }) }
                             >
                                 { totalPrice }
                             </Numeral>
@@ -721,14 +724,17 @@ export default class OrderFormHeader extends Component {
                                 className={ Styles.sumNumeral }
                                 nullText='0'
                                 currency={ this.props.intl.formatMessage({
-                                id: 'currency',
-                            }) }
+                                    id: 'currency',
+                                }) }
                             >
                                 { cashSum }
                             </Numeral>
                         </span>
                     </div>
-                    <div className={ Styles.total }>
+                    <div
+                        className={ Styles.total }
+                        onClick={ () => goTo(book.cashFlowPage, { cashFlowFilters: { ...cashFlowFilters } }) }
+                    >
                         <FormattedMessage id='remain' />
                         <Numeral
                             className={ Styles.totalSum }

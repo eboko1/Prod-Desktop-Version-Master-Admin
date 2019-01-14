@@ -2,6 +2,7 @@
 import { createSelector } from 'reselect';
 import { v4 } from 'uuid';
 import _ from 'lodash';
+import moment from 'moment';
 
 /**
  * Constants
@@ -227,7 +228,10 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_AVAILABLE_HOURS_SUCCESS:
             return {
                 ...state,
-                availableHours: { ...state.availableHours, [ payload.key ]: payload.availableHours },
+                availableHours: {
+                    ...state.availableHours,
+                    [payload.key]: payload.availableHours,
+                },
             };
 
         case FETCH_TECDOC_SUGGESTIONS_SUCCESS:
@@ -300,17 +304,41 @@ export const selectInviteData = createSelector(orderSelector, order => {
     return { hasInviteStatus, isInviteVisible, isInviteEnabled };
 });
 
-export const selectCashSum = createSelector(moduleSelector, ({cashOrders}) => {
-    if (cashOrders && cashOrders.length) {
-    const increase = cashOrders.reduce((accumulator, {increase}) => (accumulator + increase), 0);
+export const selectCashSum = createSelector(
+    moduleSelector,
+    ({ cashOrders }) => {
+        if (cashOrders && cashOrders.length) {
+            const increase = cashOrders.reduce(
+                (accumulator, { increase }) => accumulator + increase,
+                0,
+            );
 
-    const decrease = cashOrders.reduce((accumulator, {decrease}) => (accumulator + decrease), 0);  
+            const decrease = cashOrders.reduce(
+                (accumulator, { decrease }) => accumulator + decrease,
+                0,
+            );
 
-    return increase + (-decrease);
+            return increase + -decrease;
+        }
+        return 0;
+    },
+);
 
-    }
-    return 0;
-})
+export const selectCashFlowFilters = createSelector(
+    moduleSelector,
+    ({ cashOrders }) => {
+        if (!_.isEmpty(cashOrders)) {
+            const startDate = moment(_.get(_.first(cashOrders), "datetime")).format('YYYY-MM-DD');
+            const endDate = moment(_.get(_.last(cashOrders), "datetime")).format('YYYY-MM-DD')
+            return {
+                query: _.get(_.first(cashOrders), "orderId"),
+                startDate: startDate,
+                endDate:  endDate || startDate,
+            };
+        }
+        return null;
+    },
+);
 
 /**
  * Action Creators

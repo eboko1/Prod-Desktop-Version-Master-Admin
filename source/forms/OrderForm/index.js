@@ -15,6 +15,7 @@ import {
     clearTecdocSuggestions,
     clearTecdocDetailsSuggestions,
     selectCashSum,
+    selectCashFlowFilters,
 } from 'core/forms/orderForm/duck';
 import { resetModal } from 'core/modals/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
@@ -55,6 +56,7 @@ import Styles from './styles.m.css';
         stationLoads:               state.forms.orderForm.stationLoads,
         schedule:                   state.forms.orderForm.schedule,
         cashSum:                    selectCashSum(state),
+        cashFlowFilters:            selectCashFlowFilters(state),
     }),
 })
 export class OrderForm extends Component {
@@ -183,6 +185,7 @@ export class OrderForm extends Component {
             selectedClient,
             order,
             cashSum,
+            cashFlowFilters,
             setAddClientModal,
             schedule,
             stations,
@@ -289,6 +292,7 @@ export class OrderForm extends Component {
                     user={ user }
                     totalHours={ totalHours }
                     cashSum={ cashSum }
+                    cashFlowFilters={ cashFlowFilters }
                 />
                 <OrderFormBody
                     errors={ errors }
