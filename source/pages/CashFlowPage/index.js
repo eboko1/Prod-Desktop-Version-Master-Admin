@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from 'react';
+import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
@@ -98,7 +99,7 @@ export default class CashFlowPage extends Component {
                 title={ <FormattedMessage id='navigation.flow_of_money' /> }
                 controls={
                     <div className={ Styles.buttonGroup }>
-                        { /* <Icon type='printer' className={ Styles.printIcon } /> */ }
+                        <Icon type='printer' className={ Styles.printIcon } />
                         <StyledButton
                             type='secondary'
                             onClick={ () => this._onOpenCashOrderModal() }

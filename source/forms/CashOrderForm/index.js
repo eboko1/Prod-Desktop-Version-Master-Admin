@@ -122,10 +122,10 @@ export class CashOrderForm extends Component {
                 console.log('→ counterparty', counterparty);
                 console.log('→ activeCounterparty', activeCounterparty);
                 if (counterparty !== activeCounterparty) {
-
+                    console.log('→ aaa', counterparty);
                     switch (activeCounterparty) {
                         case cashOrderCounterpartyTypes.CLIENT:
-                            return setFieldsValue({ clientID: 1, orderId: 2 })
+                            return setFieldsValue({ clientId: 1, orderId: 2 })
 
                         case cashOrderCounterpartyTypes.EMPLOYEE:
                             return setFieldsValue({ employeeId: 3 })
@@ -170,7 +170,8 @@ export class CashOrderForm extends Component {
             'otherCounterparty',
             'datetime',
         ]),
-        value => !_.isNil(value));
+        value => !_.isNil(value),
+    )
 
     _setFormFields = () => {
         const { form } = this.props;
@@ -178,7 +179,7 @@ export class CashOrderForm extends Component {
         const counterparty = this._getActiveCounterpartyType();
         const normalizedDatetime = moment(fieldsMap.datetime);
         const sumType = !_.isNil(fieldsMap.increase) ? 'increase' : 'decrease';
-
+        console.log('→ SET FIELDSconterparty', counterparty);
         const normalizedFieldsMap = {
             ...fieldsMap,
             sumType,
@@ -212,6 +213,13 @@ export class CashOrderForm extends Component {
             counterparty = {
                 counterpartyType:   cashOrderCounterpartyTypes.BUSINESS_SUPPLIER,
                 businessSupplierId: fieldsMap.businessSupplierId,
+            }
+        }
+
+        if (fieldsMap.otherCounterparty) {
+            counterparty = {
+                counterpartyType:  cashOrderCounterpartyTypes.OTHER,
+                otherCounterparty: fieldsMap.otherCounterparty,
             }
         }
 
@@ -290,7 +298,7 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
 
-        const counterpartyType = getFieldValue('counterpartyType');
+        const counterpartyType = getFieldValue('counterpartyType') || _.get(this._getActiveCounterpartyType(), 'counterpartyType');
         console.log('→ getFV counterPartyType', counterpartyType);
         const cashOrderId = getFieldValue('id');
         console.log('→ this.props', this.props);
@@ -777,6 +785,7 @@ export class CashOrderForm extends Component {
     _renderEmployeeBlock = () => {
         const {
             printMode,
+            editMode,
             counterpartyList,
             form: { getFieldDecorator },
             intl: { formatMessage },
@@ -801,6 +810,7 @@ export class CashOrderForm extends Component {
                     },
                 ] }
                 disabled={ printMode }
+                className={ this._hiddenFormItemStyles(!editMode) }
             >
                 { counterpartyList.map(({ id, name, disabled }) => (
                     <Option value={ id } key={ id } disabled={ disabled }>
@@ -840,6 +850,7 @@ export class CashOrderForm extends Component {
                     },
                 ] }
                 disabled={ printMode }
+                className={ this._hiddenFormItemStyles(printMode) }
             >
                 { counterpartyList.map(({ id, name }) => (
                     <Option value={ id } key={ id }>
@@ -855,6 +866,7 @@ export class CashOrderForm extends Component {
     _renderOtherBlock = () => {
         const {
             printMode,
+            editMode,
             form: { getFieldDecorator },
             intl: { formatMessage },
         } = this.props;
@@ -874,6 +886,7 @@ export class CashOrderForm extends Component {
                     },
                 ] }
                 disabled={ printMode }
+                className={ this._hiddenFormItemStyles(printMode || editMode) }
             />
         );
     };
