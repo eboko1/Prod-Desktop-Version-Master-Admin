@@ -147,7 +147,7 @@ export function columnsConfig(props) {
                     type='printer'
                     onClick={ () => props.openPrint(cashOrder) }
                 />
-                <Icon type='edit' onClick={ () => props.openEdit(cashOrder) } />
+                { props.openEdit ? <Icon type='edit' onClick={ () => props.openEdit(cashOrder) } /> : <></> }
             </>
         ,
     };
