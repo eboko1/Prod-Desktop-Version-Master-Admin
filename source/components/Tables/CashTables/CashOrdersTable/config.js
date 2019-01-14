@@ -62,9 +62,11 @@ export function columnsConfig(props) {
 
     const dateCol = {
         title:     <FormattedMessage id='cash-table.date' />,
-        dataIndex: 'updatedAt',
+        dataIndex: 'datetime',
         width:     '10%',
-        render:    date => <FormattedDatetime datetime={ date } />,
+        render:    date => (
+            <FormattedDatetime datetime={ date } format={ 'DD.MM.YYYY' } />
+        ),
     };
 
     const conterpartyCol = {

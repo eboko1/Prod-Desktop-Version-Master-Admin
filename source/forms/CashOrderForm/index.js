@@ -33,7 +33,7 @@ import {
     DecoratedTextArea,
     DecoratedRadio,
 } from 'forms/DecoratedFields';
-import { withReduxForm2 } from 'utils';
+import { withReduxForm2, numeralFormatter, numeralParser } from 'utils';
 
 // own
 import { cashOrderTypes, cashOrderCounterpartyTypes } from './config.js';
@@ -419,6 +419,8 @@ export class CashOrderForm extends Component {
                             },
                         ] }
                         disabled={ printMode }
+                        formatter={ numeralFormatter }
+                        parser={ numeralParser }
                     />
                     <DecoratedInputNumber
                         fields={ {} }
