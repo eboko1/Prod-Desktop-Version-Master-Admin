@@ -45,9 +45,9 @@ const book = Object.freeze({
     //
     //  Cash
     //
-    cashOrdersPage:      '/cash/orders',
+    cashFlowPage:        '/cash/flow',
     cashSettingsPage:    '/cash/settings',
-    cashAccountingPage:  '/cash/accounting',
+    cashBankPage:        '/cash/bank',
     //
     // Statistics
     //

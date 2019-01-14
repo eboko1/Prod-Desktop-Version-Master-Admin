@@ -36,10 +36,10 @@
     "navigation.administration": "Administration",
     "navigation.services-spare_parts": "Services - Spare Parts",
     "navigation.priority_brands": "Priority Brands",
-    "navigation.cash": "Cash",
+    "navigation.accounting": "Accounting",
     "navigation.cash_settings": "Cash Settings",
-    "navigation.cash_orders": "Cash Orders",
-    "navigation.cash_accounting": "Accounting"
+    "navigation.flow_of_money": "Flow of Money",
+    "navigation.cash_bank": "Cashbox and Bank"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -78,10 +78,10 @@
     "navigation.administration": "Администрирование",
     "navigation.services-spare_parts": "Работы - Запчасти",
     "navigation.priority_brands": "Приоритетные бренды",
-    "navigation.cash": "Касса",
+    "navigation.accounting": "Бухгалтерия",
     "navigation.cash_settings": "Настройки кассы",
-    "navigation.cash_orders": "Кассовые ордера",
-    "navigation.cash_accounting": "Бухгалтерия"
+    "navigation.flow_of_money": "Движение денег",
+    "navigation.cash_bank": "Касса и Банк"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -120,9 +120,9 @@
     "navigation.administration": "Адміністрування",
     "navigation.services-spare_parts": "Роботи - Запчастини",
     "navigation.priority_brands": "Пріорітетні бренди",
-    "navigation.cash": "Каса",
+    "navigation.accounting": "Бухгалтерія",
     "navigation.cash_settings": "Налаштування каси",
-    "navigation.cash_orders": "Касові ордера",
-    "navigation.cash_accounting": "Бухгалтерія"
+    "navigation.flow_of_money": "Рух грошей",
+    "navigation.cash_bank": "Каса і Банк"
   }
 }

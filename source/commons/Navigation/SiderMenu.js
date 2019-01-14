@@ -22,7 +22,7 @@ export default class SiderMenu extends Component {
                 'operations',
                 'catalog',
                 'reports',
-                'cash', 
+                'accounting', 
             ];
         const selected = menuConfig.getSelectedByRoute(
             history.location.pathname,

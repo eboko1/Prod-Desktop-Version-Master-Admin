@@ -54,3 +54,7 @@
 .hiddenFormItem:global(.ant-form-item) {
     display: none;
 }
+
+.printButton {
+    margin: 0 auto;
+}

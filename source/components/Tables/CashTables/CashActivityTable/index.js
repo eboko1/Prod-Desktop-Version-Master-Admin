@@ -60,7 +60,7 @@ export class CashActivityTable extends Component {
 
     _onRowClick = data => {
         const { filters, setCashOrdersFilters } = this.props;
-        linkTo(book.cashOrdersPage);
+        linkTo(book.cashFlowPage);
         setCashOrdersFilters({
             cashBoxId: data.id,
             startDate: filters.startDate,

@@ -24,8 +24,8 @@ import ServicesPage from './ServicesPage';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import NewPasswordPage from './NewPasswordPage';
 import CashSettingsPage from './CashSettingsPage';
-import CashOrdersPage from './CashOrdersPage';
-import CashAccountingPage from './CashAccountingPage';
+import CashFlowPage from './CashFlowPage';
+import CashBankPage from './CashBankPage';
 import SuppliersPage from './SuppliersPage';
 
 export {
@@ -55,7 +55,7 @@ export {
     ForgotPasswordPage,
     NewPasswordPage,
     CashSettingsPage,
-    CashOrdersPage,
-    CashAccountingPage,
+    CashFlowPage,
+    CashBankPage,
     SuppliersPage,
 };
