@@ -36,15 +36,26 @@
 
 .total {
     display: flex;
-    justify-content: flex-end;
     width: 100%;
     font-weight: bold;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: 18px;
+    background: var(--static);
+    align-items: center;
+    justify-content: center;
 }
 
 .totalSum {
-    margin-left: 24px;
+    margin-left: 8px;
+    text-decoration: underline;
+}
+
+.sumWrapper {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.sumNumeral {
+    margin-left: 8px;
 }
 
 .durationBlock {
@@ -57,20 +68,31 @@
     display: flex;
 }
 
-.sumBlock {
+.sumBlock:global(.ant-form-item) {
     display: flex;
     flex-direction: column;
+    margin-bottom: 5px !important;
 }
 
 .sum {
     display: flex;
+    flex: 1 1 50%;
+    justify-content: space-between;
+    flex-wrap: wrap;
 }
 
 /*  min-width: 922 */
 @media screen and (max-width: 1599px) and (min-width: 768px) {
     .total {
         align-items: flex-end;
-        height: 61px;
+    }
+
+    .sumBlock :global(.ant-form-item-children) {
+        flex-wrap: wrap;
+    }
+
+    .sum {
+        height: 29px;
     }
 }
 

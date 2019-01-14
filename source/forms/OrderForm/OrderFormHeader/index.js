@@ -701,23 +701,32 @@ export default class OrderFormHeader extends Component {
 
         return (
             <div className={ Styles.headerCol }>
-                <FormItem className={Styles.sumBlock}>
+                <FormItem className={ Styles.sumBlock }>
                     <div className={ Styles.sum }>
-                        <div>
+                        <span className={ Styles.sumWrapper }>
                             <FormattedMessage id='sum' />
                             <Numeral 
-                
-                                nullText='0'>
+                                className={ Styles.sumNumeral }
+                                nullText='0'
+                                currency={ this.props.intl.formatMessage({
+                                id: 'currency',
+                            }) }
+                            >
                                 { totalPrice }
                             </Numeral>
-                        </div>
-                        <div>
+                        </span>
+                        <span className={ Styles.sumWrapper }>
                             <FormattedMessage id='paid' />
                             <Numeral 
-                                nullText='0'>
+                                className={ Styles.sumNumeral }
+                                nullText='0'
+                                currency={ this.props.intl.formatMessage({
+                                id: 'currency',
+                            }) }
+                            >
                                 { cashSum }
                             </Numeral>
-                        </div>
+                        </span>
                     </div>
                     <div className={ Styles.total }>
                         <FormattedMessage id='remain' />
