@@ -689,20 +689,38 @@ export default class OrderFormHeader extends Component {
             servicesDiscount,
             detailsDiscount,
             errors,
+            cashSum,
         } = this.props;
 
         const detailsTotalPrice =
             priceDetails - priceDetails * (detailsDiscount / 100);
         const servicesTotalPrice =
             priceServices - priceServices * (servicesDiscount / 100);
-
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
+        const remainPrice = totalPrice - cashSum;
 
         return (
             <div className={ Styles.headerCol }>
-                <FormItem>
+                <FormItem className={Styles.sumBlock}>
+                    <div className={ Styles.sum }>
+                        <div>
+                            <FormattedMessage id='sum' />
+                            <Numeral 
+                
+                                nullText='0'>
+                                { totalPrice }
+                            </Numeral>
+                        </div>
+                        <div>
+                            <FormattedMessage id='paid' />
+                            <Numeral 
+                                nullText='0'>
+                                { cashSum }
+                            </Numeral>
+                        </div>
+                    </div>
                     <div className={ Styles.total }>
-                        <FormattedMessage id='sum' />
+                        <FormattedMessage id='remain' />
                         <Numeral
                             className={ Styles.totalSum }
                             currency={ this.props.intl.formatMessage({
@@ -710,7 +728,7 @@ export default class OrderFormHeader extends Component {
                             }) }
                             nullText='0'
                         >
-                            { totalPrice }
+                            { remainPrice }
                         </Numeral>
                     </div>
                 </FormItem>

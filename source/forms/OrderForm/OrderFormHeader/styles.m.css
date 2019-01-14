@@ -12,7 +12,6 @@
     flex: 0 1 30%;
 }
 
-
 .deliveryDatetime {
     flex: 0 1 30%;
 }
@@ -23,7 +22,7 @@
 
 /* TODO: rm important */
 .durationBlock :global(.ant-form-item) {
-    margin-bottom: 0!important;
+    margin-bottom: 0 !important;
 }
 
 .duration :global(.ant-form-item-label) {
@@ -55,6 +54,15 @@
 }
 
 .deliveryBlock {
+    display: flex;
+}
+
+.sumBlock {
+    display: flex;
+    flex-direction: column;
+}
+
+.sum {
     display: flex;
 }
 

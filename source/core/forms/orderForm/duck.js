@@ -280,6 +280,7 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const orderSelector = state => state.forms[moduleName].order;
+export const moduleSelector = state => state.forms[moduleName];
 
 export const selectInviteData = createSelector(orderSelector, order => {
     const hasInviteStatus = ["success", "cancel"].includes(order.status);
@@ -298,6 +299,18 @@ export const selectInviteData = createSelector(orderSelector, order => {
 
     return { hasInviteStatus, isInviteVisible, isInviteEnabled };
 });
+
+export const selectCashSum = createSelector(moduleSelector, ({cashOrders}) => {
+    if (cashOrders && cashOrders.length) {
+    const increase = cashOrders.reduce((accumulator, {increase}) => (accumulator + increase), 0);
+
+    const decrease = cashOrders.reduce((accumulator, {decrease}) => (accumulator + decrease), 0);  
+
+    return increase + (-decrease);
+
+    }
+    return 0;
+})
 
 /**
  * Action Creators
