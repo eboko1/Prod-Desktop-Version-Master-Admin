@@ -5,10 +5,17 @@ import store from 'store/store';
 // own
 const { dispatch } = store;
 
+// tools
+export const numeralFormatter = value =>
+    `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+export const numeralParser = value => `${value}`.replace(/\$\s?|(\s)/g, '');
+
+// Components utils
 export function getDisplayName(WrappedComponent) {
     return WrappedComponent.displayName || WrappedComponent.name || 'Component';
 }
 
+// Routing utils
 export const linkBack = () => dispatch(goBack());
 
 export const goTo = (pathname, state) => dispatch(push(pathname, state));
