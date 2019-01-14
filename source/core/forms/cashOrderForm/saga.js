@@ -143,8 +143,20 @@ export function* createCashOrderSaga() {
     while (true) {
         try {
             const { payload } = yield take(CREATE_CASH_ORDER);
-            const cashOrder = _.omit(payload, [ 'counterpartyType', 'sumType' ]);
-            yield call(fetchAPI, 'POST', 'cash_orders', null, cashOrder);
+            console.log('** payload', payload);
+            const cashOrder = _.omit(payload, [
+                'counterpartyType',
+                'sumType',
+                'editMode',
+                payload.editMode && 'id',
+            ]);
+            yield call(
+                fetchAPI,
+                payload.editMode ? 'PUT' : 'POST',
+                payload.editMode ? `cash_orders/${payload.id}` : 'cash_orders',
+                null,
+                cashOrder,
+            );
             yield put(createCashOrderSuccess());
         } catch (error) {
             yield put(emitError(error));

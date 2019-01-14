@@ -18,6 +18,8 @@ import {
     selectClient,
     selectOrder,
     onClientSelect,
+    onClientReset,
+    onOrderReset,
     onOrderSearch,
     printCashOrder,
 } from 'core/forms/cashOrderForm/duck';
@@ -65,6 +67,8 @@ const reverseFromItemLayout = {
         fetchCashOrderForm,
         createCashOrder,
         onClientSelect,
+        onClientReset,
+        onOrderReset,
         onOrderSearch,
         printCashOrder,
     },
@@ -103,7 +107,9 @@ export class CashOrderForm extends Component {
 
     componentDidUpdate(prevProps) {
         const {
-            form: { getFieldValue },
+            editMode,
+            activeCashOrder,
+            form: { getFieldValue, setFieldsValue },
             fetchCashOrderForm,
         } = this.props;
         if (
@@ -111,6 +117,30 @@ export class CashOrderForm extends Component {
             this.props.fields.counterpartyType
         ) {
             const counterparty = getFieldValue('counterpartyType');
+            if (editMode) {
+                const activeCounterparty = _.get(this._getActiveCounterpartyType(), 'counterpartyType');
+                console.log('→ counterparty', counterparty);
+                console.log('→ activeCounterparty', activeCounterparty);
+                if (counterparty !== activeCounterparty) {
+
+                    switch (activeCounterparty) {
+                        case cashOrderCounterpartyTypes.CLIENT:
+                            return setFieldsValue({ clientID: 1, orderId: 2 })
+
+                        case cashOrderCounterpartyTypes.EMPLOYEE:
+                            return setFieldsValue({ employeeId: 3 })
+
+                        case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
+                            return setFieldsValue({ businessSupplierId: 4 })
+
+                        case cashOrderCounterpartyTypes.OTHER:
+                            return setFieldsValue({ otherCounterparty: 5 })
+                        
+                        default:
+                            break;
+                    }
+                }
+            }
 
             switch (counterparty) {
                 case cashOrderCounterpartyTypes.EMPLOYEE:
@@ -125,49 +155,76 @@ export class CashOrderForm extends Component {
         }
     }
 
-    _setFormFields = ff => {
-        const { activeCashOrder, form } = this.props;
-        const fieldsMap = _.pickBy(
-            _.pick(activeCashOrder, [
-                'id',
-                'type',
-                'businessSupplierId',
-                'cashBoxId',
-                'clientId',
-                'orderId',
-                'description',
-                'employeeId',
-                'increase',
-                'decrease',
-                'otherCounterparty',
-                'datetime',
-            ]),
-            value => !_.isNil(value),
-        );
-        let counterPartyType = cashOrderCounterpartyTypes.OTHER;
-        // if (fieldsMap.clientId) counterPartyType = cashOrderCounterpartyTypes.CLIENT;
-        // if (fieldsMap.employeeId) counterPartyType = cashOrderCounterpartyTypes.EMPLOYEE;
-        // if (fieldsMap.businessSupplierId) counterPartyType = cashOrderCounterpartyTypes.BUSINESS_SUPPLIER;
+    _getActiveFieldsMap = () => _.pickBy(
+        _.pick(this.props.activeCashOrder, [
+            'id',
+            'type',
+            'businessSupplierId',
+            'cashBoxId',
+            'clientId',
+            'orderId',
+            'description',
+            'employeeId',
+            'increase',
+            'decrease',
+            'otherCounterparty',
+            'datetime',
+        ]),
+        value => !_.isNil(value));
+
+    _setFormFields = () => {
+        const { form } = this.props;
+        const fieldsMap = this._getActiveFieldsMap();
+        const counterparty = this._getActiveCounterpartyType();
         const normalizedDatetime = moment(fieldsMap.datetime);
         const sumType = !_.isNil(fieldsMap.increase) ? 'increase' : 'decrease';
+
         const normalizedFieldsMap = {
             ...fieldsMap,
             sumType,
-            counterPartyType,
+            ...counterparty,
             datetime: normalizedDatetime,
         };
-        console.log('→ normalizedFieldsMap', normalizedFieldsMap);
+
         form.setFieldsValue(normalizedFieldsMap);
         this.setState({ sumType });
     };
 
+    _getActiveCounterpartyType = () => {
+        const fieldsMap = this._getActiveFieldsMap();
+
+        let counterparty = {};
+        if (fieldsMap.clientId) {
+            counterparty = {
+                counterpartyType: cashOrderCounterpartyTypes.CLIENT,
+                clientId:         fieldsMap.clientId,
+                orderId:          fieldsMap.orderId,
+            }
+        }
+        if (fieldsMap.employeeId) {
+            counterparty = {
+                counterpartyType: cashOrderCounterpartyTypes.EMPLOYEE,
+                employeeId:       fieldsMap.employeeId,
+            }
+        }
+
+        if (fieldsMap.businessSupplierId) {
+            counterparty = {
+                counterpartyType:   cashOrderCounterpartyTypes.BUSINESS_SUPPLIER,
+                businessSupplierId: fieldsMap.businessSupplierId,
+            }
+        }
+
+        return counterparty;
+    }
+
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, resetModal } = this.props;
+        const { form, createCashOrder, resetModal, editMode } = this.props;
 
         form.validateFields((err, values) => {
             if (!err) {
-                createCashOrder(values);
+                createCashOrder({ ...values, editMode });
                 form.resetFields();
                 resetModal();
             }
@@ -234,8 +291,9 @@ export class CashOrderForm extends Component {
         } = this.props;
 
         const counterpartyType = getFieldValue('counterpartyType');
+        console.log('→ getFV counterPartyType', counterpartyType);
         const cashOrderId = getFieldValue('id');
-        console.log('→ cashOrderId', cashOrderId);
+        console.log('→ this.props', this.props);
 
         return (
             <Form onSubmit={ this._submit }>
@@ -370,7 +428,7 @@ export class CashOrderForm extends Component {
                     { this._renderCounterpartyBlock(counterpartyType) }
                 </div>
                 <div className={ Styles.step }>
-                    { this.state.sumTypeRadio && (
+                    { this.state.sumTypeRadio &&
                         <DecoratedRadio
                             field='sumType'
                             getFieldDecorator={ getFieldDecorator }
@@ -390,7 +448,7 @@ export class CashOrderForm extends Component {
                                 }) }
                             </Radio>
                         </DecoratedRadio>
-                    ) }
+                    }
                     <DecoratedInputNumber
                         fields={ {} }
                         field='increase'
@@ -474,8 +532,8 @@ export class CashOrderForm extends Component {
                 </div>
                 <div className={ Styles.buttonGroup }>
                     <Button
-                        type={ printMode && 'primary' }
-                        className={ printMode && Styles.printButton }
+                        type={ printMode ? 'primary' : 'default' }
+                        className={ printMode ? Styles.printButton : '' }
                         icon='printer'
                         onClick={ () => this.props.printCashOrder(cashOrderId) }
                     >
@@ -499,43 +557,48 @@ export class CashOrderForm extends Component {
     _renderClientBlock = () => {
         const {
             printMode,
-            client: { clientId },
+            client,
+            activeCashOrder,
             order,
             intl: { formatMessage },
         } = this.props;
-        const orderId = order.id;
+        const orderId = _.get(order, 'id') || _.get(activeCashOrder, 'orderId');
+        const clientId = _.get(client, 'clientId') ||  _.get(activeCashOrder, 'clientId');
         const clientSearch = this._renderClientSearch();
         const clientSearchTable = this._renderClientSearchTable();
         const clientField = this._renderClientField();
         const orderSearchField = this._renderOrderSearch();
         const orderField = this._renderOrderField();
+        console.log('→ ClientBlock clientId', clientId);
 
         return (
-            <>
-                <Form.Item
-                    className={ Styles.switcher }
-                    { ...reverseFromItemLayout }
-                    label={ formatMessage({
-                        id: 'cash-order-form.search_by_client_or_order',
-                    }) }
-                >
-                    <RadioGroup
-                        onChange={ e => this._setClientSearchType(e) }
-                        value={ this.state.clientSearchType }
-                        disabled={ printMode }
+            <> 
+                { !printMode && (
+                    <Form.Item
+                        className={ Styles.switcher }
+                        { ...reverseFromItemLayout }
+                        label={ formatMessage({
+                            id: 'cash-order-form.search_by_client_or_order',
+                        }) }
                     >
-                        <Radio value='client'>
-                            { formatMessage({
-                                id: 'cash-order-form.switch_by_client',
-                            }) }
-                        </Radio>
-                        <Radio value='order'>
-                            { formatMessage({
-                                id: 'cash-order-form.switch_by_order',
-                            }) }
-                        </Radio>
-                    </RadioGroup>
-                </Form.Item>
+                        <RadioGroup
+                            onChange={ e => this._setClientSearchType(e) }
+                            value={ this.state.clientSearchType }
+                            disabled={ printMode }
+                        >
+                            <Radio value='client'>
+                                { formatMessage({
+                                    id: 'cash-order-form.switch_by_client',
+                                }) }
+                            </Radio>
+                            <Radio value='order'>
+                                { formatMessage({
+                                    id: 'cash-order-form.switch_by_order',
+                                }) }
+                            </Radio>
+                        </RadioGroup>
+                    </Form.Item>
+                )}
                 {this.state.clientSearchType === 'client' && 
                     <>
                         {Boolean(!clientId) && clientSearch}
@@ -607,9 +670,16 @@ export class CashOrderForm extends Component {
 
     _renderClientField = () => {
         const {
-            client: { clientId, name, surname },
+            printMode,
+            client,
+            activeCashOrder,
+            onClientReset,
             form: { getFieldDecorator },
         } = this.props;
+
+        const clientId = _.get(client, 'clientId') ||  _.get(activeCashOrder, 'clientId');
+        const name = _.get(client, 'name') ||  _.get(activeCashOrder, 'clientName');
+        const surname = _.get(client, 'surname') ||  _.get(activeCashOrder, 'clientSurname');
 
         return (
             <div className={ Styles.clientField }>
@@ -622,7 +692,7 @@ export class CashOrderForm extends Component {
                 />
                 <div>
                     <span>{ `${name} ${surname ? surname : ''}` }</span>
-                    <Icon type='close' />
+                    { !printMode && <Icon type='close' onClick={ () => onClientReset() }/> }
                 </div>
             </div>
         );
@@ -654,23 +724,33 @@ export class CashOrderForm extends Component {
 
     _renderOrderField = () => {
         const {
-            order: { id, clientId, num, clientName, clientSurname },
+            printMode,
+            order,
+            activeCashOrder,
+            onOrderReset,
             form: { getFieldDecorator },
         } = this.props;
+
+        const orderId = _.get(order, 'id') || _.get(activeCashOrder, 'orderId');
+        const clientId = _.get(order, 'clientId') || _.get(activeCashOrder, 'clientId');
+        const num = _.get(order, 'num') || _.get(activeCashOrder, 'orderNum');
+        const clientName = _.get(order, 'clientName') || _.get(activeCashOrder, 'clientName');
+        const clientSurname = _.get(order, 'clientSurname') || _.get(activeCashOrder, 'clientSurname');
+        console.log('→ _renderOrderField num ', num );
 
         return (
             <>
                 <div className={ Styles.clientField }>
                     <DecoratedInput
                         field='orderId'
-                        initialValue={ id }
+                        initialValue={ orderId }
                         getFieldDecorator={ getFieldDecorator }
                         cnStyles={ Styles.hiddenField }
                         disabled
                     />
                     <div>
                         <span>{ num }</span>
-                        <Icon type='close' />
+                        { !printMode && <Icon type='close' onClick={ () => onOrderReset() } /> }
                     </div>
                 </div>
                 {clientId && 

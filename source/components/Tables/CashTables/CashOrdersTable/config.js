@@ -106,14 +106,22 @@ export function columnsConfig(props) {
         render:    (key, { increase, decrease }) =>
             increase ? (
                 <div
-                    style={ { display: 'flex', justifyContent: 'space-around' } }
+                    style={ {
+                        display:        'flex',
+                        justifyContent: 'space-around',
+                        alignItems:     'center',
+                    } }
                 >
                     + <Numeral>{ increase }</Numeral>
                     <Icon type='caret-up' style={ { color: 'var(--enabled)' } } />
                 </div>
             ) : (
                 <div
-                    style={ { display: 'flex', justifyContent: 'space-around' } }
+                    style={ {
+                        display:        'flex',
+                        justifyContent: 'space-around',
+                        alignItems:     'center',
+                    } }
                 >
                     - <Numeral>{ decrease }</Numeral>
                     <Icon

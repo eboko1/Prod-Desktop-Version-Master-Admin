@@ -37,8 +37,10 @@ export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT
 
 export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 export const ON_CLIENT_SELECT_SUCCESS = `${prefix}/ON_CLIENT_SELECT_SUCCESS`;
+export const ON_CLIENT_RESET = `${prefix}/ON_CLIENT_RESET`;
 
 export const ON_ORDER_SELECT = `${prefix}/ON_ORDER_SELECT`;
+export const ON_ORDER_RESET = `${prefix}/ON_ORDER_RESET`;
 
 export const ON_ORDER_SEARCH = `${prefix}/ON_ORDER_SEARCH`;
 export const ON_ORDER_SEARCH_SUCCESS = `${prefix}/ON_ORDER_SEARCH_SUCCESS`;
@@ -163,6 +165,14 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case ON_CLIENT_RESET: {
+            return {
+                ...state,
+                selectedClient: ReducerState.selectedClient,
+                selectedOrder:  ReducerState.selectedOrder,
+            };
+        }
+
         case ON_CLIENT_SELECT_SUCCESS:
             return {
                 ...state,
@@ -177,6 +187,13 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 selectedOrder: payload,
             };
+
+        case ON_ORDER_RESET: {
+            return {
+                ...state,
+                selectedOrder: ReducerState.selectedOrder,
+            };
+        }
 
         case SET_SELECTED_CLIENT_ORDERS_FILTERS:
             return {
@@ -294,9 +311,17 @@ export const onClientSelect = client => ({
     payload: client,
 });
 
+export const onClientReset = () => ({
+    type: ON_CLIENT_RESET,
+});
+
 export const onOrderSelect = orderId => ({
     type:    ON_ORDER_SELECT,
     payload: orderId,
+});
+
+export const onOrderReset = () => ({
+    type: ON_ORDER_RESET,
 });
 
 export const onClientSelectSuccess = clientOrders => ({
