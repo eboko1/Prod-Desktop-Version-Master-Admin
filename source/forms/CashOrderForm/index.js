@@ -94,12 +94,10 @@ export class CashOrderForm extends Component {
 
     componentDidMount() {
         if (this.props.editMode || this.props.printMode) {
-            console.log('@ action mode');
             this._setFormFields(this.props.activeCashOrder);
         }
 
         if (!this.props.editMode && !this.props.printMode) {
-            console.log('@ createmode');
             this.props.fetchCashOrderNextId();
             this.props.fetchCashboxes();
         }
@@ -322,6 +320,7 @@ export class CashOrderForm extends Component {
                 <div className={ Styles.step }>
                     <DecoratedSelect
                         field='type'
+                        initialValue={ cashOrderTypes.INCOME }
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={ formatMessage({
@@ -381,6 +380,7 @@ export class CashOrderForm extends Component {
                     </DecoratedSelect>
                     <DecoratedDatePicker
                         field='datetime'
+                        initialValue={ moment() }
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={ formatMessage({ id: 'cash-order-form.date' }) }
@@ -791,7 +791,7 @@ export class CashOrderForm extends Component {
             intl: { formatMessage },
         } = this.props;
 
-        return !_.isEmpty(counterpartyList) ? (
+        return (
             <DecoratedSelect
                 field='employeeId'
                 formItem
@@ -812,15 +812,16 @@ export class CashOrderForm extends Component {
                 disabled={ printMode }
                 className={ this._hiddenFormItemStyles(!editMode) }
             >
-                { counterpartyList.map(({ id, name, disabled }) => (
-                    <Option value={ id } key={ id } disabled={ disabled }>
-                        { name }
-                    </Option>
-                )) }
+                {
+                    !_.isEmpty(counterpartyList)
+                        ? counterpartyList.map(({ id, name, disabled }) => (
+                            <Option value={ id } key={ id } disabled={ disabled }>
+                                { name }
+                            </Option>
+                        )) : []
+                }
             </DecoratedSelect>
-        ) : (
-            <div>{ formatMessage({ id: 'no_data' }) }</div>
-        );
+        )
     };
 
     _renderSupplierBlock = () => {
@@ -831,7 +832,7 @@ export class CashOrderForm extends Component {
             intl: { formatMessage },
         } = this.props;
 
-        return !_.isEmpty(counterpartyList) ? (
+        return (
             <DecoratedSelect
                 field='businessSupplierId'
                 formItem
@@ -852,15 +853,15 @@ export class CashOrderForm extends Component {
                 disabled={ printMode }
                 className={ this._hiddenFormItemStyles(printMode) }
             >
-                { counterpartyList.map(({ id, name }) => (
-                    <Option value={ id } key={ id }>
-                        { name }
-                    </Option>
-                )) }
+                { !_.isEmpty(counterpartyList)
+                    ? counterpartyList.map(({ id, name }) => (
+                        <Option value={ id } key={ id }>
+                            { name }
+                        </Option>
+                    )) : []
+                }
             </DecoratedSelect>
-        ) : (
-            <div>{ formatMessage({ id: 'no_data' }) }</div>
-        );
+        )
     };
 
     _renderOtherBlock = () => {
