@@ -36,12 +36,12 @@
 
 .total {
     display: flex;
-    width: 100%;
     font-weight: bold;
     font-size: 18px;
     background: var(--static);
     align-items: center;
     justify-content: center;
+    flex: 1 1 auto;
 }
 
 .totalSum {
@@ -76,7 +76,7 @@
 
 .sum {
     display: flex;
-    flex: 1 1 50%;
+    flex: 0 1 37.5%;
     justify-content: space-between;
     flex-wrap: wrap;
 }
@@ -85,6 +85,7 @@
 @media screen and (max-width: 1599px) and (min-width: 768px) {
     .total {
         align-items: flex-end;
+        width: 100%;
     }
 
     .sumBlock :global(.ant-form-item-children) {
@@ -92,7 +93,9 @@
     }
 
     .sum {
+        flex: 1 1 auto;
         height: 29px;
+        flex-wrap: nowrap;
     }
 }
 
