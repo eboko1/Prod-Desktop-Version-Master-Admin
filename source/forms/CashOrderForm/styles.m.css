@@ -1,0 +1,60 @@
+.cashOrderId {
+    margin-top: 16px;
+    background: var(--static);
+    padding: 16px;
+    border-top: 1px dashed var(--lightGray);
+    border-left: 1px dashed var(--lightGray);
+    border-right: 1px dashed var(--lightGray);
+}
+
+.cashOrderId > .styledFormItem {
+    margin: 0;
+}
+
+.styledFormItem,
+.buttonGroup {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.styledFormItem :global(.ant-form-item-required) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.step:nth-child(even) {
+    padding-top: 16px;
+    margin-bottom: 16px;
+    border-top: 1px dashed var(--lightGray);
+    border-bottom: 1px dashed var(--lightGray);
+}
+
+.expandedInput:global(.ant-input-number),
+.expandedInput:global(.ant-calendar-picker) {
+    flex: 1 1 100%;
+}
+
+.switcher {
+    display: flex;
+    align-items: center;
+}
+
+.sumType,
+.clientField {
+    display: flex;
+    justify-content: space-around;
+}
+
+.hiddenField:global(.ant-input-affix-wrapper) {
+    display: none;
+}
+
+.hiddenFormItem:global(.ant-form-item) {
+    display: none;
+}
+
+.printButton {
+    margin: 0 auto;
+}

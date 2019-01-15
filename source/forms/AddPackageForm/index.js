@@ -70,15 +70,20 @@ export class AddPackageForm extends Component {
                     mode={ 'multiple' }
                     getFieldDecorator={ getFieldDecorator }
                 >
-                    { _.toPairs(groupedPermissions).map(([ name, value ]) => (
-                        <OptGroup label={ groupsLabels[ name ] }>
-                            { value.map(value => (
-                                <Option value={ value } key={ value }>
-                                    { permissionsLabels[ value ] }
-                                </Option>
-                            )) }
-                        </OptGroup>
-                    )) }
+                    { _.toPairs(groupedPermissions).map(([ name, value ]) => {
+                        return (
+                            <OptGroup
+                                label={ groupsLabels[ name ] }
+                                key={ groupsLabels[ name ] }
+                            >
+                                { value.map(value => (
+                                    <Option value={ value } key={ value }>
+                                        { permissionsLabels[ value ] }
+                                    </Option>
+                                )) }
+                            </OptGroup>
+                        );
+                    }) }
                 </DecoratedSelect>
                 <DecoratedSelect
                     field={ 'roles' }
@@ -93,7 +98,9 @@ export class AddPackageForm extends Component {
                         },
                     ] }
                     hasFeedback
-                    label={ <FormattedMessage id='add-package-form.roles_field' /> }
+                    label={
+                        <FormattedMessage id='add-package-form.roles_field' />
+                    }
                     mode={ 'multiple' }
                     getFieldDecorator={ getFieldDecorator }
                 >

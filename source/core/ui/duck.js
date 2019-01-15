@@ -37,6 +37,9 @@ export const SET_DETAILS_SUGGESTIONS_FETCHING_STATE = `${prefix}/SET_DETAILS_SUG
 export const SET_SUGGESTIONS_FETCHING_STATE = `${prefix}/SET_SUGGESTIONS_FETCHING_STATE`;
 export const SET_SUGGESTIONS_LOADING_STATE = `${prefix}/SET_SUGGESTIONS_LOADING_STATE`;
 
+export const SET_CASH_ORDER_FETCHING_STATE = `${prefix}/SET_CASH_ORDER_FETCHING_STATE`;
+export const SET_CASH_ORDERS_FETCHING_STATE = `${prefix}/SET_CASH_ORDERS_FETCHING_STATE`;
+
 export const INITIALIZE = `${prefix}/INITIALIZE`;
 export const SET_COLLAPSED_STATE = `${prefix}/SET_COLLAPSED_STATE`;
 export const EMIT_ERROR = `${prefix}/EMIT_ERROR`;
@@ -57,6 +60,8 @@ const ReducerState = {
     profileUpdating:            false,
     ordersFetching:             false,
     orderFetching:              false,
+    cashOrderFetching:          false,
+    cashOrdersFetching:         false,
     myTasksFetching:            false,
     clientsFetching:            false,
     clientFetching:             false,
@@ -82,6 +87,7 @@ const ReducerState = {
     suggestionsFetching:        false,
     suggestionsLoading:         false,
     detailsSuggestionsFetching: false,
+    cashOrderFetching:          false,
 };
 
 /* eslint-disable complexity */
@@ -178,6 +184,12 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_BRANDS_FETCHING_STATE:
             return { ...state, brandsFetching: payload };
+
+        case SET_CASH_ORDER_FETCHING_STATE:
+            return { ...state, cashOrderFetching: payload };
+
+        case SET_CASH_ORDERS_FETCHING_STATE:
+            return { ...state, cashOrdersFetching: payload };
 
         case ADD_ERROR:
             return {
@@ -339,8 +351,18 @@ export const setSuggestionsFetching = state => ({
     type:    SET_SUGGESTIONS_FETCHING_STATE,
     payload: state,
 });
+
 export const setSuggestionsLoading = state => ({
     type:    SET_SUGGESTIONS_LOADING_STATE,
+    payload: state,
+});
+
+export const setCashOrderFetchingState = state => ({
+    type:    SET_CASH_ORDER_FETCHING_STATE,
+    payload: state,
+});
+export const setCashOrdersFetchingState = state => ({
+    type:    SET_CASH_ORDERS_FETCHING_STATE,
     payload: state,
 });
 

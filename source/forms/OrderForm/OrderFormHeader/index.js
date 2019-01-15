@@ -13,12 +13,14 @@ import {
     DecoratedSlider,
 } from 'forms/DecoratedFields';
 import { Numeral } from 'commons';
+import book from 'routes/book';
 import {
     getDateTimeConfig,
     permissions,
     isForbidden,
     mergeDateTime,
     addDuration,
+    goTo
 } from 'utils';
 
 // own
@@ -689,20 +691,51 @@ export default class OrderFormHeader extends Component {
             servicesDiscount,
             detailsDiscount,
             errors,
+            cashSum,
+            cashFlowFilters,
         } = this.props;
 
         const detailsTotalPrice =
             priceDetails - priceDetails * (detailsDiscount / 100);
         const servicesTotalPrice =
             priceServices - priceServices * (servicesDiscount / 100);
-
         const totalPrice = detailsTotalPrice + servicesTotalPrice;
+        const remainPrice = totalPrice - cashSum;
 
         return (
             <div className={ Styles.headerCol }>
-                <FormItem>
-                    <div className={ Styles.total }>
-                        <FormattedMessage id='sum' />
+                <FormItem className={ Styles.sumBlock }>
+                    <div className={ Styles.sum }>
+                        <span className={ Styles.sumWrapper }>
+                            <FormattedMessage id='sum' />
+                            <Numeral 
+                                className={ Styles.sumNumeral }
+                                nullText='0'
+                                currency={ this.props.intl.formatMessage({
+                                    id: 'currency',
+                                }) }
+                            >
+                                { totalPrice }
+                            </Numeral>
+                        </span>
+                        <span className={ Styles.sumWrapper }>
+                            <FormattedMessage id='paid' />
+                            <Numeral 
+                                className={ Styles.sumNumeral }
+                                nullText='0'
+                                currency={ this.props.intl.formatMessage({
+                                    id: 'currency',
+                                }) }
+                            >
+                                { cashSum }
+                            </Numeral>
+                        </span>
+                    </div>
+                    <div
+                        className={ Styles.total }
+                        onClick={ () => goTo(book.cashFlowPage, { cashFlowFilters: { ...cashFlowFilters } }) }
+                    >
+                        <FormattedMessage id='remain' />
                         <Numeral
                             className={ Styles.totalSum }
                             currency={ this.props.intl.formatMessage({
@@ -710,7 +743,7 @@ export default class OrderFormHeader extends Component {
                             }) }
                             nullText='0'
                         >
-                            { totalPrice }
+                            { remainPrice }
                         </Numeral>
                     </div>
                 </FormItem>

@@ -38,6 +38,18 @@ const GET_CLIENTS_ADDITIONAL_INFORMATION = 'GET_CLIENTS_ADDITIONAL_INFORMATION';
 // Tasks
 const GET_ALL_TASKS = 'GET_ALL_TASKS';
 
+//Warehouse
+const ACCESS_SUPPLIERS = 'ACCESS_SUPPLIERS';
+
+//Accounting
+const ACCESS_ACCOUNTING = 'ACCESS_ACCOUNTING';
+const EDIT_CASH_ORDERS = 'EDIT_CASH_ORDERS';
+
+//Reports
+const ACCESS_KPI = 'ACCESS_KPI';
+const ACCESS_FEEDBACK = 'ACCESS_FEEDBACK';
+const ACCESS_CALL_STATISTICS = 'ACCESS_CALL_STATISTICS';
+
 // Other
 const DEMO = 'DEMO';
 
@@ -75,6 +87,15 @@ export const permissions = Object.freeze({
 
     GET_ALL_TASKS,
 
+    ACCESS_SUPPLIERS,
+
+    ACCESS_ACCOUNTING,
+    EDIT_CASH_ORDERS,
+
+    ACCESS_KPI,
+    ACCESS_FEEDBACK,
+    ACCESS_CALL_STATISTICS,
+
     DEMO,
 });
 
@@ -83,35 +104,76 @@ export const ORDERS_PERMISSIONS = 'ORDERS_PERMISSIONS';
 export const CLIENTS_PERMISSIONS = 'CLIENTS_PERMISSIONS';
 export const TASKS_PERMISSIONS = 'TASKS_PERMISSIONS';
 export const EMPLOYEES_PERMISSIONS = 'EMPLOYEES_PERMISSIONS';
+export const WAREHOUSE_PERMISSIONS = 'WAREHOUSE_PERMISSIONS';
+export const ACCOUNTING_PERMISSIONS = 'ACCOUNTING_PERMISSIONS';
+export const REPORTS_PERMISSIONS = 'REPORTS_PERMISSIONS';
 export const OTHER_PERMISSIONS = 'OTHER_PERMISSIONS';
 
 export const groupedPermissions = {
-    [ DASHBOARD_PERMISSIONS ]: [ ACCESS_DASHBOARD, EDIT_DASHBOARD_ORDER, OPEN_DASHBOARD_ORDER, CREATE_DASHBOARD_ORDER ],
-    [ ORDERS_PERMISSIONS ]:    [ ACCESS_ORDER_BODY, ACCESS_ORDER_CALLS, ACCESS_ORDER_COMMENTS, ACCESS_ORDER_DETAILS, ACCESS_ORDER_HISTORY, ACCESS_ORDER_SERVICES, ACCESS_ORDER_STATUS, CREATE_INVITE_ORDER, CREATE_ORDER, PRINT_ORDERS, SHOW_FILTERS, SHOW_ORDERS, UPDATE_SUCCESS_ORDER ],
-    [ CLIENTS_PERMISSIONS ]:   [ GET_CLIENTS, CREATE_EDIT_DELETE_CLIENTS, CREATE_EDIT_DELETE_CLIENT_VEHICLES, FILTER_CLIENTS, GET_CLIENTS_BASIC_INFORMATION, GET_CLIENTS_ADDITIONAL_INFORMATION ],
-    [ TASKS_PERMISSIONS ]:     [ GET_ALL_TASKS ],
-    [ EMPLOYEES_PERMISSIONS ]: [ GET_EMPLOYEES, CREATE_EDIT_DELETE_EMPLOYEES, EMPLOYEES_SALARIES ],
-    [ OTHER_PERMISSIONS ]:     [ DEMO ],
+    [ DASHBOARD_PERMISSIONS ]: [
+        ACCESS_DASHBOARD,
+        EDIT_DASHBOARD_ORDER,
+        OPEN_DASHBOARD_ORDER,
+        CREATE_DASHBOARD_ORDER,
+    ],
+    [ ORDERS_PERMISSIONS ]: [
+        ACCESS_ORDER_BODY,
+        ACCESS_ORDER_CALLS,
+        ACCESS_ORDER_COMMENTS,
+        ACCESS_ORDER_DETAILS,
+        ACCESS_ORDER_HISTORY,
+        ACCESS_ORDER_SERVICES,
+        ACCESS_ORDER_STATUS,
+        CREATE_INVITE_ORDER,
+        CREATE_ORDER,
+        PRINT_ORDERS,
+        SHOW_FILTERS,
+        SHOW_ORDERS,
+        UPDATE_SUCCESS_ORDER,
+    ],
+    [ CLIENTS_PERMISSIONS ]: [
+        GET_CLIENTS,
+        CREATE_EDIT_DELETE_CLIENTS,
+        CREATE_EDIT_DELETE_CLIENT_VEHICLES,
+        FILTER_CLIENTS,
+        GET_CLIENTS_BASIC_INFORMATION,
+        GET_CLIENTS_ADDITIONAL_INFORMATION,
+    ],
+    [ TASKS_PERMISSIONS ]:      [ GET_ALL_TASKS ],
+    [ EMPLOYEES_PERMISSIONS ]:  [ GET_EMPLOYEES, CREATE_EDIT_DELETE_EMPLOYEES, EMPLOYEES_SALARIES ],
+    [ WAREHOUSE_PERMISSIONS ]:  [ ACCESS_SUPPLIERS ],
+    [ ACCOUNTING_PERMISSIONS ]: [ ACCESS_ACCOUNTING, EDIT_CASH_ORDERS ],
+    [ REPORTS_PERMISSIONS ]:    [ ACCESS_KPI, ACCESS_FEEDBACK, ACCESS_CALL_STATISTICS ],
+    [ OTHER_PERMISSIONS ]:      [ DEMO ],
 };
 
-export const isForbidden = ({ isAdmin, scope }, grant) =>
+export const isForbidden = ({isAdmin, scope}, grant) =>
     !isAdmin && !(_.isArray(scope) && scope.includes(grant));
 
-export const isAdmin = ({ isAdmin }) => isAdmin;
+export const isAdmin = ({isAdmin}) => isAdmin;
 
 export const getGroupsLabels = intl => ({
     [ DASHBOARD_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.dashboard_permissions',
     }),
-    [ TASKS_PERMISSIONS ]:   intl.formatMessage({ id: 'roles.tasks_permissions' }),
+    [ TASKS_PERMISSIONS ]:   intl.formatMessage({id: 'roles.tasks_permissions'}),
     [ CLIENTS_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.clients_permissions',
     }),
     [ EMPLOYEES_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.employees_permissions',
     }),
+    [ WAREHOUSE_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.warehouse_permissions',
+    }),
+    [ ACCOUNTING_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.accounting_permissions',
+    }),
     [ ORDERS_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.orders_permissions',
+    }),
+    [ REPORTS_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.reports_permissions',
     }),
     [ OTHER_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.other_permissions',
@@ -119,7 +181,7 @@ export const getGroupsLabels = intl => ({
 });
 
 export const getPermissionsLabels = intl => ({
-    [ ACCESS_ORDER_BODY ]:  intl.formatMessage({ id: 'roles.access_order_body' }),
+    [ ACCESS_ORDER_BODY ]:  intl.formatMessage({id: 'roles.access_order_body'}),
     [ ACCESS_ORDER_CALLS ]: intl.formatMessage({
         id: 'roles.access_order_calls',
     }),
@@ -141,15 +203,15 @@ export const getPermissionsLabels = intl => ({
     [ CREATE_INVITE_ORDER ]: intl.formatMessage({
         id: 'roles.create_invite_order',
     }),
-    [ CREATE_ORDER ]:         intl.formatMessage({ id: 'roles.create_order' }),
-    [ PRINT_ORDERS ]:         intl.formatMessage({ id: 'roles.print_orders' }),
-    [ SHOW_FILTERS ]:         intl.formatMessage({ id: 'roles.show_filters' }),
-    [ SHOW_ORDERS ]:          intl.formatMessage({ id: 'roles.show_orders' }),
+    [ CREATE_ORDER ]:         intl.formatMessage({id: 'roles.create_order'}),
+    [ PRINT_ORDERS ]:         intl.formatMessage({id: 'roles.print_orders'}),
+    [ SHOW_FILTERS ]:         intl.formatMessage({id: 'roles.show_filters'}),
+    [ SHOW_ORDERS ]:          intl.formatMessage({id: 'roles.show_orders'}),
     [ UPDATE_SUCCESS_ORDER ]: intl.formatMessage({
         id: 'roles.update_success_order',
     }),
 
-    [ ACCESS_DASHBOARD ]:     intl.formatMessage({ id: 'roles.access_dashboard' }),
+    [ ACCESS_DASHBOARD ]:     intl.formatMessage({id: 'roles.access_dashboard'}),
     [ EDIT_DASHBOARD_ORDER ]: intl.formatMessage({
         id: 'roles.edit_dashboard_order',
     }),
@@ -190,6 +252,28 @@ export const getPermissionsLabels = intl => ({
     [ GET_ALL_TASKS ]: intl.formatMessage({
         id: 'roles.get_all_tasks',
     }),
+
+    [ ACCESS_SUPPLIERS ]: intl.formatMessage({
+        id: 'roles.access_suppliers',
+    }),
+
+    [ ACCESS_ACCOUNTING ]: intl.formatMessage({
+        id: 'roles.access_accounting',
+    }),
+    [ EDIT_CASH_ORDERS ]: intl.formatMessage({
+        id: 'roles.edit_cash_orders',
+    }),
+
+    [ ACCESS_KPI ]: intl.formatMessage({
+        id: 'roles.access_kpi',
+    }),
+    [ ACCESS_FEEDBACK ]: intl.formatMessage({
+        id: 'roles.access_feedback',
+    }),
+    [ ACCESS_CALL_STATISTICS ]: intl.formatMessage({
+        id: 'roles.access_call_statistics',
+    }),
+
     [ DEMO ]: intl.formatMessage({
         id: 'roles.demo',
     }),

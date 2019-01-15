@@ -11,10 +11,9 @@ import {
     deleteService,
 } from 'core/forms/servicesForm/duck';
 
-import { Catcher } from 'commons';
-import { Paper } from 'commons/_uikit';
+import { Catcher, Paper } from 'commons';
 import { ServicesForm } from 'forms';
-import { EditableTable } from 'components/Tables';
+import { EditableTable } from 'components';
 
 const mapDispatchToProps = {
     setFilters,
@@ -34,7 +33,6 @@ const mapStateToProps = state => ({
     mapDispatchToProps,
 )
 export default class ServiceContainer extends Component {
-
     render() {
         const {
             loading,

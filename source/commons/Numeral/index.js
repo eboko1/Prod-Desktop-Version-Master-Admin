@@ -53,9 +53,7 @@ export default class Numeral extends Component {
 
     render() {
         return (
-            <span className={ `formatter__numeral ${this.props.className}` }>
-                { this.numFormatter() }
-            </span>
+            <span className={ this.props.className }>{ this.numFormatter() }</span>
         );
     }
 }

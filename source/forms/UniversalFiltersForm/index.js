@@ -1,8 +1,12 @@
 // vendor
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Form, Row, Col, Select } from 'antd';
 import { v4 } from 'uuid';
+
+// proj
+import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
 
 import {
     DecoratedSelect,
@@ -17,7 +21,15 @@ const FormItem = Form.Item;
 const Option = Select.Option;
 
 @injectIntl
+@connect(
+    null,
+    { fetchUniversalFiltersForm },
+)
 export class UniversalFiltersForm extends Component {
+    componentDidMount() {
+        this.props.fetchUniversalFiltersForm();
+    }
+
     render() {
         const {
             vehicleMakes,

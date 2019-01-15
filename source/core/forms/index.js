@@ -105,6 +105,14 @@ import spreadBusinessBrandsReducer, {
     moduleName as spreadBusinessBrands,
 } from 'core/forms/spreadBusinessBrands/duck';
 
+import cashOrdersFiltersReducer, {
+    moduleName as cashOrdersFilters,
+} from 'core/forms/cashOrdersFiltersForm/duck';
+
+import cashOrderFormReducer, {
+    moduleName as cashOrderForm,
+} from 'core/forms/cashOrderForm/duck';
+
 // combine all forms reducers to forms reducer in store
 export const formsReducer = combineReducers({
     [ spreadBusinessBrands ]:    spreadBusinessBrandsReducer,
@@ -138,4 +146,6 @@ export const formsReducer = combineReducers({
     [ toSuccess ]:               toSuccessReducer,
     [ universalFilters ]:        universalFiltersReducer,
     [ brands ]:                  brandsReducer,
+    [ cashOrdersFilters ]:       cashOrdersFiltersReducer,
+    [ cashOrderForm ]:           cashOrderFormReducer,
 });

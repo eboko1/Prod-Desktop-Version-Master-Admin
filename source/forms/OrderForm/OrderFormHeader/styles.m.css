@@ -12,7 +12,6 @@
     flex: 0 1 30%;
 }
 
-
 .deliveryDatetime {
     flex: 0 1 30%;
 }
@@ -23,7 +22,7 @@
 
 /* TODO: rm important */
 .durationBlock :global(.ant-form-item) {
-    margin-bottom: 0!important;
+    margin-bottom: 0 !important;
 }
 
 .duration :global(.ant-form-item-label) {
@@ -37,15 +36,26 @@
 
 .total {
     display: flex;
-    justify-content: flex-end;
-    width: 100%;
     font-weight: bold;
-    font-size: 24px;
-    line-height: 1.4;
+    font-size: 18px;
+    background: var(--static);
+    align-items: center;
+    justify-content: center;
+    flex: 1 1 auto;
 }
 
 .totalSum {
-    margin-left: 24px;
+    margin-left: 8px;
+    text-decoration: underline;
+}
+
+.sumWrapper {
+    font-weight: bold;
+    margin-right: 8px;
+}
+
+.sumNumeral {
+    margin-left: 8px;
 }
 
 .durationBlock {
@@ -58,11 +68,34 @@
     display: flex;
 }
 
+.sumBlock:global(.ant-form-item) {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px !important;
+}
+
+.sum {
+    display: flex;
+    flex: 0 1 37.5%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
 /*  min-width: 922 */
 @media screen and (max-width: 1599px) and (min-width: 768px) {
     .total {
         align-items: flex-end;
-        height: 61px;
+        width: 100%;
+    }
+
+    .sumBlock :global(.ant-form-item-children) {
+        flex-wrap: wrap;
+    }
+
+    .sum {
+        flex: 1 1 auto;
+        height: 29px;
+        flex-wrap: nowrap;
     }
 }
 

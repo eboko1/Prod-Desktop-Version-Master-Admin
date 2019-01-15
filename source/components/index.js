@@ -34,6 +34,10 @@ import TecDocModals from './TecDocModals';
 import VehicleNumberHistory from './VehicleNumberHistory';
 import Result from './Result';
 
+// re-exports (*) must be before ES6 other (default) exports
+// webpack issue: https://github.com/webpack/webpack/issues/3509
+export * from './Tables';
+
 export {
     SettingSalaryTable,
     EmployeesTable,

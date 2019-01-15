@@ -71,6 +71,8 @@ import SalaryReportForm from 'forms/SalaryReportForm/messages';
 import BrandsForm from 'forms/BrandsForm/messages';
 import SetDetailProductForm from 'forms/SetDetailProductForm/messages';
 import SpreadBusinessBrandsForm from 'forms/SpreadBusinessBrandsForm/messages';
+import CashCreationForm from 'forms/CashCreationForm/messages';
+import CashOrderForm from 'forms/CashOrderForm/messages';
 
 // OrderForm
 import OrderForm from 'forms/OrderForm/messages';
@@ -89,6 +91,7 @@ import AddClientModal from 'modals/AddClientModal/messages';
 import InviteModal from 'modals/InviteModal/messages';
 import UniversalChartModal from 'modals/UniversalChartModal/messages';
 import ConfirmRescheduleModal from 'modals/ConfirmRescheduleModal/messages';
+import SupplierModal from 'modals/SupplierModal/messages';
 
 // components
 import StatusIcons from 'components/StatusIcons/messages';
@@ -111,6 +114,7 @@ import CallsStatistics from 'components/CallsStatistics/messages';
 import PartSuggestions from 'components/PartSuggestions/messages';
 import PartAttributes from 'components/PartAttributes/messages';
 import VehicleNumberHistory from 'components/VehicleNumberHistory/messages';
+import CashTables from 'components/Tables/CashTables/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -176,6 +180,8 @@ const messages = merge.all([
     BrandsForm,
     SetDetailProductForm,
     SpreadBusinessBrandsForm,
+    CashCreationForm,
+    CashOrderForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
@@ -183,6 +189,7 @@ const messages = merge.all([
     OrderTaskModal,
     UniversalChartModal,
     ConfirmRescheduleModal,
+    SupplierModal,
     // components
     StatusIcons,
     OrderFormTables,
@@ -209,6 +216,7 @@ const messages = merge.all([
     PartSuggestions,
     PartAttributes,
     VehicleNumberHistory,
+    CashTables,
 ]);
 /* eslint-enable array-element-newline */
 

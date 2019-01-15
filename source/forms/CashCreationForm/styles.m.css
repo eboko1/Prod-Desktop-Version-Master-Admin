@@ -1,0 +1,15 @@
+.form {
+    display: flex;
+    align-items: center;
+}
+
+.field {
+    flex: 0 1 25%;
+    margin-right: 8px;
+}
+
+.saveIcon {
+    cursor: pointer;
+    font-size: 24px;
+    color: var(--secondary);
+}

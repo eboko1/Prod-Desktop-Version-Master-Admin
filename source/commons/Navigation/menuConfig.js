@@ -1,6 +1,6 @@
 // proj
 import book from 'routes/book';
-import { permissions, isForbidden, isAdmin } from 'utils';
+import {permissions, isForbidden, isAdmin} from 'utils';
 
 export default {
     sections: [
@@ -51,6 +51,31 @@ export default {
                         isForbidden(user, permissions.GET_EMPLOYEES),
                     name: 'navigation.employees',
                 },
+                {
+                    key:      '/suppliers',
+                    link:     book.suppliersPage,
+                    disabled: user => isForbidden(user, permissions.ACCESS_SUPPLIERS),
+                    name:     'navigation.suppliers',
+                },
+            ],
+        },
+        {
+            key:      'accounting',
+            iconType: 'wallet',
+            name:     'navigation.accounting',
+            items:    [
+                {
+                    key:      '/cash/flow',
+                    disabled: user => isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link:     book.cashFlowPage,
+                    name:     'navigation.flow_of_money',
+                },
+                {
+                    key:      '/cash/bank',
+                    disabled: user => isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link:     book.cashBankPage,
+                    name:     'navigation.cash_bank',
+                },
             ],
         },
         /* Statistics submenu */
@@ -62,21 +87,24 @@ export default {
                 {
                     key:      '/chart',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_KPI) &&
+                        !isAdmin(user),
                     link: book.chart,
                     name: 'navigation.service_indicators',
                 },
                 {
                     key:      '/feedback',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_FEEDBACK) &&
+                        !isAdmin(user),
                     link: book.feedback,
                     name: 'navigation.feedback',
                 },
                 {
                     key:      '/calls',
                     disabled: user =>
-                        !isForbidden(user, permissions.DEMO) && !isAdmin(user),
+                        isForbidden(user, permissions.ACCESS_CALL_STATISTICS) &&
+                        !isAdmin(user),
                     link: book.calls,
                     name: 'navigation.call_statistics',
                 },
@@ -94,6 +122,12 @@ export default {
                         !isForbidden(user, permissions.DEMO) && !isAdmin(user),
                     link: book.oldApp.settings,
                     name: 'navigation.main_settings',
+                },
+                {
+                    key:      '/cash/settings',
+                    disabled: user => isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link:     book.cashSettingsPage,
+                    name:     'navigation.cash_settings',
                 },
                 {
                     key:      '/requisites',

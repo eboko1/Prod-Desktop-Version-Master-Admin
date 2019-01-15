@@ -69,6 +69,7 @@ export class DecoratedDatePicker extends React.PureComponent {
                 disabledTime={ disabledTime }
                 locale={ getLocale() }
                 allowClear={ allowClear }
+                className={ cnStyles }
             />
         );
 

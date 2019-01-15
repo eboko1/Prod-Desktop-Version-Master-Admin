@@ -1,0 +1,20 @@
+{
+  "en": {
+    "supplier-modal.add_supplier": "Add supplier",
+    "supplier-modal.edit_supplier": "Edit suppliers's name",
+    "supplier-modal.supplier_name_placeholder": "Enter supplier's name",
+    "supplier-modal.name_validation": "Supplier's name is required!"
+  },
+  "ru": {
+    "supplier-modal.add_supplier": "Добавить поставщика",
+    "supplier-modal.edit_supplier": "Изменить имя",
+    "supplier-modal.supplier_name_placeholder": "Введите имя поставщика",
+    "supplier-modal.name_validation": "Имя поставщика обязательно!"
+  },
+  "uk": {
+    "supplier-modal.add_supplier": "Додати постачальника",
+    "supplier-modal.edit_supplier": "Змінити назву",
+    "supplier-modal.supplier_name_placeholder": "Введіть ім'я постачальника",
+    "supplier-modal.name_validation": "Ім'я постачальника обов'язкове!"
+  }
+}
