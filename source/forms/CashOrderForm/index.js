@@ -109,7 +109,6 @@ export class CashOrderForm extends Component {
     componentDidUpdate(prevProps) {
         const {
             editMode,
-            activeCashOrder,
             form: { getFieldValue, setFieldsValue },
             fetchCashOrderForm,
         } = this.props;
@@ -120,10 +119,8 @@ export class CashOrderForm extends Component {
             const counterparty = getFieldValue('counterpartyType');
             if (editMode) {
                 const activeCounterparty = _.get(this._getActiveCounterpartyType(), 'counterpartyType');
-                console.log('→ counterparty', counterparty);
-                console.log('→ activeCounterparty', activeCounterparty);
+    
                 if (counterparty !== activeCounterparty) {
-                    console.log('→ aaa', counterparty);
                     switch (activeCounterparty) {
                         case cashOrderCounterpartyTypes.CLIENT:
                             return setFieldsValue({ clientId: null, orderId: null })
@@ -135,7 +132,6 @@ export class CashOrderForm extends Component {
                             return setFieldsValue({ businessSupplierId: null })
 
                         case cashOrderCounterpartyTypes.OTHER:
-                            console.log('→ set Other');
                             return setFieldsValue({ otherCounterparty: null })
                         
                         default:
@@ -181,7 +177,6 @@ export class CashOrderForm extends Component {
         const counterparty = this._getActiveCounterpartyType();
         const normalizedDatetime = moment(fieldsMap.datetime);
         const sumType = !_.isNil(fieldsMap.increase) ? 'increase' : 'decrease';
-        console.log('→ SET FIELDSconterparty', counterparty);
         const normalizedFieldsMap = {
             ...fieldsMap,
             sumType,
@@ -312,9 +307,7 @@ export class CashOrderForm extends Component {
         } = this.props;
 
         const counterpartyType = getFieldValue('counterpartyType') || _.get(this._getActiveCounterpartyType(), 'counterpartyType');
-        console.log('→ getFV counterPartyType', counterpartyType);
         const cashOrderId = getFieldValue('id');
-        console.log('→ this.props', this.props);
 
         return (
             <Form onSubmit={ this._submit }>
@@ -453,7 +446,6 @@ export class CashOrderForm extends Component {
                     { this._renderSupplierBlock() }
                     { this._renderOtherBlock() }
                 </div>
-                { console.log('RAAAAAAAADIOOO!', this.state.sumTypeRadio)}
                 <div className={ Styles.step }>
                     { this.state.sumTypeRadio &&
                         <DecoratedRadio
@@ -600,8 +592,8 @@ export class CashOrderForm extends Component {
         const orderSearchField = this._renderOrderSearch();
         const orderField = this._renderOrderField();
 
+        
         const isActive = getFieldValue('counterpartyType') === cashOrderCounterpartyTypes.CLIENT;
-        console.log('→ yo');
         return (
             <> 
                 { !printMode && (isActive ? (
