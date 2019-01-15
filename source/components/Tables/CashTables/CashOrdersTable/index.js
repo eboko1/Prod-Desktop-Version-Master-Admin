@@ -5,6 +5,7 @@ import { Table } from 'antd';
 
 // own
 import { columnsConfig } from './config';
+import Styles from './styles.m.css';
 
 export class CashOrdersTable extends Component {
     constructor(props) {
@@ -15,13 +16,12 @@ export class CashOrdersTable extends Component {
             openEdit:  props.openEdit,
             // cashOrderEntity: this.state.cashOrderEntity,
         });
-
         this.pagination = {
             pageSize:         25,
             size:             'large',
             total:            Math.ceil(props.totalCount / 25) * 25,
             hideOnSinglePage: true,
-            current:          props.page,
+            current:          props.filters.page,
             onChange:         page => {
                 props.setCashOrdersFilters({ page });
                 props.fetchCashOrders();
@@ -37,6 +37,7 @@ export class CashOrdersTable extends Component {
         return (
             <Table
                 size='small'
+                className={ Styles.table }
                 columns={ this.columns }
                 pagination={ this.pagination }
                 dataSource={ cashOrders }

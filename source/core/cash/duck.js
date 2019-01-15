@@ -42,10 +42,12 @@ const ReducerState = {
     },
     cashOrders:        [],
     cashOrdersFilters: {
-        startDate: moment().format('YYYY-MM-DD'),
-        endDate:   moment().format('YYYY-MM-DD'),
-        query:     '',
-        page:      1,
+        startDate: moment()
+            .subtract(30, 'days')
+            .format('YYYY-MM-DD'),
+        endDate: moment().format('YYYY-MM-DD'),
+        query:   '',
+        page:    1,
     },
     cashAccountingFilters: {
         date:      moment(),
@@ -88,6 +90,15 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 cashboxes: [ ...state.cashboxes, payload ],
+            };
+
+        case FETCH_CASH_ORDERS:
+            return {
+                ...state,
+                cashOrdersFilters: {
+                    ...state.cashOrdersFilters,
+                    ...payload,
+                },
             };
 
         case FETCH_CASH_ORDERS_SUCCESS:
@@ -199,8 +210,9 @@ export const setCashAccountingFilters = filters => ({
 
 // cash orders
 
-export const fetchCashOrders = () => ({
-    type: FETCH_CASH_ORDERS,
+export const fetchCashOrders = filters => ({
+    type:    FETCH_CASH_ORDERS,
+    payload: filters,
 });
 
 export const fetchCashOrdersSuccess = cashOrders => ({

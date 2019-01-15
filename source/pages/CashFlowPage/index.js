@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from 'react';
+// import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
@@ -13,21 +14,24 @@ import {
 import { clearCashOrderForm } from 'core/forms/cashOrderForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Layout, Paper, StyledButton } from 'commons';
+import { Layout, Paper, Spinner, StyledButton } from 'commons';
 import { CashOrderModal } from 'modals';
 import { CashOrdersFiltersForm } from 'forms';
 import { CashOrdersTable } from 'components';
-
+import { isForbidden, permissions } from 'utils';
 // own
 import Styles from './styles.m.css';
 
 const mapStateToProps = state => ({
-    collapsed:  state.ui.collapsed,
-    cashOrders: state.cash.cashOrders,
-    stats:      state.cash.stats,
-    modal:      state.modals.modal,
-    modalProps: state.modals.modalProps,
-    filters:    selectCashOrdersFilters(state),
+    collapsed:       state.ui.collapsed,
+    cashOrders:      state.cash.cashOrders,
+    stats:           state.cash.stats,
+    user:            state.auth,
+    modal:           state.modals.modal,
+    modalProps:      state.modals.modalProps,
+    filters:         selectCashOrdersFilters(state),
+    cashFlowFilters: _.get(state, 'router.location.state.cashFlowFilters'),
+    isFetching:      state.ui.cashOrdersFetching,
 });
 
 const mapDispatchToProps = {
@@ -48,7 +52,7 @@ export default class CashFlowPage extends Component {
     };
 
     componentDidMount() {
-        this.props.fetchCashOrders();
+        this.props.fetchCashOrders(this.props.cashFlowFilters);
     }
 
     _onOpenCashOrderModal = () => {
@@ -63,7 +67,6 @@ export default class CashFlowPage extends Component {
     };
 
     _onOpenPrintCashOrderModal = cashOrderEntity => {
-        console.log('→ open printModa cashOrderEntity', cashOrderEntity);
         this.props.setModal(MODALS.CASH_ORDER, {
             printMode:       true,
             editMode:        false,
@@ -83,6 +86,7 @@ export default class CashFlowPage extends Component {
 
     render() {
         const {
+            isFetching,
             collapsed,
             stats,
             modal,
@@ -91,9 +95,18 @@ export default class CashFlowPage extends Component {
             clearCashOrderForm,
             cashOrders,
             filters,
+            user,
+            fetchCashOrders,
         } = this.props;
 
-        return (
+        const canEditCashOrders = !isForbidden(
+            user,
+            permissions.EDIT_CASH_ORDERS,
+        );
+
+        return isFetching ? (
+            <Spinner spin={ isFetching } />
+        ) : (
             <Layout
                 title={ <FormattedMessage id='navigation.flow_of_money' /> }
                 controls={
@@ -122,10 +135,16 @@ export default class CashFlowPage extends Component {
                     <CashOrdersTable
                         totalCount={ _.get(stats, 'totalCount') }
                         setCashOrdersFilters={ setCashOrdersFilters }
+                        fetchCashOrders={ fetchCashOrders }
                         cashOrders={ cashOrders }
                         filters={ filters }
                         openPrint={ this._onOpenPrintCashOrderModal }
-                        openEdit={ this._onOpenEditCashOrderModal }
+                        // eslint-disable-next-line no-empty-function
+                        openEdit={
+                            canEditCashOrders
+                                ? this._onOpenEditCashOrderModal
+                                : null
+                        }
                     />
                 </Paper>
                 { this.state.cashOrderModalMounted ? (

@@ -1,6 +1,6 @@
 // proj
 import book from 'routes/book';
-import { permissions, isForbidden, isAdmin } from 'utils';
+import {permissions, isForbidden, isAdmin} from 'utils';
 
 export default {
     sections: [
@@ -52,10 +52,10 @@ export default {
                     name: 'navigation.employees',
                 },
                 {
-                    key:  '/suppliers',
-                    link: book.suppliersPage,
-                    // disabled: user => isForbidden(user, permissions.SUPPLIERS),
-                    name: 'navigation.suppliers',
+                    key:      '/suppliers',
+                    link:     book.suppliersPage,
+                    disabled: user => isForbidden(user, permissions.ACCESS_SUPPLIERS),
+                    name:     'navigation.suppliers',
                 },
             ],
         },
@@ -65,18 +65,16 @@ export default {
             name:     'navigation.accounting',
             items:    [
                 {
-                    key:  '/cash/flow',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.CASH_ORDERS),
-                    link: book.cashFlowPage,
-                    name: 'navigation.flow_of_money',
+                    key:      '/cash/flow',
+                    disabled: user => isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link:     book.cashFlowPage,
+                    name:     'navigation.flow_of_money',
                 },
                 {
-                    key:  '/cash/bank',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.CASH_ACCOUNTING),
-                    link: book.cashBankPage,
-                    name: 'navigation.cash_bank',
+                    key:      '/cash/bank',
+                    disabled: user => isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link:     book.cashBankPage,
+                    name:     'navigation.cash_bank',
                 },
             ],
         },
@@ -126,11 +124,10 @@ export default {
                     name: 'navigation.main_settings',
                 },
                 {
-                    key:  '/cash/settings',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.CASH_SETTINGS),
-                    link: book.cashSettingsPage,
-                    name: 'navigation.cash_settings',
+                    key:      '/cash/settings',
+                    disabled: user => isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link:     book.cashSettingsPage,
+                    name:     'navigation.cash_settings',
                 },
                 {
                     key:      '/requisites',

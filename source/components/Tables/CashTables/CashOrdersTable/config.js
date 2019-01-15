@@ -8,33 +8,45 @@ import { FormattedMessage } from 'react-intl';
 import { Numeral } from 'commons';
 import { FormattedDatetime } from 'components';
 import book from 'routes/book';
+
 // own
+import Styles from './styles.m.css';
 
 function renderCounterparty(cashOrder) {
     switch (true) {
         case Boolean(cashOrder.clientId):
             return (
-                <Link to={ `${book.client}/${cashOrder.clientId}` }>
+                <Link
+                    to={ `${book.client}/${cashOrder.clientId}` }
+                    className={ Styles.breakWord }
+                >
                     { cashOrder.clientName } { cashOrder.clientSurname }
                 </Link>
             );
 
         case Boolean(cashOrder.employeeId):
             return (
-                <Link to={ `${book.employeesPage}/${cashOrder.employeeId}` }>
+                <Link
+                    to={ `${book.employeesPage}/${cashOrder.employeeId}` }
+                    className={ Styles.breakWord }
+                >
                     { cashOrder.employeeName } { cashOrder.employeeSurname }
                 </Link>
             );
 
         case Boolean(cashOrder.businessSupplierId):
             return (
-                <Link to={ `${book.suppliersPage}` }>
+                <Link to={ `${book.suppliersPage}` } className={ Styles.breakWord }>
                     { cashOrder.businessSupplierName }
                 </Link>
             );
 
         case Boolean(cashOrder.otherCounterparty):
-            return <div>{ cashOrder.otherCounterparty }</div>;
+            return (
+                <div className={ Styles.breakWord }>
+                    { cashOrder.otherCounterparty }
+                </div>
+            );
 
         default:
             return <FormattedMessage id='no_data' />;
@@ -48,7 +60,7 @@ export function columnsConfig(props) {
         dataIndex: 'cashBoxId',
         width:     '10%',
         render:    (cashBoxId, { cashBoxName }) => (
-            <div>
+            <div className={ Styles.breakWord }>
                 { cashBoxId } { cashBoxName }
             </div>
         ),
@@ -93,9 +105,11 @@ export function columnsConfig(props) {
     const activityCol = {
         title:     <FormattedMessage id='cash-table.activity' />,
         dataIndex: 'type',
-        width:     '10%',
+        width:     '15%',
         render:    type => (
-            <FormattedMessage id={ `cash-order-form.type.${type}` } />
+            <div className={ Styles.noBreak }>
+                <FormattedMessage id={ `cash-order-form.type.${type}` } />
+            </div>
         ),
     };
 
@@ -106,14 +120,22 @@ export function columnsConfig(props) {
         render:    (key, { increase, decrease }) =>
             increase ? (
                 <div
-                    style={ { display: 'flex', justifyContent: 'space-around' } }
+                    style={ {
+                        display:        'flex',
+                        justifyContent: 'space-around',
+                        alignItems:     'center',
+                    } }
                 >
                     + <Numeral>{ increase }</Numeral>
                     <Icon type='caret-up' style={ { color: 'var(--enabled)' } } />
                 </div>
             ) : (
                 <div
-                    style={ { display: 'flex', justifyContent: 'space-around' } }
+                    style={ {
+                        display:        'flex',
+                        justifyContent: 'space-around',
+                        alignItems:     'center',
+                    } }
                 >
                     - <Numeral>{ decrease }</Numeral>
                     <Icon
@@ -138,8 +160,15 @@ export function columnsConfig(props) {
                 <Icon
                     type='printer'
                     onClick={ () => props.openPrint(cashOrder) }
+                    className={ Styles.printIcon }
                 />
-                <Icon type='edit' onClick={ () => props.openEdit(cashOrder) } />
+                {props.openEdit ? (
+                    <Icon
+                        type='edit'
+                        onClick={ () => props.openEdit(cashOrder) }
+                        className={ Styles.editIcon }
+                    />
+                ) : null}
             </>
         ,
     };

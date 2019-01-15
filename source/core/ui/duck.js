@@ -38,6 +38,7 @@ export const SET_SUGGESTIONS_FETCHING_STATE = `${prefix}/SET_SUGGESTIONS_FETCHIN
 export const SET_SUGGESTIONS_LOADING_STATE = `${prefix}/SET_SUGGESTIONS_LOADING_STATE`;
 
 export const SET_CASH_ORDER_FETCHING_STATE = `${prefix}/SET_CASH_ORDER_FETCHING_STATE`;
+export const SET_CASH_ORDERS_FETCHING_STATE = `${prefix}/SET_CASH_ORDERS_FETCHING_STATE`;
 
 export const INITIALIZE = `${prefix}/INITIALIZE`;
 export const SET_COLLAPSED_STATE = `${prefix}/SET_COLLAPSED_STATE`;
@@ -59,6 +60,8 @@ const ReducerState = {
     profileUpdating:            false,
     ordersFetching:             false,
     orderFetching:              false,
+    cashOrderFetching:          false,
+    cashOrdersFetching:         false,
     myTasksFetching:            false,
     clientsFetching:            false,
     clientFetching:             false,
@@ -184,6 +187,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_CASH_ORDER_FETCHING_STATE:
             return { ...state, cashOrderFetching: payload };
+
+        case SET_CASH_ORDERS_FETCHING_STATE:
+            return { ...state, cashOrdersFetching: payload };
 
         case ADD_ERROR:
             return {
@@ -353,6 +359,10 @@ export const setSuggestionsLoading = state => ({
 
 export const setCashOrderFetchingState = state => ({
     type:    SET_CASH_ORDER_FETCHING_STATE,
+    payload: state,
+});
+export const setCashOrdersFetchingState = state => ({
+    type:    SET_CASH_ORDERS_FETCHING_STATE,
     payload: state,
 });
 

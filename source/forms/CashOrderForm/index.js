@@ -18,6 +18,8 @@ import {
     selectClient,
     selectOrder,
     onClientSelect,
+    onClientReset,
+    onOrderReset,
     onOrderSearch,
     printCashOrder,
 } from 'core/forms/cashOrderForm/duck';
@@ -65,6 +67,8 @@ const reverseFromItemLayout = {
         fetchCashOrderForm,
         createCashOrder,
         onClientSelect,
+        onClientReset,
+        onOrderReset,
         onOrderSearch,
         printCashOrder,
     },
@@ -89,21 +93,23 @@ export class CashOrderForm extends Component {
     };
 
     componentDidMount() {
-        if (this.props.editMode || this.props.printMode) {
-            console.log('@ action mode');
-            this._setFormFields(this.props.activeCashOrder);
+        const {editMode, printMode, activeCashOrder, fetchCashOrderNextId, fetchCashboxes} = this.props;
+
+        if (editMode || printMode) {
+            this._setFormFields(activeCashOrder);
+            this._selectOrderType(_.get(activeCashOrder, 'type'));
         }
 
-        if (!this.props.editMode && !this.props.printMode) {
-            console.log('@ createmode');
-            this.props.fetchCashOrderNextId();
-            this.props.fetchCashboxes();
+        if (!editMode && !printMode) {
+            fetchCashOrderNextId();
+            fetchCashboxes();
         }
     }
 
     componentDidUpdate(prevProps) {
         const {
-            form: { getFieldValue },
+            editMode,
+            form: { getFieldValue, setFieldsValue },
             fetchCashOrderForm,
         } = this.props;
         if (
@@ -111,6 +117,28 @@ export class CashOrderForm extends Component {
             this.props.fields.counterpartyType
         ) {
             const counterparty = getFieldValue('counterpartyType');
+            if (editMode) {
+                const activeCounterparty = _.get(this._getActiveCounterpartyType(), 'counterpartyType');
+    
+                if (counterparty !== activeCounterparty) {
+                    switch (activeCounterparty) {
+                        case cashOrderCounterpartyTypes.CLIENT:
+                            return setFieldsValue({ clientId: null, orderId: null })
+
+                        case cashOrderCounterpartyTypes.EMPLOYEE:
+                            return setFieldsValue({ employeeId: null })
+
+                        case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
+                            return setFieldsValue({ businessSupplierId: null })
+
+                        case cashOrderCounterpartyTypes.OTHER:
+                            return setFieldsValue({ otherCounterparty: null })
+                        
+                        default:
+                            break;
+                    }
+                }
+            }
 
             switch (counterparty) {
                 case cashOrderCounterpartyTypes.EMPLOYEE:
@@ -125,49 +153,83 @@ export class CashOrderForm extends Component {
         }
     }
 
-    _setFormFields = ff => {
-        const { activeCashOrder, form } = this.props;
-        const fieldsMap = _.pickBy(
-            _.pick(activeCashOrder, [
-                'id',
-                'type',
-                'businessSupplierId',
-                'cashBoxId',
-                'clientId',
-                'orderId',
-                'description',
-                'employeeId',
-                'increase',
-                'decrease',
-                'otherCounterparty',
-                'datetime',
-            ]),
-            value => !_.isNil(value),
-        );
-        let counterPartyType = cashOrderCounterpartyTypes.OTHER;
-        // if (fieldsMap.clientId) counterPartyType = cashOrderCounterpartyTypes.CLIENT;
-        // if (fieldsMap.employeeId) counterPartyType = cashOrderCounterpartyTypes.EMPLOYEE;
-        // if (fieldsMap.businessSupplierId) counterPartyType = cashOrderCounterpartyTypes.BUSINESS_SUPPLIER;
+    _getActiveFieldsMap = () => _.pickBy(
+        _.pick(this.props.activeCashOrder, [
+            'id',
+            'type',
+            'businessSupplierId',
+            'cashBoxId',
+            'clientId',
+            'orderId',
+            'description',
+            'employeeId',
+            'increase',
+            'decrease',
+            'otherCounterparty',
+            'datetime',
+        ]),
+        value => !_.isNil(value),
+    )
+
+    _setFormFields = () => {
+        const { form } = this.props;
+        const fieldsMap = this._getActiveFieldsMap();
+        const counterparty = this._getActiveCounterpartyType();
         const normalizedDatetime = moment(fieldsMap.datetime);
         const sumType = !_.isNil(fieldsMap.increase) ? 'increase' : 'decrease';
         const normalizedFieldsMap = {
             ...fieldsMap,
             sumType,
-            counterPartyType,
+            ...counterparty,
             datetime: normalizedDatetime,
         };
-        console.log('→ normalizedFieldsMap', normalizedFieldsMap);
+
         form.setFieldsValue(normalizedFieldsMap);
         this.setState({ sumType });
     };
 
+    _getActiveCounterpartyType = () => {
+        const fieldsMap = this._getActiveFieldsMap();
+
+        let counterparty = {};
+        if (fieldsMap.clientId) {
+            counterparty = {
+                counterpartyType: cashOrderCounterpartyTypes.CLIENT,
+                clientId:         fieldsMap.clientId,
+                orderId:          fieldsMap.orderId,
+            }
+        }
+        if (fieldsMap.employeeId) {
+            counterparty = {
+                counterpartyType: cashOrderCounterpartyTypes.EMPLOYEE,
+                employeeId:       fieldsMap.employeeId,
+            }
+        }
+
+        if (fieldsMap.businessSupplierId) {
+            counterparty = {
+                counterpartyType:   cashOrderCounterpartyTypes.BUSINESS_SUPPLIER,
+                businessSupplierId: fieldsMap.businessSupplierId,
+            }
+        }
+
+        if (fieldsMap.otherCounterparty) {
+            counterparty = {
+                counterpartyType:  cashOrderCounterpartyTypes.OTHER,
+                otherCounterparty: fieldsMap.otherCounterparty,
+            }
+        }
+
+        return counterparty;
+    }
+
     _submit = event => {
         event.preventDefault();
-        const { form, createCashOrder, resetModal } = this.props;
+        const { form, createCashOrder, resetModal, editMode } = this.props;
 
         form.validateFields((err, values) => {
             if (!err) {
-                createCashOrder(values);
+                createCashOrder({ ...values, editMode });
                 form.resetFields();
                 resetModal();
             }
@@ -217,6 +279,17 @@ export class CashOrderForm extends Component {
             ));
     }
 
+    _resetClient = () => {
+        this.props.form.resetFields('clientId')
+        this.props.onClientReset();
+    }
+
+    _resetOrder = () => {
+        this.props.form.setFieldsValue({'orderId': null});
+        // this.props.form.resetFields('orderId');
+        this.props.onOrderReset();
+    }
+
     _hiddenFormItemStyles = type =>
         cx({
             hiddenFormItem: !type,
@@ -233,9 +306,8 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
 
-        const counterpartyType = getFieldValue('counterpartyType');
+        const counterpartyType = getFieldValue('counterpartyType') || _.get(this._getActiveCounterpartyType(), 'counterpartyType');
         const cashOrderId = getFieldValue('id');
-        console.log('→ cashOrderId', cashOrderId);
 
         return (
             <Form onSubmit={ this._submit }>
@@ -256,6 +328,7 @@ export class CashOrderForm extends Component {
                 <div className={ Styles.step }>
                     <DecoratedSelect
                         field='type'
+                        initialValue={ cashOrderTypes.INCOME }
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={ formatMessage({
@@ -315,6 +388,7 @@ export class CashOrderForm extends Component {
                     </DecoratedSelect>
                     <DecoratedDatePicker
                         field='datetime'
+                        initialValue={ moment() }
                         getFieldDecorator={ getFieldDecorator }
                         formItem
                         label={ formatMessage({ id: 'cash-order-form.date' }) }
@@ -367,10 +441,13 @@ export class CashOrderForm extends Component {
                             </Option>
                         )) }
                     </DecoratedSelect>
-                    { this._renderCounterpartyBlock(counterpartyType) }
+                    { this._renderClientBlock() }
+                    { this._renderEmployeeBlock() }
+                    { this._renderSupplierBlock() }
+                    { this._renderOtherBlock() }
                 </div>
                 <div className={ Styles.step }>
-                    { this.state.sumTypeRadio && (
+                    { this.state.sumTypeRadio &&
                         <DecoratedRadio
                             field='sumType'
                             getFieldDecorator={ getFieldDecorator }
@@ -390,7 +467,7 @@ export class CashOrderForm extends Component {
                                 }) }
                             </Radio>
                         </DecoratedRadio>
-                    ) }
+                    }
                     <DecoratedInputNumber
                         fields={ {} }
                         field='increase'
@@ -460,6 +537,8 @@ export class CashOrderForm extends Component {
                             },
                         ] }
                         disabled={ printMode }
+                        formatter={ numeralFormatter }
+                        parser={ numeralParser }
                     />
                     <DecoratedTextArea
                         fields={ {} }
@@ -474,8 +553,8 @@ export class CashOrderForm extends Component {
                 </div>
                 <div className={ Styles.buttonGroup }>
                     <Button
-                        type={ printMode && 'primary' }
-                        className={ printMode && Styles.printButton }
+                        type={ printMode ? 'primary' : 'default' }
+                        className={ printMode ? Styles.printButton : '' }
                         icon='printer'
                         onClick={ () => this.props.printCashOrder(cashOrderId) }
                     >
@@ -499,43 +578,50 @@ export class CashOrderForm extends Component {
     _renderClientBlock = () => {
         const {
             printMode,
-            client: { clientId },
+            client,
+            activeCashOrder,
             order,
+            form: { getFieldValue },
             intl: { formatMessage },
         } = this.props;
-        const orderId = order.id;
+        const orderId = _.get(order, 'id') || _.get(activeCashOrder, 'orderId');
+        const clientId = _.get(client, 'clientId') ||  _.get(activeCashOrder, 'clientId');
         const clientSearch = this._renderClientSearch();
         const clientSearchTable = this._renderClientSearchTable();
         const clientField = this._renderClientField();
         const orderSearchField = this._renderOrderSearch();
         const orderField = this._renderOrderField();
 
+        
+        const isActive = getFieldValue('counterpartyType') === cashOrderCounterpartyTypes.CLIENT;
         return (
-            <>
-                <Form.Item
-                    className={ Styles.switcher }
-                    { ...reverseFromItemLayout }
-                    label={ formatMessage({
-                        id: 'cash-order-form.search_by_client_or_order',
-                    }) }
-                >
-                    <RadioGroup
-                        onChange={ e => this._setClientSearchType(e) }
-                        value={ this.state.clientSearchType }
-                        disabled={ printMode }
+            <> 
+                { !printMode && (isActive ? (
+                    <Form.Item
+                        className={ Styles.switcher }
+                        { ...reverseFromItemLayout }
+                        label={ formatMessage({
+                            id: 'cash-order-form.search_by_client_or_order',
+                        }) }
                     >
-                        <Radio value='client'>
-                            { formatMessage({
-                                id: 'cash-order-form.switch_by_client',
-                            }) }
-                        </Radio>
-                        <Radio value='order'>
-                            { formatMessage({
-                                id: 'cash-order-form.switch_by_order',
-                            }) }
-                        </Radio>
-                    </RadioGroup>
-                </Form.Item>
+                        <RadioGroup
+                            onChange={ e => this._setClientSearchType(e) }
+                            value={ this.state.clientSearchType }
+                            disabled={ printMode }
+                        >
+                            <Radio value='client'>
+                                { formatMessage({
+                                    id: 'cash-order-form.switch_by_client',
+                                }) }
+                            </Radio>
+                            <Radio value='order'>
+                                { formatMessage({
+                                    id: 'cash-order-form.switch_by_order',
+                                }) }
+                            </Radio>
+                        </RadioGroup>
+                    </Form.Item>
+                ) : null)}
                 {this.state.clientSearchType === 'client' && 
                     <>
                         {Boolean(!clientId) && clientSearch}
@@ -585,7 +671,10 @@ export class CashOrderForm extends Component {
             fields,
             errors,
             intl: { formatMessage },
+            form: { getFieldValue },
         } = this.props;
+
+        const isActive = getFieldValue('counterpartyType') === cashOrderCounterpartyTypes.CLIENT;
 
         return (
             <div className={ Styles.client }>
@@ -594,12 +683,12 @@ export class CashOrderForm extends Component {
                     errors={ errors }
                     defaultGetValueProps
                     fieldValue={ _.get(fields, 'searchClientQuery') }
-                    className={ Styles.clientSearchField }
                     formItem
                     getFieldDecorator={ getFieldDecorator }
                     placeholder={ formatMessage({
                         id: 'add_order_form.search_client.placeholder',
                     }) }
+                    className={ this._hiddenFormItemStyles(isActive) }
                 />
             </div>
         );
@@ -607,9 +696,17 @@ export class CashOrderForm extends Component {
 
     _renderClientField = () => {
         const {
-            client: { clientId, name, surname },
-            form: { getFieldDecorator },
+            printMode,
+            client,
+            activeCashOrder,
+            form: { getFieldDecorator, getFieldValue },
         } = this.props;
+
+        const isActive = getFieldValue('counterpartyType') === cashOrderCounterpartyTypes.CLIENT;
+
+        const clientId = _.get(client, 'clientId') ||  _.get(activeCashOrder, 'clientId');
+        const name = _.get(client, 'name') ||  _.get(activeCashOrder, 'clientName');
+        const surname = _.get(client, 'surname') ||  _.get(activeCashOrder, 'clientSurname');
 
         return (
             <div className={ Styles.clientField }>
@@ -620,10 +717,12 @@ export class CashOrderForm extends Component {
                     cnStyles={ Styles.hiddenField }
                     disabled
                 />
-                <div>
-                    <span>{ `${name} ${surname ? surname : ''}` }</span>
-                    <Icon type='close' />
-                </div>
+                { isActive &&
+                    <div>
+                        <span>{ `${name} ${surname ? surname : ''}` }</span>
+                        { !printMode && <Icon type='close' onClick={ () => this._resetClient() }/> }
+                    </div>
+                }
             </div>
         );
     };
@@ -654,24 +753,36 @@ export class CashOrderForm extends Component {
 
     _renderOrderField = () => {
         const {
-            order: { id, clientId, num, clientName, clientSurname },
-            form: { getFieldDecorator },
+            printMode,
+            order,
+            activeCashOrder,
+            form: { getFieldDecorator, getFieldValue },
         } = this.props;
+
+        const orderId = _.get(order, 'id') || _.get(activeCashOrder, 'orderId');
+        const clientId = _.get(order, 'clientId') || _.get(activeCashOrder, 'clientId');
+        const num = _.get(order, 'num') || _.get(activeCashOrder, 'orderNum');
+        const clientName = _.get(order, 'clientName') || _.get(activeCashOrder, 'clientName');
+        const clientSurname = _.get(order, 'clientSurname') || _.get(activeCashOrder, 'clientSurname');
+
+        const isActive = getFieldValue('counterpartyType') === cashOrderCounterpartyTypes.CLIENT;
 
         return (
             <>
                 <div className={ Styles.clientField }>
                     <DecoratedInput
                         field='orderId'
-                        initialValue={ id }
+                        initialValue={ orderId }
                         getFieldDecorator={ getFieldDecorator }
                         cnStyles={ Styles.hiddenField }
                         disabled
                     />
-                    <div>
-                        <span>{ num }</span>
-                        <Icon type='close' />
-                    </div>
+                    { isActive &&
+                        <div>
+                            <span>{ num }</span>
+                            { !printMode && <Icon type='close' onClick={ () => this._resetOrder() } /> }
+                        </div>
+                    }
                 </div>
                 {clientId && 
                     <>
@@ -698,11 +809,13 @@ export class CashOrderForm extends Component {
         const {
             printMode,
             counterpartyList,
-            form: { getFieldDecorator },
+            form: { getFieldDecorator, getFieldValue },
             intl: { formatMessage },
         } = this.props;
 
-        return !_.isEmpty(counterpartyList) ? (
+        const isActive = getFieldValue('counterpartyType') === cashOrderCounterpartyTypes.EMPLOYEE;
+
+        return (
             <DecoratedSelect
                 field='employeeId'
                 formItem
@@ -714,34 +827,38 @@ export class CashOrderForm extends Component {
                 getPopupContainer={ trigger => trigger.parentNode }
                 rules={ [
                     {
-                        required: true,
+                        required: isActive,
                         message:  formatMessage({
                             id: 'required_field',
                         }),
                     },
                 ] }
                 disabled={ printMode }
+                className={ this._hiddenFormItemStyles(isActive) }
             >
-                { counterpartyList.map(({ id, name, disabled }) => (
-                    <Option value={ id } key={ id } disabled={ disabled }>
-                        { name }
-                    </Option>
-                )) }
+                {
+                    !_.isEmpty(counterpartyList)
+                        ? counterpartyList.map(({ id, name, disabled }) => (
+                            <Option value={ id } key={ id } disabled={ disabled }>
+                                { name }
+                            </Option>
+                        )) : []
+                }
             </DecoratedSelect>
-        ) : (
-            <div>{ formatMessage({ id: 'no_data' }) }</div>
-        );
+        )
     };
 
     _renderSupplierBlock = () => {
         const {
             printMode,
             counterpartyList,
-            form: { getFieldDecorator },
+            form: { getFieldDecorator, getFieldValue },
             intl: { formatMessage },
         } = this.props;
 
-        return !_.isEmpty(counterpartyList) ? (
+        const isActive = getFieldValue('counterpartyType') === cashOrderCounterpartyTypes.BUSINESS_SUPPLIER;
+
+        return (
             <DecoratedSelect
                 field='businessSupplierId'
                 formItem
@@ -753,31 +870,35 @@ export class CashOrderForm extends Component {
                 getPopupContainer={ trigger => trigger.parentNode }
                 rules={ [
                     {
-                        required: true,
+                        required: isActive,
                         message:  formatMessage({
                             id: 'required_field',
                         }),
                     },
                 ] }
                 disabled={ printMode }
+                className={ this._hiddenFormItemStyles(isActive) }
             >
-                { counterpartyList.map(({ id, name }) => (
-                    <Option value={ id } key={ id }>
-                        { name }
-                    </Option>
-                )) }
+                { !_.isEmpty(counterpartyList)
+                    ? counterpartyList.map(({ id, name }) => (
+                        <Option value={ id } key={ id }>
+                            { name }
+                        </Option>
+                    )) : []
+                }
             </DecoratedSelect>
-        ) : (
-            <div>{ formatMessage({ id: 'no_data' }) }</div>
-        );
+        )
     };
 
     _renderOtherBlock = () => {
         const {
             printMode,
-            form: { getFieldDecorator },
+            editMode,
+            form: { getFieldDecorator, getFieldValue },
             intl: { formatMessage },
         } = this.props;
+
+        const isActive = getFieldValue('counterpartyType') === cashOrderCounterpartyTypes.OTHER;
 
         return (
             <DecoratedInput
@@ -787,33 +908,34 @@ export class CashOrderForm extends Component {
                 getFieldDecorator={ getFieldDecorator }
                 rules={ [
                     {
-                        required: true,
+                        required: isActive,
                         message:  formatMessage({
                             id: 'required_field',
                         }),
                     },
                 ] }
                 disabled={ printMode }
+                className={ this._hiddenFormItemStyles(isActive) }
             />
         );
     };
 
-    _renderCounterpartyBlock = type => {
-        switch (type) {
-            case cashOrderCounterpartyTypes.CLIENT:
-                return this._renderClientBlock();
+    // _renderCounterpartyBlock = type => {
+    //     switch (type) {
+    //         case cashOrderCounterpartyTypes.CLIENT:
+    //             return this._renderClientBlock();
 
-            case cashOrderCounterpartyTypes.EMPLOYEE:
-                return this._renderEmployeeBlock();
+    //         case cashOrderCounterpartyTypes.EMPLOYEE:
+    //             return this._renderEmployeeBlock();
 
-            case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
-                return this._renderSupplierBlock();
+    //         case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
+    //             return this._renderSupplierBlock();
 
-            case cashOrderCounterpartyTypes.OTHER:
-                return this._renderOtherBlock();
+    //         case cashOrderCounterpartyTypes.OTHER:
+    //             return this._renderOtherBlock();
 
-            default:
-                return null;
-        }
-    };
+    //         default:
+    //             return null;
+    //     }
+    // };
 }

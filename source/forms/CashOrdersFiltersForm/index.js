@@ -81,6 +81,7 @@ export class CashOrdersFiltersForm extends Component {
                     <DecoratedSearch
                         fields={ {} }
                         field='query'
+                        initialValue={ filters.query }
                         getFieldDecorator={ getFieldDecorator }
                         className={ Styles.filter }
                         placeholder={ formatMessage({
