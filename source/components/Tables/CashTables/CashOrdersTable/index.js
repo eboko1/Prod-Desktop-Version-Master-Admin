@@ -21,7 +21,7 @@ export class CashOrdersTable extends Component {
             size:             'large',
             total:            Math.ceil(props.totalCount / 25) * 25,
             hideOnSinglePage: true,
-            current:          props.page,
+            current:          props.filters.page,
             onChange:         page => {
                 props.setCashOrdersFilters({ page });
                 props.fetchCashOrders();

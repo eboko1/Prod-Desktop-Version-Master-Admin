@@ -545,6 +545,8 @@ export class CashOrderForm extends Component {
                             },
                         ] }
                         disabled={ printMode }
+                        formatter={ numeralFormatter }
+                        parser={ numeralParser }
                     />
                     <DecoratedTextArea
                         fields={ {} }

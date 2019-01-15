@@ -17,7 +17,7 @@ export default class Numeral extends Component {
 
     static defaultProps = {
         children: 0,
-        mask:     '0,0[]00',
+        mask:     '0,0',
         currency: '',
         url:      null,
         urlBlank: false,

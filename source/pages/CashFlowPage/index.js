@@ -96,13 +96,13 @@ export default class CashFlowPage extends Component {
             cashOrders,
             filters,
             user,
+            fetchCashOrders,
         } = this.props;
 
         const canEditCashOrders = !isForbidden(
             user,
             permissions.EDIT_CASH_ORDERS,
         );
-        console.log('→ isFetching', isFetching);
 
         return isFetching ? (
             <Spinner spin={ isFetching } />
@@ -135,6 +135,7 @@ export default class CashFlowPage extends Component {
                     <CashOrdersTable
                         totalCount={ _.get(stats, 'totalCount') }
                         setCashOrdersFilters={ setCashOrdersFilters }
+                        fetchCashOrders={ fetchCashOrders }
                         cashOrders={ cashOrders }
                         filters={ filters }
                         openPrint={ this._onOpenPrintCashOrderModal }
