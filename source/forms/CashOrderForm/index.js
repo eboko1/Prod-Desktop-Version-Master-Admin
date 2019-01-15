@@ -112,7 +112,7 @@ export class CashOrderForm extends Component {
             fields,
             form: { getFieldValue, setFieldsValue },
         } = this.props;
-        
+
         if (
             _.get(prevProps, 'fields.counterpartyType.value') !==
             _.get(fields, 'counterpartyType.value')
@@ -297,8 +297,7 @@ export class CashOrderForm extends Component {
     }
 
     _resetOrder = () => {
-        this.props.form.setFieldsValue({'orderId': null});
-        // this.props.form.resetFields('orderId');
+        this.props.form.setFieldsValue({ 'orderId': null });
         this.props.onOrderReset();
     }
 
@@ -318,7 +317,6 @@ export class CashOrderForm extends Component {
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
 
-        const counterpartyType = getFieldValue('counterpartyType') || _.get(this._getActiveCounterpartyType(), 'counterpartyType');
         const cashOrderId = getFieldValue('id');
 
         return (
