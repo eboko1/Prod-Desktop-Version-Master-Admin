@@ -5,6 +5,7 @@ import { Table } from 'antd';
 
 // own
 import { columnsConfig } from './config';
+import Styles from './styles.m.css';
 
 export class CashOrdersTable extends Component {
     constructor(props) {
@@ -36,6 +37,7 @@ export class CashOrdersTable extends Component {
         return (
             <Table
                 size='small'
+                className={ Styles.table }
                 columns={ this.columns }
                 pagination={ this.pagination }
                 dataSource={ cashOrders }
