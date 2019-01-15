@@ -5,7 +5,7 @@ import moment from 'moment';
 import _ from 'lodash';
 
 //proj
-import { emitError } from 'core/ui/duck';
+import { setCashOrdersFetchingState, emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
@@ -90,7 +90,7 @@ export function* fetchCashOrdersSaga() {
     while (true) {
         try {
             yield take(FETCH_CASH_ORDERS);
-            yield nprogress.start();
+            yield put(setCashOrdersFetchingState(true));
             const filters = yield select(selectCashOrdersFilters);
 
             const data = yield call(fetchAPI, 'GET', 'cash_orders', filters);
@@ -99,7 +99,7 @@ export function* fetchCashOrdersSaga() {
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield nprogress.done();
+            yield put(setCashOrdersFetchingState(false));
         }
     }
 }

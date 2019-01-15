@@ -15,12 +15,11 @@ export class CashOrdersTable extends Component {
             openEdit:  props.openEdit,
             // cashOrderEntity: this.state.cashOrderEntity,
         });
-        console.log('→ props.totalCount', props.totalCount);
         this.pagination = {
             pageSize:         25,
             size:             'large',
             total:            Math.ceil(props.totalCount / 25) * 25,
-            hideOnSinglePage: false,
+            hideOnSinglePage: true,
             current:          props.page,
             onChange:         page => {
                 props.setCashOrdersFilters({ page });

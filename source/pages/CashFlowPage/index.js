@@ -14,7 +14,7 @@ import {
 import { clearCashOrderForm } from 'core/forms/cashOrderForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Layout, Paper, StyledButton } from 'commons';
+import { Layout, Paper, Spinner, StyledButton } from 'commons';
 import { CashOrderModal } from 'modals';
 import { CashOrdersFiltersForm } from 'forms';
 import { CashOrdersTable } from 'components';
@@ -31,6 +31,7 @@ const mapStateToProps = state => ({
     modalProps:      state.modals.modalProps,
     filters:         selectCashOrdersFilters(state),
     cashFlowFilters: _.get(state, 'router.location.state.cashFlowFilters'),
+    isFetching:      state.ui.cashOrdersFetching,
 });
 
 const mapDispatchToProps = {
@@ -85,6 +86,7 @@ export default class CashFlowPage extends Component {
 
     render() {
         const {
+            isFetching,
             collapsed,
             stats,
             modal,
@@ -100,8 +102,11 @@ export default class CashFlowPage extends Component {
             user,
             permissions.EDIT_CASH_ORDERS,
         );
+        console.log('→ isFetching', isFetching);
 
-        return (
+        return isFetching ? (
+            <Spinner spin={ isFetching } />
+        ) : (
             <Layout
                 title={ <FormattedMessage id='navigation.flow_of_money' /> }
                 controls={

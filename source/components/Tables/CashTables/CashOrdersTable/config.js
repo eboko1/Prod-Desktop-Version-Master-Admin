@@ -8,7 +8,9 @@ import { FormattedMessage } from 'react-intl';
 import { Numeral } from 'commons';
 import { FormattedDatetime } from 'components';
 import book from 'routes/book';
+
 // own
+import Styles from './styles.m.css';
 
 function renderCounterparty(cashOrder) {
     switch (true) {
@@ -146,8 +148,15 @@ export function columnsConfig(props) {
                 <Icon
                     type='printer'
                     onClick={ () => props.openPrint(cashOrder) }
+                    className={ Styles.printIcon }
                 />
-                { props.openEdit ? <Icon type='edit' onClick={ () => props.openEdit(cashOrder) } /> : <></> }
+                {props.openEdit ? (
+                    <Icon
+                        type='edit'
+                        onClick={ () => props.openEdit(cashOrder) }
+                        className={ Styles.editIcon }
+                    />
+                ) : null}
             </>
         ,
     };
