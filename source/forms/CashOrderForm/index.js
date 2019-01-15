@@ -109,30 +109,38 @@ export class CashOrderForm extends Component {
     componentDidUpdate(prevProps) {
         const {
             editMode,
+            fields,
             form: { getFieldValue, setFieldsValue },
-            fetchCashOrderForm,
         } = this.props;
+        
         if (
-            prevProps.fields.counterpartyType !==
-            this.props.fields.counterpartyType
+            _.get(prevProps, 'fields.counterpartyType.value') !==
+            _.get(fields, 'counterpartyType.value')
         ) {
             const counterparty = getFieldValue('counterpartyType');
             if (editMode) {
                 const activeCounterparty = _.get(this._getActiveCounterpartyType(), 'counterpartyType');
-    
                 if (counterparty !== activeCounterparty) {
                     switch (activeCounterparty) {
                         case cashOrderCounterpartyTypes.CLIENT:
-                            return setFieldsValue({ clientId: null, orderId: null })
+                            this._fetchCounterpartyFormData(counterparty)
+                            setFieldsValue({ clientId: null, orderId: null })
+                            break;
 
                         case cashOrderCounterpartyTypes.EMPLOYEE:
-                            return setFieldsValue({ employeeId: null })
+                            this._fetchCounterpartyFormData(counterparty)
+                            setFieldsValue({ employeeId: null })
+                            break;
 
                         case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
-                            return setFieldsValue({ businessSupplierId: null })
+                            this._fetchCounterpartyFormData(counterparty)
+                            setFieldsValue({ businessSupplierId: null })
+                            break;
 
                         case cashOrderCounterpartyTypes.OTHER:
-                            return setFieldsValue({ otherCounterparty: null })
+                            this._fetchCounterpartyFormData(counterparty)
+                            setFieldsValue({ otherCounterparty: null })
+                            break;
                         
                         default:
                             break;
@@ -140,17 +148,21 @@ export class CashOrderForm extends Component {
                 }
             }
 
-            switch (counterparty) {
-                case cashOrderCounterpartyTypes.EMPLOYEE:
-                    return fetchCashOrderForm('employees');
-
-                case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
-                    return fetchCashOrderForm('business_suppliers');
-
-                default:
-                    break;
-            }
+            this._fetchCounterpartyFormData(counterparty);
         }
+    }
+
+    _fetchCounterpartyFormData = counterparty => {
+        switch (counterparty) {
+            case cashOrderCounterpartyTypes.EMPLOYEE:
+                return this.props.fetchCashOrderForm('employees');
+
+            case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
+                return this.props.fetchCashOrderForm('business_suppliers');
+
+            default:
+                break;
+        } 
     }
 
     _getActiveFieldsMap = () => _.pickBy(
@@ -592,8 +604,8 @@ export class CashOrderForm extends Component {
         const orderSearchField = this._renderOrderSearch();
         const orderField = this._renderOrderField();
 
-        
         const isActive = getFieldValue('counterpartyType') === cashOrderCounterpartyTypes.CLIENT;
+
         return (
             <> 
                 { !printMode && (isActive ? (
@@ -915,27 +927,11 @@ export class CashOrderForm extends Component {
                     },
                 ] }
                 disabled={ printMode }
+                placeholder={ formatMessage({
+                    id: 'cash-order-form.other_counterparty.placeholder',
+                }) }
                 className={ this._hiddenFormItemStyles(isActive) }
             />
         );
     };
-
-    // _renderCounterpartyBlock = type => {
-    //     switch (type) {
-    //         case cashOrderCounterpartyTypes.CLIENT:
-    //             return this._renderClientBlock();
-
-    //         case cashOrderCounterpartyTypes.EMPLOYEE:
-    //             return this._renderEmployeeBlock();
-
-    //         case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
-    //             return this._renderSupplierBlock();
-
-    //         case cashOrderCounterpartyTypes.OTHER:
-    //             return this._renderOtherBlock();
-
-    //         default:
-    //             return null;
-    //     }
-    // };
 }
