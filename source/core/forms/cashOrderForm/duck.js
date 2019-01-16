@@ -315,9 +315,9 @@ export const onClientReset = () => ({
     type: ON_CLIENT_RESET,
 });
 
-export const onOrderSelect = orderId => ({
+export const onOrderSelect = order => ({
     type:    ON_ORDER_SELECT,
-    payload: orderId,
+    payload: order,
 });
 
 export const onOrderReset = () => ({
