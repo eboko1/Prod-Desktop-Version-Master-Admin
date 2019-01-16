@@ -126,7 +126,6 @@ export class CashOrderForm extends Component {
 
     componentDidMount() {
         const {editMode, printMode, activeCashOrder, fetchCashOrderNextId, fetchCashboxes} = this.props;
-        console.log('→ activeCashOrder', activeCashOrder);
         if (editMode || printMode) {
             this._setFormFields(activeCashOrder);
             this._selectOrderType(_.get(activeCashOrder, 'type'));
@@ -187,7 +186,11 @@ export class CashOrderForm extends Component {
             _.get(prevProps, 'fields.type.value') !== _.get(fields, 'type.value') &&
             _.get(fields, 'type.value') === cashOrderTypes.ADJUSTMENT
         ) {
-            this.setState({ sumType: getFieldValue('sumType'), sumTypeRadio: true })
+            this.setState(prevState => {
+                setFieldsValue({ [ prevState.sumType ]: null });
+
+                return { sumType: getFieldValue('sumType'), sumTypeRadio: true }
+            })
         }
     }
 
@@ -272,25 +275,39 @@ export class CashOrderForm extends Component {
     };
 
     _selectOrderType = value => {
+        const { form: { setFieldsValue } } = this.props;
+
         switch (value) {
             case cashOrderTypes.INCOME:
-                return this.setState({
-                    sumType:      'increase',
-                    sumTypeRadio: false,
+                return this.setState(prevState => {
+                    setFieldsValue([ prevState.sumType ]: null);
+
+                    return {
+                        sumType:      'increase',
+                        sumTypeRadio: false,
+                    }
                 });
 
             case cashOrderTypes.EXPENSE:
-                return this.setState({
-                    sumType:      'decrease',
-                    sumTypeRadio: false,
+                return this.setState(prevState => {
+                    setFieldsValue([ prevState.sumType ]: null);
+                    
+                    return {
+                        sumType:      'decrease',
+                        sumTypeRadio: false,
+                    }
                 });
 
             case cashOrderTypes.ADJUSTMENT:
                 if (!this.props.editMode) {
-                    return this.setState({
-                        sumType:      'increase',
-                        sumTypeRadio: true,
-                    });
+                    return this.setState(prevState => {
+                        setFieldsValue([ prevState.sumType ]: null);
+                        
+                        return {
+                            sumType:      'increase',
+                            sumTypeRadio: true,
+                        }
+                    })
                 }
                 break;
 
@@ -300,22 +317,24 @@ export class CashOrderForm extends Component {
     };
 
     _setSumType = e => {
-        this.setState({ sumType: e.target.value });
-        this.props.form.setFieldsValue({ [ 'sumType' ]: e.target.value });
+        const sumType = e.target.value;
+        this.setState(prevState =>  {
+            this.props.form.setFieldsValue({ sumType, [ prevState.sumType ]: null });
+            
+            return { sumType }
+        });
+     
     };
 
     _setClientSearchType = e =>
         this.setState({ clientSearchType: e.target.value });
 
     _handleClientSelection = (client) => {
-        console.log('handle client', client.clientId);
-        console.log('→ this.props.form', this.props.form);
-        this.props.form.setFieldsValue({'clientId': client.clientId});
+        this.props.form.setFieldsValue({ 'clientId': client.clientId });
         this.props.onClientSelect(client);
     }
     _handleOrderSelection = (order) => {
-        console.log('handle order', order)
-        this.props.form.setFieldsValue({'orderId': order.id});
+        this.props.form.setFieldsValue({ 'orderId': order.id });
         this.props.onOrderSelect(order);
     }
 
@@ -345,8 +364,8 @@ export class CashOrderForm extends Component {
 
     _hiddenResetStyles = prop =>
         cx({
-            hiddenIcon: !prop,
-            clientOrderField:  true,
+            hiddenIcon:       !prop,
+            clientOrderField: true,
         });
 
     render() {
