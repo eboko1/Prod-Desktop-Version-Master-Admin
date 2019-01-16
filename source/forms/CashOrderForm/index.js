@@ -181,8 +181,8 @@ export class CashOrderForm extends Component {
 
             this._fetchCounterpartyFormData(counterparty);
         }
-
-        if (editMode &&
+        
+        if (editMode && !_.isNil(_.get(prevProps, 'fields.type.value')) &&
             _.get(prevProps, 'fields.type.value') !== _.get(fields, 'type.value') &&
             _.get(fields, 'type.value') === cashOrderTypes.ADJUSTMENT
         ) {
@@ -280,7 +280,7 @@ export class CashOrderForm extends Component {
         switch (value) {
             case cashOrderTypes.INCOME:
                 return this.setState(prevState => {
-                    setFieldsValue([ prevState.sumType ]: null);
+                    setFieldsValue({ [ prevState.sumType ]: null });
 
                     return {
                         sumType:      'increase',
@@ -290,7 +290,7 @@ export class CashOrderForm extends Component {
 
             case cashOrderTypes.EXPENSE:
                 return this.setState(prevState => {
-                    setFieldsValue([ prevState.sumType ]: null);
+                    setFieldsValue({ [ prevState.sumType ]: null });
                     
                     return {
                         sumType:      'decrease',
@@ -301,7 +301,7 @@ export class CashOrderForm extends Component {
             case cashOrderTypes.ADJUSTMENT:
                 if (!this.props.editMode) {
                     return this.setState(prevState => {
-                        setFieldsValue([ prevState.sumType ]: null);
+                        setFieldsValue({ [ prevState.sumType ]: null });
                         
                         return {
                             sumType:      'increase',
