@@ -107,9 +107,7 @@ export default class CashFlowPage extends Component {
             permissions.EDIT_CASH_ORDERS,
         );
 
-        return isFetching ? (
-            <Spinner spin={ isFetching } />
-        ) : (
+        return (
             <Layout
                 title={ <FormattedMessage id='navigation.flow_of_money' /> }
                 controls={
@@ -144,6 +142,7 @@ export default class CashFlowPage extends Component {
                         setCashOrdersFilters={ setCashOrdersFilters }
                         fetchCashOrders={ fetchCashOrders }
                         cashOrders={ cashOrders }
+                        cashOrdersFetching={ isFetching }
                         filters={ filters }
                         openPrint={ this._onOpenPrintCashOrderModal }
                         // eslint-disable-next-line no-empty-function
