@@ -23,7 +23,8 @@ export function* saveEmployee() {
         try {
             const { payload: employee, id: id } = yield take(SAVE_EMPLOYEE);
 
-            let normalizedEmployee = {
+            const normalizedEmployee = {
+                password:           employee.isManager ? employee.password : null,
                 email:              employee.email,
                 phone:              String(employee.phone),
                 enabled:            employee.enabled,
@@ -35,6 +36,7 @@ export function* saveEmployee() {
                 sendSmsNewOrder:    false,
                 surname:            employee.surname,
             };
+
             const data = yield call(
                 fetchAPI,
                 id ? 'PUT' : 'POST',

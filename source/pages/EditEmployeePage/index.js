@@ -15,6 +15,7 @@ import {
     saveEmployee,
     resetEmployeeForm,
     fireEmployee,
+    selectInitialEmployee,
 } from 'core/forms/employeeForm/duck';
 
 import { EmployeeForm, EmployeeScheduleForm, SettingSalaryForm } from 'forms';
@@ -32,7 +33,7 @@ let cx = classNames.bind(Styles);
 const mapStateToProps = state => ({
     employees:       state.employees.employees,
     employeeName:    state.forms.employeeForm.employeeName,
-    initialEmployee: state.forms.employeeForm.initialEmployee,
+    initialEmployee: selectInitialEmployee(state),
     user:            state.auth,
 });
 
@@ -87,7 +88,7 @@ export default class EditEmployeePage extends Component {
         const employeeTabs = this._renderEmployeeTabs();
         const employeesList = this._renderEmployeesList();
 
-        return (
+        return this.props.initialEmployee ? (
             <Layout
                 paper={ false }
                 title={ this.props.employeeName }
@@ -117,6 +118,8 @@ export default class EditEmployeePage extends Component {
                     </section>
                 </div>
             </Layout>
+        ) : (
+            <Loader loading={ !this.props.initialEmployee } />
         );
     }
 
@@ -146,9 +149,7 @@ export default class EditEmployeePage extends Component {
                     }) }
                     key='2'
                 >
-                    <EmployeeScheduleForm
-                        employeeId={ employeeId }
-                    />
+                    <EmployeeScheduleForm employeeId={ employeeId } />
                 </TabPane>
                 <TabPane
                     tab={ this.props.intl.formatMessage({
@@ -181,9 +182,7 @@ export default class EditEmployeePage extends Component {
                     ) }
                     key='5'
                 >
-                    <SettingSalaryForm
-                        employeeId={ employeeId }
-                    />
+                    <SettingSalaryForm employeeId={ employeeId } />
                 </TabPane>
             </Tabs>
         );

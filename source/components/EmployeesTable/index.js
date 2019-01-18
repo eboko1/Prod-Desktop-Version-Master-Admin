@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Table, Rate, Radio } from 'antd';
+import { Table, Rate, Radio, Icon } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
 
@@ -59,9 +59,21 @@ export default class EmployeesTable extends Component {
                     ),
             },
             {
+                title:     <FormattedMessage id='employee-table.manager' />,
+                dataIndex: 'isManager',
+                width:     '10%',
+                render:    isManager =>
+                    isManager ? (
+                        <Icon
+                            type='check-circle'
+                            className={ Styles.managerIcon }
+                        />
+                    ) : null,
+            },
+            {
                 title:     <FormattedMessage id='employee-table.hire_date' />,
                 dataIndex: 'hireDate',
-                width:     '30%',
+                width:     '25%',
                 render:    (text, record) => (
                     <div>
                         { record.hireDate &&
@@ -78,31 +90,6 @@ export default class EmployeesTable extends Component {
                 dataIndex: 'rating',
                 width:     '20%',
                 render:    value => value && this._renderRatingStars(value),
-            },
-            {
-                title:  '',
-                key:    'delete',
-                width:  'auto%',
-                render: () => {
-                    return null;
-                    // return (
-                    //     !isForbidden(
-                    //         this.props.user,
-                    //         permissions.CREATE_EDIT_DELETE_EMPLOYEES,
-                    //     ) && (
-                    //         <Icon
-                    //             className={ Styles.EmployeesTableIcon }
-                    //             onClick={ () => {
-                    //                 this.props.deleteEmployee(
-                    //                     record.id,
-                    //                     this.props.kind,
-                    //                 );
-                    //             } }
-                    //             type='delete'
-                    //         />
-                    //     )
-                    // );
-                },
             },
         ];
     }

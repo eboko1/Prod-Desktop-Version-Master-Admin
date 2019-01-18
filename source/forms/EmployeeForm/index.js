@@ -8,8 +8,13 @@ import _ from 'lodash';
 //proj
 import { onChangeEmployeeForm } from 'core/forms/employeeForm/duck';
 
+import { Loader } from 'commons';
 import { PhoneNumberInput } from 'components';
-import { DecoratedInput, DecoratedDatePicker } from 'forms/DecoratedFields';
+import {
+    DecoratedInput,
+    DecoratedDatePicker,
+    DecoratedCheckbox,
+} from 'forms/DecoratedFields';
 import { withReduxForm2, permissions, isForbidden } from 'utils';
 
 // own
@@ -44,18 +49,56 @@ const formItemLayout = {
     },
 })
 export class EmployeeForm extends Component {
-    state = {
-        toogleDirectory: false,
-    };
+    componentDidMount() {
+        this.props.form.setFieldsValue({
+            isManager: _.get(this.props.initialEmployee, 'isManager'),
+        });
+    }
 
     render() {
         const { initialEmployee, saveEmployee, fireEmployee } = this.props;
-        const { getFieldDecorator } = this.props.form;
+        const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
         return (
             <Form layout='horizontal'>
                 <div>
+                    <DecoratedCheckbox
+                        fields={ {} }
+                        field='isManager'
+                        formItem
+                        label={
+                            <FormattedMessage id='employee.manager_access' />
+                        }
+                        formItemLayout={ formItemLayout }
+                        getFieldDecorator={ getFieldDecorator }
+                        initialValue={ _.get(initialEmployee, 'isManager') }
+                    />
+                    <DecoratedDatePicker
+                        field='hireDate'
+                        label={ <FormattedMessage id='employee.hireDate' /> }
+                        formItem
+                        formItemLayout={ formItemLayout }
+                        formatMessage={ formatMessage }
+                        // className={ Styles.selectMargin }
+                        getFieldDecorator={ getFieldDecorator }
+                        getCalendarContainer={ trigger => trigger.parentNode }
+                        initialValue={
+                            initialEmployee && moment(initialEmployee.hireDate)
+                        }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
+                        format={ 'YYYY-MM-DD' }
+                        placeholder={
+                            <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
+                        }
+                    />
                     <DecoratedInput
                         field='name'
                         label={ <FormattedMessage id='employee.name' /> }
@@ -157,6 +200,28 @@ export class EmployeeForm extends Component {
                         getPopupContainer={ trigger => trigger.parentNode }
                         getFieldDecorator={ getFieldDecorator }
                     />
+                    { getFieldValue('isManager') && (
+                        <DecoratedInput
+                            fields={ {} }
+                            field='password'
+                            type='password'
+                            formItem
+                            label={ <FormattedMessage id='employee.password' /> }
+                            formItemLayout={ formItemLayout }
+                            getFieldDecorator={ getFieldDecorator }
+                            placeholder={ formatMessage({
+                                id: 'employee.password.placeholder',
+                            }) }
+                            rules={ [
+                                {
+                                    min:     6,
+                                    message: formatMessage({
+                                        id: 'employee.password.lenght',
+                                    }),
+                                },
+                            ] }
+                        />
+                    ) }
                     <DecoratedInput
                         field='jobTitle'
                         label={ <FormattedMessage id='employee.jobTitle' /> }
@@ -179,32 +244,6 @@ export class EmployeeForm extends Component {
                         className={ Styles.selectMargin }
                         getPopupContainer={ trigger => trigger.parentNode }
                         getFieldDecorator={ getFieldDecorator }
-                    />
-
-                    <DecoratedDatePicker
-                        field='hireDate'
-                        label={ <FormattedMessage id='employee.hireDate' /> }
-                        formItem
-                        formItemLayout={ formItemLayout }
-                        formatMessage={ formatMessage }
-                        // className={ Styles.selectMargin }
-                        getFieldDecorator={ getFieldDecorator }
-                        getCalendarContainer={ trigger => trigger.parentNode }
-                        initialValue={
-                            initialEmployee && moment(initialEmployee.hireDate)
-                        }
-                        rules={ [
-                            {
-                                required: true,
-                                message:  formatMessage({
-                                    id: 'required_field',
-                                }),
-                            },
-                        ] }
-                        format={ 'YYYY-MM-DD' }
-                        placeholder={
-                            <FormattedMessage id='order_task_modal.deadlineDate_placeholder' />
-                        }
                     />
 
                     <div className={ Styles.ButtonGroup }>
