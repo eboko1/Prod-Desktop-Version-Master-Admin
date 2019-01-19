@@ -1,11 +1,14 @@
 {
   "en": {
-    "vehicle_number_history.title": "Vehicle number history"
+    "vehicle_number_history.title": "Vehicle number history",
+    "vehicle_number_history.tooltip": "Enter vehicle number to get number history"
   },
   "ru": {
-    "vehicle_number_history.title": "История гос номера"
+    "vehicle_number_history.title": "История гос номера",
+    "vehicle_number_history.tooltip": "Введите гос. номер чтобы получть его историю"
   },
   "uk": {
-    "vehicle_number_history.title": "Історія держ номера"
+    "vehicle_number_history.title": "Історія держ номера",
+    "vehicle_number_history.tooltip": "Вкажіть держ. номер щоб отримати його історію"
   }
 }

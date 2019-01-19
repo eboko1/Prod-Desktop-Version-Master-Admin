@@ -5,6 +5,7 @@ import React, { Component } from 'react';
 import { Form, Row, Col, notification } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
+// proj
 import {
     DecoratedSelect,
     DecoratedInput,
@@ -12,6 +13,9 @@ import {
 } from 'forms/DecoratedFields';
 
 import { ArrayInput } from 'components';
+
+// own
+import Styles from './styles.m.css';
 
 const openNotificationWithIcon = (type, message, description) => {
     notification[ type ]({
@@ -56,8 +60,8 @@ export class AbstractClientForm extends Component {
 
         return (
             <Form layout='vertical'>
-                <Row gutter={ 8 }>
-                    <Col span={ 5 }>
+                <Row gutter={ 24 } type='flex'>
+                    <Col span={ 8 }>
                         <DecoratedInput
                             field='name'
                             label={
@@ -78,7 +82,7 @@ export class AbstractClientForm extends Component {
                             ] }
                         />
                     </Col>
-                    <Col span={ 5 }>
+                    <Col span={ 8 }>
                         <DecoratedInput
                             field='patronymic'
                             initialValue={ _.get(client, 'middleName') }
@@ -90,7 +94,7 @@ export class AbstractClientForm extends Component {
                             getFieldDecorator={ getFieldDecorator }
                         />
                     </Col>
-                    <Col span={ 5 }>
+                    <Col span={ 8 }>
                         <DecoratedInput
                             field='surname'
                             label={
@@ -102,109 +106,91 @@ export class AbstractClientForm extends Component {
                             getFieldDecorator={ getFieldDecorator }
                         />
                     </Col>
-                    <Col span={ 9 }>
-                        <Row gutter={ 8 } type='flex' justify='end'>
-                            <Col span={ 7 }>
-                                <DecoratedSelect
-                                    field='sex'
-                                    formItem
-                                    hasFeedback
-                                    initialValue={ _.get(client, 'sex') }
-                                    getFieldDecorator={ getFieldDecorator }
-                                    getPopupContainer={ trigger =>
-                                        trigger.parentNode
-                                    }
-                                    label={
-                                        <FormattedMessage id='add_client_form.sex' />
-                                    }
-                                    options={ [
-                                        {
-                                            id:    'male',
-                                            title: this.props.intl.formatMessage(
-                                                {
-                                                    id: 'add_client_form.male',
-                                                },
-                                            ),
-                                        },
-                                        {
-                                            id:    'femail',
-                                            title: this.props.intl.formatMessage(
-                                                {
-                                                    id:
-                                                        'add_client_form.female',
-                                                },
-                                            ),
-                                        },
-                                    ] }
-                                    optionValue='id'
-                                    optionLabel='title'
-                                />
-                            </Col>
-                            <Col span={ 7 }>
-                                <DecoratedSelect
-                                    field='status'
-                                    initialValue={ _.get(client, 'status') }
-                                    formItem
-                                    hasFeedback
-                                    getFieldDecorator={ getFieldDecorator }
-                                    getPopupContainer={ trigger =>
-                                        trigger.parentNode
-                                    }
-                                    label={
-                                        <FormattedMessage id='add_client_form.status' />
-                                    }
-                                    options={ [
-                                        {
-                                            id:    'permanent',
-                                            title: this.props.intl.formatMessage(
-                                                {
-                                                    id:
-                                                        'add_client_form.permanent',
-                                                },
-                                            ),
-                                        },
-                                        {
-                                            id:    'premium',
-                                            title: this.props.intl.formatMessage(
-                                                {
-                                                    id:
-                                                        'add_client_form.premium',
-                                                },
-                                            ),
-                                        },
-                                    ] }
-                                    optionValue='id'
-                                    optionLabel='title'
-                                />
-                            </Col>
-                            <Col span={ 7 }>
-                                <DecoratedDatePicker
-                                    field='birthday'
-                                    initialValue={
-                                        _.get(client, 'birthday')
-                                            ? moment(_.get(client, 'birthday'))
-                                            : void 0
-                                    }
-                                    label={
-                                        <FormattedMessage id='add_client_form.birthday' />
-                                    }
-                                    formItem
-                                    formatMessage={
-                                        this.props.intl.formatMessage
-                                    }
-                                    getFieldDecorator={ getFieldDecorator }
-                                    value={ null }
-                                    getCalendarContainer={ trigger =>
-                                        trigger.parentNode
-                                    }
-                                    format='YYYY-MM-DD'
-                                />
-                            </Col>
-                        </Row>
+                </Row>
+
+                <Row gutter={ 24 } type='flex'>
+                    <Col span={ 8 }>
+                        <DecoratedSelect
+                            field='sex'
+                            formItem
+                            hasFeedback
+                            initialValue={ _.get(client, 'sex') }
+                            getFieldDecorator={ getFieldDecorator }
+                            getPopupContainer={ trigger => trigger.parentNode }
+                            label={
+                                <FormattedMessage id='add_client_form.sex' />
+                            }
+                            options={ [
+                                {
+                                    id:    'male',
+                                    title: this.props.intl.formatMessage({
+                                        id: 'add_client_form.male',
+                                    }),
+                                },
+                                {
+                                    id:    'femail',
+                                    title: this.props.intl.formatMessage({
+                                        id: 'add_client_form.female',
+                                    }),
+                                },
+                            ] }
+                            optionValue='id'
+                            optionLabel='title'
+                        />
+                    </Col>
+                    <Col span={ 8 }>
+                        <DecoratedSelect
+                            field='status'
+                            initialValue={ _.get(client, 'status') }
+                            formItem
+                            hasFeedback
+                            getFieldDecorator={ getFieldDecorator }
+                            getPopupContainer={ trigger => trigger.parentNode }
+                            label={
+                                <FormattedMessage id='add_client_form.status' />
+                            }
+                            options={ [
+                                {
+                                    id:    'permanent',
+                                    title: this.props.intl.formatMessage({
+                                        id: 'add_client_form.permanent',
+                                    }),
+                                },
+                                {
+                                    id:    'premium',
+                                    title: this.props.intl.formatMessage({
+                                        id: 'add_client_form.premium',
+                                    }),
+                                },
+                            ] }
+                            optionValue='id'
+                            optionLabel='title'
+                        />
+                    </Col>
+                    <Col span={ 8 }>
+                        <DecoratedDatePicker
+                            field='birthday'
+                            initialValue={
+                                _.get(client, 'birthday')
+                                    ? moment(_.get(client, 'birthday'))
+                                    : void 0
+                            }
+                            label={
+                                <FormattedMessage id='add_client_form.birthday' />
+                            }
+                            formItem
+                            formatMessage={ this.props.intl.formatMessage }
+                            getFieldDecorator={ getFieldDecorator }
+                            value={ null }
+                            getCalendarContainer={ trigger => trigger.parentNode }
+                            format='YYYY-MM-DD'
+                            cnStyles={ Styles.datePicker }
+                        />
                     </Col>
                 </Row>
-                <Row gutter={ 8 }>
-                    <Col span={ 6 }>
+
+                <Row gutter={ 24 } type='flex'>
+                    <Col span={ 8 }>
                         <ArrayInput
                             form={ this.props.form }
                             phone
@@ -238,7 +224,7 @@ export class AbstractClientForm extends Component {
                             }
                         />
                     </Col>
-                    <Col span={ 6 }>
+                    <Col span={ 8 }>
                         <ArrayInput
                             optional
                             initialValue={

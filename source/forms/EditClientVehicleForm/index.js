@@ -157,6 +157,7 @@ export class EditClientVehicleForm extends Component {
                 size='small'
                 bordered
                 dataSource={ clientEntity.vehicles }
+                className= {Styles.list }
                 renderItem={ (item, index) => (
                     <List.Item className={ Styles.listItem }>
                         <Form>
@@ -189,6 +190,7 @@ export class EditClientVehicleForm extends Component {
                                                         vehicle,
                                                     );
                                                 } }
+                                                editableVehicle={ item }
                                             />
                                         </Modal>
                                     ) }

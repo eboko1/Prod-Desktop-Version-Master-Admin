@@ -1,0 +1,22 @@
+.addButtonWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.editableVehicle {
+    display: flex;
+    margin: 0 48px 8px 15%;
+    background: var(--static);
+    padding: 8px;
+    align-items: center;
+}
+
+.carIcon {
+    font-size: 64px;
+    color: var(--primary);
+    margin-right: 24px;
+}
+
+.listItem > span {
+    font-weight: bold;
+}
