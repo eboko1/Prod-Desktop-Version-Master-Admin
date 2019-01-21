@@ -168,8 +168,8 @@ export default class OrderFormTabs extends Component {
                             formatMessage({
                                 id: 'order_form_table.tasks',
                             }) +
-                            ` (${orderTasks.orderTasks &&
-                                orderTasks.orderTasks.length})`
+                            ` (${orderTasks.orderTasks ?
+                                orderTasks.orderTasks.length : 0})`
                         }
                         key='1'
                     >
