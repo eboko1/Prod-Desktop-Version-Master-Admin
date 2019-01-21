@@ -22,9 +22,11 @@
 }
 
 .logo {
-    width: 60px;
+    width: 70px;
 }
 
 .copyright {
-    margin-top: 12px;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
 }
