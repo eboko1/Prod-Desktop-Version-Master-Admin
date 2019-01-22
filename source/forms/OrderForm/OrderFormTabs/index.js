@@ -117,6 +117,7 @@ export default class OrderFormTabs extends Component {
             countServices,
             commentsCount,
             stationsCount,
+            totalDetailsProfit,
 
             intl: { formatMessage },
             form: { getFieldDecorator },
@@ -258,8 +259,10 @@ export default class OrderFormTabs extends Component {
                         form={ form }
                         forbidden={ areDetailsForbidden }
                         price={ priceDetails }
+                        totalDetailsProfit={ totalDetailsProfit }
                         discountFieldName={ 'detailsDiscount' }
                         fetchedOrder={ fetchedOrder }
+                        detailsMode
                     />
                 </TabPane>
                 <TabPane

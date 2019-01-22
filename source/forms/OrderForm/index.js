@@ -338,7 +338,7 @@ export class OrderForm extends Component {
 
         const tecdocId = this._getTecdocId();
 
-        const { count: countDetails, price: priceDetails } = detailsStats(
+        const { count: countDetails, price: priceDetails, totalDetailsProfit: totalDetailsProfit } = detailsStats(
             _.get(formFieldsValues, 'details', []),
         );
 
@@ -426,7 +426,7 @@ export class OrderForm extends Component {
             (this._bodyUpdateIsForbidden()
                 ? void 0
                 : _.get(location, 'state.stationNum'));
-
+        
         return (
             <OrderFormTabs
                 errors={ errors }
@@ -473,6 +473,7 @@ export class OrderForm extends Component {
                 priceDetails={ priceDetails }
                 countServices={ countServices }
                 countDetails={ countDetails }
+                totalDetailsProfit={ totalDetailsProfit }
                 commentsCount={ commentsCount }
                 stationsCount={ stationsCount }
             />
