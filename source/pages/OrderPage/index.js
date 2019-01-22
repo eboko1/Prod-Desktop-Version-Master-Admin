@@ -138,15 +138,20 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 class OrderPage extends Component {
-    componentDidMount() {
-        const { fetchOrderForm, fetchOrderTask, match } = this.props;
-        fetchOrderForm(match.params.id);
-        fetchOrderTask(match.params.id);
-    }
 
     state = {
         errors: void 0,
     };
+
+    componentDidMount() {
+        const { fetchOrderForm, fetchOrderTask, match: { params: {id}}, user } = this.props;
+        fetchOrderForm(id);
+
+        const viewTasks = !isForbidden(user, permissions.GET_TASKS);
+        if (viewTasks) {
+            fetchOrderTask(id);
+        }
+    }
 
     saveFormRef = formRef => {
         this.formRef = formRef;
