@@ -50,10 +50,9 @@ const formItemLayout = {
 })
 export class EmployeeForm extends Component {
     componentDidMount() {
-        const initialAccess = _.get(this.props.initialEmployee, 'isManager');
-        console.log('→ initialAccess', initialAccess);
+        const initialAccess = _.get(this.props.initialEmployee, 'managerEnabled');
         this.props.form.setFieldsValue({
-            isManager: initialAccess,
+            managerEnabled: initialAccess,
         });
     }
 
@@ -61,21 +60,21 @@ export class EmployeeForm extends Component {
         const { initialEmployee, saveEmployee, fireEmployee } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
-        const isManager = Boolean(getFieldValue('isManager'));
+        const managerEnabled = Boolean(getFieldValue('managerEnabled'));
 
         return (
             <Form layout='horizontal'>
                 <div>
                     <DecoratedCheckbox
                         fields={ {} }
-                        field='isManager'
+                        field='managerEnabled'
                         formItem
                         label={
                             <FormattedMessage id='employee.manager_access' />
                         }
                         formItemLayout={ formItemLayout }
                         getFieldDecorator={ getFieldDecorator }
-                        initialValue={ _.get(initialEmployee, 'isManager') }
+                        initialValue={ _.get(initialEmployee, 'managerEnabled') }
                     />
                     <DecoratedDatePicker
                         field='hireDate'
@@ -179,12 +178,12 @@ export class EmployeeForm extends Component {
                         autosize={ { minRows: 2, maxRows: 6 } }
                         rules={ [
                             {
-                                required: isManager,
+                                required: managerEnabled,
                                 message:  formatMessage({
                                     id: 'required_field',
                                 }),
                             },
-                            isManager && {
+                            managerEnabled && {
                                 validator: (rule, value, callback) => {
                                     let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; // eslint-disable-line
                                     /* eslint-disable */
@@ -211,7 +210,7 @@ export class EmployeeForm extends Component {
                         getPopupContainer={ trigger => trigger.parentNode }
                         getFieldDecorator={ getFieldDecorator }
                     />
-                    { getFieldValue('isManager') && (
+                    { getFieldValue('managerEnabled') && (
                         <DecoratedInput
                             fields={ {} }
                             field='password'
@@ -225,7 +224,7 @@ export class EmployeeForm extends Component {
                             }) }
                             rules={ [
                                 {
-                                    required: isManager,
+                                    required: managerEnabled,
                                     min:      6,
                                     message:  formatMessage({
                                         id: 'employee.password.lenght',

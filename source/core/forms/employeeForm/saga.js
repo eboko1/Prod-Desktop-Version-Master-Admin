@@ -24,8 +24,11 @@ export function* saveEmployee() {
             const { payload: employee, id: id } = yield take(SAVE_EMPLOYEE);
 
             const normalizedEmployee = {
-                password:           employee.isManager ? employee.password : null,
+                ...employee.managerEnabled
+                    ? { password: employee.managerEnabled }
+                    : {},
                 email:              employee.email ? employee.email : null,
+                managerEnabled:     employee.managerEnabled,
                 phone:              String(employee.phone),
                 enabled:            employee.enabled,
                 hireDate:           moment(employee.hireDate).format('YYYY-MM-DD'),

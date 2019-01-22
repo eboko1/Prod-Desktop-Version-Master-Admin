@@ -22,7 +22,7 @@ export const FIRE_EMPLOYEE = `${prefix}/FIRE_EMPLOYEE`;
 
 const ReducerState = {
     fields: {
-        // isManager:          { value: false, name: 'isManager' },
+        // managerEnabled:          { value: false, name: 'managerEnabled' },
         // password:           { value: void 0, name: 'password' },
         // email:              { value: void 0, name: 'email' },
         // phone:              { value: void 0, name: 'phone' },

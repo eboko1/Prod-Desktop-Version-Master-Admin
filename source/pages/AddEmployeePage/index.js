@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { withRouter, Link } from 'react-router-dom';
-import { Button, Icon, Tabs } from 'antd';
+import { Button, Icon } from 'antd';
 
 // proj
 import { fetchEmployees } from 'core/employees/duck';
@@ -16,9 +16,6 @@ import {
 import { Layout } from 'commons';
 import { EmployeeForm } from 'forms';
 import book from 'routes/book';
-
-// own
-const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
     employeesData: state.forms.employeeForm.fields,
@@ -72,7 +69,6 @@ class EditEmployeePage extends Component {
                 title={ <FormattedMessage id={ 'employee-page.add_employee' } /> }
                 controls={
                     <Link to={ book.employeesPage }>
-                        { ' ' }
                         <Button type='default'>
                             <Icon type='arrow-left' />
                             <FormattedMessage id='back-to-list' />
@@ -80,21 +76,12 @@ class EditEmployeePage extends Component {
                     </Link>
                 }
             >
-                <Tabs type='card' tabPosition='right'>
-                    <TabPane
-                        tab={ this.props.intl.formatMessage({
-                            id: 'employee.general_data',
-                        }) }
-                        key='1'
-                    >
-                        <EmployeeForm
-                            user={ user }
-                            wrappedComponentRef={ this.saveEmployeeFormRef }
-                            saveEmployee={ this.saveEmployee }
-                            initialEmployee={ null }
-                        />
-                    </TabPane>
-                </Tabs>
+                <EmployeeForm
+                    user={ user }
+                    wrappedComponentRef={ this.saveEmployeeFormRef }
+                    saveEmployee={ this.saveEmployee }
+                    initialEmployee={ null }
+                />
             </Layout>
         );
     }

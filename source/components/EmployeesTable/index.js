@@ -6,6 +6,7 @@ import { FormattedMessage } from 'react-intl';
 import { Table, Rate, Radio, Icon } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
+import classNames from 'classnames/bind';
 
 // proj
 import { Catcher } from 'commons';
@@ -16,6 +17,8 @@ import book from 'routes/book';
 import Styles from './styles.m.css';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+
+const cx = classNames.bind(Styles);
 
 @withRouter
 export default class EmployeesTable extends Component {
@@ -62,11 +65,13 @@ export default class EmployeesTable extends Component {
                 title:     <FormattedMessage id='employee-table.manager' />,
                 dataIndex: 'isManager',
                 width:     '10%',
-                render:    isManager =>
+                render:    (isManager, { managerEnabled }) =>
                     isManager ? (
                         <Icon
                             type='check-circle'
-                            className={ Styles.managerIcon }
+                            className={ this._managerIconClassName(
+                                managerEnabled,
+                            ) }
                         />
                     ) : null,
             },
@@ -98,6 +103,12 @@ export default class EmployeesTable extends Component {
         this.props.setEmployeesStatus({ status, disabled });
         this.props.fetchEmployees();
     };
+
+    _managerIconClassName = enabled =>
+        cx({
+            managerIconDisabled: !enabled,
+            managerIcon:         true,
+        });
 
     render() {
         const { employees } = this.props;
