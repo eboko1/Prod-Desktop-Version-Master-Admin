@@ -64,15 +64,23 @@ export class OrderForm extends Component {
         formValues: {},
     };
 
-    _openNotification = () => {
+    _openNotification = ({make, model}) => {
         const params = {
             message: this.props.intl.formatMessage({
                 id: 'order-form.warning',
             }),
-            description: this.props.intl.formatMessage({
-                id: 'order-form.update_modification_info',
-            }),
-            duration: 0,
+            description: (
+                <div>
+                    <div>
+                        { this.props.intl.formatMessage({
+                            id: 'order-form.update_modification_info',
+                        }) }
+                    </div>
+                    <div>{ make } { model }</div>
+                </div>
+            ),
+            placement: 'topLeft',
+            duration:  7,
         };
         notification.open(params);
     };
@@ -94,12 +102,12 @@ export class OrderForm extends Component {
         if (newClientVehicleId !== oldClientVehicleId && newClientVehicleId) {
             const newClientVehicle = this._getClientVehicle(newClientVehicleId);
             if (!newClientVehicle.modificationId) {
-                this._openNotification();
+                this._openNotification(newClientVehicle);
             } else if (
                 newClientVehicle.bodyType &&
                 !newClientVehicle.tecdocId
             ) {
-                this._openNotification();
+                this._openNotification(newClientVehicle);
             }
         }
 
