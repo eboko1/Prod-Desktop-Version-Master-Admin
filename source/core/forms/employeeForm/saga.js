@@ -25,7 +25,7 @@ export function* saveEmployee() {
 
             const normalizedEmployee = {
                 password:           employee.isManager ? employee.password : null,
-                email:              employee.email,
+                email:              employee.email ? employee.email : null,
                 phone:              String(employee.phone),
                 enabled:            employee.enabled,
                 hireDate:           moment(employee.hireDate).format('YYYY-MM-DD'),

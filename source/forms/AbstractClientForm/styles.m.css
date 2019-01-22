@@ -1,3 +1,7 @@
+.form :global(.ant-form-item) {
+    margin-bottom: 2px;
+}
+
 .datePicker {
     width: 100%;
 }

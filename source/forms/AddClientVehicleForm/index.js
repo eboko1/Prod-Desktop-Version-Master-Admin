@@ -47,7 +47,13 @@ export class AddClientVehicleForm extends Component {
 
     /* eslint-disable complexity */
     render() {
-        const { makes, models, modifications, lastFilterAction, editableVehicle } = this.props;
+        const {
+            makes,
+            models,
+            modifications,
+            lastFilterAction,
+            editableVehicle,
+        } = this.props;
 
         const years = Array(new Date().getFullYear() - 1900 + 1)
             .fill(1900)
@@ -63,30 +69,34 @@ export class AddClientVehicleForm extends Component {
         const vehicle = getFieldsValue();
 
         return (
-            <Form>
-                { editableVehicle && 
+            <Form className={ Styles.form }>
+                { editableVehicle && (
                     <div className={ Styles.editableVehicle }>
                         <Icon type='car' className={ Styles.carIcon } />
                         <ul>
                             <li className={ Styles.listItem }>
-                                <FormattedMessage id='add_client_form.year' />:{' '}
+                                <FormattedMessage id='add_client_form.year' />:{ ' ' }
                                 { editableVehicle.year && editableVehicle.year }
                             </li>
                             <li className={ Styles.listItem }>
-                                <FormattedMessage id='add_client_form.make' />:{' '}
+                                <FormattedMessage id='add_client_form.make' />:{ ' ' }
                                 { editableVehicle.make && editableVehicle.make }
                             </li>
                             <li className={ Styles.listItem }>
-                                <FormattedMessage id='add_client_form.model' />:{' '}
+                                <FormattedMessage id='add_client_form.model' />:{ ' ' }
                                 { editableVehicle.model && editableVehicle.model }
                             </li>
                             <li className={ Styles.listItem }>
-                                <FormattedMessage id='add_client_form.modification' />:{' '}
-                                { editableVehicle.modification && editableVehicle.modification } { editableVehicle.horsePower && `(${ editableVehicle.horsePower })`}
+                                <FormattedMessage id='add_client_form.modification' />
+                                :{ ' ' }
+                                { editableVehicle.modification &&
+                                    editableVehicle.modification }{ ' ' }
+                                { editableVehicle.horsePower &&
+                                    `(${editableVehicle.horsePower})` }
                             </li>
                         </ul>
                     </div>
-                }
+                ) }
                 { years && (
                     <DecoratedSelect
                         field={ 'year' }
@@ -251,15 +261,15 @@ export class AddClientVehicleForm extends Component {
                 ) }
 
                 { !this.props.onlyVehicles && (
-                    <FormItem
-                        { ...formItemLayout }
-                        label={ <FormattedMessage id='add_client_form.number' /> }
-                        hasFeedback
-                    >
+                    <div className={ Styles.numWrapper }>
                         <DecoratedInput
                             field='number'
-                            // hasFeedback
-                            // formItem
+                            hasFeedback
+                            formItem
+                            formItemLayout={ formItemLayout }
+                            label={
+                                <FormattedMessage id='add_client_form.number' />
+                            }
                             // formItemLayout={ formItemLayout }
                             rules={ [
                                 {
@@ -269,16 +279,11 @@ export class AddClientVehicleForm extends Component {
                                     }),
                                 },
                             ] }
-                            // label={
-                            //     <FormattedMessage id='add_client_form.number' />
-                            // }
                             getFieldDecorator={ getFieldDecorator }
                         />
 
-                        { /* <FormItem> */ }
                         <VehicleNumberHistory vehicleNumber={ vehicle.number } />
-                        { /* </FormItem> */ }
-                    </FormItem>
+                    </div>
                 ) }
                 { !this.props.onlyVehicles && (
                     <DecoratedInput

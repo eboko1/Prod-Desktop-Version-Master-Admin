@@ -50,8 +50,10 @@ const formItemLayout = {
 })
 export class EmployeeForm extends Component {
     componentDidMount() {
+        const initialAccess = _.get(this.props.initialEmployee, 'isManager');
+        console.log('→ initialAccess', initialAccess);
         this.props.form.setFieldsValue({
-            isManager: _.get(this.props.initialEmployee, 'isManager'),
+            isManager: initialAccess,
         });
     }
 
@@ -59,6 +61,7 @@ export class EmployeeForm extends Component {
         const { initialEmployee, saveEmployee, fireEmployee } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
+        const isManager = Boolean(getFieldValue('isManager'));
 
         return (
             <Form layout='horizontal'>
@@ -154,6 +157,14 @@ export class EmployeeForm extends Component {
                             }
                             initialPhoneNumber={ _.get(initialEmployee, 'phone') }
                             form={ this.props.form }
+                            rules={ [
+                                {
+                                    required: true,
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
+                                },
+                            ] }
                         />
                     </FormItem>
                     <DecoratedInput
@@ -168,12 +179,12 @@ export class EmployeeForm extends Component {
                         autosize={ { minRows: 2, maxRows: 6 } }
                         rules={ [
                             {
-                                required: true,
+                                required: isManager,
                                 message:  formatMessage({
                                     id: 'required_field',
                                 }),
                             },
-                            {
+                            isManager && {
                                 validator: (rule, value, callback) => {
                                     let re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i; // eslint-disable-line
                                     /* eslint-disable */
@@ -214,8 +225,9 @@ export class EmployeeForm extends Component {
                             }) }
                             rules={ [
                                 {
-                                    min:     6,
-                                    message: formatMessage({
+                                    required: isManager,
+                                    min:      6,
+                                    message:  formatMessage({
                                         id: 'employee.password.lenght',
                                     }),
                                 },

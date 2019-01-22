@@ -1,3 +1,7 @@
+.form :global(.ant-form-item) {
+    margin-bottom: 2px;
+}
+
 .addButtonWrapper {
     display: flex;
     justify-content: center;
@@ -19,4 +23,16 @@
 
 .listItem > span {
     font-weight: bold;
+}
+
+.numWrapper {
+    display: flex;
+}
+
+.numWrapper :global(.ant-row) {
+    width: 100%;
+}
+
+.numWrapper :global(.ant-form-item-control-wrapper) {
+    padding: 0 5px;
 }

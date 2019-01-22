@@ -59,7 +59,7 @@ export class AbstractClientForm extends Component {
         }
 
         return (
-            <Form layout='vertical'>
+            <Form layout='vertical' className={ Styles.form }>
                 <Row gutter={ 24 } type='flex'>
                     <Col span={ 8 }>
                         <DecoratedInput
