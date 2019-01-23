@@ -21,6 +21,7 @@ const ACCESS_DASHBOARD = 'ACCESS_DASHBOARD';
 const EDIT_DASHBOARD_ORDER = 'EDIT_DASHBOARD_ORDER';
 const OPEN_DASHBOARD_ORDER = 'OPEN_DASHBOARD_ORDER';
 const CREATE_DASHBOARD_ORDER = 'CREATE_DASHBOARD_ORDER';
+const RESCHEDULE_ORDERS = 'RESCHEDULE_ORDERS';
 
 // Employees
 const GET_EMPLOYEES = 'GET_EMPLOYEES';
@@ -74,6 +75,7 @@ export const permissions = Object.freeze({
     EDIT_DASHBOARD_ORDER,
     OPEN_DASHBOARD_ORDER,
     CREATE_DASHBOARD_ORDER,
+    RESCHEDULE_ORDERS,
 
     GET_EMPLOYEES,
     CREATE_EDIT_DELETE_EMPLOYEES,
@@ -117,6 +119,7 @@ export const groupedPermissions = {
         EDIT_DASHBOARD_ORDER,
         OPEN_DASHBOARD_ORDER,
         CREATE_DASHBOARD_ORDER,
+        RESCHEDULE_ORDERS,
     ],
     [ ORDERS_PERMISSIONS ]: [
         ACCESS_ORDER_BODY,
@@ -222,6 +225,9 @@ export const getPermissionsLabels = intl => ({
     }),
     [ CREATE_DASHBOARD_ORDER ]: intl.formatMessage({
         id: 'roles.create_dashboard_order',
+    }),
+    [ RESCHEDULE_ORDERS ]: intl.formatMessage({
+        id: 'roles.reschedule_orders',
     }),
     [ GET_EMPLOYEES ]: intl.formatMessage({
         id: 'roles.get_employees',
