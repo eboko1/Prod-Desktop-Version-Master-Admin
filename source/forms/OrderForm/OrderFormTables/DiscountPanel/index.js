@@ -14,7 +14,6 @@ const FormItem = Form.Item;
 
 @injectIntl
 class DiscountPanel extends Component {
-
     shouldComponentUpdate(nextProps) {
         return !_.isEqual(nextProps, this.props);
     }
@@ -23,9 +22,11 @@ class DiscountPanel extends Component {
         const {
             form: { getFieldDecorator },
             price,
+            totalDetailsProfit,
             discountFieldName,
             fetchedOrder,
             forbidden,
+            detailsMode,
         } = this.props;
 
         const discount = this.props.form.getFieldValue(discountFieldName);
@@ -92,6 +93,30 @@ class DiscountPanel extends Component {
                             }
                         />
                     </FormItem>
+                    { detailsMode && (
+                        <FormItem
+                            label={
+                                <FormattedMessage id='order_form_table.details_profit' />
+                            }
+                            colon={ false }
+                            className={ Styles.formItem }
+                        >
+                            <InputNumber
+                                disabled
+                                value={ totalDetailsProfit }
+                                min={ 0 }
+                                formatter={ value =>
+                                    `${value}`.replace(
+                                        /\B(?=(\d{3})+(?!\d))/g,
+                                        ' ',
+                                    )
+                                }
+                                parser={ value =>
+                                    `${value}`.replace(/\$\s?|(\s)/g, '')
+                                }
+                            />
+                        </FormItem>
+                    ) }
                 </div>
             </Catcher>
         );

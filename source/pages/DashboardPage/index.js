@@ -18,6 +18,7 @@ import {
     transferOutdateRepairs,
 } from 'core/dashboard/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import { permissions, isForbidden } from 'utils';
 
 import { Layout, Spinner, Loader } from 'commons';
 import { ArrowsWeekPicker, ArrowsDatePicker } from 'components';
@@ -119,9 +120,10 @@ class DashboardPage extends Component {
     _transferOutdateRepairs = () => this.props.transferOutdateRepairs();
 
     render() {
-        const { startDate, endDate, date, mode, spinner, loading } = this.props;
+        const { startDate, endDate, date, mode, spinner, loading, user } = this.props;
 
         const dashboardContainer = this._renderDashboardContainer();
+        const rescheduleOrdersAllowed = !isForbidden(user, permissions.RESCHEDULE_ORDERS);
 
         return spinner ? (
             <Spinner spin={ spinner } />
@@ -133,7 +135,7 @@ class DashboardPage extends Component {
                     <FormattedMessage id='dashboard-page.description' />
                 }
                 controls={
-                    <Button
+                    (rescheduleOrdersAllowed ? <Button
                         type='primary'
                         // onClick={ () => this._transferOutdateRepairs() }
                         onClick={ () =>
@@ -141,7 +143,7 @@ class DashboardPage extends Component {
                         }
                     >
                         <FormattedMessage id='dashboard-page.transfer_outdated_repairs' />
-                    </Button>
+                    </Button> : <></>)
                 }
             >
                 <section className={ Styles.dashboardPage }>

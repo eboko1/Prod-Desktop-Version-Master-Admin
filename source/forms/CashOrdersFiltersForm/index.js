@@ -11,6 +11,7 @@ import {
     selectCashStats,
     setCashOrdersFilters,
     selectCashOrdersFilters,
+    setSearchQuery,
 } from 'core/cash/duck';
 import { onChangeCashOrdersFiltersForm } from 'core/forms/cashOrdersFiltersForm/duck';
 
@@ -33,6 +34,7 @@ const Option = Select.Option;
         fetchCashboxes,
         fetchCashOrders,
         setCashOrdersFilters,
+        setSearchQuery,
     },
     mapStateToProps: state => ({
         cashStats: selectCashStats(state),
@@ -47,7 +49,7 @@ export class CashOrdersFiltersForm extends Component {
     }
 
     _onSearch = ({ target: { value } }) => {
-        this.props.setCashOrdersFilters({ query: value });
+        this.props.setSearchQuery(value);
         this.props.fetchCashOrders();
     };
 

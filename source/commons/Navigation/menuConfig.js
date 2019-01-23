@@ -25,8 +25,10 @@ export default {
                     name: 'navigation.workflow',
                 },
                 {
-                    key:  '/mytasks',
-                    link: book.myTasksPage,
+                    key:      '/mytasks',
+                    link:     book.myTasksPage,
+                    disabled: user =>
+                        isForbidden(user, permissions.GET_TASKS),
                     name: 'navigation.mytasks',
                 },
             ],

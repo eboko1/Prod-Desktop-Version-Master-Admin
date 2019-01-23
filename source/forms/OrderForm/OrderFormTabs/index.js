@@ -117,6 +117,7 @@ export default class OrderFormTabs extends Component {
             countServices,
             commentsCount,
             stationsCount,
+            totalDetailsProfit,
 
             intl: { formatMessage },
             form: { getFieldDecorator },
@@ -135,6 +136,7 @@ export default class OrderFormTabs extends Component {
             ACCESS_ORDER_COMMENTS,
             ACCESS_ORDER_SERVICES,
             ACCESS_ORDER_DETAILS,
+            GET_TASKS,
             GET_ALL_TASKS,
         } = permissions;
 
@@ -144,6 +146,7 @@ export default class OrderFormTabs extends Component {
         const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
         const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
 
+        const viewTasks = !isForbidden(user, GET_TASKS);
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
         const canCreateTask =
             viewAllTasks &&
@@ -161,15 +164,15 @@ export default class OrderFormTabs extends Component {
 
         return (
             <Tabs type='card' className={ Styles.orderFormsTabs }>
-                { !addOrderForm && (
+                { !addOrderForm && viewTasks && (
                     <TabPane
                         forceRender
                         tab={
                             formatMessage({
                                 id: 'order_form_table.tasks',
                             }) +
-                            ` (${orderTasks.orderTasks &&
-                                orderTasks.orderTasks.length})`
+                            ` (${orderTasks.orderTasks ?
+                                orderTasks.orderTasks.length : 0})`
                         }
                         key='1'
                     >
@@ -258,8 +261,10 @@ export default class OrderFormTabs extends Component {
                         form={ form }
                         forbidden={ areDetailsForbidden }
                         price={ priceDetails }
+                        totalDetailsProfit={ totalDetailsProfit }
                         discountFieldName={ 'detailsDiscount' }
                         fetchedOrder={ fetchedOrder }
+                        detailsMode
                     />
                 </TabPane>
                 <TabPane

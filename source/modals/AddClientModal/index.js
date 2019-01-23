@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import _ from 'lodash';
 
 // proj
 import {
@@ -54,10 +55,13 @@ export default class AddClientModal extends Component {
             <Modal
                 className={ Styles.addClientModal }
                 width={ '80%' }
+                height={ '80%' }
+                style={ { top: 20 } }
                 title={ <>{title}</> }
                 cancelText={ <FormattedMessage id='cancel' /> }
                 okText={ <FormattedMessage id='add' /> }
                 wrapClassName={ Styles.addClientModal }
+                // centered
                 visible={ visible === MODALS.ADD_CLIENT }
                 onOk={ () => {
                     validateFields([ 'name', 'phones' ], err => {
@@ -115,15 +119,15 @@ export default class AddClientModal extends Component {
                     wrappedComponentRef={ this.props.wrappedComponentRef }
                     addClientFormData={ addClientFormData }
                 />
-                <AddClientVehicleForm
-                    addClientVehicle={ this.props.addClientVehicle }
-                />
-                { vehicles && (
+                { !_.isEmpty(vehicles) && (
                     <ClientsVehiclesTable
                         removeClientVehicle={ this.props.removeClientVehicle }
                         vehicles={ vehicles }
                     />
                 ) }
+                <AddClientVehicleForm
+                    addClientVehicle={ this.props.addClientVehicle }
+                />
             </Modal>
         );
     }

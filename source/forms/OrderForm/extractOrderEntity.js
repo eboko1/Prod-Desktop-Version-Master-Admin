@@ -63,9 +63,15 @@ export function convertFieldsValuesToDbEntity(
             const detailCustom = !detailConfig
                 ? { name: detailId }
                 : { detailId };
-            const brandCustom = !brandConfig
-                ? { brandName: brandId }
-                : { brandId };
+
+            let brandCustom = {};
+            if (!brandConfig) {
+                if(brandId) {
+                    brandCustom = { brandName: brandId }
+                }
+            } else {
+                brandCustom = { brandId }
+            }
 
             return { ...baseDetail, ...detailCustom, ...brandCustom };
         })

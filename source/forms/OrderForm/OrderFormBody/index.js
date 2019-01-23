@@ -204,7 +204,7 @@ export default class OrderFormBody extends Component {
 
     _getClientVehiclesOptions() {
         return _.get(this.props, 'selectedClient.vehicles', []).map(vehicle => (
-            <Option value={ vehicle.id } key={ v4() }>
+            <Option value={ vehicle.id } key={ v4() } disabled={ vehicle.disabled }>
                 { formatVehicleLabel(vehicle, this.props.intl.formatMessage) }
             </Option>
         ));

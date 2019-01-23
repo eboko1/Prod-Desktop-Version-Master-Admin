@@ -10,8 +10,6 @@ import {
     select,
 } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
-import _ from 'lodash';
-import moment from 'moment';
 import nprogress from 'nprogress';
 
 // proj
@@ -22,6 +20,7 @@ import {
     setDetailsSuggestionsFetchingState,
     emitError,
 } from 'core/ui/duck';
+import { setErrorMessage } from 'core/errorMessage/duck';
 import { fetchAPI } from 'utils';
 import book from 'routes/book';
 
@@ -162,7 +161,7 @@ export function* updateOrderSaga() {
                 },
             } = yield take(UPDATE_ORDER);
             const mergedOrder = options ? { ...order, ...options } : order;
-            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder);
+            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder, {handleErrorInternally: true});
 
             if (!redirectStatus) {
                 yield put(fetchOrderForm(id));
@@ -185,7 +184,7 @@ export function* updateOrderSaga() {
                 yield put(returnToOrdersPage(redirectStatus));
             }
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         } finally {
             yield put(updateOrderSuccess());
         }

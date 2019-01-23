@@ -5,6 +5,7 @@ import createSagaMiddleware from 'redux-saga';
 import thunk from 'redux-thunk';
 import nprogress from 'nprogress';
 
+// proj
 const history = createBrowserHistory();
 const routerMiddleware = createRouterMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();

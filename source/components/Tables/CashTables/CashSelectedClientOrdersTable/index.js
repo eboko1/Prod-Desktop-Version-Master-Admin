@@ -52,8 +52,10 @@ export class CashSelectedClientOrdersTable extends Component {
         this.props.fetchSelectedClientOrders();
     }
 
-    _onRowClick = orderId => {
-        this.props.onOrderSelect(orderId);
+    _onRowClick = order => {
+        console.log('→ _onRowClick orderId', order);
+        // this.props.onOrderSelect(order);
+        this.props.selectOrder(order);
     };
 
     render() {

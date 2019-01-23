@@ -1,6 +1,7 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
+import { saveAs } from 'file-saver';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -19,12 +20,14 @@ import {
     fetchCashboxesActivitySuccess,
     selectCashOrdersFilters,
     selectCashAccountingFilters,
+    printCashOrderSuccess,
     FETCH_CASHBOXES,
     FETCH_CASHBOXES_BALANCE,
     FETCH_CASHBOXES_ACTIVITY,
     CREATE_CASHBOX,
     DELETE_CASHBOX,
     FETCH_CASH_ORDERS,
+    PRINT_CASH_ORDERS,
 } from './duck';
 
 export function* fetchCashboxesSaga() {
@@ -137,6 +140,38 @@ export function* deleteCashboxSaga() {
     }
 }
 
+export function* printCashOrdersSaga() {
+    while (true) {
+        try {
+            yield take(PRINT_CASH_ORDERS);
+            yield nprogress.start();
+            const filters = yield select(selectCashOrdersFilters);
+            const response = yield call(
+                fetchAPI,
+                'GET',
+                'cash_orders/pdf',
+                filters,
+                null,
+                { rawResponse: true },
+            );
+
+            const reportFile = yield response.blob();
+
+            const contentDispositionHeader = response.headers.get(
+                'content-disposition',
+            );
+            const fileName = contentDispositionHeader.match(
+                /^attachment; filename="(.*)"/,
+            )[ 1 ];
+            yield saveAs(reportFile, fileName);
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* saga() {
     yield all([
         call(fetchCashboxesSaga),
@@ -145,5 +180,6 @@ export function* saga() {
         call(createCashboxSaga),
         call(deleteCashboxSaga),
         call(fetchCashOrdersSaga),
+        call(printCashOrdersSaga),
     ]);
 }

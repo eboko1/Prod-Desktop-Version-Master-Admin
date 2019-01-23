@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-// import { Icon } from 'antd';
+import { Icon } from 'antd';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import _ from 'lodash';
@@ -10,6 +10,7 @@ import {
     setCashOrdersFilters,
     fetchCashOrders,
     selectCashOrdersFilters,
+    printCashOrder,
 } from 'core/cash/duck';
 import { clearCashOrderForm } from 'core/forms/cashOrderForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
@@ -40,6 +41,7 @@ const mapDispatchToProps = {
     setCashOrdersFilters,
     fetchCashOrders,
     clearCashOrderForm,
+    printCashOrder,
 };
 
 @connect(
@@ -97,6 +99,7 @@ export default class CashFlowPage extends Component {
             filters,
             user,
             fetchCashOrders,
+            printCashOrder,
         } = this.props;
 
         const canEditCashOrders = !isForbidden(
@@ -104,14 +107,16 @@ export default class CashFlowPage extends Component {
             permissions.EDIT_CASH_ORDERS,
         );
 
-        return isFetching ? (
-            <Spinner spin={ isFetching } />
-        ) : (
+        return (
             <Layout
                 title={ <FormattedMessage id='navigation.flow_of_money' /> }
                 controls={
                     <div className={ Styles.buttonGroup }>
-                        { /* <Icon type='printer' className={ Styles.printIcon } /> */ }
+                        <Icon
+                            type='printer'
+                            className={ Styles.printIcon }
+                            onClick={ () => printCashOrder() }
+                        />
                         <StyledButton
                             type='secondary'
                             onClick={ () => this._onOpenCashOrderModal() }
@@ -137,6 +142,7 @@ export default class CashFlowPage extends Component {
                         setCashOrdersFilters={ setCashOrdersFilters }
                         fetchCashOrders={ fetchCashOrders }
                         cashOrders={ cashOrders }
+                        cashOrdersFetching={ isFetching }
                         filters={ filters }
                         openPrint={ this._onOpenPrintCashOrderModal }
                         // eslint-disable-next-line no-empty-function

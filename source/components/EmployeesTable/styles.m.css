@@ -27,6 +27,15 @@
     font-weight: bold;
 }
 
-.ratingStars{
+.ratingStars,
+.managerIcon {
     color: var(--secondary);
+}
+
+.managerIcon {
+    font-size: 24px;
+}
+
+.managerIconDisabled {
+    color: var(--cancel);
 }

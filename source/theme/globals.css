@@ -86,3 +86,7 @@ a {
 .ant-table-tbody > tr > td {
     padding: 4px;
 }
+
+.ant-message-custom-content {
+    display: flex;
+}

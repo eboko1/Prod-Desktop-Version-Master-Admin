@@ -1,15 +1,13 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Button, Table, Icon, Modal, notification } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {Button, Table, Icon, Modal, notification} from 'antd';
+import {FormattedMessage, injectIntl} from 'react-intl';
 import _ from 'lodash';
 
 // proj
-import { Catcher } from 'commons';
-import { PackageForm, AddPackageForm } from 'forms';
-import book from 'routes/book';
+import {Catcher} from 'commons';
+import {PackageForm, AddPackageForm} from 'forms';
 
 // own
 import {
@@ -68,26 +66,22 @@ export default class PackageContainer extends Component {
 
         this.columns = [
             {
-                title:     <FormattedMessage id='package-container.index' />,
+                title:     <FormattedMessage id='package-container.index'/>,
                 dataIndex: 'index',
                 width:     'auto',
                 render:    field => field + 1,
             },
             {
-                title:     <FormattedMessage id='package-container.name' />,
+                title:     <FormattedMessage id='package-container.name'/>,
                 dataIndex: 'name',
                 width:     '30%',
-                render:    (name, record) => (
-                    <Link to={ `${book.packagePage}/${record.id}` }>
-                        { record.name }
-                    </Link>
-                ),
+                render:    (name, record) => record.name,
             },
             {
-                title:     <FormattedMessage id='package-container.roles' />,
+                title:     <FormattedMessage id='package-container.roles'/>,
                 dataIndex: 'roles',
                 width:     '30%',
-                render:    field => field.map(({ name }) => name).join(','),
+                render:    field => field.map(({name}) => name).join(','),
             },
             // {
             //     title:  <FormattedMessage id='package-container.view' />,
@@ -136,7 +130,7 @@ export default class PackageContainer extends Component {
         } = this.props;
 
         if (errors.length) {
-            const currentComponentErrors = errors.filter(({ response }) =>
+            const currentComponentErrors = errors.filter(({response}) =>
                 _.keys(this.apiErrorsMap).includes(_.get(response, 'message')));
 
             currentComponentErrors.forEach(componentError => {
@@ -161,7 +155,7 @@ export default class PackageContainer extends Component {
             key: packageEntity.packageId,
         }));
 
-        const initPackage = editPackageId && _.find(packages, { packageId: editPackageId });
+        const initPackage = editPackageId && _.find(packages, {packageId: editPackageId});
         const initPackageName = _.get(initPackage, 'name');
 
         return (
@@ -171,7 +165,7 @@ export default class PackageContainer extends Component {
                     className={ Styles.addPackageButton }
                     onClick={ () => this.props.setCreatePackage(true) }
                 >
-                    <FormattedMessage id='package-container.create' />
+                    <FormattedMessage id='package-container.create'/>
                 </Button>
                 <Table
                     size='small'
@@ -185,9 +179,9 @@ export default class PackageContainer extends Component {
                 <Modal
                     title={
                         editPackageId ? (
-                            <FormattedMessage id='package-container.edit_title' />
+                            <FormattedMessage id='package-container.edit_title'/>
                         ) : (
-                            <FormattedMessage id='package-container.create_title' />
+                            <FormattedMessage id='package-container.create_title'/>
                         )
                     }
                     visible={ editPackageId || createPackageForm }
@@ -203,9 +197,9 @@ export default class PackageContainer extends Component {
                             updatePackage={ updatePackage }
                         />
                     ) ||
-                        createPackageForm && (
-                            <AddPackageForm roles={ roles } createPackage={ createPackage } />
-                        ) }
+                    createPackageForm && (
+                        <AddPackageForm roles={ roles } createPackage={ createPackage }/>
+                    ) }
                 </Modal>
             </Catcher>
         );

@@ -15,6 +15,7 @@ addLocaleData([ ...ru, ...en, ...uk ]);
 
 // Messages
 import global from 'utils/messages';
+import errorMessage from 'core/errorMessage/messages';
 // commons
 import Header from 'commons/Header/messages';
 import Navigation from 'commons/Navigation/messages';
@@ -122,6 +123,7 @@ import Footer from 'commons/Footer/messages';
 /* eslint-disable array-element-newline */
 const messages = merge.all([
     global,
+    errorMessage,
     // commons
     Navigation,
     Header,

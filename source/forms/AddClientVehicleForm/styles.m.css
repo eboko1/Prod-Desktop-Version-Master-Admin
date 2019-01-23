@@ -1,0 +1,38 @@
+.form :global(.ant-form-item) {
+    margin-bottom: 2px;
+}
+
+.addButtonWrapper {
+    display: flex;
+    justify-content: center;
+}
+
+.editableVehicle {
+    display: flex;
+    margin: 0 48px 8px 15%;
+    background: var(--static);
+    padding: 8px;
+    align-items: center;
+}
+
+.carIcon {
+    font-size: 64px;
+    color: var(--primary);
+    margin-right: 24px;
+}
+
+.listItem > span {
+    font-weight: bold;
+}
+
+.numWrapper {
+    display: flex;
+}
+
+.numWrapper :global(.ant-row) {
+    width: 100%;
+}
+
+.numWrapper :global(.ant-form-item-control-wrapper) {
+    padding: 0 5px;
+}

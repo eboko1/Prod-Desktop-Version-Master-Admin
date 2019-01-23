@@ -27,6 +27,11 @@ export const DELETE_CASHBOX_SUCCESS = `${prefix}/DELETE_CASHBOX_SUCCESS`;
 export const SET_CASH_ORDERS_FILTERS = `${prefix}/SET_CASH_ORDERS_FILTERS`;
 export const SET_CASH_ACCOUNTING_FILTERS = `${prefix}/SET_CASH_ACCOUNTING_FILTERS`;
 
+export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
+
+export const PRINT_CASH_ORDERS = `${prefix}/PRINT_CASH_ORDERS`;
+export const PRINT_CASH_ORDERS_SUCCESS = `${prefix}/PRINT_CASH_ORDERS_SUCCESS`;
+
 /**
  * Reducer
  * */
@@ -114,6 +119,16 @@ export default function reducer(state = ReducerState, action) {
                 cashOrdersFilters: {
                     ...state.cashOrdersFilters,
                     ...payload,
+                },
+            };
+
+        case SET_SEARCH_QUERY:
+            return {
+                ...state,
+                cashOrdersFilters: {
+                    ...state.cashOrdersFilters,
+                    query: payload,
+                    page:  1,
                 },
             };
 
@@ -218,4 +233,18 @@ export const fetchCashOrders = filters => ({
 export const fetchCashOrdersSuccess = cashOrders => ({
     type:    FETCH_CASH_ORDERS_SUCCESS,
     payload: cashOrders,
+});
+
+export const printCashOrder = () => ({
+    type: PRINT_CASH_ORDERS,
+});
+
+export const printCashOrderSuccess = doc => ({
+    type:    PRINT_CASH_ORDERS_SUCCESS,
+    payload: doc,
+});
+
+export const setSearchQuery = searchQuery => ({
+    type:    SET_SEARCH_QUERY,
+    payload: searchQuery,
 });
