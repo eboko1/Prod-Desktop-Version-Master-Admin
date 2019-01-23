@@ -2,6 +2,7 @@
 import { call, put, all, take } from 'redux-saga/effects';
 import { replace } from 'react-router-redux';
 import moment from 'moment';
+import _ from 'lodash';
 
 //proj
 import { emitError } from 'core/ui/duck';
@@ -27,8 +28,10 @@ export function* saveEmployee() {
                 ...employee.managerEnabled
                     ? { password: employee.password }
                     : {},
+                ...!_.isNull(employee.managerEnabled)
+                    ? { managerEnabled: employee.managerEnabled }
+                    : {},
                 email:              employee.email ? employee.email : null,
-                managerEnabled:     employee.managerEnabled,
                 phone:              String(employee.phone),
                 enabled:            employee.enabled,
                 hireDate:           moment(employee.hireDate).format('YYYY-MM-DD'),
@@ -64,6 +67,9 @@ export function* fireEmployee() {
             } = yield take(FIRE_EMPLOYEE);
 
             let normalizedEmployee = {
+                ...!_.isNull(employee.managerEnabled)
+                    ? { managerEnabled: false }
+                    : {},
                 email:              employee.email,
                 phone:              String(employee.phone),
                 enabled:            employee.enabled,

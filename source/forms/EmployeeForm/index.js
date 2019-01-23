@@ -50,7 +50,10 @@ const formItemLayout = {
 })
 export class EmployeeForm extends Component {
     componentDidMount() {
-        const initialAccess = _.get(this.props.initialEmployee, 'managerEnabled');
+        const initialAccess = _.get(
+            this.props.initialEmployee,
+            'managerEnabled',
+        );
         this.props.form.setFieldsValue({
             managerEnabled: initialAccess,
         });
@@ -74,7 +77,9 @@ export class EmployeeForm extends Component {
                         }
                         formItemLayout={ formItemLayout }
                         getFieldDecorator={ getFieldDecorator }
-                        initialValue={ _.get(initialEmployee, 'managerEnabled') }
+                        initialValue={ Boolean(
+                            _.get(initialEmployee, 'managerEnabled'),
+                        ) }
                     />
                     <DecoratedDatePicker
                         field='hireDate'
