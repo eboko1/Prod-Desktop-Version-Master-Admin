@@ -21,6 +21,7 @@ const ACCESS_DASHBOARD = 'ACCESS_DASHBOARD';
 const EDIT_DASHBOARD_ORDER = 'EDIT_DASHBOARD_ORDER';
 const OPEN_DASHBOARD_ORDER = 'OPEN_DASHBOARD_ORDER';
 const CREATE_DASHBOARD_ORDER = 'CREATE_DASHBOARD_ORDER';
+const RESCHEDULE_ORDERS = 'RESCHEDULE_ORDERS';
 
 // Employees
 const GET_EMPLOYEES = 'GET_EMPLOYEES';
@@ -36,6 +37,7 @@ const GET_CLIENTS_BASIC_INFORMATION = 'GET_CLIENTS_BASIC_INFORMATION';
 const GET_CLIENTS_ADDITIONAL_INFORMATION = 'GET_CLIENTS_ADDITIONAL_INFORMATION';
 
 // Tasks
+const GET_TASKS = 'GET_TASKS';
 const GET_ALL_TASKS = 'GET_ALL_TASKS';
 
 //Warehouse
@@ -73,6 +75,7 @@ export const permissions = Object.freeze({
     EDIT_DASHBOARD_ORDER,
     OPEN_DASHBOARD_ORDER,
     CREATE_DASHBOARD_ORDER,
+    RESCHEDULE_ORDERS,
 
     GET_EMPLOYEES,
     CREATE_EDIT_DELETE_EMPLOYEES,
@@ -85,6 +88,7 @@ export const permissions = Object.freeze({
     GET_CLIENTS_BASIC_INFORMATION,
     GET_CLIENTS_ADDITIONAL_INFORMATION,
 
+    GET_TASKS,
     GET_ALL_TASKS,
 
     ACCESS_SUPPLIERS,
@@ -115,6 +119,7 @@ export const groupedPermissions = {
         EDIT_DASHBOARD_ORDER,
         OPEN_DASHBOARD_ORDER,
         CREATE_DASHBOARD_ORDER,
+        RESCHEDULE_ORDERS,
     ],
     [ ORDERS_PERMISSIONS ]: [
         ACCESS_ORDER_BODY,
@@ -139,7 +144,7 @@ export const groupedPermissions = {
         GET_CLIENTS_BASIC_INFORMATION,
         GET_CLIENTS_ADDITIONAL_INFORMATION,
     ],
-    [ TASKS_PERMISSIONS ]:      [ GET_ALL_TASKS ],
+    [ TASKS_PERMISSIONS ]:      [ GET_TASKS, GET_ALL_TASKS ],
     [ EMPLOYEES_PERMISSIONS ]:  [ GET_EMPLOYEES, CREATE_EDIT_DELETE_EMPLOYEES, EMPLOYEES_SALARIES ],
     [ WAREHOUSE_PERMISSIONS ]:  [ ACCESS_SUPPLIERS ],
     [ ACCOUNTING_PERMISSIONS ]: [ ACCESS_ACCOUNTING, EDIT_CASH_ORDERS ],
@@ -221,6 +226,9 @@ export const getPermissionsLabels = intl => ({
     [ CREATE_DASHBOARD_ORDER ]: intl.formatMessage({
         id: 'roles.create_dashboard_order',
     }),
+    [ RESCHEDULE_ORDERS ]: intl.formatMessage({
+        id: 'roles.reschedule_orders',
+    }),
     [ GET_EMPLOYEES ]: intl.formatMessage({
         id: 'roles.get_employees',
     }),
@@ -249,6 +257,9 @@ export const getPermissionsLabels = intl => ({
         id: 'roles.get_clients_additional_information',
     }),
 
+    [ GET_TASKS ]: intl.formatMessage({
+        id: 'roles.get_tasks',
+    }),
     [ GET_ALL_TASKS ]: intl.formatMessage({
         id: 'roles.get_all_tasks',
     }),
