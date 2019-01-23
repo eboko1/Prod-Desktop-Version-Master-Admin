@@ -60,7 +60,12 @@ export class EmployeeForm extends Component {
     }
 
     render() {
-        const { initialEmployee, saveEmployee, fireEmployee } = this.props;
+        const {
+            adding,
+            initialEmployee,
+            saveEmployee,
+            fireEmployee,
+        } = this.props;
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
         const managerEnabled = Boolean(getFieldValue('managerEnabled'));
@@ -221,7 +226,13 @@ export class EmployeeForm extends Component {
                             field='password'
                             type='password'
                             formItem
-                            label={ <FormattedMessage id='employee.password' /> }
+                            label={
+                                adding ? (
+                                    <FormattedMessage id='employee.password' />
+                                ) : (
+                                    <FormattedMessage id='employee.change_password' />
+                                )
+                            }
                             formItemLayout={ formItemLayout }
                             getFieldDecorator={ getFieldDecorator }
                             placeholder={ formatMessage({

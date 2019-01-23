@@ -77,6 +77,7 @@ class EditEmployeePage extends Component {
                 }
             >
                 <EmployeeForm
+                    adding
                     user={ user }
                     wrappedComponentRef={ this.saveEmployeeFormRef }
                     saveEmployee={ this.saveEmployee }
