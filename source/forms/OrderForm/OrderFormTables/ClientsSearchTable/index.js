@@ -10,7 +10,7 @@ import { Catcher } from 'commons';
 // own
 import Styles from './styles.m.css';
 
-class DetailsTable extends Component {
+export default class ClientSearchTable extends Component {
     constructor(props) {
         super(props);
         this.columns = [
@@ -83,10 +83,10 @@ class DetailsTable extends Component {
                     columns={ columns }
                     pagination={ false }
                     loading={ clientsSearching }
-                    onRow={ record => {
+                    onRow={ client => {
                         return {
                             onClick: () => {
-                                setClientSelection(record);
+                                setClientSelection(client);
                             },
                         };
                     } }
@@ -99,5 +99,3 @@ class DetailsTable extends Component {
         );
     }
 }
-
-export default DetailsTable;

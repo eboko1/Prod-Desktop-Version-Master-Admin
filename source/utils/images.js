@@ -3,7 +3,7 @@ import exception400 from 'theme/images/exceptions/400.svg';
 import exception404 from 'theme/images/exceptions/404.svg';
 import exception500 from 'theme/images/exceptions/500.svg';
 // Logos
-import carbookLogo from 'theme/images/carbookLogo.png';
+import carbookLogo from 'theme/images/logoCarbookPrimary.png';
 import ecatLogo from 'theme/images/logos/ecatLogo.png';
 import kybLogo from 'theme/images/logos/kybLogo.png';
 import sidemLogo from 'theme/images/logos/sidemLogo.png';

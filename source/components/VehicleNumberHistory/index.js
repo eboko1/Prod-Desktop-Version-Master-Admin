@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Modal, Table, Icon } from 'antd';
+import { Modal, Table, Tooltip, Icon } from 'antd';
 import { v4 } from 'uuid';
+import classNames from 'classnames/bind';
 
 // proj
 import { Catcher } from 'commons';
@@ -14,6 +15,8 @@ import {
 
 // own
 import Styles from './styles.m.css';
+
+const cx = classNames.bind(Styles);
 
 const mapStateToProps = state => {
     return {
@@ -32,6 +35,12 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 export default class VehicleNumberHistory extends Component {
+    _tooltipClassName = disabled =>
+        cx({
+            tooltip:         true,
+            tooltipDisabled: disabled,
+        });
+
     render() {
         const { history, vehicleNumber } = this.props;
 
@@ -80,16 +89,27 @@ export default class VehicleNumberHistory extends Component {
 
         return (
             <Catcher>
-                <Icon
-                    type='question-circle'
-                    theme='filled'
-                    className={ Styles.questionIcon }
-                    disabled={ !vehicleNumber }
-                    onClick={ () =>
-                        vehicleNumber &&
-                        this.props.fetchVehicleNumberHistory(vehicleNumber)
+                <Tooltip
+                    title={
+                        !vehicleNumber ? (
+                            <FormattedMessage id='vehicle_number_history.tooltip' />
+                        ) : (
+                            <FormattedMessage id='vehicle_number_history.title' />
+                        )
                     }
-                />
+                    overlayStyle={ { zIndex: 2110 } }
+                >
+                    <Icon
+                        type='question-circle'
+                        theme='filled'
+                        className={ this._tooltipClassName(!vehicleNumber) }
+                        disabled={ !vehicleNumber }
+                        onClick={ () =>
+                            vehicleNumber &&
+                            this.props.fetchVehicleNumberHistory(vehicleNumber)
+                        }
+                    />
+                </Tooltip>
                 <Modal
                     width={ '80%' }
                     title={

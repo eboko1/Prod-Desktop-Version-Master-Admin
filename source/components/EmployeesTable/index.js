@@ -3,9 +3,10 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
-import { Table, Rate, Radio } from 'antd';
+import { Table, Rate, Radio, Icon } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
+import classNames from 'classnames/bind';
 
 // proj
 import { Catcher } from 'commons';
@@ -16,6 +17,8 @@ import book from 'routes/book';
 import Styles from './styles.m.css';
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
+
+const cx = classNames.bind(Styles);
 
 @withRouter
 export default class EmployeesTable extends Component {
@@ -59,9 +62,23 @@ export default class EmployeesTable extends Component {
                     ),
             },
             {
+                title:     <FormattedMessage id='employee-table.manager' />,
+                dataIndex: 'isManager',
+                width:     '10%',
+                render:    (isManager, { managerEnabled }) =>
+                    isManager ? (
+                        <Icon
+                            type='check-circle'
+                            className={ this._managerIconClassName(
+                                managerEnabled,
+                            ) }
+                        />
+                    ) : null,
+            },
+            {
                 title:     <FormattedMessage id='employee-table.hire_date' />,
                 dataIndex: 'hireDate',
-                width:     '30%',
+                width:     '25%',
                 render:    (text, record) => (
                     <div>
                         { record.hireDate &&
@@ -79,31 +96,6 @@ export default class EmployeesTable extends Component {
                 width:     '20%',
                 render:    value => value && this._renderRatingStars(value),
             },
-            {
-                title:  '',
-                key:    'delete',
-                width:  'auto%',
-                render: () => {
-                    return null;
-                    // return (
-                    //     !isForbidden(
-                    //         this.props.user,
-                    //         permissions.CREATE_EDIT_DELETE_EMPLOYEES,
-                    //     ) && (
-                    //         <Icon
-                    //             className={ Styles.EmployeesTableIcon }
-                    //             onClick={ () => {
-                    //                 this.props.deleteEmployee(
-                    //                     record.id,
-                    //                     this.props.kind,
-                    //                 );
-                    //             } }
-                    //             type='delete'
-                    //         />
-                    //     )
-                    // );
-                },
-            },
         ];
     }
 
@@ -111,6 +103,12 @@ export default class EmployeesTable extends Component {
         this.props.setEmployeesStatus({ status, disabled });
         this.props.fetchEmployees();
     };
+
+    _managerIconClassName = enabled =>
+        cx({
+            managerIconDisabled: !enabled,
+            managerIcon:         true,
+        });
 
     render() {
         const { employees } = this.props;

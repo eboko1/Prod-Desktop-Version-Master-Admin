@@ -9,6 +9,9 @@ import _ from 'lodash';
 // proj
 import intl from 'core/intl/reducer';
 import uiReducer, { moduleName as uiModule } from 'core/ui/duck';
+import errorMessageReducer, {
+    moduleName as errorMessageModule,
+} from 'core/errorMessage/duck';
 import authReducer, { moduleName as authModule } from 'core/auth/duck';
 import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
@@ -102,9 +105,7 @@ const appState = {
     [ cashModule ]:                 cashReducer,
     [ suppliersModule ]:            suppliersReducer,
     [ uiModule ]:                   uiReducer,
-    // [ authModule ]:            authReducer,
-    // intl,
-    // router,
+    [ errorMessageModule ]:         errorMessageReducer,
 };
 
 const appReducer = combineReducers({ ...persistedState, ...appState });

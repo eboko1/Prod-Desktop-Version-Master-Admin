@@ -91,6 +91,10 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 searchQuery: payload,
+                sort:        {
+                    ...state.sort,
+                    page: 1,
+                },
             };
 
         case INVITE_CLIENTS_SUCCESS:

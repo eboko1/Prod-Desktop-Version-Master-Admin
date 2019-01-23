@@ -22,16 +22,18 @@ export const FIRE_EMPLOYEE = `${prefix}/FIRE_EMPLOYEE`;
 
 const ReducerState = {
     fields: {
-        email:              { value: void 0, name: 'email' },
-        phone:              { value: void 0, name: 'phone' },
-        enabled:            true,
-        hireDate:           { value: moment(), name: 'hireDate' },
-        jobTitle:           { value: void 0, name: 'jobTitle' },
-        name:               { value: void 0, name: 'name' },
-        sendSmsCancelOrder: false,
-        sendSmsManualOrder: false,
-        sendSmsNewOrder:    false,
-        surname:            { value: void 0, name: 'surname' },
+        // managerEnabled:          { value: false, name: 'managerEnabled' },
+        // password:           { value: void 0, name: 'password' },
+        // email:              { value: void 0, name: 'email' },
+        // phone:              { value: void 0, name: 'phone' },
+        // enabled:            true,
+        // hireDate:           { value: moment(), name: 'hireDate' },
+        // jobTitle:           { value: void 0, name: 'jobTitle' },
+        // name:               { value: void 0, name: 'name' },
+        // sendSmsCancelOrder: false,
+        // sendSmsManualOrder: false,
+        // sendSmsNewOrder:    false,
+        // surname:            { value: void 0, name: 'surname' },
     },
     employeeName:    '',
     employeeId:      null,
@@ -73,7 +75,10 @@ export default function reducer(state = ReducerState, action) {
  * Selectors
  * */
 
-export const stateSelector = state => state[ moduleName ];
+export const stateSelector = state => state.forms[ moduleName ];
+
+export const selectInitialEmployee = state =>
+    state.forms[ moduleName ].initialEmployee;
 
 /**
  * Action Creators

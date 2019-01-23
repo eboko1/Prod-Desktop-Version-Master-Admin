@@ -45,11 +45,26 @@ export const detailsStats = selectedDetails => {
         .values()
         .filter(detail => _.get(detail, 'detailName'))
         .map(service => ({
-            price: _.get(service, 'detailPrice'),
-            count: _.get(service, 'detailCount'),
-            id:    _.get(service, 'detailName'),
+            price:         _.get(service, 'detailPrice'),
+            purchasePrice: _.get(service, 'purchasePrice'),
+            count:         _.get(service, 'detailCount'),
+            id:            _.get(service, 'detailName'),
+            detailsProfit:
+                (_.get(service, 'detailPrice') -
+                    _.get(service, 'purchasePrice')) *
+                _.get(service, 'detailCount'),
         }))
         .value();
 
-    return calculateStats(selectedSimpleDetails);
+    const totalDetailsProfit = {
+        totalDetailsProfit: selectedSimpleDetails.reduce(
+            (accumulator, { detailsProfit }) => accumulator + detailsProfit,
+            0,
+        ),
+    };
+
+    return {
+        ...calculateStats(selectedSimpleDetails),
+        ...totalDetailsProfit,
+    };
 };

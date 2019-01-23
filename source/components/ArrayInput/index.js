@@ -169,7 +169,11 @@ class ArrayInput extends Component {
                     <Col span={ 20 }>
                         <Row type='flex' justify='center'>
                             <FormItem>
-                                <Button type='dashed' onClick={ this.add }>
+                                <Button
+                                    type='dashed'
+                                    onClick={ this.add }
+                                    style={ { marginTop: 30 } }
+                                >
                                     <Icon type='plus' /> { this.props.buttonText }
                                 </Button>
                             </FormItem>

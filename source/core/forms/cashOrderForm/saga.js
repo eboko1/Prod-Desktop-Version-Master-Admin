@@ -143,7 +143,6 @@ export function* createCashOrderSaga() {
     while (true) {
         try {
             const { payload } = yield take(CREATE_CASH_ORDER);
-            console.log('** payload', payload);
             const cashOrder = _.omit(payload, [
                 'counterpartyType',
                 'sumType',
@@ -165,26 +164,27 @@ export function* createCashOrderSaga() {
         }
     }
 }
-export function* editCashOrderSaga() {
-    while (true) {
-        try {
-            const { payload } = yield take(EDIT_CASH_ORDER);
-            const cashOrder = _.omit(payload, [ 'counterpartyType', 'sumType' ]);
-            yield call(
-                fetchAPI,
-                'PUT',
-                `cash_orders/${payload.id}`,
-                null,
-                cashOrder,
-            );
-            yield put(editCashOrderSuccess());
-        } catch (error) {
-            yield put(emitError(error));
-        } finally {
-            yield put(fetchCashOrders());
-        }
-    }
-}
+// export function* editCashOrderSaga() {
+//     while (true) {
+//         try {
+//             // TODO: decompose creation to Edit
+//             const { payload } = yield take(EDIT_CASH_ORDER);
+//             const cashOrder = _.omit(payload, [ 'counterpartyType', 'sumType' ]);
+//             yield call(
+//                 fetchAPI,
+//                 'PUT',
+//                 `cash_orders/${payload.id}`,
+//                 null,
+//                 cashOrder,
+//             );
+//             yield put(editCashOrderSuccess());
+//         } catch (error) {
+//             yield put(emitError(error));
+//         } finally {
+//             yield put(fetchCashOrders());
+//         }
+//     }
+// }
 
 export function* printCashOrderSaga() {
     while (true) {

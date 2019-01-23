@@ -62,13 +62,12 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state.forms[ moduleName ];
-// export const selectUniversalFilters = state =>
-//     state.forms.universalFiltersForm.fields;
+
 
 /**
  * Action Creators
  * */
-// Universal Filters
+
 export const fetchUniversalFiltersForm = () => ({
     type: FETCH_CASH_ORDERS_FILTERS_FORM,
 });

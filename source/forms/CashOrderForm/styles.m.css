@@ -58,3 +58,19 @@
 .printButton {
     margin: 0 auto;
 }
+
+.clientOrderField {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.hiddenIcon {
+    display: none;
+}
+
+.resetIcon {
+    color: var(--disabled);
+    margin-left: 4px;
+    cursor: pointer;
+}

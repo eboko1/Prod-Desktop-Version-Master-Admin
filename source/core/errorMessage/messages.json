@@ -1,0 +1,11 @@
+{
+  "en": {
+    "CLIENT_VEHICLE_DISABLED": "Please, turn on client's vehicle"
+  },
+  "ru": {
+    "CLIENT_VEHICLE_DISABLED": "Пожалуйста, вкл. авто клиента"
+  },
+  "uk": {
+    "CLIENT_VEHICLE_DISABLED": "Будь ласка, активуйте авто клієнта"
+  }
+}

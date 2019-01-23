@@ -30,7 +30,8 @@
     "cash-order-form.counterparty.BUSINESS_SUPPLIER": "Client",
     "cash-order-form.counterparty.OTHER": "Other",
     "cash-order-form.increase": "Earnings",
-    "cash-order-form.decrease": "Spending"
+    "cash-order-form.decrease": "Spending",
+    "cash-order-form.other_counterparty.placeholder": "Enter your counterparty"
   },
   "ru": {
     "cash-order-form.cash_order_num": "№ ордера",
@@ -63,7 +64,8 @@
     "cash-order-form.counterparty.BUSINESS_SUPPLIER": "Поставщик",
     "cash-order-form.counterparty.OTHER": "Другое",
     "cash-order-form.increase": "Приход",
-    "cash-order-form.decrease": "Расход"
+    "cash-order-form.decrease": "Расход",
+    "cash-order-form.other_counterparty": "Введите контрагента"
   },
   "uk": {
     "cash-order-form.cash_order_num": "№ ордера",
@@ -96,6 +98,7 @@
     "cash-order-form.counterparty.BUSINESS_SUPPLIER": "Постачальник",
     "cash-order-form.counterparty.OTHER": "Інше",
     "cash-order-form.increase": "Дохід",
-    "cash-order-form.decrease": "Витрата"
+    "cash-order-form.decrease": "Витрата",
+    "cash-order-form.other_counterparty.placeholder": "Вкажіть контрагента"
   }
 }

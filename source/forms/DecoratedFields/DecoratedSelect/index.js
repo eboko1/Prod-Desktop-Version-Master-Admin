@@ -49,6 +49,7 @@ export class DecoratedSelect extends React.PureComponent {
             cnStyles,
             dropdownMatchSelectWidth,
             dropdownStyle,
+            dropdownClassName,
 
             initialValue,
             onFocus,
@@ -78,6 +79,7 @@ export class DecoratedSelect extends React.PureComponent {
                 getPopupContainer={ getPopupContainer }
                 dropdownMatchSelectWidth={ dropdownMatchSelectWidth }
                 dropdownStyle={ dropdownStyle }
+                dropdownClassName={ dropdownClassName }
                 onInputKeyDown={ e => e.key === 'Enter' && onPressEnter() }
                 onFocus={ onFocus }
                 optionFilterProp={

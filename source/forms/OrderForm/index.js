@@ -64,15 +64,23 @@ export class OrderForm extends Component {
         formValues: {},
     };
 
-    _openNotification = () => {
+    _openNotification = ({make, model}) => {
         const params = {
             message: this.props.intl.formatMessage({
                 id: 'order-form.warning',
             }),
-            description: this.props.intl.formatMessage({
-                id: 'order-form.update_modification_info',
-            }),
-            duration: 0,
+            description: (
+                <div>
+                    <div>
+                        { this.props.intl.formatMessage({
+                            id: 'order-form.update_modification_info',
+                        }) }
+                    </div>
+                    <div>{ make } { model }</div>
+                </div>
+            ),
+            placement: 'topLeft',
+            duration:  7,
         };
         notification.open(params);
     };
@@ -94,12 +102,12 @@ export class OrderForm extends Component {
         if (newClientVehicleId !== oldClientVehicleId && newClientVehicleId) {
             const newClientVehicle = this._getClientVehicle(newClientVehicleId);
             if (!newClientVehicle.modificationId) {
-                this._openNotification();
+                this._openNotification(newClientVehicle);
             } else if (
                 newClientVehicle.bodyType &&
                 !newClientVehicle.tecdocId
             ) {
-                this._openNotification();
+                this._openNotification(newClientVehicle);
             }
         }
 
@@ -338,7 +346,7 @@ export class OrderForm extends Component {
 
         const tecdocId = this._getTecdocId();
 
-        const { count: countDetails, price: priceDetails } = detailsStats(
+        const { count: countDetails, price: priceDetails, totalDetailsProfit: totalDetailsProfit } = detailsStats(
             _.get(formFieldsValues, 'details', []),
         );
 
@@ -426,7 +434,7 @@ export class OrderForm extends Component {
             (this._bodyUpdateIsForbidden()
                 ? void 0
                 : _.get(location, 'state.stationNum'));
-
+        
         return (
             <OrderFormTabs
                 errors={ errors }
@@ -473,6 +481,7 @@ export class OrderForm extends Component {
                 priceDetails={ priceDetails }
                 countServices={ countServices }
                 countDetails={ countDetails }
+                totalDetailsProfit={ totalDetailsProfit }
                 commentsCount={ commentsCount }
                 stationsCount={ stationsCount }
             />
