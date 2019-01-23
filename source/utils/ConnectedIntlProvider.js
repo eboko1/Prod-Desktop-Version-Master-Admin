@@ -18,8 +18,11 @@ const mapStateToProps = (state, { intlSelector = defaultSelector }) => {
     };
 };
 
-export const ConnectedIntlProvider = connect(mapStateToProps, null, null, {
-    pure: false,
-})(IntlProvider);
-
-// export default ConnectedIntlProvider;
+export const ConnectedIntlProvider = connect(
+    mapStateToProps,
+    null,
+    null,
+    {
+        pure: false,
+    },
+)(IntlProvider);

@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { Button, Icon } from 'antd';
@@ -36,7 +36,7 @@ import {
     ConfirmOrderExitModal,
     OrderTaskModal,
 } from 'modals';
-import { permissions, isForbidden } from 'utils';
+import { permissions, isForbidden, withErrorMessage } from 'utils';
 import {
     convertFieldsValuesToDbEntity,
     requiredFieldsOnStatuses,
@@ -137,6 +137,7 @@ const mapDispatchToProps = {
     mapStateToProps,
     mapDispatchToProps,
 )
+@withErrorMessage()
 class OrderPage extends Component {
     componentDidMount() {
         const { fetchOrderForm, fetchOrderTask, match } = this.props;

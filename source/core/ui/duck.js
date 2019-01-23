@@ -87,7 +87,6 @@ const ReducerState = {
     suggestionsFetching:        false,
     suggestionsLoading:         false,
     detailsSuggestionsFetching: false,
-    cashOrderFetching:          false,
 };
 
 /* eslint-disable complexity */

@@ -25,7 +25,7 @@ export function* saveEmployee() {
 
             const normalizedEmployee = {
                 ...employee.managerEnabled
-                    ? { password: employee.managerEnabled }
+                    ? { password: employee.password }
                     : {},
                 email:              employee.email ? employee.email : null,
                 managerEnabled:     employee.managerEnabled,

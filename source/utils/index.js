@@ -13,8 +13,13 @@ export { ContextProvider } from './ContextProvider';
 export { withReduxForm, hasErrors } from './withReduxForm';
 export { withReduxForm2 } from './withReduxForm2';
 export { withResponsive } from './withResponsive';
+export { withErrorMessage } from './withErrorMessage';
 export { getDaterange } from './getDaterange';
-export { getDateTimeConfig, mergeDateTime, addDuration } from './getDateTimeConfig';
+export {
+    getDateTimeConfig,
+    mergeDateTime,
+    addDuration,
+} from './getDateTimeConfig';
 export {
     permissions,
     isForbidden,
@@ -23,10 +28,7 @@ export {
     groupedPermissions,
     getGroupsLabels,
 } from './permissions';
-export {
-    isField,
-    extractFieldsConfigs,
-} from './antdHelpers';
+export { isField, extractFieldsConfigs } from './antdHelpers';
 export {
     getCurrentDuckErrors,
     handleCurrentDuckErrors,
