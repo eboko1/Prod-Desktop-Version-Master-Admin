@@ -9,11 +9,14 @@ import moment from 'moment';
 import { Catcher, Numeral } from 'commons';
 import { OrderStatusIcon } from 'components';
 import book from 'routes/book';
+import {permissions, isForbidden} from 'utils';
 
 @injectIntl
 export default class HistoryTable extends Component {
     constructor(props) {
         super(props);
+
+        const viewTasks = !isForbidden(props.user, permissions.GET_TASKS);
 
         this.columns = [
             {
@@ -38,7 +41,9 @@ export default class HistoryTable extends Component {
                             to={ `${book.order}/${record.id}` }
                             onClick={ () => {
                                 props.fetchOrderForm(record.id);
-                                props.fetchOrderTask(record.id);
+                                if (viewTasks) {
+                                    props.fetchOrderTask(record.id);
+                                }
                             } }
                         >
                             { text }
