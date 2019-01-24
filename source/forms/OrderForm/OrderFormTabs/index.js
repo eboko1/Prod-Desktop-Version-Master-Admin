@@ -378,6 +378,7 @@ export default class OrderFormTabs extends Component {
                             orderHistory={ orderHistory }
                             fetchOrderForm={ fetchOrderForm }
                             fetchOrderTask={ fetchOrderTask }
+                            user={ user }
                         />
                     </TabPane>
                 ) }
