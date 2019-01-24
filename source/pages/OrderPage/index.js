@@ -1,9 +1,9 @@
 // vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
-import { connect } from 'react-redux';
-import { Button, Icon } from 'antd';
+import React, {Component} from 'react';
+import {FormattedMessage, injectIntl} from 'react-intl';
+import {Link} from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Button, Icon} from 'antd';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -21,22 +21,22 @@ import {
     saveOrderTask,
     changeModalStatus,
 } from 'core/forms/orderTaskForm/duck';
-import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
-import { getReport, fetchReport } from 'core/order/duck';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
+import {fetchAddClientForm} from 'core/forms/addClientForm/duck';
+import {getReport, fetchReport} from 'core/order/duck';
+import {setModal, resetModal, MODALS} from 'core/modals/duck';
 import book from 'routes/book';
 
-import { Layout, Spinner, MobileView, ResponsiveView } from 'commons';
-import { BREAKPOINTS, extractFieldsConfigs } from 'utils';
-import { OrderForm, MobileRecordForm } from 'forms';
-import { ReportsDropdown, ChangeStatusDropdown } from 'components';
+import {Layout, Spinner, MobileView, ResponsiveView} from 'commons';
+import {BREAKPOINTS, extractFieldsConfigs} from 'utils';
+import {OrderForm, MobileRecordForm} from 'forms';
+import {ReportsDropdown, ChangeStatusDropdown} from 'components';
 import {
     CancelReasonModal,
     ToSuccessModal,
     ConfirmOrderExitModal,
     OrderTaskModal,
 } from 'modals';
-import { permissions, isForbidden, withErrorMessage } from 'utils';
+import {permissions, isForbidden, withErrorMessage} from 'utils';
 import {
     convertFieldsValuesToDbEntity,
     requiredFieldsOnStatuses,
@@ -145,7 +145,7 @@ class OrderPage extends Component {
     };
 
     componentDidMount() {
-        const { fetchOrderForm, fetchOrderTask, match: { params: {id}}, user } = this.props;
+        const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user} = this.props;
         fetchOrderForm(id);
 
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
@@ -172,17 +172,17 @@ class OrderPage extends Component {
     };
 
     _onStatusChange = (status, redirectStatus, options) => {
-        const { allServices, allDetails, selectedClient, history } = this.props;
+        const {allServices, allDetails, selectedClient, history} = this.props;
         const form = this.orderFormRef.props.form;
         const requiredFields = requiredFieldsOnStatuses(form.getFieldsValue())[
             status
         ];
-        const { id } = this.props.match.params;
+        const {id} = this.props.match.params;
 
         form.validateFields(requiredFields, err => {
             if (!err) {
                 const values = form.getFieldsValue();
-                const orderFormEntity = { ...values, selectedClient };
+                const orderFormEntity = {...values, selectedClient};
                 const redirectToDashboard = _.get(
                     history,
                     'location.state.fromDashboard',
@@ -202,7 +202,7 @@ class OrderPage extends Component {
                     options,
                 });
             } else {
-                this.setState({ errors: err });
+                this.setState({errors: err});
             }
         });
     };
@@ -216,7 +216,7 @@ class OrderPage extends Component {
             orderTaskId,
             orderTasks,
             initialOrderTask,
-            match: { params },
+            match: {params},
         } = this.props;
 
         const form = this.orderTaskFormRef.props.form;
@@ -239,13 +239,13 @@ class OrderPage extends Component {
     };
     /* eslint-disable complexity */
     _close = () => {
-        const { setModal } = this.props;
+        const {setModal} = this.props;
 
         const fields = this.orderFormRef.props.fields;
         const configs = extractFieldsConfigs(fields);
         const ordersAreSame = !_.keys(configs).length;
 
-        const { canEdit, hideEditButton } = this.getSecurityConfig();
+        const {canEdit, hideEditButton} = this.getSecurityConfig();
 
         if (!canEdit || hideEditButton || ordersAreSame) {
             this._redirect();
@@ -259,7 +259,7 @@ class OrderPage extends Component {
             resetModal,
             returnToOrdersPage,
             history,
-            order: { status },
+            order: {status},
         } = this.props;
 
         resetModal();
@@ -275,7 +275,7 @@ class OrderPage extends Component {
             status,
             clientPhone,
         } = this.props.order;
-        const { user, createInviteOrder } = this.props;
+        const {user, createInviteOrder} = this.props;
 
         if (
             (status === 'success' || status === 'cancel') &&
@@ -327,6 +327,7 @@ class OrderPage extends Component {
             forbiddenUpdate,
         };
     }
+
     /* eslint-disable complexity*/
     render() {
         const {
@@ -347,8 +348,8 @@ class OrderPage extends Component {
             initialOrderTask,
         } = this.props;
 
-        const { num, status, datetime } = this.props.order;
-        const { id } = this.props.match.params;
+        const {num, status, datetime} = this.props.order;
+        const {id} = this.props.match.params;
 
         const {
             isClosedStatus,
@@ -356,38 +357,41 @@ class OrderPage extends Component {
             disabledEditButton,
             forbiddenUpdate,
         } = this.getSecurityConfig();
+        const viewTasks = !isForbidden(user, permissions.GET_TASKS);
 
         return spinner ? (
-            <Spinner spin={ spinner } />
+            <Spinner spin={ spinner }/>
         ) : (
             <Layout
                 title={
-                    !status || !num ? 
+                    !status || !num ?
                         ''
-                        : 
+                        :
                         <>
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
                             {` ${num}`}
                         </>
-                    
+
                 }
                 description={
                     <>
-                        <FormattedMessage id='order-page.creation_date' />
+                        <FormattedMessage id='order-page.creation_date'/>
                         {`: ${moment(datetime).format('DD MMMM YYYY, HH:mm')}`}
                     </>
                 }
                 controls={
                     <>
                         {hasInviteStatus &&
-                            inviteOrderId && (
+                        inviteOrderId && (
                             <Link
                                 to={ `${book.order}/${inviteOrderId}` }
                                 onClick={ () => {
                                     fetchOrderForm(inviteOrderId);
-                                    fetchOrderTask(inviteOrderId);
+                                    if (viewTasks) {
+                                        fetchOrderTask(inviteOrderId);
+                                    }
                                 } }
                             >
                                 { inviteOrderId }
@@ -408,7 +412,7 @@ class OrderPage extends Component {
                                 }
                                 onClick={ this._invite }
                             >
-                                <FormattedMessage id='order-page.create_invite_order' />
+                                <FormattedMessage id='order-page.create_invite_order'/>
                             </Button>
                         ) : null}
                         {!isMobile && (
@@ -436,7 +440,7 @@ class OrderPage extends Component {
                                     cursor:   'pointer',
                                     margin:   '0 10px',
                                     ...disabledEditButton
-                                        ? { color: 'gray' }
+                                        ? {color: 'gray'}
                                         : {},
                                 } }
                                 onClick={ () =>
@@ -446,7 +450,7 @@ class OrderPage extends Component {
                             />
                         )}
                         {!isClosedStatus &&
-                            !forbiddenUpdate && (
+                        !forbiddenUpdate && (
                             <Icon
                                 type='delete'
                                 style={ {
@@ -477,7 +481,7 @@ class OrderPage extends Component {
                     />
                 </MobileView>
                 <ResponsiveView
-                    view={ { min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max } }
+                    view={ {min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max} }
                 >
                     <OrderForm
                         errors={ this.state.errors }
