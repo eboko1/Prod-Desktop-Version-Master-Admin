@@ -118,6 +118,7 @@ export default class OrderFormTabs extends Component {
             commentsCount,
             stationsCount,
             totalDetailsProfit,
+            totalServicesProfit,
 
             intl: { formatMessage },
             form: { getFieldDecorator },
@@ -164,15 +165,19 @@ export default class OrderFormTabs extends Component {
 
         return (
             <Tabs type='card' className={ Styles.orderFormsTabs }>
-                { !addOrderForm && viewTasks && (
+                { !addOrderForm &&
+                    viewTasks && (
                     <TabPane
                         forceRender
                         tab={
                             formatMessage({
                                 id: 'order_form_table.tasks',
                             }) +
-                            ` (${orderTasks.orderTasks ?
-                                orderTasks.orderTasks.length : 0})`
+                                ` (${
+                                    orderTasks.orderTasks
+                                        ? orderTasks.orderTasks.length
+                                        : 0
+                                })`
                         }
                         key='1'
                     >
@@ -224,6 +229,8 @@ export default class OrderFormTabs extends Component {
                         price={ priceServices }
                         discountFieldName={ 'servicesDiscount' }
                         fetchedOrder={ fetchedOrder }
+                        totalServicesProfit={ totalServicesProfit }
+                        servicesMode
                     />
                 </TabPane>
                 <TabPane

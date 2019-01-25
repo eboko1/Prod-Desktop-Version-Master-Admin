@@ -19,7 +19,6 @@ const Option = Select.Option;
 
 @injectIntl
 class ServicesTable extends Component {
-
     constructor(props) {
         super(props);
 
@@ -82,20 +81,21 @@ class ServicesTable extends Component {
         return this._localizationMap[ key ];
     }
 
-    // if selected client car has tecdoc id, we fetch suggestions
-    _onServiceSelect = item => {
-        const { fields, selectedClient } = this.props;
-        const id = Number(item.replace(/[^\d]/g, ''));
+    // if ownDetail checkbox = false we look if selected client car has tecdoc id afterwards we fetch suggestions
+    _onServiceSelect = (value, ownDetail) => {
+        if (ownDetail) {
+            const { fields, selectedClient } = this.props;
+            const id = Number(value.replace(/[^\d]/g, ''));
 
-        const clientVehicleId = _.get(fields, 'clientVehicle');
-        const vehicles = _.get(selectedClient, 'vehicles');
-
-        if (clientVehicleId && _.isArray(vehicles)) {
-            const vehicleQuery = { id: clientVehicleId };
-            const vehicle = _.find(vehicles, vehicleQuery);
-            const tecdocId = _.get(vehicle, 'tecdocId');
-            if (tecdocId && id) {
-                this.props.fetchTecdocSuggestions(tecdocId, id);
+            const clientVehicleId = _.get(fields, 'clientVehicle');
+            const vehicles = _.get(selectedClient, 'vehicles');
+            if (clientVehicleId && _.isArray(vehicles)) {
+                const vehicleQuery = { id: clientVehicleId };
+                const vehicle = _.find(vehicles, vehicleQuery);
+                const tecdocId = _.get(vehicle, 'tecdocId');
+                if (tecdocId && id) {
+                    this.props.fetchTecdocSuggestions(tecdocId, id);
+                }
             }
         }
     };
@@ -144,6 +144,21 @@ class ServicesTable extends Component {
 
         return [
             {
+                title:  <FormattedMessage id='order_form_table.own_detail' />,
+                key:    'ownDetail',
+                render: ({ key }) => (
+                    <DecoratedCheckbox
+                        errors={ errors }
+                        defaultGetValueProps
+                        fieldValue={ _.get(fields, `services[${key}].ownDetail`) }
+                        initialValue={ this._getDefaultValue(key, 'ownDetail') }
+                        field={ `services[${key}].ownDetail` }
+                        getFieldDecorator={ getFieldDecorator }
+                        disabled={ editServicesForbidden }
+                    />
+                ),
+            },
+            {
                 title:  <FormattedMessage id='order_form_table.service' />,
                 key:    'service',
                 width:  '30%',
@@ -162,7 +177,10 @@ class ServicesTable extends Component {
                                 `services[${key}].serviceName`,
                             ) }
                             disabled={ editServicesForbidden }
-                            onSelect={ this._onServiceSelect }
+                            onSelect={ (value) => this._onServiceSelect(value, _.get(
+                                fields,
+                                `services[${key}].ownDetail`,
+                            )) }
                             field={ `services[${key}].serviceName` }
                             getFieldDecorator={ getFieldDecorator }
                             mode={ 'combobox' }
@@ -185,6 +203,27 @@ class ServicesTable extends Component {
                 },
             },
             {
+                title:  <FormattedMessage id='order_form_table.prime_cost' />,
+                width:  '9%',
+                key:    'primeCost',
+                render: ({ key }) => (
+                    <DecoratedInputNumber
+                        errors={ errors }
+                        defaultGetValueProps
+                        fieldValue={ _.get(fields, `services[${key}].primeCost`) }
+                        initialValue={ this._getDefaultValue(key, 'primeCost') }
+                        field={ `services[${key}].primeCost` }
+                        disabled={
+                            this._isFieldDisabled(key) || editServicesForbidden
+                        }
+                        getFieldDecorator={ this.props.form.getFieldDecorator }
+                        min={ 0 }
+                        formatter={ this._formatter }
+                        parser={ this._parser }
+                    />
+                ),
+            },
+            {
                 title:  <FormattedMessage id='order_form_table.price' />,
                 key:    'price',
                 render: ({ key }) => (
@@ -197,14 +236,13 @@ class ServicesTable extends Component {
                             fields,
                             `services[${key}].servicePrice`,
                         ) }
-                        initialValue={
+                        initialValue={ _.defaultTo(
                             _.defaultTo(
-                                _.defaultTo(
-                                    this._getDefaultValue(key, 'servicePrice'),
-                                    this._getDefaultPrice(key),
-                                ), 0,
-                            )
-                        }
+                                this._getDefaultValue(key, 'servicePrice'),
+                                this._getDefaultPrice(key),
+                            ),
+                            0,
+                        ) }
                         field={ `services[${key}].servicePrice` }
                         getFieldDecorator={ getFieldDecorator }
                         rules={
@@ -302,23 +340,6 @@ class ServicesTable extends Component {
                         </DecoratedSelect>
                     );
                 },
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.own_detail' />,
-                key:    'ownDetail',
-                render: ({ key }) => (
-                    <DecoratedCheckbox
-                        errors={ errors }
-                        defaultGetValueProps
-                        fieldValue={ _.get(fields, `services[${key}].ownDetail`) }
-                        initialValue={ this._getDefaultValue(key, 'ownDetail') }
-                        field={ `services[${key}].ownDetail` }
-                        getFieldDecorator={ getFieldDecorator }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                    />
-                ),
             },
             {
                 title:  '',
