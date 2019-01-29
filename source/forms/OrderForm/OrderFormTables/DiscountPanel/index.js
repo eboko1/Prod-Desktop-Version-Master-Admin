@@ -23,10 +23,12 @@ class DiscountPanel extends Component {
             form: { getFieldDecorator },
             price,
             totalDetailsProfit,
+            totalServicesProfit,
             discountFieldName,
             fetchedOrder,
             forbidden,
             detailsMode,
+            servicesMode,
         } = this.props;
 
         const discount = this.props.form.getFieldValue(discountFieldName);
@@ -93,17 +95,27 @@ class DiscountPanel extends Component {
                             }
                         />
                     </FormItem>
-                    { detailsMode && (
+                    { (detailsMode || servicesMode) && (
                         <FormItem
                             label={
-                                <FormattedMessage id='order_form_table.details_profit' />
+                                <FormattedMessage
+                                    id={ `${
+                                        servicesMode
+                                            ? 'order_form_table.services_profit'
+                                            : 'order_form_table.details_profit'
+                                    }` }
+                                />
                             }
                             colon={ false }
                             className={ Styles.formItem }
                         >
                             <InputNumber
                                 disabled
-                                value={ totalDetailsProfit }
+                                value={
+                                    servicesMode
+                                        ? totalServicesProfit
+                                        : totalDetailsProfit
+                                }
                                 min={ 0 }
                                 formatter={ value =>
                                     `${value}`.replace(
