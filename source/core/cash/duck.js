@@ -25,6 +25,7 @@ export const DELETE_CASHBOX = `${prefix}/DELETE_CASHBOX`;
 export const DELETE_CASHBOX_SUCCESS = `${prefix}/DELETE_CASHBOX_SUCCESS`;
 
 export const SET_CASH_ORDERS_FILTERS = `${prefix}/SET_CASH_ORDERS_FILTERS`;
+export const SET_CASH_ORDERS_PAGE = `${prefix}/SET_CASH_ORDERS_PAGE`;
 export const SET_CASH_ACCOUNTING_FILTERS = `${prefix}/SET_CASH_ACCOUNTING_FILTERS`;
 
 export const SET_SEARCH_QUERY = `${prefix}/SET_SEARCH_QUERY`;
@@ -36,15 +37,10 @@ export const PRINT_CASH_ORDERS_SUCCESS = `${prefix}/PRINT_CASH_ORDERS_SUCCESS`;
  * Reducer
  * */
 const ReducerState = {
-    cashboxes: [],
-    activity:  [],
-    balance:   [],
-    stats:     {
-        totalCount: null,
-        increase:   null,
-        decrease:   null,
-        balance:    null,
-    },
+    cashboxes:         [],
+    activity:          [],
+    balance:           [],
+    stats:             {},
     cashOrders:        [],
     cashOrdersFilters: {
         startDate: moment()
@@ -119,6 +115,16 @@ export default function reducer(state = ReducerState, action) {
                 cashOrdersFilters: {
                     ...state.cashOrdersFilters,
                     ...payload,
+                    page: 1,
+                },
+            };
+
+        case SET_CASH_ORDERS_PAGE:
+            return {
+                ...state,
+                cashOrdersFilters: {
+                    ...state.cashOrdersFilters,
+                    page: payload,
                 },
             };
 
@@ -216,6 +222,11 @@ export const deleteCashboxSuccess = cashbox => ({
 export const setCashOrdersFilters = filters => ({
     type:    SET_CASH_ORDERS_FILTERS,
     payload: filters,
+});
+
+export const setCashOrdersPage = ({ page }) => ({
+    type:    SET_CASH_ORDERS_PAGE,
+    payload: page,
 });
 
 export const setCashAccountingFilters = filters => ({

@@ -64,7 +64,7 @@ export class OrderForm extends Component {
         formValues: {},
     };
 
-    _openNotification = ({make, model}) => {
+    _openNotification = ({ make, model }) => {
         const params = {
             message: this.props.intl.formatMessage({
                 id: 'order-form.warning',
@@ -76,7 +76,9 @@ export class OrderForm extends Component {
                             id: 'order-form.update_modification_info',
                         }) }
                     </div>
-                    <div>{ make } { model }</div>
+                    <div>
+                        { make } { model }
+                    </div>
                 </div>
             ),
             placement: 'topLeft',
@@ -346,14 +348,17 @@ export class OrderForm extends Component {
 
         const tecdocId = this._getTecdocId();
 
-        const { count: countDetails, price: priceDetails, totalDetailsProfit: totalDetailsProfit } = detailsStats(
-            _.get(formFieldsValues, 'details', []),
-        );
+        const {
+            count: countDetails,
+            price: priceDetails,
+            totalDetailsProfit,
+        } = detailsStats(_.get(formFieldsValues, 'details', []));
 
         const {
             count: countServices,
             price: priceServices,
             // totalHours,
+            totalServicesProfit: totalServicesProfit,
         } = servicesStats(_.get(formFieldsValues, 'services', []), allServices);
 
         // _.values(value).some(_.isNil) gets only filled rows
@@ -434,7 +439,7 @@ export class OrderForm extends Component {
             (this._bodyUpdateIsForbidden()
                 ? void 0
                 : _.get(location, 'state.stationNum'));
-        
+
         return (
             <OrderFormTabs
                 errors={ errors }
@@ -482,6 +487,7 @@ export class OrderForm extends Component {
                 countServices={ countServices }
                 countDetails={ countDetails }
                 totalDetailsProfit={ totalDetailsProfit }
+                totalServicesProfit={ totalServicesProfit }
                 commentsCount={ commentsCount }
                 stationsCount={ stationsCount }
             />
