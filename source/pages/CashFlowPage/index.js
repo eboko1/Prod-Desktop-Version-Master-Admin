@@ -7,7 +7,7 @@ import _ from 'lodash';
 
 // proj
 import {
-    setCashOrdersFilters,
+    setCashOrdersPage,
     fetchCashOrders,
     selectCashOrdersFilters,
     printCashOrder,
@@ -38,7 +38,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     setModal,
     resetModal,
-    setCashOrdersFilters,
+    setCashOrdersPage,
     fetchCashOrders,
     clearCashOrderForm,
     printCashOrder,
@@ -93,7 +93,7 @@ export default class CashFlowPage extends Component {
             stats,
             modal,
             modalProps,
-            setCashOrdersFilters,
+            setCashOrdersPage,
             clearCashOrderForm,
             cashOrders,
             filters,
@@ -138,8 +138,8 @@ export default class CashFlowPage extends Component {
                 </section>
                 <Paper className={ Styles.content }>
                     <CashOrdersTable
-                        totalCount={ _.get(stats, 'totalCount') }
-                        setCashOrdersFilters={ setCashOrdersFilters }
+                        totalCount={ stats.totalCount }
+                        setCashOrdersPage={ setCashOrdersPage }
                         fetchCashOrders={ fetchCashOrders }
                         cashOrders={ cashOrders }
                         cashOrdersFetching={ isFetching }
