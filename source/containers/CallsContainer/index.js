@@ -14,6 +14,9 @@ import {
     setCallsPageFilter,
     selectCallsChartData,
     selectCallsPieData,
+    selectCallsData,
+    selectCallsFilter,
+    selectCallsStats,
 } from 'core/calls/duck';
 
 import { Catcher } from 'commons';
@@ -23,13 +26,16 @@ import { CallsTable, CallsStatistics } from 'components';
 // own
 const TabPane = Tabs.TabPane;
 
-const mapStateToProps = state => ({
-    calls:    state.calls.calls,
-    stats:    state.calls.stats,
-    pieStats: [ ...selectCallsPieData(state) ],
-    chart:    [ ...selectCallsChartData(state) ],
-    filter:   state.calls.filter,
-});
+const mapStateToProps = state => {
+    return {
+        calls:              selectCallsData(state),
+        stats:              selectCallsStats(state),
+        pieStats:           [ ...selectCallsPieData(state) ],
+        chart:              [ ...selectCallsChartData(state) ],
+        filter:             { ...selectCallsFilter(state) },
+        callsChartFetching: state.ui.callsChartFetching,
+    };
+};
 
 const mapDispatchToProps = {
     fetchCalls,
@@ -71,6 +77,8 @@ export default class CallsContainer extends Component {
             setCallsTableMode,
             setCallsPageFilter,
             fetchCallsChart,
+            callsChartFetching,
+            callsFetching,
         } = this.props;
 
         return (
@@ -88,6 +96,7 @@ export default class CallsContainer extends Component {
                             pieStats={ pieStats }
                             setCallsChartMode={ setCallsChartMode }
                             fetchCallsChart={ fetchCallsChart }
+                            callsChartFetching={ callsChartFetching }
                         />
                     </TabPane>
                     <TabPane
@@ -103,6 +112,7 @@ export default class CallsContainer extends Component {
                             fetchCalls={ fetchCalls }
                             setCallsTableMode={ setCallsTableMode }
                             setCallsPageFilter={ setCallsPageFilter }
+                            callsFetching={ callsFetching }
                         />
                     </TabPane>
                 </Tabs>

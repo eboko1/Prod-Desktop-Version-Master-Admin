@@ -8,6 +8,7 @@ import {
     setCallsFetchingState,
     setCallsChartFetchingState,
     emitError,
+    setCallsInitializingState,
 } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
@@ -25,7 +26,7 @@ export function* fetchCallsSaga() {
     while (true) {
         try {
             yield take(FETCH_CALLS);
-            // yield put(setCallsFetchingState(true));
+            yield put(setCallsFetchingState(true));
             const filter = yield select(selectCallsFilter);
 
             const queries = {
@@ -42,7 +43,7 @@ export function* fetchCallsSaga() {
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            // yield put(setCallsFetchingState(false));
+            yield put(setCallsFetchingState(false));
         }
     }
 }
@@ -50,8 +51,13 @@ export function* fetchCallsSaga() {
 export function* fetchCallsChartSaga() {
     while (true) {
         try {
-            yield take(FETCH_CALLS_CHART);
-            yield put(setCallsChartFetchingState(true));
+            const { payload: init } = yield take(FETCH_CALLS_CHART);
+            if (init) {
+                yield put(setCallsInitializingState(true));
+            } else {
+                yield put(setCallsChartFetchingState(true));
+            }
+
             const filter = yield select(selectCallsFilter);
 
             const queries = {
@@ -68,10 +74,13 @@ export function* fetchCallsChartSaga() {
 
             const data = yield call(fetchAPI, 'GET', 'calls/chart', queries);
             yield put(fetchCallsChartSuccess(data));
+            if (init) {
+                yield put(setCallsInitializingState(false));
+            } else {
+                yield put(setCallsChartFetchingState(false));
+            }
         } catch (error) {
             yield put(emitError(error));
-        } finally {
-            yield put(setCallsChartFetchingState(false));
         }
     }
 }
