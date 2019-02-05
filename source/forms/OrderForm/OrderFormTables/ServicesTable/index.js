@@ -83,7 +83,7 @@ class ServicesTable extends Component {
 
     // if ownDetail checkbox = false we look if selected client car has tecdoc id afterwards we fetch suggestions
     _onServiceSelect = (value, ownDetail) => {
-        if (ownDetail) {
+        if (!ownDetail) {
             const { fields, selectedClient } = this.props;
             const id = Number(value.replace(/[^\d]/g, ''));
 
