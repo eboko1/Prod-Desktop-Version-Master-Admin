@@ -5,7 +5,7 @@ import { Radio, Table } from 'antd';
 import _ from 'lodash';
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher, Loader } from 'commons';
 
 //own
 import { columnsConfig } from './callsTableConfig.js';
@@ -60,7 +60,9 @@ export default class CallsTable extends Component {
 
         const callsTableControls = this._renderCallsTableControls();
 
-        return (
+        return callsFetching ? (
+            <Loader loading={ callsFetching } />
+        ) : (
             <Catcher>
                 { callsTableControls }
                 <Table
