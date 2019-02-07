@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher, Loader } from 'commons';
 
 import { Pie, MiniPie, Line } from 'components/Charts';
 
@@ -19,6 +19,7 @@ export default class CallsStatistics extends Component {
             stats,
             setCallsChartMode,
             fetchCallsChart,
+            callsChartFetching,
         } = this.props;
 
         const piesRow = this._renderPiesRow();
@@ -44,7 +45,9 @@ export default class CallsStatistics extends Component {
             ],
         };
 
-        return (
+        return callsChartFetching ? (
+            <Loader loading={ callsChartFetching } />
+        ) : (
             <Catcher>
                 <div className={ Styles.callsStatistics }>
                     <div className={ Styles.column }>

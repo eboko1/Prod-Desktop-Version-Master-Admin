@@ -138,7 +138,14 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
-export const selectCallsFilter = state => state.calls.filter;
+export const selectCallsFilter = state => state[ moduleName ].filter;
+export const selectCallsStats = state => state[ moduleName ].stats;
+
+export const selectCallsData = createSelector([ stateSelector ], ({ calls }) =>
+    calls.map(call => ({
+        ...call,
+        ...{ duration: call.duration - call.waiting },
+    })));
 
 export const selectCallsChartData = createSelector(
     [ stateSelector ],
@@ -170,8 +177,9 @@ export const fetchCallsSuccess = data => ({
     payload: data,
 });
 
-export const fetchCallsChart = () => ({
-    type: FETCH_CALLS_CHART,
+export const fetchCallsChart = init => ({
+    type:    FETCH_CALLS_CHART,
+    payload: init,
 });
 
 export const fetchCallsChartSuccess = data => ({

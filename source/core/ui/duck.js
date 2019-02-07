@@ -19,6 +19,7 @@ export const SET_CLIENT_ORDERS_FETCHING_STATE = `${prefix}/SET_CLIENT_ORDERS_FET
 export const SET_REVIEWS_FETCHING_STATE = `${prefix}/SET_REVIEWS_FETCHING_STATE`;
 export const SET_REVIEW_FETCHING_STATE = `${prefix}/SET_REVIEW_FETCHING_STATE`;
 export const SET_CHART_FETCHING_STATE = `${prefix}/SET_CHART_FETCHING_STATE`;
+export const SET_CALLS_INITIALIZING_STATE = `${prefix}/SET_CALLS_INITIALIZING_STATE`;
 export const SET_CALLS_FETCHING_STATE = `${prefix}/SET_CALLS_FETCHING_STATE`;
 export const SET_CALLS_CHART_FETCHING_STATE = `${prefix}/SET_CALLS_CHART_FETCHING_STATE`;
 export const SET_PACKAGE_FETCHING_STATE = `${prefix}/SET_PACKAGE_FETCHING_STATE`;
@@ -71,6 +72,7 @@ const ReducerState = {
     reviewReplyLoading:         false,
     reviewComplaintLoading:     false,
     chartFetching:              false,
+    callsInitializing:          false,
     callsFetching:              false,
     callsChartFetching:         false,
     dashboardInitializing:      false,
@@ -159,6 +161,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_CHART_FETCHING_STATE:
             return { ...state, chartFetching: payload };
+
+        case SET_CALLS_INITIALIZING_STATE:
+            return { ...state, callsInitializing: payload };
 
         case SET_CALLS_FETCHING_STATE:
             return { ...state, callsFetching: payload };
@@ -313,6 +318,11 @@ export const setReviewComplaintState = state => ({
 
 export const setChartFetchingState = state => ({
     type:    SET_CHART_FETCHING_STATE,
+    payload: state,
+});
+
+export const setCallsInitializingState = state => ({
+    type:    SET_CALLS_INITIALIZING_STATE,
     payload: state,
 });
 

@@ -110,7 +110,11 @@ export function columnsConfig(formatMessage, showPhone, phones) {
         width:     140,
         dataIndex: 'innerRecipient',
         key:       'innerRecipient',
-        render:    innerRecipient => <div>{ innerRecipient }</div>,
+        render:    innerRecipient => (
+            <a href={ `tel:${innerRecipient}` } className={ Styles.orderLink }>
+                { innerRecipient }
+            </a>
+        ),
     };
 
     const record = {
@@ -128,5 +132,15 @@ export function columnsConfig(formatMessage, showPhone, phones) {
             ),
     };
 
-    return [ date, status, order, caller, recipient, waiting, duration, innerRecipient, record ];
+    return [
+        date,
+        status,
+        order,
+        caller,
+        recipient,
+        waiting,
+        duration,
+        innerRecipient,
+        record,
+    ];
 }

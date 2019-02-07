@@ -22,11 +22,12 @@ import Styles from './styles.m.css';
 const Option = Select.Option;
 
 const mapStateToProps = state => ({
-    tab:           state.calls.tab,
-    calls:         state.calls.calls,
-    channels:      state.calls.channels,
-    filter:        state.calls.filter,
-    callsFetching: state.ui.callsFetching,
+    tab:               state.calls.tab,
+    calls:             state.calls.calls,
+    channels:          state.calls.channels,
+    filter:            state.calls.filter,
+    callsInitializing: state.ui.callsInitializing,
+    callsFetching:     state.ui.callsFetching,
 });
 
 const mapDispatchToProps = {
@@ -44,11 +45,17 @@ const mapDispatchToProps = {
 )
 export default class CallsPage extends Component {
     componentDidMount() {
-        this.props.fetchCallsChart();
+        this.props.fetchCallsChart('init');
     }
 
     _setCallsDaterange = daterange => {
-        const { tab, setCallsDaterange, fetchCallsChart } = this.props;
+        const {
+            tab,
+            setCallsDaterange,
+            fetchCallsChart,
+            fetchCalls,
+        } = this.props;
+
         setCallsDaterange(daterange);
 
         if (tab === 'callsTable') {
@@ -97,12 +104,13 @@ export default class CallsPage extends Component {
         const {
             tab,
             channels,
+            callsInitializing,
             callsFetching,
             filter: { startDate, endDate, period },
         } = this.props;
 
-        return callsFetching ? (
-            <Spinner spin={ callsFetching } />
+        return callsInitializing ? (
+            <Spinner spin={ callsInitializing } />
         ) : (
             <Layout
                 title={ <FormattedMessage id='calls-page.title' /> }
@@ -112,7 +120,7 @@ export default class CallsPage extends Component {
                         <DatePickerGroup
                             startDate={ startDate }
                             endDate={ endDate }
-                            loading={ callsFetching }
+                            loading={ callsInitializing || callsFetching }
                             period={ period }
                             onDaterangeChange={ this._setCallsDaterange }
                             onPeriodChange={ this._setCallsPeriod }
@@ -137,7 +145,7 @@ export default class CallsPage extends Component {
                     </>
                 }
             >
-                <CallsContainer />
+                <CallsContainer callsFetching={ callsFetching } />
             </Layout>
         );
     }
