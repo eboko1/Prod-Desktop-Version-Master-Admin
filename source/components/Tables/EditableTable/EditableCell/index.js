@@ -141,7 +141,7 @@ export class EditableCell extends Component {
                             },
                         ] }
                         initialValue={ record[ dataIndex ] }
-                        innerRef={node => (this.input = node)} // eslint-disable-line
+                        ref={node => (this.input = node)} // eslint-disable-line
                         onPressEnter={ this._save }
                     />
                 );
@@ -151,7 +151,7 @@ export class EditableCell extends Component {
                         formItem
                         field={ dataIndex }
                         getFieldDecorator={ getFieldDecorator }
-                        innerRef={node => (this.input = node)} // eslint-disable-line
+                        ref={node => (this.input = node)} // eslint-disable-line
                     />
                 );
             case cellType.LIMITED_SELECT:
@@ -174,7 +174,7 @@ export class EditableCell extends Component {
                         dropdownMatchSelectWidth={ false }
                         dropdownStyle={ { width: '50%' } }
                         cnStyles={ Styles.detailsSelect }
-                        innerRef={node => (this.input = node)} // eslint-disable-line
+                        ref={node => (this.input = node)} // eslint-disable-line
                         getPopupContainer={node => (this.input = node)} // eslint-disable-line
                         allowClear
                         onPressEnter={ () => this._save() }
@@ -199,7 +199,7 @@ export class EditableCell extends Component {
                             },
                         ] }
                         initialValue={ record[ dataIndex ] }
-                        innerRef={node => (this.input = node)} // eslint-disable-line
+                        ref={node => (this.input = node)} // eslint-disable-line
                         onPressEnter={ this._save }
                     />
                 );

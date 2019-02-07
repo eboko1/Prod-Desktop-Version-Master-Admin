@@ -1,6 +1,6 @@
 // vendor
 import { call, put, all, take } from 'redux-saga/effects';
-import { replace } from 'react-router-redux';
+import { replace } from 'connected-react-router';
 
 //proj
 import { intlActions } from 'core/intl/actions';

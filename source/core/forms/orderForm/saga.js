@@ -9,7 +9,7 @@ import {
     takeEvery,
     select,
 } from 'redux-saga/effects';
-import { replace } from 'react-router-redux';
+import { replace } from 'connected-react-router';
 import nprogress from 'nprogress';
 
 // proj

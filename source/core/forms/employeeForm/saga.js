@@ -1,6 +1,6 @@
 // vendor
 import { call, put, all, take } from 'redux-saga/effects';
-import { replace } from 'react-router-redux';
+import { replace } from 'connected-react-router';
 import moment from 'moment';
 import _ from 'lodash';
 

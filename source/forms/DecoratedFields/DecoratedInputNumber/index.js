@@ -16,7 +16,7 @@ export class DecoratedInputNumber extends React.PureComponent {
             className,
             hasFeedback,
             formItemLayout,
-            innerRef,
+            ref,
             onPressEnter,
 
             getFieldDecorator,
@@ -58,7 +58,7 @@ export class DecoratedInputNumber extends React.PureComponent {
                 placeholder={ placeholder }
                 formatter={ formatter }
                 parser={ parser }
-                ref={ innerRef }
+                ref={ ref }
                 onKeyDown={ e => e.key === 'Enter' && onPressEnter() }
             />,
         );

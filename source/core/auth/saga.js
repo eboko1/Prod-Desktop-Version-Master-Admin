@@ -1,6 +1,6 @@
 // vendor
 import { all, call, put, take } from 'redux-saga/effects';
-import { replace } from 'react-router-redux';
+import { replace } from 'connected-react-router';
 import { purgeStoredState } from 'redux-persist';
 import moment from 'moment';
 

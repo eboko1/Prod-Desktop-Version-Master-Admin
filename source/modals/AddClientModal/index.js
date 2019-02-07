@@ -7,7 +7,6 @@ import _ from 'lodash';
 // proj
 import {
     onChangeAddClientForm,
-    fetchVehiclesInfo,
     addClientVehicle,
     createClient,
     removeClientVehicle,
@@ -28,7 +27,6 @@ import Styles from './styles.m.css';
     name:    'addClientForm',
     actions: {
         change: onChangeAddClientForm,
-        fetchVehiclesInfo,
         addClientVehicle,
         removeClientVehicle,
         createClient,

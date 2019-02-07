@@ -1,7 +1,7 @@
 // vendor
 import { message } from 'antd';
 import { trim, toUpper } from 'lodash/string';
-import { replace } from 'react-router-redux';
+import { replace } from 'connected-react-router';
 import _ from 'lodash';
 import qs from 'qs';
 

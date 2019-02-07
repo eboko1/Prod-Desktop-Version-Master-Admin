@@ -9,7 +9,7 @@ import {
     delay,
     select,
 } from 'redux-saga/effects';
-import { go } from 'react-router-redux';
+import { go } from 'connected-react-router';
 
 // proj
 import { authenticate, selectToken } from 'core/auth/duck';

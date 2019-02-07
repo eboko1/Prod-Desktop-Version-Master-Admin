@@ -38,7 +38,6 @@ export default class SuppliersPage extends Component {
             createSupplier,
             modalProps,
         } = this.props;
-        console.log('→ modalProps', modalProps);
 
         return (
             <Layout

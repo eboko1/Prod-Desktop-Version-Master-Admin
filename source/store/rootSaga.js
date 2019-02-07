@@ -49,7 +49,6 @@ import { saga as servicesFormSaga } from 'core/forms/servicesForm/saga';
 import { saga as brandsSaga } from 'core/forms/brandsForm/saga';
 import { saga as setDetailProductSaga } from 'core/forms/setDetailProduct/saga';
 import { saga as spreadBusinessSaga } from 'core/forms/spreadBusinessBrands/saga';
-import { saga as cashOrdersFiltersFormSaga } from 'core/forms/cashOrdersFiltersForm/saga';
 import { saga as cashOrderFormSaga } from 'core/forms/cashOrderForm/saga';
 
 /* eslint-disable array-element-newline */
@@ -90,7 +89,6 @@ export default function* rootSaga() {
         suppliersSaga(),
         // cash
         cashSaga(),
-        // cashOrdersFiltersFormSaga(),
         cashOrderFormSaga(),
         // statistics
         chartSaga(),

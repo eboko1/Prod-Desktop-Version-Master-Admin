@@ -9,7 +9,6 @@ import { v4 } from 'uuid';
 
 // proj
 import {
-    ordersSearch,
     fetchOrders,
     setOrdersStatusFilter,
     setOrdersSearchFilter,
@@ -38,7 +37,6 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    ordersSearch,
     fetchOrders,
     setOrdersStatusFilter,
     setOrdersSearchFilter,

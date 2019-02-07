@@ -1,5 +1,5 @@
 // vendor
-import { replace, push, goBack } from 'react-router-redux';
+import { replace, push, goBack } from 'connected-react-router';
 import store from 'store/store';
 
 // own
