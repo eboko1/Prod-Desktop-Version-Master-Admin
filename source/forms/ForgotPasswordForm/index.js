@@ -1,56 +1,45 @@
 // vendor
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Form, Button, Card } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { Form, Button, Card } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
 
 // proj
-import { Result } from 'components';
+import { Result } from "components";
 
-import { DecoratedInput } from 'forms/DecoratedFields';
+import { DecoratedInput } from "forms/DecoratedFields";
 // import { withReduxForm2 } from 'utils';
-import book from 'routes/book.js';
-import { fetchAPI } from 'utils';
+import book from "routes/book.js";
+import { fetchAPI } from "utils";
 
 // own
-import Styles from '../LoginForm/loginForm.m.css';
+import Styles from "../LoginForm/loginForm.m.css";
 
 @injectIntl
 export class ForgotPassword extends Component {
     state = {
-        noLogin:  false,
+        noLogin: false,
         goToMail: false,
     };
 
-    _submit = event => {
+    _submit = async event => {
         event.preventDefault();
-        const { getFieldValue } = this.props.form;
 
-        const onFulfilled = () =>
-            this.setState({
-                goToMail: true,
-            });
-
-        const onRejected = () =>
-            this.setState({
-                noLogin: true,
-            });
-
-        const promise = fetchAPI(
-            'POST',
-            '/password/reset/request',
+        const response = await fetchAPI(
+            "POST",
+            "/password/reset/request",
             null,
             {
-                login: getFieldValue('login'),
+                login: this.props.form.getFieldValue("login"),
             },
             {
-                rawResponse:           true,
+                rawResponse: true,
                 handleErrorInternally: true,
             },
         );
 
-        promise.then(onFulfilled);
-        promise.then(null, onRejected);
+        if (response.status === 200) this.setState({ goToMail: true });
+        if (response.status !== 200) this.setState({ noLogin: true });
     };
 
     _backToForm = () => this.setState({ noLogin: false });
@@ -63,72 +52,72 @@ export class ForgotPassword extends Component {
         const { noLogin, goToMail } = this.state;
 
         return (
-            <Form className={ Styles.loginForm } onSubmit={ this._submit }>
-                { !(noLogin || goToMail) ? 
+            <Form className={Styles.loginForm} onSubmit={this._submit}>
+                {!(noLogin || goToMail) ? (
                     <>
                         <DecoratedInput
                             formItem
                             label={
-                                <FormattedMessage id='login_form.enter_your_registration_login' />
+                                <FormattedMessage id="login_form.enter_your_registration_login" />
                             }
-                            field='login'
-                            getFieldDecorator={ getFieldDecorator }
-                            rules={ [
+                            field="login"
+                            getFieldDecorator={getFieldDecorator}
+                            rules={[
                                 {
                                     required: true,
-                                    message:  formatMessage({
-                                        id: 'login_form.login_is_required',
+                                    message: formatMessage({
+                                        id: "login_form.login_is_required",
                                     }),
                                 },
-                            ] }
-                            placeholder={ formatMessage({
-                                id: 'login_form.enter_login',
-                            }) }
+                            ]}
+                            placeholder={formatMessage({
+                                id: "login_form.enter_login",
+                            })}
                         />
-                        <Button type='primary' htmlType='submit'>
-                            <FormattedMessage id='submit' />
+                        <Button type="primary" htmlType="submit">
+                            <FormattedMessage id="submit" />
                         </Button>
                     </>
-                    : null }
-                { noLogin && (
-                    <Card bordered={ false }>
+                ) : null}
+                {noLogin && (
+                    <Card bordered={false}>
                         <Result
-                            type='error'
-                            title={ <FormattedMessage id='login_form.error' /> }
+                            type="error"
+                            title={<FormattedMessage id="login_form.error" />}
                             description={
-                                <FormattedMessage id='login_form.no_login_found' />
+                                <FormattedMessage id="login_form.no_login_found" />
                             }
                             // extra={ extra }
                             actions={
-                                <Button onClick={ this._backToForm }>
-                                    <FormattedMessage id='login_form.back_to_form' />
+                                <Button onClick={this._backToForm}>
+                                    <FormattedMessage id="login_form.back_to_form" />
                                 </Button>
                             }
-                            style={ { marginTop: 48, marginBottom: 16 } }
+                            style={{ marginTop: 48, marginBottom: 16 }}
                         />
                     </Card>
-                ) }
-                { goToMail && (
-                    <Card bordered={ false }>
+                )}
+                {goToMail && (
+                    <Card bordered={false}>
                         <Result
-                            type='success'
+                            type="success"
                             title={
-                                <FormattedMessage id='login_form.go_to_mail' />
+                                <FormattedMessage id="login_form.go_to_mail" />
                             }
                             description={
-                                <FormattedMessage id='login_form.go_to_mail_description' />
+                                <FormattedMessage id="login_form.go_to_mail_description" />
                             }
                             actions={
-                                <Button onClick={ this._backToLogin }>
-                                    <Link to={ book.login }>
-                                        <FormattedMessage id='login_form.back_to_login' />
-                                    </Link>
-                                </Button>
+                                <Link to={book.login}>
+                                    <Button onClick={this._backToLogin}>
+                                        <FormattedMessage id="login_form.back_to_login" />
+                                    </Button>
+                                </Link>
                             }
-                            style={ { marginTop: 48, marginBottom: 16 } }
+                            style={{ marginTop: 48, marginBottom: 16 }}
                         />
                     </Card>
-                ) }
+                )}
             </Form>
         );
     }
