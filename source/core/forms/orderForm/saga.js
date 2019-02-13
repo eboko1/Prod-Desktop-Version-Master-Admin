@@ -9,7 +9,7 @@ import {
     takeEvery,
     select,
 } from 'redux-saga/effects';
-import { replace } from 'react-router-redux';
+import { replace } from 'connected-react-router';
 import nprogress from 'nprogress';
 
 // proj
@@ -129,7 +129,10 @@ export function* createOrderSaga() {
             const {
                 payload: { order, redirectStatus, redirectToDashboard },
             } = yield take(CREATE_ORDER);
-            yield call(fetchAPI, 'POST', 'orders', {}, order);
+            yield call(fetchAPI, 'POST', 'orders', {}, order, {
+                handleErrorInternally: true,
+            });
+
             if (redirectToDashboard && redirectStatus) {
                 yield put(replace(book.dashboard));
             }
@@ -138,7 +141,7 @@ export function* createOrderSaga() {
                 yield put(returnToOrdersPage(redirectStatus));
             }
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         } finally {
             yield put(createOrderSuccess());
         }
@@ -161,7 +164,9 @@ export function* updateOrderSaga() {
                 },
             } = yield take(UPDATE_ORDER);
             const mergedOrder = options ? { ...order, ...options } : order;
-            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder, {handleErrorInternally: true});
+            yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder, {
+                handleErrorInternally: true,
+            });
 
             if (!redirectStatus) {
                 yield put(fetchOrderForm(id));
@@ -198,7 +203,12 @@ export function* returnToOrdersPageSaga() {
             const statusesMap = [
                 {
                     route:    '/orders/appointments',
-                    statuses: [ 'not_complete', 'required', 'reserve', 'call' ],
+                    statuses: [
+                        'not_complete',
+                        'required',
+                        'reserve',
+                        'call',
+                    ],
                 },
                 { route: '/orders/approve', statuses: [ 'approve' ] },
                 { route: '/orders/progress', statuses: [ 'progress' ] },

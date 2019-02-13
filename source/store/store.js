@@ -15,7 +15,6 @@ const store = createStore(
 
 export const persistor = persistStore(store);
 
-export { history } from './middleware';
 export default store;
 
 sagaMiddleware.run(rootSaga);

@@ -16,7 +16,7 @@ export class DecoratedSearch extends React.PureComponent {
             className,
             hasFeedback,
             formItemLayout,
-            innerRef,
+            ref,
             onSearch,
             onPressEnter,
             enterButton,
@@ -56,7 +56,7 @@ export class DecoratedSearch extends React.PureComponent {
                 placeholder={ placeholder }
                 disabled={ disabled }
                 onChange={ onChange }
-                ref={ innerRef }
+                ref={ ref }
                 onSearch={ onSearch }
                 onPressEnter={ onPressEnter }
                 enterButton={ enterButton }

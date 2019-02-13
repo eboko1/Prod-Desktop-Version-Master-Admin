@@ -67,21 +67,18 @@ const compareOrderTasks = (initialOrderTask, orderTask) => {
     return !_.isEqual(_.omitBy(orderTaskEntity, _.isNil), _.omitBy(initialOrderTaskEntity, _.isNil));
 };
 
-const mapStateToProps = state => {
-    return {
-        myTasks:          state.myTasksContainer.myTasks,
-        page:             state.myTasksContainer.page,
-        modal:            state.modals.modal,
-        // orderTaskEntity:  state.forms.orderTaskForm.fields,
-        initialOrderTask: state.forms.orderTaskForm.initialOrderTask,
-        orderTaskId:      state.forms.orderTaskForm.taskId,
-        activeOrder:      state.myTasksContainer.activeOrder,
-        activeVehicle:    state.myTasksContainer.vehicle,
-        spinner:          state.ui.myTasksFetching,
-        filter:           state.myTasksContainer.filters,
-        isMobile:         state.ui.views.isMobile,
-    };
-};
+const mapStateToProps = state => ({
+    myTasks:          state.myTasksContainer.myTasks,
+    page:             state.myTasksContainer.page,
+    modal:            state.modals.modal,
+    initialOrderTask: state.forms.orderTaskForm.initialOrderTask,
+    orderTaskId:      state.forms.orderTaskForm.taskId,
+    activeOrder:      state.myTasksContainer.activeOrder,
+    activeVehicle:    state.myTasksContainer.vehicle,
+    spinner:          state.ui.myTasksFetching,
+    filter:           state.myTasksContainer.filters,
+    isMobile:         state.ui.views.isMobile,
+});
 
 const mapDispatchToProps = {
     setModal,
@@ -97,6 +94,7 @@ const mapDispatchToProps = {
     setMyTasksSortFieldFilter,
     setMyTasksSortOrderFilter,
 };
+
 @injectIntl
 @connect(
     mapStateToProps,
@@ -133,7 +131,7 @@ class MyTasksPage extends Component {
         this.orderTaskFormRef = formRef;
     };
 
-    saveOrderTask = () => {
+    _saveOrderTask = () => {
         const { orderTaskId, initialOrderTask } = this.props;
         const form = this.orderTaskFormRef.props.form;
         let myTasks = 'mytasks';
@@ -168,6 +166,7 @@ class MyTasksPage extends Component {
         }
         fetchMyTasks(filter);
     };
+
     _renderHeaderContorls = () => {
         const { button } = this.state;
 
@@ -279,7 +278,7 @@ class MyTasksPage extends Component {
                     resetOrderTasksForm={ this.props.resetOrderTasksForm }
                     stations={ myTasks && myTasks.stations || [] }
                     managers={ myTasks && myTasks.managers || [] }
-                    saveNewOrderTask={ this.saveOrderTask }
+                    saveNewOrderTask={ this._saveOrderTask }
                     orderTasks={ myTasks && myTasks.orderTasks || [] }
                 />
             </Layout>

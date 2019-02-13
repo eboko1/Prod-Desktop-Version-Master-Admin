@@ -19,7 +19,7 @@ export class DecoratedSelect extends React.PureComponent {
             style,
             hasFeedback,
             formItemLayout,
-            innerRef,
+            ref,
             onPressEnter,
 
             // DecoratedField
@@ -62,7 +62,7 @@ export class DecoratedSelect extends React.PureComponent {
                 showSearch={ showSearch }
                 allowClear={ allowClear }
                 className={ cnStyles }
-                ref={ innerRef }
+                ref={ ref }
                 labelInValue={ labelInValue }
                 optionLabelProp={ optionLabelProp }
                 onChange={ onChange }

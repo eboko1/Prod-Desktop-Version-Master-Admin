@@ -151,7 +151,7 @@ export default class DashboardOrderDragSource extends Component {
                 }
                 onMouseDown={ this._hideDashboardTooltip }
                 onMouseLeave={ this._hideDashboardTooltip }
-                innerRef={ order => this._getOrderRef(order) }
+                ref={ order => this._getOrderRef(order) }
             >
                 <StyledDashboardOrderBox>
                     { [ ...Array(rows).keys() ].map((_, index) =>

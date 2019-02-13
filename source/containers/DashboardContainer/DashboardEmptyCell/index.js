@@ -61,7 +61,7 @@ export default class DashboardEmptyCell extends Component {
                 day={ day }
                 stationNum={ stationNum }
                 globalPosition={ globalPosition }
-                innerRef={ cell => connectDropTarget(cell) }
+                ref={ cell => connectDropTarget(cell) }
             >
                 { children }
                 { isOver && !canDrop && <EmptyCellOverlay color={ 'red' } /> }

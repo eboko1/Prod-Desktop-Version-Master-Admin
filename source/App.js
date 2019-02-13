@@ -2,13 +2,14 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
-import { ConnectedRouter as Router } from 'react-router-redux';
+import { ConnectedRouter } from 'connected-react-router';
 import { LocaleProvider } from 'antd';
 
 // proj
 import { ConnectedIntlProvider as IntlProvider } from 'utils';
 import { setLocaleProvider } from 'utils';
-import store, { history, persistor } from './store/store';
+import store, { persistor } from './store/store';
+import history from './store/history';
 import Routes from './routes/Main';
 
 export default class App extends Component {
@@ -18,9 +19,9 @@ export default class App extends Component {
                 <PersistGate loading={ null } persistor={ persistor }>
                     <IntlProvider>
                         <LocaleProvider locale={ setLocaleProvider() }>
-                            <Router history={ history }>
+                            <ConnectedRouter history={ history }>
                                 <Routes />
-                            </Router>
+                            </ConnectedRouter>
                         </LocaleProvider>
                     </IntlProvider>
                 </PersistGate>

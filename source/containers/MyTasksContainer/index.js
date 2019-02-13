@@ -1,48 +1,48 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Icon, Tooltip, Button, Row, Col } from 'antd';
+import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
+import { Table, Icon, Tooltip, Button, Row, Col } from 'antd';
 import moment from 'moment';
 import { v4 } from 'uuid';
-import { Link } from 'react-router-dom';
 
 // proj
-import { withReduxForm } from 'utils';
 import {
     fetchMyTasks,
     setPage,
-    onChangeMyTasksForm,
     getActiveOrder,
     getActiveVehicle,
     setManager,
 } from 'core/myTasks/duck';
 import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
 import { setModal, MODALS } from 'core/modals/duck';
-import { ManagerSearchField } from 'forms/_formkit';
+
 import { Catcher } from 'commons';
-import { permissions, isForbidden } from 'utils';
+import { ManagerSearchField } from 'forms/_formkit';
+import { withReduxForm, permissions, isForbidden } from 'utils';
 
 // own
 import Styles from './styles.m.css';
 
+const mapStateToProps = state => ({
+    managerId: state.myTasksContainer.managerId,
+    user:      state.auth,
+});
+
+const mapDispatchToProps = {
+    fetchMyTasks,
+    setModal,
+    initOrderTasksForm,
+    getActiveOrder,
+    setPage,
+    getActiveVehicle,
+    setManager,
+};
+
+
 @injectIntl
-@withReduxForm({
-    name:    'myTasksForm',
-    actions: {
-        change: onChangeMyTasksForm,
-        fetchMyTasks,
-        setModal,
-        initOrderTasksForm,
-        getActiveOrder,
-        setPage,
-        getActiveVehicle,
-        setManager,
-    },
-    mapStateToProps: state => ({
-        managerId: state.myTasksContainer.managerId,
-        user:      state.auth,
-    }),
-})
+@connect(mapStateToProps, mapDispatchToProps)
 export default class MyTasksContainer extends Component {
     constructor(props) {
         super(props);

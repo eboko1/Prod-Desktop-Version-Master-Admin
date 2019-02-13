@@ -23,6 +23,7 @@ import {
     requiredFieldsOnStatuses,
 } from 'forms/OrderForm/extractOrderEntity';
 import book from 'routes/book';
+import { withErrorMessage } from 'utils';
 
 //  own
 const RadioButton = Radio.Button;
@@ -64,6 +65,7 @@ const mapDispatch = {
     mapStateToProps,
     mapDispatch,
 )
+@withErrorMessage()
 class AddOrderPage extends Component {
     state = {
         errors: void 0,

@@ -31,7 +31,7 @@ export class DecoratedTimePicker extends React.PureComponent {
             disabledMinutes,
             disabledSeconds,
             inputReadOnly,
-            allowEmpty,
+            allowClear,
             initialValue: initialInitialValue,
             defaultOpenValue: initialDefaultOpenValue,
             onChange,
@@ -62,7 +62,7 @@ export class DecoratedTimePicker extends React.PureComponent {
                 popupClassName={ popupClassName }
                 minuteStep={ minuteStep }
                 inputReadOnly={ inputReadOnly }
-                allowEmpty={ allowEmpty }
+                allowClear={ allowClear }
                 onChange={ onChange }
             />,
         );
