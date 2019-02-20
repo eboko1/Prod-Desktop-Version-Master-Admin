@@ -9,3 +9,22 @@
     margin-right: 10px;
     width: 168px;
 }
+
+.passwordFieldEditing {
+    border: 2px dashed var(--warning);
+    border-radius: 4px;
+    margin: 10px 0;
+    padding: 10px 10px 0 0;
+}
+
+.changePasswordControl {
+    margin: 0 25% 12px;
+}
+.cancelPasswordControl {
+    margin: 0 25% 12px;
+    display: inline-flex;
+    white-space: nowrap;
+    align-items: center;
+    color: var(--warning);
+    cursor: pointer;
+}
