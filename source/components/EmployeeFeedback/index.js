@@ -26,7 +26,7 @@ export default class EmployeeFeedback extends Component {
                     <div>
                         <Link
                             className={ Styles.employeeName }
-                            to={ `${book.oldApp.reviews}/${record.id}` }
+                            to={ `${book.feedback}/${record.id}` }
                         >
                             <div>
                                 { moment(datetime).format('YYYY-MM-DD HH:mm') }
