@@ -38,7 +38,7 @@ export class CashOrdersTable extends Component {
             },
         };
 
-        return totalCount ? (
+        return (
             <Table
                 size='small'
                 className={ Styles.table }
@@ -51,8 +51,6 @@ export class CashOrdersTable extends Component {
                 } }
                 scroll={ { x: 1000 } }
             />
-        ) : (
-            <Loader loading={ !totalCount } />
         );
     }
 }
