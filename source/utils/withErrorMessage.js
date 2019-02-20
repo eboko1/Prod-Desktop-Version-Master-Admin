@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import { message } from 'antd';
 import styled from 'styled-components';
 
@@ -41,6 +41,7 @@ export const withErrorMessage = () => Enhanceable => {
         _renderErrorMessage = () => {
             const { errorType, error, resetErrorMessage } = this.props;
 
+            // https://ant.design/components/message/
             return (
                 Object.keys(errorMessages).includes(errorType) &&
                 message.error(
@@ -57,8 +58,6 @@ export const withErrorMessage = () => Enhanceable => {
         };
 
         render() {
-            // https://ant.design/components/message/
-
             return <Enhanceable { ...this.props } />;
         }
     }
@@ -72,17 +71,3 @@ const ErrorStatusCode = styled.span`
     font-weight: bold;
     margin-right: 8px;
 `;
-
-// error.response ? (
-//     <div>
-//         { error.response.statusCode }
-//         111
-//         <FormattedMessage
-//             id={ `error_message.${
-//                 error.response.message
-//             }` }
-//         />
-//     </div>
-// ) :
-//     `${error.status}222 ${error.message}`
-// ,
