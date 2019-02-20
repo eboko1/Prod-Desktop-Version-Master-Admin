@@ -1,5 +1,13 @@
 // vendor
-import { call, put, all, take, select } from 'redux-saga/effects';
+import {
+    call,
+    put,
+    all,
+    take,
+    select,
+    delay,
+    takeLatest,
+} from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import { saveAs } from 'file-saver';
 import moment from 'moment';
@@ -15,6 +23,7 @@ import {
     fetchCashboxesSuccess,
     createCashboxSuccess,
     deleteCashboxSuccess,
+    fetchCashOrders,
     fetchCashOrdersSuccess,
     fetchCashboxesBalanceSuccess,
     fetchCashboxesActivitySuccess,
@@ -28,6 +37,7 @@ import {
     DELETE_CASHBOX,
     FETCH_CASH_ORDERS,
     PRINT_CASH_ORDERS,
+    SET_SEARCH_QUERY,
 } from './duck';
 
 export function* fetchCashboxesSaga() {
@@ -107,6 +117,15 @@ export function* fetchCashOrdersSaga() {
     }
 }
 
+function* handleCashOrdersSearchSaga() {
+    try {
+        yield delay(1000);
+        yield put(fetchCashOrders());
+    } catch (error) {
+        yield put(emitError(error));
+    }
+}
+
 export function* createCashboxSaga() {
     while (true) {
         try {
@@ -123,6 +142,7 @@ export function* createCashboxSaga() {
         }
     }
 }
+
 export function* deleteCashboxSaga() {
     while (true) {
         try {
@@ -179,7 +199,8 @@ export function* saga() {
         call(fetchCashboxesActivitySaga),
         call(createCashboxSaga),
         call(deleteCashboxSaga),
-        call(fetchCashOrdersSaga),
         call(printCashOrdersSaga),
+        call(fetchCashOrdersSaga),
+        takeLatest(SET_SEARCH_QUERY, handleCashOrdersSearchSaga),
     ]);
 }

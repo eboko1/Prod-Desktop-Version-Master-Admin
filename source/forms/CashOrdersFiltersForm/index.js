@@ -1,8 +1,9 @@
 // vendor
-import React, { Component } from 'react';
-import { Form, Select } from 'antd';
-import { injectIntl } from 'react-intl';
-import moment from 'moment';
+import React, { Component } from "react";
+import { Form, Select, Input } from "antd";
+import { injectIntl } from "react-intl";
+import moment from "moment";
+import _ from "lodash";
 
 // proj
 import {
@@ -12,23 +13,24 @@ import {
     setCashOrdersFilters,
     selectCashOrdersFilters,
     setSearchQuery,
-} from 'core/cash/duck';
-import { onChangeCashOrdersFiltersForm } from 'core/forms/cashOrdersFiltersForm/duck';
+} from "core/cash/duck";
+import { onChangeCashOrdersFiltersForm } from "core/forms/cashOrdersFiltersForm/duck";
 
-import { StatsCountsPanel } from 'components';
+import { StatsCountsPanel } from "components";
 import {
     DecoratedSearch,
     DecoratedSelect,
     DecoratedDatePicker,
-} from 'forms/DecoratedFields';
-import { withReduxForm2, getDaterange } from 'utils';
+} from "forms/DecoratedFields";
+import { withReduxForm2, getDaterange } from "utils";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
+const Search = Input.Search;
 const Option = Select.Option;
 
 @withReduxForm2({
-    name:    'cashOrdersFiltersForm',
+    name: "cashOrdersFiltersForm",
     actions: {
         change: onChangeCashOrdersFiltersForm,
         fetchCashboxes,
@@ -36,9 +38,10 @@ const Option = Select.Option;
         setCashOrdersFilters,
         setSearchQuery,
     },
+    debouncedFields: ["query"],
     mapStateToProps: state => ({
         cashStats: selectCashStats(state),
-        filters:   selectCashOrdersFilters(state),
+        filters: selectCashOrdersFilters(state),
         cashboxes: state.cash.cashboxes,
     }),
 })
@@ -48,10 +51,7 @@ export class CashOrdersFiltersForm extends Component {
         this.props.fetchCashboxes();
     }
 
-    _onSearch = ({ target: { value } }) => {
-        this.props.setSearchQuery(value);
-        this.props.fetchCashOrders();
-    };
+    _onSearch = value => this.props.setSearchQuery(value);
 
     _onCashboxSelect = value => {
         this.props.setCashOrdersFilters({ cashBoxId: value });
@@ -59,10 +59,10 @@ export class CashOrdersFiltersForm extends Component {
     };
 
     _onDateRangeChange = value => {
-        const normalizedValue = value.map(date => date.format('YYYY-MM-DD'));
+        const normalizedValue = value.map(date => date.format("YYYY-MM-DD"));
         const daterange = {
-            startDate: normalizedValue[ 0 ],
-            endDate:   normalizedValue[ 1 ],
+            startDate: normalizedValue[0],
+            endDate: normalizedValue[1],
         };
         this.props.setCashOrdersFilters(daterange);
         this.props.fetchCashOrders();
@@ -79,63 +79,63 @@ export class CashOrdersFiltersForm extends Component {
 
         return (
             <Form>
-                <div className={ Styles.row }>
-                    <DecoratedSearch
-                        fields={ {} }
-                        field='query'
-                        initialValue={ filters.query }
-                        getFieldDecorator={ getFieldDecorator }
-                        className={ Styles.filter }
-                        placeholder={ formatMessage({
-                            id: 'orders-filter.search_placeholder',
-                        }) }
-                        onChange={ this._onSearch }
+                <div className={Styles.row}>
+                    <Search
+                        placeholder={formatMessage({
+                            id: "orders-filter.search_placeholder",
+                        })}
+                        onChange={({ target: { value } }) =>
+                            this._onSearch(value)
+                        }
                     />
                     <DecoratedSelect
-                        field='cashBoxId'
-                        initialValue={ filters.cashBoxId }
-                        placeholder={ formatMessage({
-                            id: 'cash-order-form.cashbox',
-                        }) }
-                        getFieldDecorator={ getFieldDecorator }
-                        cnStyles={ Styles.filter }
-                        onChange={ this._onCashboxSelect }
+                        field="cashBoxId"
+                        initialValue={filters.cashBoxId}
+                        placeholder={formatMessage({
+                            id: "cash-order-form.cashbox",
+                        })}
+                        getFieldDecorator={getFieldDecorator}
+                        cnStyles={Styles.filter}
+                        onChange={this._onCashboxSelect}
                         allowClear
                     >
-                        { cashboxes.map(({ id, name }) => (
-                            <Option value={ id } key={ id }>
-                                { name }
+                        {cashboxes.map(({ id, name }) => (
+                            <Option value={id} key={id}>
+                                {name}
                             </Option>
-                        )) }
+                        ))}
                     </DecoratedSelect>
                     <DecoratedDatePicker
-                        field='daterange'
-                        initialValue={ [ moment(filters.startDate), moment(filters.endDate) ] }
-                        allowClear={ false }
-                        getFieldDecorator={ getFieldDecorator }
-                        formatMessage={ formatMessage }
-                        getCalendarContainer={ trigger => trigger.parentNode }
-                        cnStyles={ Styles.filter }
-                        ranges={ {
+                        field="daterange"
+                        initialValue={[
+                            moment(filters.startDate),
+                            moment(filters.endDate),
+                        ]}
+                        allowClear={false}
+                        getFieldDecorator={getFieldDecorator}
+                        formatMessage={formatMessage}
+                        getCalendarContainer={trigger => trigger.parentNode}
+                        cnStyles={Styles.filter}
+                        ranges={{
                             // this day
-                            [ formatMessage({
-                                id: 'datepicker.today',
-                            }) ]: getDaterange('today', 'ant'),
+                            [formatMessage({
+                                id: "datepicker.today",
+                            })]: getDaterange("today", "ant"),
                             // prev month
-                            [ formatMessage({
-                                id: 'datepicker.prev_month',
-                            }) ]: getDaterange('prevMonth', 'ant'),
+                            [formatMessage({
+                                id: "datepicker.prev_month",
+                            })]: getDaterange("prevMonth", "ant"),
                             // prev year
-                            [ formatMessage({
-                                id: 'datepicker.prev_year',
-                            }) ]: getDaterange('prevYear', 'ant'),
-                        } }
+                            [formatMessage({
+                                id: "datepicker.prev_year",
+                            })]: getDaterange("prevYear", "ant"),
+                        }}
                         // showTime
-                        format='YYYY-MM-DD'
-                        onChange={ this._onDateRangeChange }
+                        format="YYYY-MM-DD"
+                        onChange={this._onDateRangeChange}
                     />
                 </div>
-                <StatsCountsPanel stats={ cashStats } extendedCounts />
+                <StatsCountsPanel stats={cashStats} extendedCounts />
             </Form>
         );
     }
