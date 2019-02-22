@@ -1,11 +1,20 @@
 {
     "en": {
-        "header.open_your_site": "Open Your Site"
+        "header.open_your_site": "Open Your Site",
+        "header.expand_sidebar": "Expand sidebar",
+        "header.collapse_sidebar": "Collapse sidebar",
+        "header.switch_business": "Switch Business"
     },
     "ru": {
-        "header.open_your_site": "Открыть Свой Сайт"
+        "header.open_your_site": "Открыть Свой Сайт",
+        "header.expand_sidebar": "Развернуть меню",
+        "header.collapse_sidebar": "Свернуть меню",
+        "header.switch_business": "Переключить Бизнес"
     },
     "uk": {
-        "header.open_your_site": "Відкрити Свій Сайт"
+        "header.open_your_site": "Відкрити Свій Сайт",
+        "header.expand_sidebar": "Розгорнути меню",
+        "header.collapse_sidebar": "Згорнути меню",
+        "header.switch_business": "Переключити Бізнес"
     }
 }

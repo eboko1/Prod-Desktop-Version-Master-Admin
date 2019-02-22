@@ -18,6 +18,11 @@
     width: calc(100% - 80px);
 }
 
+.headerWeb {
+    display: flex;
+    align-items: center;
+}
+
 .headerWrapper {
     display: flex;
     flex: 1 1 100%;
@@ -29,14 +34,8 @@
     width: 268px;
 }
 
-/* .trigger {
-    color: #fff;
-    margin: 0 50px 0 0;
-} */
-
 .trigger {
-    font-size: 18px;
-    line-height: 64px;
+    font-size: 24px;
     padding: 0 24px;
     cursor: pointer;
     color: #fff;
@@ -48,7 +47,7 @@
 }
 
 .headerWebLink {
-    color: #fff;
+    display: flex;
 }
 
 .headerPanel {
@@ -81,6 +80,8 @@
 
 .siteIcon {
     margin: 0 4px 0 10px;
+    font-size: 24px;
+    color: #fff;
 }
 
 .avatar {

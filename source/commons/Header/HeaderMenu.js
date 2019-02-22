@@ -1,20 +1,20 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import { Icon, Avatar } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { Link } from "react-router-dom";
+import { Icon, Avatar, Tooltip } from "antd";
+import { FormattedMessage } from "react-intl";
 
 // proj
-import { selectAdmin } from 'core/auth/duck';
-import { setBusiness } from 'core/forms/switchBusinessForm/duck';
-import { setModal, MODALS } from 'core/modals/duck';
+import { selectAdmin } from "core/auth/duck";
+import { setBusiness } from "core/forms/switchBusinessForm/duck";
+import { setModal, MODALS } from "core/modals/duck";
 
-import { SwitchBusinessModal } from 'modals';
-import book from 'routes/book';
+import { SwitchBusinessModal } from "modals";
+import book from "routes/book";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 const mapStateToProps = state => {
     return {
@@ -38,9 +38,9 @@ export default class HeaderMenu extends Component {
         const openYourSite = this._renderOpenYourSite();
 
         return (
-            <div className={ Styles.headerMenu }>
-                { !isMobile && openYourSite }
-                { headerPanel }
+            <div className={Styles.headerMenu}>
+                {!isMobile && openYourSite}
+                {headerPanel}
             </div>
         );
     }
@@ -50,19 +50,19 @@ export default class HeaderMenu extends Component {
 
         return (
             <div
-                className={ `${Styles.headerPanel} ${isMobile &&
-                    Styles.headerPanelMobile} ` }
+                className={`${Styles.headerPanel} ${isMobile &&
+                    Styles.headerPanelMobile} `}
             >
-                <Link className={ Styles.user } to={ book.profile }>
-                    <Avatar className={ Styles.avatar } icon='user' />
-                    { user.name } { user.surname }
+                <Link className={Styles.user} to={book.profile}>
+                    <Avatar className={Styles.avatar} icon="user" />
+                    {user.name} {user.surname}
                 </Link>
                 <Icon
-                    className={ Styles.logout }
-                    type='poweroff'
-                    onClick={ logout }
+                    className={Styles.logout}
+                    type="poweroff"
+                    onClick={logout}
                 />
-                <SwitchBusinessModal setBusiness={ this.props.setBusiness } />
+                <SwitchBusinessModal setBusiness={this.props.setBusiness} />
             </div>
         );
     };
@@ -75,18 +75,27 @@ export default class HeaderMenu extends Component {
         } = this.props;
 
         return (
-            <div className={ Styles.headerWeb }>
-                { (isAdmin || businessesAccess) && (
-                    <Icon
-                        type='home'
-                        className={ Styles.homeIcon }
-                        onClick={ () => setModal(MODALS.SWITCH_BUSINESS) }
-                    />
-                ) }
-                <a href='#' className={ Styles.headerWebLink }>
-                    <Icon type='global' className={ Styles.siteIcon } />
-                    <FormattedMessage id='header.open_your_site' />
-                </a>
+            <div className={Styles.headerWeb}>
+                {(isAdmin || businessesAccess) && (
+                    <Tooltip
+                        placement="topLeft"
+                        title={<FormattedMessage id="header.switch_business" />}
+                    >
+                        <Icon
+                            type="home"
+                            className={Styles.homeIcon}
+                            onClick={() => setModal(MODALS.SWITCH_BUSINESS)}
+                        />
+                    </Tooltip>
+                )}
+                <Tooltip
+                    placement="topLeft"
+                    title={<FormattedMessage id="header.open_your_site" />}
+                >
+                    <a href="#" className={Styles.headerWebLink}>
+                        <Icon type="global" className={Styles.siteIcon} />
+                    </a>
+                </Tooltip>
             </div>
         );
     };
