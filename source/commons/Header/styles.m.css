@@ -43,7 +43,7 @@
 }
 
 .trigger:hover {
-    color: #1890ff;
+    color: var(--primary);
 }
 
 .headerWebLink {
@@ -70,6 +70,7 @@
 
 .logout {
     margin-left: 16px;
+    font-size: 24px;
     color: #fff;
     cursor: pointer;
 
@@ -82,6 +83,10 @@
     margin: 0 4px 0 10px;
     font-size: 24px;
     color: #fff;
+}
+
+.siteIcon:hover {
+    color: var(--link);
 }
 
 .avatar {
