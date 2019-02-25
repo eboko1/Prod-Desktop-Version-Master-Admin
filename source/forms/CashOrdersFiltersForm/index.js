@@ -87,6 +87,7 @@ export class CashOrdersFiltersForm extends Component {
                         onChange={({ target: { value } }) =>
                             this._onSearch(value)
                         }
+                        className={Styles.filter}
                     />
                     <DecoratedSelect
                         field="cashBoxId"
