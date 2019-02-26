@@ -20,14 +20,11 @@ export function* fetchMyTasks() {
             const {
                 payload: { firstLoading },
             } = yield take(FETCH_MY_TASKS);
-            console.log('→ firstLoading', firstLoading);
             if (firstLoading) {
                 yield put(setMyTasksFetchingState(true));
             }
-            // const { filter } = yield select(selectFilter);
             const { filter, managerId } = yield select(selectFilter);
-            console.log('* filter', filter);
-            console.log('* managerId', managerId);
+
             const queryFilters = {
                 ...filter.status === 'active'
                     ? { notInStatus: 'CLOSED' }
@@ -40,7 +37,6 @@ export function* fetchMyTasks() {
                 deadlineDateFrom: _.get(filter, 'daterange.startDate'),
                 deadlineDateTo:   _.get(filter, 'daterange.endDate'),
             };
-            console.log('→ queryFilters', queryFilters);
             const url = 'orders/my-tasks';
             const data = yield call(fetchAPI, 'GET', url, queryFilters);
 

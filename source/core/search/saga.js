@@ -38,7 +38,6 @@ function* handleBusinessesSearchSaga({ payload: query }) {
 
 function* handleManagersSearchSaga({ payload: query }) {
     yield delay(1000);
-    console.log('* query', query);
     yield put(setIsFetchingManagers(true));
     const managers = yield call(fetchAPI, 'GET', 'managers/search', {
         search: query,

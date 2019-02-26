@@ -311,7 +311,7 @@ export default class MyTasksContainer extends Component {
 
         const { GET_ALL_TASKS } = permissions;
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
-        console.log("→ this.props.managerId", this.props.managerId);
+
         return (
             <Catcher>
                 <Paper className={Styles.myTasks}>

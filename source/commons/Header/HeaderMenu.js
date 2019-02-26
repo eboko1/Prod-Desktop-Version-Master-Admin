@@ -82,6 +82,7 @@ export default class HeaderMenu extends Component {
         const {
             isAdmin,
             setModal,
+            businessSynonym,
             user: { businessesAccess },
         } = this.props;
 
@@ -103,7 +104,12 @@ export default class HeaderMenu extends Component {
                     placement="topLeft"
                     title={<FormattedMessage id="header.open_your_site" />}
                 >
-                    <a href="businessSynonym" className={Styles.headerWebLink}>
+                    <a
+                        href={`https://${businessSynonym}.cb24.eu`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={Styles.headerWebLink}
+                    >
                         <Icon type="global" className={Styles.siteIcon} />
                     </a>
                 </Tooltip>
