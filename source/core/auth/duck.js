@@ -47,8 +47,8 @@ export default function reducer(state = ReducerState, action) {
         case LOGOUT_SUCCESS:
             return ReducerState;
 
-        // case REHYDRATE: // This added just to show that this action type also exists, can be omitted.
-        //     return state;
+            // case REHYDRATE: // This added just to show that this action type also exists, can be omitted.
+            //     return state;
 
         case PURGE:
             return state; // Return the initial state of this reducer to 'reset' the app
@@ -61,6 +61,7 @@ export default function reducer(state = ReducerState, action) {
  * Selectors
  **/
 
+export const selectState = state => state[ moduleName ];
 export const selectToken = state => state.auth.token;
 export const selectAdmin = state => state.auth.scope.indexOf('ADMIN') > -1;
 

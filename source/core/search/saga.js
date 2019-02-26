@@ -38,7 +38,7 @@ function* handleBusinessesSearchSaga({ payload: query }) {
 
 function* handleManagersSearchSaga({ payload: query }) {
     yield delay(1000);
-
+    console.log('* query', query);
     yield put(setIsFetchingManagers(true));
     const managers = yield call(fetchAPI, 'GET', 'managers/search', {
         search: query,
@@ -80,5 +80,10 @@ function* handleProductsSearchSaga({ payload: query }) {
 }
 
 export function* saga() {
-    yield all([ takeLatest(SET_PRODUCT_SEARCH_QUERY, handleProductsSearchSaga), takeLatest(SET_SUPPLIER_SEARCH_QUERY, handleSuppliersSearchSaga), takeLatest(SET_BUSINESS_SEARCH_QUERY, handleBusinessesSearchSaga), takeLatest(SET_MANAGER_SEARCH_QUERY, handleManagersSearchSaga) ]);
+    yield all([
+        takeLatest(SET_PRODUCT_SEARCH_QUERY, handleProductsSearchSaga),
+        takeLatest(SET_SUPPLIER_SEARCH_QUERY, handleSuppliersSearchSaga),
+        takeLatest(SET_BUSINESS_SEARCH_QUERY, handleBusinessesSearchSaga),
+        takeLatest(SET_MANAGER_SEARCH_QUERY, handleManagersSearchSaga),
+    ]);
 }

@@ -18,6 +18,7 @@ import CallsContainer from './CallsContainer';
 import TecDocActionsContainer from './TecDocActionsContainer';
 import ServicesContainer from './ServicesContainer';
 import CashAccountingContainer from './CashAccountingContainer';
+import MyTasksContainer from './MyTasksContainer';
 
 export {
     OrdersContainer,
@@ -40,4 +41,5 @@ export {
     TecDocActionsContainer,
     ServicesContainer,
     CashAccountingContainer,
+    MyTasksContainer,
 };

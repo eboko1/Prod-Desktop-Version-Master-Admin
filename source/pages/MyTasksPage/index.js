@@ -1,6 +1,5 @@
 // vendor
 import React, { Component } from 'react';
-import MyTasksContainer from 'containers/MyTasksContainer';
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { Radio, Input } from 'antd';
@@ -13,8 +12,6 @@ import {
     saveOrderTask,
     changeModalStatus,
 } from 'core/forms/orderTaskForm/duck';
-import { OrderTaskModal } from 'modals';
-import { Layout, Spinner } from 'commons';
 import {
     fetchMyTasks,
     resetData,
@@ -24,9 +21,16 @@ import {
     setMyTasksSearchFilter,
     setMyTasksStatusFilter,
 } from 'core/myTasks/duck';
-import { getDaterange } from 'utils';
+
+import { Layout, Spinner } from 'commons';
+import { OrderTaskModal } from 'modals';
+import { MyTasksContainer } from 'containers';
 import { setModal, resetModal } from 'core/modals/duck';
+import { getDaterange } from 'utils';
+
+// own
 import Styles from './styles.m.css';
+
 const RadioButton = Radio.Button;
 const RadioGroup = Radio.Group;
 const Search = Input.Search;
@@ -64,19 +68,22 @@ const compareOrderTasks = (initialOrderTask, orderTask) => {
         stationNum: orderTask.stationName,
     };
 
-    return !_.isEqual(_.omitBy(orderTaskEntity, _.isNil), _.omitBy(initialOrderTaskEntity, _.isNil));
+    return !_.isEqual(
+        _.omitBy(orderTaskEntity, _.isNil),
+        _.omitBy(initialOrderTaskEntity, _.isNil),
+    );
 };
 
 const mapStateToProps = state => ({
-    myTasks:          state.myTasksContainer.myTasks,
-    page:             state.myTasksContainer.page,
+    myTasks:          state.myTasks.myTasks,
+    page:             state.myTasks.page,
+    activeOrder:      state.myTasks.activeOrder,
+    activeVehicle:    state.myTasks.vehicle,
+    filter:           state.myTasks.filters,
     modal:            state.modals.modal,
     initialOrderTask: state.forms.orderTaskForm.initialOrderTask,
     orderTaskId:      state.forms.orderTaskForm.taskId,
-    activeOrder:      state.myTasksContainer.activeOrder,
-    activeVehicle:    state.myTasksContainer.vehicle,
     spinner:          state.ui.myTasksFetching,
-    filter:           state.myTasksContainer.filters,
     isMobile:         state.ui.views.isMobile,
 });
 
@@ -112,7 +119,7 @@ class MyTasksPage extends Component {
 
         this.state = {
             button: 'all',
-        }
+        };
     }
 
     componentDidMount() {

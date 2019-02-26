@@ -82,7 +82,7 @@
     "order_form_table.recommendation": "Рекомендации",
     "order_form_table.cancel_reason": "Причина отмены",
     "order_form_table.repair_status": "Статус ремонта",
-    "order_form_table.prime_cost": "Цена субподряд",
+    "order_form_table.prime_cost": "Цена субподряда",
     "order_form_table.services_profit": "Прибыль по работам",
     "urgency": "Срочность",
     "priority": "Приоритет",

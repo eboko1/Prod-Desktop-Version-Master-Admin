@@ -6,7 +6,7 @@ import { Icon, Avatar, Tooltip } from "antd";
 import { FormattedMessage } from "react-intl";
 
 // proj
-import { selectAdmin } from "core/auth/duck";
+import { selectAdmin, selectState } from "core/auth/duck";
 import { setBusiness } from "core/forms/switchBusinessForm/duck";
 import { setModal, MODALS } from "core/modals/duck";
 
@@ -19,6 +19,7 @@ import Styles from "./styles.m.css";
 const mapStateToProps = state => {
     return {
         isAdmin: selectAdmin(state),
+        businessSynonym: selectState(state).businessSynonym,
     };
 };
 
@@ -102,7 +103,7 @@ export default class HeaderMenu extends Component {
                     placement="topLeft"
                     title={<FormattedMessage id="header.open_your_site" />}
                 >
-                    <a href="#" className={Styles.headerWebLink}>
+                    <a href="businessSynonym" className={Styles.headerWebLink}>
                         <Icon type="global" className={Styles.siteIcon} />
                     </a>
                 </Tooltip>
