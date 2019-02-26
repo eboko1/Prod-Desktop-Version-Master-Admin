@@ -18,6 +18,11 @@
     width: calc(100% - 80px);
 }
 
+.headerWeb {
+    display: flex;
+    align-items: center;
+}
+
 .headerWrapper {
     display: flex;
     flex: 1 1 100%;
@@ -29,14 +34,8 @@
     width: 268px;
 }
 
-/* .trigger {
-    color: #fff;
-    margin: 0 50px 0 0;
-} */
-
 .trigger {
-    font-size: 18px;
-    line-height: 64px;
+    font-size: 24px;
     padding: 0 24px;
     cursor: pointer;
     color: #fff;
@@ -44,11 +43,11 @@
 }
 
 .trigger:hover {
-    color: #1890ff;
+    color: var(--primary);
 }
 
 .headerWebLink {
-    color: #fff;
+    display: flex;
 }
 
 .headerPanel {
@@ -71,6 +70,7 @@
 
 .logout {
     margin-left: 16px;
+    font-size: 24px;
     color: #fff;
     cursor: pointer;
 
@@ -81,6 +81,12 @@
 
 .siteIcon {
     margin: 0 4px 0 10px;
+    font-size: 24px;
+    color: #fff;
+}
+
+.siteIcon:hover {
+    color: var(--link);
 }
 
 .avatar {

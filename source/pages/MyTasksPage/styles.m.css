@@ -19,6 +19,7 @@
     box-sizing: border-box;
     width: calc(100% - 256px);
     padding: 10px 16px;
+    top: 128px;
 }
 
 .buttonFilterGroup {
@@ -34,8 +35,4 @@
 
 .cancelReasonSelect {
     flex: 0 1 40%;
-}
-.myTasksWrapper {
-    padding: 80px 0 0 0;
-    margin: 0 16px;
 }

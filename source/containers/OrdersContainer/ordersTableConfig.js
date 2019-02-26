@@ -46,7 +46,7 @@ export function columnsConfig(
         dataIndex: 'num',
         key:       'num',
         // fixed:     'left',
-        render:    (_, order) => 
+        render:    (_, order) => (
             <>
                 <Link
                     className={ Styles.ordernLink }
@@ -55,17 +55,17 @@ export function columnsConfig(
                     { order.num }
                 </Link>
                 <OrderStatusIcon status={ order.status } />
-                {order.serviceNames && (
+                { order.serviceNames && (
                     <div className={ Styles.serviceNames }>
                         { [ ...new Set(order.serviceNames) ].join(', ') }
                     </div>
-                )}
-                {order.recommendation && (
+                ) }
+                { order.recommendation && (
                     <div className={ Styles.recommendation }>
                         { order.recommendation }
                     </div>
-                )}
-                {(order.cancelReason ||
+                ) }
+                { (order.cancelReason ||
                     order.cancelStatusReason ||
                     order.cancelStatusOwnReason) && (
                     <div className={ Styles.cancelReason }>
@@ -73,9 +73,9 @@ export function columnsConfig(
                         <div>{ order.cancelStatusReason }</div>
                         <div>{ order.cancelStatusOwnReason }</div>
                     </div>
-                )}
+                ) }
             </>
-        ,
+        ),
     };
 
     const datetimeCol = {
@@ -255,7 +255,7 @@ export function columnsConfig(
         render:    (data, order) => {
             if (_.isNumber(order.nps)) {
                 return (
-                    <a href={ `${book.oldApp.reviews}/${order.reviewIds[ 0 ]}` }>
+                    <a href={ `${book.feedback}/${order.reviewIds[ 0 ]}` }>
                         <div
                             className={ classNames(Styles.nps, {
                                 [ Styles.npsMid ]:
@@ -387,26 +387,100 @@ export function columnsConfig(
 
     switch (activeRoute) {
         case '/orders/appointments':
-            return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, tasksCol, editCol ];
+            return [
+                indexCol,
+                orderCol,
+                datetimeCol,
+                beginDatetimeCol,
+                clientCol,
+                sumCol,
+                responsibleCol,
+                sourceCol,
+                tasksCol,
+                editCol,
+            ];
 
         case '/orders/approve':
         case '/orders/progress':
-            return [ indexCol, orderCol, beginDatetimeCol, deliveryDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
+            return [
+                indexCol,
+                orderCol,
+                beginDatetimeCol,
+                deliveryDatetimeCol,
+                clientCol,
+                sumCol,
+                responsibleCol,
+                sourceCol,
+                editCol,
+            ];
 
         case '/orders/success':
-            return [ indexCol, orderCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, reviewCol, invitationCol, editCol ];
+            return [
+                indexCol,
+                orderCol,
+                beginDatetimeCol,
+                successDatetimeCol,
+                clientCol,
+                sumCol,
+                responsibleCol,
+                sourceCol,
+                reviewCol,
+                invitationCol,
+                editCol,
+            ];
 
         case '/orders/cancel':
-            return [ indexCol, orderCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, invitationCol, editCol ];
+            return [
+                indexCol,
+                orderCol,
+                beginDatetimeCol,
+                clientCol,
+                sumCol,
+                responsibleCol,
+                sourceCol,
+                invitationCol,
+                editCol,
+            ];
 
         case '/orders/reviews':
-            return [ indexCol, orderCol, reviewCol, beginDatetimeCol, successDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, editCol ];
+            return [
+                indexCol,
+                orderCol,
+                reviewCol,
+                beginDatetimeCol,
+                successDatetimeCol,
+                clientCol,
+                sumCol,
+                responsibleCol,
+                sourceCol,
+                editCol,
+            ];
 
         case '/orders/invitations':
-            return [ indexCol, orderCol, createDatetimeCol, beginDatetimeCol, clientCol, actionCol, responsibleCol, editCol ];
+            return [
+                indexCol,
+                orderCol,
+                createDatetimeCol,
+                beginDatetimeCol,
+                clientCol,
+                actionCol,
+                responsibleCol,
+                editCol,
+            ];
 
         default:
-            return [ indexCol, orderCol, datetimeCol, beginDatetimeCol, clientCol, sumCol, responsibleCol, sourceCol, tasksCol, editCol ];
+            return [
+                indexCol,
+                orderCol,
+                datetimeCol,
+                beginDatetimeCol,
+                clientCol,
+                sumCol,
+                responsibleCol,
+                sourceCol,
+                tasksCol,
+                editCol,
+            ];
     }
 }
 

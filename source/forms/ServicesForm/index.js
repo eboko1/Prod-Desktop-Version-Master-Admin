@@ -1,37 +1,37 @@
 // vendor
-import React, { Component } from 'react';
-import { injectIntl } from 'react-intl';
-import { Form, Icon, Select } from 'antd';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { injectIntl } from "react-intl";
+import { Form, Icon, Select } from "antd";
+import _ from "lodash";
 
 // proj
 import {
     fetchServicesSuggestions,
     selectServicesSuggestionsOptions,
-} from 'core/servicesSuggestions/duck';
+} from "core/servicesSuggestions/duck";
 import {
     onChangeServicesForm,
     createService,
     updateService,
     deleteService,
     resetFields,
-} from 'core/forms/servicesForm/duck';
+} from "core/forms/servicesForm/duck";
 
-import { Catcher } from 'commons';
+import { Catcher } from "commons";
 import {
     DecoratedInputNumber,
     DecoratedSelect,
     LimitedDecoratedSelect,
-} from 'forms/DecoratedFields';
-import { withReduxForm2 } from 'utils';
+} from "forms/DecoratedFields";
+import { withReduxForm2 } from "utils";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 const Option = Select.Option;
 
 @injectIntl
 @withReduxForm2({
-    name:    'servicesForm',
+    name: "servicesForm",
     actions: {
         change: onChangeServicesForm,
         fetchServicesSuggestions,
@@ -64,93 +64,87 @@ export class ServicesForm extends Component {
 
         return (
             <Catcher>
-                <Form layout='horizontal' className={ Styles.form }>
+                <Form layout="horizontal" className={Styles.form}>
                     <DecoratedSelect
-                        cnStyles={ Styles.servicesSelect }
-                        field={ 'serviceId' }
-                        getFieldDecorator={ getFieldDecorator }
+                        cnStyles={Styles.servicesSelect}
+                        field={"serviceId"}
+                        getFieldDecorator={getFieldDecorator}
                         // initialValue={ _getDefaultValue(key, 'serviceId') }
-                        dropdownMatchSelectWidth={ false }
-                        dropdownStyle={ { width: '50%' } }
-                        mode={ 'combobox' }
-                        optionLabelProp={ 'children' }
-                        optionFilterProp={ 'children' }
+                        dropdownMatchSelectWidth={false}
+                        dropdownStyle={{ width: "50%" }}
+                        mode={"combobox"}
+                        optionLabelProp={"children"}
+                        optionFilterProp={"children"}
                         showSearch
-                        placeholder={ 'Выберете работу' }
-                        rules={ [
+                        placeholder={"Выберете работу"}
+                        rules={[
                             {
                                 required: true,
-                                message:  'serviceId is required!',
+                                message: "serviceId is required!",
                             },
-                        ] }
+                        ]}
                     >
-                        { services.map(({ serviceId, serviceName }) => (
-                            <Option value={ String(serviceId) } key={ serviceId }>
-                                { serviceName }
+                        {services.map(({ serviceId, serviceName }) => (
+                            <Option value={String(serviceId)} key={serviceId}>
+                                {serviceName}
                             </Option>
-                        )) }
+                        ))}
                     </DecoratedSelect>
                     <LimitedDecoratedSelect
-                        cnStyles={ Styles.detailsSelect }
-                        // cnStyles={
-                        //     getFieldValue(
-                        //         `details[${key}][multipleSuggestions]`,
-                        //     )
-                        //         ? Styles.multipleSuggest
-                        //         : void 0
-                        // }
-                        field={ 'detailId' }
-                        getFieldDecorator={ getFieldDecorator }
-                        mode={ 'combobox' }
-                        optionLabelProp={ 'children' }
+                        cnStyles={Styles.detailsSelect}
+                        field={"detailId"}
+                        getFieldDecorator={getFieldDecorator}
+                        mode={"combobox"}
+                        optionLabelProp={"children"}
                         showSearch
-                        // onChange={ value =>
-                        //     this._handleDetailSelect(key, value, modificationId)
-                        // }
-                        // initialValue={ this._getDefaultValue(key, 'detailName') }
-                        placeholder={ 'Выберете деталь' }
-                        dropdownMatchSelectWidth={ false }
-                        dropdownStyle={ { width: '50%' } }
-                        rules={ [
+                        placeholder={"Выберете деталь"}
+                        dropdownMatchSelectWidth={false}
+                        dropdownStyle={{ width: "50%" }}
+                        rules={[
                             {
                                 required: true,
-                                message:  'detailId is required!',
+                                message: "detailId is required!",
                             },
-                        ] }
+                        ]}
                     >
-                        { details.map(({ detailId, detailName }) => (
-                            <Option value={ String(detailId) } key={ detailId }>
-                                { detailName }
+                        {details.map(({ detailId, detailName }) => (
+                            <Option value={String(detailId)} key={detailId}>
+                                {detailName}
                             </Option>
-                        )) }
+                        ))}
                     </LimitedDecoratedSelect>
                     <DecoratedInputNumber
-                        placeholder={ 'кол-во' }
-                        cnStyles={ Styles.quantity }
-                        field={ 'quantity' }
-                        getFieldDecorator={ getFieldDecorator }
-                        rules={ [
+                        placeholder={"кол-во"}
+                        cnStyles={Styles.quantity}
+                        field={"quantity"}
+                        getFieldDecorator={getFieldDecorator}
+                        rules={[
                             {
                                 required: true,
-                                message:  'quantity is required!',
+                                message: "quantity is required!",
                             },
-                        ] }
+                        ]}
+                        min={1}
                         // initialValue={ _getDefaultValue(key, 'quantity') }
                     />
                     <Icon
-                        type='save'
-                        className={ Styles.saveIcon }
-                        onClick={ () => {
+                        type="save"
+                        className={Styles.saveIcon}
+                        onClick={() => {
                             validateFields((error, values) => {
                                 if (error) {
                                     return; // eslint-disable-line
                                 }
                                 createService({
-                                    ...getFieldsValue([ 'serviceId', 'detailId', 'quantity' ]),
+                                    ...getFieldsValue([
+                                        "serviceId",
+                                        "detailId",
+                                        "quantity",
+                                    ]),
                                 });
                                 resetFields();
                             });
-                        } }
+                        }}
                     />
                 </Form>
             </Catcher>

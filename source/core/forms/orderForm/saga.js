@@ -6,11 +6,11 @@ import {
     take,
     takeLatest,
     delay,
-    takeEvery,
     select,
 } from 'redux-saga/effects';
-import { replace } from 'connected-react-router';
+import { replace, push } from 'connected-react-router';
 import nprogress from 'nprogress';
+import _ from 'lodash';
 
 // proj
 import { resetModal, MODALS } from 'core/modals/duck';
@@ -41,7 +41,9 @@ import {
     createInviteOrderSuccess,
     fetchTecdocSuggestionsSuccess,
     fetchTecdocDetailsSuggestionsSuccess,
+    createOrderCopySuccess,
     CREATE_INVITE_ORDER,
+    CREATE_ORDER_COPY,
     FETCH_ORDER_FORM,
     FETCH_ADD_ORDER_FORM,
     FETCH_ORDER_TASK,
@@ -100,10 +102,19 @@ export function* fetchOrderFormSaga() {
             const { payload: id } = yield take(FETCH_ORDER_FORM);
             yield put(setOrderFetchingState(true));
 
-            const data = yield call(fetchAPI, 'GET', `orders/${id}`);
+            const data = yield call(
+                fetchAPI,
+                'GET',
+                `orders/${id}`,
+                null,
+                null,
+                {
+                    handleErrorInternally: true,
+                },
+            );
             yield put(fetchOrderFormSuccess(data));
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         } finally {
             yield put(setOrderFetchingState(false));
         }
@@ -196,6 +207,34 @@ export function* updateOrderSaga() {
     }
 }
 
+export function* createOrderCopySaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(CREATE_ORDER_COPY);
+            const response = yield call(
+                fetchAPI,
+                'POST',
+                'orders',
+                {},
+                payload,
+                {
+                    handleErrorInternally: true,
+                },
+            );
+
+            yield put(createOrderCopySuccess());
+
+            const id = response.created[ 0 ].id;
+            yield put(push(`${book.order}/${id}`));
+            if (id) {
+                yield put(fetchOrderForm(id));
+            }
+        } catch (error) {
+            yield put(setErrorMessage(error));
+        }
+    }
+}
+
 export function* returnToOrdersPageSaga() {
     while (true) {
         try {
@@ -207,7 +246,7 @@ export function* returnToOrdersPageSaga() {
                         'not_complete',
                         'required',
                         'reserve',
-                        'call',
+                        'call', 
                     ],
                 },
                 { route: '/orders/approve', statuses: [ 'approve' ] },
@@ -279,18 +318,24 @@ export function* fetchAddOrderFormSaga() {
     }
 }
 
-export function* createInviteOrderSaga({ payload: invite }) {
-    try {
-        yield nprogress.start();
-        const data = yield call(fetchAPI, 'POST', 'orders', null, invite);
+export function* createInviteOrderSaga() {
+    while (true) {
+        try {
+            const { payload: invite } = yield take(CREATE_INVITE_ORDER);
+            yield nprogress.start();
+            const data = yield call(fetchAPI, 'POST', 'orders', null, invite, {
+                handleErrorInternally: true,
+            });
 
-        yield put(createInviteOrderSuccess(data));
-        yield nprogress.done();
-
-        const id = yield select(state => state.forms.orderForm.order.id);
-        yield put(fetchOrderForm(id));
-    } catch (error) {
-        yield put(emitError(error));
+            yield put(createInviteOrderSuccess(data));
+            yield nprogress.done();
+            const id = yield select(state => state.forms.orderForm.order.id);
+            if (id) {
+                yield put(fetchOrderForm(id));
+            }
+        } catch (error) {
+            yield put(setErrorMessage(error));
+        }
     }
 }
 
@@ -315,13 +360,14 @@ export function* fetchAvailableHoursSaga() {
 /* eslint-disable array-element-newline */
 export function* saga() {
     yield all([
-        takeEvery(CREATE_INVITE_ORDER, createInviteOrderSaga),
+        call(createInviteOrderSaga),
         call(fetchTecdocSuggestionsSaga),
         call(fetchTecdocDetailsSuggestionsSaga),
         call(fetchOrderTaskSaga),
         call(returnToOrdersPageSaga),
         call(updateOrderSaga),
         call(createOrderSaga),
+        call(createOrderCopySaga),
         call(fetchAddOrderFormSaga),
         call(fetchOrderFormSaga),
         call(onChangeOrderFormSaga),

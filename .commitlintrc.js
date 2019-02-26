@@ -63,7 +63,6 @@ module.exports = {
         "scope-min-length": [2, "always", 0],
 
         "subject-empty": [2, "never"],
-        "subject-case": [2, "never", "sentence-case"],
         "subject-max-length": [2, "always", Infinity],
         "subject-min-length": [2, "always", 0],
     },

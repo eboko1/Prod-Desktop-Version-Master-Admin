@@ -28,8 +28,6 @@ export function columnsConfig(
     bodyUpdateIsForbidden,
     fetchedOrder,
 ) {
-    // console.log('→cc  props', props);
-
     const _getDefaultValue = (key, fieldName) => {
         const orderStationLoads = (props.stationLoads || [])[ key ];
         if (!orderStationLoads) {
@@ -161,8 +159,18 @@ export function columnsConfig(
                 additionalData={ _.get(props.availableHours, String(key), []) }
                 disabled={
                     bodyUpdateIsForbidden() ||
-                    !_.get(props, [ 'fields', 'stationLoads', key, 'beginDate' ]) ||
-                    !_.get(props, [ 'fields', 'stationLoads', key, 'station' ])
+                    !_.get(props, [
+                        'fields',
+                        'stationLoads',
+                        key,
+                        'beginDate',
+                    ]) ||
+                    !_.get(props, [
+                        'fields',
+                        'stationLoads',
+                        key,
+                        'station',
+                    ])
                 }
                 defaultOpenValue={ moment(`${beginTime}:00`, 'HH:mm:ss') }
                 field={ `stationLoads[${key}].beginTime` }
@@ -271,5 +279,12 @@ export function columnsConfig(
         },
     };
 
-    return [ statusCol, dateCol, stationCol, timeCol, durationCol, deleteCol ];
+    return [
+        statusCol,
+        dateCol,
+        stationCol,
+        timeCol,
+        durationCol,
+        deleteCol,
+    ];
 }

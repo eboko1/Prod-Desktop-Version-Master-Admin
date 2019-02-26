@@ -19,6 +19,7 @@ export {
     getDateTimeConfig,
     mergeDateTime,
     addDuration,
+    roundCurrentTime,
 } from './getDateTimeConfig';
 export {
     permissions,

@@ -41,6 +41,9 @@ export const RETURN_TO_ORDERS_PAGE = `${prefix}/RETURN_TO_ORDERS_PAGE`;
 export const CREATE_INVITE_ORDER = `${prefix}/CREATE_INVITE_ORDER`;
 export const CREATE_INVITE_ORDER_SUCCESS = `${prefix}/CREATE_INVITE_ORDER_SUCCESS`;
 
+export const CREATE_ORDER_COPY = `${prefix}/CREATE_ORDER_COPY`;
+export const CREATE_ORDER_COPY_SUCCESS = `${prefix}/CREATE_ORDER_COPY_SUCCESS`;
+
 export const FETCH_ORDER_TASK = `${prefix}/FETCH_ORDER_TASK`;
 export const FETCH_ORDER_TASK_SUCCESS = `${prefix}/FETCH_ORDER_TASK_SUCCESS`;
 
@@ -137,7 +140,8 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 ...payload,
                 fetchedOrder: payload,
-                selectedClient: payload.client || state.selectedClient,
+                selectedClient:
+                    _.get(payload, "client") || state.selectedClient,
             };
 
         case SET_CREATE_STATUS:
@@ -286,23 +290,26 @@ export default function reducer(state = ReducerState, action) {
 export const orderSelector = state => state.forms[moduleName].order;
 export const moduleSelector = state => state.forms[moduleName];
 
-export const selectInviteData = createSelector(orderSelector, order => {
-    const hasInviteStatus = ["success", "cancel"].includes(order.status);
+export const selectInviteData = createSelector(
+    orderSelector,
+    order => {
+        const hasInviteStatus = ["success", "cancel"].includes(order.status);
 
-    const isInviteVisible =
-        !order.inviteOrderId && order.id && order.status && hasInviteStatus;
+        const isInviteVisible =
+            !order.inviteOrderId && order.id && order.status && hasInviteStatus;
 
-    const isInviteEnabled =
-        hasInviteStatus &&
-        order.id &&
-        order.status &&
-        order.clientVehicleId &&
-        order.clientId &&
-        order.clientPhone &&
-        !order.invited;
+        const isInviteEnabled =
+            hasInviteStatus &&
+            order.id &&
+            order.status &&
+            order.clientVehicleId &&
+            order.clientId &&
+            order.clientPhone &&
+            !order.invited;
 
-    return { hasInviteStatus, isInviteVisible, isInviteEnabled };
-});
+        return { hasInviteStatus, isInviteVisible, isInviteEnabled };
+    },
+);
 
 export const selectCashSum = createSelector(
     moduleSelector,
@@ -328,12 +335,16 @@ export const selectCashFlowFilters = createSelector(
     moduleSelector,
     ({ cashOrders }) => {
         if (!_.isEmpty(cashOrders)) {
-            const startDate = moment(_.get(_.first(cashOrders), "datetime")).format('YYYY-MM-DD');
-            const endDate = moment(_.get(_.last(cashOrders), "datetime")).format('YYYY-MM-DD')
+            const startDate = moment(
+                _.get(_.first(cashOrders), "datetime"),
+            ).format("YYYY-MM-DD");
+            const endDate = moment(
+                _.get(_.last(cashOrders), "datetime"),
+            ).format("YYYY-MM-DD");
             return {
                 query: _.get(_.first(cashOrders), "orderId"),
                 startDate: startDate,
-                endDate:  endDate || startDate,
+                endDate: endDate || startDate,
             };
         }
         return null;
@@ -442,6 +453,16 @@ export const createInviteOrder = inviteOrder => ({
 
 export const createInviteOrderSuccess = response => ({
     type: CREATE_INVITE_ORDER_SUCCESS,
+    payload: response,
+});
+
+export const createOrderCopy = order => ({
+    type: CREATE_ORDER_COPY,
+    payload: order,
+});
+
+export const createOrderCopySuccess = response => ({
+    type: CREATE_ORDER_COPY_SUCCESS,
     payload: response,
 });
 

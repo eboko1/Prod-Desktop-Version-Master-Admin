@@ -1,11 +1,11 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
-import { Table, Icon, Tooltip, Button, Row, Col } from 'antd';
-import moment from 'moment';
-import { v4 } from 'uuid';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Link } from "react-router-dom";
+import { Table, Icon, Tooltip, Button, Row, Col } from "antd";
+import moment from "moment";
+import { v4 } from "uuid";
 
 // proj
 import {
@@ -14,20 +14,20 @@ import {
     getActiveOrder,
     getActiveVehicle,
     setManager,
-} from 'core/myTasks/duck';
-import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
-import { setModal, MODALS } from 'core/modals/duck';
+} from "core/myTasks/duck";
+import { initOrderTasksForm } from "core/forms/orderTaskForm/duck";
+import { setModal, MODALS } from "core/modals/duck";
 
-import { Catcher } from 'commons';
-import { ManagerSearchField } from 'forms/_formkit';
-import { withReduxForm, permissions, isForbidden } from 'utils';
+import { Catcher, Paper } from "commons";
+import { ManagerSearchField } from "forms/_formkit";
+import { withReduxForm, permissions, isForbidden } from "utils";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
-    managerId: state.myTasksContainer.managerId,
-    user:      state.auth,
+    managerId: state.myTasks.managerId,
+    user: state.auth,
 });
 
 const mapDispatchToProps = {
@@ -40,27 +40,29 @@ const mapDispatchToProps = {
     setManager,
 };
 
-
 @injectIntl
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export default class MyTasksContainer extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            sort: { field: 'startDate', order: 'desc' },
+            sort: { field: "startDate", order: "desc" },
         };
         this.columns = [
             {
-                title:     '',
-                dataIndex: 'review',
-                width:     '2%',
-                render:    (text, record) => {
+                title: "",
+                dataIndex: "review",
+                width: "2%",
+                render: (text, record) => {
                     if (record.orderNum) {
-                        if (record.status !== 'CLOSED') {
+                        if (record.status !== "CLOSED") {
                             return (
                                 <Icon
-                                    className={ Styles.editOrderTaskIcon }
-                                    onClick={ () => {
+                                    className={Styles.editOrderTaskIcon}
+                                    onClick={() => {
                                         this.props.initOrderTasksForm(record);
                                         this.props.setModal(MODALS.ORDER_TASK);
                                         this.props.getActiveOrder(
@@ -70,8 +72,8 @@ export default class MyTasksContainer extends Component {
                                             `${record.vehicleMakeName}
                                             ${record.vehicleModelName}`,
                                         );
-                                    } }
-                                    type='edit'
+                                    }}
+                                    type="edit"
                                 />
                             );
                         }
@@ -80,77 +82,77 @@ export default class MyTasksContainer extends Component {
             },
 
             {
-                title:     <FormattedMessage id='orderNumber' />,
-                dataIndex: 'orderNum',
-                width:     '7%',
-                render:    (text, record) => (
-                    <Link to={ `/order/${record.orderId}` }>{ text }</Link>
+                title: <FormattedMessage id="orderNumber" />,
+                dataIndex: "orderNum",
+                width: "7%",
+                render: (text, record) => (
+                    <Link to={`/order/${record.orderId}`}>{text}</Link>
                 ),
             },
             {
-                title:     <FormattedMessage id='comment' />,
-                dataIndex: 'comment',
-                width:     '7%',
-                render:    (text) => (
+                title: <FormattedMessage id="comment" />,
+                dataIndex: "comment",
+                width: "7%",
+                render: text => (
                     <div>
                         <Tooltip
-                            placement='bottomLeft'
-                            title={ <div>{ text }</div> }
-                            getPopupContainer={ trigger => trigger.parentNode }
+                            placement="bottomLeft"
+                            title={<div>{text}</div>}
+                            getPopupContainer={trigger => trigger.parentNode}
                         >
-                            <div className={ Styles.commentDiv }>{ text }</div>
+                            <div className={Styles.commentDiv}>{text}</div>
                         </Tooltip>
                     </div>
                 ),
             },
             {
-                title:     <FormattedMessage id='status' />,
-                dataIndex: 'status',
-                width:     '7%',
-                render:    (text) => {
-                    return text ? <FormattedMessage id={ text } /> : '';
+                title: <FormattedMessage id="status" />,
+                dataIndex: "status",
+                width: "7%",
+                render: text => {
+                    return text ? <FormattedMessage id={text} /> : "";
                 },
                 sorter: true,
             },
             {
-                title:     <FormattedMessage id='priority' />,
-                dataIndex: 'priority',
-                width:     '6%',
-                render:    (text) => {
-                    return text ? <FormattedMessage id={ text } /> : null;
+                title: <FormattedMessage id="priority" />,
+                dataIndex: "priority",
+                width: "6%",
+                render: text => {
+                    return text ? <FormattedMessage id={text} /> : null;
                 },
                 sorter: true,
             },
             {
-                title:     <FormattedMessage id='urgency' />,
-                dataIndex: 'urgency',
-                width:     '7%',
-                render:    (text) => {
-                    return text ? <FormattedMessage id={ text } /> : null;
+                title: <FormattedMessage id="urgency" />,
+                dataIndex: "urgency",
+                width: "7%",
+                render: text => {
+                    return text ? <FormattedMessage id={text} /> : null;
                 },
                 sorter: true,
             },
             {
-                title:     <FormattedMessage id='vehicle' />,
-                dataIndex: 'vehicleMakeName',
-                width:     '7%',
-                render:    (text, record) => {
+                title: <FormattedMessage id="vehicle" />,
+                dataIndex: "vehicleMakeName",
+                width: "7%",
+                render: (text, record) => {
                     return record.vehicleMakeName ? (
                         <div>
-                            { record.vehicleMakeName } { record.vehicleModelName }
+                            {record.vehicleMakeName} {record.vehicleModelName}
                         </div>
                     ) : null;
                 },
             },
             {
-                title:     <FormattedMessage id='responsible' />,
-                dataIndex: 'responsibleName',
-                width:     '7%',
-                render:    (text, record) => {
+                title: <FormattedMessage id="responsible" />,
+                dataIndex: "responsibleName",
+                width: "7%",
+                render: (text, record) => {
                     return (
-                        <div style={ { wordBreak: 'normal' } }>{ `${text} ${
+                        <div style={{ wordBreak: "normal" }}>{`${text} ${
                             record.responsibleSurname
-                        }` }</div>
+                        }`}</div>
                     );
                 },
             },
@@ -160,39 +162,39 @@ export default class MyTasksContainer extends Component {
             //     width:     '7%',
             // },
             {
-                title:     <FormattedMessage id='stationName' />,
-                dataIndex: 'stationName',
-                width:     '7%',
+                title: <FormattedMessage id="stationName" />,
+                dataIndex: "stationName",
+                width: "7%",
             },
             {
-                title:     <FormattedMessage id='startDate' />,
-                dataIndex: 'startDate',
-                width:     '7%',
-                render:    (text) => (
+                title: <FormattedMessage id="startDate" />,
+                dataIndex: "startDate",
+                width: "7%",
+                render: text => (
                     <div>
-                        { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
+                        {text ? moment(text).format("DD.MM.YYYY HH:mm") : null}
                     </div>
                 ),
-                defaultSortOrder: 'descend',
-                sorter:           true,
+                defaultSortOrder: "descend",
+                sorter: true,
             },
             {
-                title:     <FormattedMessage id='deadlineDate' />,
-                dataIndex: 'deadlineDate',
-                width:     '7%',
-                render:    (text) => (
+                title: <FormattedMessage id="deadlineDate" />,
+                dataIndex: "deadlineDate",
+                width: "7%",
+                render: text => (
                     <div>
-                        { ' ' }
-                        { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
+                        {" "}
+                        {text ? moment(text).format("DD.MM.YYYY HH:mm") : null}
                     </div>
                 ),
                 sorter: true,
             },
             {
-                title:     <FormattedMessage id='duration' />,
-                dataIndex: 'duration',
-                width:     '9%',
-                render:    (text) => {
+                title: <FormattedMessage id="duration" />,
+                dataIndex: "duration",
+                width: "9%",
+                render: text => {
                     // let durationText = moment.duration(text, 'seconds');
                     // let duration = moment
                     //     .utc(durationText.asMilliseconds())
@@ -200,55 +202,34 @@ export default class MyTasksContainer extends Component {
 
                     return (
                         <div>
-                            { text
+                            {text
                                 ? moment
-                                    .duration(text, 'milliseconds')
-                                    .humanize()
-                                : null }
+                                      .duration(text, "milliseconds")
+                                      .humanize()
+                                : null}
                         </div>
                     );
                 },
                 sorter: true,
             },
             {
-                title:     <FormattedMessage id='endDate' />,
-                dataIndex: 'endDate',
-                width:     '7%',
-                render:    (text) => (
+                title: <FormattedMessage id="endDate" />,
+                dataIndex: "endDate",
+                width: "7%",
+                render: text => (
                     <div>
-                        { text ? moment(text).format('DD.MM.YYYY HH:mm') : null }
+                        {text ? moment(text).format("DD.MM.YYYY HH:mm") : null}
                     </div>
                 ),
                 sorter: true,
             },
-            // {
-            //     title:     <FormattedMessage id='comment' />,
-            //     dataIndex: 'comment',
-            //     width:     '7%',
-            //     render:    (text, record) => (
-            //         <div>
-            //             <Tooltip
-            //                 placement='bottomLeft'
-            //                 title={
-            //                     <div
-            //                     >
-            //                         { text }
-            //                     </div>
-            //                 }
-            //                 getPopupContainer={ trigger => trigger.parentNode }
-            //             >
-            //                 <div className={ Styles.commentDiv }>{ text }</div>
-            //             </Tooltip>
-            //         </div>
-            //     ),
-            // },
             {
-                title:     <FormattedMessage id='author' />,
-                dataIndex: 'author',
-                width:     '10%',
-                render:    (text, record) => (
+                title: <FormattedMessage id="author" />,
+                dataIndex: "author",
+                width: "10%",
+                render: (text, record) => (
                     <div>
-                        { record.authorName } { record.authorSurname }
+                        {record.authorName} {record.authorSurname}
                     </div>
                 ),
             },
@@ -266,7 +247,7 @@ export default class MyTasksContainer extends Component {
             return;
         }
         setMyTasksSortFieldFilter(sorter.field);
-        setMyTasksSortOrderFilter(sorter.order === 'ascend' ? 'asc' : 'desc');
+        setMyTasksSortOrderFilter(sorter.order === "ascend" ? "asc" : "desc");
         fetchMyTasks();
     };
 
@@ -317,12 +298,12 @@ export default class MyTasksContainer extends Component {
         const columns = this.columns;
         // const { sortField, sortArrow } = this.state;
         const pagination = {
-            pageSize:         25,
-            size:             'large',
-            total:            myTasks ? Number(myTasks.orderTasks.orderTasksCount) : 25,
+            pageSize: 25,
+            size: "large",
+            total: myTasks ? Number(myTasks.orderTasks.orderTasksCount) : 25,
             hideOnSinglePage: true,
-            current:          page,
-            onChange:         page => {
+            current: page,
+            onChange: page => {
                 this.props.setPage(page);
                 this.props.fetchMyTasks();
             },
@@ -333,68 +314,64 @@ export default class MyTasksContainer extends Component {
 
         return (
             <Catcher>
-                <div className={ Styles.paper }>
-                    { viewAllTasks ? (
-                        <Row type='flex' className={ Styles.searchRow }>
-                            <Col span={ 18 }>
+                <Paper className={Styles.myTasks}>
+                    {viewAllTasks ? (
+                        <Row type="flex" className={Styles.searchRow}>
+                            <Col span={18}>
                                 <ManagerSearchField
-                                    managerId={ this.props.managerId }
-                                    onSelect={ managerId => {
+                                    managerId={this.props.managerId}
+                                    onSelect={managerId => {
                                         this.props.setManager(managerId);
                                         this.props.fetchMyTasks();
-                                    } }
+                                    }}
                                 />
                             </Col>
-                            <Col span={ 6 }>
+                            <Col span={6}>
                                 <div
-                                    style={ {
-                                        display:        'flex',
-                                        justifyContent: 'flex-end',
-                                    } }
+                                    style={{
+                                        display: "flex",
+                                        justifyContent: "flex-end",
+                                    }}
                                 >
                                     <Button
-                                        onClick={ () => {
+                                        onClick={() => {
                                             this.props.setManager(
                                                 this.props.user.id,
                                             );
                                             this.props.fetchMyTasks();
-                                        } }
+                                        }}
                                     >
-                                        <FormattedMessage id='my_tasks' />
+                                        <FormattedMessage id="my_tasks" />
                                     </Button>
                                 </div>
                             </Col>
                         </Row>
-                    ) : null }
-                    <section className={ Styles.myTasks }>
-                        <Table
-                            className={ Styles.TableMyTasks }
-                            dataSource={
-                                myTasks &&
-                                myTasks.orderTasks.orderTasks.length > 0
-                                    ? myTasks.orderTasks.orderTasks
-                                    // .sort(this.sortTable)
-                                        .map((task, index) => ({
-                                            ...task,
-                                            index,
-                                            key: v4(),
-                                        }))
-                                    : []
-                            }
-                            size='small'
-                            scroll={ {
-                                x: 2200,
-                                y: '50vh',
-                            } }
-                            columns={ columns }
-                            pagination={ pagination }
-                            locale={ {
-                                emptyText: <FormattedMessage id='no_data' />,
-                            } }
-                            onChange={ this.handleTableChange }
-                        />
-                    </section>
-                </div>
+                    ) : null}
+                    <Table
+                        dataSource={
+                            myTasks && myTasks.orderTasks.orderTasks.length > 0
+                                ? myTasks.orderTasks.orderTasks
+                                      // .sort(this.sortTable)
+                                      .map((task, index) => ({
+                                          ...task,
+                                          index,
+                                          key: v4(),
+                                      }))
+                                : []
+                        }
+                        size="small"
+                        scroll={{
+                            x: 2200,
+                            y: "50vh",
+                        }}
+                        columns={columns}
+                        pagination={pagination}
+                        locale={{
+                            emptyText: <FormattedMessage id="no_data" />,
+                        }}
+                        onChange={this.handleTableChange}
+                    />
+                </Paper>
             </Catcher>
         );
     }
