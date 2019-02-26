@@ -53,15 +53,25 @@ export default class HeaderMenu extends Component {
                 className={`${Styles.headerPanel} ${isMobile &&
                     Styles.headerPanelMobile} `}
             >
-                <Link className={Styles.user} to={book.profile}>
-                    <Avatar className={Styles.avatar} icon="user" />
-                    {user.name} {user.surname}
-                </Link>
-                <Icon
-                    className={Styles.logout}
-                    type="poweroff"
-                    onClick={logout}
-                />
+                <Tooltip
+                    placement="topLeft"
+                    title={<FormattedMessage id="header.profile" />}
+                >
+                    <Link className={Styles.user} to={book.profile}>
+                        <Avatar className={Styles.avatar} icon="user" />
+                        {user.name} {user.surname}
+                    </Link>
+                </Tooltip>
+                <Tooltip
+                    placement="topLeft"
+                    title={<FormattedMessage id="header.logout" />}
+                >
+                    <Icon
+                        className={Styles.logout}
+                        type="poweroff"
+                        onClick={logout}
+                    />
+                </Tooltip>
                 <SwitchBusinessModal setBusiness={this.props.setBusiness} />
             </div>
         );

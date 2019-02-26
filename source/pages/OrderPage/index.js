@@ -13,9 +13,14 @@ import {
     updateOrder,
     returnToOrdersPage,
     createInviteOrder,
+    createOrderCopy,
     fetchOrderTask,
     selectInviteData,
 } from 'core/forms/orderForm/duck';
+import {
+    convertFieldsValuesToDbEntity,
+    requiredFieldsOnStatuses,
+} from 'forms/OrderForm/extractOrderEntity';
 import {
     resetOrderTasksForm,
     saveOrderTask,
@@ -24,10 +29,8 @@ import {
 import {fetchAddClientForm} from 'core/forms/addClientForm/duck';
 import {getReport, fetchReport} from 'core/order/duck';
 import {setModal, resetModal, MODALS} from 'core/modals/duck';
-import book from 'routes/book';
 
-import {Layout, Spinner, MobileView, ResponsiveView} from 'commons';
-import {BREAKPOINTS, extractFieldsConfigs} from 'utils';
+import {Layout, Spinner, MobileView, ResponsiveView, StyledButton} from 'commons';
 import {OrderForm, MobileRecordForm} from 'forms';
 import {ReportsDropdown, ChangeStatusDropdown} from 'components';
 import {
@@ -36,11 +39,12 @@ import {
     ConfirmOrderExitModal,
     OrderTaskModal,
 } from 'modals';
-import {permissions, isForbidden, withErrorMessage} from 'utils';
-import {
-    convertFieldsValuesToDbEntity,
-    requiredFieldsOnStatuses,
-} from 'forms/OrderForm/extractOrderEntity';
+import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage} from 'utils';
+import book from 'routes/book';
+
+// own
+import Styles from './styles.m.css';
+
 
 const compareOrderTasks = (initialOrderTask, orderTask) => {
     if (!initialOrderTask) {
@@ -126,6 +130,7 @@ const mapDispatchToProps = {
     resetModal,
     returnToOrdersPage,
     createInviteOrder,
+    createOrderCopy,
     fetchAddClientForm,
     resetOrderTasksForm,
     saveOrderTask,
@@ -177,6 +182,7 @@ class OrderPage extends Component {
         const requiredFields = requiredFieldsOnStatuses(form.getFieldsValue())[
             status
         ];
+
         const {id} = this.props.match.params;
 
         form.validateFields(requiredFields, err => {
@@ -267,6 +273,43 @@ class OrderPage extends Component {
             ? history.push(`${book.dashboard}`)
             : returnToOrdersPage(status);
     };
+
+    _createCopy = () => {
+        const {allServices, allDetails, selectedClient} = this.props;
+        const form = this.orderFormRef.props.form;
+        console.log('→ copy status', status);
+        const requiredFields = requiredFieldsOnStatuses(form.getFieldsValue()).success;
+
+        console.log('→ create copy', requiredFields.success);
+        form.validateFields(requiredFields, err => {
+            console.log('→ err', err);
+            if (!err) {
+                const values = form.getFieldsValue();
+                const orderFormEntity = {...values, selectedClient};
+                console.log('→ values', values);
+                console.log('→ orderFormEntity', orderFormEntity);
+                console.log('→ this.props.user', this.props.user);
+                console.log('convertFieldsValuesToDbEntity', {...convertFieldsValuesToDbEntity(
+                        orderFormEntity,
+                        allServices,
+                        allDetails,
+                        'not_complete',
+                        this.props.user,
+                    )});
+                this.props.createOrderCopy(
+                    {...convertFieldsValuesToDbEntity(
+                        orderFormEntity,
+                        allServices,
+                        allDetails,
+                        'not_complete',
+                        this.props.user,
+                    )},
+                );
+            } else {
+                this.setState({errors: err});
+            }
+        });
+    }
 
     _invite = () => {
         const {
@@ -371,19 +414,19 @@ class OrderPage extends Component {
                             <FormattedMessage
                                 id={ `order-status.${status || 'order'}` }
                             />
-                            {` ${num}`}
+                            { ` ${num}` }
                         </>
 
                 }
                 description={
                     <>
                         <FormattedMessage id='order-page.creation_date'/>
-                        {`: ${moment(datetime).format('DD MMMM YYYY, HH:mm')}`}
+                        { `: ${moment(datetime).format('DD MMMM YYYY, HH:mm')}` }
                     </>
                 }
                 controls={
                     <>
-                        {hasInviteStatus &&
+                        { hasInviteStatus &&
                         inviteOrderId && (
                             <Link
                                 to={ `${book.order}/${inviteOrderId}` }
@@ -393,12 +436,14 @@ class OrderPage extends Component {
                                         fetchOrderTask(inviteOrderId);
                                     }
                                 } }
+                                className={ Styles.inviteButton}
                             >
                                 { inviteOrderId }
                             </Link>
-                        )}
-                        {isInviteVisible && !inviteOrderId ? (
-                            <Button
+                        ) }
+                        { isInviteVisible && !inviteOrderId ? (
+                            <StyledButton
+                                type='secondary'
                                 disabled={
                                     !isInviteEnabled ||
                                     isForbidden(
@@ -411,11 +456,29 @@ class OrderPage extends Component {
                                     )
                                 }
                                 onClick={ this._invite }
+                                className={ Styles.inviteButton}
                             >
                                 <FormattedMessage id='order-page.create_invite_order'/>
+                            </StyledButton>
+                        ) : null }
+                        { status === 'success' ? (
+                            <Button
+                                icon='copy'
+                                type='primary'
+                                disabled={
+                                    !isInviteEnabled ||
+                                    isForbidden(
+                                        user,
+                                        permissions.CREATE_ORDER,
+                                    )
+                                }
+                                onClick={ this._createCopy }
+                                className={ Styles.inviteButton }
+                            >
+                                <FormattedMessage id='order-page.create_copy'/>
                             </Button>
-                        ) : null}
-                        {!isMobile && (
+                        ) : null }
+                        { !isMobile && (
                             <ChangeStatusDropdown
                                 user={ user }
                                 orderStatus={ status }
@@ -432,7 +495,7 @@ class OrderPage extends Component {
                             download={ this.props.getReport }
                             isMobile={ isMobile }
                         />
-                        {!hideEditButton && (
+                        { !hideEditButton && (
                             <Icon
                                 type='save'
                                 style={ {
@@ -448,8 +511,8 @@ class OrderPage extends Component {
                                     this._onStatusChange(status)
                                 }
                             />
-                        )}
-                        {!isClosedStatus &&
+                        ) }
+                        { !isClosedStatus &&
                         !forbiddenUpdate && (
                             <Icon
                                 type='delete'
@@ -462,7 +525,7 @@ class OrderPage extends Component {
                                     setModal(MODALS.CANCEL_REASON)
                                 }
                             />
-                        )}
+                        ) }
                         <Icon
                             style={ {
                                 fontSize: isMobile ? 12 : 24,
