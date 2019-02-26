@@ -39,7 +39,7 @@ import {
     ConfirmOrderExitModal,
     OrderTaskModal,
 } from 'modals';
-import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage} from 'utils';
+import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
 
 // own
@@ -277,25 +277,20 @@ class OrderPage extends Component {
     _createCopy = () => {
         const {allServices, allDetails, selectedClient} = this.props;
         const form = this.orderFormRef.props.form;
-        console.log('→ copy status', status);
         const requiredFields = requiredFieldsOnStatuses(form.getFieldsValue()).success;
 
-        console.log('→ create copy', requiredFields.success);
         form.validateFields(requiredFields, err => {
-            console.log('→ err', err);
             if (!err) {
                 const values = form.getFieldsValue();
-                const orderFormEntity = {...values, selectedClient};
-                console.log('→ values', values);
-                console.log('→ orderFormEntity', orderFormEntity);
-                console.log('→ this.props.user', this.props.user);
-                console.log('convertFieldsValuesToDbEntity', {...convertFieldsValuesToDbEntity(
-                        orderFormEntity,
-                        allServices,
-                        allDetails,
-                        'not_complete',
-                        this.props.user,
-                    )});
+        
+                const entryStationLoad = _.get(values, 'stationLoads[0]');
+                const normalizedBeginDateTime = roundCurrentTime();
+                entryStationLoad.beginDate = normalizedBeginDateTime;
+                entryStationLoad.beginTime = normalizedBeginDateTime;
+        
+                const normalizedValues = _.set(values, 'stationLoads', [ entryStationLoad ]);
+                const orderFormEntity = {...normalizedValues, selectedClient};
+                
                 this.props.createOrderCopy(
                     {...convertFieldsValuesToDbEntity(
                         orderFormEntity,

@@ -112,10 +112,8 @@ export function* fetchOrderFormSaga() {
                     handleErrorInternally: true,
                 },
             );
-            console.log('→ data', data);
             yield put(fetchOrderFormSuccess(data));
         } catch (error) {
-            console.log('→ fetchOrderFormSaga error', error);
             yield put(setErrorMessage(error));
         } finally {
             yield put(setOrderFetchingState(false));
@@ -213,7 +211,6 @@ export function* createOrderCopySaga() {
     while (true) {
         try {
             const { payload } = yield take(CREATE_ORDER_COPY);
-            // console.log('** order', payload);
             const response = yield call(
                 fetchAPI,
                 'POST',
@@ -224,20 +221,14 @@ export function* createOrderCopySaga() {
                     handleErrorInternally: true,
                 },
             );
-            // console.log('** response', response);
-            // const id = response.created[ 0 ].id;
-            // console.log('** id', id);
+
             yield put(createOrderCopySuccess());
-            // console.log('→ response222', response);
-            // console.log('→ success', response.create[ 0 ].id);
-            // console.log('→ success', _.get(response, 'created[0]'));
+
             const id = response.created[ 0 ].id;
             yield put(push(`${book.order}/${id}`));
-            console.log('→ redirected ID', id);
             if (id) {
                 yield put(fetchOrderForm(id));
             }
-            console.log('→ end');
         } catch (error) {
             yield put(setErrorMessage(error));
         }

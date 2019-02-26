@@ -1,5 +1,6 @@
 // vendor
 import _ from 'lodash';
+import moment from 'moment';
 
 const defaultDateTimeConfig = {
     beginTime: '08:00',
@@ -40,7 +41,12 @@ const isIntervalDisabled = (
     endTimeConfig,
     range,
 ) => {
-    if ([ datetime, startTimeConfig, endTimeConfig, range ].some(_.isNil)) {
+    if ([
+        datetime,
+        startTimeConfig,
+        endTimeConfig,
+        range, 
+    ].some(_.isNil)) {
         return false;
     }
 
@@ -228,4 +234,33 @@ export const getDateTimeConfig = (
         beginTime: dateTimeConfig.h24 ? '00:00' : dateTimeConfig.beginTime,
         endTime:   dateTimeConfig.h24 ? '23:59' : dateTimeConfig.endTime,
     };
+};
+
+export const roundCurrentTime = () => {
+    let date = moment()
+        .utc()
+        .format('YYYY-MM-DD');
+
+    let hours = moment()
+        .utc()
+        .hours();
+
+    let minutes =
+        moment()
+            .utc()
+            .minutes() % 60;
+
+    if (minutes >= 15 && minutes < 45) {
+        minutes = 30;
+    } else {
+        hours += minutes > 45 ? 1 : 0;
+        minutes = 0;
+    }
+
+    return moment
+        .utc(date)
+        .set({ hours, minutes })
+        .format();
+    // example of returned value 2019-02-26T14:30:00Z
+    // return moment(`${date} ${hours + (minutes ? ':' + minutes : ':00')}`);
 };

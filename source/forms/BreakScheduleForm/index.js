@@ -36,7 +36,6 @@ export class BreakScheduleForm extends Component {
             resetFields,
             forbiddenUpdate,
         } = this.props;
-        console.log('→ this.props', this.props);
 
         return (
             <ArrayBreakScheduleInput

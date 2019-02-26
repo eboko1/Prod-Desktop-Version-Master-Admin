@@ -107,7 +107,7 @@ export default class CashFlowPage extends Component {
             user,
             permissions.EDIT_CASH_ORDERS,
         );
-        console.log("→ cashOrders", cashOrders);
+        
         return (
             <Layout
                 title={<FormattedMessage id="navigation.flow_of_money" />}
