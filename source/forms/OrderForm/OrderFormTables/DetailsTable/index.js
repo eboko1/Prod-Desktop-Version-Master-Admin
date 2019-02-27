@@ -151,7 +151,6 @@ export default class DetailsTable extends Component {
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
                                 }
-                                mode={"combobox"}
                                 optionLabelProp={"children"}
                                 showSearch
                                 onChange={this._cachedInvoke.getCachedResult(
@@ -204,7 +203,6 @@ export default class DetailsTable extends Component {
                                     fields,
                                     `details[${key}].detailBrandName`,
                                 )}
-                                mode={"combobox"}
                                 optionLabelProp={"children"}
                                 initialValue={this._getDefaultValue(
                                     key,

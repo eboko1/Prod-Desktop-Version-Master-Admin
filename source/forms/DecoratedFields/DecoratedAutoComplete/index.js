@@ -80,7 +80,11 @@ export const DecoratedAutoComplete = memo(
                 dropdownMatchSelectWidth={ dropdownMatchSelectWidth }
                 dropdownStyle={ dropdownStyle }
                 dropdownClassName={ dropdownClassName }
-                onInputKeyDown={ e => e.key === 'Enter' && onPressEnter() }
+                onKeyDown={ e => {
+                    if (e.key === 'Enter') {
+                        onPressEnter();
+                    }
+                } }
                 onFocus={ onFocus }
                 optionFilterProp={
                     optionFilterProp ? optionFilterProp : 'children'

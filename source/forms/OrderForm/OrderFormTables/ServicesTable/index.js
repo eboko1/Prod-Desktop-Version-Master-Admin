@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { Catcher } from 'commons';
 import {
     DecoratedSelect,
+    DecoratedAutoComplete,
     DecoratedInputNumber,
     DecoratedCheckbox,
 } from 'forms/DecoratedFields';
@@ -169,7 +170,7 @@ class ServicesTable extends Component {
                     }
 
                     return (
-                        <DecoratedSelect
+                        <DecoratedAutoComplete
                             errors={ errors }
                             defaultGetValueProps
                             fieldValue={ _.get(
@@ -185,7 +186,6 @@ class ServicesTable extends Component {
                             }
                             field={ `services[${key}].serviceName` }
                             getFieldDecorator={ getFieldDecorator }
-                            mode={ 'combobox' }
                             optionLabelProp={ 'children' }
                             optionFilterProp={ 'children' }
                             showSearch
@@ -200,7 +200,7 @@ class ServicesTable extends Component {
                             // dropdownStyle={ { width: '70%' } }
                         >
                             { this.state.options }
-                        </DecoratedSelect>
+                        </DecoratedAutoComplete>
                     );
                 },
             },
