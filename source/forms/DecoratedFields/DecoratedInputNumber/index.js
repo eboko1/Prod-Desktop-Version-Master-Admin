@@ -1,13 +1,13 @@
 // vendor
-import React from 'react';
+import React, { forwardRef, memo } from 'react';
 import { InputNumber, Form } from 'antd';
 import _ from 'lodash';
 
 // own
 const FormItem = Form.Item;
 
-export class DecoratedInputNumber extends React.PureComponent {
-    render() {
+export const DecoratedInputNumber = memo(
+    forwardRef((props, ref) => {
         const {
             //FormItem
             formItem,
@@ -16,7 +16,6 @@ export class DecoratedInputNumber extends React.PureComponent {
             className,
             hasFeedback,
             formItemLayout,
-            ref,
             onPressEnter,
 
             getFieldDecorator,
@@ -37,7 +36,7 @@ export class DecoratedInputNumber extends React.PureComponent {
             placeholder,
 
             cnStyles,
-        } = this.props;
+        } = props;
 
         const defaultValue = [ initialValue ].find(_.isNumber);
         const numberInitialValue = _.isNumber(defaultValue)
@@ -76,5 +75,5 @@ export class DecoratedInputNumber extends React.PureComponent {
         ) : 
             inputNumber
         ;
-    }
-}
+    }),
+);
