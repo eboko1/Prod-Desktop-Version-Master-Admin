@@ -1,9 +1,9 @@
 // vendor
-import React, { Component } from 'react';
-import { Form, notification } from 'antd';
-import { injectIntl } from 'react-intl';
-import _ from 'lodash';
-import moment from 'moment';
+import React, { Component } from "react";
+import { Form, notification } from "antd";
+import { injectIntl } from "react-intl";
+import _ from "lodash";
+import moment from "moment";
 
 //proj
 import {
@@ -16,24 +16,24 @@ import {
     clearTecdocDetailsSuggestions,
     selectCashSum,
     selectCashFlowFilters,
-} from 'core/forms/orderForm/duck';
-import { resetModal } from 'core/modals/duck';
-import { initOrderTasksForm } from 'core/forms/orderTaskForm/duck';
+} from "core/forms/orderForm/duck";
+import { resetModal } from "core/modals/duck";
+import { initOrderTasksForm } from "core/forms/orderTaskForm/duck";
 
-import { AddClientModal } from 'modals';
+import { AddClientModal } from "modals";
 
-import { withReduxForm2, isForbidden, permissions } from 'utils';
+import { withReduxForm2, isForbidden, permissions } from "utils";
 
 // own
-import OrderFormHeader from './OrderFormHeader';
-import OrderFormBody from './OrderFormBody';
-import OrderFormTabs from './OrderFormTabs';
-import { servicesStats, detailsStats } from './stats';
-import Styles from './styles.m.css';
+import OrderFormHeader from "./OrderFormHeader";
+import OrderFormBody from "./OrderFormBody";
+import OrderFormTabs from "./OrderFormTabs";
+import { servicesStats, detailsStats } from "./stats";
+import Styles from "./styles.m.css";
 
 @injectIntl
 @withReduxForm2({
-    name:    'orderForm',
+    name: "orderForm",
     // debouncedFields: [ 'comment', 'recommendation', 'vehicleCondition', 'businessComment' ],
     actions: {
         change: onChangeOrderForm,
@@ -47,16 +47,16 @@ import Styles from './styles.m.css';
         clearTecdocDetailsSuggestions,
     },
     mapStateToProps: state => ({
-        modal:                      state.modals.modal,
-        addClientFormData:          state.forms.addClientForm.data,
-        authentificatedManager:     state.auth.id,
-        user:                       state.auth,
-        suggestionsFetching:        state.ui.suggestionsFetching,
+        modal: state.modals.modal,
+        addClientFormData: state.forms.addClientForm.data,
+        authentificatedManager: state.auth.id,
+        user: state.auth,
+        suggestionsFetching: state.ui.suggestionsFetching,
         detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
-        stationLoads:               state.forms.orderForm.stationLoads,
-        schedule:                   state.forms.orderForm.schedule,
-        cashSum:                    selectCashSum(state),
-        cashFlowFilters:            selectCashFlowFilters(state),
+        stationLoads: state.forms.orderForm.stationLoads,
+        schedule: state.forms.orderForm.schedule,
+        cashSum: selectCashSum(state),
+        cashFlowFilters: selectCashFlowFilters(state),
     }),
 })
 export class OrderForm extends Component {
@@ -67,22 +67,22 @@ export class OrderForm extends Component {
     _openNotification = ({ make, model }) => {
         const params = {
             message: this.props.intl.formatMessage({
-                id: 'order-form.warning',
+                id: "order-form.warning",
             }),
             description: (
                 <div>
                     <div>
-                        { this.props.intl.formatMessage({
-                            id: 'order-form.update_modification_info',
-                        }) }
+                        {this.props.intl.formatMessage({
+                            id: "order-form.update_modification_info",
+                        })}
                     </div>
                     <div>
-                        { make } { model }
+                        {make} {model}
                     </div>
                 </div>
             ),
-            placement: 'topLeft',
-            duration:  7,
+            placement: "topLeft",
+            duration: 7,
         };
         notification.open(params);
     };
@@ -121,8 +121,14 @@ export class OrderForm extends Component {
         // if values is not equal we will fetch available hours for each row
         _.each(formValues.stationLoads, (stationLoad, index) => {
             const prevStationLoad = _.get(prevFormValues.stationLoads, index);
-            const prevStationHoursFields = _.pick(prevStationLoad, [ 'beginDate', 'station' ]);
-            const stationHoursFields = _.pick(stationLoad, [ 'beginDate', 'station' ]);
+            const prevStationHoursFields = _.pick(prevStationLoad, [
+                "beginDate",
+                "station",
+            ]);
+            const stationHoursFields = _.pick(stationLoad, [
+                "beginDate",
+                "station",
+            ]);
 
             if (
                 stationHoursFields &&
@@ -134,7 +140,7 @@ export class OrderForm extends Component {
                     beginDate: prevBeginDate,
                 } = prevStationHoursFields;
                 // fetching new availableHours
-                if (![ station, beginDate ].some(_.isNil)) {
+                if (![station, beginDate].some(_.isNil)) {
                     this.props.fetchAvailableHours(
                         station,
                         beginDate,
@@ -142,9 +148,9 @@ export class OrderForm extends Component {
                         index,
                     );
                     // clearing previous form fields values
-                    if (![ prevStation, prevBeginDate ].some(_.isNil)) {
+                    if (![prevStation, prevBeginDate].some(_.isNil)) {
                         this.props.form.setFieldsValue({
-                            [ `stationLoads[${index}].beginTime` ]: void 0,
+                            [`stationLoads[${index}].beginTime`]: void 0,
                         });
                     }
                 }
@@ -160,26 +166,26 @@ export class OrderForm extends Component {
         isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
 
     _getClientVehicle = clientVehicleId => {
-        const vehicles = _.get(this.props, 'selectedClient.vehicles');
+        const vehicles = _.get(this.props, "selectedClient.vehicles");
 
         return clientVehicleId && _.isArray(vehicles)
             ? _.chain(vehicles)
-                .find({ id: clientVehicleId })
-                .value()
+                  .find({ id: clientVehicleId })
+                  .value()
             : null;
     };
 
     _getTecdocId = () => {
         const { form } = this.props;
 
-        const clientVehicleId = form.getFieldValue('clientVehicle');
-        const vehicles = _.get(this.props, 'selectedClient.vehicles');
+        const clientVehicleId = form.getFieldValue("clientVehicle");
+        const vehicles = _.get(this.props, "selectedClient.vehicles");
 
         return clientVehicleId && _.isArray(vehicles)
             ? _.chain(vehicles)
-                .find({ id: clientVehicleId })
-                .get('tecdocId', null)
-                .value()
+                  .find({ id: clientVehicleId })
+                  .get("tecdocId", null)
+                  .value()
             : null;
     };
 
@@ -212,124 +218,124 @@ export class OrderForm extends Component {
         const formFieldsValues = form.getFieldsValue();
 
         const { totalHours } = servicesStats(
-            _.get(formFieldsValues, 'services', []),
+            _.get(formFieldsValues, "services", []),
             allServices,
         );
-        const clientVehicle = _.get(formFieldsValues, 'clientVehicle');
-        const clientPhone = _.get(formFieldsValues, 'clientPhone');
-        const clientEmail = _.get(formFieldsValues, 'clientEmail');
-        const searchClientQuery = _.get(formFieldsValues, 'searchClientQuery');
+        const clientVehicle = _.get(formFieldsValues, "clientVehicle");
+        const clientPhone = _.get(formFieldsValues, "clientPhone");
+        const clientEmail = _.get(formFieldsValues, "clientEmail");
+        const searchClientQuery = _.get(formFieldsValues, "searchClientQuery");
 
         const zeroStationLoadBeginDate = _.get(
             formFieldsValues,
-            'stationLoads[0].beginDate',
+            "stationLoads[0].beginDate",
         );
         const zeroStationLoadBeginTime = _.get(
             formFieldsValues,
-            'stationLoads[0].beginTime',
+            "stationLoads[0].beginTime",
         );
         const zeroStationLoadStation = _.get(
             formFieldsValues,
-            'stationLoads[0].station',
+            "stationLoads[0].station",
         );
         const zeroStationLoadDuration = _.get(
             formFieldsValues,
-            'stationLoads[0].duration',
+            "stationLoads[0].duration",
         );
-        const deliveryDate = _.get(formFieldsValues, 'deliveryDate');
+        const deliveryDate = _.get(formFieldsValues, "deliveryDate");
 
         const orderFormBodyFields = _.pick(formFieldsValues, [
-            'comment',
-            'odometerValue',
-            'clientVehicle',
-            'clientRequisite',
-            'clientEmail',
-            'clientPhone',
-            'searchClientQuery',
+            "comment",
+            "odometerValue",
+            "clientVehicle",
+            "clientRequisite",
+            "clientEmail",
+            "clientPhone",
+            "searchClientQuery",
         ]);
         const orderFormHeaderFields = _.pick(formFieldsValues, [
-            'stationLoads[0].beginTime',
-            'stationLoads[0].station',
-            'stationLoads[0].beginDate',
-            'stationLoads[0].duration',
-            'deliveryDate',
-            'deliveryTime',
-            'manager',
-            'employee',
-            'appurtenanciesResponsible',
-            'paymentMethod',
-            'requisite',
+            "stationLoads[0].beginTime",
+            "stationLoads[0].station",
+            "stationLoads[0].beginDate",
+            "stationLoads[0].duration",
+            "deliveryDate",
+            "deliveryTime",
+            "manager",
+            "employee",
+            "appurtenanciesResponsible",
+            "paymentMethod",
+            "requisite",
         ]);
 
         const { price: priceDetails } = detailsStats(
-            _.get(formFieldsValues, 'details', []),
+            _.get(formFieldsValues, "details", []),
         );
         const { price: priceServices } = servicesStats(
-            _.get(formFieldsValues, 'services', []),
+            _.get(formFieldsValues, "services", []),
             allServices,
         );
 
-        const servicesDiscount = _.get(formFieldsValues, 'servicesDiscount', 0);
-        const detailsDiscount = _.get(formFieldsValues, 'detailsDiscount', 0);
+        const servicesDiscount = _.get(formFieldsValues, "servicesDiscount", 0);
+        const detailsDiscount = _.get(formFieldsValues, "detailsDiscount", 0);
 
         const tabs = this._renderTabs(formFieldsValues);
 
         return (
-            <Form className={ Styles.form } layout='horizontal'>
+            <Form className={Styles.form} layout="horizontal">
                 <OrderFormHeader
-                    errors={ errors }
-                    priceServices={ priceServices }
-                    priceDetails={ priceDetails }
-                    detailsDiscount={ detailsDiscount }
-                    servicesDiscount={ servicesDiscount }
-                    location={ location }
-                    authentificatedManager={ authentificatedManager }
-                    fields={ orderFormHeaderFields }
-                    deliveryDate={ deliveryDate }
-                    zeroStationLoadBeginDate={ zeroStationLoadBeginDate }
-                    zeroStationLoadBeginTime={ zeroStationLoadBeginTime }
-                    zeroStationLoadDuration={ zeroStationLoadDuration }
-                    zeroStationLoadStation={ zeroStationLoadStation }
-                    fetchedOrder={ fetchedOrder }
-                    schedule={ schedule }
-                    form={ form }
-                    stations={ stations }
-                    availableHours={ availableHours }
-                    managers={ managers }
-                    employees={ employees }
-                    allServices={ allServices }
-                    requisites={ requisites }
-                    user={ user }
-                    totalHours={ totalHours }
-                    cashSum={ cashSum }
-                    cashFlowFilters={ cashFlowFilters }
+                    errors={errors}
+                    priceServices={priceServices}
+                    priceDetails={priceDetails}
+                    detailsDiscount={detailsDiscount}
+                    servicesDiscount={servicesDiscount}
+                    location={location}
+                    authentificatedManager={authentificatedManager}
+                    fields={orderFormHeaderFields}
+                    deliveryDate={deliveryDate}
+                    zeroStationLoadBeginDate={zeroStationLoadBeginDate}
+                    zeroStationLoadBeginTime={zeroStationLoadBeginTime}
+                    zeroStationLoadDuration={zeroStationLoadDuration}
+                    zeroStationLoadStation={zeroStationLoadStation}
+                    fetchedOrder={fetchedOrder}
+                    schedule={schedule}
+                    form={form}
+                    stations={stations}
+                    availableHours={availableHours}
+                    managers={managers}
+                    employees={employees}
+                    allServices={allServices}
+                    requisites={requisites}
+                    user={user}
+                    totalHours={totalHours}
+                    cashSum={cashSum}
+                    cashFlowFilters={cashFlowFilters}
                 />
                 <OrderFormBody
-                    errors={ errors }
-                    location={ location }
-                    fields={ orderFormBodyFields }
-                    searchClientQuery={ searchClientQuery }
-                    clientVehicle={ clientVehicle }
-                    clientPhone={ clientPhone }
-                    clientEmail={ clientEmail }
-                    orderHistory={ orderHistory }
-                    orderId={ orderId }
-                    searchClientsResult={ searchClientsResult }
-                    setClientSelection={ setClientSelection }
-                    fetchedOrder={ fetchedOrder }
-                    selectedClient={ selectedClient }
-                    form={ form }
-                    user={ user }
-                    order={ order }
-                    setAddClientModal={ setAddClientModal }
+                    errors={errors}
+                    location={location}
+                    fields={orderFormBodyFields}
+                    searchClientQuery={searchClientQuery}
+                    clientVehicle={clientVehicle}
+                    clientPhone={clientPhone}
+                    clientEmail={clientEmail}
+                    orderHistory={orderHistory}
+                    orderId={orderId}
+                    searchClientsResult={searchClientsResult}
+                    setClientSelection={setClientSelection}
+                    fetchedOrder={fetchedOrder}
+                    selectedClient={selectedClient}
+                    form={form}
+                    user={user}
+                    order={order}
+                    setAddClientModal={setAddClientModal}
                 />
-                { tabs }
+                {tabs}
                 <AddClientModal
-                    searchQuery={ searchClientQuery }
-                    wrappedComponentRef={ this._saveFormRef }
-                    visible={ this.props.modal }
-                    resetModal={ this.props.resetModal }
-                    addClientFormData={ this.props.addClientFormData }
+                    searchQuery={searchClientQuery}
+                    wrappedComponentRef={this._saveFormRef}
+                    visible={this.props.modal}
+                    resetModal={this.props.resetModal}
+                    addClientFormData={this.props.addClientFormData}
                 />
             </Form>
         );
@@ -352,31 +358,31 @@ export class OrderForm extends Component {
             count: countDetails,
             price: priceDetails,
             totalDetailsProfit,
-        } = detailsStats(_.get(formFieldsValues, 'details', []));
+        } = detailsStats(_.get(formFieldsValues, "details", []));
 
         const {
             count: countServices,
             price: priceServices,
             // totalHours,
             totalServicesProfit: totalServicesProfit,
-        } = servicesStats(_.get(formFieldsValues, 'services', []), allServices);
+        } = servicesStats(_.get(formFieldsValues, "services", []), allServices);
 
         // _.values(value).some(_.isNil) gets only filled rows
-        const stationsCount = _.get(formFieldsValues, 'stationLoads', [])
+        const stationsCount = _.get(formFieldsValues, "stationLoads", [])
             .filter(Boolean)
             .filter(value => !_.values(value).some(_.isNil));
 
         const comments = _.pick(formFieldsValues, [
-            'comment',
-            'businessComment',
-            'vehicleCondition',
-            'recommendation',
+            "comment",
+            "businessComment",
+            "vehicleCondition",
+            "recommendation",
         ]);
 
         const commentsCollection = _.values(comments);
         const commentsCount = commentsCollection.filter(Boolean).length;
 
-        const clientVehicleId = _.get(formFieldsValues, 'clientVehicle');
+        const clientVehicleId = _.get(formFieldsValues, "clientVehicle");
 
         const {
             setModal,
@@ -411,85 +417,85 @@ export class OrderForm extends Component {
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
-            'comment',
-            'vehicleCondition',
-            'businessComment',
-            'recommendation',
-            'stationLoads',
-            'services',
-            'clientVehicle',
-            'employee',
-            'details',
-            'servicesDiscount',
-            'detailsDiscount',
+            "comment",
+            "vehicleCondition",
+            "businessComment",
+            "recommendation",
+            "stationLoads",
+            "services",
+            "clientVehicle",
+            "employee",
+            "details",
+            "servicesDiscount",
+            "detailsDiscount",
         ]);
 
         const beginDatetime =
-            _.get(fetchedOrder, 'order.beginDatetime') ||
+            _.get(fetchedOrder, "order.beginDatetime") ||
             (this._bodyUpdateIsForbidden()
                 ? void 0
-                : _.get(location, 'state.beginDatetime'));
+                : _.get(location, "state.beginDatetime"));
 
         const initialBeginDatetime = beginDatetime
             ? moment(beginDatetime).toISOString()
             : void 0;
 
         const initialStation =
-            _.get(fetchedOrder, 'order.stationNum') ||
+            _.get(fetchedOrder, "order.stationNum") ||
             (this._bodyUpdateIsForbidden()
                 ? void 0
-                : _.get(location, 'state.stationNum'));
+                : _.get(location, "state.stationNum"));
 
         return (
             <OrderFormTabs
-                errors={ errors }
-                initialBeginDatetime={ initialBeginDatetime }
-                initialStation={ initialStation }
-                fields={ orderFormTabsFields }
-                details={ orderFormTabsFields.details || [] }
-                services={ orderFormTabsFields.services || [] }
-                fetchOrderForm={ fetchOrderForm }
-                fetchOrderTask={ fetchOrderTask }
-                fetchTecdocSuggestions={ fetchTecdocSuggestions }
-                fetchTecdocDetailsSuggestions={ fetchTecdocDetailsSuggestions }
-                clearTecdocDetailsSuggestions={ clearTecdocDetailsSuggestions }
-                clearTecdocSuggestions={ clearTecdocSuggestions }
-                addOrderForm={ addOrderForm }
-                detailsSuggestionsFetching={ detailsSuggestionsFetching }
-                suggestionsFetching={ suggestionsFetching }
-                orderCalls={ orderCalls }
-                orderHistory={ orderHistory }
-                orderServices={ orderServices }
-                orderDetails={ orderDetails }
-                allServices={ allServices }
-                allDetails={ allDetails }
-                employees={ employees }
-                selectedClient={ selectedClient }
-                detailsSuggestions={ detailsSuggestions }
-                suggestions={ suggestions }
-                fetchedOrder={ fetchedOrder }
-                user={ user }
-                stations={ stations }
-                availableHours={ availableHours }
-                changeModalStatus={ changeModalStatus }
-                tecdocId={ tecdocId }
-                clientVehicleId={ clientVehicleId }
-                initOrderTasksForm={ this.props.initOrderTasksForm }
-                formatMessage={ formatMessage }
-                getFieldDecorator={ getFieldDecorator }
-                form={ form }
-                setModal={ setModal }
-                orderTasks={ orderTasks }
-                stationLoads={ stationLoads }
-                schedule={ schedule }
-                priceServices={ priceServices }
-                priceDetails={ priceDetails }
-                countServices={ countServices }
-                countDetails={ countDetails }
-                totalDetailsProfit={ totalDetailsProfit }
-                totalServicesProfit={ totalServicesProfit }
-                commentsCount={ commentsCount }
-                stationsCount={ stationsCount }
+                errors={errors}
+                initialBeginDatetime={initialBeginDatetime}
+                initialStation={initialStation}
+                fields={orderFormTabsFields}
+                details={orderFormTabsFields.details || []}
+                services={orderFormTabsFields.services || []}
+                fetchOrderForm={fetchOrderForm}
+                fetchOrderTask={fetchOrderTask}
+                fetchTecdocSuggestions={fetchTecdocSuggestions}
+                fetchTecdocDetailsSuggestions={fetchTecdocDetailsSuggestions}
+                clearTecdocDetailsSuggestions={clearTecdocDetailsSuggestions}
+                clearTecdocSuggestions={clearTecdocSuggestions}
+                addOrderForm={addOrderForm}
+                detailsSuggestionsFetching={detailsSuggestionsFetching}
+                suggestionsFetching={suggestionsFetching}
+                orderCalls={orderCalls}
+                orderHistory={orderHistory}
+                orderServices={orderServices}
+                orderDetails={orderDetails}
+                allServices={allServices}
+                allDetails={allDetails}
+                employees={employees}
+                selectedClient={selectedClient}
+                detailsSuggestions={detailsSuggestions}
+                suggestions={suggestions}
+                fetchedOrder={fetchedOrder}
+                user={user}
+                stations={stations}
+                availableHours={availableHours}
+                changeModalStatus={changeModalStatus}
+                tecdocId={tecdocId}
+                clientVehicleId={clientVehicleId}
+                initOrderTasksForm={this.props.initOrderTasksForm}
+                formatMessage={formatMessage}
+                getFieldDecorator={getFieldDecorator}
+                form={form}
+                setModal={setModal}
+                orderTasks={orderTasks}
+                stationLoads={stationLoads}
+                schedule={schedule}
+                priceServices={priceServices}
+                priceDetails={priceDetails}
+                countServices={countServices}
+                countDetails={countDetails}
+                totalDetailsProfit={totalDetailsProfit}
+                totalServicesProfit={totalServicesProfit}
+                commentsCount={commentsCount}
+                stationsCount={stationsCount}
             />
         );
     };

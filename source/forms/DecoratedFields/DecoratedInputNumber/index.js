@@ -37,7 +37,7 @@ export const DecoratedInputNumber = memo(
 
             cnStyles,
         } = props;
-        console.log('→ INPUTNUMBER ref', ref);
+
         const defaultValue = [ initialValue ].find(_.isNumber);
         const numberInitialValue = _.isNumber(defaultValue)
             ? defaultValue

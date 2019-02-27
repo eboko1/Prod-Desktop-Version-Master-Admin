@@ -179,16 +179,24 @@ class OrderPage extends Component {
     _onStatusChange = (status, redirectStatus, options) => {
         const {allServices, allDetails, selectedClient, history} = this.props;
         const form = this.orderFormRef.props.form;
-        const requiredFields = requiredFieldsOnStatuses(form.getFieldsValue())[
+        const orderFormValues = form.getFieldsValue();
+        const requiredFields = requiredFieldsOnStatuses(orderFormValues)[
             status
         ];
+        const commentsFields = [
+            'comment',
+            'businessComment',
+            'vehicleCondition',
+            'recommendation',
+        ];
 
-        const {id} = this.props.match.params;
-
-        form.validateFields(requiredFields, err => {
-            if (!err) {
-                const values = form.getFieldsValue();
-                const orderFormEntity = {...values, selectedClient};
+        const { id } = this.props.match.params;
+        form.validateFieldsAndScroll([ ...requiredFields, ...commentsFields ], (errors) => {
+      
+            if (!errors) {
+               
+                const orderFormEntity = {...orderFormValues, selectedClient};
+            
                 const redirectToDashboard = _.get(
                     history,
                     'location.state.fromDashboard',
@@ -208,7 +216,7 @@ class OrderPage extends Component {
                     options,
                 });
             } else {
-                this.setState({errors: err});
+                this.setState({errors});
             }
         });
     };
@@ -227,8 +235,8 @@ class OrderPage extends Component {
 
         const form = this.orderTaskFormRef.props.form;
 
-        form.validateFields((err, values) => {
-            if (!err) {
+        form.validateFields((errors, values) => {
+            if (!errors) {
                 if (orderTasks.orderTasks.length >= 1) {
                     if (compareOrderTasks(initialOrderTask, values)) {
                         saveOrderTask(values, params.id, orderTaskId);
@@ -277,18 +285,24 @@ class OrderPage extends Component {
     _createCopy = () => {
         const {allServices, allDetails, selectedClient} = this.props;
         const form = this.orderFormRef.props.form;
-        const requiredFields = requiredFieldsOnStatuses(form.getFieldsValue()).success;
+        const orderFormValues = form.getFieldsValue();
+        const requiredFields = requiredFieldsOnStatuses(orderFormValues).success;
+        const commentsFields = [
+            'comment',
+            'businessComment',
+            'vehicleCondition',
+            'recommendation',
+        ];
 
-        form.validateFields(requiredFields, err => {
-            if (!err) {
-                const values = form.getFieldsValue();
+        form.validateFieldsAndScroll([ ...requiredFields,  ...commentsFields ], errors => {
+            if (!errors) {
         
-                const entryStationLoad = _.get(values, 'stationLoads[0]');
+                const entryStationLoad = _.get(orderFormValues, 'stationLoads[0]');
                 const normalizedBeginDateTime = roundCurrentTime();
                 entryStationLoad.beginDate = normalizedBeginDateTime;
                 entryStationLoad.beginTime = normalizedBeginDateTime;
         
-                const normalizedValues = _.set(values, 'stationLoads', [ entryStationLoad ]);
+                const normalizedValues = _.set(orderFormValues, 'stationLoads', [ entryStationLoad ]);
                 const orderFormEntity = {...normalizedValues, selectedClient};
                 
                 this.props.createOrderCopy(
@@ -301,7 +315,7 @@ class OrderPage extends Component {
                     )},
                 );
             } else {
-                this.setState({errors: err});
+                this.setState({errors});
             }
         });
     }
@@ -396,7 +410,7 @@ class OrderPage extends Component {
             forbiddenUpdate,
         } = this.getSecurityConfig();
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
-        
+
         return spinner ? (
             <Spinner spin={ spinner }/>
         ) : (
@@ -431,7 +445,7 @@ class OrderPage extends Component {
                                         fetchOrderTask(inviteOrderId);
                                     }
                                 } }
-                                className={ Styles.inviteButton}
+                                className={ Styles.inviteButton }
                             >
                                 { inviteOrderId }
                             </Link>
