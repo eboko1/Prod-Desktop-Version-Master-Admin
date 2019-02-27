@@ -396,7 +396,7 @@ class OrderPage extends Component {
             forbiddenUpdate,
         } = this.getSecurityConfig();
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
-
+        
         return spinner ? (
             <Spinner spin={ spinner }/>
         ) : (
