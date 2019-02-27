@@ -20,8 +20,8 @@ import {
 import { Catcher } from "commons";
 import {
     DecoratedInputNumber,
-    DecoratedSelect,
     LimitedDecoratedSelect,
+    DecoratedAutoComplete,
 } from "forms/DecoratedFields";
 import { withReduxForm2 } from "utils";
 
@@ -65,14 +65,13 @@ export class ServicesForm extends Component {
         return (
             <Catcher>
                 <Form layout="horizontal" className={Styles.form}>
-                    <DecoratedSelect
+                    <DecoratedAutoComplete
                         cnStyles={Styles.servicesSelect}
                         field={"serviceId"}
                         getFieldDecorator={getFieldDecorator}
                         // initialValue={ _getDefaultValue(key, 'serviceId') }
                         dropdownMatchSelectWidth={false}
                         dropdownStyle={{ width: "50%" }}
-                        mode={"combobox"}
                         optionLabelProp={"children"}
                         optionFilterProp={"children"}
                         showSearch
@@ -89,12 +88,11 @@ export class ServicesForm extends Component {
                                 {serviceName}
                             </Option>
                         ))}
-                    </DecoratedSelect>
+                    </DecoratedAutoComplete>
                     <LimitedDecoratedSelect
                         cnStyles={Styles.detailsSelect}
                         field={"detailId"}
                         getFieldDecorator={getFieldDecorator}
-                        mode={"combobox"}
                         optionLabelProp={"children"}
                         showSearch
                         placeholder={"Выберете деталь"}

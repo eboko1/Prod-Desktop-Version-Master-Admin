@@ -166,7 +166,6 @@ export class EditableCell extends Component {
                                 message:  `${title} is required.`,
                             },
                         ] }
-                        mode={ 'combobox' }
                         optionLabelProp={ 'children' }
                         showSearch
                         initialValue={ record.detailName || record[ dataIndex ] }
