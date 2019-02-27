@@ -15,9 +15,16 @@ import {
 
 import { getDisplayName } from 'utils';
 
-const errorMessages = Object.freeze({
+// own
+const _errorMessages = Object.freeze({
     CLIENT_VEHICLE_DISABLED: 'CLIENT_VEHICLE_DISABLED',
+    MANAGER_DISABLED:        'MANAGER_DISABLED',
 });
+
+const ErrorStatusCode = styled.span`
+    font-weight: bold;
+    margin-right: 8px;
+`;
 
 export const withErrorMessage = () => Enhanceable => {
     @injectIntl
@@ -43,7 +50,7 @@ export const withErrorMessage = () => Enhanceable => {
 
             // https://ant.design/components/message/
             return (
-                Object.keys(errorMessages).includes(errorType) &&
+                Object.keys(_errorMessages).includes(errorType) &&
                 message.error(
                     <div>
                         <ErrorStatusCode>{ error.status }</ErrorStatusCode>
@@ -66,8 +73,3 @@ export const withErrorMessage = () => Enhanceable => {
 
     return Enhanced;
 };
-
-const ErrorStatusCode = styled.span`
-    font-weight: bold;
-    margin-right: 8px;
-`;
