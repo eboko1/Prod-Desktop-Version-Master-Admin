@@ -1,11 +1,14 @@
 {
   "en": {
-    "CLIENT_VEHICLE_DISABLED": "Please, turn on client's vehicle"
+    "CLIENT_VEHICLE_DISABLED": "Please, turn on client's vehicle",
+    "MANAGER_DISABLED": "Manager has been fired"
   },
   "ru": {
-    "CLIENT_VEHICLE_DISABLED": "Пожалуйста, вкл. авто клиента"
+    "CLIENT_VEHICLE_DISABLED": "Пожалуйста, вкл. авто клиента",
+    "MANAGER_DISABLED": "Ответственный менеджер уволен"
   },
   "uk": {
-    "CLIENT_VEHICLE_DISABLED": "Будь ласка, активуйте авто клієнта"
+    "CLIENT_VEHICLE_DISABLED": "Будь ласка, активуйте авто клієнта",
+    "MANAGER_DISABLED": "Відповідальний менеджер звільнений"
   }
 }
