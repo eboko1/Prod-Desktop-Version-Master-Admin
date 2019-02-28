@@ -11,10 +11,17 @@ const cx = classNames.bind(Styles);
 export const Subscriptions = props => {
     const { packages, suggestions } = props;
 
-    const expirationDiff = subscriptionType =>
-        subscriptionType
-            ? -moment().diff(subscriptionType.expirationDatetime, 'days')
-            : 1000;
+    const expirationDiff = subscriptionType => {
+        if (subscriptionType) {
+            const date =
+                subscriptionType.expirationDatetime || subscriptionType.endDate;
+            if (date) {
+                return -moment().diff(date, 'days');
+            }
+        }
+
+        return 1000;
+    };
 
     const backgroundColor = subscriptionType => {
         const expiration = expirationDiff(subscriptionType);
@@ -47,7 +54,8 @@ export const Subscriptions = props => {
                                 Styles.rightRow
                             }` }
                         >
-                            до&nbsp;
+                            <FormattedMessage id='header.until' />
+                            &nbsp;
                             { moment(packages.expirationDatetime).format(
                                 'YYYY-MM-DD',
                             ) }
@@ -72,17 +80,32 @@ export const Subscriptions = props => {
                     <FormattedMessage id='header.advertisement' />
                     :&nbsp;
                 </span>
-                <span
-                    className={ `${backgroundColor(suggestions)} ${
-                        Styles.rightRow
-                    }` }
-                >
+                <span className={ backgroundColor(suggestions) }>
                     { suggestions ? 
                         suggestions.name.split(' ')[ 0 ]
                         : (
                             <FormattedMessage id='header.not_active' />
                         ) }
                 </span>
+                { suggestions && (
+                    <span
+                        className={ `${backgroundColor(suggestions)} ${
+                            Styles.rightRow
+                        }` }
+                    >
+                        { suggestions.endDate ? (
+                            <>
+                                <FormattedMessage id='header.until' />
+                                &nbsp;
+                                { moment(suggestions.endDate).format(
+                                    'YYYY-MM-DD',
+                                ) }
+                            </>
+                        ) : (
+                            <FormattedMessage id='header.unlimited' />
+                        ) }
+                    </span>
+                ) }
             </div>
         </div>
     );
