@@ -11,14 +11,18 @@ const cx = classNames.bind(Styles);
 export const Subscriptions = props => {
     const { packages, suggestions } = props;
 
-    const expirationDiff = -moment().diff(packages.expirationDatetime, 'days');
+    const expirationDiff = subscriptionType =>
+        subscriptionType
+            ? -moment().diff(subscriptionType.expirationDatetime, 'days')
+            : 1000;
 
-    const backgroundColor = () => {
-        if (Number(expirationDiff)) {
+    const backgroundColor = subscriptionType => {
+        const expiration = expirationDiff(subscriptionType);
+        if (Number(expiration)) {
             return cx({
-                normalRow:   expirationDiff > 10,
-                warningRow:  expirationDiff <= 10 && expirationDiff >= -10,
-                criticalRow: expirationDiff < -10,
+                normalRow:   expiration > 10,
+                warningRow:  expiration <= 10 && expiration >= -10,
+                criticalRow: expiration < -10,
             });
         }
     };
@@ -26,25 +30,57 @@ export const Subscriptions = props => {
     return (
         <div className={ Styles.headerInfo }>
             <div className={ Styles.packages }>
-                <span className={ `${backgroundColor()} ${Styles.leftRow} ` }>
+                <span
+                    className={ `${backgroundColor(packages)} ${
+                        Styles.leftRow
+                    } ` }
+                >
                     PRO:&nbsp;
                 </span>
-                <span className={ backgroundColor() }>{ packages.name }&nbsp;</span>
-                <span className={ `${backgroundColor()} ${Styles.rightRow}` }>
-                    до&nbsp;
-                    { moment(packages.expirationDatetime).format('YYYY-MM-DD') }
-                </span>
+                { packages ? (
+                    <>
+                        <span className={ backgroundColor(packages) }>
+                            { packages.name }&nbsp;
+                        </span>
+                        <span
+                            className={ `${backgroundColor(packages)} ${
+                                Styles.rightRow
+                            }` }
+                        >
+                            до&nbsp;
+                            { moment(packages.expirationDatetime).format(
+                                'YYYY-MM-DD',
+                            ) }
+                        </span>
+                    </>
+                ) : (
+                    <span
+                        className={ `${backgroundColor(packages)} ${
+                            Styles.rightRow
+                        }` }
+                    >
+                        <FormattedMessage id='header.not_active' />
+                    </span>
+                ) }
             </div>
             <div className={ Styles.suggestions }>
-                <span className={ `${backgroundColor()} ${Styles.leftRow}` }>
+                <span
+                    className={ `${backgroundColor(suggestions)} ${
+                        Styles.leftRow
+                    }` }
+                >
                     <FormattedMessage id='header.advertisement' />
                     :&nbsp;
                 </span>
-                <span className={ `${backgroundColor()} ${Styles.rightRow}` }>
+                <span
+                    className={ `${backgroundColor(suggestions)} ${
+                        Styles.rightRow
+                    }` }
+                >
                     { suggestions ? 
-                        suggestions
+                        suggestions.name.split(' ')[ 0 ]
                         : (
-                            <FormattedMessage id='header.no_active' />
+                            <FormattedMessage id='header.not_active' />
                         ) }
                 </span>
             </div>

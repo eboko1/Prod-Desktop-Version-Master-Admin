@@ -7,7 +7,7 @@
     "header.profile": "Profile",
     "header.logout": "Logout",
     "header.advertisement": "Advertisement",
-    "header.no_active": "no active"
+    "header.not_active": "not active"
   },
   "ru": {
     "header.open_your_site": "Открыть Свой Сайт",
@@ -17,7 +17,7 @@
     "header.profile": "Личный кабинет",
     "header.logout": "Выйти",
     "header.advertisement": "Реклама",
-    "header.no_active": "не активна"
+    "header.not_active": "не активна"
   },
   "uk": {
     "header.open_your_site": "Відкрити Свій Сайт",
@@ -27,6 +27,6 @@
     "header.profile": "Особистий кабінет",
     "header.logout": "Вийти",
     "header.advertisement": "Реклама",
-    "header.no_active": "не активна"
+    "header.not_active": "не активна"
   }
 }
