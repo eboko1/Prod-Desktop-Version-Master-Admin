@@ -6,6 +6,7 @@ import { all } from 'redux-saga/effects';
 import intl from 'core/intl/saga/watchers';
 import { saga as authSaga } from 'core/auth/saga';
 import { saga as uiSaga } from 'core/ui/saga';
+import { saga as subscriptionSaga } from 'core/subscription/saga';
 // containers
 import { saga as dashboardSaga } from 'core/dashboard/saga';
 import { saga as ordersSaga } from 'core/orders/saga';
@@ -58,6 +59,7 @@ export default function* rootSaga() {
         intl.updateIntlWatcher(),
         authSaga(),
         uiSaga(),
+        subscriptionSaga(),
         // login
         loginFormSaga(),
         // commons

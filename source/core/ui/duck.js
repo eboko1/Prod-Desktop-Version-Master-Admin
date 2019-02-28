@@ -9,6 +9,7 @@ export const SET_VIEW = `${prefix}/SET_VIEW`;
 export const SET_AUTH_FETCHING_STATE = `${prefix}/SET_AUTH_FETCHING_STATE`;
 export const SET_PROFILE_UPDATING_STATE = `${prefix}/SET_PROFILE_UPDATING_STATE`;
 
+export const SET_HEADER_FETCHING_STATE = `${prefix}/SET_HEADER_FETCHING_STATE`;
 export const SET_SEARCH_BUSINESSES_FETCHING_STATE = `${prefix}/SET_SEARCH_BUSINESSES_FETCHING_STATE`;
 export const SET_ORDERS_FETCHING_STATE = `${prefix}/SET_ORDERS_FETCHING_STATE`;
 export const SET_ORDER_FETCHING_STATE = `${prefix}/SET_ORDER_FETCHING_STATE`;
@@ -58,6 +59,7 @@ const ReducerState = {
     errors:                     [],
     initialized:                false,
     authFetching:               false,
+    headerFetching:             false,
     profileUpdating:            false,
     ordersFetching:             false,
     orderFetching:              false,
@@ -104,6 +106,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_VIEW:
             return { ...state, views: { ...payload } };
+
+        case SET_HEADER_FETCHING_STATE:
+            return { ...state, headerFetching: payload };
 
         case EMIT_ERROR:
             return { ...state, error: payload };
@@ -224,6 +229,11 @@ export default function reducer(state = ReducerState, action) {
 
 export const initialize = () => ({
     type: INITIALIZE,
+});
+
+export const setHeaderFetchingState = state => ({
+    type:    SET_HEADER_FETCHING_STATE,
+    payload: state,
 });
 
 export const setAuthFetchingState = state => ({

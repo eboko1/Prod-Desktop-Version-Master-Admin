@@ -9,10 +9,14 @@ import _ from 'lodash';
 // proj
 import intl from 'core/intl/reducer';
 import uiReducer, { moduleName as uiModule } from 'core/ui/duck';
+import subscriptionReducer, {
+    moduleName as subscriptionModule,
+} from 'core/subscription/duck';
 import errorMessageReducer, {
     moduleName as errorMessageModule,
 } from 'core/errorMessage/duck';
 import authReducer, { moduleName as authModule } from 'core/auth/duck';
+
 import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
@@ -69,15 +73,16 @@ import suppliersReducer, {
 import history from './history';
 
 export const persistConfig = {
-    key:       'user',
+    key:       'persistedStore',
     storage,
-    whitelist: [ 'auth' ],
+    whitelist: [ 'auth', 'subscription' ],
 };
 
 const persistedState = {
-    [ authModule ]: authReducer,
+    [ authModule ]:         authReducer,
+    [ subscriptionModule ]: subscriptionReducer,
     intl,
-    router: connectRouter(history),
+    router:                 connectRouter(history),
 };
 
 const appState = {

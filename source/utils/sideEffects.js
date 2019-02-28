@@ -69,3 +69,54 @@ export const removeCollapsedState = () =>
 //
 
 moment.locale(getLocale());
+
+//
+// cookies
+//
+
+export const getCookie = name => {
+    const matches = document.cookie.match(
+        new RegExp(
+            '(?:^|; )' +
+                name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
+                '=([^;]*)',
+        ),
+    );
+
+    return matches ? decodeURIComponent(matches[ 1 ]) : void 0;
+};
+
+export const setCookie = (name, value, props = {}) => {
+    let expires = props.expires;
+
+    if (typeof expires === 'number' && expires) {
+        const date = new Date();
+
+        date.setTime(date.getTime() + expires * 1000);
+
+        expires = props.expires = date;
+    }
+
+    if (expires && expires.toUTCString) {
+        props.expires = expires.toUTCString();
+    }
+
+    let updatedCookie = name + '=' + encodeURIComponent(value);
+
+    /* eslint-disable guard-for-in */
+    for (let propName in props) {
+        updatedCookie += '; ' + propName;
+
+        let propValue = props[ propName ];
+
+        if (propValue !== true) {
+            updatedCookie += '=' + propValue;
+        }
+    }
+
+    document.cookie = updatedCookie;
+};
+
+export const deleteCookie = name => {
+    setCookie(name, null, { expires: -1 });
+};

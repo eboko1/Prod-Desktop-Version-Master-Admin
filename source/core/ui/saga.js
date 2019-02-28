@@ -1,7 +1,9 @@
 //vendor
 import { all, call, take } from 'redux-saga/effects';
+
 // proj
 import { setCollapsedState } from 'utils';
+
 // own
 import { SET_COLLAPSED_STATE } from './duck';
 

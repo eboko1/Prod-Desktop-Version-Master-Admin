@@ -10,16 +10,20 @@ import { selectAdmin, selectState } from "core/auth/duck";
 import { setBusiness } from "core/forms/switchBusinessForm/duck";
 import { setModal, MODALS } from "core/modals/duck";
 
+import { Loader } from "commons";
 import { SwitchBusinessModal } from "modals";
 import book from "routes/book";
 
 // own
+import { Subscriptions } from "./Subscriptions.js";
+import { Banner } from "./Banner.js";
 import Styles from "./styles.m.css";
 
 const mapStateToProps = state => {
     return {
         isAdmin: selectAdmin(state),
         businessSynonym: selectState(state).businessSynonym,
+        headerFetching: state.ui.headerFetching,
     };
 };
 
@@ -34,13 +38,29 @@ const mapDispatch = {
 )
 export default class HeaderMenu extends Component {
     render() {
-        const { isMobile } = this.props;
+        const { isMobile, header, headerFetching } = this.props;
         const headerPanel = this._renderHeaderPanel();
         const openYourSite = this._renderOpenYourSite();
 
         return (
             <div className={Styles.headerMenu}>
                 {!isMobile && openYourSite}
+                {headerFetching ? (
+                    <Loader
+                        loading={headerFetching}
+                        background="var(--blocks)"
+                    />
+                ) : (
+                    <>
+                        {!_.isEmpty(header.proBanners) && (
+                            <Banner banners={header.proBanners} />
+                        )}
+                        <Subscriptions
+                            packages={header.rolePackage}
+                            suggestions={header.suggestionGroup}
+                        />
+                    </>
+                )}
                 {headerPanel}
             </div>
         );
@@ -60,7 +80,9 @@ export default class HeaderMenu extends Component {
                 >
                     <Link className={Styles.user} to={book.profile}>
                         <Avatar className={Styles.avatar} icon="user" />
-                        {user.name} {user.surname}
+                        <span className={Styles.userName}>
+                            {user.name} {user.surname}
+                        </span>
                     </Link>
                 </Tooltip>
                 <Tooltip
