@@ -21,14 +21,8 @@ export const removeToken = () =>
     localStorage.removeItem('@@my.carbook.pro/token');
 
 // locale
-// export const setIntl = (locale, messages) => {
-//     const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
-//
-//     return {
-//         locale:   locale || fallbackLocale,
-//         messages: messages[ locale || fallbackLocale ],
-//     };
-// };
+const fallbackLocale =
+    window.navigator.language || window.navigator.userLanguage;
 
 export const setLocale = locale => {
     if (locale === 'ua') {
@@ -38,7 +32,8 @@ export const setLocale = locale => {
     return localStorage.setItem('@@my.carbook.pro/locale', locale);
 };
 
-export const getLocale = () => localStorage.getItem('@@my.carbook.pro/locale');
+export const getLocale = () =>
+    localStorage.getItem('@@my.carbook.pro/locale') || fallbackLocale;
 
 export const removeLocale = () =>
     localStorage.removeItem('@my.carbook.pro/locale');
@@ -72,5 +67,5 @@ export const removeCollapsedState = () =>
 //
 // moment
 //
-const locale = window.navigator.userLanguage || window.navigator.language;
-moment.locale(locale);
+
+moment.locale(getLocale());
