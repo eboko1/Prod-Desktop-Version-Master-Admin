@@ -95,6 +95,7 @@ export class EmployeeForm extends Component {
                         initialValue={Boolean(
                             _.get(initialEmployee, "managerEnabled"),
                         )}
+                        onChange={() => this._setPasswordField()}
                     />
                     <DecoratedDatePicker
                         field="hireDate"
