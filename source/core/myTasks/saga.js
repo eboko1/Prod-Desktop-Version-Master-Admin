@@ -8,10 +8,12 @@ import { fetchAPI } from 'utils';
 
 // own
 import { fetchMyTasksSuccess, FETCH_MY_TASKS } from './duck';
-const selectFilter = ({ myTasksContainer: { managerId, filters } }) => ({
+
+const selectFilter = ({ myTasks: { managerId, filters } }) => ({
     filter: filters,
     managerId,
 });
+
 export function* fetchMyTasks() {
     while (true) {
         try {
@@ -21,12 +23,13 @@ export function* fetchMyTasks() {
             if (firstLoading) {
                 yield put(setMyTasksFetchingState(true));
             }
-            // const { filter } = yield select(selectFilter);
             const { filter, managerId } = yield select(selectFilter);
 
             const queryFilters = {
-                ...filter.status === 'active' ? { notInStatus: 'CLOSED' } : {},
-                managerId,
+                ...filter.status === 'active'
+                    ? { notInStatus: 'CLOSED' }
+                    : {},
+                managerId:        managerId,
                 page:             filter.page,
                 query:            filter.query,
                 sortField:        filter.sortField,

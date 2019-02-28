@@ -6,7 +6,7 @@ import { Input, Form } from 'antd';
 const { TextArea } = Input;
 const FormItem = Form.Item;
 
-export default class DecoratedTextArea extends React.PureComponent {
+export class DecoratedTextArea extends React.PureComponent {
     render() {
         const {
             //FormItem

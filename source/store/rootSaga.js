@@ -6,6 +6,7 @@ import { all } from 'redux-saga/effects';
 import intl from 'core/intl/saga/watchers';
 import { saga as authSaga } from 'core/auth/saga';
 import { saga as uiSaga } from 'core/ui/saga';
+import { saga as subscriptionSaga } from 'core/subscription/saga';
 // containers
 import { saga as dashboardSaga } from 'core/dashboard/saga';
 import { saga as ordersSaga } from 'core/orders/saga';
@@ -49,7 +50,6 @@ import { saga as servicesFormSaga } from 'core/forms/servicesForm/saga';
 import { saga as brandsSaga } from 'core/forms/brandsForm/saga';
 import { saga as setDetailProductSaga } from 'core/forms/setDetailProduct/saga';
 import { saga as spreadBusinessSaga } from 'core/forms/spreadBusinessBrands/saga';
-import { saga as cashOrdersFiltersFormSaga } from 'core/forms/cashOrdersFiltersForm/saga';
 import { saga as cashOrderFormSaga } from 'core/forms/cashOrderForm/saga';
 
 /* eslint-disable array-element-newline */
@@ -59,6 +59,7 @@ export default function* rootSaga() {
         intl.updateIntlWatcher(),
         authSaga(),
         uiSaga(),
+        subscriptionSaga(),
         // login
         loginFormSaga(),
         // commons
@@ -90,7 +91,6 @@ export default function* rootSaga() {
         suppliersSaga(),
         // cash
         cashSaga(),
-        // cashOrdersFiltersFormSaga(),
         cashOrderFormSaga(),
         // statistics
         chartSaga(),

@@ -235,7 +235,7 @@ export class MobileRecordForm extends Component {
                     formItem
                     hasFeedback
                     inputReadOnly
-                    allowEmpty={ false }
+                    allowClear={ false }
                     disabled={
                         !this.props.form.getFieldValue('beginDate') ||
                         !this.props.form.getFieldValue('station')

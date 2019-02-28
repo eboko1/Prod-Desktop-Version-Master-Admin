@@ -4,7 +4,7 @@ import nprogress from 'nprogress';
 import { spreadProp } from 'ramda-adjunct';
 import _ from 'lodash';
 import moment from 'moment';
-// import { routerReducer } from 'react-router-redux';
+// import { routerReducer } from 'connected-react-router';
 
 //proj
 import { setOrdersFetchingState, emitError } from 'core/ui/duck';

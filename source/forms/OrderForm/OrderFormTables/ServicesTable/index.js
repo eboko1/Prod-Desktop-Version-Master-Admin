@@ -8,6 +8,7 @@ import _ from 'lodash';
 import { Catcher } from 'commons';
 import {
     DecoratedSelect,
+    DecoratedAutoComplete,
     DecoratedInputNumber,
     DecoratedCheckbox,
 } from 'forms/DecoratedFields';
@@ -47,6 +48,13 @@ class ServicesTable extends Component {
         };
     }
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            !_.isEqual(nextProps, this.props) ||
+            !_.isEqual(nextState, this.state)
+        );
+    }
+
     componentDidUpdate(nextProps) {
         if (nextProps.employees !== this.props.employees) {
             const employeesOptions = this._getEmployeesOptions();
@@ -57,13 +65,6 @@ class ServicesTable extends Component {
             const options = this._getServicesOptions();
             this.setState({ options });
         }
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return (
-            !_.isEqual(nextProps, this.props) ||
-            !_.isEqual(nextState, this.state)
-        );
     }
 
     // common formatter & parser for DecoratedInputNumber
@@ -169,7 +170,7 @@ class ServicesTable extends Component {
                     }
 
                     return (
-                        <DecoratedSelect
+                        <DecoratedAutoComplete
                             errors={ errors }
                             defaultGetValueProps
                             fieldValue={ _.get(
@@ -177,13 +178,14 @@ class ServicesTable extends Component {
                                 `services[${key}].serviceName`,
                             ) }
                             disabled={ editServicesForbidden }
-                            onSelect={ (value) => this._onServiceSelect(value, _.get(
-                                fields,
-                                `services[${key}].ownDetail`,
-                            )) }
+                            onSelect={ value =>
+                                this._onServiceSelect(
+                                    value,
+                                    _.get(fields, `services[${key}].ownDetail`),
+                                )
+                            }
                             field={ `services[${key}].serviceName` }
                             getFieldDecorator={ getFieldDecorator }
-                            mode={ 'combobox' }
                             optionLabelProp={ 'children' }
                             optionFilterProp={ 'children' }
                             showSearch
@@ -198,7 +200,7 @@ class ServicesTable extends Component {
                             // dropdownStyle={ { width: '70%' } }
                         >
                             { this.state.options }
-                        </DecoratedSelect>
+                        </DecoratedAutoComplete>
                     );
                 },
             },
@@ -443,6 +445,7 @@ class ServicesTable extends Component {
         return (
             <Catcher>
                 <Table
+                    className={ Styles.serviceTable }
                     rowKey={ ({ key }) => key }
                     dataSource={ keys.map(key => ({ key })) }
                     columns={ columns }

@@ -1,34 +1,41 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { Layout } from 'antd';
-import DocumentTitle from 'react-document-title';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
+import { Layout } from "antd";
+import DocumentTitle from "react-document-title";
 
 // proj
-import { logout } from 'core/auth/duck';
-import { setCollapsedState, setView } from 'core/ui/duck';
-import { Navigation, Header, Footer, ModuleHeader } from 'commons';
-import { getCollapsedState, withResponsive } from 'utils';
+import { logout } from "core/auth/duck";
+import { setCollapsedState, setView } from "core/ui/duck";
+import { fetchHeaderData } from "core/subscription/duck";
+
+import { Navigation, Header, Footer, ModuleHeader } from "commons";
+import { getCollapsedState, withResponsive } from "utils";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
     authFetching: state.ui.authFetching,
-    collapsed:    state.ui.collapsed,
-    user:         state.auth,
+    collapsed: state.ui.collapsed,
+    header: state.subscription.header,
+    user: state.auth,
 });
 
 const mapDispatchToProps = {
     logout,
     setCollapsedState,
     setView,
+    fetchHeaderData,
 };
 
 @withResponsive()
 @withRouter
-@connect(mapStateToProps, mapDispatchToProps)
+@connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)
 export class LayoutComponent extends Component {
     static defaultProps = {
         paper: true,
@@ -40,6 +47,7 @@ export class LayoutComponent extends Component {
 
         this.props.setView({ isMobile, isTablet, isDesktop });
         this.props.setCollapsedState(collapsed);
+        this.props.fetchHeaderData();
     }
 
     _toggleNavigation = () => {
@@ -51,10 +59,10 @@ export class LayoutComponent extends Component {
 
     _getPageTitle = () => {
         const { history, location } = this.props;
-        let title = 'Carbook.Pro';
+        let title = "Carbook.Pro";
 
         if (history.location.pathname && location.pathname) {
-            const path = location.pathname.split('/')[ 1 ];
+            const path = location.pathname.split("/")[1];
             title = `Carbook.Pro - ${path.charAt(0).toUpperCase() +
                 path.slice(1)}`;
         }
@@ -70,56 +78,58 @@ export class LayoutComponent extends Component {
             paper,
             collapsed,
             isMobile,
+            header,
             user,
         } = this.props;
 
         return (
-            <DocumentTitle title={ this._getPageTitle() }>
-                <Layout style={ { height: '100%' } }>
+            <DocumentTitle title={this._getPageTitle()}>
+                <Layout style={{ height: "100%" }}>
                     <Navigation
-                        onCollapse={ this._toggleNavigation }
-                        collapsed={ collapsed }
-                        isMobile={ isMobile }
-                        user={ user }
+                        onCollapse={this._toggleNavigation}
+                        collapsed={collapsed}
+                        isMobile={isMobile}
+                        user={user}
                     />
-                    <Layout className={ Styles.layout }>
-                        { !isMobile && (
-                            <Layout.Header className={ Styles.header }>
+                    <Layout className={Styles.layout}>
+                        {!isMobile && (
+                            <Layout.Header className={Styles.header}>
                                 <Header
-                                    user={ user }
-                                    collapsed={ collapsed }
-                                    toggleNavigation={ this._toggleNavigation }
-                                    logout={ this._logout }
+                                    header={header}
+                                    user={user}
+                                    collapsed={collapsed}
+                                    toggleNavigation={this._toggleNavigation}
+                                    logout={this._logout}
                                 />
                             </Layout.Header>
-                        ) }
-                        { title && (
+                        )}
+                        {title && (
                             <ModuleHeader
-                                title={ title }
-                                description={ description }
-                                controls={ controls }
-                                collapsed={ collapsed }
-                                isMobile={ isMobile }
+                                title={title}
+                                description={description}
+                                controls={controls}
+                                collapsed={collapsed}
+                                isMobile={isMobile}
                             />
-                        ) }
+                        )}
                         <main
-                            className={ `${Styles.content} ${collapsed &&
+                            className={`${Styles.content} ${collapsed &&
                                 Styles.contentCollapsed} ${title &&
-                                Styles.contentModuleHeader}` }
+                                Styles.contentModuleHeader}`}
                         >
                             <Layout.Content
-                                className={ `${
+                                className={`${
                                     paper ? Styles.paper : Styles.pure
-                                }` }
+                                }`}
                             >
-                                { this.props.children }
+                                {this.props.children}
                             </Layout.Content>
                         </main>
-                        { !isMobile && (
+                        {!isMobile && (
                             <Layout.Footer>
-                                <Footer collapsed={ collapsed } />
+                                <Footer collapsed={collapsed} />
                             </Layout.Footer>
-                        ) }
+                        )}
                     </Layout>
                 </Layout>
             </DocumentTitle>

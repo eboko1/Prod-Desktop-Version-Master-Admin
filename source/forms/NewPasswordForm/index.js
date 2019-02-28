@@ -1,54 +1,47 @@
 // vendor
-import React, { Component } from 'react';
-import { withRouter, Link } from 'react-router-dom';
-import { Form, Button, Card, message } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { Component } from "react";
+import { withRouter, Link } from "react-router-dom";
+import { Form, Button, Card, message } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
 
 // proj
-import { Result } from 'components';
-import { DecoratedInput } from 'forms/DecoratedFields';
-import book from 'routes/book.js';
-import { fetchAPI } from 'utils';
+import { Result } from "components";
+import { DecoratedInput } from "forms/DecoratedFields";
+import book from "routes/book.js";
+import { fetchAPI } from "utils";
 
 // own
-import Styles from '../LoginForm/loginForm.m.css';
+import Styles from "../LoginForm/loginForm.m.css";
 @withRouter
 @injectIntl
 export class NewPassword extends Component {
     state = {
-        confirmDirty:    false,
+        confirmDirty: false,
         passwordChanged: false,
-        handleError:     false,
+        handleError: false,
     };
 
     componentDidMount() {
         this._checkRecoverySession();
     }
 
-    _checkRecoverySession = () => {
-        const passwordResetId = this.props.location.search.split('=').pop();
+    _checkRecoverySession = async () => {
+        const passwordResetId = this.props.location.search.split("=").pop();
 
         const checkExpiration = () => {
-            const hide = message.loading('Session validation...', 0);
+            const hide = message.loading("Session validation...", 0);
             setTimeout(hide, 2500);
         };
 
-        const onFulfilled = () => checkExpiration();
-
-        const onRejected = () =>
-            this.setState({
-                handleError: true,
-            });
-
-        const promise = fetchAPI(
-            'GET',
+        const response = await fetchAPI(
+            "GET",
             `password/reset/verify?passwordResetId=${passwordResetId}`,
             null,
-            { rawResponse: true, handleErrorInternally: true },
+            { handleErrorInternally: true },
         );
 
-        promise.then(onFulfilled);
-        promise.then(null, onRejected);
+        if (response.status === "valid") checkExpiration();
+        if (response.status !== "valid") this.setState({ handleError: true });
     };
 
     _handleConfirmBlur = e => {
@@ -74,7 +67,7 @@ export class NewPassword extends Component {
     _validateToNextPassword = (rule, value, callback) => {
         const form = this.props.form;
         if (value && this.state.confirmDirty) {
-            form.validateFields([ 'confirm' ], { force: true });
+            form.validateFields(["confirm"], { force: true });
         }
         callback();
     };
@@ -82,37 +75,29 @@ export class NewPassword extends Component {
     _submit = event => {
         event.preventDefault();
 
-        this.props.form.validateFieldsAndScroll(err => {
+        this.props.form.validateFieldsAndScroll(async err => {
             if (!err) {
                 this._checkRecoverySession();
 
                 const passwordResetId = this.props.location.search
-                    .split('=')
+                    .split("=")
                     .pop();
 
-                const onFulfilled = () =>
-                    this.setState({
-                        passwordChanged: true,
-                    });
-
-                const onRejected = () =>
-                    this.setState({
-                        handleError: true,
-                    });
-
-                const promise = fetchAPI(
-                    'POST',
-                    '/password/reset',
+                const response = await fetchAPI(
+                    "POST",
+                    "/password/reset",
                     null,
                     {
                         passwordResetId,
-                        password: this.props.form.getFieldValue('password'),
+                        password: this.props.form.getFieldValue("password"),
                     },
                     { rawResponse: true, handleErrorInternally: true },
                 );
 
-                promise.then(onFulfilled);
-                promise.then(null, onRejected);
+                if (response.status === 200)
+                    this.setState({ passwordChanged: true });
+                if (response.status !== 200)
+                    this.setState({ handleError: true });
             }
         });
     };
@@ -127,104 +112,106 @@ export class NewPassword extends Component {
         const { passwordChanged, handleError } = this.state;
 
         return (
-            <Form className={ Styles.loginForm } onSubmit={ this._submit }>
-                { !(passwordChanged || handleError) ? 
+            <Form className={Styles.loginForm} onSubmit={this._submit}>
+                {!(passwordChanged || handleError) ? (
                     <>
                         <DecoratedInput
                             formItem
                             label={
-                                <FormattedMessage id='login_form.password' />
+                                <FormattedMessage id="login_form.password" />
                             }
-                            field='password'
-                            getFieldDecorator={ getFieldDecorator }
-                            type='password'
-                            rules={ [
+                            field="password"
+                            getFieldDecorator={getFieldDecorator}
+                            type="password"
+                            rules={[
                                 {
                                     required: true,
-                                    message:  formatMessage({
+                                    message: formatMessage({
                                         id:
-                                            'login_form.password_is_required_min',
+                                            "login_form.password_is_required_min",
                                     }),
                                     min: 6,
                                 },
                                 {
                                     validator: this._validateToNextPassword,
                                 },
-                            ] }
-                            placeholder={ formatMessage({
-                                id: 'login_form.enter_password',
-                            }) }
+                            ]}
+                            placeholder={formatMessage({
+                                id: "login_form.enter_password",
+                            })}
                         />
                         <DecoratedInput
                             formItem
                             label={
-                                <FormattedMessage id='login_form.confirm_password' />
+                                <FormattedMessage id="login_form.confirm_password" />
                             }
-                            field='confirm'
-                            getFieldDecorator={ getFieldDecorator }
-                            rules={ [
+                            field="confirm"
+                            getFieldDecorator={getFieldDecorator}
+                            rules={[
                                 {
                                     required: true,
-                                    message:  formatMessage({
+                                    message: formatMessage({
                                         id:
-                                            'login_form.password_is_required_min',
+                                            "login_form.password_is_required_min",
                                     }),
                                     min: 6,
                                 },
                                 {
                                     validator: this._compareToFirstPassword,
                                 },
-                            ] }
-                            placeholder={ formatMessage({
-                                id: 'login_form.enter_password',
-                            }) }
-                            type='password'
-                            onBlur={ this._handleConfirmBlur }
+                            ]}
+                            placeholder={formatMessage({
+                                id: "login_form.enter_password",
+                            })}
+                            type="password"
+                            onBlur={this._handleConfirmBlur}
                         />
-                        <Button type='primary' htmlType='submit'>
-                            <FormattedMessage id='submit' />
+                        <Button type="primary" htmlType="submit">
+                            <FormattedMessage id="submit" />
                         </Button>
                     </>
-                    : null }
-                { handleError && (
-                    <Card bordered={ false }>
+                ) : null}
+                {handleError && (
+                    <Card bordered={false}>
                         <Result
-                            type='error'
-                            title={ <FormattedMessage id='login_form.error' /> }
+                            type="error"
+                            title={<FormattedMessage id="login_form.error" />}
                             description={
-                                <FormattedMessage id='login_form.password_expired' />
+                                <FormattedMessage id="login_form.password_expired" />
                             }
                             // extra={ extra }
                             actions={
-                                <Button onClick={ this._backToForm }>
-                                    <FormattedMessage id='login_form.back_to_login' />
-                                </Button>
+                                <Link to={book.login}>
+                                    <Button onClick={this._backToLogin}>
+                                        <FormattedMessage id="login_form.back_to_login" />
+                                    </Button>
+                                </Link>
                             }
-                            style={ { marginTop: 48, marginBottom: 16 } }
+                            style={{ marginTop: 48, marginBottom: 16 }}
                         />
                     </Card>
-                ) }
-                { passwordChanged && (
-                    <Card bordered={ false }>
+                )}
+                {passwordChanged && (
+                    <Card bordered={false}>
                         <Result
-                            type='success'
+                            type="success"
                             title={
-                                <FormattedMessage id='login_form.congratulations' />
+                                <FormattedMessage id="login_form.congratulations" />
                             }
                             description={
-                                <FormattedMessage id='login_form.password_changed' />
+                                <FormattedMessage id="login_form.password_changed" />
                             }
                             actions={
-                                <Button onClick={ this._backToLogin }>
-                                    <Link to={ book.login }>
-                                        <FormattedMessage id='login_form.back_to_login' />
-                                    </Link>
-                                </Button>
+                                <Link to={book.login}>
+                                    <Button onClick={this._backToLogin}>
+                                        <FormattedMessage id="login_form.back_to_login" />
+                                    </Button>
+                                </Link>
                             }
-                            style={ { marginTop: 48, marginBottom: 16 } }
+                            style={{ marginTop: 48, marginBottom: 16 }}
                         />
                     </Card>
-                ) }
+                )}
             </Form>
         );
     }

@@ -1,10 +1,7 @@
-// Core
+// vendor
 import { addLocaleData } from 'react-intl';
 import numeral from 'numeral';
 import merge from 'deepmerge';
-
-// Proj
-import { getLocale } from 'utils';
 
 // Locale data
 import ru from 'react-intl/locale-data/ru';
@@ -223,8 +220,12 @@ const messages = merge.all([
 /* eslint-enable array-element-newline */
 
 // Intl
+const fallbackLocale =
+    window.navigator.language || window.navigator.userLanguage === 'uk_UA'
+        ? 'uk'
+        : 'ru';
+
 const setIntl = language => {
-    const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
     let locale = language;
     if (locale === 'ua') {
         locale = 'uk';
@@ -236,7 +237,9 @@ const setIntl = language => {
     };
 };
 
-let persistedLocale = getLocale();
+let persistedLocale =
+    localStorage.getItem('@@my.carbook.pro/locale') || fallbackLocale;
+
 if (persistedLocale === 'ua') {
     persistedLocale = 'uk';
 }

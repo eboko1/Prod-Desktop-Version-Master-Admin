@@ -1,3 +1,7 @@
+.detailsTable td {
+    vertical-align: top;
+}
+
 .sum :global(.ant-input-number-input[disabled]) {
     color: rgba(0, 0, 0, 1);
 }

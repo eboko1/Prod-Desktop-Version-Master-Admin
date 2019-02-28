@@ -1,18 +1,22 @@
 // vendor
 import { combineReducers } from 'redux';
-import { routerReducer as router } from 'react-router-redux';
+import { connectRouter } from 'connected-react-router';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
-import { LOCATION_CHANGE } from 'react-router-redux';
+import { LOCATION_CHANGE } from 'connected-react-router';
 import _ from 'lodash';
 
 // proj
 import intl from 'core/intl/reducer';
 import uiReducer, { moduleName as uiModule } from 'core/ui/duck';
+import subscriptionReducer, {
+    moduleName as subscriptionModule,
+} from 'core/subscription/duck';
 import errorMessageReducer, {
     moduleName as errorMessageModule,
 } from 'core/errorMessage/duck';
 import authReducer, { moduleName as authModule } from 'core/auth/duck';
+
 import { formsReducer as forms } from 'core/forms';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
@@ -65,16 +69,20 @@ import suppliersReducer, {
     moduleName as suppliersModule,
 } from 'core/suppliers/duck';
 
+// own
+import history from './history';
+
 export const persistConfig = {
-    key:       'user',
+    key:       'persistedStore',
     storage,
-    whitelist: [ 'auth' ],
+    whitelist: [ 'auth', 'subscription' ],
 };
 
 const persistedState = {
-    [ authModule ]: authReducer,
+    [ authModule ]:         authReducer,
+    [ subscriptionModule ]: subscriptionReducer,
     intl,
-    router,
+    router:                 connectRouter(history),
 };
 
 const appState = {

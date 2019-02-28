@@ -21,14 +21,8 @@ export const removeToken = () =>
     localStorage.removeItem('@@my.carbook.pro/token');
 
 // locale
-// export const setIntl = (locale, messages) => {
-//     const fallbackLocale = window.navigator.language === 'uk_UA' ? 'uk' : 'ru';
-//
-//     return {
-//         locale:   locale || fallbackLocale,
-//         messages: messages[ locale || fallbackLocale ],
-//     };
-// };
+const fallbackLocale =
+    window.navigator.language || window.navigator.userLanguage;
 
 export const setLocale = locale => {
     if (locale === 'ua') {
@@ -38,7 +32,8 @@ export const setLocale = locale => {
     return localStorage.setItem('@@my.carbook.pro/locale', locale);
 };
 
-export const getLocale = () => localStorage.getItem('@@my.carbook.pro/locale');
+export const getLocale = () =>
+    localStorage.getItem('@@my.carbook.pro/locale') || fallbackLocale;
 
 export const removeLocale = () =>
     localStorage.removeItem('@my.carbook.pro/locale');
@@ -72,5 +67,56 @@ export const removeCollapsedState = () =>
 //
 // moment
 //
-const locale = window.navigator.userLanguage || window.navigator.language;
-moment.locale(locale);
+
+moment.locale(getLocale());
+
+//
+// cookies
+//
+
+export const getCookie = name => {
+    const matches = document.cookie.match(
+        new RegExp(
+            '(?:^|; )' +
+                name.replace(/([\.$?*|{}\(\)\[\]\\\/\+^])/g, '\\$1') +
+                '=([^;]*)',
+        ),
+    );
+
+    return matches ? decodeURIComponent(matches[ 1 ]) : void 0;
+};
+
+export const setCookie = (name, value, props = {}) => {
+    let expires = props.expires;
+
+    if (typeof expires === 'number' && expires) {
+        const date = new Date();
+
+        date.setTime(date.getTime() + expires * 1000);
+
+        expires = props.expires = date;
+    }
+
+    if (expires && expires.toUTCString) {
+        props.expires = expires.toUTCString();
+    }
+
+    let updatedCookie = name + '=' + encodeURIComponent(value);
+
+    /* eslint-disable guard-for-in */
+    for (let propName in props) {
+        updatedCookie += '; ' + propName;
+
+        let propValue = props[ propName ];
+
+        if (propValue !== true) {
+            updatedCookie += '=' + propValue;
+        }
+    }
+
+    document.cookie = updatedCookie;
+};
+
+export const deleteCookie = name => {
+    setCookie(name, null, { expires: -1 });
+};

@@ -61,7 +61,7 @@ class DashboardContainer extends Component {
 
         return (
             <Catcher>
-                <Dashboard innerRef={ this._dashboardRef } className='withScroll'>
+                <Dashboard ref={ this._dashboardRef } className='withScroll'>
                     <DashboardTimeline schedule={ schedule } />
                     { timeColumn }
                     <DashboardGrid

@@ -66,11 +66,11 @@ export function convertFieldsValuesToDbEntity(
 
             let brandCustom = {};
             if (!brandConfig) {
-                if(brandId) {
-                    brandCustom = { brandName: brandId }
+                if (brandId) {
+                    brandCustom = { brandName: brandId };
                 }
             } else {
-                brandCustom = { brandId }
+                brandCustom = { brandId };
             }
 
             return { ...baseDetail, ...detailCustom, ...brandCustom };
@@ -127,11 +127,7 @@ export function convertFieldsValuesToDbEntity(
     const stationLoadsEntity = _.get(orderFields, 'stationLoads')
         .filter(
             ({ beginDate, beginTime, station }) =>
-                ![
-                    beginDate,
-                    beginTime,
-                    station,
-                ].some(_.isNil),
+                ![ beginDate, beginTime, station ].some(_.isNil),
         )
         .map(obj => {
             const dayPart =
@@ -152,11 +148,7 @@ export function convertFieldsValuesToDbEntity(
                 moment(`${dayPart}T${hourPart}:00.000Z`).toISOString();
 
             return {
-                ..._.omit(obj, [
-                    'beginDate',
-                    'beginTime',
-                    'station', 
-                ]),
+                ..._.omit(obj, [ 'beginDate', 'beginTime', 'station' ]),
                 stationNum: obj.station,
                 beginDatetime,
             };
@@ -195,10 +187,8 @@ export function convertFieldsValuesToDbEntity(
         comment:          _.get(orderFields, 'comment'),
     };
 
-    const orderClearedFields = _.mapValues(
-        order,
-        value => value === '' ? null : value,
-    );
+    const orderClearedFields = _.mapValues(order, value =>
+        value === '' ? null : value);
     // omit forbidden fields
     const rolesOmitFieldsFunctions = [
         orderEntity =>
@@ -261,19 +251,9 @@ export const requiredFieldsOnStatuses = values => {
             'services',
             'details',
         ],
-
-        not_complete: [
-            'manager',
-            'services',
-            'details', 
-        ],
-        required: [
-            'manager',
-            'services',
-            'details',
-        ],
-
-        reserve: [
+        not_complete: [ 'manager', 'services', 'details' ],
+        required:     [ 'manager', 'services', 'details' ],
+        reserve:      [
             'stationLoads[0].beginDate',
             'stationLoads[0].beginTime',
             'manager',
@@ -290,11 +270,9 @@ export const requiredFieldsOnStatuses = values => {
             'services',
             'details',
         ],
-
         redundant: [ 'services', 'details' ],
         cancel:    [ 'services', 'details' ],
-
-        progress: [
+        progress:  [
             'stationLoads[0].beginDate',
             'stationLoads[0].beginTime',
             'manager',
@@ -306,7 +284,6 @@ export const requiredFieldsOnStatuses = values => {
             'services',
             'details',
         ],
-
         success: [
             'stationLoads[0].beginDate',
             'stationLoads[0].beginTime',
@@ -324,20 +301,12 @@ export const requiredFieldsOnStatuses = values => {
         values[ 'stationLoads[0].beginDate' ]
     ) {
         statuses = _.mapValues(statuses, fields =>
-            _.uniq([
-                ...fields,
-                'stationLoads[0].beginTime',
-                'stationLoads[0].beginDate',
-            ]));
+            _.uniq([ ...fields, 'stationLoads[0].beginTime', 'stationLoads[0].beginDate' ]));
     }
 
     if (values.deliveryDate || values.deliveryTime) {
         statuses = _.mapValues(statuses, fields =>
-            _.uniq([
-                ...fields,
-                'deliveryDate',
-                'deliveryTime',
-            ]));
+            _.uniq([ ...fields, 'deliveryDate', 'deliveryTime' ]));
     }
 
     return statuses;

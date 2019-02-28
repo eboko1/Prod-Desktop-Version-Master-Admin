@@ -1,15 +1,15 @@
-// Core
-import React from 'react';
-import { Select, Form } from 'antd';
+// vendor
+import React, { forwardRef, memo } from 'react';
+import { AutoComplete, Form } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { v4 } from 'uuid';
 
 // own
-const Option = Select.Option;
+const Option = AutoComplete.Option;
 const FormItem = Form.Item;
 
-export class DecoratedSelect extends React.PureComponent {
-    render() {
+export const DecoratedAutoComplete = memo(
+    forwardRef((props, ref) => {
         const {
             //FormItem
             formItem,
@@ -19,7 +19,7 @@ export class DecoratedSelect extends React.PureComponent {
             style,
             hasFeedback,
             formItemLayout,
-            ref,
+
             onPressEnter,
 
             // DecoratedField
@@ -53,10 +53,10 @@ export class DecoratedSelect extends React.PureComponent {
 
             initialValue,
             onFocus,
-        } = this.props;
+        } = props;
 
-        const renderSelect = (
-            <Select
+        const renderAutoComplete = (
+            <AutoComplete
                 mode={ mode }
                 disabled={ disabled }
                 showSearch={ showSearch }
@@ -80,7 +80,11 @@ export class DecoratedSelect extends React.PureComponent {
                 dropdownMatchSelectWidth={ dropdownMatchSelectWidth }
                 dropdownStyle={ dropdownStyle }
                 dropdownClassName={ dropdownClassName }
-                onInputKeyDown={ e => e.key === 'Enter' && onPressEnter() }
+                onKeyDown={ e => {
+                    if (e.key === 'Enter') {
+                        onPressEnter();
+                    }
+                } }
                 onFocus={ onFocus }
                 optionFilterProp={
                     optionFilterProp ? optionFilterProp : 'children'
@@ -112,19 +116,19 @@ export class DecoratedSelect extends React.PureComponent {
                             { option[ optionLabel ] }
                         </Option>
                     )) }
-            </Select>
+            </AutoComplete>
         );
 
-        let select = null;
+        let autoComplete = null;
         if (getFieldDecorator) {
-            select = getFieldDecorator(field, {
+            autoComplete = getFieldDecorator(field, {
                 ...initialValue
                     ? { initialValue: initialValue }
                     : { initialValue: void 0 },
                 rules,
-            })(renderSelect);
+            })(renderAutoComplete);
         } else {
-            select = renderSelect;
+            autoComplete = renderAutoComplete;
         }
 
         return formItem ? (
@@ -136,31 +140,10 @@ export class DecoratedSelect extends React.PureComponent {
                 style={ style }
                 { ...formItemLayout }
             >
-                { select }
+                { autoComplete }
             </FormItem>
         ) : 
-            select
+            autoComplete
         ;
-    }
-}
-
-// function LimitedSearch() {
-//     let globalQuery = null;
-//     let globalOptions = [];
-//
-//     this.handleLimitedSearch = function handleLimitedSearch(
-//         query,
-//         optionValue,
-//     ) {
-//         if (query !== globalQuery) {
-//             globalOptions = _.map(children, 'props.children')
-//                 .filter(value => value.toLowerCase().indexOf(query) !== -1)
-//                 .slice(0, globalLimit);
-//             globalQuery = query;
-//         }
-//
-//         return globalOptions.includes(optionValue);
-//     };
-// }
-//
-// const limitedSearch = new LimitedSearch();
+    }),
+);

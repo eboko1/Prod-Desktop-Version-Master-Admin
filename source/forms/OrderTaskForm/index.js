@@ -329,7 +329,7 @@ export class OrderTaskForm extends Component {
                                 }
                             />
                             <DecoratedTimePicker
-                                allowEmpty={ false }
+                                allowClear={ false }
                                 minuteStep={ 30 }
                                 field='deadlineTime'
                                 initialValue={

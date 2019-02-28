@@ -1,12 +1,12 @@
-// Core
-import { routerMiddleware as createRouterMiddleware } from 'react-router-redux';
-import createBrowserHistory from 'history/createBrowserHistory';
+// vendor
+import { routerMiddleware as createRouterMiddleware } from 'connected-react-router';
 import createSagaMiddleware from 'redux-saga';
 import thunk from 'redux-thunk';
 import nprogress from 'nprogress';
 
 // proj
-const history = createBrowserHistory();
+import history from './history';
+
 const routerMiddleware = createRouterMiddleware(history);
 const sagaMiddleware = createSagaMiddleware();
 const middleware = [ thunk, sagaMiddleware, routerMiddleware ];
@@ -35,9 +35,9 @@ if (__LOCAL__ || __DEV__) {
     middleware.push(logger);
 }
 
-export { history, sagaMiddleware, middleware };
-
 history.listen(() => {
     nprogress.start();
     nprogress.done();
 });
+
+export { sagaMiddleware, middleware };

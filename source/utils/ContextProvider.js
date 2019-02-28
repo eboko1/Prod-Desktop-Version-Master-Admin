@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 const Context = React.createContext();
 
-export default class ContextProvider extends Component {
+export class ContextProvider extends Component {
     state = {};
 
     render() {
@@ -13,27 +13,3 @@ export default class ContextProvider extends Component {
         );
     }
 }
-
-// const OrderContext = React.createContext();
-//
-// class OrderProvider extends Component {
-//     state = {
-//         datetime,
-//         status,
-//         num,
-//     };
-//
-//     render() {
-//         return (
-//             <OrderContext.Provider value={ { state: this.state } }>
-//                 { this.props.children }
-//             </OrderContext.Provider>
-//         );
-//     }
-// }
-//
-// <OrderContext.Consumer>
-//         { context => {
-//         <p>blalba</p>;
-//     } }
-//     </OrderContext.Consumer>;

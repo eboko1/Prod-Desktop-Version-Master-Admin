@@ -1,13 +1,12 @@
 /**
  * Constants
  * */
-export const moduleName = 'myTasksContainer';
+export const moduleName = 'myTasks';
 const prefix = `cpb/${moduleName}`;
 
 export const FETCH_MY_TASKS = `${prefix}/FETCH_MY_TASKS`;
 export const FETCH_MY_TASKS_SUCCESS = `${prefix}/FETCH_MY_TASKS_SUCCESS`;
 
-export const ON_CHANGE_MY_TASKS_FORM = `${prefix}/ON_CHANGE_MY_TASKS_FORM`;
 export const GET_ACTIVE_ORDER = `${prefix}/GET_ACTIVE_ORDER`;
 export const GET_ACTIVE_VEHICLE = `${prefix}/GET_ACTIVE_VEHICLE`;
 export const SET_CURRENT_PAGE = `${prefix}/SET_CURRENT_PAGE`;
@@ -48,29 +47,24 @@ export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
     switch (type) {
-        case ON_CHANGE_MY_TASKS_FORM:
-            return {
-                ...state,
-                fields: {
-                    ...state.fields,
-                    ...payload,
-                },
-            };
-        case SET_MANAGER:
-            return {
-                ...state,
-                managerId: payload,
-            };
         case FETCH_MY_TASKS_SUCCESS:
             return {
                 ...state,
                 myTasks: payload,
             };
+
+        case SET_MANAGER:
+            return {
+                ...state,
+                managerId: payload,
+            };
+
         case GET_ACTIVE_ORDER:
             return {
                 ...state,
                 activeOrder: payload,
             };
+
         case GET_ACTIVE_VEHICLE:
             return {
                 ...state,
@@ -84,6 +78,7 @@ export default function reducer(state = ReducerState, action) {
                     page: payload,
                 },
             };
+
         case SET_MY_TASKS_DATERANGE_FILTER:
             return {
                 ...state,
@@ -92,6 +87,7 @@ export default function reducer(state = ReducerState, action) {
                     daterange: payload,
                 },
             };
+
         case SET_MY_TASKS_SEARCH_FILTER:
             return {
                 ...state,
@@ -100,6 +96,7 @@ export default function reducer(state = ReducerState, action) {
                     query: payload,
                 },
             };
+
         case SET_MY_TASKS_STATUS_FILTER:
             return {
                 ...state,
@@ -108,6 +105,7 @@ export default function reducer(state = ReducerState, action) {
                     status: payload,
                 },
             };
+
         case SET_MY_TASKS_SORT_ORDER_FILTER:
             return {
                 ...state,
@@ -116,6 +114,7 @@ export default function reducer(state = ReducerState, action) {
                     sortOrder: payload,
                 },
             };
+
         case SET_MY_TASKS_SORT_FIELD_FILTER:
             return {
                 ...state,
@@ -124,6 +123,7 @@ export default function reducer(state = ReducerState, action) {
                     sortField: payload,
                 },
             };
+
         case RESET_DATA:
             return {
                 ...state,

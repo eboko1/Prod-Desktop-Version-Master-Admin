@@ -1,13 +1,12 @@
 // vendor
-import React from 'react';
+import React, { forwardRef, memo } from 'react';
 import { Input, Icon, Form } from 'antd';
-import _ from 'lodash';
 
 // own
 const FormItem = Form.Item;
 
-export class DecoratedInput extends React.PureComponent {
-    render() {
+export const DecoratedInput = memo(
+    forwardRef((props, ref) => {
         const {
             //FormItem
             formItem,
@@ -16,7 +15,6 @@ export class DecoratedInput extends React.PureComponent {
             className,
             hasFeedback,
             formItemLayout,
-            innerRef,
             onPressEnter,
 
             cnStyles,
@@ -31,7 +29,7 @@ export class DecoratedInput extends React.PureComponent {
             initialValue,
             style,
             onChange,
-        } = this.props;
+        } = props;
 
         const input = getFieldDecorator(field, {
             ...initialValue ? { initialValue } : { initialValue: void 0 },
@@ -54,7 +52,7 @@ export class DecoratedInput extends React.PureComponent {
                 placeholder={ placeholder }
                 disabled={ disabled }
                 onChange={ onChange }
-                ref={ innerRef }
+                ref={ ref }
                 onPressEnter={ onPressEnter }
             />,
         );
@@ -72,5 +70,5 @@ export class DecoratedInput extends React.PureComponent {
         ) : 
             input
         ;
-    }
-}
+    }),
+);

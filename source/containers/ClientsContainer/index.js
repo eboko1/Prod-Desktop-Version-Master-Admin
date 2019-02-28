@@ -11,7 +11,6 @@ import _ from 'lodash';
 import {
     fetchClients,
     setClientsPageSort,
-    createInviteOrders,
     setInvite,
     createInvite,
 } from 'core/clients/duck';
@@ -40,7 +39,6 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchClients,
     setClientsPageSort,
-    createInviteOrders,
     setModal,
     resetModal,
     setInvite,

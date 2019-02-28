@@ -1,17 +1,11 @@
 // vendor
-import React, { Component } from 'react';
+import React, { Component, forwardRef } from 'react';
 import _ from 'lodash';
 
 // proj
-import { DecoratedSelect } from 'forms/DecoratedFields';
+import { DecoratedAutoComplete } from 'forms/DecoratedFields';
 
-export default class LimitedDecoratedSelect extends Component {
-    _onSearch = search => {
-        this.setState({
-            search: _.isString(search) ? search.toLowerCase() : void 0,
-        });
-    };
-
+class Limited extends Component {
     constructor(props) {
         super(props);
 
@@ -19,8 +13,31 @@ export default class LimitedDecoratedSelect extends Component {
         const emptySearchOptions = this._getEmptySearchOptions();
 
         this.searchMap = {};
-        this.state = { search: void 0, requiredOptions, emptySearchOptions };
+        this.state = {
+            search: void 0,
+            requiredOptions,
+            emptySearchOptions,
+        };
     }
+
+    componentDidUpdate(prevProps) {
+        if (
+            prevProps.children !== this.props.children ||
+            this.props.defaultValues !== prevProps.defaultValues
+        ) {
+            const requiredOptions = this._calculateRequiredOptions();
+            const emptySearchOptions = this._getEmptySearchOptions();
+
+            this.searchMap = {};
+            this.setState({ requiredOptions, emptySearchOptions });
+        }
+    }
+
+    _onSearch = search => {
+        this.setState({
+            search: _.isString(search) ? search.toLowerCase() : void 0,
+        });
+    };
 
     _calculateRequiredOptions = () => {
         const defaultValues = this.props.defaultValues || [];
@@ -51,19 +68,6 @@ export default class LimitedDecoratedSelect extends Component {
         return this.searchMap[ search ];
     };
 
-    componentDidUpdate(prevProps) {
-        if (
-            prevProps.children !== this.props.children ||
-            this.props.defaultValues !== prevProps.defaultValues
-        ) {
-            const requiredOptions = this._calculateRequiredOptions();
-            const emptySearchOptions = this._getEmptySearchOptions();
-
-            this.searchMap = {};
-            this.setState({ requiredOptions, emptySearchOptions });
-        }
-    }
-
     render() {
         const { children } = this.props;
         const { search } = this.state;
@@ -73,11 +77,16 @@ export default class LimitedDecoratedSelect extends Component {
             : this._resolveSearchResult(search);
 
         return children ? (
-            <DecoratedSelect
-                { ...this.props }
+            <DecoratedAutoComplete
+                ref={ this.props.innerRef }
                 children={ limitedChildren }
                 onSearch={ this._onSearch }
+                { ...this.props }
             />
         ) : null;
     }
 }
+
+export const LimitedDecoratedSelect = forwardRef((props, ref) => {
+    return <Limited innerRef={ ref } { ...props } />;
+});
