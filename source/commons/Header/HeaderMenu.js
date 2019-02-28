@@ -38,33 +38,36 @@ const mapDispatch = {
 )
 export default class HeaderMenu extends Component {
     render() {
-        const { isMobile, header, headerFetching } = this.props;
+        const { isMobile } = this.props;
         const headerPanel = this._renderHeaderPanel();
         const openYourSite = this._renderOpenYourSite();
+        const headerInfo = this._renderHeaderInfo();
 
         return (
             <div className={Styles.headerMenu}>
                 {!isMobile && openYourSite}
-                {headerFetching ? (
-                    <Loader
-                        loading={headerFetching}
-                        background="var(--blocks)"
-                    />
-                ) : (
-                    <>
-                        {!_.isEmpty(header.proBanners) && (
-                            <Banner banners={header.proBanners} />
-                        )}
-                        <Subscriptions
-                            packages={header.rolePackage}
-                            suggestions={header.suggestionGroup}
-                        />
-                    </>
-                )}
+                {!isMobile && headerInfo}
                 {headerPanel}
             </div>
         );
     }
+
+    _renderHeaderInfo = () => {
+        const { header, headerFetching } = this.props;
+        return headerFetching ? (
+            <Loader loading={headerFetching} background="var(--blocks)" />
+        ) : header ? (
+            <>
+                {!_.isEmpty(header.proBanners) && (
+                    <Banner banners={header.proBanners} />
+                )}
+                <Subscriptions
+                    packages={header.rolePackage}
+                    suggestions={header.suggestionGroup}
+                />
+            </>
+        ) : null;
+    };
 
     _renderHeaderPanel = () => {
         const { logout, isMobile, user } = this.props;
