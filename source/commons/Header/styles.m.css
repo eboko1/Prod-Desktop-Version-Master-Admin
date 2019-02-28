@@ -146,6 +146,11 @@
     background: var(--warning);
 }
 
+.normalRow {
+    background: white;
+    color: var(--text);
+}
+
 .criticalRow {
     background: red;
 }
