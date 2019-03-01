@@ -59,40 +59,52 @@ import {
 
 export function* fetchTecdocDetailsSuggestionsSaga() {
     while (true) {
-        const {
-            payload: { modificationId, productId, key },
-        } = yield take(FETCH_TECDOC_DETAILS_SUGGESTIONS);
-        const query = { modificationId, productId };
-        yield put(setDetailsSuggestionsFetchingState(true));
-        const suggestions = yield call(
-            fetchAPI,
-            'GET',
-            'tecdoc/products/parts/suggest',
-            query,
-            void 0,
-        );
-        yield put(fetchTecdocDetailsSuggestionsSuccess(suggestions, key));
-        yield put(setDetailsSuggestionsFetchingState(false));
+        try {
+            const {
+                payload: { modificationId, productId, key },
+            } = yield take(FETCH_TECDOC_DETAILS_SUGGESTIONS);
+
+            const query = { modificationId, productId };
+            yield put(setDetailsSuggestionsFetchingState(true));
+
+            const suggestions = yield call(
+                fetchAPI,
+                'GET',
+                'tecdoc/products/parts/suggest',
+                query,
+                void 0,
+            );
+
+            yield put(fetchTecdocDetailsSuggestionsSuccess(suggestions, key));
+            yield put(setDetailsSuggestionsFetchingState(false));
+        } catch (error) {
+            yield put(setErrorMessage(error));
+        }
     }
 }
 
 export function* fetchTecdocSuggestionsSaga() {
     while (true) {
-        const {
-            payload: { modificationId, serviceId },
-        } = yield take(FETCH_TECDOC_SUGGESTIONS);
+        try {
+            const {
+                payload: { modificationId, serviceId },
+            } = yield take(FETCH_TECDOC_SUGGESTIONS);
 
-        const query = { modificationId, serviceId };
+            const query = { modificationId, serviceId };
+            yield put(setSuggestionsFetchingState(true));
 
-        yield put(setSuggestionsFetchingState(true));
-        const suggestions = yield call(
-            fetchAPI,
-            'GET',
-            'tecdoc/suggestions',
-            query,
-        );
-        yield put(fetchTecdocSuggestionsSuccess(suggestions));
-        yield put(setSuggestionsFetchingState(false));
+            const suggestions = yield call(
+                fetchAPI,
+                'GET',
+                'tecdoc/suggestions',
+                query,
+            );
+
+            yield put(fetchTecdocSuggestionsSuccess(suggestions));
+            yield put(setSuggestionsFetchingState(false));
+        } catch (error) {
+            yield put(setErrorMessage(error));
+        }
     }
 }
 
@@ -112,6 +124,7 @@ export function* fetchOrderFormSaga() {
                     handleErrorInternally: true,
                 },
             );
+
             yield put(fetchOrderFormSuccess(data));
         } catch (error) {
             yield put(setErrorMessage(error));
