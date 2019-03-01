@@ -124,6 +124,7 @@
     padding: 0 24px;
     justify-content: flex-end;
     display: flex;
+    height: 64px;
 }
 
 .packages {
