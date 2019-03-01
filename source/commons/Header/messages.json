@@ -9,7 +9,7 @@
     "header.advertisement": "Advertisement",
     "header.not_active": "not active",
     "header.until": "until",
-    "header.unlimited": "Unlimited"
+    "header.unlimited": "unlimited"
   },
   "ru": {
     "header.open_your_site": "Открыть Свой Сайт",
@@ -27,7 +27,7 @@
     "header.open_your_site": "Відкрити Свій Сайт",
     "header.expand_sidebar": "Розгорнути меню",
     "header.collapse_sidebar": "Згорнути меню",
-    "header.go_to_business": "Переключити Бізнес",
+    "header.switch_business": "Переключити Бізнес",
     "header.profile": "Особистий кабінет",
     "header.logout": "Вийти",
     "header.advertisement": "Реклама",
