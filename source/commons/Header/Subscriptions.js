@@ -80,7 +80,7 @@ export const Subscriptions = props => {
                     <FormattedMessage id='header.advertisement' />
                     :&nbsp;
                 </span>
-                <span className={ backgroundColor(suggestions) }>
+                <span className={ `${backgroundColor(suggestions)} ${!suggestions &&  Styles.rightRow}` }>
                     { suggestions ? 
                         suggestions.name.split(' ')[ 0 ]
                         : (
