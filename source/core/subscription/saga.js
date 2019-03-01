@@ -12,14 +12,14 @@ import { fetchHeaderDataSuccess, FETCH_HEADER_DATA } from './duck';
 export function* headerDataSaga() {
     while (true) {
         try {
-            yield take(FETCH_HEADER_DATA);
-
+            const { payload: force } = yield take(FETCH_HEADER_DATA);
             if (!navigator.cookieEnabled) {
                 console.info(
                     'Please, turn on your cookies for the proper application workflow!',
                 );
             }
-            if (!getCookie('@@my.carbook.pro/header')) {
+
+            if (force) {
                 yield put(setHeaderFetchingState(true));
                 // 1h 3600 * 1000(ms)
                 const expires = new Date(
@@ -30,6 +30,22 @@ export function* headerDataSaga() {
                 const response = yield call(fetchAPI, 'GET', '/header');
                 yield put(fetchHeaderDataSuccess(response));
                 yield put(setHeaderFetchingState(false));
+            }
+            if (!force) {
+                if (!getCookie('@@my.carbook.pro/header')) {
+                    yield put(setHeaderFetchingState(true));
+                    // 1h 3600 * 1000(ms)
+                    const expires = new Date(
+                        new Date().getTime() + 1800 * 1000,
+                    ).toUTCString();
+
+                    setCookie('@@my.carbook.pro/header', 'subscribe', {
+                        expires,
+                    });
+                    const response = yield call(fetchAPI, 'GET', '/header');
+                    yield put(fetchHeaderDataSuccess(response));
+                    yield put(setHeaderFetchingState(false));
+                }
             }
         } catch (error) {
             throw new Error(error);

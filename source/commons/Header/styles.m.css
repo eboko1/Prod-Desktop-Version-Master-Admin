@@ -140,6 +140,7 @@
 .warningRow,
 .criticalRow {
     padding: 4px;
+    font-size: 14px;
 }
 
 .warningRow {

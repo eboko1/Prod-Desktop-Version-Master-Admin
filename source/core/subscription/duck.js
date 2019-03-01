@@ -35,8 +35,9 @@ export default function reducer(state = ReducerState, action) {
  * Action Creators
  **/
 
-export const fetchHeaderData = () => ({
-    type: FETCH_HEADER_DATA,
+export const fetchHeaderData = force => ({
+    type:    FETCH_HEADER_DATA,
+    payload: force,
 });
 
 export const fetchHeaderDataSuccess = payload => ({
