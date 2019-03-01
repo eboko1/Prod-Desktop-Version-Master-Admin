@@ -25,7 +25,7 @@ export const Subscriptions = props => {
 
     const backgroundColor = subscriptionType => {
         const expiration = expirationDiff(subscriptionType);
-        if (Number(expiration)) {
+        if (Number.isInteger(expiration)) {
             return cx({
                 normalRow:   expiration > 10,
                 warningRow:  expiration <= 10 && expiration >= -10,
@@ -80,7 +80,11 @@ export const Subscriptions = props => {
                     <FormattedMessage id='header.advertisement' />
                     :&nbsp;
                 </span>
-                <span className={ `${backgroundColor(suggestions)} ${!suggestions &&  Styles.rightRow}` }>
+                <span
+                    className={ `${backgroundColor(
+                        suggestions,
+                    )} ${!suggestions && Styles.rightRow}` }
+                >
                     { suggestions ? 
                         suggestions.name.split(' ')[ 0 ]
                         : (
