@@ -1,6 +1,6 @@
 // vendor
-import React, { Component } from 'react';
-import { injectIntl, FormattedMessage } from 'react-intl';
+import React, { Component } from "react";
+import { injectIntl, FormattedMessage } from "react-intl";
 import {
     Table,
     Select,
@@ -10,15 +10,15 @@ import {
     notification,
     Modal,
     Button,
-} from 'antd';
-import _ from 'lodash';
+} from "antd";
+import _ from "lodash";
 
 // proj
 import {
     BusinessSearchField,
     SupplierSearchField,
     ProductSearchField,
-} from 'forms/_formkit';
+} from "forms/_formkit";
 import {
     onChangeBrandsForm,
     fetchPriorityBrands,
@@ -30,33 +30,33 @@ import {
     updatePriorityBrand,
     deletePriorityBrand,
     createPriorityBrand,
-} from 'core/forms/brandsForm/duck';
-import { handleError } from 'core/ui/duck';
-import { SetDetailProductForm, SpreadBusinessBrandsForm } from 'forms';
-import { setModal, resetModal, MODALS } from 'core/modals/duck';
+} from "core/forms/brandsForm/duck";
+import { handleError } from "core/ui/duck";
+import { SetDetailProductForm, SpreadBusinessBrandsForm } from "forms";
+import { setModal, resetModal, MODALS } from "core/modals/duck";
 
-import { DecoratedSelect, DecoratedInputNumber } from 'forms/DecoratedFields';
+import { DecoratedSelect, DecoratedInputNumber } from "forms/DecoratedFields";
 import {
     withReduxForm,
     handleCurrentDuckErrors,
     getCurrentDuckErrors,
-} from 'utils';
-import { Catcher } from 'commons';
-import Styles from './styles.m.css';
+} from "utils";
+import { Catcher } from "commons";
+import Styles from "./styles.m.css";
 
 // own
-import getErrorConfigs from './error_configs';
+import getErrorConfigs from "./error_configs";
 
 const Option = Select.Option;
 
 const sortOptions = {
-    asc:  'ascend',
-    desc: 'descend',
+    asc: "ascend",
+    desc: "descend",
 };
 
 @injectIntl
 @withReduxForm({
-    name:    'brandsForm',
+    name: "brandsForm",
     actions: {
         change: onChangeBrandsForm,
         fetchPriorityBrands,
@@ -74,13 +74,13 @@ const sortOptions = {
     },
     mapStateToProps: state => ({
         errors: state.ui.errors,
-        modal:  state.modals.modal,
+        modal: state.modals.modal,
     }),
 })
 export class BrandsForm extends Component {
     constructor(props) {
         super(props);
-        this._source = 'brandsForm';
+        this._source = "brandsForm";
         this._errorConfigs = getErrorConfigs(props.intl);
     }
 
@@ -89,7 +89,7 @@ export class BrandsForm extends Component {
     }
 
     _getColumnOrder = (sort, fieldName) =>
-        sort.field === fieldName ? sortOptions[ sort.order ] : void 0;
+        sort.field === fieldName ? sortOptions[sort.order] : void 0;
 
     _handleTableChange = (pagination, filters, sorter) => {
         if (!sorter) {
@@ -97,7 +97,7 @@ export class BrandsForm extends Component {
         }
         const sort = {
             field: sorter.columnKey,
-            order: sorter.order === 'ascend' ? 'asc' : 'desc',
+            order: sorter.order === "ascend" ? "asc" : "desc",
         };
 
         this.props.setSort(sort);
@@ -119,19 +119,19 @@ export class BrandsForm extends Component {
         handleCurrentDuckErrors(notification, duckErrors, intl, handleError);
 
         const priorityBrands = this.props.priorityBrands;
-        const count = _.get(priorityBrands, [ 'stats', 'count' ], 0);
-        const list = _.get(priorityBrands, [ 'list' ], []);
-        const page = _.get(this.props, [ 'sort', 'page' ], 1);
-        const sort = _.get(this.props, 'sort', {});
+        const count = _.get(priorityBrands, ["stats", "count"], 0);
+        const list = _.get(priorityBrands, ["list"], []);
+        const page = _.get(this.props, ["sort", "page"], 1);
+        const sort = _.get(this.props, "sort", {});
         const { formatMessage } = this.props.intl;
 
         const pagination = {
-            pageSize:         11,
-            size:             'large',
-            total:            Math.ceil(count / 10) * 11,
+            pageSize: 11,
+            size: "large",
+            total: Math.ceil(count / 10) * 11,
             hideOnSinglePage: true,
-            current:          page,
-            onChange:         page => {
+            current: page,
+            onChange: page => {
                 this.props.setSort({ page });
             },
         };
@@ -142,125 +142,125 @@ export class BrandsForm extends Component {
             idFieldName,
             valueFieldName,
             searchResults,
-            idField = 'id',
+            idField = "id",
         ) => {
             return (
                 <DecoratedSelect
-                    getFieldDecorator={ getFieldDecorator }
-                    key={ `${item.id}-${idFieldName}` }
-                    field={ `${item.id}.${idFieldName}` }
+                    getFieldDecorator={getFieldDecorator}
+                    key={`${item.id}-${idFieldName}`}
+                    field={`${item.id}.${idFieldName}`}
                     formItem
-                    className={ Styles.brandsFormItem }
-                    cnStyles={ Styles.brandsSelect }
+                    className={Styles.brandsFormItem}
+                    cnStyles={Styles.brandsSelect}
                     showSearch
-                    rules={ [
+                    rules={[
                         {
                             required: true,
-                            message:  formatMessage({
-                                id: 'required_field',
+                            message: formatMessage({
+                                id: "required_field",
                             }),
                         },
-                    ] }
-                    onFocus={ () =>
-                        _.isNil(_.get(searchResults, [ item.id ])) &&
-                        searchAction(item.id, '')
+                    ]}
+                    onFocus={() =>
+                        _.isNil(_.get(searchResults, [item.id])) &&
+                        searchAction(item.id, "")
                     }
-                    onSearch={ query => searchAction(item.id, query) }
-                    initialValue={ item[ idFieldName ] || void 0 }
-                    filterOption={ false }
+                    onSearch={query => searchAction(item.id, query)}
+                    initialValue={item[idFieldName] || void 0}
+                    filterOption={false}
                 >
-                    { _.uniqBy(
+                    {_.uniqBy(
                         [
-                            ..._.get(searchResults, [ item.id ], []),
-                            ...item[ idFieldName ]
+                            ..._.get(searchResults, [item.id], []),
+                            ...(item[idFieldName]
                                 ? [
-                                    {
-                                        [ idField ]: item[ idFieldName ],
-                                        name:        item[ valueFieldName ],
-                                    },
-                                ]
-                                : [],
+                                      {
+                                          [idField]: item[idFieldName],
+                                          name: item[valueFieldName],
+                                      },
+                                  ]
+                                : []),
                         ],
-                        value => value[ idField ],
-                    ).map(({ [ idField ]: id, name }) => (
-                        <Option value={ id } key={ String(id) }>
-                            { name }
+                        value => value[idField],
+                    ).map(({ [idField]: id, name }) => (
+                        <Option value={id} key={String(id)}>
+                            {name}
                         </Option>
-                    )) }
+                    ))}
                 </DecoratedSelect>
             );
         };
 
         const columns = [
             {
-                title:  formatMessage({ id: 'brands.business_name' }),
-                width:  '20%',
-                key:    'businessName',
+                title: formatMessage({ id: "brands.business_name" }),
+                width: "20%",
+                key: "businessName",
                 render: item => {
                     return getSearchSelect(
                         item,
                         this.props.setSearchBusinesses,
-                        'businessId',
-                        'businessName',
+                        "businessId",
+                        "businessName",
                         this.props.searchBusinesses,
-                        'businessId',
+                        "businessId",
                     );
                 },
             },
             {
-                title:     formatMessage({ id: 'brands.product_name' }),
-                sorter:    true,
-                sortOrder: this._getColumnOrder(sort, 'productName'),
-                width:     '20%',
-                key:       'productName',
-                render:    item => {
+                title: formatMessage({ id: "brands.product_name" }),
+                sorter: true,
+                sortOrder: this._getColumnOrder(sort, "productName"),
+                width: "20%",
+                key: "productName",
+                render: item => {
                     return getSearchSelect(
                         item,
                         this.props.setSearchProducts,
-                        'productId',
-                        'productName',
+                        "productId",
+                        "productName",
                         this.props.searchProducts,
-                        'productId',
+                        "productId",
                     );
                 },
             },
             {
-                title:  formatMessage({ id: 'brands.supplier_name' }),
-                width:  '20%',
-                key:    'supplierName',
+                title: formatMessage({ id: "brands.supplier_name" }),
+                width: "20%",
+                key: "supplierName",
                 render: item => {
                     return getSearchSelect(
                         item,
                         this.props.setSearchSuppliers,
-                        'supplierId',
-                        'supplierName',
+                        "supplierId",
+                        "supplierName",
                         this.props.searchSuppliers,
-                        'supplierId',
+                        "supplierId",
                     );
                 },
             },
             {
-                title:  formatMessage({ id: 'brands.priority' }),
-                width:  '20%',
-                key:    'priority',
+                title: formatMessage({ id: "brands.priority" }),
+                width: "20%",
+                key: "priority",
                 render: item => {
                     return (
                         <DecoratedInputNumber
-                            getFieldDecorator={ getFieldDecorator }
-                            className={ Styles.brandsFormItem }
-                            field={ `${item.id}.priority` }
-                            key={ `${item.id}-priority` }
-                            min={ 0 }
-                            max={ 500 }
+                            getFieldDecorator={getFieldDecorator}
+                            className={Styles.brandsFormItem}
+                            field={`${item.id}.priority`}
+                            key={`${item.id}-priority`}
+                            min={0}
+                            max={500}
                             formItem
-                            rules={ [
+                            rules={[
                                 {
                                     required: true,
-                                    message:  formatMessage({
-                                        id: 'required_field',
+                                    message: formatMessage({
+                                        id: "required_field",
                                     }),
                                 },
-                            ] }
+                            ]}
                             initialValue={
                                 _.isNil(item.priority) ? void 0 : item.priority
                             }
@@ -269,16 +269,16 @@ export class BrandsForm extends Component {
                 },
             },
             {
-                width:  '20%',
+                width: "20%",
                 render: item => {
                     return item.id === -1 ? (
                         <div>
                             <Icon
-                                className={ Styles.brandSaveIcon }
-                                type='save'
-                                onClick={ () => {
+                                className={Styles.brandSaveIcon}
+                                type="save"
+                                onClick={() => {
                                     validateFields(
-                                        [ String(item.id) ],
+                                        [String(item.id)],
                                         (err, values) => {
                                             if (!err) {
                                                 this.props.createPriorityBrand(
@@ -290,17 +290,17 @@ export class BrandsForm extends Component {
                                             }
                                         },
                                     );
-                                } }
+                                }}
                             />
                         </div>
                     ) : (
                         <div>
                             <Icon
-                                className={ Styles.brandSaveIcon }
-                                type='save'
-                                onClick={ () => {
+                                className={Styles.brandSaveIcon}
+                                type="save"
+                                onClick={() => {
                                     validateFields(
-                                        [ String(item.id) ],
+                                        [String(item.id)],
                                         (err, values) => {
                                             if (!err) {
                                                 this.props.updatePriorityBrand(
@@ -313,12 +313,12 @@ export class BrandsForm extends Component {
                                             }
                                         },
                                     );
-                                } }
+                                }}
                             />
                             <Icon
-                                className={ Styles.brandDeleteIcon }
-                                type='delete'
-                                onClick={ () =>
+                                className={Styles.brandDeleteIcon}
+                                type="delete"
+                                onClick={() =>
                                     this.props.deletePriorityBrand(item.id)
                                 }
                             />
@@ -330,93 +330,93 @@ export class BrandsForm extends Component {
 
         return (
             <Catcher>
-                <Row type='flex' align='inline' gutter={ 24 }>
-                    <Col span={ 6 }>
+                <Row type="flex" align="inline" gutter={24}>
+                    <Col span={6}>
                         <BusinessSearchField
-                            selectStyles={ { width: '100%' } }
-                            onSelect={ businessId =>
+                            selectStyles={{ width: "100%" }}
+                            onSelect={businessId =>
                                 this.props.setFilter({ businessId })
                             }
-                            businessId={ this.props.filter.businessId }
+                            businessId={this.props.filter.businessId}
                         />
                     </Col>
-                    <Col span={ 6 }>
+                    <Col span={6}>
                         <ProductSearchField
-                            selectStyles={ { width: '100%' } }
-                            onSelect={ productId =>
+                            selectStyles={{ width: "100%" }}
+                            onSelect={productId =>
                                 this.props.setFilter({ productId })
                             }
-                            productId={ this.props.filter.productId }
+                            productId={this.props.filter.productId}
                         />
                     </Col>
-                    <Col span={ 6 }>
+                    <Col span={6}>
                         <SupplierSearchField
-                            selectStyles={ { width: '100%' } }
-                            onSelect={ supplierId =>
+                            selectStyles={{ width: "100%" }}
+                            onSelect={supplierId =>
                                 this.props.setFilter({ supplierId })
                             }
-                            supplierId={ this.props.filter.supplierId }
+                            supplierId={this.props.filter.supplierId}
                         />
                     </Col>
-                    <Col span={ 3 }>
+                    <Col span={3}>
                         <Button
-                            icon='swap'
-                            className={ Styles.swapIcon }
-                            onClick={ () =>
+                            icon="swap"
+                            className={Styles.swapIcon}
+                            onClick={() =>
                                 this.props.setModal(MODALS.DETAIL_PRODUCT)
                             }
                         >
                             TecDoc
                         </Button>
                     </Col>
-                    <Col span={ 3 }>
+                    <Col span={3}>
                         <Button
-                            icon='copy'
-                            className={ Styles.swapIcon }
-                            onClick={ () =>
+                            icon="copy"
+                            className={Styles.swapIcon}
+                            onClick={() =>
                                 this.props.setModal(
                                     MODALS.SPREAD_BUSINESS_BRANDS,
                                 )
                             }
                         >
-                            Copy
+                            <FormattedMessage id="copy" />
                         </Button>
                     </Col>
                 </Row>
                 <br />
                 <Table
-                    size='small'
-                    rowKey={ record => record.id }
-                    columns={ columns }
-                    dataSource={ [{ id: -1 }, ...list ] }
-                    loading={ this.props.brandsFetching }
-                    onChange={ this._handleTableChange }
-                    locale={ {
-                        emptyText: <FormattedMessage id='no_data' />,
-                    } }
-                    pagination={ pagination }
-                    rowClassName={ ({ id }) => {
+                    size="small"
+                    rowKey={record => record.id}
+                    columns={columns}
+                    dataSource={[{ id: -1 }, ...list]}
+                    loading={this.props.brandsFetching}
+                    onChange={this._handleTableChange}
+                    locale={{
+                        emptyText: <FormattedMessage id="no_data" />,
+                    }}
+                    pagination={pagination}
+                    rowClassName={({ id }) => {
                         if (id === -1) {
                             return Styles.newBrandRow;
-                        } else if (this.props.fields[ id ]) {
+                        } else if (this.props.fields[id]) {
                             return Styles.editedBrandRow;
                         }
-                    } }
+                    }}
                     // onChange={ handleTableChange }
                 />
                 <Modal
-                    title='TecDoc: articles'
-                    visible={ MODALS.DETAIL_PRODUCT === this.props.modal }
-                    onCancel={ () => this.props.resetModal() }
-                    footer={ null }
+                    title="TecDoc: articles"
+                    visible={MODALS.DETAIL_PRODUCT === this.props.modal}
+                    onCancel={() => this.props.resetModal()}
+                    footer={null}
                 >
                     <SetDetailProductForm />
                 </Modal>
                 <Modal
-                    title='TecDoc: suppliers'
-                    visible={ MODALS.SPREAD_BUSINESS_BRANDS === this.props.modal }
-                    onCancel={ () => this.props.resetModal() }
-                    footer={ null }
+                    title="TecDoc: suppliers"
+                    visible={MODALS.SPREAD_BUSINESS_BRANDS === this.props.modal}
+                    onCancel={() => this.props.resetModal()}
+                    footer={null}
                 >
                     <SpreadBusinessBrandsForm />
                 </Modal>

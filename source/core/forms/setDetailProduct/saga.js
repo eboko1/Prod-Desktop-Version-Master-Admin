@@ -3,6 +3,7 @@ import { call, put, all, take } from 'redux-saga/effects';
 import _ from 'lodash';
 
 //proj
+import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 
 // own
@@ -33,10 +34,14 @@ export function* submitDetailProductSaga() {
 
 export function* fetchDetailsSaga() {
     while (true) {
-        yield take(FETCH_DETAILS);
-        const data = yield call(fetchAPI, 'GET', 'tecdoc/products/all');
-
-        yield put(fetchDetailsSuccess(data));
+        try {
+            yield take(FETCH_DETAILS);
+            const data = yield call(fetchAPI, 'GET', 'tecdoc/products/all');
+            console.log('* fetchDetailsSaga', data);
+            yield put(fetchDetailsSuccess(data));
+        } catch (error) {
+            emitError(error);
+        }
     }
 }
 

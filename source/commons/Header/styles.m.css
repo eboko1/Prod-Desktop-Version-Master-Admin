@@ -140,10 +140,12 @@
 .warningRow,
 .criticalRow {
     padding: 4px;
+    font-size: 14px;
 }
 
 .warningRow {
-    background: var(--warning);
+    background: var(--static);
+    color: var(--text);
 }
 
 .normalRow {
@@ -152,7 +154,8 @@
 }
 
 .criticalRow {
-    background: red;
+    background: rgb(255, 216, 216);
+    color: var(--text);
 }
 
 .leftRow {

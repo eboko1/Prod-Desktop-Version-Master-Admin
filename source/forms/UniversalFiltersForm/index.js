@@ -1,20 +1,20 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Row, Col, Select } from 'antd';
-import { v4 } from 'uuid';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Form, Row, Col, Select } from "antd";
+import { v4 } from "uuid";
 
 // proj
-import { fetchUniversalFiltersForm } from 'core/forms/universalFiltersForm/duck';
+import { fetchUniversalFiltersForm } from "core/forms/universalFiltersForm/duck";
 
 import {
     DecoratedSelect,
     DecoratedDatePicker,
     DecoratedInputNumber,
-} from 'forms/DecoratedFields';
+} from "forms/DecoratedFields";
 
-import { getDaterange } from 'utils';
+import { getDaterange } from "utils";
 
 // own
 const FormItem = Form.Item;
@@ -43,7 +43,7 @@ export class UniversalFiltersForm extends Component {
         const { getFieldDecorator, getFieldValue } = this.props.form;
         const { formatMessage } = this.props.intl;
 
-        const makeId = getFieldValue('make');
+        const makeId = getFieldValue("make");
         const vehiclesYears = Array(new Date().getFullYear() - 1900 + 1)
             .fill(1900)
             .map((val, index) => val + index)
@@ -51,383 +51,382 @@ export class UniversalFiltersForm extends Component {
 
         return (
             <Form
-                layout='vertical'
-                onSubmit={ () => handleUniversalFiltersModalSubmit() }
+                layout="vertical"
+                onSubmit={() => handleUniversalFiltersModalSubmit()}
             >
-                <Row gutter={ 8 }>
-                    <Col span={ 12 }>
+                <Row gutter={8}>
+                    <Col span={12}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.enrollment_date' />
+                                <FormattedMessage id="universal_filters_form.enrollment_date" />
                             }
                         >
                             <DecoratedDatePicker
-                                field='beginDate'
-                                getFieldDecorator={ getFieldDecorator }
-                                formatMessage={ formatMessage }
-                                getCalendarContainer={ trigger =>
+                                field="beginDate"
+                                getFieldDecorator={getFieldDecorator}
+                                formatMessage={formatMessage}
+                                getCalendarContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                ranges={ {
+                                ranges={{
                                     // this day
-                                    [ formatMessage({
-                                        id: 'datepicker.today',
-                                    }) ]: getDaterange('today', 'ant'),
+                                    [formatMessage({
+                                        id: "datepicker.today",
+                                    })]: getDaterange("today", "ant"),
                                     // prev month
-                                    [ formatMessage({
-                                        id: 'datepicker.prev_month',
-                                    }) ]: getDaterange('prevMonth', 'ant'),
+                                    [formatMessage({
+                                        id: "datepicker.prev_month",
+                                    })]: getDaterange("prevMonth", "ant"),
                                     // prev year
-                                    [ formatMessage({
-                                        id: 'datepicker.prev_year',
-                                    }) ]: getDaterange('prevYear', 'ant'),
-                                } }
+                                    [formatMessage({
+                                        id: "datepicker.prev_year",
+                                    })]: getDaterange("prevYear", "ant"),
+                                }}
                                 // showTime
-                                format='YYYY-MM-DD HH:mm'
+                                format="YYYY-MM-DD HH:mm"
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 12 }>
+                    <Col span={12}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.create_date' />
+                                <FormattedMessage id="universal_filters_form.create_date" />
                             }
                         >
                             <DecoratedDatePicker
-                                field='createDate'
-                                getFieldDecorator={ getFieldDecorator }
-                                formatMessage={ formatMessage }
-                                getCalendarContainer={ trigger =>
+                                field="createDate"
+                                getFieldDecorator={getFieldDecorator}
+                                formatMessage={formatMessage}
+                                getCalendarContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                ranges={ {
+                                ranges={{
                                     // this day
-                                    [ formatMessage({
-                                        id: 'datepicker.today',
-                                    }) ]: getDaterange('today', 'ant'),
+                                    [formatMessage({
+                                        id: "datepicker.today",
+                                    })]: getDaterange("today", "ant"),
                                     // prev month
-                                    [ formatMessage({
-                                        id: 'datepicker.prev_month',
-                                    }) ]: getDaterange('prevMonth', 'ant'),
+                                    [formatMessage({
+                                        id: "datepicker.prev_month",
+                                    })]: getDaterange("prevMonth", "ant"),
                                     // prev year
-                                    [ formatMessage({
-                                        id: 'datepicker.prev_year',
-                                    }) ]: getDaterange('prevYear', 'ant'),
-                                } }
+                                    [formatMessage({
+                                        id: "datepicker.prev_year",
+                                    })]: getDaterange("prevYear", "ant"),
+                                }}
                                 // showTime
-                                format='YYYY-MM-DD HH:mm:ss'
+                                format="YYYY-MM-DD HH:mm:ss"
                             />
                         </FormItem>
                     </Col>
                 </Row>
-                <Row gutter={ 8 }>
-                    <Col span={ 6 }>
+                <Row gutter={8}>
+                    <Col span={6}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.make' />
+                                <FormattedMessage id="universal_filters_form.make" />
                             }
                         >
                             <DecoratedSelect
-                                field='make'
+                                field="make"
                                 showSearch
-                                getFieldDecorator={ getFieldDecorator }
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters_form.all' />
+                                    <FormattedMessage id="universal_filters_form.all" />
                                 }
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                options={ vehicleMakes }
-                                optionValue='makeId'
-                                optionLabel='makeName'
+                                options={vehicleMakes}
+                                optionValue="makeId"
+                                optionLabel="makeName"
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 6 }>
+                    <Col span={6}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.models' />
+                                <FormattedMessage id="universal_filters_form.models" />
                             }
                         >
                             <DecoratedSelect
-                                field='models'
-                                mode='multiple'
-                                disabled={ !makeId }
+                                field="models"
+                                mode="multiple"
+                                disabled={!makeId}
                                 showSearch
-                                getFieldDecorator={ getFieldDecorator }
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters_form.all' />
+                                    <FormattedMessage id="universal_filters_form.all" />
                                 }
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                                 options={
                                     makeId
                                         ? vehicleModels.filter(
-                                            ({ makeId: modelMakeId }) =>
-                                                makeId === modelMakeId,
-                                        )
+                                              ({ makeId: modelMakeId }) =>
+                                                  makeId === modelMakeId,
+                                          )
                                         : vehicleModels
                                 }
-                                optionValue='id'
-                                optionLabel='name'
+                                optionValue="id"
+                                optionLabel="name"
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 6 }>
+                    <Col span={6}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.year' />
+                                <FormattedMessage id="universal_filters_form.year" />
                             }
                         >
                             <DecoratedSelect
-                                field='year'
-                                getFieldDecorator={ getFieldDecorator }
+                                field="year"
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters_form.year' />
+                                    <FormattedMessage id="universal_filters_form.year" />
                                 }
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             >
-                                { vehiclesYears
+                                {vehiclesYears
                                     .sort((a, b) => b - a)
                                     .map(year => (
-                                        <Option value={ year } key={ v4() }>
-                                            { String(year) }
+                                        <Option value={year} key={v4()}>
+                                            {String(year)}
                                         </Option>
-                                    )) }
+                                    ))}
                             </DecoratedSelect>
                         </FormItem>
                     </Col>
-                    <Col span={ 3 }>
+                    <Col span={3}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.mileage_from' />
+                                <FormattedMessage id="universal_filters_form.mileage_from" />
                             }
                         >
                             <DecoratedInputNumber
-                                fields={ {} }
-                                field='odometerGreater'
+                                fields={{}}
+                                field="odometerGreater"
                                 showSearch
-                                getFieldDecorator={ getFieldDecorator }
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
-                                placeholder={ formatMessage({
-                                    id: 'universal_filters_form.mileage_from',
-                                }) }
+                                placeholder={formatMessage({
+                                    id: "universal_filters_form.mileage_from",
+                                })}
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                options={ services }
-                                optionValue='id'
-                                optionLabel='serviceName'
+                                options={services}
+                                optionValue="id"
+                                optionLabel="serviceName"
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 3 }>
+                    <Col span={3}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.mileage_to' />
+                                <FormattedMessage id="universal_filters_form.mileage_to" />
                             }
                         >
                             <DecoratedInputNumber
-                                fields={ {} }
-                                field='odometerLower'
-                                getFieldDecorator={ getFieldDecorator }
-                                placeholder={ formatMessage({
-                                    id: 'universal_filters_form.mileage_to',
-                                }) }
-                                getPopupContainer={ trigger =>
+                                fields={{}}
+                                field="odometerLower"
+                                getFieldDecorator={getFieldDecorator}
+                                placeholder={formatMessage({
+                                    id: "universal_filters_form.mileage_to",
+                                })}
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             />
                         </FormItem>
                     </Col>
                 </Row>
-                <Row gutter={ 8 }>
-                    <Col span={ 12 }>
+                <Row gutter={8}>
+                    <Col span={12}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.service' />
+                                <FormattedMessage id="universal_filters_form.service" />
                             }
                         >
                             <DecoratedSelect
-                                field='service'
+                                field="service"
                                 showSearch
-                                getFieldDecorator={ getFieldDecorator }
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters_form.all' />
+                                    <FormattedMessage id="universal_filters_form.all" />
                                 }
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                options={ services }
-                                optionValue='id'
-                                optionLabel='serviceName'
+                                options={services}
+                                optionValue="id"
+                                optionLabel="serviceName"
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 6 }>
+                    <Col span={6}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.managers' />
+                                <FormattedMessage id="universal_filters_form.managers" />
                             }
                         >
                             <DecoratedSelect
-                                field='managers'
-                                mode='multiple'
+                                field="managers"
+                                mode="multiple"
                                 showSearch
-                                getFieldDecorator={ getFieldDecorator }
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters_form.all' />
+                                    <FormattedMessage id="universal_filters_form.all" />
                                 }
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                options={ managers }
-                                optionValue='id'
-                                optionLabel='managerSurname'
+                                options={managers}
+                                optionValue="id"
+                                optionLabel="managerSurname"
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 6 }>
+                    <Col span={6}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.served_employee' />
+                                <FormattedMessage id="universal_filters_form.served_employee" />
                             }
                         >
                             <DecoratedSelect
-                                field='employee'
+                                field="employee"
                                 showSearch
-                                getFieldDecorator={ getFieldDecorator }
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters_form.all' />
+                                    <FormattedMessage id="universal_filters_form.all" />
                                 }
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
-                                options={ employees }
-                                optionValue='id'
-                                optionLabel='surname'
+                                options={employees}
+                                optionValue="id"
+                                optionLabel="surname"
                             />
                         </FormItem>
                     </Col>
                 </Row>
-                <Row gutter={ 8 }>
-                    <Col span={ 6 }>
+                <Row gutter={8}>
+                    <Col span={6}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.number_of_visits_from' />
+                                <FormattedMessage id="universal_filters_form.number_of_visits_from" />
                             }
                         >
                             <DecoratedInputNumber
-                                fields={ {} }
-                                field='ordersGreater'
-                                getFieldDecorator={ getFieldDecorator }
+                                fields={{}}
+                                field="ordersGreater"
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
-                                placeholder={ formatMessage({
+                                placeholder={formatMessage({
                                     id:
-                                        'universal_filters_form.number_of_visits_from',
-                                }) }
+                                        "universal_filters_form.number_of_visits_from",
+                                })}
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 6 }>
+                    <Col span={6}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.number_of_visits_to' />
+                                <FormattedMessage id="universal_filters_form.number_of_visits_to" />
                             }
                         >
                             <DecoratedInputNumber
-                                fields={ {} }
-                                field='ordersLower'
-                                getFieldDecorator={ getFieldDecorator }
+                                fields={{}}
+                                field="ordersLower"
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
-                                placeholder={ formatMessage({
+                                placeholder={formatMessage({
                                     id:
-                                        'universal_filters_form.number_of_visits_to',
-                                }) }
+                                        "universal_filters_form.number_of_visits_to",
+                                })}
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             />
                         </FormItem>
                     </Col>
-                    <Col span={ 4 }>
+                    <Col span={4}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.visited' />
+                                <FormattedMessage id="universal_filters_form.visited" />
                             }
                         >
                             <DecoratedSelect
-                                field='notVisit'
-                                showSearch
-                                getFieldDecorator={ getFieldDecorator }
+                                field="notVisit"
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
                                 placeholder={
-                                    <FormattedMessage id='universal_filters_form.not_selected' />
+                                    <FormattedMessage id="universal_filters_form.not_selected" />
                                 }
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             >
                                 <Option
-                                    value={ false }
-                                    key={ v4() }
+                                    value={false}
+                                    key={"visited"}
                                     name={
-                                        <FormattedMessage id='universal_filters_form.visited' />
+                                        <FormattedMessage id="universal_filters_form.visited" />
                                     }
                                 >
-                                    <FormattedMessage id='universal_filters_form.visited' />
+                                    <FormattedMessage id="universal_filters_form.visited" />
                                 </Option>
                                 <Option
                                     value
-                                    key={ v4() }
+                                    key={"not_visited"}
                                     name={
-                                        <FormattedMessage id='universal_filters_form.not_visited' />
+                                        <FormattedMessage id="universal_filters_form.not_visited" />
                                     }
                                 >
-                                    <FormattedMessage id='universal_filters_form.not_visited' />
+                                    <FormattedMessage id="universal_filters_form.not_visited" />
                                 </Option>
                             </DecoratedSelect>
                         </FormItem>
                     </Col>
-                    <Col span={ 4 }>
+                    <Col span={4}>
                         <FormItem
                             label={
-                                <FormattedMessage id='universal_filters_form.last' />
+                                <FormattedMessage id="universal_filters_form.last" />
                             }
                         >
                             <DecoratedInputNumber
-                                fields={ {} }
-                                field='notVisitDays'
+                                fields={{}}
+                                field="notVisitDays"
                                 showSearch
-                                getFieldDecorator={ getFieldDecorator }
+                                getFieldDecorator={getFieldDecorator}
                                 // style={ { width: 200 } }
-                                placeholder={ formatMessage({
-                                    id: 'universal_filters_form.last',
-                                }) }
+                                placeholder={formatMessage({
+                                    id: "universal_filters_form.last",
+                                })}
                                 // optionFilterProp='children'
-                                getPopupContainer={ trigger =>
+                                getPopupContainer={trigger =>
                                     trigger.parentNode
                                 }
                             />

@@ -1,11 +1,10 @@
 // vendor
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
-import { injectIntl, FormattedMessage } from 'react-intl';
-import { Table, Modal, Select, Form, Button } from 'antd';
-import { v4 } from 'uuid';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { withRouter } from "react-router";
+import { injectIntl, FormattedMessage } from "react-intl";
+import { Table, Modal, Select, Form, Button } from "antd";
+import _ from "lodash";
 
 // proj
 import {
@@ -13,27 +12,27 @@ import {
     setClientsPageSort,
     setInvite,
     createInvite,
-} from 'core/clients/duck';
-import { setModal, resetModal } from 'core/modals/duck';
+} from "core/clients/duck";
+import { setModal, resetModal } from "core/modals/duck";
 
-import { Catcher } from 'commons';
+import { Catcher } from "commons";
 
 // own
-import { columnsConfig } from './clientsTableConfig';
-import Styles from './styles.m.css';
+import { columnsConfig } from "./clientsTableConfig";
+import Styles from "./styles.m.css";
 
 const Option = Select.Option;
 const FormItem = Form.Item;
 
 const mapStateToProps = state => ({
-    clients:         state.clients.clients,
-    stats:           state.clients.stats,
-    filter:          state.clients.filter,
-    sort:            state.clients.sort,
-    modal:           state.modals.modal,
+    clients: state.clients.clients,
+    stats: state.clients.stats,
+    filter: state.clients.filter,
+    sort: state.clients.sort,
+    modal: state.modals.modal,
     clientsFetching: state.ui.clientsFetching,
-    user:            state.auth,
-    invite:          state.clients.invite,
+    user: state.auth,
+    invite: state.clients.invite,
 });
 
 const mapDispatchToProps = {
@@ -48,22 +47,28 @@ const mapDispatchToProps = {
 function formatVehicleLabel(vehicle, formatMessage) {
     const modelPart = vehicle.model
         ? `${vehicle.make} ${vehicle.model}`
-        : formatMessage({ id: 'add_order_form.no_model' });
+        : formatMessage({ id: "add_order_form.no_model" });
     const horsePowerLabel = !vehicle.horsePower
         ? null
         : `(${vehicle.horsePower} ${formatMessage({
-            id: 'horse_power',
-        })})`;
-    const modificationPart = [ vehicle.modification, horsePowerLabel ]
+              id: "horse_power",
+          })})`;
+    const modificationPart = [vehicle.modification, horsePowerLabel]
         .filter(Boolean)
-        .join(' ');
-    const parts = [ modelPart, vehicle.year, modificationPart, vehicle.number, vehicle.vin ];
+        .join(" ");
+    const parts = [
+        modelPart,
+        vehicle.year,
+        modificationPart,
+        vehicle.number,
+        vehicle.vin,
+    ];
 
     return parts
         .filter(Boolean)
         .map(String)
         .map(_.trimEnd)
-        .join(', ');
+        .join(", ");
 }
 
 @withRouter
@@ -85,12 +90,12 @@ export default class ClientsContainer extends Component {
         const columns = columnsConfig(sort, user, formatMessage, setInvite);
 
         const pagination = {
-            pageSize:         25,
-            size:             'large',
-            total:            Math.ceil(this.props.stats.countClients / 25) * 25,
+            pageSize: 25,
+            size: "large",
+            total: Math.ceil(this.props.stats.countClients / 25) * 25,
             hideOnSinglePage: true,
-            current:          this.props.sort.page,
-            onChange:         page => {
+            current: this.props.sort.page,
+            onChange: page => {
                 this.props.setClientsPageSort({ page });
                 this.props.fetchClients(this.props.filter);
             },
@@ -98,86 +103,90 @@ export default class ClientsContainer extends Component {
 
         return (
             <Catcher>
-                <div className={ Styles.paper }>
+                <div className={Styles.paper}>
                     <Table
-                        size='small'
-                        className={ Styles.table }
-                        columns={ columns }
-                        dataSource={ clients }
+                        size="small"
+                        className={Styles.table}
+                        columns={columns}
+                        dataSource={clients}
                         // scroll={ scrollConfig() }
-                        loading={ this.props.clientsFetching }
-                        locale={ {
-                            emptyText: <FormattedMessage id='no_data' />,
-                        } }
-                        pagination={ pagination }
+                        loading={this.props.clientsFetching}
+                        locale={{
+                            emptyText: <FormattedMessage id="no_data" />,
+                        }}
+                        pagination={pagination}
                         // onChange={ handleTableChange }
-                        scroll={ { x: 1360 } }
+                        scroll={{ x: 1360 }}
                     />
                 </div>
                 <Modal
-                    title={ <FormattedMessage id='orders.invitation' /> }
-                    visible={ invite.client }
-                    onCancel={ () => setInvite(null, null) }
-                    footer={ [
+                    title={<FormattedMessage id="orders.invitation" />}
+                    visible={invite.client}
+                    onCancel={() => setInvite(null, null)}
+                    footer={[
                         <Button
-                            key='back'
-                            onClick={ () => setInvite(null, null) }
+                            key="back"
+                            onClick={() => setInvite(null, null)}
                         >
-                            <FormattedMessage id='cancel' />
+                            <FormattedMessage id="cancel" />
                         </Button>,
                         <Button
-                            key='submit'
-                            type='primary'
-                            disabled={ !invite.clientVehicleId }
-                            onClick={ () => {
+                            key="submit"
+                            type="primary"
+                            disabled={!invite.clientVehicleId}
+                            onClick={() => {
                                 const inviteOrder = {
-                                    managerId:       user.id,
-                                    clientId:        invite.client.clientId,
+                                    managerId: user.id,
+                                    clientId: invite.client.clientId,
                                     clientVehicleId: invite.clientVehicleId,
-                                    clientPhone:     invite.client.phones.find(
+                                    clientPhone: invite.client.phones.find(
                                         Boolean,
                                     ),
-                                    status: 'invite',
+                                    status: "invite",
                                 };
                                 setInvite(null, null);
                                 createInvite(inviteOrder);
-                            } }
+                            }}
                         >
-                            <FormattedMessage id='orders.invite' />
+                            <FormattedMessage id="orders.invite" />
                         </Button>,
-                    ] }
+                    ]}
                 >
-                    { invite.client && (
+                    {invite.client && (
                         <Form>
                             <FormItem
                                 label={
-                                    <FormattedMessage id='client_order_tab.car' />
+                                    <FormattedMessage id="client_order_tab.car" />
                                 }
                             >
                                 <Select
-                                    value={ invite.clientVehicleId }
-                                    getPopupContainer={ trigger =>
+                                    value={invite.clientVehicleId}
+                                    getPopupContainer={trigger =>
                                         trigger.parentNode
                                     }
-                                    onChange={ clientVehicleId =>
+                                    onChange={clientVehicleId =>
                                         setInvite(
                                             invite.client,
                                             clientVehicleId,
                                         )
                                     }
                                 >
-                                    { invite.client.vehicles.map(vehicle => (
-                                        <Option value={ vehicle.id } key={ v4() }>
-                                            { formatVehicleLabel(
+                                    {invite.client.vehicles.map(vehicle => (
+                                        <Option
+                                            value={vehicle.id}
+                                            key={vehicle.id}
+                                            disabled={vehicle.disabled}
+                                        >
+                                            {formatVehicleLabel(
                                                 vehicle,
                                                 formatMessage,
-                                            ) }
+                                            )}
                                         </Option>
-                                    )) }
+                                    ))}
                                 </Select>
                             </FormItem>
                         </Form>
-                    ) }
+                    )}
                 </Modal>
             </Catcher>
         );

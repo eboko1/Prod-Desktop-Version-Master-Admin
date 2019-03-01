@@ -10,9 +10,10 @@ import { selectAdmin, selectState } from "core/auth/duck";
 import { setBusiness } from "core/forms/switchBusinessForm/duck";
 import { setModal, MODALS } from "core/modals/duck";
 
-import { Loader } from "commons";
+import { Loader, ResponsiveView } from "commons";
 import { SwitchBusinessModal } from "modals";
 import book from "routes/book";
+import { BREAKPOINTS } from "utils";
 
 // own
 import { Subscriptions } from "./Subscriptions.js";
@@ -83,9 +84,13 @@ export default class HeaderMenu extends Component {
                 >
                     <Link className={Styles.user} to={book.profile}>
                         <Avatar className={Styles.avatar} icon="user" />
-                        <span className={Styles.userName}>
-                            {user.name} {user.surname}
-                        </span>
+                        <ResponsiveView
+                            view={{ min: BREAKPOINTS.xxl.min, max: null }}
+                        >
+                            <span className={Styles.userName}>
+                                {user.name} {user.surname}
+                            </span>
+                        </ResponsiveView>
                     </Link>
                 </Tooltip>
                 <Tooltip

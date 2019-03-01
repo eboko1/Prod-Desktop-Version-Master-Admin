@@ -6,6 +6,7 @@ import moment from 'moment';
 
 // proj
 import { emitError, setAuthFetchingState } from 'core/ui/duck';
+import { fetchHeaderData } from 'core/subscription/duck';
 import { persistConfig } from 'store/rootReducer';
 import book from 'routes/book';
 import { setToken, removeToken, setLocale, removeLocale } from 'utils';
@@ -27,6 +28,7 @@ export function* authenticateSaga() {
             yield setLocale(user.language);
             yield setToken(user.token);
             yield authenticateSuccess();
+            yield put(fetchHeaderData(true));
         } catch (error) {
             yield put(emitError(error));
         }
@@ -58,7 +60,7 @@ export function* updateUserSaga() {
         try {
             const { payload: user } = yield take(UPDATE_USER);
             yield put(updateUserSuccess(user));
-        } catch {
+        } catch (error) {
             yield put(emitError(error));
         }
     }
