@@ -32,21 +32,21 @@ import Styles from './styles.m.css';
 
 const mapStateToProps = state => {
     return {
-        stations:          state.forms.orderForm.stations,
-        vehicles:          state.forms.orderForm.vehicles,
-        employees:         state.forms.orderForm.employees,
-        managers:          state.forms.orderForm.managers,
+        // addClientFormData: state.forms.addClientForm.data,
         allDetails:        state.forms.orderForm.allDetails,
         allServices:       state.forms.orderForm.allServices,
-        requisites:        state.forms.orderForm.requisites,
-        modal:             state.modals.modal,
-        // addClientFormData: state.forms.addClientForm.data,
-        spinner:           state.ui.orderFetching,
         createStatus:      state.forms.orderForm.createStatus,
-        selectedClient:    state.forms.orderForm.selectedClient,
+        employees:         state.forms.orderForm.employees,
+        managers:          state.forms.orderForm.managers,
+        modal:             state.modals.modal,
         orderHistory:      state.forms.orderForm.history,
         orderStationLoads: state.forms.orderForm.stationLoads,
+        requisites:        state.forms.orderForm.requisites,
+        selectedClient:    state.forms.orderForm.selectedClient,
+        spinner:           state.ui.orderFetching,
+        stations:          state.forms.orderForm.stations,
         user:              state.auth,
+        vehicles:          state.forms.orderForm.vehicles,
     };
 };
 
@@ -140,7 +140,7 @@ class AddOrderPage extends Component {
     _setCreateStatus = status => this.props.setCreateStatus(status);
 
     render() {
-        const { modal, createStatus, spinner } = this.props;
+        const { modal, user, createStatus, spinner } = this.props;
         const { errors } = this.state;
 
         return spinner ? (
@@ -209,6 +209,7 @@ class AddOrderPage extends Component {
                     errors={ this.state.errors }
                     wrappedComponentRef={ this.saveOrderFormRef }
                     setAddClientModal={ this._setAddClientModal }
+                    user={ user }
                     modal={ modal }
                     addOrderForm
                     orderHistory={ this.props.orderHistory }

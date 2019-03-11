@@ -46,20 +46,21 @@ import Styles from "./styles.m.css";
         fetchTecdocDetailsSuggestions,
         clearTecdocDetailsSuggestions,
     },
+
     mapStateToProps: state => ({
-        modal: state.modals.modal,
+        // modal: state.modals.modal,
+        // user: state.auth,
         addClientFormData: state.forms.addClientForm.data,
         authentificatedManager: state.auth.id,
-        user: state.auth,
-        suggestionsFetching: state.ui.suggestionsFetching,
-        detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
-        stationLoads: state.forms.orderForm.stationLoads,
-        schedule: state.forms.orderForm.schedule,
-        cashSum: selectCashSum(state),
         cashFlowFilters: selectCashFlowFilters(state),
+        cashSum: selectCashSum(state),
+        detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
+        schedule: state.forms.orderForm.schedule,
+        stationLoads: state.forms.orderForm.stationLoads,
+        suggestionsFetching: state.ui.suggestionsFetching,
     }),
 })
-export class OrderForm extends Component {
+export class OrderForm extends React.PureComponent {
     state = {
         formValues: {},
     };
@@ -253,6 +254,7 @@ export class OrderForm extends Component {
             "clientPhone",
             "searchClientQuery",
         ]);
+
         const orderFormHeaderFields = _.pick(formFieldsValues, [
             "stationLoads[0].beginTime",
             "stationLoads[0].station",

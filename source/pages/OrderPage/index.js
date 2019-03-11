@@ -1,7 +1,7 @@
 // vendor
 import React, {Component} from 'react';
 import {FormattedMessage, injectIntl} from 'react-intl';
-import {Link} from 'react-router-dom';
+import {Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {Button, Icon} from 'antd';
 import moment from 'moment';
@@ -87,35 +87,35 @@ const compareOrderTasks = (initialOrderTask, orderTask) => {
 
 const mapStateToProps = state => {
     return {
-        isMobile:              state.ui.views.isMobile,
         // orderTaskEntity:       state.forms.orderTaskForm.fields,
-        initialOrderTask:      state.forms.orderTaskForm.initialOrderTask,
-        orderTaskId:           state.forms.orderTaskForm.taskId,
-        priorityOptions:       state.forms.orderTaskForm.priorityOptions,
-        progressStatusOptions: state.forms.orderTaskForm.progressStatusOptions,
-        orderTasks:            state.forms.orderForm.orderTasks,
-        stations:              state.forms.orderForm.stations,
-        vehicles:              state.forms.orderForm.vehicles,
-        employees:             state.forms.orderForm.employees,
-        managers:              state.forms.orderForm.managers,
-        clients:               state.forms.orderForm.clients,
+        // addClientFormData:     state.forms.addClientForm.data,
         allDetails:            state.forms.orderForm.allDetails,
         allServices:           state.forms.orderForm.allServices,
-        requisites:            state.forms.orderForm.requisites,
-        addClientFormData:     state.forms.addClientForm.data,
-        orderComments:         state.forms.orderForm.orderComments,
-        order:                 state.forms.orderForm.order,
-        inviteOrderId:         state.forms.orderForm.inviteOrderId,
-        orderCalls:            state.forms.orderForm.calls,
-        orderHistory:          state.forms.orderForm.history,
-        initOrderEntity:       state.forms.orderForm.initOrderEntity,
-        invited:               state.forms.orderForm.invited,
-        user:                  state.auth,
-        modal:                 state.modals.modal,
-        spinner:               state.ui.orderFetching,
-        selectedClient:        state.forms.orderForm.selectedClient,
+        clients:               state.forms.orderForm.clients,
+        employees:             state.forms.orderForm.employees,
         fetchedOrder:          state.forms.orderForm.fetchedOrder,
         fields:                state.forms.orderForm.fields,
+        initialOrderTask:      state.forms.orderTaskForm.initialOrderTask,
+        initOrderEntity:       state.forms.orderForm.initOrderEntity,
+        invited:               state.forms.orderForm.invited,
+        inviteOrderId:         state.forms.orderForm.inviteOrderId,
+        isMobile:              state.ui.views.isMobile,
+        managers:              state.forms.orderForm.managers,
+        modal:                 state.modals.modal,
+        order:                 state.forms.orderForm.order,
+        orderCalls:            state.forms.orderForm.calls,
+        orderComments:         state.forms.orderForm.orderComments,
+        orderHistory:          state.forms.orderForm.history,
+        orderTaskId:           state.forms.orderTaskForm.taskId,
+        orderTasks:            state.forms.orderForm.orderTasks,
+        priorityOptions:       state.forms.orderTaskForm.priorityOptions,
+        progressStatusOptions: state.forms.orderTaskForm.progressStatusOptions,
+        requisites:            state.forms.orderForm.requisites,
+        selectedClient:        state.forms.orderForm.selectedClient,
+        spinner:               state.ui.orderFetching,
+        stations:              state.forms.orderForm.stations,
+        user:                  state.auth,
+        vehicles:              state.forms.orderForm.vehicles,
         ...selectInviteData(state),
     };
 };
@@ -137,7 +137,7 @@ const mapDispatchToProps = {
     changeModalStatus,
 };
 
-// @withRouter
+@withRouter
 @connect(
     mapStateToProps,
     mapDispatchToProps,
@@ -148,6 +148,7 @@ class OrderPage extends Component {
     state = {
         errors: void 0,
     };
+    
 
     componentDidMount() {
         const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user} = this.props;
@@ -465,7 +466,7 @@ class OrderPage extends Component {
                                     )
                                 }
                                 onClick={ this._invite }
-                                className={ Styles.inviteButton}
+                                className={ Styles.inviteButton }
                             >
                                 <FormattedMessage id='order-page.create_invite_order'/>
                             </StyledButton>
@@ -557,6 +558,7 @@ class OrderPage extends Component {
                 >
                     <OrderForm
                         errors={ this.state.errors }
+                        user={ this.props.user }
                         orderId={ Number(this.props.match.params.id) }
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
@@ -570,6 +572,7 @@ class OrderPage extends Component {
                         filteredDetails={ this.props.filteredDetails }
                         setModal={ setModal }
                         changeModalStatus={ this.props.changeModalStatus }
+                        // location={ this.props.history.location }
                         location={ false }
                         fetchOrderForm={ fetchOrderForm }
                         fetchOrderTask={ fetchOrderTask }

@@ -46,8 +46,10 @@ export default class Private extends Component {
                 />
                 <Route
                     exact
-                    render={ props => <OrderPage { ...props } /> }
                     path={ book.orderId }
+                    render={ props => (
+                        <OrderPage key={ props.match.params.id } { ...props } />
+                    ) }
                 />
                 <Route exact component={ AddOrderPage } path={ book.addOrder } />
                 <Route exact component={ MyTasksPage } path={ book.myTasksPage } />

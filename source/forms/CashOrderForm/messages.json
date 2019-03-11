@@ -65,7 +65,8 @@
     "cash-order-form.counterparty.OTHER": "Другое",
     "cash-order-form.increase": "Приход",
     "cash-order-form.decrease": "Расход",
-    "cash-order-form.other_counterparty": "Введите контрагента"
+    "cash-order-form.other_counterparty": "Введите контрагента",
+    "cash-order-form.other_counterparty.placeholder": "Укажите контрагента"
   },
   "uk": {
     "cash-order-form.cash_order_num": "№ ордера",

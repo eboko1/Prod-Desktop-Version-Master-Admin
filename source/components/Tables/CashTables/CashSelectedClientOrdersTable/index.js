@@ -22,8 +22,8 @@ const mapStateToProps = state => {
 
     return {
         clientOrders: selectClientOrders(state),
-        // orders:       _.get(selectClientOrders(state), 'orders'),
         filters: selectClientOrdersFilters(state),
+        // orders:       _.get(selectClientOrders(state), 'orders'),
     };
 };
 

@@ -104,16 +104,6 @@ export function columnsConfig() {
         ),
     };
 
-    // const testCol = {
-    //     title:     'test',
-    //     dataIndex: 'id',
-    //     render:    (_, order) => {
-    //         console.log('→ table order', order);
-
-    //         return <div>test</div>;
-    //     },
-    // };
-
     return [
         // testCol,
         orderCol,

@@ -37,7 +37,6 @@ export function* fetchDetailsSaga() {
         try {
             yield take(FETCH_DETAILS);
             const data = yield call(fetchAPI, 'GET', 'tecdoc/products/all');
-            console.log('* fetchDetailsSaga', data);
             yield put(fetchDetailsSuccess(data));
         } catch (error) {
             emitError(error);
