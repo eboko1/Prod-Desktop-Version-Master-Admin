@@ -7,10 +7,6 @@ const prefix = `cpb/${moduleName}`;
 export const SET_ERROR_MESSAGE = `${prefix}/SET_ERROR_MESSAGE`;
 export const RESET_ERROR_MESSAGE = `${prefix}/RESET_ERROR_MESSAGE`;
 
-export const ERROR_MESSAGE = {
-    CLIENT_VEHICLE_DISABLED: 'CLIENT_VEHICLE_DISABLED',
-};
-
 //
 // Reducer
 //

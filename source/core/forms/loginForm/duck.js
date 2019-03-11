@@ -15,26 +15,7 @@ export const ON_CHANGE_LOGIN_FORM = `${prefix}/ON_CHANGE_LOGIN_FORM`;
  * */
 //
 
-const ReducerState = {
-    fields: {
-        login: {
-            errors:     void 0,
-            name:       'make',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-        password: {
-            errors:     void 0,
-            name:       'models',
-            touched:    true,
-            validating: false,
-            value:      void 0,
-            dirty:      false,
-        },
-    },
-};
+const ReducerState = {};
 
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;

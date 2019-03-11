@@ -1,22 +1,23 @@
 // vendor
-import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
-import { Form, Button } from 'antd';
-import { FormattedMessage, injectIntl } from 'react-intl';
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { Form, Button } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
+import _ from "lodash";
 
 // proj
-import { onChangeLoginForm, login } from 'core/forms/loginForm/duck';
+import { onChangeLoginForm, login } from "core/forms/loginForm/duck";
 
-import { DecoratedInput } from 'forms/DecoratedFields';
-import { withReduxForm } from 'utils';
-import book from 'routes/book';
+import { DecoratedInput } from "forms/DecoratedFields";
+import { withReduxForm } from "utils";
+import book from "routes/book";
 
 // own
-import Styles from './loginForm.m.css';
+import Styles from "./loginForm.m.css";
 
 @injectIntl
 @withReduxForm({
-    name:    'loginForm',
+    name: "loginForm",
     actions: {
         change: onChangeLoginForm,
         login,
@@ -25,11 +26,10 @@ import Styles from './loginForm.m.css';
 export class LoginForm extends Component {
     _submit = event => {
         event.preventDefault();
-        const { login, fields } = this.props;
-
-        login({
-            login:    fields.login.value,
-            password: fields.password.value,
+        this.props.form.validateFields((err, values) => {
+            if (!err) {
+                this.props.login(values);
+            }
         });
     };
 
@@ -38,47 +38,47 @@ export class LoginForm extends Component {
         const { formatMessage } = this.props.intl;
 
         return (
-            <Form className={ Styles.loginForm } onSubmit={ this._submit }>
+            <Form className={Styles.loginForm} onSubmit={this._submit}>
                 <DecoratedInput
                     formItem
-                    label={ <FormattedMessage id='login_form.login' /> }
-                    field='login'
-                    getFieldDecorator={ getFieldDecorator }
-                    rules={ [
+                    label={<FormattedMessage id="login_form.login" />}
+                    field="login"
+                    getFieldDecorator={getFieldDecorator}
+                    rules={[
                         {
                             required: true,
-                            message:  formatMessage({
-                                id: 'login_form.login_is_required',
+                            message: formatMessage({
+                                id: "login_form.login_is_required",
                             }),
                         },
-                    ] }
-                    placeholder={ formatMessage({
-                        id: 'login_form.enter_login',
-                    }) }
+                    ]}
+                    placeholder={formatMessage({
+                        id: "login_form.enter_login",
+                    })}
                 />
                 <DecoratedInput
                     formItem
-                    label={ <FormattedMessage id='login_form.password' /> }
-                    field='password'
-                    getFieldDecorator={ getFieldDecorator }
-                    rules={ [
+                    label={<FormattedMessage id="login_form.password" />}
+                    field="password"
+                    getFieldDecorator={getFieldDecorator}
+                    rules={[
                         {
                             required: true,
-                            message:  formatMessage({
-                                id: 'login_form.password_is_required',
+                            message: formatMessage({
+                                id: "login_form.password_is_required",
                             }),
                         },
-                    ] }
-                    placeholder={ formatMessage({
-                        id: 'login_form.enter_password',
-                    }) }
-                    type='password'
+                    ]}
+                    placeholder={formatMessage({
+                        id: "login_form.enter_password",
+                    })}
+                    type="password"
                 />
-                <Button type='primary' htmlType='submit'>
-                    <FormattedMessage id='enter' />
+                <Button type="primary" htmlType="submit">
+                    <FormattedMessage id="enter" />
                 </Button>
-                <Link to={ book.forgotPassword }>
-                    <FormattedMessage id='login_form.forgot_password' />
+                <Link to={book.forgotPassword}>
+                    <FormattedMessage id="login_form.forgot_password" />
                 </Link>
             </Form>
         );
