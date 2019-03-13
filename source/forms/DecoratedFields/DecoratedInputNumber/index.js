@@ -29,14 +29,18 @@ export const DecoratedInputNumber = memo(
             initialValue,
             onChange,
 
-            formatter,
-            parser,
+            // formatter,
+            //     parser,
             style,
 
             placeholder,
 
             cnStyles,
         } = props;
+
+        const formatter = value =>
+            `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+        const parser = value => `${value}`.replace(/\$\s?|(\s)/g, '');
 
         const defaultValue = [ initialValue ].find(_.isNumber);
         const numberInitialValue = _.isNumber(defaultValue)
@@ -55,8 +59,8 @@ export const DecoratedInputNumber = memo(
                 disabled={ disabled }
                 onChange={ onChange }
                 placeholder={ placeholder }
-                formatter={ formatter }
-                parser={ parser }
+                formatter={ props.formatter || formatter }
+                parser={ props.parser || parser }
                 ref={ ref }
                 onKeyDown={ e => e.key === 'Enter' && onPressEnter() }
             />,

@@ -1,9 +1,9 @@
 // vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { Form, Select, Icon } from 'antd';
-import moment from 'moment';
-import _ from 'lodash';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Form, Select, Icon } from "antd";
+import moment from "moment";
+import _ from "lodash";
 
 // proj
 import {
@@ -11,49 +11,50 @@ import {
     DecoratedTimePicker,
     DecoratedSelect,
     DecoratedSlider,
-} from 'forms/DecoratedFields';
-import { Numeral } from 'commons';
-import book from 'routes/book';
+} from "forms/DecoratedFields";
+import { Numeral } from "commons";
+import book from "routes/book";
 import {
     getDateTimeConfig,
     permissions,
     isForbidden,
     mergeDateTime,
     addDuration,
-    goTo
-} from 'utils';
+    goTo,
+} from "utils";
 
 // own
-import { formHeaderItemLayout } from '../layouts';
-import Styles from './styles.m.css';
+import { formHeaderItemLayout } from "../layouts";
+import Styles from "./styles.m.css";
 const FormItem = Form.Item;
 const Option = Select.Option;
 
 // TODO: move it into utils
 // blocks hours for time picker
 const getAvailableHoursDisabledHours = propsAvailableHours => () => {
-    const availableHours = _.get(propsAvailableHours, '0', []);
+    const availableHours = _.get(propsAvailableHours, "0", []);
 
     return _.difference(
         Array(24)
             .fill(1)
             .map((value, index) => index),
         availableHours.map(availableHour =>
-            Number(moment(availableHour).format('HH'))),
+            Number(moment(availableHour).format("HH")),
+        ),
     );
 };
 
 // TODO: move it into utils
 // blocks minutes for time picker
 const getAvailableHoursDisabledMinutes = propsAvailableHours => hour => {
-    const availableHours = _.get(propsAvailableHours, '0', []);
+    const availableHours = _.get(propsAvailableHours, "0", []);
 
     const availableMinutes = availableHours
         .map(availableHour => moment(availableHour))
-        .filter(availableHour => Number(availableHour.format('HH')) === hour)
-        .map(availableHour => Number(availableHour.format('mm')));
+        .filter(availableHour => Number(availableHour.format("HH")) === hour)
+        .map(availableHour => Number(availableHour.format("mm")));
 
-    return _.difference([ 0, 30 ], availableMinutes);
+    return _.difference([0, 30], availableMinutes);
 };
 
 @injectIntl
@@ -69,8 +70,8 @@ export default class OrderFormHeader extends Component {
         this.requiredRule = [
             {
                 required: true,
-                message:  formatMessage({
-                    id: 'required_field',
+                message: formatMessage({
+                    id: "required_field",
                 }),
             },
         ];
@@ -87,17 +88,17 @@ export default class OrderFormHeader extends Component {
         const employeesOptions = this._getEmployeesOptions();
 
         const paymentMethodOptions = [
-            <Option value='cash' key='cash'>
-                <Icon type='wallet' />
-                <FormattedMessage id='add_order_form.cash' />
+            <Option value="cash" key="cash">
+                <Icon type="wallet" />
+                <FormattedMessage id="add_order_form.cash" />
             </Option>,
-            <Option value='noncash' key='noncash'>
-                <Icon type='credit-card' />
-                <FormattedMessage id='add_order_form.non-cash' />
+            <Option value="noncash" key="noncash">
+                <Icon type="credit-card" />
+                <FormattedMessage id="add_order_form.non-cash" />
             </Option>,
-            <Option value='visa' key='visa'>
-                <Icon type='credit-card' />
-                <FormattedMessage id='add_order_form.visa' />
+            <Option value="visa" key="visa">
+                <Icon type="credit-card" />
+                <FormattedMessage id="add_order_form.visa" />
             </Option>,
         ];
         // TODO: move into utils
@@ -140,7 +141,7 @@ export default class OrderFormHeader extends Component {
             {
                 momentDate: zeroStationLoadBeginDate,
                 momentTime: zeroStationLoadBeginTime,
-                duration:   zeroStationLoadDuration,
+                duration: zeroStationLoadDuration,
             },
         ];
 
@@ -153,27 +154,27 @@ export default class OrderFormHeader extends Component {
         } = getDateTimeConfig(moment(deliveryDate), schedule, excludeConfig);
 
         const initialBeginDatetime = moment(zeroStationLoadBeginDate).set({
-            hours:        0,
-            minutes:      0,
+            hours: 0,
+            minutes: 0,
             milliseconds: 0,
-            seconds:      0,
+            seconds: 0,
         });
 
         const sameOfBeforeDisabledDate = date =>
             dateTimeDisabledDate(date) ||
-            date && date.isSameOrBefore(initialBeginDatetime);
+            (date && date.isSameOrBefore(initialBeginDatetime));
 
         const initialDeliveryDatetime =
             zeroStationLoadBeginDate &&
             zeroStationLoadBeginTime &&
             zeroStationLoadDuration
                 ? addDuration(
-                    mergeDateTime(
-                        zeroStationLoadBeginDate,
-                        zeroStationLoadBeginTime,
-                    ),
-                    zeroStationLoadDuration,
-                )
+                      mergeDateTime(
+                          zeroStationLoadBeginDate,
+                          zeroStationLoadBeginTime,
+                      ),
+                      zeroStationLoadDuration,
+                  )
                 : void 0;
 
         return {
@@ -188,52 +189,52 @@ export default class OrderFormHeader extends Component {
 
     // prevent re-renders
     _getLocalization(key) {
-        if (!this._localizationMap[ key ]) {
-            this._localizationMap[ key ] = this.props.intl.formatMessage({
+        if (!this._localizationMap[key]) {
+            this._localizationMap[key] = this.props.intl.formatMessage({
                 id: key,
             });
         }
 
-        return this._localizationMap[ key ];
+        return this._localizationMap[key];
     }
 
     _getStationsOptions = () => {
-        return _.get(this.props, 'stations', []).map(({ name, num }) => {
+        return _.get(this.props, "stations", []).map(({ name, num }) => {
             return (
-                <Option value={ num } key={ String(num) }>
-                    { name || String(num) }
+                <Option value={num} key={String(num)}>
+                    {name || String(num)}
                 </Option>
             );
         });
     };
 
     _getManagersOptions = () => {
-        return _.get(this.props, 'managers', []).map(manager => (
+        return _.get(this.props, "managers", []).map(manager => (
             <Option
-                disabled={ manager.disabled }
-                value={ manager.id }
-                key={ `manager-${manager.id}` }
+                disabled={manager.disabled}
+                value={manager.id}
+                key={`manager-${manager.id}`}
             >
-                { `${manager.managerName} ${manager.managerSurname}` }
+                {`${manager.managerName} ${manager.managerSurname}`}
             </Option>
         ));
     };
 
     _getEmployeesOptions = () => {
-        return _.get(this.props, 'employees', []).map(employee => (
+        return _.get(this.props, "employees", []).map(employee => (
             <Option
-                value={ employee.id }
-                key={ `employee-${employee.id}` }
-                disabled={ employee.disabled }
+                value={employee.id}
+                key={`employee-${employee.id}`}
+                disabled={employee.disabled}
             >
-                { `${employee.name} ${employee.surname}` }
+                {`${employee.name} ${employee.surname}`}
             </Option>
         ));
     };
 
     componentDidUpdate(prevProps) {
-        const oldAvailableHours = _.get(prevProps, [ 'availableHours', '0' ]);
-        const newAvailableHours = _.get(this.props, [ 'availableHours', '0' ]);
+        const oldAvailableHours = _.get(prevProps, ["availableHours", "0"]);
+        const newAvailableHours = _.get(this.props, ["availableHours", "0"]);
         // if availableHours has been changed we need to generate new configs
         if (oldAvailableHours !== newAvailableHours) {
             const availableHoursDisabledMinutes = getAvailableHoursDisabledMinutes(
@@ -265,21 +266,21 @@ export default class OrderFormHeader extends Component {
         }
         // check all fields related for deliveryDatetime
         const deliveryFields = [
-            'schedule',
-            'zeroStationLoadBeginDate',
-            'zeroStationLoadBeginTime',
-            'zeroStationLoadDuration',
-            'deliveryDate',
+            "schedule",
+            "zeroStationLoadBeginDate",
+            "zeroStationLoadBeginTime",
+            "zeroStationLoadDuration",
+            "deliveryDate",
         ];
         // check deliveryDatetime depended properties changes
         // if moment -> toISOString to check moment objects as strings to prevent re-renders
         const deliveryConfigUpdate = deliveryFields.reduce((prev, cur) => {
-            const parsedThisProps = moment.isMoment(this.props[ cur ])
-                ? this.props[ cur ].toISOString()
-                : this.props[ cur ];
-            const parsedPrevProps = moment.isMoment(prevProps[ cur ])
-                ? prevProps[ cur ].toISOString()
-                : prevProps[ cur ];
+            const parsedThisProps = moment.isMoment(this.props[cur])
+                ? this.props[cur].toISOString()
+                : this.props[cur];
+            const parsedPrevProps = moment.isMoment(prevProps[cur])
+                ? prevProps[cur].toISOString()
+                : prevProps[cur];
 
             return prev || parsedThisProps !== parsedPrevProps;
         }, false);
@@ -328,11 +329,11 @@ export default class OrderFormHeader extends Component {
         const duration = this._renderDuration();
 
         return (
-            <div className={ Styles.formHeader }>
-                <div className={ Styles.headerColumns }>
-                    { dateBlock } { masterBlock } { totalBlock }
+            <div className={Styles.formHeader}>
+                <div className={Styles.headerColumns}>
+                    {dateBlock} {masterBlock} {totalBlock}
                 </div>
-                { duration }
+                {duration}
             </div>
         );
     }
@@ -359,108 +360,108 @@ export default class OrderFormHeader extends Component {
 
         const initialDeliveryDatetime = _.get(
             fetchedOrder,
-            'order.deliveryDatetime',
+            "order.deliveryDatetime",
         );
 
         return (
-            <div className={ Styles.durationBlock }>
+            <div className={Styles.durationBlock}>
                 <DecoratedSlider
-                    errors={ errors }
-                    fieldValue={ _.get(fields, 'stationLoads[0].duration') }
+                    errors={errors}
+                    fieldValue={_.get(fields, "stationLoads[0].duration")}
                     defaultGetValueProps
-                    field='stationLoads[0].duration'
+                    field="stationLoads[0].duration"
                     formItem
-                    formItemLayout={ formHeaderItemLayout }
-                    className={ `${Styles.duration} ${Styles.deliveryDatetime}` }
-                    colon={ false }
-                    disabled={ this.bodyUpdateIsForbidden() }
+                    formItemLayout={formHeaderItemLayout}
+                    className={`${Styles.duration} ${Styles.deliveryDatetime}`}
+                    colon={false}
+                    disabled={this.bodyUpdateIsForbidden()}
                     initDuration={
-                        _.get(fetchedOrder, 'order.duration') || totalHours
+                        _.get(fetchedOrder, "order.duration") || totalHours
                     }
-                    label={ `${this._getLocalization(
-                        'time',
+                    label={`${this._getLocalization(
+                        "time",
                     )} (${zeroStationLoadDuration}${this._getLocalization(
-                        'add_order_form.hours_shortcut',
-                    )})` }
-                    getFieldDecorator={ getFieldDecorator }
-                    min={ 0 }
-                    step={ 0.5 }
-                    max={ 8 }
+                        "add_order_form.hours_shortcut",
+                    )})`}
+                    getFieldDecorator={getFieldDecorator}
+                    min={0}
+                    step={0.5}
+                    max={8}
                 />
                 <DecoratedDatePicker
-                    errors={ errors }
+                    errors={errors}
                     defaultGetValueProps
                     fieldValue={
-                        _.get(fields, 'deliveryDate')
-                            ? _.get(fields, 'deliveryDate').toISOString()
+                        _.get(fields, "deliveryDate")
+                            ? _.get(fields, "deliveryDate").toISOString()
                             : void 0
                     }
-                    getFieldDecorator={ getFieldDecorator }
-                    disabled={ this.bodyUpdateIsForbidden() }
-                    field='deliveryDate'
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    field="deliveryDate"
                     hasFeedback
                     formItem
-                    formItemLayout={ formHeaderItemLayout }
-                    label={ this._getLocalization(
-                        'add_order_form.delivery_date',
-                    ) }
-                    colon={ false }
-                    className={ Styles.deliveryDatetime }
-                    rules={ this.requiredRule }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.select_date',
-                    ) }
-                    disabledDate={ disabledDate }
-                    format={ 'YYYY-MM-DD' } // HH:mm
-                    showTime={ false }
+                    formItemLayout={formHeaderItemLayout}
+                    label={this._getLocalization(
+                        "add_order_form.delivery_date",
+                    )}
+                    colon={false}
+                    className={Styles.deliveryDatetime}
+                    rules={this.requiredRule}
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_date",
+                    )}
+                    disabledDate={disabledDate}
+                    format={"YYYY-MM-DD"} // HH:mm
+                    showTime={false}
                     initialValue={
                         initialDeliveryDatetime
                             ? moment(initialDeliveryDatetime).toISOString()
                             : calculatedDeliveryDatetime
-                                ? calculatedDeliveryDatetime.toISOString()
-                                : void 0
+                            ? calculatedDeliveryDatetime.toISOString()
+                            : void 0
                     }
                 />
                 <DecoratedTimePicker
-                    errors={ errors }
+                    errors={errors}
                     defaultGetValueProps
                     fieldValue={
-                        _.get(fields, 'deliveryTime')
-                            ? _.get(fields, 'deliveryTime').toISOString()
+                        _.get(fields, "deliveryTime")
+                            ? _.get(fields, "deliveryTime").toISOString()
                             : void 0
                     }
                     formItem
-                    disabled={ Boolean(
+                    disabled={Boolean(
                         this.bodyUpdateIsForbidden() || !deliveryDate,
-                    ) }
-                    disabledHours={ disabledHours }
-                    disabledMinutes={ disabledMinutes }
-                    disabledSeconds={ disabledSeconds }
-                    formItemLayout={ formHeaderItemLayout }
-                    defaultOpenValue={ moment(
+                    )}
+                    disabledHours={disabledHours}
+                    disabledMinutes={disabledMinutes}
+                    disabledSeconds={disabledSeconds}
+                    formItemLayout={formHeaderItemLayout}
+                    defaultOpenValue={moment(
                         `${beginTime}:00`,
-                        'HH:mm:ss',
-                    ).toISOString() }
-                    field='deliveryTime'
+                        "HH:mm:ss",
+                    ).toISOString()}
+                    field="deliveryTime"
                     hasFeedback
-                    label={ this._getLocalization(
-                        'add_order_form.delivery_time',
-                    ) }
-                    formatMessage={ formatMessage }
-                    className={ Styles.deliveryDatetime }
-                    getFieldDecorator={ getFieldDecorator }
-                    rules={ this.requiredRule }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.provide_time',
-                    ) }
+                    label={this._getLocalization(
+                        "add_order_form.delivery_time",
+                    )}
+                    formatMessage={formatMessage}
+                    className={Styles.deliveryDatetime}
+                    getFieldDecorator={getFieldDecorator}
+                    rules={this.requiredRule}
+                    placeholder={this._getLocalization(
+                        "add_order_form.provide_time",
+                    )}
                     initialValue={
                         initialDeliveryDatetime
                             ? moment(initialDeliveryDatetime).toISOString()
                             : calculatedDeliveryDatetime
-                                ? calculatedDeliveryDatetime.toISOString()
-                                : void 0
+                            ? calculatedDeliveryDatetime.toISOString()
+                            : void 0
                     }
-                    minuteStep={ 30 }
+                    minuteStep={30}
                 />
             </div>
         );
@@ -482,85 +483,85 @@ export default class OrderFormHeader extends Component {
         const { disabledDate, beginTime } = this.state.beginDatetimeConfig;
 
         const beginDatetime =
-            _.get(fetchedOrder, 'order.beginDatetime') ||
+            _.get(fetchedOrder, "order.beginDatetime") ||
             (this.bodyUpdateIsForbidden()
                 ? void 0
-                : _.get(location, 'state.beginDatetime'));
+                : _.get(location, "state.beginDatetime"));
 
         const momentBeginDatetime = beginDatetime
             ? moment(beginDatetime).toISOString()
             : void 0;
 
         return (
-            <div className={ Styles.headerCol }>
+            <div className={Styles.headerCol}>
                 <DecoratedDatePicker
-                    errors={ errors }
+                    errors={errors}
                     defaultGetValueProps
                     fieldValue={
-                        _.get(fields, 'stationLoads[0].beginDate')
+                        _.get(fields, "stationLoads[0].beginDate")
                             ? _.get(
-                                fields,
-                                'stationLoads[0].beginDate',
-                            ).toISOString()
+                                  fields,
+                                  "stationLoads[0].beginDate",
+                              ).toISOString()
                             : void 0
                     }
-                    getFieldDecorator={ getFieldDecorator }
-                    disabled={ this.bodyUpdateIsForbidden() }
-                    field='stationLoads[0].beginDate'
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    field="stationLoads[0].beginDate"
                     hasFeedback
                     formItem
-                    formItemLayout={ formHeaderItemLayout }
+                    formItemLayout={formHeaderItemLayout}
                     // formatMessage={ formatMessage }
-                    label={ this._getLocalization(
-                        'add_order_form.enrollment_date',
-                    ) }
-                    allowClear={ false }
-                    colon={ false }
-                    className={ Styles.datePanelItem }
-                    rules={ this.requiredRule }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.select_date',
-                    ) }
-                    disabledDate={ disabledDate }
-                    format={ 'YYYY-MM-DD' } // HH:mm
-                    showTime={ false }
-                    initialValue={ momentBeginDatetime }
+                    label={this._getLocalization(
+                        "add_order_form.enrollment_date",
+                    )}
+                    allowClear={false}
+                    colon={false}
+                    className={Styles.datePanelItem}
+                    rules={this.requiredRule}
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_date",
+                    )}
+                    disabledDate={disabledDate}
+                    format={"YYYY-MM-DD"} // HH:mm
+                    showTime={false}
+                    initialValue={momentBeginDatetime}
                 />
                 <DecoratedSelect
-                    errors={ errors }
-                    colon={ false }
-                    className={ Styles.datePanelItem }
-                    getFieldDecorator={ getFieldDecorator }
-                    field='stationLoads[0].station'
-                    fieldValue={ _.get(fields, 'stationLoads[0].station') }
+                    errors={errors}
+                    colon={false}
+                    className={Styles.datePanelItem}
+                    getFieldDecorator={getFieldDecorator}
+                    field="stationLoads[0].station"
+                    fieldValue={_.get(fields, "stationLoads[0].station")}
                     defaultGetValueProps
                     formItem
-                    formItemLayout={ formHeaderItemLayout }
-                    rules={ this.requiredRule }
-                    label={ this._getLocalization('add_order_form.station') }
+                    formItemLayout={formHeaderItemLayout}
+                    rules={this.requiredRule}
+                    label={this._getLocalization("add_order_form.station")}
                     hasFeedback
-                    placeholder={ this._getLocalization(
-                        'add_order_form.select_station',
-                    ) }
-                    disabled={ this.bodyUpdateIsForbidden() }
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_station",
+                    )}
+                    disabled={this.bodyUpdateIsForbidden()}
                     initialValue={
-                        _.get(fetchedOrder, 'order.stationNum') ||
+                        _.get(fetchedOrder, "order.stationNum") ||
                         (this.bodyUpdateIsForbidden()
                             ? void 0
-                            : _.get(location, 'state.stationNum'))
+                            : _.get(location, "state.stationNum"))
                     }
                 >
-                    { this.state.stationsOptions }
+                    {this.state.stationsOptions}
                 </DecoratedSelect>
                 <DecoratedTimePicker
-                    errors={ errors }
+                    errors={errors}
                     defaultGetValueProps
                     fieldValue={
-                        _.get(fields, 'stationLoads[0].beginTime')
+                        _.get(fields, "stationLoads[0].beginTime")
                             ? _.get(
-                                fields,
-                                'stationLoads[0].beginTime',
-                            ).toISOString()
+                                  fields,
+                                  "stationLoads[0].beginTime",
+                              ).toISOString()
                             : void 0
                     }
                     formItem
@@ -569,25 +570,25 @@ export default class OrderFormHeader extends Component {
                         !zeroStationLoadBeginDate ||
                         !zeroStationLoadStation
                     }
-                    formItemLayout={ formHeaderItemLayout }
-                    defaultOpenValue={ moment(
+                    formItemLayout={formHeaderItemLayout}
+                    defaultOpenValue={moment(
                         `${beginTime}:00`,
-                        'HH:mm:ss',
-                    ).toISOString() }
-                    field='stationLoads[0].beginTime'
+                        "HH:mm:ss",
+                    ).toISOString()}
+                    field="stationLoads[0].beginTime"
                     hasFeedback
-                    disabledHours={ this.state.availableHoursDisabledHours }
-                    disabledMinutes={ this.state.availableHoursDisabledMinutes }
-                    label={ this._getLocalization('add_order_form.applied_on') }
-                    formatMessage={ formatMessage }
-                    className={ Styles.datePanelItem }
-                    getFieldDecorator={ getFieldDecorator }
-                    rules={ this.requiredRule }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.provide_time',
-                    ) }
-                    minuteStep={ 30 }
-                    initialValue={ momentBeginDatetime }
+                    disabledHours={this.state.availableHoursDisabledHours}
+                    disabledMinutes={this.state.availableHoursDisabledMinutes}
+                    label={this._getLocalization("add_order_form.applied_on")}
+                    formatMessage={formatMessage}
+                    className={Styles.datePanelItem}
+                    getFieldDecorator={getFieldDecorator}
+                    rules={this.requiredRule}
+                    placeholder={this._getLocalization(
+                        "add_order_form.provide_time",
+                    )}
+                    minuteStep={30}
+                    initialValue={momentBeginDatetime}
                 />
             </div>
         );
@@ -610,73 +611,73 @@ export default class OrderFormHeader extends Component {
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <div className={ Styles.headerCol }>
+            <div className={Styles.headerCol}>
                 <DecoratedSelect
-                    errors={ errors }
-                    fieldValue={ _.get(fields, 'manager') }
+                    errors={errors}
+                    fieldValue={_.get(fields, "manager")}
                     defaultGetValueProps
-                    field='manager'
+                    field="manager"
                     formItem
-                    getFieldDecorator={ getFieldDecorator }
-                    rules={ this.requiredRule }
-                    label={ this._getLocalization('add_order_form.manager') }
+                    getFieldDecorator={getFieldDecorator}
+                    rules={this.requiredRule}
+                    label={this._getLocalization("add_order_form.manager")}
                     hasFeedback
-                    colon={ false }
-                    className={ Styles.datePanelItem }
+                    colon={false}
+                    className={Styles.datePanelItem}
                     initialValue={
-                        _.get(fetchedOrder, 'order.managerId') ||
+                        _.get(fetchedOrder, "order.managerId") ||
                         (this.bodyUpdateIsForbidden()
                             ? void 0
                             : isOwnBusiness && authentificatedManager)
                     }
-                    disabled={ this.bodyUpdateIsForbidden() }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.select_manager',
-                    ) }
-                    formItemLayout={ formHeaderItemLayout }
+                    disabled={this.bodyUpdateIsForbidden()}
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_manager",
+                    )}
+                    formItemLayout={formHeaderItemLayout}
                 >
-                    { this.state.managersOptions }
+                    {this.state.managersOptions}
                 </DecoratedSelect>
                 <DecoratedSelect
-                    errors={ errors }
+                    errors={errors}
                     formItem
-                    fieldValue={ _.get(fields, 'employee') }
+                    fieldValue={_.get(fields, "employee")}
                     defaultGetValueProps
-                    field='employee'
-                    label={ this._getLocalization('order_form_table.master') }
-                    className={ Styles.durationPanelItem }
-                    disabled={ this.bodyUpdateIsForbidden() }
-                    getFieldDecorator={ getFieldDecorator }
-                    initialValue={ _.get(fetchedOrder, 'order.employeeId') }
-                    placeholder={ this._getLocalization(
-                        'order_form_table.select_master',
-                    ) }
-                    formItemLayout={ formHeaderItemLayout }
+                    field="employee"
+                    label={this._getLocalization("order_form_table.master")}
+                    className={Styles.durationPanelItem}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    getFieldDecorator={getFieldDecorator}
+                    initialValue={_.get(fetchedOrder, "order.employeeId")}
+                    placeholder={this._getLocalization(
+                        "order_form_table.select_master",
+                    )}
+                    formItemLayout={formHeaderItemLayout}
                 >
-                    { this.state.employeesOptions }
+                    {this.state.employeesOptions}
                 </DecoratedSelect>
                 <DecoratedSelect
-                    errors={ errors }
+                    errors={errors}
                     formItem
-                    fieldValue={ _.get(fields, 'appurtenanciesResponsible') }
+                    fieldValue={_.get(fields, "appurtenanciesResponsible")}
                     defaultGetValueProps
-                    field='appurtenanciesResponsible'
-                    label={ this._getLocalization(
-                        'order_form_table.appurtenancies_responsible',
-                    ) }
-                    className={ Styles.durationPanelItem }
-                    disabled={ this.bodyUpdateIsForbidden() }
-                    getFieldDecorator={ getFieldDecorator }
-                    initialValue={ _.get(
+                    field="appurtenanciesResponsible"
+                    label={this._getLocalization(
+                        "order_form_table.appurtenancies_responsible",
+                    )}
+                    className={Styles.durationPanelItem}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    getFieldDecorator={getFieldDecorator}
+                    initialValue={_.get(
                         fetchedOrder,
-                        'order.appurtenanciesResponsibleId',
-                    ) }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.select_appurtenancies_responsible',
-                    ) }
-                    formItemLayout={ formHeaderItemLayout }
+                        "order.appurtenanciesResponsibleId",
+                    )}
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_appurtenancies_responsible",
+                    )}
+                    formItemLayout={formHeaderItemLayout}
                 >
-                    { this.state.employeesOptions }
+                    {this.state.employeesOptions}
                 </DecoratedSelect>
             </div>
         );
@@ -686,110 +687,105 @@ export default class OrderFormHeader extends Component {
         const { fetchedOrder, fields } = this.props;
         const { getFieldDecorator } = this.props.form;
         const {
-            priceDetails,
-            priceServices,
-            servicesDiscount,
-            detailsDiscount,
             errors,
+            totalPrice,
             cashSum,
+            remainPrice,
             cashFlowFilters,
         } = this.props;
 
-        const detailsTotalPrice =
-            priceDetails - priceDetails * (detailsDiscount / 100);
-        const servicesTotalPrice =
-            priceServices - priceServices * (servicesDiscount / 100);
-        const totalPrice = detailsTotalPrice + servicesTotalPrice;
-        const remainPrice = totalPrice - cashSum;
-
         return (
-            <div className={ Styles.headerCol }>
-                <FormItem className={ Styles.sumBlock }>
-                    <div className={ Styles.sum }>
-                        <span className={ Styles.sumWrapper }>
-                            <FormattedMessage id='sum' />
-                            <Numeral 
-                                className={ Styles.sumNumeral }
-                                nullText='0'
-                                currency={ this.props.intl.formatMessage({
-                                    id: 'currency',
-                                }) }
+            <div className={Styles.headerCol}>
+                <FormItem className={Styles.sumBlock}>
+                    <div className={Styles.sum}>
+                        <span className={Styles.sumWrapper}>
+                            <FormattedMessage id="sum" />
+                            <Numeral
+                                className={Styles.sumNumeral}
+                                nullText="0"
+                                currency={this.props.intl.formatMessage({
+                                    id: "currency",
+                                })}
                             >
-                                { totalPrice }
+                                {totalPrice}
                             </Numeral>
                         </span>
-                        <span className={ Styles.sumWrapper }>
-                            <FormattedMessage id='paid' />
-                            <Numeral 
-                                className={ Styles.sumNumeral }
-                                nullText='0'
-                                currency={ this.props.intl.formatMessage({
-                                    id: 'currency',
-                                }) }
+                        <span className={Styles.sumWrapper}>
+                            <FormattedMessage id="paid" />
+                            <Numeral
+                                className={Styles.sumNumeral}
+                                nullText="0"
+                                currency={this.props.intl.formatMessage({
+                                    id: "currency",
+                                })}
                             >
-                                { cashSum }
+                                {cashSum}
                             </Numeral>
                         </span>
                     </div>
                     <div
-                        className={ Styles.total }
-                        onClick={ () => goTo(book.cashFlowPage, { cashFlowFilters: { ...cashFlowFilters } }) }
+                        className={Styles.total}
+                        onClick={() =>
+                            goTo(book.cashFlowPage, {
+                                cashFlowFilters: { ...cashFlowFilters },
+                            })
+                        }
                     >
-                        <FormattedMessage id='remain' />
+                        <FormattedMessage id="remain" />
                         <Numeral
-                            className={ Styles.totalSum }
-                            currency={ this.props.intl.formatMessage({
-                                id: 'currency',
-                            }) }
-                            nullText='0'
+                            className={Styles.totalSum}
+                            currency={this.props.intl.formatMessage({
+                                id: "currency",
+                            })}
+                            nullText="0"
                         >
-                            { remainPrice }
+                            {remainPrice}
                         </Numeral>
                     </div>
                 </FormItem>
                 <DecoratedSelect
-                    errors={ errors }
-                    fieldValue={ _.get(fields, 'paymentMethod') }
+                    errors={errors}
+                    fieldValue={_.get(fields, "paymentMethod")}
                     defaultGetValueProps
-                    field='paymentMethod'
-                    disabled={ this.bodyUpdateIsForbidden() }
-                    initialValue={ _.get(fetchedOrder, 'order.paymentMethod') }
+                    field="paymentMethod"
+                    disabled={this.bodyUpdateIsForbidden()}
+                    initialValue={_.get(fetchedOrder, "order.paymentMethod")}
                     formItem
-                    colon={ false }
-                    getFieldDecorator={ getFieldDecorator }
-                    formItemLayout={ formHeaderItemLayout }
-                    label={ this._getLocalization(
-                        'add_order_form.payment_method',
-                    ) }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.select_payment_method',
-                    ) }
+                    colon={false}
+                    getFieldDecorator={getFieldDecorator}
+                    formItemLayout={formHeaderItemLayout}
+                    label={this._getLocalization(
+                        "add_order_form.payment_method",
+                    )}
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_payment_method",
+                    )}
                 >
-                    { this.state.paymentMethodOptions }
+                    {this.state.paymentMethodOptions}
                 </DecoratedSelect>
                 <DecoratedSelect
-                    errors={ errors }
-                    field='requisite'
-                    fieldValue={ _.get(fields, 'requisite') }
+                    errors={errors}
+                    field="requisite"
+                    fieldValue={_.get(fields, "requisite")}
                     defaultGetValueProps
-                    disabled={ this.bodyUpdateIsForbidden() }
-                    initialValue={ _.get(
+                    disabled={this.bodyUpdateIsForbidden()}
+                    initialValue={_.get(
                         fetchedOrder,
-                        'order.businessRequisiteId',
-                    ) }
+                        "order.businessRequisiteId",
+                    )}
                     formItem
-                    label={ this._getLocalization(
-                        'add_order_form.service_requisites',
-                    ) }
-                    formItemLayout={ formHeaderItemLayout }
-                    getFieldDecorator={ getFieldDecorator }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.select_requisites',
-                    ) }
-                    options={ this.props.requisites }
-                    optionValue='id'
-                    optionLabel='name'
-                    optionDisabled='disabled'
+                    label={this._getLocalization(
+                        "add_order_form.service_requisites",
+                    )}
+                    formItemLayout={formHeaderItemLayout}
+                    getFieldDecorator={getFieldDecorator}
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_requisites",
+                    )}
+                    options={this.props.requisites}
+                    optionValue="id"
+                    optionLabel="name"
+                    optionDisabled="disabled"
                 />
             </div>
         );

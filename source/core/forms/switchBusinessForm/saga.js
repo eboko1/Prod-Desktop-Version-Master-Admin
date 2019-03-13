@@ -13,7 +13,7 @@ import { go } from 'connected-react-router';
 
 // proj
 import { authenticate, selectToken } from 'core/auth/duck';
-import { setSearchBusinessesFetchingState } from 'core/ui/duck';
+import { setSearchBusinessesFetchingState, emitError } from 'core/ui/duck';
 import { SET_MODAL, MODALS } from 'core/modals/duck';
 
 import { fetchAPI } from 'utils';
@@ -49,23 +49,27 @@ function* onSetModalSaga({ payload }) {
 
 function* setBusinessSaga() {
     while (true) {
-        const {
-            payload: { businessId, businessName },
-        } = yield take(SET_BUSINESS);
+        try {
+            const {
+                payload: { businessId, businessName },
+            } = yield take(SET_BUSINESS);
 
-        const user = yield call(
-            fetchAPI,
-            'POST',
-            'managers/businesses/set',
-            void 0,
-            {
-                businessId,
-            },
-        );
-        const token = yield select(selectToken);
-        yield put(authenticate({ ...user, businessName, token }));
+            const user = yield call(
+                fetchAPI,
+                'POST',
+                'managers/businesses/set',
+                void 0,
+                {
+                    businessId,
+                },
+            );
+            const token = yield select(selectToken);
+            yield put(authenticate({ ...user, businessName, token }));
 
-        yield put(go(book.dashboard));
+            yield put(go(book.dashboard));
+        } catch (error) {
+            yield put(emitError(error));
+        }
     }
 }
 

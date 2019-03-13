@@ -8,21 +8,37 @@ import { MODALS } from 'core/modals/duck';
 import { ToSuccessForm } from 'forms';
 
 export default class ToSuccessModal extends Component {
+    //_handleToSuccessModalSubmit = () => {
+    //    onStatusChange;
+    //};
+
     render() {
-        const { visible, handleToSuccessModalSubmit, resetModal } = this.props;
+        const {
+            visible,
+            onStatusChange,
+            remainPrice,
+            resetModal,
+            clientId,
+            orderId,
+        } = this.props;
 
         return (
             <Modal
-                cancelText={ <FormattedMessage id='cancel' /> }
-                okText={ <FormattedMessage id='invite-modal.invite' /> }
                 visible={ visible === MODALS.TO_SUCCESS }
-                onOk={ () => handleToSuccessModalSubmit() }
+                //onOk={ () => this._handleToSuccessModalSubmit() }
                 onCancel={ () => resetModal() }
                 footer={ null }
+                destroyOnClose
             >
                 <ToSuccessForm
-                    handleToSuccessModalSubmit={ handleToSuccessModalSubmit }
+                    //handleToSuccessModalSubmit={
+                    //    this._handleToSuccessModalSubmit
+                    //}
+                    onStatusChange={ onStatusChange }
                     resetModal={ resetModal }
+                    remainPrice={ remainPrice }
+                    clientId={ clientId }
+                    orderId={ orderId }
                 />
             </Modal>
         );

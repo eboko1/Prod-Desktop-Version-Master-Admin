@@ -51,10 +51,18 @@ import {
 } from './duck';
 
 export function* fetchCashOrderNextIdSaga() {
-    yield put(setCashOrderFetchingState(true));
-    const cashOrderNextId = yield call(fetchAPI, 'GET', 'cash_orders/next_id');
-    yield put(fetchCashOrderNextIdSuccess(cashOrderNextId));
-    yield put(setCashOrderFetchingState(false));
+    try {
+        yield put(setCashOrderFetchingState(true));
+        const cashOrderNextId = yield call(
+            fetchAPI,
+            'GET',
+            'cash_orders/next_id',
+        );
+        yield put(fetchCashOrderNextIdSuccess(cashOrderNextId));
+        yield put(setCashOrderFetchingState(false));
+    } catch (error) {
+        yield put(emitError(error));
+    }
 }
 
 export function* fetchCashOrderFormSaga() {

@@ -1,12 +1,12 @@
 // vendor
-import React, { Component } from 'react';
-import { FormattedMessage, injectIntl } from 'react-intl';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
-import { Link } from 'react-router-dom';
-import { Select, Icon } from 'antd';
-import _ from 'lodash';
-import { v4 } from 'uuid';
-import classNames from 'classnames/bind';
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { Link } from "react-router-dom";
+import { Select, Icon } from "antd";
+import _ from "lodash";
+import { v4 } from "uuid";
+import classNames from "classnames/bind";
 
 // proj
 import {
@@ -14,19 +14,19 @@ import {
     DecoratedSelect,
     DecoratedInputNumber,
     DecoratedTextArea,
-} from 'forms/DecoratedFields';
-import book from 'routes/book';
-import { permissions, isForbidden } from 'utils';
+} from "forms/DecoratedFields";
+import book from "routes/book";
+import { permissions, isForbidden } from "utils";
 
 // own
-import Styles from './styles.m.css';
+import Styles from "./styles.m.css";
 import {
     formVerticalLayout,
     formCommentLayout,
     fromExpandedCommentLayout,
     formRecommendationLayout,
-} from '../layouts';
-import { ClientsSearchTable } from './../OrderFormTables';
+} from "../layouts";
+import { ClientsSearchTable } from "./../OrderFormTables";
 const Option = Select.Option;
 
 let cx = classNames.bind(Styles);
@@ -36,22 +36,28 @@ let cx = classNames.bind(Styles);
 function formatVehicleLabel(vehicle, formatMessage) {
     const modelPart = vehicle.model
         ? `${vehicle.make} ${vehicle.model}`
-        : formatMessage({ id: 'add_order_form.no_model' });
+        : formatMessage({ id: "add_order_form.no_model" });
     const horsePowerLabel = !vehicle.horsePower
         ? null
         : `(${vehicle.horsePower} ${formatMessage({
-            id: 'horse_power',
-        })})`;
-    const modificationPart = [ vehicle.modification, horsePowerLabel ]
+              id: "horse_power",
+          })})`;
+    const modificationPart = [vehicle.modification, horsePowerLabel]
         .filter(Boolean)
-        .join(' ');
-    const parts = [ modelPart, vehicle.year, modificationPart, vehicle.number, vehicle.vin ];
+        .join(" ");
+    const parts = [
+        modelPart,
+        vehicle.year,
+        modificationPart,
+        vehicle.number,
+        vehicle.vin,
+    ];
 
     return parts
         .filter(Boolean)
         .map(String)
         .map(_.trimEnd)
-        .join(', ');
+        .join(", ");
 }
 
 @injectIntl
@@ -63,24 +69,24 @@ export default class OrderFormBody extends Component {
         this.requiredFieldRules = [
             {
                 required: true,
-                message:  this.props.intl.formatMessage({
-                    id: 'required_field',
+                message: this.props.intl.formatMessage({
+                    id: "required_field",
                 }),
             },
         ];
         this.requiredNumberFieldRules = [
             {
-                type:    'number',
+                type: "number",
                 message: this.props.intl.formatMessage({
-                    id: 'required_field',
+                    id: "required_field",
                 }),
             },
         ];
         this.recommendationRules = [
             {
-                max:     2000,
+                max: 2000,
                 message: this.props.intl.formatMessage({
-                    id: 'field_should_be_below_2000_chars',
+                    id: "field_should_be_below_2000_chars",
                 }),
             },
         ];
@@ -148,15 +154,19 @@ export default class OrderFormBody extends Component {
 
     _getRecommendationStyles() {
         const { orderId: id, orderHistory } = this.props;
-        const orders = _.get(orderHistory, 'orders');
+        const orders = _.get(orderHistory, "orders");
         const orderIndexInHistory = _.findIndex(orders, { id });
         const prevRecommendation =
             orderIndexInHistory !== -1
-                ? _.get(orderHistory, [ 'orders', orderIndexInHistory + 1, 'recommendation' ])
+                ? _.get(orderHistory, [
+                      "orders",
+                      orderIndexInHistory + 1,
+                      "recommendation",
+                  ])
                 : null;
 
         const value = cx({
-            comment:         true,
+            comment: true,
             commentExtended: !prevRecommendation,
         });
 
@@ -164,11 +174,11 @@ export default class OrderFormBody extends Component {
     }
 
     _getClientPhonesOptions() {
-        return _.get(this.props, 'selectedClient.phones', [])
+        return _.get(this.props, "selectedClient.phones", [])
             .filter(Boolean)
             .map(phone => (
-                <Option value={ phone } key={ v4() }>
-                    { phone }
+                <Option value={phone} key={v4()}>
+                    {phone}
                 </Option>
             ));
     }
@@ -178,52 +188,52 @@ export default class OrderFormBody extends Component {
 
         return (
             <div>
-                <FormattedMessage id='add_order_form.email' />
-                { clipboardClientEmail && (
-                    <CopyToClipboard text={ clipboardClientEmail }>
+                <FormattedMessage id="add_order_form.email" />
+                {clipboardClientEmail && (
+                    <CopyToClipboard text={clipboardClientEmail}>
                         <Icon
-                            type='copy'
-                            theme='outlined'
-                            className={ Styles.copyIcon }
+                            type="copy"
+                            theme="outlined"
+                            className={Styles.copyIcon}
                         />
                     </CopyToClipboard>
-                ) }
+                )}
             </div>
         );
     }
 
     _getClientEmailsOptions() {
-        return _.get(this.props, 'selectedClient.emails', [])
-            .filter(Boolean)
-            .map(email => (
-                <Option value={ email } key={ v4() }>
-                    { email }
-                </Option>
-            ));
+        const emails =
+            Object.values(_.get(this.props, "selectedClient.emails")) || [];
+
+        return emails.filter(Boolean).map((email, index) => (
+            <Option value={email} key={`${email}-${index}`}>
+                {email}
+            </Option>
+        ));
     }
 
     _getClientVehiclesOptions() {
-        return _.get(this.props, 'selectedClient.vehicles', []).map(vehicle => (
-            <Option value={ vehicle.id } key={ v4() } disabled={ vehicle.disabled }>
-                { formatVehicleLabel(vehicle, this.props.intl.formatMessage) }
+        return _.get(this.props, "selectedClient.vehicles", []).map(vehicle => (
+            <Option value={vehicle.id} key={v4()} disabled={vehicle.disabled}>
+                {formatVehicleLabel(vehicle, this.props.intl.formatMessage)}
             </Option>
         ));
     }
 
     _getLocalization(key) {
-        if (!this._localizationMap[ key ]) {
-            this._localizationMap[ key ] = this.props.intl.formatMessage({
+        if (!this._localizationMap[key]) {
+            this._localizationMap[key] = this.props.intl.formatMessage({
                 id: key,
             });
         }
 
-        return this._localizationMap[ key ];
+        return this._localizationMap[key];
     }
 
     bodyUpdateIsForbidden() {
         return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
     }
-
 
     render() {
         const clientSearch = this._renderClientSearch();
@@ -233,14 +243,14 @@ export default class OrderFormBody extends Component {
         const clientsSearchTable = this._renderClientSearchTable();
 
         return (
-            <div className={ Styles.clientBlock }>
-                { clientSearch }
-                { clientsSearchTable }
-                <div className={ Styles.clientData }>
-                    { clientColumn }
-                    { vehicleColumn }
+            <div className={Styles.clientBlock}>
+                {clientSearch}
+                {clientsSearchTable}
+                <div className={Styles.clientData}>
+                    {clientColumn}
+                    {vehicleColumn}
                 </div>
-                { comments }
+                {comments}
             </div>
         );
     }
@@ -254,10 +264,10 @@ export default class OrderFormBody extends Component {
 
         return (
             <ClientsSearchTable
-                clientsSearching={ clientsSearching }
-                setClientSelection={ setClientSelection }
-                visible={ searchClientQuery }
-                clients={ clients }
+                clientsSearching={clientsSearching}
+                setClientSelection={setClientSelection}
+                visible={searchClientQuery}
+                clients={clients}
             />
         );
     };
@@ -268,39 +278,39 @@ export default class OrderFormBody extends Component {
         const { CREATE_EDIT_DELETE_CLIENTS } = permissions;
 
         const disabledClientSearch =
-            (!_.get(this.props, 'order.status') ||
-                _.get(this.props, 'order.status') !== 'reserve') &&
-            _.get(this.props, 'order.clientId');
+            (!_.get(this.props, "order.status") ||
+                _.get(this.props, "order.status") !== "reserve") &&
+            _.get(this.props, "order.clientId");
 
         return !disabledClientSearch ? (
-            <div className={ Styles.client }>
+            <div className={Styles.client}>
                 <DecoratedInput
-                    errors={ errors }
+                    errors={errors}
                     defaultGetValueProps
-                    fieldValue={ _.get(fields, 'searchClientQuery') }
-                    className={ Styles.clientSearchField }
-                    field='searchClientQuery'
+                    fieldValue={_.get(fields, "searchClientQuery")}
+                    className={Styles.clientSearchField}
+                    field="searchClientQuery"
                     formItem
-                    colon={ false }
-                    label={ this._getLocalization(
-                        'add_order_form.search_client',
-                    ) }
-                    getFieldDecorator={ getFieldDecorator }
+                    colon={false}
+                    label={this._getLocalization(
+                        "add_order_form.search_client",
+                    )}
+                    getFieldDecorator={getFieldDecorator}
                     disabled={
                         Boolean(disabledClientSearch) ||
                         this.bodyUpdateIsForbidden()
                     }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.search_client.placeholder',
-                    ) }
+                    placeholder={this._getLocalization(
+                        "add_order_form.search_client.placeholder",
+                    )}
                 />
-                { !isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
+                {!isForbidden(user, CREATE_EDIT_DELETE_CLIENTS) ? (
                     <Icon
-                        type='plus'
-                        className={ Styles.addClientIcon }
-                        onClick={ () => this.props.setAddClientModal() }
+                        type="plus"
+                        className={Styles.addClientIcon}
+                        onClick={() => this.props.setAddClientModal()}
                     />
-                ) : null }
+                ) : null}
             </div>
         ) : null;
     };
@@ -317,107 +327,110 @@ export default class OrderFormBody extends Component {
         const hasClient = clientPhone;
 
         return (
-            <div className={ Styles.bodyColumn }>
-                <div className={ Styles.bodyColumnContent }>
-                    <div className={ Styles.contentWrapper }>
-                        <div className={ Styles.comboFieldWrapper }>
-                            <FormattedMessage id='add_order_form.client' />
-                            <div className={ Styles.comboField }>
-                                { selectedClient.name || selectedClient.surname
+            <div className={Styles.bodyColumn}>
+                <div className={Styles.bodyColumnContent}>
+                    <div className={Styles.contentWrapper}>
+                        <div className={Styles.comboFieldWrapper}>
+                            <FormattedMessage id="add_order_form.client" />
+                            <div className={Styles.comboField}>
+                                {selectedClient.name || selectedClient.surname
                                     ? (selectedClient.surname
-                                        ? selectedClient.surname + ' '
-                                        : '') + `${selectedClient.name}`
-                                    : void 0 }
+                                          ? selectedClient.surname + " "
+                                          : "") + `${selectedClient.name}`
+                                    : void 0}
                             </div>
                         </div>
                         <DecoratedSelect
-                            errors={ errors }
+                            errors={errors}
                             defaultGetValueProps
-                            fieldValue={ _.get(fields, 'clientPhone') }
-                            field='clientPhone'
-                            disabled={ this.bodyUpdateIsForbidden() }
+                            fieldValue={_.get(fields, "clientPhone")}
+                            field="clientPhone"
+                            disabled={this.bodyUpdateIsForbidden()}
                             initialValue={
-                                _.get(fetchedOrder, 'order.clientPhone') ||
+                                _.get(fetchedOrder, "order.clientPhone") ||
                                 (this.bodyUpdateIsForbidden()
                                     ? void 0
-                                    : _.get(selectedClient, 'phones[0]'))
+                                    : _.get(selectedClient, "phones[0]"))
                             }
                             formItem
                             hasFeedback
-                            className={ `${Styles.clientCol} ${
+                            className={`${Styles.clientCol} ${
                                 Styles.comboFieldSelect
-                            }` }
-                            colon={ false }
-                            rules={ this.requiredFieldRules }
-                            getFieldDecorator={ getFieldDecorator }
-                            dropdownStyle={ this._clientPhoneBorderStyle }
+                            }`}
+                            colon={false}
+                            rules={this.requiredFieldRules}
+                            getFieldDecorator={getFieldDecorator}
+                            dropdownStyle={this._clientPhoneBorderStyle}
                         >
-                            { this.state.clientPhonesOptions }
+                            {this.state.clientPhonesOptions}
                         </DecoratedSelect>
                     </div>
-                    { hasClient && (
-                        <div className={ Styles.iconsCol }>
+                    {hasClient && (
+                        <div className={Styles.iconsCol}>
                             <Link
-                                to={ `${book.client}/${selectedClient.clientId}` }
+                                to={`${book.client}/${selectedClient.clientId}`}
                             >
-                                <Icon type='edit' className={ Styles.editIcon } />
+                                <Icon type="edit" className={Styles.editIcon} />
                             </Link>
-                            <CopyToClipboard text={ hasClient }>
+                            <CopyToClipboard text={hasClient}>
                                 <Icon
-                                    type='copy'
-                                    theme='outlined'
-                                    className={ Styles.copyIcon }
+                                    type="copy"
+                                    theme="outlined"
+                                    className={Styles.copyIcon}
                                 />
                             </CopyToClipboard>
                         </div>
-                    ) }
+                    )}
                 </div>
-                <div className={ Styles.clientsInfo }>
+                <div className={Styles.clientsInfo}>
                     <DecoratedSelect
-                        errors={ errors }
+                        errors={errors}
                         defaultGetValueProps
-                        fieldValue={ _.get(fields, 'clientEmail') }
-                        field='clientEmail'
-                        className={ Styles.clientsInfoCol }
+                        fieldValue={_.get(fields, "clientEmail")}
+                        field="clientEmail"
+                        className={Styles.clientsInfoCol}
                         formItem
-                        disabled={ this.bodyUpdateIsForbidden() }
-                        formItemLayout={ formVerticalLayout }
-                        getFieldDecorator={ getFieldDecorator }
-                        label={ this.state.clientEmailLabel }
+                        disabled={this.bodyUpdateIsForbidden()}
+                        formItemLayout={formVerticalLayout}
+                        getFieldDecorator={getFieldDecorator}
+                        label={this.state.clientEmailLabel}
                         initialValue={
-                            _.get(fetchedOrder, 'order.clientEmail') ||
-                            selectedClient.emails.find(Boolean)
+                            _.get(fetchedOrder, "order.clientEmail") ||
+                            Object.values(
+                                _.get(this.props, "selectedClient.emails"),
+                            )[0] ||
+                            void 0
                         }
-                        placeholder={ this._getLocalization(
-                            'add_order_form.email.placeholder',
-                        ) }
+                        placeholder={this._getLocalization(
+                            "add_order_form.email.placeholder",
+                        )}
                     >
-                        { this.state.clientEmailsOptions }
+                        {this.state.clientEmailsOptions}
                     </DecoratedSelect>
                     <DecoratedSelect
-                        errors={ errors }
+                        errors={errors}
                         defaultGetValueProps
-                        fieldValue={ _.get(fields, 'clientRequisite') }
-                        field='clientRequisite'
-                        className={ Styles.clientsInfoCol }
-                        disabled={ this.bodyUpdateIsForbidden() }
-                        initialValue={ _.get(
+                        fieldValue={_.get(fields, "clientRequisite")}
+                        field="clientRequisite"
+                        className={Styles.clientsInfoCol}
+                        disabled={this.bodyUpdateIsForbidden()}
+                        initialValue={_.get(
                             fetchedOrder,
-                            'order.clientRequisiteId',
-                        ) }
+                            "order.clientRequisiteId",
+                        )}
                         formItem
-                        label={ this._getLocalization(
-                            'add_order_form.client_requisites',
-                        ) }
-                        formItemLayout={ formVerticalLayout }
-                        getFieldDecorator={ getFieldDecorator }
-                        placeholder={ this._getLocalization(
-                            'add_order_form.select_requisites',
-                        ) }
-                        options={ selectedClient.requisites }
-                        optionValue='id'
-                        optionLabel='name'
-                        optionDisabled='disabled'
+                        label={this._getLocalization(
+                            "add_order_form.client_requisites",
+                        )}
+                        formItemLayout={formVerticalLayout}
+                        getFieldDecorator={getFieldDecorator}
+                        placeholder={this._getLocalization(
+                            "add_order_form.select_requisites",
+                        )}
+                        options={selectedClient.requisites}
+                        optionValue="id"
+                        optionLabel="name"
+                        optionDisabled="disabled"
                     />
                 </div>
             </div>
@@ -441,88 +454,88 @@ export default class OrderFormBody extends Component {
             _.find(selectedClient.vehicles, { id: selectedVehicleId });
 
         return (
-            <div className={ Styles.bodyColumn }>
-                <div className={ Styles.bodyColumnContent }>
-                    <div className={ Styles.contentWrapper }>
-                        <div className={ Styles.comboFieldWrapper }>
-                            <FormattedMessage id='add_order_form.car' />
-                            <div className={ Styles.comboField }>
-                                { _.get(selectedVehicle, 'number') && (
+            <div className={Styles.bodyColumn}>
+                <div className={Styles.bodyColumnContent}>
+                    <div className={Styles.contentWrapper}>
+                        <div className={Styles.comboFieldWrapper}>
+                            <FormattedMessage id="add_order_form.car" />
+                            <div className={Styles.comboField}>
+                                {_.get(selectedVehicle, "number") && (
                                     <div>
-                                        <FormattedMessage id='add_client_form.number' />
-                                        : { _.get(selectedVehicle, 'number') }
+                                        <FormattedMessage id="add_client_form.number" />
+                                        : {_.get(selectedVehicle, "number")}
                                     </div>
-                                ) }
-                                { _.get(selectedVehicle, 'vin') && (
+                                )}
+                                {_.get(selectedVehicle, "vin") && (
                                     <div>
-                                        <FormattedMessage id='add_client_form.vin' />
-                                        : { _.get(selectedVehicle, 'vin') }
+                                        <FormattedMessage id="add_client_form.vin" />
+                                        : {_.get(selectedVehicle, "vin")}
                                     </div>
-                                ) }
+                                )}
                             </div>
                         </div>
                         <DecoratedSelect
-                            errors={ errors }
+                            errors={errors}
                             defaultGetValueProps
-                            fieldValue={ _.get(fields, 'clientVehicle') }
-                            field='clientVehicle'
-                            disabled={ this.bodyUpdateIsForbidden() }
+                            fieldValue={_.get(fields, "clientVehicle")}
+                            field="clientVehicle"
+                            disabled={this.bodyUpdateIsForbidden()}
                             initialValue={
-                                _.get(fetchedOrder, 'order.clientVehicleId') ||
+                                _.get(fetchedOrder, "order.clientVehicleId") ||
                                 (this.bodyUpdateIsForbidden()
                                     ? void 0
-                                    : _.get(selectedClient, 'vehicles[0].id'))
+                                    : _.get(selectedClient, "vehicles[0].id"))
                             }
                             formItem
                             hasFeedback
-                            colon={ false }
-                            className={ Styles.comboFieldSelect }
-                            getFieldDecorator={ getFieldDecorator }
-                            rules={ this.requiredFieldRules }
-                            optionDisabled='enabled'
+                            colon={false}
+                            className={Styles.comboFieldSelect}
+                            getFieldDecorator={getFieldDecorator}
+                            rules={this.requiredFieldRules}
+                            optionDisabled="enabled"
                         >
-                            { this.state.clientVehiclesOptions }
+                            {this.state.clientVehiclesOptions}
                         </DecoratedSelect>
                     </div>
-                    { selectedVehicle && (
-                        <div className={ Styles.iconsCol }>
+                    {selectedVehicle && (
+                        <div className={Styles.iconsCol}>
                             <Link
-                                to={ `${book.client}/${selectedClient.clientId}` }
+                                to={`${book.client}/${selectedClient.clientId}`}
                             >
-                                <Icon type='edit' className={ Styles.editIcon } />
+                                <Icon type="edit" className={Styles.editIcon} />
                             </Link>
                             <CopyToClipboard
-                                text={ `${selectedVehicle.make} ${
+                                text={`${selectedVehicle.make} ${
                                     selectedVehicle.model
-                                }` }
+                                }`}
                             >
                                 <Icon
-                                    type='copy'
-                                    theme='outlined'
-                                    className={ Styles.copyIcon }
+                                    type="copy"
+                                    theme="outlined"
+                                    className={Styles.copyIcon}
                                 />
                             </CopyToClipboard>
                         </div>
-                    ) }
+                    )}
                 </div>
                 <DecoratedInputNumber
-                    errors={ errors }
+                    errors={errors}
                     defaultGetValueProps
-                    field='odometerValue'
-                    fieldValue={ _.get(fields, 'odometerValue') }
-                    disabled={ this.bodyUpdateIsForbidden() }
+                    field="odometerValue"
+                    fieldValue={_.get(fields, "odometerValue")}
+                    disabled={this.bodyUpdateIsForbidden()}
                     formItem
-                    initialValue={ _.get(fetchedOrder, 'order.odometerValue') }
-                    colon={ false }
-                    label={ this._getLocalization('add_order_form.odometr') }
-                    formItemLayout={ formVerticalLayout }
-                    getFieldDecorator={ getFieldDecorator }
-                    className={ Styles.odometr }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.provide_odometr',
-                    ) }
-                    rules={ this.requiredNumberFieldRules }
-                    min={ 0 }
+                    initialValue={_.get(fetchedOrder, "order.odometerValue")}
+                    colon={false}
+                    label={this._getLocalization("add_order_form.odometr")}
+                    formItemLayout={formVerticalLayout}
+                    getFieldDecorator={getFieldDecorator}
+                    className={Styles.odometr}
+                    placeholder={this._getLocalization(
+                        "add_order_form.provide_odometr",
+                    )}
+                    rules={this.requiredNumberFieldRules}
+                    min={0}
                 />
             </div>
         );
@@ -534,55 +547,55 @@ export default class OrderFormBody extends Component {
         const { getFieldDecorator } = this.props.form;
 
         return (
-            <div className={ Styles.commentsBlock }>
+            <div className={Styles.commentsBlock}>
                 <DecoratedTextArea
-                    errors={ errors }
+                    errors={errors}
                     defaultGetValueProps
-                    fieldValue={ _.get(fields, 'comment') }
-                    className={ this.state.recommendationStyles.value }
+                    fieldValue={_.get(fields, "comment")}
+                    className={this.state.recommendationStyles.value}
                     formItem
                     formItemLayout={
                         this.state.recommendationStyles.prevRecommendation
                             ? formCommentLayout
                             : fromExpandedCommentLayout
                     }
-                    colon={ false }
-                    label={ this._getLocalization(
-                        'add_order_form.client_comments',
-                    ) }
-                    disabled={ isForbidden(user, ACCESS_ORDER_COMMENTS) }
-                    getFieldDecorator={ getFieldDecorator }
-                    field='comment'
-                    initialValue={ _.get(fetchedOrder, 'order.comment') }
-                    rules={ this.recommendationRules }
-                    placeholder={ this._getLocalization(
-                        'add_order_form.client_comments',
-                    ) }
-                    autosize={ this._recommendationAutoSize }
+                    colon={false}
+                    label={this._getLocalization(
+                        "add_order_form.client_comments",
+                    )}
+                    disabled={isForbidden(user, ACCESS_ORDER_COMMENTS)}
+                    getFieldDecorator={getFieldDecorator}
+                    field="comment"
+                    initialValue={_.get(fetchedOrder, "order.comment")}
+                    rules={this.recommendationRules}
+                    placeholder={this._getLocalization(
+                        "add_order_form.client_comments",
+                    )}
+                    autosize={this._recommendationAutoSize}
                 />
-                { this.state.recommendationStyles.prevRecommendation && (
+                {this.state.recommendationStyles.prevRecommendation && (
                     <DecoratedTextArea
-                        errors={ errors }
-                        className={ Styles.comment }
+                        errors={errors}
+                        className={Styles.comment}
                         formItem
-                        formItemLayout={ formRecommendationLayout }
-                        colon={ false }
-                        label={ this._getLocalization(
-                            'add_order_form.prev_order_recommendations',
-                        ) }
+                        formItemLayout={formRecommendationLayout}
+                        colon={false}
+                        label={this._getLocalization(
+                            "add_order_form.prev_order_recommendations",
+                        )}
                         disabled
-                        getFieldDecorator={ getFieldDecorator }
-                        field='prevRecommendation'
+                        getFieldDecorator={getFieldDecorator}
+                        field="prevRecommendation"
                         initialValue={
                             this.state.recommendationStyles.prevRecommendation
                         }
-                        rules={ this.recommendationRules }
-                        placeholder={ this._getLocalization(
-                            'add_order_form.client_comments',
-                        ) }
-                        autosize={ this._prevRecommendationAutoSize }
+                        rules={this.recommendationRules}
+                        placeholder={this._getLocalization(
+                            "add_order_form.client_comments",
+                        )}
+                        autosize={this._prevRecommendationAutoSize}
                     />
-                ) }
+                )}
             </div>
         );
     };

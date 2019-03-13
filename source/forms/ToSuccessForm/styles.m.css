@@ -19,3 +19,17 @@
 .text {
     margin-top: 14px;
 }
+
+.hiddenFormItem:global(.ant-form-item) {
+    display: none;
+}
+
+.styledFormItem :global(.ant-form-item) {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+.styledFormItem :global(.ant-input-number) {
+    width: 100%;
+}

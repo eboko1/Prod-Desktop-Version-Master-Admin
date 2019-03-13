@@ -4,20 +4,26 @@
     "to_success.sms1": "Your order at ",
     "to_success.sms2": " completed, you can pick up your car",
     "to_success.create_new": "Create new application with reminder",
-    "to_success.send_message": "Would you like to send an SMS to the client?"
+    "to_success.send_message": "Would you like to send an SMS to the client?",
+    "to_success.pay": "Pay",
+    "to_success.partial_payment": "Partial payment"
   },
   "ru": {
     "to_success.title": "Выполнить заказ?",
     "to_success.sms1": "Ваш заказа на ",
     "to_success.sms2": " выполнен, Вы можете забрать авто",
     "to_success.create_new": "Создать обращение с напоминанием о новом заезде",
-    "to_success.send_message": "Хотите отправить SMS клиенту о выполнении заказе?"
+    "to_success.send_message": "Хотите отправить SMS клиенту о выполнении заказе?",
+    "to_success.pay": "Оплатить",
+    "to_success.partial_payment": "Частичная оплата"
   },
   "uk": {
     "to_success.title": "Виконати наряд-замовлння?",
     "to_success.sms1": "Ваше замовлення на ",
     "to_success.sms2": " виконано, Ви можете забрати авто",
     "to_success.create_ne": "Створити звернення з нагадуванням про новий заїзд",
-    "to_success.send_message": "Бажаєте відправити SMS кліенту про виконате замовлення"
+    "to_success.send_message": "Бажаєте відправити SMS кліенту про виконате замовлення",
+    "to_success.pay": "Сплатити",
+    "to_success.partial_payment": "Часткова оплата"
   }
 }

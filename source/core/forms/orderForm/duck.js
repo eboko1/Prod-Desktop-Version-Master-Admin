@@ -331,6 +331,10 @@ export const selectCashSum = createSelector(
     },
 );
 
+//export const remainSum = createSelector(
+//    moduleSelector, {()
+//)
+
 export const selectCashFlowFilters = createSelector(
     moduleSelector,
     ({ cashOrders }) => {

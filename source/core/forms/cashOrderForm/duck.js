@@ -233,6 +233,9 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state.forms[ moduleName ];
 
+export const selectCashOrderNextId = state =>
+    state.forms.cashOrderForm.fields.nextId;
+
 export const selectCounterpartyList = state =>
     state.forms.cashOrderForm.counterpartyList;
 

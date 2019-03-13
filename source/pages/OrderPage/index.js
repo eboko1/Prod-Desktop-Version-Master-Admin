@@ -35,7 +35,6 @@ import {OrderForm, MobileRecordForm} from 'forms';
 import {ReportsDropdown, ChangeStatusDropdown} from 'components';
 import {
     CancelReasonModal,
-    ToSuccessModal,
     ConfirmOrderExitModal,
     OrderTaskModal,
 } from 'modals';
@@ -194,8 +193,7 @@ class OrderPage extends Component {
         const { id } = this.props.match.params;
         form.validateFieldsAndScroll([ ...requiredFields, ...commentsFields ], (errors) => {
       
-            if (!errors) {
-               
+            if (!errors) {            
                 const orderFormEntity = {...orderFormValues, selectedClient};
             
                 const redirectToDashboard = _.get(
@@ -497,7 +495,7 @@ class OrderPage extends Component {
                                 modals={ MODALS }
                                 isMobile={ isMobile }
                             />
-                        )}
+                        ) }
                         <ReportsDropdown
                             user={ this.props.user }
                             orderId={ id }
@@ -576,6 +574,7 @@ class OrderPage extends Component {
                         location={ false }
                         fetchOrderForm={ fetchOrderForm }
                         fetchOrderTask={ fetchOrderTask }
+                        onStatusChange={ this._onStatusChange }
                     />
                 </ResponsiveView>
                 <CancelReasonModal
@@ -603,12 +602,7 @@ class OrderPage extends Component {
                     closeModal={ () => this._close() }
                     redirect={ () => this._redirect() }
                 />
-                <ToSuccessModal
-                    wrappedComponentRef={ this.saveFormRef }
-                    visible={ modal }
-                    handleToSuccessModalSubmit={ this._onStatusChange }
-                    resetModal={ () => resetModal() }
-                />
+
                 <OrderTaskModal
                     wrappedComponentRef={ this.saveOrderTaskFormRef }
                     orderTaskEntity={ this.props.orderTaskEntity }
