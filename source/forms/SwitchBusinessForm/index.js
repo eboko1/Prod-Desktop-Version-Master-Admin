@@ -52,10 +52,7 @@ export class SwitchBusinessForm extends Component {
                     renderItem={ item => (
                         <List.Item
                             onClick={ () =>
-                                setBusiness({
-                                    businessId:   item.businessId,
-                                    businessName: item.name,
-                                })
+                                setBusiness(item.businessId)
                             }
                         >
                             <List.Item.Meta
