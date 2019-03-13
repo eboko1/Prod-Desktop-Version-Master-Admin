@@ -50,7 +50,7 @@ function* onSetModalSaga({ payload }) {
 function* setBusinessSaga() {
     while (true) {
         const {
-            payload: { businessId, businessName },
+            payload: businessId,
         } = yield take(SET_BUSINESS);
 
         const user = yield call(
@@ -63,7 +63,7 @@ function* setBusinessSaga() {
             },
         );
         const token = yield select(selectToken);
-        yield put(authenticate({ ...user, businessName, token }));
+        yield put(authenticate({ ...user, token }));
 
         yield put(go(book.dashboard));
     }
