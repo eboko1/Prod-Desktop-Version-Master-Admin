@@ -238,7 +238,7 @@ const setIntl = language => {
 };
 
 let persistedLocale =
-    localStorage.getItem('@@my.carbook.pro/locale') || fallbackLocale;
+    localStorage.getItem('_my.carbook.pro/locale') || fallbackLocale;
 
 if (persistedLocale === 'ua') {
     persistedLocale = 'uk';

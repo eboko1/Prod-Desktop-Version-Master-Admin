@@ -57,7 +57,7 @@
     "cash-order-form.select_employee": "Выберите сотрудника",
     "cash-order-form.select_supplier": "Выберите поставщика",
     "cash-order-form.type.INCOME": "Приходный",
-    "cash-order-form.type.EXPENSE": "Рассходный",
+    "cash-order-form.type.EXPENSE": "Расходный",
     "cash-order-form.type.ADJUSTMENT": "Корректирующий",
     "cash-order-form.counterparty.CLIENT": "Клиент",
     "cash-order-form.counterparty.EMPLOYEE": "Сотрудник",

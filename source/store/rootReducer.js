@@ -89,6 +89,7 @@ const appState = {
     forms,
     [ businessPackageModule ]:      businessPackageReducer,
     [ callsModule ]:                callsReducer,
+    [ cashModule ]:                 cashReducer,
     [ chartModule ]:                chartReducer,
     [ clientModule ]:               clientReducer,
     [ clientOrdersModule ]:         clientOrdersReducer,
@@ -97,6 +98,7 @@ const appState = {
     [ dashboardModule ]:            dashboardReducer,
     [ employeeScheduleModule ]:     employeeScheduleReducer,
     [ employeesModule ]:            employeesReducer,
+    [ errorMessageModule ]:         errorMessageReducer,
     [ managerRoleModule ]:          managerRoleReducer,
     [ modalsModule ]:               modalsReducer,
     [ myTasksModule ]:              myTasksReducer,
@@ -108,12 +110,10 @@ const appState = {
     [ roleModule ]:                 roleReducer,
     [ searchModule ]:               searchReducer,
     [ servicesSuggestionsModule ]:  servicesSuggestionsReducer,
-    [ tecDocActionsModule ]:        tecDocActionsReducer,
-    [ vehicleNumberHistoryModule ]: vehicleNumberHistoryReducer,
-    [ cashModule ]:                 cashReducer,
     [ suppliersModule ]:            suppliersReducer,
+    [ tecDocActionsModule ]:        tecDocActionsReducer,
     [ uiModule ]:                   uiReducer,
-    [ errorMessageModule ]:         errorMessageReducer,
+    [ vehicleNumberHistoryModule ]: vehicleNumberHistoryReducer,
 };
 
 const appReducer = combineReducers({ ...persistedState, ...appState });

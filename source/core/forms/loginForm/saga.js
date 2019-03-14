@@ -20,7 +20,7 @@ export function* loginFormSaga({ payload: { login, password } }) {
             'POST',
             'login',
             null,
-            { login, password },
+            { login: login.trim(), password: password.trim() },
             { handleErrorInternally: true },
         );
 
