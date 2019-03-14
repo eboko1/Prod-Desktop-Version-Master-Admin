@@ -50,17 +50,17 @@ const formItemLayout = {
     wrapperCol: { span: 15 },
 };
 
-const expandedWrapperFormItemLayout = {
-    wrapperCol: { span: 24 },
-};
+//const expandedWrapperFormItemLayout = {
+//    wrapperCol: { span: 24 },
+//};
 
 const reverseFromItemLayout = {
     labelCol: { span: 15 },
     wrapperCol: { span: 7 },
 };
 
-const getActiveFieldsMap = activeCashOrder =>
-    _.pickBy(
+const getActiveFieldsMap = activeCashOrder => {
+    return _.pickBy(
         _.pick(activeCashOrder, [
             "id",
             "type",
@@ -77,6 +77,7 @@ const getActiveFieldsMap = activeCashOrder =>
         ]),
         value => !_.isNil(value),
     );
+};
 
 @withReduxForm2({
     name: "cashOrderForm",
@@ -150,53 +151,33 @@ export class CashOrderForm extends Component {
             fetchCashboxes();
         }
     }
-    /* eslint-disable complexity */
+
     componentDidUpdate(prevProps) {
         const {
             editMode,
             fields,
-            form: { getFieldValue, setFieldsValue },
+            form: { getFieldValue, setFieldsValue, resetFields },
         } = this.props;
-
         if (
             _.get(prevProps, "fields.counterpartyType.value") !==
             _.get(fields, "counterpartyType.value")
         ) {
             const counterparty = getFieldValue("counterpartyType");
+            this._fetchCounterpartyFormData(counterparty);
+
+            if (!editMode) {
+                this._setNullToFieldsValue();
+            }
+
             if (editMode) {
                 const activeCounterparty = _.get(
                     this._getActiveCounterpartyType(),
                     "counterpartyType",
                 );
                 if (counterparty !== activeCounterparty) {
-                    switch (activeCounterparty) {
-                        case cashOrderCounterpartyTypes.CLIENT:
-                            this._fetchCounterpartyFormData(counterparty);
-                            setFieldsValue({ clientId: null, orderId: null });
-                            break;
-
-                        case cashOrderCounterpartyTypes.EMPLOYEE:
-                            this._fetchCounterpartyFormData(counterparty);
-                            setFieldsValue({ employeeId: null });
-                            break;
-
-                        case cashOrderCounterpartyTypes.BUSINESS_SUPPLIER:
-                            this._fetchCounterpartyFormData(counterparty);
-                            setFieldsValue({ businessSupplierId: null });
-                            break;
-
-                        case cashOrderCounterpartyTypes.OTHER:
-                            this._fetchCounterpartyFormData(counterparty);
-                            setFieldsValue({ otherCounterparty: null });
-                            break;
-
-                        default:
-                            break;
-                    }
+                    this._setNullToFieldsValue();
                 }
             }
-
-            this._fetchCounterpartyFormData(counterparty);
         }
 
         if (
@@ -216,6 +197,15 @@ export class CashOrderForm extends Component {
             });
         }
     }
+
+    _setNullToFieldsValue = () =>
+        this.props.form.setFieldsValue({
+            clientId: null,
+            orderId: null,
+            employeeId: null,
+            businessSupplierId: null,
+            otherCounterparty: null,
+        });
 
     _fetchCounterpartyFormData = counterparty => {
         switch (counterparty) {
@@ -360,6 +350,7 @@ export class CashOrderForm extends Component {
         this.props.form.setFieldsValue({ clientId: client.clientId });
         this.props.onClientSelect(client);
     };
+
     _handleOrderSelection = order => {
         this.props.form.setFieldsValue({ orderId: order.id });
         this.props.onOrderSelect(order);
@@ -407,6 +398,8 @@ export class CashOrderForm extends Component {
 
         const cashOrderId = getFieldValue("id");
 
+        //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
+        getFieldDecorator("clientId", { initialValue: void 0 });
         return (
             <Form onSubmit={this._submit}>
                 <div className={Styles.cashOrderId}>
@@ -473,6 +466,7 @@ export class CashOrderForm extends Component {
                                 }),
                             },
                         ]}
+                        initialValue={_.get(cashboxes, "[0].id")}
                         getPopupContainer={trigger => trigger.parentNode}
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}
@@ -526,6 +520,7 @@ export class CashOrderForm extends Component {
                                 }),
                             },
                         ]}
+                        initialValue={cashOrderCounterpartyTypes.CLIENT}
                         getPopupContainer={trigger => trigger.parentNode}
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}
@@ -692,11 +687,13 @@ export class CashOrderForm extends Component {
             _.get(client, "clientId") || this.state.editing
                 ? _.get(client, "clientId") || getFieldValue("clientId")
                 : _.get(activeCashOrder, "clientId");
+
         const clientSearch = this._renderClientSearch();
         const clientSearchTable = this._renderClientSearchTable();
         const clientField = this._renderClientField();
         const orderSearchField = this._renderOrderSearch();
         const orderField = this._renderOrderField();
+
         const isActive =
             getFieldValue("counterpartyType") ===
             cashOrderCounterpartyTypes.CLIENT;
@@ -705,51 +702,59 @@ export class CashOrderForm extends Component {
             <>
                 {!printMode &&
                     (isActive ? (
-                        <Form.Item
-                            className={Styles.switcher}
-                            {...reverseFromItemLayout}
-                            label={formatMessage({
-                                id: "cash-order-form.search_by_client_or_order",
-                            })}
-                        >
-                            <RadioGroup
-                                onChange={e => this._setClientSearchType(e)}
-                                value={this.state.clientSearchType}
-                                disabled={printMode}
+                        <>
+                            <Form.Item
+                                className={Styles.switcher}
+                                {...reverseFromItemLayout}
+                                label={formatMessage({
+                                    id:
+                                        "cash-order-form.search_by_client_or_order",
+                                })}
                             >
-                                <Radio value="client">
-                                    {formatMessage({
-                                        id: "cash-order-form.switch_by_client",
-                                    })}
-                                </Radio>
-                                <Radio value="order">
-                                    {formatMessage({
-                                        id: "cash-order-form.switch_by_order",
-                                    })}
-                                </Radio>
-                            </RadioGroup>
-                        </Form.Item>
+                                <RadioGroup
+                                    onChange={e => this._setClientSearchType(e)}
+                                    value={this.state.clientSearchType}
+                                    disabled={printMode}
+                                >
+                                    <Radio value="client">
+                                        {formatMessage({
+                                            id:
+                                                "cash-order-form.switch_by_client",
+                                        })}
+                                    </Radio>
+                                    <Radio value="order">
+                                        {formatMessage({
+                                            id:
+                                                "cash-order-form.switch_by_order",
+                                        })}
+                                    </Radio>
+                                </RadioGroup>
+                            </Form.Item>
+
+                            {this.state.clientSearchType === "client" && (
+                                <>
+                                    {Boolean(!clientId) && clientSearch}
+                                    {Boolean(!clientId) && clientSearchTable}
+                                    {clientField}
+                                    {Boolean(clientId) && Boolean(!orderId) && (
+                                        <CashSelectedClientOrdersTable
+                                            orders={this.props.orders}
+                                            selectOrder={
+                                                this._handleOrderSelection
+                                            }
+                                        />
+                                    )}
+                                    {orderField}
+                                </>
+                            )}
+                            {this.state.clientSearchType === "order" && (
+                                <>
+                                    {Boolean(!orderId) && orderSearchField}
+                                    {orderField}
+                                </>
+                            )}
+                        </>
                     ) : null)}
-                {this.state.clientSearchType === "client" && (
-                    <>
-                        {Boolean(!clientId) && clientSearch}
-                        {Boolean(!clientId) && clientSearchTable}
-                        {clientField}
-                        {Boolean(clientId) && Boolean(!orderId) && (
-                            <CashSelectedClientOrdersTable
-                                orders={this.props.orders}
-                                selectOrder={this._handleOrderSelection}
-                            />
-                        )}
-                        {orderField}
-                    </>
-                )}
-                {this.state.clientSearchType === "order" && (
-                    <>
-                        {Boolean(!orderId) && orderSearchField}
-                        {orderField}
-                    </>
-                )}
             </>
         );
     };
@@ -793,12 +798,23 @@ export class CashOrderForm extends Component {
                     defaultGetValueProps
                     fieldValue={_.get(fields, "searchClientQuery")}
                     formItem
+                    label={formatMessage({
+                        id: "cash-order-form.search",
+                    })}
                     formItemLayout={formItemLayout}
                     getFieldDecorator={getFieldDecorator}
                     placeholder={formatMessage({
                         id: "add_order_form.search_client.placeholder",
                     })}
                     className={this._hiddenFormItemStyles(isActive)}
+                    rules={[
+                        {
+                            required: isActive,
+                            message: formatMessage({
+                                id: "required_field",
+                            }),
+                        },
+                    ]}
                 />
             </div>
         );
@@ -821,6 +837,7 @@ export class CashOrderForm extends Component {
             _.get(client, "clientId") || this.state.editing
                 ? _.get(client, "clientId") || getFieldValue("clientId")
                 : _.get(activeCashOrder, "clientId");
+
         const name =
             _.get(client, "name") || _.get(activeCashOrder, "clientName");
         const surname =
@@ -856,9 +873,14 @@ export class CashOrderForm extends Component {
     _renderOrderSearch = () => {
         const {
             onOrderSearch,
-            form: { getFieldDecorator },
+            form: { getFieldDecorator, getFieldValue },
             intl: { formatMessage },
         } = this.props;
+
+        const isActive =
+            getFieldValue("counterpartyType") ===
+                cashOrderCounterpartyTypes.CLIENT &&
+            this.state.clientSearchType === "order";
 
         return (
             <DecoratedSearch
@@ -866,13 +888,24 @@ export class CashOrderForm extends Component {
                 field="orderId"
                 getFieldDecorator={getFieldDecorator}
                 formItem
+                label={formatMessage({
+                    id: "cash-order-form.search",
+                })}
+                formItemLayout={formItemLayout}
                 placeholder={formatMessage({
                     id: "cash-order-form.search_by_order",
                 })}
                 onSearch={onOrderSearch}
-                formItemLayout={formItemLayout}
                 className={Styles.styledFormItem}
                 enterButton
+                rules={[
+                    {
+                        required: isActive,
+                        message: formatMessage({
+                            id: "required_field",
+                        }),
+                    },
+                ]}
             />
         );
     };
@@ -893,6 +926,7 @@ export class CashOrderForm extends Component {
             _.get(order, "clientId") || this.state.editing
                 ? _.get(order, "clientId") || getFieldValue("clientId")
                 : _.get(activeCashOrder, "clientId");
+
         const num = _.get(order, "num") || _.get(activeCashOrder, "orderNum");
         const clientName =
             _.get(order, "clientName") || _.get(activeCashOrder, "clientName");
@@ -969,7 +1003,10 @@ export class CashOrderForm extends Component {
                 placeholder={formatMessage({
                     id: "cash-order-form.select_employee",
                 })}
-                formItemLayout={expandedWrapperFormItemLayout}
+                label={formatMessage({
+                    id: "cash-order-form.counterparty.EMPLOYEE",
+                })}
+                formItemLayout={formItemLayout}
                 getFieldDecorator={getFieldDecorator}
                 getPopupContainer={trigger => trigger.parentNode}
                 rules={[
@@ -1013,6 +1050,9 @@ export class CashOrderForm extends Component {
                 placeholder={formatMessage({
                     id: "cash-order-form.select_supplier",
                 })}
+                label={formatMessage({
+                    id: "cash-order-form.counterparty.BUSINESS_SUPPLIER",
+                })}
                 formItemLayout={formItemLayout}
                 getFieldDecorator={getFieldDecorator}
                 getPopupContainer={trigger => trigger.parentNode}
@@ -1053,7 +1093,10 @@ export class CashOrderForm extends Component {
             <DecoratedInput
                 field="otherCounterparty"
                 formItem
-                formItemLayout={expandedWrapperFormItemLayout}
+                label={formatMessage({
+                    id: "cash-order-form.counterparty.OTHER",
+                })}
+                formItemLayout={formItemLayout}
                 getFieldDecorator={getFieldDecorator}
                 rules={[
                     {

@@ -56,7 +56,6 @@
     color: var(--not_complete);
 }
 
-
 .ordersTable table::-webkit-scrollbar-thumb {
     background-color: var(--primary);
 }
@@ -75,4 +74,8 @@
 
 .ordersTable :global(.ant-table-tbody > tr > th) {
     word-break: none;
+}
+
+.linkRow {
+    cursor: pointer;
 }

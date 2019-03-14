@@ -16,10 +16,9 @@ import {
 
 // own
 import { columnsConfig } from "./config";
+import Styles from "./styles.m.css";
 
 const mapStateToProps = state => {
-    // console.log('→ orders', _.get(selectClientOrders(state), 'orders[0].id'));
-
     return {
         clientOrders: selectClientOrders(state),
         filters: selectClientOrdersFilters(state),
@@ -74,23 +73,23 @@ export class CashSelectedClientOrdersTable extends Component {
             },
         };
 
-        return (
+        return orders ? (
             <Table
                 size="small"
                 columns={this.columns}
                 pagination={pagination}
-                // pagination={ this.pagination }
-                dataSource={orders}
-                // dataSource={ clientOrders.orders }
-                // loading={ cashOrdersFetching }
+                dataSource={orders.filter(
+                    ({ remainingSum }) => remainingSum !== 0,
+                )}
                 onRow={order => ({
                     onClick: () => this._onRowClick(order),
                 })}
+                rowClassName={() => Styles.linkRow}
                 locale={{
                     emptyText: <FormattedMessage id="no_data" />,
                 }}
                 scroll={{ x: 720 }}
             />
-        );
+        ) : null;
     }
 }

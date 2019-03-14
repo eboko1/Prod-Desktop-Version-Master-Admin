@@ -201,6 +201,18 @@ export function columnsConfig(
         ),
     };
 
+    const remainingSumCol = {
+        title:     <FormattedMessage id='orders.remaining_sum' />,
+        dataIndex: 'remainingSum',
+        key:       'remainingSum',
+        width:     140,
+        render:    remainingSum => (
+            <Numeral currency={ formatMessage({ id: 'currency' }) } nullText='0'>
+                { remainingSum }
+            </Numeral>
+        ),
+    };
+
     const responsibleCol = {
         title:     <FormattedMessage id='orders.responsible' />,
         dataIndex: 'managerName',
@@ -422,6 +434,7 @@ export function columnsConfig(
                 successDatetimeCol,
                 clientCol,
                 sumCol,
+                remainingSumCol,
                 responsibleCol,
                 sourceCol,
                 reviewCol,
@@ -510,7 +523,7 @@ export function scrollConfig(activeRoute) {
         case '/orders/progress':
             return { x: 1340, y: '50vh' }; //1440 - 80 - 20
         case '/orders/success':
-            return { x: 1720, y: '50vh' }; //1820
+            return { x: 1860, y: '50vh' }; //1820
         case '/orders/reviews':
             return { x: 1520, y: '50vh' }; //1620
         case '/orders/invitations':
