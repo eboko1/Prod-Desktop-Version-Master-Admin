@@ -27,6 +27,8 @@ import CashSettingsPage from './CashSettingsPage';
 import CashFlowPage from './CashFlowPage';
 import CashBankPage from './CashBankPage';
 import SuppliersPage from './SuppliersPage';
+import PaymentPage from './PaymentPage';
+import SubscriptionPage from './SubscriptionPage';
 
 export {
     DashboardPage,
@@ -58,4 +60,6 @@ export {
     CashFlowPage,
     CashBankPage,
     SuppliersPage,
+    PaymentPage,
+    SubscriptionPage,
 };

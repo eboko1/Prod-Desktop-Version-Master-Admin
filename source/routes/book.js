@@ -56,6 +56,11 @@ const book = Object.freeze({
     feedbackId:          '/feedback/:id',
     calls:               '/calls',
     //
+    // Payment
+    //
+    paymentPage:         '/payment',
+    subscriptionPage:    '/subscription',
+    //
     // Settings
     //
     packagePage:         '/packages',

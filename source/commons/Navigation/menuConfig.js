@@ -1,6 +1,6 @@
 // proj
 import book from 'routes/book';
-import {permissions, isForbidden, isAdmin} from 'utils';
+import { permissions, isForbidden, isAdmin } from 'utils';
 
 export default {
     sections: [
@@ -27,9 +27,8 @@ export default {
                 {
                     key:      '/mytasks',
                     link:     book.myTasksPage,
-                    disabled: user =>
-                        isForbidden(user, permissions.GET_TASKS),
-                    name: 'navigation.mytasks',
+                    disabled: user => isForbidden(user, permissions.GET_TASKS),
+                    name:     'navigation.mytasks',
                 },
             ],
         },
@@ -56,27 +55,30 @@ export default {
                 {
                     key:      '/suppliers',
                     link:     book.suppliersPage,
-                    disabled: user => isForbidden(user, permissions.ACCESS_SUPPLIERS),
-                    name:     'navigation.suppliers',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_SUPPLIERS),
+                    name: 'navigation.suppliers',
                 },
             ],
         },
         {
             key:      'accounting',
-            iconType: 'wallet',
+            iconType: 'audit',
             name:     'navigation.accounting',
             items:    [
                 {
                     key:      '/cash/flow',
-                    disabled: user => isForbidden(user, permissions.ACCESS_ACCOUNTING),
-                    link:     book.cashFlowPage,
-                    name:     'navigation.flow_of_money',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link: book.cashFlowPage,
+                    name: 'navigation.flow_of_money',
                 },
                 {
                     key:      '/cash/bank',
-                    disabled: user => isForbidden(user, permissions.ACCESS_ACCOUNTING),
-                    link:     book.cashBankPage,
-                    name:     'navigation.cash_bank',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link: book.cashBankPage,
+                    name: 'navigation.cash_bank',
                 },
             ],
         },
@@ -112,6 +114,26 @@ export default {
                 },
             ],
         },
+        /* Payment submenu */
+        {
+            key:      'payment',
+            iconType: 'wallet',
+            name:     'navigation.payment',
+            items:    [
+                {
+                    key:  '/payment',
+                    //disabled: user => !isForbidden(user, permissions.DEMO),
+                    link: book.paymentPage,
+                    name: 'navigation.payment',
+                },
+                {
+                    key:  '/subscription',
+                    //disabled: user => !isForbidden(user, permissions.DEMO),
+                    link: book.subscriptionPage,
+                    name: 'navigation.subscription',
+                },
+            ],
+        },
         /* Settings submenu */
         {
             key:      'settings',
@@ -127,9 +149,10 @@ export default {
                 },
                 {
                     key:      '/cash/settings',
-                    disabled: user => isForbidden(user, permissions.ACCESS_ACCOUNTING),
-                    link:     book.cashSettingsPage,
-                    name:     'navigation.cash_settings',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_ACCOUNTING),
+                    link: book.cashSettingsPage,
+                    name: 'navigation.cash_settings',
                 },
                 {
                     key:      '/requisites',
