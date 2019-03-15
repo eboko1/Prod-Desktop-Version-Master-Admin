@@ -3,6 +3,9 @@ import React, { forwardRef, memo } from 'react';
 import { InputNumber, Form } from 'antd';
 import _ from 'lodash';
 
+// proj
+import { numeralFormatter, numeralParser } from 'utils';
+
 // own
 const FormItem = Form.Item;
 
@@ -29,8 +32,8 @@ export const DecoratedInputNumber = memo(
             initialValue,
             onChange,
 
-            formatter,
-            parser,
+            // formatter,
+            //     parser,
             style,
 
             placeholder,
@@ -55,8 +58,8 @@ export const DecoratedInputNumber = memo(
                 disabled={ disabled }
                 onChange={ onChange }
                 placeholder={ placeholder }
-                formatter={ formatter }
-                parser={ parser }
+                formatter={ props.formatter || numeralFormatter }
+                parser={ props.parser || numeralParser }
                 ref={ ref }
                 onKeyDown={ e => e.key === 'Enter' && onPressEnter() }
             />,

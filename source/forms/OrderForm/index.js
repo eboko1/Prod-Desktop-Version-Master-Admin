@@ -20,7 +20,7 @@ import {
 import { resetModal } from "core/modals/duck";
 import { initOrderTasksForm } from "core/forms/orderTaskForm/duck";
 
-import { AddClientModal } from "modals";
+import { AddClientModal, ToSuccessModal } from "modals";
 
 import { withReduxForm2, isForbidden, permissions } from "utils";
 
@@ -46,20 +46,21 @@ import Styles from "./styles.m.css";
         fetchTecdocDetailsSuggestions,
         clearTecdocDetailsSuggestions,
     },
+
     mapStateToProps: state => ({
-        modal: state.modals.modal,
+        // modal: state.modals.modal,
+        // user: state.auth,
         addClientFormData: state.forms.addClientForm.data,
         authentificatedManager: state.auth.id,
-        user: state.auth,
-        suggestionsFetching: state.ui.suggestionsFetching,
-        detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
-        stationLoads: state.forms.orderForm.stationLoads,
-        schedule: state.forms.orderForm.schedule,
-        cashSum: selectCashSum(state),
         cashFlowFilters: selectCashFlowFilters(state),
+        cashSum: selectCashSum(state),
+        detailsSuggestionsFetching: state.ui.detailsSuggestionsFetching,
+        schedule: state.forms.orderForm.schedule,
+        stationLoads: state.forms.orderForm.stationLoads,
+        suggestionsFetching: state.ui.suggestionsFetching,
     }),
 })
-export class OrderForm extends Component {
+export class OrderForm extends React.PureComponent {
     state = {
         formValues: {},
     };
@@ -100,6 +101,10 @@ export class OrderForm extends Component {
         const formValues = this.props.form.getFieldsValue();
         const newClientVehicleId = formValues.clientVehicle;
         const oldClientVehicleId = prevFormValues.clientVehicle;
+
+        const { price: priceDetails } = detailsStats(
+            _.get(formValues, "details", []),
+        );
 
         if (newClientVehicleId !== oldClientVehicleId && newClientVehicleId) {
             const newClientVehicle = this._getClientVehicle(newClientVehicleId);
@@ -253,6 +258,7 @@ export class OrderForm extends Component {
             "clientPhone",
             "searchClientQuery",
         ]);
+
         const orderFormHeaderFields = _.pick(formFieldsValues, [
             "stationLoads[0].beginTime",
             "stationLoads[0].station",
@@ -270,6 +276,7 @@ export class OrderForm extends Component {
         const { price: priceDetails } = detailsStats(
             _.get(formFieldsValues, "details", []),
         );
+
         const { price: priceServices } = servicesStats(
             _.get(formFieldsValues, "services", []),
             allServices,
@@ -280,35 +287,43 @@ export class OrderForm extends Component {
 
         const tabs = this._renderTabs(formFieldsValues);
 
+        const detailsTotalPrice =
+            priceDetails - priceDetails * (detailsDiscount / 100);
+        const servicesTotalPrice =
+            priceServices - priceServices * (servicesDiscount / 100);
+
+        const totalPrice = Math.round(detailsTotalPrice + servicesTotalPrice);
+        const remainPrice = Math.round(totalPrice - cashSum);
+
         return (
             <Form className={Styles.form} layout="horizontal">
                 <OrderFormHeader
-                    errors={errors}
-                    priceServices={priceServices}
-                    priceDetails={priceDetails}
-                    detailsDiscount={detailsDiscount}
-                    servicesDiscount={servicesDiscount}
-                    location={location}
+                    allServices={allServices}
                     authentificatedManager={authentificatedManager}
-                    fields={orderFormHeaderFields}
+                    availableHours={availableHours}
+                    cashFlowFilters={cashFlowFilters}
+                    cashSum={cashSum}
                     deliveryDate={deliveryDate}
+                    detailsDiscount={detailsDiscount}
+                    employees={employees}
+                    errors={errors}
+                    fetchedOrder={fetchedOrder}
+                    fields={orderFormHeaderFields}
+                    form={form}
+                    location={location}
+                    managers={managers}
+                    remainPrice={remainPrice}
+                    requisites={requisites}
+                    schedule={schedule}
+                    servicesDiscount={servicesDiscount}
+                    stations={stations}
+                    totalHours={totalHours}
+                    totalPrice={totalPrice}
+                    user={user}
                     zeroStationLoadBeginDate={zeroStationLoadBeginDate}
                     zeroStationLoadBeginTime={zeroStationLoadBeginTime}
                     zeroStationLoadDuration={zeroStationLoadDuration}
                     zeroStationLoadStation={zeroStationLoadStation}
-                    fetchedOrder={fetchedOrder}
-                    schedule={schedule}
-                    form={form}
-                    stations={stations}
-                    availableHours={availableHours}
-                    managers={managers}
-                    employees={employees}
-                    allServices={allServices}
-                    requisites={requisites}
-                    user={user}
-                    totalHours={totalHours}
-                    cashSum={cashSum}
-                    cashFlowFilters={cashFlowFilters}
                 />
                 <OrderFormBody
                     errors={errors}
@@ -336,6 +351,15 @@ export class OrderForm extends Component {
                     visible={this.props.modal}
                     resetModal={this.props.resetModal}
                     addClientFormData={this.props.addClientFormData}
+                />
+                <ToSuccessModal
+                    wrappedComponentRef={this._saveFormRef}
+                    visible={this.props.modal}
+                    onStatusChange={this.props.onStatusChange}
+                    resetModal={this.props.resetModal}
+                    remainPrice={remainPrice}
+                    clientId={selectedClient.clientId}
+                    orderId={orderId}
                 />
             </Form>
         );

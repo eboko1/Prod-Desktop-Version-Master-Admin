@@ -22,12 +22,14 @@ export function columnsConfig() {
         // fiDeviceLightEvent
         render:    (_, order) => (
             <div>
-                <Link
+                <a
                     className={ Styles.orderLink }
-                    to={ `${book.order}/${order.id}` }
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    href={ `${__APP_URL__}${book.order}/${order.id}` }
                 >
                     { order.num }
-                </Link>
+                </a>
                 <OrderStatusIcon status={ order.status } />
                 { order.serviceNames && (
                     <div className={ Styles.serviceNames }>
@@ -104,15 +106,13 @@ export function columnsConfig() {
         ),
     };
 
-    // const testCol = {
-    //     title:     'test',
-    //     dataIndex: 'id',
-    //     render:    (_, order) => {
-    //         console.log('→ table order', order);
-
-    //         return <div>test</div>;
-    //     },
-    // };
+    const remainingSumCol = {
+        title:     <FormattedMessage id='orders.remaining_sum' />,
+        dataIndex: 'remainingSum',
+        key:       'remainingSum',
+        width:     140,
+        render:    remainingSum => <Numeral nullText='0'>{ remainingSum }</Numeral>,
+    };
 
     return [
         // testCol,
@@ -120,24 +120,6 @@ export function columnsConfig() {
         beginDatetimeCol,
         clientCol,
         sumCol,
+        remainingSumCol,
     ];
 }
-// {order.serviceNames && (
-//     <div className={ Styles.serviceNames }>
-//         { [ ...new Set(order.serviceNames) ].join(', ') }
-//     </div>
-// )}
-// {order.recommendation && (
-//     <div className={ Styles.recommendation }>
-//         { order.recommendation }
-//     </div>
-// )}
-// {(order.cancelReason ||
-//     order.cancelStatusReason ||
-//     order.cancelStatusOwnReason) && (
-//     <div className={ Styles.cancelReason }>
-//         { /* <div>{ order.cancelReason }</div> */ }
-//         <div>{ order.cancelStatusReason }</div>
-//         <div>{ order.cancelStatusOwnReason }</div>
-//     </div>
-// )}

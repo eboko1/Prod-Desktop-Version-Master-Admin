@@ -57,7 +57,7 @@
     "cash-order-form.select_employee": "Выберите сотрудника",
     "cash-order-form.select_supplier": "Выберите поставщика",
     "cash-order-form.type.INCOME": "Приходный",
-    "cash-order-form.type.EXPENSE": "Рассходный",
+    "cash-order-form.type.EXPENSE": "Расходный",
     "cash-order-form.type.ADJUSTMENT": "Корректирующий",
     "cash-order-form.counterparty.CLIENT": "Клиент",
     "cash-order-form.counterparty.EMPLOYEE": "Сотрудник",
@@ -65,7 +65,8 @@
     "cash-order-form.counterparty.OTHER": "Другое",
     "cash-order-form.increase": "Приход",
     "cash-order-form.decrease": "Расход",
-    "cash-order-form.other_counterparty": "Введите контрагента"
+    "cash-order-form.other_counterparty": "Введите контрагента",
+    "cash-order-form.other_counterparty.placeholder": "Укажите контрагента"
   },
   "uk": {
     "cash-order-form.cash_order_num": "№ ордера",

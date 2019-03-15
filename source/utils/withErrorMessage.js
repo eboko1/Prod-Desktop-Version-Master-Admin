@@ -19,6 +19,7 @@ import { getDisplayName } from 'utils';
 const _errorMessages = Object.freeze({
     CLIENT_VEHICLE_DISABLED: 'CLIENT_VEHICLE_DISABLED',
     MANAGER_DISABLED:        'MANAGER_DISABLED',
+    INVALID_CREDENTIALS:     'INVALID_CREDENTIALS',
 });
 
 const ErrorStatusCode = styled.span`

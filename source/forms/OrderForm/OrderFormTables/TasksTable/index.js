@@ -220,7 +220,7 @@ class TasksTable extends Component {
                                 : []
                         }
                         size='small'
-                        scroll={ { x: 2000, y: 200 } }
+                        scroll={ { x: 2000 } }
                         columns={ columns }
                         pagination={ false }
                         expandedRowClassName={ () => Styles.ExpandedRow }

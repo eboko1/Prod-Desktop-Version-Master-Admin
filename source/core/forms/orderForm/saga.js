@@ -26,35 +26,36 @@ import book from 'routes/book';
 
 // own
 import {
-    fetchOrderTaskSuccess,
-    fetchOrderFormSuccess,
+    createInviteOrderSuccess,
+    createOrderCopySuccess,
+    createOrderSuccess,
     fetchAddOrderFormSuccess,
+    fetchAvailableHours,
     fetchAvailableHoursSuccess,
     fetchOrderForm,
-    fetchAvailableHours,
+    fetchOrderFormSuccess,
+    fetchOrderTaskSuccess,
+    fetchTecdocDetailsSuggestionsSuccess,
+    fetchTecdocSuggestionsSuccess,
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
-    createOrderSuccess,
-    updateOrderSuccess,
     returnToOrdersPage,
-    createInviteOrderSuccess,
-    fetchTecdocSuggestionsSuccess,
-    fetchTecdocDetailsSuggestionsSuccess,
-    createOrderCopySuccess,
+    selectCashSum,
+    updateOrderSuccess,
     CREATE_INVITE_ORDER,
     CREATE_ORDER_COPY,
-    FETCH_ORDER_FORM,
-    FETCH_ADD_ORDER_FORM,
-    FETCH_ORDER_TASK,
-    ON_CHANGE_ORDER_FORM,
-    ON_CHANGE_CLIENT_SEARCH_QUERY,
     CREATE_ORDER,
-    UPDATE_ORDER,
-    RETURN_TO_ORDERS_PAGE,
+    FETCH_ADD_ORDER_FORM,
     FETCH_AVAILABLE_HOURS,
-    FETCH_TECDOC_SUGGESTIONS,
+    FETCH_ORDER_FORM,
+    FETCH_ORDER_TASK,
     FETCH_TECDOC_DETAILS_SUGGESTIONS,
+    FETCH_TECDOC_SUGGESTIONS,
+    ON_CHANGE_CLIENT_SEARCH_QUERY,
+    ON_CHANGE_ORDER_FORM,
+    RETURN_TO_ORDERS_PAGE,
+    UPDATE_ORDER,
 } from './duck';
 
 export function* fetchTecdocDetailsSuggestionsSaga() {
@@ -188,6 +189,7 @@ export function* updateOrderSaga() {
                 },
             } = yield take(UPDATE_ORDER);
             const mergedOrder = options ? { ...order, ...options } : order;
+            const cashSum = yield select(selectCashSum);
             yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder, {
                 handleErrorInternally: true,
             });

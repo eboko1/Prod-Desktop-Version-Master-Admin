@@ -23,6 +23,7 @@ export default class CashOrderModal extends Component {
                 visible={ visible === MODALS.CASH_ORDER }
                 footer={ null }
                 onCancel={ resetModal }
+                destroyOnClose
             >
                 <CashOrderForm
                     resetModal={ resetModal }

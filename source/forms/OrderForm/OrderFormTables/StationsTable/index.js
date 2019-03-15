@@ -25,8 +25,9 @@ export default class StationsTable extends Component {
         };
     }
 
-    _bodyUpdateIsForbidden = () =>
-        isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
 
     componentDidUpdate() {
         const loads = _.get(this.props.fields, 'stationLoads', []);
@@ -37,6 +38,9 @@ export default class StationsTable extends Component {
             this._handleAdd();
         }
     }
+
+    _bodyUpdateIsForbidden = () =>
+        isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
 
     _onDelete = redundantKey => {
         const { keys } = this.state;
@@ -51,10 +55,6 @@ export default class StationsTable extends Component {
         const { keys } = this.state;
         this.setState({ keys: [ ...keys, this.uuid++ ] });
     };
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
-    }
 
     render() {
         const {

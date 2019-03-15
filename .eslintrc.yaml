@@ -25,6 +25,7 @@ globals:
   __LOCAL__: false
   __DEV__: false
   __PROD__: false
+  __APP_URL__: false
   __API_URL__: false
   __OLD_APP_URL__: false
 

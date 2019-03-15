@@ -8,6 +8,7 @@ const { dispatch } = store;
 // tools
 export const numeralFormatter = value =>
     `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+
 export const numeralParser = value => `${value}`.replace(/\$\s?|(\s)/g, '');
 
 // Components utils

@@ -12,7 +12,12 @@ import {
     DecoratedInputNumber,
     DecoratedCheckbox,
 } from 'forms/DecoratedFields';
-import { permissions, isForbidden } from 'utils';
+import {
+    permissions,
+    isForbidden,
+    numeralFormatter,
+    numeralParser,
+} from 'utils';
 
 // own
 import Styles from './styles.m.css';
@@ -66,10 +71,6 @@ class ServicesTable extends Component {
             this.setState({ options });
         }
     }
-
-    // common formatter & parser for DecoratedInputNumber
-    _formatter = value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
-    _parser = value => `${value}`.replace(/\$\s?|(\s)/g, '');
 
     // TODO: move into utils
     _getLocalization(key) {
@@ -220,8 +221,6 @@ class ServicesTable extends Component {
                         }
                         getFieldDecorator={ this.props.form.getFieldDecorator }
                         min={ 0 }
-                        formatter={ this._formatter }
-                        parser={ this._parser }
                     />
                 ),
             },
@@ -256,8 +255,6 @@ class ServicesTable extends Component {
                             this._isFieldDisabled(key) || editServicesForbidden
                         }
                         min={ 0 }
-                        formatter={ this._formatter }
-                        parser={ this._parser }
                     />
                 ),
             },
@@ -289,8 +286,6 @@ class ServicesTable extends Component {
                         }
                         min={ 0.1 }
                         step={ 0.1 }
-                        formatter={ this._formatter }
-                        parser={ this._parser }
                     />
                 ),
             },
@@ -299,9 +294,10 @@ class ServicesTable extends Component {
                 key:    'sum',
                 render: ({ key }) => {
                     const services = _.get(fields, 'services', []);
-                    const value =
+                    const value = (
                         _.get(services, [ key, 'servicePrice' ], 0) *
-                        _.get(services, [ key, 'serviceCount' ], 1);
+                        _.get(services, [ key, 'serviceCount' ], 1)
+                    ).toFixed(2);
 
                     return (
                         <InputNumber
@@ -309,8 +305,8 @@ class ServicesTable extends Component {
                             disabled
                             defaultValue={ 0 }
                             value={ value }
-                            formatter={ this._formatter }
-                            parser={ this._parser }
+                            formatter={ numeralFormatter }
+                            parser={ numeralParser }
                         />
                     );
                 },

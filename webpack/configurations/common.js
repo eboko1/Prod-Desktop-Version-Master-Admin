@@ -24,6 +24,7 @@ export const generateCommonConfiguration = () => {
     const BUILD_ENV = process.env.BUILD_ENV;
 
     const {
+        __APP_URL__,
         __API_URL__,
         __OLD_APP_URL__,
         __TECDOC_IMAGES_URL__,
@@ -39,8 +40,15 @@ export const generateCommonConfiguration = () => {
             publicPath: '/',
         },
         resolve: {
-            extensions: [ '.mjs', '.js', '.json', '.css', '.m.css', '.less' ],
-            modules:    [ source, 'node_modules' ],
+            extensions: [
+                '.mjs',
+                '.js',
+                '.json',
+                '.css',
+                '.m.css',
+                '.less', 
+            ],
+            modules: [ source, 'node_modules' ],
         },
         optimization: {
             nodeEnv: process.env.NODE_ENV,
@@ -115,6 +123,7 @@ export const generateCommonConfiguration = () => {
                 __DEV__:               BUILD_ENV === 'development',
                 __STAGE__:             BUILD_ENV === 'stage',
                 __PROD__:              BUILD_ENV === 'production',
+                __APP_URL__:           JSON.stringify(__APP_URL__),
                 __API_URL__:           JSON.stringify(__API_URL__),
                 __OLD_APP_URL__:       JSON.stringify(__OLD_APP_URL__),
                 __TECDOC_IMAGES_URL__: JSON.stringify(__TECDOC_IMAGES_URL__),

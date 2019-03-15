@@ -182,8 +182,8 @@ export class BrandsForm extends Component {
                                 : []),
                         ],
                         value => value[idField],
-                    ).map(({ [idField]: id, name }) => (
-                        <Option value={id} key={String(id)}>
+                    ).map(({ [idField]: id, name }, index) => (
+                        <Option value={id} key={`${id}-${index}`}>
                             {name}
                         </Option>
                     ))}
@@ -330,7 +330,7 @@ export class BrandsForm extends Component {
 
         return (
             <Catcher>
-                <Row type="flex" align="inline" gutter={24}>
+                <Row type="flex" gutter={24}>
                     <Col span={6}>
                         <BusinessSearchField
                             selectStyles={{ width: "100%" }}
