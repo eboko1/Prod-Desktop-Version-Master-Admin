@@ -12,7 +12,13 @@ import {
     DecoratedInputNumber,
     LimitedDecoratedSelect,
 } from "forms/DecoratedFields";
-import { permissions, isForbidden, CachedInvoke } from "utils";
+import {
+    permissions,
+    isForbidden,
+    CachedInvoke,
+    numeralFormatter,
+    numeralParser,
+} from "utils";
 
 // own
 import Styles from "./styles.m.css";
@@ -327,8 +333,8 @@ export default class DetailsTable extends Component {
                                 this.props.form.getFieldDecorator
                             }
                             min={0}
-                            formatter={this._formatter}
-                            parser={this._parser}
+                            formatter={numeralFormatter}
+                            parser={numeralParser}
                         />
                     ),
                 },
@@ -362,8 +368,8 @@ export default class DetailsTable extends Component {
                                 this._getDefaultValue(key, "detailPrice") || 0
                             }
                             min={0}
-                            formatter={this._formatter}
-                            parser={this._parser}
+                            formatter={numeralFormatter}
+                            parser={numeralParser}
                         />
                     ),
                 },
@@ -398,8 +404,8 @@ export default class DetailsTable extends Component {
                             }
                             min={0.1}
                             step={0.1}
-                            formatter={this._formatter}
-                            parser={this._parser}
+                            formatter={numeralFormatter}
+                            parser={numeralParser}
                         />
                     ),
                 },
@@ -409,9 +415,10 @@ export default class DetailsTable extends Component {
                     key: "sum",
                     render: ({ key }) => {
                         const details = this.props.details;
-                        const value =
+                        const value = (
                             _.get(details, [key, "detailPrice"], 0) *
-                            _.get(details, [key, "detailCount"], 0);
+                            _.get(details, [key, "detailCount"], 0)
+                        ).toFixed(2);
 
                         return (
                             <InputNumber
@@ -419,8 +426,8 @@ export default class DetailsTable extends Component {
                                 disabled
                                 defaultValue={0}
                                 value={value}
-                                formatter={this._formatter}
-                                parser={this._parser}
+                                formatter={numeralFormatter}
+                                parser={numeralParser}
                             />
                         );
                     },
@@ -558,9 +565,6 @@ export default class DetailsTable extends Component {
             }
         }
     }
-
-    _formatter = value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-    _parser = value => `${value}`.replace(/\$\s?|(\s)/g, "");
 
     _getLocalization(key) {
         if (!this._localizationMap[key]) {

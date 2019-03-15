@@ -291,8 +291,9 @@ export class OrderForm extends React.PureComponent {
             priceDetails - priceDetails * (detailsDiscount / 100);
         const servicesTotalPrice =
             priceServices - priceServices * (servicesDiscount / 100);
-        const totalPrice = detailsTotalPrice + servicesTotalPrice;
-        const remainPrice = totalPrice - cashSum;
+
+        const totalPrice = Math.round(detailsTotalPrice + servicesTotalPrice);
+        const remainPrice = Math.round(totalPrice - cashSum);
 
         return (
             <Form className={Styles.form} layout="horizontal">

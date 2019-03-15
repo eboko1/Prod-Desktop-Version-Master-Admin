@@ -8,7 +8,7 @@ function calculateStats(entries) {
     );
     const count = entries.length;
 
-    return { price, count };
+    return { price: price.toFixed(2), count };
 }
 
 // count sum and total hours for SERVICES tab
@@ -39,16 +39,16 @@ export const servicesStats = (selectedServices, allServices) => {
         15,
     );
 
-    const totalServicesProfit = {
-        totalServicesProfit: selectedSimpleServices.reduce(
+    const totalServicesProfit = selectedSimpleServices
+        .reduce(
             (accumulator, { servicesProfit }) => accumulator + servicesProfit,
             0,
-        ),
-    };
+        )
+        .toFixed(2);
 
     return {
         ...calculateStats(selectedSimpleServices),
-        ...totalServicesProfit,
+        totalServicesProfit,
         totalHours: (Math.ceil(totalHours / 60 * 2) || 1) / 2,
     };
 };
@@ -74,15 +74,15 @@ export const detailsStats = selectedDetails => {
         })
         .value();
 
-    const totalDetailsProfit = {
-        totalDetailsProfit: selectedSimpleDetails.reduce(
+    const totalDetailsProfit = selectedSimpleDetails
+        .reduce(
             (accumulator, { detailsProfit }) => accumulator + detailsProfit,
             0,
-        ),
-    };
+        )
+        .toFixed(2);
 
     return {
         ...calculateStats(selectedSimpleDetails),
-        ...totalDetailsProfit,
+        totalDetailsProfit,
     };
 };
