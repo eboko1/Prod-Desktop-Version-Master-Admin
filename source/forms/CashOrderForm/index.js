@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from "react";
-import { Form, Select, Button, Radio, Icon } from "antd";
+import { Form, Select, Button, Radio, Icon, message } from "antd";
 import { injectIntl } from "react-intl";
 import _ from "lodash";
 import moment from "moment";
@@ -116,6 +116,8 @@ export class CashOrderForm extends Component {
         sumTypeRadio: null,
         clientSearchType: "client",
         editing: false,
+        errorValidationPanel: false,
+        timerId: null,
     };
 
     static getDerivedStateFromProps(props, state) {
@@ -286,13 +288,17 @@ export class CashOrderForm extends Component {
         const { form, createCashOrder, resetModal, editMode } = this.props;
 
         form.validateFields((err, values) => {
+            if (_.has(err, "clientId") || _.has(err, "orderId")) {
+                this._handleErrorValidationPanel();
+            }
+
             if (!err) {
                 const cashOrder = {
                     clientId: values.hasOwnProperty("clientId")
                         ? values.clientId
                         : null,
                     orderId: values.hasOwnProperty("orderId")
-                        ? values.clientId
+                        ? values.orderId
                         : null,
                     editMode,
                     ...values,
@@ -426,6 +432,29 @@ export class CashOrderForm extends Component {
     _resetClientCounterparty = () => {
         this.props.onClientReset();
         this.props.onClientFieldsReset();
+    };
+
+    _handleErrorValidationPanel = () => {
+        const setTimer = () => {
+            const timerId = setTimeout(() => {
+                this.setState(state => ({
+                    errorValidationPanel: !state.errorValidationPanel,
+                    timerId: null,
+                }));
+            }, 3000);
+            this.setState(() => ({ timerId: timerId }));
+        };
+
+        if (this.state.timerId) {
+            clearTimeout(this.state.timerId);
+            setTimer();
+            return;
+        }
+
+        this.setState(state => ({
+            errorValidationPanel: !state.errorValidationPanel,
+        }));
+        setTimer();
     };
 
     _hiddenFormItemStyles = type =>
@@ -700,6 +729,13 @@ export class CashOrderForm extends Component {
                         disabled={printMode}
                     />
                 </div>
+                {this.state.errorValidationPanel && (
+                    <div className={Styles.error}>
+                        {formatMessage({
+                            id: "cash-order-form.client_and_order_are_required",
+                        })}
+                    </div>
+                )}
                 <div className={Styles.buttonGroup}>
                     <Button
                         type={printMode ? "primary" : "default"}
@@ -914,6 +950,7 @@ export class CashOrderForm extends Component {
             client,
             activeCashOrder,
             form: { getFieldDecorator, getFieldValue },
+            intl: { formatMessage },
         } = this.props;
 
         const isActive =
@@ -924,7 +961,7 @@ export class CashOrderForm extends Component {
             _.get(client, "name") || _.get(activeCashOrder, "clientName");
         const surname =
             _.get(client, "surname") || _.get(activeCashOrder, "clientSurname");
-            
+
         return (
             <div className={Styles.clientField}>
                 <DecoratedInput
@@ -933,6 +970,14 @@ export class CashOrderForm extends Component {
                     getFieldDecorator={getFieldDecorator}
                     cnStyles={Styles.hiddenField}
                     disabled
+                    rules={[
+                        {
+                            required: isActive,
+                            message: formatMessage({
+                                id: "required_field",
+                            }),
+                        },
+                    ]}
                 />
                 {isActive && (
                     <div className={this._hiddenResetStyles(clientId)}>
@@ -1000,6 +1045,7 @@ export class CashOrderForm extends Component {
             order,
             activeCashOrder,
             form: { getFieldDecorator, getFieldValue },
+            intl: { formatMessage },
         } = this.props;
 
         const orderId =
@@ -1028,6 +1074,14 @@ export class CashOrderForm extends Component {
                         getFieldDecorator={getFieldDecorator}
                         cnStyles={Styles.hiddenField}
                         disabled
+                        rules={[
+                            {
+                                required: isActive,
+                                message: formatMessage({
+                                    id: "required_field",
+                                }),
+                            },
+                        ]}
                     />
                     {isActive && (
                         <div className={this._hiddenResetStyles(orderId)}>
@@ -1049,6 +1103,14 @@ export class CashOrderForm extends Component {
                     getFieldDecorator={getFieldDecorator}
                     cnStyles={Styles.hiddenField}
                     disabled
+                    rules={[
+                        {
+                            required: isActive,
+                            message: formatMessage({
+                                id: "required_field",
+                            }),
+                        },
+                    ]}
                 />
                 {this.state.clientSearchType !== "client" && (
                     <div className={this._hiddenResetStyles(clientId)}>
