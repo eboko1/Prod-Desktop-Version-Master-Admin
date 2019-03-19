@@ -13,7 +13,12 @@ import { saveAs } from 'file-saver';
 import _ from 'lodash';
 
 //proj
-import { emitError, setCashOrderFetchingState } from 'core/ui/duck';
+import {
+    emitError,
+    setCashOrderFetchingState,
+    setClientOrdersFetchingState,
+    setClientFetchingState,
+} from 'core/ui/duck';
 import { fetchCashOrders } from 'core/cash/duck';
 import { fetchAPI } from 'utils';
 
@@ -22,32 +27,35 @@ import {
     fetchCashOrderNextIdSuccess,
     fetchCashOrderFormSuccess,
     createCashOrderSuccess,
-    editCashOrderSuccess,
     //
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
     onChangeClientSearchQuerySuccess,
+    onChangeOrderSearchQuery,
+    onChangeOrderSearchQueryRequest,
+    onChangeOrderSearchQuerySuccess,
     //
     onClientSelectSuccess,
     selectClient,
     selectClientOrdersFilters,
+    selectSearchOrdersResultFilters,
+    setOrderSearchFilters,
     //
     fetchSelectedClientOrdersSuccess,
+    fetchSearchOrderSuccess,
     //
-    onOrderSearchSuccess,
     printCashOrderSuccess,
     FETCH_CASH_ORDER_NEXT_ID,
     FETCH_CASH_ORDER_FORM,
     CREATE_CASH_ORDER,
-    EDIT_CASH_ORDER,
     PRINT_CASH_ORDER,
     ON_CHANGE_CASH_ORDER_FORM,
     ON_CHANGE_CLIENT_SEARCH_QUERY,
+    ON_CHANGE_ORDER_SEARCH_QUERY,
+    FETCH_SEARCH_ORDER,
     ON_CLIENT_SELECT,
     // ON_CLIENT_SELECT_SUCCESS,
     FETCH_SELECTED_CLIENT_ORDERS,
-    //
-    ON_ORDER_SEARCH,
 } from './duck';
 
 export function* fetchCashOrderNextIdSaga() {
@@ -88,6 +96,9 @@ export function* onChangeCashOrderFormSaga() {
             if (field === 'searchClientQuery') {
                 yield put(onChangeClientSearchQuery(payload[ field ].value));
             }
+            if (field === 'searchOrderQuery') {
+                yield put(onChangeOrderSearchQuery(payload[ field ].value));
+            }
         } catch (error) {
             yield put(emitError(error));
         }
@@ -111,17 +122,40 @@ export function* handleClientSearchSaga({ payload }) {
     }
 }
 
+export function* handleOrderSearchSaga({ payload }) {
+    try {
+        yield put(onChangeOrderSearchQueryRequest());
+        yield delay(1000);
+        yield put(setClientOrdersFetchingState(true));
+        yield put(setOrderSearchFilters({ query: payload }));
+        if (payload.length >= 1) {
+            const response = yield call(fetchAPI, 'GET', 'orders', {
+                sumRemains: true,
+                query:      payload,
+            });
+            yield put(onChangeOrderSearchQuerySuccess(response));
+        } else {
+            yield put(onChangeOrderSearchQuerySuccess([]));
+        }
+        yield put(setClientOrdersFetchingState(false));
+    } catch (error) {
+        yield put(emitError(error));
+    }
+}
+
 export function* handleClientSelectSaga() {
     while (true) {
         try {
             const {
                 payload: { clientId },
             } = yield take(ON_CLIENT_SELECT);
-
+            yield put(setClientOrdersFetchingState(true));
             const selectedClientOrders = yield call(fetchAPI, 'GET', 'orders', {
-                client: clientId,
+                sumRemains: true,
+                client:     clientId,
             });
             yield put(onClientSelectSuccess(selectedClientOrders));
+            yield put(setClientOrdersFetchingState(false));
         } catch (error) {
             yield put(emitError(error));
         }
@@ -132,15 +166,38 @@ export function* fetchSelectedClientOrders() {
     while (true) {
         try {
             yield take(FETCH_SELECTED_CLIENT_ORDERS);
+            yield put(setClientFetchingState(true));
             const filters = yield select(selectClientOrdersFilters);
             const { clientId } = yield select(selectClient);
 
             const data = yield call(fetchAPI, 'GET', 'orders', {
                 ...filters,
-                client: clientId,
+                sumRemains: true,
+                client:     clientId,
             });
 
             yield put(fetchSelectedClientOrdersSuccess(data));
+            yield put(setClientFetchingState(false));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
+export function* fetchSearchOrderSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_SEARCH_ORDER);
+            yield put(setClientFetchingState(true));
+            const filters = yield select(selectSearchOrdersResultFilters);
+
+            const data = yield call(fetchAPI, 'GET', 'orders', {
+                sumRemains: true,
+                ...filters,
+            });
+
+            yield put(fetchSearchOrderSuccess(data));
+            yield put(setClientFetchingState(false));
         } catch (error) {
             yield put(emitError(error));
         }
@@ -172,27 +229,6 @@ export function* createCashOrderSaga() {
         }
     }
 }
-// export function* editCashOrderSaga() {
-//     while (true) {
-//         try {
-//             // TODO: decompose creation to Edit
-//             const { payload } = yield take(EDIT_CASH_ORDER);
-//             const cashOrder = _.omit(payload, [ 'counterpartyType', 'sumType' ]);
-//             yield call(
-//                 fetchAPI,
-//                 'PUT',
-//                 `cash_orders/${payload.id}`,
-//                 null,
-//                 cashOrder,
-//             );
-//             yield put(editCashOrderSuccess());
-//         } catch (error) {
-//             yield put(emitError(error));
-//         } finally {
-//             yield put(fetchCashOrders());
-//         }
-//     }
-// }
 
 export function* printCashOrderSaga() {
     while (true) {
@@ -227,24 +263,6 @@ export function* printCashOrderSaga() {
     }
 }
 
-export function* onOrderSearchSaga() {
-    while (true) {
-        try {
-            const { payload } = yield take(ON_ORDER_SEARCH);
-
-            const response = yield call(fetchAPI, 'GET', 'orders', {
-                query: payload,
-            });
-            const selectedOrder = _.get(response, 'orders[0]');
-            yield put(onOrderSearchSuccess(selectedOrder));
-        } catch (error) {
-            yield put(emitError(error));
-        } finally {
-            yield nprogress.done();
-        }
-    }
-}
-
 export function* saga() {
     yield all([
         call(createCashOrderSaga),
@@ -252,9 +270,10 @@ export function* saga() {
         call(onChangeCashOrderFormSaga),
         call(handleClientSelectSaga),
         call(fetchSelectedClientOrders),
-        call(onOrderSearchSaga),
+        call(fetchSearchOrderSaga),
         call(printCashOrderSaga),
         takeLatest(FETCH_CASH_ORDER_NEXT_ID, fetchCashOrderNextIdSaga),
         takeLatest(ON_CHANGE_CLIENT_SEARCH_QUERY, handleClientSearchSaga),
+        takeLatest(ON_CHANGE_ORDER_SEARCH_QUERY, handleOrderSearchSaga),
     ]);
 }

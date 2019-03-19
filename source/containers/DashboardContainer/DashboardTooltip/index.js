@@ -7,6 +7,7 @@ class TooltipBox extends Component {
     render() {
         const {
             id,
+            num,
             clientName,
             clientSurname,
             clientPhone,
@@ -17,7 +18,6 @@ class TooltipBox extends Component {
             className,
             position,
         } = this.props;
-        // console.log('→ Tooltip props', this.props);
 
         return position ? (
             <div
@@ -35,16 +35,17 @@ class TooltipBox extends Component {
                 clientPhone ||
                 vehicleMakeName ||
                 vehicleModelName ||
-                comment ? 
+                comment ? (
                     <>
+                        { num }
                         <DashboardTooltipClient>
                             { clientName } { clientSurname }
                         </DashboardTooltipClient>
-                        {clientName !== clientPhone && <div>{ clientPhone }</div>}
+                        { clientName !== clientPhone && <div>{ clientPhone }</div> }
                         <DashboardTooltipVehicle>
                             { vehicleMakeName } { vehicleModelName } { vehicleYear }
                         </DashboardTooltipVehicle>
-                        {comment && (
+                        { comment && (
                             <div>
                                 <span style={ { color: 'red' } }>
                                     <FormattedMessage id='comment' />:
@@ -53,9 +54,9 @@ class TooltipBox extends Component {
                                     { comment }
                                 </DashboardTooltipComment>
                             </div>
-                        )}
+                        ) }
                     </>
-                    : (
+                    ) : (
                         <FormattedMessage id='no_data' />
                     ) }
             </div>

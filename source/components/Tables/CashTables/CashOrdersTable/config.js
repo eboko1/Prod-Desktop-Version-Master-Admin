@@ -153,24 +153,24 @@ export function columnsConfig(props) {
     };
 
     const actionsCol = {
-        dataIndex: 'actions',
-        width:     'auto',
-        render:    (key, cashOrder) => 
+        key:    'actions',
+        width:  'auto',
+        render: (key, cashOrder) => (
             <>
                 <Icon
                     type='printer'
                     onClick={ () => props.openPrint(cashOrder) }
                     className={ Styles.printIcon }
                 />
-                {props.openEdit ? (
+                { props.openEdit ? (
                     <Icon
                         type='edit'
                         onClick={ () => props.openEdit(cashOrder) }
                         className={ Styles.editIcon }
                     />
-                ) : null}
+                ) : null }
             </>
-        ,
+        ),
     };
 
     return [
