@@ -50,6 +50,7 @@ export class CashOrdersTable extends Component {
                     emptyText: <FormattedMessage id='no_data' />,
                 } }
                 scroll={ { x: 1000 } }
+                rowKey={ record => record.id }
             />
         );
     }
