@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { createSelector } from 'reselect';
 
 /**
  * Constants
@@ -316,19 +315,6 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
-            // case ON_ORDER_SEARCH_SUCCESS:
-            //     return {
-            //         ...state,
-            //         selectedOrder: payload,
-            //         fields:        {
-            //             ...state.fields,
-            //             clientId: {
-            //                 name:  'clientId',
-            //                 value: payload.clientId,
-            //             },
-            //         },
-            //     };
-
         default:
             return state;
     }
@@ -348,15 +334,6 @@ export const selectCounterpartyList = state =>
 
 export const selectClientOrders = state =>
     state.forms.cashOrderForm.selectedClient.clientOrders;
-
-export const selectClientFilteredOrders = createSelector(
-    selectClientOrders,
-    selectedClientOrder => {
-        const orders = _.get(selectedClientOrder, 'orders', []);
-
-        return orders.filter(({ remainingSum }) => remainingSum !== 0);
-    },
-);
 
 export const selectClientOrdersFilters = state =>
     state.forms.cashOrderForm.selectedClient.filters;

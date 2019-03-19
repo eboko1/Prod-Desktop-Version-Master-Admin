@@ -27,7 +27,6 @@ import {
     fetchCashOrderNextIdSuccess,
     fetchCashOrderFormSuccess,
     createCashOrderSuccess,
-    editCashOrderSuccess,
     //
     onChangeClientSearchQuery,
     onChangeClientSearchQueryRequest,
@@ -131,9 +130,9 @@ export function* handleOrderSearchSaga({ payload }) {
         yield put(setOrderSearchFilters({ query: payload }));
         if (payload.length >= 1) {
             const response = yield call(fetchAPI, 'GET', 'orders', {
-                query: payload,
+                sumRemains: true,
+                query:      payload,
             });
-            console.log('*** RESPONSE handleOrderSearchSaga', response);
             yield put(onChangeOrderSearchQuerySuccess(response));
         } else {
             yield put(onChangeOrderSearchQuerySuccess([]));
@@ -152,7 +151,8 @@ export function* handleClientSelectSaga() {
             } = yield take(ON_CLIENT_SELECT);
             yield put(setClientOrdersFetchingState(true));
             const selectedClientOrders = yield call(fetchAPI, 'GET', 'orders', {
-                client: clientId,
+                sumRemains: true,
+                client:     clientId,
             });
             yield put(onClientSelectSuccess(selectedClientOrders));
             yield put(setClientOrdersFetchingState(false));
@@ -172,7 +172,8 @@ export function* fetchSelectedClientOrders() {
 
             const data = yield call(fetchAPI, 'GET', 'orders', {
                 ...filters,
-                client: clientId,
+                sumRemains: true,
+                client:     clientId,
             });
 
             yield put(fetchSelectedClientOrdersSuccess(data));
@@ -189,9 +190,12 @@ export function* fetchSearchOrderSaga() {
             yield take(FETCH_SEARCH_ORDER);
             yield put(setClientFetchingState(true));
             const filters = yield select(selectSearchOrdersResultFilters);
-            console.log('**** FILTERS fetchSearchOrderSaga', filters);
-            const data = yield call(fetchAPI, 'GET', 'orders', filters);
-            console.log('**** DATA fetchSearchOrderSaga', data);
+
+            const data = yield call(fetchAPI, 'GET', 'orders', {
+                sumRemains: true,
+                ...filters,
+            });
+
             yield put(fetchSearchOrderSuccess(data));
             yield put(setClientFetchingState(false));
         } catch (error) {

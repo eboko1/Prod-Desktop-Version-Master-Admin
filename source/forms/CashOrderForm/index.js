@@ -23,7 +23,7 @@ import {
     printCashOrder,
     onOrderSelect,
     onClientFieldsReset,
-    selectClientFilteredOrders,
+    selectClientOrders,
 } from "core/forms/cashOrderForm/duck";
 
 import { Loader } from "commons";
@@ -102,12 +102,10 @@ const getActiveFieldsMap = activeCashOrder => {
             cashboxes: state.cash.cashboxes,
             client: selectClient(state),
             clientFetching: state.ui.clientFetching,
-            clientFilteredOrders: selectClientFilteredOrders(state),
             clientOrdersFetching: state.ui.clientOrdersFetching,
             counterpartyList: selectCounterpartyList(state),
             nextId: _.get(state, "forms.cashOrderForm.fields.nextId"),
             order: selectOrder(state),
-            //searchOrdersResult: state.forms.cashOrderForm.searchOrdersResult,
         };
     },
 })
@@ -163,25 +161,6 @@ export class CashOrderForm extends Component {
             fields,
             form: { getFieldValue, setFieldsValue, resetFields },
         } = this.props;
-        // console.log("→ UP CT", getFieldValue("counterpartyType"));
-        // console.log(
-        //     "→ UP activeCT",
-        //     _.get(this._getActiveCounterpartyType(), "counterpartyType"),
-        // );
-        // console.log(
-        //     "→ UP condition",
-        //     prevProps.client !== this.props.client ||
-        //         prevProps.order !== this.props.order,
-        // );
-        // if (
-        //     (prevProps.client !== this.props.client ||
-        //         prevProps.order !== this.props.order) &&
-        //     getFieldValue("counterpartyType") !==
-        //         _.get(this._getActiveCounterpartyType(), "counterpartyType")
-        // ) {
-        //     console.log("→ UP SET clientId", this._getClientId());
-        //     setFieldsValue({ clientId: this._getClientId() });
-        // }
 
         if (
             _.get(prevProps, "fields.counterpartyType.value") !==
@@ -200,10 +179,8 @@ export class CashOrderForm extends Component {
                     this._getActiveCounterpartyType(),
                     "counterpartyType",
                 );
-                console.log("→ counterparty", counterparty);
-                console.log("→ activeCounterparty", activeCounterparty);
+
                 if (counterparty !== activeCounterparty) {
-                    console.log("→ EDIT NULLED");
                     this._setNullToFieldsValue();
                 }
             }
@@ -228,7 +205,6 @@ export class CashOrderForm extends Component {
     }
 
     _setNullToFieldsValue = () => {
-        console.log("→ _setNullToFieldsValue");
         this.props.form.setFieldsValue({
             clientId: null,
             orderId: null,
@@ -310,9 +286,6 @@ export class CashOrderForm extends Component {
         const { form, createCashOrder, resetModal, editMode } = this.props;
 
         form.validateFields((err, values) => {
-            console.log("→ values", values);
-            console.log("→ values2", this.props.form.getFieldsValue());
-
             if (!err) {
                 const cashOrder = {
                     clientId: values.hasOwnProperty("clientId")
@@ -402,7 +375,6 @@ export class CashOrderForm extends Component {
             orderId: order.id,
             clientId: order.clientId,
         });
-        console.log("→ order", order);
         this.props.onOrderSelect(order);
     };
 
@@ -413,9 +385,6 @@ export class CashOrderForm extends Component {
             "counterpartyType",
         );
 
-        console.log("→ 111 counterparty", counterparty);
-        console.log("→ 222 activeCounterparty", activeCounterparty);
-        console.log("→ 333 type", type);
         if (type === cashOrderCounterpartyTypes.CLIENT) {
             this._resetClientCounterparty();
         }
@@ -482,9 +451,7 @@ export class CashOrderForm extends Component {
         } = this.props;
 
         const cashOrderId = getFieldValue("id");
-        console.log("→ this.props.fields", this.props.fields);
-        console.log("→ this.props.form.values", this.props.form);
-        // console.log("→0 render", initialValue);
+
         //https://github.com/ant-design/ant-design/issues/8880#issuecomment-402590493
         // getFieldDecorator("clientId", { initialValue: void 0 });
         return (
@@ -612,8 +579,6 @@ export class CashOrderForm extends Component {
                         formItemLayout={formItemLayout}
                         className={Styles.styledFormItem}
                         disabled={printMode}
-                        //TODO
-                        onChange={ev => console.log("change", ev)}
                         onSelect={type => this._setCounterpartyType(type)}
                     >
                         {Object.values(cashOrderCounterpartyTypes).map(type => (
@@ -788,7 +753,6 @@ export class CashOrderForm extends Component {
         const isActive =
             getFieldValue("counterpartyType") ===
             cashOrderCounterpartyTypes.CLIENT;
-        console.log("→searching", this.props.searchOrdersResult.searching);
 
         return (
             <>
@@ -843,10 +807,6 @@ export class CashOrderForm extends Component {
                                                     this._handleOrderSelection
                                                 }
                                                 selectedClient={client}
-                                                clientFilteredOrders={
-                                                    this.props
-                                                        .clientFilteredOrders
-                                                }
                                             />
                                         ))}
                                     {orderField}
@@ -875,7 +835,6 @@ export class CashOrderForm extends Component {
                                                 searchOrderQuery={this.props.form.getFieldValue(
                                                     "searchOrderQuery",
                                                 )}
-                                                // searching={this.props.searchOrdersResult.searching}
                                             />
                                         ) : null)}
                                     {orderField}
@@ -960,18 +919,12 @@ export class CashOrderForm extends Component {
         const isActive =
             getFieldValue("counterpartyType") ===
             cashOrderCounterpartyTypes.CLIENT;
-        // console.log('→ this.state', this.state);
-        // const searchEntity = this.props[this.state.clientSearchType];
-        // const clientId =
-        //     _.get(searchEntity, "clientId") || this.state.editing
-        //         ? _.get(searchEntity, "clientId") || getFieldValue("clientId")
-        //         : _.get(activeCashOrder, "clientId");
         const clientId = this._getClientId();
         const name =
             _.get(client, "name") || _.get(activeCashOrder, "clientName");
         const surname =
             _.get(client, "surname") || _.get(activeCashOrder, "clientSurname");
-        console.log("→1_renderClientField clientId", clientId);
+            
         return (
             <div className={Styles.clientField}>
                 <DecoratedInput
@@ -1048,17 +1001,13 @@ export class CashOrderForm extends Component {
             activeCashOrder,
             form: { getFieldDecorator, getFieldValue },
         } = this.props;
+
         const orderId =
             _.get(order, "id") || this.state.editing
                 ? _.get(order, "id") || getFieldValue("orderId")
                 : _.get(activeCashOrder, "orderId");
-        // const clientId =
-        //     _.get(order, "clientId") || this.state.editing
-        //         ? _.get(order, "clientId") || getFieldValue("clientId")
-        //         : _.get(activeCashOrder, "clientId");
         const clientId = this._getClientId();
-        console.log("→2 _renderOrderField clientId", clientId);
-        // this.props.form.setFieldsValue({ clientId });
+
         const num = _.get(order, "num") || _.get(activeCashOrder, "orderNum");
         const clientName =
             _.get(order, "clientName") || _.get(activeCashOrder, "clientName");

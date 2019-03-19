@@ -10,8 +10,6 @@ import {
     setSelectedClientOrdersFilters,
     fetchSelectedClientOrders,
     selectClientOrders,
-    selectClientOrdersFilters,
-    // selectClientFilteredOrders,
     setOrderSearchFilters,
     fetchSearchOrder,
     onOrderSelect,
@@ -42,18 +40,6 @@ export class CashSelectedClientOrdersTable extends Component {
         this.columns = columnsConfig({
             formatMessage: props.intl.formatMessage,
         });
-
-        //    this.pagination = {
-        //        pageSize: 25,
-        //        size: "large",
-        //        total: Math.ceil(_.get(props, "clientOrders.count", 0) / 25) * 25,
-        //        hideOnSinglePage: true,
-        //        current: _.get(props, "filters.page", 1),
-        //        onChange: page => {
-        //            this.props.setSelectedClientOrdersFilters({ page });
-        //            this.props.fetchSelectedClientOrders();
-        //        },
-        //    };
     }
 
     componentDidMount() {
@@ -75,28 +61,12 @@ export class CashSelectedClientOrdersTable extends Component {
     };
 
     render() {
-        // const { clientOrders, filters, orders } = this.props;
         const {
             searching,
             selectedClient,
             clientFilteredOrders,
             searchOrdersResult,
         } = this.props;
-        // console.log("→ this.props.selectedClient", this.props.selectedClient);
-        // console.log("→ searchOrdersResult", searchOrdersResult);
-        // console.log("→ orders", orders);
-        // console.log("→ filters", filters);
-        // console.log("→ filteredOrders", filteredOrders);
-        // console.log("→ this.props.type", this.props.type);
-        console.log(
-            "→ _.get(selectedClient",
-            _.get(selectedClient, "clientOrders.count"),
-        );
-        console.log("→ searchOrdersResult", _.get(searchOrdersResult, "count"));
-        console.log(
-            "→ searchOrdersResult",
-            _.get(searchOrdersResult, "filters.page"),
-        );
 
         const pagination = {
             pageSize: 25,
@@ -114,8 +84,7 @@ export class CashSelectedClientOrdersTable extends Component {
                     : _.get(searchOrdersResult, "filters.page", 1),
             onChange: page => this._setPage(page),
         };
-        //  console.log("→ filteredOrders", clientFilteredOrders);
-        //    console.log("→ searchOrdersResult", searchOrdersResult);
+
         return (
             <Table
                 size="small"
@@ -124,8 +93,8 @@ export class CashSelectedClientOrdersTable extends Component {
                 loading={searching}
                 dataSource={
                     this.props.type === "client"
-                        ? clientFilteredOrders
-                        : searchOrdersResult.orders
+                        ? _.get(selectedClient, "clientOrders.orders", [])
+                        : _.get(searchOrdersResult, "orders", [])
                 }
                 onRow={order => ({
                     onClick: () => this._onRowClick(order),
