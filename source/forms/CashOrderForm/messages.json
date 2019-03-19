@@ -31,7 +31,8 @@
     "cash-order-form.counterparty.OTHER": "Other",
     "cash-order-form.increase": "Earnings",
     "cash-order-form.decrease": "Spending",
-    "cash-order-form.other_counterparty.placeholder": "Enter your counterparty"
+    "cash-order-form.other_counterparty.placeholder": "Enter your counterparty",
+    "cash-order-form.client_and_order_are_required": "Client and order are required!"
   },
   "ru": {
     "cash-order-form.cash_order_num": "№ ордера",
@@ -66,7 +67,8 @@
     "cash-order-form.increase": "Приход",
     "cash-order-form.decrease": "Расход",
     "cash-order-form.other_counterparty": "Введите контрагента",
-    "cash-order-form.other_counterparty.placeholder": "Укажите контрагента"
+    "cash-order-form.other_counterparty.placeholder": "Укажите контрагента",
+    "cash-order-form.client_and_order_are_required": "Клиент и заказ обязательны!"
   },
   "uk": {
     "cash-order-form.cash_order_num": "№ ордера",
@@ -100,6 +102,7 @@
     "cash-order-form.counterparty.OTHER": "Інше",
     "cash-order-form.increase": "Дохід",
     "cash-order-form.decrease": "Витрата",
-    "cash-order-form.other_counterparty.placeholder": "Вкажіть контрагента"
+    "cash-order-form.other_counterparty.placeholder": "Вкажіть контрагента",
+    "cash-order-form.client_and_order_are_required": "Клієнт та замовлення обов'язкові!"
   }
 }
