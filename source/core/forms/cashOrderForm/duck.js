@@ -1,4 +1,5 @@
 import _ from 'lodash';
+
 /**
  * Constants
  * */
@@ -16,6 +17,9 @@ export const FETCH_CASH_ORDER_FORM_SUCCESS = `${prefix}/FETCH_CASH_ORDER_FORM_SU
 
 export const FETCH_SELECTED_CLIENT_ORDERS = `${prefix}/FETCH_SELECTED_CLIENT_ORDERS`;
 export const FETCH_SELECTED_CLIENT_ORDERS_SUCCESS = `${prefix}/FETCH_SELECTED_CLIENT_ORDERS_SUCCESS`;
+
+export const FETCH_SEARCH_ORDER = `${prefix}/FETCH_SEARCH_ORDER`;
+export const FETCH_SEARCH_ORDER_SUCCESS = `${prefix}/FETCH_SEARCH_ORDER_SUCCESS`;
 
 export const SET_SELECTED_CLIENT_ORDERS_FILTERS = `${prefix}/SET_SELECTED_CLIENT_ORDERS_FILTERS`;
 
@@ -35,6 +39,10 @@ export const ON_CHANGE_CLIENT_SEARCH_QUERY = `${prefix}/ON_CHANGE_CLIENT_SEARCH_
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_REQUEST`;
 export const ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS`;
 
+export const ON_CHANGE_ORDER_SEARCH_QUERY = `${prefix}/ON_CHANGE_ORDER_SEARCH_QUERY`;
+export const ON_CHANGE_ORDER_SEARCH_QUERY_REQUEST = `${prefix}/ON_CHANGE_ORDER_SEARCH_QUERY_REQUEST`;
+export const ON_CHANGE_ORDER_SEARCH_QUERY_SUCCESS = `${prefix}/ON_CHANGE_ORDER_SEARCH_QUERY_SUCCESS`;
+
 export const ON_CLIENT_SELECT = `${prefix}/ON_CLIENT_SELECT`;
 export const ON_CLIENT_SELECT_SUCCESS = `${prefix}/ON_CLIENT_SELECT_SUCCESS`;
 export const ON_CLIENT_RESET = `${prefix}/ON_CLIENT_RESET`;
@@ -42,8 +50,9 @@ export const ON_CLIENT_RESET = `${prefix}/ON_CLIENT_RESET`;
 export const ON_ORDER_SELECT = `${prefix}/ON_ORDER_SELECT`;
 export const ON_ORDER_RESET = `${prefix}/ON_ORDER_RESET`;
 
-export const ON_ORDER_SEARCH = `${prefix}/ON_ORDER_SEARCH`;
-export const ON_ORDER_SEARCH_SUCCESS = `${prefix}/ON_ORDER_SEARCH_SUCCESS`;
+export const SET_ORDER_SEARCH_FILTERS = `${prefix}/SET_ORDER_SEARCH_FILTERS`;
+
+export const ON_CLIENT_FIELDS_RESET = `${prefix}/ON_CLIENT_FIELDS_RESET`;
 
 function duplicate(clients) {
     return _.flatten(
@@ -72,10 +81,22 @@ function duplicate(clients) {
  * */
 
 const ReducerState = {
-    fields:              {},
+    fields: {
+        counterPartyType: {
+            name:  'counterPartyType',
+            value: 'CLIENT',
+        },
+    },
     searchClientsResult: {
         searching: true,
         clients:   [],
+    },
+    searchOrdersResult: {
+        searching: true,
+        orders:    [],
+        filters:   {
+            page: 1,
+        },
     },
     counterpartyList: [],
     selectedClient:   {
@@ -134,12 +155,33 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case ON_CHANGE_ORDER_SEARCH_QUERY_REQUEST:
+            return {
+                ...state,
+                searchOrdersResult: {
+                    ...state.searchOrdersResult,
+                    orders:    [],
+                    searching: true,
+                },
+            };
+
         case ON_CHANGE_CLIENT_SEARCH_QUERY_SUCCESS:
             return {
                 ...state,
                 searchClientsResult: {
                     clients:   duplicate(payload.clients),
                     searching: false,
+                },
+            };
+
+        case ON_CHANGE_ORDER_SEARCH_QUERY_SUCCESS:
+            return {
+                ...state,
+                searchOrdersResult: {
+                    ...state.searchOrdersResult,
+                    orders:    duplicate(payload.orders),
+                    searching: false,
+                    count:     payload.count,
                 },
             };
 
@@ -168,6 +210,17 @@ export default function reducer(state = ReducerState, action) {
         case ON_CLIENT_RESET: {
             return {
                 ...state,
+                fields: {
+                    ...state.fields,
+                    clientId: {
+                        name:  'clientId',
+                        value: null,
+                    },
+                    orderId: {
+                        name:  'orderId',
+                        value: null,
+                    },
+                },
                 selectedClient: ReducerState.selectedClient,
                 selectedOrder:  ReducerState.selectedOrder,
             };
@@ -178,7 +231,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 selectedClient: {
                     ...state.selectedClient,
-                    clientOrders: payload,
+                    clientOrders: { ...payload },
                 },
             };
 
@@ -188,9 +241,32 @@ export default function reducer(state = ReducerState, action) {
                 selectedOrder: payload,
             };
 
+        case ON_CLIENT_FIELDS_RESET:
+            return {
+                ...state,
+                fields: {
+                    ...state.fields,
+                    clientId: {
+                        name:  'clientId',
+                        value: null,
+                    },
+                    orderId: {
+                        name:  'orderId',
+                        value: null,
+                    },
+                },
+            };
+
         case ON_ORDER_RESET: {
             return {
                 ...state,
+                fields: {
+                    ...state.fields,
+                    orderId: {
+                        name:  'orderId',
+                        value: null,
+                    },
+                },
                 selectedOrder: ReducerState.selectedOrder,
             };
         }
@@ -207,19 +283,36 @@ export default function reducer(state = ReducerState, action) {
                 },
             };
 
+        case SET_ORDER_SEARCH_FILTERS:
+            return {
+                ...state,
+                searchOrdersResult: {
+                    ...state.searchOrdersResult,
+                    filters: {
+                        ...state.searchOrdersResult.filters,
+                        ...payload,
+                    },
+                },
+            };
+
         case FETCH_SELECTED_CLIENT_ORDERS_SUCCESS:
             return {
                 ...state,
                 selectedClient: {
                     ...state.selectedClient,
-                    ...payload,
+                    clientOrders: { ...payload },
                 },
             };
 
-        case ON_ORDER_SEARCH_SUCCESS:
+        case FETCH_SEARCH_ORDER_SUCCESS:
             return {
                 ...state,
-                selectedOrder: payload,
+                searchOrdersResult: {
+                    ...state.searchOrdersResult,
+                    orders:    duplicate(payload.orders),
+                    searching: false,
+                    count:     payload.count,
+                },
             };
 
         default:
@@ -244,6 +337,9 @@ export const selectClientOrders = state =>
 
 export const selectClientOrdersFilters = state =>
     state.forms.cashOrderForm.selectedClient.filters;
+
+export const selectSearchOrdersResultFilters = state =>
+    state.forms.cashOrderForm.searchOrdersResult.filters;
 
 export const selectClient = state => state.forms.cashOrderForm.selectedClient;
 
@@ -346,6 +442,25 @@ export const onChangeClientSearchQuerySuccess = data => ({
     payload: data,
 });
 
+export const onChangeOrderSearchQuery = searchQuery => ({
+    type:    ON_CHANGE_ORDER_SEARCH_QUERY,
+    payload: searchQuery,
+});
+
+export const onChangeOrderSearchQueryRequest = () => ({
+    type: ON_CHANGE_ORDER_SEARCH_QUERY_REQUEST,
+});
+
+export const onChangeOrderSearchQuerySuccess = data => ({
+    type:    ON_CHANGE_ORDER_SEARCH_QUERY_SUCCESS,
+    payload: data,
+});
+
+export const setOrderSearchFilters = filters => ({
+    type:    SET_ORDER_SEARCH_FILTERS,
+    payload: filters,
+});
+
 export const fetchSelectedClientOrders = () => ({
     type: FETCH_SELECTED_CLIENT_ORDERS,
 });
@@ -355,20 +470,22 @@ export const fetchSelectedClientOrdersSuccess = clientOrders => ({
     payload: clientOrders,
 });
 
+export const fetchSearchOrder = () => ({
+    type: FETCH_SEARCH_ORDER,
+});
+
+export const fetchSearchOrderSuccess = orders => ({
+    type:    FETCH_SEARCH_ORDER_SUCCESS,
+    payload: orders,
+});
+
 export const setSelectedClientOrdersFilters = filters => ({
     type:    SET_SELECTED_CLIENT_ORDERS_FILTERS,
     payload: filters,
 });
 
-// Search by Order
-export const onOrderSearch = orderSearch => ({
-    type:    ON_ORDER_SEARCH,
-    payload: orderSearch,
-});
-
-export const onOrderSearchSuccess = order => ({
-    type:    ON_ORDER_SEARCH_SUCCESS,
-    payload: order,
+export const onClientFieldsReset = () => ({
+    type: ON_CLIENT_FIELDS_RESET,
 });
 
 // Print cash order

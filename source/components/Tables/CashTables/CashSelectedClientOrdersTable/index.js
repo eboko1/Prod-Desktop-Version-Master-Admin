@@ -10,31 +10,26 @@ import {
     setSelectedClientOrdersFilters,
     fetchSelectedClientOrders,
     selectClientOrders,
-    selectClientOrdersFilters,
+    setOrderSearchFilters,
+    fetchSearchOrder,
     onOrderSelect,
 } from "core/forms/cashOrderForm/duck";
+import { Loader } from "commons";
 
 // own
 import { columnsConfig } from "./config";
 import Styles from "./styles.m.css";
 
-const mapStateToProps = state => {
-    return {
-        clientOrders: selectClientOrders(state),
-        filters: selectClientOrdersFilters(state),
-        // orders:       _.get(selectClientOrders(state), 'orders'),
-    };
-};
-
 const mapDispatchToProps = {
     setSelectedClientOrdersFilters,
     fetchSelectedClientOrders,
     onOrderSelect,
+    setOrderSearchFilters,
+    fetchSearchOrder,
 };
 
 @connect(
-    mapStateToProps,
-    // null,
+    null,
     mapDispatchToProps,
 )
 @injectIntl
@@ -53,34 +48,54 @@ export class CashSelectedClientOrdersTable extends Component {
 
     _onRowClick = order => this.props.selectOrder(order);
 
+    _setPage = page => {
+        if (this.props.type === "client") {
+            this.props.setSelectedClientOrdersFilters({ page });
+            this.props.fetchSelectedClientOrders();
+        }
+
+        if (this.props.type === "order") {
+            this.props.setOrderSearchFilters({ page });
+            this.props.fetchSearchOrder();
+        }
+    };
+
     render() {
         const {
-            clientOrders,
-
-            filters,
-            orders,
+            searching,
+            selectedClient,
+            clientFilteredOrders,
+            searchOrdersResult,
         } = this.props;
 
         const pagination = {
             pageSize: 25,
             size: "large",
-            total: Math.ceil(clientOrders.count / 25) * 25,
+            total:
+                Math.ceil(
+                    this.props.type === "client"
+                        ? _.get(selectedClient, "clientOrders.count", 1) / 25
+                        : _.get(searchOrdersResult, "count", 1) / 25,
+                ) * 25,
             hideOnSinglePage: true,
-            current: filters.page,
-            onChange: page => {
-                this.props.setSelectedClientOrdersFilters({ page });
-                this.props.fetchSelectedClientOrders();
-            },
+            current:
+                this.props.type === "client"
+                    ? _.get(selectedClient, "filters.page", 1)
+                    : _.get(searchOrdersResult, "filters.page", 1),
+            onChange: page => this._setPage(page),
         };
 
-        return orders ? (
+        return (
             <Table
                 size="small"
                 columns={this.columns}
                 pagination={pagination}
-                dataSource={orders.filter(
-                    ({ remainingSum }) => remainingSum !== 0,
-                )}
+                loading={searching}
+                dataSource={
+                    this.props.type === "client"
+                        ? _.get(selectedClient, "clientOrders.orders", [])
+                        : _.get(searchOrdersResult, "orders", [])
+                }
                 onRow={order => ({
                     onClick: () => this._onRowClick(order),
                 })}
@@ -90,6 +105,6 @@ export class CashSelectedClientOrdersTable extends Component {
                 }}
                 scroll={{ x: 720 }}
             />
-        ) : null;
+        );
     }
 }

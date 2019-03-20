@@ -33,7 +33,7 @@ class DiscountPanel extends Component {
 
         const discount = this.props.form.getFieldValue(discountFieldName);
 
-        const total = price - price * (discount / 100);
+        const total = (price - price * (discount / 100)).toFixed(2);
 
         return (
             <Catcher>
@@ -54,7 +54,8 @@ class DiscountPanel extends Component {
                         className={ Styles.formItem }
                         min={ 0 }
                         max={ 100 }
-                        formatter={ value => `${value}%` }
+                        step={ 1 }
+                        formatter={ value => `${Math.round(value)}%` }
                         parser={ value => value.replace('%', '') }
                     />
                     <FormItem

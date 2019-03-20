@@ -2,6 +2,7 @@
 import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { Form, Select, Icon } from "antd";
+import classNames from "classnames/bind";
 import moment from "moment";
 import _ from "lodash";
 
@@ -28,6 +29,8 @@ import { formHeaderItemLayout } from "../layouts";
 import Styles from "./styles.m.css";
 const FormItem = Form.Item;
 const Option = Select.Option;
+
+const cx = classNames.bind(Styles);
 
 // TODO: move it into utils
 // blocks hours for time picker
@@ -119,6 +122,95 @@ export default class OrderFormHeader extends Component {
             managersOptions,
             paymentMethodOptions,
         };
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            !_.isEqual(nextProps, this.props) ||
+            !_.isEqual(nextState, this.state)
+        );
+    }
+
+    componentDidUpdate(prevProps) {
+        const oldAvailableHours = _.get(prevProps, ["availableHours", "0"]);
+        const newAvailableHours = _.get(this.props, ["availableHours", "0"]);
+        // if availableHours has been changed we need to generate new configs
+        if (oldAvailableHours !== newAvailableHours) {
+            const availableHoursDisabledMinutes = getAvailableHoursDisabledMinutes(
+                this.props.availableHours,
+            );
+            const availableHoursDisabledHours = getAvailableHoursDisabledHours(
+                this.props.availableHours,
+            );
+
+            this.setState({
+                availableHoursDisabledHours,
+                availableHoursDisabledMinutes,
+            });
+        }
+
+        if (prevProps.stations !== this.props.stations) {
+            const stationsOptions = this._getStationsOptions();
+            this.setState({ stationsOptions });
+        }
+
+        if (prevProps.managers !== this.props.managers) {
+            const managersOptions = this._getManagersOptions();
+            this.setState({ managersOptions });
+        }
+
+        if (prevProps.employees !== this.props.employees) {
+            const employeesOptions = this._getEmployeesOptions();
+            this.setState({ employeesOptions });
+        }
+        // check all fields related for deliveryDatetime
+        const deliveryFields = [
+            "schedule",
+            "zeroStationLoadBeginDate",
+            "zeroStationLoadBeginTime",
+            "zeroStationLoadDuration",
+            "deliveryDate",
+        ];
+        // check deliveryDatetime depended properties changes
+        // if moment -> toISOString to check moment objects as strings to prevent re-renders
+        const deliveryConfigUpdate = deliveryFields.reduce((prev, cur) => {
+            const parsedThisProps = moment.isMoment(this.props[cur])
+                ? this.props[cur].toISOString()
+                : this.props[cur];
+            const parsedPrevProps = moment.isMoment(prevProps[cur])
+                ? prevProps[cur].toISOString()
+                : prevProps[cur];
+
+            return prev || parsedThisProps !== parsedPrevProps;
+        }, false);
+        // if deliveryDatetime fields have been updated
+        // get new config and set it to local state to trigger componentUpdate with new config
+        if (deliveryConfigUpdate) {
+            this.setState({
+                deliveryDatetimeConfig: this._getDeliveryDatetimeConfig(),
+            });
+        }
+        // update check for beginDatetime
+        const currentZeroStationLoadBeginDate = this.props
+            .zeroStationLoadBeginDate
+            ? this.props.zeroStationLoadBeginDate.toISOString()
+            : void 0;
+        const prevZeroStationLoadBeginDate = prevProps.zeroStationLoadBeginDate
+            ? prevProps.zeroStationLoadBeginDate.toISOString()
+            : void 0;
+
+        if (
+            this.props.schedule !== prevProps.schedule ||
+            currentZeroStationLoadBeginDate !== prevZeroStationLoadBeginDate
+        ) {
+            this.setState({
+                beginDatetimeConfig: this._getBeginDatetimeConfig(),
+            });
+        }
+    }
+    // TODO: move into utils
+    bodyUpdateIsForbidden() {
+        return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
     }
 
     _getBeginDatetimeConfig() {
@@ -232,94 +324,19 @@ export default class OrderFormHeader extends Component {
         ));
     };
 
-    componentDidUpdate(prevProps) {
-        const oldAvailableHours = _.get(prevProps, ["availableHours", "0"]);
-        const newAvailableHours = _.get(this.props, ["availableHours", "0"]);
-        // if availableHours has been changed we need to generate new configs
-        if (oldAvailableHours !== newAvailableHours) {
-            const availableHoursDisabledMinutes = getAvailableHoursDisabledMinutes(
-                this.props.availableHours,
-            );
-            const availableHoursDisabledHours = getAvailableHoursDisabledHours(
-                this.props.availableHours,
-            );
-
-            this.setState({
-                availableHoursDisabledHours,
-                availableHoursDisabledMinutes,
+    _redirectToCashFlow = () => {
+        if (!isForbidden(this.props.user, permissions.ACCESS_ACCOUNTING)) {
+            goTo(book.cashFlowPage, {
+                cashFlowFilters: { ...this.props.cashFlowFilters },
             });
         }
+    };
 
-        if (prevProps.stations !== this.props.stations) {
-            const stationsOptions = this._getStationsOptions();
-            this.setState({ stationsOptions });
-        }
-
-        if (prevProps.managers !== this.props.managers) {
-            const managersOptions = this._getManagersOptions();
-            this.setState({ managersOptions });
-        }
-
-        if (prevProps.employees !== this.props.employees) {
-            const employeesOptions = this._getEmployeesOptions();
-            this.setState({ employeesOptions });
-        }
-        // check all fields related for deliveryDatetime
-        const deliveryFields = [
-            "schedule",
-            "zeroStationLoadBeginDate",
-            "zeroStationLoadBeginTime",
-            "zeroStationLoadDuration",
-            "deliveryDate",
-        ];
-        // check deliveryDatetime depended properties changes
-        // if moment -> toISOString to check moment objects as strings to prevent re-renders
-        const deliveryConfigUpdate = deliveryFields.reduce((prev, cur) => {
-            const parsedThisProps = moment.isMoment(this.props[cur])
-                ? this.props[cur].toISOString()
-                : this.props[cur];
-            const parsedPrevProps = moment.isMoment(prevProps[cur])
-                ? prevProps[cur].toISOString()
-                : prevProps[cur];
-
-            return prev || parsedThisProps !== parsedPrevProps;
-        }, false);
-        // if deliveryDatetime fields have been updated
-        // get new config and set it to local state to trigger componentUpdate with new config
-        if (deliveryConfigUpdate) {
-            this.setState({
-                deliveryDatetimeConfig: this._getDeliveryDatetimeConfig(),
-            });
-        }
-        // update check for beginDatetime
-        const currentZeroStationLoadBeginDate = this.props
-            .zeroStationLoadBeginDate
-            ? this.props.zeroStationLoadBeginDate.toISOString()
-            : void 0;
-        const prevZeroStationLoadBeginDate = prevProps.zeroStationLoadBeginDate
-            ? prevProps.zeroStationLoadBeginDate.toISOString()
-            : void 0;
-
-        if (
-            this.props.schedule !== prevProps.schedule ||
-            currentZeroStationLoadBeginDate !== prevZeroStationLoadBeginDate
-        ) {
-            this.setState({
-                beginDatetimeConfig: this._getBeginDatetimeConfig(),
-            });
-        }
-    }
-    // TODO: move into utils
-    bodyUpdateIsForbidden() {
-        return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return (
-            !_.isEqual(nextProps, this.props) ||
-            !_.isEqual(nextState, this.state)
-        );
-    }
+    _totalStyles = disabled =>
+        cx({
+            totalDisabled: disabled,
+            total: true,
+        });
 
     render() {
         // TODO: decomposite for separate view components
@@ -686,13 +703,7 @@ export default class OrderFormHeader extends Component {
     _renderTotalBlock = () => {
         const { fetchedOrder, fields } = this.props;
         const { getFieldDecorator } = this.props.form;
-        const {
-            errors,
-            totalPrice,
-            cashSum,
-            remainPrice,
-            cashFlowFilters,
-        } = this.props;
+        const { errors, totalPrice, cashSum, remainPrice } = this.props;
 
         return (
             <div className={Styles.headerCol}>
@@ -724,12 +735,13 @@ export default class OrderFormHeader extends Component {
                         </span>
                     </div>
                     <div
-                        className={Styles.total}
-                        onClick={() =>
-                            goTo(book.cashFlowPage, {
-                                cashFlowFilters: { ...cashFlowFilters },
-                            })
-                        }
+                        className={this._totalStyles(
+                            isForbidden(
+                                this.props.user,
+                                permissions.ACCESS_ACCOUNTING,
+                            ),
+                        )}
+                        onClick={() => this._redirectToCashFlow()}
                     >
                         <FormattedMessage id="remain" />
                         <Numeral
