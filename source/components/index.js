@@ -33,6 +33,10 @@ import PartSuggestions from './PartSuggestions';
 import TecDocModals from './TecDocModals';
 import VehicleNumberHistory from './VehicleNumberHistory';
 import Result from './Result';
+import { TabsTwins } from './TabsTwins';
+import { SubscriptionProduct } from './SubscriptionProduct';
+import { GridCard } from './Grid';
+import { GridCardSkeleton } from './Grid';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -75,4 +79,8 @@ export {
     TecDocModals,
     VehicleNumberHistory,
     Result,
+    TabsTwins,
+    SubscriptionProduct,
+    GridCard,
+    GridCardSkeleton,
 };

@@ -1,18 +1,36 @@
+// vendor
+import { createSelector } from 'reselect';
+
 /**
  * Constants
  **/
 export const moduleName = 'subscription';
-const prefix = `GLOBAL/${moduleName}`;
+const prefix = `cbp/${moduleName}`;
 
+// global
 export const FETCH_HEADER_DATA = `${prefix}/FETCH_HEADER_DATA`;
 export const FETCH_HEADER_DATA_SUCCESS = `${prefix}/FETCH_HEADER_DATA_SUCCESS`;
+
+// products
+export const FETCH_SUBSCRIPTION_PRODUCTS = `${prefix}/FETCH_SUBSCRIPTION_PRODUCTS`;
+export const FETCH_SUBSCRIPTION_PRODUCTS_SUCCESS = `${prefix}/FETCH_SUBSCRIPTION_PRODUCTS_SUCCESS`;
+
+// history
+export const FETCH_SUBSCRIPTION_HISTORY = `${prefix}/FETCH_SUBSCRIPTION_HISTORY`;
+export const FETCH_SUBSCRIPTION_HISTORY_SUCCESS = `${prefix}/FETCH_SUBSCRIPTION_HISTORY_SUCCESS`;
 
 /**
  * Reducer
  **/
 
 const ReducerState = {
-    header: {},
+    header:   {},
+    products: [],
+    history:  {
+        packages:        [],
+        suggestionGroup: [],
+        filters:         {},
+    },
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -22,6 +40,18 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_HEADER_DATA_SUCCESS:
             return { ...state, header: { ...payload } };
 
+        case FETCH_SUBSCRIPTION_PRODUCTS_SUCCESS:
+            return {
+                ...state,
+                products: payload,
+            };
+
+        case FETCH_SUBSCRIPTION_HISTORY_SUCCESS:
+            return {
+                ...state,
+                history: payload,
+            };
+
         default:
             return state;
     }
@@ -30,6 +60,37 @@ export default function reducer(state = ReducerState, action) {
 /**
  * Selectors
  **/
+
+export const stateSelector = state => state[ moduleName ];
+
+export const selectSubscriptionProducts = createSelector(
+    [ stateSelector ],
+    ({ products }) => {
+        console.log('→ products', products);
+
+        return products.reduce(
+            (accumulator, currentValue) => {
+                console.log('→ currentValue', currentValue);
+                console.log('→ accumulator', accumulator);
+                if (currentValue.rolesPackageId) {
+                    return {
+                        ...accumulator,
+                        rolePackages: [ currentValue, ...accumulator.rolePackages ],
+                    };
+                }
+
+                return {
+                    ...accumulator,
+                    suggestionGroup: [ currentValue, ...accumulator.suggestionGroup ],
+                };
+            },
+            {
+                rolePackages:    [],
+                suggestionGroup: [],
+            },
+        );
+    },
+);
 
 /**
  * Action Creators
@@ -42,5 +103,25 @@ export const fetchHeaderData = force => ({
 
 export const fetchHeaderDataSuccess = payload => ({
     type: FETCH_HEADER_DATA_SUCCESS,
+    payload,
+});
+
+export const fetchSubscriptionProducts = type => ({
+    type:    FETCH_SUBSCRIPTION_PRODUCTS,
+    payload: type,
+});
+
+export const fetchSubscriptionProductsSuccess = products => ({
+    type:    FETCH_SUBSCRIPTION_PRODUCTS_SUCCESS,
+    payload: products,
+});
+
+export const fetchSubscriptionHistory = type => ({
+    type:    FETCH_SUBSCRIPTION_PRODUCTS,
+    payload: type,
+});
+
+export const fetchSubscriptionHistorySuccess = payload => ({
+    type: FETCH_SUBSCRIPTION_PRODUCTS_SUCCESS,
     payload,
 });

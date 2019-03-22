@@ -8,3 +8,10 @@ export { CashBalanceTable } from './CashTables/CashBalanceTable';
 export {
     CashSelectedClientOrdersTable,
 } from './CashTables/CashSelectedClientOrdersTable';
+
+export {
+    SubscriptionCarbookTable,
+} from './SubscriptionTables/SubscriptionCarbookTable';
+export {
+    SubscriptionProTable,
+} from './SubscriptionTables/SubscriptionProTable';

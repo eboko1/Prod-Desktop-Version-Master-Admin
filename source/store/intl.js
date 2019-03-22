@@ -113,6 +113,7 @@ import PartSuggestions from 'components/PartSuggestions/messages';
 import PartAttributes from 'components/PartAttributes/messages';
 import VehicleNumberHistory from 'components/VehicleNumberHistory/messages';
 import CashTables from 'components/Tables/CashTables/messages';
+import SubscriptionTables from 'components/Tables/SubscriptionTables/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -216,6 +217,7 @@ const messages = merge.all([
     PartAttributes,
     VehicleNumberHistory,
     CashTables,
+    SubscriptionTables,
 ]);
 /* eslint-enable array-element-newline */
 
