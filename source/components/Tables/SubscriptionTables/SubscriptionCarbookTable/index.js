@@ -15,7 +15,7 @@ import {
 } from "core/cash/duck";
 
 import { RangePickerField } from "forms/_formkit";
-import { ResponsiveView } from "commons";
+import { ResponsiveView, StyledButton } from "commons";
 import { BREAKPOINTS, linkTo } from "utils";
 import book from "routes/book";
 
@@ -96,17 +96,14 @@ export class SubscriptionCarbookTable extends Component {
                     dataSource={data}
                     loading={cashboxesFetching}
                     pagination={false}
-                    onRow={record => ({
-                        onClick: () => this._onRowClick(record),
-                    })}
                     locale={{
                         emptyText: <FormattedMessage id="no_data" />,
                     }}
                 />
-                <Link to={book.subscriptionPackagesPage}>
-                    <Button type="primary">
+                <Link  className={Styles.purchaseButton} to={book.subscriptionPackagesPage}>
+                    <StyledButton type="secondary">
                         <FormattedMessage id="subscription-table.buy_package" />
-                    </Button>
+                    </StyledButton>
                 </Link>
             </div>
         );
