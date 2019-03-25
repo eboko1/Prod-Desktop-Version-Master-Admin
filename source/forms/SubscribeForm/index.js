@@ -22,6 +22,7 @@ import {
     DecoratedSelect,
     DecoratedInput,
     DecoratedDatePicker,
+    DecoratedSlider,
 } from "forms/DecoratedFields";
 import { cashOrderTypes } from "forms/CashOrderForm/config";
 import { permissions, isForbidden, withReduxForm2 } from "utils";
@@ -57,21 +58,22 @@ const marks = {
 };
 
 @injectIntl
-@withReduxForm2({
-    name: "subscribeForm",
-    actions: {
-        change: onChangeToSuccessForm,
-        createCashOrder,
-        fetchCashboxes,
-        fetchCashOrderNextId,
-    },
-    mapStateToProps: state => ({
-        businessName: state.auth.businessName,
-        user: state.auth,
-        cashboxes: state.cash.cashboxes,
-        cashOrderNextId: selectCashOrderNextId(state),
-    }),
-})
+// @withReduxForm2({
+//     name: "subscribeForm",
+//     actions: {
+//         change: onChangeToSuccessForm,
+//         createCashOrder,
+//         fetchCashboxes,
+//         fetchCashOrderNextId,
+//     },
+//     mapStateToProps: state => ({
+//         businessName: state.auth.businessName,
+//         user: state.auth,
+//         cashboxes: state.cash.cashboxes,
+//         cashOrderNextId: selectCashOrderNextId(state),
+//     }),
+// })
+@Form.create()
 export class SubscribeForm extends Component {
     componentWillUnmount() {
         this.props.form.resetFields();
@@ -81,17 +83,28 @@ export class SubscribeForm extends Component {
         const { form, subscribe, resetModal } = this.props;
 
         form.validateFields((err, values) => {
+            console.log("→ _submit values", values);
             if (!err) {
-                subscribe();
+                //subscribe();
                 resetModal();
                 form.resetFields();
             }
         });
     };
 
-    _handleSubscriptionPeriod = () => {
-        this.props.form.getFieldValue('')
-    }
+    _handleSubscriptionStartDate = startDate => {
+        const period = this.props.form.getFieldValue("period");
+        this.props.form.setFieldsValue({
+            endDate: startDate.add(period, "month"),
+        });
+    };
+
+    _handleSubscriptionPeriod = period => {
+        const startDate = this.props.form.getFieldValue("startDate");
+        this.props.form.setFieldsValue({
+            endDate: startDate.add(period, "month"),
+        });
+    };
 
     render() {
         const {
@@ -128,6 +141,7 @@ export class SubscribeForm extends Component {
                 </div>
                 <div className={Styles.fieldsBlock}>
                     <DecoratedDatePicker
+                        fields={{}}
                         field="startDate"
                         getFieldDecorator={getFieldDecorator}
                         initialValue={moment()}
@@ -137,22 +151,30 @@ export class SubscribeForm extends Component {
                         disabledDate={current =>
                             current && current <= moment().startOf("day")
                         }
+                        onChange={startDate =>
+                            this._handleSubscriptionStartDate(startDate)
+                        }
                     />
-                    <Slider
-                        defaultValue={modalProps.range || 3}
+                    <DecoratedSlider
+                        fields={{}}
+                        field="period"
+                        getFieldDecorator={getFieldDecorator}
+                        initialValue={modalProps.period || 3}
                         tooltipVisible
-                        min={0}
+                        min={3}
                         max={12}
                         step={3}
-                        onChange={value => console.log("slider value", value)}
-                        className={Styles.slider}
+                        onChange={period =>
+                            this._handleSubscriptionPeriod(period)
+                        }
+                        cnStyles={Styles.slider}
                         marks={marks}
                     />
                     <DecoratedDatePicker
                         disabled
                         field="endDate"
                         getFieldDecorator={getFieldDecorator}
-                        initialValue={moment()}
+                        initialValue={moment().add(3, "month")}
                         allowClear={false}
                         formatMessage={formatMessage}
                         getCalendarContainer={trigger => trigger.parentNode}
@@ -172,7 +194,7 @@ export class SubscribeForm extends Component {
                     })}
                     : &nbsp;
                     <Numeral currency={"грн."} className={Styles.totalSum}>
-                        {modalProps.price}
+                        {modalProps.price * (getFieldValue("period") || 3)}
                     </Numeral>
                 </div>
                 <Button
