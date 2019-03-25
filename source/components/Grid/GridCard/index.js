@@ -21,8 +21,11 @@ const StyledGridCard = styled(Card.Grid)`
 
     text-align: center;
     height: 600px;
+    max-width: 400px;
     display: flex;
     flex-direction: column;
+    margin: 12px 0px;
+    background: white;
 
     ${props => props.css}
 `;

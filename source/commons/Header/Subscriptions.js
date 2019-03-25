@@ -1,8 +1,12 @@
 // vendor
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { FormattedMessage } from 'react-intl';
 import moment from 'moment';
 import classNames from 'classnames/bind';
+
+// proj
+import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
@@ -36,7 +40,7 @@ export const Subscriptions = props => {
 
     return (
         <div className={ Styles.headerInfo }>
-            <div className={ Styles.packages }>
+            <Link to={ book.subscriptionHistoryPage } className={ Styles.packages }>
                 <span
                     className={ `${backgroundColor(packages)} ${
                         Styles.leftRow
@@ -70,8 +74,11 @@ export const Subscriptions = props => {
                         <FormattedMessage id='header.not_active' />
                     </span>
                 ) }
-            </div>
-            <div className={ Styles.suggestions }>
+            </Link>
+            <Link
+                to={ book.subscriptionHistoryPage }
+                className={ Styles.suggestions }
+            >
                 <span
                     className={ `${backgroundColor(suggestions)} ${
                         Styles.leftRow
@@ -110,7 +117,7 @@ export const Subscriptions = props => {
                         ) }
                     </span>
                 ) }
-            </div>
+            </Link>
         </div>
     );
 };

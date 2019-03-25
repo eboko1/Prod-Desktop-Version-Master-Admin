@@ -66,7 +66,7 @@ export function* fetchSubscriptionProductsSaga() {
             const { payload: type } = yield take(FETCH_SUBSCRIPTION_PRODUCTS);
 
             const response = yield call(fetchAPI, 'GET', '/products', { type });
-            console.log('→ response', response);
+
             yield put(fetchSubscriptionProductsSuccess(response));
         } catch (error) {
             yield put(emitError(error));

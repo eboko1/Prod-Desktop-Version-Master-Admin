@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Table, Button } from "antd";
@@ -13,10 +14,10 @@ import {
     selectCashAccountingFilters,
 } from "core/cash/duck";
 
-import book from "routes/book";
 import { RangePickerField } from "forms/_formkit";
 import { ResponsiveView } from "commons";
 import { BREAKPOINTS, linkTo } from "utils";
+import book from "routes/book";
 
 // own
 import { columnsConfig } from "./config";
@@ -102,9 +103,11 @@ export class SubscriptionProTable extends Component {
                         emptyText: <FormattedMessage id="no_data" />,
                     }}
                 />
-                <Button type="primary">
-                    <FormattedMessage id="subscription-table.buy_package" />
-                </Button>
+                <Link to={book.subscriptionPackagesPage}>
+                    <Button type="primary">
+                        <FormattedMessage id="subscription-table.buy_package" />
+                    </Button>
+                </Link>
             </div>
         );
     }

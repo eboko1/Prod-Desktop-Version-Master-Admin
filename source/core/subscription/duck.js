@@ -66,12 +66,8 @@ export const stateSelector = state => state[ moduleName ];
 export const selectSubscriptionProducts = createSelector(
     [ stateSelector ],
     ({ products }) => {
-        console.log('→ products', products);
-
         return products.reduce(
             (accumulator, currentValue) => {
-                console.log('→ currentValue', currentValue);
-                console.log('→ accumulator', accumulator);
                 if (currentValue.rolesPackageId) {
                     return {
                         ...accumulator,

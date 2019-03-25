@@ -1,10 +1,12 @@
 // vendor
 import React from 'react';
 import styled from 'styled-components';
+import { FormattedMessage } from 'react-intl';
 
 // proj
+import { Numeral } from 'commons';
 import { StyledButton } from 'commons/_uikit';
-import { GridCard } from 'components';
+import { GridCard } from 'components/Grid/GridCard';
 
 export const SubscriptionProduct = props => {
     const {
@@ -29,9 +31,17 @@ export const SubscriptionProduct = props => {
             </ProductTitleWrapper>
             <ProductDescription dangerouslySetInnerHTML={ createMarkup() } />
             <ProductFooter>
-                <ShowMore>Подробнее</ShowMore>
-                <ProductPrice>от { price } грн. / месяц</ProductPrice>
-                <PurchaseButton type='secondary'>Купить</PurchaseButton>
+                <ShowMore>
+                    <FormattedMessage id='subscription.details' />
+                </ShowMore>
+                <ProductPrice>
+                    <FormattedMessage id='subscription.from' />{ ' ' }
+                    <Numeral currency={ 'грн.' }>{ price }</Numeral> /{ ' ' }
+                    <FormattedMessage id='subscription.monthly' />
+                </ProductPrice>
+                <PurchaseButton type='secondary' onClick={ props.setModal }>
+                    <FormattedMessage id='subscription.purchase' />
+                </PurchaseButton>
             </ProductFooter>
         </GridCard>
     );

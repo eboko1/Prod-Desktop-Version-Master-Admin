@@ -1,8 +1,8 @@
 // vendor
 import React, { Component } from "react";
 import { connect } from "react-redux";
+import { FormattedMessage } from "react-intl";
 import { Card, Skeleton } from "antd";
-// import { withRouter } from 'react-router-dom';
 import styled, { css } from "styled-components";
 
 // proj
@@ -10,8 +10,10 @@ import {
     fetchSubscriptionProducts,
     selectSubscriptionProducts,
 } from "core/subscription/duck";
+import { setModal, resetModal, MODALS } from "core/modals/duck";
 
 import { SubscriptionProduct } from "components";
+import { SubscribeModal } from "modals";
 import book from "routes/book";
 
 const GridCardSkeletonCSS = css`
@@ -27,64 +29,112 @@ const GridCardSkeletonCSS = css`
 
 const mapStateToProps = state => ({
     products: selectSubscriptionProducts(state),
+    modal: state.modals.modal,
+    modalProps: state.modals.modalProps,
 });
 
 // own
 @connect(
     mapStateToProps,
-    { fetchSubscriptionProducts },
+    { fetchSubscriptionProducts, setModal, resetModal },
 )
 export default class SubscriptionProductsContainer extends Component {
     componentDidMount() {
         this.props.fetchSubscriptionProducts();
     }
 
+    _setModal = modalProps => this.props.setModal(MODALS.SUBSCRIBE, modalProps);
+
     render() {
-        // this.props.loading ?
-        //     this._renderBannersGridSkeleton()
-        //     : (
         return (
-            <SubscriptionProductsGrid>
-                <Card title={this._renderTitle("#pro")} bordered={false}>
-                    {this.props.products.rolePackages.map(
-                        ({ id, name, price, description, rolesPackageId }) => (
-                            <SubscriptionProduct
-                                key={id}
-                                name={name}
-                                price={price}
-                                description={description}
-                                rolesPackageId={rolesPackageId}
-                            />
-                        ),
-                    )}
-                </Card>
-                <Card title={this._renderTitle("#advertise")} bordered={false}>
-                    {this.props.products.suggestionGroup.map(
-                        ({ id, name, price, description, rolesPackageId }) => (
-                            <SubscriptionProduct
-                                key={id}
-                                name={name}
-                                price={price}
-                                description={description}
-                                rolesPackageId={rolesPackageId}
-                            />
-                        ),
-                    )}
-                </Card>
-            </SubscriptionProductsGrid>
+            <>
+                <SubscriptionProductsGrid>
+                    <Card
+                        title={
+                            <h3>
+                                <FormattedMessage id="subscription-table.pro" />
+                            </h3>
+                        }
+                        bordered={false}
+                    >
+                        {this.props.products.rolePackages.map(
+                            ({
+                                id,
+                                name,
+                                price,
+                                description,
+                                rolesPackageId,
+                            }) => (
+                                <SubscriptionProduct
+                                    key={id}
+                                    name={name}
+                                    price={price}
+                                    description={description}
+                                    rolesPackageId={rolesPackageId}
+                                    setModal={() =>
+                                        this._setModal({
+                                            name,
+                                            price,
+                                            rolesPackageId,
+                                        })
+                                    }
+                                />
+                            ),
+                        )}
+                    </Card>
+                    <Card
+                        title={
+                            <h3>
+                                <FormattedMessage id="subscription-table.advertise" />
+                            </h3>
+                        }
+                        bordered={false}
+                    >
+                        {this.props.products.suggestionGroup.map(
+                            ({
+                                id,
+                                name,
+                                price,
+                                description,
+                                suggestionGroupId,
+                            }) => (
+                                <SubscriptionProduct
+                                    key={id}
+                                    name={name}
+                                    price={price}
+                                    description={description}
+                                    suggestionGroupId={suggestionGroupId}
+                                    setModal={() =>
+                                        this._setModal({
+                                            name,
+                                            price,
+                                            suggestionGroupId,
+                                        })
+                                    }
+                                />
+                            ),
+                        )}
+                    </Card>
+                </SubscriptionProductsGrid>
+                <SubscribeModal
+                    visible={this.props.modal}
+                    resetModal={this.props.resetModal}
+                    modalProps={this.props.modalProps}
+                />
+            </>
         );
     }
 
-    _renderTitle = id => (
-        <h3 id={id}>
-            <a
-                href={`${book.subscriptionPackagesPage}${id}`}
-                className="anchor"
-            >
-                #
-            </a>
-        </h3>
-    );
+    // _renderTitle = id => (
+    //     <h3 id={id}>
+    //         <a
+    //             href={`${book.subscriptionPackagesPage}${id}`}
+    //             className="anchor"
+    //         >
+    //             #
+    //         </a>
+    //     </h3>
+    // );
 
     _renderBannersSkeleton = () => (
         <Skeleton
@@ -112,7 +162,13 @@ export default class SubscriptionProductsContainer extends Component {
 
 const SubscriptionProductsGrid = styled.div`
     & .ant-card {
-        margin: 0 24px 24px 24px;
+        margin: 24px;
+        border: 2px dashed var(--secondary);
+    }
+
+    & .ant-card-body {
+        padding: 0;
+        background-color: rgb(240, 242, 245);
     }
 `;
 

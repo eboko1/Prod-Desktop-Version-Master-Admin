@@ -1,0 +1,47 @@
+{
+  "en": {
+    "subscription.purchase": "Purchase",
+    "subscription.total_sum": "Total Sum",
+    "subscription.proceed_with_the_payment": "Proceed with the payment",
+    "subscription.monthly": "monthly",
+    "subscription.promo_code": "Promo code",
+    "subscription.from": "from",
+    "subscription.since": "since",
+    "subscription.to": "to",
+    "subscription.details": "Details",
+    "subscription.tooltip": "The price might be changed if you purchase a subscription for more than 3 months",
+    "subscription.terms": "Payment by Visa and Mastercard is provided by service of online-payments Portmone.com. Payment safety was confirmed by PCI DSS security audit.",
+    "subscription.support": "In case of questions call or email us",
+    "subscription.phone": "tel."
+  },
+  "ru": {
+    "subscription.purchase": "Купить",
+    "subscription.total_sum": "Итоговая сумма",
+    "subscription.proceed_with_the_payment": "Прейти к оплате",
+    "subscription.monthly": "месяц",
+    "subscription.promo_code": "Промокод",
+    "subscription.from": "от",
+    "subscription.since": "с",
+    "subscription.to": "по",
+    "subscription.details": "Подробней",
+    "subscription.tooltip": "При покупке подписки периодом более 3х месяцев - цена может меняться",
+    "subscription.terms": "Оплату картами Visa и Mastercard обеспечивает сервис онлайн-платежей Portmone.com. Безопасность оплаты подтверждена международным аудитом PCI DSS.",
+    "subscription.support": "Служба поддержки",
+    "subscription.phone": "тел."
+  },
+  "uk": {
+    "subscription.purchase": "Придбати",
+    "subscription.total_sum": "Загальна сума",
+    "subscription.proceed_with_the_payment": "Перейти до оплати",
+    "subscription.monthly": "місяць",
+    "subscription.promo_code": "Промокод",
+    "subscription.from": "від",
+    "subscription.since": "з",
+    "subscription.to": "по",
+    "subscription.details": "Детальніше",
+    "subscription.tooltip": "У разі придбання підписки на період, більше ніж 3 місяця - ціна може змінюватись",
+    "subscription.terms": "Розрахунок картками Visa та Mastercard забезпечує сервіс онлайн-платежів Portmone.com. Безпека оплати підтверджена міжнародним аудитом PCI DSS.",
+    "subscription.support": "Служба підтримки",
+    "subscription.phone": "тел."
+  }
+}
