@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Icon } from 'antd';
+import { Button, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 export function columnsConfig() {
@@ -24,7 +24,14 @@ export function columnsConfig() {
         title:     <FormattedMessage id='subscription-table.paid' />,
         dataIndex: 'paid',
         width:     '20%',
-        render:    paid => paid ? <Icon type='check-circle' /> : 'paid',
+        render:    paid =>
+            paid ? (
+                <Icon type='check-circle' />
+            ) : (
+                <Button type='primary'>
+                    <FormattedMessage id='subscription.purchase' />
+                </Button>
+            ),
     };
 
     return [

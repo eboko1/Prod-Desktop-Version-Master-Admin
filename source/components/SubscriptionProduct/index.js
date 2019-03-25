@@ -69,7 +69,7 @@ const ProductTitle = styled.h2`
 const ProductDescription = styled.div`
     flex: 1 1 100%;
     max-height: 380px;
-    overflow: scroll;
+    overflow-y: scroll;
     margin: 16px 0;
     font-size: 16px;
 

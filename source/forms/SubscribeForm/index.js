@@ -89,6 +89,10 @@ export class SubscribeForm extends Component {
         });
     };
 
+    _handleSubscriptionPeriod = () => {
+        this.props.form.getFieldValue('')
+    }
+
     render() {
         const {
             handleToSuccessModalSubmit,
