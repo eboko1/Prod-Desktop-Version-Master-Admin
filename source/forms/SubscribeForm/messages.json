@@ -5,6 +5,7 @@
     "subscription.proceed_with_the_payment": "Proceed with the payment",
     "subscription.monthly": "monthly",
     "subscription.promo_code": "Promo code",
+    "subscription.receive_invoice": "Receive invoice",
     "subscription.from": "from",
     "subscription.since": "since",
     "subscription.to": "to",
@@ -12,7 +13,12 @@
     "subscription.tooltip": "The price might be changed if you purchase a subscription for more than 3 months",
     "subscription.terms": "Payment by Visa and Mastercard is provided by service of online-payments Portmone.com. Payment safety was confirmed by PCI DSS security audit.",
     "subscription.support": "In case of questions call or email us",
-    "subscription.phone": "tel."
+    "subscription.phone": "tel.",
+    "subscription.paymentTypes.PORTMONE": "Card",
+    "subscription.paymentTypes.TERMINAL": "Terminal",
+    "subscription.paymentTypes.LTD_WITHOUT_VAT": "LTD",
+    "subscription.paymentTypes.LTD_WITH_VAT": "LTD with VAT",
+    "subscription.paymentTypes.INDIVIDUAL_ENTREPRENEUR": "Individual entrepreneur"
   },
   "ru": {
     "subscription.purchase": "Купить",
@@ -20,6 +26,7 @@
     "subscription.proceed_with_the_payment": "Прейти к оплате",
     "subscription.monthly": "месяц",
     "subscription.promo_code": "Промокод",
+    "subscription.receive_invoice": "Получить счёт",
     "subscription.from": "от",
     "subscription.since": "с",
     "subscription.to": "по",
@@ -27,7 +34,12 @@
     "subscription.tooltip": "При покупке подписки периодом более 3х месяцев - цена может меняться",
     "subscription.terms": "Оплату картами Visa и Mastercard обеспечивает сервис онлайн-платежей Portmone.com. Безопасность оплаты подтверждена международным аудитом PCI DSS.",
     "subscription.support": "Служба поддержки",
-    "subscription.phone": "тел."
+    "subscription.phone": "тел.",
+    "subscription.paymentTypes.PORTMONE": "Картой",
+    "subscription.paymentTypes.TERMINAL": "Терминалом",
+    "subscription.paymentTypes.LTD_WITHOUT_VAT": "ТОВ без НДС",
+    "subscription.paymentTypes.LTD_WITH_VAT": "ТОВ с НДС",
+    "subscription.paymentTypes.INDIVIDUAL_ENTREPRENEUR": "СПД"
   },
   "uk": {
     "subscription.purchase": "Придбати",
@@ -35,6 +47,7 @@
     "subscription.proceed_with_the_payment": "Перейти до оплати",
     "subscription.monthly": "місяць",
     "subscription.promo_code": "Промокод",
+    "subscription.receive_invoice": "Отримати рахунок",
     "subscription.from": "від",
     "subscription.since": "з",
     "subscription.to": "по",
@@ -42,6 +55,11 @@
     "subscription.tooltip": "У разі придбання підписки на період, більше ніж 3 місяця - ціна може змінюватись",
     "subscription.terms": "Розрахунок картками Visa та Mastercard забезпечує сервіс онлайн-платежів Portmone.com. Безпека оплати підтверджена міжнародним аудитом PCI DSS.",
     "subscription.support": "Служба підтримки",
-    "subscription.phone": "тел."
+    "subscription.phone": "тел.",
+    "subscription.paymentTypes.PORTMONE": "Карткой",
+    "subscription.paymentTypes.TERMINAL": "Терміналом",
+    "subscription.paymentTypes.LTD_WITHOUT_VAT": "ТОВ без ПДВ",
+    "subscription.paymentTypes.LTD_WITH_VAT": "ТОВ з ПДВ",
+    "subscription.paymentTypes.INDIVIDUAL_ENTREPRENEUR": "ФОП"
   }
 }

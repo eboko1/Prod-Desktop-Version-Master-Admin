@@ -8,11 +8,11 @@ import _ from "lodash";
 
 // proj
 import {
-    fetchCashboxesActivity,
-    setCashAccountingFilters,
-    setCashOrdersFilters,
-    selectCashAccountingFilters,
-} from "core/cash/duck";
+    fetchSubscriptionSuggestions,
+    setSubscriptionSuggestionsFilters,
+    selectSubscriptionSuggestions,
+    SUBSCRIPTION_TYPES,
+} from "core/payments/duck";
 
 import { RangePickerField } from "forms/_formkit";
 import { ResponsiveView, StyledButton } from "commons";
@@ -24,14 +24,12 @@ import { columnsConfig } from "./config";
 import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
-    data: state.cash.activity,
-    filters: selectCashAccountingFilters(state),
+    suggestions: selectSubscriptionSuggestions(state),
 });
 
 const mapDispatchToProps = {
-    fetchCashboxesActivity,
-    setCashAccountingFilters,
-    setCashOrdersFilters,
+    fetchSubscriptionSuggestions,
+    setSubscriptionSuggestionsFilters,
 };
 
 @connect(
@@ -46,31 +44,41 @@ export class SubscriptionCarbookTable extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchCashboxesActivity();
+        this.props.fetchSubscriptionSuggestions(
+            SUBSCRIPTION_TYPES.SUGGESTION_GROUP,
+        );
     }
 
     _onDateRangeChange = value => {
         const normalizedValue = value.map(date => date.format("YYYY-MM-DD"));
         const daterange = {
-            startDate: normalizedValue[0],
-            endDate: normalizedValue[1],
+            startDatetime: normalizedValue[0],
+            endDatetime: normalizedValue[1],
         };
-        this.props.setCashAccountingFilters(daterange);
-        this.props.fetchCashboxesActivity();
-    };
-
-    _onRowClick = data => {
-        const { filters, setCashOrdersFilters } = this.props;
-        linkTo(book.cashFlowPage);
-        setCashOrdersFilters({
-            cashBoxId: data.id,
-            startDate: filters.startDate,
-            endDate: filters.endDate,
-        });
+        this.props.setSubscriptionSuggestionsFilters(daterange);
+        this.props.fetchSubscriptionSuggestions(
+            SUBSCRIPTION_TYPES.SUGGESTION_GROUP,
+        );
     };
 
     render() {
-        const { cashboxesFetching, data, filters } = this.props;
+        const { suggestions } = this.props;
+        console.log("→ suggestions", suggestions);
+
+        const pagination = {
+            pageSize: 10,
+            size: "large",
+            total: Math.ceil(suggestions.stats.count / 10) * 10,
+            hideOnSinglePage: true,
+            current: suggestions.filters.page,
+            onChange: page => {
+                console.log("→ page", page);
+                this.props.setSubscriptionSuggestionsFilters({ page });
+                this.props.fetchSubscriptionSuggestions(
+                    SUBSCRIPTION_TYPES.SUGGESTION_GROUP,
+                );
+            },
+        };
 
         return (
             <div className={Styles.tableWrapper}>
@@ -85,22 +93,25 @@ export class SubscriptionCarbookTable extends Component {
                     <RangePickerField
                         onChange={this._onDateRangeChange}
                         // loading={ loading }
-                        startDate={_.get(filters, "startDate")}
-                        endDate={_.get(filters, "endDate")}
+                        startDate={_.get(suggestions, "filters.startDatetime")}
+                        endDate={_.get(suggestions, "filters.endDatetime")}
                     />
                 </div>
                 <Table
                     className={Styles.table}
                     size="small"
                     columns={this.columns}
-                    dataSource={data}
-                    loading={cashboxesFetching}
-                    pagination={false}
+                    dataSource={_.get(suggestions, "list", [])}
+                    // loading={cashboxesFetching}
+                    pagination={pagination}
                     locale={{
                         emptyText: <FormattedMessage id="no_data" />,
                     }}
                 />
-                <Link  className={Styles.purchaseButton} to={book.subscriptionPackagesPage}>
+                <Link
+                    className={Styles.purchaseButton}
+                    to={book.subscriptionPackagesPage}
+                >
                     <StyledButton type="secondary">
                         <FormattedMessage id="subscription-table.buy_package" />
                     </StyledButton>

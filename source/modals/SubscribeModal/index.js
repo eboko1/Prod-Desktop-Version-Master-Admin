@@ -18,7 +18,7 @@ export default class SubscribeModal extends Component {
     //};
 
     render() {
-        const { visible, modalProps, resetModal } = this.props;
+        const { user, visible, modalProps, resetModal, subscribe } = this.props;
         const footer = this._renderModalFooter();
 
         return (
@@ -29,9 +29,11 @@ export default class SubscribeModal extends Component {
                 onCancel={ () => resetModal() }
                 footer={ footer }
                 destroyOnClose
-                width={ 720 }
+                width={ 760 }
             >
                 <SubscribeForm
+                    user={ user }
+                    subscribe={ subscribe }
                     resetModal={ resetModal }
                     modalProps={ modalProps }
                 />
@@ -53,10 +55,19 @@ export default class SubscribeModal extends Component {
                 <div className={ Styles.support }>
                     <FormattedMessage id='subscription.support' />:{ ' ' }
                     <FormattedMessage id='subscription.phone' />{ ' ' }
-                    <a href='tel:380442000902'>+380(44)2000902</a>,{ ' ' }
+                    <a href='tel:380442000902'>+380(44)200-09-02</a>,{ ' ' }
                     <a href='mailto:support@portmone.com'>
                         support@portmone.com
                     </a>
+                </div>
+                <div className={ Styles.support }>
+                    <FormattedMessage id='footer.support' /> Carbook.Pro:&nbsp;
+                    <a href='tel:380442994556'>+38(044)299-45-56</a>
+                    &nbsp;
+                    <FormattedMessage id='or' />
+                    &nbsp;
+                    <a href='mailto:support@carbook.pro'>support@carbook.pro</a>
+                    &nbsp;
                 </div>
             </div>
         );

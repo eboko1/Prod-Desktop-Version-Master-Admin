@@ -35,3 +35,13 @@
 .purchaseButton {
     margin: 16px auto;
 }
+
+.paymentType {
+    border: 2px dashed var(--secondary);
+    margin: 16px 0;
+    padding: 16px;
+}
+
+.hiddenInput {
+    display: none;
+}

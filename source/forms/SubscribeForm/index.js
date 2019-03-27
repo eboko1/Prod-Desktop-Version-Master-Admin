@@ -1,19 +1,11 @@
 //vendor
 import React, { Component } from "react";
 import { injectIntl, FormattedMessage } from "react-intl";
-import { Form, Button, Slider, Tooltip, Icon } from "antd";
+import { Form, Button, Slider, Tooltip, Icon, Radio, Tabs } from "antd";
 import _ from "lodash";
 import moment from "moment";
 
 // proj
-import { onChangeToSuccessForm } from "core/forms/toSuccessForm/duck";
-import {
-    createCashOrder,
-    fetchCashOrderNextId,
-    selectCashOrderNextId,
-} from "core/forms/cashOrderForm/duck";
-import { fetchCashboxes } from "core/cash/duck";
-
 import { Numeral } from "commons";
 import {
     DecoratedCheckbox,
@@ -24,11 +16,13 @@ import {
     DecoratedDatePicker,
     DecoratedSlider,
 } from "forms/DecoratedFields";
-import { cashOrderTypes } from "forms/CashOrderForm/config";
-import { permissions, isForbidden, withReduxForm2 } from "utils";
+import { permissions, isForbidden } from "utils";
 
 // own
+import { paymentTypes } from "./config";
 import Styles from "./styles.m.css";
+
+const TabPane = Tabs.TabPane;
 
 const marks = {
     3: {
@@ -75,6 +69,10 @@ const marks = {
 // })
 @Form.create()
 export class SubscribeForm extends Component {
+    state = {
+        paymentType: "support",
+    };
+
     componentWillUnmount() {
         this.props.form.resetFields();
     }
@@ -85,24 +83,36 @@ export class SubscribeForm extends Component {
         form.validateFields((err, values) => {
             console.log("→ _submit values", values);
             if (!err) {
-                //subscribe();
+                subscribe(_.omit(values, ["period"]));
                 resetModal();
                 form.resetFields();
             }
         });
     };
 
-    _handleSubscriptionStartDate = startDate => {
+    _handleSubscriptionStartDate = startDatetime => {
         const period = this.props.form.getFieldValue("period");
         this.props.form.setFieldsValue({
-            endDate: startDate.add(period, "month"),
+            endDatetime: startDatetime.add(period, "month"),
         });
     };
 
     _handleSubscriptionPeriod = period => {
-        const startDate = this.props.form.getFieldValue("startDate");
+        const startDatetime = this.props.form.getFieldValue("startDatetime");
         this.props.form.setFieldsValue({
-            endDate: startDate.add(period, "month"),
+            endDatetime: startDatetime.add(period, "month"),
+        });
+    };
+
+    _setPaymentType = event => {
+        const paymentType = event.target.value;
+        this.setState(prevState => {
+            this.props.form.setFieldsValue({
+                paymentType,
+                [prevState.paymentType]: null,
+            });
+
+            return { paymentType };
         });
     };
 
@@ -114,6 +124,7 @@ export class SubscribeForm extends Component {
             remainPrice,
             cashboxes,
             modalProps,
+            user,
         } = this.props;
 
         const {
@@ -123,11 +134,10 @@ export class SubscribeForm extends Component {
         } = this.props.form;
 
         const { formatMessage } = this.props.intl;
-
+        console.log("→ modalProps", modalProps);
         return (
             <Form className={Styles.form} layout="vertical">
                 <div className={Styles.price}>
-                    {formatMessage({ id: "subscription.from" })} &nbsp;
                     <Numeral currency={"грн."}>{modalProps.price}</Numeral>{" "}
                     &nbsp;/&nbsp;
                     {formatMessage({ id: "subscription.monthly" })} &nbsp;
@@ -140,9 +150,15 @@ export class SubscribeForm extends Component {
                     </Tooltip>
                 </div>
                 <div className={Styles.fieldsBlock}>
+                    <DecoratedInput
+                        field="productId"
+                        initialValue={modalProps.id}
+                        className={Styles.hiddenInput}
+                        getFieldDecorator={getFieldDecorator}
+                    />
                     <DecoratedDatePicker
                         fields={{}}
-                        field="startDate"
+                        field="startDatetime"
                         getFieldDecorator={getFieldDecorator}
                         initialValue={moment()}
                         allowClear={false}
@@ -151,8 +167,8 @@ export class SubscribeForm extends Component {
                         disabledDate={current =>
                             current && current <= moment().startOf("day")
                         }
-                        onChange={startDate =>
-                            this._handleSubscriptionStartDate(startDate)
+                        onChange={startDatetime =>
+                            this._handleSubscriptionStartDate(startDatetime)
                         }
                     />
                     <DecoratedSlider
@@ -172,7 +188,7 @@ export class SubscribeForm extends Component {
                     />
                     <DecoratedDatePicker
                         disabled
-                        field="endDate"
+                        field="endDatetime"
                         getFieldDecorator={getFieldDecorator}
                         initialValue={moment().add(3, "month")}
                         allowClear={false}
@@ -180,14 +196,143 @@ export class SubscribeForm extends Component {
                         getCalendarContainer={trigger => trigger.parentNode}
                     />
                 </div>
+                <Tabs className={Styles.paymentType} defaultActiveKey="2">
+                    <TabPane
+                        tab={
+                            <span>
+                                <Icon type="credit-card" />
+                                {formatMessage({
+                                    id: "subscription.paymentTypes.PORTMONE",
+                                })}
+                            </span>
+                        }
+                        disabled
+                        key="1"
+                    >
+                        <div className={Styles.tabContent}>Portmone</div>
+                    </TabPane>
+                    <TabPane
+                        tab={formatMessage({
+                            id: "subscription.paymentTypes.TERMINAL",
+                        })}
+                        key="2"
+                    >
+                        <div className={Styles.tabContent}>
+                            <p>
+                                № Карти ПриватБанка: 5169 3305 1764 9940
+                                <br />
+                                <br />
+                                Ніколенко Наталія Григорівна
+                                <br />
+                                № Рахунку: 26002056120889
+                                <br />
+                                В призначенні платежу вкажіть, будь ласка:
+                                <br />«{user.businessId} {user.businessName}»
+                            </p>
+                        </div>
+                    </TabPane>
+                    <TabPane
+                        tab={formatMessage({
+                            id: "subscription.paymentTypes.LTD_WITHOUT_VAT",
+                        })}
+                        disabled
+                        key="3"
+                    >
+                        <div className={Styles.tabContent}>
+                            <p>
+                                ТОВ «КАРБУК» 02002,
+                                <br />
+                                Україна, м. Київ, вул. Є.Сверстюка 11А, оф.608
+                                <br />
+                                р/р 26004513922 в АТ «Райффайзен Банк Аваль»
+                                <br />
+                                МФО 380805 Код ЄДРПОУ 40336808
+                                <br />
+                                ІПН 10000000579859
+                                <br />
+                                Директор Ніколенко О.В.
+                            </p>
+                        </div>
+                    </TabPane>
+                    <TabPane
+                        tab={formatMessage({
+                            id: "subscription.paymentTypes.LTD_WITH_VAT",
+                        })}
+                        disabled
+                        key="4"
+                    >
+                        <div className={Styles.tabContent}>
+                            <p>
+                                ТОВ «КАРБУК Україна»
+                                <br />
+                                Коміссіонер ЄДРПОУ 42408931
+                                <br />
+                                Р/р 26006612348 в АТ «Райффайзен Банк Аваль»
+                                <br />
+                                МФО 380805 тел. "02002,
+                                <br />
+                                м. Київ вул. Є.Сверстюка, 11А, офіс № 608
+                                <br />
+                                Директор Ніколенко О.В.
+                            </p>
+                        </div>
+                    </TabPane>
+                    <TabPane
+                        tab={formatMessage({
+                            id:
+                                "subscription.paymentTypes.INDIVIDUAL_ENTREPRENEUR",
+                        })}
+                        key="5"
+                    >
+                        <div className={Styles.tabContent}>
+                            <p>
+                                ФОП Ніколенко Наталя Григорівна
+                                <br />
+                                тел. 0679836991
+                                <br />
+                                Р/Р 26002056120889 в Фiлiя "КИЇВСIТI" АТ КБ
+                                "ПРИВАТБАНК"
+                                <br />
+                                ЄДРПОУ 2852101228, МФО 380775
+                                <br />
+                                тел. "Адреса: 07364, Київська обл.,
+                                Вишгородський р-н,
+                                <br />
+                                с. Новосілки, урочище "Участок", вул. Райдужна,
+                                буд. 20
+                            </p>
+                        </div>
+                    </TabPane>
+                </Tabs>
                 <DecoratedInput
+                    fields={{}}
                     placeholder={formatMessage({
                         id: "subscription.promo_code",
                     })}
-                    field="promo"
+                    field="promoCode"
                     getFieldDecorator={getFieldDecorator}
                     className={Styles.promoCode}
                 />
+                {/* <DecoratedRadio
+                    field="paymentType"
+                    formItem
+                    getFieldDecorator={getFieldDecorator}
+                    onChange={event => this._setPaymentType(event)}
+                    initialValue={this.state.paymentType}
+                >
+                    <Radio value="card">
+                        {formatMessage({
+                            id: "cash-order-form.increase",
+                        })}
+                    </Radio>
+                    <Radio value="support">
+                        {formatMessage({
+                            id: "cash-order-form.decrease",
+                        })}
+                    </Radio>
+                </DecoratedRadio>
+                 */}
+
                 <div className={Styles.price}>
                     {formatMessage({
                         id: "subscription.total_sum",

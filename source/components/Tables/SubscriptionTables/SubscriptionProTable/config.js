@@ -6,17 +6,18 @@ import { FormattedMessage } from 'react-intl';
 export function columnsConfig() {
     const nameCol = {
         title:     <FormattedMessage id='subscription-table.name' />,
-        dataIndex: 'name',
+        dataIndex: 'product',
         width:     '40%',
+        render:    product => product[ 0 ].name,
     };
     const startDateCol = {
         title:     <FormattedMessage id='subscription-table.start_date' />,
-        dataIndex: 'startDate',
+        dataIndex: 'startDatetime',
         width:     '20%',
     };
     const endDateCol = {
         title:     <FormattedMessage id='subscription-table.end_date' />,
-        dataIndex: 'endDate',
+        dataIndex: 'endDatetime',
         width:     '20%',
     };
 

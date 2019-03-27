@@ -7,9 +7,10 @@ import styled, { css } from "styled-components";
 
 // proj
 import {
+    subscribe,
     fetchSubscriptionProducts,
     selectSubscriptionProducts,
-} from "core/subscription/duck";
+} from "core/payments/duck";
 import { setModal, resetModal, MODALS } from "core/modals/duck";
 
 import { SubscriptionProduct } from "components";
@@ -29,6 +30,7 @@ const GridCardSkeletonCSS = css`
 
 const mapStateToProps = state => ({
     products: selectSubscriptionProducts(state),
+    user: state.auth,
     modal: state.modals.modal,
     modalProps: state.modals.modalProps,
 });
@@ -36,7 +38,7 @@ const mapStateToProps = state => ({
 // own
 @connect(
     mapStateToProps,
-    { fetchSubscriptionProducts, setModal, resetModal },
+    { fetchSubscriptionProducts, setModal, resetModal, subscribe },
 )
 export default class SubscriptionProductsContainer extends Component {
     componentDidMount() {
@@ -76,6 +78,7 @@ export default class SubscriptionProductsContainer extends Component {
                                             name,
                                             price,
                                             rolesPackageId,
+                                            id,
                                         })
                                     }
                                 />
@@ -109,6 +112,7 @@ export default class SubscriptionProductsContainer extends Component {
                                             name,
                                             price,
                                             suggestionGroupId,
+                                            id,
                                         })
                                     }
                                 />
@@ -120,6 +124,8 @@ export default class SubscriptionProductsContainer extends Component {
                     visible={this.props.modal}
                     resetModal={this.props.resetModal}
                     modalProps={this.props.modalProps}
+                    user={this.props.user}
+                    subscribe={this.props.subscribe}
                 />
             </>
         );

@@ -8,11 +8,11 @@ import _ from "lodash";
 
 // proj
 import {
-    fetchCashboxesActivity,
-    setCashAccountingFilters,
-    setCashOrdersFilters,
-    selectCashAccountingFilters,
-} from "core/cash/duck";
+    fetchSubscriptionPackages,
+    setSubscriptionPackagesFilters,
+    selectSubscriptionPackages,
+    SUBSCRIPTION_TYPES,
+} from "core/payments/duck";
 
 import { RangePickerField } from "forms/_formkit";
 import { ResponsiveView, StyledButton } from "commons";
@@ -24,14 +24,12 @@ import { columnsConfig } from "./config";
 import Styles from "./styles.m.css";
 
 const mapStateToProps = state => ({
-    data: state.cash.activity,
-    filters: selectCashAccountingFilters(state),
+    packages: selectSubscriptionPackages(state),
 });
 
 const mapDispatchToProps = {
-    fetchCashboxesActivity,
-    setCashAccountingFilters,
-    setCashOrdersFilters,
+    fetchSubscriptionPackages,
+    setSubscriptionPackagesFilters,
 };
 
 @connect(
@@ -46,31 +44,36 @@ export class SubscriptionProTable extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchCashboxesActivity();
+        this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGE);
     }
 
     _onDateRangeChange = value => {
         const normalizedValue = value.map(date => date.format("YYYY-MM-DD"));
         const daterange = {
-            startDate: normalizedValue[0],
-            endDate: normalizedValue[1],
+            startDatetime: normalizedValue[0],
+            endDatetime: normalizedValue[1],
         };
-        this.props.setCashAccountingFilters(daterange);
-        this.props.fetchCashboxesActivity();
-    };
-
-    _onRowClick = data => {
-        const { filters, setCashOrdersFilters } = this.props;
-        linkTo(book.cashFlowPage);
-        setCashOrdersFilters({
-            cashBoxId: data.id,
-            startDate: filters.startDate,
-            endDate: filters.endDate,
-        });
+        this.props.setSubscriptionPackagesFilters(daterange);
+        this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGES);
     };
 
     render() {
-        const { cashboxesFetching, data, filters } = this.props;
+        const { packages } = this.props;
+        console.log("→ packages", packages);
+
+        const pagination = {
+            pageSize: 10,
+            size: "large",
+            total: Math.ceil(packages.stats.count / 10) * 10,
+            hideOnSinglePage: true,
+            current: packages.filters.page,
+            onChange: page => {
+                this.props.setSubscriptionPackagesFilters(page);
+                this.props.fetchSubscriptionPackages(
+                    SUBSCRIPTION_TYPES.ROLES_PACKAGES,
+                );
+            },
+        };
 
         return (
             <div className={Styles.tableWrapper}>
@@ -85,17 +88,17 @@ export class SubscriptionProTable extends Component {
                     <RangePickerField
                         onChange={this._onDateRangeChange}
                         // loading={ loading }
-                        startDate={_.get(filters, "startDate")}
-                        endDate={_.get(filters, "endDate")}
+                        startDate={_.get(packages, "filters.startDatetime")}
+                        endDate={_.get(packages, "filters.endDatetime")}
                     />
                 </div>
                 <Table
                     className={Styles.table}
                     size="small"
                     columns={this.columns}
-                    dataSource={data}
-                    loading={cashboxesFetching}
-                    pagination={false}
+                    dataSource={_.get(packages, "list", [])}
+                    // loading={cashboxesFetching}
+                    pagination={pagination}
                     locale={{
                         emptyText: <FormattedMessage id="no_data" />,
                     }}

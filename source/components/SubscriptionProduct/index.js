@@ -35,7 +35,6 @@ export const SubscriptionProduct = props => {
                     <FormattedMessage id='subscription.details' />
                 </ShowMore>
                 <ProductPrice>
-                    <FormattedMessage id='subscription.from' />{ ' ' }
                     <Numeral currency={ 'грн.' }>{ price }</Numeral> /{ ' ' }
                     <FormattedMessage id='subscription.monthly' />
                 </ProductPrice>

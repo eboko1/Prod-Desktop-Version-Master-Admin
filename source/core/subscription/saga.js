@@ -2,19 +2,12 @@
 import { all, call, put, take } from 'redux-saga/effects';
 
 // proj
-import { setHeaderFetchingState, emitError } from 'core/ui/duck';
+import { setHeaderFetchingState } from 'core/ui/duck';
 
 import { getCookie, setCookie, fetchAPI } from 'utils';
 
 // own
-import {
-    fetchHeaderDataSuccess,
-    FETCH_HEADER_DATA,
-    fetchSubscriptionProductsSuccess,
-    fetchSubscriptionHistorySuccess,
-    FETCH_SUBSCRIPTION_PRODUCTS,
-    FETCH_SUBSCRIPTION_HISTORY,
-} from './duck';
+import { fetchHeaderDataSuccess, FETCH_HEADER_DATA } from './duck';
 
 export function* headerDataSaga() {
     while (true) {
@@ -60,35 +53,6 @@ export function* headerDataSaga() {
     }
 }
 
-export function* fetchSubscriptionProductsSaga() {
-    while (true) {
-        try {
-            const { payload: type } = yield take(FETCH_SUBSCRIPTION_PRODUCTS);
-
-            const response = yield call(fetchAPI, 'GET', '/products', { type });
-
-            yield put(fetchSubscriptionProductsSuccess(response));
-        } catch (error) {
-            yield put(emitError(error));
-        }
-    }
-}
-export function* fetchSubscriptionHistorySaga() {
-    while (true) {
-        try {
-            const { payload: type } = yield take(FETCH_SUBSCRIPTION_HISTORY);
-
-            const response = yield call(fetchAPI, 'GET', '/subscriptions', {
-                type,
-            });
-
-            yield put(fetchSubscriptionHistorySuccess(response));
-        } catch (error) {
-            yield put(emitError(error));
-        }
-    }
-}
-
 export function* saga() {
-    yield all([ call(headerDataSaga), call(fetchSubscriptionProductsSaga), call(fetchSubscriptionHistorySaga) ]);
+    yield all([ call(headerDataSaga) ]);
 }
