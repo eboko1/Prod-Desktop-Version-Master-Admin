@@ -66,10 +66,10 @@ const ReducerState = {
         list:    [],
         filters: {
             startDatetime: moment().format('YYYY-MM-DD'),
-            endDatetime:   moment()
-                .add(3, 'month')
-                .format('YYYY-MM-DD'),
-            page: 1,
+            // endDatetime:   moment()
+            //     .add(3, 'month')
+            //     .format('YYYY-MM-DD'),
+            page:          1,
         },
     },
 };
