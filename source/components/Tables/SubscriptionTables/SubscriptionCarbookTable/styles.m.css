@@ -21,3 +21,7 @@
     text-align: center;
     margin: 24px;
 }
+
+.datePickerField {
+    width: 320px;
+}

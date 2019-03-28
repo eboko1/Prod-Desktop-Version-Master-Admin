@@ -58,7 +58,9 @@ export class SubscriptionProTable extends Component {
     //     this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGES);
     // };
     _handleDatePicker = date => {
-        this.props.setSubscriptionPackagesFilters({ startDatetime: date });
+        this.props.setSubscriptionPackagesFilters({
+            startDatetime: moment(date).format("YYYY-MM-DD"),
+        });
         this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGES);
     };
 
@@ -92,6 +94,7 @@ export class SubscriptionProTable extends Component {
                     <DatePickerField
                         date={moment(_.get(packages, "filters.startDatetime"))}
                         onChange={this._handleDatePicker}
+                        className={Styles.datePickerField}
                     />
                     {/* <RangePickerField
                         onChange={this._onDateRangeChange}
