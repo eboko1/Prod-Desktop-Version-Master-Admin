@@ -5,6 +5,7 @@ import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Table, Button } from "antd";
 import _ from "lodash";
+import moment from "moment";
 
 // proj
 import {
@@ -14,7 +15,7 @@ import {
     SUBSCRIPTION_TYPES,
 } from "core/payments/duck";
 
-import { RangePickerField } from "forms/_formkit";
+import { DatePickerField } from "forms/_formkit";
 import { ResponsiveView, StyledButton } from "commons";
 import { BREAKPOINTS, linkTo } from "utils";
 import book from "routes/book";
@@ -47,19 +48,22 @@ export class SubscriptionProTable extends Component {
         this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGE);
     }
 
-    _onDateRangeChange = value => {
-        const normalizedValue = value.map(date => date.format("YYYY-MM-DD"));
-        const daterange = {
-            startDatetime: normalizedValue[0],
-            endDatetime: normalizedValue[1],
-        };
-        this.props.setSubscriptionPackagesFilters(daterange);
+    // _onDateRangeChange = value => {
+    //     const normalizedValue = value.map(date => date.format("YYYY-MM-DD"));
+    //     const daterange = {
+    //         startDatetime: normalizedValue[0],
+    //         endDatetime: normalizedValue[1],
+    //     };
+    //     this.props.setSubscriptionPackagesFilters(daterange);
+    //     this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGES);
+    // };
+    _handleDatePicker = date => {
+        this.props.setSubscriptionPackagesFilters({ startDatetime: date });
         this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGES);
     };
 
     render() {
         const { packages } = this.props;
-        console.log("→ packages", packages);
 
         const pagination = {
             pageSize: 10,
@@ -68,7 +72,7 @@ export class SubscriptionProTable extends Component {
             hideOnSinglePage: true,
             current: packages.filters.page,
             onChange: page => {
-                this.props.setSubscriptionPackagesFilters(page);
+                this.props.setSubscriptionPackagesFilters({ page });
                 this.props.fetchSubscriptionPackages(
                     SUBSCRIPTION_TYPES.ROLES_PACKAGES,
                 );
@@ -85,12 +89,16 @@ export class SubscriptionProTable extends Component {
                             <FormattedMessage id="subscription-table.pro" />
                         </h3>
                     </ResponsiveView>
-                    <RangePickerField
+                    <DatePickerField
+                        date={moment(_.get(packages, "filters.startDatetime"))}
+                        onChange={this._handleDatePicker}
+                    />
+                    {/* <RangePickerField
                         onChange={this._onDateRangeChange}
                         // loading={ loading }
                         startDate={_.get(packages, "filters.startDatetime")}
                         endDate={_.get(packages, "filters.endDatetime")}
-                    />
+                    /> */}
                 </div>
                 <Table
                     className={Styles.table}

@@ -63,7 +63,6 @@ export class SubscriptionCarbookTable extends Component {
 
     render() {
         const { suggestions } = this.props;
-        console.log("→ suggestions", suggestions);
 
         const pagination = {
             pageSize: 10,
@@ -72,7 +71,6 @@ export class SubscriptionCarbookTable extends Component {
             hideOnSinglePage: true,
             current: suggestions.filters.page,
             onChange: page => {
-                console.log("→ page", page);
                 this.props.setSubscriptionSuggestionsFilters({ page });
                 this.props.fetchSubscriptionSuggestions(
                     SUBSCRIPTION_TYPES.SUGGESTION_GROUP,

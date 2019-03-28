@@ -2,23 +2,26 @@
 import React from 'react';
 import { Button, Icon } from 'antd';
 import { FormattedMessage } from 'react-intl';
+import moment from 'moment';
 
 export function columnsConfig() {
     const nameCol = {
         title:     <FormattedMessage id='subscription-table.name' />,
         dataIndex: 'product',
         width:     '40%',
-        render:    product => product[ 0 ].name,
+        render:    product => product.name,
     };
     const startDateCol = {
         title:     <FormattedMessage id='subscription-table.start_date' />,
         dataIndex: 'startDatetime',
         width:     '20%',
+        render:    date => moment(date).format('YYYY-MM-DD'),
     };
     const endDateCol = {
         title:     <FormattedMessage id='subscription-table.end_date' />,
         dataIndex: 'endDatetime',
         width:     '20%',
+        render:    date => moment(date).format('YYYY-MM-DD'),
     };
 
     const paidCol = {
@@ -39,6 +42,6 @@ export function columnsConfig() {
         nameCol,
         startDateCol,
         endDateCol,
-        paidCol,
+        paidCol, 
     ];
 }

@@ -31,26 +31,32 @@ export const SET_SUBSCRIPTION_PACKAGES_FILTERS = `${prefix}/SET_SUBSCRIPTION_PAC
 export const SET_SUBSCRIPTION_SUGGESTIONS_FILTERS = `${prefix}/SET_SUBSCRIPTION_SUGGESTIONS_FILTERS`;
 
 // subscription
+export const VERIFY_PROMO_CODE = `${prefix}/VERIFY_PROMO_CODE`;
+export const VERIFY_PROMO_CODE_SUCCESS = `${prefix}/VERIFY_PROMO_CODE_SUCCESS`;
+export const VERIFY_PROMO_CODE_ERROR = `${prefix}/VERIFY_PROMO_CODE_ERROR`;
+
 export const SUBSCRIBE = `${prefix}/SUBSCRIBE`;
 export const SUBSCRIBE_SUCCESS = `${prefix}/SUBSCRIBE_SUCCESS`;
+export const SUBSCRIBE_ERROR = `${prefix}/SUBSCRIBE_ERROR`;
 
 /**
  * Reducer
  **/
 
 const ReducerState = {
-    products: [],
-    packages: {
+    products:  [],
+    promoCode: null,
+    packages:  {
         stats: {
             count: 1,
         },
         list:    [],
         filters: {
             startDatetime: moment().format('YYYY-MM-DD'),
-            endDatetime:   moment()
-                .add(3, 'month')
-                .format('YYYY-MM-DD'),
-            page: 1,
+            // endDatetime:   moment()
+            //     .add(3, 'month')
+            //     .format('YYYY-MM-DD'),
+            page:          1,
         },
     },
     suggestions: {
@@ -118,6 +124,29 @@ export default function reducer(state = ReducerState, action) {
                         ...payload,
                     },
                 },
+            };
+
+        case VERIFY_PROMO_CODE_SUCCESS:
+            return {
+                ...state,
+                promoCode: payload,
+            };
+        case VERIFY_PROMO_CODE_ERROR:
+            return {
+                ...state,
+                promoCode: payload,
+            };
+
+        case SUBSCRIBE_SUCCESS:
+            return {
+                ...state,
+                subscribed: true,
+            };
+
+        case SUBSCRIBE_ERROR:
+            return {
+                ...state,
+                subscribed: false,
             };
 
         default:
@@ -205,6 +234,22 @@ export const fetchSubscriptionSuggestionsSuccess = payload => ({
     payload,
 });
 
+export const verifyPromoCode = payload => ({
+    type: VERIFY_PROMO_CODE,
+    payload,
+});
+
+export const verifyPromoCodeSuccess = payload => ({
+    type: VERIFY_PROMO_CODE_SUCCESS,
+    payload,
+});
+
+export const verifyPromoCodeError = error => ({
+    type:    VERIFY_PROMO_CODE_ERROR,
+    payload: error,
+    error:   error,
+});
+
 export const subscribe = payload => ({
     type: SUBSCRIBE,
     payload,
@@ -212,6 +257,10 @@ export const subscribe = payload => ({
 
 export const subscribeSuccess = () => ({
     type: SUBSCRIBE_SUCCESS,
+});
+
+export const subscribeError = () => ({
+    type: SUBSCRIBE_ERROR,
 });
 
 export const setSubscriptionPackagesFilters = filters => ({

@@ -12,11 +12,15 @@ import {
     fetchSubscriptionPackagesSuccess,
     fetchSubscriptionSuggestionsSuccess,
     subscribeSuccess,
+    subscribeError,
     FETCH_SUBSCRIPTION_PRODUCTS,
     FETCH_SUBSCRIPTION_PACKAGES,
     FETCH_SUBSCRIPTION_SUGGESTIONS,
     SUBSCRIBE,
     SUBSCRIPTION_TYPES,
+    VERIFY_PROMO_CODE,
+    verifyPromoCodeSuccess,
+    verifyPromoCodeError,
     selectSubscriptionPackages,
     selectSubscriptionSuggestions,
 } from './duck';
@@ -76,6 +80,29 @@ export function* fetchSubscriptionSuggestionsSaga() {
     }
 }
 
+export function* verifyPromoCodeSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(VERIFY_PROMO_CODE);
+            console.log('→ payload', payload);
+            const response = yield call(
+                fetchAPI,
+                'GET',
+                `/promo_codes/${payload}`,
+                null,
+                null,
+                { handleErrorInternally: true },
+            );
+            console.log('* verifyPromoCodeSaga', response);
+            yield put(verifyPromoCodeSuccess(response.discountPercent));
+        } catch (error) {
+            console.error(error);
+            yield put(verifyPromoCodeError('error'));
+            // yield put(emitError(error));
+        }
+    }
+}
+
 export function* subscribeSaga() {
     while (true) {
         try {
@@ -83,7 +110,7 @@ export function* subscribeSaga() {
             yield call(fetchAPI, 'POST', '/subscriptions', null, payload);
             yield put(subscribeSuccess());
         } catch (error) {
-            yield put(emitError(error));
+            yield put(subscribeError());
         }
     }
 }
@@ -94,5 +121,6 @@ export function* saga() {
         call(fetchSubscriptionPackagesSaga),
         call(fetchSubscriptionSuggestionsSaga),
         call(subscribeSaga),
+        call(verifyPromoCodeSaga),
     ]);
 }

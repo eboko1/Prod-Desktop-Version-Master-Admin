@@ -7,6 +7,7 @@ import styled, { css } from "styled-components";
 
 // proj
 import {
+    verifyPromoCode,
     subscribe,
     fetchSubscriptionProducts,
     selectSubscriptionProducts,
@@ -33,12 +34,22 @@ const mapStateToProps = state => ({
     user: state.auth,
     modal: state.modals.modal,
     modalProps: state.modals.modalProps,
+    promoCode: state.payments.promoCode,
+    subscribed: state.payments.subscribed,
 });
+
+const mapDispatchToProps = {
+    fetchSubscriptionProducts,
+    verifyPromoCode,
+    setModal,
+    resetModal,
+    subscribe,
+};
 
 // own
 @connect(
     mapStateToProps,
-    { fetchSubscriptionProducts, setModal, resetModal, subscribe },
+    mapDispatchToProps,
 )
 export default class SubscriptionProductsContainer extends Component {
     componentDidMount() {
@@ -126,6 +137,9 @@ export default class SubscriptionProductsContainer extends Component {
                     modalProps={this.props.modalProps}
                     user={this.props.user}
                     subscribe={this.props.subscribe}
+                    verifyPromoCode={this.props.verifyPromoCode}
+                    promoCode={this.props.promoCode}
+                    subscribed={this.props.subscribed}
                 />
             </>
         );

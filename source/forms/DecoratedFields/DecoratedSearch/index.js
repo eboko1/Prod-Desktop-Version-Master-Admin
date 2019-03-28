@@ -20,6 +20,7 @@ export class DecoratedSearch extends React.PureComponent {
             onSearch,
             onPressEnter,
             enterButton,
+            validateStatus,
 
             cnStyles,
             getFieldDecorator,
@@ -67,6 +68,7 @@ export class DecoratedSearch extends React.PureComponent {
             <FormItem
                 label={ label }
                 hasFeedback={ hasFeedback }
+                validateStatus={ validateStatus }
                 colon={ colon }
                 className={ className }
                 { ...formItemLayout }

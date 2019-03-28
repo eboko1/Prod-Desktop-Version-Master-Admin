@@ -12,13 +12,16 @@ import {
     DecoratedRadio,
     DecoratedInputNumber,
     DecoratedSelect,
+    DecoratedSearch,
     DecoratedInput,
     DecoratedDatePicker,
     DecoratedSlider,
 } from "forms/DecoratedFields";
-import { permissions, isForbidden } from "utils";
+import { permissions, isForbidden, goTo } from "utils";
+import book from "routes/book";
 
 // own
+import { CashlessToast, PromoCodeToast } from "./NotificationToasts";
 import { paymentTypes } from "./config";
 import Styles from "./styles.m.css";
 
@@ -52,26 +55,24 @@ const marks = {
 };
 
 @injectIntl
-// @withReduxForm2({
-//     name: "subscribeForm",
-//     actions: {
-//         change: onChangeToSuccessForm,
-//         createCashOrder,
-//         fetchCashboxes,
-//         fetchCashOrderNextId,
-//     },
-//     mapStateToProps: state => ({
-//         businessName: state.auth.businessName,
-//         user: state.auth,
-//         cashboxes: state.cash.cashboxes,
-//         cashOrderNextId: selectCashOrderNextId(state),
-//     }),
-// })
 @Form.create()
 export class SubscribeForm extends Component {
     state = {
-        paymentType: "support",
+        paymentType: "CASHLESS",
+        promoCodeDiscount: void 0,
+        subscribeStatus: void 0,
     };
+
+    static getDerivedStateFromProps(props, state) {
+        console.log("→ getDerivedStateFromProps props", props);
+        if (props.promoCode !== state.promoCodeDiscount) {
+            props.form.setFieldsValue({ promoCodeDiscount: props.promoCode });
+            return {
+                promoCodeDiscount: props.promoCode,
+            };
+        }
+        return null;
+    }
 
     componentWillUnmount() {
         this.props.form.resetFields();
@@ -83,37 +84,62 @@ export class SubscribeForm extends Component {
         form.validateFields((err, values) => {
             console.log("→ _submit values", values);
             if (!err) {
-                subscribe(_.omit(values, ["period"]));
-                resetModal();
+                subscribe(_.omit(values, ["period", "promoCodeDiscount"]));
                 form.resetFields();
+                resetModal();
+                goTo(book.subscriptionHistoryPage);
+                // if (this.props.subscribed) {
+                //     this.setState({ subscribeStatus: "success" });
+                //     console.log("→ delayed111");
+                //     _.delay(function() {
+                //         console.log("→ delayed222");
+                //         form.resetFields();
+                //         resetModal();
+                //         goTo(book.subscriptionHistoryPage);
+                //     }, 2000);
+                //     console.log("→ delayed333");
+                // } else {
+                //     this.setState({ subscribeStatus: "error" });
+                // }
             }
         });
     };
 
     _handleSubscriptionStartDate = startDatetime => {
+        const startDatetimeClone = startDatetime.clone();
         const period = this.props.form.getFieldValue("period");
+        const endDatetime = startDatetimeClone.add(period, "month");
+
         this.props.form.setFieldsValue({
-            endDatetime: startDatetime.add(period, "month"),
+            startDatetime,
+            endDatetime,
         });
     };
 
     _handleSubscriptionPeriod = period => {
-        const startDatetime = this.props.form.getFieldValue("startDatetime");
+        const startDatetimeClone = this.props.form
+            .getFieldValue("startDatetime")
+            .clone();
+
         this.props.form.setFieldsValue({
-            endDatetime: startDatetime.add(period, "month"),
+            endDatetime: startDatetimeClone.add(period, "month"),
         });
     };
 
-    _setPaymentType = event => {
-        const paymentType = event.target.value;
-        this.setState(prevState => {
-            this.props.form.setFieldsValue({
-                paymentType,
-                [prevState.paymentType]: null,
-            });
-
-            return { paymentType };
+    _setPaymentType = key => {
+        this.props.form.setFieldsValue({
+            paymentType: key,
         });
+    };
+
+    _verifyPromoCode = value => {
+        // console.log("→ rule, value, callback", rule, value, callback);
+        this.props.verifyPromoCode(value);
+        // return this.props.promoCode;
+        // this.props.form.validateFields(["promoCode"], { force: true });
+        // this.setState({
+        //     promoCode: this.props.promoCode
+        // })
     };
 
     render() {
@@ -134,9 +160,22 @@ export class SubscribeForm extends Component {
         } = this.props.form;
 
         const { formatMessage } = this.props.intl;
-        console.log("→ modalProps", modalProps);
+        // console.log("→ this.props.form.fields", this.props.form);
+        // console.log("→ this.props", this.props);
+        const totalSum = modalProps.price * (getFieldValue("period") || 3);
+        const promoCodeDiscount = getFieldValue("promoCodeDiscount");
+        let totalSumWithDiscount = totalSum;
+        if (promoCodeDiscount && promoCodeDiscount !== "error") {
+            totalSumWithDiscount =
+                totalSum - (totalSum / 100) * promoCodeDiscount;
+        }
+        console.log("→ totalSum", totalSum);
+        console.log("→ promoCodeDiscount", promoCodeDiscount);
+        console.log("→ totalSumWithDiscount", totalSumWithDiscount);
+
         return (
             <Form className={Styles.form} layout="vertical">
+                {this.state.subscribeStatus === "success" && <div>AAAAA</div>}
                 <div className={Styles.price}>
                     <Numeral currency={"грн."}>{modalProps.price}</Numeral>{" "}
                     &nbsp;/&nbsp;
@@ -196,7 +235,12 @@ export class SubscribeForm extends Component {
                         getCalendarContainer={trigger => trigger.parentNode}
                     />
                 </div>
-                <Tabs className={Styles.paymentType} defaultActiveKey="2">
+
+                <Tabs
+                    className={Styles.paymentType}
+                    defaultActiveKey={paymentTypes.CASHLESS}
+                    onChange={this._setPaymentType}
+                >
                     <TabPane
                         tab={
                             <span>
@@ -207,104 +251,28 @@ export class SubscribeForm extends Component {
                             </span>
                         }
                         disabled
-                        key="1"
+                        key={paymentTypes.PORTMONE}
                     >
                         <div className={Styles.tabContent}>Portmone</div>
                     </TabPane>
                     <TabPane
                         tab={formatMessage({
-                            id: "subscription.paymentTypes.TERMINAL",
+                            id: "subscription.paymentTypes.CASHLESS",
                         })}
-                        key="2"
+                        key={paymentTypes.CASHLESS}
                     >
-                        <div className={Styles.tabContent}>
-                            <p>
-                                № Карти ПриватБанка: 5169 3305 1764 9940
-                                <br />
-                                <br />
-                                Ніколенко Наталія Григорівна
-                                <br />
-                                № Рахунку: 26002056120889
-                                <br />
-                                В призначенні платежу вкажіть, будь ласка:
-                                <br />«{user.businessId} {user.businessName}»
-                            </p>
-                        </div>
-                    </TabPane>
-                    <TabPane
-                        tab={formatMessage({
-                            id: "subscription.paymentTypes.LTD_WITHOUT_VAT",
-                        })}
-                        disabled
-                        key="3"
-                    >
-                        <div className={Styles.tabContent}>
-                            <p>
-                                ТОВ «КАРБУК» 02002,
-                                <br />
-                                Україна, м. Київ, вул. Є.Сверстюка 11А, оф.608
-                                <br />
-                                р/р 26004513922 в АТ «Райффайзен Банк Аваль»
-                                <br />
-                                МФО 380805 Код ЄДРПОУ 40336808
-                                <br />
-                                ІПН 10000000579859
-                                <br />
-                                Директор Ніколенко О.В.
-                            </p>
-                        </div>
-                    </TabPane>
-                    <TabPane
-                        tab={formatMessage({
-                            id: "subscription.paymentTypes.LTD_WITH_VAT",
-                        })}
-                        disabled
-                        key="4"
-                    >
-                        <div className={Styles.tabContent}>
-                            <p>
-                                ТОВ «КАРБУК Україна»
-                                <br />
-                                Коміссіонер ЄДРПОУ 42408931
-                                <br />
-                                Р/р 26006612348 в АТ «Райффайзен Банк Аваль»
-                                <br />
-                                МФО 380805 тел. "02002,
-                                <br />
-                                м. Київ вул. Є.Сверстюка, 11А, офіс № 608
-                                <br />
-                                Директор Ніколенко О.В.
-                            </p>
-                        </div>
-                    </TabPane>
-                    <TabPane
-                        tab={formatMessage({
-                            id:
-                                "subscription.paymentTypes.INDIVIDUAL_ENTREPRENEUR",
-                        })}
-                        key="5"
-                    >
-                        <div className={Styles.tabContent}>
-                            <p>
-                                ФОП Ніколенко Наталя Григорівна
-                                <br />
-                                тел. 0679836991
-                                <br />
-                                Р/Р 26002056120889 в Фiлiя "КИЇВСIТI" АТ КБ
-                                "ПРИВАТБАНК"
-                                <br />
-                                ЄДРПОУ 2852101228, МФО 380775
-                                <br />
-                                тел. "Адреса: 07364, Київська обл.,
-                                Вишгородський р-н,
-                                <br />
-                                с. Новосілки, урочище "Участок", вул. Райдужна,
-                                буд. 20
-                            </p>
-                        </div>
+                        Оплатить Безналом
                     </TabPane>
                 </Tabs>
                 <DecoratedInput
+                    field="paymentType"
+                    initialValue={paymentTypes.CASHLESS}
+                    className={Styles.hiddenInput}
+                    getFieldDecorator={getFieldDecorator}
+                />
+                <DecoratedSearch
+                    formItem
+                    // validateStatus
                     fields={{}}
                     placeholder={formatMessage({
                         id: "subscription.promo_code",
@@ -312,34 +280,41 @@ export class SubscribeForm extends Component {
                     field="promoCode"
                     getFieldDecorator={getFieldDecorator}
                     className={Styles.promoCode}
+                    enterButton={"Применить"}
+                    // disabled={Boolean(getFieldValue("promoCode"))}
+                    // onPressEnter={e => {
+                    //     console.log("e", e);
+                    //     this._verifyPromoCode();
+                    // }}
+                    // onPressEnter={e => console.log("e", e)}
+                    onSearch={value => this._verifyPromoCode(value)}
+                    // rules={[
+                    //     {
+                    //         required: this._verifyPromoCode,
+                    //         message: "Промокод не очень",
+                    //     },
+                    // ]}
                 />
-                {/* <DecoratedRadio
-                    field="paymentType"
-                    formItem
+                {this.state.promoCodeDiscount && (
+                    <PromoCodeToast
+                        promoCodeDiscount={this.props.form.getFieldValue(
+                            "promoCodeDiscount",
+                        )}
+                    />
+                )}
+                <DecoratedInput
+                    field="promoCodeDiscount"
+                    initialValue={this.state.promoCodeDiscount}
+                    className={Styles.hiddenInput}
                     getFieldDecorator={getFieldDecorator}
-                    onChange={event => this._setPaymentType(event)}
-                    initialValue={this.state.paymentType}
-                >
-                    <Radio value="card">
-                        {formatMessage({
-                            id: "cash-order-form.increase",
-                        })}
-                    </Radio>
-                    <Radio value="support">
-                        {formatMessage({
-                            id: "cash-order-form.decrease",
-                        })}
-                    </Radio>
-                </DecoratedRadio>
-                 */}
-
+                />
                 <div className={Styles.price}>
                     {formatMessage({
                         id: "subscription.total_sum",
                     })}
                     : &nbsp;
                     <Numeral currency={"грн."} className={Styles.totalSum}>
-                        {modalProps.price * (getFieldValue("period") || 3)}
+                        {totalSumWithDiscount}
                     </Numeral>
                 </div>
                 <Button

@@ -18,7 +18,17 @@ export default class SubscribeModal extends Component {
     //};
 
     render() {
-        const { user, visible, modalProps, resetModal, subscribe } = this.props;
+        const {
+            user,
+            visible,
+            modalProps,
+            resetModal,
+            subscribe,
+            verifyPromoCode,
+            promoCode,
+            subscribed,
+        } = this.props;
+
         const footer = this._renderModalFooter();
 
         return (
@@ -36,6 +46,9 @@ export default class SubscribeModal extends Component {
                     subscribe={ subscribe }
                     resetModal={ resetModal }
                     modalProps={ modalProps }
+                    verifyPromoCode={ verifyPromoCode }
+                    promoCode={ promoCode }
+                    subscribed={ subscribed }
                 />
             </Modal>
         );
