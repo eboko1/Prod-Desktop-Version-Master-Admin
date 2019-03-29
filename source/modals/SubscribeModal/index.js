@@ -27,6 +27,7 @@ export default class SubscribeModal extends Component {
             verifyPromoCode,
             promoCode,
             subscribed,
+            asyncSubscribe,
         } = this.props;
 
         const footer = this._renderModalFooter();
@@ -49,6 +50,7 @@ export default class SubscribeModal extends Component {
                     verifyPromoCode={ verifyPromoCode }
                     promoCode={ promoCode }
                     subscribed={ subscribed }
+                    asyncSubscribe={ asyncSubscribe }
                 />
             </Modal>
         );

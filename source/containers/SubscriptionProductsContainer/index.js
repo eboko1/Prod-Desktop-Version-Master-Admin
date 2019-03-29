@@ -11,6 +11,7 @@ import {
     subscribe,
     fetchSubscriptionProducts,
     selectSubscriptionProducts,
+    asyncSubscribe,
 } from "core/payments/duck";
 import { setModal, resetModal, MODALS } from "core/modals/duck";
 
@@ -44,6 +45,7 @@ const mapDispatchToProps = {
     setModal,
     resetModal,
     subscribe,
+    asyncSubscribe,
 };
 
 // own
@@ -140,6 +142,7 @@ export default class SubscriptionProductsContainer extends Component {
                     verifyPromoCode={this.props.verifyPromoCode}
                     promoCode={this.props.promoCode}
                     subscribed={this.props.subscribed}
+                    asyncSubscribe={this.props.asyncSubscribe}
                 />
             </>
         );

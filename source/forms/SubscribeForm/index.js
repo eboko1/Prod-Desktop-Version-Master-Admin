@@ -24,6 +24,7 @@ import book from "routes/book";
 import { CashlessToast, PromoCodeToast } from "./NotificationToasts";
 import { paymentTypes } from "./config";
 import Styles from "./styles.m.css";
+import { SubscribeNotification } from "./NotificationToasts/SubscribeNotification";
 
 const TabPane = Tabs.TabPane;
 
@@ -78,16 +79,42 @@ export class SubscribeForm extends Component {
         this.props.form.resetFields();
     }
 
+    _subscribeReset = () => {
+        this.props.form.resetFields();
+        this.props.resetModal();
+        goTo(book.subscriptionHistoryPage);
+    };
+
+    _subscribeSuccess = type => {
+        this.setState({
+            subscribeStatus: type,
+        });
+
+        _.delay(() => this._subscribeReset(), 2000);
+    };
+
     _submit = () => {
         const { form, subscribe, resetModal } = this.props;
 
         form.validateFields((err, values) => {
             console.log("→ _submit values", values);
             if (!err) {
-                subscribe(_.omit(values, ["period", "promoCodeDiscount"]));
-                form.resetFields();
-                resetModal();
-                goTo(book.subscriptionHistoryPage);
+                this.props
+                    .asyncSubscribe(
+                        _.omit(values, ["period", "promoCodeDiscount"]),
+                    )
+                    .then(
+                        () => this._subscribeSuccess(values.paymentType),
+                        error => console.log("→ error", error),
+                    );
+                // console.log('→ ', );
+                // async
+                // subscribe(_.omit(values, ["period", "promoCodeDiscount"]));
+
+                // _subscribeSubmit
+                // form.resetFields();
+                // resetModal();
+                // goTo(book.subscriptionHistoryPage);
                 // if (this.props.subscribed) {
                 //     this.setState({ subscribeStatus: "success" });
                 //     console.log("→ delayed111");
@@ -133,13 +160,7 @@ export class SubscribeForm extends Component {
     };
 
     _verifyPromoCode = value => {
-        // console.log("→ rule, value, callback", rule, value, callback);
         this.props.verifyPromoCode(value);
-        // return this.props.promoCode;
-        // this.props.form.validateFields(["promoCode"], { force: true });
-        // this.setState({
-        //     promoCode: this.props.promoCode
-        // })
     };
 
     render() {
@@ -160,8 +181,7 @@ export class SubscribeForm extends Component {
         } = this.props.form;
 
         const { formatMessage } = this.props.intl;
-        // console.log("→ this.props.form.fields", this.props.form);
-        // console.log("→ this.props", this.props);
+
         const totalSum = modalProps.price * (getFieldValue("period") || 3);
         const promoCodeDiscount = getFieldValue("promoCodeDiscount");
         let totalSumWithDiscount = totalSum;
@@ -169,13 +189,11 @@ export class SubscribeForm extends Component {
             totalSumWithDiscount =
                 totalSum - (totalSum / 100) * promoCodeDiscount;
         }
-        console.log("→ totalSum", totalSum);
-        console.log("→ promoCodeDiscount", promoCodeDiscount);
-        console.log("→ totalSumWithDiscount", totalSumWithDiscount);
 
-        return (
+        return this.state.subscribeStatus ? (
+            <SubscribeNotification type={this.state.subscribeStatus} />
+        ) : (
             <Form className={Styles.form} layout="vertical">
-                {this.state.subscribeStatus === "success" && <div>AAAAA</div>}
                 <div className={Styles.price}>
                     <Numeral currency={"грн."}>{modalProps.price}</Numeral>{" "}
                     &nbsp;/&nbsp;

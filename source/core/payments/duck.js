@@ -1,6 +1,10 @@
 // vendor
 import { createSelector } from 'reselect';
 import moment from 'moment';
+
+// proj
+import { fetchAPI } from 'utils';
+
 /**
  * Constants
  **/
@@ -250,18 +254,26 @@ export const verifyPromoCodeError = error => ({
     error:   error,
 });
 
-export const subscribe = payload => ({
-    type: SUBSCRIBE,
-    payload,
-});
+// export const subscribe = payload => ({
+//     type: SUBSCRIBE,
+//     payload,
+// });
 
-export const subscribeSuccess = () => ({
-    type: SUBSCRIBE_SUCCESS,
+export const subscribeSuccess = response => ({
+    type:    SUBSCRIBE_SUCCESS,
+    payload: response,
 });
 
 export const subscribeError = () => ({
     type: SUBSCRIBE_ERROR,
 });
+
+export const asyncSubscribe = payload => dispatch => {
+    return fetchAPI('POST', '/subscriptions', null, payload).then(
+        response => dispatch(subscribeSuccess(response)),
+        error => dispatch(subscribeError(error)),
+    );
+};
 
 export const setSubscriptionPackagesFilters = filters => ({
     type:    SET_SUBSCRIPTION_PACKAGES_FILTERS,

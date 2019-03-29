@@ -4,13 +4,23 @@ import { FormattedMessage } from 'react-intl';
 import { Icon } from 'antd';
 import styled from 'styled-components';
 
-export const CashlessToast = props => {
+// own
+
+import { paymentTypes } from '../config';
+
+export const SubscribeNotification = ({ type }) => {
     return (
         <Toast>
-            <Icon type='check-circle' />
-            <FormattedMessage id='subscription.cashless_success' />
-            <br />
-            <FormattedMessage id='subscription.support_will_contact' />
+            { type === paymentTypes.CASHLESS && (
+                <>
+                    <Icon type='check-circle' />
+                    &nspb;
+                    <FormattedMessage id='subscription.cashless_success' />
+                    &nspb;
+                    <br />
+                    <FormattedMessage id='subscription.support_will_contact' />
+                </>
+            ) }
         </Toast>
     );
 };

@@ -103,24 +103,24 @@ export function* verifyPromoCodeSaga() {
     }
 }
 
-export function* subscribeSaga() {
-    while (true) {
-        try {
-            const { payload } = yield take(SUBSCRIBE);
-            yield call(fetchAPI, 'POST', '/subscriptions', null, payload);
-            yield put(subscribeSuccess());
-        } catch (error) {
-            yield put(subscribeError());
-        }
-    }
-}
+// export function* subscribeSaga() {
+//     while (true) {
+//         try {
+//             const { payload } = yield take(SUBSCRIBE);
+//             yield call(fetchAPI, 'POST', '/subscriptions', null, payload);
+//             yield put(subscribeSuccess());
+//         } catch (error) {
+//             yield put(subscribeError());
+//         }
+//     }
+// }
 
 export function* saga() {
     yield all([
         call(fetchSubscriptionProductsSaga),
         call(fetchSubscriptionPackagesSaga),
         call(fetchSubscriptionSuggestionsSaga),
-        call(subscribeSaga),
+        // call(subscribeSaga),
         call(verifyPromoCodeSaga),
     ]);
 }
