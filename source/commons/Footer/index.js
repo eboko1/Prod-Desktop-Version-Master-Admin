@@ -1,9 +1,11 @@
 // core
 import React, { Component } from 'react';
 import { Icon } from 'antd';
+import { Link } from 'react-router-dom';
 
 // proj
 import { images } from 'utils';
+import book from 'routes/book';
 
 // own
 import Styles from './styles.m.css';
@@ -26,14 +28,24 @@ class Footer extends Component {
                 <div className={ Styles.contacts }>
                     <FormattedMessage id='footer.support' />
                     :&nbsp;
-                    <a href='tel:380442994556'>+38(044)299-45-56</a>
+                    <a href='tel:380442994556' className={ Styles.link }>
+                        +38(044)299-45-56
+                    </a>
                     &nbsp;
                     <FormattedMessage id='or' />
                     &nbsp;
-                    <a href='mailto:support@carbook.pro'>support@carbook.pro</a>
+                    <a
+                        href='mailto:support@carbook.pro'
+                        className={ Styles.link }
+                    >
+                        support@carbook.pro
+                    </a>
                     &nbsp;
                 </div>
                 <div className={ Styles.copyright }>
+                    <Link to={ book.userAgreement } className={ Styles.link }>
+                        <FormattedMessage id='user_agreement' />
+                    </Link>
                     <img
                         className={ Styles.logo }
                         src={ images.carbookLogo }

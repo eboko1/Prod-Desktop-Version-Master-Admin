@@ -30,6 +30,7 @@ import SuppliersPage from './SuppliersPage';
 import PaymentPage from './PaymentPage';
 import SubscriptionHistoryPage from './SubscriptionHistoryPage';
 import SubscriptionPackagesPage from './SubscriptionPackagesPage';
+import UserAgreementPage from './UserAgreementPage';
 
 export {
     DashboardPage,
@@ -64,4 +65,5 @@ export {
     PaymentPage,
     SubscriptionHistoryPage,
     SubscriptionPackagesPage,
+    UserAgreementPage,
 };

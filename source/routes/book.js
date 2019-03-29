@@ -12,6 +12,7 @@ const book = Object.freeze({
     exception:                '/exception',
     exceptionStatusCode:      '/exception/:statusCode',
     // Private
+    userAgreement:            '/user-agreement',
     profile:                  '/profile',
     dashboard:                '/dashboard',
     myTasksPage:              '/mytasks',

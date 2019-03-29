@@ -33,6 +33,7 @@ import {
     PaymentPage,
     SubscriptionHistoryPage,
     SubscriptionPackagesPage,
+    UserAgreementPage,
 } from 'pages';
 import book from './book';
 
@@ -142,6 +143,11 @@ export default class Private extends Component {
                 <Route exact component={ BrandsPage } path={ book.brandsPage } />
                 { /* Global */ }
                 <Route exact component={ ProfilePage } path={ book.profile } />
+                <Route
+                    exact
+                    component={ UserAgreementPage }
+                    path={ book.userAgreement }
+                />
                 <Route
                     component={ ExceptionPage }
                     path={ book.exceptionStatusCode }
