@@ -16,6 +16,7 @@ export default class PDFViewerModal extends Component {
                 onCancel={ () => resetModal() }
                 footer={ null }
                 destroyOnClose
+                style={ { top: 20 } }
                 width={ 760 }
             >
                 <PDF />
