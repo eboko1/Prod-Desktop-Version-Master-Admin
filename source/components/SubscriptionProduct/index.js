@@ -13,13 +13,10 @@ export const SubscriptionProduct = props => {
         name,
         price,
         description,
+        showDetails,
         // rolesPackageId,
         // suggestionGroupId,
     } = props;
-    // name={name}
-    // price={price}
-    // description={description}
-    // rolesPackageId={rolesPackageId}
 
     const createMarkup = () => ({ __html: description });
 
@@ -31,7 +28,7 @@ export const SubscriptionProduct = props => {
             </ProductTitleWrapper>
             <ProductDescription dangerouslySetInnerHTML={ createMarkup() } />
             <ProductFooter>
-                <ShowMore>
+                <ShowMore onClick={ () => showDetails() }>
                     <FormattedMessage id='subscription.details' />
                 </ShowMore>
                 <ProductPrice>

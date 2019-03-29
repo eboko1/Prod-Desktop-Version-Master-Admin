@@ -1,0 +1,9 @@
+.pdf {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.paging {
+    text-align: center;
+}

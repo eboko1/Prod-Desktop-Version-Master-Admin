@@ -16,7 +16,7 @@ import {
 import { setModal, resetModal, MODALS } from "core/modals/duck";
 
 import { SubscriptionProduct } from "components";
-import { SubscribeModal } from "modals";
+import { SubscribeModal, PDFViewerModal } from "modals";
 import book from "routes/book";
 
 const GridCardSkeletonCSS = css`
@@ -59,6 +59,7 @@ export default class SubscriptionProductsContainer extends Component {
     }
 
     _setModal = modalProps => this.props.setModal(MODALS.SUBSCRIBE, modalProps);
+    _showDetails = () => this.props.setModal(MODALS.PDF_VIEWER);
 
     render() {
         return (
@@ -86,6 +87,7 @@ export default class SubscriptionProductsContainer extends Component {
                                     price={price}
                                     description={description}
                                     rolesPackageId={rolesPackageId}
+                                    showDetails={() => this._showDetails()}
                                     setModal={() =>
                                         this._setModal({
                                             name,
@@ -120,6 +122,7 @@ export default class SubscriptionProductsContainer extends Component {
                                     price={price}
                                     description={description}
                                     suggestionGroupId={suggestionGroupId}
+                                    showDetails={() => this._showDetails()}
                                     setModal={() =>
                                         this._setModal({
                                             name,
@@ -133,31 +136,28 @@ export default class SubscriptionProductsContainer extends Component {
                         )}
                     </Card>
                 </SubscriptionProductsGrid>
-                <SubscribeModal
-                    visible={this.props.modal}
-                    resetModal={this.props.resetModal}
-                    modalProps={this.props.modalProps}
-                    user={this.props.user}
-                    subscribe={this.props.subscribe}
-                    verifyPromoCode={this.props.verifyPromoCode}
-                    promoCode={this.props.promoCode}
-                    subscribed={this.props.subscribed}
-                    asyncSubscribe={this.props.asyncSubscribe}
-                />
+                {this.props.modal === MODALS.SUBSCRIBE && (
+                    <SubscribeModal
+                        visible={this.props.modal}
+                        resetModal={this.props.resetModal}
+                        modalProps={this.props.modalProps}
+                        user={this.props.user}
+                        subscribe={this.props.subscribe}
+                        verifyPromoCode={this.props.verifyPromoCode}
+                        promoCode={this.props.promoCode}
+                        subscribed={this.props.subscribed}
+                        asyncSubscribe={this.props.asyncSubscribe}
+                    />
+                )}
+                {this.props.modal === MODALS.PDF_VIEWER && (
+                    <PDFViewerModal
+                        visible={this.props.modal}
+                        resetModal={this.props.resetModal}
+                    />
+                )}
             </>
         );
     }
-
-    // _renderTitle = id => (
-    //     <h3 id={id}>
-    //         <a
-    //             href={`${book.subscriptionPackagesPage}${id}`}
-    //             className="anchor"
-    //         >
-    //             #
-    //         </a>
-    //     </h3>
-    // );
 
     _renderBannersSkeleton = () => (
         <Skeleton
@@ -179,10 +179,6 @@ export default class SubscriptionProductsContainer extends Component {
     );
 }
 
-// proj
-
-// import { media } from 'styles/tools';
-
 const SubscriptionProductsGrid = styled.div`
     & .ant-card {
         margin: 24px;
@@ -194,17 +190,3 @@ const SubscriptionProductsGrid = styled.div`
         background-color: rgb(240, 242, 245);
     }
 `;
-
-// const BannersGridContainer = styled(Card)`
-//     & .ant-card-body {
-//         ${media.md`
-//             padding-top: 0;
-//             padding-left: 0;
-//             padding-right: 0;
-//         `}
-//     //
-//     .ant-card-head-title {
-//         ${media.sm`font-size: 32px;`};
-//         ${media.xs`font-size: 24px;`};
-//     }
-// `;

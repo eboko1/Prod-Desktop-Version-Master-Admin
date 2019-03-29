@@ -24,6 +24,7 @@ export const MODALS = {
     TO_SUCCESS:             'TO_SUCCESS',
     UNIVERSAL_CHART:        'UNIVERSAL_CHART',
     UNIVERSAL_FILTERS:      'UNIVERSAL_FILTERS',
+    PDF_VIEWER:             'PDF_VIEWER',
 };
 
 //
