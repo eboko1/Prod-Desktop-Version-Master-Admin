@@ -128,7 +128,8 @@ const reducer = (state, action) => {
 
     if (
         type === LOCATION_CHANGE &&
-        _.get(payload, 'pathname') !== _.get(state, 'router.location.pathname')
+        _.get(payload, 'location.pathname') !==
+            _.get(state, 'router.location.pathname')
     ) {
         resetedState = Object.keys(persistedState).reduce(
             (resetedState, moduleName) => {
