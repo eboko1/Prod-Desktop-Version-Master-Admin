@@ -14,7 +14,7 @@ export function columnsConfig() {
     const nameCol = {
         title:     <FormattedMessage id='subscription-table.name' />,
         dataIndex: 'product',
-        width:     '40%',
+        width:     '35%',
         render:    product => product.name,
     };
     const startDateCol = {
@@ -33,7 +33,7 @@ export function columnsConfig() {
     const paidCol = {
         title:     <FormattedMessage id='subscription-table.paid' />,
         dataIndex: 'paid',
-        width:     '20%',
+        width:     '25%',
         render:    (paid, subscription) => {
             if (!paid && subscription.paymentType === paymentTypes.CASHLESS) {
                 return (

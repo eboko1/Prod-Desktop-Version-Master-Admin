@@ -200,6 +200,12 @@ export class SubscribeForm extends Component {
                         <Icon type="question-circle-o" />
                     </Tooltip>
                 </div>
+                <div className={Styles.paymentRates}>
+                    <Icon type="calculator" className={Styles.loyaltyIcon} />
+                    &nbsp;
+                    {formatMessage({ id: "subscription.loyalty_program" })}
+                    <div>{this._renderLoyaltyProgram()}</div>
+                </div>
                 <div className={Styles.fieldsBlock}>
                     <DecoratedInput
                         field="productId"
@@ -227,7 +233,6 @@ export class SubscribeForm extends Component {
                         field="period"
                         getFieldDecorator={getFieldDecorator}
                         initialValue={modalProps.period || 3}
-                        tooltipVisible
                         min={3}
                         max={12}
                         step={3}
@@ -273,7 +278,9 @@ export class SubscribeForm extends Component {
                         })}
                         key={paymentTypes.CASHLESS}
                     >
-                        Оплатить Безналом
+                        {formatMessage({
+                            id: "subscription.support_will_contact",
+                        })}
                     </TabPane>
                 </Tabs>
                 <DecoratedInput
@@ -292,7 +299,9 @@ export class SubscribeForm extends Component {
                     field="promoCode"
                     getFieldDecorator={getFieldDecorator}
                     className={Styles.promoCode}
-                    enterButton={"Применить"}
+                    enterButton={formatMessage({
+                        id: "submit",
+                    })}
                     onSearch={value => this._verifyPromoCode(value)}
                 />
                 {this.state.promoCodeDiscount && (
@@ -329,4 +338,15 @@ export class SubscribeForm extends Component {
             </Form>
         );
     }
+
+    _renderLoyaltyProgram = () =>
+        Object.keys(paymentRates).map((key, index) => (
+            <span key={`${key}-${index}`} className={Styles.loyaltyRate}>
+                {key}&nbsp;
+                {this.props.intl.formatMessage({
+                    id: "mo.",
+                })}
+                &nbsp; - {Object.values(paymentRates)[index]}%
+            </span>
+        ));
 }
