@@ -22,7 +22,7 @@ import book from "routes/book";
 
 // own
 import { CashlessToast, PromoCodeToast } from "./NotificationToasts";
-import { paymentTypes } from "./config";
+import { paymentTypes, paymentRates } from "./config";
 import Styles from "./styles.m.css";
 import { SubscribeNotification } from "./NotificationToasts/SubscribeNotification";
 
@@ -65,7 +65,6 @@ export class SubscribeForm extends Component {
     };
 
     static getDerivedStateFromProps(props, state) {
-        console.log("→ getDerivedStateFromProps props", props);
         if (props.promoCode !== state.promoCodeDiscount) {
             props.form.setFieldsValue({ promoCodeDiscount: props.promoCode });
             return {
@@ -97,37 +96,25 @@ export class SubscribeForm extends Component {
         const { form, subscribe, resetModal } = this.props;
 
         form.validateFields((err, values) => {
-            console.log("→ _submit values", values);
             if (!err) {
+                const normalizedValues = {
+                    ..._.omit(values, ["period", "promoCodeDiscount"]),
+                    startDatetime: moment(values.startDatetime)
+                        .utc()
+                        .startOf("day")
+                        .toISOString(),
+                    endDatetime: moment(values.endDatetime)
+                        .utc()
+                        .endOf("day")
+                        .toISOString(),
+                };
+
                 this.props
-                    .asyncSubscribe(
-                        _.omit(values, ["period", "promoCodeDiscount"]),
-                    )
+                    .asyncSubscribe(normalizedValues)
                     .then(
                         () => this._subscribeSuccess(values.paymentType),
                         error => console.log("→ error", error),
                     );
-                // console.log('→ ', );
-                // async
-                // subscribe(_.omit(values, ["period", "promoCodeDiscount"]));
-
-                // _subscribeSubmit
-                // form.resetFields();
-                // resetModal();
-                // goTo(book.subscriptionHistoryPage);
-                // if (this.props.subscribed) {
-                //     this.setState({ subscribeStatus: "success" });
-                //     console.log("→ delayed111");
-                //     _.delay(function() {
-                //         console.log("→ delayed222");
-                //         form.resetFields();
-                //         resetModal();
-                //         goTo(book.subscriptionHistoryPage);
-                //     }, 2000);
-                //     console.log("→ delayed333");
-                // } else {
-                //     this.setState({ subscribeStatus: "error" });
-                // }
             }
         });
     };
@@ -181,9 +168,16 @@ export class SubscribeForm extends Component {
         } = this.props.form;
 
         const { formatMessage } = this.props.intl;
+        const period = getFieldValue("period") || 3;
+        const totalPrice = modalProps.price * period;
+        const periodRate = paymentRates[period];
+        const totalSum =
+            period !== 3
+                ? totalPrice - (totalPrice / 100) * periodRate
+                : totalPrice;
 
-        const totalSum = modalProps.price * (getFieldValue("period") || 3);
         const promoCodeDiscount = getFieldValue("promoCodeDiscount");
+
         let totalSumWithDiscount = totalSum;
         if (promoCodeDiscount && promoCodeDiscount !== "error") {
             totalSumWithDiscount =
@@ -299,19 +293,7 @@ export class SubscribeForm extends Component {
                     getFieldDecorator={getFieldDecorator}
                     className={Styles.promoCode}
                     enterButton={"Применить"}
-                    // disabled={Boolean(getFieldValue("promoCode"))}
-                    // onPressEnter={e => {
-                    //     console.log("e", e);
-                    //     this._verifyPromoCode();
-                    // }}
-                    // onPressEnter={e => console.log("e", e)}
                     onSearch={value => this._verifyPromoCode(value)}
-                    // rules={[
-                    //     {
-                    //         required: this._verifyPromoCode,
-                    //         message: "Промокод не очень",
-                    //     },
-                    // ]}
                 />
                 {this.state.promoCodeDiscount && (
                     <PromoCodeToast

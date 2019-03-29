@@ -50,21 +50,11 @@ export class SubscriptionCarbookTable extends Component {
         );
     }
 
-    // _onDateRangeChange = value => {
-    //     const normalizedValue = value.map(date => date.format("YYYY-MM-DD"));
-    //     const daterange = {
-    //         startDatetime: normalizedValue[0],
-    //         endDatetime: normalizedValue[1],
-    //     };
-    //     this.props.setSubscriptionSuggestionsFilters(daterange);
-    //     this.props.fetchSubscriptionSuggestions(
-    //         SUBSCRIPTION_TYPES.SUGGESTION_GROUP,
-    //     );
-    // };
-
     _handleDatePicker = date => {
         this.props.setSubscriptionSuggestionsFilters({
-            startDatetime: moment(date).format("YYYY-MM-DD"),
+            startDatetime: moment(date)
+                .utc()
+                .startOf("day"),
         });
         this.props.fetchSubscriptionSuggestions(
             SUBSCRIPTION_TYPES.SUGGESTION_GROUP,
@@ -98,12 +88,6 @@ export class SubscriptionCarbookTable extends Component {
                             <FormattedMessage id="subscription-table.advertise" />
                         </h3>
                     </ResponsiveView>
-                    {/* <RangePickerField
-                        onChange={this._onDateRangeChange}
-                        // loading={ loading }
-                        startDate={_.get(suggestions, "filters.startDatetime")}
-                        endDate={_.get(suggestions, "filters.endDatetime")}
-                    /> */}
                     <DatePickerField
                         date={moment(
                             _.get(suggestions, "filters.startDatetime"),

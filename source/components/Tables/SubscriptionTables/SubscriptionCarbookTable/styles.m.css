@@ -25,3 +25,13 @@
 .datePickerField {
     width: 320px;
 }
+
+.inProgress {
+    color: var(--orange);
+    white-space: nowrap;
+}
+
+.paid {
+    color: var(--green);
+    white-space: nowrap;
+}

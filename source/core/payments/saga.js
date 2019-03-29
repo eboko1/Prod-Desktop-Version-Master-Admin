@@ -1,6 +1,6 @@
 //vendor
 import { all, call, put, take, select } from 'redux-saga/effects';
-
+import moment from 'moment';
 // proj
 import { emitError } from 'core/ui/duck';
 
@@ -43,16 +43,21 @@ export function* fetchSubscriptionPackagesSaga() {
     while (true) {
         try {
             yield take(FETCH_SUBSCRIPTION_PACKAGES);
-            console.log('→ 11');
             const packages = yield select(selectSubscriptionPackages);
+            const filters = {
+                ...packages.filters,
+                startDatetime: moment(packages.filters.startDatetime)
+                    .utc()
+                    .startOf('day')
+                    .toISOString(),
+            };
 
-            console.log('* 11filters', packages);
             const response = yield call(fetchAPI, 'GET', '/subscriptions', {
                 type:     SUBSCRIPTION_TYPES.ROLES_PACKAGE,
                 pageSize: 10,
-                ...packages.filters,
+                ...filters,
             });
-            console.log('→ 111response', response);
+
             yield put(fetchSubscriptionPackagesSuccess(response));
         } catch (error) {
             yield put(emitError(error));
@@ -64,15 +69,19 @@ export function* fetchSubscriptionSuggestionsSaga() {
     while (true) {
         try {
             yield take(FETCH_SUBSCRIPTION_SUGGESTIONS);
-            console.log('→ 222');
             const suggestions = yield select(selectSubscriptionSuggestions);
-
+            const filters = {
+                ...suggestions.filters,
+                startDatetime: moment(suggestions.filters.startDatetime)
+                    .utc()
+                    .startOf('day')
+                    .toISOString(),
+            };
             const response = yield call(fetchAPI, 'GET', '/subscriptions', {
                 type:     SUBSCRIPTION_TYPES.SUGGESTION_GROUP,
                 pageSize: 10,
-                ...suggestions.filters,
+                ...filters,
             });
-            console.log('→ 222response', response);
             yield put(fetchSubscriptionSuggestionsSuccess(response));
         } catch (error) {
             yield put(emitError(error));
@@ -84,7 +93,6 @@ export function* verifyPromoCodeSaga() {
     while (true) {
         try {
             const { payload } = yield take(VERIFY_PROMO_CODE);
-            console.log('→ payload', payload);
             const response = yield call(
                 fetchAPI,
                 'GET',
@@ -93,10 +101,8 @@ export function* verifyPromoCodeSaga() {
                 null,
                 { handleErrorInternally: true },
             );
-            console.log('* verifyPromoCodeSaga', response);
             yield put(verifyPromoCodeSuccess(response.discountPercent));
         } catch (error) {
-            console.error(error);
             yield put(verifyPromoCodeError('error'));
             // yield put(emitError(error));
         }

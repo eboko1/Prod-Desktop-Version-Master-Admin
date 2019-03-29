@@ -48,18 +48,11 @@ export class SubscriptionProTable extends Component {
         this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGE);
     }
 
-    // _onDateRangeChange = value => {
-    //     const normalizedValue = value.map(date => date.format("YYYY-MM-DD"));
-    //     const daterange = {
-    //         startDatetime: normalizedValue[0],
-    //         endDatetime: normalizedValue[1],
-    //     };
-    //     this.props.setSubscriptionPackagesFilters(daterange);
-    //     this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGES);
-    // };
     _handleDatePicker = date => {
         this.props.setSubscriptionPackagesFilters({
-            startDatetime: moment(date).format("YYYY-MM-DD"),
+            startDatetime: moment(date)
+                .utc()
+                .startOf("day"),
         });
         this.props.fetchSubscriptionPackages(SUBSCRIPTION_TYPES.ROLES_PACKAGES);
     };
@@ -96,12 +89,6 @@ export class SubscriptionProTable extends Component {
                         onChange={this._handleDatePicker}
                         className={Styles.datePickerField}
                     />
-                    {/* <RangePickerField
-                        onChange={this._onDateRangeChange}
-                        // loading={ loading }
-                        startDate={_.get(packages, "filters.startDatetime")}
-                        endDate={_.get(packages, "filters.endDatetime")}
-                    /> */}
                 </div>
                 <Table
                     className={Styles.table}

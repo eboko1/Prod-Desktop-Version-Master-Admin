@@ -7,7 +7,8 @@
     "subscription-table.end_date": "End date",
     "subscription-table.paid": "Is payed",
     "subscription-table.pay": "Pay",
-    "subscription-table.buy_package": "Buy package"
+    "subscription-table.buy_package": "Buy package",
+    "subscription-table.in_progress": "In progress"
   },
   "ru": {
     "subscription-table.pro": ".Pro",
@@ -17,7 +18,8 @@
     "subscription-table.end_date": "Дата конца",
     "subscription-table.paid": "Оплачено",
     "subscription-table.pay": "Оплатить",
-    "subscription-table.buy_package": "Купить пакет"
+    "subscription-table.buy_package": "Купить пакет",
+    "subscription-table.in_progress": "Обрабатывается"
   },
   "uk": {
     "subscription-table.pro": ".Pro",
@@ -27,6 +29,7 @@
     "subscription-table.end_date": "Дата кінця",
     "subscription-table.paid": "Сплачено",
     "subscription-table.pay": "Сплатити",
-    "subscription-table.buy_package": "Придбати пакет"
+    "subscription-table.buy_package": "Придбати пакет",
+    "subscription-table.in_progress": "Опрацьовується"
   }
 }

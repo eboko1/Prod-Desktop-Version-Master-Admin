@@ -13,10 +13,10 @@ export const SubscribeNotification = ({ type }) => {
         <Toast>
             { type === paymentTypes.CASHLESS && (
                 <>
-                    <Icon type='check-circle' />
-                    &nspb;
+                    <StatusIcon type='check-circle' />
+                    &nbsp;
                     <FormattedMessage id='subscription.cashless_success' />
-                    &nspb;
+                    &nbsp;
                     <br />
                     <FormattedMessage id='subscription.support_will_contact' />
                 </>
@@ -28,6 +28,7 @@ export const SubscribeNotification = ({ type }) => {
 const Toast = styled.div`
     margin-bottom: 10px;
     padding: 12px;
+    font-size: 24px;
     border: ${props =>
         props.promocodediscount === 'error'
             ? '1px solid var(--warning)'

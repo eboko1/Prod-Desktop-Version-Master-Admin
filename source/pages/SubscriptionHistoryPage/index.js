@@ -23,11 +23,11 @@ export default class SubscriptionHistoryPage extends Component {
             >
                 <TabsTwins
                     primary={ {
-                        title:   'cash-table.leftovers',
+                        title:   'subscription-table.pro',
                         content: <SubscriptionProTable />,
                     } }
                     secondary={ {
-                        title:   'cash-table.trace',
+                        title:   'subscription-table.advertise',
                         content: <SubscriptionCarbookTable />,
                     } }
                 />

@@ -56,11 +56,11 @@ const ReducerState = {
         },
         list:    [],
         filters: {
-            startDatetime: moment().format('YYYY-MM-DD'),
-            // endDatetime:   moment()
-            //     .add(3, 'month')
-            //     .format('YYYY-MM-DD'),
-            page:          1,
+            startDatetime: moment()
+                .utc()
+                .startOf('day')
+                .toISOString(),
+            page: 1,
         },
     },
     suggestions: {
@@ -69,11 +69,11 @@ const ReducerState = {
         },
         list:    [],
         filters: {
-            startDatetime: moment().format('YYYY-MM-DD'),
-            // endDatetime:   moment()
-            //     .add(3, 'month')
-            //     .format('YYYY-MM-DD'),
-            page:          1,
+            startDatetime: moment()
+                .utc()
+                .startOf('day')
+                .toISOString(),
+            page: 1,
         },
     },
 };
