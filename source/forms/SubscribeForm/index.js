@@ -325,6 +325,19 @@ export class SubscribeForm extends Component {
                     <Numeral currency={"грн."} className={Styles.totalSum}>
                         {totalSumWithDiscount}
                     </Numeral>
+                    &nbsp;
+                    {period !== 3 ? (
+                        <span>
+                            &nbsp;(
+                            <Numeral currency={"грн."}>
+                                {modalProps.price -
+                                    (modalProps.price * paymentRates[period]) /
+                                        100}
+                            </Numeral>
+                            &nbsp;/&nbsp;
+                            {formatMessage({ id: "subscription.monthly" })})
+                        </span>
+                    ) : null}
                 </div>
                 <Button
                     className={Styles.purchaseButton}

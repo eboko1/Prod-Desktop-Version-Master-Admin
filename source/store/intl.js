@@ -242,7 +242,7 @@ const setIntl = language => {
 };
 
 let persistedLocale =
-    localStorage.getItem('_my.carbook.pro/locale') || fallbackLocale;
+    localStorage.getItem('_my.carbook.pro_locale') || fallbackLocale;
 
 if (persistedLocale === 'ua') {
     persistedLocale = 'uk';
