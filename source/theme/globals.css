@@ -90,3 +90,15 @@ a {
 .ant-message-custom-content {
     display: flex;
 }
+
+::-webkit-scrollbar {
+    width: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary);
+}
+
+::-webkit-scrollbar:horizontal {
+    height: 5px;
+}

@@ -30,6 +30,10 @@ import {
     CashBankPage,
     CashFlowPage,
     SuppliersPage,
+    PaymentPage,
+    SubscriptionHistoryPage,
+    SubscriptionPackagesPage,
+    UserAgreementPage,
 } from 'pages';
 import book from './book';
 
@@ -105,6 +109,18 @@ export default class Private extends Component {
                     path={ book.feedbackId }
                 />
                 <Route exact component={ CallsPage } path={ book.calls } />
+                { /* Payment */ }
+                <Route exact component={ PaymentPage } path={ book.paymentPage } />
+                <Route
+                    exact
+                    component={ SubscriptionHistoryPage }
+                    path={ book.subscriptionHistoryPage }
+                />
+                <Route
+                    exact
+                    component={ SubscriptionPackagesPage }
+                    path={ book.subscriptionPackagesPage }
+                />
                 { /* Roles */ }
                 <Route exact component={ PackagePage } path={ book.packagePage } />
                 <Route exact component={ RolePage } path={ book.rolePage } />
@@ -120,13 +136,18 @@ export default class Private extends Component {
                 />
                 { /* Administration */ }
                 <Route
-                    exacat
+                    exact
                     component={ ServicesPage }
                     path={ book.servicesPage }
                 />
-                <Route exacat component={ BrandsPage } path={ book.brandsPage } />
+                <Route exact component={ BrandsPage } path={ book.brandsPage } />
                 { /* Global */ }
                 <Route exact component={ ProfilePage } path={ book.profile } />
+                <Route
+                    exact
+                    component={ UserAgreementPage }
+                    path={ book.userAgreement }
+                />
                 <Route
                     component={ ExceptionPage }
                     path={ book.exceptionStatusCode }

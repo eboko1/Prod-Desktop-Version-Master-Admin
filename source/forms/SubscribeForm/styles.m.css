@@ -1,0 +1,64 @@
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.price {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px;
+    background: var(--static);
+}
+
+.fieldsBlock {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 12px 0;
+}
+
+.slider:global(.ant-slider) {
+    flex: 1 1 70%;
+    margin: 0 16px;
+}
+
+.promoCode {
+    margin: 8px 0;
+}
+
+.totalSum {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+.purchaseButton {
+    margin: 16px auto;
+}
+
+.paymentType {
+    border: 2px dashed var(--secondary);
+    margin: 16px 0;
+    padding: 16px;
+}
+
+.paymentRates {
+    display: flex;
+    align-items: center;
+    margin: 8px 0;
+    padding: 8px;
+    border-bottom: 1px solid var(--primary);
+}
+
+.hiddenInput {
+    display: none;
+}
+
+.loyaltyIcon {
+    font-size: 24px;
+    color: var(--primary);
+}
+
+.loyaltyRate {
+    margin: 0 24px;
+}

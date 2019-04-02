@@ -113,6 +113,8 @@ import PartSuggestions from 'components/PartSuggestions/messages';
 import PartAttributes from 'components/PartAttributes/messages';
 import VehicleNumberHistory from 'components/VehicleNumberHistory/messages';
 import CashTables from 'components/Tables/CashTables/messages';
+import SubscriptionTables from 'components/Tables/SubscriptionTables/messages';
+import SubscribeForm from 'forms/SubscribeForm/messages';
 
 //commons
 import Footer from 'commons/Footer/messages';
@@ -181,6 +183,7 @@ const messages = merge.all([
     SpreadBusinessBrandsForm,
     CashCreationForm,
     CashOrderForm,
+    SubscribeForm,
     // modals
     UniversalFiltersModal,
     AddClientModal,
@@ -216,6 +219,7 @@ const messages = merge.all([
     PartAttributes,
     VehicleNumberHistory,
     CashTables,
+    SubscriptionTables,
 ]);
 /* eslint-enable array-element-newline */
 
@@ -238,7 +242,7 @@ const setIntl = language => {
 };
 
 let persistedLocale =
-    localStorage.getItem('_my.carbook.pro/locale') || fallbackLocale;
+    localStorage.getItem('_my.carbook.pro_locale') || fallbackLocale;
 
 if (persistedLocale === 'ua') {
     persistedLocale = 'uk';

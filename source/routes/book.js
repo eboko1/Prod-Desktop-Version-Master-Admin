@@ -5,68 +5,75 @@ const OLD_APP_URL = __OLD_APP_URL__;
 
 const book = Object.freeze({
     // Public
-    login:               '/login',
-    forgotPassword:      '/forgot-password',
+    login:                    '/login',
+    forgotPassword:           '/forgot-password',
     // newPasswordPage:     '/new-password',
-    newPassword:         '/new-password',
-    exception:           '/exception',
-    exceptionStatusCode: '/exception/:statusCode',
+    newPassword:              '/new-password',
+    exception:                '/exception',
+    exceptionStatusCode:      '/exception/:statusCode',
     // Private
-    profile:             '/profile',
-    dashboard:           '/dashboard',
-    myTasksPage:         '/mytasks',
+    userAgreement:            '/user-agreement',
+    profile:                  '/profile',
+    dashboard:                '/dashboard',
+    myTasksPage:              '/mytasks',
     //
     // Orders
     //
-    orders:              '/orders',
-    ordersByStatuses:    '/orders/:ordersStatuses',
-    ordersAppointments:  '/orders/appointments',
+    orders:                   '/orders',
+    ordersByStatuses:         '/orders/:ordersStatuses',
+    ordersAppointments:       '/orders/appointments',
     // Order
-    order:               '/order',
-    orderId:             '/order/:id',
+    order:                    '/order',
+    orderId:                  '/order/:id',
     // AddOrder
-    addOrder:            '/add',
+    addOrder:                 '/add',
     // reports
-    reports:             '/orders/reports',
+    reports:                  '/orders/reports',
     //
     // Reference book
     //
     // Clients
-    clients:             '/clients',
-    client:              '/client',
-    clientId:            '/client/:id',
+    clients:                  '/clients',
+    client:                   '/client',
+    clientId:                 '/client/:id',
     // Employees
-    employeesPage:       '/employees',
-    addEmployee:         '/employees/add',
+    employeesPage:            '/employees',
+    addEmployee:              '/employees/add',
     // TODO: employeeId
-    editEmployee:        '/employees/:id',
+    editEmployee:             '/employees/:id',
     // Suppliers
-    suppliersPage:       '/suppliers',
+    suppliersPage:            '/suppliers',
     //
     //  Cash
     //
-    cashFlowPage:        '/cash/flow',
-    cashSettingsPage:    '/cash/settings',
-    cashBankPage:        '/cash/bank',
+    cashFlowPage:             '/cash/flow',
+    cashSettingsPage:         '/cash/settings',
+    cashBankPage:             '/cash/bank',
     //
     // Statistics
     //
-    chart:               '/chart',
-    feedback:            '/feedback',
-    feedbackId:          '/feedback/:id',
-    calls:               '/calls',
+    chart:                    '/chart',
+    feedback:                 '/feedback',
+    feedbackId:               '/feedback/:id',
+    calls:                    '/calls',
+    //
+    // Payment
+    //
+    paymentPage:              '/payment',
+    subscriptionPackagesPage: '/subscription/packages',
+    subscriptionHistoryPage:  '/subscription/history',
     //
     // Settings
     //
-    packagePage:         '/packages',
-    businessPackagePage: '/businesses/packages',
-    managerRolePage:     '/managers/roles',
-    rolePage:            '/roles',
+    packagePage:              '/packages',
+    businessPackagePage:      '/businesses/packages',
+    managerRolePage:          '/managers/roles',
+    rolePage:                 '/roles',
     //
     // Administration
     //
-    servicesPage:        '/administration/services',
-    brandsPage:          '/administration/brands',
+    servicesPage:             '/administration/services',
+    brandsPage:               '/administration/brands',
 
     oldApp: {
         // link to my.cb24.eu

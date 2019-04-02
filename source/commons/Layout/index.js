@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { withRouter } from "react-router";
-import { Layout } from "antd";
+import { Layout, BackTop } from "antd";
 import DocumentTitle from "react-document-title";
 
 // proj
@@ -131,6 +131,7 @@ export class LayoutComponent extends Component {
                             </Layout.Footer>
                         )}
                     </Layout>
+                    <BackTop>AAA</BackTop>
                 </Layout>
             </DocumentTitle>
         );

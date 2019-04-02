@@ -392,7 +392,7 @@ export default class OrderFormHeader extends Component {
                     className={`${Styles.duration} ${Styles.deliveryDatetime}`}
                     colon={false}
                     disabled={this.bodyUpdateIsForbidden()}
-                    initDuration={
+                    initialValue={
                         _.get(fetchedOrder, "order.duration") || totalHours
                     }
                     label={`${this._getLocalization(

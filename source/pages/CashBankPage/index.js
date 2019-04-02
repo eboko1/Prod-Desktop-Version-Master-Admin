@@ -4,18 +4,25 @@ import { FormattedMessage } from 'react-intl';
 
 // proj
 import { Layout } from 'commons';
-import { CashAccountingContainer } from 'containers';
+import { TabsTwins, CashBalanceTable, CashActivityTable } from 'components';
+// import { CashAccountingContainer } from 'containers';
 
 // own
 
 export default class CashBankPage extends Component {
     render() {
         return (
-            <Layout
-                title={ <FormattedMessage id='navigation.cash_bank' /> }
-                // description={ <FormattedMessage id='chart-page.description' /> }
-            >
-                <CashAccountingContainer />
+            <Layout title={ <FormattedMessage id='navigation.cash_bank' /> }>
+                <TabsTwins
+                    primary={ {
+                        title:   'cash-table.leftovers',
+                        content: <CashBalanceTable />,
+                    } }
+                    secondary={ {
+                        title:   'cash-table.trace',
+                        content: <CashActivityTable />,
+                    } }
+                />
             </Layout>
         );
     }

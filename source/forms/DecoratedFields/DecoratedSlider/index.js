@@ -14,6 +14,8 @@ export class DecoratedSlider extends React.PureComponent {
             label,
             colon,
             className,
+            cnStyles,
+            width,
             hasFeedback,
             formItemLayout,
 
@@ -21,16 +23,18 @@ export class DecoratedSlider extends React.PureComponent {
             disabled,
             rules,
             field,
-            initDuration,
+            initialValue,
 
+            onChange,
             step,
             min,
             max,
+            marks,
         } = this.props;
 
         const slider = getFieldDecorator(field, {
-            ...initDuration
-                ? { initialValue: initDuration }
+            ...initialValue
+                ? { initialValue }
                 : { initialValue: void 0 },
             rules,
         })(
@@ -39,9 +43,10 @@ export class DecoratedSlider extends React.PureComponent {
                 min={ min }
                 step={ step }
                 max={ max }
-                // value={ initialValue }
-                // onChange={ value => console.log('→ duration slider value', value) }
-                style={ { width: '100%' } }
+                marks={ marks }
+                onChange={ onChange }
+                style={ { width: width || '100%' } }
+                className={ cnStyles }
             />,
         );
 

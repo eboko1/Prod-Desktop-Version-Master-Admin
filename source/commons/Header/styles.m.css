@@ -130,11 +130,13 @@
 .packages {
     position: absolute;
     top: -16px;
+    cursor: pointer;
 }
 
 .suggestions {
     position: absolute;
     bottom: -16px;
+    cursor: pointer;
 }
 
 .normalRow,

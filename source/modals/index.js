@@ -10,6 +10,8 @@ import UniversalChartModal from './UniversalChartModal';
 import ConfirmRescheduleModal from './ConfirmRescheduleModal';
 import SupplierModal from './SupplierModal';
 import CashOrderModal from './CashOrderModal';
+import SubscribeModal from './SubscribeModal';
+import PDFViewerModal from './PDFViewerModal';
 
 export {
     UniversalFiltersModal,
@@ -24,4 +26,6 @@ export {
     ConfirmRescheduleModal,
     SupplierModal,
     CashOrderModal,
+    SubscribeModal,
+    PDFViewerModal,
 };

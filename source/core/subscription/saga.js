@@ -18,7 +18,6 @@ export function* headerDataSaga() {
                     'Please, turn on your cookies for the proper application workflow!',
                 );
             }
-
             if (force) {
                 yield put(setHeaderFetchingState(true));
                 // 1h 3600 * 1000(ms)
@@ -26,20 +25,20 @@ export function* headerDataSaga() {
                     new Date().getTime() + 1800 * 1000,
                 ).toUTCString();
 
-                setCookie('_my.carbook.pro/header', 'subscribe', { expires });
+                setCookie('_my.carbook.pro_header', 'subscribe', { expires });
                 const response = yield call(fetchAPI, 'GET', '/header');
                 yield put(fetchHeaderDataSuccess(response));
                 yield put(setHeaderFetchingState(false));
             }
             if (!force) {
-                if (!getCookie('_my.carbook.pro/header')) {
+                if (!getCookie('_my.carbook.pro_header')) {
                     yield put(setHeaderFetchingState(true));
                     // 1h 3600 * 1000(ms)
                     const expires = new Date(
                         new Date().getTime() + 1800 * 1000,
                     ).toUTCString();
 
-                    setCookie('_my.carbook.pro/header', 'subscribe', {
+                    setCookie('_my.carbook.pro_header', 'subscribe', {
                         expires,
                     });
                     const response = yield call(fetchAPI, 'GET', '/header');
@@ -48,6 +47,7 @@ export function* headerDataSaga() {
                 }
             }
         } catch (error) {
+            console.error('* headerDataSaga error', error);
             throw new Error(error);
         }
     }

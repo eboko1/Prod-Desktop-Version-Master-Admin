@@ -7,6 +7,7 @@ import { source, build, antd, favicon } from '../paths';
 import { DefinePlugin, ContextReplacementPlugin } from 'webpack';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import HtmlWebpackTemplate from 'html-webpack-template';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
 
 // own
 import { getConstants } from './envUtils';
@@ -46,7 +47,7 @@ export const generateCommonConfiguration = () => {
                 '.json',
                 '.css',
                 '.m.css',
-                '.less', 
+                '.less',
             ],
             modules: [ source, 'node_modules' ],
         },
@@ -67,6 +68,16 @@ export const generateCommonConfiguration = () => {
                         loader:  'file-loader',
                         options: {
                             name: 'fonts/[name].[hash:5].[ext]',
+                        },
+                    },
+                },
+                {
+                    test:    /\.pdf$/,
+                    include: source,
+                    use:     {
+                        loader:  'file-loader',
+                        options: {
+                            name: 'documents/[name].[hash:5].[ext]',
                         },
                     },
                 },
@@ -117,6 +128,11 @@ export const generateCommonConfiguration = () => {
                 mobile:      true,
             }),
             new ContextReplacementPlugin(/moment\/locale$/, /en|ru|uk/),
+            new CopyWebpackPlugin([
+                // { from: './index.html' },
+                // { from: './sample.pdf' },
+                { from: 'node_modules/pdfjs-dist/cmaps/', to: 'cmaps/' },
+            ]),
             new DefinePlugin({
                 __ENV__:               JSON.stringify(BUILD_ENV),
                 __LOCAL__:             BUILD_ENV === 'local',

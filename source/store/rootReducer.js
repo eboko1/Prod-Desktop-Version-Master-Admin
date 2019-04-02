@@ -68,6 +68,9 @@ import cashReducer, { moduleName as cashModule } from 'core/cash/duck';
 import suppliersReducer, {
     moduleName as suppliersModule,
 } from 'core/suppliers/duck';
+import paymentsReducer, {
+    moduleName as paymentsModule,
+} from 'core/payments/duck';
 
 // own
 import history from './history';
@@ -105,6 +108,7 @@ const appState = {
     [ orderModule ]:                orderReducer,
     [ ordersModule ]:               ordersReducer,
     [ packageModule ]:              packageReducer,
+    [ paymentsModule ]:             paymentsReducer,
     [ reviewModule ]:               reviewReducer,
     [ reviewsModule ]:              reviewsReducer,
     [ roleModule ]:                 roleReducer,
@@ -124,7 +128,8 @@ const reducer = (state, action) => {
 
     if (
         type === LOCATION_CHANGE &&
-        _.get(payload, 'pathname') !== _.get(state, 'router.location.pathname')
+        _.get(payload, 'location.pathname') !==
+            _.get(state, 'router.location.pathname')
     ) {
         resetedState = Object.keys(persistedState).reduce(
             (resetedState, moduleName) => {
