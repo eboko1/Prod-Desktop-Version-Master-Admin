@@ -29,6 +29,12 @@ import { SubscribeNotification } from "./NotificationToasts/SubscribeNotificatio
 const TabPane = Tabs.TabPane;
 
 const marks = {
+    1: {
+        style: {
+            color: "rgb(255, 126, 126)",
+        },
+        label: <strong>1</strong>,
+    },
     3: {
         style: {
             color: "rgb(255, 126, 126)",
@@ -172,7 +178,7 @@ export class SubscribeForm extends Component {
         const totalPrice = modalProps.price * period;
         const periodRate = paymentRates[period];
         const totalSum =
-            period !== 3
+            period !== 1 && period !== 3
                 ? totalPrice - (totalPrice / 100) * periodRate
                 : totalPrice;
 
@@ -233,7 +239,7 @@ export class SubscribeForm extends Component {
                         field="period"
                         getFieldDecorator={getFieldDecorator}
                         initialValue={modalProps.period || 3}
-                        min={3}
+                        min={1}
                         max={12}
                         step={3}
                         onChange={period =>
@@ -326,13 +332,23 @@ export class SubscribeForm extends Component {
                         {totalSumWithDiscount}
                     </Numeral>
                     &nbsp;
-                    {period !== 3 ? (
+                    {period !== 1 && period !== 3 ? (
                         <span>
                             &nbsp;(
                             <Numeral currency={"грн."}>
                                 {modalProps.price -
                                     (modalProps.price * paymentRates[period]) /
                                         100}
+                            </Numeral>
+                            &nbsp;/&nbsp;
+                            {formatMessage({ id: "subscription.monthly" })})
+                        </span>
+                    ) : null}
+                    {period === 3 ? (
+                        <span>
+                            &nbsp;(
+                            <Numeral currency={"грн."}>
+                                {modalProps.price}
                             </Numeral>
                             &nbsp;/&nbsp;
                             {formatMessage({ id: "subscription.monthly" })})
