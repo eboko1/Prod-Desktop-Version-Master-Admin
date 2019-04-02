@@ -7,7 +7,7 @@ import { Pagination } from 'antd';
 import { Loader } from 'commons';
 
 // own
-import samplePDF from './test-pdf.pdf';
+import samplePDF from './pricelist.pdf';
 import Styles from './styles.m.css';
 
 const options = {
@@ -46,15 +46,15 @@ export class PDF extends Component {
                     options={ options }
                     loading={ <Loader loading /> }
                 >
-                    <Page pageNumber={ pageNumber } />
-                    <Pagination
+                    <Page pageNumber={ pageNumber } scale={ 2 } />
+                    { /* <Pagination
                         simple
                         defaultCurrent={ pageNumber }
                         // x10 for antd simple pagination weird approach
                         total={ numPages * 10 }
                         onChange={ this._onChange }
                         className={ Styles.paging }
-                    />
+                    /> */ }
                 </Document>
             </div>
         );

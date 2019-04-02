@@ -18,7 +18,6 @@ export function* headerDataSaga() {
                     'Please, turn on your cookies for the proper application workflow!',
                 );
             }
-
             if (force) {
                 yield put(setHeaderFetchingState(true));
                 // 1h 3600 * 1000(ms)
@@ -48,6 +47,7 @@ export function* headerDataSaga() {
                 }
             }
         } catch (error) {
+            console.error('* headerDataSaga error', error);
             throw new Error(error);
         }
     }
