@@ -1,7 +1,7 @@
 // vendor
-import React, { Component } from 'react';
-import { DatePicker } from 'antd';
-import { injectIntl } from 'react-intl';
+import React, { Component } from "react";
+import { DatePicker } from "antd";
+import { injectIntl } from "react-intl";
 
 @injectIntl
 export default class DatePickerField extends Component {
@@ -24,19 +24,21 @@ export default class DatePickerField extends Component {
             onChange,
             date,
             loading,
+            className,
             intl: { formatMessage },
         } = this.props;
 
         return (
             <DatePicker
-                allowClear={ false }
-                value={ date }
-                onChange={ value => onChange(value) }
-                placeholder={ formatMessage({
-                    id: 'select_date',
-                }) }
-                format={ 'dddd, DD MMM YYYY' }
-                disabled={ loading }
+                allowClear={false}
+                value={date}
+                onChange={value => onChange(value)}
+                placeholder={formatMessage({
+                    id: "select_date",
+                })}
+                format={"dddd, DD MMM YYYY"}
+                disabled={loading}
+                className={className}
             />
         );
     }

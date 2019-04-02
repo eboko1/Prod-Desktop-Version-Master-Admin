@@ -36,6 +36,7 @@ export { NewPasswordForm } from './NewPasswordForm';
 export { CashCreationForm } from './CashCreationForm';
 export { CashOrdersFiltersForm } from './CashOrdersFiltersForm';
 export { CashOrderForm } from './CashOrderForm';
+export { SubscribeForm } from './SubscribeForm';
 
 export {
     LoginForm,

@@ -1,0 +1,22 @@
+.modalFooter {
+    text-align: left;
+}
+
+.portmoneLogos {
+    width: 240px;
+    margin-right: 24px;
+}
+
+.terms {
+    display: flex;
+}
+
+.support {
+    margin: 12px 0;
+    text-align: center;
+}
+
+.support a {
+    color: var(--link);
+    cursor: pointer;
+}

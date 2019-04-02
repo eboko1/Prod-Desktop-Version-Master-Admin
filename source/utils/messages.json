@@ -17,6 +17,7 @@
     "day": "Day",
     "week": "Week",
     "month": "Month",
+    "mo.": "mo.",
     "Year": "Year",
     "no_data": "No Data",
     "appointments": "Application",
@@ -140,7 +141,8 @@
     "fuel": "Fuel",
     "body": "Body",
     "nRegNew": "Number",
-    "operName": "Operation"
+    "operName": "Operation",
+    "user_agreement": "User agreement"
   },
   "ru": {
     "currency": "грн.",
@@ -160,6 +162,7 @@
     "day": "День",
     "week": "Неделя",
     "month": "Месяц",
+    "mo.": "мес.",
     "Year": "Год",
     "no_data": "Нет Данных",
     "appointments": "Обращения",
@@ -283,7 +286,8 @@
     "fuel": "Топливо",
     "body": "Кузов",
     "nRegNew": "Номер",
-    "operName": "Операция"
+    "operName": "Операция",
+    "user_agreement": "Пользовательское соглашение"
   },
   "uk": {
     "currency": "грн.",
@@ -303,6 +307,7 @@
     "day": "День",
     "week": "Тиждень",
     "month": "Місяць",
+    "mo.": "міс.",
     "Year": "Рік",
     "no_data": "Вiдсутнi Данi",
     "appointments": "Звернення",
@@ -426,6 +431,7 @@
     "fuel": "Пальне",
     "body": "Кузов",
     "nRegNew": "Номер",
-    "operName": "Операція"
+    "operName": "Операція",
+    "user_agreement": "Користувача угода"
   }
 }

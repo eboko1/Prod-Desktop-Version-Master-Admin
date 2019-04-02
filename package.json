@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "engines": {
-    "node": ">=8.10.0 <11.6.0"
+    "node": "10.15.3"
   },
   "scripts": {
     "start": "nodemon",
@@ -41,6 +41,7 @@
     "normalizr": "^3.3.0",
     "nprogress": "~0.2.0",
     "numeral": "^2.0.6",
+    "pdfjs-dist": "^2.0.943",
     "prop-types": "^15.6.2",
     "qs": "^6.6.0",
     "ramda": "^0.26.1",
@@ -57,6 +58,7 @@
     "react-fittext": "^1.0.0",
     "react-i18next": "^10.0.0",
     "react-intl": "^2.8.0",
+    "react-pdf": "^4.0.5",
     "react-redux": "~6.0.0",
     "react-redux-form": "^1.16.12",
     "react-resizable": "^1.7.5",
@@ -100,6 +102,7 @@
     "chalk": "~2.4.2",
     "clean-webpack-plugin": "~1.0.1",
     "commitlint": "~7.5.0",
+    "copy-webpack-plugin": "^5.0.2",
     "cross-env": "~5.2.0",
     "css-loader": "~2.1.0",
     "css-mqpacker": "~7.0.0",

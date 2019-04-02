@@ -23,6 +23,7 @@ import { saga as servicesSuggestions } from 'core/servicesSuggestions/saga';
 import { saga as vehicleNumberHistorySaga } from 'core/vehicleNumberHistory/saga';
 import { saga as cashSaga } from 'core/cash/saga';
 import { saga as suppliersSaga } from 'core/suppliers/saga';
+import { saga as paymentsSaga } from 'core/payments/saga';
 // forms
 import { saga as loginFormSaga } from 'core/forms/loginForm/saga';
 import { saga as universalFiltersFormSaga } from 'core/forms/universalFiltersForm/saga';
@@ -104,6 +105,7 @@ export default function* rootSaga() {
         managerRoleSaga(),
         tecDocFormSaga(),
         tecDocActionsSaga(),
+        paymentsSaga(),
         // administration
         servicesFormSaga(),
         servicesSuggestions(),

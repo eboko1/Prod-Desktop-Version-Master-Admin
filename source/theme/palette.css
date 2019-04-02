@@ -1,4 +1,5 @@
 :root {
+    /* color */
     --paletteColor1: #000;
     --paletteColor2: #fff;
     --paletteColor3: #090c14;
@@ -8,6 +9,8 @@
     --paletteColor7: #474b68;
     --lightGray: rgba(214, 215, 218, 0.5);
     --snow: rgba(214, 215, 218, 0.2);
+    --orange: rgb(251, 158, 62);
+    --green: rgb(81, 205, 102);
 
     --rgbaColor1: rgba(0, 0, 0, 0.9);
     --rgbaColor2: rgba(0, 0, 0, 0.25);

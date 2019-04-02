@@ -9,20 +9,22 @@ export const RESET_MODAL = `${prefix}/RESET_MODAL`;
 
 export const MODALS = {
     ADD_CLIENT:             'ADD_CLIENT',
-    SUPPLIER:               'SUPPLIER',
-    CASH_ORDER:             'CASH_ORDER',
-    INVITE:                 'INVITE',
-    UNIVERSAL_FILTERS:      'UNIVERSAL_FILTERS',
-    UNIVERSAL_CHART:        'UNIVERSAL_CHART',
     CANCEL_REASON:          'CANCEL_REASON',
-    TO_SUCCESS:             'TO_SUCCESS',
-    CONFIRM_EXIT:           'CONFIRM_EXIT',
+    CASH_ORDER:             'CASH_ORDER',
     CHANGE_TASK:            'CHANGE_TASK',
-    ORDER_TASK:             'ORDER_TASK',
-    SWITCH_BUSINESS:        'SWITCH_BUSINESS',
+    CONFIRM_EXIT:           'CONFIRM_EXIT',
     CONFIRM_RESCHEDULE:     'CONFIRM_RESCHEDULE',
     DETAIL_PRODUCT:         'DETAIL_PRODUCT',
+    INVITE:                 'INVITE',
+    ORDER_TASK:             'ORDER_TASK',
     SPREAD_BUSINESS_BRANDS: 'SPREAD_BUSINESS_BRANDS',
+    SUBSCRIBE:              'SUBSCRIBE',
+    SUPPLIER:               'SUPPLIER',
+    SWITCH_BUSINESS:        'SWITCH_BUSINESS',
+    TO_SUCCESS:             'TO_SUCCESS',
+    UNIVERSAL_CHART:        'UNIVERSAL_CHART',
+    UNIVERSAL_FILTERS:      'UNIVERSAL_FILTERS',
+    PDF_VIEWER:             'PDF_VIEWER',
 };
 
 //

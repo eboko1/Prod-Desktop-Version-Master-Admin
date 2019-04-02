@@ -1,0 +1,30 @@
+.license h1 {
+    font-size: 32px;
+    margin: 16px 0;
+    text-align: center;
+}
+
+.license h2 {
+    font-size: 24px;
+    text-align: center;
+    margin: 16px 0;
+}
+
+.license p {
+    margin: 16px;
+    text-indent: 16px;
+}
+
+.license ul {
+    list-style-position: inside;
+    margin-left: 16px;
+}
+
+.license ul li {
+    margin-bottom: 8px;
+}
+
+.license ul li b {
+    margin-right: 16px;
+    font-weight: bold;
+}

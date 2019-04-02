@@ -39,7 +39,10 @@
     "navigation.accounting": "Accounting",
     "navigation.cash_settings": "Cash Settings",
     "navigation.flow_of_money": "Flow of Money",
-    "navigation.cash_bank": "Cashbox and Bank"
+    "navigation.cash_bank": "Cashbox and Bank",
+    "navigation.payment": "Payment",
+    "navigation.subscription_packages": "Subscribe",
+    "navigation.subscription_history": "Subscription history"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -81,7 +84,10 @@
     "navigation.accounting": "Бухгалтерия",
     "navigation.cash_settings": "Настройки кассы",
     "navigation.flow_of_money": "Движение денег",
-    "navigation.cash_bank": "Касса и Банк"
+    "navigation.cash_bank": "Касса и Банк",
+    "navigation.payment": "Оплата",
+    "navigation.subscription_packages": "Оформить подписку",
+    "navigation.subscription_history": "История подписок"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -123,6 +129,9 @@
     "navigation.accounting": "Бухгалтерія",
     "navigation.cash_settings": "Налаштування каси",
     "navigation.flow_of_money": "Рух грошей",
-    "navigation.cash_bank": "Каса і Банк"
+    "navigation.cash_bank": "Каса і Банк",
+    "navigation.payment": "Оплата",
+    "navigation.subscription_packages": "Оформити підписок",
+    "navigation.subscription_history": "Історія підписок"
   }
 }
