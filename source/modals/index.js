@@ -12,6 +12,7 @@ import SupplierModal from './SupplierModal';
 import CashOrderModal from './CashOrderModal';
 import SubscribeModal from './SubscribeModal';
 import PDFViewerModal from './PDFViewerModal';
+import StoreGroupModal from './StoreGroupModal';
 
 export {
     UniversalFiltersModal,
@@ -28,4 +29,5 @@ export {
     CashOrderModal,
     SubscribeModal,
     PDFViewerModal,
+    StoreGroupModal,
 };

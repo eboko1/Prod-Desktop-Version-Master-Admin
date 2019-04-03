@@ -61,6 +61,7 @@ export default {
                 },
             ],
         },
+        /* Accounting */
         {
             key:      'accounting',
             iconType: 'audit',
@@ -79,6 +80,49 @@ export default {
                         isForbidden(user, permissions.ACCESS_ACCOUNTING),
                     link: book.cashBankPage,
                     name: 'navigation.cash_bank',
+                },
+            ],
+        },
+        /* Storage */
+        {
+            key:      'storage',
+            iconType: 'inbox',
+            name:     'navigation.storage',
+            items:    [
+                {
+                    key:  '/products-groups',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    link: book.productsGroups,
+                    name: 'navigation.products_groups',
+                },
+                {
+                    key:  '/products',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    link: book.products,
+                    name: 'navigation.products',
+                },
+                {
+                    key:  '/storage',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    link: book.storage,
+                    name: 'navigation.storage',
+                },
+                {
+                    key:  '/income',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    link: book.income,
+                    name: 'navigation.income',
+                },
+                {
+                    key:  '/expense',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    link: book.expense,
+                    name: 'navigation.expense',
                 },
             ],
         },

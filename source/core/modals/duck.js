@@ -25,6 +25,8 @@ export const MODALS = {
     UNIVERSAL_CHART:        'UNIVERSAL_CHART',
     UNIVERSAL_FILTERS:      'UNIVERSAL_FILTERS',
     PDF_VIEWER:             'PDF_VIEWER',
+    STORE_GROUP:            'STORE_GROUP',
+    STORE_PRODUCT_GROUP:    'STORE_PRODUCT_GROUP',
 };
 
 //
