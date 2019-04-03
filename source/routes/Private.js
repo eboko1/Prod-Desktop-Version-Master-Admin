@@ -34,6 +34,11 @@ import {
     SubscriptionHistoryPage,
     SubscriptionPackagesPage,
     UserAgreementPage,
+    ExpensePage,
+    IncomePage,
+    ProductsGroupsPage,
+    ProductsPage,
+    StoragePage,
 } from 'pages';
 import book from './book';
 
@@ -100,6 +105,16 @@ export default class Private extends Component {
                     component={ CashBankPage }
                     path={ book.cashBankPage }
                 />
+                { /* Storage */ }
+                <Route
+                    exact
+                    component={ ProductsGroupsPage }
+                    path={ book.productsGroups }
+                />
+                <Route exact component={ ProductsPage } path={ book.products } />
+                <Route exact component={ StoragePage } path={ book.storage } />
+                <Route exact component={ IncomePage } path={ book.income } />
+                <Route exact component={ ExpensePage } path={ book.expense } />
                 { /* Statistics */ }
                 <Route exact component={ ChartPage } path={ book.chart } />
                 <Route exact component={ ReviewsPage } path={ book.feedback } />

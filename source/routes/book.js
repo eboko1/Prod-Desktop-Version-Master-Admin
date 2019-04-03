@@ -50,6 +50,14 @@ const book = Object.freeze({
     cashSettingsPage:         '/cash/settings',
     cashBankPage:             '/cash/bank',
     //
+    // Storage
+    //
+    productsGroups:           '/products-groups',
+    products:                 '/products',
+    storage:                  '/storage',
+    income:                   '/income',
+    expense:                  '/expense',
+    //
     // Statistics
     //
     chart:                    '/chart',
