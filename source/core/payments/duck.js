@@ -198,16 +198,6 @@ export const selectSubscriptionSuggestions = state =>
  * Action Creators
  **/
 
-export const fetchHeaderData = force => ({
-    type:    FETCH_HEADER_DATA,
-    payload: force,
-});
-
-export const fetchHeaderDataSuccess = payload => ({
-    type: FETCH_HEADER_DATA_SUCCESS,
-    payload,
-});
-
 export const fetchSubscriptionProducts = type => ({
     type:    FETCH_SUBSCRIPTION_PRODUCTS,
     payload: type,

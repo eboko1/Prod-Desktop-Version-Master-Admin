@@ -2,6 +2,7 @@
 import {
     call,
     put,
+    putResolve,
     all,
     take,
     takeLatest,
@@ -9,7 +10,7 @@ import {
     delay,
     select,
 } from 'redux-saga/effects';
-import { go } from 'connected-react-router';
+import { push } from 'connected-react-router';
 
 // proj
 import { authenticate, selectToken } from 'core/auth/duck';
@@ -22,6 +23,7 @@ import book from 'routes/book';
 // own
 import { SET_SEARCH_QUERY, SET_BUSINESS } from './duck';
 import { fetchBusinessesSuccess } from './duck';
+import { fetchHeaderData } from 'core/subscription/duck';
 
 function* handleBusinessesSearchSaga({ payload: { query } }) {
     yield delay(1000);
@@ -62,9 +64,9 @@ function* setBusinessSaga() {
                 },
             );
             const token = yield select(selectToken);
-            yield put(authenticate({ ...user, token }));
-
-            yield put(go(book.dashboard));
+            yield putResolve(authenticate({ ...user, token }));
+            // yield putResolve(fetchHeaderData(true));
+            yield put(push(book.dashboard));
         } catch (error) {
             yield put(emitError(error));
         }
