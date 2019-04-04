@@ -17,7 +17,7 @@ export default class PDFViewerModal extends Component {
                 footer={ null }
                 destroyOnClose
                 style={ { top: 20 } }
-                width={ 1000 }
+                width={ 1020 }
             >
                 <PDF />
             </Modal>
