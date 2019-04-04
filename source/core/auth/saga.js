@@ -1,5 +1,5 @@
 // vendor
-import { all, call, put, take } from 'redux-saga/effects';
+import { all, call, put, putResolve, take } from 'redux-saga/effects';
 import { replace } from 'connected-react-router';
 import { purgeStoredState } from 'redux-persist';
 import moment from 'moment';
@@ -27,8 +27,8 @@ export function* authenticateSaga() {
             const { payload: user } = yield take(AUTHENTICATE);
             yield setLocale(user.language);
             yield setToken(user.token);
+            yield putResolve(fetchHeaderData(true));
             yield authenticateSuccess();
-            yield put(fetchHeaderData(true));
         } catch (error) {
             yield put(emitError(error));
         }

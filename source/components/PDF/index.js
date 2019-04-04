@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { Document, Page } from 'react-pdf';
-import { Pagination } from 'antd';
+// import { Pagination } from 'antd';
 
 // proj
 import { Loader } from 'commons';
@@ -11,8 +11,9 @@ import samplePDF from './pricelist.pdf';
 import Styles from './styles.m.css';
 
 const options = {
-    cMapUrl:    'cmaps/',
-    cMapPacked: true,
+    cMapUrl:       'cmaps/',
+    cMapPacked:    true,
+    disableWorker: true,
 };
 
 export class PDF extends Component {
