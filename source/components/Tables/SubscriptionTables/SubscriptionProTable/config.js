@@ -57,6 +57,7 @@ export function columnsConfig() {
                 return (
                     <span className={ Styles.paid }>
                         <Icon type='check-circle' />
+                        &nbsp;
                         <FormattedMessage id='subscription-table.paid' />
                     </span>
                 );
