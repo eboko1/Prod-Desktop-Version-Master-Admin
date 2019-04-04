@@ -5,7 +5,6 @@ import { FormattedMessage } from "react-intl";
 import { connect } from "react-redux";
 import { Table, Button } from "antd";
 import _ from "lodash";
-import moment from "moment";
 
 // proj
 import {
@@ -50,17 +49,6 @@ export class SubscriptionCarbookTable extends Component {
         );
     }
 
-    _handleDatePicker = date => {
-        this.props.setSubscriptionSuggestionsFilters({
-            startDatetime: moment(date)
-                .utc()
-                .startOf("day"),
-        });
-        this.props.fetchSubscriptionSuggestions(
-            SUBSCRIPTION_TYPES.SUGGESTION_GROUP,
-        );
-    };
-
     render() {
         const { suggestions } = this.props;
 
@@ -88,13 +76,6 @@ export class SubscriptionCarbookTable extends Component {
                             <FormattedMessage id="subscription-table.advertise" />
                         </h3>
                     </ResponsiveView>
-                    <DatePickerField
-                        date={moment(
-                            _.get(suggestions, "filters.startDatetime"),
-                        )}
-                        onChange={this._handleDatePicker}
-                        className={Styles.datePickerField}
-                    />
                 </div>
                 <Table
                     className={Styles.table}

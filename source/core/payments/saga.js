@@ -1,6 +1,5 @@
 //vendor
 import { all, call, put, take, select } from 'redux-saga/effects';
-import moment from 'moment';
 // proj
 import { emitError } from 'core/ui/duck';
 
@@ -46,10 +45,6 @@ export function* fetchSubscriptionPackagesSaga() {
             const packages = yield select(selectSubscriptionPackages);
             const filters = {
                 ...packages.filters,
-                startDatetime: moment(packages.filters.startDatetime)
-                    .utc()
-                    .startOf('day')
-                    .toISOString(),
             };
 
             const response = yield call(fetchAPI, 'GET', '/subscriptions', {
@@ -72,10 +67,6 @@ export function* fetchSubscriptionSuggestionsSaga() {
             const suggestions = yield select(selectSubscriptionSuggestions);
             const filters = {
                 ...suggestions.filters,
-                startDatetime: moment(suggestions.filters.startDatetime)
-                    .utc()
-                    .startOf('day')
-                    .toISOString(),
             };
             const response = yield call(fetchAPI, 'GET', '/subscriptions', {
                 type:     SUBSCRIPTION_TYPES.SUGGESTION_GROUP,
