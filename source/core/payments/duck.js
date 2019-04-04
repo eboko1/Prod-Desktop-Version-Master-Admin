@@ -56,10 +56,6 @@ const ReducerState = {
         },
         list:    [],
         filters: {
-            startDatetime: moment()
-                .utc()
-                .startOf('day')
-                .toISOString(),
             page: 1,
         },
     },
@@ -69,10 +65,6 @@ const ReducerState = {
         },
         list:    [],
         filters: {
-            startDatetime: moment()
-                .utc()
-                .startOf('day')
-                .toISOString(),
             page: 1,
         },
     },

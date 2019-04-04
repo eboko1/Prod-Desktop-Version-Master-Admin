@@ -23,7 +23,6 @@ import book from 'routes/book';
 // own
 import { SET_SEARCH_QUERY, SET_BUSINESS } from './duck';
 import { fetchBusinessesSuccess } from './duck';
-import { fetchHeaderData } from 'core/subscription/duck';
 
 function* handleBusinessesSearchSaga({ payload: { query } }) {
     yield delay(1000);
