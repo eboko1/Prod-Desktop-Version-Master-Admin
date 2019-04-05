@@ -34,11 +34,14 @@ import {
     SubscriptionHistoryPage,
     SubscriptionPackagesPage,
     UserAgreementPage,
-    ExpensePage,
-    IncomePage,
+    ExpensesPage,
+    IncomesPage,
     ProductsGroupsPage,
+    PriceGroupsPage,
     ProductsPage,
-    StoragePage,
+    ProductsTrackingPage,
+    StorageBalancePage,
+    StorageMovementPage,
 } from 'pages';
 import book from './book';
 
@@ -115,10 +118,37 @@ export default class Private extends Component {
                     component={ ProductsGroupsPage }
                     path={ book.productsGroups }
                 />
+                <Route
+                    exact
+                    component={ PriceGroupsPage }
+                    path={ book.priceGroups }
+                />
                 <Route exact component={ ProductsPage } path={ book.products } />
-                <Route exact component={ StoragePage } path={ book.storage } />
-                <Route exact component={ IncomePage } path={ book.income } />
-                <Route exact component={ ExpensePage } path={ book.expense } />
+                <Route
+                    exact
+                    component={ StorageBalancePage }
+                    path={ book.storageBalance }
+                />
+                <Route
+                    exact
+                    component={ StorageMovementPage }
+                    path={ book.storageMovement }
+                />
+                <Route
+                    exact
+                    component={ ProductsTrackingPage }
+                    path={ book.productsTracking }
+                />
+                <Route
+                    exact
+                    component={ IncomesPage }
+                    path={ book.storageIncomes }
+                />
+                <Route
+                    exact
+                    component={ ExpensesPage }
+                    path={ book.storageExpenses }
+                />
                 { /* Statistics */ }
                 <Route exact component={ ChartPage } path={ book.chart } />
                 <Route exact component={ ReviewsPage } path={ book.feedback } />

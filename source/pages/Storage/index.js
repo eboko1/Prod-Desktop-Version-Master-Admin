@@ -1,7 +1,8 @@
 export { ProductsGroupsPage } from './ProductsGroupsPage';
+export { PriceGroupsPage } from './PriceGroupsPage';
 export { ProductsPage } from './ProductsPage';
-export { StoragePage } from './StoragePage';
-// export { IncomesPage } from './IncomesPage';
-export { IncomePage } from './IncomePage';
-// export { ExpansesPage } from './ExpansesPage';
-export { ExpensePage } from './ExpensePage';
+export { StorageBalancePage } from './StorageBalancePage';
+export { StorageMovementPage } from './StorageMovementPage';
+export { ProductsTrackingPage } from './ProductsTrackingPage';
+export { IncomesPage } from './IncomesPage';
+export { ExpensesPage } from './ExpensesPage';

@@ -10,6 +10,9 @@ import en from 'react-intl/locale-data/en';
 
 addLocaleData([ ...ru, ...en, ...uk ]);
 
+// Module locales
+import Storage from 'locales/storage.json';
+
 // Messages
 import global from 'utils/messages';
 import errorMessage from 'core/errorMessage/messages';
@@ -123,6 +126,8 @@ import Footer from 'commons/Footer/messages';
 const messages = merge.all([
     global,
     errorMessage,
+    //locales
+    Storage,
     // commons
     Navigation,
     Header,
