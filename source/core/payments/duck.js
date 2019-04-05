@@ -164,13 +164,13 @@ export const selectSubscriptionProducts = createSelector(
                 if (currentValue.rolesPackageId) {
                     return {
                         ...accumulator,
-                        rolePackages: [ currentValue, ...accumulator.rolePackages ],
+                        rolePackages: [ ...accumulator.rolePackages, currentValue ],
                     };
                 }
 
                 return {
                     ...accumulator,
-                    suggestionGroup: [ currentValue, ...accumulator.suggestionGroup ],
+                    suggestionGroup: [ ...accumulator.suggestionGroup, currentValue ],
                 };
             },
             {
