@@ -53,10 +53,13 @@ const book = Object.freeze({
     // Storage
     //
     productsGroups:           '/products-groups',
+    priceGroups:              '/price-groups',
     products:                 '/products',
-    storage:                  '/storage',
-    income:                   '/income',
-    expense:                  '/expense',
+    storageBalance:           '/storage-balance',
+    storageMovement:          '/storage-movement',
+    productsTracking:         '/tracking',
+    storageIncomes:           '/incomes',
+    storageExpenses:          '/expenses',
     //
     // Statistics
     //

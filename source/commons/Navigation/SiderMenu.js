@@ -2,13 +2,13 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router";
 import { FormattedMessage } from "react-intl";
-import Link from "./link";
 import { Layout, Menu, Icon } from "antd";
 
 // proj
 import HeaderMenu from "commons/Header/HeaderMenu";
 
 // own
+import Link from "./link";
 import Styles from "./styles.m.css";
 import menuConfig from "./menuConfig";
 
@@ -16,9 +16,7 @@ import menuConfig from "./menuConfig";
 export default class SiderMenu extends Component {
     render() {
         const { history, collapsed, isMobile, onCollapse, user } = this.props;
-        const defaultOpenKeys = collapsed
-            ? []
-            : ["operations", "catalog", "reports", "accounting"];
+        const defaultOpenKeys = collapsed ? [] : ["operations", "catalog"];
         const selected = menuConfig.getSelectedByRoute(
             history.location.pathname,
         );

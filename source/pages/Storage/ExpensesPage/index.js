@@ -5,10 +5,10 @@ import { FormattedMessage } from 'react-intl';
 // proj
 import { Layout } from 'commons';
 
-export const IncomePage = () => {
+export const ExpensesPage = () => {
     return (
-        <Layout title={ <FormattedMessage id='navigation.income' /> }>
-            <div>IncomePage</div>
+        <Layout title={ <FormattedMessage id='navigation.expenses' /> }>
+            <div>ExpensesPage</div>
         </Layout>
     );
 };

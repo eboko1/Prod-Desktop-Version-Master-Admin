@@ -97,6 +97,13 @@ export default {
                     name: 'navigation.products_groups',
                 },
                 {
+                    key:  '/price-groups',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    link: book.priceGroups,
+                    name: 'navigation.price_groups',
+                },
+                {
                     key:  '/products',
                     // disabled: user =>
                     //     isForbidden(user, permissions.ACCESS_STORAGE),
@@ -104,25 +111,39 @@ export default {
                     name: 'navigation.products',
                 },
                 {
-                    key:  '/storage',
+                    key:  '/storage-balance',
                     // disabled: user =>
                     //     isForbidden(user, permissions.ACCESS_STORAGE),
-                    link: book.storage,
-                    name: 'navigation.storage',
+                    link: book.storageBalance,
+                    name: 'navigation.storage_balance',
                 },
                 {
-                    key:  '/income',
+                    key:  '/storage-movement',
                     // disabled: user =>
                     //     isForbidden(user, permissions.ACCESS_STORAGE),
-                    link: book.income,
-                    name: 'navigation.income',
+                    link: book.storageMovement,
+                    name: 'navigation.storage_movement',
                 },
                 {
-                    key:  '/expense',
+                    key:  '/tracking',
                     // disabled: user =>
                     //     isForbidden(user, permissions.ACCESS_STORAGE),
-                    link: book.expense,
-                    name: 'navigation.expense',
+                    link: book.productsTracking,
+                    name: 'navigation.products_tracking',
+                },
+                {
+                    key:  '/incomes',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    link: book.storageIncomes,
+                    name: 'navigation.incomes',
+                },
+                {
+                    key:  '/expenses',
+                    // disabled: user =>
+                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    link: book.storageExpenses,
+                    name: 'navigation.expenses',
                 },
             ],
         },
