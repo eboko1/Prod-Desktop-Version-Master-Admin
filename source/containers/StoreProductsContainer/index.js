@@ -1,10 +1,7 @@
 // vendor
 import React, { Component } from "react";
 import { connect } from "react-redux";
-<<<<<<< HEAD
 import { injectIntl } from "react-intl";
-=======
->>>>>>> fef1b4c0f25fe73484fd954f31b415c010ed55c6
 import { Tree, Input, Icon, Button } from "antd";
 import styled from "styled-components";
 
@@ -84,10 +81,7 @@ const mapDispatchToProps = {
     resetModal,
 };
 
-<<<<<<< HEAD
 @injectIntl
-=======
->>>>>>> fef1b4c0f25fe73484fd954f31b415c010ed55c6
 @connect(
     mapStateToProps,
     mapDispatchToProps,
@@ -190,13 +184,9 @@ export default class StoreProductsContainer extends Component {
                         })
                     }
                 >
-<<<<<<< HEAD
                     {this.props.intl.formatMessage({
                         id: "storage.add_root_product_group",
                     })}
-=======
-                    Add a root category
->>>>>>> fef1b4c0f25fe73484fd954f31b415c010ed55c6
                 </Button>
                 <StyledTree
                     onExpand={this.onExpand}

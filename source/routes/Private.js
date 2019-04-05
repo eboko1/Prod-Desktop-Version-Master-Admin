@@ -34,7 +34,6 @@ import {
     SubscriptionHistoryPage,
     SubscriptionPackagesPage,
     UserAgreementPage,
-<<<<<<< HEAD
     ExpensesPage,
     IncomesPage,
     ProductsGroupsPage,
@@ -43,13 +42,6 @@ import {
     ProductsTrackingPage,
     StorageBalancePage,
     StorageMovementPage,
-=======
-    ExpensePage,
-    IncomePage,
-    ProductsGroupsPage,
-    ProductsPage,
-    StoragePage,
->>>>>>> fef1b4c0f25fe73484fd954f31b415c010ed55c6
 } from 'pages';
 import book from './book';
 
