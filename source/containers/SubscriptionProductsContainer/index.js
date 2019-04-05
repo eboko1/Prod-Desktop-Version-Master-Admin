@@ -60,7 +60,6 @@ export default class SubscriptionProductsContainer extends Component {
 
     _setModal = modalProps => this.props.setModal(MODALS.SUBSCRIBE, modalProps);
     _showDetails = () => this.props.setModal(MODALS.PDF_VIEWER);
-
     render() {
         return (
             <>
