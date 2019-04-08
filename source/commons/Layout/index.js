@@ -131,7 +131,6 @@ export class LayoutComponent extends Component {
                             </Layout.Footer>
                         )}
                     </Layout>
-                    <BackTop>AAA</BackTop>
                 </Layout>
             </DocumentTitle>
         );
