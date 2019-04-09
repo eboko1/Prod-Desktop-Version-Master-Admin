@@ -120,10 +120,21 @@ class DashboardPage extends Component {
     _transferOutdateRepairs = () => this.props.transferOutdateRepairs();
 
     render() {
-        const { startDate, endDate, date, mode, spinner, loading, user } = this.props;
+        const {
+            startDate,
+            endDate,
+            date,
+            mode,
+            spinner,
+            loading,
+            user,
+        } = this.props;
 
         const dashboardContainer = this._renderDashboardContainer();
-        const rescheduleOrdersAllowed = !isForbidden(user, permissions.RESCHEDULE_ORDERS);
+        const rescheduleOrdersAllowed = !isForbidden(
+            user,
+            permissions.RESCHEDULE_ORDERS,
+        );
 
         return spinner ? (
             <Spinner spin={ spinner } />
@@ -135,15 +146,19 @@ class DashboardPage extends Component {
                     <FormattedMessage id='dashboard-page.description' />
                 }
                 controls={
-                    (rescheduleOrdersAllowed ? <Button
-                        type='primary'
-                        // onClick={ () => this._transferOutdateRepairs() }
-                        onClick={ () =>
-                            this.props.setModal(MODALS.CONFIRM_RESCHEDULE)
-                        }
-                    >
-                        <FormattedMessage id='dashboard-page.transfer_outdated_repairs' />
-                    </Button> : <></>)
+                    rescheduleOrdersAllowed ? (
+                        <Button
+                            type='primary'
+                            // onClick={ () => this._transferOutdateRepairs() }
+                            onClick={ () =>
+                                this.props.setModal(MODALS.CONFIRM_RESCHEDULE)
+                            }
+                        >
+                            <FormattedMessage id='dashboard-page.transfer_outdated_repairs' />
+                        </Button>
+                    ) : (
+                        <></>
+                    )
                 }
             >
                 <section className={ Styles.dashboardPage }>
@@ -216,7 +231,7 @@ class DashboardPage extends Component {
 
         return loading ? (
             <Loader loading={ loading } />
-        ) :
+        ) : (
             <>
                 <DashboardContainer
                     user={ user }
@@ -241,7 +256,7 @@ class DashboardPage extends Component {
                     reset={ this.props.resetModal }
                 />
             </>
-        ;
+        );
     };
 }
 

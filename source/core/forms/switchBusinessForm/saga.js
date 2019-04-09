@@ -23,6 +23,7 @@ import book from 'routes/book';
 // own
 import { SET_SEARCH_QUERY, SET_BUSINESS } from './duck';
 import { fetchBusinessesSuccess } from './duck';
+import { refreshDashboard } from 'core/dashboard/duck';
 
 function* handleBusinessesSearchSaga({ payload: { query } }) {
     yield delay(1000);
@@ -64,8 +65,13 @@ function* setBusinessSaga() {
             );
             const token = yield select(selectToken);
             yield putResolve(authenticate({ ...user, token }));
-            // yield putResolve(fetchHeaderData(true));
+            const location = yield select(
+                state => state.router.location.pathname,
+            );
             yield put(push(book.dashboard));
+            if (location === book.dashboard) {
+                yield put(refreshDashboard());
+            }
         } catch (error) {
             yield put(emitError(error));
         }

@@ -42,7 +42,11 @@ export default class Private extends Component {
         return (
             <Switch>
                 { /* Operations */ }
-                <Route exact component={ DashboardPage } path={ book.dashboard } />
+                <Route
+                    exact
+                    render={ props => <DashboardPage { ...props } /> }
+                    path={ book.dashboard }
+                />
                 <Route
                     exact
                     render={ props => <OrdersPage { ...props } /> }
