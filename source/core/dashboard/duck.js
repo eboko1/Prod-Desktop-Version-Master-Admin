@@ -9,9 +9,6 @@ const prefix = `cpb/${moduleName}`;
 export const INIT_DASHBOARD = `${prefix}/INIT_DASHBOARD`;
 export const INIT_DASHBOARD_SUCCESS = `${prefix}/INIT_DASHBOARD_SUCCESS`;
 
-export const FETCH_DASHBOARD = `${prefix}/FETCH_DASHBOARD`;
-export const FETCH_DASHBOARD_SUCCESS = `${prefix}/FETCH_DASHBOARD_SUCCESS`;
-
 export const REFRESH_DASHBOARD = `${prefix}/REFRESH_DASHBOARD`;
 
 export const FETCH_DASHBOARD_CALENDAR = `${prefix}/FETCH_DASHBOARD_CALENDAR`;
@@ -160,11 +157,6 @@ export const initDashboard = () => ({
 export const initDashboardSuccess = data => ({
     type:    INIT_DASHBOARD_SUCCESS,
     payload: data,
-});
-
-export const fetchDashboard = mode => ({
-    type:    FETCH_DASHBOARD,
-    payload: mode,
 });
 
 export const fetchDashboardCalendar = () => ({

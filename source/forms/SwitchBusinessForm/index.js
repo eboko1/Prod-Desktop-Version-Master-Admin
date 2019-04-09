@@ -5,6 +5,7 @@ import { Form, List } from "antd";
 
 // proj
 import {
+    setBusiness,
     setSearchQuery,
     onChangeSwitchBusinessForm,
 } from "core/forms/switchBusinessForm/duck";
@@ -21,6 +22,7 @@ import Styles from "./styles.m.css";
     actions: {
         change: onChangeSwitchBusinessForm,
         setSearchQuery,
+        setBusiness,
     },
 })
 export class SwitchBusinessForm extends Component {
@@ -35,12 +37,14 @@ export class SwitchBusinessForm extends Component {
 
     _handleClick = business => {
         this.props.setBusiness(business.businessId);
+        this.props.form.resetFields();
         this.props.resetModal();
     };
 
     _handleEnter = () => {
         if (this.props.businesses.length === 1) {
             this.props.setBusiness(this.props.businesses[0].businessId);
+            this.props.form.resetFields();
             this.props.resetModal();
         }
     };
