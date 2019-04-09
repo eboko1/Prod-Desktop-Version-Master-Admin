@@ -71,6 +71,7 @@ import suppliersReducer, {
 import paymentsReducer, {
     moduleName as paymentsModule,
 } from 'core/payments/duck';
+import storageReducer, { moduleName as storageModule } from 'core/storage/duck';
 
 // own
 import history from './history';
@@ -114,6 +115,7 @@ const appState = {
     [ roleModule ]:                 roleReducer,
     [ searchModule ]:               searchReducer,
     [ servicesSuggestionsModule ]:  servicesSuggestionsReducer,
+    [ storageModule ]:              storageReducer,
     [ suppliersModule ]:            suppliersReducer,
     [ tecDocActionsModule ]:        tecDocActionsReducer,
     [ uiModule ]:                   uiReducer,

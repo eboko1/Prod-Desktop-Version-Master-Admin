@@ -45,7 +45,7 @@ export const DecoratedInputNumber = memo(
         const numberInitialValue = _.isNumber(defaultValue)
             ? defaultValue
             : void 0;
-
+        console.log('→ ref', ref);
         const inputNumber = getFieldDecorator(field, {
             rules,
             initialValue: numberInitialValue,

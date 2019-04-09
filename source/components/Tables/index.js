@@ -15,3 +15,5 @@ export {
 export {
     SubscriptionProTable,
 } from './SubscriptionTables/SubscriptionProTable';
+
+export { ProductsExcelTable } from './StorageTables/ProductsExcelTable';
