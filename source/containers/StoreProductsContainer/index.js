@@ -188,7 +188,6 @@ export default class StoreProductsContainer extends Component {
                         id: "storage.add_root_product_group",
                     })}
                 </Button>
-
                 <StyledTree
                     onExpand={this.onExpand}
                     expandedKeys={expandedKeys}
