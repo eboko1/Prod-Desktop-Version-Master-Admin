@@ -1,6 +1,9 @@
 // vendor
 import React, { Component } from 'react';
+import { FormattedMessage } from 'react-intl';
+import { Icon } from 'antd';
 import XLSX from 'xlsx';
+import styled from 'styled-components';
 
 // own
 import { makeCols } from './columns';
@@ -42,10 +45,22 @@ export class ExcelReader extends Component {
             /* Get first worksheet */
             const wsname = wb.SheetNames[ 0 ];
             const ws = wb.Sheets[ wsname ];
-
             /* Convert array of arrays */
-            const data = XLSX.utils.sheet_to_json(ws);
-            console.log('→ data', data);
+            // https://github.com/SheetJS/js-xlsx
+            const data = XLSX.utils.sheet_to_json(ws, {
+                header: [
+                    'productId',
+                    'productGroup',
+                    'measure',
+                    'productName',
+                    'brandId',
+                    'customCode',
+                    'certificate',
+                    'priceGroup',
+                    'price',
+                ],
+                range: 'A2:I10001',
+            });
             /* Update state */
             this.setState({ data: data, cols: makeCols(ws[ '!ref' ]) }, () => {
                 console.log(JSON.stringify(this.state.data, null, 2));
@@ -63,17 +78,36 @@ export class ExcelReader extends Component {
 
     render() {
         return (
-            <div>
-                <label htmlFor='file'>Upload an Excel</label>
+            <StyledUpload>
+                <label htmlFor='file'>
+                    <Icon type='upload' />
+                    <FormattedMessage id='storage.import_excel_with_products' />
+                </label>
                 <input
                     type='file'
                     className='form-control'
                     id='file'
                     accept={ types }
                     onChange={ this._handleChange }
-                    style={ { visibility: 'hidden' } }
                 />
-            </div>
+            </StyledUpload>
         );
     }
 }
+
+const StyledUpload = styled.div`
+    background: var(--primary);
+    color: white;
+    padding: 7px;
+    flex-wrap: nowrap;
+    display: flex;
+    border: 1px solid var(--primary);
+
+    & > label {
+        cursor: pointer;
+    }
+
+    & > input {
+        display: none;
+    }
+`;

@@ -30,7 +30,7 @@ export const DecoratedInput = memo(
             style,
             onChange,
         } = props;
-console.log('→ ref', ref);
+
         const input = getFieldDecorator(field, {
             ...initialValue ? { initialValue } : { initialValue: void 0 },
             rules,

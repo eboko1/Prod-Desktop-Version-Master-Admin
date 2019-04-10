@@ -24,7 +24,9 @@
     "storage.sum_of_purchase": "Sum of purchase",
     "storage.operation_type": "Operation type",
     "storage.document_num": "Document num.",
-    "storage.remain": "Remain"
+    "storage.remain": "Remain",
+    "storage.download_excel_template": "Download Excel template",
+    "storage.import_excel_with_products": "Import Excel with products"
   },
   "ru": {
     "storage.product_group": "Группа товаров",
@@ -51,7 +53,9 @@
     "storage.sum_of_purchase": "Цена закупки",
     "storage.operation_type": "Тип операции",
     "storage.document_num": "№ документа",
-    "storage.remain": "Остатки"
+    "storage.remain": "Остатки",
+    "storage.download_excel_template": "Скачать шаблон Excel",
+    "storage.import_excel_with_products": "Импортировать Excel с товарами"
   },
   "uk": {
     "storage.product_group": "Група товару",
@@ -78,6 +82,8 @@
     "storage.sum_of_purchase": "Сума закупки",
     "storage.operation_type": "Тип операції",
     "storage.document_num": "№ Документу",
-    "storage.remain": "Залишок"
+    "storage.remain": "Залишок",
+    "storage.download_excel_template": "Завантажити шаблон Excel",
+    "storage.import_excel_with_products": "Імпортувати Excel з товарами"
   }
 }

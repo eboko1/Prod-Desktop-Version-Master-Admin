@@ -1,80 +1,161 @@
 // vendor
 import React from 'react';
-import { Popconfirm, Icon } from 'antd';
-// import { FormattedMessage } from 'react-intl';
-// import moment from 'moment';
-import { v4 } from 'uuid';
-import { DecoratedInputNumber } from 'forms/DecoratedFields';
 
 // proj
+import { DecoratedInputNumber, DecoratedInput } from 'forms/DecoratedFields';
 
-// own
-// import Styles from './styles.m.css';
-
-export function columnsConfig(props, state) {
+export function columnsConfig(dataSource, getFieldDecorator, formatMessage) {
     const productId = {
         title:     'productId',
         dataIndex: 'productId',
-        width:     '20%',
-        editable:  true,
+        width:     'auto',
+        render:    (productId, data, index) => (
+            <DecoratedInput
+                fields={ {} }
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.productId` }
+                initialValue={ productId }
+                rules={ [
+                    {
+                        required: true,
+                        message:  'required!',
+                    },
+                ] }
+            />
+        ),
     };
+
     const productGroup = {
         title:     'productGroup',
         dataIndex: 'productGroup',
-        key:       v4(),
-        width:     '20%',
-        editable:  true,
+        width:     '10%',
+        render:    (productGroup, data, index) => (
+            <DecoratedInput
+                fields={ {} }
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.productGroup` }
+                initialValue={ productGroup }
+                rules={ [
+                    {
+                        required: true,
+                        message:  'required!',
+                    },
+                ] }
+            />
+        ),
     };
 
     const measure = {
         title:     'measure',
         dataIndex: 'measure',
-        key:       v4(),
         width:     '10%',
-        editable:  true,
+        render:    (measure, data, index) => (
+            <DecoratedInput
+                fields={ {} }
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.measure` }
+                initialValue={ measure }
+            />
+        ),
     };
 
     const productName = {
         title:     'productName',
         dataIndex: 'productName',
-        key:       v4(),
         width:     '20%',
-        editable:  true,
+        render:    (productName, data, index) => (
+            <DecoratedInput
+                fields={ {} }
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.productName` }
+                initialValue={ productName }
+                rules={ [
+                    {
+                        required: true,
+                        message:  'required!',
+                    },
+                ] }
+            />
+        ),
+    };
+
+    const brandId = {
+        title:     'brand',
+        dataIndex: 'brandId',
+        width:     '10%',
+        render:    (brandId, data, index) => (
+            <DecoratedInput
+                fields={ {} }
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.brandId` }
+                initialValue={ brandId }
+            />
+        ),
+    };
+
+    const customCode = {
+        title:     'customCode',
+        dataIndex: 'customCode',
+        width:     '10%',
+        render:    (customCode, data, index) => (
+            <DecoratedInput
+                fields={ {} }
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.customCode` }
+                initialValue={ customCode }
+            />
+        ),
+    };
+
+    const certificate = {
+        title:     'certificate',
+        dataIndex: 'certificate',
+        width:     '10%',
+        render:    (certificate, data, index) => (
+            <DecoratedInput
+                fields={ {} }
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.certificate` }
+                initialValue={ certificate }
+            />
+        ),
+    };
+
+    const priceGroup = {
+        title:     'priceGroup',
+        dataIndex: 'priceGroup',
+        width:     '10%',
+        render:    (priceGroup, data, index) => (
+            <DecoratedInput
+                fields={ {} }
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.priceGroup` }
+                initialValue={ priceGroup }
+            />
+        ),
     };
 
     const price = {
         title:     'price',
         dataIndex: 'price',
-        key:       v4(),
         width:     '10%',
-        editable:  true,
-        // render:    price => (
-        //     <DecoratedInputNumber
-        //         getFieldDecorator={ getFieldDecorator }
-        //         field='price'
-        //         initialValue={ price }
-        //         rules={ [
-        //             {
-        //                 required: true,
-        //                 message:  'required!',
-        //             },
-        //         ] }
-        //     />
-        // ),
-    };
-
-    const actions = {
-        title:     '',
-        dataIndex: 'actions',
-        render:    (key, data) =>
-            state.dataSource.length >= 1 ? (
-                <Popconfirm
-                    title='Sure to delete?'
-                    onConfirm={ () => props.handleDelete(data.key) }
-                >
-                    <Icon type='delete' />
-                </Popconfirm>
-            ) : null,
+        render:    (price, data, index) => (
+            <DecoratedInputNumber
+                fields={ {} }
+                formItem
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.price` }
+                initialValue={ price }
+                rules={ [
+                    {
+                        required: true,
+                        message:  formatMessage({
+                            id: 'required_field',
+                        }),
+                    },
+                ] }
+            />
+        ),
     };
 
     return [
@@ -82,11 +163,10 @@ export function columnsConfig(props, state) {
         productGroup,
         measure,
         productName,
-        // brand,
-        // customCode,
-        // certificate,
-        // priceGroup,
+        brandId,
+        customCode,
+        certificate,
+        priceGroup,
         price,
-        actions,
     ];
 }

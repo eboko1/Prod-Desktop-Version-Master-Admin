@@ -1,56 +1,85 @@
 // vendor
 import React, { Component } from "react";
-import { FormattedMessage } from "react-intl";
-import { Form, Button } from "antd";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Form, Input, Table, Button, Icon } from "antd";
+import _ from "lodash";
+import styled from "styled-components";
 
 // own
 import { ProductsExcelTable } from "components";
-import { withReduxForm2 } from "utils";
+import { DecoratedInputNumber } from "forms/DecoratedFields";
+import { Loader } from "commons";
 
-// import Styles from './styles.m.css';
+const ButtonGroup = styled.div`
+    display: flex;
+    margin: 8px 0;
+    justify-content: flex-end;
+`;
 
-@withReduxForm2({
-    name: "productsExcelForm",
-    actions: {
-        // change: onChangeCashOrderForm,
-    },
-    mapStateToProps: state => ({
-        productsExcel: state.storage.productsExcel,
-    }),
-})
+const SubmitButton = styled(Button)`
+    width: 30%;
+    margin: 0 auto;
+`;
+
+@injectIntl
+@Form.create()
 export class ProductsExcelForm extends Component {
     _submit = event => {
         event.preventDefault();
+
         const { form } = this.props;
 
-        form.validateFieldsAndScroll((err, values) => {
-            console.log("→ err", err);
-            console.log("→ values", values);
-
-            if (!err) {
-                console.log("→ submit values", value);
-                // const products = [...values];
-
-                // createCashOrder(cashOrder);
-                // form.resetFields();
-            }
-        });
+        this.props.form.validateFieldsAndScroll(
+            { scroll: { offsetBottom: 50 } },
+            // { scroll: { offsetBottom: 50 }, force: true },
+            (err, values) => {
+                if (!err) {
+                    const normalizedFields = _.toPairs(values).reduce(
+                        (result, [name, value]) => {
+                            return _.set(result, name, value);
+                        },
+                        [],
+                    );
+                }
+            },
+        );
     };
 
     render() {
-        const { packages } = this.props;
         const { getFieldDecorator } = this.props.form;
+        const buttonGroup = this._renderButtonGroup();
 
         return (
             <Form onSubmit={this._submit}>
-                <Button type="primary" htmlType="submit">
-                    Submit
-                </Button>
+                {buttonGroup}
                 <ProductsExcelTable
-                    data={this.props.productsExcel}
+                    dataSource={this.props.dataSource}
                     getFieldDecorator={getFieldDecorator}
                 />
+                {this.props.dataSource && this.props.dataSource.length >= 20 ? (
+                    <SubmitButton type="primary" htmlType="submit">
+                        {this.props.intl.formatMessage({ id: "submit" })}
+                    </SubmitButton>
+                ) : null}
             </Form>
         );
     }
+
+    _renderButtonGroup = () => {
+        return (
+            <ButtonGroup>
+                {!_.isEmpty(this.props.dataSource) && (
+                    <SubmitButton type="primary" htmlType="submit">
+                        {this.props.intl.formatMessage({ id: "submit" })}
+                    </SubmitButton>
+                )}
+                <Button
+                    icon="rollback"
+                    onClick={() => this.props.productsExcelImportReset()}
+                >
+                    {this.props.intl.formatMessage({ id: "back" })}
+                </Button>
+            </ButtonGroup>
+        );
+    };
 }
