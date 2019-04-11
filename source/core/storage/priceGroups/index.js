@@ -140,9 +140,9 @@ export function* updatePriceGroupSaga() {
             yield call(
                 fetchAPI,
                 'PUT',
-                `price_groups/${payload.id}`,
+                `price_groups/${payload.number}`,
                 null,
-                _.omit(payload, 'id'),
+                _.omit(payload, [ 'businessId', 'number' ]),
             );
 
             yield put(updatePriceGroupSuccess());
@@ -158,10 +158,10 @@ export function* updatePriceGroupSaga() {
 export function* deletePriceGroupSaga() {
     while (true) {
         try {
-            const { payload: id } = yield take(DELETE_PRICE_GROUP);
+            const { payload: number } = yield take(DELETE_PRICE_GROUP);
             yield nprogress.start();
 
-            yield call(fetchAPI, 'DELETE', `price_groups/${id}`);
+            yield call(fetchAPI, 'DELETE', `price_groups/${number}`);
 
             yield put(deletePriceGroupSuccess());
             yield put(fetchPriceGroups());
