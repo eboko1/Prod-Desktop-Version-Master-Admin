@@ -9,7 +9,9 @@ import _ from "lodash";
 import {
     productsExcelImport,
     productsExcelImportReset,
-} from "core/storage/duck";
+    selectStoreProducts,
+    selectStoreProductsExcel,
+} from "core/storage/products";
 
 import { Layout, StyledButton } from "commons";
 import {
@@ -20,8 +22,8 @@ import {
 import { ProductsExcelForm } from "forms";
 
 const mapStateToProps = state => ({
-    productsExcel: state.storage.productsExcel,
-    storeProducts: [],
+    productsExcel: selectStoreProductsExcel(state),
+    storeProducts: selectStoreProducts(state),
 });
 
 const mapDispatchToProps = {

@@ -2,7 +2,7 @@
 import { combineReducers } from 'redux';
 import { connectRouter } from 'connected-react-router';
 import { persistReducer } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
+import { default as persistStorage } from 'redux-persist/lib/storage'; // defaults to localStorage for web and AsyncStorage for react-native
 import { LOCATION_CHANGE } from 'connected-react-router';
 import _ from 'lodash';
 
@@ -18,6 +18,7 @@ import errorMessageReducer, {
 import authReducer, { moduleName as authModule } from 'core/auth/duck';
 
 import { formsReducer as forms } from 'core/forms';
+import { storageReducer as storage } from 'core/storage';
 import ordersReducer, { moduleName as ordersModule } from 'core/orders/duck';
 import clientsReducer, { moduleName as clientsModule } from 'core/clients/duck';
 import myTasksReducer, { moduleName as myTasksModule } from 'core/myTasks/duck';
@@ -71,14 +72,13 @@ import suppliersReducer, {
 import paymentsReducer, {
     moduleName as paymentsModule,
 } from 'core/payments/duck';
-import storageReducer, { moduleName as storageModule } from 'core/storage/duck';
 
 // own
 import history from './history';
 
 export const persistConfig = {
     key:       'persistedStore',
-    storage,
+    storage:   persistStorage,
     whitelist: [ 'auth', 'subscription' ],
 };
 
@@ -91,6 +91,7 @@ const persistedState = {
 
 const appState = {
     forms,
+    storage,
     [ businessPackageModule ]:      businessPackageReducer,
     [ callsModule ]:                callsReducer,
     [ cashModule ]:                 cashReducer,
@@ -115,7 +116,6 @@ const appState = {
     [ roleModule ]:                 roleReducer,
     [ searchModule ]:               searchReducer,
     [ servicesSuggestionsModule ]:  servicesSuggestionsReducer,
-    [ storageModule ]:              storageReducer,
     [ suppliersModule ]:            suppliersReducer,
     [ tecDocActionsModule ]:        tecDocActionsReducer,
     [ uiModule ]:                   uiReducer,

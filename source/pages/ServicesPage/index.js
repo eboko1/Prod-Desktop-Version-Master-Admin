@@ -35,7 +35,7 @@ export default class ServicesPage extends Component {
                     <FormattedMessage id='navigation.services-spare_parts' />
                 }
                 paper={ false }
-                // controls={ <BusinessSearchField /> }
+                
             >
                 <ServicesContainer isFetching={ isFetching } />
             </Layout>

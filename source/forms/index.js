@@ -37,7 +37,7 @@ export { CashCreationForm } from './CashCreationForm';
 export { CashOrdersFiltersForm } from './CashOrdersFiltersForm';
 export { CashOrderForm } from './CashOrderForm';
 export { SubscribeForm } from './SubscribeForm';
-export { ProductsExcelForm } from './StorageForms';
+export { ProductsExcelForm, PriceGroupForm } from './StorageForms';
 
 export {
     LoginForm,

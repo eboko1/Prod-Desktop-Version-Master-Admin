@@ -41,6 +41,7 @@ plugins:
   - babel
   - react
   - babel
+  - react-hooks
 
 rules:
   # React: core
@@ -53,6 +54,10 @@ rules:
   react/no-string-refs: 2
   react/no-unknown-property: 2
   react/react-in-jsx-scope: 2
+
+  # React hooks
+  react-hooks/rules-of-hooks: error
+  react-hooks/exhaustive-dep: warn
 
   # React JSX
   react/jsx-boolean-value: 2

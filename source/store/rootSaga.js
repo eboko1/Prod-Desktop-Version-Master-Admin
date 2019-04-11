@@ -52,6 +52,8 @@ import { saga as brandsSaga } from 'core/forms/brandsForm/saga';
 import { saga as setDetailProductSaga } from 'core/forms/setDetailProduct/saga';
 import { saga as spreadBusinessSaga } from 'core/forms/spreadBusinessBrands/saga';
 import { saga as cashOrderFormSaga } from 'core/forms/cashOrderForm/saga';
+// storage
+import { saga as storagePriceGroupsSaga } from 'core/storage/priceGroups';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -90,6 +92,8 @@ export default function* rootSaga() {
         scheduleFormSaga(),
         settingSalaryFormSaga(),
         suppliersSaga(),
+        //
+        storagePriceGroupsSaga(),
         // cash
         cashSaga(),
         cashOrderFormSaga(),

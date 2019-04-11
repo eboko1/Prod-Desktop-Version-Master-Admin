@@ -1,40 +1,64 @@
 // vendor
-import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import React, { useState, useEffect } from 'react';
+import { connect } from 'react-redux';
+import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
 
 // proj
+import {
+    fetchPriceGroups,
+    createPriceGroup,
+    deletePriceGroup,
+    selectPriceGroups,
+} from 'core/storage/priceGroups';
 
 // own
 import { columnsConfig } from './config';
+// import { EditableRow, EditableCell } from 'editable';
 
-export const PriceGroupsTable = props => {
-    const { priceGroups, priceGroupsFetching } = props;
+const PriceGroups = props => {
+    useEffect(() => {
+        props.fetchPriceGroups();
+    }, []);
 
-    const pagination = {
-        pageSize:         25,
-        size:             'large',
-        total:            Math.ceil(props.totalCount / 25) * 25,
-        hideOnSinglePage: true,
-        current:          props.filters.page,
-        onChange:         page => {
-            props.setCashOrdersPage({ page });
-            props.fetchCashOrders();
-        },
-    };
+    const _handleDelete = number => props.deletePriceGroup(number);
+
+    // const components = {
+    //     body: {
+    //         row:  EditableRow,
+    //         cell: EditableCell,
+    //     },
+    // };
 
     return (
         <Table
             size='small'
-            columns={ columnsConfig() }
-            pagination={ pagination }
-            dataSource={ priceGroups }
-            loading={ priceGroupsFetching }
+            // components={ components }
+            columns={ columnsConfig(props.intl.formatMessage, _handleDelete) }
+            pagination={ false }
+            dataSource={ props.priceGroups }
+            loading={ props.priceGroupsFetching }
             locale={ {
-                emptyText: <FormattedMessage id='no_data' />,
+                emptyText: props.intl.formatMessage({ id: 'no_data' }),
             } }
-            scroll={ { x: 1000 } }
             rowKey={ record => record.id }
         />
     );
 };
+
+const mapStateToProps = state => ({
+    priceGroups: selectPriceGroups(state),
+});
+
+const mapDispatchToProps = {
+    fetchPriceGroups,
+    createPriceGroup,
+    deletePriceGroup,
+};
+
+export const PriceGroupsTable = injectIntl(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps,
+    )(PriceGroups),
+);
