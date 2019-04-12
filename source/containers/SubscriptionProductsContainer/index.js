@@ -8,7 +8,6 @@ import styled, { css } from "styled-components";
 // proj
 import {
     verifyPromoCode,
-    subscribe,
     fetchSubscriptionProducts,
     selectSubscriptionProducts,
     asyncSubscribe,
@@ -44,7 +43,6 @@ const mapDispatchToProps = {
     verifyPromoCode,
     setModal,
     resetModal,
-    subscribe,
     asyncSubscribe,
 };
 
@@ -141,7 +139,6 @@ export default class SubscriptionProductsContainer extends Component {
                         resetModal={this.props.resetModal}
                         modalProps={this.props.modalProps}
                         user={this.props.user}
-                        subscribe={this.props.subscribe}
                         verifyPromoCode={this.props.verifyPromoCode}
                         promoCode={this.props.promoCode}
                         subscribed={this.props.subscribed}

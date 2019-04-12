@@ -13,17 +13,12 @@ import { images } from 'utils';
 import Styles from './styles.m.css';
 
 export default class SubscribeModal extends Component {
-    //_handleToSuccessModalSubmit = () => {
-    //    onStatusChange;
-    //};
-
     render() {
         const {
             user,
             visible,
             modalProps,
             resetModal,
-            subscribe,
             verifyPromoCode,
             promoCode,
             subscribed,
@@ -44,7 +39,6 @@ export default class SubscribeModal extends Component {
             >
                 <SubscribeForm
                     user={ user }
-                    subscribe={ subscribe }
                     resetModal={ resetModal }
                     modalProps={ modalProps }
                     verifyPromoCode={ verifyPromoCode }
