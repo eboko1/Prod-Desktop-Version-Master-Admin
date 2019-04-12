@@ -1,6 +1,5 @@
 // vendor
 import { createSelector } from 'reselect';
-import moment from 'moment';
 
 // proj
 import { fetchAPI } from 'utils';
@@ -39,9 +38,10 @@ export const VERIFY_PROMO_CODE = `${prefix}/VERIFY_PROMO_CODE`;
 export const VERIFY_PROMO_CODE_SUCCESS = `${prefix}/VERIFY_PROMO_CODE_SUCCESS`;
 export const VERIFY_PROMO_CODE_ERROR = `${prefix}/VERIFY_PROMO_CODE_ERROR`;
 
-export const SUBSCRIBE = `${prefix}/SUBSCRIBE`;
-export const SUBSCRIBE_SUCCESS = `${prefix}/SUBSCRIBE_SUCCESS`;
-export const SUBSCRIBE_ERROR = `${prefix}/SUBSCRIBE_ERROR`;
+// export const SUBSCRIBE = `${prefix}/SUBSCRIBE`;
+export const ASYNC_SUBSCRIBE_REQUEST = `${prefix}/ASYNC_SUBSCRIBE_REQUEST`;
+export const ASYNC_SUBSCRIBE_SUCCESS = `${prefix}/ASYNC_SUBSCRIBE_SUCCESS`;
+export const ASYNC_SUBSCRIBE_ERROR = `${prefix}/ASYNC_SUBSCRIBE_ERROR`;
 
 /**
  * Reducer
@@ -133,13 +133,13 @@ export default function reducer(state = ReducerState, action) {
                 promoCode: payload,
             };
 
-        case SUBSCRIBE_SUCCESS:
+        case ASYNC_SUBSCRIBE_SUCCESS:
             return {
                 ...state,
                 subscribed: true,
             };
 
-        case SUBSCRIBE_ERROR:
+        case ASYNC_SUBSCRIBE_ERROR:
             return {
                 ...state,
                 subscribed: false,
@@ -236,24 +236,25 @@ export const verifyPromoCodeError = error => ({
     error:   error,
 });
 
-// export const subscribe = payload => ({
-//     type: SUBSCRIBE,
-//     payload,
-// });
+export const asyncSubscribeRequest = () => ({
+    type: ASYNC_SUBSCRIBE_REQUEST,
+});
 
-export const subscribeSuccess = response => ({
-    type:    SUBSCRIBE_SUCCESS,
+export const asyncSubscribeSuccess = response => ({
+    type:    ASYNC_SUBSCRIBE_SUCCESS,
     payload: response,
 });
 
-export const subscribeError = () => ({
-    type: SUBSCRIBE_ERROR,
+export const asyncSubscribeError = () => ({
+    type: ASYNC_SUBSCRIBE_ERROR,
 });
 
 export const asyncSubscribe = payload => dispatch => {
+    dispatch(asyncSubscribeRequest());
+
     return fetchAPI('POST', '/subscriptions', null, payload).then(
-        response => dispatch(subscribeSuccess(response)),
-        error => dispatch(subscribeError(error)),
+        response => dispatch(asyncSubscribeSuccess(response)),
+        error => dispatch(asyncSubscribeError(error)),
     );
 };
 
