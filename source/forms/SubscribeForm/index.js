@@ -99,7 +99,7 @@ export class SubscribeForm extends Component {
     };
 
     _submit = () => {
-        const { form, subscribe, resetModal } = this.props;
+        const { form, asyncSubscribe, resetModal } = this.props;
 
         form.validateFields((err, values) => {
             if (!err) {
@@ -115,12 +115,10 @@ export class SubscribeForm extends Component {
                         .toISOString(),
                 };
 
-                this.props
-                    .asyncSubscribe(normalizedValues)
-                    .then(
-                        () => this._subscribeSuccess(values.paymentType),
-                        error => console.log("→ error", error),
-                    );
+                asyncSubscribe(normalizedValues).then(
+                    () => this._subscribeSuccess(values.paymentType),
+                    error => console.log("→ error", error),
+                );
             }
         });
     };
@@ -241,7 +239,7 @@ export class SubscribeForm extends Component {
                         initialValue={modalProps.period || 3}
                         min={1}
                         max={12}
-                        step={3}
+                        step={null}
                         onChange={period =>
                             this._handleSubscriptionPeriod(period)
                         }
