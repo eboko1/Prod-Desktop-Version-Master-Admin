@@ -18,41 +18,11 @@ import { columnsConfig } from './config';
 import { EditableCell } from './editable';
 import { EditableContext } from './context';
 
-const mockData = [
-    {
-        number:     1,
-        businessId: 1174,
-        multiplier: 1.2,
-    },
-    {
-        number:     2,
-        businessId: 1174,
-        multiplier: 1.4,
-    },
-    {
-        number:     3,
-        businessId: 1174,
-        multiplier: 1.6,
-    },
-    {
-        number:     4,
-        businessId: 1174,
-        multiplier: 1.8,
-    },
-    {
-        number:     5,
-        businessId: 1174,
-        multiplier: 2,
-    },
-];
-
 const PriceGroups = props => {
     useEffect(() => {
         props.fetchPriceGroups();
     }, []);
 
-    // const [ data, setData ] = useState(mockData);
-    // const [ isEditing, setEditMode ] = useState(false);
     const [ editingKey, setEditingKey ] = useState('');
 
     const _getEditingState = record => record.number === editingKey;
@@ -76,39 +46,6 @@ const PriceGroups = props => {
             setEditingKey('');
         });
     };
-    // const _save = (form, key) => {
-    //     form.validateFields((error, row) => {
-    //         if (error) {
-    //             return;
-    //         }
-    //         const newData = [ ...data ];
-    //         console.log('→ 11newData', newData);
-    //         const index = newData.findIndex(item => key === item.number);
-    //         if (index > -1) {
-    //             console.log('→ 22save newData', newData);
-    //             console.log('→ save index', index);
-    //             const item = newData[ index ];
-    //             const value = { ...item, ...row };
-    //             newData.splice(index, 1, {
-    //                 ...item,
-    //                 ...row,
-    //             });
-    //             console.log('→ save item', item);
-    //             console.log('→ row', row);
-    //             console.log('→ value', value);
-    //             console.log('→ 33 new Data', newData);
-    //             // this.setState({ data: newData, editingKey: '' });
-    //             setData(newData);
-    //             setEditingKey('');
-    //             props.updatePriceGroup(value);
-    //         } else {
-    //             console.log('→ else');
-    //             newData.push(row);
-    //             setData(newData);
-    //             setEditingKey('');
-    //         }
-    //     });
-    // };
 
     const components = {
         body: {
@@ -116,7 +53,6 @@ const PriceGroups = props => {
         },
     };
 
-    //   const columns = columnsConfig(props.intl.formatMessage, _handleDelete).map((col) => {
     const columns = columnsConfig(
         props.intl.formatMessage,
         editingKey,
@@ -144,22 +80,18 @@ const PriceGroups = props => {
 
     return (
         <EditableContext.Provider value={ props.form }>
-            { console.log('=== TABLE === editingKey', editingKey) }
             <Table
-                rowClassName='editable-row'
-                // size='small'
+                size='small'
                 bordered
                 components={ components }
-                // columns={ columnsConfig(props.intl.formatMessage, _handleDelete) }
                 columns={ columns }
                 pagination={ false }
-                // dataSource={ data }
                 dataSource={ props.priceGroups }
                 loading={ props.priceGroupsFetching }
                 locale={ {
                     emptyText: props.intl.formatMessage({ id: 'no_data' }),
                 } }
-                rowKey={ record => record.id }
+                rowKey={ record => record.number }
             />
         </EditableContext.Provider>
     );

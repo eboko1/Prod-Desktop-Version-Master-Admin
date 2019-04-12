@@ -4,24 +4,24 @@ import { Icon, Popconfirm } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-// import { EditableContext } from './editable';
+// own
 import { EditableContext } from './context';
 
-// const DeleteIcon = styled(Icon)`
-//     color: var(--warning);
-//     font-size: 24px;
-// `;
+const DeleteIcon = styled(Icon)`
+    color: var(--warning);
+    font-size: 24px;
+`;
 
-// const EditIcon = styled(Icon)`
-//     color: var(--green);
-//     font-size: 24px;
-//     cursor: pointer;
-// `;
+const EditIcon = styled(Icon)`
+    color: var(--green);
+    font-size: 24px;
+    cursor: pointer;
+`;
 
-// const ActionsIcons = styled.div`
-//     display: flex;
-//     align-items: center;
-// `;
+const ActionsIcons = styled.div`
+    display: flex;
+    align-items: center;
+`;
 
 // export function columnsConfig(formatMessage, deletePriceGroup) {
 export function columnsConfig(
@@ -36,7 +36,7 @@ export function columnsConfig(
     const number = {
         title:     <FormattedMessage id='storage.price_group' />,
         dataIndex: 'number',
-        width:     '50%',
+        width:     '25%',
     };
 
     const multiplier = {
@@ -47,36 +47,15 @@ export function columnsConfig(
         render:    multiplier => <span>{ multiplier } %</span>,
     };
 
-    // const actions = {
-    //     title:     '',
-    //     dataIndex: 'actions',
-    //     width:     'auto',
-    //     render:    (_, data) => (
-    //         <ActionsIcons>
-    //             <EditIcon type='edit' />
-    //             <Popconfirm
-    //                 cancelText={ formatMessage({ id: 'no' }) }
-    //                 okText={ formatMessage({ id: 'yes' }) }
-    //                 title={ `${formatMessage({ id: 'delete' })}?` }
-    //                 onConfirm={() => deletePriceGroup(data.number)} // eslint-disable-line
-    //             >
-    //                 <DeleteIcon type='delete' />
-    //             </Popconfirm>
-    //         </ActionsIcons>
-    //     ),
-    // };
-
     const operations = {
         title:     '',
         dataIndex: 'operation',
+        width:     '25%',
         render:    (text, record) => {
             const editable = getEditingState(record);
-            // console.log('→COLUMNS editable', editable);
-            // console.log('=== COLUMNS === editingKey', editingKey);
-            // console.log('→COLUMNS record.number', record.number);
 
             return (
-                <div>
+                <ActionsIcons>
                     { editable ? (
                         <span>
                             <EditableContext.Consumer>
@@ -88,39 +67,34 @@ export function columnsConfig(
                                         }
                                         style={ { marginRight: 8 } }
                                     >
-                                        Save
+                                        { formatMessage({ id: 'save' }) }
                                     </a>
                                 ) }
                             </EditableContext.Consumer>
                             <Popconfirm
-                                title='Sure to cancel?'
+                                title={ `${formatMessage({ id: 'cancel' })} ?` }
                                 onConfirm={ () => cancelEditing(record.key) }
                             >
-                                <a>Cancel</a>
+                                <a>{ formatMessage({ id: 'cancel' }) }</a>
                             </Popconfirm>
                         </span>
                     ) : (
-                        <a
+                        <EditIcon
+                            type='edit'
                             disabled={ editingKey !== '' }
                             onClick={ () => startEditing(record.number) }
-                            // onClick={ () => startEditing(record.key) }
-                        >
-                            Edit
-                        </a>
+                        />
                     ) }
                     <Popconfirm
-                        title='Sure to delete?'
+                        title={ `${formatMessage({ id: 'delete' })} ?` }
                         onConfirm={ () => handleDelete(record.number) }
                     >
-                        <a>Delete</a>
+                        <DeleteIcon type='delete' />
                     </Popconfirm>
-                </div>
+                </ActionsIcons>
             );
         },
     };
 
-    return [
-        number, multiplier, operations,
-        // actions,
-    ];
+    return [ number, multiplier, operations ];
 }
