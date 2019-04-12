@@ -10,12 +10,9 @@ import {
     fetchSubscriptionProductsSuccess,
     fetchSubscriptionPackagesSuccess,
     fetchSubscriptionSuggestionsSuccess,
-    subscribeSuccess,
-    subscribeError,
     FETCH_SUBSCRIPTION_PRODUCTS,
     FETCH_SUBSCRIPTION_PACKAGES,
     FETCH_SUBSCRIPTION_SUGGESTIONS,
-    SUBSCRIBE,
     SUBSCRIPTION_TYPES,
     VERIFY_PROMO_CODE,
     verifyPromoCodeSuccess,
@@ -100,24 +97,11 @@ export function* verifyPromoCodeSaga() {
     }
 }
 
-// export function* subscribeSaga() {
-//     while (true) {
-//         try {
-//             const { payload } = yield take(SUBSCRIBE);
-//             yield call(fetchAPI, 'POST', '/subscriptions', null, payload);
-//             yield put(subscribeSuccess());
-//         } catch (error) {
-//             yield put(subscribeError());
-//         }
-//     }
-// }
-
 export function* saga() {
     yield all([
         call(fetchSubscriptionProductsSaga),
         call(fetchSubscriptionPackagesSaga),
         call(fetchSubscriptionSuggestionsSaga),
-        // call(subscribeSaga),
         call(verifyPromoCodeSaga),
     ]);
 }
