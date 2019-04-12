@@ -57,9 +57,19 @@ export default function popupsReducer(state = ReducerState, action) {
             return state;
     }
 }
-//
-// Action Creators
-//
+
+/**
+ * Selectors
+ **/
+
+export const stateSelector = state => state[ moduleName ];
+export const selectModal = state => stateSelector(state).modal;
+export const selectModalProps = state => stateSelector(state).modalProps;
+
+/**
+ * Action Creators
+ **/
+
 export const setModal = (modal, modalProps) => ({
     type:    SET_MODAL,
     payload: { modal, modalProps },

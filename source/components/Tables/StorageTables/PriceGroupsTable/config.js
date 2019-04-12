@@ -44,7 +44,7 @@ export function columnsConfig(
         dataIndex: 'multiplier',
         width:     '50%',
         editable:  true,
-        render:    multiplier => <span>{ multiplier } %</span>,
+        render:    multiplier => <span>{ multiplier }</span>,
     };
 
     const operations = {
