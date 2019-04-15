@@ -1,7 +1,7 @@
 // vendor
-// vendor
 import { call, put, all, take } from 'redux-saga/effects';
 import nprogress from 'nprogress';
+import { createSelector } from 'reselect';
 import _ from 'lodash';
 
 //proj
@@ -25,11 +25,11 @@ export const DELETE_PRICE_GROUP = `${prefix}/DELETE_PRICE_GROUP`;
 export const DELETE_PRICE_GROUP_SUCCESS = `${prefix}/DELETE_PRICE_GROUP_SUCCESS`;
 
 /**
- * Reducer
+ * Reduconsole.error(object)
  **/
 
 const ReducerState = {
-    priceGroups: [],
+    priceGroups: null,
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -49,7 +49,20 @@ export default function reducer(state = ReducerState, action) {
  **/
 
 export const stateSelector = state => state.storage[ moduleName ];
-export const selectPriceGroups = state => stateSelector(state).priceGroups;
+// export const selectPriceGroups = state => stateSelector(state).priceGroups;
+export const selectPriceGroups = createSelector(
+    [ stateSelector ],
+    ({ priceGroups }) => {
+        return priceGroups
+            ? priceGroups.map(priceGroup => {
+                return {
+                    ...priceGroup,
+                    multiplier: Number(priceGroup.multiplier).toFixed(2),
+                };
+            })
+            : null;
+    },
+);
 
 /**
  * Action Creators

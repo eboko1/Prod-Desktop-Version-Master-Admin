@@ -13,6 +13,8 @@ import {
     selectPriceGroups,
 } from 'core/storage/priceGroups';
 
+import { Loader } from 'commons';
+
 // own
 import { columnsConfig } from './config';
 import { EditableCell } from './editable';
@@ -78,7 +80,9 @@ const PriceGroups = props => {
         };
     });
 
-    return (
+    return !props.priceGroups ? (
+        <Loader loading={ props.priceGroups } />
+    ) : (
         <EditableContext.Provider value={ props.form }>
             <Table
                 size='small'
@@ -86,7 +90,7 @@ const PriceGroups = props => {
                 components={ components }
                 columns={ columns }
                 pagination={ false }
-                dataSource={ props.priceGroups }
+                dataSource={ props.priceGroups || [] }
                 loading={ props.priceGroupsFetching }
                 locale={ {
                     emptyText: props.intl.formatMessage({ id: 'no_data' }),
