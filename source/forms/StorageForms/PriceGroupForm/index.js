@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Button } from 'antd';
 import styled from 'styled-components';
+import schema from 'async-validator';
 
 // proj
 import { createPriceGroup } from 'core/storage/priceGroups';
@@ -26,8 +27,7 @@ const StyledForm = styled(Form)`
 `;
 
 const PriceGroup = props => {
-    const _submit = event => {
-        event.preventDefault();
+    const _submit = () => {
         props.form.validateFields((err, values) => {
             if (!err) {
                 props.createPriceGroup(values);
@@ -36,8 +36,40 @@ const PriceGroup = props => {
         });
     };
 
+    const descriptor = {
+        name: {
+            type:      'number',
+            required:  true,
+            validator: (rule, value) => !value.match(/[a-zA-Z]+/),
+        },
+    };
+
+    const _handleErrors = (errors, fields) =>
+        console.log('_handleErrors(errors, fields)', errors, fields);
+
+    const validator = new schema(descriptor);
+
+    validator.validate({ name: 'multiplier' }, (errors, fields) => {
+        if (errors) {
+            // validation failed, errors is an array of all errors
+            // fields is an object keyed by field name with an array of
+            // errors per field
+            return _handleErrors(errors, fields);
+        }
+        // validation passed
+        console.log('→ PASSED');
+    });
+
+    // const _validate = (value, errors, fields) => {
+    //     console.log('value', value);
+    //     if (errors) {
+    //         console.log('→ errors', errors);
+    //     }
+    //     console.log('→ fields', fields);
+    // };
+
     return (
-        <StyledForm onSubmit={ _submit }>
+        <StyledForm>
             <StyledInput
                 fields={ {} }
                 field='multiplier'
@@ -51,10 +83,17 @@ const PriceGroup = props => {
                         message:  props.intl.formatMessage({
                             id: 'required_field',
                         }),
+                        // validator: validator,
+                        // validator: (rule, value, _validate) => {
+                        //     // console.log('rule', rule);
+                        //     // console.log('value', value);
+                        //     // value && !value.match(/[a-zA-Z]+/);
+                        // },
                     },
                 ] }
+                onPressEnter={ () => _submit() }
             />
-            <Button type='primary' htmlType='submit'>
+            <Button type='primary' onClick={ () => _submit() }>
                 { props.intl.formatMessage({ id: 'create' }) }
             </Button>
         </StyledForm>

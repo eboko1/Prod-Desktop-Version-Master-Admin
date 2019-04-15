@@ -61,7 +61,34 @@ export const DecoratedInputNumber = memo(
                 formatter={ props.formatter || numeralFormatter }
                 parser={ props.parser || numeralParser }
                 ref={ ref }
-                onKeyDown={ e => e.key === 'Enter' && onPressEnter() }
+                // TODO: move to onChange
+                onKeyDown={ e => {
+                    const validKeys = [
+                        '0',
+                        '1',
+                        '2',
+                        '3',
+                        '4',
+                        '5',
+                        '6',
+                        '7',
+                        '8',
+                        '9',
+                        '.',
+                        ',',
+                        'Tab',
+                        'Enter',
+                        'Backspace',
+                        'Delete',
+                    ];
+                    if (validKeys.includes(e.key)) {
+                        return (
+                            e.key === 'Enter' && onPressEnter && onPressEnter()
+                        );
+                    }
+
+                    return e.preventDefault();
+                } }
             />,
         );
 

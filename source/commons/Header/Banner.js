@@ -1,8 +1,11 @@
 // vendor
-import React from 'react';
+import React, { memo } from 'react';
 
-export const Banner = ({ banners }) => {
+export const Banner = memo(({ banners }) => {
     return (
-        <img style={ { margin: '0 24px'} } src={ banners[ Math.floor(Math.random() * banners.length) ].url } />
+        <img
+            style={ { margin: '0 24px' } }
+            src={ banners[ Math.floor(Math.random() * banners.length) ].url }
+        />
     );
-};
+});

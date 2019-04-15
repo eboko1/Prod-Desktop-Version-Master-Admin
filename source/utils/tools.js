@@ -9,7 +9,8 @@ const { dispatch } = store;
 export const numeralFormatter = value =>
     `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
 
-export const numeralParser = value => `${value}`.replace(/\$\s?|(\s)/g, '');
+export const numeralParser = value =>
+    `${value}`.replace(/\$\s?|(\s)/g, '').replace(/,/g, '.');
 
 // Components utils
 export function getDisplayName(WrappedComponent) {
