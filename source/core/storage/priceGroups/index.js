@@ -25,11 +25,11 @@ export const DELETE_PRICE_GROUP = `${prefix}/DELETE_PRICE_GROUP`;
 export const DELETE_PRICE_GROUP_SUCCESS = `${prefix}/DELETE_PRICE_GROUP_SUCCESS`;
 
 /**
- * Reduconsole.error(object)
+ * Reducer
  **/
 
 const ReducerState = {
-    priceGroups: null,
+    priceGroups: [],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -53,14 +53,14 @@ export const stateSelector = state => state.storage[ moduleName ];
 export const selectPriceGroups = createSelector(
     [ stateSelector ],
     ({ priceGroups }) => {
-        return priceGroups
+        return !_.isEmpty(priceGroups)
             ? priceGroups.map(priceGroup => {
                 return {
                     ...priceGroup,
                     multiplier: Number(priceGroup.multiplier).toFixed(2),
                 };
             })
-            : null;
+            : [];
     },
 );
 
