@@ -1,6 +1,16 @@
+// vendor
+import { call, put, all, take } from 'redux-saga/effects';
+import nprogress from 'nprogress';
+import { createSelector } from 'reselect';
+import _ from 'lodash';
+
+//proj
+import { emitError } from 'core/ui/duck';
+import { fetchAPI } from 'utils';
 /**
  * Constants
  **/
+
 export const moduleName = 'store_groups';
 const prefix = `cpb/${moduleName}`;
 
@@ -40,6 +50,51 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state.storage[ moduleName ];
 export const selectStoreGroups = state => stateSelector(state).storeGroups;
+
+export const selectFlattenStoreGroups = createSelector(
+    [ stateSelector ],
+    ({ storeGroups }) => {
+        const flattenTree = [];
+        const flattenStoreGroups = data => {
+            for (let item = 0; item < data.length; item++) {
+                const node = data[ item ];
+
+                flattenTree.push({
+                    id:   node.id,
+                    name: node.name,
+                });
+                if (node.childGroups) {
+                    flattenStoreGroups(node.childGroups);
+                }
+            }
+        };
+        flattenStoreGroups(storeGroups);
+
+        return flattenTree;
+    },
+);
+
+// export const selectStoreGroups = createSelector(
+//     [ stateSelector ],
+//     ({ storeGroups }) => {
+//         const generateTreeNode = tree =>
+//             tree.map(node => {
+//                 return {
+//                     businessId:    node.businessId,
+//                     languageId:    node.languageId,
+//                     parentGroupId: node.parentGroupId,
+//                     title:         node.name,
+//                     key:           node.id,
+//                     id:            node.id,
+//                     children:      _.isEmpty(node.childGroups)
+//                         ? node.childGroups
+//                         : generateTreeNode(node.childGroups),
+//                 };
+//             });
+
+//         return !_.isEmpty(storeGroups) ? generateTreeNode(storeGroups) : [];
+//     },
+// );
 
 /**
  * Action Creators
@@ -81,3 +136,28 @@ export const deleteStoreGroup = storeGroup => ({
 export const deleteStoreGroupSuccess = () => ({
     type: DELETE_STORE_GROUP_SUCCESS,
 });
+
+/**
+ * Sagas
+ **/
+
+export function* fetchStoreGroupsSaga() {
+    while (true) {
+        try {
+            yield take(FETCH_STORE_GROUPS);
+            yield nprogress.start();
+
+            const storeGroups = yield call(fetchAPI, 'GET', 'store_groups');
+
+            yield put(fetchStoreGroupsSuccess(storeGroups));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* saga() {
+    yield all([ call(fetchStoreGroupsSaga) ]);
+}
