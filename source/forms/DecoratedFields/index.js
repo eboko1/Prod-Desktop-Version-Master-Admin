@@ -11,6 +11,7 @@ import { DecoratedInputPhone } from './DecoratedInputPhone';
 import { LimitedDecoratedSelect } from './LimitedDecoratedSelect';
 import { DecoratedRadio } from './DecoratedRadio';
 import { DecoratedAutoComplete } from './DecoratedAutoComplete';
+import { DecoratedTreeSelect } from './DecoratedTreeSelect';
 
 export {
     DecoratedSelect,
@@ -26,4 +27,5 @@ export {
     DecoratedSearch,
     DecoratedRadio,
     DecoratedAutoComplete,
+    DecoratedTreeSelect,
 };

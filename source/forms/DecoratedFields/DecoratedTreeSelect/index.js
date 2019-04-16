@@ -1,37 +1,13 @@
 // vendor
 import React, { forwardRef, memo } from 'react';
 import { TreeSelect, Form } from 'antd';
+import _ from 'lodash';
 
 // own
 const FormItem = Form.Item;
-// const TreeNode = TreeSelect.TreeNode;
+const TreeNode = TreeSelect.TreeNode;
 
-const defaultTreeData = [
-    {
-        title:    'Node1',
-        value:    '0-0',
-        key:      '0-0',
-        children: [
-            {
-                title: 'Child Node1',
-                value: '0-0-1',
-                key:   '0-0-1',
-            },
-            {
-                title: 'Child Node2',
-                value: '0-0-2',
-                key:   '0-0-2',
-            },
-        ],
-    },
-    {
-        title: 'Node2',
-        value: '0-1',
-        key:   '0-1',
-    },
-];
-
-export const DecoratedInput = memo(
+export const DecoratedTreeSelect = memo(
     forwardRef((props, ref) => {
         const {
             //FormItem
@@ -50,11 +26,48 @@ export const DecoratedInput = memo(
             placeholder,
 
             treeData,
+            treeDataNodes,
+            treeDefaultExpandAll,
             field,
             initialValue,
             style,
             onChange,
         } = props;
+
+        const treeSelectFilterTreeNode = (input, treeNode) => {
+            const compare1 = treeNode.props.title.toLowerCase();
+            const compare2 = input.toLowerCase();
+
+            return compare1.indexOf(compare2) >= 0;
+        };
+
+        const loop = treeDataNodes =>
+            treeDataNodes.map((node, index) => {
+                if (!_.isEmpty(node.childGroups)) {
+                    return (
+                        <TreeNode
+                            value={ node.id }
+                            title={ node.name }
+                            label={ node.name }
+                            key={ `${index}-${node.id}-${node.name}` }
+                        >
+                            { loop(node.childGroups) }
+                        </TreeNode>
+                    );
+                }
+
+                return (
+                    <TreeNode
+                        isLeaf
+                        value={ node.id }
+                        title={ node.name }
+                        label={ node.name }
+                        key={ `${index}-${node.id}-${node.name}` }
+                    >
+                        { !_.isEmpty(node.childGroups) }
+                    </TreeNode>
+                );
+            });
 
         const treeSelect = getFieldDecorator(field, {
             ...initialValue ? { initialValue } : { initialValue: void 0 },
@@ -66,14 +79,17 @@ export const DecoratedInput = memo(
                 dropdownStyle={
                     dropdownStyle || { maxHeight: 400, overflow: 'auto' }
                 }
-                treeData={ treeData || defaultTreeData }
+                treeData={ treeData }
                 placeholder={ placeholder }
-                treeDefaultExpandAll
+                treeDefaultExpandAll={ treeDefaultExpandAll }
                 allowClear
                 onChange={ onChange }
                 disabled={ disabled }
                 ref={ ref }
-            />,
+                filterTreeNode={ treeSelectFilterTreeNode }
+            >
+                { !_.isEmpty(treeDataNodes) ? loop(treeDataNodes) : null }
+            </TreeSelect>,
         );
 
         return formItem ? (

@@ -2,19 +2,28 @@
 import React from 'react';
 
 // proj
-import { DecoratedInputNumber, DecoratedInput } from 'forms/DecoratedFields';
+import {
+    DecoratedInputNumber,
+    DecoratedInput,
+    DecoratedTreeSelect,
+} from 'forms/DecoratedFields';
 
-export function columnsConfig(dataSource, getFieldDecorator, formatMessage) {
+export function columnsConfig(
+    dataSource,
+    getFieldDecorator,
+    formatMessage,
+    storeGroups,
+) {
     const productId = {
-        title:     'productId',
-        dataIndex: 'productId',
+        title:     'code',
+        dataIndex: 'code',
         width:     'auto',
-        render:    (productId, data, index) => (
+        render:    (code, data, index) => (
             <DecoratedInput
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
-                field={ `${index}.productId` }
-                initialValue={ productId }
+                field={ `${index}.code` }
+                initialValue={ code }
                 rules={ [
                     {
                         required: true,
@@ -30,7 +39,7 @@ export function columnsConfig(dataSource, getFieldDecorator, formatMessage) {
         dataIndex: 'productGroup',
         width:     '10%',
         render:    (productGroup, data, index) => (
-            <DecoratedInput
+            <DecoratedTreeSelect
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.productGroup` }
@@ -41,8 +50,24 @@ export function columnsConfig(dataSource, getFieldDecorator, formatMessage) {
                         message:  'required!',
                     },
                 ] }
+                treeDataNodes={ storeGroups }
             />
         ),
+
+        // render:    (productGroup, data, index) => (
+        //     <DecoratedInput
+        //         fields={ {} }
+        //         getFieldDecorator={ getFieldDecorator }
+        //         field={ `${index}.productGroup` }
+        //         initialValue={ productGroup }
+        //         rules={ [
+        //             {
+        //                 required: true,
+        //                 message:  'required!',
+        //             },
+        //         ] }
+        //     />
+        // ),
     };
 
     const measure = {

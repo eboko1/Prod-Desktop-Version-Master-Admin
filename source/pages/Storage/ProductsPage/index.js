@@ -12,6 +12,7 @@ import {
     selectStoreProducts,
     selectStoreProductsExcel,
 } from 'core/storage/products';
+import { fetchStoreGroups, selectStoreGroups } from 'core/storage/storeGroups';
 import { MODALS, setModal, selectModal } from 'core/modals/duck';
 
 import { Layout, StyledButton } from 'commons';
@@ -56,6 +57,8 @@ const StoreProducts = props => {
                 <ProductsExcelForm
                     dataSource={ props.productsExcel || [] }
                     productsExcelImportReset={ props.productsExcelImportReset }
+                    storeGroups={ props.storeGroups }
+                    fetchStoreGroups={ props.fetchStoreGroups }
                 />
             ) }
             <StoreProductModal visible={ props.modal } />
@@ -67,12 +70,14 @@ const mapStateToProps = state => ({
     productsExcel: selectStoreProductsExcel(state),
     storeProducts: selectStoreProducts(state),
     modal:         selectModal(state),
+    storeGroups:   selectStoreGroups(state),
 });
 
 const mapDispatchToProps = {
     productsExcelImport,
     productsExcelImportReset,
     setModal,
+    fetchStoreGroups,
 };
 
 export const ProductsPage = connect(

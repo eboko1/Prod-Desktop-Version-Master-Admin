@@ -1,35 +1,33 @@
 // vendor
-import React, { Component } from "react";
-import { FormattedMessage, injectIntl } from "react-intl";
-import { Table, Button } from "antd";
-import _ from "lodash";
+import React from 'react';
+import { injectIntl } from 'react-intl';
+import { Table } from 'antd';
 
 // own
-import { columnsConfig } from "./config";
+import { columnsConfig } from './config';
 
-@injectIntl
-export class ProductsExcelTable extends Component {
-    constructor(props) {
-        super(props);
+const ProductsExcelTableComponent = props => {
+    const columns = columnsConfig(
+        props.dataSource,
+        props.getFieldDecorator,
+        props.intl.formatMessage,
+        props.storeGroups,
+    );
 
-        this.columns = columnsConfig(
-            props.dataSource,
-            props.getFieldDecorator,
-            props.intl.formatMessage,
-        );
-    }
+    return (
+        <Table
+            size='small'
+            columns={ columns }
+            dataSource={ props.dataSource }
+            pagination={ false }
+            locale={ {
+                emptyText: props.intl.formatMessage({ id: 'no_data' }),
+            } }
+            rowKey={ (record, index) =>
+                `${index}-${record.code}-${record.productName}`
+            }
+        />
+    );
+};
 
-    render() {
-        return (
-            <Table
-                size="small"
-                columns={this.columns}
-                dataSource={this.props.dataSource}
-                pagination={false}
-                locale={{
-                    emptyText: <FormattedMessage id="no_data" />,
-                }}
-            />
-        );
-    }
-}
+export const ProductsExcelTable = injectIntl(ProductsExcelTableComponent);

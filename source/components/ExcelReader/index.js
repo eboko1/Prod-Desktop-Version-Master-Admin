@@ -49,7 +49,7 @@ export class ExcelReader extends Component {
             // https://github.com/SheetJS/js-xlsx
             const data = XLSX.utils.sheet_to_json(ws, {
                 header: [
-                    'productId',
+                    'code',
                     'productGroup',
                     'measure',
                     'productName',
