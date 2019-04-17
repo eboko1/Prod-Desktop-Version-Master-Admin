@@ -45,6 +45,7 @@ export const DecoratedAutoComplete = memo(
             optionFilterProp,
             labelInValue,
             optionLabelProp,
+            getItemValue,
 
             cnStyles,
             dropdownMatchSelectWidth,
@@ -54,9 +55,10 @@ export const DecoratedAutoComplete = memo(
             initialValue,
             onFocus,
         } = props;
-
+       
         const renderAutoComplete = (
             <AutoComplete
+                getItemValue={ getItemValue }
                 mode={ mode }
                 disabled={ disabled }
                 showSearch={ showSearch }

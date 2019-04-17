@@ -8,11 +8,9 @@ import _ from 'lodash';
 // proj
 import {
     productsExcelImport,
-    productsExcelImportReset,
-    selectStoreProducts,
+    productsExcelImportValidate,
     selectStoreProductsExcel,
 } from 'core/storage/products';
-import { fetchStoreGroups, selectStoreGroups } from 'core/storage/storeGroups';
 import { MODALS, setModal, selectModal } from 'core/modals/duck';
 
 import { Layout, StyledButton } from 'commons';
@@ -40,6 +38,7 @@ const StoreProducts = props => {
                     </StyledButton>
                     <ExcelReader
                         importExcel={ props.productsExcelImport }
+                        validateExcel={ props.productsExcelImportValidate }
                         key={ props.productsExcel }
                     />
                     <AddButton
@@ -52,14 +51,9 @@ const StoreProducts = props => {
             }
         >
             { _.isEmpty(props.productsExcel) ? (
-                <StoreProductsTable dataSource={ props.storeProducts } />
+                <StoreProductsTable />
             ) : (
-                <ProductsExcelForm
-                    dataSource={ props.productsExcel || [] }
-                    productsExcelImportReset={ props.productsExcelImportReset }
-                    storeGroups={ props.storeGroups }
-                    fetchStoreGroups={ props.fetchStoreGroups }
-                />
+                <ProductsExcelForm productsExcel={ props.productsExcel } />
             ) }
             <StoreProductModal visible={ props.modal } />
         </Layout>
@@ -67,17 +61,14 @@ const StoreProducts = props => {
 };
 
 const mapStateToProps = state => ({
-    productsExcel: selectStoreProductsExcel(state),
-    storeProducts: selectStoreProducts(state),
     modal:         selectModal(state),
-    storeGroups:   selectStoreGroups(state),
+    productsExcel: selectStoreProductsExcel(state),
 });
 
 const mapDispatchToProps = {
     productsExcelImport,
-    productsExcelImportReset,
+    productsExcelImportValidate,
     setModal,
-    fetchStoreGroups,
 };
 
 export const ProductsPage = connect(

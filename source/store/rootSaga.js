@@ -55,6 +55,7 @@ import { saga as cashOrderFormSaga } from 'core/forms/cashOrderForm/saga';
 // storage
 import { saga as storageStoreGroupsSaga } from 'core/storage/storeGroups';
 import { saga as storagePriceGroupsSaga } from 'core/storage/priceGroups';
+import { saga as storageProductsSaga } from 'core/storage/products';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -96,6 +97,7 @@ export default function* rootSaga() {
         // storage
         storageStoreGroupsSaga(),
         storagePriceGroupsSaga(),
+        storageProductsSaga(),
         // cash
         cashSaga(),
         cashOrderFormSaga(),

@@ -1,9 +1,16 @@
 // vendor
-import React, { useEffect } from 'react';
+import React from 'react';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Button } from 'antd';
 import _ from 'lodash';
 import styled from 'styled-components';
+
+// proj
+import {
+    productsExcelImport,
+    productsExcelImportReset,
+} from 'core/storage/products';
 
 // own
 import { ProductsExcelTable } from 'components';
@@ -20,10 +27,6 @@ const SubmitButton = styled(Button)`
 `;
 
 const ProductsExcelFormComponent = props => {
-    useEffect(() => {
-        props.fetchStoreGroups();
-    }, []);
-
     const _submit = () => {
         console.log('→ submit');
         props.form.validateFieldsAndScroll(
@@ -38,6 +41,7 @@ const ProductsExcelFormComponent = props => {
                         [],
                     );
                     console.log('→ normalizedFields', normalizedFields);
+                    props.productsExcelImport(normalizedFields);
                 }
             },
         );
@@ -65,20 +69,21 @@ const ProductsExcelFormComponent = props => {
         <Form>
             { _renderButtonGroup() }
             <ProductsExcelTable
-                dataSource={ props.dataSource }
+                dataSource={ props.productsExcel }
                 getFieldDecorator={ props.form.getFieldDecorator }
                 storeGroups={ props.storeGroups }
                 getFieldValue={ props.form.getFieldValue }
             />
-            { props.dataSource && props.dataSource.length >= 15 ? (
-                <SubmitButton type='primary' onClick={ () => _submit() }>
-                    { props.intl.formatMessage({ id: 'submit' }) }
-                </SubmitButton>
-            ) : null }
+            { props.productsExcel && props.productsExcel.length >= 15
+                ? _renderButtonGroup()
+                : null }
         </Form>
     );
 };
 
 export const ProductsExcelForm = injectIntl(
-    Form.create()(ProductsExcelFormComponent),
+    connect(
+        null,
+        { productsExcelImport, productsExcelImportReset },
+    )(Form.create()(ProductsExcelFormComponent)),
 );

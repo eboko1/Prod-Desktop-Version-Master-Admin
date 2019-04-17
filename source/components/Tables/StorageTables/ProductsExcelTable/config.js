@@ -46,7 +46,7 @@ export function columnsConfig(
     };
 
     const productGroup = {
-        title:     'storeGroup',
+        title:     'groupId',
         dataIndex: 'groupId',
         width:     '10%',
         render:    (groupId, data, index) => (
@@ -64,21 +64,6 @@ export function columnsConfig(
                 treeDataNodes={ storeGroups }
             />
         ),
-
-        // render:    (productGroup, data, index) => (
-        //     <DecoratedInput
-        //         fields={ {} }
-        //         getFieldDecorator={ getFieldDecorator }
-        //         field={ `${index}.productGroup` }
-        //         initialValue={ productGroup }
-        //         rules={ [
-        //             {
-        //                 required: true,
-        //                 message:  'required!',
-        //             },
-        //         ] }
-        //     />
-        // ),
     };
 
     const measureUnit = {
@@ -124,9 +109,14 @@ export function columnsConfig(
             <DecoratedAutoComplete
                 fields={ {} }
                 defaultGetValueProps
+                getItemValue={ item => {
+                    console.log(item);
+
+                    return item.brandName;
+                } }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.brandId` }
-                initialValue={ brandId }
+                initialValue={ String(brandId) }
                 // fieldValue={ _.get(fields, `services[${key}].serviceName`) }
                 // initialValue={ this._getDefaultValue(key, 'serviceName') }
                 // onSelect={ value =>
@@ -149,11 +139,24 @@ export function columnsConfig(
                     '→ props.form.getFieldValue(brandId)',
                     getFieldValue(`${index}.brandId`),
                 ) }
-                { brands.map(({ brandName, brandId }) => (
+                { /* { console.log('()(()()()()brands', data) } */ }
+                { /* { brands.map(({ brandName, brandId }) => (
                     <Option value={ String(brandId) } key={ brandId }>
-                        { brandName }
+                        { brandName || data.brandName }
                     </Option>
-                )) }
+                )) } */ }
+
+                { _.isEmpty(brands) ? (
+                    <Option value={ String(brandId) } key={ brandId }>
+                        { data.brandName }
+                    </Option>
+                ) : 
+                    brands.map(({ brandName, brandId }) => (
+                        <Option value={ String(brandId) } key={ brandId }>
+                            { brandName || data.brandName }
+                        </Option>
+                    ))
+                }
             </DecoratedAutoComplete>
         ),
     };
@@ -177,7 +180,7 @@ export function columnsConfig(
         dataIndex: 'priceGroupNumber',
         width:     '10%',
         render:    (priceGroupNumber, data, index) => {
-            console.log('→ priceGroupNumber', priceGroupNumber);
+            // console.log('→ priceGroupNumber', priceGroupNumber);
 
             return (
                 <PriceGroupSelect

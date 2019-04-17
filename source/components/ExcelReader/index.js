@@ -50,10 +50,10 @@ export class ExcelReader extends Component {
             const data = XLSX.utils.sheet_to_json(ws, {
                 header: [
                     'code',
-                    'groupId',
+                    'groupName',
                     'measureUnit',
                     'name',
-                    'brandId',
+                    'brandName',
                     'certificate',
                     'priceGroupNumber',
                     'price',
@@ -61,11 +61,12 @@ export class ExcelReader extends Component {
                 range: 'A2:I10001',
             });
             /* Update state */
-            this.setState({ data: data, cols: makeCols(ws[ '!ref' ]) }, () => {
-                console.log(JSON.stringify(this.state.data, null, 2));
-            });
+            this.setState({ data: data, cols: makeCols(ws[ '!ref' ]) });
+            // this.setState({ data: data, cols: makeCols(ws[ '!ref' ]) }, () => {
+            //     console.log(JSON.stringify(this.state.data, null, 2));
+            // });
 
-            this.props.importExcel(data);
+            this.props.validateExcel(data);
         };
 
         if (rABS) {
