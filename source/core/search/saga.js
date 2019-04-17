@@ -14,6 +14,8 @@ import {
     setIsFetchingSuppliers,
     fetchProductsSuccess,
     setIsFetchingProducts,
+    fetchBrandsSuccess,
+    setIsFetchingBrands,
 } from './duck';
 
 import {
@@ -21,6 +23,7 @@ import {
     SET_MANAGER_SEARCH_QUERY,
     SET_SUPPLIER_SEARCH_QUERY,
     SET_PRODUCT_SEARCH_QUERY,
+    SET_BRANDS_SEARCH_QUERY,
 } from './duck';
 
 function* handleBusinessesSearchSaga({ payload: query }) {
@@ -77,6 +80,16 @@ function* handleProductsSearchSaga({ payload: query }) {
     yield put(fetchProductsSuccess(products));
     yield put(setIsFetchingProducts(false));
 }
+function* handleBrandsSearchSaga({ payload: query }) {
+    yield delay(1000);
+
+    yield put(setIsFetchingBrands(true));
+    const brands = yield call(fetchAPI, 'GET', '/brands/search', {
+        query,
+    });
+    yield put(fetchBrandsSuccess(brands));
+    yield put(setIsFetchingBrands(false));
+}
 
 export function* saga() {
     yield all([
@@ -84,5 +97,6 @@ export function* saga() {
         takeLatest(SET_SUPPLIER_SEARCH_QUERY, handleSuppliersSearchSaga),
         takeLatest(SET_BUSINESS_SEARCH_QUERY, handleBusinessesSearchSaga),
         takeLatest(SET_MANAGER_SEARCH_QUERY, handleManagersSearchSaga),
+        takeLatest(SET_BRANDS_SEARCH_QUERY, handleBrandsSearchSaga),
     ]);
 }

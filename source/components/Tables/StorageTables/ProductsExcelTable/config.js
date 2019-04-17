@@ -1,20 +1,31 @@
 // vendor
 import React from 'react';
+import { Select } from 'antd';
+import _ from 'lodash';
 
 // proj
 import {
     DecoratedInputNumber,
     DecoratedInput,
     DecoratedTreeSelect,
+    DecoratedAutoComplete,
 } from 'forms/DecoratedFields';
+import { MeasureUnitSelect, PriceGroupSelect } from 'forms/_formkit';
+
+// own
+const Option = Select.Option;
 
 export function columnsConfig(
     dataSource,
     getFieldDecorator,
     formatMessage,
     storeGroups,
+    priceGroups,
+    brands,
+    setBrandsSearchQuery,
+    getFieldValue,
 ) {
-    const productId = {
+    const code = {
         title:     'code',
         dataIndex: 'code',
         width:     'auto',
@@ -35,15 +46,15 @@ export function columnsConfig(
     };
 
     const productGroup = {
-        title:     'productGroup',
-        dataIndex: 'productGroup',
+        title:     'storeGroup',
+        dataIndex: 'groupId',
         width:     '10%',
-        render:    (productGroup, data, index) => (
+        render:    (groupId, data, index) => (
             <DecoratedTreeSelect
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
-                field={ `${index}.productGroup` }
-                initialValue={ productGroup }
+                field={ `${index}.groupId` }
+                initialValue={ groupId }
                 rules={ [
                     {
                         required: true,
@@ -70,30 +81,31 @@ export function columnsConfig(
         // ),
     };
 
-    const measure = {
-        title:     'measure',
-        dataIndex: 'measure',
+    const measureUnit = {
+        title:     'measureUnit',
+        dataIndex: 'measureUnit',
         width:     '10%',
-        render:    (measure, data, index) => (
-            <DecoratedInput
-                fields={ {} }
+        render:    (measureUnit, data, index) => (
+            <MeasureUnitSelect
+                formItem={ false }
                 getFieldDecorator={ getFieldDecorator }
-                field={ `${index}.measure` }
-                initialValue={ measure }
+                field={ `${index}.measureUnit` }
+                formatMessage={ formatMessage }
+                initialValue={ measureUnit }
             />
         ),
     };
 
-    const productName = {
-        title:     'productName',
-        dataIndex: 'productName',
+    const name = {
+        title:     'name',
+        dataIndex: 'name',
         width:     '20%',
-        render:    (productName, data, index) => (
+        render:    (name, data, index) => (
             <DecoratedInput
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
-                field={ `${index}.productName` }
-                initialValue={ productName }
+                field={ `${index}.name` }
+                initialValue={ name }
                 rules={ [
                     {
                         required: true,
@@ -109,26 +121,40 @@ export function columnsConfig(
         dataIndex: 'brandId',
         width:     '10%',
         render:    (brandId, data, index) => (
-            <DecoratedInput
+            <DecoratedAutoComplete
                 fields={ {} }
+                defaultGetValueProps
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.brandId` }
                 initialValue={ brandId }
-            />
-        ),
-    };
-
-    const customCode = {
-        title:     'customCode',
-        dataIndex: 'customCode',
-        width:     '10%',
-        render:    (customCode, data, index) => (
-            <DecoratedInput
-                fields={ {} }
-                getFieldDecorator={ getFieldDecorator }
-                field={ `${index}.customCode` }
-                initialValue={ customCode }
-            />
+                // fieldValue={ _.get(fields, `services[${key}].serviceName`) }
+                // initialValue={ this._getDefaultValue(key, 'serviceName') }
+                // onSelect={ value =>
+                //     this._onServiceSelect(
+                //         value,
+                //         _.get(fields, `services[${key}].ownDetail`),
+                //     )
+                // }
+                // onChange={ e => console.log('cha', e) }
+                onSearch={ value => {
+                    console.log('onSearch', value);
+                    setBrandsSearchQuery(value);
+                } }
+                optionLabelProp={ 'children' }
+                optionFilterProp={ 'children' }
+                showSearch
+                dropdownMatchSelectWidth={ false }
+            >
+                { console.log(
+                    '→ props.form.getFieldValue(brandId)',
+                    getFieldValue(`${index}.brandId`),
+                ) }
+                { brands.map(({ brandName, brandId }) => (
+                    <Option value={ String(brandId) } key={ brandId }>
+                        { brandName }
+                    </Option>
+                )) }
+            </DecoratedAutoComplete>
         ),
     };
 
@@ -146,18 +172,25 @@ export function columnsConfig(
         ),
     };
 
-    const priceGroup = {
-        title:     'priceGroup',
-        dataIndex: 'priceGroup',
+    const priceGroupNumber = {
+        title:     'priceGroupNumber',
+        dataIndex: 'priceGroupNumber',
         width:     '10%',
-        render:    (priceGroup, data, index) => (
-            <DecoratedInput
-                fields={ {} }
-                getFieldDecorator={ getFieldDecorator }
-                field={ `${index}.priceGroup` }
-                initialValue={ priceGroup }
-            />
-        ),
+        render:    (priceGroupNumber, data, index) => {
+            console.log('→ priceGroupNumber', priceGroupNumber);
+
+            return (
+                <PriceGroupSelect
+                    formItem={ false }
+                    field={ `${index}.priceGroupNumber` }
+                    initialValue={ priceGroupNumber }
+                    getFieldDecorator={ getFieldDecorator }
+                    getPopupContainer={ trigger => trigger.parentNode }
+                    priceGroups={ priceGroups }
+                    formatMessage={ formatMessage }
+                />
+            );
+        },
     };
 
     const price = {
@@ -184,14 +217,13 @@ export function columnsConfig(
     };
 
     return [
-        productId,
+        code,
         productGroup,
-        measure,
-        productName,
+        measureUnit,
+        name,
         brandId,
-        customCode,
         certificate,
-        priceGroup,
+        priceGroupNumber,
         price,
     ];
 }

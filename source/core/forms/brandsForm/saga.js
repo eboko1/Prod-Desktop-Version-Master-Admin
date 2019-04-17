@@ -39,6 +39,7 @@ import {
 export function* setSortSaga() {
     yield put(fetchPriorityBrands());
 }
+
 export function* fetchPriorityBrandsSaga() {
     while (true) {
         yield take(FETCH_PRIORITY_BRANDS);
@@ -139,5 +140,14 @@ export function* createPriorityBrandSaga({ payload: entity }) {
 }
 
 export function* saga() {
-    yield all([ takeEvery([ SET_SORT, SET_FILTER ], setSortSaga), takeEvery(CREATE_PRIORITY_BRAND, createPriorityBrandSaga), takeEvery(UPDATE_PRIORITY_BRAND, updatePriorityBrandSaga), takeEvery(DELETE_PRIORITY_BRAND, deletePriorityBrandSaga), call(fetchPriorityBrandsSaga), takeLatest(SET_SEARCH_SUPPLIERS, searchSuppliersSaga), takeLatest(SET_SEARCH_BUSINESSES, searchBusinessesSaga), takeLatest(SET_SEARCH_PRODUCTS, searchProductsSaga) ]);
+    yield all([
+        call(fetchPriorityBrandsSaga),
+        takeEvery([ SET_SORT, SET_FILTER ], setSortSaga),
+        takeEvery(CREATE_PRIORITY_BRAND, createPriorityBrandSaga),
+        takeEvery(UPDATE_PRIORITY_BRAND, updatePriorityBrandSaga),
+        takeEvery(DELETE_PRIORITY_BRAND, deletePriorityBrandSaga),
+        takeLatest(SET_SEARCH_SUPPLIERS, searchSuppliersSaga),
+        takeLatest(SET_SEARCH_BUSINESSES, searchBusinessesSaga),
+        takeLatest(SET_SEARCH_PRODUCTS, searchProductsSaga),
+    ]);
 }

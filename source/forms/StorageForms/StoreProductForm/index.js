@@ -9,11 +9,10 @@ import _ from 'lodash';
 import { createProduct } from 'core/storage/products';
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
 
-import { DecoratedInput, DecoratedSelect } from 'forms/DecoratedFields';
+import { DecoratedInput } from 'forms/DecoratedFields';
+import { MeasureUnitSelect, PriceGroupSelect } from 'forms/_formkit';
 
 // own
-const Option = Select.Option;
-
 const ProductForm = props => {
     const {
         form,
@@ -62,21 +61,11 @@ const ProductForm = props => {
                     },
                 ] }
             />
-            <DecoratedSelect
-                formItem
-                label={ formatMessage({ id: 'storage.measure_units' }) }
-                fields={ {} }
-                field='measure'
+            <MeasureUnitSelect
                 getFieldDecorator={ form.getFieldDecorator }
+                formatMessage={ formatMessage }
                 getPopupContainer={ trigger => trigger.parentNode }
-            >
-                <Option value={ 'items' } key={ 'items' }>
-                    { formatMessage({ id: 'storage.measure.items' }) }
-                </Option>
-                <Option value={ 'liters' } key={ 'liters' }>
-                    { formatMessage({ id: 'storage.measure.liters' }) }
-                </Option>
-            </DecoratedSelect>
+            />
             <DecoratedInput
                 formItem
                 label={ formatMessage({ id: 'storage.trade_code' }) }
@@ -84,27 +73,13 @@ const ProductForm = props => {
                 field='tradeCode'
                 getFieldDecorator={ form.getFieldDecorator }
             />
-            <DecoratedSelect
+            <PriceGroupSelect
                 formItem
-                label={ formatMessage({ id: 'storage.price_group' }) }
-                fields={ {} }
-                field='priceGroup'
                 getFieldDecorator={ form.getFieldDecorator }
                 getPopupContainer={ trigger => trigger.parentNode }
-            >
-                { props.priceGroups.map(({ number, multiplier }) => (
-                    <Option value={ number } key={ number }>
-                        <span>
-                            { formatMessage({ id: 'storage.price_group' }) } -{ ' ' }
-                            { number }{ ' ' }
-                        </span>
-                        <span>
-                            ({ formatMessage({ id: 'storage.markup' }) } -{ ' ' }
-                            { multiplier })
-                        </span>
-                    </Option>
-                )) }
-            </DecoratedSelect>
+                priceGroups={ props.priceGroups }
+                formatMessage={ formatMessage }
+            />
             <DecoratedInput
                 formItem
                 label={ formatMessage({ id: 'storage.certificate' }) }

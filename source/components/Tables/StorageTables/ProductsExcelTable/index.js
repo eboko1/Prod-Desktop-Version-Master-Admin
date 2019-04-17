@@ -1,17 +1,30 @@
 // vendor
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
+
+// proj
+import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
+import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
 
 // own
 import { columnsConfig } from './config';
 
 const ProductsExcelTableComponent = props => {
+    useEffect(() => {
+        props.fetchPriceGroups();
+    }, []);
+
     const columns = columnsConfig(
         props.dataSource,
         props.getFieldDecorator,
         props.intl.formatMessage,
         props.storeGroups,
+        props.priceGroups,
+        props.brands,
+        props.setBrandsSearchQuery,
+        props.getFieldValue,
     );
 
     return (
@@ -30,4 +43,19 @@ const ProductsExcelTableComponent = props => {
     );
 };
 
-export const ProductsExcelTable = injectIntl(ProductsExcelTableComponent);
+const mapStateToProps = state => ({
+    brands:      selectBrandsByQuery(state),
+    priceGroups: selectPriceGroups(state),
+});
+
+const mapDispatchToProps = {
+    setBrandsSearchQuery,
+    fetchPriceGroups,
+};
+
+export const ProductsExcelTable = injectIntl(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps,
+    )(ProductsExcelTableComponent),
+);

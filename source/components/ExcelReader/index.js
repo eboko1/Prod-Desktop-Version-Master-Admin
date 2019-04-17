@@ -50,13 +50,12 @@ export class ExcelReader extends Component {
             const data = XLSX.utils.sheet_to_json(ws, {
                 header: [
                     'code',
-                    'productGroup',
-                    'measure',
-                    'productName',
+                    'groupId',
+                    'measureUnit',
+                    'name',
                     'brandId',
-                    'customCode',
                     'certificate',
-                    'priceGroup',
+                    'priceGroupNumber',
                     'price',
                 ],
                 range: 'A2:I10001',

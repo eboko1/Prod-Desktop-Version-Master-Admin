@@ -24,8 +24,8 @@ const ProductsExcelFormComponent = props => {
         props.fetchStoreGroups();
     }, []);
 
-    const _submit = event => {
-        event.preventDefault();
+    const _submit = () => {
+        console.log('→ submit');
         props.form.validateFieldsAndScroll(
             { scroll: { offsetBottom: 50 } },
             // { scroll: { offsetBottom: 50 }, force: true },
@@ -37,6 +37,7 @@ const ProductsExcelFormComponent = props => {
                         },
                         [],
                     );
+                    console.log('→ normalizedFields', normalizedFields);
                 }
             },
         );
@@ -46,7 +47,7 @@ const ProductsExcelFormComponent = props => {
         return (
             <ButtonGroup>
                 { !_.isEmpty(props.dataSource) && (
-                    <SubmitButton type='primary' htmlType='submit'>
+                    <SubmitButton type='primary' onClick={ () => _submit() }>
                         { props.intl.formatMessage({ id: 'submit' }) }
                     </SubmitButton>
                 ) }
@@ -61,15 +62,16 @@ const ProductsExcelFormComponent = props => {
     };
 
     return (
-        <Form onSubmit={ _submit }>
+        <Form>
             { _renderButtonGroup() }
             <ProductsExcelTable
                 dataSource={ props.dataSource }
                 getFieldDecorator={ props.form.getFieldDecorator }
                 storeGroups={ props.storeGroups }
+                getFieldValue={ props.form.getFieldValue }
             />
             { props.dataSource && props.dataSource.length >= 15 ? (
-                <SubmitButton type='primary' htmlType='submit'>
+                <SubmitButton type='primary' onClick={ () => _submit() }>
                     { props.intl.formatMessage({ id: 'submit' }) }
                 </SubmitButton>
             ) : null }
