@@ -24,16 +24,14 @@ const ProductsExcelTableComponent = props => {
 
     const columns = columnsConfig(
         props.dataSource,
-        props.getFieldDecorator,
+        props.form,
         props.intl.formatMessage,
         props.storeGroups,
         props.priceGroups,
         props.brands,
         props.setBrandsSearchQuery,
-        props.getFieldValue,
     );
-
-    console.log('→ brands', props.brands);
+    console.log('→ RENDER');
 
     return (
         <Table

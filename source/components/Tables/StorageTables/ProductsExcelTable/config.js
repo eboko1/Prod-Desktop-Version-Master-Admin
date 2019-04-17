@@ -17,14 +17,20 @@ const Option = Select.Option;
 
 export function columnsConfig(
     dataSource,
-    getFieldDecorator,
+    form,
     formatMessage,
     storeGroups,
     priceGroups,
     brands,
     setBrandsSearchQuery,
-    getFieldValue,
 ) {
+    const {
+        getFieldDecorator,
+        getFieldValue,
+        setFieldsValue,
+        resetFields,
+    } = form;
+    console.log('→ from.getFieldsValue', form.getFieldsValue());
     const code = {
         title:     'code',
         dataIndex: 'code',
@@ -105,60 +111,86 @@ export function columnsConfig(
         title:     'brand',
         dataIndex: 'brandId',
         width:     '10%',
-        render:    (brandId, data, index) => (
-            <DecoratedAutoComplete
-                fields={ {} }
-                defaultGetValueProps
-                getItemValue={ item => {
-                    console.log(item);
+        render:    (brandId, data, index) => {
+            console.log('→ DATA', data);
+            const field = brandId ? `${index}.brandId` : `${index}.brandName`;
 
-                    return item.brandName;
-                } }
-                getFieldDecorator={ getFieldDecorator }
-                field={ `${index}.brandId` }
-                initialValue={ String(brandId) }
-                // fieldValue={ _.get(fields, `services[${key}].serviceName`) }
-                // initialValue={ this._getDefaultValue(key, 'serviceName') }
-                // onSelect={ value =>
-                //     this._onServiceSelect(
-                //         value,
-                //         _.get(fields, `services[${key}].ownDetail`),
-                //     )
-                // }
-                // onChange={ e => console.log('cha', e) }
-                onSearch={ value => {
-                    console.log('onSearch', value);
-                    setBrandsSearchQuery(value);
-                } }
-                optionLabelProp={ 'children' }
-                optionFilterProp={ 'children' }
-                showSearch
-                dropdownMatchSelectWidth={ false }
-            >
-                { console.log(
-                    '→ props.form.getFieldValue(brandId)',
-                    getFieldValue(`${index}.brandId`),
-                ) }
-                { /* { console.log('()(()()()()brands', data) } */ }
-                { /* { brands.map(({ brandName, brandId }) => (
+            return (
+                <DecoratedAutoComplete
+                    fields={ {} }
+                    defaultGetValueProps
+                    // getItemValue={ item => {
+                    //     console.log(item);
+
+                    //     return item.brandName;
+                    // } }
+                    getFieldDecorator={ getFieldDecorator }
+                    field={ field }
+                    initialValue={ brandId ? String(brandId) : data.brandName }
+                    // fieldValue={ _.get(fields, `services[${key}].serviceName`) }
+                    // initialValue={ this._getDefaultValue(key, 'serviceName') }
+                    // onSelect={ value =>
+                    //     this._onServiceSelect(
+                    //         value,
+                    //         _.get(fields, `services[${key}].ownDetail`),
+                    //     )
+                    // }
+                    // onChange={ e => console.log('cha', e) }
+                    onSearch={ value => setBrandsSearchQuery(value) }
+                    onSelect={ value => {
+                        // setFieldsValue({ [ `${index}.brandId` ]: value });
+                        setFieldsValue({
+                            [ `${index}.brandId` ]:   value,
+                            [ `${index}.brandName` ]: void 0,
+                        });
+                        // resetFields([ `${index}.brandName` ]);
+                    } }
+                    optionLabelProp={ 'children' }
+                    optionFilterProp={ 'children' }
+                    showSearch
+                    dropdownMatchSelectWidth={ false }
+                >
+                    { console.log(
+                        '→ props.form.getFieldValue(brandId)',
+                        getFieldValue(`${index}.brandId`),
+                    ) }
+                    { console.log(
+                        '→ props.form.getFieldValue(brandName)',
+                        getFieldValue(`${index}.brandName`),
+                    ) }
+                    { /* { console.log('()(()()()()brands', data) } */ }
+                    { /* { brands.map(({ brandName, brandId }) => (
                     <Option value={ String(brandId) } key={ brandId }>
                         { brandName || data.brandName }
                     </Option>
                 )) } */ }
-
-                { _.isEmpty(brands) ? (
-                    <Option value={ String(brandId) } key={ brandId }>
-                        { data.brandName }
-                    </Option>
-                ) : 
-                    brands.map(({ brandName, brandId }) => (
+                    { /* { brands.map(({ brandName, brandId }) => (
                         <Option value={ String(brandId) } key={ brandId }>
                             { brandName || data.brandName }
                         </Option>
-                    ))
-                }
-            </DecoratedAutoComplete>
-        ),
+                    )) } */ }
+
+                    { _.isEmpty(brands) && brandId ? (
+                        <Option
+                            value={
+                                brandId != 'undefined'
+                                    ? String(brandId)
+                                    : `brandName.${data.brandName}`
+                            }
+                            key={ `${index}-${brandId}` }
+                        >
+                            { data.brandName }
+                        </Option>
+                    ) : 
+                        brands.map(({ brandName, brandId }) => (
+                            <Option value={ String(brandId) } key={ brandId }>
+                                { brandName || data.brandName }
+                            </Option>
+                        ))
+                    }
+                </DecoratedAutoComplete>
+            );
+        },
     };
 
     const certificate = {

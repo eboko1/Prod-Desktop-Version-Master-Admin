@@ -33,6 +33,7 @@ const ProductsExcelFormComponent = props => {
             { scroll: { offsetBottom: 50 } },
             // { scroll: { offsetBottom: 50 }, force: true },
             (err, values) => {
+                console.log('→ submit values', values);
                 if (!err) {
                     const normalizedFields = _.toPairs(values).reduce(
                         (result, [ name, value ]) => {
@@ -50,7 +51,7 @@ const ProductsExcelFormComponent = props => {
     const _renderButtonGroup = () => {
         return (
             <ButtonGroup>
-                { !_.isEmpty(props.dataSource) && (
+                { !_.isEmpty(props.productsExcel) && (
                     <SubmitButton type='primary' onClick={ () => _submit() }>
                         { props.intl.formatMessage({ id: 'submit' }) }
                     </SubmitButton>
@@ -70,9 +71,8 @@ const ProductsExcelFormComponent = props => {
             { _renderButtonGroup() }
             <ProductsExcelTable
                 dataSource={ props.productsExcel }
-                getFieldDecorator={ props.form.getFieldDecorator }
+                form={ props.form }
                 storeGroups={ props.storeGroups }
-                getFieldValue={ props.form.getFieldValue }
             />
             { props.productsExcel && props.productsExcel.length >= 15
                 ? _renderButtonGroup()
