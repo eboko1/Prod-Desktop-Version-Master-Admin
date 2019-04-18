@@ -62,6 +62,7 @@ const ProductForm = props => {
                 ] }
             />
             <MeasureUnitSelect
+                formItem
                 getFieldDecorator={ form.getFieldDecorator }
                 formatMessage={ formatMessage }
                 getPopupContainer={ trigger => trigger.parentNode }

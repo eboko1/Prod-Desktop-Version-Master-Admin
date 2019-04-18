@@ -114,81 +114,97 @@ export function columnsConfig(
         render:    (brandId, data, index) => {
             console.log('→ DATA', data);
             const field = brandId ? `${index}.brandId` : `${index}.brandName`;
+            const hiddenField = !brandId
+                ? `${index}.brandId`
+                : `${index}.brandName`;
 
             return (
-                <DecoratedAutoComplete
-                    fields={ {} }
-                    defaultGetValueProps
-                    // getItemValue={ item => {
-                    //     console.log(item);
+                <>
+                    <DecoratedAutoComplete
+                        fields={ {} }
+                        defaultGetValueProps
+                        // getItemValue={ item => {
+                        //     console.log(item);
 
-                    //     return item.brandName;
-                    // } }
-                    getFieldDecorator={ getFieldDecorator }
-                    field={ field }
-                    initialValue={ brandId ? String(brandId) : data.brandName }
-                    // fieldValue={ _.get(fields, `services[${key}].serviceName`) }
-                    // initialValue={ this._getDefaultValue(key, 'serviceName') }
-                    // onSelect={ value =>
-                    //     this._onServiceSelect(
-                    //         value,
-                    //         _.get(fields, `services[${key}].ownDetail`),
-                    //     )
-                    // }
-                    // onChange={ e => console.log('cha', e) }
-                    onSearch={ value => setBrandsSearchQuery(value) }
-                    onSelect={ value => {
-                        // setFieldsValue({ [ `${index}.brandId` ]: value });
-                        setFieldsValue({
-                            [ `${index}.brandId` ]:   value,
-                            [ `${index}.brandName` ]: void 0,
-                        });
-                        // resetFields([ `${index}.brandName` ]);
-                    } }
-                    optionLabelProp={ 'children' }
-                    optionFilterProp={ 'children' }
-                    showSearch
-                    dropdownMatchSelectWidth={ false }
-                >
-                    { console.log(
-                        '→ props.form.getFieldValue(brandId)',
-                        getFieldValue(`${index}.brandId`),
-                    ) }
-                    { console.log(
-                        '→ props.form.getFieldValue(brandName)',
-                        getFieldValue(`${index}.brandName`),
-                    ) }
-                    { /* { console.log('()(()()()()brands', data) } */ }
-                    { /* { brands.map(({ brandName, brandId }) => (
+                        //     return item.brandName;
+                        // } }
+                        getFieldDecorator={ getFieldDecorator }
+                        field={ field }
+                        initialValue={
+                            brandId ? String(brandId) : data.brandName
+                        }
+                        // fieldValue={ _.get(fields, `services[${key}].serviceName`) }
+                        // initialValue={ this._getDefaultValue(key, 'serviceName') }
+                        // onSelect={ value =>
+                        //     this._onServiceSelect(
+                        //         value,
+                        //         _.get(fields, `services[${key}].ownDetail`),
+                        //     )
+                        // }
+                        // onChange={ e => console.log('cha', e) }
+                        onSearch={ value => setBrandsSearchQuery(value) }
+                        onSelect={ value => {
+                            // setFieldsValue({ [ `${index}.brandId` ]: value });
+                            setFieldsValue({
+                                [ `${index}.brandId` ]:   value,
+                                [ `${index}.brandName` ]: void 0,
+                            });
+                            // resetFields([ `${index}.brandName` ]);
+                        } }
+                        optionLabelProp={ 'children' }
+                        optionFilterProp={ 'children' }
+                        showSearch
+                        dropdownMatchSelectWidth={ false }
+                    >
+                        { console.log(
+                            '→ props.form.getFieldValue(brandId)',
+                            getFieldValue(`${index}.brandId`),
+                        ) }
+                        { console.log(
+                            '→ props.form.getFieldValue(brandName)',
+                            getFieldValue(`${index}.brandName`),
+                        ) }
+                        { /* { console.log('()(()()()()brands', data) } */ }
+                        { /* { brands.map(({ brandName, brandId }) => (
                     <Option value={ String(brandId) } key={ brandId }>
                         { brandName || data.brandName }
                     </Option>
                 )) } */ }
-                    { /* { brands.map(({ brandName, brandId }) => (
+                        { /* { brands.map(({ brandName, brandId }) => (
                         <Option value={ String(brandId) } key={ brandId }>
                             { brandName || data.brandName }
                         </Option>
                     )) } */ }
 
-                    { _.isEmpty(brands) && brandId ? (
-                        <Option
-                            value={
-                                brandId != 'undefined'
-                                    ? String(brandId)
-                                    : `brandName.${data.brandName}`
-                            }
-                            key={ `${index}-${brandId}` }
-                        >
-                            { data.brandName }
-                        </Option>
-                    ) : 
-                        brands.map(({ brandName, brandId }) => (
-                            <Option value={ String(brandId) } key={ brandId }>
-                                { brandName || data.brandName }
+                        { _.isEmpty(brands) && brandId ? (
+                            <Option
+                                value={
+                                    brandId != 'undefined'
+                                        ? String(brandId)
+                                        : `brandName.${data.brandName}`
+                                }
+                                key={ `${index}-${brandId}` }
+                            >
+                                { data.brandName }
                             </Option>
-                        ))
-                    }
-                </DecoratedAutoComplete>
+                        ) : 
+                            brands.map(({ brandName, brandId }) => (
+                                <Option value={ String(brandId) } key={ brandId }>
+                                    { brandName || data.brandName }
+                                </Option>
+                            ))
+                        }
+                    </DecoratedAutoComplete>
+                    <DecoratedInput
+                        hiddenInput
+                        fields={ {} }
+                        getFieldDecorator={ getFieldDecorator }
+                        field={ hiddenField }
+                        initialValue={
+                            !brandId ? String(brandId) : data.brandName
+                        }
+                    />
+                </>
             );
         },
     };

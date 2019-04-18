@@ -1,9 +1,17 @@
 // vendor
 import React, { forwardRef, memo } from 'react';
 import { Input, Icon, Form } from 'antd';
+import styled from 'styled-components';
 
 // own
-const FormItem = Form.Item;
+// const FormItem = Form.Item;
+const FormItem = styled(Form.Item)`
+    display: ${props => props.hiddenField && 'none'};
+`;
+
+const StyledInput = styled(Input)`
+    display: ${props => props.hiddenInput && 'none'};
+`;
 
 export const DecoratedInput = memo(
     forwardRef((props, ref) => {
@@ -16,8 +24,12 @@ export const DecoratedInput = memo(
             hasFeedback,
             formItemLayout,
             onPressEnter,
-
+            // styles
+            hiddenField,
+            hiddenInput,
             cnStyles,
+            style,
+            // input
             getFieldDecorator,
             disabled,
             rules,
@@ -27,7 +39,6 @@ export const DecoratedInput = memo(
             iconType,
             field,
             initialValue,
-            style,
             onChange,
         } = props;
 
@@ -35,7 +46,8 @@ export const DecoratedInput = memo(
             ...initialValue ? { initialValue } : { initialValue: void 0 },
             rules,
         })(
-            <Input
+            <StyledInput
+                hiddenInput={ hiddenInput }
                 className={ cnStyles || className }
                 prefix={
                     icon ? (
@@ -59,6 +71,7 @@ export const DecoratedInput = memo(
 
         return formItem ? (
             <FormItem
+                hiddenField={ hiddenField }
                 label={ label }
                 hasFeedback={ hasFeedback }
                 colon={ colon }
