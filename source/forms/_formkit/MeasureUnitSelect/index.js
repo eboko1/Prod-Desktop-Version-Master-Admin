@@ -11,6 +11,7 @@ const Option = Select.Option;
 export default props => {
     const {
         formItem,
+        formItemLayout,
         formatMessage,
         getFieldDecorator,
         getPopupContainer,
@@ -20,6 +21,7 @@ export default props => {
     return (
         <DecoratedSelect
             formItem={ formItem }
+            formItemLayout={ formItemLayout }
             label={ formatMessage({ id: 'storage.measure_units' }) }
             fields={ {} }
             field='measureUnit'
@@ -27,10 +29,10 @@ export default props => {
             getPopupContainer={ getPopupContainer }
             initialValue={ initialValue }
         >
-            <Option value={ 'piece' } key={ 'piece' }>
+            <Option value={ 'PIECE' } key={ 'piece' }>
                 { formatMessage({ id: 'storage.measure.piece' }) }
             </Option>
-            <Option value={ 'liter' } key={ 'liter' }>
+            <Option value={ 'LITER' } key={ 'liter' }>
                 { formatMessage({ id: 'storage.measure.liter' }) }
             </Option>
         </DecoratedSelect>

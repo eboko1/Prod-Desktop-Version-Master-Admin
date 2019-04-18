@@ -54,6 +54,7 @@ export class ExcelReader extends Component {
                     'measureUnit',
                     'name',
                     'brandName',
+                    'tradeCode',
                     'certificate',
                     'priceGroupNumber',
                     'price',

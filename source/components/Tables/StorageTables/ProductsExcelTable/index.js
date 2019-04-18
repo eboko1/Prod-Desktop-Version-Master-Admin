@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
+import styled from 'styled-components';
 
 // proj
 import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
@@ -10,17 +11,79 @@ import { fetchStoreGroups, selectStoreGroups } from 'core/storage/storeGroups';
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
 import { selectStoreProductsExcelLoading } from 'core/storage/products';
 
+import { Loader } from 'commons';
+
 // own
 import { columnsConfig } from './config';
 
+const StyledTable = styled(Table)`
+    /* &
+        .ant-table-small
+        > .ant-table-content
+        > .ant-table-body
+        > table
+        > .ant-table-tbody
+        > tr
+        > td {
+        padding: 0;
+    } */
+
+    &
+        .ant-table-small
+        > .ant-table-content
+        > .ant-table-scroll
+        > .ant-table-body
+        > table
+        > .ant-table-tbody
+        > tr
+        > td {
+        padding: 0;
+    }
+
+    & .ant-table-small > .ant-table-content > .ant-table-body {
+        margin: 0;
+    }
+
+    /* .ant-select-auto-complete.ant-select {
+        top: -1px;
+    } */
+
+    /* & tr {
+        vertical-align: top;
+    }
+    &
+        .ant-table-small
+        > .ant-table-content
+        > .ant-table-scroll
+        > .ant-table-body
+        > table
+        > .ant-table-tbody
+        > tr {
+        vertical-align: top;
+    } */
+
+    & .ant-select-selection,
+    .ant-input,
+    .ant-input-number,
+    .ant-input-number-input {
+        border-radius: 0;
+    }
+`;
+
 const ProductsExcelTableComponent = props => {
     useEffect(() => {
-        props.fetchPriceGroups();
+        return () => {
+            props.fetchPriceGroups();
+            props.fetchStoreGroups();
+        };
     }, []);
+    // useEffect(() => {
+    //     props.fetchPriceGroups();
+    // }, []);
 
-    useEffect(() => {
-        props.fetchStoreGroups();
-    }, []);
+    // useEffect(() => {
+    //     props.fetchStoreGroups();
+    // }, []);
 
     const columns = columnsConfig(
         props.dataSource,
@@ -31,10 +94,14 @@ const ProductsExcelTableComponent = props => {
         props.brands,
         props.setBrandsSearchQuery,
     );
-    console.log('→ RENDER');
 
-    return (
-        <Table
+    console.log('→ !!!RENDER 2', props.loading);
+
+    return props.loading ? (
+        <Loader loading={ props.loading } />
+    ) : (
+        <StyledTable
+            // bordered
             size='small'
             columns={ columns }
             dataSource={ props.dataSource }
@@ -45,7 +112,8 @@ const ProductsExcelTableComponent = props => {
             rowKey={ (record, index) =>
                 `${index}-${record.code}-${record.productName}`
             }
-            loading={ props.loading }
+            // loading={ props.loading }
+            scroll={ { x: 1600 } }
         />
     );
 };

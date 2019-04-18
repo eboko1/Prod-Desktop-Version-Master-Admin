@@ -30,9 +30,11 @@ export function columnsConfig(
         setFieldsValue,
         resetFields,
     } = form;
-    console.log('→ from.getFieldsValue', form.getFieldsValue());
+    // console.log('→ from.getFieldsValue', form.getFieldsValue());
     const code = {
-        title:     'code',
+        title: formatMessage({
+            id: 'storage.product_code',
+        }),
         dataIndex: 'code',
         width:     'auto',
         render:    (code, data, index) => (
@@ -52,7 +54,9 @@ export function columnsConfig(
     };
 
     const productGroup = {
-        title:     'groupId',
+        title: formatMessage({
+            id: 'storage.product_group',
+        }),
         dataIndex: 'groupId',
         width:     '10%',
         render:    (groupId, data, index) => (
@@ -73,9 +77,11 @@ export function columnsConfig(
     };
 
     const measureUnit = {
-        title:     'measureUnit',
+        title: formatMessage({
+            id: 'storage.measure_unit',
+        }),
         dataIndex: 'measureUnit',
-        width:     '10%',
+        width:     '5%',
         render:    (measureUnit, data, index) => (
             <MeasureUnitSelect
                 formItem={ false }
@@ -88,9 +94,11 @@ export function columnsConfig(
     };
 
     const name = {
-        title:     'name',
+        title: formatMessage({
+            id: 'storage.name',
+        }),
         dataIndex: 'name',
-        width:     '20%',
+        width:     '10%',
         render:    (name, data, index) => (
             <DecoratedInput
                 fields={ {} }
@@ -108,11 +116,12 @@ export function columnsConfig(
     };
 
     const brandId = {
-        title:     'brand',
+        title: formatMessage({
+            id: 'storage.brand',
+        }),
         dataIndex: 'brandId',
         width:     '10%',
         render:    (brandId, data, index) => {
-            console.log('→ DATA', data);
             const field = brandId ? `${index}.brandId` : `${index}.brandName`;
             const hiddenField = !brandId
                 ? `${index}.brandId`
@@ -123,25 +132,11 @@ export function columnsConfig(
                     <DecoratedAutoComplete
                         fields={ {} }
                         defaultGetValueProps
-                        // getItemValue={ item => {
-                        //     console.log(item);
-
-                        //     return item.brandName;
-                        // } }
                         getFieldDecorator={ getFieldDecorator }
                         field={ field }
                         initialValue={
                             brandId ? String(brandId) : data.brandName
                         }
-                        // fieldValue={ _.get(fields, `services[${key}].serviceName`) }
-                        // initialValue={ this._getDefaultValue(key, 'serviceName') }
-                        // onSelect={ value =>
-                        //     this._onServiceSelect(
-                        //         value,
-                        //         _.get(fields, `services[${key}].ownDetail`),
-                        //     )
-                        // }
-                        // onChange={ e => console.log('cha', e) }
                         onSearch={ value => setBrandsSearchQuery(value) }
                         onSelect={ value => {
                             // setFieldsValue({ [ `${index}.brandId` ]: value });
@@ -156,26 +151,6 @@ export function columnsConfig(
                         showSearch
                         dropdownMatchSelectWidth={ false }
                     >
-                        { console.log(
-                            '→ props.form.getFieldValue(brandId)',
-                            getFieldValue(`${index}.brandId`),
-                        ) }
-                        { console.log(
-                            '→ props.form.getFieldValue(brandName)',
-                            getFieldValue(`${index}.brandName`),
-                        ) }
-                        { /* { console.log('()(()()()()brands', data) } */ }
-                        { /* { brands.map(({ brandName, brandId }) => (
-                    <Option value={ String(brandId) } key={ brandId }>
-                        { brandName || data.brandName }
-                    </Option>
-                )) } */ }
-                        { /* { brands.map(({ brandName, brandId }) => (
-                        <Option value={ String(brandId) } key={ brandId }>
-                            { brandName || data.brandName }
-                        </Option>
-                    )) } */ }
-
                         { _.isEmpty(brands) && brandId ? (
                             <Option
                                 value={
@@ -196,7 +171,7 @@ export function columnsConfig(
                         }
                     </DecoratedAutoComplete>
                     <DecoratedInput
-                        hiddenInput
+                        hiddeninput='hiddeninput'
                         fields={ {} }
                         getFieldDecorator={ getFieldDecorator }
                         field={ hiddenField }
@@ -209,8 +184,26 @@ export function columnsConfig(
         },
     };
 
+    const tradeCode = {
+        title: formatMessage({
+            id: 'storage.trade_code',
+        }),
+        dataIndex: 'tradeCode',
+        width:     '10%',
+        render:    (tradeCode, data, index) => (
+            <DecoratedInput
+                fields={ {} }
+                getFieldDecorator={ getFieldDecorator }
+                field={ `${index}.tradeCode` }
+                initialValue={ tradeCode }
+            />
+        ),
+    };
+
     const certificate = {
-        title:     'certificate',
+        title: formatMessage({
+            id: 'storage.certificate',
+        }),
         dataIndex: 'certificate',
         width:     '10%',
         render:    (certificate, data, index) => (
@@ -224,12 +217,12 @@ export function columnsConfig(
     };
 
     const priceGroupNumber = {
-        title:     'priceGroupNumber',
+        title: formatMessage({
+            id: 'storage.price_group',
+        }),
         dataIndex: 'priceGroupNumber',
         width:     '10%',
         render:    (priceGroupNumber, data, index) => {
-            // console.log('→ priceGroupNumber', priceGroupNumber);
-
             return (
                 <PriceGroupSelect
                     formItem={ false }
@@ -245,9 +238,11 @@ export function columnsConfig(
     };
 
     const price = {
-        title:     'price',
+        title: formatMessage({
+            id: 'storage.price',
+        }),
         dataIndex: 'price',
-        width:     '10%',
+        width:     'auto',
         render:    (price, data, index) => (
             <DecoratedInputNumber
                 fields={ {} }
@@ -273,6 +268,7 @@ export function columnsConfig(
         measureUnit,
         name,
         brandId,
+        tradeCode,
         certificate,
         priceGroupNumber,
         price,

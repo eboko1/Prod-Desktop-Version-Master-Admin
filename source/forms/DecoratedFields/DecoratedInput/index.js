@@ -10,7 +10,7 @@ const FormItem = styled(Form.Item)`
 `;
 
 const StyledInput = styled(Input)`
-    display: ${props => props.hiddenInput && 'none'};
+    display: ${props => props.hiddeninput && 'none'};
 `;
 
 export const DecoratedInput = memo(
@@ -26,7 +26,7 @@ export const DecoratedInput = memo(
             onPressEnter,
             // styles
             hiddenField,
-            hiddenInput,
+            hiddeninput,
             cnStyles,
             style,
             // input
@@ -47,7 +47,7 @@ export const DecoratedInput = memo(
             rules,
         })(
             <StyledInput
-                hiddenInput={ hiddenInput }
+                hiddeninput={ hiddeninput }
                 className={ cnStyles || className }
                 prefix={
                     icon ? (

@@ -19,6 +19,7 @@ export const DecoratedTreeSelect = memo(
             formItemLayout,
 
             // cnStyles,
+            getPopupContainer,
             dropdownStyle,
             getFieldDecorator,
             disabled,
@@ -75,7 +76,8 @@ export const DecoratedTreeSelect = memo(
         })(
             <TreeSelect
                 showSearch
-                style={ style || { width: 300 } }
+                style={ style }
+                getPopupContainer={ getPopupContainer }
                 dropdownStyle={
                     dropdownStyle || { maxHeight: 400, overflow: 'auto' }
                 }

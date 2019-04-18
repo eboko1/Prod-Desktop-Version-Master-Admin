@@ -11,6 +11,7 @@ const Option = Select.Option;
 export default props => {
     const {
         formItem,
+        formItemLayout,
         formatMessage,
         getFieldDecorator,
         initialValue,
@@ -20,9 +21,10 @@ export default props => {
     return (
         <DecoratedSelect
             formItem={ formItem }
+            formItemLayout={ formItemLayout }
             label={ formatMessage({ id: 'storage.price_group' }) }
             fields={ {} }
-            field='priceGroup'
+            field='priceGroupNumber'
             getFieldDecorator={ getFieldDecorator }
             getPopupContainer={ trigger => trigger.parentNode }
             initialValue={ initialValue }

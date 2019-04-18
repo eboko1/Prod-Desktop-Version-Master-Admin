@@ -7,6 +7,7 @@ import _ from 'lodash';
 import styled from 'styled-components';
 
 // proj
+import { Catcher } from 'commons';
 import {
     productsExcelImport,
     productsExcelImportReset,
@@ -28,7 +29,6 @@ const SubmitButton = styled(Button)`
 
 const ProductsExcelFormComponent = props => {
     const _submit = () => {
-        console.log('→ submit');
         props.form.validateFieldsAndScroll(
             { scroll: { offsetBottom: 50 } },
             // { scroll: { offsetBottom: 50 }, force: true },
@@ -66,18 +66,21 @@ const ProductsExcelFormComponent = props => {
         );
     };
 
+    console.log('→ RENDER');
+
     return (
-        <Form>
-            { _renderButtonGroup() }
-            <ProductsExcelTable
-                dataSource={ props.productsExcel }
-                form={ props.form }
-                storeGroups={ props.storeGroups }
-            />
-            { props.productsExcel && props.productsExcel.length >= 15
-                ? _renderButtonGroup()
-                : null }
-        </Form>
+        <Catcher>
+            <Form>
+                { _renderButtonGroup() }
+                <ProductsExcelTable
+                    dataSource={ props.productsExcel }
+                    form={ props.form }
+                />
+                { props.productsExcel && props.productsExcel.length >= 15
+                    ? _renderButtonGroup()
+                    : null }
+            </Form>
+        </Catcher>
     );
 };
 

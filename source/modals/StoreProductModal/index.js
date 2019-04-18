@@ -23,8 +23,9 @@ const StoreProductModal = props => {
             onCancel={ () => resetModal() }
             destroyOnClose
             footer={ null }
+            width={ 720 }
         >
-            <StoreProductForm />
+            <StoreProductForm resetModal={ props.resetModal } />
         </Modal>
     );
 };

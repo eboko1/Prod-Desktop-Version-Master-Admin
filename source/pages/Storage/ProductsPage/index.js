@@ -10,6 +10,7 @@ import {
     productsExcelImport,
     productsExcelImportValidate,
     selectStoreProductsExcel,
+    selectStoreProductsExcelLoading,
 } from 'core/storage/products';
 import { MODALS, setModal, selectModal } from 'core/modals/duck';
 
@@ -50,7 +51,7 @@ const StoreProducts = props => {
                 </ButtonGroup>
             }
         >
-            { _.isEmpty(props.productsExcel) ? (
+            { _.isEmpty(props.productsExcel) && !props.loading ? (
                 <StoreProductsTable />
             ) : (
                 <ProductsExcelForm productsExcel={ props.productsExcel } />
@@ -63,6 +64,7 @@ const StoreProducts = props => {
 const mapStateToProps = state => ({
     modal:         selectModal(state),
     productsExcel: selectStoreProductsExcel(state),
+    loading:       selectStoreProductsExcelLoading(state),
 });
 
 const mapDispatchToProps = {

@@ -6,28 +6,29 @@ import { Popconfirm, Icon } from 'antd';
 import { MODALS } from 'core/modals/duck';
 
 export default props => {
-    const id = {
-        title:     'id',
-        dataIndex: 'id',
+    const code = {
+        title: props.intl.formatMessage({
+            id: 'storage.product_code',
+        }),
+        dataIndex: 'code',
         width:     'auto',
     };
 
-    const treePath = {
-        title:     'treePath',
-        dataIndex: 'treePath',
-        width:     '20%',
-    };
-
     const brandName = {
-        title:     'brandName',
+        title: props.intl.formatMessage({
+            id: 'storage.brand',
+        }),
         dataIndex: 'brandName',
         width:     '20%',
     };
 
     const markup = {
-        title:     'markup',
-        dataIndex: 'markup',
+        title: props.intl.formatMessage({
+            id: 'storage.markup',
+        }),
+        dataIndex: 'priceGroup',
         width:     '20%',
+        render:    (key, { priceGroup }) => <div>{ priceGroup.multiplier }</div>,
     };
 
     const actions = {
@@ -55,9 +56,9 @@ export default props => {
     };
 
     return [
-        id,
-        treePath,
+        code,
         brandName,
-        markup, 
+        markup,
+        actions,
     ];
 };
