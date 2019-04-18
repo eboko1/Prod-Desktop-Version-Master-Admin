@@ -170,6 +170,7 @@ const ProductForm = props => {
                 />
             </>
             <MeasureUnitSelect
+                field={ 'measureUnit' }
                 formItem
                 formItemLayout={ formItemLayout }
                 getFieldDecorator={ form.getFieldDecorator }
@@ -185,6 +186,7 @@ const ProductForm = props => {
                 getFieldDecorator={ form.getFieldDecorator }
             />
             <PriceGroupSelect
+                field={ 'priceGroupNumber' }
                 formItem
                 formItemLayout={ formItemLayout }
                 getFieldDecorator={ form.getFieldDecorator }

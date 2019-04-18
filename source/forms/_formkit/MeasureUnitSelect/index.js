@@ -10,6 +10,7 @@ const Option = Select.Option;
 
 export default props => {
     const {
+        field,
         formItem,
         formItemLayout,
         formatMessage,
@@ -24,7 +25,7 @@ export default props => {
             formItemLayout={ formItemLayout }
             label={ formatMessage({ id: 'storage.measure_units' }) }
             fields={ {} }
-            field='measureUnit'
+            field={ field }
             getFieldDecorator={ getFieldDecorator }
             getPopupContainer={ getPopupContainer }
             initialValue={ initialValue }

@@ -10,6 +10,7 @@ import {
     selectStoreProducts,
     selectProductsLoading,
 } from 'core/storage/products';
+import { setModal } from 'core/modals/duck';
 
 // own
 import columnsConfig from './config';
@@ -42,6 +43,6 @@ const mapStateToProps = state => ({
 export const StoreProductsTable = injectIntl(
     connect(
         mapStateToProps,
-        { fetchProducts },
+        { fetchProducts, setModal },
     )(ProductsTable),
 );

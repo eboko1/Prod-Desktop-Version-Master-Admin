@@ -1,5 +1,5 @@
 // vendor
-import React from 'react';
+import React, { memo } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Form, Button } from 'antd';
@@ -27,7 +27,7 @@ const SubmitButton = styled(Button)`
     margin: 0 auto;
 `;
 
-const ProductsExcelFormComponent = props => {
+const ProductsExcelFormComponent = memo(props => {
     const _submit = () => {
         props.form.validateFieldsAndScroll(
             { scroll: { offsetBottom: 50 } },
@@ -51,11 +51,9 @@ const ProductsExcelFormComponent = props => {
     const _renderButtonGroup = () => {
         return (
             <ButtonGroup>
-                { !_.isEmpty(props.productsExcel) && (
-                    <SubmitButton type='primary' onClick={ () => _submit() }>
-                        { props.intl.formatMessage({ id: 'submit' }) }
-                    </SubmitButton>
-                ) }
+                <SubmitButton type='primary' onClick={ () => _submit() }>
+                    { props.intl.formatMessage({ id: 'submit' }) }
+                </SubmitButton>
                 <Button
                     icon='rollback'
                     onClick={ () => props.productsExcelImportReset() }
@@ -66,7 +64,8 @@ const ProductsExcelFormComponent = props => {
         );
     };
 
-    console.log('→ RENDER');
+    console.log('→ RENDER FORM');
+    console.info('→ FORM productsExcel', props.productsExcel);
 
     return (
         <Catcher>
@@ -82,7 +81,7 @@ const ProductsExcelFormComponent = props => {
             </Form>
         </Catcher>
     );
-};
+});
 
 export const ProductsExcelForm = injectIntl(
     connect(

@@ -9,8 +9,7 @@ import _ from 'lodash';
 import {
     productsExcelImport,
     productsExcelImportValidate,
-    selectStoreProductsExcel,
-    selectStoreProductsExcelLoading,
+    selectProductsImporting,
 } from 'core/storage/products';
 import { MODALS, setModal, selectModal } from 'core/modals/duck';
 
@@ -29,6 +28,9 @@ const AddButton = styled(StyledButton)`
 `;
 
 const StoreProducts = props => {
+    console.log('→ RENDER PAGE');
+    console.log('→ PAGE productsExcel', props.productsExcel);
+
     return (
         <Layout
             title={ <FormattedMessage id='navigation.products' /> }
@@ -43,6 +45,7 @@ const StoreProducts = props => {
                         key={ props.productsExcel }
                     />
                     <AddButton
+                        disabled={ props.importing }
                         type='link'
                         onClick={ () => props.setModal(MODALS.STORE_PRODUCT) }
                     >
@@ -51,20 +54,15 @@ const StoreProducts = props => {
                 </ButtonGroup>
             }
         >
-            { _.isEmpty(props.productsExcel) && !props.loading ? (
-                <StoreProductsTable />
-            ) : (
-                <ProductsExcelForm productsExcel={ props.productsExcel } />
-            ) }
+            { props.importing ? <ProductsExcelForm /> : <StoreProductsTable /> }
             <StoreProductModal visible={ props.modal } />
         </Layout>
     );
 };
 
 const mapStateToProps = state => ({
-    modal:         selectModal(state),
-    productsExcel: selectStoreProductsExcel(state),
-    loading:       selectStoreProductsExcelLoading(state),
+    modal:     selectModal(state),
+    importing: selectProductsImporting(state),
 });
 
 const mapDispatchToProps = {

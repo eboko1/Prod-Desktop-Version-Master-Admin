@@ -47,6 +47,7 @@ const ReducerState = {
     productSearchQuery: null,
 
     brands:            [],
+    // brands:            [{ supplierId: 362, brandId: 12, brandName: 'ALKAR' }, { supplierId: 85, brandId: 167, brandName: 'KAYABA' }],
     isBrandsFetching:  false,
     brandsSearchQuery: null,
 };

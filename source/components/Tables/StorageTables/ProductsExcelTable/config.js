@@ -31,6 +31,18 @@ export function columnsConfig(
         resetFields,
     } = form;
     // console.log('→ from.getFieldsValue', form.getFieldsValue());
+
+    const log = (brandId, index) => {
+        console.group([ `_${index}-row_` ]);
+        console.log('→ brandId', brandId);
+        console.log('getFieldValue brandId', getFieldValue(`${index}.brandId`));
+        console.log(
+            'getFieldValue brandName',
+            getFieldValue(`${index}.brandName`),
+        );
+        console.groupEnd();
+    };
+
     const code = {
         title: formatMessage({
             id: 'storage.product_code',
@@ -122,27 +134,40 @@ export function columnsConfig(
         dataIndex: 'brandId',
         width:     '10%',
         render:    (brandId, data, index) => {
+            console.log('→ !!!!data', data);
             const field = brandId ? `${index}.brandId` : `${index}.brandName`;
-            const hiddenField = !brandId
-                ? `${index}.brandId`
-                : `${index}.brandName`;
+            const hiddenField = brandId
+                ? `${index}.brandName`
+                : `${index}.brandId`;
 
             return (
                 <>
                     <DecoratedAutoComplete
                         fields={ {} }
+                        // labelInValue
                         defaultGetValueProps
                         getFieldDecorator={ getFieldDecorator }
                         field={ field }
                         initialValue={
                             brandId ? String(brandId) : data.brandName
                         }
-                        onSearch={ value => setBrandsSearchQuery(value) }
+                        onSearch={ value => {
+                            // console.log('onSearch value', value);
+                            // setFieldsValue({
+                            //     [ `${index}.brandId` ]:   null,
+                            //     [ `${index}.brandName` ]: `custom.${value}`,
+                            // });
+                            // resetFields({
+                            //     [brandId ? `${index}.brandId` : `${index}.brandName`]
+                            // })
+                            setBrandsSearchQuery(value);
+                        } }
                         onSelect={ value => {
+                            console.log('onSelect value', value);
                             // setFieldsValue({ [ `${index}.brandId` ]: value });
                             setFieldsValue({
                                 [ `${index}.brandId` ]:   value,
-                                [ `${index}.brandName` ]: void 0,
+                                [ `${index}.brandName` ]: null,
                             });
                             // resetFields([ `${index}.brandName` ]);
                         } }
@@ -151,7 +176,23 @@ export function columnsConfig(
                         showSearch
                         dropdownMatchSelectWidth={ false }
                     >
-                        { _.isEmpty(brands) && brandId ? (
+                        { /* { console.log('brandId', brandId) } */ }
+                        { log(brandId, index) }
+
+                        { brandId ? (
+                            <Option value={ String(brandId) } key={ brandId }>
+                                { /* { console.log('brandName', data.brandName) } */ }
+                                { data.brandName }
+                            </Option>
+                        ) : null }
+                        { !_.isEmpty(brands)
+                            ? brands.map(({ brandName, brandId }) => (
+                                <Option value={ String(brandId) } key={ brandId }>
+                                    { brandName || data.brandName }
+                                </Option>
+                            ))
+                            : null }
+                        { /* { _.isEmpty(brands) && brandId ? (
                             <Option
                                 value={
                                     brandId != 'undefined'
@@ -168,16 +209,14 @@ export function columnsConfig(
                                     { brandName || data.brandName }
                                 </Option>
                             ))
-                        }
+                        } */ }
                     </DecoratedAutoComplete>
                     <DecoratedInput
                         hiddeninput='hiddeninput'
                         fields={ {} }
                         getFieldDecorator={ getFieldDecorator }
                         field={ hiddenField }
-                        initialValue={
-                            !brandId ? String(brandId) : data.brandName
-                        }
+                        initialValue={ brandId ? data.brandName : void 0 }
                     />
                 </>
             );

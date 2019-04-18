@@ -1,7 +1,7 @@
 // vendor
 import { call, put, all, take } from 'redux-saga/effects';
 import nprogress from 'nprogress';
-// import { createSelector } from 'reselect';
+import { createSelector } from 'reselect';
 // import _ from 'lodash';
 
 //proj
@@ -38,6 +38,7 @@ export const SET_PRODUCTS_EXCEL_IMPORT_LOADING = `${prefix}/SET_PRODUCTS_EXCEL_I
 const ReducerState = {
     products:             [],
     productsExcel:        [],
+    importing:            false,
     productsExcelLoading: false,
     productsLoading:      false,
     product:              {},
@@ -48,10 +49,14 @@ export default function reducer(state = ReducerState, action) {
 
     switch (type) {
         case PRODUCTS_EXCEL_IMPORT_VALIDATE_SUCCESS:
-            return { ...state, productsExcel: payload };
+            return { ...state, importing: true, productsExcel: payload };
 
         case PRODUCTS_EXCEL_IMPORT_RESET:
-            return { ...state, productsExcel: ReducerState.productsExcel };
+            return {
+                ...state,
+                importing:     false,
+                productsExcel: ReducerState.productsExcel,
+            };
 
         case FETCH_PRODUCTS_SUCCESS:
             return { ...state, products: payload };
@@ -73,12 +78,18 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state.storage[ moduleName ];
 export const selectStoreProducts = state => stateSelector(state).products;
-export const selectStoreProductsExcel = state =>
-    stateSelector(state).productsExcel;
+// export const selectStoreProductsExcel = state =>
+//     stateSelector(state).productsExcel;
 export const selectStoreProductsExcelLoading = state =>
     stateSelector(state).productsExcelLoading;
 export const selectProductsLoading = state =>
     stateSelector(state).productsLoading;
+export const selectProductsImporting = state => stateSelector(state).importing;
+
+export const selectStoreProductsExcel = createSelector(
+    [ stateSelector ],
+    ({ productsExcel }) => productsExcel,
+);
 
 /**
  * Action Creators

@@ -37,7 +37,7 @@ export const DecoratedAutoComplete = memo(
             onSearch,
             onChange,
             onSelect,
-            options,
+            options = [],
             optionValue,
             optionLabel,
             optionDisabled,
@@ -55,7 +55,7 @@ export const DecoratedAutoComplete = memo(
             initialValue,
             onFocus,
         } = props;
-       
+
         const renderAutoComplete = (
             <AutoComplete
                 getItemValue={ getItemValue }
