@@ -35,12 +35,44 @@ const ProductsExcelFormComponent = memo(props => {
             (err, values) => {
                 console.log('→ submit values', values);
                 if (!err) {
-                    const normalizedFields = _.toPairs(values).reduce(
+                    console.log('-> _.toPairs(values)', _.toPairs(values));
+                    const fields = _.toPairs(values).reduce(
                         (result, [ name, value ]) => {
-                            return _.set(result, name, value);
+                            if (!value.alreadyExists) {
+                                result.push(value);
+                            }
+
+                            return result;
+                            // return value.alreadyExists
+                            //     ? result
+                            //     : _.set(result, name, value);
+                            // return _.set(result, name, value);
                         },
                         [],
                     );
+                    console.log('→ fields', fields);
+                    const normalizedFields = fields.map(product => {
+                        const { brandId, brandName } = product;
+                        const isLikeNumber = !_.chain(brandId)
+                            .toNumber()
+                            .isNaN()
+                            .value();
+                        if (brandId === brandName) {
+                            if (isLikeNumber) {
+                                delete product.brandName;
+                                product.brandId = _(brandId).toNumber();
+                            } else {
+                                delete product.brandId;
+                            }
+                        } else {
+                            if (isLikeNumber) {
+                                delete product.brandName;
+                                product.brandId = _(brandId).toNumber();
+                            }
+                        }
+
+                        return product;
+                    });
                     console.log('→ normalizedFields', normalizedFields);
                     props.productsExcelImport(normalizedFields);
                 }
@@ -63,9 +95,6 @@ const ProductsExcelFormComponent = memo(props => {
             </ButtonGroup>
         );
     };
-
-    console.log('→ RENDER FORM');
-    console.info('→ FORM productsExcel', props.productsExcel);
 
     return (
         <Catcher>

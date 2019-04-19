@@ -1,6 +1,7 @@
 // vendor
 import React from 'react';
 import { Popconfirm, Icon } from 'antd';
+import _ from 'lodash';
 
 // proj
 import { MODALS } from 'core/modals/duck';
@@ -12,6 +13,14 @@ export default props => {
         }),
         dataIndex: 'code',
         width:     'auto',
+    };
+
+    const name = {
+        title: props.intl.formatMessage({
+            id: 'storage.name',
+        }),
+        dataIndex: 'name',
+        width:     '10%',
     };
 
     const brandName = {
@@ -28,7 +37,9 @@ export default props => {
         }),
         dataIndex: 'priceGroup',
         width:     '20%',
-        render:    (key, { priceGroup }) => <div>{ priceGroup.multiplier }</div>,
+        render:    (key, data) => (
+            <div>{ _.get(data, 'priceGroup.multiplier') }</div>
+        ),
     };
 
     const actions = {
@@ -57,6 +68,7 @@ export default props => {
 
     return [
         code,
+        name,
         brandName,
         markup,
         actions,

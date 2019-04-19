@@ -163,6 +163,23 @@ export const setProductsLoading = isLoading => ({
  * Sagas
  **/
 
+const normalizeFile = file =>
+    file.map(product => {
+        return {
+            code:             String(product.code),
+            name:             String(product.name),
+            groupId:          Number(product.groupId),
+            groupName:        String(product.groupName),
+            brandId:          Number(product.brandId),
+            brandName:        String(product.brandName),
+            measureUnit:      String(product.measureUnit),
+            tradeCode:        String(product.tradeCode),
+            certificate:      String(product.certificate),
+            priceGroupNumber: Number(product.priceGroupNumber),
+            price:            Number(product.price),
+        };
+    });
+
 export function* fetchProductsSaga() {
     while (true) {
         try {
@@ -211,12 +228,14 @@ export function* productsExcelImportValidateSaga() {
             yield nprogress.start();
             yield put(setProductsExcelImportLoading(true));
             console.log('* file', file);
+            const normalizedFile = normalizeFile(file);
+
             const response = yield call(
                 fetchAPI,
                 'POST',
                 '/store_products/import/validate',
                 null,
-                file,
+                normalizedFile,
             );
 
             console.log('* response', response);
@@ -237,6 +256,8 @@ export function* productsExcelImportSaga() {
 
             yield nprogress.start();
             yield put(setProductsExcelImportLoading(true));
+
+            // const normalizedFile = normalizeFile(file);
 
             const response = yield call(
                 fetchAPI,

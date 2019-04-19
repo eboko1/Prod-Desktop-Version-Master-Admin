@@ -9,12 +9,16 @@ import styled from 'styled-components';
 import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
 import { fetchStoreGroups, selectStoreGroups } from 'core/storage/storeGroups';
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
-import { selectStoreProductsExcel } from 'core/storage/products';
+import {
+    selectStoreProductsExcel,
+    selectStoreProductsExcelLoading,
+} from 'core/storage/products';
 
 import { Loader } from 'commons';
 
 // own
 import { columnsConfig } from './config';
+import Styles from './styles.m.css';
 
 const StyledTable = styled(Table)`
     /* &
@@ -43,6 +47,17 @@ const StyledTable = styled(Table)`
     & .ant-table-small > .ant-table-content > .ant-table-body {
         margin: 0;
     }
+
+    /* &
+        .ant-table-small
+        > .ant-table-content
+        > .ant-table-scroll
+        > .ant-table-body
+        > table
+        > .ant-table-tbody
+        > tr {
+        vertical-align: middle !important;
+    } */
 
     /* .ant-select-auto-complete.ant-select {
         top: -1px;
@@ -73,7 +88,7 @@ const StyledTable = styled(Table)`
 // memo(
 //     forwardRef((props, ref) =>
 
-const ProductsExcelTableComponent = memo(props => {
+const ProductsExcelTableComponent = props => {
     const {
         productsExcel,
         form,
@@ -84,19 +99,19 @@ const ProductsExcelTableComponent = memo(props => {
         intl: { formatMessage },
     } = props;
 
+    // useEffect(() => {
+    //     return () => {
+    //         props.fetchPriceGroups();
+    //         props.fetchStoreGroups();
+    //     };
+    // }, []);
     useEffect(() => {
-        return () => {
-            props.fetchPriceGroups();
-            props.fetchStoreGroups();
-        };
+        props.fetchPriceGroups();
     }, []);
-    // useEffect(() => {
-    //     props.fetchPriceGroups();
-    // }, []);
 
-    // useEffect(() => {
-    //     props.fetchStoreGroups();
-    // }, []);
+    useEffect(() => {
+        props.fetchStoreGroups();
+    }, []);
 
     const columns = useMemo(
         () =>
@@ -113,11 +128,13 @@ const ProductsExcelTableComponent = memo(props => {
             productsExcel,
             storeGroups,
             priceGroups,
-            brands, 
+            brands,
         ],
     );
 
     console.log('→ !!!RENDER Table');
+    console.log('→ storeGroups', props.storeGroups);
+    console.log('→ priceGroups', props.priceGroups);
 
     //return props.loading ? (
     //    <Loader loading={ props.loading } />
@@ -125,6 +142,7 @@ const ProductsExcelTableComponent = memo(props => {
     return (
         <StyledTable
             // bordered
+            className={ Styles.importTable }
             size='small'
             columns={ columns }
             dataSource={ props.productsExcel }
@@ -135,18 +153,19 @@ const ProductsExcelTableComponent = memo(props => {
             rowKey={ (record, index) =>
                 `${index}-${record.code}-${record.productName}`
             }
-            // loading={ props.loading }
+            loading={ props.loading }
             scroll={ { x: 1600 } }
+            rowClassName={ record => record.alreadyExists && Styles.duplicateRow }
         />
     );
-});
+};
 
 const mapStateToProps = state => ({
     productsExcel: selectStoreProductsExcel(state),
     brands:        selectBrandsByQuery(state),
     priceGroups:   selectPriceGroups(state),
     storeGroups:   selectStoreGroups(state),
-    // loading:     selectStoreProductsExcelLoading(state),
+    loading:       selectStoreProductsExcelLoading(state),
 });
 
 const mapDispatchToProps = {

@@ -13,6 +13,7 @@ import {
 import { MeasureUnitSelect, PriceGroupSelect } from 'forms/_formkit';
 
 // own
+import Styles from './styles.m.css';
 const Option = Select.Option;
 
 export function columnsConfig(
@@ -24,13 +25,7 @@ export function columnsConfig(
     brands,
     setBrandsSearchQuery,
 ) {
-    const {
-        getFieldDecorator,
-        getFieldValue,
-        setFieldsValue,
-        resetFields,
-    } = form;
-    // console.log('→ from.getFieldsValue', form.getFieldsValue());
+    const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
 
     const log = (brandId, index) => {
         console.group([ `_${index}-row_` ]);
@@ -50,18 +45,29 @@ export function columnsConfig(
         dataIndex: 'code',
         width:     'auto',
         render:    (code, data, index) => (
-            <DecoratedInput
-                fields={ {} }
-                getFieldDecorator={ getFieldDecorator }
-                field={ `${index}.code` }
-                initialValue={ code }
-                rules={ [
-                    {
-                        required: true,
-                        message:  'required!',
-                    },
-                ] }
-            />
+            <>
+                <DecoratedInput
+                    formItem
+                    cnStyles={ data.alreadyExists && Styles.duplicate }
+                    fields={ {} }
+                    getFieldDecorator={ getFieldDecorator }
+                    field={ `${index}.code` }
+                    initialValue={ code }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'required!',
+                        },
+                    ] }
+                />
+                <DecoratedInput
+                    hiddeninput='hiddeninput'
+                    fields={ {} }
+                    getFieldDecorator={ getFieldDecorator }
+                    field={ `${index}.alreadyExists` }
+                    initialValue={ data.alreadyExists }
+                />
+            </>
         ),
     };
 
@@ -73,6 +79,8 @@ export function columnsConfig(
         width:     '10%',
         render:    (groupId, data, index) => (
             <DecoratedTreeSelect
+                formItem
+                cnStyles={ data.alreadyExists && Styles.duplicate }
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.groupId` }
@@ -96,11 +104,18 @@ export function columnsConfig(
         width:     '5%',
         render:    (measureUnit, data, index) => (
             <MeasureUnitSelect
-                formItem={ false }
+                formItem
+                cnStyles={ data.alreadyExists && Styles.duplicate }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.measureUnit` }
                 formatMessage={ formatMessage }
                 initialValue={ measureUnit }
+                rules={ [
+                    {
+                        required: true,
+                        message:  'required!',
+                    },
+                ] }
             />
         ),
     };
@@ -114,6 +129,8 @@ export function columnsConfig(
         render:    (name, data, index) => (
             <DecoratedInput
                 fields={ {} }
+                formItem
+                cnStyles={ data.alreadyExists && Styles.duplicate }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.name` }
                 initialValue={ name }
@@ -134,7 +151,6 @@ export function columnsConfig(
         dataIndex: 'brandId',
         width:     '10%',
         render:    (brandId, data, index) => {
-            console.log('→ !!!!data', data);
             const field = brandId ? `${index}.brandId` : `${index}.brandName`;
             const hiddenField = brandId
                 ? `${index}.brandName`
@@ -144,7 +160,9 @@ export function columnsConfig(
                 <>
                     <DecoratedAutoComplete
                         fields={ {} }
+                        formItem
                         // labelInValue
+                        cnStyles={ data.alreadyExists && Styles.duplicate }
                         defaultGetValueProps
                         getFieldDecorator={ getFieldDecorator }
                         field={ field }
@@ -152,36 +170,26 @@ export function columnsConfig(
                             brandId ? String(brandId) : data.brandName
                         }
                         onSearch={ value => {
-                            // console.log('onSearch value', value);
-                            // setFieldsValue({
-                            //     [ `${index}.brandId` ]:   null,
-                            //     [ `${index}.brandName` ]: `custom.${value}`,
-                            // });
-                            // resetFields({
-                            //     [brandId ? `${index}.brandId` : `${index}.brandName`]
-                            // })
+                            setFieldsValue({
+                                [ `${index}.brandId` ]:   null,
+                                [ `${index}.brandName` ]: value,
+                            });
+
                             setBrandsSearchQuery(value);
                         } }
                         onSelect={ value => {
-                            console.log('onSelect value', value);
-                            // setFieldsValue({ [ `${index}.brandId` ]: value });
                             setFieldsValue({
                                 [ `${index}.brandId` ]:   value,
                                 [ `${index}.brandName` ]: null,
                             });
-                            // resetFields([ `${index}.brandName` ]);
                         } }
                         optionLabelProp={ 'children' }
                         optionFilterProp={ 'children' }
                         showSearch
                         dropdownMatchSelectWidth={ false }
                     >
-                        { /* { console.log('brandId', brandId) } */ }
-                        { log(brandId, index) }
-
                         { brandId ? (
                             <Option value={ String(brandId) } key={ brandId }>
-                                { /* { console.log('brandName', data.brandName) } */ }
                                 { data.brandName }
                             </Option>
                         ) : null }
@@ -192,24 +200,6 @@ export function columnsConfig(
                                 </Option>
                             ))
                             : null }
-                        { /* { _.isEmpty(brands) && brandId ? (
-                            <Option
-                                value={
-                                    brandId != 'undefined'
-                                        ? String(brandId)
-                                        : `brandName.${data.brandName}`
-                                }
-                                key={ `${index}-${brandId}` }
-                            >
-                                { data.brandName }
-                            </Option>
-                        ) : 
-                            brands.map(({ brandName, brandId }) => (
-                                <Option value={ String(brandId) } key={ brandId }>
-                                    { brandName || data.brandName }
-                                </Option>
-                            ))
-                        } */ }
                     </DecoratedAutoComplete>
                     <DecoratedInput
                         hiddeninput='hiddeninput'
@@ -231,10 +221,12 @@ export function columnsConfig(
         width:     '10%',
         render:    (tradeCode, data, index) => (
             <DecoratedInput
+                formItem
+                cnStyles={ data.alreadyExists && Styles.duplicate }
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.tradeCode` }
-                initialValue={ tradeCode }
+                initialValue={ String(tradeCode) }
             />
         ),
     };
@@ -247,10 +239,12 @@ export function columnsConfig(
         width:     '10%',
         render:    (certificate, data, index) => (
             <DecoratedInput
+                formItem
+                cnStyles={ data.alreadyExists && Styles.duplicate }
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.certificate` }
-                initialValue={ certificate }
+                initialValue={ String(certificate) }
             />
         ),
     };
@@ -264,7 +258,8 @@ export function columnsConfig(
         render:    (priceGroupNumber, data, index) => {
             return (
                 <PriceGroupSelect
-                    formItem={ false }
+                    cnStyles={ data.alreadyExists && Styles.duplicate }
+                    formItem
                     field={ `${index}.priceGroupNumber` }
                     initialValue={ priceGroupNumber }
                     getFieldDecorator={ getFieldDecorator }
@@ -284,6 +279,7 @@ export function columnsConfig(
         width:     'auto',
         render:    (price, data, index) => (
             <DecoratedInputNumber
+                cnStyles={ data.alreadyExists && Styles.duplicate }
                 fields={ {} }
                 formItem
                 getFieldDecorator={ getFieldDecorator }

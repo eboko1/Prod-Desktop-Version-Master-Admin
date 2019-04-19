@@ -36,21 +36,34 @@ const StoreProducts = props => {
             title={ <FormattedMessage id='navigation.products' /> }
             controls={
                 <ButtonGroup>
-                    <StyledButton type='secondary' icon='download' resetRadius>
-                        <FormattedMessage id='storage.download_excel_template' />
-                    </StyledButton>
-                    <ExcelReader
-                        importExcel={ props.productsExcelImport }
-                        validateExcel={ props.productsExcelImportValidate }
-                        key={ props.productsExcel }
-                    />
-                    <AddButton
-                        disabled={ props.importing }
-                        type='link'
-                        onClick={ () => props.setModal(MODALS.STORE_PRODUCT) }
-                    >
-                        <FormattedMessage id='add' />
-                    </AddButton>
+                    { !props.importing ? (
+                        <>
+                            <StyledButton
+                                type='secondary'
+                                icon='download'
+                                resetRadius
+                            >
+                                <FormattedMessage id='storage.download_excel_template' />
+                            </StyledButton>
+                            <ExcelReader
+                                importExcel={ props.productsExcelImport }
+                                validateExcel={
+                                    props.productsExcelImportValidate
+                                }
+                                key={ props.productsExcel }
+                            />
+                            <AddButton
+                                type='link'
+                                onClick={ () =>
+                                    props.setModal(MODALS.STORE_PRODUCT)
+                                }
+                            >
+                                <FormattedMessage id='add' />
+                            </AddButton>
+                        </>
+                    ) : (
+                        <div>Please finish import</div>
+                    ) }
                 </ButtonGroup>
             }
         >

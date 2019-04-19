@@ -172,6 +172,7 @@ const ProductForm = props => {
             <MeasureUnitSelect
                 field={ 'measureUnit' }
                 formItem
+                label={ formatMessage({ id: 'storage.measure_units' }) }
                 formItemLayout={ formItemLayout }
                 getFieldDecorator={ form.getFieldDecorator }
                 formatMessage={ formatMessage }
