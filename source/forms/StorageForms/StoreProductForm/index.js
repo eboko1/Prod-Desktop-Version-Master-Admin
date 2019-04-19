@@ -56,9 +56,8 @@ const ProductForm = props => {
         form,
         intl: { formatMessage },
     } = props;
-    console.log('→ ProductForm props', props);
+
     useEffect(() => {
-        console.log('→useEffect modalProps', props.modalProps);
         if (_.get(props, 'modalProps.id')) {
             props.fetchProduct(_.get(props, 'modalProps.id'));
         }
@@ -66,12 +65,10 @@ const ProductForm = props => {
 
     useEffect(() => {
         props.fetchStoreGroups();
-    }, []);
-
-    useEffect(() => {
         props.fetchPriceGroups();
     }, []);
 
+    console.log('→ props.editing', props.editing);
     const _submit = event => {
         event.preventDefault();
         props.form.validateFields((err, values) => {
@@ -79,8 +76,14 @@ const ProductForm = props => {
                 if (values.brandName && values.brandId) {
                     _.set(values, 'brandId', void 0);
                 }
+                console.log('→ values', values);
+                props.editing
+                    ? props.updateProduct({
+                        id:      _.get(props, 'modalProps.id'),
+                        product: values,
+                    })
+                    : props.createProduct(values);
 
-                props.createProduct(values);
                 props.form.resetFields();
                 props.resetModal();
             }

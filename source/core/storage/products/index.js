@@ -245,8 +245,13 @@ export function* fetchProductsSaga() {
         try {
             yield take(FETCH_PRODUCTS);
             yield put(setProductsLoading(true));
-            const filters = yield select(selectStoreProductsFilters)
-            const response = yield call(fetchAPI, 'GET', '/store_products', filters);
+            const filters = yield select(selectStoreProductsFilters);
+            const response = yield call(
+                fetchAPI,
+                'GET',
+                '/store_products',
+                filters,
+            );
 
             yield put(fetchProductsSuccess(response));
         } catch (error) {
@@ -304,9 +309,9 @@ export function* updateProductSaga() {
             yield call(
                 fetchAPI,
                 'PUT',
-                `/store_products${payload.id}`,
+                `/store_products/${payload.id}`,
                 null,
-                payload,
+                payload.product,
             );
             yield put(updateProductSuccess());
         } catch (error) {
