@@ -43,10 +43,6 @@ const ProductsExcelFormComponent = memo(props => {
                             }
 
                             return result;
-                            // return value.alreadyExists
-                            //     ? result
-                            //     : _.set(result, name, value);
-                            // return _.set(result, name, value);
                         },
                         [],
                     );

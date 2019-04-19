@@ -29,16 +29,7 @@ export const DELETE_STORE_GROUP_SUCCESS = `${prefix}/DELETE_STORE_GROUP_SUCCESS`
  **/
 
 const ReducerState = {
-    storeGroups: [
-        // {
-        //     id:            4,
-        //     parentGroupId: null,
-        //     businessId:    null,
-        //     name:          'Кузовные детали',
-        //     languageId:    1,
-        //     childGroups:   [],
-        // },
-    ],
+    storeGroups: [],
 };
 
 export default function reducer(state = ReducerState, action) {

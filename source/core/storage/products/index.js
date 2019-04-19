@@ -1,5 +1,5 @@
 // vendor
-import { call, put, all, take } from 'redux-saga/effects';
+import { call, put, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import { createSelector } from 'reselect';
 // import _ from 'lodash';
@@ -33,6 +33,8 @@ export const UPDATE_PRODUCT_SUCCESS = `${prefix}/UPDATE_PRODUCT_SUCCESS`;
 export const DELETE_PRODUCT = `${prefix}/DELETE_PRODUCT`;
 export const DELETE_PRODUCT_SUCCESS = `${prefix}/DELETE_PRODUCT_SUCCESS`;
 
+export const SET_STORE_PRODUCTS_PAGE = `${prefix}/SET_STORE_PRODUCTS_PAGE`;
+
 export const SET_PRODUCT_LOADING = `${prefix}/SET_PRODUCT_LOADING`;
 export const SET_PRODUCTS_LOADING = `${prefix}/SET_PRODUCTS_LOADING`;
 export const SET_PRODUCTS_EXCEL_IMPORT_LOADING = `${prefix}/SET_PRODUCTS_EXCEL_IMPORT_LOADING`;
@@ -42,12 +44,20 @@ export const SET_PRODUCTS_EXCEL_IMPORT_LOADING = `${prefix}/SET_PRODUCTS_EXCEL_I
  **/
 
 const ReducerState = {
-    products:             [],
+    products: {
+        stats: {
+            count: '',
+        },
+        list: [],
+    },
     productsExcel:        [],
     importing:            false,
     productsExcelLoading: false,
     productsLoading:      false,
     product:              {},
+    filters:              {
+        page: 1,
+    },
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -70,6 +80,9 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_PRODUCTS_SUCCESS:
             return { ...state, products: payload };
 
+        case SET_STORE_PRODUCTS_PAGE:
+            return { ...state, filters: { ...state.filters, page: payload } };
+
         case SET_PRODUCTS_EXCEL_IMPORT_LOADING:
             return { ...state, productsExcelLoading: payload };
 
@@ -91,6 +104,7 @@ export default function reducer(state = ReducerState, action) {
 export const stateSelector = state => state.storage[ moduleName ];
 export const selectStoreProduct = state => stateSelector(state).product;
 export const selectStoreProducts = state => stateSelector(state).products;
+export const selectStoreProductsFilters = state => stateSelector(state).filters;
 // export const selectStoreProductsExcel = state =>
 //     stateSelector(state).productsExcel;
 export const selectStoreProductsExcelLoading = state =>
@@ -119,6 +133,11 @@ export const fetchProducts = () => ({
 export const fetchProductsSuccess = products => ({
     type:    FETCH_PRODUCTS_SUCCESS,
     payload: products,
+});
+
+export const setStoreProductsPage = page => ({
+    type:    SET_STORE_PRODUCTS_PAGE,
+    payload: page,
 });
 
 // product
@@ -226,7 +245,8 @@ export function* fetchProductsSaga() {
         try {
             yield take(FETCH_PRODUCTS);
             yield put(setProductsLoading(true));
-            const response = yield call(fetchAPI, 'GET', '/store_products');
+            const filters = yield select(selectStoreProductsFilters)
+            const response = yield call(fetchAPI, 'GET', '/store_products', filters);
 
             yield put(fetchProductsSuccess(response));
         } catch (error) {
@@ -354,6 +374,7 @@ export function* productsExcelImportSaga() {
 
             yield put(productsExcelImportSuccess(response));
             yield put(setProductsExcelImportLoading(false));
+            yield put(productsExcelImportReset());
         } catch (error) {
             yield put(emitError(error));
         } finally {

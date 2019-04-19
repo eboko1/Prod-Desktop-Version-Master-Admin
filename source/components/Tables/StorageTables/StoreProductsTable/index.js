@@ -10,6 +10,8 @@ import {
     deleteProduct,
     selectStoreProducts,
     selectProductsLoading,
+    selectStoreProductsFilters,
+    setStoreProductsPage,
 } from 'core/storage/products';
 import { setModal } from 'core/modals/duck';
 
@@ -17,16 +19,33 @@ import { setModal } from 'core/modals/duck';
 import columnsConfig from './config';
 
 const ProductsTable = props => {
+    const { products } = props;
+
     useEffect(() => {
         props.fetchProducts();
-    }, [ props.products ]);
+    }, [ products ]);
+
+    console.log('→ products', products);
+    console.log('→ filters', props.filters);
+
+    const pagination = {
+        pageSize:         25,
+        size:             'large',
+        total:            Math.ceil(products.stats.count / 25) * 25,
+        hideOnSinglePage: true,
+        current:          props.filters.page,
+        onChange:         page => {
+            props.setStoreProductsPage(page);
+            props.fetchProducts();
+        },
+    };
 
     return (
         <Table
             size='small'
             columns={ columnsConfig(props) }
             dataSource={ props.products.list }
-            pagination={ false }
+            pagination={ pagination }
             locale={ {
                 emptyText: props.intl.formatMessage({ id: 'no_data' }),
             } }
@@ -38,12 +57,20 @@ const ProductsTable = props => {
 
 const mapStateToProps = state => ({
     products: selectStoreProducts(state),
+    filters:  selectStoreProductsFilters(state),
     loading:  selectProductsLoading(state),
 });
+
+const mapDispatchToProps = {
+    fetchProducts,
+    setModal,
+    deleteProduct,
+    setStoreProductsPage,
+};
 
 export const StoreProductsTable = injectIntl(
     connect(
         mapStateToProps,
-        { fetchProducts, setModal, deleteProduct },
+        mapDispatchToProps,
     )(ProductsTable),
 );

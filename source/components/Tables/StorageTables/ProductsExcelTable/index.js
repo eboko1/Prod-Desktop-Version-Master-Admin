@@ -133,12 +133,7 @@ const ProductsExcelTableComponent = props => {
     );
 
     console.log('→ !!!RENDER Table');
-    console.log('→ storeGroups', props.storeGroups);
-    console.log('→ priceGroups', props.priceGroups);
 
-    //return props.loading ? (
-    //    <Loader loading={ props.loading } />
-    //) : (
     return (
         <StyledTable
             // bordered
