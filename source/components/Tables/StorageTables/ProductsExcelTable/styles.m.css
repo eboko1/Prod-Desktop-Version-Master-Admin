@@ -12,7 +12,7 @@
     pointer-events: none;
     cursor: not-allowed;
 }
-.duplicate :global(.ant-select-selection__rendered) {
+.duplicate :global(.ant-select-selection) {
     background-color: rgba(255, 45, 45, 0.28);
     pointer-events: none;
     cursor: not-allowed;

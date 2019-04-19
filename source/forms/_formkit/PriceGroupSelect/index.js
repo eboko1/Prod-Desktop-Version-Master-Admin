@@ -18,6 +18,9 @@ export default props => {
         getFieldDecorator,
         initialValue,
         priceGroups,
+        cnStyles,
+        rules,
+        disabled,
     } = props;
 
     return (
@@ -30,6 +33,9 @@ export default props => {
             getFieldDecorator={ getFieldDecorator }
             getPopupContainer={ trigger => trigger.parentNode }
             initialValue={ initialValue }
+            cnStyles={ cnStyles }
+            disabled={ disabled }
+            rules={ rules }
         >
             { priceGroups.map(({ number, multiplier }) => (
                 <Option value={ number } key={ number }>

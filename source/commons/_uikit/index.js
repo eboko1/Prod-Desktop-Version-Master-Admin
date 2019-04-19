@@ -1,6 +1,6 @@
 import { Paper } from './Paper';
 import { StyledButton } from './StyledButton';
-import { ActionIcons } from './ActionIcons';
 import { GoBack } from './GoBack';
+import ActionIcons from './ActionIcons';
 
 export { Paper, StyledButton, ActionIcons, GoBack };

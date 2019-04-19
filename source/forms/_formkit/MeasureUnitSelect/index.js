@@ -21,7 +21,7 @@ const measureUnitsHumanization = {
         'л.',
         'литры',
         'литер',
-        'літер', 
+        'літер',
     ],
 };
 
@@ -36,6 +36,8 @@ export default props => {
         getPopupContainer,
         initialValue,
         rules,
+        disabled,
+        cnStyles,
     } = props;
 
     const value = _.findKey(measureUnitsHumanization, units => {
@@ -53,6 +55,8 @@ export default props => {
             getPopupContainer={ getPopupContainer }
             initialValue={ value || measureUnits.PIECE }
             rules={ rules }
+            cnStyles={ cnStyles }
+            disabled={ disabled }
         >
             <Option value={ measureUnits.PIECE } key={ 'piece' }>
                 { formatMessage({ id: 'storage.measure.piece' }) }

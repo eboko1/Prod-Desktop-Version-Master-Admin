@@ -7,6 +7,7 @@ import { Table } from 'antd';
 // proj
 import {
     fetchProducts,
+    deleteProduct,
     selectStoreProducts,
     selectProductsLoading,
 } from 'core/storage/products';
@@ -18,7 +19,7 @@ import columnsConfig from './config';
 const ProductsTable = props => {
     useEffect(() => {
         props.fetchProducts();
-    }, []);
+    }, [ props.products ]);
 
     return (
         <Table
@@ -43,6 +44,6 @@ const mapStateToProps = state => ({
 export const StoreProductsTable = injectIntl(
     connect(
         mapStateToProps,
-        { fetchProducts, setModal },
+        { fetchProducts, setModal, deleteProduct },
     )(ProductsTable),
 );

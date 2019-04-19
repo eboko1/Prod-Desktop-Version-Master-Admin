@@ -1,10 +1,10 @@
 // vendor
 import React from 'react';
-import { Popconfirm, Icon } from 'antd';
 import _ from 'lodash';
 
 // proj
 import { MODALS } from 'core/modals/duck';
+import { ActionIcons } from 'commons/_uikit';
 
 export default props => {
     const code = {
@@ -12,7 +12,7 @@ export default props => {
             id: 'storage.product_code',
         }),
         dataIndex: 'code',
-        width:     'auto',
+        width:     '20%',
     };
 
     const name = {
@@ -20,7 +20,7 @@ export default props => {
             id: 'storage.name',
         }),
         dataIndex: 'name',
-        width:     '10%',
+        width:     '20%',
     };
 
     const brandName = {
@@ -45,25 +45,21 @@ export default props => {
     const actions = {
         width:     'auto',
         dataIndex: 'delete',
-        render:    (key, { id, name }) => (
-            <div>
-                <Icon
-                    type='edit'
-                    onClick={ () =>
-                        props.setModal(MODALS.STORE_PRODUCT, { id, name })
+        render:    (key, { id, name, code }) => {
+            return (
+                <ActionIcons
+                    edit={ () =>
+                        props.setModal(MODALS.STORE_PRODUCT, {
+                            id,
+                            name,
+                            code,
+                            editing: true,
+                        })
                     }
+                    delete={ () => props.deleteProduct(id) }
                 />
-                <div />
-                <Popconfirm
-                    title={ `${props.intl.formatMessage({
-                        id: 'delete',
-                    })} ?` }
-                    onConfirm={ () => props.deleteSupplier(id) }
-                >
-                    <Icon type='delete' />
-                </Popconfirm>
-            </div>
-        ),
+            );
+        },
     };
 
     return [

@@ -25,9 +25,15 @@ export const FETCH_PRODUCTS_SUCCESS = `${prefix}/FETCH_PRODUCTS_SUCCESS`;
 
 export const FETCH_PRODUCT = `${prefix}/FETCH_PRODUCT`;
 export const FETCH_PRODUCT_SUCCESS = `${prefix}/FETCH_PRODUCT_SUCCESS`;
+
 export const CREATE_PRODUCT = `${prefix}/CREATE_PRODUCT`;
 export const CREATE_PRODUCT_SUCCESS = `${prefix}/CREATE_PRODUCT_SUCCESS`;
+export const UPDATE_PRODUCT = `${prefix}/UPDATE_PRODUCT`;
+export const UPDATE_PRODUCT_SUCCESS = `${prefix}/UPDATE_PRODUCT_SUCCESS`;
+export const DELETE_PRODUCT = `${prefix}/DELETE_PRODUCT`;
+export const DELETE_PRODUCT_SUCCESS = `${prefix}/DELETE_PRODUCT_SUCCESS`;
 
+export const SET_PRODUCT_LOADING = `${prefix}/SET_PRODUCT_LOADING`;
 export const SET_PRODUCTS_LOADING = `${prefix}/SET_PRODUCTS_LOADING`;
 export const SET_PRODUCTS_EXCEL_IMPORT_LOADING = `${prefix}/SET_PRODUCTS_EXCEL_IMPORT_LOADING`;
 
@@ -58,11 +64,17 @@ export default function reducer(state = ReducerState, action) {
                 productsExcel: ReducerState.productsExcel,
             };
 
+        case FETCH_PRODUCT_SUCCESS:
+            return { ...state, product: payload };
+
         case FETCH_PRODUCTS_SUCCESS:
             return { ...state, products: payload };
 
         case SET_PRODUCTS_EXCEL_IMPORT_LOADING:
             return { ...state, productsExcelLoading: payload };
+
+        case SET_PRODUCT_LOADING:
+            return { ...state, productLoading: payload };
 
         case SET_PRODUCTS_LOADING:
             return { ...state, productsLoading: payload };
@@ -77,13 +89,17 @@ export default function reducer(state = ReducerState, action) {
  **/
 
 export const stateSelector = state => state.storage[ moduleName ];
+export const selectStoreProduct = state => stateSelector(state).product;
 export const selectStoreProducts = state => stateSelector(state).products;
 // export const selectStoreProductsExcel = state =>
 //     stateSelector(state).productsExcel;
 export const selectStoreProductsExcelLoading = state =>
     stateSelector(state).productsExcelLoading;
+export const selectProductLoading = state =>
+    stateSelector(state).productLoading;
 export const selectProductsLoading = state =>
     stateSelector(state).productsLoading;
+
 export const selectProductsImporting = state => stateSelector(state).importing;
 
 export const selectStoreProductsExcel = createSelector(
@@ -106,8 +122,9 @@ export const fetchProductsSuccess = products => ({
 });
 
 // product
-export const fetchProduct = () => ({
-    type: FETCH_PRODUCT,
+export const fetchProduct = id => ({
+    type:    FETCH_PRODUCT,
+    payload: id,
 });
 
 export const fetchProductSuccess = product => ({
@@ -122,6 +139,24 @@ export const createProduct = product => ({
 
 export const createProductSuccess = () => ({
     type: CREATE_PRODUCT_SUCCESS,
+});
+
+export const updateProduct = product => ({
+    type:    UPDATE_PRODUCT,
+    payload: product,
+});
+
+export const updateProductSuccess = () => ({
+    type: UPDATE_PRODUCT_SUCCESS,
+});
+
+export const deleteProduct = product => ({
+    type:    DELETE_PRODUCT,
+    payload: product,
+});
+
+export const deleteProductSuccess = () => ({
+    type: DELETE_PRODUCT_SUCCESS,
 });
 
 // productsExcel
@@ -154,6 +189,12 @@ export const setProductsExcelImportLoading = isLoading => ({
     type:    SET_PRODUCTS_EXCEL_IMPORT_LOADING,
     payload: isLoading,
 });
+
+export const setProductLoading = isLoading => ({
+    type:    SET_PRODUCT_LOADING,
+    payload: isLoading,
+});
+
 export const setProductsLoading = isLoading => ({
     type:    SET_PRODUCTS_LOADING,
     payload: isLoading,
@@ -196,12 +237,31 @@ export function* fetchProductsSaga() {
     }
 }
 
+export function* fetchProductSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(FETCH_PRODUCT);
+            yield put(setProductLoading(true));
+            const response = yield call(
+                fetchAPI,
+                'GET',
+                `/store_products/${payload}`,
+            );
+
+            yield put(fetchProductSuccess(response));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield put(setProductLoading(false));
+        }
+    }
+}
+
 export function* createProductSaga() {
     while (true) {
         try {
             const { payload } = yield take(CREATE_PRODUCT);
             yield put(setProductsLoading(true));
-            console.log('* createProductsSaga');
             const response = yield call(
                 fetchAPI,
                 'POST',
@@ -209,12 +269,39 @@ export function* createProductSaga() {
                 null,
                 payload,
             );
-            console.log('* createProductsSaga');
             yield put(fetchProductsSuccess(response));
         } catch (error) {
             yield put(emitError(error));
         } finally {
             yield put(setProductsLoading(false));
+        }
+    }
+}
+export function* updateProductSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(UPDATE_PRODUCT);
+            yield call(
+                fetchAPI,
+                'PUT',
+                `/store_products${payload.id}`,
+                null,
+                payload,
+            );
+            yield put(updateProductSuccess());
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+export function* deleteProductSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(DELETE_PRODUCT);
+            yield call(fetchAPI, 'DELETE', `/store_products/${payload}`);
+            yield put(deleteProductSuccess());
+        } catch (error) {
+            yield put(emitError(error));
         }
     }
 }
@@ -227,7 +314,6 @@ export function* productsExcelImportValidateSaga() {
             );
             yield nprogress.start();
             yield put(setProductsExcelImportLoading(true));
-            console.log('* file', file);
             const normalizedFile = normalizeFile(file);
 
             const response = yield call(
@@ -238,7 +324,6 @@ export function* productsExcelImportValidateSaga() {
                 normalizedFile,
             );
 
-            console.log('* response', response);
             yield put(productsExcelImportValidateSuccess(response));
             yield put(setProductsExcelImportLoading(false));
         } catch (error) {
@@ -279,8 +364,11 @@ export function* productsExcelImportSaga() {
 
 export function* saga() {
     yield all([
+        call(fetchProductSaga),
         call(fetchProductsSaga),
         call(createProductSaga),
+        call(updateProductSaga),
+        call(deleteProductSaga),
         call(productsExcelImportValidateSaga),
         call(productsExcelImportSaga),
     ]);

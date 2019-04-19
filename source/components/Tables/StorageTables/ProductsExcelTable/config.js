@@ -49,6 +49,7 @@ export function columnsConfig(
                 <DecoratedInput
                     formItem
                     cnStyles={ data.alreadyExists && Styles.duplicate }
+                    disabled={ !_.isNil(data.alreadyExists) }
                     fields={ {} }
                     getFieldDecorator={ getFieldDecorator }
                     field={ `${index}.code` }
@@ -80,7 +81,9 @@ export function columnsConfig(
         render:    (groupId, data, index) => (
             <DecoratedTreeSelect
                 formItem
+                allowClear={ false }
                 cnStyles={ data.alreadyExists && Styles.duplicate }
+                disabled={ !_.isNil(data.alreadyExists) }
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.groupId` }
@@ -106,6 +109,7 @@ export function columnsConfig(
             <MeasureUnitSelect
                 formItem
                 cnStyles={ data.alreadyExists && Styles.duplicate }
+                disabled={ !_.isNil(data.alreadyExists) }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.measureUnit` }
                 formatMessage={ formatMessage }
@@ -131,6 +135,7 @@ export function columnsConfig(
                 fields={ {} }
                 formItem
                 cnStyles={ data.alreadyExists && Styles.duplicate }
+                disabled={ !_.isNil(data.alreadyExists) }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.name` }
                 initialValue={ name }
@@ -163,6 +168,7 @@ export function columnsConfig(
                         formItem
                         // labelInValue
                         cnStyles={ data.alreadyExists && Styles.duplicate }
+                        disabled={ !_.isNil(data.alreadyExists) }
                         defaultGetValueProps
                         getFieldDecorator={ getFieldDecorator }
                         field={ field }
@@ -223,6 +229,7 @@ export function columnsConfig(
             <DecoratedInput
                 formItem
                 cnStyles={ data.alreadyExists && Styles.duplicate }
+                disabled={ !_.isNil(data.alreadyExists) }
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.tradeCode` }
@@ -241,6 +248,7 @@ export function columnsConfig(
             <DecoratedInput
                 formItem
                 cnStyles={ data.alreadyExists && Styles.duplicate }
+                disabled={ !_.isNil(data.alreadyExists) }
                 fields={ {} }
                 getFieldDecorator={ getFieldDecorator }
                 field={ `${index}.certificate` }
@@ -259,6 +267,7 @@ export function columnsConfig(
             return (
                 <PriceGroupSelect
                     cnStyles={ data.alreadyExists && Styles.duplicate }
+                    disabled={ !_.isNil(data.alreadyExists) }
                     formItem
                     field={ `${index}.priceGroupNumber` }
                     initialValue={ priceGroupNumber }
@@ -280,6 +289,7 @@ export function columnsConfig(
         render:    (price, data, index) => (
             <DecoratedInputNumber
                 cnStyles={ data.alreadyExists && Styles.duplicate }
+                disabled={ !_.isNil(data.alreadyExists) }
                 fields={ {} }
                 formItem
                 getFieldDecorator={ getFieldDecorator }

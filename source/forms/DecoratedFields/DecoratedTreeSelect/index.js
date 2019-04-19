@@ -17,8 +17,9 @@ export const DecoratedTreeSelect = memo(
             className,
             hasFeedback,
             formItemLayout,
+            allowClear,
 
-            // cnStyles,
+            cnStyles,
             getPopupContainer,
             dropdownStyle,
             getFieldDecorator,
@@ -75,6 +76,7 @@ export const DecoratedTreeSelect = memo(
             rules,
         })(
             <TreeSelect
+                className={ cnStyles }
                 showSearch
                 style={ style }
                 getPopupContainer={ getPopupContainer }
@@ -84,7 +86,7 @@ export const DecoratedTreeSelect = memo(
                 treeData={ treeData }
                 placeholder={ placeholder }
                 treeDefaultExpandAll={ treeDefaultExpandAll }
-                allowClear
+                allowClear={ allowClear }
                 onChange={ onChange }
                 disabled={ disabled }
                 ref={ ref }
