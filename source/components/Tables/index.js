@@ -19,4 +19,4 @@ export {
 export { ProductsExcelTable } from './StorageTables/ProductsExcelTable';
 export { StoreProductsTable } from './StorageTables/StoreProductsTable';
 export { PriceGroupsTable } from './StorageTables/PriceGroupsTable';
-export { IncomesTable } from './StorageTables';
+export { IncomesTable, ExpensesTable } from './StorageTables';

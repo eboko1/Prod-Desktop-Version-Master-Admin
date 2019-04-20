@@ -35,8 +35,11 @@
     "storage.remain": "Remain",
     "storage.download_excel_template": "Download Excel template",
     "storage.please_finish_import": "Please, finish import.",
-    "storage.record_datetime": "Record datetime",
+    "storage.created_datetime": "Created datetime",
     "storage.status": "Status",
+    "storage.status.NEW": "New",
+    "storage.status.DONE": "Done",
+    "storage.supplier": "Supplier",
     "storage.client": "Client"
   },
   "ru": {
@@ -76,8 +79,11 @@
     "storage.download_excel_template": "Скачать шаблон Excel",
     "storage.import_excel_with_products": "Импортировать Excel с товарами",
     "storage.please_finish_import": "Пожалуйста, закончите импорт.",
-    "storage.record_datetime": "Дата записи",
+    "storage.created_datetime": "Дата создания",
     "storage.status": "Статус",
+    "storage.status.NEW": "Новый",
+    "storage.status.DONE": "Выполненный",
+    "storage.supplier": "Поставщик",
     "storage.client": "Клиент"
   },
   "uk": {
@@ -117,8 +123,11 @@
     "storage.download_excel_template": "Завантажити шаблон Excel",
     "storage.import_excel_with_products": "Імпортувати Excel з товарами",
     "storage.please_finish_import": "Будь ласка, закінчіть імпорт.",
-    "storage.record_datetime": "Дата запису",
+    "storage.created_datetime": "Дата створення",
     "storage.status": "Статус",
+    "storage.status.NEW": "Новий",
+    "storage.status.DONE": "Виконанний",
+    "storage.supplier": "Постачальник",
     "storage.client": "Клієнт"
   }
 }

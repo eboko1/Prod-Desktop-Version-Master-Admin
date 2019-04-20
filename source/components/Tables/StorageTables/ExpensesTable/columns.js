@@ -38,13 +38,13 @@ export default props => {
         ),
     };
 
-    const supplier = {
+    const client = {
         title: props.intl.formatMessage({
-            id: 'storage.supplier',
+            id: 'storage.client',
         }),
         dataIndex: 'businessSupplierId',
         width:     '20%',
-        render:    (supplier, { businessSupplier }) => (
+        render:    (client, { businessSupplier }) => (
             <div>{ businessSupplier.name }</div>
         ),
     };
@@ -60,18 +60,18 @@ export default props => {
     const actions = {
         width:     'auto',
         dataIndex: 'delete',
-        render:    (key, data) => {
+        render:    (key, { id }) => {
             return (
                 <ActionIcons
-                // edit={ () =>
-                //     props.setModal(MODALS.STORE_PRODUCT, {
-                //         id,
-                //         name,
-                //         code,
-                //         editing: true,
-                //     })
-                // }
-                // delete={ () => props.deleteProduct(id) }
+                    // edit={ () =>
+                    //     props.setModal(MODALS.STORE_PRODUCT, {
+                    //         id,
+                    //         name,
+                    //         code,
+                    //         editing: true,
+                    //     })
+                    // }
+                    delete={ () => props.deleteExpenseDoc(id) }
                 />
             );
         },
@@ -81,7 +81,7 @@ export default props => {
         id,
         createdDatetime,
         status,
-        supplier,
+        client,
         sum,
         actions,
     ];

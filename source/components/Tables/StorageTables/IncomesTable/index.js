@@ -53,7 +53,7 @@ const IncomesTableComponent = props => {
                     emptyText: props.intl.formatMessage({ id: 'no_data' }),
                 } }
                 loading={ props.loading }
-                rowKey={ record => record.code }
+                rowKey={ record => record.id }
             />
         </Catcher>
     );
