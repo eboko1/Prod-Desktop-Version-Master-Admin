@@ -60,18 +60,18 @@ export default props => {
     const actions = {
         width:     'auto',
         dataIndex: 'delete',
-        render:    (key, data) => {
+        render:    (key, { id }) => {
             return (
                 <ActionIcons
-                // edit={ () =>
-                //     props.setModal(MODALS.STORE_PRODUCT, {
-                //         id,
-                //         name,
-                //         code,
-                //         editing: true,
-                //     })
-                // }
-                // delete={ () => props.deleteProduct(id) }
+                    // edit={ () =>
+                    //     props.setModal(MODALS.STORE_PRODUCT, {
+                    //         id,
+                    //         name,
+                    //         code,
+                    //         editing: true,
+                    //     })
+                    // }
+                    delete={ () => props.deleteIncomeDoc(id) }
                 />
             );
         },
