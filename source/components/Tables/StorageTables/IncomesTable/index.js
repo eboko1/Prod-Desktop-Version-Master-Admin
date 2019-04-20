@@ -1,76 +1,79 @@
 // vendor
-import React, { useEffect } from 'react';
+import React, { useEffect, memo } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
+import _ from 'lodash';
 
 // proj
 import {
-    fetchProducts,
-    deleteProduct,
-    selectStoreProducts,
-    selectProductsLoading,
-    selectStoreProductsFilters,
-    setStoreProductsPage,
-} from 'core/storage/products';
-import { setModal } from 'core/modals/duck';
+    fetchIncomes,
+    deleteIncomeDoc,
+    selectIncomes,
+    selectIncomesLoading,
+    selectIncomesFilters,
+    setIncomesPage,
+} from 'core/storage/incomes';
+
+import { Catcher } from 'commons';
 
 // own
 import columnsConfig from './columns';
 
-const ProductsTable = props => {
-    const { products } = props;
+const IncomesTableComponent = props => {
+    const { incomes } = props;
 
     useEffect(() => {
-        props.fetchProducts();
-    }, [ products ]);
+        props.fetchIncomes();
+    }, []); // add incomes -> recursion
 
-    console.log('→ products', products);
+    console.log('→ incomes', incomes);
     console.log('→ filters', props.filters);
 
     const pagination = {
         pageSize:         25,
         size:             'large',
-        total:            Math.ceil(products.stats.count / 25) * 25,
+        total:            Math.ceil(_.get(incomes, 'stats.count', 0) / 25) * 25,
         hideOnSinglePage: true,
         current:          props.filters.page,
         onChange:         page => {
-            props.setStoreProductsPage(page);
-            props.fetchProducts();
+            props.setIncomesPage(page);
+            props.fetchIncomes();
         },
     };
 
     return (
-        <Table
-            size='small'
-            columns={ columnsConfig(props) }
-            dataSource={ props.products.list }
-            pagination={ pagination }
-            locale={ {
-                emptyText: props.intl.formatMessage({ id: 'no_data' }),
-            } }
-            loading={ props.loading }
-            rowKey={ record => record.code }
-        />
+        <Catcher>
+            <Table
+                size='small'
+                columns={ columnsConfig(props) }
+                dataSource={ props.incomes.list }
+                pagination={ pagination }
+                locale={ {
+                    emptyText: props.intl.formatMessage({ id: 'no_data' }),
+                } }
+                loading={ props.loading }
+                rowKey={ record => record.code }
+            />
+        </Catcher>
     );
 };
 
 const mapStateToProps = state => ({
-    products: selectStoreProducts(state),
-    filters:  selectStoreProductsFilters(state),
-    loading:  selectProductsLoading(state),
+    incomes: selectIncomes(state),
+    filters: selectIncomesFilters(state),
+    loading: selectIncomesLoading(state),
 });
 
 const mapDispatchToProps = {
-    fetchProducts,
-    setModal,
-    deleteProduct,
-    setStoreProductsPage,
+    fetchIncomes,
+    deleteIncomeDoc,
+    setIncomesPage,
 };
 
-export const StoreProductsTable = injectIntl(
+export const IncomesTable = injectIntl(
     connect(
         mapStateToProps,
         mapDispatchToProps,
-    )(ProductsTable),
+    )(IncomesTableComponent),
 );

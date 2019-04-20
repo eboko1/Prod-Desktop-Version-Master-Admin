@@ -33,7 +33,8 @@ export const SET_INCOME_DOC_LOADING = `${prefix}/SET_INCOME_DOC_LOADING`;
  **/
 
 const ReducerState = {
-    incomes:   [],
+    // incomes:   { stats: { count: '0' }, list: [] },
+    incomes:   {},
     incomeDoc: {},
     filters:   {
         page: 1,

@@ -46,7 +46,7 @@ export const SET_PRODUCTS_EXCEL_IMPORT_LOADING = `${prefix}/SET_PRODUCTS_EXCEL_I
 const ReducerState = {
     products: {
         stats: {
-            count: '',
+            count: '0',
         },
         list: [],
     },

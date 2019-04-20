@@ -17,7 +17,7 @@ export default props => {
 
     const recordDatetime = {
         title: props.intl.formatMessage({
-            id: 'storage.recordDatetime',
+            id: 'storage.record_datetime',
         }),
         dataIndex: 'recordDatetime',
         width:     '20%',
@@ -50,7 +50,7 @@ export default props => {
     const actions = {
         width:     'auto',
         dataIndex: 'delete',
-        render:    (key, data}) => {
+        render:    (key, data) => {
             return (
                 <ActionIcons
                 // edit={ () =>

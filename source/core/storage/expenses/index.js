@@ -33,9 +33,9 @@ export const SET_EXPENSE_DOC_LOADING = `${prefix}/SET_EXPENSE_DOC_LOADING`;
  **/
 
 const ReducerState = {
-    expenses:   [],
+    expenses:   { stats: { count: '0' }, list: [] },
     expenseDoc: {},
-    filters:   {
+    filters:    {
         page: 1,
     },
     expensesLoading:   false,
