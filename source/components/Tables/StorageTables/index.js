@@ -7,3 +7,4 @@ export { StoreBalanceTable } from './StoreBalanceTable';
 export { StoreDocumentTable } from './StoreDocumentTable';
 export { StoreMovementTable } from './StoreMovementTable';
 export { ProductsExcelTable } from './ProductsExcelTable';
+export { StoreDocumentProductsTable } from './StoreDocumentProductsTable';

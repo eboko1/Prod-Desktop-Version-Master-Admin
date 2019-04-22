@@ -19,7 +19,6 @@ const Title = styled.div`
 `;
 
 const ExpenseDoc = props => {
-    console.log('→ props', props);
     const id = _.get(props, 'location.state.id');
     const status = _.get(props, 'location.state.status');
 

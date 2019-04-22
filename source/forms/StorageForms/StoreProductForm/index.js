@@ -68,7 +68,6 @@ const ProductForm = props => {
         props.fetchPriceGroups();
     }, []);
 
-    console.log('→ props.editing', props.editing);
     const _submit = event => {
         event.preventDefault();
         props.form.validateFields((err, values) => {

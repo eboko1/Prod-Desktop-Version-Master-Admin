@@ -22,13 +22,15 @@ const ActionsIcons = styled.div`
 export default injectIntl(props => {
     return (
         <ActionsIcons>
-            <EditIcon type='edit' onClick={ props.edit } />
-            <Popconfirm
-                title={ `${props.intl.formatMessage({ id: 'delete' })} ?` }
-                onConfirm={ props.delete }
-            >
-                <DeleteIcon type='delete' />
-            </Popconfirm>
+            { props.edit ? <EditIcon type='edit' onClick={ props.edit } /> : null }
+            { props.delete ? (
+                <Popconfirm
+                    title={ `${props.intl.formatMessage({ id: 'delete' })} ?` }
+                    onConfirm={ props.delete }
+                >
+                    <DeleteIcon type='delete' />
+                </Popconfirm>
+            ) : null }
         </ActionsIcons>
     );
 });

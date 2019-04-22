@@ -24,6 +24,10 @@ export const IS_FETCHING_BRANDS = `${prefix}/IS_FETCHING_BRANDS`;
 export const SET_BRANDS_SEARCH_QUERY = `${prefix}/SET_BRANDS_SEARCH_QUERY`;
 export const FETCH_BRANDS_SUCCESS = `${prefix}/FETCH_BRANDS_SUCCESS`;
 
+export const IS_FETCHING_STORE_PRODUCTS = `${prefix}/IS_FETCHING_STORE_PRODUCTS`;
+export const SET_STORE_PRODUCTS_SEARCH_QUERY = `${prefix}/SET_STORE_PRODUCTS_SEARCH_QUERY`;
+export const FETCH_STORE_PRODUCTS_SUCCESS = `${prefix}/FETCH_STORE_PRODUCTS_SUCCESS`;
+
 /**
  * Reducer
  * */
@@ -50,6 +54,10 @@ const ReducerState = {
     // brands:            [{ supplierId: 362, brandId: 12, brandName: 'ALKAR' }, { supplierId: 85, brandId: 167, brandName: 'KAYABA' }],
     isBrandsFetching:  false,
     brandsSearchQuery: null,
+
+    storeProducts:            [],
+    isStoreProductsFetching:  false,
+    storeProductsSearchQuery: null,
 };
 
 /* eslint-disable complexity */
@@ -87,6 +95,12 @@ export default function reducer(state = ReducerState, action) {
                 brands: payload,
             };
 
+        case FETCH_STORE_PRODUCTS_SUCCESS:
+            return {
+                ...state,
+                storeProducts: payload,
+            };
+
         case SET_BUSINESS_SEARCH_QUERY:
             return {
                 ...state,
@@ -115,6 +129,12 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 brandsSearchQuery: payload,
+            };
+
+        case SET_STORE_PRODUCTS_SEARCH_QUERY:
+            return {
+                ...state,
+                storeProductsSearchQuery: payload,
             };
 
         case IS_FETCHING_BUSINESSES:
@@ -147,6 +167,12 @@ export default function reducer(state = ReducerState, action) {
                 isFetchingBrands: payload,
             };
 
+        case IS_FETCHING_STORE_PRODUCTS:
+            return {
+                ...state,
+                isStoreProductsFetching: payload,
+            };
+
         default:
             return state;
     }
@@ -158,6 +184,8 @@ export default function reducer(state = ReducerState, action) {
 
 export const stateSelector = state => state[ moduleName ];
 export const selectBrandsByQuery = state => stateSelector(state).brands;
+export const selectStoreProductsByQuery = state =>
+    stateSelector(state).storeProducts;
 
 /**
  * Action Creators
@@ -188,6 +216,11 @@ export const setBrandsSearchQuery = query => ({
     payload: query,
 });
 
+export const setStoreProductsSearchQuery = query => ({
+    type:    SET_STORE_PRODUCTS_SEARCH_QUERY,
+    payload: query,
+});
+
 export const fetchBusinessesSuccess = businesses => ({
     type:    FETCH_BUSINESSES_SUCCESS,
     payload: businesses,
@@ -213,6 +246,11 @@ export const fetchBrandsSuccess = brands => ({
     payload: brands,
 });
 
+export const fetchStoreProductsSuccess = storeProducts => ({
+    type:    FETCH_STORE_PRODUCTS_SUCCESS,
+    payload: storeProducts,
+});
+
 export const setIsFetchingBusinesses = isFetching => ({
     type:    IS_FETCHING_BUSINESSES,
     payload: isFetching,
@@ -235,5 +273,10 @@ export const setIsFetchingProducts = isFetching => ({
 
 export const setIsFetchingBrands = isFetching => ({
     type:    IS_FETCHING_BRANDS,
+    payload: isFetching,
+});
+
+export const setIsFetchingStoreProducts = isFetching => ({
+    type:    IS_FETCHING_STORE_PRODUCTS,
     payload: isFetching,
 });

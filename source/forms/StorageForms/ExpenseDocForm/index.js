@@ -35,7 +35,6 @@ const ExpenseForm = props => {
         }
     }, [ _.get(props, 'modalProps.id') ]);
 
-    console.log('→ props.editing', props.editing);
     const _submit = event => {
         props.form.validateFields((err, values) => {
             if (!err) {

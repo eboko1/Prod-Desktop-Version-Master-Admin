@@ -1,6 +1,7 @@
 // vendor
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router';
 import { Form, Select, Icon } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
@@ -12,6 +13,7 @@ import {
     selectIncomeDoc,
     selectIncomeDocLoading,
 } from 'core/storage/incomes';
+import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
 import { fetchSuppliers, selectSuppliers } from 'core/suppliers/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
@@ -23,6 +25,7 @@ import {
     DecoratedSelect,
 } from 'forms/DecoratedFields';
 import { SupplierModal } from 'modals';
+import { StoreDocumentProductsTable } from 'components';
 
 // own
 const Option = Select.Option;
@@ -39,10 +42,15 @@ const IncomeForm = props => {
     } = props;
 
     useEffect(() => {
+        if (props.match.params.id) {
+            props.fetchIncomeDoc(props.match.params.id);
+        }
+    }, []);
+
+    useEffect(() => {
         props.fetchSuppliers();
     }, []);
 
-    console.log('→ props.editing', props.editing);
     const _submit = event => {
         props.form.validateFields((err, values) => {
             if (!err) {
@@ -62,6 +70,7 @@ const IncomeForm = props => {
             }
         });
     };
+    const { incomeDoc } = props;
 
     return (
         <Catcher>
@@ -73,7 +82,7 @@ const IncomeForm = props => {
                     label={ formatMessage({
                         id: 'storage.supplier_document_number',
                     }) }
-                    field='code'
+                    field='supplierDocNumber'
                     getFieldDecorator={ form.getFieldDecorator }
                     rules={ [
                         {
@@ -81,7 +90,7 @@ const IncomeForm = props => {
                             message:  'required',
                         },
                     ] }
-                    // initialValue={}
+                    initialValue={ incomeDoc.supplierDocNumber }
                 />
                 <DecoratedDatePicker
                     formItem
@@ -98,7 +107,7 @@ const IncomeForm = props => {
                             message:  'required',
                         },
                     ] }
-                    // initialValue={}
+                    initialValue={ incomeDoc.recordDatetime }
                 />
                 <DecoratedDatePicker
                     formItem
@@ -107,10 +116,9 @@ const IncomeForm = props => {
                     label={ formatMessage({
                         id: 'storage.payment_date',
                     }) }
-                    field='paymentDatetime'
+                    field='paidDatetime'
                     getFieldDecorator={ form.getFieldDecorator }
-
-                    // initialValue={}
+                    initialValue={ incomeDoc.paidDatetime }
                 />
                 <DecoratedSelect
                     field='businessSupplierId'
@@ -124,6 +132,7 @@ const IncomeForm = props => {
                     formItemLayout={ formItemLayout }
                     getFieldDecorator={ form.getFieldDecorator }
                     getPopupContainer={ trigger => trigger.parentNode }
+                    initialValue={ incomeDoc.businessSupplierId }
                 >
                     { !_.isEmpty(props.suppliers)
                         ? props.suppliers.map(({ id, name }) => (
@@ -144,14 +153,16 @@ const IncomeForm = props => {
                     fields={ {} }
                     field='sum'
                     getFieldDecorator={ form.getFieldDecorator }
-                    initialValue={ _.get(props, 'incomeDoc.tradeCode') }
+                    initialValue={ incomeDoc.sum }
                 />
-                <div>Table</div>
+                <StoreDocumentProductsTable
+                    incomeDoc={ incomeDoc }
+                    form={ props.form }
+                    brands={ props.brands }
+                    setBrandsSearchQuery={ props.setBrandsSearchQuery }
+                />
             </Form>
-            <SupplierModal
-            // visible={ props.modal }
-            // resetModal={ props.resetModal }
-            />
+            <SupplierModal />
         </Catcher>
     );
 };
@@ -159,8 +170,8 @@ const IncomeForm = props => {
 const mapStateToProps = state => ({
     incomeDoc: selectIncomeDoc(state),
     loading:   selectIncomeDocLoading(state),
+    brands:    selectBrandsByQuery(state),
     suppliers: selectSuppliers(state),
-    // modal:     state.modals.modal,
 });
 
 const mapDispatchToProps = {
@@ -170,9 +181,11 @@ const mapDispatchToProps = {
     resetModal,
 };
 
-export const IncomeDocForm = injectIntl(
-    connect(
-        mapStateToProps,
-        mapDispatchToProps,
-    )(Form.create()(IncomeForm)),
+export const IncomeDocForm = withRouter(
+    injectIntl(
+        connect(
+            mapStateToProps,
+            mapDispatchToProps,
+        )(Form.create()(IncomeForm)),
+    ),
 );
