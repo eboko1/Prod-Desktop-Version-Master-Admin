@@ -153,7 +153,11 @@ export default class Private extends Component {
                         <IncomeDocPage key={ props.match.params.id } { ...props } />
                     ) }
                 />
-
+                <Route
+                    exact
+                    path={ book.storageIncomeDoc }
+                    render={ props => <IncomeDocPage { ...props } /> }
+                />
                 <Route
                     exact
                     component={ ExpensesPage }
@@ -162,6 +166,16 @@ export default class Private extends Component {
                 <Route
                     exact
                     path={ book.storageExpenseDocId }
+                    render={ props => (
+                        <ExpenseDocPage
+                            key={ props.match.params.id }
+                            { ...props }
+                        />
+                    ) }
+                />
+                <Route
+                    exact
+                    path={ book.storageExpenseDoc }
                     render={ props => <ExpenseDocPage { ...props } /> }
                 />
                 { /* Statistics */ }
