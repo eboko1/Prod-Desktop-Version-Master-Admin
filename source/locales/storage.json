@@ -40,7 +40,12 @@
     "storage.status.NEW": "New",
     "storage.status.DONE": "Done",
     "storage.supplier": "Supplier",
-    "storage.client": "Client"
+    "storage.client": "Client",
+    "storage.income_document": "Income Document",
+    "storage.expense_document": "Expense Document",
+    "storage.supplier_document_number": "Supplier's document number",
+    "storage.record_date": "Record Date",
+    "storage.payment_date": "Payment Date"
   },
   "ru": {
     "storage.product_group": "Группа товаров",
@@ -84,7 +89,12 @@
     "storage.status.NEW": "Новый",
     "storage.status.DONE": "Выполненный",
     "storage.supplier": "Поставщик",
-    "storage.client": "Клиент"
+    "storage.client": "Клиент",
+    "storage.income_document": "Приходный Документ",
+    "storage.expense_document": "Расходный Документ",
+    "storage.supplier_document_number": "Номер документа поставщика",
+    "storage.record_date": "Дата учета",
+    "storage.payment_date": "Дата оплаты"
   },
   "uk": {
     "storage.product_group": "Група товару",
@@ -128,6 +138,11 @@
     "storage.status.NEW": "Новий",
     "storage.status.DONE": "Виконанний",
     "storage.supplier": "Постачальник",
-    "storage.client": "Клієнт"
+    "storage.client": "Клієнт",
+    "storage.income_document": "Прихідний Документ",
+    "storage.expense_document": "Росхідний Документ",
+    "storage.supplier_document_number": "Номер документу постачальника",
+    "storage.record_date": "Дата обліку",
+    "storage.payment_date": "Дата оплати"
   }
 }

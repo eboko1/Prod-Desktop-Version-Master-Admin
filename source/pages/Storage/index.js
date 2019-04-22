@@ -6,3 +6,5 @@ export { StorageMovementPage } from './StorageMovementPage';
 export { ProductsTrackingPage } from './ProductsTrackingPage';
 export { IncomesPage } from './IncomesPage';
 export { ExpensesPage } from './ExpensesPage';
+export { IncomeDocPage } from './IncomeDocPage';
+export { ExpenseDocPage } from './ExpenseDocPage';

@@ -60,7 +60,11 @@ const book = Object.freeze({
     productsTracking:         '/tracking',
     storageIncomes:           '/incomes',
     storageExpenses:          '/expenses',
-    //
+    storageIncomeDoc:         '/income-document',
+    storageIncomeDocId:       '/income-document/:id',
+    storageExpenseDoc:        '/expense-document',
+    storageExpenseDocId:      '/expense-document/:id',
+    //trt
     // Statistics
     //
     chart:                    '/chart',

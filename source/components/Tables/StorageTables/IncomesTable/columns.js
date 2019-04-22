@@ -1,15 +1,28 @@
 // vendor
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Tag } from 'antd';
 
 // proj
 import { ActionIcons, DatetimeFormatter } from 'commons/_uikit';
+import book from 'routes/book';
+import { goTo } from 'utils';
 
 export default props => {
     const id = {
         title:     '№',
         dataIndex: 'id',
         width:     '20%',
+        render:    (key, { id, status }) => (
+            <Link
+                to={ {
+                    pathname: `${book.storageIncomeDoc}/${id}`,
+                    state:    { id, status },
+                } }
+            >
+                { id }
+            </Link>
+        ),
     };
 
     const createdDatetime = {
@@ -63,14 +76,7 @@ export default props => {
         render:    (key, { id }) => {
             return (
                 <ActionIcons
-                    // edit={ () =>
-                    //     props.setModal(MODALS.STORE_PRODUCT, {
-                    //         id,
-                    //         name,
-                    //         code,
-                    //         editing: true,
-                    //     })
-                    // }
+                    edit={ () => goTo(`${book.storageIncomeDoc}/${id}`, { id }) }
                     delete={ () => props.deleteIncomeDoc(id) }
                 />
             );
