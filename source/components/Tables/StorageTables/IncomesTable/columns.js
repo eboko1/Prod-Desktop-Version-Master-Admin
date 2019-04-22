@@ -58,7 +58,7 @@ export default props => {
         dataIndex: 'businessSupplierId',
         width:     '20%',
         render:    (supplier, { businessSupplier }) => (
-            <div>{ businessSupplier.name }</div>
+            <div>{ businessSupplier ? businessSupplier.name : null }</div>
         ),
     };
 

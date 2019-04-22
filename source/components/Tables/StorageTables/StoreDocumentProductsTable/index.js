@@ -1,5 +1,5 @@
 // vendor
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { Table } from 'antd';
 import { injectIntl } from 'react-intl';
@@ -17,20 +17,29 @@ import { Catcher } from 'commons';
 import columns from './columns';
 
 const DocumentProductsTable = props => {
-    const docProducts = _.get(props, 'incomeDoc.docProducts', []);
-    console.log('→ docProducts', docProducts);
-    const uuid = docProducts.length;
-    
+    // const docProducts = _.get(props, 'incomeDoc.docProducts', []);
+    const [ docProducts, setDocProducts ] = useState([]);
 
     // const defaultKeys = [ ..._.keys(docProducts), uuid++ ];
 
     // const [ keys, setKeys ] = useState([ ..._.keys(defaultKeys) ]);
 
     // const [ uuid, setUuid ] = useState(docProducts.length);
-    const [ keys, setKeys ] = useState([ ..._.keys(docProducts), uuid + 1 ]);
-    console.log('→TABLE DS keys', keys);
-    console.log('→ TABLE UUDI', uuid);
+    const [ keys, setKeys ] = useState([ ..._.keys(docProducts), docProducts.length + 1 ]);
 
+    useEffect(() => {
+        const incomeDocProducts = _.get(props, 'incomeDoc.docProducts', []);
+        // setDocProducts(_.get(props, 'incomeDoc.docProducts', []));
+        setDocProducts(incomeDocProducts);
+        console.log('→ EFFECT incomeDocProducts', incomeDocProducts);
+
+        setKeys([ ..._.keys(incomeDocProducts), incomeDocProducts.length + 1 ]);
+    }, [ docProducts ]);
+
+    // const uuid = docProducts.length;
+    console.log('→ docProducts', docProducts);
+    console.log('→TABLE DS keys', keys);
+    // console.log('→ TABLE UUDI', uuid);
     // const _isFieldDisabled = key => {
     //     return !_.get(props.details, [ key, 'detailName' ]);
     // };
