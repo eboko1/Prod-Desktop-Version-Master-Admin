@@ -39,7 +39,8 @@ const IncomeDoc = props => {
                 <FormattedMessage id='add' />
             ) : null }
             &nbsp;
-            <FormattedMessage id='storage.income_document' />: { id }
+            <FormattedMessage id='storage.income_document' />
+            { id ? `: ${id}` : null }
         </Title>
     );
 

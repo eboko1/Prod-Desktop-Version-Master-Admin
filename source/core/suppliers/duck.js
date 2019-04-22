@@ -54,6 +54,7 @@ export default function reducer(state = ReducerState, action) {
  * */
 
 export const stateSelector = state => state[ moduleName ];
+export const selectSuppliers = state => state[ moduleName ].suppliers;
 
 /**
  * Action Creators

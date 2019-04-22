@@ -1,7 +1,7 @@
 // vendor
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Form, Select, Button } from 'antd';
+import { Form, Select, Icon } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import styled from 'styled-components';
@@ -12,12 +12,17 @@ import {
     selectIncomeDoc,
     selectIncomeDocLoading,
 } from 'core/storage/incomes';
+import { fetchSuppliers, selectSuppliers } from 'core/suppliers/duck';
+import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
+import { Catcher } from 'commons';
 import {
     DecoratedInput,
     DecoratedInputNumber,
     DecoratedDatePicker,
+    DecoratedSelect,
 } from 'forms/DecoratedFields';
+import { SupplierModal } from 'modals';
 
 // own
 const Option = Select.Option;
@@ -34,10 +39,8 @@ const IncomeForm = props => {
     } = props;
 
     useEffect(() => {
-        if (_.get(props, 'modalProps.id')) {
-            props.fetchProduct(_.get(props, 'modalProps.id'));
-        }
-    }, [ _.get(props, 'modalProps.id') ]);
+        props.fetchSuppliers();
+    }, []);
 
     console.log('→ props.editing', props.editing);
     const _submit = event => {
@@ -61,75 +64,110 @@ const IncomeForm = props => {
     };
 
     return (
-        <Form>
-            <DecoratedInput
-                formItem
-                formItemLayout={ formItemLayout }
-                fields={ {} }
-                label={ formatMessage({
-                    id: 'storage.supplier_document_number',
-                }) }
-                field='code'
-                getFieldDecorator={ form.getFieldDecorator }
-                rules={ [
-                    {
-                        required: true,
-                        message:  'required',
-                    },
-                ] }
-                // initialValue={}
-            />
-            <DecoratedDatePicker
-                formItem
-                formItemLayout={ formItemLayout }
-                fields={ {} }
-                label={ formatMessage({
-                    id: 'storage.record_date',
-                }) }
-                field='recordDatetime'
-                getFieldDecorator={ form.getFieldDecorator }
-                rules={ [
-                    {
-                        required: true,
-                        message:  'required',
-                    },
-                ] }
-                // initialValue={}
-            />
-            <DecoratedDatePicker
-                formItem
-                formItemLayout={ formItemLayout }
-                fields={ {} }
-                label={ formatMessage({
-                    id: 'storage.payment_date',
-                }) }
-                field='paymentDatetime'
-                getFieldDecorator={ form.getFieldDecorator }
+        <Catcher>
+            <Form>
+                <DecoratedInput
+                    formItem
+                    formItemLayout={ formItemLayout }
+                    fields={ {} }
+                    label={ formatMessage({
+                        id: 'storage.supplier_document_number',
+                    }) }
+                    field='code'
+                    getFieldDecorator={ form.getFieldDecorator }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'required',
+                        },
+                    ] }
+                    // initialValue={}
+                />
+                <DecoratedDatePicker
+                    formItem
+                    formItemLayout={ formItemLayout }
+                    fields={ {} }
+                    label={ formatMessage({
+                        id: 'storage.record_date',
+                    }) }
+                    field='recordDatetime'
+                    getFieldDecorator={ form.getFieldDecorator }
+                    rules={ [
+                        {
+                            required: true,
+                            message:  'required',
+                        },
+                    ] }
+                    // initialValue={}
+                />
+                <DecoratedDatePicker
+                    formItem
+                    formItemLayout={ formItemLayout }
+                    fields={ {} }
+                    label={ formatMessage({
+                        id: 'storage.payment_date',
+                    }) }
+                    field='paymentDatetime'
+                    getFieldDecorator={ form.getFieldDecorator }
 
-                // initialValue={}
+                    // initialValue={}
+                />
+                <DecoratedSelect
+                    field='businessSupplierId'
+                    formItem
+                    placeholder={ formatMessage({
+                        id: 'cash-order-form.select_supplier',
+                    }) }
+                    label={ formatMessage({
+                        id: 'cash-order-form.counterparty.BUSINESS_SUPPLIER',
+                    }) }
+                    formItemLayout={ formItemLayout }
+                    getFieldDecorator={ form.getFieldDecorator }
+                    getPopupContainer={ trigger => trigger.parentNode }
+                >
+                    { !_.isEmpty(props.suppliers)
+                        ? props.suppliers.map(({ id, name }) => (
+                            <Option value={ id } key={ id }>
+                                { name }
+                            </Option>
+                        ))
+                        : [] }
+                </DecoratedSelect>
+                <Icon
+                    type='plus'
+                    onClick={ () => props.setModal(MODALS.SUPPLIER) }
+                />
+                <DecoratedInputNumber
+                    formItem
+                    formItemLayout={ formItemLayout }
+                    label={ formatMessage({ id: 'storage.sum' }) }
+                    fields={ {} }
+                    field='sum'
+                    getFieldDecorator={ form.getFieldDecorator }
+                    initialValue={ _.get(props, 'incomeDoc.tradeCode') }
+                />
+                <div>Table</div>
+            </Form>
+            <SupplierModal
+            // visible={ props.modal }
+            // resetModal={ props.resetModal }
             />
-
-            <DecoratedInputNumber
-                formItem
-                formItemLayout={ formItemLayout }
-                label={ formatMessage({ id: 'storage.sum' }) }
-                fields={ {} }
-                field='sum'
-                getFieldDecorator={ form.getFieldDecorator }
-                initialValue={ _.get(props, 'incomeDoc.tradeCode') }
-            />
-            <div>Table</div>
-        </Form>
+        </Catcher>
     );
 };
 
 const mapStateToProps = state => ({
     incomeDoc: selectIncomeDoc(state),
     loading:   selectIncomeDocLoading(state),
+    suppliers: selectSuppliers(state),
+    // modal:     state.modals.modal,
 });
 
 const mapDispatchToProps = {
     fetchIncomeDoc,
+    fetchSuppliers,
+    setModal,
+    resetModal,
 };
 
 export const IncomeDocForm = injectIntl(
