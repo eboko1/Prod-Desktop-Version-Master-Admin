@@ -57,6 +57,8 @@ const ProductForm = props => {
         intl: { formatMessage },
     } = props;
 
+    console.log('→ props', props);
+
     useEffect(() => {
         if (_.get(props, 'modalProps.id')) {
             props.fetchProduct(_.get(props, 'modalProps.id'));
@@ -80,6 +82,10 @@ const ProductForm = props => {
                     ? props.updateProduct({
                         id:      _.get(props, 'modalProps.id'),
                         product: values,
+                        // product: {
+                        //     ...values,
+                        //     brandId: Number(values.brandId),
+                        // },
                     })
                     : props.createProduct(values);
 
@@ -94,6 +100,8 @@ const ProductForm = props => {
         props.form.resetFields();
         props.resetModal();
     };
+
+    console.log('→ form.getFieldsValue()', form.getFieldsValue());
 
     return (
         <StyledForm onSubmit={ _submit }>

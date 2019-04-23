@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
+import _ from 'lodash';
 
 // proj
 import {
@@ -19,19 +20,17 @@ import { setModal } from 'core/modals/duck';
 import columnsConfig from './config';
 
 const ProductsTable = props => {
+    // const products = { ...props.products };
     const { products } = props;
 
     useEffect(() => {
         props.fetchProducts();
     }, [ products ]);
 
-    console.log('→ products', products);
-    console.log('→ filters', props.filters);
-
     const pagination = {
         pageSize:         25,
         size:             'large',
-        total:            Math.ceil(products.stats.count / 25) * 25,
+        total:            Math.ceil(_.get(products, 'stats.count', 0) / 25) * 25,
         hideOnSinglePage: true,
         current:          props.filters.page,
         onChange:         page => {
