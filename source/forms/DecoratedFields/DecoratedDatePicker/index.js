@@ -22,6 +22,7 @@ export class DecoratedDatePicker extends React.PureComponent {
             className,
             hasFeedback,
             formItemLayout,
+            style,
 
             // formatMessage,
             ranges,
@@ -90,6 +91,7 @@ export class DecoratedDatePicker extends React.PureComponent {
                 hasFeedback={ hasFeedback }
                 colon={ colon }
                 className={ className }
+                style={ style }
                 { ...formItemLayout }
             >
                 { datePicker }

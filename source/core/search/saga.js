@@ -99,12 +99,13 @@ function* handleStoreProductsSearchSaga({ payload: query }) {
     yield delay(1000);
 
     yield put(setIsFetchingStoreProducts(true));
+    console.log('* query', query, typeof query);
     const storeProducts = yield call(
         fetchAPI,
         'GET',
         '/store_products/search',
         {
-            query,
+            query: query ? query : '',
         },
     );
     yield put(fetchStoreProductsSuccess(storeProducts));

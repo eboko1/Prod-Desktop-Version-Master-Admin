@@ -53,21 +53,19 @@ export default (props, state, table) => {
         },
     ];
 
+    const _isFieldDisabled = key => !props.form.getFieldValue(`${key}.code`);
+
     return [
         {
             title:  formatMessage({ id: 'storage.product_code' }),
             width:  '20%',
             key:    'code',
             render: data => {
-                // const detailArray = [
-                //     _.chain(formDetails)props.
-                //         .get(key)
-                //         .pick('detailName')
-                //         .value(),
-                // ].filter(Boolean);
-                console.log('→ data', data);
-                console.log('→ !!!!! key', data.key);
-                console.log('→ props', props);
+                const handleBlur = (key, value) => {
+                    if (value) {
+                        table.handleProductSelect(key, value);
+                    }
+                };
 
                 return (
                     <DecoratedSelect
@@ -85,6 +83,8 @@ export default (props, state, table) => {
                             props,
                             `incomeDoc.docProducts[${data.key}].product.code`,
                         ) }
+                        onBlur={ value => handleBlur(data.key, value) }
+                        // onBlur={ value => handleBlur(value, `${data.key}.code`) }
                         onSearch={ value => {
                             props.setStoreProductsSearchQuery(value);
                         } }
@@ -115,8 +115,8 @@ export default (props, state, table) => {
                     // fieldValue={ _.get(fields, `details[${key}].detailCode`) }
 
                     // initialValue={ _getDefaultValue(key, 'code') }
-                    field={ `${key}].product.code` }
-                    // disabled={ _isFieldDisabled(key) || editDetailsForbidden }
+                    field={ `${key}].name` }
+                    disabled={ _isFieldDisabled(key) }
                     getFieldDecorator={ props.form.getFieldDecorator }
                 />
             ),
@@ -126,13 +126,6 @@ export default (props, state, table) => {
             width:  '10%',
             key:    'brandId',
             render: ({ key }) => {
-                // const detailArray = [
-                //     _.chain(formDetails)props.
-                //         .get(key)
-                //         .pick('detailName')
-                //         .value(),
-                // ].filter(Boolean);
-
                 return (
                     <DecoratedAutoComplete
                         // formItemLayout={ formItemLayout }
@@ -159,6 +152,7 @@ export default (props, state, table) => {
                         optionFilterProp={ 'children' }
                         showSearch
                         dropdownMatchSelectWidth={ false }
+                        disabled={ _isFieldDisabled(key) }
                     >
                         { props.brands.map(({ brandName, brandId }) => (
                             <Option
@@ -183,7 +177,7 @@ export default (props, state, table) => {
                     // fieldValue={ _.get(fields, `${key}.purchasePrice`) }
                     // initialValue={ _getDefaultValue(key, 'purchasePrice') }
                     field={ `${key}.purchasePrice` }
-                    // disabled={ _isFieldDisabled(key) || editDetailsForbidden }
+                    disabled={ _isFieldDisabled(key) }
                     getFieldDecorator={ props.form.getFieldDecorator }
                     min={ 0 }
                     formatter={ numeralFormatter }
@@ -239,8 +233,8 @@ export default (props, state, table) => {
                     fieldValue={ _.get(fields, `${key}.quantity`) }
                     field={ `${key}.quantity` }
                     getFieldDecorator={ getFieldDecorator }
-                    // disabled={ _isFieldDisabled(key) || editDetailsForbidden }
-                    initialValue={ 1 }
+                    disabled={ _isFieldDisabled(key) }
+                    initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
                     min={ 0.1 }
                     step={ 0.1 }
                     formatter={ numeralFormatter }

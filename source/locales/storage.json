@@ -45,7 +45,9 @@
     "storage.expense_document": "Expense Document",
     "storage.supplier_document_number": "Supplier's document number",
     "storage.record_date": "Record Date",
-    "storage.payment_date": "Payment Date"
+    "storage.payment_date": "Payment Date",
+    "storage.document_number": "Document number",
+    "storage.complete": "Complete"
   },
   "ru": {
     "storage.product_group": "Группа товаров",
@@ -94,7 +96,9 @@
     "storage.expense_document": "Расходный Документ",
     "storage.supplier_document_number": "Номер документа поставщика",
     "storage.record_date": "Дата учета",
-    "storage.payment_date": "Дата оплаты"
+    "storage.payment_date": "Дата оплаты",
+    "storage.document_number": "Номер документа",
+    "storage.complete": "Выполнить"
   },
   "uk": {
     "storage.product_group": "Група товару",
@@ -143,6 +147,8 @@
     "storage.expense_document": "Росхідний Документ",
     "storage.supplier_document_number": "Номер документу постачальника",
     "storage.record_date": "Дата обліку",
-    "storage.payment_date": "Дата оплати"
+    "storage.payment_date": "Дата оплати",
+    "storage.document_number": "Номер документу",
+    "storage.complete": "Виконати"
   }
 }

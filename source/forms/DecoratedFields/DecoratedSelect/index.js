@@ -20,6 +20,7 @@ export const DecoratedSelect = memo(
             hasFeedback,
             formItemLayout,
             onPressEnter,
+            onBlur,
 
             // DecoratedField
             children,
@@ -67,6 +68,7 @@ export const DecoratedSelect = memo(
                 onChange={ onChange }
                 onSearch={ onSearch }
                 onSelect={ onSelect }
+                onBlur={ onBlur }
                 placeholder={ placeholder }
                 notFoundContent={
                     notFoundContent ? 

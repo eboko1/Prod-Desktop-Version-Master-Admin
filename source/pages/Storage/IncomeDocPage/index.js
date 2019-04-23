@@ -1,19 +1,18 @@
 // vendor
 import React from 'react';
-import { Button, Tag, Icon } from 'antd';
+import { Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import _ from 'lodash';
 
 // proj
-import { Layout, Close } from 'commons';
+import { Layout, Close, StyledButton } from 'commons';
 import { IncomeDocForm } from 'forms';
 import book from 'routes/book';
 import { linkBack } from 'utils';
 
-const Title = styled.div`
+const ModuleHeaderContent = styled.div`
     display: flex;
     align-items: center;
 `;
@@ -22,8 +21,13 @@ const IncomeDoc = props => {
     const id = _.get(props, 'location.state.id');
     const status = _.get(props, 'location.state.status');
 
+    const _submitDocument = incomeDoc => {
+        console.log('_submitDocument incomeDoc', incomeDoc);
+        // props.createIncomeDoc(incomeDoc)
+    };
+
     const title = (
-        <Title>
+        <ModuleHeaderContent>
             { status ? (
                 <Tag
                     color={
@@ -40,11 +44,20 @@ const IncomeDoc = props => {
             &nbsp;
             <FormattedMessage id='storage.income_document' />
             { id ? `: ${id}` : null }
-        </Title>
+        </ModuleHeaderContent>
+    );
+
+    const controls = (
+        <ModuleHeaderContent>
+            <StyledButton type='secondary'>
+                <FormattedMessage id='storage.complete' />
+            </StyledButton>
+            <Close onClick={ () => linkBack() } />
+        </ModuleHeaderContent>
     );
 
     return (
-        <Layout title={ title } controls={ <Close onClick={ () => linkBack() } /> }>
+        <Layout title={ title } controls={ controls }>
             <IncomeDocForm />
         </Layout>
     );
