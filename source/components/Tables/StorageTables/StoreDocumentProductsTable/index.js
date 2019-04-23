@@ -17,24 +17,34 @@ import { Catcher } from 'commons';
 import columns from './columns';
 
 const DocumentProductsTable = props => {
+    const incomeDocProducts = _.get(props, 'incomeDoc.docProducts');
     // const docProducts = _.get(props, 'incomeDoc.docProducts', []);
-    const [ docProducts, setDocProducts ] = useState([]);
+    const [ docProducts, setDocProducts ] = useState();
 
     // const defaultKeys = [ ..._.keys(docProducts), uuid++ ];
 
     // const [ keys, setKeys ] = useState([ ..._.keys(defaultKeys) ]);
 
     // const [ uuid, setUuid ] = useState(docProducts.length);
-    const [ keys, setKeys ] = useState([ ..._.keys(docProducts), docProducts.length + 1 ]);
+    // const [ keys, setKeys ] = useState([ ..._.keys(docProducts), docProducts.length + 1 ]);
+    const [ keys, setKeys ] = useState(() => {
+        const products = docProducts ? docProducts.length + 1 : 1;
+
+        return [ ..._.keys(docProducts), products ];
+    });
 
     useEffect(() => {
-        const incomeDocProducts = _.get(props, 'incomeDoc.docProducts', []);
+        // const incomeDocProducts = _.get(props, 'incomeDoc.docProducts', []);
         // setDocProducts(_.get(props, 'incomeDoc.docProducts', []));
-        setDocProducts(incomeDocProducts);
-        console.log('→ EFFECT incomeDocProducts', incomeDocProducts);
+        if (incomeDocProducts) {
+            setDocProducts(incomeDocProducts);
+            console.log('→ EFFECT incomeDocProducts', incomeDocProducts);
+            console.log('→ EFFECT setKeys([ ..._.keys(incomeDocProducts)', [ ..._.keys(incomeDocProducts).map(key => Number(key)), incomeDocProducts.length ]);
+            setKeys([ ..._.keys(incomeDocProducts).map(key => Number(key)), incomeDocProducts.length ]);
+        }
 
-        setKeys([ ..._.keys(incomeDocProducts), incomeDocProducts.length + 1 ]);
-    }, [ docProducts ]);
+        // setKeys([ ..._.keys(incomeDocProducts), incomeDocProducts.length + 1 ]);
+    }, [ incomeDocProducts ]);
 
     // const uuid = docProducts.length;
     console.log('→ docProducts', docProducts);

@@ -83,8 +83,7 @@ export default (props, state, table) => {
                         field={ `${data.key}.code` }
                         initialValue={ _.get(
                             props,
-                            `incomeDoc.docProducts[${data.key -
-                                1}].product.code`,
+                            `incomeDoc.docProducts[${data.key}].product.code`,
                         ) }
                         onSearch={ value => {
                             props.setStoreProductsSearchQuery(value);
