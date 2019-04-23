@@ -17,7 +17,7 @@ import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
 import { fetchSuppliers, selectSuppliers } from 'core/suppliers/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Catcher, Numeral } from 'commons';
+import { Catcher, Numeral, StyledButton } from 'commons';
 import {
     DecoratedInput,
     DecoratedInputNumber,
@@ -45,6 +45,10 @@ const FormHeader = styled.div`
 const FormBody = styled.div`
     display: flex;
     justify-content: space-between;
+`;
+
+const SubmitButton = styled(Button)`
+    margin-right: 24px;
 `;
 
 const TotalSum = styled.div`
@@ -116,9 +120,14 @@ const IncomeForm = props => {
         <Catcher>
             <Form>
                 <FormHeader>
-                    <Button type='primary' onClick={ _submit }>
-                        { formatMessage({ id: 'create' }) }
-                    </Button>
+                    <div>
+                        <SubmitButton type='primary' onClick={ _submit }>
+                            { formatMessage({ id: 'create' }) }
+                        </SubmitButton>
+                        <StyledButton type='secondary'>
+                            { formatMessage({ id: 'storage.complete' }) }
+                        </StyledButton>
+                    </div>
                     <TotalSum>
                         { formatMessage({ id: 'storage.sum' }) }&nbsp;
                         <Numeral
@@ -156,7 +165,7 @@ const IncomeForm = props => {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  'required',
+                                    message:  'required_field',
                                 },
                             ] }
                             initialValue={ incomeDoc.supplierDocNumber }
@@ -207,7 +216,7 @@ const IncomeForm = props => {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  'required',
+                                    message:  'required_field',
                                 },
                             ] }
                             initialValue={ incomeDoc.recordDatetime }

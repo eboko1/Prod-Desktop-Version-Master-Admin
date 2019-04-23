@@ -49,9 +49,6 @@ const IncomeDoc = props => {
 
     const controls = (
         <ModuleHeaderContent>
-            <StyledButton type='secondary'>
-                <FormattedMessage id='storage.complete' />
-            </StyledButton>
             <Close onClick={ () => linkBack() } />
         </ModuleHeaderContent>
     );
