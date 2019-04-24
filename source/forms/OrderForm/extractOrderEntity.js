@@ -50,19 +50,27 @@ export function convertFieldsValuesToDbEntity(
                 detailCode: code,
                 detailBrandName: brandId,
                 purchasePrice: purchasePrice,
+                storage: storage,
+                using: using,
             } = detail;
 
             const detailConfig = allDetails.details.find(
                 ({ detailId: id }) => String(id) === detailId,
             );
+
+            let detailCustom = { detailId };
+
+            if (storage) {
+                detailCustom = { productId: detailId };
+            } else if (!detailConfig) {
+                detailCustom = { name: detailId };
+            }
+
             const brandConfig = allDetails.brands.find(
                 ({ brandId: id }) => String(id) === brandId,
             );
 
             const baseDetail = { price, count, code, purchasePrice };
-            const detailCustom = !detailConfig
-                ? { name: detailId }
-                : { detailId };
 
             let brandCustom = {};
             if (!brandConfig) {
@@ -73,7 +81,12 @@ export function convertFieldsValuesToDbEntity(
                 brandCustom = { brandId };
             }
 
-            return { ...baseDetail, ...detailCustom, ...brandCustom };
+            return {
+                ...baseDetail,
+                ...detailCustom,
+                ...brandCustom,
+                ...storage && using ? { using } : {},
+            };
         })
         .value();
 
@@ -249,7 +262,7 @@ export const requiredFieldsOnStatuses = values => {
             'clientPhone',
             'manager',
             'services',
-            'details',
+            'details', 
         ],
         not_complete: [ 'manager', 'services', 'details' ],
         required:     [ 'manager', 'services', 'details' ],

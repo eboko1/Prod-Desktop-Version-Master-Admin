@@ -17,6 +17,15 @@ import {
     selectCashSum,
     selectCashFlowFilters,
 } from "core/forms/orderForm/duck";
+import {
+    setStoreProductsSearchQuery,
+    selectStoreProductsByQuery,
+} from "core/search/duck";
+import { 
+    fetchAvailableProducts,
+    selectAvailableProducts,
+    selectAvailableProductsLoading,
+} from 'core/storage/products';
 import { resetModal } from "core/modals/duck";
 import { initOrderTasksForm } from "core/forms/orderTaskForm/duck";
 
@@ -45,6 +54,8 @@ import Styles from "./styles.m.css";
         clearTecdocSuggestions,
         fetchTecdocDetailsSuggestions,
         clearTecdocDetailsSuggestions,
+        setStoreProductsSearchQuery,
+        fetchAvailableProducts,
     },
 
     mapStateToProps: state => ({
@@ -58,6 +69,9 @@ import Styles from "./styles.m.css";
         schedule: state.forms.orderForm.schedule,
         stationLoads: state.forms.orderForm.stationLoads,
         suggestionsFetching: state.ui.suggestionsFetching,
+        storeProducts: selectStoreProductsByQuery(state),
+        availableProducts: selectAvailableProducts(state),
+        availableProductsLoading: selectAvailableProductsLoading(state),
     }),
 })
 export class OrderForm extends React.PureComponent {
@@ -438,6 +452,9 @@ export class OrderForm extends React.PureComponent {
             changeModalStatus,
             errors,
             location,
+
+            storeProducts,
+            setStoreProductsSearchQuery,
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -520,6 +537,11 @@ export class OrderForm extends React.PureComponent {
                 totalServicesProfit={totalServicesProfit}
                 commentsCount={commentsCount}
                 stationsCount={stationsCount}
+                storeProducts={storeProducts}
+                setStoreProductsSearchQuery={setStoreProductsSearchQuery}
+                availableProducts={this.props.availableProducts}
+                availableProductsLoading={this.props.availableProductsLoading}
+                fetchAvailableProducts={this.props.fetchAvailableProducts}
             />
         );
     };

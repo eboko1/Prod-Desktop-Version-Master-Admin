@@ -263,6 +263,17 @@ export default class OrderFormTabs extends React.PureComponent {
                         detailsSuggestionsFetching={detailsSuggestionsFetching}
                         suggestionsFetching={suggestionsFetching}
                         user={user}
+                        setStoreProductsSearchQuery={
+                            this.props.setStoreProductsSearchQuery
+                        }
+                        storeProducts={this.props.storeProducts}
+                        availableProducts={this.props.availableProducts}
+                        availableProductsLoading={
+                            this.props.availableProductsLoading
+                        }
+                        fetchAvailableProducts={
+                            this.props.fetchAvailableProducts
+                        }
                     />
                     <DiscountPanel
                         fields={discountTabFieldsProps}

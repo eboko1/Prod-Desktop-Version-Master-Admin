@@ -23,6 +23,9 @@ export const PRODUCTS_EXCEL_IMPORT_RESET = `${prefix}/PRODUCTS_EXCEL_IMPORT_RESE
 export const FETCH_PRODUCTS = `${prefix}/FETCH_PRODUCTS`;
 export const FETCH_PRODUCTS_SUCCESS = `${prefix}/FETCH_PRODUCTS_SUCCESS`;
 
+export const FETCH_AVAILABLE_PRODUCTS = `${prefix}/FETCH_AVAILABLE_PRODUCTS`;
+export const FETCH_AVAILABLE_PRODUCTS_SUCCESS = `${prefix}/FETCH_AVAILABLE_PRODUCTS_SUCCESS`;
+
 export const FETCH_PRODUCT = `${prefix}/FETCH_PRODUCT`;
 export const FETCH_PRODUCT_SUCCESS = `${prefix}/FETCH_PRODUCT_SUCCESS`;
 
@@ -37,6 +40,7 @@ export const SET_STORE_PRODUCTS_PAGE = `${prefix}/SET_STORE_PRODUCTS_PAGE`;
 
 export const SET_PRODUCT_LOADING = `${prefix}/SET_PRODUCT_LOADING`;
 export const SET_PRODUCTS_LOADING = `${prefix}/SET_PRODUCTS_LOADING`;
+export const SET_AVAILABLE_PRODUCTS_LOADING = `${prefix}/SET_AVAILABLE_PRODUCTS_LOADING`;
 export const SET_PRODUCTS_EXCEL_IMPORT_LOADING = `${prefix}/SET_PRODUCTS_EXCEL_IMPORT_LOADING`;
 
 /**
@@ -50,16 +54,19 @@ const ReducerState = {
         },
         list: [],
     },
-    productsExcel:        [],
-    importing:            false,
-    productsExcelLoading: false,
-    productsLoading:      false,
-    product:              {},
-    filters:              {
+    availableProducts:        {},
+    productsExcel:            [],
+    importing:                false,
+    productsExcelLoading:     false,
+    productsLoading:          false,
+    availableProductsLoading: false,
+    product:                  {},
+    filters:                  {
         page: 1,
     },
 };
 
+/* eslint-disable complexity */
 export default function reducer(state = ReducerState, action) {
     const { type, payload } = action;
 
@@ -80,6 +87,15 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_PRODUCTS_SUCCESS:
             return { ...state, products: payload };
 
+        case FETCH_AVAILABLE_PRODUCTS_SUCCESS:
+            return {
+                ...state,
+                availableProducts: {
+                    key:   payload.key,
+                    using: { ...payload.availableProducts },
+                },
+            };
+
         case SET_STORE_PRODUCTS_PAGE:
             return { ...state, filters: { ...state.filters, page: payload } };
 
@@ -91,6 +107,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_PRODUCTS_LOADING:
             return { ...state, productsLoading: payload };
+
+        case SET_AVAILABLE_PRODUCTS_LOADING:
+            return { ...state, availableProductsLoading: payload };
 
         default:
             return state;
@@ -104,6 +123,8 @@ export default function reducer(state = ReducerState, action) {
 export const stateSelector = state => state.storage[ moduleName ];
 export const selectStoreProduct = state => stateSelector(state).product;
 export const selectStoreProducts = state => stateSelector(state).products;
+export const selectAvailableProducts = state =>
+    stateSelector(state).availableProducts;
 export const selectStoreProductsFilters = state => stateSelector(state).filters;
 // export const selectStoreProductsExcel = state =>
 //     stateSelector(state).productsExcel;
@@ -113,6 +134,8 @@ export const selectProductLoading = state =>
     stateSelector(state).productLoading;
 export const selectProductsLoading = state =>
     stateSelector(state).productsLoading;
+export const selectAvailableProductsLoading = state =>
+    stateSelector(state).availableProductsLoading;
 
 export const selectProductsImporting = state => stateSelector(state).importing;
 
@@ -138,6 +161,17 @@ export const fetchProductsSuccess = products => ({
 export const setStoreProductsPage = page => ({
     type:    SET_STORE_PRODUCTS_PAGE,
     payload: page,
+});
+
+// available products
+export const fetchAvailableProducts = (key, id, count) => ({
+    type:    FETCH_AVAILABLE_PRODUCTS,
+    payload: { key, id, count },
+});
+
+export const fetchAvailableProductsSuccess = (key, availableProducts) => ({
+    type:    FETCH_AVAILABLE_PRODUCTS_SUCCESS,
+    payload: { key, availableProducts },
 });
 
 // product
@@ -219,6 +253,11 @@ export const setProductsLoading = isLoading => ({
     payload: isLoading,
 });
 
+export const setAvailableProductsLoading = isLoading => ({
+    type:    SET_AVAILABLE_PRODUCTS_LOADING,
+    payload: isLoading,
+});
+
 /**
  * Sagas
  **/
@@ -282,6 +321,33 @@ export function* fetchProductSaga() {
     }
 }
 
+export function* fetchAvailableProductsSaga() {
+    while (true) {
+        try {
+            const {
+                payload: { key, id, count },
+            } = yield take(FETCH_AVAILABLE_PRODUCTS);
+            yield put(setAvailableProductsLoading(true));
+
+            const response = yield call(
+                fetchAPI,
+                'GET',
+                '/store_doc_products/available/',
+                {
+                    productId:      id,
+                    neededQuantity: count || 1,
+                },
+            );
+
+            yield put(fetchAvailableProductsSuccess(key, response));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield put(setAvailableProductsLoading(false));
+        }
+    }
+}
+
 export function* createProductSaga() {
     while (true) {
         try {
@@ -302,6 +368,7 @@ export function* createProductSaga() {
         }
     }
 }
+
 export function* updateProductSaga() {
     while (true) {
         try {
@@ -392,6 +459,7 @@ export function* saga() {
     yield all([
         call(fetchProductSaga),
         call(fetchProductsSaga),
+        call(fetchAvailableProductsSaga),
         call(createProductSaga),
         call(updateProductSaga),
         call(deleteProductSaga),

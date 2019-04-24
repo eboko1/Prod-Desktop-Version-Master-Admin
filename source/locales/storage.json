@@ -1,5 +1,6 @@
 {
   "en": {
+    "storage": "Storage",
     "storage.product_group": "Product Group",
     "storage.add_root_product_group": "Add root product group",
     "storage.name": "Name",
@@ -50,6 +51,7 @@
     "storage.complete": "Complete"
   },
   "ru": {
+    "storage": "Склад",
     "storage.product_group": "Группа товаров",
     "storage.add_root_product_group": "Добавить родительскую группу",
     "storage.name": "Наименование",
@@ -101,6 +103,7 @@
     "storage.complete": "Выполнить"
   },
   "uk": {
+    "storage": "Склад",
     "storage.product_group": "Група товару",
     "storage.add_root_product_group": "Додати батьківську категорію",
     "storage.name": "Найменування",
