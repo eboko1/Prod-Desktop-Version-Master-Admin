@@ -118,9 +118,9 @@ export const createIncomeDocSuccess = () => ({
     type: CREATE_INCOME_DOC_SUCCESS,
 });
 
-export const updateIncomeDoc = incomeDoc => ({
+export const updateIncomeDoc = (id, incomeDoc) => ({
     type:    UPDATE_INCOME_DOC,
-    payload: incomeDoc,
+    payload: { id, incomeDoc },
 });
 
 export const updateIncomeDocSuccess = () => ({
@@ -195,13 +195,10 @@ export function* createIncomeDocSaga() {
         try {
             const { payload } = yield take(CREATE_INCOME_DOC);
             yield put(setIncomeDocLoading(true));
-            const response = yield call(
-                fetchAPI,
-                'POST',
-                '/store_docs',
-                null,
-                payload,
-            );
+            const response = yield call(fetchAPI, 'POST', '/store_docs', null, {
+                type: 'INCOME',
+                ...payload,
+            });
             yield put(fetchIncomeDocSuccess(response));
         } catch (error) {
             yield put(emitError(error));
@@ -214,14 +211,13 @@ export function* createIncomeDocSaga() {
 export function* updateIncomeDocSaga() {
     while (true) {
         try {
-            const { payload } = yield take(UPDATE_INCOME_DOC);
-            yield call(
-                fetchAPI,
-                'PUT',
-                `/store_docs/${payload.id}`,
-                null,
-                payload.product,
-            );
+            const {
+                payload: { id, incomeDoc },
+            } = yield take(UPDATE_INCOME_DOC);
+            yield call(fetchAPI, 'PUT', `/store_docs/${id}`, null, {
+                type: 'INCOME',
+                ...incomeDoc,
+            });
             yield put(updateIncomeDocSuccess());
         } catch (error) {
             yield put(emitError(error));

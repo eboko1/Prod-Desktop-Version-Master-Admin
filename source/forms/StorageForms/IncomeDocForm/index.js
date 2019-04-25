@@ -6,10 +6,13 @@ import { Form, Select, Icon, Button } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import styled from 'styled-components';
+import moment from 'moment';
 
 // proj
 import {
     fetchIncomeDoc,
+    createIncomeDoc,
+    updateIncomeDoc,
     selectIncomeDoc,
     selectIncomeDocLoading,
 } from 'core/storage/incomes';
@@ -26,6 +29,8 @@ import {
 } from 'forms/DecoratedFields';
 import { SupplierModal } from 'modals';
 import { StoreDocumentProductsTable } from 'components';
+import { goTo, numeralFormatter, numeralParser } from 'utils';
+import book from 'routes/book';
 
 // own
 const Option = Select.Option;
@@ -83,9 +88,11 @@ const IncomeForm = props => {
         intl: { formatMessage },
     } = props;
 
+    const incomeDocId = props.match.params.id;
+
     useEffect(() => {
-        if (props.match.params.id) {
-            props.fetchIncomeDoc(props.match.params.id);
+        if (incomeDocId) {
+            props.fetchIncomeDoc(incomeDocId);
         }
     }, []);
 
@@ -95,20 +102,30 @@ const IncomeForm = props => {
 
     const _submit = () => {
         props.form.validateFields((err, values) => {
-            console.log('→ form values', values);
+          
             if (!err) {
-                // if (values.brandName && values.brandId) {
-                //     _.set(values, 'brandId', void 0);
-                // }
-                console.log('→ submit values', values);
+             
+                const docProducts = values.docProducts.filter(Boolean);
 
-                // props.editing
-                //     ? props.updateProduct({
-                //         id:      _.get(props, 'modalProps.id'),
-                //         product: values,
-                //     })
-                //     : props.createProduct(values);
+                let normalizedValues = {};
+                if (!_.last(docProducts).productId) {
+                    normalizedValues = {
+                        ...values,
+                        docProducts: docProducts.slice(0, -1),
+                    };
+                } else {
+                    normalizedValues = {
+                        ...values,
+                        docProducts,
+                    };
+                }
 
+                console.log('→ submit normalizedValues', normalizedValues);
+                incomeDocId
+                    ? props.updateIncomeDoc(incomeDocId, normalizedValues)
+                    : props.createIncomeDoc(normalizedValues);
+              
+                goTo(book.storageIncomes);
                 // props.form.resetFields();
                 // props.resetModal();
             }
@@ -136,8 +153,21 @@ const IncomeForm = props => {
                             }) }
                             nullText='0'
                         >
-                            { Number(1) }
+                            { Number(props.form.getFieldValue('sum')) }
                         </Numeral>
+                        <DecoratedInput
+                            hiddeninput='hiddeninput'
+                            // className={ Styles.detailsRequiredFormItem }
+                            // rules={ !_isFieldDisabled(key) ? this.requiredRule : void 0 }
+                            // errors={ errors }
+                            // formItem
+                            // fieldValue={ _.get(fields, `${key}.quantity`) }
+                            fields={ {} }
+                            field={ 'sum' }
+                            getFieldDecorator={ props.form.getFieldDecorator }
+                            // disabled={ _isFieldDisabled(key) }
+                            // initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
+                        />
                     </TotalSum>
                     <DecoratedInput
                         hiddeninput='hiddeninput'
@@ -165,7 +195,9 @@ const IncomeForm = props => {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  'required_field',
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
                                 },
                             ] }
                             initialValue={ incomeDoc.supplierDocNumber }
@@ -216,10 +248,12 @@ const IncomeForm = props => {
                             rules={ [
                                 {
                                     required: true,
-                                    message:  'required_field',
+                                    message:  formatMessage({
+                                        id: 'required_field',
+                                    }),
                                 },
                             ] }
-                            initialValue={ incomeDoc.recordDatetime }
+                            initialValue={ incomeDoc.recordDatetime || moment() }
                         />
                         <DecoratedDatePicker
                             formItem
@@ -258,6 +292,8 @@ const mapDispatchToProps = {
     fetchSuppliers,
     setModal,
     resetModal,
+    createIncomeDoc,
+    updateIncomeDoc,
 };
 
 export const IncomeDocForm = withRouter(

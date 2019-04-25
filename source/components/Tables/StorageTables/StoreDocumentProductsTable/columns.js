@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Select } from 'antd';
+import { Select, InputNumber } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -40,9 +40,9 @@ const Option = Select.Option;
 // };
 
 export default (props, state, table) => {
-    const { fields, errors } = props;
+    // const { fields, errors } = props;
     const { formatMessage } = props.intl;
-    const { getFieldDecorator } = props.form;
+    const { getFieldDecorator, getFieldValue } = props.form;
 
     const requiredRule = [
         {
@@ -53,19 +53,23 @@ export default (props, state, table) => {
         },
     ];
 
-    const _isFieldDisabled = key => !props.form.getFieldValue(`${key}.code`);
+    const _isFieldDisabled = key =>
+        !props.form.getFieldValue(`docProducts[${key}].productId`);
 
     return [
         {
             title:  formatMessage({ id: 'storage.product_code' }),
             width:  '20%',
             key:    'code',
-            render: data => {
+            render: ({ key }) => {
                 const handleBlur = (key, value) => {
                     if (value) {
                         table.handleProductSelect(key, value);
                     }
                 };
+
+                // console.log('→ props.incomeDoc', props.incomeDoc);
+                // console.log('→ props.storeProducts', props.storeProducts);
 
                 return (
                     <DecoratedSelect
@@ -73,30 +77,30 @@ export default (props, state, table) => {
                         // formItemLayout={ formItemLayout }
                         fieldValue={ _.get(
                             props,
-                            `form.fields[${data.key}.code]`,
+                            `form.fields.docProducts[${key}].productId`,
                         ) }
                         fields={ {} }
                         getFieldDecorator={ getFieldDecorator }
                         getPopupContainer={ trigger => trigger.parentNode }
-                        field={ `${data.key}.code` }
+                        field={ `docProducts[${key}].productId` }
                         initialValue={ _.get(
                             props,
-                            `incomeDoc.docProducts[${data.key}].product.code`,
+                            `incomeDoc.docProducts[${key}].product.productId`,
                         ) }
-                        onBlur={ value => handleBlur(data.key, value) }
-                        // onBlur={ value => handleBlur(value, `${data.key}.code`) }
+                        onBlur={ value => handleBlur(key, value) }
+                        // onBlur={ value => handleBlur(value, `${data.key}.productId`) }
                         onSearch={ value => {
                             props.setStoreProductsSearchQuery(value);
                         } }
                         onSelect={ value =>
-                            table.handleProductSelect(data.key, value)
+                            table.handleProductSelect(key, value)
                         }
                         showSearch
                         dropdownMatchSelectWidth={ false }
-                        rules={ requiredRule }
+                        // rules={ requiredRule }
                     >
                         { props.storeProducts.map(({ id, code }) => (
-                            <Option value={ code } key={ id }>
+                            <Option value={ id } key={ id }>
                                 { code }
                             </Option>
                         )) }
@@ -110,14 +114,14 @@ export default (props, state, table) => {
             key:    'name',
             render: ({ key }) => (
                 <DecoratedInput
-                    errors={ errors }
+                    // errors={ errors }
                     defaultGetValueProps
                     // fieldValue={ _.get(fields, `details[${key}].detailCode`) }
 
-                    // initialValue={ _getDefaultValue(key, 'code') }
-                    field={ `${key}].name` }
+                    field={ `docProducts[${key}].name` }
                     disabled={ _isFieldDisabled(key) }
                     getFieldDecorator={ props.form.getFieldDecorator }
+                    // initialValue={ props.storeProducts[ key ].name }
                 />
             ),
         },
@@ -133,19 +137,19 @@ export default (props, state, table) => {
                         defaultGetValueProps
                         getFieldDecorator={ getFieldDecorator }
                         getPopupContainer={ trigger => trigger.parentNode }
-                        field='brandId'
-                        initialValue={ _.get(props, 'product.brandId') }
+                        field={ `docProducts[${key}].brandId'` }
+                        // initialValue={ props.storeProducts[ key ].brandId }
                         onSearch={ value => {
                             props.form.setFieldsValue({
-                                brandId:   void 0,
-                                brandName: value,
+                                [ `docProducts[${key}].brandId` ]:   void 0,
+                                [ `docProducts[${key}].brandName` ]: value,
                             });
                             props.setBrandsSearchQuery(value);
                         } }
                         onSelect={ value => {
                             props.form.setFieldsValue({
-                                brandId:   value,
-                                brandName: void 0,
+                                [ `docProducts[${key}].brandId` ]:   value,
+                                [ `docProducts[${key}].brandName` ]: void 0,
                             });
                         } }
                         optionLabelProp={ 'children' }
@@ -167,59 +171,63 @@ export default (props, state, table) => {
             },
         },
         {
-            title:  formatMessage({ id: 'order_form_table.purchasePrice' }),
-            width:  '15%',
-            key:    'purchasePrice',
+            title:  formatMessage({ id: 'storage.trade_code' }),
+            width:  '20%',
+            key:    'tradeCode',
             render: ({ key }) => (
-                <DecoratedInputNumber
-                    errors={ errors }
+                <DecoratedInput
+                    // errors={ errors }
                     defaultGetValueProps
-                    // fieldValue={ _.get(fields, `${key}.purchasePrice`) }
-                    // initialValue={ _getDefaultValue(key, 'purchasePrice') }
-                    field={ `${key}.purchasePrice` }
+                    // fieldValue={ _.get(fields, `details[${key}].detailCode`) }
+
+                    field={ `docProducts[${key}].tradeCode` }
                     disabled={ _isFieldDisabled(key) }
                     getFieldDecorator={ props.form.getFieldDecorator }
-                    min={ 0 }
-                    formatter={ numeralFormatter }
-                    parser={ numeralParser }
+                    // initialValue={ props.storeProducts[ key ].name }
                 />
             ),
         },
-        // {
-        //     title: <FormattedMessage id="order_form_table.price" />,
-        //     width: "9%",
-        //     key: "price",
-        //     render: ({ key }) => (
-        //         <DecoratedInputNumber
-        //             className={Styles.detailsRequiredFormItem}
-        //             rules={
-        //                 !_isFieldDisabled(key)
-        //                     ? this.requiredRule
-        //                     : void 0
-        //             }
-        //             errors={errors}
-        //             formItem
-        //             fieldValue={_.get(
-        //                 fields,
-        //                 `details[${key}].detailPrice`,
-        //             )}
-        //             field={`details[${key}].detailPrice`}
-        //             getFieldDecorator={
-        //                 props.form.getFieldDecorator
-        //             }
-        //             disabled={
-        //                 _isFieldDisabled(key) ||
-        //                 editDetailsForbidden
-        //             }
-        //             initialValue={
-        //                 _getDefaultValue(key, "detailPrice") || 0
-        //             }
-        //             min={0}
-        //             formatter={numeralFormatter}
-        //             parser={numeralParser}
-        //         />
-        //     ),
-        // },
+        {
+            title:  formatMessage({ id: 'order_form_table.purchasePrice' }),
+            width:  '15%',
+            key:    'purchasePrice',
+            render: ({ key }) => {
+                // const quantity = props.form.getFieldValue(
+                //     `docProducts[${key}].quantity`,
+                // );
+
+                // const handleChange = value => {
+                //     props.form.setFieldsValue([
+                //         {
+                //             [ `docProducts[${key}].purchaseSum` ]:
+                //                 value * quantity,
+                //         },
+                //     ]);
+                // };
+
+                return (
+                    <DecoratedInputNumber
+                        // errors={ errors }
+                        defaultGetValueProps
+                        // fieldValue={ _.get(fields, `${key}.purchasePrice`) }
+                        // initialValue={ _getDefaultValue(key, 'purchasePrice') }
+                        field={ `docProducts[${key}].purchasePrice` }
+                        disabled={ _isFieldDisabled(key) }
+                        getFieldDecorator={ props.form.getFieldDecorator }
+                        min={ 0 }
+                        formatter={ numeralFormatter }
+                        parser={ numeralParser }
+                        onChange={ value =>
+                            table.handleSumCalculation(
+                                key,
+                                `docProducts[${key}].purchasePrice`,
+                                value,
+                            )
+                        }
+                    />
+                );
+            },
+        },
         {
             title:  formatMessage({ id: 'storage.quantity' }),
             width:  '7.5%',
@@ -228,10 +236,10 @@ export default (props, state, table) => {
                 <DecoratedInputNumber
                     // className={ Styles.detailsRequiredFormItem }
                     // rules={ !_isFieldDisabled(key) ? this.requiredRule : void 0 }
-                    errors={ errors }
+                    // errors={ errors }
                     formItem
-                    fieldValue={ _.get(fields, `${key}.quantity`) }
-                    field={ `${key}.quantity` }
+                    // fieldValue={ _.get(fields, `${key}.quantity`) }
+                    field={ `docProducts[${key}].quantity` }
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ _isFieldDisabled(key) }
                     initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
@@ -239,32 +247,54 @@ export default (props, state, table) => {
                     step={ 0.1 }
                     formatter={ numeralFormatter }
                     parser={ numeralParser }
+                    onChange={ value =>
+                        table.handleSumCalculation(
+                            key,
+                            `docProducts[${key}].quantity`,
+                            value,
+                        )
+                    }
                 />
             ),
         },
-        // {
-        //     title: <FormattedMessage id="order_form_table.sum" />,
-        //     width: "10%",
-        //     key: "sum",
-        //     render: ({ key }) => {
-        //         const details = props.details;
-        //         const value = (
-        //             _.get(details, [key, "detailPrice"], 0) *
-        //             _.get(details, [key, "detailCount"], 0)
-        //         ).toFixed(2);
+        {
+            title:  formatMessage({ id: 'storage.sum' }),
+            width:  '10%',
+            key:    'sum',
+            render: ({ key }) => {
+                // const details = props.details;
+                // const purchasePrice = props.form.getFieldValue(
+                //     `docProducts[${key}].purchasePrice`,
+                // );
+                // console.log(
+                //     '|| docProducts',
+                //     props.form.getFieldValue('docProducts'),
+                // );
+                // console.log('||| key', key);
+                // const quantity = props.form.getFieldValue(
+                //     `docProducts[${key}].quantity`,
+                // );
+                // console.log('||| purchasePrice', purchasePrice);
+                // console.log('||| quantity', quantity);
+                // const value = (purchasePrice * quantity).toFixed(2);
+                // console.log('→ value', value);
+                // props.form.setFieldsValue([{ [ `docProducts[${key}].purchaseSum` ]: value }]);
 
-        //         return (
-        //             <InputNumber
-        //                 className={Styles.sum}
-        //                 disabled
-        //                 defaultValue={0}
-        //                 value={value}
-        //                 formatter={numeralFormatter}
-        //                 parser={numeralParser}
-        //             />
-        //         );
-        //     },
-        // },
+                return (
+                    <DecoratedInputNumber
+                        // disabled
+                        fields={ {} }
+                        field={ `docProducts[${key}].purchaseSum` }
+                        getFieldDecorator={ props.form.getFieldDecorator }
+                        // value={ Number(value) }
+                        formatter={ numeralFormatter }
+                        parser={ numeralParser }
+                        // defaultValue={ 0 }
+                        // initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
+                    />
+                );
+            },
+        },
         {
             title:  '',
             width:  'auto',

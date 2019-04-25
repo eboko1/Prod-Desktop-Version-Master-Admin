@@ -21,11 +21,6 @@ const IncomeDoc = props => {
     const id = _.get(props, 'location.state.id');
     const status = _.get(props, 'location.state.status');
 
-    const _submitDocument = incomeDoc => {
-        console.log('_submitDocument incomeDoc', incomeDoc);
-        // props.createIncomeDoc(incomeDoc)
-    };
-
     const title = (
         <ModuleHeaderContent>
             { status ? (

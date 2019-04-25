@@ -18,15 +18,9 @@ import columns from './columns';
 
 const DocumentProductsTable = props => {
     const incomeDocProducts = _.get(props, 'incomeDoc.docProducts');
-    // const docProducts = _.get(props, 'incomeDoc.docProducts', []);
+
     const [ docProducts, setDocProducts ] = useState();
 
-    // const defaultKeys = [ ..._.keys(docProducts), uuid++ ];
-
-    // const [ keys, setKeys ] = useState([ ..._.keys(defaultKeys) ]);
-
-    // const [ uuid, setUuid ] = useState(docProducts.length);
-    // const [ keys, setKeys ] = useState([ ..._.keys(docProducts), docProducts.length + 1 ]);
     const [ keys, setKeys ] = useState(() => {
         const products = docProducts ? docProducts.length + 1 : 1;
 
@@ -34,87 +28,99 @@ const DocumentProductsTable = props => {
     });
 
     useEffect(() => {
-        // const incomeDocProducts = _.get(props, 'incomeDoc.docProducts', []);
-        // setDocProducts(_.get(props, 'incomeDoc.docProducts', []));
         if (incomeDocProducts) {
             setDocProducts(incomeDocProducts);
-            console.log('→ EFFECT incomeDocProducts', incomeDocProducts);
-            console.log('→ EFFECT setKeys([ ..._.keys(incomeDocProducts)', [ ..._.keys(incomeDocProducts).map(key => Number(key)), incomeDocProducts.length ]);
+
             setKeys([ ..._.keys(incomeDocProducts).map(key => Number(key)), incomeDocProducts.length ]);
         }
-
-        // setKeys([ ..._.keys(incomeDocProducts), incomeDocProducts.length + 1 ]);
     }, [ incomeDocProducts ]);
 
-    // const uuid = docProducts.length;
-    console.log('→ docProducts', docProducts);
-    console.log('→TABLE DS keys', keys);
-    // console.log('→ TABLE UUDI', uuid);
-    // const _isFieldDisabled = key => {
-    //     return !_.get(props.details, [ key, 'detailName' ]);
-    // };
+    useEffect(() => {
+        console.log('→ fetch magic!');
+    }, [ props.storeProducts ]);
 
-    // const _getDefaultValue = (key, fieldName) => {
-    //     const orderDetail = (props.orderDetails || [])[ key ];
-    //     if (!orderDetail) {
-    //         return;
-    //     }
-
-    //     const actions = {
-    //         detailName:
-    //             (orderDetail.detailId || orderDetail.detailName) &&
-    //             String(orderDetail.detailId || orderDetail.detailName),
-    //         detailCount:     orderDetail.count,
-    //         detailCode:      orderDetail.detailCode,
-    //         detailPrice:     orderDetail.price,
-    //         purchasePrice:   orderDetail.purchasePrice,
-    //         detailBrandName:
-    //             (orderDetail.brandId || orderDetail.brandName) &&
-    //             String(orderDetail.brandId || orderDetail.brandName),
-    //     };
-
-    //     return actions[ fieldName ];
-    // };
+    // useEffect(() => {
+    //     console.log('→ fetch magic!');
+    // }, [ props.storeProducts ]);
 
     const _handleDelete = redundantKey => {
-        console.log('(1) redundantKey', redundantKey);
-        console.log('(2) keys', keys);
-        console.log(
-            '(3) setKeys filter',
-            keys.filter(key => redundantKey !== key),
-        );
-        console.log(
-            '(5) props.form.setFieldsValue ',
-            props.form.setFieldsValue,
-        );
+        // console.log('(1) redundantKey', redundantKey);
+        // console.log('(2) keys', keys);
+        // console.log(
+        //     '(3) setKeys filter',
+        //     keys.filter(key => redundantKey !== key),
+        // );
+        // console.log(
+        //     '(5) props.form.setFieldsValue ',
+        //     props.form.setFieldsValue,
+        // );
         setKeys(keys.filter(key => redundantKey !== key));
         props.form.setFieldsValue({
             [ redundantKey ]: void 0,
         });
-        console.log('(2)(2) keys', keys);
+        // console.log('(2)(2) keys', keys);
     };
 
-    // const _handleAdd = () => setKeys([ ...keys, uuid++ ]);
     const _handleAdd = () => {
-        // setUuid(uuid + 1);
-        console.log('→ _handleAddkeys', [ ...keys ]);
         setKeys([ ...keys, _.last(keys) + 1 ]);
     };
 
     const _handleProductSelect = (key, value) => {
-        // console.log('→ _handleProductSelect props.docProducts', docProducts);
-        console.log('0 value', value);
-        console.log('1 key', key);
-        console.log('2 _.last(keys)', _.last(keys));
-        console.log('3 _.last(keys) === key', _.last(keys) === key);
-        console.log('4 docProducts', docProducts);
-        console.log(
-            '5 !_.get(docProducts, [ key, code ])',
-            !_.get(docProducts, [ key, 'code' ]),
+        const selectedProduct = props.storeProducts.find(
+            ({ id }) => id === value,
         );
-        // _handleAdd();
-        if (_.last(keys) === key && !_.get(docProducts, [ key, 'code' ])) {
+        props.form.setFieldsValue({
+            [ `docProducts[${key}].name` ]:      selectedProduct.name,
+            [ `docProducts[${key}].tradeCode` ]: selectedProduct.tradeCode,
+        });
+        if (_.last(keys) === key && !_.get(docProducts, [ key, 'productId' ])) {
             _handleAdd();
+        }
+    };
+
+    const _handleSumCalculation = (key, field, value) => {
+       
+        const purchasePrice = props.form.getFieldValue(
+            `docProducts[${key}].purchasePrice`,
+        );
+        const quantity = props.form.getFieldValue(
+            `docProducts[${key}].quantity`,
+        );
+        const sum = props.form.getFieldValue('sum') || 0;
+
+        const getTotalSum = key => {
+            let docProducts = props.form
+                .getFieldValue('docProducts')
+                .filter(Boolean);
+
+            docProducts.splice(key - 1, 1, {
+                ...docProducts[ key - 1 ],
+                purchaseSum: field.includes('purchasePrice') ? value * quantity : purchasePrice * value,
+            
+            });
+     
+            return docProducts.reduce((accumulator, product) => {        
+                return accumulator + (product.purchaseSum || 0)
+            }, 0);
+        };
+
+        const totalSum = getTotalSum(key);
+     
+
+        if (field.includes('purchasePrice')) {
+
+            props.form.setFieldsValue({
+                [ `docProducts[${key}].purchaseSum` ]: value * quantity,
+                sum:                                   totalSum,
+         
+            });
+        }
+        if (field.includes('quantity')) {
+            props.form.setFieldsValue({
+                [ `docProducts[${key}].purchaseSum` ]: purchasePrice * value,
+                sum:                                   totalSum,
+                
+            });
         }
     };
 
@@ -131,13 +137,10 @@ const DocumentProductsTable = props => {
                         handleAdd:                   _handleAdd,
                         handleDelete:                _handleDelete,
                         handleProductSelect:         _handleProductSelect,
+                        handleSumCalculation:        _handleSumCalculation,
                         setStoreProductsSearchQuery: setStoreProductsSearchQuery,
                         // getDefaultValue:     _getDefaultValue,
                     },
-                    // _handleAdd,
-                    // _handleDelete,
-                    // _handleProductSelect,
-                    // _getDefaultValue,
                 ) }
                 pagination={ false }
             />
