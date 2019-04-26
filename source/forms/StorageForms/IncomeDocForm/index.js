@@ -84,6 +84,7 @@ const AddSupplierIcon = styled(Icon)`
 
 const IncomeForm = props => {
     const {
+        incomeDoc,
         form,
         intl: { formatMessage },
     } = props;
@@ -91,20 +92,12 @@ const IncomeForm = props => {
     const incomeDocId = props.match.params.id;
 
     useEffect(() => {
-        if (incomeDocId) {
-            props.fetchIncomeDoc(incomeDocId);
-        }
-    }, []);
-
-    useEffect(() => {
         props.fetchSuppliers();
     }, []);
 
     const _submit = () => {
         props.form.validateFields((err, values) => {
-          
             if (!err) {
-             
                 const docProducts = values.docProducts.filter(Boolean);
 
                 let normalizedValues = {};
@@ -124,14 +117,13 @@ const IncomeForm = props => {
                 incomeDocId
                     ? props.updateIncomeDoc(incomeDocId, normalizedValues)
                     : props.createIncomeDoc(normalizedValues);
-              
+
                 goTo(book.storageIncomes);
                 // props.form.resetFields();
                 // props.resetModal();
             }
         });
     };
-    const { incomeDoc } = props;
 
     return (
         <Catcher>
@@ -157,15 +149,10 @@ const IncomeForm = props => {
                         </Numeral>
                         <DecoratedInput
                             hiddeninput='hiddeninput'
-                            // className={ Styles.detailsRequiredFormItem }
-                            // rules={ !_isFieldDisabled(key) ? this.requiredRule : void 0 }
-                            // errors={ errors }
-                            // formItem
-                            // fieldValue={ _.get(fields, `${key}.quantity`) }
                             fields={ {} }
                             field={ 'sum' }
                             getFieldDecorator={ props.form.getFieldDecorator }
-                            // disabled={ _isFieldDisabled(key) }
+
                             // initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
                         />
                     </TotalSum>
@@ -281,7 +268,6 @@ const IncomeForm = props => {
 };
 
 const mapStateToProps = state => ({
-    incomeDoc: selectIncomeDoc(state),
     loading:   selectIncomeDocLoading(state),
     brands:    selectBrandsByQuery(state),
     suppliers: selectSuppliers(state),

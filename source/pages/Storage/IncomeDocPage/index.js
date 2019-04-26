@@ -1,5 +1,6 @@
 // vendor
-import React from 'react';
+import React, { useEffect } from 'react';
+import { connect } from 'react-redux';
 import { Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
@@ -7,6 +8,8 @@ import styled from 'styled-components';
 import _ from 'lodash';
 
 // proj
+import { fetchIncomeDoc, selectIncomeDoc } from 'core/storage/incomes';
+
 import { Layout, Close, StyledButton } from 'commons';
 import { IncomeDocForm } from 'forms';
 import book from 'routes/book';
@@ -18,8 +21,15 @@ const ModuleHeaderContent = styled.div`
 `;
 
 const IncomeDoc = props => {
-    const id = _.get(props, 'location.state.id');
-    const status = _.get(props, 'location.state.status');
+    const id = props.match.params.id;
+    const status = props.incomeDoc.status;
+    // const status = _.get(props, 'location.state.status');
+
+    useEffect(() => {
+        if (id) {
+            props.fetchIncomeDoc(id);
+        }
+    }, []);
 
     const title = (
         <ModuleHeaderContent>
@@ -48,11 +58,26 @@ const IncomeDoc = props => {
         </ModuleHeaderContent>
     );
 
+    console.log('→ PAGE props.incomeDoc', props.incomeDoc);
+
     return (
         <Layout title={ title } controls={ controls }>
-            <IncomeDocForm />
+            <IncomeDocForm incomeDoc={ props.incomeDoc } />
         </Layout>
     );
 };
 
-export const IncomeDocPage = withRouter(IncomeDoc);
+const mapStateToProps = state => ({
+    incomeDoc: selectIncomeDoc(state),
+});
+
+const mapDispatchToProps = {
+    fetchIncomeDoc,
+};
+
+export const IncomeDocPage = withRouter(
+    connect(
+        mapStateToProps,
+        mapDispatchToProps,
+    )(IncomeDoc),
+);

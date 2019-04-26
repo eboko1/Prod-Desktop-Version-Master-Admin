@@ -18,7 +18,8 @@ import columns from './columns';
 
 const DocumentProductsTable = props => {
     const incomeDocProducts = _.get(props, 'incomeDoc.docProducts');
-
+    const incomeDocId = _.get(props, 'incomeDoc.id');
+    console.log('→ incomeDocId', incomeDocId);
     const [ docProducts, setDocProducts ] = useState();
 
     const [ keys, setKeys ] = useState(() => {
@@ -35,30 +36,15 @@ const DocumentProductsTable = props => {
         }
     }, [ incomeDocProducts ]);
 
-    useEffect(() => {
-        console.log('→ fetch magic!');
-    }, [ props.storeProducts ]);
-
     // useEffect(() => {
     //     console.log('→ fetch magic!');
     // }, [ props.storeProducts ]);
 
     const _handleDelete = redundantKey => {
-        // console.log('(1) redundantKey', redundantKey);
-        // console.log('(2) keys', keys);
-        // console.log(
-        //     '(3) setKeys filter',
-        //     keys.filter(key => redundantKey !== key),
-        // );
-        // console.log(
-        //     '(5) props.form.setFieldsValue ',
-        //     props.form.setFieldsValue,
-        // );
         setKeys(keys.filter(key => redundantKey !== key));
         props.form.setFieldsValue({
             [ redundantKey ]: void 0,
         });
-        // console.log('(2)(2) keys', keys);
     };
 
     const _handleAdd = () => {
@@ -78,48 +64,48 @@ const DocumentProductsTable = props => {
         }
     };
 
-    const _handleSumCalculation = (key, field, value) => {
-       
+    const _handleSumCalculation = (fieldKey, field, value) => {
+        // fieldKey isEqual with update flow but +1 for creation because of [empty] at first docProduct array index
+        const key = incomeDocId ? fieldKey : fieldKey - 1;
+
         const purchasePrice = props.form.getFieldValue(
-            `docProducts[${key}].purchasePrice`,
+            `docProducts[${fieldKey}].purchasePrice`,
         );
         const quantity = props.form.getFieldValue(
-            `docProducts[${key}].quantity`,
+            `docProducts[${fieldKey}].quantity`,
         );
-        const sum = props.form.getFieldValue('sum') || 0;
+
+        // const sum = props.form.getFieldValue('sum') || 0;
 
         const getTotalSum = key => {
             let docProducts = props.form
                 .getFieldValue('docProducts')
                 .filter(Boolean);
 
-            docProducts.splice(key - 1, 1, {
-                ...docProducts[ key - 1 ],
-                purchaseSum: field.includes('purchasePrice') ? value * quantity : purchasePrice * value,
-            
+            docProducts.splice(key, 1, {
+                ...docProducts[ key ],
+                purchaseSum: field.includes('purchasePrice')
+                    ? value * quantity
+                    : purchasePrice * value,
             });
-     
-            return docProducts.reduce((accumulator, product) => {        
-                return accumulator + (product.purchaseSum || 0)
+
+            return docProducts.reduce((accumulator, product) => {
+                return accumulator + (product.purchaseSum || 0);
             }, 0);
         };
 
         const totalSum = getTotalSum(key);
-     
 
         if (field.includes('purchasePrice')) {
-
             props.form.setFieldsValue({
-                [ `docProducts[${key}].purchaseSum` ]: value * quantity,
-                sum:                                   totalSum,
-         
+                [ `docProducts[${fieldKey}].purchaseSum` ]: value * quantity,
+                sum:                                        totalSum,
             });
         }
         if (field.includes('quantity')) {
             props.form.setFieldsValue({
-                [ `docProducts[${key}].purchaseSum` ]: purchasePrice * value,
-                sum:                                   totalSum,
-                
+                [ `docProducts[${fieldKey}].purchaseSum` ]: purchasePrice * value,
+                sum:                                        totalSum,
             });
         }
     };

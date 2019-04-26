@@ -22,25 +22,7 @@ import {
 // own
 const Option = Select.Option;
 
-// const requiredLimitedOptions = (
-//     details,
-//     formFieldName,
-//     entityFieldName,
-//     source,
-//     sourceFilter,
-// ) => {
-//     return (
-//         _(details)
-//             .map(formFieldName)
-//             .map(name => _.find(source, { [ sourceFilter ]: Number(name) }))
-//             .map(entityFieldName)
-//             .filter(Boolean)
-//             .value() || []
-//     );
-// };
-
 export default (props, state, table) => {
-    // const { fields, errors } = props;
     const { formatMessage } = props.intl;
     const { getFieldDecorator, getFieldValue } = props.form;
 
@@ -85,7 +67,7 @@ export default (props, state, table) => {
                         field={ `docProducts[${key}].productId` }
                         initialValue={ _.get(
                             props,
-                            `incomeDoc.docProducts[${key}].product.productId`,
+                            `incomeDoc.docProducts[${key}].product.id`,
                         ) }
                         onBlur={ value => handleBlur(key, value) }
                         // onBlur={ value => handleBlur(value, `${data.key}.productId`) }
@@ -121,7 +103,10 @@ export default (props, state, table) => {
                     field={ `docProducts[${key}].name` }
                     disabled={ _isFieldDisabled(key) }
                     getFieldDecorator={ props.form.getFieldDecorator }
-                    // initialValue={ props.storeProducts[ key ].name }
+                    initialValue={ _.get(
+                        props,
+                        `incomeDoc.docProducts[${key}].product.name`,
+                    ) }
                 />
             ),
         },
@@ -183,7 +168,10 @@ export default (props, state, table) => {
                     field={ `docProducts[${key}].tradeCode` }
                     disabled={ _isFieldDisabled(key) }
                     getFieldDecorator={ props.form.getFieldDecorator }
-                    // initialValue={ props.storeProducts[ key ].name }
+                    initialValue={ _.get(
+                        props,
+                        `incomeDoc.docProducts[${key}].product.code`,
+                    ) }
                 />
             ),
         },
@@ -210,7 +198,10 @@ export default (props, state, table) => {
                         // errors={ errors }
                         defaultGetValueProps
                         // fieldValue={ _.get(fields, `${key}.purchasePrice`) }
-                        // initialValue={ _getDefaultValue(key, 'purchasePrice') }
+                        initialValue={ _.get(
+                            props,
+                            `incomeDoc.docProducts[${key}].purchasePrice`,
+                        ) }
                         field={ `docProducts[${key}].purchasePrice` }
                         disabled={ _isFieldDisabled(key) }
                         getFieldDecorator={ props.form.getFieldDecorator }
@@ -242,7 +233,15 @@ export default (props, state, table) => {
                     field={ `docProducts[${key}].quantity` }
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ _isFieldDisabled(key) }
-                    initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
+                    initialValue={
+                        _isFieldDisabled(key)
+                            ? void 0
+                            : _.get(
+                                props,
+                                `incomeDoc.docProducts[${key}].quantity`,
+                                1,
+                            )
+                    }
                     min={ 0.1 }
                     step={ 0.1 }
                     formatter={ numeralFormatter }
@@ -291,6 +290,10 @@ export default (props, state, table) => {
                         parser={ numeralParser }
                         // defaultValue={ 0 }
                         // initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
+                        initialValue={ _.get(
+                            props,
+                            `incomeDoc.docProducts[${key}].purchaseSum`,
+                        ) }
                     />
                 );
             },
