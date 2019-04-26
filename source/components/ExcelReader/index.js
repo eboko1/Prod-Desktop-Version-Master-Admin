@@ -59,7 +59,7 @@ export class ExcelReader extends Component {
                     'priceGroupNumber',
                     'price',
                 ],
-                range: 'A2:I10001',
+                range: 'A2:I50001',
             });
             /* Update state */
             this.setState({ data: data, cols: makeCols(ws[ '!ref' ]) });
