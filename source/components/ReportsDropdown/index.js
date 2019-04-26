@@ -2,12 +2,14 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Menu, Dropdown, Icon } from 'antd';
+import _ from 'lodash';
 
 // proj
 import book from 'routes/book';
 import { permissions, isForbidden } from 'utils';
 
 // own
+import config from './config';
 import Styles from './styles.m.css';
 
 const ACT_OF_ACCEPTANCE_REPORT = 'actOfAcceptanceReport'; // actOfAcceptanceReport -> акт приема работ
@@ -26,22 +28,50 @@ class ReportsDropdown extends React.Component {
 
     static getReports(props) {
         const { orderId, orderStatus } = props;
+        const businessId = _.get(props, 'user.businessId');
         if (!orderStatus) {
             return [];
         }
 
-        const all = [ ACT_OF_ACCEPTANCE_REPORT, BUSINESS_ORDER_REPORT, CALCULATION_REPORT, CLIENT_ORDER_REPORT, COMPLETED_WORK_REPORT, DIAGNOSTICS_ACT_REPORT, INVOICE_REPORT ];
+        const all = [
+            ACT_OF_ACCEPTANCE_REPORT,
+            BUSINESS_ORDER_REPORT,
+            CALCULATION_REPORT,
+            CLIENT_ORDER_REPORT,
+            COMPLETED_WORK_REPORT,
+            DIAGNOSTICS_ACT_REPORT,
+            INVOICE_REPORT,
+        ];
+
+        const selectedReports = [ ACT_OF_ACCEPTANCE_REPORT, BUSINESS_ORDER_REPORT, DIAGNOSTICS_ACT_REPORT ];
 
         const statusToReportsMap = {
-            not_complete: [ CALCULATION_REPORT ], // eslint-disable-line camelcase
-            required:     [ CALCULATION_REPORT ],
-            reserve:      [ CALCULATION_REPORT ],
-            call:         [ CALCULATION_REPORT ],
-            approve:      all,
-            progress:     all,
-            success:      [ CALCULATION_REPORT, CLIENT_ORDER_REPORT, COMPLETED_WORK_REPORT, INVOICE_REPORT ],
-            invite:       [ CALCULATION_REPORT ],
-            cancel:       [ CALCULATION_REPORT ],
+            not_complete: config.avtostop.includes(businessId)
+                ? []
+                : [ CALCULATION_REPORT ], // eslint-disable-line camelcase
+            required: config.avtostop.includes(businessId)
+                ? []
+                : [ CALCULATION_REPORT ],
+            reserve: config.avtostop.includes(businessId)
+                ? []
+                : [ CALCULATION_REPORT ],
+            call: config.avtostop.includes(businessId)
+                ? []
+                : [ CALCULATION_REPORT ],
+            approve: config.avtostop.includes(businessId)
+                ? selectedReports
+                : all,
+            progress: config.avtostop.includes(businessId)
+                ? selectedReports
+                : all,
+            success: [
+                CALCULATION_REPORT,
+                CLIENT_ORDER_REPORT,
+                COMPLETED_WORK_REPORT,
+                INVOICE_REPORT,
+            ],
+            invite: [ CALCULATION_REPORT ],
+            cancel: [ CALCULATION_REPORT ],
         };
         const reports = statusToReportsMap[ orderStatus ].map(name => {
             return {
@@ -55,6 +85,7 @@ class ReportsDropdown extends React.Component {
 
     render() {
         const { isMobile } = this.props;
+        console.log('→ this.props.user', this.props.user);
         const menu = (
             <Menu>
                 { this.reports.map((item, index) => (
