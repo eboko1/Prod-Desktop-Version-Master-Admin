@@ -79,7 +79,7 @@ export default props => {
         }),
         key:    'tradeCode',
         width:  '10%',
-        render: ({ doc }) => doc.tradeCode,
+        render: ({ product }) => product.tradeCode,
     };
 
     const quantity = {
