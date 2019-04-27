@@ -25,11 +25,13 @@ export default class DatePickerField extends Component {
             date,
             loading,
             className,
+            style,
             intl: { formatMessage },
         } = this.props;
 
         return (
             <DatePicker
+                style={style}
                 allowClear={false}
                 value={date}
                 onChange={value => onChange(value)}

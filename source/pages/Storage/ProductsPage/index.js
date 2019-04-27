@@ -11,7 +11,7 @@ import {
     productsExcelImportValidate,
     selectProductsImporting,
 } from 'core/storage/products';
-import { MODALS, setModal, selectModal } from 'core/modals/duck';
+import { MODALS, setModal } from 'core/modals/duck';
 
 import { Layout, StyledButton } from 'commons';
 import { ExcelReader, StoreProductsTable } from 'components';
@@ -28,9 +28,6 @@ const AddButton = styled(StyledButton)`
 `;
 
 const StoreProducts = props => {
-    console.log('→ RENDER PAGE');
-    console.log('→ PAGE productsExcel', props.productsExcel);
-
     return (
         <Layout
             title={ <FormattedMessage id='navigation.products' /> }
@@ -68,13 +65,12 @@ const StoreProducts = props => {
             }
         >
             { props.importing ? <ProductsExcelForm /> : <StoreProductsTable /> }
-            <StoreProductModal visible={ props.modal } />
+            <StoreProductModal />
         </Layout>
     );
 };
 
 const mapStateToProps = state => ({
-    modal:     selectModal(state),
     importing: selectProductsImporting(state),
 });
 

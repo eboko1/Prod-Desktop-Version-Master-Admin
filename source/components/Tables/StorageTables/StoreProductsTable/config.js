@@ -13,6 +13,20 @@ export default props => {
         }),
         dataIndex: 'code',
         width:     '20%',
+        render:    (key, { id, name, code }) => (
+            <div
+                onClick={ () =>
+                    props.setModal(MODALS.STORE_PRODUCT, {
+                        id,
+                        name,
+                        code,
+                        editing: true,
+                    })
+                }
+            >
+                { code }
+            </div>
+        ),
     };
 
     const name = {

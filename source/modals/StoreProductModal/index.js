@@ -10,14 +10,11 @@ import { MODALS, resetModal } from 'core/modals/duck';
 import { StoreProductForm } from 'forms/StorageForms';
 
 const StoreProductModal = props => {
-    const { visible, resetModal } = props;
-
     const [ editing, setEditing ] = useState(_.get(props, 'modalProps.editing'));
 
     useEffect(() => {
         setEditing(_.get(props, 'modalProps.editing'));
     }, [ _.get(props, 'modalProps.editing') ]);
-    console.log('→ StoreProductModal props', props);
 
     return (
         <Modal
@@ -33,9 +30,8 @@ const StoreProductModal = props => {
             }
             cancelText={ <FormattedMessage id='cancel' /> }
             okText={ <FormattedMessage id='save' /> }
-            visible={ visible === MODALS.STORE_PRODUCT }
-            // onOk={ () => this._submit() }
-            onCancel={ () => resetModal() }
+            visible={ props.modal === MODALS.STORE_PRODUCT }
+            onCancel={ () => props.resetModal() }
             destroyOnClose
             footer={ null }
             width={ 720 }
@@ -50,6 +46,7 @@ const StoreProductModal = props => {
 };
 
 const mapStateToProps = state => ({
+    modal:      state.modals.modal,
     modalProps: state.modals.modalProps,
 });
 

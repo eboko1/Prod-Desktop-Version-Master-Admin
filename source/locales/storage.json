@@ -29,8 +29,8 @@
     "storage.price": "Price",
     "storage.purchase_price": "Purchase price",
     "storage.selling_price": "Selling price",
-    "storage.sum_of_sales": "Sum of sales",
-    "storage.sum_of_purchase": "Sum of purchase",
+    "storage.selling_sum": "Selling sum",
+    "storage.purchase_sum": "Purchase sum",
     "storage.operation_type": "Operation type",
     "storage.document_num": "Document num.",
     "storage.remain": "Remain",
@@ -44,11 +44,14 @@
     "storage.client": "Client",
     "storage.income_document": "Income Document",
     "storage.expense_document": "Expense Document",
+    "storage.INCOME": "Income",
+    "storage.EXPENSE": "Expense",
     "storage.supplier_document_number": "Supplier's document number",
     "storage.record_date": "Record Date",
     "storage.payment_date": "Payment Date",
     "storage.document_number": "Document number",
-    "storage.complete": "Complete"
+    "storage.complete": "Complete",
+    "storage.storage.document_number": "# document"
   },
   "ru": {
     "storage": "Склад",
@@ -80,8 +83,8 @@
     "storage.price": "Цена",
     "storage.purchase_price": "Закупочная цена",
     "storage.selling_price": "Цена продажи",
-    "storage.sum_of_sales": "Сумма продажи",
-    "storage.sum_of_purchase": "Цена закупки",
+    "storage.selling_sum": "Сумма продажи",
+    "storage.purchase_sum": "Цена закупки",
     "storage.operation_type": "Тип операции",
     "storage.document_num": "№ документа",
     "storage.remain": "Остатки",
@@ -96,11 +99,14 @@
     "storage.client": "Клиент",
     "storage.income_document": "Приходный Документ",
     "storage.expense_document": "Расходный Документ",
+    "storage.INCOME": "Приход",
+    "storage.EXPENSE": "Расход",
     "storage.supplier_document_number": "Номер документа поставщика",
     "storage.record_date": "Дата учета",
     "storage.payment_date": "Дата оплаты",
     "storage.document_number": "Номер документа",
-    "storage.complete": "Выполнить"
+    "storage.complete": "Выполнить",
+    "storage.storage.document_number": "№ документа"
   },
   "uk": {
     "storage": "Склад",
@@ -132,8 +138,8 @@
     "storage.price": "Ціна",
     "storage.purchase_price": "Ціна закупки",
     "storage.selling_price": "Ціна продажу",
-    "storage.sum_of_sales": "Сума продажу",
-    "storage.sum_of_purchase": "Сума закупки",
+    "storage.selling_sum": "Сума продажу",
+    "storage.purchase_sum": "Сума закупки",
     "storage.operation_type": "Тип операції",
     "storage.document_num": "№ Документу",
     "storage.remain": "Залишок",
@@ -148,10 +154,13 @@
     "storage.client": "Клієнт",
     "storage.income_document": "Прихідний Документ",
     "storage.expense_document": "Росхідний Документ",
+    "storage.INCOME": "Прихід",
+    "storage.EXPENSE": "Росхід",
     "storage.supplier_document_number": "Номер документу постачальника",
     "storage.record_date": "Дата обліку",
     "storage.payment_date": "Дата оплати",
     "storage.document_number": "Номер документу",
-    "storage.complete": "Виконати"
+    "storage.complete": "Виконати",
+    "storage.storage.document_number": "№ документу"
   }
 }
