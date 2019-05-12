@@ -41,8 +41,15 @@ export default props => {
         title: props.intl.formatMessage({
             id: 'storage.brand',
         }),
-        dataIndex: 'brandName',
+        dataIndex: 'brand',
         width:     '20%',
+        render:    (key, data) => {
+            if (data.brandName) {
+                return data.brandName;
+            }
+
+            return _.get(data, 'brand.name', '');
+        },
     };
 
     const markup = {

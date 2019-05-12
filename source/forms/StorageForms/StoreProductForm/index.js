@@ -103,6 +103,20 @@ const ProductForm = props => {
 
     console.log('→ form.getFieldsValue()', form.getFieldsValue());
 
+    const _generateBrandInitialOption = () => {
+        const product = _.get(props, 'product', {});
+
+        return _.isEmpty(product.brand) ? (
+            <Option value={ String(_.get(props, 'product.brandName')) }>
+                { _.get(props, 'product.brandName') }
+            </Option>
+        ) : (
+            <Option value={ String(_.get(props, 'product.brand.id')) }>
+                { _.get(props, 'product.brand.name') }
+            </Option>
+        );
+    };
+
     return (
         <StyledForm onSubmit={ _submit }>
             <DecoratedInput
@@ -162,7 +176,11 @@ const ProductForm = props => {
                     getFieldDecorator={ form.getFieldDecorator }
                     getPopupContainer={ trigger => trigger.parentNode }
                     field='brandId'
-                    initialValue={ _.get(props, 'product.brandId') }
+                    initialValue={
+                        _.isEmpty(props.product.brand)
+                            ? _.get(props, 'product.brandName')
+                            : String(_.get(props, 'product.brand.id'))
+                    }
                     onSearch={ value => {
                         form.setFieldsValue({
                             brandId:   void 0,
@@ -181,6 +199,7 @@ const ProductForm = props => {
                     showSearch
                     dropdownMatchSelectWidth={ false }
                 >
+                    { !_.isEmpty(props.product) && _generateBrandInitialOption() }
                     { props.brands.map(({ brandName, brandId }) => (
                         <Option
                             value={ String(brandId) }
