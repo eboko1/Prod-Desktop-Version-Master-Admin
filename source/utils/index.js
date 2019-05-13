@@ -4,6 +4,7 @@
 // webpack issue: https://github.com/webpack/webpack/issues/3509
 export * from './sideEffects';
 export * from './tools';
+export * from './hooks';
 //
 export { default as images } from './images';
 export { default as fetchAPI } from './api';

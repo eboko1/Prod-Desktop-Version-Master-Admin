@@ -8,6 +8,7 @@ import styled from 'styled-components';
 
 // proj
 import {
+    fetchProducts,
     fetchProduct,
     createProduct,
     updateProduct,
@@ -90,6 +91,7 @@ const ProductForm = props => {
                     : props.createProduct(values);
 
                 props.form.resetFields();
+                props.fetchProducts();
                 props.resetModal();
             }
         });
@@ -281,6 +283,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
+    fetchProducts,
     fetchProduct,
     fetchStoreGroups,
     fetchPriceGroups,

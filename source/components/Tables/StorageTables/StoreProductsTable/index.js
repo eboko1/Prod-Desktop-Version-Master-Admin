@@ -1,5 +1,5 @@
 // vendor
-import React, { useEffect } from 'react';
+import React, { memo, useRef, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
@@ -15,17 +15,25 @@ import {
     setStoreProductsPage,
 } from 'core/storage/products';
 import { setModal } from 'core/modals/duck';
+import { usePrevious } from 'utils';
 
 // own
 import columnsConfig from './config';
 
-const ProductsTable = props => {
-    // const products = { ...props.products };
+const ProductsTable = memo(props => {
     const { products } = props;
 
+    const prevValues = usePrevious(products);
+
     useEffect(() => {
-        props.fetchProducts();
-    }, [ products ]);
+        if (!_.isEqual(products, prevValues)) {
+            props.fetchProducts();
+        }
+    }, [ prevValues ]);
+
+    // useEffect(() => {
+    //     props.fetchProducts();
+    // }, [ products ]);
 
     const pagination = {
         pageSize:         25,
@@ -52,7 +60,7 @@ const ProductsTable = props => {
             rowKey={ record => record.code }
         />
     );
-};
+});
 
 const mapStateToProps = state => ({
     products: selectStoreProducts(state),

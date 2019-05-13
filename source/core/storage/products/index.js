@@ -82,10 +82,10 @@ export default function reducer(state = ReducerState, action) {
             };
 
         case FETCH_PRODUCT_SUCCESS:
-            return { ...state, product: payload };
+            return { ...state, product: { ...payload } };
 
         case FETCH_PRODUCTS_SUCCESS:
-            return { ...state, products: payload };
+            return { ...state, products: { ...payload } };
 
         case FETCH_AVAILABLE_PRODUCTS_SUCCESS:
             return {
