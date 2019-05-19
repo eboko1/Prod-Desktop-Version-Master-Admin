@@ -12,6 +12,7 @@ const CREATE_INVITE_ORDER = 'CREATE_INVITE_ORDER';
 const CREATE_ORDER = 'CREATE_ORDER';
 const GRANT = 'GRANT';
 const PRINT_ORDERS = 'PRINT_ORDERS';
+const LIMITED_PRINT = 'LIMITED_PRINT';
 const SHOW_FILTERS = 'SHOW_FILTERS';
 const SHOW_ORDERS = 'SHOW_ORDERS';
 const UPDATE_SUCCESS_ORDER = 'UPDATE_SUCCESS_ORDER';
@@ -67,6 +68,7 @@ export const permissions = Object.freeze({
     CREATE_ORDER,
     GRANT,
     PRINT_ORDERS,
+    LIMITED_PRINT,
     SHOW_FILTERS,
     SHOW_ORDERS,
     UPDATE_SUCCESS_ORDER,
@@ -132,6 +134,7 @@ export const groupedPermissions = {
         CREATE_INVITE_ORDER,
         CREATE_ORDER,
         PRINT_ORDERS,
+        LIMITED_PRINT,
         SHOW_FILTERS,
         SHOW_ORDERS,
         UPDATE_SUCCESS_ORDER,
@@ -210,6 +213,7 @@ export const getPermissionsLabels = intl => ({
     }),
     [ CREATE_ORDER ]:         intl.formatMessage({id: 'roles.create_order'}),
     [ PRINT_ORDERS ]:         intl.formatMessage({id: 'roles.print_orders'}),
+    [ LIMITED_PRINT ]:         intl.formatMessage({id: 'roles.limited_print'}),
     [ SHOW_FILTERS ]:         intl.formatMessage({id: 'roles.show_filters'}),
     [ SHOW_ORDERS ]:          intl.formatMessage({id: 'roles.show_orders'}),
     [ UPDATE_SUCCESS_ORDER ]: intl.formatMessage({
