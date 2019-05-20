@@ -25,7 +25,7 @@ class ReportsDropdown extends React.Component {
     }
 
     static getReports(props) {
-        const { orderId, orderStatus } = props;
+        const { user, orderId, orderStatus } = props;
 
         if (!orderStatus) {
             return [];
@@ -43,10 +43,7 @@ class ReportsDropdown extends React.Component {
 
         const selectedReports = [ ACT_OF_ACCEPTANCE_REPORT, BUSINESS_ORDER_REPORT, DIAGNOSTICS_ACT_REPORT ];
 
-        const limitedPrint = isForbidden(
-            this.props.user,
-            permissions.LIMITED_PRINT,
-        );
+        const limitedPrint = isForbidden(user, permissions.LIMITED_PRINT);
 
         const statusToReportsMap = {
             not_complete: limitedPrint ? [] : [ CALCULATION_REPORT ], // eslint-disable-line camelcase
