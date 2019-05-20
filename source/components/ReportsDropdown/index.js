@@ -2,14 +2,12 @@
 import React from 'react';
 import { FormattedMessage } from 'react-intl';
 import { Menu, Dropdown, Icon } from 'antd';
-import _ from 'lodash';
 
 // proj
 import book from 'routes/book';
 import { permissions, isForbidden } from 'utils';
 
 // own
-import config from './config';
 import Styles from './styles.m.css';
 
 const ACT_OF_ACCEPTANCE_REPORT = 'actOfAcceptanceReport'; // actOfAcceptanceReport -> акт приема работ
@@ -27,8 +25,8 @@ class ReportsDropdown extends React.Component {
     }
 
     static getReports(props) {
-        const { orderId, orderStatus } = props;
-        const businessId = _.get(props, 'user.businessId');
+        const { user, orderId, orderStatus } = props;
+
         if (!orderStatus) {
             return [];
         }
@@ -45,26 +43,16 @@ class ReportsDropdown extends React.Component {
 
         const selectedReports = [ ACT_OF_ACCEPTANCE_REPORT, BUSINESS_ORDER_REPORT, DIAGNOSTICS_ACT_REPORT ];
 
+        const limitedPrint = isForbidden(user, permissions.LIMITED_PRINT);
+
         const statusToReportsMap = {
-            not_complete: config.avtostop.includes(businessId)
-                ? []
-                : [ CALCULATION_REPORT ], // eslint-disable-line camelcase
-            required: config.avtostop.includes(businessId)
-                ? []
-                : [ CALCULATION_REPORT ],
-            reserve: config.avtostop.includes(businessId)
-                ? []
-                : [ CALCULATION_REPORT ],
-            call: config.avtostop.includes(businessId)
-                ? []
-                : [ CALCULATION_REPORT ],
-            approve: config.avtostop.includes(businessId)
-                ? selectedReports
-                : all,
-            progress: config.avtostop.includes(businessId)
-                ? selectedReports
-                : all,
-            success: [
+            not_complete: limitedPrint ? [] : [ CALCULATION_REPORT ], // eslint-disable-line camelcase
+            required:     limitedPrint ? [] : [ CALCULATION_REPORT ],
+            reserve:      limitedPrint ? [] : [ CALCULATION_REPORT ],
+            call:         limitedPrint ? [] : [ CALCULATION_REPORT ],
+            approve:      limitedPrint ? selectedReports : all,
+            progress:     limitedPrint ? selectedReports : all,
+            success:      [
                 CALCULATION_REPORT,
                 CLIENT_ORDER_REPORT,
                 COMPLETED_WORK_REPORT,
@@ -85,7 +73,7 @@ class ReportsDropdown extends React.Component {
 
     render() {
         const { isMobile } = this.props;
-        console.log('→ this.props.user', this.props.user);
+
         const menu = (
             <Menu>
                 { this.reports.map((item, index) => (
