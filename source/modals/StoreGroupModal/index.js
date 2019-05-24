@@ -1,27 +1,34 @@
 // vendor
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import { Modal, Form } from "antd";
 import { FormattedMessage, injectIntl } from "react-intl";
 import _ from "lodash";
 
 // proj
-import { MODALS } from "core/modals/duck";
+import { MODALS, selectModalProps } from "core/modals/duck";
 
-import { DecoratedInput } from "forms/DecoratedFields";
+import { DecoratedInput, DecoratedCheckbox } from "forms/DecoratedFields";
+
+const formItemLayout = {
+    labelCol: { span: 6 },
+    wrapperCol: { span: 18 },
+};
+
+const mapStateToProps = state => ({
+    modalProps: selectModalProps(state),
+});
 
 @injectIntl
 @Form.create()
+@connect(mapStateToProps)
 export default class StoreGroupModal extends Component {
     _submit = () => {
-        const { form, createSupplier, resetModal, modalProps } = this.props;
-
-        const supplierId = _.get(modalProps, "id");
+        const { form, resetModal, modalProps } = this.props;
 
         form.validateFields((err, values) => {
             if (!err) {
-                supplierId
-                    ? createSupplier({ ...values, id: supplierId })
-                    : createSupplier(values);
+                console.log("→ StoreGroupModal Submit values", values);
                 form.resetFields();
                 resetModal();
             }
@@ -37,8 +44,8 @@ export default class StoreGroupModal extends Component {
             intl: { formatMessage },
         } = this.props;
 
-        const supplierName = _.get(modalProps, "name");
-
+        const name = _.get(modalProps, "storeGroup.name");
+        const id = _.get(modalProps, "storeGroup.id");
         return (
             <Modal
                 cancelText={<FormattedMessage id="cancel" />}
@@ -47,7 +54,34 @@ export default class StoreGroupModal extends Component {
                 onOk={() => this._submit()}
                 onCancel={() => resetModal()}
             >
-                <Form onSubmit={this._submit}>MODALS STORE GROUP</Form>
+                <Form onSubmit={this._submit} style={{ padding: 24 }}>
+                    <DecoratedInput
+                        fields={{}}
+                        field="name"
+                        formItem
+                        formItemLayout={formItemLayout}
+                        label="Name"
+                        initialValue={name}
+                        getFieldDecorator={getFieldDecorator}
+                    />
+                    <DecoratedInput
+                        fields={{}}
+                        field="priceGroupNumber"
+                        getFieldDecorator={getFieldDecorator}
+                        initialValue={id}
+                        hiddeninput="hiddeninput"
+                    />
+                    {modalProps.create && (
+                        <DecoratedCheckbox
+                            fields={{}}
+                            formItem
+                            label="SystemWide"
+                            formItemLayout={formItemLayout}
+                            field="systemWide"
+                            getFieldDecorator={getFieldDecorator}
+                        />
+                    )}
+                </Form>
             </Modal>
         );
     }

@@ -158,6 +158,60 @@ export function* fetchStoreGroupsSaga() {
     }
 }
 
+export function* createStoreGroupSaga() {
+    while (true) {
+        try {
+            yield take(CREATE_STORE_GROUP);
+            yield nprogress.start();
+
+            const storeGroups = yield call(fetchAPI, 'POST', 'store_groups');
+
+            yield put(createStoreGroupSuccess(storeGroups));
+            yield put(fetchStoreGroups());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* updateStoreGroupSaga() {
+    while (true) {
+        try {
+            const { payload: id } = yield take(UPDATE_STORE_GROUP);
+            yield nprogress.start();
+
+            yield call(fetchAPI, 'PUT', `store_groups/${id}`);
+
+            yield put(updateStoreGroupSuccess());
+            yield put(fetchStoreGroups());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
+export function* deleteStoreGroupSaga() {
+    while (true) {
+        try {
+            yield take(DELETE_STORE_GROUP);
+            yield nprogress.start();
+
+            yield call(fetchAPI, 'DELETE', `store_groups/${id}`);
+
+            yield put(deleteStoreGroupSuccess());
+            yield put(fetchStoreGroups());
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* saga() {
     yield all([ call(fetchStoreGroupsSaga) ]);
 }

@@ -124,6 +124,12 @@ export default class StoreProductsContainer extends Component {
                                 selected ? (
                                     <StoreProductsSetting
                                         setModal={this.props.setModal}
+                                        storeGroup={{
+                                            id: item.id,
+                                            name: item.name,
+                                            priceGroupNumber:
+                                                item.priceGroupNumber,
+                                        }}
                                     />
                                 ) : null
                             }
@@ -137,10 +143,15 @@ export default class StoreProductsContainer extends Component {
                     <Leaf
                         key={String(item.id)}
                         title={title}
-                        icon={item =>
-                            item.selected ? (
+                        icon={leaf =>
+                            leaf.selected ? (
                                 <StoreProductsSetting
                                     setModal={this.props.setModal}
+                                    storeGroup={{
+                                        id: item.id,
+                                        name: item.name,
+                                        priceGroupNumber: item.priceGroupNumber,
+                                    }}
                                 />
                             ) : null
                         }
@@ -160,6 +171,7 @@ export default class StoreProductsContainer extends Component {
                     type="dashed"
                     onClick={() =>
                         this.props.setModal(MODALS.STORE_GROUP, {
+                            create: true,
                             root: true,
                         })
                     }

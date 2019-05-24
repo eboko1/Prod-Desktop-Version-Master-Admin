@@ -1,5 +1,5 @@
 // vendor
-import React, { useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
@@ -15,14 +15,19 @@ import {
 } from 'core/storage/tracking';
 import { setModal } from 'core/modals/duck';
 
+import { usePrevious } from 'utils';
+
 // own
 import columns from './columns';
 
-const TrackingTableComponent = props => {
+const TrackingTableComponent = memo(props => {
     const { tracking } = props;
+    const prevTracking = usePrevious(tracking);
 
     useEffect(() => {
-        props.fetchTracking();
+        if (!_.isEqual(tracking, prevTracking)) {
+            props.fetchTracking();
+        }
     }, [ tracking ]);
 
     const pagination = {
@@ -50,7 +55,7 @@ const TrackingTableComponent = props => {
             rowKey={ record => record.id }
         />
     );
-};
+});
 
 const mapStateToProps = state => ({
     tracking: selectTracking(state),

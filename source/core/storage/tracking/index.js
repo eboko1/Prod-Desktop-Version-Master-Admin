@@ -39,7 +39,7 @@ export default function reducer(state = ReducerState, action) {
 
     switch (type) {
         case FETCH_TRACKING_SUCCESS:
-            return { ...state, tracking: payload };
+            return { ...state, tracking: { ...payload } };
 
         case SET_TRACKING_PAGE:
             return { ...state, filters: { ...state.filters, page: payload } };

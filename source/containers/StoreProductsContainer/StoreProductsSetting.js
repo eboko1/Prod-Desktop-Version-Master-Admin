@@ -4,8 +4,8 @@ import { Icon } from 'antd';
 // proj
 import { MODALS } from 'core/modals/duck';
 
-export const StoreProductsSetting = props => {
-    const { setModal } = props;
+export const StoreProductsSetting = ({ setModal, storeGroup }) => {
+    console.log('→ storeGroup', storeGroup);
 
     return (
         <>
@@ -19,7 +19,12 @@ export const StoreProductsSetting = props => {
             />
             <Icon
                 type={ 'edit' }
-                onClick={ () => setModal(MODALS.STORE_GROUP, { edit: true }) }
+                onClick={ () =>
+                    setModal(MODALS.STORE_GROUP, {
+                        edit: true,
+                        storeGroup,
+                    })
+                }
                 style={ {
                     fontSize: '16px',
                     color:    'var(--secondary)',
@@ -27,7 +32,12 @@ export const StoreProductsSetting = props => {
             />
             <Icon
                 type={ 'delete' }
-                onClick={ () => setModal(MODALS.STORE_GROUP, { delete: true }) }
+                onClick={ () =>
+                    setModal(MODALS.STORE_GROUP, {
+                        delete: true,
+                        storeGroup,
+                    })
+                }
                 style={ {
                     fontSize: '16px',
                     color:    'var(--warning)',
