@@ -26,6 +26,9 @@ export const FETCH_PRODUCTS_SUCCESS = `${prefix}/FETCH_PRODUCTS_SUCCESS`;
 export const FETCH_AVAILABLE_PRODUCTS = `${prefix}/FETCH_AVAILABLE_PRODUCTS`;
 export const FETCH_AVAILABLE_PRODUCTS_SUCCESS = `${prefix}/FETCH_AVAILABLE_PRODUCTS_SUCCESS`;
 
+export const FETCH_RECOMMENDED_PRICE = `${prefix}/FETCH_RECOMMENDED_PRICE`;
+export const FETCH_RECOMMENDED_PRICE_SUCCESS = `${prefix}/FETCH_RECOMMENDED_PRICE_SUCCESS`;
+
 export const FETCH_PRODUCT = `${prefix}/FETCH_PRODUCT`;
 export const FETCH_PRODUCT_SUCCESS = `${prefix}/FETCH_PRODUCT_SUCCESS`;
 
@@ -40,7 +43,7 @@ export const SET_STORE_PRODUCTS_PAGE = `${prefix}/SET_STORE_PRODUCTS_PAGE`;
 
 export const SET_PRODUCT_LOADING = `${prefix}/SET_PRODUCT_LOADING`;
 export const SET_PRODUCTS_LOADING = `${prefix}/SET_PRODUCTS_LOADING`;
-export const SET_AVAILABLE_PRODUCTS_LOADING = `${prefix}/SET_AVAILABLE_PRODUCTS_LOADING`;
+export const SET_RECOMMENDED_PRICE_LOADING = `${prefix}/SET_RECOMMENDED_PRICE_LOADING`;
 export const SET_PRODUCTS_EXCEL_IMPORT_LOADING = `${prefix}/SET_PRODUCTS_EXCEL_IMPORT_LOADING`;
 
 /**
@@ -54,14 +57,14 @@ const ReducerState = {
         },
         list: [],
     },
-    availableProducts:        {},
-    productsExcel:            [],
-    importing:                false,
-    productsExcelLoading:     false,
-    productsLoading:          false,
-    availableProductsLoading: false,
-    product:                  {},
-    filters:                  {
+    availableProducts:       {},
+    productsExcel:           [],
+    importing:               false,
+    productsExcelLoading:    false,
+    productsLoading:         false,
+    recommendedPriceLoading: false,
+    product:                 {},
+    filters:                 {
         page: 1,
     },
 };
@@ -87,13 +90,21 @@ export default function reducer(state = ReducerState, action) {
         case FETCH_PRODUCTS_SUCCESS:
             return { ...state, products: { ...payload } };
 
-        case FETCH_AVAILABLE_PRODUCTS_SUCCESS:
+        // DEPRECATED
+        // case FETCH_AVAILABLE_PRODUCTS_SUCCESS:
+        //     return {
+        //         ...state,
+        //         availableProducts: {
+        //             key:   payload.key,
+        //             using: { ...payload.availableProducts },
+        //         },
+        //     };
+        case FETCH_RECOMMENDED_PRICE_SUCCESS:
+            console.log('→ FETCH_RECOMMENDED_PRICE_SUCCESS payload', payload);
+
             return {
                 ...state,
-                availableProducts: {
-                    key:   payload.key,
-                    using: { ...payload.availableProducts },
-                },
+                recommendedPrice: { ...payload },
             };
 
         case SET_STORE_PRODUCTS_PAGE:
@@ -108,8 +119,8 @@ export default function reducer(state = ReducerState, action) {
         case SET_PRODUCTS_LOADING:
             return { ...state, productsLoading: payload };
 
-        case SET_AVAILABLE_PRODUCTS_LOADING:
-            return { ...state, availableProductsLoading: payload };
+        case SET_RECOMMENDED_PRICE_LOADING:
+            return { ...state, recommendedPriceLoading: payload };
 
         default:
             return state;
@@ -123,8 +134,8 @@ export default function reducer(state = ReducerState, action) {
 export const stateSelector = state => state.storage[ moduleName ];
 export const selectStoreProduct = state => stateSelector(state).product;
 export const selectStoreProducts = state => stateSelector(state).products;
-export const selectAvailableProducts = state =>
-    stateSelector(state).availableProducts;
+export const selectRecommendedPrice = state =>
+    stateSelector(state).selectRecommendedPrice;
 export const selectStoreProductsFilters = state => stateSelector(state).filters;
 // export const selectStoreProductsExcel = state =>
 //     stateSelector(state).productsExcel;
@@ -134,8 +145,8 @@ export const selectProductLoading = state =>
     stateSelector(state).productLoading;
 export const selectProductsLoading = state =>
     stateSelector(state).productsLoading;
-export const selectAvailableProductsLoading = state =>
-    stateSelector(state).availableProductsLoading;
+export const selectRecommendedPriceLoading = state =>
+    stateSelector(state).selectRecommendedPriceLoading;
 
 export const selectProductsImporting = state => stateSelector(state).importing;
 
@@ -163,7 +174,7 @@ export const setStoreProductsPage = page => ({
     payload: page,
 });
 
-// available products
+// available products DEPRECATED!
 export const fetchAvailableProducts = (key, id, count) => ({
     type:    FETCH_AVAILABLE_PRODUCTS,
     payload: { key, id, count },
@@ -172,6 +183,17 @@ export const fetchAvailableProducts = (key, id, count) => ({
 export const fetchAvailableProductsSuccess = (key, availableProducts) => ({
     type:    FETCH_AVAILABLE_PRODUCTS_SUCCESS,
     payload: { key, availableProducts },
+});
+
+//
+export const fetchRecommendedPrice = (key, id) => ({
+    type:    FETCH_RECOMMENDED_PRICE,
+    payload: { key, id },
+});
+
+export const fetchRecommendedPriceSuccess = recommendedPrice => ({
+    type:    FETCH_RECOMMENDED_PRICE_SUCCESS,
+    payload: recommendedPrice,
 });
 
 // product
@@ -253,8 +275,8 @@ export const setProductsLoading = isLoading => ({
     payload: isLoading,
 });
 
-export const setAvailableProductsLoading = isLoading => ({
-    type:    SET_AVAILABLE_PRODUCTS_LOADING,
+export const setRecommendedPriceLoading = isLoading => ({
+    type:    SET_RECOMMENDED_PRICE_LOADING,
     payload: isLoading,
 });
 
@@ -321,29 +343,52 @@ export function* fetchProductSaga() {
     }
 }
 
-export function* fetchAvailableProductsSaga() {
+// DEPRECATED
+// export function* fetchAvailableProductsSaga() {
+//     while (true) {
+//         try {
+//             const {
+//                 payload: { key, id, count },
+//             } = yield take(FETCH_AVAILABLE_PRODUCTS);
+//             yield put(setAvailableProductsLoading(true));
+
+//             const response = yield call(
+//                 fetchAPI,
+//                 'GET',
+//                 '/store_doc_products/available/',
+//                 {
+//                     productId:      id,
+//                     neededQuantity: count || 1,
+//                 },
+//             );
+
+//             yield put(fetchAvailableProductsSuccess(key, response));
+//         } catch (error) {
+//             yield put(emitError(error));
+//         } finally {
+//             yield put(setAvailableProductsLoading(false));
+//         }
+//     }
+// }
+export function* fetchRecommendedPriceSaga() {
     while (true) {
         try {
             const {
-                payload: { key, id, count },
-            } = yield take(FETCH_AVAILABLE_PRODUCTS);
-            yield put(setAvailableProductsLoading(true));
+                payload: { key, id },
+            } = yield take(FETCH_RECOMMENDED_PRICE);
+            yield put(setRecommendedPriceLoading(true));
 
             const response = yield call(
                 fetchAPI,
                 'GET',
-                '/store_doc_products/available/',
-                {
-                    productId:      id,
-                    neededQuantity: count || 1,
-                },
+                `/store_doc_products/${id}/recommended_price`,
             );
 
-            yield put(fetchAvailableProductsSuccess(key, response));
+            yield put(fetchRecommendedPriceSuccess({ key, ...response }));
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            yield put(setAvailableProductsLoading(false));
+            yield put(setRecommendedPriceLoading(false));
         }
     }
 }
@@ -459,7 +504,8 @@ export function* saga() {
     yield all([
         call(fetchProductSaga),
         call(fetchProductsSaga),
-        call(fetchAvailableProductsSaga),
+        // call(fetchAvailableProductsSaga),
+        call(fetchRecommendedPriceSaga),
         call(createProductSaga),
         call(updateProductSaga),
         call(deleteProductSaga),

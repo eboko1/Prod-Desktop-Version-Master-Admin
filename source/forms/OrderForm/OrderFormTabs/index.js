@@ -267,13 +267,11 @@ export default class OrderFormTabs extends React.PureComponent {
                             this.props.setStoreProductsSearchQuery
                         }
                         storeProducts={this.props.storeProducts}
-                        availableProducts={this.props.availableProducts}
-                        availableProductsLoading={
-                            this.props.availableProductsLoading
+                        recommendedPrice={this.props.recommendedPrice}
+                        recommendedPriceLoading={
+                            this.props.recommendedPriceLoading
                         }
-                        fetchAvailableProducts={
-                            this.props.fetchAvailableProducts
-                        }
+                        fetchRecommendedPrice={this.props.fetchRecommendedPrice}
                     />
                     <DiscountPanel
                         fields={discountTabFieldsProps}

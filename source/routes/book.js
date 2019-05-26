@@ -62,8 +62,6 @@ const book = Object.freeze({
     storageExpenses:          '/expenses',
     storageIncomeDoc:         '/income-document',
     storageIncomeDocId:       '/income-document/:id',
-    storageExpenseDoc:        '/expense-document',
-    storageExpenseDocId:      '/expense-document/:id',
     //trt
     // Statistics
     //

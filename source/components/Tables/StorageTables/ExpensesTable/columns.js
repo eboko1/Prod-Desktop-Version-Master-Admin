@@ -25,13 +25,13 @@ export default props => {
         ),
     };
 
-    const createdDatetime = {
+    const orderDatetime = {
         title: props.intl.formatMessage({
-            id: 'storage.created_datetime',
+            id: 'storage.date',
         }),
-        dataIndex: 'createdDatetime',
+        dataIndex: 'orderDatetime',
         width:     '20%',
-        render:    datetime => <DatetimeFormatter datetime={ datetime } />,
+        render:    orderDatetime => <DatetimeFormatter datetime={ orderDatetime } />,
     };
 
     const status = {
@@ -51,14 +51,32 @@ export default props => {
         ),
     };
 
+    const order = {
+        title: props.intl.formatMessage({
+            id: 'storage.order',
+        }),
+        dataIndex: 'orderId',
+        width:     '20%',
+        render:    (order, { orderId, orderNum }) => (
+            <Link
+                to={ `${book.order}/${orderId}` }
+                style={ { color: 'var(--link)' } }
+            >
+                { orderNum }
+            </Link>
+        ),
+    };
+
     const client = {
         title: props.intl.formatMessage({
             id: 'storage.client',
         }),
-        dataIndex: 'businessSupplierId',
+        dataIndex: 'clientName',
         width:     '20%',
-        render:    (client, { businessSupplier }) => (
-            <div>{ businessSupplier.name }</div>
+        render:    (client, { clientName, clientSurname }) => (
+            <div>
+                { clientName } { clientSurname }
+            </div>
         ),
     };
 
@@ -85,8 +103,9 @@ export default props => {
 
     return [
         id,
-        createdDatetime,
+        orderDatetime,
         status,
+        order,
         client,
         sum,
         actions,

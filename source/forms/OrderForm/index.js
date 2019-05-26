@@ -21,11 +21,11 @@ import {
     setStoreProductsSearchQuery,
     selectStoreProductsByQuery,
 } from "core/search/duck";
-import { 
-    fetchAvailableProducts,
-    selectAvailableProducts,
-    selectAvailableProductsLoading,
-} from 'core/storage/products';
+import {
+    fetchRecommendedPrice,
+    selectRecommendedPrice,
+    selectRecommendedPriceLoading,
+} from "core/storage/products";
 import { resetModal } from "core/modals/duck";
 import { initOrderTasksForm } from "core/forms/orderTaskForm/duck";
 
@@ -55,7 +55,7 @@ import Styles from "./styles.m.css";
         fetchTecdocDetailsSuggestions,
         clearTecdocDetailsSuggestions,
         setStoreProductsSearchQuery,
-        fetchAvailableProducts,
+        fetchRecommendedPrice,
     },
 
     mapStateToProps: state => ({
@@ -70,8 +70,8 @@ import Styles from "./styles.m.css";
         stationLoads: state.forms.orderForm.stationLoads,
         suggestionsFetching: state.ui.suggestionsFetching,
         storeProducts: selectStoreProductsByQuery(state),
-        availableProducts: selectAvailableProducts(state),
-        availableProductsLoading: selectAvailableProductsLoading(state),
+        recommendedPrice: selectRecommendedPrice(state),
+        recommendedPriceLoading: selectRecommendedPriceLoading(state),
     }),
 })
 export class OrderForm extends React.PureComponent {
@@ -539,9 +539,9 @@ export class OrderForm extends React.PureComponent {
                 stationsCount={stationsCount}
                 storeProducts={storeProducts}
                 setStoreProductsSearchQuery={setStoreProductsSearchQuery}
-                availableProducts={this.props.availableProducts}
-                availableProductsLoading={this.props.availableProductsLoading}
-                fetchAvailableProducts={this.props.fetchAvailableProducts}
+                recommendedPrice={this.props.recommendedPrice}
+                recommendedPriceLoading={this.props.recommendedPriceLoading}
+                fetchRecommendedPrice={this.props.fetchRecommendedPrice}
             />
         );
     };

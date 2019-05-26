@@ -43,7 +43,6 @@ import {
     StorageBalancePage,
     StorageMovementPage,
     IncomeDocPage,
-    ExpenseDocPage,
 } from 'pages';
 import book from './book';
 
@@ -162,21 +161,6 @@ export default class Private extends Component {
                     exact
                     component={ ExpensesPage }
                     path={ book.storageExpenses }
-                />
-                <Route
-                    exact
-                    path={ book.storageExpenseDocId }
-                    render={ props => (
-                        <ExpenseDocPage
-                            key={ props.match.params.id }
-                            { ...props }
-                        />
-                    ) }
-                />
-                <Route
-                    exact
-                    path={ book.storageExpenseDoc }
-                    render={ props => <ExpenseDocPage { ...props } /> }
                 />
                 { /* Statistics */ }
                 <Route exact component={ ChartPage } path={ book.chart } />
