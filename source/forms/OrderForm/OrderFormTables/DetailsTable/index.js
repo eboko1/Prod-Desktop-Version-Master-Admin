@@ -456,7 +456,12 @@ export default class DetailsTable extends Component {
                             }
                         />
                     );
+                    console.log(
+                        "→  productCode fieldValue",
+                        _.get(fields, `details[${key}].productCode`),
+                    );
 
+                    console.log("→ fileds", _.get(fields, "details"));
                     const renderAsStoreProductsField = () => (
                         <DecoratedInput
                             errors={errors}
@@ -943,7 +948,7 @@ export default class DetailsTable extends Component {
                     product,
                     "brand.id",
                 ),
-                [`details[${key}].productCode`]: _.get(product, "productCode"),
+                [`details[${key}].productCode`]: _.get(product, "code"),
             });
         }
 
