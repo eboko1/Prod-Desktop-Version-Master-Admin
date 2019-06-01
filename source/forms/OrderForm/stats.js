@@ -57,8 +57,18 @@ export const servicesStats = (selectedServices, allServices) => {
 export const detailsStats = selectedDetails => {
     const selectedSimpleDetails = _(selectedDetails)
         .values()
-        .filter(detail => _.get(detail, 'detailName'))
-        .map(({ detailPrice, purchasePrice, detailCount, detailName }) => {
+        .filter(
+            detail => _.get(detail, 'detailName') || _.get(detail, 'productId'),
+        )
+        .map(item => {
+            const {
+                detailPrice,
+                purchasePrice,
+                detailCount,
+                detailName,
+            } = item;
+            console.log('→ item', item);
+
             return {
                 price:         !_.isNil(detailPrice) ? detailPrice : 0,
                 count:         !_.isNil(detailCount) ? detailCount : 0,

@@ -41,7 +41,9 @@ export function convertFieldsValuesToDbEntity(
 
     const details = _(orderFields.details)
         .filter(Boolean)
-        .filter(detail => _.get(detail, 'detailName'))
+        .filter(
+            detail => _.get(detail, 'detailName') || _.get(detail, 'productId'),
+        )
         .map(detail => {
             const {
                 detailName: detailId,
@@ -51,9 +53,11 @@ export function convertFieldsValuesToDbEntity(
                 detailBrandName: brandId,
                 purchasePrice: purchasePrice,
                 storage: storage,
-                using: using,
+                productId: productId,
+                // using: using,
             } = detail;
-
+            console.log('→ ExtractOrderEntity detail', detail);
+            console.log('→ storage', storage);
             const detailConfig = allDetails.details.find(
                 ({ detailId: id }) => String(id) === detailId,
             );
@@ -61,7 +65,7 @@ export function convertFieldsValuesToDbEntity(
             let detailCustom = { detailId };
 
             if (storage) {
-                detailCustom = { productId: detailId };
+                detailCustom = { productId };
             } else if (!detailConfig) {
                 detailCustom = { name: detailId };
             }
@@ -85,7 +89,7 @@ export function convertFieldsValuesToDbEntity(
                 ...baseDetail,
                 ...detailCustom,
                 ...brandCustom,
-                ...storage && using ? { using } : {},
+                // ...storage && using ? { using } : {},
             };
         })
         .value();
@@ -262,7 +266,7 @@ export const requiredFieldsOnStatuses = values => {
             'clientPhone',
             'manager',
             'services',
-            'details', 
+            'details',
         ],
         not_complete: [ 'manager', 'services', 'details' ],
         required:     [ 'manager', 'services', 'details' ],
