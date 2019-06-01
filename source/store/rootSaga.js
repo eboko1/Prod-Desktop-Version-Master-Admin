@@ -59,6 +59,7 @@ import { saga as storageProductsSaga } from 'core/storage/products';
 import { saga as storageIncomesSaga } from 'core/storage/incomes';
 import { saga as storageExpensesSaga } from 'core/storage/expenses';
 import { saga as storageTrackingSaga } from 'core/storage/tracking';
+import { saga as storageBalanceSaga } from 'core/storage/storeBalance';
 
 /* eslint-disable array-element-newline */
 export default function* rootSaga() {
@@ -104,6 +105,7 @@ export default function* rootSaga() {
         storageIncomesSaga(),
         storageExpensesSaga(),
         storageTrackingSaga(),
+        storageBalanceSaga(),
         // cash
         cashSaga(),
         cashOrderFormSaga(),

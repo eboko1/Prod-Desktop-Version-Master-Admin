@@ -24,4 +24,5 @@ export {
     ExpensesTable,
     StoreDocumentProductsTable,
     TrackingTable,
+    StoreBalanceTable,
 } from './StorageTables';
