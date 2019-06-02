@@ -51,7 +51,7 @@ export const StorageBalanceTotals = connect(
             </DataWrapper>
             <DataWrapper>
                 { total
-                    ? renderTotalData('reserve', total.reversed)
+                    ? renderTotalData('reserve', total.reserved)
                     : SkeletonLoader }
             </DataWrapper>
             <DataWrapper>

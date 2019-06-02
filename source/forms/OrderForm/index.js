@@ -286,10 +286,7 @@ export class OrderForm extends React.PureComponent {
             "paymentMethod",
             "requisite",
         ]);
-        console.log(
-            "→RENDER OF details[]",
-            _.get(formFieldsValues, "details", []),
-        );
+
         const { price: priceDetails } = detailsStats(
             _.get(formFieldsValues, "details", []),
         );

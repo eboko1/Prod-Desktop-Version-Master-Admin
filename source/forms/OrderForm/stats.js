@@ -67,7 +67,6 @@ export const detailsStats = selectedDetails => {
                 detailCount,
                 detailName,
             } = item;
-            console.log('→ item', item);
 
             return {
                 price:         !_.isNil(detailPrice) ? detailPrice : 0,

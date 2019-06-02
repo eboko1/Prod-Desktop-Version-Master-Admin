@@ -26,9 +26,9 @@ export default props => {
         title: props.intl.formatMessage({
             id: 'storage.reserve',
         }),
-        dataIndex: 'reversed',
+        dataIndex: 'reserved',
         width:     '10%',
-        render:    reversed => numeralFormatter(reversed),
+        render:    reserved => numeralFormatter(reserved),
     };
 
     const sum = {

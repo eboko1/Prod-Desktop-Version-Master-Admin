@@ -378,17 +378,12 @@ export default class DetailsTable extends Component {
                     };
 
                     const renderAsStoreProductsField = () => {
-                        const productBrand = this._getDefaultValue(
-                            key,
-                            "productBrandName",
-                        );
-                        console.log('→ productBrand', productBrand);
-
                         return (
                             <>
                                 <DecoratedInput
                                     errors={errors}
-                                    defaultGetValueProps
+                                    fields={{}}
+                                    // defaultGetValueProps
                                     initialValue={this._getDefaultValue(
                                         key,
                                         "productBrandName",
@@ -506,9 +501,13 @@ export default class DetailsTable extends Component {
                 title: <FormattedMessage id="order_form_table.suggest" />,
                 key: "tecDocActions",
                 render: ({ key }) => {
-                    const storageFlow = this.props.form.getFieldValue(
-                        `details[${key}].storage`,
-                    );
+                    const storageFlow =
+                        this.props.form.getFieldValue(
+                            `details[${key}].storage`,
+                        ) ||
+                        this.props.form.getFieldValue(
+                            `details[${key}].productId`,
+                        );
 
                     // const renderAsTecDocField = () => {
                     const detailIdFieldName = `[${key}].detailName`;
@@ -517,7 +516,7 @@ export default class DetailsTable extends Component {
                     const detailId = extractId(formDetails, detailIdFieldName);
                     const brandId = extractId(formDetails, brandIdFieldName);
 
-                    return (
+                    return !storageFlow ? (
                         <>
                             <TecDocActionsContainer
                                 detailId={detailId}
@@ -542,7 +541,7 @@ export default class DetailsTable extends Component {
                                 // initialValue={{}}
                             />
                         </>
-                    );
+                    ) : null;
                     // }
 
                     // const renderAsStorageField = () => {
@@ -889,7 +888,7 @@ export default class DetailsTable extends Component {
         if (!orderDetail) {
             return;
         }
-
+        console.log("→ orderDetail", orderDetail);
         const actions = {
             detailName:
                 (orderDetail.detailId || orderDetail.detailName) &&
@@ -947,15 +946,15 @@ export default class DetailsTable extends Component {
         const { keys } = this.state;
 
         const product = _.find(storeProducts, { id: Number(value) });
-
+        console.log("→ product", product);
         if (details[key].storage) {
             this.props.fetchRecommendedPrice(key, value);
             this.props.form.setFieldsValue({
-                [`details[${key}].productBrandId`]: _.get(product, "brand.id"),
+                [`details[${key}].productBrandId`]: _.get(product, "brand.id", null),
                 [`details[${key}].productBrandName`]: _.get(
                     product,
                     "brand.name",
-                ),
+                ) || _.get(product, 'brandName'),
                 [`details[${key}].productCode`]: _.get(product, "code"),
             });
         }
