@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
 import _ from 'lodash';
+import styled from 'styled-components';
 
 // proj
 import {
@@ -14,6 +15,7 @@ import {
     setStoreBalancePage,
 } from 'core/storage/storeBalance';
 
+import { StorageBalanceTotals } from 'components';
 import { usePrevious } from 'utils';
 
 // own
@@ -35,6 +37,7 @@ const StoreBalanceTableComponent = memo(props => {
         total:            Math.ceil(_.get(balance, 'stats.count', 0) / 32) * 32,
         hideOnSinglePage: true,
         current:          props.filters.page,
+        position:         'both',
         onChange:         page => {
             props.setStoreBalancePage(page);
             props.fetchStoreBalance();
@@ -42,7 +45,7 @@ const StoreBalanceTableComponent = memo(props => {
     };
 
     return (
-        <Table
+        <StyledTable
             size='small'
             columns={ columns(props) }
             dataSource={ props.balance.list }
@@ -55,6 +58,16 @@ const StoreBalanceTableComponent = memo(props => {
         />
     );
 });
+
+const StyledTable = styled(Table)`
+    background-color: rgb(255, 255, 255);
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px,
+        rgba(0, 0, 0, 0.23) 0px 3px 10px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    box-sizing: border-box;
+    padding: 10px;
+`;
 
 const mapStateToProps = state => ({
     balance: selectStoreBalance(state),
