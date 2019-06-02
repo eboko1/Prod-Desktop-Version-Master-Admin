@@ -43,6 +43,16 @@ const GET_ALL_TASKS = 'GET_ALL_TASKS';
 
 //Warehouse
 const ACCESS_SUPPLIERS = 'ACCESS_SUPPLIERS';
+const ACCESS_STORE_GROUPS =  'ACCESS_STORE_GROUPS';
+const ACCESS_PRICE_GROUPS =  'ACCESS_PRICE_GROUPS';
+const ACCESS_STORE_PRODUCTS =  'ACCESS_STORE_PRODUCTS';
+const EDIT_STORE_PRODUCT_PRICE =  'EDIT_STORE_PRODUCT_PRICE';
+const ACCESS_INCOME_STORE_DOCS =  'ACCESS_INCOME_STORE_DOCS';
+const ACCESS_EXPENSE_STORE_DOCS =  'ACCESS_EXPENSE_STORE_DOCS';
+const SEARCH_STORE_PRODUCT =  'SEARCH_STORE_PRODUCT';
+const SEARCH_STORE_PRODUCT_WITH_PRICE =  'SEARCH_STORE_PRODUCT_WITH_PRICE';
+const VIEW_STORE =  'VIEW_STORE';
+const VIEW_STORE_WITH_PRICE =  'VIEW_STORE_WITH_PRICE';
 
 //Accounting
 const ACCESS_ACCOUNTING = 'ACCESS_ACCOUNTING';
@@ -94,6 +104,16 @@ export const permissions = Object.freeze({
     GET_ALL_TASKS,
 
     ACCESS_SUPPLIERS,
+    ACCESS_STORE_GROUPS,
+    ACCESS_PRICE_GROUPS,
+    ACCESS_STORE_PRODUCTS,
+    EDIT_STORE_PRODUCT_PRICE,
+    ACCESS_INCOME_STORE_DOCS,
+    ACCESS_EXPENSE_STORE_DOCS,
+    SEARCH_STORE_PRODUCT,
+    SEARCH_STORE_PRODUCT_WITH_PRICE,
+    VIEW_STORE,
+    VIEW_STORE_WITH_PRICE,
 
     ACCESS_ACCOUNTING,
     EDIT_CASH_ORDERS,
@@ -147,9 +167,21 @@ export const groupedPermissions = {
         GET_CLIENTS_BASIC_INFORMATION,
         GET_CLIENTS_ADDITIONAL_INFORMATION,
     ],
-    [ TASKS_PERMISSIONS ]:      [ GET_TASKS, GET_ALL_TASKS ],
-    [ EMPLOYEES_PERMISSIONS ]:  [ GET_EMPLOYEES, CREATE_EDIT_DELETE_EMPLOYEES, EMPLOYEES_SALARIES ],
-    [ WAREHOUSE_PERMISSIONS ]:  [ ACCESS_SUPPLIERS ],
+    [ TASKS_PERMISSIONS ]:     [ GET_TASKS, GET_ALL_TASKS ],
+    [ EMPLOYEES_PERMISSIONS ]: [ GET_EMPLOYEES, CREATE_EDIT_DELETE_EMPLOYEES, EMPLOYEES_SALARIES ],
+    [ WAREHOUSE_PERMISSIONS ]: [
+        ACCESS_SUPPLIERS,
+        ACCESS_STORE_GROUPS,
+        ACCESS_PRICE_GROUPS,
+        ACCESS_STORE_PRODUCTS,
+        EDIT_STORE_PRODUCT_PRICE,
+        ACCESS_INCOME_STORE_DOCS,
+        ACCESS_EXPENSE_STORE_DOCS,
+        SEARCH_STORE_PRODUCT,
+        SEARCH_STORE_PRODUCT_WITH_PRICE,
+        VIEW_STORE,
+        VIEW_STORE_WITH_PRICE,
+    ],
     [ ACCOUNTING_PERMISSIONS ]: [ ACCESS_ACCOUNTING, EDIT_CASH_ORDERS ],
     [ REPORTS_PERMISSIONS ]:    [ ACCESS_KPI, ACCESS_FEEDBACK, ACCESS_CALL_STATISTICS ],
     [ OTHER_PERMISSIONS ]:      [ DEMO ],
@@ -213,7 +245,7 @@ export const getPermissionsLabels = intl => ({
     }),
     [ CREATE_ORDER ]:         intl.formatMessage({id: 'roles.create_order'}),
     [ PRINT_ORDERS ]:         intl.formatMessage({id: 'roles.print_orders'}),
-    [ LIMITED_PRINT ]:         intl.formatMessage({id: 'roles.limited_print'}),
+    [ LIMITED_PRINT ]:        intl.formatMessage({id: 'roles.limited_print'}),
     [ SHOW_FILTERS ]:         intl.formatMessage({id: 'roles.show_filters'}),
     [ SHOW_ORDERS ]:          intl.formatMessage({id: 'roles.show_orders'}),
     [ UPDATE_SUCCESS_ORDER ]: intl.formatMessage({
@@ -270,6 +302,46 @@ export const getPermissionsLabels = intl => ({
 
     [ ACCESS_SUPPLIERS ]: intl.formatMessage({
         id: 'roles.access_suppliers',
+    }),
+
+    [ ACCESS_STORE_GROUPS ]: intl.formatMessage({
+        id: 'roles.access_store_groups',
+    }),
+
+    [ ACCESS_PRICE_GROUPS ]: intl.formatMessage({
+        id: 'roles.access_price_groups',
+    }),
+
+    [ ACCESS_STORE_PRODUCTS ]: intl.formatMessage({
+        id: 'roles.access_store_products',
+    }),
+
+    [ EDIT_STORE_PRODUCT_PRICE ]: intl.formatMessage({
+        id: 'roles.edit_store_product_price',
+    }),
+
+    [ ACCESS_INCOME_STORE_DOCS ]: intl.formatMessage({
+        id: 'roles.access_income_store_docs',
+    }),
+
+    [ ACCESS_EXPENSE_STORE_DOCS ]: intl.formatMessage({
+        id: 'roles.access_expense_store_docs',
+    }),
+
+    [ SEARCH_STORE_PRODUCT ]: intl.formatMessage({
+        id: 'roles.search_store_product',
+    }),
+
+    [ SEARCH_STORE_PRODUCT_WITH_PRICE ]: intl.formatMessage({
+        id: 'roles.search_store_product_with_price',
+    }),
+
+    [ VIEW_STORE ]: intl.formatMessage({
+        id: 'roles.view_store',
+    }),
+
+    [ VIEW_STORE_WITH_PRICE ]: intl.formatMessage({
+        id: 'roles.view_store_with_price',
     }),
 
     [ ACCESS_ACCOUNTING ]: intl.formatMessage({
