@@ -15,7 +15,6 @@ import {
     setStoreBalancePage,
 } from 'core/storage/storeBalance';
 
-import { StorageBalanceTotals } from 'components';
 import { usePrevious } from 'utils';
 
 // own

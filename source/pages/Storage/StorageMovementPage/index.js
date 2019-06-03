@@ -1,14 +1,73 @@
 // vendor
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
+import styled from 'styled-components';
+import moment from 'moment';
 
 // proj
-import { Layout } from 'commons';
+import {
+    selectStoreMovementFilters,
+    setStoreMovementFilters,
+    selectStoreMovementLoading,
+} from 'core/storage/storeMovement';
 
-export const StorageMovementPage = () => {
+import { Layout } from 'commons';
+import {
+    StoreMovementTable,
+    StorageMovementTotals,
+    DatePickerGroup,
+} from 'components';
+
+const mapStateToProps = state => ({
+    filters: selectStoreMovementFilters(state),
+    loading: selectStoreMovementLoading(state),
+});
+
+export const StorageMovementPage = connect(
+    mapStateToProps,
+    { setStoreMovementFilters },
+)(props => {
+    const { loading, filters } = props;
+
+    const [ period, setPeriod ] = useState('month');
+
+    const setDaterange = daterange => {
+        const [ startDate, endDate ] = daterange;
+        props.setStoreMovementFilters({ startDate, endDate });
+    };
+
+    const handlePeriod = period => {
+        setPeriod(period);
+        period === 'month'
+            ? setDaterange([ moment(filters.endDate).subtract(30, 'days'), moment(filters.endDate) ])
+            : setDaterange([ moment(filters.endDate).subtract(1, period), moment(filters.endDate) ]);
+    };
+
     return (
-        <Layout title={ <FormattedMessage id='navigation.storage_movement' /> }>
-            <div>StorageMovementPage</div>
+        <Layout
+            paper={ false }
+            title={ <FormattedMessage id='navigation.storage_movement' /> }
+            controls={
+                <DatePickerGroup
+                    startDate={ moment(filters.startDate) }
+                    endDate={ moment(filters.endDate) }
+                    loading={ loading }
+                    period={ period }
+                    onDaterangeChange={ setDaterange }
+                    onPeriodChange={ handlePeriod }
+                />
+            }
+        >
+            <StorageMovementTotals />
+            <StoreMovementTableWrapper>
+                <StoreMovementTable />
+            </StoreMovementTableWrapper>
         </Layout>
     );
-};
+});
+
+const StoreMovementTableWrapper = styled.section`
+    padding: 100px 0 0 0;
+    margin: 0 16px;
+`;

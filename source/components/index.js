@@ -40,6 +40,7 @@ import { GridCardSkeleton } from './Grid';
 import { PDF } from './PDF';
 import { ExcelReader } from './ExcelReader';
 import { StorageBalanceTotals } from './StorageBalanceTotals';
+import { StorageMovementTotals } from './StorageMovementTotals';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -89,4 +90,5 @@ export {
     PDF,
     ExcelReader,
     StorageBalanceTotals,
+    StorageMovementTotals,
 };

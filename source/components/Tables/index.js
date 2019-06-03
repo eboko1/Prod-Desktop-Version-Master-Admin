@@ -25,4 +25,5 @@ export {
     StoreDocumentProductsTable,
     TrackingTable,
     StoreBalanceTable,
+    StoreMovementTable,
 } from './StorageTables';
