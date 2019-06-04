@@ -26,7 +26,7 @@ export const SET_STORE_BALANCE_LOADING = `${prefix}/SET_STORE_BALANCE_LOADING`;
 
 const ReducerState = {
     balance: {
-        total: [],
+        total: {},
         stats: {
             count: '0',
         },
@@ -70,7 +70,7 @@ export default function reducer(state = ReducerState, action) {
 export const stateSelector = state => state.storage[ moduleName ];
 export const selectStoreBalance = state => stateSelector(state).balance;
 export const selectStoreBalanceTotal = state =>
-    _.get(stateSelector(state), 'balance.total[0]');
+    _.get(stateSelector(state), 'balance.total');
 export const selectStoreBalanceFilters = state => stateSelector(state).filters;
 export const selectStoreBalanceLoading = state =>
     stateSelector(state).storeBalanceLoading;
@@ -109,7 +109,7 @@ export const setStoreBalanceLoading = isLoading => ({
 export function* fetchStoreBalanceSaga() {
     while (true) {
         try {
-            yield take([FETCH_STORE_BALANCE, SET_STORE_BALANCE_FILTERS]);
+            yield take([ FETCH_STORE_BALANCE, SET_STORE_BALANCE_FILTERS ]);
             yield put(setStoreBalanceLoading(true));
             const filters = yield select(selectStoreBalanceFilters);
             const response = yield call(
@@ -118,7 +118,7 @@ export function* fetchStoreBalanceSaga() {
                 '/store_doc_products/balance',
                 { ...filters, date: moment(filters.date).format('YYYY-MM-DD') },
             );
-            console.log('** response', response);
+
             yield put(fetchStoreBalanceSuccess(response));
         } catch (error) {
             yield put(emitError(error));

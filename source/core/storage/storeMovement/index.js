@@ -26,7 +26,7 @@ export const SET_STORE_MOVEMENT_LOADING = `${prefix}/SET_STORE_MOVEMENT_LOADING`
 
 const ReducerState = {
     movement: {
-        total: [],
+        total: {},
         stats: {
             count: '0',
         },
@@ -71,7 +71,7 @@ export default function reducer(state = ReducerState, action) {
 export const stateSelector = state => state.storage[ moduleName ];
 export const selectStoreMovement = state => stateSelector(state).movement;
 export const selectStoreMovementTotal = state =>
-    _.get(stateSelector(state), 'movement.total[0]');
+    _.get(stateSelector(state), 'movement.total');
 export const selectStoreMovementFilters = state => stateSelector(state).filters;
 export const selectStoreMovementLoading = state =>
     stateSelector(state).storeMovementLoading;

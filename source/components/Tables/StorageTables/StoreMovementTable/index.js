@@ -66,6 +66,15 @@ const StyledTable = styled(Table)`
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     box-sizing: border-box;
     padding: 10px;
+
+    & th.income,
+    & td.income {
+        background: rgba(var(--secondaryRGB), 0.2) !important;
+    }
+    & th.expense,
+    & td.expense {
+        background: rgba(var(--warningRGB), 0.2) !important;
+    }
 `;
 
 const mapStateToProps = state => ({

@@ -13,45 +13,78 @@ export default props => {
         dataIndex: 'name',
         width:     '10%',
     };
-    const remaining = {
+
+    const quantity = {
         title: props.intl.formatMessage({
             id: 'storage.quantity',
         }),
-        dataIndex: 'remaining',
+        dataIndex: 'incomeQuantity',
         width:     '10%',
-        render:    remaining => numeralFormatter(remaining),
+        render:    (incomeQuantity, data) =>
+            incomeQuantity
+                ? numeralFormatter(incomeQuantity)
+                : numeralFormatter(data.expenseQuantity),
     };
 
-    const reserve = {
+    const incomePrice = {
         title: props.intl.formatMessage({
-            id: 'storage.reserve',
+            id: 'storage.income_price',
         }),
-        dataIndex: 'reserved',
+        dataIndex: 'incomePrice',
         width:     '10%',
-        render:    reserved => numeralFormatter(reserved),
-    };
-
-    const sum = {
-        title: props.intl.formatMessage({
-            id: 'storage.sum',
-        }),
-        dataIndex: 'sellingSum',
-        width:     '10%',
-        render:    sum => (
+        className: 'income',
+        render:    incomePrice => (
             <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
-                { sum }
+                { incomePrice }
+            </Numeral>
+        ),
+    };
+    const incomeSum = {
+        title: props.intl.formatMessage({
+            id: 'storage.income_sum',
+        }),
+        dataIndex: 'incomeSum',
+        width:     '10%',
+        className: 'income',
+        render:    incomeSum => (
+            <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
+                { incomeSum }
+            </Numeral>
+        ),
+    };
+    const expensePrice = {
+        title: props.intl.formatMessage({
+            id: 'storage.expense_price',
+        }),
+        dataIndex: 'expensePrice',
+        width:     '10%',
+        className: 'expense',
+        render:    expensePrice => (
+            <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
+                { expensePrice }
+            </Numeral>
+        ),
+    };
+    const expenseSum = {
+        title: props.intl.formatMessage({
+            id: 'storage.expense_sum',
+        }),
+        dataIndex: 'expenseSum',
+        width:     '10%',
+        className: 'expense',
+        render:    expenseSum => (
+            <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
+                { expenseSum }
             </Numeral>
         ),
     };
 
     return [
-        // id,
         name,
-        incomeQuantity,
+        quantity,
         incomePrice,
         incomeSum,
-        expenseQuantity,
         expensePrice,
-        sum,
+        expenseSum, 
     ];
 };

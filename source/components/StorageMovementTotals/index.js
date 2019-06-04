@@ -3,7 +3,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import { Skeleton } from 'antd';
-import moment from 'moment';
 import styled from 'styled-components';
 
 import {
@@ -35,7 +34,12 @@ export const StorageMovementTotals = connect(
 
     return (
         <MovementTotal collapsed={ collapsed }>
-            <DataWrapper>
+            <div>
+                <DataWrapper>
+                    { total
+                        ? renderTotalData('income_price', total.incomePrice)
+                        : SkeletonLoader }
+                </DataWrapper>
                 <DataWrapper>
                     { total
                         ? renderTotalData(
@@ -51,6 +55,11 @@ export const StorageMovementTotals = connect(
                 </DataWrapper>
                 <DataWrapper>
                     { total
+                        ? renderTotalData('expense_price', total.expensePrice)
+                        : SkeletonLoader }
+                </DataWrapper>
+                <DataWrapper>
+                    { total
                         ? renderTotalData(
                             'expense_quantity',
                             total.expenseQuantity,
@@ -59,10 +68,10 @@ export const StorageMovementTotals = connect(
                 </DataWrapper>
                 <DataWrapper>
                     { total
-                        ? renderTotalData('expense_price', total.expensePrice)
+                        ? renderTotalData('expense_sum', total.expenseSum)
                         : SkeletonLoader }
                 </DataWrapper>
-            </DataWrapper>
+            </div>
         </MovementTotal>
     );
 });
