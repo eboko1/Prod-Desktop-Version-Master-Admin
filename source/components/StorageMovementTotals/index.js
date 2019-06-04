@@ -5,20 +5,17 @@ import { FormattedMessage } from 'react-intl';
 import { Skeleton } from 'antd';
 import styled from 'styled-components';
 
-import {
-    selectStoreMovementTotal,
-    setStoreMovementFilters,
-} from 'core/storage/storeMovement';
+// proj
+import { selectStoreMovementTotal } from 'core/storage/storeMovement';
+
+import { StoreProductsSelect } from 'forms/_formkit';
 
 const mapStateToProps = state => ({
     collapsed: state.ui.collapsed,
     total:     selectStoreMovementTotal(state),
 });
 
-export const StorageMovementTotals = connect(
-    mapStateToProps,
-    { setStoreMovementFilters },
-)(props => {
+export const StorageMovementTotals = connect(mapStateToProps)(props => {
     const { total, collapsed } = props;
 
     const SkeletonLoader = (
@@ -34,7 +31,10 @@ export const StorageMovementTotals = connect(
 
     return (
         <MovementTotal collapsed={ collapsed }>
-            <div>
+            <DataColumn>
+                <StoreProductsSelect filters={ props.filters } />
+            </DataColumn>
+            <DataColumn>
                 <DataWrapper>
                     { total
                         ? renderTotalData('income_price', total.incomePrice)
@@ -71,14 +71,14 @@ export const StorageMovementTotals = connect(
                         ? renderTotalData('expense_sum', total.expenseSum)
                         : SkeletonLoader }
                 </DataWrapper>
-            </div>
+            </DataColumn>
         </MovementTotal>
     );
 });
 
 const MovementTotal = styled.div`
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
     overflow: initial;
     box-sizing: border-box;
     background-color: rgb(255, 255, 255);
@@ -92,6 +92,10 @@ const MovementTotal = styled.div`
     left: ${props => props.collapsed ? '80px' : '256px'};
     width: ${props =>
         props.collapsed ? 'calc(100% - 80px)' : 'calc(100% - 256px)'};
+`;
+
+const DataColumn = styled.div`
+    flex: 0 1 40%;
 `;
 
 const DataWrapper = styled.div`

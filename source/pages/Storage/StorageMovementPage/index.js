@@ -59,7 +59,7 @@ export const StorageMovementPage = connect(
                 />
             }
         >
-            <StorageMovementTotals />
+            <StorageMovementTotals filters={ filters } />
             <StoreMovementTableWrapper>
                 <StoreMovementTable />
             </StoreMovementTableWrapper>

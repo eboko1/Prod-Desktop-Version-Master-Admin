@@ -13,13 +13,12 @@ import {
 import { Catcher } from 'commons';
 
 // own
-// import Styles from "./styles.m.css";
 import columns from './columns';
 
 const DocumentProductsTable = props => {
     const incomeDocProducts = _.get(props, 'incomeDoc.docProducts');
     const incomeDocId = _.get(props, 'incomeDoc.id');
-    console.log('→ incomeDocId', incomeDocId);
+    
     const [ docProducts, setDocProducts ] = useState();
 
     const [ keys, setKeys ] = useState(() => {

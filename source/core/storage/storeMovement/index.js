@@ -37,6 +37,7 @@ const ReducerState = {
         page:      1,
         startDate: moment().subtract(30, 'days'),
         endDate:   moment(),
+        productId: void 0,
     },
 };
 

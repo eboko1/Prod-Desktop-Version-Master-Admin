@@ -50,9 +50,6 @@ export default (props, state, table) => {
                     }
                 };
 
-                // console.log('→ props.incomeDoc', props.incomeDoc);
-                // console.log('→ props.storeProducts', props.storeProducts);
-
                 return (
                     <DecoratedSelect
                         formItem

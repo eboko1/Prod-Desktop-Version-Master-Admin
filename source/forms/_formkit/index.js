@@ -6,6 +6,7 @@ import SupplierSearchField from './SupplierSearchField';
 import ProductSearchField from './ProductSearchField';
 import MeasureUnitSelect from './MeasureUnitSelect';
 import PriceGroupSelect from './PriceGroupSelect';
+import StoreProductsSelect from './StoreProductsSelect';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -20,4 +21,5 @@ export {
     ProductSearchField,
     MeasureUnitSelect,
     PriceGroupSelect,
+    StoreProductsSelect,
 };
