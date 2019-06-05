@@ -1,5 +1,6 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
+import moment from 'moment';
 
 //proj
 import { emitError } from 'core/ui/duck';
@@ -14,7 +15,7 @@ export const FETCH_TRACKING = `${prefix}/FETCH_TRACKING`;
 export const FETCH_TRACKING_SUCCESS = `${prefix}/FETCH_TRACKING_SUCCESS`;
 
 export const SET_TRACKING_LOADING = `${prefix}/SET_TRACKING_LOADING`;
-
+export const SET_TRACKING_FILTERS = `${prefix}/SET_TRACKING_FILTERS`;
 export const SET_TRACKING_PAGE = `${prefix}/SET_TRACKING_PAGE`;
 
 /**
@@ -30,7 +31,10 @@ const ReducerState = {
     },
     trackingLoading: false,
     filters:         {
-        page: 1,
+        page:      1,
+        date:      void 0,
+        // date:      moment(),
+        productId: void 0,
     },
 };
 
@@ -44,6 +48,11 @@ export default function reducer(state = ReducerState, action) {
         case SET_TRACKING_PAGE:
             return { ...state, filters: { ...state.filters, page: payload } };
 
+        case SET_TRACKING_FILTERS:
+            return {
+                ...state,
+                filters: { ...payload, page: state.filters.page },
+            };
         case SET_TRACKING_LOADING:
             return { ...state, trackingLoading: payload };
 
@@ -80,6 +89,11 @@ export const setTrackingPage = page => ({
     payload: page,
 });
 
+export const setTrackingFilters = filters => ({
+    type:    SET_TRACKING_FILTERS,
+    payload: filters,
+});
+
 export const setTrackingLoading = isLoading => ({
     type:    SET_TRACKING_LOADING,
     payload: isLoading,
@@ -92,14 +106,19 @@ export const setTrackingLoading = isLoading => ({
 export function* fetchTrackingSaga() {
     while (true) {
         try {
-            yield take(FETCH_TRACKING);
+            yield take([ FETCH_TRACKING, SET_TRACKING_FILTERS ]);
             yield put(setTrackingLoading(true));
             const filters = yield select(selectTrackingFilters);
             const response = yield call(
                 fetchAPI,
                 'GET',
                 '/store_doc_products',
-                filters,
+                {
+                    ...filters,
+                    date: filters.date
+                        ? moment(filters.date).format('YYYY-MM-DD')
+                        : void 0,
+                },
             );
 
             yield put(fetchTrackingSuccess(response));

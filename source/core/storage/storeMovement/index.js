@@ -94,6 +94,7 @@ export const setStoreMovementPage = page => ({
     type:    SET_STORE_MOVEMENT_PAGE,
     payload: page,
 });
+
 export const setStoreMovementFilters = filters => ({
     type:    SET_STORE_MOVEMENT_FILTERS,
     payload: filters,

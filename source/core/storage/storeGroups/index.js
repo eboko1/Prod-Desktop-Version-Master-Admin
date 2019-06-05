@@ -197,7 +197,7 @@ export function* updateStoreGroupSaga() {
 export function* deleteStoreGroupSaga() {
     while (true) {
         try {
-            yield take(DELETE_STORE_GROUP);
+            const { payload: id } = yield take(DELETE_STORE_GROUP);
             yield nprogress.start();
 
             yield call(fetchAPI, 'DELETE', `store_groups/${id}`);
@@ -213,5 +213,10 @@ export function* deleteStoreGroupSaga() {
 }
 
 export function* saga() {
-    yield all([ call(fetchStoreGroupsSaga) ]);
+    yield all([
+        call(fetchStoreGroupsSaga),
+        call(createStoreGroupSaga),
+        call(updateStoreGroupSaga),
+        call(deleteStoreGroupSaga),
+    ]);
 }

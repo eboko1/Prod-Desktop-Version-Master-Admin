@@ -104,12 +104,16 @@ const IncomeForm = props => {
                 if (!_.last(docProducts).productId) {
                     normalizedValues = {
                         ...values,
-                        docProducts: docProducts.slice(0, -1),
+                        docProducts: docProducts
+                            .slice(0, -1)
+                            .map(product =>
+                                _.omit(product, [ 'name', 'tradeCode' ])),
                     };
                 } else {
                     normalizedValues = {
                         ...values,
-                        docProducts,
+                        docProducts: docProducts.map(product =>
+                            _.omit(product, [ 'name', 'tradeCode' ])),
                     };
                 }
 

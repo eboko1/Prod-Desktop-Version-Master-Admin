@@ -6,6 +6,11 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import _ from "lodash";
 
 // proj
+import {
+    createStoreGroup,
+    updateStoreGroup,
+    deleteStoreGroup,
+} from "core/storage/storeGroups";
 import { MODALS, selectModalProps } from "core/modals/duck";
 
 import { DecoratedInput, DecoratedCheckbox } from "forms/DecoratedFields";
@@ -21,7 +26,10 @@ const mapStateToProps = state => ({
 
 @injectIntl
 @Form.create()
-@connect(mapStateToProps)
+@connect(
+    mapStateToProps,
+    { createStoreGroup, updateStoreGroup, deleteStoreGroup },
+)
 export default class StoreGroupModal extends Component {
     _submit = () => {
         const { form, resetModal, modalProps } = this.props;
@@ -29,6 +37,16 @@ export default class StoreGroupModal extends Component {
         form.validateFields((err, values) => {
             if (!err) {
                 console.log("→ StoreGroupModal Submit values", values);
+
+                if (modalProps.create) {
+                    this.props.createStoreGroup(values);
+                }
+                if (modalProps.edit) {
+                    this.props.updateStoreGroup(values);
+                }
+                if (modalProps.delete) {
+                    this.props.deleteStoreGroup(values.id);
+                }
                 form.resetFields();
                 resetModal();
             }
@@ -46,12 +64,20 @@ export default class StoreGroupModal extends Component {
 
         const name = _.get(modalProps, "storeGroup.name");
         const id = _.get(modalProps, "storeGroup.id");
+        const deleteMode = _.get(modalProps, "delete");
         return (
             <Modal
                 cancelText={<FormattedMessage id="cancel" />}
-                okText={<FormattedMessage id="save" />}
+                okText={
+                    deleteMode ? (
+                        <FormattedMessage id="delete" />
+                    ) : (
+                        <FormattedMessage id="save" />
+                    )
+                }
                 visible={visible === MODALS.STORE_GROUP}
                 onOk={() => this._submit()}
+                okButtonProps={deleteMode && { type: "danger" }}
                 onCancel={() => resetModal()}
             >
                 <Form onSubmit={this._submit} style={{ padding: 24 }}>
@@ -60,7 +86,7 @@ export default class StoreGroupModal extends Component {
                         field="name"
                         formItem
                         formItemLayout={formItemLayout}
-                        label="Name"
+                        label={formatMessage({ id: "storage.product_group" })}
                         initialValue={name}
                         getFieldDecorator={getFieldDecorator}
                     />
@@ -75,7 +101,7 @@ export default class StoreGroupModal extends Component {
                         <DecoratedCheckbox
                             fields={{}}
                             formItem
-                            label="SystemWide"
+                            label={formatMessage({ id: "storage.system_wide" })}
                             formItemLayout={formItemLayout}
                             field="systemWide"
                             getFieldDecorator={getFieldDecorator}

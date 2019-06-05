@@ -5,7 +5,6 @@ import { connect } from 'react-redux';
 import { Select, Icon, Spin } from 'antd';
 
 // proj
-import { setStoreMovementFilters } from 'core/storage/storeMovement';
 import {
     setStoreProductsSearchQuery,
     selectStoreProductsByQuery,
@@ -20,12 +19,11 @@ const mapStateToProps = state => ({
 const StoreProductsSelect = injectIntl(
     connect(
         mapStateToProps,
-        { setStoreProductsSearchQuery, setStoreMovementFilters },
+        { setStoreProductsSearchQuery },
     )(props => {
         const handleSearch = value => props.setStoreProductsSearchQuery(value);
 
-        const handleSelect = productId =>
-            props.setStoreMovementFilters({ productId });
+        const handleSelect = productId => props.setFilters({ productId });
 
         return (
             <Select

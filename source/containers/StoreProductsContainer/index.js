@@ -163,7 +163,9 @@ export default class StoreProductsContainer extends Component {
             <div>
                 <Search
                     style={{ marginBottom: 8 }}
-                    placeholder="Search"
+                    placeholder={this.props.intl.formatMessage({
+                        id: "storage.search_for_product_group",
+                    })}
                     onChange={this.onChange}
                 />
                 <Button

@@ -1,5 +1,6 @@
 // vendor
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Tag } from 'antd';
 import _ from 'lodash';
 
@@ -7,13 +8,12 @@ import _ from 'lodash';
 import { MODALS } from 'core/modals/duck';
 import { DatetimeFormatter } from 'commons/_uikit';
 import { Numeral } from 'commons';
+import book from 'routes/book';
+
+// own
+import { ProductTableData } from '../ProductTableData';
 
 export default props => {
-    // const id = {
-    //     title:     '№',
-    //     dataIndex: 'id',
-    // };
-
     const code = {
         title: props.intl.formatMessage({
             id: 'storage.product_code',
@@ -31,7 +31,8 @@ export default props => {
                     })
                 }
             >
-                { product.code }
+                { }
+                <ProductTableData name={ product.name } code={ product.code } />
             </div>
         ),
     };
@@ -42,15 +43,21 @@ export default props => {
         }),
         key:    'type',
         width:  '5%',
-        render: ({ doc }) => (
-            <Tag
-                color={
-                    doc.type === 'INCOME' ? 'var(--green)' : 'var(--warning)'
-                }
-            >
-                { props.intl.formatMessage({ id: `storage.${doc.type}` }) }
-            </Tag>
-        ),
+        render: (key, data) => {
+            const type = _.get(data, 'doc.type');
+
+            return (
+                <Tag
+                    color={
+                        type === 'INCOME' ? 'var(--green)' : 'var(--warning)'
+                    }
+                >
+                    { props.intl.formatMessage({
+                        id: `storage.${type ? type : 'EXPENSE'}`,
+                    }) }
+                </Tag>
+            );
+        },
     };
 
     const docNum = {
@@ -59,18 +66,34 @@ export default props => {
         }),
         key:    'docNum',
         width:  '7.5%',
-        render: ({ doc }) => doc.id,
+        render: (key, data) => {
+            const docId = _.get(data, 'doc.id');
+
+            return docId ? (
+                <Link
+                    to={ `${book.storageIncomeDoc}/${docId}` }
+                    style={ { color: 'var(--link)', fontWeight: 'bold' } }
+                >
+                    { docId }
+                </Link>
+            ) : (
+                <Link
+                    to={ `${book.order}/${data.orderId}` }
+                    style={ { color: 'var(--link)', fontWeight: 'bold' } }
+                >
+                    { data.orderId }
+                </Link>
+            );
+        },
     };
 
     const createdDatetime = {
         title: props.intl.formatMessage({
             id: 'storage.date',
         }),
-        key:    'createdDatetime',
-        width:  '10%',
-        render: ({ doc }) => (
-            <DatetimeFormatter datetime={ doc.createdDatetime } />
-        ),
+        dataIndex: 'datetime',
+        width:     '10%',
+        render:    datetime => <DatetimeFormatter datetime={ datetime } />,
     };
 
     const tradeCode = {
@@ -79,7 +102,7 @@ export default props => {
         }),
         key:    'tradeCode',
         width:  '10%',
-        render: ({ product }) => product.tradeCode,
+        render: (key, data) => _.get(data, 'product.tradeCode'),
     };
 
     const quantity = {

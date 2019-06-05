@@ -5,7 +5,6 @@ import { Icon } from 'antd';
 import { MODALS } from 'core/modals/duck';
 
 export const StoreProductsSetting = ({ setModal, storeGroup }) => {
-    console.log('→ storeGroup', storeGroup);
 
     return (
         <>

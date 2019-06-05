@@ -6,7 +6,10 @@ import { Skeleton } from 'antd';
 import styled from 'styled-components';
 
 // proj
-import { selectStoreMovementTotal } from 'core/storage/storeMovement';
+import {
+    selectStoreMovementTotal,
+    setStoreMovementFilters,
+} from 'core/storage/storeMovement';
 
 import { StoreProductsSelect } from 'forms/_formkit';
 
@@ -15,7 +18,10 @@ const mapStateToProps = state => ({
     total:     selectStoreMovementTotal(state),
 });
 
-export const StorageMovementTotals = connect(mapStateToProps)(props => {
+export const StorageMovementTotals = connect(
+    mapStateToProps,
+    { setStoreMovementFilters },
+)(props => {
     const { total, collapsed } = props;
 
     const SkeletonLoader = (
@@ -31,7 +37,10 @@ export const StorageMovementTotals = connect(mapStateToProps)(props => {
 
     return (
         <MovementTotal collapsed={ collapsed }>
-            <StoreProductsSelect filters={ props.filters } />
+            <StoreProductsSelect
+                setFilters={ props.setStoreMovementFilters }
+                filters={ props.filters }
+            />
 
             <DataGrid>
                 <DataWrapper>

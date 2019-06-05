@@ -2,6 +2,7 @@
   "en": {
     "storage": "Storage",
     "storage.product_group": "Product Group",
+    "storage.system_wide": "System wide",
     "storage.add_root_product_group": "Add root product group",
     "storage.name": "Name",
     "storage.product_name": "Product name",
@@ -57,11 +58,13 @@
     "storage.income_price": "Average income price",
     "storage.income_sum": "Income sum",
     "storage.expense_price": "Average expense price",
-    "storage.expense_sum": "Expense sum"
+    "storage.expense_sum": "Expense sum",
+    "storage.search_for_product_group": "Search for product group"
   },
   "ru": {
     "storage": "Склад",
     "storage.product_group": "Группа товаров",
+    "storage.system_wide": "Системная",
     "storage.add_root_product_group": "Добавить родительскую группу",
     "storage.name": "Наименование",
     "storage.product_name": "Наименование товара",
@@ -118,11 +121,13 @@
     "storage.income_price": "Средняя закупочная цена",
     "storage.income_sum": "Сумма закупки",
     "storage.expense_price": "Средняя продажная цена",
-    "storage.expense_sum": "Сумма продажи"
+    "storage.expense_sum": "Сумма продажи",
+    "storage.search_for_product_group": "Искать группу товаров"
   },
   "uk": {
     "storage": "Склад",
     "storage.product_group": "Група товару",
+    "storage.system_wide": "Системна",
     "storage.add_root_product_group": "Додати батьківську категорію",
     "storage.name": "Найменування",
     "storage.product_name": "Найменування товару",
@@ -179,6 +184,7 @@
     "storage.income_price": "Середня закупочна ціна",
     "storage.income_sum": "Сума закупки",
     "storage.expense_price": "Середня продажня ціна",
-    "storage.expense_sum": "Сума продажу"
+    "storage.expense_sum": "Сума продажу",
+    "storage.search_for_product_group": "Шукати групу товарів"
   }
 }

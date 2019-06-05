@@ -59,7 +59,6 @@ const TrackingTableComponent = memo(props => {
 
 const mapStateToProps = state => ({
     tracking: selectTracking(state),
-    filters:  selectTrackingFilters(state),
     loading:  selectTrackingLoading(state),
 });
 
