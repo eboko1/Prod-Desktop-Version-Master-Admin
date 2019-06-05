@@ -47,7 +47,7 @@ const StoreProductsSelect = injectIntl(
                 onSearch={ handleSearch }
                 onSelect={ handleSelect }
                 optionFilterProp='children'
-                style={ { width: '100%' } }
+                style={ { width: '320px' } }
             >
                 { props.storeProducts.map(product => (
                     <Option value={ product.id } key={ product.id }>

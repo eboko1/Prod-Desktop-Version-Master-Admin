@@ -52,7 +52,12 @@
     "storage.payment_date": "Payment Date",
     "storage.document_number": "Document number",
     "storage.complete": "Complete",
-    "storage.storage.document_number": "# document"
+    "storage.storage.document_number": "# document",
+    "storage.select_product": "Select product",
+    "storage.income_price": "Average income price",
+    "storage.income_sum": "Income sum",
+    "storage.expense_price": "Average expense price",
+    "storage.expense_sum": "Expense sum"
   },
   "ru": {
     "storage": "Склад",
@@ -108,7 +113,12 @@
     "storage.payment_date": "Дата оплаты",
     "storage.document_number": "Номер документа",
     "storage.complete": "Выполнить",
-    "storage.storage.document_number": "№ документа"
+    "storage.storage.document_number": "№ документа",
+    "storage.select_product": "Выберите продукт",
+    "storage.income_price": "Средняя закупочная цена",
+    "storage.income_sum": "Сумма закупки",
+    "storage.expense_price": "Средняя продажная цена",
+    "storage.expense_sum": "Сумма продажи"
   },
   "uk": {
     "storage": "Склад",
@@ -164,6 +174,11 @@
     "storage.payment_date": "Дата оплати",
     "storage.document_number": "Номер документу",
     "storage.complete": "Виконати",
-    "storage.storage.document_number": "№ документу"
+    "storage.storage.document_number": "№ документу",
+    "storage.select_product": "Оберіть продукт",
+    "storage.income_price": "Середня закупочна ціна",
+    "storage.income_sum": "Сума закупки",
+    "storage.expense_price": "Середня продажня ціна",
+    "storage.expense_sum": "Сума продажу"
   }
 }

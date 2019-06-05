@@ -68,6 +68,6 @@ export const StorageMovementPage = connect(
 });
 
 const StoreMovementTableWrapper = styled.section`
-    padding: 100px 0 0 0;
+    padding: 164px 0 0 0;
     margin: 0 16px;
 `;

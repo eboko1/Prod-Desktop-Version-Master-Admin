@@ -22,35 +22,39 @@ export const StorageMovementTotals = connect(mapStateToProps)(props => {
         <Skeleton active title={ false } paragraph={ { rows: 1, width: 100 } } />
     );
 
-    const renderTotalData = (label, data) => (
+    const renderTotalData = (label, data, income) => (
         <span>
             <FormattedMessage id={ `storage.${label}` } />
-            :&nbsp;<Highlighted>{ data }</Highlighted>
+            :&nbsp;<Highlighted income={ income }>{ data }</Highlighted>
         </span>
     );
 
     return (
         <MovementTotal collapsed={ collapsed }>
-            <DataColumn>
-                <StoreProductsSelect filters={ props.filters } />
-            </DataColumn>
-            <DataColumn>
-                <DataWrapper>
-                    { total
-                        ? renderTotalData('income_price', total.incomePrice)
-                        : SkeletonLoader }
-                </DataWrapper>
+            <StoreProductsSelect filters={ props.filters } />
+
+            <DataGrid>
                 <DataWrapper>
                     { total
                         ? renderTotalData(
-                            'income_quantity',
-                            total.incomeQuantity,
+                            'income_price',
+                            total.incomePrice,
+                            true,
                         )
                         : SkeletonLoader }
                 </DataWrapper>
                 <DataWrapper>
                     { total
-                        ? renderTotalData('income_sum', total.incomeSum)
+                        ? renderTotalData(
+                            'quantity',
+                            total.incomeQuantity,
+                            true,
+                        )
+                        : SkeletonLoader }
+                </DataWrapper>
+                <DataWrapper>
+                    { total
+                        ? renderTotalData('income_sum', total.incomeSum, true)
                         : SkeletonLoader }
                 </DataWrapper>
                 <DataWrapper>
@@ -60,10 +64,7 @@ export const StorageMovementTotals = connect(mapStateToProps)(props => {
                 </DataWrapper>
                 <DataWrapper>
                     { total
-                        ? renderTotalData(
-                            'expense_quantity',
-                            total.expenseQuantity,
-                        )
+                        ? renderTotalData('quantity', total.expenseQuantity)
                         : SkeletonLoader }
                 </DataWrapper>
                 <DataWrapper>
@@ -71,14 +72,14 @@ export const StorageMovementTotals = connect(mapStateToProps)(props => {
                         ? renderTotalData('expense_sum', total.expenseSum)
                         : SkeletonLoader }
                 </DataWrapper>
-            </DataColumn>
+            </DataGrid>
         </MovementTotal>
     );
 });
 
 const MovementTotal = styled.div`
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     overflow: initial;
     box-sizing: border-box;
     background-color: rgb(255, 255, 255);
@@ -94,17 +95,22 @@ const MovementTotal = styled.div`
         props.collapsed ? 'calc(100% - 80px)' : 'calc(100% - 256px)'};
 `;
 
-const DataColumn = styled.div`
-    flex: 0 1 40%;
+const DataGrid = styled.div`
+    margin-top: 12px;
+    display: grid;
+    grid-template-columns: 50% 50%;
+    grid-template-rows: repeat(3, 1fr);
+    grid-auto-flow: column;
 `;
 
 const DataWrapper = styled.div`
     display: flex;
     font-size: 20px;
+    margin-right: 24px;
 `;
 
 const Highlighted = styled.span`
-    color: var(--secondary);
+    color: ${props => props.income ? 'var(--secondary)' : 'var(--warning)'};
     font-weight: 700;
     font-size: 24px;
 `;
