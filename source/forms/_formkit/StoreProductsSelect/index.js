@@ -24,6 +24,10 @@ const StoreProductsSelect = injectIntl(
         const handleSearch = value => props.setStoreProductsSearchQuery(value);
 
         const handleSelect = productId => props.setFilters({ productId });
+        console.log(
+            '→ SELECT props.filters.productId',
+            props.filters.productId,
+        );
 
         return (
             <Select
@@ -32,6 +36,7 @@ const StoreProductsSelect = injectIntl(
                 autoClearSearchValue
                 allowClear
                 value={ props.filters.productId }
+                initialValue={ props.filters.productId }
                 // notFoundContent={ fetching ? <Spin size='small' /> : null }
                 clearIcon={
                     <Icon

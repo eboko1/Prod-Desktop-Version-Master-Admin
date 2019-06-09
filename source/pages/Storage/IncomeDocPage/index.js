@@ -5,15 +5,14 @@ import { Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import styled from 'styled-components';
-import _ from 'lodash';
 
 // proj
 import { fetchIncomeDoc, selectIncomeDoc } from 'core/storage/incomes';
 
-import { Layout, Close, StyledButton } from 'commons';
+import { Layout, Close, Loader } from 'commons';
 import { IncomeDocForm } from 'forms';
+import { goTo } from 'utils';
 import book from 'routes/book';
-import { linkBack } from 'utils';
 
 const ModuleHeaderContent = styled.div`
     display: flex;
@@ -38,7 +37,7 @@ const IncomeDoc = props => {
                     color={
                         status === 'NEW'
                             ? 'var(--not_complete)'
-                            : 'var(--success'
+                            : 'var(--green)'
                     }
                 >
                     <FormattedMessage id={ `storage.status.${status}` } />
@@ -54,15 +53,17 @@ const IncomeDoc = props => {
 
     const controls = (
         <ModuleHeaderContent>
-            <Close onClick={ () => linkBack() } />
+            <Close onClick={ () => goTo(book.storageIncomes) } />
         </ModuleHeaderContent>
     );
 
-    console.log('→ PAGE props.incomeDoc', props.incomeDoc);
-
     return (
         <Layout title={ title } controls={ controls }>
-            <IncomeDocForm incomeDoc={ props.incomeDoc } />
+            { props.loading ? (
+                <Loader loading={ props.loading } />
+            ) : (
+                <IncomeDocForm incomeDoc={ props.incomeDoc } />
+            ) }
         </Layout>
     );
 };

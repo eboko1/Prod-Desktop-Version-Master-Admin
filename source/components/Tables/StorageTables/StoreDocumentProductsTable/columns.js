@@ -285,6 +285,7 @@ export default (props, state, table) => {
                         // value={ Number(value) }
                         formatter={ numeralFormatter }
                         parser={ numeralParser }
+                        disabled={ _isFieldDisabled(key) }
                         // defaultValue={ 0 }
                         // initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
                         initialValue={ _.get(

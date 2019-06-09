@@ -27,9 +27,6 @@ const IncomesTableComponent = props => {
         props.fetchIncomes();
     }, []); // add incomes -> recursion
 
-    console.log('→ incomes', incomes);
-    console.log('→ filters', props.filters);
-
     const pagination = {
         pageSize:         25,
         size:             'large',

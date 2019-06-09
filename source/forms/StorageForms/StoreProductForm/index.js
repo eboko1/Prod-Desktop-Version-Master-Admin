@@ -58,8 +58,6 @@ const ProductForm = props => {
         intl: { formatMessage },
     } = props;
 
-    console.log('→ props', props);
-
     useEffect(() => {
         if (_.get(props, 'modalProps.id')) {
             props.fetchProduct(_.get(props, 'modalProps.id'));
@@ -78,7 +76,6 @@ const ProductForm = props => {
                 if (values.brandName && values.brandId) {
                     _.set(values, 'brandId', void 0);
                 }
-                console.log('→ values', values);
                 props.editing
                     ? props.updateProduct({
                         id:      _.get(props, 'modalProps.id'),
@@ -102,8 +99,6 @@ const ProductForm = props => {
         props.form.resetFields();
         props.resetModal();
     };
-
-    console.log('→ form.getFieldsValue()', form.getFieldsValue());
 
     const _generateBrandInitialOption = () => {
         const product = _.get(props, 'product', {});

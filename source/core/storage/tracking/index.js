@@ -1,10 +1,12 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
 import moment from 'moment';
+import { push } from 'connected-react-router';
 
 //proj
 import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
+import book from 'routes/book';
 /**
  * Constants
  **/
@@ -16,6 +18,7 @@ export const FETCH_TRACKING_SUCCESS = `${prefix}/FETCH_TRACKING_SUCCESS`;
 
 export const SET_TRACKING_LOADING = `${prefix}/SET_TRACKING_LOADING`;
 export const SET_TRACKING_FILTERS = `${prefix}/SET_TRACKING_FILTERS`;
+export const REDIRECT_TO_TRACKING = `${prefix}/REDIRECT_TO_TRACKING`;
 export const SET_TRACKING_PAGE = `${prefix}/SET_TRACKING_PAGE`;
 
 /**
@@ -53,6 +56,7 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 filters: { ...payload, page: state.filters.page },
             };
+
         case SET_TRACKING_LOADING:
             return { ...state, trackingLoading: payload };
 
@@ -94,6 +98,11 @@ export const setTrackingFilters = filters => ({
     payload: filters,
 });
 
+export const redirectToTracking = filters => ({
+    type:    REDIRECT_TO_TRACKING,
+    payload: filters,
+});
+
 export const setTrackingLoading = isLoading => ({
     type:    SET_TRACKING_LOADING,
     payload: isLoading,
@@ -130,6 +139,18 @@ export function* fetchTrackingSaga() {
     }
 }
 
+export function* redirectToTrackingSaga() {
+    while (true) {
+        try {
+            const { payload } = yield take(REDIRECT_TO_TRACKING);
+            yield put(push(book.productsTracking));
+            yield put(setTrackingFilters(payload));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
 export function* saga() {
-    yield all([ call(fetchTrackingSaga) ]);
+    yield all([ call(fetchTrackingSaga), call(redirectToTrackingSaga) ]);
 }

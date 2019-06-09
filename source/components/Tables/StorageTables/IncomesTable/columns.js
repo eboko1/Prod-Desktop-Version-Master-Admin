@@ -43,7 +43,7 @@ export default props => {
         render:    status => (
             <Tag
                 color={
-                    status === 'NEW' ? 'var(--not_complete)' : 'var(--success'
+                    status === 'NEW' ? 'var(--not_complete)' : 'var(--green)'
                 }
             >
                 { props.intl.formatMessage({ id: `storage.status.${status}` }) }

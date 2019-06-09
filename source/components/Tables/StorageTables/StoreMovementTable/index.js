@@ -14,6 +14,7 @@ import {
     selectStoreMovementFilters,
     setStoreMovementPage,
 } from 'core/storage/storeMovement';
+import { redirectToTracking } from 'core/storage/tracking';
 
 import { usePrevious } from 'utils';
 
@@ -86,6 +87,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchStoreMovement,
     setStoreMovementPage,
+    redirectToTracking,
 };
 
 export const StoreMovementTable = injectIntl(

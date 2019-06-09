@@ -1,5 +1,5 @@
 // vendor
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { connect } from 'react-redux';
 import { Table } from 'antd';
 import { injectIntl } from 'react-intl';
@@ -18,9 +18,8 @@ import columns from './columns';
 const DocumentProductsTable = props => {
     const incomeDocProducts = _.get(props, 'incomeDoc.docProducts');
     const incomeDocId = _.get(props, 'incomeDoc.id');
-    
+    const incomeDocSum = _.get(props, 'incomeDoc.sum', 0);
     const [ docProducts, setDocProducts ] = useState();
-
     const [ keys, setKeys ] = useState(() => {
         const products = docProducts ? docProducts.length + 1 : 1;
 
@@ -34,10 +33,6 @@ const DocumentProductsTable = props => {
             setKeys([ ..._.keys(incomeDocProducts).map(key => Number(key)), incomeDocProducts.length ]);
         }
     }, [ incomeDocProducts ]);
-
-    // useEffect(() => {
-    //     console.log('→ fetch magic!');
-    // }, [ props.storeProducts ]);
 
     const _handleDelete = redundantKey => {
         setKeys(keys.filter(key => redundantKey !== key));
@@ -90,7 +85,7 @@ const DocumentProductsTable = props => {
 
             return docProducts.reduce((accumulator, product) => {
                 return accumulator + (product.purchaseSum || 0);
-            }, 0);
+            }, incomeDocSum);
         };
 
         const totalSum = getTotalSum(key);

@@ -13,7 +13,6 @@ import {
     fetchIncomeDoc,
     createIncomeDoc,
     updateIncomeDoc,
-    selectIncomeDoc,
     selectIncomeDocLoading,
 } from 'core/storage/incomes';
 import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
@@ -30,7 +29,6 @@ import {
 import { SupplierModal } from 'modals';
 import { StoreDocumentProductsTable } from 'components';
 import { goTo, numeralFormatter, numeralParser } from 'utils';
-import book from 'routes/book';
 
 // own
 const Option = Select.Option;
@@ -95,7 +93,7 @@ const IncomeForm = props => {
         props.fetchSuppliers();
     }, []);
 
-    const _submit = () => {
+    const _submit = complete => {
         props.form.validateFields((err, values) => {
             if (!err) {
                 const docProducts = values.docProducts.filter(Boolean);
@@ -108,23 +106,22 @@ const IncomeForm = props => {
                             .slice(0, -1)
                             .map(product =>
                                 _.omit(product, [ 'name', 'tradeCode' ])),
+                        status: complete ? 'DONE' : 'NEW',
                     };
                 } else {
                     normalizedValues = {
                         ...values,
                         docProducts: docProducts.map(product =>
                             _.omit(product, [ 'name', 'tradeCode' ])),
+                        status: complete ? 'DONE' : 'NEW',
                     };
                 }
 
-                console.log('→ submit normalizedValues', normalizedValues);
                 incomeDocId
                     ? props.updateIncomeDoc(incomeDocId, normalizedValues)
                     : props.createIncomeDoc(normalizedValues);
 
-                goTo(book.storageIncomes);
-                // props.form.resetFields();
-                // props.resetModal();
+                props.form.resetFields();
             }
         });
     };
@@ -134,12 +131,19 @@ const IncomeForm = props => {
             <Form>
                 <FormHeader>
                     <div>
-                        <SubmitButton type='primary' onClick={ _submit }>
-                            { formatMessage({ id: 'create' }) }
-                        </SubmitButton>
-                        <StyledButton type='secondary'>
-                            { formatMessage({ id: 'storage.complete' }) }
-                        </StyledButton>
+                        { !incomeDocId && (
+                            <SubmitButton type='primary' onClick={ _submit }>
+                                { formatMessage({ id: 'create' }) }
+                            </SubmitButton>
+                        ) }
+                        { _.get(incomeDoc, 'status') === 'DONE' ? null : (
+                            <StyledButton
+                                type='secondary'
+                                onClick={ () => _submit(true) }
+                            >
+                                { formatMessage({ id: 'storage.complete' }) }
+                            </StyledButton>
+                        ) }
                     </div>
                     <TotalSum>
                         { formatMessage({ id: 'storage.sum' }) }&nbsp;

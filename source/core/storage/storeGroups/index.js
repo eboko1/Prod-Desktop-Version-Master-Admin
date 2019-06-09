@@ -161,10 +161,16 @@ export function* fetchStoreGroupsSaga() {
 export function* createStoreGroupSaga() {
     while (true) {
         try {
-            yield take(CREATE_STORE_GROUP);
+            const { payload } = yield take(CREATE_STORE_GROUP);
             yield nprogress.start();
-
-            const storeGroups = yield call(fetchAPI, 'POST', 'store_groups');
+            console.log('*** createStoreGroupSaga', payload);
+            const storeGroups = yield call(
+                fetchAPI,
+                'POST',
+                'store_groups',
+                null,
+                payload,
+            );
 
             yield put(createStoreGroupSuccess(storeGroups));
             yield put(fetchStoreGroups());
@@ -179,10 +185,16 @@ export function* createStoreGroupSaga() {
 export function* updateStoreGroupSaga() {
     while (true) {
         try {
-            const { payload: id } = yield take(UPDATE_STORE_GROUP);
+            const { payload } = yield take(UPDATE_STORE_GROUP);
             yield nprogress.start();
-
-            yield call(fetchAPI, 'PUT', `store_groups/${id}`);
+            console.log('*** updateStoreGroupSaga payload', payload);
+            yield call(
+                fetchAPI,
+                'PUT',
+                `store_groups/${payload.id}`,
+                null,
+                _.omit(payload, 'id'),
+            );
 
             yield put(updateStoreGroupSuccess());
             yield put(fetchStoreGroups());

@@ -1,9 +1,12 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
+import { push } from 'connected-react-router';
 
 //proj
 import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
+
+import book from 'routes/book';
 
 /**
  * Constants
@@ -79,7 +82,7 @@ export const selectIncomeDoc = state => stateSelector(state).incomeDoc;
 export const selectIncomesLoading = state =>
     stateSelector(state).incomesLoading;
 export const selectIncomeDocLoading = state =>
-    stateSelector(state).incomesLoading;
+    stateSelector(state).incomeDocLoading;
 
 /**
  * Action Creators
@@ -178,7 +181,7 @@ export function* fetchIncomeDocSaga() {
             const response = yield call(
                 fetchAPI,
                 'GET',
-                `/store_docs/${payload}`,
+                `/store_docs/INCOME/${payload}`,
             );
 
             yield put(fetchIncomeDocSuccess(response));
@@ -200,6 +203,7 @@ export function* createIncomeDocSaga() {
                 ...payload,
             });
             yield put(fetchIncomeDocSuccess(response));
+            yield put(push(`${book.storageIncomes}`));
         } catch (error) {
             yield put(emitError(error));
         } finally {
@@ -214,13 +218,17 @@ export function* updateIncomeDocSaga() {
             const {
                 payload: { id, incomeDoc },
             } = yield take(UPDATE_INCOME_DOC);
+            yield put(setIncomeDocLoading(true));
             yield call(fetchAPI, 'PUT', `/store_docs/${id}`, null, {
                 type: 'INCOME',
                 ...incomeDoc,
             });
             yield put(updateIncomeDocSuccess());
+            yield put(push(`${book.storageIncomes}`));
         } catch (error) {
             yield put(emitError(error));
+        } finally {
+            yield put(setIncomeDocLoading(false));
         }
     }
 }

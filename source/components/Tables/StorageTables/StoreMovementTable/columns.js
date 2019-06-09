@@ -16,20 +16,13 @@ export default props => {
         dataIndex: 'name',
         width:     '10%',
         render:    (name, data) => (
-            <ProductTableData link name={ name } code={ data.code } />
+            <ProductTableData
+                link
+                name={ name }
+                code={ data.code }
+                onClick={ () => props.redirectToTracking({ productId: data.id }) }
+            />
         ),
-    };
-
-    const quantity = {
-        title: props.intl.formatMessage({
-            id: 'storage.quantity',
-        }),
-        dataIndex: 'incomeQuantity',
-        width:     '10%',
-        render:    (incomeQuantity, data) =>
-            incomeQuantity
-                ? numeralFormatter(incomeQuantity)
-                : numeralFormatter(data.expenseQuantity),
     };
 
     const incomePrice = {
@@ -45,6 +38,17 @@ export default props => {
             </Numeral>
         ),
     };
+
+    const incomeQuantity = {
+        title: props.intl.formatMessage({
+            id: 'storage.quantity',
+        }),
+        dataIndex: 'incomeQuantity',
+        width:     '5%',
+        className: 'income',
+        render:    incomeQuantity => numeralFormatter(incomeQuantity),
+    };
+
     const incomeSum = {
         title: props.intl.formatMessage({
             id: 'storage.income_sum',
@@ -71,6 +75,17 @@ export default props => {
             </Numeral>
         ),
     };
+
+    const expenseQuantity = {
+        title: props.intl.formatMessage({
+            id: 'storage.quantity',
+        }),
+        dataIndex: 'expenseQuantity',
+        width:     '5%',
+        className: 'expense',
+        render:    expenseQuantity => numeralFormatter(expenseQuantity),
+    };
+
     const expenseSum = {
         title: props.intl.formatMessage({
             id: 'storage.expense_sum',
@@ -87,10 +102,11 @@ export default props => {
 
     return [
         name,
-        quantity,
         incomePrice,
+        incomeQuantity,
         incomeSum,
         expensePrice,
+        expenseQuantity,
         expenseSum,
     ];
 };

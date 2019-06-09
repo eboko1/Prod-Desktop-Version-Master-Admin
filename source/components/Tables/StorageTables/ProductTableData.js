@@ -29,12 +29,12 @@ const ProductCode = styled.span`
 
 export const ProductTableData = props => {
     return props.link ? (
-        <StyledLink to={ book.productsTracking }>
+        <StyledLink to={ book.productsTracking } onClick={ () => props.onClick() }>
             <span>{ props.name }</span>
             <ProductCode>{ props.code }</ProductCode>
         </StyledLink>
     ) : (
-        <StyledBlock>
+        <StyledBlock onClick={ () => props.onClick() }>
             <span>{ props.name }</span>
             <ProductCode>{ props.code }</ProductCode>
         </StyledBlock>
