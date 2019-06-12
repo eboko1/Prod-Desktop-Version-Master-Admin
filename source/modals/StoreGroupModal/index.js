@@ -77,8 +77,6 @@ const StoreGroup = props => {
         });
     };
 
-    console.log('→ props', props);
-
     return (
         <Modal
             cancelText={ <FormattedMessage id='cancel' /> }
@@ -134,7 +132,7 @@ const StoreGroup = props => {
                         formItemLayout={ formItemLayout }
                         field='systemWide'
                         getFieldDecorator={ getFieldDecorator }
-                        initialValue={ systemWide }
+                        initialValue={ !systemWide }
                         disabled={ !systemWide }
                     />
                 ) : null }
