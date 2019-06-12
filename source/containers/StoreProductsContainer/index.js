@@ -127,6 +127,9 @@ export default class StoreProductsContainer extends Component {
                                         storeGroup={{
                                             id: item.id,
                                             name: item.name,
+                                            systemWide: Boolean(
+                                                item.businessId,
+                                            ),
                                             priceGroupNumber:
                                                 item.priceGroupNumber,
                                         }}
@@ -150,6 +153,7 @@ export default class StoreProductsContainer extends Component {
                                     storeGroup={{
                                         id: item.id,
                                         name: item.name,
+                                        systemWide: Boolean(item.businessId),
                                         priceGroupNumber: item.priceGroupNumber,
                                     }}
                                 />

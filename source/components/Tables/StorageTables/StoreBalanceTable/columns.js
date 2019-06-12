@@ -5,6 +5,9 @@ import React from 'react';
 import { Numeral } from 'commons';
 import { numeralFormatter } from 'utils';
 
+//own
+import { ProductTableData } from '../ProductTableData';
+
 export default props => {
     const name = {
         title: props.intl.formatMessage({
@@ -12,7 +15,22 @@ export default props => {
         }),
         dataIndex: 'name',
         width:     '10%',
+        render:    (name, data) => (
+            <ProductTableData
+                link
+                name={ name }
+                code={ data.code }
+                onClick={ () =>
+                    props.redirectToTracking({
+                        id:   data.id,
+                        name: data.name,
+                        code: data.code,
+                    })
+                }
+            />
+        ),
     };
+
     const remaining = {
         title: props.intl.formatMessage({
             id: 'storage.quantity',

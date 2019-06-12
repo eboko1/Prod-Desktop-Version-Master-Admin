@@ -5,12 +5,13 @@ import { Icon } from 'antd';
 import { MODALS } from 'core/modals/duck';
 
 export const StoreProductsSetting = ({ setModal, storeGroup }) => {
-
     return (
         <>
             <Icon
                 type={ 'plus' }
-                onClick={ () => setModal(MODALS.STORE_GROUP, { create: true }) }
+                onClick={ () =>
+                    setModal(MODALS.STORE_GROUP, { create: true, storeGroup })
+                }
                 style={ {
                     fontSize: '16px',
                     color:    'var(--primary)',

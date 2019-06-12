@@ -45,6 +45,8 @@ const StoreGroup = props => {
     } = props;
 
     const name = _.get(modalProps, 'storeGroup.name');
+    const parentGroupId = _.get(modalProps, 'storeGroup.id');
+    const systemWide = _.get(modalProps, 'storeGroup.systemWide');
 
     const deleteMode = _.get(modalProps, 'delete');
 
@@ -75,6 +77,8 @@ const StoreGroup = props => {
         });
     };
 
+    console.log('→ props', props);
+
     return (
         <Modal
             cancelText={ <FormattedMessage id='cancel' /> }
@@ -100,6 +104,13 @@ const StoreGroup = props => {
                     initialValue={ name }
                     getFieldDecorator={ getFieldDecorator }
                 />
+                <DecoratedInput
+                    hiddeninput='hiddeninput'
+                    fields={ {} }
+                    getFieldDecorator={ getFieldDecorator }
+                    field='parentGroupId'
+                    initialValue={ parentGroupId }
+                />
                 <PriceGroupSelect
                     field={ 'priceGroupNumber' }
                     label={ formatMessage({ id: 'storage.price_group' }) }
@@ -109,9 +120,13 @@ const StoreGroup = props => {
                     getPopupContainer={ trigger => trigger.parentNode }
                     priceGroups={ props.priceGroups }
                     formatMessage={ formatMessage }
-                    initialValue={ _.get(props, 'product.priceGroupNumber') }
+                    initialValue={ _.get(
+                        modalProps,
+                        'storeGroup.priceGroupNumber',
+                    ) }
                 />
-                { modalProps.create && (
+                { /* systemWide is null if active or businessId if not  */ }
+                { modalProps.create || !systemWide ? (
                     <DecoratedCheckbox
                         fields={ {} }
                         formItem
@@ -119,8 +134,10 @@ const StoreGroup = props => {
                         formItemLayout={ formItemLayout }
                         field='systemWide'
                         getFieldDecorator={ getFieldDecorator }
+                        initialValue={ systemWide }
+                        disabled={ !systemWide }
                     />
-                ) }
+                ) : null }
             </Form>
         </Modal>
     );

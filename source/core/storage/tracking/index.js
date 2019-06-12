@@ -4,6 +4,7 @@ import moment from 'moment';
 import { push } from 'connected-react-router';
 
 //proj
+import { setStoreProductsSearchQuery } from 'core/search/duck';
 import { emitError } from 'core/ui/duck';
 import { fetchAPI } from 'utils';
 import book from 'routes/book';
@@ -143,8 +144,10 @@ export function* redirectToTrackingSaga() {
     while (true) {
         try {
             const { payload } = yield take(REDIRECT_TO_TRACKING);
+            console.log('→ REDIRECT payload', payload);
             yield put(push(book.productsTracking));
-            yield put(setTrackingFilters(payload));
+            yield put(setTrackingFilters({ productId: payload.id }));
+            yield put(setStoreProductsSearchQuery(payload.name));
         } catch (error) {
             yield put(emitError(error));
         }

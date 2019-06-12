@@ -20,7 +20,13 @@ export default props => {
                 link
                 name={ name }
                 code={ data.code }
-                onClick={ () => props.redirectToTracking({ productId: data.id }) }
+                onClick={ () =>
+                    props.redirectToTracking({
+                        id:   data.id,
+                        name: data.name,
+                        code: data.code,
+                    })
+                }
             />
         ),
     };

@@ -14,6 +14,7 @@ import {
     selectStoreBalanceFilters,
     setStoreBalancePage,
 } from 'core/storage/storeBalance';
+import { redirectToTracking } from 'core/storage/tracking';
 
 import { usePrevious } from 'utils';
 
@@ -77,6 +78,7 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     fetchStoreBalance,
     setStoreBalancePage,
+    redirectToTracking,
 };
 
 export const StoreBalanceTable = injectIntl(
