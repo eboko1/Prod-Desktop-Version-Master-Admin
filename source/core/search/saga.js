@@ -12,6 +12,8 @@ import {
     setIsFetchingManagers,
     fetchSuppliersSuccess,
     setIsFetchingSuppliers,
+    fetchBusinessSuppliersSuccess,
+    setIsFetchingBusinessSuppliers,
     fetchProductsSuccess,
     setIsFetchingProducts,
     fetchBrandsSuccess,
@@ -24,6 +26,7 @@ import {
     SET_BUSINESS_SEARCH_QUERY,
     SET_MANAGER_SEARCH_QUERY,
     SET_SUPPLIER_SEARCH_QUERY,
+    SET_BUSINESS_SUPPLIERS_SEARCH_QUERY,
     SET_PRODUCT_SEARCH_QUERY,
     SET_BRANDS_SEARCH_QUERY,
     SET_STORE_PRODUCTS_SEARCH_QUERY,
@@ -66,6 +69,22 @@ function* handleSuppliersSearchSaga({ payload: query }) {
     );
     yield put(fetchSuppliersSuccess(suppliers));
     yield put(setIsFetchingSuppliers(false));
+}
+
+function* handleBusinessSuppliersSearchSaga({ payload: query }) {
+    yield delay(1000);
+
+    yield put(setIsFetchingBusinessSuppliers(true));
+    const businessSuppliers = yield call(
+        fetchAPI,
+        'GET',
+        '/business_suppliers',
+        {
+            query,
+        },
+    );
+    yield put(fetchBusinessSuppliersSuccess(businessSuppliers));
+    yield put(setIsFetchingBusinessSuppliers(false));
 }
 
 function* handleProductsSearchSaga({ payload: query }) {
@@ -116,6 +135,10 @@ export function* saga() {
     yield all([
         takeLatest(SET_PRODUCT_SEARCH_QUERY, handleProductsSearchSaga),
         takeLatest(SET_SUPPLIER_SEARCH_QUERY, handleSuppliersSearchSaga),
+        takeLatest(
+            SET_BUSINESS_SUPPLIERS_SEARCH_QUERY,
+            handleBusinessSuppliersSearchSaga,
+        ),
         takeLatest(SET_BUSINESS_SEARCH_QUERY, handleBusinessesSearchSaga),
         takeLatest(SET_MANAGER_SEARCH_QUERY, handleManagersSearchSaga),
         takeLatest(SET_BRANDS_SEARCH_QUERY, handleBrandsSearchSaga),

@@ -1,6 +1,7 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
+import _ from 'lodash';
 
 //proj
 import { emitError } from 'core/ui/duck';
@@ -18,6 +19,7 @@ export const FETCH_INCOMES = `${prefix}/FETCH_INCOMES`;
 export const FETCH_INCOMES_SUCCESS = `${prefix}/FETCH_INCOMES_SUCCESS`;
 
 export const SET_INCOMES_PAGE = `${prefix}/SET_INCOMES_PAGE`;
+export const SET_INCOMES_FILERS = `${prefix}/SET_INCOMES_FILERS`;
 
 export const SET_INCOMES_LOADING = `${prefix}/SET_INCOMES_LOADING`;
 
@@ -40,7 +42,9 @@ const ReducerState = {
     incomes:   {},
     incomeDoc: {},
     filters:   {
-        page: 1,
+        supplierId: null,
+        status:     null,
+        page:       1,
     },
     incomesLoading:   false,
     incomeDocLoading: false,
@@ -58,6 +62,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_INCOMES_PAGE:
             return { ...state, filters: { ...state.filters, page: payload } };
+
+        case SET_INCOMES_FILERS:
+            return { ...state, filters: { ...state.filters, ...payload } };
 
         case SET_INCOMES_LOADING:
             return { ...state, incomesLoading: payload };
@@ -100,6 +107,11 @@ export const fetchIncomesSuccess = incomes => ({
 export const setIncomesPage = page => ({
     type:    SET_INCOMES_PAGE,
     payload: page,
+});
+
+export const setIncomesFilters = filters => ({
+    type:    SET_INCOMES_FILERS,
+    payload: filters,
 });
 
 export const fetchIncomeDoc = id => ({
@@ -155,12 +167,34 @@ export const setIncomeDocLoading = isLoading => ({
 export function* fetchIncomesSaga() {
     while (true) {
         try {
-            yield take(FETCH_INCOMES);
+            yield take([ FETCH_INCOMES, SET_INCOMES_FILERS ]);
             yield put(setIncomesLoading(true));
             const filters = yield select(selectIncomesFilters);
+
             const response = yield call(fetchAPI, 'GET', '/store_docs', {
                 type: 'INCOME',
                 ...filters,
+                ...filters.createdDatetime
+                    ? {
+                        createdDatetime: filters.createdDatetime.format(
+                            'YYYY-MM-DD',
+                        ),
+                    }
+                    : {},
+                ...filters.recordDatetime
+                    ? {
+                        recordDatetime: filters.recordDatetime.format(
+                            'YYYY-MM-DD',
+                        ),
+                    }
+                    : {},
+                ...filters.doneDatetime
+                    ? {
+                        doneDatetime: filters.doneDatetime.format(
+                            'YYYY-MM-DD',
+                        ),
+                    }
+                    : {},
             });
 
             yield put(fetchIncomesSuccess(response));
@@ -237,7 +271,7 @@ export function* deleteIncomeDocSaga() {
     while (true) {
         try {
             const { payload } = yield take(DELETE_INCOME_DOC);
-            yield call(fetchAPI, 'DELETE', `/store_docs/${payload}`);
+            yield call(fetchAPI, 'DELETE', `/store_docs/INCOME/${payload}`);
             yield put(deleteIncomeDocSuccess());
         } catch (error) {
             yield put(emitError(error));

@@ -9,6 +9,8 @@ import _ from 'lodash';
 import {
     setStoreProductsSearchQuery,
     selectStoreProductsByQuery,
+    setBrandsSearchQuery,
+    selectBrandsByQuery,
 } from 'core/search/duck';
 import { Catcher } from 'commons';
 
@@ -49,6 +51,7 @@ const DocumentProductsTable = props => {
         const selectedProduct = props.storeProducts.find(
             ({ id }) => id === value,
         );
+        console.log('→ selectedProduct', selectedProduct);
         props.form.setFieldsValue({
             [ `docProducts[${key}].name` ]:      selectedProduct.name,
             [ `docProducts[${key}].tradeCode` ]: selectedProduct.tradeCode,
@@ -119,6 +122,7 @@ const DocumentProductsTable = props => {
                         handleProductSelect:         _handleProductSelect,
                         handleSumCalculation:        _handleSumCalculation,
                         setStoreProductsSearchQuery: setStoreProductsSearchQuery,
+                        setBrandsSearchQuery:        setBrandsSearchQuery,
                         // getDefaultValue:     _getDefaultValue,
                     },
                 ) }
@@ -130,9 +134,13 @@ const DocumentProductsTable = props => {
 
 const mapStateToProps = state => ({
     storeProducts: selectStoreProductsByQuery(state),
+    brands:        selectBrandsByQuery(state),
 });
 
-const mapDispatchToProps = { setStoreProductsSearchQuery };
+const mapDispatchToProps = {
+    setStoreProductsSearchQuery,
+    setBrandsSearchQuery,
+};
 
 export const StoreDocumentProductsTable = injectIntl(
     connect(

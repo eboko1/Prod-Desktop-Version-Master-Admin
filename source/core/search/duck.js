@@ -12,6 +12,10 @@ export const IS_FETCHING_SUPPLIERS = `${prefix}/IS_FETCHING_SUPPLIERS`;
 export const SET_SUPPLIER_SEARCH_QUERY = `${prefix}/SET_SUPPLIER_SEARCH_QUERY`;
 export const FETCH_SUPPLIERS_SUCCESS = `${prefix}/FETCH_SUPPLIERS_SUCCESS`;
 
+export const IS_FETCHING_BUSINESS_SUPPLIERS = `${prefix}/IS_FETCHING_BUSINESS_SUPPLIERS`;
+export const SET_BUSINESS_SUPPLIERS_SEARCH_QUERY = `${prefix}/SET_BUSINESS_SUPPLIERS_SEARCH_QUERY`;
+export const FETCH_BUSINESS_SUPPLIERS_SUCCESS = `${prefix}/FETCH_BUSINESS_SUPPLIERS_SUCCESS`;
+
 export const IS_FETCHING_PRODUCTS = `${prefix}/IS_FETCHING_PRODUCTS`;
 export const SET_PRODUCT_SEARCH_QUERY = `${prefix}/SET_PRODUCT_SEARCH_QUERY`;
 export const FETCH_PRODUCTS_SUCCESS = `${prefix}/FETCH_PRODUCTS_SUCCESS`;
@@ -45,6 +49,10 @@ const ReducerState = {
     suppliers:           [],
     isFetchingSuppliers: false,
     supplierSearchQuery: null,
+
+    businessSuppliers:            [],
+    isFetchingBusinessSuppliers:  false,
+    businessSuppliersSearchQuery: null,
 
     products:           [],
     isFetchingProducts: false,
@@ -83,6 +91,12 @@ export default function reducer(state = ReducerState, action) {
                 suppliers: payload,
             };
 
+        case FETCH_BUSINESS_SUPPLIERS_SUCCESS:
+            return {
+                ...state,
+                businessSuppliers: payload,
+            };
+
         case FETCH_PRODUCTS_SUCCESS:
             return {
                 ...state,
@@ -117,6 +131,12 @@ export default function reducer(state = ReducerState, action) {
             return {
                 ...state,
                 supplierSearchQuery: payload,
+            };
+
+        case SET_BUSINESS_SUPPLIERS_SEARCH_QUERY:
+            return {
+                ...state,
+                businessSuppliersSearchQuery: payload,
             };
 
         case SET_PRODUCT_SEARCH_QUERY:
@@ -155,6 +175,12 @@ export default function reducer(state = ReducerState, action) {
                 isFetchingSuppliers: payload,
             };
 
+        case IS_FETCHING_BUSINESS_SUPPLIERS:
+            return {
+                ...state,
+                isFetchingBusinessSuppliers: payload,
+            };
+
         case IS_FETCHING_PRODUCTS:
             return {
                 ...state,
@@ -186,6 +212,10 @@ export const stateSelector = state => state[ moduleName ];
 export const selectBrandsByQuery = state => stateSelector(state).brands;
 export const selectStoreProductsByQuery = state =>
     stateSelector(state).storeProducts;
+export const selectBusinessSuppliersByQuery = state =>
+    stateSelector(state).businessSuppliers;
+export const selectBusinessSuppliersFetching = state =>
+    stateSelector(state).isFetchingBusinessSuppliers;
 
 /**
  * Action Creators
@@ -203,6 +233,11 @@ export const setManagerSearchQuery = query => ({
 
 export const setSupplierSearchQuery = query => ({
     type:    SET_SUPPLIER_SEARCH_QUERY,
+    payload: query,
+});
+
+export const setBusinessSuppliersSearchQuery = query => ({
+    type:    SET_BUSINESS_SUPPLIERS_SEARCH_QUERY,
     payload: query,
 });
 
@@ -236,6 +271,11 @@ export const fetchSuppliersSuccess = suppliers => ({
     payload: suppliers,
 });
 
+export const fetchBusinessSuppliersSuccess = businessSuppliers => ({
+    type:    FETCH_BUSINESS_SUPPLIERS_SUCCESS,
+    payload: businessSuppliers,
+});
+
 export const fetchProductsSuccess = products => ({
     type:    FETCH_PRODUCTS_SUCCESS,
     payload: products,
@@ -263,6 +303,11 @@ export const setIsFetchingManagers = isFetching => ({
 
 export const setIsFetchingSuppliers = isFetching => ({
     type:    IS_FETCHING_SUPPLIERS,
+    payload: isFetching,
+});
+
+export const setIsFetchingBusinessSuppliers = isFetching => ({
+    type:    IS_FETCHING_BUSINESS_SUPPLIERS,
     payload: isFetching,
 });
 

@@ -1,5 +1,5 @@
 // vendor
-import React, { useEffect, memo } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
@@ -11,7 +11,7 @@ import {
     deleteIncomeDoc,
     selectIncomes,
     selectIncomesLoading,
-    selectIncomesFilters,
+   
     setIncomesPage,
 } from 'core/storage/incomes';
 
@@ -58,7 +58,6 @@ const IncomesTableComponent = props => {
 
 const mapStateToProps = state => ({
     incomes: selectIncomes(state),
-    filters: selectIncomesFilters(state),
     loading: selectIncomesLoading(state),
 });
 

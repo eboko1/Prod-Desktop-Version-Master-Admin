@@ -22,16 +22,16 @@ import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { Catcher, Numeral, StyledButton } from 'commons';
 import {
     DecoratedInput,
-    DecoratedInputNumber,
     DecoratedDatePicker,
     DecoratedSelect,
 } from 'forms/DecoratedFields';
+import { BusinessSuppliersSearch } from 'forms/_formkit';
 import { SupplierModal } from 'modals';
 import { StoreDocumentProductsTable } from 'components';
-import { goTo, numeralFormatter, numeralParser } from 'utils';
 
 // own
 const Option = Select.Option;
+const FormItem = Form.Item;
 
 const formItemLayout = {
     labelCol:   { span: 8 },
@@ -199,7 +199,7 @@ const IncomeForm = props => {
                         />
 
                         <SupplierFieldWrapper>
-                            <DecoratedSelect
+                            { /* <DecoratedSelect
                                 field='businessSupplierId'
                                 formItem
                                 placeholder={ formatMessage({
@@ -223,7 +223,26 @@ const IncomeForm = props => {
                                         </Option>
                                     ))
                                     : [] }
-                            </DecoratedSelect>
+                            </DecoratedSelect> */ }
+                            <FormItem
+                                label={ formatMessage({
+                                    id:
+                                        'cash-order-form.counterparty.BUSINESS_SUPPLIER',
+                                }) }
+                                { ...formItemLayout }
+                            >
+                                { form.getFieldDecorator('businessSupplierId', {
+                                    initialValue: incomeDoc.businessSupplierId,
+                                })(
+                                    <BusinessSuppliersSearch
+                                        selectStyles={ { width: '100%' } }
+                                        onSelect={ id =>
+                                            form.setFieldsValue({ businessSupplierId: id })
+                                        }
+                                        id={ incomeDoc.businessSupplierId }
+                                    />,
+                                ) }
+                            </FormItem>
                             <AddSupplierIcon
                                 type='plus'
                                 onClick={ () => props.setModal(MODALS.SUPPLIER) }
