@@ -9,29 +9,25 @@ import book from 'routes/book';
 import { goTo } from 'utils';
 
 export default props => {
-    const id = {
-        title:     '№',
-        dataIndex: 'id',
-        width:     '20%',
-        render:    (key, { id, status }) => (
-            <Link
-                to={ {
-                    pathname: `${book.storageExpenseDoc}/${id}`,
-                    state:    { id, status },
-                } }
-            >
-                { id }
-            </Link>
-        ),
-    };
-
     const orderDatetime = {
         title: props.intl.formatMessage({
-            id: 'storage.date',
+            id: 'storage.done_date',
         }),
         dataIndex: 'orderDatetime',
         width:     '20%',
         render:    orderDatetime => <DatetimeFormatter datetime={ orderDatetime } />,
+    };
+
+    const orderSuccessDatetime = {
+        title: props.intl.formatMessage({
+            id: 'storage.off_date',
+        }),
+        dataIndex: 'orderSuccessDatetime',
+        width:     '20%',
+        render:    orderSuccessDatetime =>
+            orderSuccessDatetime ? (
+                <DatetimeFormatter datetime={ orderSuccessDatetime } />
+            ) : null,
     };
 
     const status = {
@@ -39,7 +35,7 @@ export default props => {
             id: 'storage.status',
         }),
         dataIndex: 'status',
-        width:     '20%',
+        width:     '15%',
         render:    status => (
             <Tag
                 color={
@@ -82,13 +78,27 @@ export default props => {
         ),
     };
 
-    const sum = {
+    const manager = {
         title: props.intl.formatMessage({
-            id: 'storage.sum',
+            id: 'storage.responsible',
         }),
-        dataIndex: 'sum',
+        dataIndex: 'managerEmployeeId',
         width:     '20%',
+        render:    (manager, data) =>
+            manager ? (
+                <Link to={ `${book.employeesPage}/${data.managerEmployeeId}` }>
+                    { data.managerName } { data.managerSurname }
+                </Link>
+            ) : null,
     };
+
+    // const sum = {
+    //     title: props.intl.formatMessage({
+    //         id: 'storage.sum',
+    //     }),
+    //     dataIndex: 'sum',
+    //     width:     '20%',
+    // };
 
     const actions = {
         width:     'auto',
@@ -104,12 +114,13 @@ export default props => {
     };
 
     return [
-        id,
         orderDatetime,
+        orderSuccessDatetime,
         status,
         order,
         client,
-        sum,
+        manager,
+        // sum,
         actions,
     ];
 };

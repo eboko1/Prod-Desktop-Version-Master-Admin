@@ -96,13 +96,7 @@ const ProductsExcelFormComponent = memo(props => {
         <Catcher>
             <Form>
                 { _renderButtonGroup() }
-                <ProductsExcelTable
-                    dataSource={ props.productsExcel }
-                    form={ props.form }
-                />
-                { props.productsExcel && props.productsExcel.length >= 15
-                    ? _renderButtonGroup()
-                    : null }
+                <ProductsExcelTable form={ props.form } />
             </Form>
         </Catcher>
     );

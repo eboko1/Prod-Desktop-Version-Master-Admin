@@ -1,16 +1,18 @@
 // vendor
-import React, { memo, useMemo, useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
 import styled from 'styled-components';
+import _ from 'lodash';
 
 // proj
 import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
 import { fetchStoreGroups, selectStoreGroups } from 'core/storage/storeGroups';
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
 import {
-    selectStoreProductsExcel,
+    selectImportInvalidProducts,
+    selectImportTooManyInvalids,
     selectStoreProductsExcelLoading,
 } from 'core/storage/products';
 
@@ -90,7 +92,7 @@ const StyledTable = styled(Table)`
 
 const ProductsExcelTableComponent = props => {
     const {
-        productsExcel,
+        invalidProductsExcel,
         form,
         storeGroups,
         priceGroups,
@@ -116,7 +118,7 @@ const ProductsExcelTableComponent = props => {
     const columns = useMemo(
         () =>
             columnsConfig(
-                productsExcel,
+                invalidProductsExcel,
                 form,
                 formatMessage,
                 storeGroups,
@@ -125,7 +127,7 @@ const ProductsExcelTableComponent = props => {
                 setBrandsSearchQuery,
             ),
         [
-            productsExcel,
+            invalidProductsExcel,
             storeGroups,
             priceGroups,
             brands,
@@ -134,13 +136,15 @@ const ProductsExcelTableComponent = props => {
 
     console.log('→ !!!RENDER Table');
 
-    return (
+    return props.tooManyInvalids ? (
+        <div>validate passed. press ok</div>
+    ) : (
         <StyledTable
             // bordered
             className={ Styles.importTable }
             size='small'
             columns={ columns }
-            dataSource={ props.productsExcel }
+            dataSource={ props.invalidProductsExcel }
             pagination={ false }
             locale={ {
                 emptyText: props.intl.formatMessage({ id: 'no_data' }),
@@ -156,11 +160,12 @@ const ProductsExcelTableComponent = props => {
 };
 
 const mapStateToProps = state => ({
-    productsExcel: selectStoreProductsExcel(state),
-    brands:        selectBrandsByQuery(state),
-    priceGroups:   selectPriceGroups(state),
-    storeGroups:   selectStoreGroups(state),
-    loading:       selectStoreProductsExcelLoading(state),
+    invalidProductsExcel: selectImportInvalidProducts(state),
+    tooManyInvalids:      selectImportTooManyInvalids(state),
+    brands:               selectBrandsByQuery(state),
+    priceGroups:          selectPriceGroups(state),
+    storeGroups:          selectStoreGroups(state),
+    loading:              selectStoreProductsExcelLoading(state),
 });
 
 const mapDispatchToProps = {

@@ -15,13 +15,21 @@ const measureUnits = Object.freeze({
 });
 
 const measureUnitsHumanization = {
-    PIECE: [ 'шт', 'шт.', 'штука' ],
+    PIECE: [
+        'шт',
+        'шт.',
+        'штука',
+        'штуки',
+    ],
     LITER: [
         'л',
         'л.',
         'литры',
+        'литр',
+        'літри',
         'литер',
         'літер',
+        'літр', 
     ],
 };
 

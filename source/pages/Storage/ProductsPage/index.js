@@ -17,6 +17,7 @@ import { Layout, StyledButton } from 'commons';
 import { ExcelReader, StoreProductsTable } from 'components';
 import { ProductsExcelForm } from 'forms';
 import { StoreProductModal } from 'modals';
+import { withErrorMessage } from 'utils';
 
 const ButtonGroup = styled.div`
     display: flex;
@@ -27,7 +28,7 @@ const AddButton = styled(StyledButton)`
     margin-left: 32px;
 `;
 
-const StoreProducts = props => {
+const StoreProducts = withErrorMessage()(props => {
     return (
         <Layout
             title={ <FormattedMessage id='navigation.products' /> }
@@ -68,7 +69,7 @@ const StoreProducts = props => {
             <StoreProductModal />
         </Layout>
     );
-};
+});
 
 const mapStateToProps = state => ({
     importing: selectProductsImporting(state),

@@ -6,6 +6,7 @@ import { createSelector } from 'reselect';
 
 //proj
 import { emitError } from 'core/ui/duck';
+import { setErrorMessage } from 'core/errorMessage/duck';
 import { fetchAPI } from 'utils';
 
 /**
@@ -57,8 +58,12 @@ const ReducerState = {
         },
         list: [],
     },
-    availableProducts:       {},
-    productsExcel:           [],
+    availableProducts: {},
+    productsExcel:     {
+        validProducts:   [],
+        tooManyInvalidProducts: false,
+        invalidProducts: [],
+    },
     importing:               false,
     productsExcelLoading:    false,
     productsLoading:         false,
@@ -149,6 +154,13 @@ export const selectRecommendedPriceLoading = state =>
     stateSelector(state).selectRecommendedPriceLoading;
 
 export const selectProductsImporting = state => stateSelector(state).importing;
+
+export const selectImportValidProducts = state =>
+    stateSelector(state).productsExcel.validProducts;
+export const selectImportInvalidProducts = state =>
+    stateSelector(state).productsExcel.invalidProducts;
+export const selectImportTooManyInvalids = state =>
+    stateSelector(state).productsExcel.tooManyInvalidProducts;
 
 export const selectStoreProductsExcel = createSelector(
     [ stateSelector ],
@@ -287,17 +299,23 @@ export const setRecommendedPriceLoading = isLoading => ({
 const normalizeFile = file =>
     file.map(product => {
         return {
-            code:             String(product.code),
-            name:             String(product.name),
-            groupId:          Number(product.groupId),
-            groupName:        String(product.groupName),
-            brandId:          Number(product.brandId),
-            brandName:        String(product.brandName),
-            measureUnit:      String(product.measureUnit),
-            tradeCode:        String(product.tradeCode),
-            certificate:      String(product.certificate),
-            priceGroupNumber: Number(product.priceGroupNumber),
-            price:            Number(product.price),
+            code:        product.code ? String(product.code) : void 0,
+            name:        product.name ? String(product.name) : void 0,
+            groupId:     product.groupId ? Number(product.groupId) : void 0,
+            groupName:   product.groupName ? String(product.groupName) : void 0,
+            brandId:     product.brandId ? Number(product.brandId) : void 0,
+            brandName:   product.brandName ? String(product.brandName) : void 0,
+            measureUnit: product.measureUnit
+                ? String(product.measureUnit)
+                : void 0,
+            tradeCode:   product.tradeCode ? String(product.tradeCode) : void 0,
+            certificate: product.certificate
+                ? String(product.certificate)
+                : void 0,
+            priceGroupNumber: product.priceGroupNumber
+                ? Number(product.priceGroupNumber)
+                : void 0,
+            price: product.price ? Number(product.price) : void 0,
         };
     });
 
@@ -316,7 +334,7 @@ export function* fetchProductsSaga() {
 
             yield put(fetchProductsSuccess(response));
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         } finally {
             yield put(setProductsLoading(false));
         }
@@ -336,7 +354,7 @@ export function* fetchProductSaga() {
 
             yield put(fetchProductSuccess(response));
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         } finally {
             yield put(setProductLoading(false));
         }
@@ -382,11 +400,16 @@ export function* fetchRecommendedPriceSaga() {
                 fetchAPI,
                 'GET',
                 `/store_doc_products/${id}/recommended_price`,
+                null,
+                null,
+                {
+                    handleErrorInternally: true,
+                },
             );
 
             yield put(fetchRecommendedPriceSuccess({ key, ...response }));
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         } finally {
             yield put(setRecommendedPriceLoading(false));
         }
@@ -404,10 +427,14 @@ export function* createProductSaga() {
                 '/store_products',
                 null,
                 payload,
+                {
+                    handleErrorInternally: true,
+                },
             );
             yield put(fetchProductsSuccess(response));
         } catch (error) {
-            yield put(emitError(error));
+            // TODO: fifnish error toast handling
+            yield put(setErrorMessage(error));
         } finally {
             yield put(setProductsLoading(false));
         }
@@ -424,10 +451,13 @@ export function* updateProductSaga() {
                 `/store_products/${payload.id}`,
                 null,
                 payload.product,
+                {
+                    handleErrorInternally: true,
+                },
             );
             yield put(updateProductSuccess());
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         }
     }
 }
@@ -435,10 +465,12 @@ export function* deleteProductSaga() {
     while (true) {
         try {
             const { payload } = yield take(DELETE_PRODUCT);
-            yield call(fetchAPI, 'DELETE', `/store_products/${payload}`);
+            yield call(fetchAPI, 'DELETE', `/store_products/${payload}`, null, null,   {
+                handleErrorInternally: true,
+            });
             yield put(deleteProductSuccess());
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         }
     }
 }
@@ -459,12 +491,15 @@ export function* productsExcelImportValidateSaga() {
                 '/store_products/import/validate',
                 null,
                 normalizedFile,
+                {
+                    handleErrorInternally: true,
+                },
             );
 
             yield put(productsExcelImportValidateSuccess(response));
             yield put(setProductsExcelImportLoading(false));
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         } finally {
             yield nprogress.done();
         }
@@ -474,26 +509,36 @@ export function* productsExcelImportValidateSaga() {
 export function* productsExcelImportSaga() {
     while (true) {
         try {
+            // file = invalid
             const { payload: file } = yield take(PRODUCTS_EXCEL_IMPORT);
 
             yield nprogress.start();
             yield put(setProductsExcelImportLoading(true));
+            const valid = yield select(selectImportValidProducts);
 
             // const normalizedFile = normalizeFile(file);
-
+            console.log(
+                '→ valid',
+                valid,
+            );
+            console.log('→ file', file);
+            
             const response = yield call(
                 fetchAPI,
                 'POST',
                 '/store_products/import',
                 null,
-                file,
+                valid.concat(file),
+                {
+                    handleErrorInternally: true,
+                },
             );
 
             yield put(productsExcelImportSuccess(response));
             yield put(setProductsExcelImportLoading(false));
             yield put(productsExcelImportReset());
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         } finally {
             yield nprogress.done();
         }
