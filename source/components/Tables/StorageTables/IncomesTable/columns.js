@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Tag } from 'antd';
 
 // proj
+import { Numeral } from 'commons';
 import { ActionIcons, DatetimeFormatter } from 'commons/_uikit';
 import book from 'routes/book';
 import { goTo } from 'utils';
@@ -34,6 +35,15 @@ export default props => {
         render:    datetime => <DatetimeFormatter datetime={ datetime } />,
     };
 
+    const doneDatetime = {
+        title: props.intl.formatMessage({
+            id: 'storage.done_date',
+        }),
+        dataIndex: 'doneDatetime',
+        width:     '20%',
+        render:    datetime => datetime ? <DatetimeFormatter datetime={ datetime } /> : null,
+    };
+
     const status = {
         title: props.intl.formatMessage({
             id: 'storage.status',
@@ -62,12 +72,31 @@ export default props => {
         ),
     };
 
+    const manager = {
+        title: props.intl.formatMessage({
+            id: 'storage.responsible',
+        }),
+        dataIndex: 'manager',
+        width:     '20%',
+        render:    manager =>
+            manager ? (
+                <Link to={ `${book.employeesPage}/${manager.employeeId}` }>
+                    { manager.name } { manager.surname }
+                </Link>
+            ) : null,
+    };
+
     const sum = {
         title: props.intl.formatMessage({
             id: 'storage.sum',
         }),
         dataIndex: 'sum',
         width:     '20%',
+        render:    sum => (
+            <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
+                { sum }
+            </Numeral>
+        ),
     };
 
     const actions = {
@@ -86,8 +115,10 @@ export default props => {
     return [
         id,
         createdDatetime,
+        doneDatetime,
         status,
         supplier,
+        manager,
         sum,
         actions,
     ];

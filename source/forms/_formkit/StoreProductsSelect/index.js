@@ -54,7 +54,7 @@ const StoreProductsSelect = injectIntl(
             >
                 { props.storeProducts.map(product => (
                     <Option value={ product.id } key={ product.id }>
-                        { product.name }
+                        { product.code }
                     </Option>
                 )) }
             </Select>

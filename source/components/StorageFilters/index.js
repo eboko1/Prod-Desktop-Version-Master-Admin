@@ -14,39 +14,47 @@ import {
 const statuses = [ 'NEW', 'DONE' ];
 
 export const StorageFilters = props => {
+    const { filters } = props;
+
     return (
         <Catcher>
             <section>
                 <FormattedMessage id='storage.created_datetime' />
                 <DatePickerField
-                    date={ props.filters.createdDatetime }
+                    date={ filters.createdDatetime }
                     onChange={ date =>
                         props.setFilters({
                             createdDatetime: date,
+                            recordDatetime:  void 0,
+                            doneDatetime:    void 0,
                         })
                     }
                 />
                 <FormattedMessage id='storage.record_date' />
                 <DatePickerField
-                    date={ props.filters.recordDatetime }
+                    date={ filters.recordDatetime }
                     onChange={ date =>
                         props.setFilters({
-                            recordDatetime: date,
+                            createdDatetime: void 0,
+                            recordDatetime:  date,
+                            doneDatetime:    void 0,
                         })
                     }
                 />
                 <FormattedMessage id='storage.done_date' />
                 <DatePickerField
-                    date={ props.filters.doneDatetime }
+                    date={ filters.doneDatetime }
                     onChange={ date =>
                         props.setFilters({
-                            doneDatetime: date,
+                            createdDatetime: void 0,
+                            recordDatetime:  void 0,
+                            doneDatetime:    date,
                         })
                     }
                 />
                 <SearchField setFilters={ props.setFilters } />
                 <StatusRadioButtons
-                    status={ props.filters.status }
+                    status={ filters.status }
                     statuses={ statuses }
                     setFilters={ props.setFilters }
                 />

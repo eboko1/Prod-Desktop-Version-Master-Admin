@@ -22,7 +22,7 @@ const StyledBlock = styled.div`
     ${productDataCSS}
 `;
 
-const ProductCode = styled.span`
+const ProductName = styled.span`
     font-size: 12px;
     color: rgba(0, 0, 0, 0.65);
 `;
@@ -30,13 +30,13 @@ const ProductCode = styled.span`
 export const ProductTableData = props => {
     return props.link ? (
         <StyledLink to={ book.productsTracking } onClick={ () => props.onClick() }>
-            <span>{ props.name }</span>
-            <ProductCode>{ props.code }</ProductCode>
+            <span>{ props.code }</span>
+            <ProductName>{ props.name }</ProductName>
         </StyledLink>
     ) : (
         <StyledBlock onClick={ () => props.onClick() }>
-            <span>{ props.name }</span>
-            <ProductCode>{ props.code }</ProductCode>
+            <span>{ props.code }</span>
+            <ProductName>{ props.name }</ProductName>
         </StyledBlock>
     );
 };

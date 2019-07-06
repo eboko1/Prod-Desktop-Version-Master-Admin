@@ -76,9 +76,14 @@ export default props => {
         width:     '10%',
         className: 'expense',
         render:    expensePrice => (
-            <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
-                { expensePrice }
-            </Numeral>
+            <>
+                -
+                <Numeral
+                    currency={ props.intl.formatMessage({ id: 'currency' }) }
+                >
+                    { expensePrice }
+                </Numeral>
+            </>
         ),
     };
 
@@ -100,9 +105,14 @@ export default props => {
         width:     '10%',
         className: 'expense',
         render:    expenseSum => (
-            <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
-                { expenseSum }
-            </Numeral>
+            <>
+                -
+                <Numeral
+                    currency={ props.intl.formatMessage({ id: 'currency' }) }
+                >
+                    { expenseSum }
+                </Numeral>
+            </>
         ),
     };
 

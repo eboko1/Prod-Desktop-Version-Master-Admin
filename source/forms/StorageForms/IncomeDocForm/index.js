@@ -97,22 +97,22 @@ const IncomeForm = props => {
         props.form.validateFields((err, values) => {
             if (!err) {
                 const docProducts = values.docProducts.filter(Boolean);
-
                 let normalizedValues = {};
+                console.log('→ values', values);
                 if (!_.last(docProducts).productId) {
                     normalizedValues = {
                         ...values,
                         docProducts: docProducts
                             .slice(0, -1)
                             .map(product =>
-                                _.omit(product, [ 'name', 'tradeCode' ])),
+                                _.omit(product, [ 'name', 'tradeCode', 'brandId' ])),
                         status: complete ? 'DONE' : 'NEW',
                     };
                 } else {
                     normalizedValues = {
                         ...values,
                         docProducts: docProducts.map(product =>
-                            _.omit(product, [ 'name', 'tradeCode' ])),
+                            _.omit(product, [ 'name', 'tradeCode', 'brandId' ])),
                         status: complete ? 'DONE' : 'NEW',
                     };
                 }

@@ -49,8 +49,8 @@ export const DecoratedTreeSelect = memo(
                     return (
                         <TreeNode
                             value={ node.id }
-                            title={ node.name }
-                            label={ node.name }
+                            title={ `${node.name} (#${node.id})` }
+                            label={ `${node.name} (#${node.id})` }
                             key={ `${index}-${node.id}-${node.name}` }
                         >
                             { loop(node.childGroups) }
@@ -62,8 +62,8 @@ export const DecoratedTreeSelect = memo(
                     <TreeNode
                         isLeaf
                         value={ node.id }
-                        title={ node.name }
-                        label={ node.name }
+                        title={ `${node.name} (#${node.id})` }
+                        label={ `${node.name} (#${node.id})` }
                         key={ `${index}-${node.id}-${node.name}` }
                     >
                         { !_.isEmpty(node.childGroups) }

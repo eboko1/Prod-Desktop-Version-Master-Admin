@@ -25,7 +25,7 @@ export default props => {
                         value={ status }
                         onClick={ () => props.setFilters({ status }) }
                     >
-                        <FormattedMessage id={ status } />
+                        <FormattedMessage id={ `storage.status.${status}` } />
                     </RadioButton>
                 )) }
         </RadioGroup>

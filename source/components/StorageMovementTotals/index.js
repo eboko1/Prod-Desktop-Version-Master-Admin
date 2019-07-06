@@ -12,6 +12,7 @@ import {
 } from 'core/storage/storeMovement';
 
 import { StoreProductsSelect } from 'forms/_formkit';
+import { numeralFormatter } from 'utils';
 
 const mapStateToProps = state => ({
     collapsed: state.ui.collapsed,
@@ -31,7 +32,8 @@ export const StorageMovementTotals = connect(
     const renderTotalData = (label, data, income) => (
         <span>
             <FormattedMessage id={ `storage.${label}` } />
-            :&nbsp;<Highlighted income={ income }>{ data }</Highlighted>
+            :&nbsp;
+            <Highlighted income={ income }>{ numeralFormatter(data) }</Highlighted>
         </span>
     );
 

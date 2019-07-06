@@ -98,7 +98,7 @@ export default (props, state, table) => {
                     // fieldValue={ _.get(fields, `details[${key}].detailCode`) }
 
                     field={ `docProducts[${key}].name` }
-                    disabled={ _isFieldDisabled(key) }
+                    disabled
                     getFieldDecorator={ props.form.getFieldDecorator }
                     initialValue={ _.get(
                         props,
@@ -119,7 +119,7 @@ export default (props, state, table) => {
                         defaultGetValueProps
                         getFieldDecorator={ getFieldDecorator }
                         getPopupContainer={ trigger => trigger.parentNode }
-                        field={ `docProducts[${key}].brandId'` }
+                        field={ `docProducts[${key}].brandId` }
                         // initialValue={ props.storeProducts[ key ].brandId }
                         onSearch={ value => {
                             props.form.setFieldsValue({
@@ -138,7 +138,7 @@ export default (props, state, table) => {
                         optionFilterProp={ 'children' }
                         showSearch
                         dropdownMatchSelectWidth={ false }
-                        disabled={ _isFieldDisabled(key) }
+                        disabled
                     >
                         { props.brands.map(({ brandName, brandId }) => (
                             <Option
@@ -163,7 +163,7 @@ export default (props, state, table) => {
                     // fieldValue={ _.get(fields, `details[${key}].detailCode`) }
 
                     field={ `docProducts[${key}].tradeCode` }
-                    disabled={ _isFieldDisabled(key) }
+                    disabled
                     getFieldDecorator={ props.form.getFieldDecorator }
                     initialValue={ _.get(
                         props,

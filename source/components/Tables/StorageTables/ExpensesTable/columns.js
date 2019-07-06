@@ -46,7 +46,9 @@ export default props => {
                     status === 'NEW' ? 'var(--not_complete)' : 'var(--green)'
                 }
             >
-                { props.intl.formatMessage({ id: `storage.status.${status}` }) }
+                { props.intl.formatMessage({
+                    id: `storage.status.${status === 'DONE' ? 'OFF' : status}`,
+                }) }
             </Tag>
         ),
     };
@@ -73,10 +75,10 @@ export default props => {
         }),
         dataIndex: 'clientName',
         width:     '20%',
-        render:    (client, { clientName, clientSurname }) => (
-            <div>
+        render:    (client, { clientId, clientName, clientSurname }) => (
+            <Link to={ `${book.client}/${clientId}` }>
                 { clientName } { clientSurname }
-            </div>
+            </Link>
         ),
     };
 

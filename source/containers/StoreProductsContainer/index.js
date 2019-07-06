@@ -108,11 +108,11 @@ export default class StoreProductsContainer extends Component {
                         <span>
                             {beforeStr}
                             <span style={{ color: "#f50" }}>{searchValue}</span>
-                            {afterStr} ({item.id})
+                            {afterStr} (#{item.id})
                         </span>
                     ) : (
                         <span>
-                            {item.name} ({item.id})
+                            {item.name} (#{item.id})
                         </span>
                     );
                 if (!_.isEmpty(item.childGroups)) {

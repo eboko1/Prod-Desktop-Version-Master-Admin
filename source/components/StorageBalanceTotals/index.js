@@ -5,13 +5,14 @@ import { FormattedMessage } from 'react-intl';
 import { DatePicker, Skeleton } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
-import _ from 'lodash';
 
 import {
     selectStoreBalanceTotal,
     selectStoreBalanceFilters,
     setStoreBalanceFilters,
 } from 'core/storage/storeBalance';
+
+import { numeralFormatter } from 'utils';
 
 const mapStateToProps = state => ({
     collapsed: state.ui.collapsed,
@@ -34,7 +35,7 @@ export const StorageBalanceTotals = connect(
     const renderTotalData = (label, data) => (
         <span>
             <FormattedMessage id={ `storage.${label}` } />
-            :&nbsp;<Highlighted>{ data }</Highlighted>
+            :&nbsp;<Highlighted>{ numeralFormatter(data) }</Highlighted>
         </span>
     );
 
@@ -46,12 +47,20 @@ export const StorageBalanceTotals = connect(
             />
             <DataWrapper>
                 { total
-                    ? renderTotalData('remain', total.remaining)
+                    ? renderTotalData('in_stock', total.remaining)
                     : SkeletonLoader }
             </DataWrapper>
             <DataWrapper>
                 { total
                     ? renderTotalData('reserve', total.reserved)
+                    : SkeletonLoader }
+            </DataWrapper>
+            <DataWrapper>
+                { total
+                    ? renderTotalData(
+                        'available',
+                        total.remaining - total.reserved,
+                    )
                     : SkeletonLoader }
             </DataWrapper>
             <DataWrapper>

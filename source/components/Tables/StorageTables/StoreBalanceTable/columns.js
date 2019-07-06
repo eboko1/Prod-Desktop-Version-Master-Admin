@@ -33,7 +33,7 @@ export default props => {
 
     const remaining = {
         title: props.intl.formatMessage({
-            id: 'storage.quantity',
+            id: 'storage.in_stock',
         }),
         dataIndex: 'remaining',
         width:     '10%',
@@ -47,6 +47,15 @@ export default props => {
         dataIndex: 'reserved',
         width:     '10%',
         render:    reserved => numeralFormatter(reserved),
+    };
+
+    const available = {
+        title: props.intl.formatMessage({
+            id: 'storage.available',
+        }),
+        key:    'available',
+        width:  '10%',
+        render: (_, data) => numeralFormatter(data.remaining - data.reserved),
     };
 
     const sum = {
@@ -67,6 +76,7 @@ export default props => {
         name,
         remaining,
         reserve,
+        available,
         sum,
     ];
 };

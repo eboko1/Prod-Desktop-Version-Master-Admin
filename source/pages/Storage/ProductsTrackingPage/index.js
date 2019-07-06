@@ -28,8 +28,6 @@ export const ProductsTrackingPage = withRouter(
         mapStateToProps,
         { setTrackingFilters },
     )(props => {
-        console.log('→ props', props);
-
         const renderFilters = (
             <Filters>
                 <DatePickerField
