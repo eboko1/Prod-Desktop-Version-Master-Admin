@@ -22,6 +22,6 @@ export const StorageBalancePage = () => {
 };
 
 const StoreBalanceTableWrapper = styled.section`
-    padding: 100px 0 0 0;
+    padding: 136px 0 0 0;
     margin: 0 16px;
 `;

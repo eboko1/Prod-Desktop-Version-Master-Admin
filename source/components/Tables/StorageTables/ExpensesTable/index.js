@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
 import _ from 'lodash';
+import styled from 'styled-components';
 
 // proj
 import {
@@ -44,7 +45,7 @@ const ExpensesTableComponent = props => {
 
     return (
         <Catcher>
-            <Table
+            <StyledTable
                 size='small'
                 columns={ columnsConfig(props) }
                 dataSource={ props.expenses.list }
@@ -58,6 +59,10 @@ const ExpensesTableComponent = props => {
         </Catcher>
     );
 };
+
+const StyledTable = styled(Table)`
+    background: white;
+`;
 
 const mapStateToProps = state => ({
     expenses: selectExpenses(state),

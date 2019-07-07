@@ -6,12 +6,14 @@ import { DatePicker, Skeleton } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
 
+// proj
 import {
     selectStoreBalanceTotal,
     selectStoreBalanceFilters,
     setStoreBalanceFilters,
 } from 'core/storage/storeBalance';
 
+import { SearchField } from 'forms/_formkit';
 import { numeralFormatter } from 'utils';
 
 const mapStateToProps = state => ({
@@ -41,38 +43,43 @@ export const StorageBalanceTotals = connect(
 
     return (
         <BalanceTotal collapsed={ collapsed }>
-            <DatePicker
-                onChange={ onPickDate }
-                defaultValue={ moment(filters.date) }
-            />
-            <DataWrapper>
-                { total
-                    ? renderTotalData('in_stock', total.remaining)
-                    : SkeletonLoader }
-            </DataWrapper>
-            <DataWrapper>
-                { total
-                    ? renderTotalData('reserve', total.reserved)
-                    : SkeletonLoader }
-            </DataWrapper>
-            <DataWrapper>
-                { total
-                    ? renderTotalData(
-                        'available',
-                        total.remaining - total.reserved,
-                    )
-                    : SkeletonLoader }
-            </DataWrapper>
-            <DataWrapper>
-                { total ? renderTotalData('sum', total.sum) : SkeletonLoader }
-            </DataWrapper>
+            <FiltersRow>
+                <DatePicker
+                    onChange={ onPickDate }
+                    defaultValue={ moment(filters.date) }
+                />
+                <SearchField />
+            </FiltersRow>
+            <DataRow>
+                <DataWrapper>
+                    { total
+                        ? renderTotalData('in_stock', total.remaining)
+                        : SkeletonLoader }
+                </DataWrapper>
+                <DataWrapper>
+                    { total
+                        ? renderTotalData('reserve', total.reserved)
+                        : SkeletonLoader }
+                </DataWrapper>
+                <DataWrapper>
+                    { total
+                        ? renderTotalData(
+                            'available',
+                            total.remaining - total.reserved,
+                        )
+                        : SkeletonLoader }
+                </DataWrapper>
+                <DataWrapper>
+                    { total ? renderTotalData('sum', total.sum) : SkeletonLoader }
+                </DataWrapper>
+            </DataRow>
         </BalanceTotal>
     );
 });
 
 const BalanceTotal = styled.div`
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     overflow: initial;
     box-sizing: border-box;
     background-color: rgb(255, 255, 255);
@@ -86,6 +93,16 @@ const BalanceTotal = styled.div`
     left: ${props => props.collapsed ? '80px' : '256px'};
     width: ${props =>
         props.collapsed ? 'calc(100% - 80px)' : 'calc(100% - 256px)'};
+`;
+
+const FiltersRow = styled.div`
+    display: flex;
+    margin-bottom: 16px;
+`;
+
+const DataRow = styled.div`
+    display: flex;
+    justify-content: space-between;
 `;
 
 const DataWrapper = styled.div`

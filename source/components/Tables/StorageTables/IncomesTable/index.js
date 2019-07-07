@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
 import _ from 'lodash';
+import styled from 'styled-components';
 
 // proj
 import {
@@ -11,7 +12,6 @@ import {
     deleteIncomeDoc,
     selectIncomes,
     selectIncomesLoading,
-   
     setIncomesPage,
 } from 'core/storage/incomes';
 
@@ -41,7 +41,7 @@ const IncomesTableComponent = props => {
 
     return (
         <Catcher>
-            <Table
+            <StyledTable
                 size='small'
                 columns={ columnsConfig(props) }
                 dataSource={ props.incomes.list }
@@ -55,6 +55,10 @@ const IncomesTableComponent = props => {
         </Catcher>
     );
 };
+
+const StyledTable = styled(Table)`
+    background: white;
+`;
 
 const mapStateToProps = state => ({
     incomes: selectIncomes(state),

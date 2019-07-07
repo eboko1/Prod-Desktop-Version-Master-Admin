@@ -33,7 +33,9 @@ export const StorageMovementTotals = connect(
         <span>
             <FormattedMessage id={ `storage.${label}` } />
             :&nbsp;
-            <Highlighted income={ income }>{ numeralFormatter(data) }</Highlighted>
+            <Highlighted income={ income }>
+                { data ? numeralFormatter(Math.round(data * 100) / 100) : 0 }
+            </Highlighted>
         </span>
     );
 
