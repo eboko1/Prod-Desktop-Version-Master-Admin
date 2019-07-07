@@ -144,7 +144,6 @@ export function* redirectToTrackingSaga() {
     while (true) {
         try {
             const { payload } = yield take(REDIRECT_TO_TRACKING);
-            console.log('→ REDIRECT payload', payload);
             yield put(push(book.productsTracking));
             yield put(setTrackingFilters({ productId: payload.id }));
             yield put(setStoreProductsSearchQuery(payload.name));

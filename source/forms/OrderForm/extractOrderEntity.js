@@ -56,8 +56,6 @@ export function convertFieldsValuesToDbEntity(
                 productId: productId,
                 // using: using,
             } = detail;
-            console.log('→ ExtractOrderEntity detail', detail);
-            console.log('→ storage', storage);
             const detailConfig = allDetails.details.find(
                 ({ detailId: id }) => String(id) === detailId,
             );

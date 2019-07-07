@@ -98,7 +98,6 @@ const IncomeForm = props => {
             if (!err) {
                 const docProducts = values.docProducts.filter(Boolean);
                 let normalizedValues = {};
-                console.log('→ values', values);
                 if (!_.last(docProducts).productId) {
                     normalizedValues = {
                         ...values,

@@ -20,41 +20,43 @@ export const StorageFilters = props => {
     return (
         <Catcher>
             <Filters>
-                <FilterRow>
-                    <FormattedMessage id='storage.created_datetime' />
-                    <DatePickerField
-                        date={ filters.createdDatetime }
-                        onChange={ date =>
-                            props.setFilters({
-                                createdDatetime: date,
-                                recordDatetime:  void 0,
-                                doneDatetime:    void 0,
-                            })
-                        }
-                    />
-                    <FormattedMessage id='storage.record_date' />
-                    <DatePickerField
-                        date={ filters.recordDatetime }
-                        onChange={ date =>
-                            props.setFilters({
-                                createdDatetime: void 0,
-                                recordDatetime:  date,
-                                doneDatetime:    void 0,
-                            })
-                        }
-                    />
-                    <FormattedMessage id='storage.done_date' />
-                    <DatePickerField
-                        date={ filters.doneDatetime }
-                        onChange={ date =>
-                            props.setFilters({
-                                createdDatetime: void 0,
-                                recordDatetime:  void 0,
-                                doneDatetime:    date,
-                            })
-                        }
-                    />
-                </FilterRow>
+                { props.type !== 'expenses' ? (
+                    <FilterRow>
+                        <FormattedMessage id='storage.created_datetime' />
+                        <DatePickerField
+                            date={ filters.createdDatetime }
+                            onChange={ date =>
+                                props.setFilters({
+                                    createdDatetime: date,
+                                    recordDatetime:  void 0,
+                                    doneDatetime:    void 0,
+                                })
+                            }
+                        />
+                        <FormattedMessage id='storage.record_date' />
+                        <DatePickerField
+                            date={ filters.recordDatetime }
+                            onChange={ date =>
+                                props.setFilters({
+                                    createdDatetime: void 0,
+                                    recordDatetime:  date,
+                                    doneDatetime:    void 0,
+                                })
+                            }
+                        />
+                        <FormattedMessage id='storage.done_date' />
+                        <DatePickerField
+                            date={ filters.doneDatetime }
+                            onChange={ date =>
+                                props.setFilters({
+                                    createdDatetime: void 0,
+                                    recordDatetime:  void 0,
+                                    doneDatetime:    date,
+                                })
+                            }
+                        />
+                    </FilterRow>
+                ) : null }
                 <FilterRow>
                     <SearchField setFilters={ props.setFilters } />
                     <StatusRadioButtons

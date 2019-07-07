@@ -134,8 +134,6 @@ const ProductsExcelTableComponent = props => {
         ],
     );
 
-    console.log('→ !!!RENDER Table');
-
     return props.tooManyInvalids ? (
         <div>validate passed. press ok</div>
     ) : (

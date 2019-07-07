@@ -57,7 +57,7 @@ const PriceGroup = props => {
             return _handleErrors(errors, fields);
         }
         // validation passed
-        console.log('→ PASSED');
+    
     });
 
     // const _validate = (value, errors, fields) => {

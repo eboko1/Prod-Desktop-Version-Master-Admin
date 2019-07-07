@@ -303,7 +303,6 @@ class OrderPage extends Component {
         
                 const normalizedValues = _.set(orderFormValues, 'stationLoads', [ entryStationLoad ]);
                 const orderFormEntity = {...normalizedValues, selectedClient};
-                console.log('→ orderFormEntity', orderFormEntity);
                 this.props.createOrderCopy(
                     {...convertFieldsValuesToDbEntity(
                         orderFormEntity,

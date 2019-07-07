@@ -60,7 +60,6 @@ const StoreGroup = props => {
         form.validateFields((err, values) => {
             if (!err) {
                 const id = _.get(modalProps, 'storeGroup.id');
-                console.log('→ StoreGroupModal Submit values', values);
 
                 if (modalProps.create) {
                     props.createStoreGroup(values);

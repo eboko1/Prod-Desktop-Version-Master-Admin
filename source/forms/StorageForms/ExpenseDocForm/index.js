@@ -41,7 +41,6 @@ const ExpenseForm = props => {
                 if (values.brandName && values.brandId) {
                     _.set(values, 'brandId', void 0);
                 }
-                console.log('→ values', values);
                 props.editing
                     ? props.updateProduct({
                         id:      _.get(props, 'modalProps.id'),

@@ -105,8 +105,6 @@ export default function reducer(state = ReducerState, action) {
         //         },
         //     };
         case FETCH_RECOMMENDED_PRICE_SUCCESS:
-            console.log('→ FETCH_RECOMMENDED_PRICE_SUCCESS payload', payload);
-
             return {
                 ...state,
                 recommendedPrice: { ...payload },
@@ -517,11 +515,6 @@ export function* productsExcelImportSaga() {
             const valid = yield select(selectImportValidProducts);
 
             // const normalizedFile = normalizeFile(file);
-            console.log(
-                '→ valid',
-                valid,
-            );
-            console.log('→ file', file);
             
             const response = yield call(
                 fetchAPI,

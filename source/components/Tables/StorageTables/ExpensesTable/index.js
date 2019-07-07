@@ -28,9 +28,6 @@ const ExpensesTableComponent = props => {
         props.fetchExpenses();
     }, []); // add expenses -> recursion
 
-    console.log('→ expenses', expenses);
-    console.log('→ filters', props.filters);
-
     const pagination = {
         pageSize:         25,
         size:             'large',

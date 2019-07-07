@@ -15,6 +15,7 @@ export const FETCH_EXPENSES = `${prefix}/FETCH_EXPENSES`;
 export const FETCH_EXPENSES_SUCCESS = `${prefix}/FETCH_EXPENSES_SUCCESS`;
 
 export const SET_EXPENSES_PAGE = `${prefix}/SET_EXPENSES_PAGE`;
+export const SET_EXPENSES_FILTERS = `${prefix}/SET_EXPENSES_FILTERS`;
 
 export const SET_EXPENSES_LOADING = `${prefix}/SET_EXPENSES_LOADING`;
 
@@ -36,7 +37,10 @@ const ReducerState = {
     expenses:   { stats: { count: '0' }, list: [] },
     expenseDoc: {},
     filters:    {
-        page: 1,
+        orderDatetime:        void 0,
+        orderSuccessDatetime: void 0,
+        status:               null,
+        page:                 1,
     },
     expensesLoading:   false,
     expenseDocLoading: false,
@@ -54,6 +58,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_EXPENSES_PAGE:
             return { ...state, filters: { ...state.filters, page: payload } };
+
+        case SET_EXPENSES_FILTERS:
+            return { ...state, filters: { ...state.filters, ...payload } };
 
         case SET_EXPENSES_LOADING:
             return { ...state, expensesLoading: payload };
@@ -96,6 +103,11 @@ export const fetchExpensesSuccess = expenses => ({
 export const setExpensesPage = page => ({
     type:    SET_EXPENSES_PAGE,
     payload: page,
+});
+
+export const setExpensesFilters = filters => ({
+    type:    SET_EXPENSES_FILTERS,
+    payload: filters,
 });
 
 export const fetchExpenseDoc = id => ({
@@ -151,7 +163,7 @@ export const setExpenseDocLoading = isLoading => ({
 export function* fetchExpensesSaga() {
     while (true) {
         try {
-            yield take(FETCH_EXPENSES);
+            yield take([ FETCH_EXPENSES, SET_EXPENSES_FILTERS ]);
             yield put(setExpensesLoading(true));
             const filters = yield select(selectExpensesFilters);
             const response = yield call(fetchAPI, 'GET', '/store_docs', {

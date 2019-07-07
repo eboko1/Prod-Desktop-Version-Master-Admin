@@ -18,20 +18,34 @@ export default props => {
             >
                 <FormattedMessage id='all' />
             </RadioButton>
-            { !_.isEmpty(props.statuses) &&
+            { props.type === 'expenses' ? (
+                <>
+                    <RadioButton
+                        key={ 'NEW' }
+                        value={ 'NEW' }
+                        onClick={ () => props.setFilters({ status: 'NEW' }) }
+                    >
+                        <FormattedMessage id='storage.status.NEW' />
+                    </RadioButton>
+                    <RadioButton
+                        key={ 'DONE' }
+                        value={ 'DONE' }
+                        onClick={ () => props.setFilters({ status: 'DONE' }) }
+                    >
+                        <FormattedMessage id='storage.status.OFF' />
+                    </RadioButton>
+                </>
+            ) : 
                 props.statuses.map(status => (
                     <RadioButton
                         key={ status }
                         value={ status }
                         onClick={ () => props.setFilters({ status }) }
                     >
-                        <FormattedMessage
-                            id={ `storage.status.${
-                                props.type === 'expenses' ? 'OFF' : status
-                            }` }
-                        />
+                        <FormattedMessage id={ `storage.status.${status}` } />
                     </RadioButton>
-                )) }
+                ))
+            }
         </RadioGroup>
     );
 };

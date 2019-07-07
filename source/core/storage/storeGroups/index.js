@@ -163,7 +163,6 @@ export function* createStoreGroupSaga() {
         try {
             const { payload } = yield take(CREATE_STORE_GROUP);
             yield nprogress.start();
-            console.log('*** createStoreGroupSaga', payload);
             const storeGroups = yield call(
                 fetchAPI,
                 'POST',
@@ -187,7 +186,6 @@ export function* updateStoreGroupSaga() {
         try {
             const { payload } = yield take(UPDATE_STORE_GROUP);
             yield nprogress.start();
-            console.log('*** updateStoreGroupSaga payload', payload);
             yield call(
                 fetchAPI,
                 'PUT',

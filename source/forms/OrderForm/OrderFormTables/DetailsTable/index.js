@@ -946,7 +946,6 @@ export default class DetailsTable extends Component {
         const { keys } = this.state;
 
         const product = _.find(storeProducts, { id: Number(value) });
-        console.log("→ product", product);
         if (details[key].storage) {
             this.props.fetchRecommendedPrice(key, value);
             this.props.form.setFieldsValue({
