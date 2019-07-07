@@ -17,9 +17,11 @@ import { getDisplayName } from 'utils';
 
 // own
 const _errorMessages = Object.freeze({
-    CLIENT_VEHICLE_DISABLED: 'CLIENT_VEHICLE_DISABLED',
-    MANAGER_DISABLED:        'MANAGER_DISABLED',
-    INVALID_CREDENTIALS:     'INVALID_CREDENTIALS',
+    CLIENT_VEHICLE_DISABLED:                  'CLIENT_VEHICLE_DISABLED',
+    MANAGER_DISABLED:                         'MANAGER_DISABLED',
+    INVALID_CREDENTIALS:                      'INVALID_CREDENTIALS',
+    UNIQUE_CONSTRAINT_VIOLATION_PRODUCT_CODE:
+        'UNIQUE_CONSTRAINT_VIOLATION_PRODUCT_CODE',
 });
 
 const ErrorStatusCode = styled.span`

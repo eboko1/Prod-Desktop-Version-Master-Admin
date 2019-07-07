@@ -9,6 +9,7 @@ import { MODALS } from 'core/modals/duck';
 import { DatetimeFormatter } from 'commons/_uikit';
 import { Numeral } from 'commons';
 import book from 'routes/book';
+import { numeralFormatter } from 'utils';
 
 // own
 import { ProductTableData } from '../ProductTableData';
@@ -96,13 +97,72 @@ export default props => {
         render:    datetime => <DatetimeFormatter datetime={ datetime } />,
     };
 
-    const tradeCode = {
+    const counterparty = {
         title: props.intl.formatMessage({
-            id: 'storage.trade_code',
+            id: 'storage.counterparty',
         }),
-        key:    'tradeCode',
-        width:  '10%',
-        render: (key, data) => _.get(data, 'product.tradeCode'),
+        dataIndex: 'doc',
+        width:     '10%',
+        render:    (doc, data) => {
+            const income = Boolean(doc);
+            const isCounterpartyExists =
+                _.get(data, 'order.client.id') ||
+                _.get(data, 'doc.businessSupplier.name');
+
+            return isCounterpartyExists ? (
+                <Link
+                    to={
+                        income
+                            ? `${book.suppliersPage}`
+                            : `${book.client}/${_.get(data, 'order.client.id')}`
+                    }
+                >
+                    { income
+                        ? `${_.get(data, 'doc.businessSupplier.name', '')}`
+                        : `${_.get(data, 'order.client.name', '')} ${_.get(
+                            data,
+                            'order.client.surname',
+                            '',
+                        )}` }
+                </Link>
+            ) : null;
+        },
+    };
+
+    const responsible = {
+        title: props.intl.formatMessage({
+            id: 'storage.responsible',
+        }),
+        dataIndex: 'order',
+        width:     '10%',
+        render:    (order, data) => {
+            const expense = Boolean(order);
+            const isManagerExists =
+                _.get(data, 'order.manager.employeeId') ||
+                _.get(data, 'doc.manager.employeeId');
+
+            return isManagerExists ? (
+                <Link
+                    to={ `${book.employeesPage}/${
+                        expense
+                            ? _.get(data, 'order.manager.employeeId')
+                            : _.get(data, 'doc.manager.employeeId')
+                    }` }
+                >
+                    { expense
+                        ? `${_.get(data, 'order.manager.name', '')} ${_.get(
+                            data,
+                            'order.manager.surname',
+                            '',
+                        )}`
+                        : `${_.get(data, 'doc.manager.name', '')} ${_.get(
+                            data,
+                            'doc.manager.surname',
+                            '',
+                        )}` }
+                </Link>
+            ) : null;
+        },
     };
 
     const quantity = {
@@ -111,6 +171,7 @@ export default props => {
         }),
         dataIndex: 'quantity',
         width:     '7.5%',
+        render:    quantity => numeralFormatter(parseInt(quantity, 10)),
     };
 
     const purchasePrice = {
@@ -171,7 +232,8 @@ export default props => {
         type,
         docNum,
         createdDatetime,
-        tradeCode,
+        counterparty,
+        responsible,
         quantity,
         purchasePrice,
         purchaseSum,
