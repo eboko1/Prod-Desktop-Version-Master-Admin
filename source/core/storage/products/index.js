@@ -561,9 +561,9 @@ export function* productsExcelImportSaga() {
             yield put(productsExcelImportSuccess(validationResult));
             yield put(setProductsExcelImportLoading(false));
 
-            // if(!_.isEmpty(validationResult.invalidProducts)) {
-            //     yield put(productsExcelImportReset());
-            // }
+            if(!_.isEmpty(validationResult.invalidProducts)) {
+                yield put(productsExcelImportReset());
+            }
         } catch (error) {
             yield put(setErrorMessage(error));
         } finally {
