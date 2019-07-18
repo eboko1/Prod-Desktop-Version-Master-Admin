@@ -560,7 +560,7 @@ export function* productsExcelImportSaga() {
 
             yield put(productsExcelImportSuccess(validationResult));
             yield put(setProductsExcelImportLoading(false));
-            yield put(productsExcelImportReset());
+            // yield put(productsExcelImportReset());
         } catch (error) {
             yield put(setErrorMessage(error));
         } finally {

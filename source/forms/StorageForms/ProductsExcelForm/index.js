@@ -100,12 +100,12 @@ const ProductsExcelFormComponent = memo(props => {
                                 <FormattedMessage id='storage.validation_too_many_errors' />
                             ) : (
                                 <FormattedMessage id='storage.validation_with_errors' />
-                            ) }
+                            ) }{ ' ' }
+                            <Controls>
+                                <DuplicateSquare /> -{ ' ' }
+                                <FormattedMessage id='storage.validation_duplicate' />
+                            </Controls>
                         </div>
-                        <Controls>
-                            <DuplicateSquare /> -{ ' ' }
-                            <FormattedMessage id='storage.validation_duplicate' />
-                        </Controls>
                         { props.invalidProductsExcel.filter(
                             product => !product.alreadyExists,
                         ) && (
