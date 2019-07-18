@@ -1,13 +1,14 @@
 // vendor
 import React, { memo } from 'react';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { Form, Button } from 'antd';
 import _ from 'lodash';
 import styled from 'styled-components';
 
 // proj
 import { Catcher } from 'commons';
+import { selectImportTooManyInvalids } from 'core/storage/products';
 import {
     productsExcelImport,
     productsExcelImportReset,
@@ -33,9 +34,7 @@ const ProductsExcelFormComponent = memo(props => {
             { scroll: { offsetBottom: 50 } },
             // { scroll: { offsetBottom: 50 }, force: true },
             (err, values) => {
-                console.log('→ submit values', values);
                 if (!err) {
-                    console.log('-> _.toPairs(values)', _.toPairs(values));
                     const fields = _.toPairs(values).reduce(
                         (result, [ name, value ]) => {
                             if (!value.alreadyExists) {
@@ -46,7 +45,7 @@ const ProductsExcelFormComponent = memo(props => {
                         },
                         [],
                     );
-                    console.log('→ fields', fields);
+
                     const normalizedFields = fields.map(product => {
                         const { brandId, brandName } = product;
                         const isLikeNumber = !_.chain(brandId)
@@ -69,7 +68,7 @@ const ProductsExcelFormComponent = memo(props => {
 
                         return product;
                     });
-                    console.log('→ normalizedFields', normalizedFields);
+
                     props.productsExcelImport(normalizedFields);
                 }
             },
@@ -79,9 +78,13 @@ const ProductsExcelFormComponent = memo(props => {
     const _renderButtonGroup = () => {
         return (
             <ButtonGroup>
-                <SubmitButton type='primary' onClick={ () => _submit() }>
-                    { props.intl.formatMessage({ id: 'submit' }) }
-                </SubmitButton>
+                { props.tooManyInvalids ? (
+                    <FormattedMessage id='storage.validation_success' />
+                ) : (
+                    <SubmitButton type='primary' onClick={ () => _submit() }>
+                        { props.intl.formatMessage({ id: 'submit' }) }
+                    </SubmitButton>
+                ) }
                 <Button
                     icon='rollback'
                     onClick={ () => props.productsExcelImportReset() }
@@ -91,6 +94,8 @@ const ProductsExcelFormComponent = memo(props => {
             </ButtonGroup>
         );
     };
+
+    console.log('→FORM props', props);
 
     return (
         <Catcher>
@@ -102,9 +107,13 @@ const ProductsExcelFormComponent = memo(props => {
     );
 });
 
+const mapStateToProps = state => ({
+    tooManyInvalids: selectImportTooManyInvalids(state),
+});
+
 export const ProductsExcelForm = injectIntl(
     connect(
-        null,
+        mapStateToProps,
         { productsExcelImport, productsExcelImportReset },
     )(Form.create()(ProductsExcelFormComponent)),
 );

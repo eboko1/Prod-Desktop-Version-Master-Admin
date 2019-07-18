@@ -11,7 +11,6 @@ import { fetchStoreGroups, selectStoreGroups } from 'core/storage/storeGroups';
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
 import {
     selectImportInvalidProducts,
-    selectImportTooManyInvalids,
     selectStoreProductsExcelLoading,
 } from 'core/storage/products';
 
@@ -86,15 +85,12 @@ const ProductsExcelTableComponent = props => {
             invalidProductsExcel,
             storeGroups,
             priceGroups,
-            brands, 
+            brands,
         ],
     );
+    console.log('→ TABLE props', props);
 
-    return props.tooManyInvalids ? (
-        <div>
-            <FormattedMessage id='storage.validation_success' />
-        </div>
-    ) : (
+    return (
         <StyledTable
             // bordered
             className={ Styles.importTable }
@@ -117,7 +113,6 @@ const ProductsExcelTableComponent = props => {
 
 const mapStateToProps = state => ({
     invalidProductsExcel: selectImportInvalidProducts(state),
-    tooManyInvalids:      selectImportTooManyInvalids(state),
     brands:               selectBrandsByQuery(state),
     priceGroups:          selectPriceGroups(state),
     storeGroups:          selectStoreGroups(state),
