@@ -11,6 +11,7 @@ import { selectIncomesFilters, setIncomesFilters } from 'core/storage/incomes';
 
 import { Layout } from 'commons';
 import { StorageFilters, IncomesTable } from 'components';
+import { withErrorMessage } from 'utils';
 import book from 'routes/book';
 
 const mapStateToProps = state => ({
@@ -24,7 +25,7 @@ const mapDispatchToProps = {
 export const IncomesPage = connect(
     mapStateToProps,
     mapDispatchToProps,
-)(props => {
+)(withErrorMessage()(props => {
     return (
         <Layout
             title={ <FormattedMessage id='navigation.incomes' /> }

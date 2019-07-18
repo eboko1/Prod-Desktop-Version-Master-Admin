@@ -48,6 +48,7 @@ const DocumentProductsTable = props => {
     };
 
     const _handleProductSelect = (key, value) => {
+        console.log('→ key, value', key, value);
         const selectedProduct = props.storeProducts.find(
             ({ id }) => id === value,
         );

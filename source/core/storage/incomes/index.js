@@ -1,10 +1,10 @@
 // vendor
 import { call, put, all, take, select } from 'redux-saga/effects';
 import { push } from 'connected-react-router';
-import _ from 'lodash';
 
 //proj
 import { emitError } from 'core/ui/duck';
+import { setErrorMessage } from 'core/errorMessage/duck';
 import { fetchAPI } from 'utils';
 
 import book from 'routes/book';
@@ -274,10 +274,19 @@ export function* deleteIncomeDocSaga() {
     while (true) {
         try {
             const { payload } = yield take(DELETE_INCOME_DOC);
-            yield call(fetchAPI, 'DELETE', `/store_docs/INCOME/${payload}`);
+            yield call(
+                fetchAPI,
+                'DELETE',
+                `/store_docs/INCOME/${payload}`,
+                null,
+                null,
+                {
+                    handleErrorInternally: true,
+                },
+            );
             yield put(deleteIncomeDocSuccess());
         } catch (error) {
-            yield put(emitError(error));
+            yield put(setErrorMessage(error));
         }
     }
 }

@@ -71,9 +71,14 @@ export default (props, state, table) => {
                         onSearch={ value => {
                             props.setStoreProductsSearchQuery(value);
                         } }
-                        onSelect={ value =>
-                            table.handleProductSelect(key, value)
-                        }
+                        onSelect={ value => {
+                            console.log(
+                                'select',
+                                table.handleProductSelect(key, value),
+                            );
+
+                            return table.handleProductSelect(key, value);
+                        } }
                         showSearch
                         dropdownMatchSelectWidth={ false }
                         // rules={ requiredRule }

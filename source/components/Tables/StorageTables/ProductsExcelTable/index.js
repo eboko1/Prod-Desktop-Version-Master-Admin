@@ -68,15 +68,14 @@ const ProductsExcelTableComponent = props => {
     }, []);
 
     const columns = columnsConfig(
-                invalidProductsExcel,
-                form,
-                formatMessage,
-                storeGroups,
-                priceGroups,
-                brands,
-                setBrandsSearchQuery,
-            ),
-    console.log('→ TABLE props', props);
+        invalidProductsExcel,
+        form,
+        formatMessage,
+        storeGroups,
+        priceGroups,
+        brands,
+        setBrandsSearchQuery,
+    );
 
     return (
         <StyledTable
