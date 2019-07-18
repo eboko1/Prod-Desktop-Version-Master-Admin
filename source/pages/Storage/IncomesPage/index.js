@@ -14,18 +14,30 @@ import { StorageFilters, IncomesTable } from 'components';
 import { withErrorMessage } from 'utils';
 import book from 'routes/book';
 
-const mapStateToProps = state => ({
-    filters: selectIncomesFilters(state),
-});
+const Filters = styled.section`
+    display: flex;
+    justify-content: space-between;
+    overflow: initial;
+    box-sizing: border-box;
+    background-color: rgb(255, 255, 255);
+    padding: 16px;
+    margin-bottom: 24px;
+    z-index: 210;
+    border-top: 1px dashed var(--primary);
+    border-bottom: 1px dashed var(--primary);
+    position: fixed;
+    top: 128px;
+    left: ${props => props.collapsed ? '80px' : '256px'};
+    width: ${props =>
+        props.collapsed ? 'calc(100% - 80px)' : 'calc(100% - 256px)'};
+`;
 
-const mapDispatchToProps = {
-    setIncomesFilters,
-};
+const Content = styled.section`
+    padding: 150px 0 0 0;
+    margin: 0 16px;
+`;
 
-export const IncomesPage = connect(
-    mapStateToProps,
-    mapDispatchToProps,
-)(withErrorMessage()(props => {
+const IncomesPageComponent = withErrorMessage()(props => {
     return (
         <Layout
             title={ <FormattedMessage id='navigation.incomes' /> }
@@ -52,25 +64,15 @@ export const IncomesPage = connect(
     );
 });
 
-const Filters = styled.section`
-    display: flex;
-    justify-content: space-between;
-    overflow: initial;
-    box-sizing: border-box;
-    background-color: rgb(255, 255, 255);
-    padding: 16px;
-    margin-bottom: 24px;
-    z-index: 210;
-    border-top: 1px dashed var(--primary);
-    border-bottom: 1px dashed var(--primary);
-    position: fixed;
-    top: 128px;
-    left: ${props => props.collapsed ? '80px' : '256px'};
-    width: ${props =>
-        props.collapsed ? 'calc(100% - 80px)' : 'calc(100% - 256px)'};
-`;
+const mapStateToProps = state => ({
+    filters: selectIncomesFilters(state),
+});
 
-const Content = styled.section`
-    padding: 150px 0 0 0;
-    margin: 0 16px;
-`;
+const mapDispatchToProps = {
+    setIncomesFilters,
+};
+
+export const IncomesPage = connect(
+    mapStateToProps,
+    mapDispatchToProps,
+)(IncomesPageComponent);

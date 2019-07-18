@@ -129,7 +129,11 @@ const ProductsExcelFormComponent = memo(props => {
                         ) : null }
                         { props.validationError && <div>Validation Failed!</div> }
                     </Flex>
-                ) : null }
+                ) : (
+                    <SubmitButton type='primary' onClick={ () => _submit() }>
+                        { props.intl.formatMessage({ id: 'submit' }) }
+                    </SubmitButton>
+                ) }
                 <Button
                     icon='rollback'
                     onClick={ () => props.productsExcelImportReset() }

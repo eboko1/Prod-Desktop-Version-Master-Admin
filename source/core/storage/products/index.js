@@ -85,7 +85,7 @@ export default function reducer(state = ReducerState, action) {
         case PRODUCTS_EXCEL_IMPORT_SUCCESS:
             return {
                 ...state,
-                importing:       !_.isEmpty(payload.invalidProducts),
+                // importing:       !_.isEmpty(payload.invalidProducts),
                 productsExcel:   payload,
                 validationError: !_.isEmpty(payload.invalidProducts),
             };
@@ -560,7 +560,10 @@ export function* productsExcelImportSaga() {
 
             yield put(productsExcelImportSuccess(validationResult));
             yield put(setProductsExcelImportLoading(false));
-            // yield put(productsExcelImportReset());
+
+            // if(!_.isEmpty(validationResult.invalidProducts)) {
+            //     yield put(productsExcelImportReset());
+            // }
         } catch (error) {
             yield put(setErrorMessage(error));
         } finally {
