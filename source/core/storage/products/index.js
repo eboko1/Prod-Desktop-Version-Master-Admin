@@ -85,7 +85,7 @@ export default function reducer(state = ReducerState, action) {
         case PRODUCTS_EXCEL_IMPORT_SUCCESS:
             return {
                 ...state,
-                importing:       true,
+                importing:       !_.isEmpty(payload.invalidProducts),
                 productsExcel:   payload,
                 validationError: !_.isEmpty(payload.invalidProducts),
             };

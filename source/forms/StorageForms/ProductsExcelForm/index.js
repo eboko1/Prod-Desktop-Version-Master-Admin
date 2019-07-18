@@ -33,8 +33,13 @@ const SubmitButton = styled(Button)`
     margin: 0 auto;
 `;
 
-const Controls = styled.div`
+const Flex = styled.div`
     display: flex;
+`;
+
+const ValidationMessage = styled.div`
+    display: flex;
+    margin-right: 16px;
 `;
 
 const DuplicateSquare = styled.div`
@@ -94,21 +99,21 @@ const ProductsExcelFormComponent = memo(props => {
         return (
             <ButtonGroup>
                 { !_.isEmpty(props.invalidProductsExcel) ? (
-                    <Controls>
-                        <div>
+                    <Flex>
+                        <ValidationMessage>
                             { props.tooManyInvalids ? (
                                 <FormattedMessage id='storage.validation_too_many_errors' />
                             ) : (
                                 <FormattedMessage id='storage.validation_with_errors' />
                             ) }{ ' ' }
-                            <Controls>
+                            <Flex>
                                 <DuplicateSquare /> -{ ' ' }
                                 <FormattedMessage id='storage.validation_duplicate' />
-                            </Controls>
-                        </div>
+                            </Flex>
+                        </ValidationMessage>
                         { props.invalidProductsExcel.filter(
                             product => !product.alreadyExists,
-                        ) && (
+                        ).lenght && (
                             <SubmitButton
                                 type='primary'
                                 onClick={ () => _submit() }
@@ -116,7 +121,7 @@ const ProductsExcelFormComponent = memo(props => {
                                 { props.intl.formatMessage({ id: 'submit' }) }
                             </SubmitButton>
                         ) }
-                    </Controls>
+                    </Flex>
                 ) : null }
                 <Button
                     icon='rollback'
@@ -133,22 +138,12 @@ const ProductsExcelFormComponent = memo(props => {
     return (
         <Catcher>
             <Form>
-                { !props.validationError ? (
-                    <>
-                        { _renderButtonGroup() }
-                        <ProductsExcelTable
-                            form={ props.form }
-                            invalidProductsExcel={ props.invalidProductsExcel }
-                        />
-                    </>
-                ) : (
-                    <Button
-                        icon='rollback'
-                        onClick={ () => props.productsExcelImportReset() }
-                    >
-                        { props.intl.formatMessage({ id: 'back' }) }
-                    </Button>
-                ) }
+                { _renderButtonGroup() }
+                <ProductsExcelTable
+                    form={ props.form }
+                    validationError={ props.validationError }
+                    invalidProductsExcel={ props.invalidProductsExcel }
+                />
             </Form>
         </Catcher>
     );
