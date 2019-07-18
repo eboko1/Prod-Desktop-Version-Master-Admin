@@ -66,7 +66,11 @@
     "storage.income_sum": "Income sum",
     "storage.expense_price": "Average expense price",
     "storage.expense_sum": "Expense sum",
-    "storage.search_for_product_group": "Search for product group"
+    "storage.search_for_product_group": "Search for product group",
+    "storage.validation_success": "Validation has passed!",
+    "storage.validation_failed": "Validation has failed!",
+    "storage.validation_with_errors": "Validation has passed with errors!",
+    "storage.validation_too_many_errors": "Too many errors!"
   },
   "ru": {
     "storage": "Склад",
@@ -136,7 +140,11 @@
     "storage.income_sum": "Сумма закупки",
     "storage.expense_price": "Средняя продажная цена",
     "storage.expense_sum": "Сумма продажи",
-    "storage.search_for_product_group": "Искать группу товаров"
+    "storage.search_for_product_group": "Искать группу товаров",
+    "storage.validation_success": "Валидация прошла успешно!",
+    "storage.validation_failed": "Валидация не пройдена!",
+    "storage.validation_with_errors": "Валидация прошла с ошибками!",
+    "storage.validation_too_many_errors": "Слишком много ошибок!"
   },
   "uk": {
     "storage": "Склад",
@@ -206,6 +214,9 @@
     "storage.income_sum": "Сума закупки",
     "storage.expense_price": "Середня продажня ціна",
     "storage.expense_sum": "Сума продажу",
-    "storage.search_for_product_group": "Шукати групу товарів"
+    "storage.search_for_product_group": "Шукати групу товарів",
+    "storage.validation_success": "Валідація пройшла успішно!",
+    "storage.validation_with_errors": "Валідація пройшла з помилками!",
+    "storage.validation_too_many_errors": "Забагато помилок!"
   }
 }

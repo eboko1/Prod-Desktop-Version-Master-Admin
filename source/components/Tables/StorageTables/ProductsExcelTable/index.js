@@ -1,10 +1,9 @@
 // vendor
 import React, { useMemo, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { injectIntl } from 'react-intl';
+import { injectIntl, FormattedMessage } from 'react-intl';
 import { Table } from 'antd';
 import styled from 'styled-components';
-import _ from 'lodash';
 
 // proj
 import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
@@ -15,8 +14,6 @@ import {
     selectImportTooManyInvalids,
     selectStoreProductsExcelLoading,
 } from 'core/storage/products';
-
-import { Loader } from 'commons';
 
 // own
 import { columnsConfig } from './config';
@@ -50,35 +47,6 @@ const StyledTable = styled(Table)`
         margin: 0;
     }
 
-    /* &
-        .ant-table-small
-        > .ant-table-content
-        > .ant-table-scroll
-        > .ant-table-body
-        > table
-        > .ant-table-tbody
-        > tr {
-        vertical-align: middle !important;
-    } */
-
-    /* .ant-select-auto-complete.ant-select {
-        top: -1px;
-    } */
-
-    /* & tr {
-        vertical-align: top;
-    }
-    &
-        .ant-table-small
-        > .ant-table-content
-        > .ant-table-scroll
-        > .ant-table-body
-        > table
-        > .ant-table-tbody
-        > tr {
-        vertical-align: top;
-    } */
-
     & .ant-select-selection,
     .ant-input,
     .ant-input-number,
@@ -86,9 +54,6 @@ const StyledTable = styled(Table)`
         border-radius: 0;
     }
 `;
-
-// memo(
-//     forwardRef((props, ref) =>
 
 const ProductsExcelTableComponent = props => {
     const {
@@ -101,17 +66,8 @@ const ProductsExcelTableComponent = props => {
         intl: { formatMessage },
     } = props;
 
-    // useEffect(() => {
-    //     return () => {
-    //         props.fetchPriceGroups();
-    //         props.fetchStoreGroups();
-    //     };
-    // }, []);
     useEffect(() => {
         props.fetchPriceGroups();
-    }, []);
-
-    useEffect(() => {
         props.fetchStoreGroups();
     }, []);
 
@@ -130,12 +86,14 @@ const ProductsExcelTableComponent = props => {
             invalidProductsExcel,
             storeGroups,
             priceGroups,
-            brands,
+            brands, 
         ],
     );
 
     return props.tooManyInvalids ? (
-        <div>validate passed. press ok</div>
+        <div>
+            <FormattedMessage id='storage.validation_success' />
+        </div>
     ) : (
         <StyledTable
             // bordered
