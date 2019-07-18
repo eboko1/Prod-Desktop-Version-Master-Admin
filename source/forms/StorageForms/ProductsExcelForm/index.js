@@ -113,7 +113,7 @@ const ProductsExcelFormComponent = memo(props => {
                         </ValidationMessage>
                         { props.invalidProductsExcel.filter(
                             product => !product.alreadyExists,
-                        ).lenght && (
+                        ).length && (
                             <SubmitButton
                                 type='primary'
                                 onClick={ () => _submit() }
@@ -121,6 +121,7 @@ const ProductsExcelFormComponent = memo(props => {
                                 { props.intl.formatMessage({ id: 'submit' }) }
                             </SubmitButton>
                         ) }
+                        { props.validationError && <div>bad news</div> }
                     </Flex>
                 ) : null }
                 <Button

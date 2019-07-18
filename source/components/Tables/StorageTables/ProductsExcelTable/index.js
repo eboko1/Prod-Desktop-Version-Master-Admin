@@ -67,9 +67,7 @@ const ProductsExcelTableComponent = props => {
         props.fetchStoreGroups();
     }, []);
 
-    const columns = useMemo(
-        () =>
-            columnsConfig(
+    const columns = columnsConfig(
                 invalidProductsExcel,
                 form,
                 formatMessage,
@@ -78,13 +76,6 @@ const ProductsExcelTableComponent = props => {
                 brands,
                 setBrandsSearchQuery,
             ),
-        [
-            invalidProductsExcel,
-            storeGroups,
-            priceGroups,
-            brands,
-        ],
-    );
     console.log('→ TABLE props', props);
 
     return (
