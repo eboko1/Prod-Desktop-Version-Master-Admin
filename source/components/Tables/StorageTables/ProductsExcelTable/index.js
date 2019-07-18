@@ -9,10 +9,7 @@ import styled from 'styled-components';
 import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
 import { fetchStoreGroups, selectStoreGroups } from 'core/storage/storeGroups';
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
-import {
-    selectImportInvalidProducts,
-    selectStoreProductsExcelLoading,
-} from 'core/storage/products';
+import { selectStoreProductsExcelLoading } from 'core/storage/products';
 
 // own
 import { columnsConfig } from './config';
@@ -112,11 +109,10 @@ const ProductsExcelTableComponent = props => {
 };
 
 const mapStateToProps = state => ({
-    invalidProductsExcel: selectImportInvalidProducts(state),
-    brands:               selectBrandsByQuery(state),
-    priceGroups:          selectPriceGroups(state),
-    storeGroups:          selectStoreGroups(state),
-    loading:              selectStoreProductsExcelLoading(state),
+    brands:      selectBrandsByQuery(state),
+    priceGroups: selectPriceGroups(state),
+    storeGroups: selectStoreGroups(state),
+    loading:     selectStoreProductsExcelLoading(state),
 });
 
 const mapDispatchToProps = {

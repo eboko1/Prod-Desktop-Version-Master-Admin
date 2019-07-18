@@ -5,7 +5,7 @@ import _ from 'lodash';
 
 // proj
 import {
-    DecoratedInputNumber,
+    // DecoratedInputNumber,
     DecoratedInput,
     DecoratedTreeSelect,
     DecoratedAutoComplete,
@@ -280,32 +280,32 @@ export function columnsConfig(
         },
     };
 
-    const price = {
-        title: formatMessage({
-            id: 'storage.price',
-        }),
-        dataIndex: 'price',
-        width:     'auto',
-        render:    (price, data, index) => (
-            <DecoratedInputNumber
-                cnStyles={ data.alreadyExists && Styles.duplicate }
-                disabled={ !_.isNil(data.alreadyExists) }
-                fields={ {} }
-                formItem
-                getFieldDecorator={ getFieldDecorator }
-                field={ `${index}.price` }
-                initialValue={ price }
-                rules={ [
-                    {
-                        required: true,
-                        message:  formatMessage({
-                            id: 'required_field',
-                        }),
-                    },
-                ] }
-            />
-        ),
-    };
+    // const price = {
+    //     title: formatMessage({
+    //         id: 'storage.price',
+    //     }),
+    //     dataIndex: 'price',
+    //     width:     'auto',
+    //     render:    (price, data, index) => (
+    //         <DecoratedInputNumber
+    //             cnStyles={ data.alreadyExists && Styles.duplicate }
+    //             disabled={ !_.isNil(data.alreadyExists) }
+    //             fields={ {} }
+    //             formItem
+    //             getFieldDecorator={ getFieldDecorator }
+    //             field={ `${index}.price` }
+    //             initialValue={ price }
+    //             rules={ [
+    //                 {
+    //                     required: true,
+    //                     message:  formatMessage({
+    //                         id: 'required_field',
+    //                     }),
+    //                 },
+    //             ] }
+    //         />
+    //     ),
+    // };
 
     return [
         code,
@@ -316,6 +316,6 @@ export function columnsConfig(
         tradeCode,
         certificate,
         priceGroupNumber,
-        price,
+        // price,
     ];
 }
