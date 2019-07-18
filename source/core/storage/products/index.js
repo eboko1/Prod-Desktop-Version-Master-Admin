@@ -532,17 +532,19 @@ export function* productsExcelImportSaga() {
             const valid = yield select(selectImportValidProducts);
 
             const normalizedFile = normalizeFile(file);
-
-            const validationResult = yield call(
-                fetchAPI,
-                'POST',
-                '/store_products/import/validate',
-                null,
-                normalizedFile,
-                {
-                    handleErrorInternally: true,
-                },
-            );
+            let validationResult = {};
+            if (!_.isEmpty(normalizedFile)) {
+                validationResult = yield call(
+                    fetchAPI,
+                    'POST',
+                    '/store_products/import/validate',
+                    null,
+                    normalizedFile,
+                    {
+                        handleErrorInternally: true,
+                    },
+                );
+            }
             console.log('**SAGA validationResult', validationResult);
 
             const response = yield call(
@@ -561,7 +563,7 @@ export function* productsExcelImportSaga() {
             yield put(productsExcelImportSuccess(validationResult));
             yield put(setProductsExcelImportLoading(false));
 
-            if(!_.isEmpty(validationResult.invalidProducts)) {
+            if (_.isEmpty(validationResult.invalidProducts)) {
                 yield put(productsExcelImportReset());
             }
         } catch (error) {

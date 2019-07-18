@@ -25,7 +25,7 @@ const Option = Select.Option;
 export default (props, state, table) => {
     const { formatMessage } = props.intl;
     const { getFieldDecorator, getFieldValue } = props.form;
-
+    const { fields } = props.form;
     const requiredRule = [
         {
             required: true,
@@ -98,10 +98,10 @@ export default (props, state, table) => {
             key:    'name',
             render: ({ key }) => (
                 <DecoratedInput
+                    fields={ {} }
                     // errors={ errors }
-                    defaultGetValueProps
-                    // fieldValue={ _.get(fields, `details[${key}].detailCode`) }
-
+                    // defaultGetValueProps
+                    fieldValue={ _.get(fields, `details[${key}].name`) }
                     field={ `docProducts[${key}].name` }
                     disabled
                     getFieldDecorator={ props.form.getFieldDecorator }
@@ -164,9 +164,9 @@ export default (props, state, table) => {
             render: ({ key }) => (
                 <DecoratedInput
                     // errors={ errors }
-                    defaultGetValueProps
+                    // defaultGetValueProps
                     // fieldValue={ _.get(fields, `details[${key}].detailCode`) }
-
+                    fields={ {} }
                     field={ `docProducts[${key}].tradeCode` }
                     disabled
                     getFieldDecorator={ props.form.getFieldDecorator }

@@ -22,6 +22,7 @@ const DocumentProductsTable = props => {
     const incomeDocId = _.get(props, 'incomeDoc.id');
     const incomeDocSum = _.get(props, 'incomeDoc.sum', 0);
     const [ docProducts, setDocProducts ] = useState();
+    const [ forceRerender, setForceRerender ] = useState(false);
     const [ keys, setKeys ] = useState(() => {
         const products = docProducts ? docProducts.length + 1 : 1;
 
@@ -57,6 +58,11 @@ const DocumentProductsTable = props => {
             [ `docProducts[${key}].name` ]:      selectedProduct.name,
             [ `docProducts[${key}].tradeCode` ]: selectedProduct.tradeCode,
         });
+        setForceRerender(prev => {
+            console.log('→ FORCE');
+            return !prev
+        });
+        console.log('→ props.form', props.form.getFieldsValue());
         if (_.last(keys) === key && !_.get(docProducts, [ key, 'productId' ])) {
             _handleAdd();
         }
