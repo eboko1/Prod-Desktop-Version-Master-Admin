@@ -2,10 +2,9 @@
 import { call, put, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import { createSelector } from 'reselect';
-// import _ from 'lodash';
+import _ from 'lodash';
 
 //proj
-import { emitError } from 'core/ui/duck';
 import { setErrorMessage } from 'core/errorMessage/duck';
 import { fetchAPI } from 'utils';
 
@@ -60,10 +59,11 @@ const ReducerState = {
     },
     availableProducts: {},
     productsExcel:     {
-        validProducts:   [],
+        validProducts:          [],
         tooManyInvalidProducts: false,
-        invalidProducts: [],
+        invalidProducts:        [],
     },
+    validationError:         false,
     importing:               false,
     productsExcelLoading:    false,
     productsLoading:         false,
@@ -81,6 +81,14 @@ export default function reducer(state = ReducerState, action) {
     switch (type) {
         case PRODUCTS_EXCEL_IMPORT_VALIDATE_SUCCESS:
             return { ...state, importing: true, productsExcel: payload };
+
+        case PRODUCTS_EXCEL_IMPORT_SUCCESS:
+            return {
+                ...state,
+                importing:       true,
+                productsExcel:   payload,
+                validationError: !_.isEmpty(payload.invalidProducts),
+            };
 
         case PRODUCTS_EXCEL_IMPORT_RESET:
             return {
@@ -155,6 +163,8 @@ export const selectProductsImporting = state => stateSelector(state).importing;
 
 export const selectImportValidProducts = state =>
     stateSelector(state).productsExcel.validProducts;
+export const selectImportValidationError = state =>
+    stateSelector(state).validationError;
 export const selectImportInvalidProducts = state =>
     stateSelector(state).productsExcel.invalidProducts;
 export const selectImportTooManyInvalids = state =>
@@ -463,9 +473,16 @@ export function* deleteProductSaga() {
     while (true) {
         try {
             const { payload } = yield take(DELETE_PRODUCT);
-            yield call(fetchAPI, 'DELETE', `/store_products/${payload}`, null, null,   {
-                handleErrorInternally: true,
-            });
+            yield call(
+                fetchAPI,
+                'DELETE',
+                `/store_products/${payload}`,
+                null,
+                null,
+                {
+                    handleErrorInternally: true,
+                },
+            );
             yield put(deleteProductSuccess());
         } catch (error) {
             yield put(setErrorMessage(error));
@@ -514,20 +531,34 @@ export function* productsExcelImportSaga() {
             yield put(setProductsExcelImportLoading(true));
             const valid = yield select(selectImportValidProducts);
 
-            // const normalizedFile = normalizeFile(file);
-            
+            const normalizedFile = normalizeFile(file);
+
+            const validationResult = yield call(
+                fetchAPI,
+                'POST',
+                '/store_products/import/validate',
+                null,
+                normalizedFile,
+                {
+                    handleErrorInternally: true,
+                },
+            );
+            console.log('**SAGA validationResult', validationResult);
+
             const response = yield call(
                 fetchAPI,
                 'POST',
                 '/store_products/import',
                 null,
-                valid.concat(file),
+                valid.concat(validationResult.validProducts),
                 {
                     handleErrorInternally: true,
                 },
             );
 
-            yield put(productsExcelImportSuccess(response));
+            console.log('→ ** SAGA response', response);
+
+            yield put(productsExcelImportSuccess(validationResult));
             yield put(setProductsExcelImportLoading(false));
             yield put(productsExcelImportReset());
         } catch (error) {

@@ -10,6 +10,7 @@ import styled from 'styled-components';
 import { Catcher } from 'commons';
 
 import {
+    selectImportValidationError,
     selectImportTooManyInvalids,
     selectImportInvalidProducts,
 } from 'core/storage/products';
@@ -24,7 +25,7 @@ import { ProductsExcelTable } from 'components';
 const ButtonGroup = styled.div`
     display: flex;
     margin: 8px 0;
-    justify-content: flex-end;
+    justify-content: space-between;
 `;
 
 const SubmitButton = styled(Button)`
@@ -32,7 +33,11 @@ const SubmitButton = styled(Button)`
     margin: 0 auto;
 `;
 
-const DuplicateSquare = styled.span`
+const Controls = styled.div`
+    display: flex;
+`;
+
+const DuplicateSquare = styled.div`
     width: 24px;
     height: 24px;
     background-color: rgba(255, 45, 45, 0.28);
@@ -89,7 +94,7 @@ const ProductsExcelFormComponent = memo(props => {
         return (
             <ButtonGroup>
                 { !_.isEmpty(props.invalidProductsExcel) ? (
-                    <div>
+                    <Controls>
                         <div>
                             { props.tooManyInvalids ? (
                                 <FormattedMessage id='storage.validation_too_many_errors' />
@@ -97,10 +102,10 @@ const ProductsExcelFormComponent = memo(props => {
                                 <FormattedMessage id='storage.validation_with_errors' />
                             ) }
                         </div>
-                        <div>
+                        <Controls>
                             <DuplicateSquare /> -{ ' ' }
                             <FormattedMessage id='storage.validation_duplicate' />
-                        </div>
+                        </Controls>
                         { props.invalidProductsExcel.filter(
                             product => !product.alreadyExists,
                         ) && (
@@ -111,7 +116,7 @@ const ProductsExcelFormComponent = memo(props => {
                                 { props.intl.formatMessage({ id: 'submit' }) }
                             </SubmitButton>
                         ) }
-                    </div>
+                    </Controls>
                 ) : null }
                 <Button
                     icon='rollback'
@@ -128,11 +133,22 @@ const ProductsExcelFormComponent = memo(props => {
     return (
         <Catcher>
             <Form>
-                { _renderButtonGroup() }
-                <ProductsExcelTable
-                    form={ props.form }
-                    invalidProductsExcel={ props.invalidProductsExcel }
-                />
+                { !props.validationError ? (
+                    <>
+                        { _renderButtonGroup() }
+                        <ProductsExcelTable
+                            form={ props.form }
+                            invalidProductsExcel={ props.invalidProductsExcel }
+                        />
+                    </>
+                ) : (
+                    <Button
+                        icon='rollback'
+                        onClick={ () => props.productsExcelImportReset() }
+                    >
+                        { props.intl.formatMessage({ id: 'back' }) }
+                    </Button>
+                ) }
             </Form>
         </Catcher>
     );
@@ -141,6 +157,7 @@ const ProductsExcelFormComponent = memo(props => {
 const mapStateToProps = state => ({
     tooManyInvalids:      selectImportTooManyInvalids(state),
     invalidProductsExcel: selectImportInvalidProducts(state),
+    validationError:      selectImportValidationError(state),
 });
 
 export const ProductsExcelForm = injectIntl(
