@@ -40,9 +40,11 @@ const Flex = styled.div`
 const ValidationMessage = styled.div`
     display: flex;
     margin-right: 16px;
+    white-space: nowrap;
 `;
 
 const DuplicateSquare = styled.div`
+    margin-left: 16px;
     width: 24px;
     height: 24px;
     background-color: rgba(255, 45, 45, 0.28);
@@ -96,6 +98,12 @@ const ProductsExcelFormComponent = memo(props => {
     };
 
     const _renderButtonGroup = () => {
+        const availableToSubmit = !_.isEmpty(
+            props.invalidProductsExcel.filter(
+                product => !product.alreadyExists,
+            ),
+        );
+
         return (
             <ButtonGroup>
                 { !_.isEmpty(props.invalidProductsExcel) ? (
@@ -111,17 +119,15 @@ const ProductsExcelFormComponent = memo(props => {
                                 <FormattedMessage id='storage.validation_duplicate' />
                             </Flex>
                         </ValidationMessage>
-                        { props.invalidProductsExcel.filter(
-                            product => !product.alreadyExists,
-                        ).length && (
+                        { availableToSubmit ? (
                             <SubmitButton
                                 type='primary'
                                 onClick={ () => _submit() }
                             >
                                 { props.intl.formatMessage({ id: 'submit' }) }
                             </SubmitButton>
-                        ) }
-                        { props.validationError && <div>bad news</div> }
+                        ) : null }
+                        { props.validationError && <div>Validation Failed!</div> }
                     </Flex>
                 ) : null }
                 <Button

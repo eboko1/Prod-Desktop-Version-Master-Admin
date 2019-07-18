@@ -22,6 +22,7 @@ const _errorMessages = Object.freeze({
     INVALID_CREDENTIALS:                      'INVALID_CREDENTIALS',
     UNIQUE_CONSTRAINT_VIOLATION_PRODUCT_CODE:
         'UNIQUE_CONSTRAINT_VIOLATION_PRODUCT_CODE',
+    STORE_DOC_PRODUCTS_ARE_USED: 'STORE_DOC_PRODUCTS_ARE_USED',
 });
 
 const ErrorStatusCode = styled.span`
