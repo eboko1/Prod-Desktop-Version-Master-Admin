@@ -1,10 +1,12 @@
 // vendor
 import React, { Component } from "react";
-import { Table, InputNumber, Icon, Popconfirm, Select } from "antd";
+import { Table, InputNumber, Icon, Popconfirm, Select, Button } from "antd";
 import { FormattedMessage, injectIntl } from "react-intl";
 import _ from "lodash";
 
 // proj
+import { MODALS } from 'core/modals/duck'
+
 import { Catcher } from "commons";
 import { TecDocActionsContainer } from "containers";
 import {
@@ -949,11 +951,13 @@ export default class DetailsTable extends Component {
         if (details[key].storage) {
             this.props.fetchRecommendedPrice(key, value);
             this.props.form.setFieldsValue({
-                [`details[${key}].productBrandId`]: _.get(product, "brand.id", null),
-                [`details[${key}].productBrandName`]: _.get(
+                [`details[${key}].productBrandId`]: _.get(
                     product,
-                    "brand.name",
-                ) || _.get(product, 'brandName'),
+                    "brand.id",
+                    null,
+                ),
+                [`details[${key}].productBrandName`]:
+                    _.get(product, "brand.name") || _.get(product, "brandName"),
                 [`details[${key}].productCode`]: _.get(product, "code"),
             });
         }
@@ -982,7 +986,7 @@ export default class DetailsTable extends Component {
     render() {
         const { keys } = this.state;
         const columns = this.columns();
-
+        
         return (
             <Catcher>
                 <Table
@@ -995,6 +999,12 @@ export default class DetailsTable extends Component {
                     columns={columns}
                     pagination={false}
                 />
+                <Button
+                    icon="plus"
+                    onClick={() => this.props.setModal(MODALS.STORE_PRODUCT)}
+                >
+                    <FormattedMessage id="storage.add_new_storage_product" />
+                </Button>
             </Catcher>
         );
     }

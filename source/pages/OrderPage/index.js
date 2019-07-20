@@ -1,7 +1,7 @@
 // vendor
 import React, {Component} from 'react';
-import {FormattedMessage, injectIntl} from 'react-intl';
-import {Link, withRouter} from 'react-router-dom';
+import {FormattedMessage } from 'react-intl';
+import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {Button, Icon} from 'antd';
 import moment from 'moment';
@@ -37,6 +37,7 @@ import {
     CancelReasonModal,
     ConfirmOrderExitModal,
     OrderTaskModal,
+    StoreProductModal,
 } from 'modals';
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
@@ -619,6 +620,7 @@ class OrderPage extends Component {
                     saveNewOrderTask={ this._saveNewOrderTask }
                     orderTasks={ this.props.orderTasks }
                 />
+                <StoreProductModal />
             </Layout>
         );
     }

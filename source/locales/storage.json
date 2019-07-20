@@ -71,7 +71,8 @@
     "storage.validation_failed": "Validation has failed!",
     "storage.validation_with_errors": "Validation has passed with errors!",
     "storage.validation_too_many_errors": "Too many errors!",
-    "storage.validation_duplicate": "duplicate"
+    "storage.validation_duplicate": "duplicate",
+    "storage.add_new_storage_product": "Add new storage product"
   },
   "ru": {
     "storage": "Склад",
@@ -146,7 +147,8 @@
     "storage.validation_failed": "Валидация не пройдена!",
     "storage.validation_with_errors": "Валидация прошла с ошибками!",
     "storage.validation_too_many_errors": "Слишком много ошибок!",
-    "storage.validation_duplicate": "Дубликат"
+    "storage.validation_duplicate": "Дубликат",
+    "storage.add_new_storage_product": "Добавить новый товар на склад"
   },
   "uk": {
     "storage": "Склад",
@@ -220,6 +222,7 @@
     "storage.validation_success": "Валідація пройшла успішно!",
     "storage.validation_with_errors": "Валідація пройшла з помилками!",
     "storage.validation_too_many_errors": "Забагато помилок!",
-    "storage.validation_duplicate": "Дублікат"
+    "storage.validation_duplicate": "Дублікат",
+    "storage.add_new_storage_product": "Додати новий товар на склад"
   }
 }

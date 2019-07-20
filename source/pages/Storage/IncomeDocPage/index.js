@@ -11,7 +11,7 @@ import { fetchIncomeDoc, selectIncomeDoc } from 'core/storage/incomes';
 
 import { Layout, Close, Loader } from 'commons';
 import { IncomeDocForm } from 'forms';
-import { goTo } from 'utils';
+import { goTo, withErrorMessage } from 'utils';
 import book from 'routes/book';
 
 const ModuleHeaderContent = styled.div`
@@ -19,7 +19,7 @@ const ModuleHeaderContent = styled.div`
     align-items: center;
 `;
 
-const IncomeDoc = props => {
+const IncomeDoc = withErrorMessage()(props => {
     const id = props.match.params.id;
     const status = props.incomeDoc.status;
     // const status = _.get(props, 'location.state.status');
@@ -66,7 +66,7 @@ const IncomeDoc = props => {
             ) }
         </Layout>
     );
-};
+});
 
 const mapStateToProps = state => ({
     incomeDoc: selectIncomeDoc(state),

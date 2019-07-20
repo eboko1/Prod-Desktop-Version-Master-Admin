@@ -26,7 +26,7 @@ import {
     DecoratedSelect,
 } from 'forms/DecoratedFields';
 import { BusinessSuppliersSearch } from 'forms/_formkit';
-import { SupplierModal } from 'modals';
+import { SupplierModal, StoreProductModal } from 'modals';
 import { StoreDocumentProductsTable } from 'components';
 
 // own
@@ -130,7 +130,11 @@ const IncomeForm = props => {
             <Form>
                 <FormHeader>
                     <div>
-                        { !incomeDocId && (
+                        { incomeDocId ? (
+                            <SubmitButton icon='save'>
+                                { formatMessage({ id: 'save' }) }
+                            </SubmitButton>
+                        ) : (
                             <SubmitButton type='primary' onClick={ _submit }>
                                 { formatMessage({ id: 'create' }) }
                             </SubmitButton>
@@ -236,7 +240,9 @@ const IncomeForm = props => {
                                     <BusinessSuppliersSearch
                                         selectStyles={ { width: '100%' } }
                                         onSelect={ id =>
-                                            form.setFieldsValue({ businessSupplierId: id })
+                                            form.setFieldsValue({
+                                                businessSupplierId: id,
+                                            })
                                         }
                                         id={ incomeDoc.businessSupplierId }
                                     />,
@@ -287,8 +293,12 @@ const IncomeForm = props => {
                     brands={ props.brands }
                     setBrandsSearchQuery={ props.setBrandsSearchQuery }
                 />
+                <Button icon='plus' onClick={ () => props.setModal(MODALS.STORE_PRODUCT) }>
+                    { formatMessage({ id: 'storage.add_new_storage_product' }) }
+                </Button>
             </Form>
             <SupplierModal />
+            <StoreProductModal />
         </Catcher>
     );
 };

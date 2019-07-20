@@ -17,12 +17,11 @@ import { Catcher } from 'commons';
 // own
 import columns from './columns';
 
-const DocumentProductsTable = props => {
+const DocumentProductsTable = memo(props => {
     const incomeDocProducts = _.get(props, 'incomeDoc.docProducts');
     const incomeDocId = _.get(props, 'incomeDoc.id');
     const incomeDocSum = _.get(props, 'incomeDoc.sum', 0);
     const [ docProducts, setDocProducts ] = useState();
-    const [ forceRerender, setForceRerender ] = useState(false);
     const [ keys, setKeys ] = useState(() => {
         const products = docProducts ? docProducts.length + 1 : 1;
 
@@ -49,20 +48,14 @@ const DocumentProductsTable = props => {
     };
 
     const _handleProductSelect = (key, value) => {
-        console.log('→ key, value', key, value);
         const selectedProduct = props.storeProducts.find(
             ({ id }) => id === value,
         );
-        console.log('→ selectedProduct', selectedProduct);
         props.form.setFieldsValue({
             [ `docProducts[${key}].name` ]:      selectedProduct.name,
             [ `docProducts[${key}].tradeCode` ]: selectedProduct.tradeCode,
         });
-        setForceRerender(prev => {
-            console.log('→ FORCE');
-            return !prev
-        });
-        console.log('→ props.form', props.form.getFieldsValue());
+
         if (_.last(keys) === key && !_.get(docProducts, [ key, 'productId' ])) {
             _handleAdd();
         }
@@ -119,7 +112,7 @@ const DocumentProductsTable = props => {
             <Table
                 // className={Styles.detailsTable}
                 loading={ props.brandsFetching }
-                dataSource={ keys.map(key => ({ key })) }
+                dataSource={ keys.map((key, index) => ({ key, index })) }
                 columns={ columns(
                     props,
                     { keys },
@@ -137,7 +130,7 @@ const DocumentProductsTable = props => {
             />
         </Catcher>
     );
-};
+});
 
 const mapStateToProps = state => ({
     storeProducts: selectStoreProductsByQuery(state),

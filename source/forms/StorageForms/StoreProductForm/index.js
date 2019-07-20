@@ -126,7 +126,7 @@ const ProductForm = props => {
                 rules={ [
                     {
                         required: true,
-                        message:  'required',
+                        message:  formatMessage({ id: 'required_field' }),
                     },
                 ] }
                 initialValue={ _.get(props, 'product.code') }
@@ -142,7 +142,7 @@ const ProductForm = props => {
                 rules={ [
                     {
                         required: true,
-                        message:  'required!',
+                        message:  formatMessage({ id: 'required_field' }),
                     },
                 ] }
                 treeDataNodes={ props.storeGroups }
@@ -158,7 +158,7 @@ const ProductForm = props => {
                 rules={ [
                     {
                         required: true,
-                        message:  'required',
+                        message:  formatMessage({ id: 'required_field' }),
                     },
                 ] }
                 initialValue={ _.get(props, 'product.name') }
@@ -173,6 +173,12 @@ const ProductForm = props => {
                     getFieldDecorator={ form.getFieldDecorator }
                     getPopupContainer={ trigger => trigger.parentNode }
                     field='brandId'
+                    rules={ [
+                        {
+                            required: true,
+                            message:  formatMessage({ id: 'required_field' }),
+                        },
+                    ] }
                     initialValue={
                         _.isEmpty(props.product.brand)
                             ? _.get(props, 'product.brandName')

@@ -58,7 +58,7 @@ export const StorageFilters = props => {
                     </FilterRow>
                 ) : null }
                 <FilterRow>
-                    <SearchField setFilters={ props.setFilters } />
+                    <SearchField width='30%' setFilters={ props.setFilters } />
                     <StatusRadioButtons
                         type={ props.type }
                         status={ filters.status }

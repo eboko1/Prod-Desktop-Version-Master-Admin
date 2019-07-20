@@ -35,6 +35,31 @@ export default (props, state, table) => {
         },
     ];
 
+    console.log('→ getFieldsValue', props.form.getFieldsValue());
+
+    const isRulesActive = index => {
+        // console.log('→ if', getFieldValue('docProducts'));
+        // return false;
+        console.log('→ index', index);
+        if (Array.isArray(getFieldValue('docProducts'))) {
+            console.log('→ if', getFieldValue('docProducts'));
+            const filteredDocProducts = getFieldValue('docProducts').filter(
+                elem => elem,
+            );
+            console.log(
+                '→ 22filteredDocProducts.length',
+                filteredDocProducts.length,
+            );
+            console.log('→ 222index', index);
+            if (filteredDocProducts.length !== index + 1) {
+                return requiredRule;
+            }
+            // return false;
+        }
+
+        // return [{}];
+    };
+
     const _isFieldDisabled = key =>
         !props.form.getFieldValue(`docProducts[${key}].productId`);
 
@@ -43,21 +68,25 @@ export default (props, state, table) => {
             title:  formatMessage({ id: 'storage.product_code' }),
             width:  '20%',
             key:    'code',
-            render: ({ key }) => {
+            render: ({ key, index }) => {
+                console.log('→ key', key);
+                console.log('→ index', index);
+                console.log('→ aa', getFieldValue('docProducts'));
+                //console.log('→ aa', getFieldValue('docProducts') && getFieldValue('docProducts').length);
                 const handleBlur = (key, value) => {
                     if (value) {
                         table.handleProductSelect(key, value);
                     }
                 };
+                console.log('→ aaa props', props);
 
                 return (
                     <DecoratedSelect
                         formItem
-                        // formItemLayout={ formItemLayout }
-                        fieldValue={ _.get(
-                            props,
-                            `form.fields.docProducts[${key}].productId`,
-                        ) }
+                        // fieldValue={ _.get(
+                        //     props,
+                        //     `form.fields.docProducts[${key}].productId`,
+                        // ) }
                         fields={ {} }
                         getFieldDecorator={ getFieldDecorator }
                         getPopupContainer={ trigger => trigger.parentNode }
@@ -71,17 +100,19 @@ export default (props, state, table) => {
                         onSearch={ value => {
                             props.setStoreProductsSearchQuery(value);
                         } }
-                        onSelect={ value => {
-                            console.log(
-                                'select',
-                                table.handleProductSelect(key, value),
-                            );
-
-                            return table.handleProductSelect(key, value);
-                        } }
+                        onSelect={ value =>
+                            table.handleProductSelect(key, value)
+                        }
                         showSearch
                         dropdownMatchSelectWidth={ false }
-                        // rules={ requiredRule }
+                        rules={ isRulesActive(index) }
+                        // rules={
+                        //     getFieldValue('docProducts') &&
+                        //     getFieldValue('docProducts').length !== key
+                        //         ? requiredRule
+                        //         : []
+                        // }
+                        // rules={ docProducts[key] === docProducts.length ? requiredRule : []}
                     >
                         { props.storeProducts.map(({ id, code }) => (
                             <Option value={ id } key={ id }>
@@ -163,9 +194,6 @@ export default (props, state, table) => {
             key:    'tradeCode',
             render: ({ key }) => (
                 <DecoratedInput
-                    // errors={ errors }
-                    // defaultGetValueProps
-                    // fieldValue={ _.get(fields, `details[${key}].detailCode`) }
                     fields={ {} }
                     field={ `docProducts[${key}].tradeCode` }
                     disabled
@@ -181,25 +209,18 @@ export default (props, state, table) => {
             title:  formatMessage({ id: 'order_form_table.purchasePrice' }),
             width:  '15%',
             key:    'purchasePrice',
-            render: ({ key }) => {
-                // const quantity = props.form.getFieldValue(
-                //     `docProducts[${key}].quantity`,
-                // );
-
-                // const handleChange = value => {
-                //     props.form.setFieldsValue([
-                //         {
-                //             [ `docProducts[${key}].purchaseSum` ]:
-                //                 value * quantity,
-                //         },
-                //     ]);
-                // };
-
+            render: ({ key, index }) => {
                 return (
                     <DecoratedInputNumber
-                        // errors={ errors }
-                        defaultGetValueProps
-                        // fieldValue={ _.get(fields, `${key}.purchasePrice`) }
+                        fields={ {} }
+                        // rules={ isRulesActive(key) }
+                        // rules={
+                        //     getFieldValue('docProducts') &&
+                        //     getFieldValue('docProducts').length !== key
+                        //         ? requiredRule
+                        //         : []
+                        // }
+                        rules={ isRulesActive(index) }
                         initialValue={ _.get(
                             props,
                             `incomeDoc.docProducts[${key}].purchasePrice`,
@@ -225,13 +246,17 @@ export default (props, state, table) => {
             title:  formatMessage({ id: 'storage.quantity' }),
             width:  '7.5%',
             key:    'quantity',
-            render: ({ key }) => (
+            render: ({ key, index }) => (
                 <DecoratedInputNumber
-                    // className={ Styles.detailsRequiredFormItem }
-                    // rules={ !_isFieldDisabled(key) ? this.requiredRule : void 0 }
-                    // errors={ errors }
                     formItem
-                    // fieldValue={ _.get(fields, `${key}.quantity`) }
+                    fields={ {} }
+                    rules={ isRulesActive(index) }
+                    // rules={
+                    //     getFieldValue('docProducts') &&
+                    //     getFieldValue('docProducts').length !== key
+                    //         ? requiredRule
+                    //         : []
+                    // }
                     field={ `docProducts[${key}].quantity` }
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ _isFieldDisabled(key) }
@@ -262,41 +287,27 @@ export default (props, state, table) => {
             title:  formatMessage({ id: 'storage.sum' }),
             width:  '10%',
             key:    'sum',
-            render: ({ key }) => {
-                // const details = props.details;
-                // const purchasePrice = props.form.getFieldValue(
-                //     `docProducts[${key}].purchasePrice`,
-                // );
-                // console.log(
-                //     '|| docProducts',
-                //     props.form.getFieldValue('docProducts'),
-                // );
-                // console.log('||| key', key);
-                // const quantity = props.form.getFieldValue(
-                //     `docProducts[${key}].quantity`,
-                // );
-                // console.log('||| purchasePrice', purchasePrice);
-                // console.log('||| quantity', quantity);
-                // const value = (purchasePrice * quantity).toFixed(2);
-                // console.log('→ value', value);
-                // props.form.setFieldsValue([{ [ `docProducts[${key}].purchaseSum` ]: value }]);
-
+            render: ({ key, index }) => {
                 return (
                     <DecoratedInputNumber
-                        // disabled
                         fields={ {} }
+                        rules={ isRulesActive(index) }
                         field={ `docProducts[${key}].purchaseSum` }
                         getFieldDecorator={ props.form.getFieldDecorator }
-                        // value={ Number(value) }
                         formatter={ numeralFormatter }
                         parser={ numeralParser }
-                        disabled={ _isFieldDisabled(key) }
-                        // defaultValue={ 0 }
-                        // initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
+                        disabled
                         initialValue={ _.get(
                             props,
                             `incomeDoc.docProducts[${key}].purchaseSum`,
                         ) }
+                        // rules={ isRulesActive(key) }
+                        // rules={
+                        //     getFieldValue('docProducts') &&
+                        //     getFieldValue('docProducts').length !== key
+                        //         ? requiredRule
+                        //         : []
+                        // }
                     />
                 );
             },
