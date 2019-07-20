@@ -5,7 +5,7 @@ import { FormattedMessage, injectIntl } from "react-intl";
 import _ from "lodash";
 
 // proj
-import { MODALS } from 'core/modals/duck'
+import { MODALS } from "core/modals/duck";
 
 import { Catcher } from "commons";
 import { TecDocActionsContainer } from "containers";
@@ -296,7 +296,7 @@ export default class DetailsTable extends Component {
                                                 key={`${name}-${id}-${code}`}
                                             >
                                                 {/* {code} */}
-                                                {name}
+                                                {code}
                                             </Option>
                                         ),
                                     )
@@ -986,7 +986,7 @@ export default class DetailsTable extends Component {
     render() {
         const { keys } = this.state;
         const columns = this.columns();
-        
+
         return (
             <Catcher>
                 <Table
