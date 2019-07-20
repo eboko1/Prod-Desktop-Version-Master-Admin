@@ -121,6 +121,6 @@ export default props => {
         client,
         manager,
         // sum,
-        actions,
+        // actions,
     ];
 };
