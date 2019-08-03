@@ -164,7 +164,7 @@ export default props => {
             ) : null;
         },
     };
-
+    // TODO: if expense make quantity, purchaseSum, sellingSum fields render with '-' (!0)
     const quantity = {
         title: props.intl.formatMessage({
             id: 'storage.quantity',

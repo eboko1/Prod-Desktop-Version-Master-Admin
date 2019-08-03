@@ -62,7 +62,7 @@ export default props => {
         title: props.intl.formatMessage({
             id: 'storage.sum',
         }),
-        dataIndex: 'sellingSum',
+        dataIndex: 'sum',
         width:     '10%',
         render:    sum => (
             <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>

@@ -211,97 +211,35 @@ export default class DetailsTable extends Component {
                             </LimitedDecoratedSelect>
                         );
                     };
+
                     const renderAsStoreProductsField = () => {
-                        // const handleSelect = this._cachedInvoke.getCachedResult(
-                        //     Function.prototype.bind,
-                        //     [null, key, modificationId],
-                        //     this._handleDetailSelect,
-                        // );
-
-                        const handleBlur = (key, value) => {
-                            if (value) {
-                                this._handleDetailSelect(key, null, value);
-                            }
-                        };
-
+                        console.log("→ key", key);
                         return (
-                            <DecoratedSelect
-                                formItem
-                                // formItemLayout={ formItemLayout }
-                                // fieldValue={_.get(
-                                //     fields,
-                                //     `details[${key}].productName`,
-                                // )}
-                                fields={{}}
+                            <DecoratedInput
+                                errors={errors}
+                                defaultGetValueProps
+                                fieldValue={_.get(
+                                    fields,
+                                    `details[${key}].productName`,
+                                )}
+                                cnStyles={
+                                    _.get(
+                                        formDetails,
+                                        `[${key}].multipleSuggestions`,
+                                    )
+                                        ? Styles.multipleSuggest
+                                        : void 0
+                                }
+                                initialValue={this._getDefaultValue(
+                                    key,
+                                    "productName",
+                                )}
+                                field={`details[${key}].productName`}
+                                disabled
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
                                 }
-                                getPopupContainer={trigger =>
-                                    trigger.parentNode
-                                }
-                                field={`details[${key}].productId`}
-                                // initialValue={_.get(
-                                //     fields,
-                                //     `details[${key}].productId`,
-                                // )}
-                                initialValue={this._getDefaultValue(
-                                    key,
-                                    "productId",
-                                )}
-                                onBlur={value => {
-                                    if (value) {
-                                        this._handleProductSelect(
-                                            key,
-                                            // modificationId,
-                                            value,
-                                        );
-                                        // return this._cachedInvoke.getCachedResult(
-                                        //     Function.prototype.bind,
-                                        //     [null, key, modificationId, value],
-                                        //     this._handleDetailSelect,
-                                        // );
-                                    }
-                                }}
-                                // onBlur={ value => handleBlur(value, `${data.key}.code`) }
-                                onSearch={value => {
-                                    this.props.setStoreProductsSearchQuery(
-                                        value,
-                                    );
-                                }}
-                                onSelect={this._cachedInvoke.getCachedResult(
-                                    Function.prototype.bind,
-                                    [null, key, modificationId],
-                                    this._handleDetailSelect,
-                                )}
-                                // onSelect={value =>
-                                //     this._handleDetailSelect(key, null, value)
-                                // }
-                                showSearch
-                                dropdownMatchSelectWidth={false}
-                                rules={this.requiredRule}
-                            >
-                                {productId ? (
-                                    <Option value={productId} key={productId}>
-                                        {/* {code} */}
-                                        {this._getDefaultValue(
-                                            key,
-                                            "productName",
-                                        )}
-                                    </Option>
-                                ) : (
-                                    this.props.storeProducts.map(
-                                        ({ id, name, code }) => (
-                                            <Option
-                                                value={id}
-                                                key={`${name}-${id}-${code}`}
-                                            >
-                                                {/* {code} */}
-                                                {code}
-                                            </Option>
-                                        ),
-                                    )
-                                )}
-                            </DecoratedSelect>
+                            />
                         );
                     };
 
@@ -424,6 +362,8 @@ export default class DetailsTable extends Component {
                 width: "10%",
                 key: "code",
                 render: ({ key }) => {
+                    const productId = this._getDefaultValue(key, "productId");
+
                     const storageFlow =
                         this.props.form.getFieldValue(
                             `details[${key}].storage`,
@@ -463,33 +403,100 @@ export default class DetailsTable extends Component {
                         />
                     );
 
-                    const renderAsStoreProductsField = () => (
-                        <DecoratedInput
-                            errors={errors}
-                            defaultGetValueProps
-                            fieldValue={_.get(
-                                fields,
-                                `details[${key}].productCode`,
-                            )}
-                            cnStyles={
-                                _.get(
-                                    formDetails,
-                                    `[${key}].multipleSuggestions`,
-                                )
-                                    ? Styles.multipleSuggest
-                                    : void 0
+                    const renderAsStoreProductsField = () => {
+                        // const handleSelect = this._cachedInvoke.getCachedResult(
+                        //     Function.prototype.bind,
+                        //     [null, key, modificationId],
+                        //     this._handleDetailSelect,
+                        // );
+
+                        const handleBlur = (key, value) => {
+                            if (value) {
+                                this._handleDetailSelect(key, null, value);
                             }
-                            initialValue={this._getDefaultValue(
-                                key,
-                                "productCode",
-                            )}
-                            field={`details[${key}].productCode`}
-                            disabled
-                            getFieldDecorator={
-                                this.props.form.getFieldDecorator
-                            }
-                        />
-                    );
+                        };
+
+                        return (
+                            <DecoratedSelect
+                                formItem
+                                // formItemLayout={ formItemLayout }
+                                // fieldValue={_.get(
+                                //     fields,
+                                //     `details[${key}].productName`,
+                                // )}
+                                fields={{}}
+                                getFieldDecorator={
+                                    this.props.form.getFieldDecorator
+                                }
+                                getPopupContainer={trigger =>
+                                    trigger.parentNode
+                                }
+                                field={`details[${key}].productId`}
+                                // initialValue={_.get(
+                                //     fields,
+                                //     `details[${key}].productId`,
+                                // )}
+                                initialValue={this._getDefaultValue(
+                                    key,
+                                    "productId",
+                                )}
+                                onBlur={value => {
+                                    if (value) {
+                                        this._handleProductSelect(
+                                            key,
+                                            // modificationId,
+                                            value,
+                                        );
+                                        // return this._cachedInvoke.getCachedResult(
+                                        //     Function.prototype.bind,
+                                        //     [null, key, modificationId, value],
+                                        //     this._handleDetailSelect,
+                                        // );
+                                    }
+                                }}
+                                // onBlur={ value => handleBlur(value, `${data.key}.code`) }
+                                onSearch={value => {
+                                    this.props.setStoreProductsSearchQuery(
+                                        value,
+                                    );
+                                }}
+                                onSelect={this._cachedInvoke.getCachedResult(
+                                    Function.prototype.bind,
+                                    [null, key, modificationId],
+                                    this._handleDetailSelect,
+                                )}
+                                // onSelect={value =>
+                                //     this._handleDetailSelect(key, null, value)
+                                // }
+                                showSearch
+                                dropdownMatchSelectWidth={false}
+                                rules={this.requiredRule}
+                                placeholder={"storage.product_code"}
+                            >
+                                {productId ? (
+                                    <Option value={productId} key={productId}>
+                                        {/* {code} */}
+                                        {this._getDefaultValue(
+                                            key,
+                                            "productName",
+                                        )}
+                                    </Option>
+                                ) : (
+                                    this.props.storeProducts.map(
+                                        ({ id, name, code }) => (
+                                            <Option
+                                                value={id}
+                                                key={`${name}-${id}-${code}`}
+                                            >
+                                                {/* {code} */}
+                                                {code}
+                                            </Option>
+                                        ),
+                                    )
+                                )}
+                            </DecoratedSelect>
+                        );
+                    };
 
                     if (storageFlow) {
                         return renderAsStoreProductsField();
@@ -946,7 +953,10 @@ export default class DetailsTable extends Component {
     _handleProductSelect = (key, value) => {
         const { storeProducts, details } = this.props;
         const { keys } = this.state;
-
+        console.log(
+            '→ _.get(product, "productName")',
+            _.get(product, "productName"),
+        );
         const product = _.find(storeProducts, { id: Number(value) });
         if (details[key].storage) {
             this.props.fetchRecommendedPrice(key, value);
@@ -958,7 +968,7 @@ export default class DetailsTable extends Component {
                 ),
                 [`details[${key}].productBrandName`]:
                     _.get(product, "brand.name") || _.get(product, "brandName"),
-                [`details[${key}].productCode`]: _.get(product, "code"),
+                [`details[${key}].productName`]: _.get(product, "productName"),
             });
         }
 

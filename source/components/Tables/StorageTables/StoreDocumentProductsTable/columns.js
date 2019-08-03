@@ -37,28 +37,29 @@ export default (props, state, table) => {
 
     console.log('→ getFieldsValue', props.form.getFieldsValue());
 
-    const isRulesActive = index => {
-        // console.log('→ if', getFieldValue('docProducts'));
-        // return false;
-        console.log('→ index', index);
-        if (Array.isArray(getFieldValue('docProducts'))) {
-            console.log('→ if', getFieldValue('docProducts'));
-            const filteredDocProducts = getFieldValue('docProducts').filter(
-                elem => elem,
-            );
-            console.log(
-                '→ 22filteredDocProducts.length',
-                filteredDocProducts.length,
-            );
-            console.log('→ 222index', index);
-            if (filteredDocProducts.length !== index + 1) {
-                return requiredRule;
-            }
-            // return false;
-        }
+    // const isRulesActive = index => {
+    //     console.log('→ if', getFieldValue('docProducts'));
+    //     // return false;
+    //     // console.log('→ index', index);
+    //     if (Array.isArray(getFieldValue('docProducts'))) {
+    //         console.log('→ if', getFieldValue('docProducts'));
 
-        // return [{}];
-    };
+    //         // const filteredDocProducts = getFieldValue('docProducts').filter(
+    //         //     elem => elem,
+    //         // );
+    //         // console.log(
+    //         //     '→ 22filteredDocProducts.length',
+    //         //     filteredDocProducts.length,
+    //         // );
+    //         // console.log('→ 222index', index);
+    //         // if (filteredDocProducts.length !== index + 1) {
+    //         //     return requiredRule;
+    //         // }
+    //         return false;
+    //     }
+
+    //     return true;
+    // };
 
     const _isFieldDisabled = key =>
         !props.form.getFieldValue(`docProducts[${key}].productId`);
@@ -68,17 +69,14 @@ export default (props, state, table) => {
             title:  formatMessage({ id: 'storage.product_code' }),
             width:  '20%',
             key:    'code',
-            render: ({ key, index }) => {
-                console.log('→ key', key);
-                console.log('→ index', index);
-                console.log('→ aa', getFieldValue('docProducts'));
-                //console.log('→ aa', getFieldValue('docProducts') && getFieldValue('docProducts').length);
+            render: ({ key }) => {
                 const handleBlur = (key, value) => {
                     if (value) {
                         table.handleProductSelect(key, value);
                     }
                 };
-                console.log('→ aaa props', props);
+
+                console.log(props.storeProducts);
 
                 return (
                     <DecoratedSelect
@@ -105,20 +103,20 @@ export default (props, state, table) => {
                         }
                         showSearch
                         dropdownMatchSelectWidth={ false }
-                        rules={ isRulesActive(index) }
-                        // rules={
-                        //     getFieldValue('docProducts') &&
-                        //     getFieldValue('docProducts').length !== key
-                        //         ? requiredRule
-                        //         : []
-                        // }
+                        // rules={ requiredRule }
+                        rules={ state.keys.length !== key + 1 && requiredRule }
                         // rules={ docProducts[key] === docProducts.length ? requiredRule : []}
                     >
-                        { props.storeProducts.map(({ id, code }) => (
-                            <Option value={ id } key={ id }>
-                                { code }
-                            </Option>
-                        )) }
+                        { 
+                            [
+                                ...props.storeProducts[ key ] || [],
+                                ...props.searchStoreProducts || []
+                            ].map(({ id, code }) => (
+                                <Option value={ id } key={ id }>
+                                    { code }
+                                </Option>
+                            ))
+                        }
                     </DecoratedSelect>
                 );
             },
@@ -213,14 +211,7 @@ export default (props, state, table) => {
                 return (
                     <DecoratedInputNumber
                         fields={ {} }
-                        // rules={ isRulesActive(key) }
-                        // rules={
-                        //     getFieldValue('docProducts') &&
-                        //     getFieldValue('docProducts').length !== key
-                        //         ? requiredRule
-                        //         : []
-                        // }
-                        rules={ isRulesActive(index) }
+                        rules={ state.keys.length !== key + 1 && requiredRule }
                         initialValue={ _.get(
                             props,
                             `incomeDoc.docProducts[${key}].purchasePrice`,
@@ -250,13 +241,7 @@ export default (props, state, table) => {
                 <DecoratedInputNumber
                     formItem
                     fields={ {} }
-                    rules={ isRulesActive(index) }
-                    // rules={
-                    //     getFieldValue('docProducts') &&
-                    //     getFieldValue('docProducts').length !== key
-                    //         ? requiredRule
-                    //         : []
-                    // }
+                    rules={ state.keys.length !== key + 1 && requiredRule }
                     field={ `docProducts[${key}].quantity` }
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ _isFieldDisabled(key) }
@@ -291,7 +276,7 @@ export default (props, state, table) => {
                 return (
                     <DecoratedInputNumber
                         fields={ {} }
-                        rules={ isRulesActive(index) }
+       
                         field={ `docProducts[${key}].purchaseSum` }
                         getFieldDecorator={ props.form.getFieldDecorator }
                         formatter={ numeralFormatter }
@@ -301,13 +286,8 @@ export default (props, state, table) => {
                             props,
                             `incomeDoc.docProducts[${key}].purchaseSum`,
                         ) }
-                        // rules={ isRulesActive(key) }
-                        // rules={
-                        //     getFieldValue('docProducts') &&
-                        //     getFieldValue('docProducts').length !== key
-                        //         ? requiredRule
-                        //         : []
-                        // }
+                        rules={ state.keys.length !== key + 1 && requiredRule }
+
                     />
                 );
             },

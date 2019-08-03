@@ -33,7 +33,7 @@ export default class BusinessSuppliersSearch extends Component {
     render() {
         const { onSelect, setBusinessSuppliersSearchQuery } = this.props;
         const { businessSuppliers, isFetching, id } = this.props;
-        console.log("→ businessSuppliers", businessSuppliers);
+
         return (
             <Select
                 placeholder={this.props.intl.formatMessage({

@@ -251,7 +251,7 @@ export const setBrandsSearchQuery = query => ({
     payload: query,
 });
 
-export const setStoreProductsSearchQuery = query => ({
+export const setStoreProductsSearchQuery = (query) => ({
     type:    SET_STORE_PRODUCTS_SEARCH_QUERY,
     payload: query,
 });

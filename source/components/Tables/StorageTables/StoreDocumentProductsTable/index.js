@@ -21,21 +21,53 @@ const DocumentProductsTable = memo(props => {
     const incomeDocProducts = _.get(props, 'incomeDoc.docProducts');
     const incomeDocId = _.get(props, 'incomeDoc.id');
     const incomeDocSum = _.get(props, 'incomeDoc.sum', 0);
+
     const [ docProducts, setDocProducts ] = useState();
     const [ keys, setKeys ] = useState(() => {
-        const products = docProducts ? docProducts.length + 1 : 1;
+        const products = docProducts ? docProducts.length : 0;
 
         return [ ..._.keys(docProducts), products ];
     });
+    const [ searchResult, setSearchResult ] = useState(() => ({
+        storeProducts: [[]],
+    }));
 
     useEffect(() => {
         if (incomeDocProducts) {
+            console.log('→ ZALUPA');
             setDocProducts(incomeDocProducts);
 
             setKeys([ ..._.keys(incomeDocProducts).map(key => Number(key)), incomeDocProducts.length ]);
+
+            setSearchResult({
+                storeProducts: [
+                    ...(incomeDocProducts || []).map(({ product }) => {
+                        if (product) {
+                            return [ ...props.searchStoreProducts, { ...product }];
+                        }
+
+                        return [ ...props.searchStoreProducts ];
+                    }),
+                    props.searchStoreProducts,
+                ],
+            });
         }
     }, [ incomeDocProducts ]);
 
+    // useEffect(() => {
+    //     setSearchResult({storeProducts: [
+    //         ...(docProducts || []).map(({ product }) => {
+    //             if (product) {
+    //                 return [ ...props.searchStoreProducts, { id: product.id, code: product.code }];
+    //             }
+
+    //             return [ ...props.searchStoreProducts ];
+    //         }),
+    //         props.searchStoreProducts,
+    //     ]})
+    // }, [])
+
+    console.log('!!! keys', keys);
     const _handleDelete = redundantKey => {
         setKeys(keys.filter(key => redundantKey !== key));
         props.form.setFieldsValue({
@@ -48,17 +80,19 @@ const DocumentProductsTable = memo(props => {
     };
 
     const _handleProductSelect = (key, value) => {
-        const selectedProduct = props.storeProducts.find(
-            ({ id }) => id === value,
-        );
+        const selectedProduct = _.uniqBy([ ...props.searchStoreProducts, ...searchResult.storeProducts[ key ] || [] ], 'id').find(({ id }) => id === value);
         props.form.setFieldsValue({
             [ `docProducts[${key}].name` ]:      selectedProduct.name,
             [ `docProducts[${key}].tradeCode` ]: selectedProduct.tradeCode,
         });
 
         if (_.last(keys) === key && !_.get(docProducts, [ key, 'productId' ])) {
+            setSearchResult({
+                storeProducts: [ ...searchResult.storeProducts.slice(-1), props.searchStoreProducts, []],
+            });
             _handleAdd();
         }
+        // TODO: check how it works with edit
     };
 
     const _handleSumCalculation = (fieldKey, field, value) => {
@@ -106,6 +140,7 @@ const DocumentProductsTable = memo(props => {
             });
         }
     };
+    console.log('bzdyuk searchResult', searchResult);
 
     return (
         <Catcher>
@@ -114,7 +149,10 @@ const DocumentProductsTable = memo(props => {
                 loading={ props.brandsFetching }
                 dataSource={ keys.map((key, index) => ({ key, index })) }
                 columns={ columns(
-                    props,
+                    {
+                        ...props,
+                        ...searchResult,
+                    },
                     { keys },
                     {
                         handleAdd:                   _handleAdd,
@@ -133,8 +171,8 @@ const DocumentProductsTable = memo(props => {
 });
 
 const mapStateToProps = state => ({
-    storeProducts: selectStoreProductsByQuery(state),
-    brands:        selectBrandsByQuery(state),
+    searchStoreProducts: selectStoreProductsByQuery(state),
+    brands:              selectBrandsByQuery(state),
 });
 
 const mapDispatchToProps = {
