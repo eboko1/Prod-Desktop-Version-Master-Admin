@@ -213,7 +213,6 @@ export default class DetailsTable extends Component {
                     };
 
                     const renderAsStoreProductsField = () => {
-                        console.log("→ key", key);
                         return (
                             <DecoratedInput
                                 errors={errors}
@@ -478,7 +477,7 @@ export default class DetailsTable extends Component {
                                         {/* {code} */}
                                         {this._getDefaultValue(
                                             key,
-                                            "productName",
+                                            "productCode",
                                         )}
                                     </Option>
                                 ) : (
@@ -897,7 +896,7 @@ export default class DetailsTable extends Component {
         if (!orderDetail) {
             return;
         }
-        console.log("→ orderDetail", orderDetail);
+        // console.log("→ orderDetail", orderDetail);
         const actions = {
             detailName:
                 (orderDetail.detailId || orderDetail.detailName) &&
@@ -920,7 +919,8 @@ export default class DetailsTable extends Component {
     };
 
     _isFieldDisabled = (key, storage) => {
-        storage
+        // console.log("→ storage", storage);
+        return storage
             ? !_.get(this.props.details, [key, "productId"])
             : !_.get(this.props.details, [key, "detailName"]);
     };
@@ -953,13 +953,17 @@ export default class DetailsTable extends Component {
     _handleProductSelect = (key, value) => {
         const { storeProducts, details } = this.props;
         const { keys } = this.state;
-        console.log(
-            '→ _.get(product, "productName")',
-            _.get(product, "productName"),
-        );
         const product = _.find(storeProducts, { id: Number(value) });
+        // console.log("LOG PRODUCT", product);
+        // console.log(
+        //     '→ _.get(product, "productName")',
+        //     _.get(product, "productName"),
+        // );
         if (details[key].storage) {
+
+            // Promise.resolve()
             this.props.fetchRecommendedPrice(key, value);
+
             this.props.form.setFieldsValue({
                 [`details[${key}].productBrandId`]: _.get(
                     product,
@@ -968,7 +972,7 @@ export default class DetailsTable extends Component {
                 ),
                 [`details[${key}].productBrandName`]:
                     _.get(product, "brand.name") || _.get(product, "brandName"),
-                [`details[${key}].productName`]: _.get(product, "productName"),
+                [`details[${key}].productName`]: _.get(product, "name"),
             });
         }
 
