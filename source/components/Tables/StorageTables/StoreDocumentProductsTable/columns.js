@@ -2,6 +2,7 @@
 import React from 'react';
 import { Select, InputNumber } from 'antd';
 import _ from 'lodash';
+import { v4 } from 'uuid';
 
 // proj
 import ActionsIcons from 'commons/_uikit/ActionIcons';
@@ -76,8 +77,6 @@ export default (props, state, table) => {
                     }
                 };
 
-                console.log(props.storeProducts);
-
                 return (
                     <DecoratedSelect
                         formItem
@@ -93,7 +92,8 @@ export default (props, state, table) => {
                             props,
                             `incomeDoc.docProducts[${key}].product.id`,
                         ) }
-                        onBlur={ value => handleBlur(key, value) }
+                        onBlur={ () => {} }
+                        // onBlur={ value => handleBlur(key, value) }
                         // onBlur={ value => handleBlur(value, `${data.key}.productId`) }
                         onSearch={ value => {
                             props.setStoreProductsSearchQuery(value);
@@ -107,16 +107,43 @@ export default (props, state, table) => {
                         rules={ state.keys.length !== key + 1 && requiredRule }
                         // rules={ docProducts[key] === docProducts.length ? requiredRule : []}
                     >
-                        { 
-                            [
-                                ...props.storeProducts[ key ] || [],
-                                ...props.searchStoreProducts || []
-                            ].map(({ id, code }) => (
-                                <Option value={ id } key={ id }>
-                                    { code }
+                        { console.log(
+                            'aa',
+                            [ ...props.searchStoreProducts || [] ].map(
+                                ({ id, code }) => (
+                                    <Option value={ id } key={ v4() }>
+                                        { code }
+                                    </Option>
+                                ),
+                            ),
+                        ) }
+                        { !_.isEmpty(props.searchStoreProducts) ? 
+                            [ ...props.searchStoreProducts || [] ].map(
+                                ({ id, code }) => (
+                                    <Option value={ id } key={ v4() }>
+                                        { code }
+                                    </Option>
+                                ),
+                            )
+                            : (
+                                <Option
+                                    value={ _.get(
+                                        props,
+                                        `incomeDoc.docProducts[${key}].product.id`,
+                                    ) }
+                                    key={ v4() }
+                                >
+                                    { _.get(
+                                        props,
+                                        `incomeDoc.docProducts[${key}].product.code`,
+                                    ) }
                                 </Option>
-                            ))
-                        }
+                            ) }
+                        { /* { [ ...props.storeProducts[ key ] || [], ...props.searchStoreProducts || [] ].map(({ id, code }) => (
+                            <Option value={ id } key={ v4() }>
+                                { code }
+                            </Option>
+                        )) } */ }
                     </DecoratedSelect>
                 );
             },
@@ -146,43 +173,41 @@ export default (props, state, table) => {
             width:  '10%',
             key:    'brandId',
             render: ({ key }) => {
+                console.log(
+                    '→LOOOOOOG',
+                    _.get(props, `incomeDoc.docProducts[${key}]`),
+                );
+
                 return (
-                    <DecoratedAutoComplete
-                        // formItemLayout={ formItemLayout }
-                        fields={ {} }
-                        defaultGetValueProps
-                        getFieldDecorator={ getFieldDecorator }
-                        getPopupContainer={ trigger => trigger.parentNode }
-                        field={ `docProducts[${key}].brandId` }
-                        // initialValue={ props.storeProducts[ key ].brandId }
-                        onSearch={ value => {
-                            props.form.setFieldsValue({
-                                [ `docProducts[${key}].brandId` ]:   void 0,
-                                [ `docProducts[${key}].brandName` ]: value,
-                            });
-                            props.setBrandsSearchQuery(value);
-                        } }
-                        onSelect={ value => {
-                            props.form.setFieldsValue({
-                                [ `docProducts[${key}].brandId` ]:   value,
-                                [ `docProducts[${key}].brandName` ]: void 0,
-                            });
-                        } }
-                        optionLabelProp={ 'children' }
-                        optionFilterProp={ 'children' }
-                        showSearch
-                        dropdownMatchSelectWidth={ false }
-                        disabled
-                    >
-                        { props.brands.map(({ brandName, brandId }) => (
-                            <Option
-                                value={ String(brandId) }
-                                key={ `${brandId}-${brandName}` }
-                            >
-                                { brandName }
-                            </Option>
-                        )) }
-                    </DecoratedAutoComplete>
+                    <>
+                        <DecoratedInput
+                            fields={ {} }
+                            // defaultGetValueProps
+                            initialValue={
+                                _.get(
+                                    props,
+                                    `incomeDoc.docProducts[${key}].product.brand.name`,
+                                ) ||
+                                _.get(
+                                    props,
+                                    `incomeDoc.docProducts[${key}].product.brandName`,
+                                )
+                            }
+                            field={ `docProducts[${key}].brandName` }
+                            disabled
+                            getFieldDecorator={ props.form.getFieldDecorator }
+                        />
+                        <DecoratedInput
+                            hiddeninput='hiddeninput'
+                            fields={ {} }
+                            getFieldDecorator={ props.form.getFieldDecorator }
+                            field={ `docProducts[${key}].brandId` }
+                            initialValue={ _.get(
+                                props,
+                                `incomeDoc.docProducts[${key}].product.brandId`,
+                            ) }
+                        />
+                    </>
                 );
             },
         },
@@ -198,7 +223,7 @@ export default (props, state, table) => {
                     getFieldDecorator={ props.form.getFieldDecorator }
                     initialValue={ _.get(
                         props,
-                        `incomeDoc.docProducts[${key}].product.code`,
+                        `incomeDoc.docProducts[${key}].product.certificate`,
                     ) }
                 />
             ),
@@ -276,7 +301,6 @@ export default (props, state, table) => {
                 return (
                     <DecoratedInputNumber
                         fields={ {} }
-       
                         field={ `docProducts[${key}].purchaseSum` }
                         getFieldDecorator={ props.form.getFieldDecorator }
                         formatter={ numeralFormatter }
@@ -287,7 +311,6 @@ export default (props, state, table) => {
                             `incomeDoc.docProducts[${key}].purchaseSum`,
                         ) }
                         rules={ state.keys.length !== key + 1 && requiredRule }
-
                     />
                 );
             },

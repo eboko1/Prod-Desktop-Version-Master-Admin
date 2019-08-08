@@ -28,18 +28,17 @@ const DocumentProductsTable = memo(props => {
 
         return [ ..._.keys(docProducts), products ];
     });
-    const [ searchResult, setSearchResult ] = useState(() => ({
+    const [ searchStoreProducts, setSearchStoreProducts ] = useState(() => ({
         storeProducts: [[]],
     }));
 
     useEffect(() => {
         if (incomeDocProducts) {
-            console.log('→ ZALUPA');
             setDocProducts(incomeDocProducts);
 
             setKeys([ ..._.keys(incomeDocProducts).map(key => Number(key)), incomeDocProducts.length ]);
 
-            setSearchResult({
+            setSearchStoreProducts({
                 storeProducts: [
                     ...(incomeDocProducts || []).map(({ product }) => {
                         if (product) {
@@ -80,15 +79,25 @@ const DocumentProductsTable = memo(props => {
     };
 
     const _handleProductSelect = (key, value) => {
-        const selectedProduct = _.uniqBy([ ...props.searchStoreProducts, ...searchResult.storeProducts[ key ] || [] ], 'id').find(({ id }) => id === value);
+        const selectedProduct = _.uniqBy(
+            [ ...props.searchStoreProducts, ...searchStoreProducts.storeProducts[ key ] || [] ],
+            'id',
+        ).find(({ id }) => id === value);
+        // console.log('selectedProduct', selectedProduct);
         props.form.setFieldsValue({
             [ `docProducts[${key}].name` ]:      selectedProduct.name,
             [ `docProducts[${key}].tradeCode` ]: selectedProduct.tradeCode,
+            [ `docProducts[${key}].brandName` ]: selectedProduct.brand
+                ? selectedProduct.brand.name
+                : selectedProduct.brandName,
+            [ `docProducts[${key}].brandId` ]: selectedProduct.brand
+                ? selectedProduct.brand.id
+                : null,
         });
 
         if (_.last(keys) === key && !_.get(docProducts, [ key, 'productId' ])) {
-            setSearchResult({
-                storeProducts: [ ...searchResult.storeProducts.slice(-1), props.searchStoreProducts, []],
+            setSearchStoreProducts({
+                storeProducts: [ ...searchStoreProducts.storeProducts.slice(-1), props.searchStoreProducts, []],
             });
             _handleAdd();
         }
@@ -97,8 +106,10 @@ const DocumentProductsTable = memo(props => {
 
     const _handleSumCalculation = (fieldKey, field, value) => {
         // fieldKey isEqual with update flow but +1 for creation because of [empty] at first docProduct array index
-        const key = incomeDocId ? fieldKey : fieldKey - 1;
-
+        const key = incomeDocId ? fieldKey : fieldKey;
+        console.log('→ incomeDocId', incomeDocId);
+        console.log('!!!!!fieldKey', fieldKey);
+        console.log('!!!!!key', key);
         const purchasePrice = props.form.getFieldValue(
             `docProducts[${fieldKey}].purchasePrice`,
         );
@@ -109,6 +120,8 @@ const DocumentProductsTable = memo(props => {
         // const sum = props.form.getFieldValue('sum') || 0;
 
         const getTotalSum = key => {
+            console.log('→ getTotalSum key', key);
+
             let docProducts = props.form
                 .getFieldValue('docProducts')
                 .filter(Boolean);
@@ -128,6 +141,7 @@ const DocumentProductsTable = memo(props => {
         const totalSum = getTotalSum(key);
 
         if (field.includes('purchasePrice')) {
+            console.log('→ fieldKey', fieldKey);
             props.form.setFieldsValue({
                 [ `docProducts[${fieldKey}].purchaseSum` ]: value * quantity,
                 sum:                                        totalSum,
@@ -140,7 +154,7 @@ const DocumentProductsTable = memo(props => {
             });
         }
     };
-    console.log('bzdyuk searchResult', searchResult);
+    console.log('bzdyuk searchResult', searchStoreProducts);
 
     return (
         <Catcher>
@@ -151,7 +165,7 @@ const DocumentProductsTable = memo(props => {
                 columns={ columns(
                     {
                         ...props,
-                        ...searchResult,
+                        ...searchStoreProducts,
                     },
                     { keys },
                     {

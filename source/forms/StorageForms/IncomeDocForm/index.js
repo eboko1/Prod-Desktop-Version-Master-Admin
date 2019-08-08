@@ -104,14 +104,24 @@ const IncomeForm = props => {
                         docProducts: docProducts
                             .slice(0, -1)
                             .map(product =>
-                                _.omit(product, [ 'name', 'tradeCode', 'brandId' ])),
+                                _.omit(product, [
+                                    'name',
+                                    'tradeCode',
+                                    'brandId',
+                                    'brandName',
+                                ])),
                         status: complete ? 'DONE' : 'NEW',
                     };
                 } else {
                     normalizedValues = {
                         ...values,
                         docProducts: docProducts.map(product =>
-                            _.omit(product, [ 'name', 'tradeCode', 'brandId' ])),
+                            _.omit(product, [
+                                'name',
+                                'tradeCode',
+                                'brandId',
+                                'brandName',
+                            ])),
                         status: complete ? 'DONE' : 'NEW',
                     };
                 }
@@ -135,7 +145,7 @@ const IncomeForm = props => {
                                 { formatMessage({ id: 'save' }) }
                             </SubmitButton>
                         ) : (
-                            <SubmitButton type='primary' onClick={ _submit }>
+                            <SubmitButton type='primary' onClick={ () => _submit() }>
                                 { formatMessage({ id: 'create' }) }
                             </SubmitButton>
                         ) }
@@ -293,7 +303,10 @@ const IncomeForm = props => {
                     brands={ props.brands }
                     setBrandsSearchQuery={ props.setBrandsSearchQuery }
                 />
-                <Button icon='plus' onClick={ () => props.setModal(MODALS.STORE_PRODUCT) }>
+                <Button
+                    icon='plus'
+                    onClick={ () => props.setModal(MODALS.STORE_PRODUCT) }
+                >
                     { formatMessage({ id: 'storage.add_new_storage_product' }) }
                 </Button>
             </Form>

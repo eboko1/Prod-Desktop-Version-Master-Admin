@@ -169,9 +169,9 @@ export default props => {
         title: props.intl.formatMessage({
             id: 'storage.quantity',
         }),
-        dataIndex: 'quantity',
+        dataIndex: 'remaining',
         width:     '7.5%',
-        render:    quantity => numeralFormatter(parseInt(quantity, 10)),
+        render:    remaining => numeralFormatter(parseInt(remaining, 10)),
     };
 
     const purchasePrice = {

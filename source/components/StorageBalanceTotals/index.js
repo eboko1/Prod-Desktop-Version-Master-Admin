@@ -45,6 +45,7 @@ export const StorageBalanceTotals = connect(
         <BalanceTotal collapsed={ collapsed }>
             <FiltersRow>
                 <DatePicker
+                    allowClear={ false }
                     onChange={ onPickDate }
                     defaultValue={ moment(filters.date) }
                 />
