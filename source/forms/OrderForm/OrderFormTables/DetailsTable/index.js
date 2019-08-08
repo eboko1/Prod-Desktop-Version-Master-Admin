@@ -439,31 +439,37 @@ export default class DetailsTable extends Component {
                                     key,
                                     "productId",
                                 )}
-                                onBlur={value => {
-                                    if (value) {
-                                        this._handleProductSelect(
-                                            key,
-                                            // modificationId,
-                                            value,
-                                        );
-                                        // return this._cachedInvoke.getCachedResult(
-                                        //     Function.prototype.bind,
-                                        //     [null, key, modificationId, value],
-                                        //     this._handleDetailSelect,
-                                        // );
-                                    }
-                                }}
-                                // onBlur={ value => handleBlur(value, `${data.key}.code`) }
+                                onBlur={() => {}}
+                                // onBlur={value => {
+                                //     if (value) {
+                                //         this._handleProductSelect(
+                                //             key,
+                                //             // modificationId,
+                                //             value,
+                                //         );
+                                //         // return this._cachedInvoke.getCachedResult(
+                                //         //     Function.prototype.bind,
+                                //         //     [null, key, modificationId, value],
+                                //         //     this._handleDetailSelect,
+                                //         // );
+                                //     }
+                                // }}
+
                                 onSearch={value => {
                                     this.props.setStoreProductsSearchQuery(
                                         value,
                                     );
                                 }}
-                                onSelect={this._cachedInvoke.getCachedResult(
-                                    Function.prototype.bind,
-                                    [null, key, modificationId],
-                                    this._handleDetailSelect,
-                                )}
+                                onSelect={value => {
+                                    if (value) {
+                                        this._handleProductSelect(key, value);
+                                    }
+                                }}
+                                // onSelect={this._cachedInvoke.getCachedResult(
+                                //     Function.prototype.bind,
+                                //     [null, key, modificationId],
+                                //     this._handleDetailSelect,
+                                // )}
                                 // onSelect={value =>
                                 //     this._handleDetailSelect(key, null, value)
                                 // }
@@ -582,6 +588,7 @@ export default class DetailsTable extends Component {
                     <DecoratedInputNumber
                         errors={errors}
                         defaultGetValueProps
+                        fields={{}}
                         fieldValue={_.get(
                             fields,
                             `details[${key}].purchasePrice`,
@@ -620,6 +627,7 @@ export default class DetailsTable extends Component {
                             fields,
                             `details[${key}].detailPrice`,
                         )}
+                        fields={{}}
                         field={`details[${key}].detailPrice`}
                         getFieldDecorator={this.props.form.getFieldDecorator}
                         disabled={
@@ -791,14 +799,15 @@ export default class DetailsTable extends Component {
             this.props.clearTecdocDetailsSuggestions();
             setFieldsValue(_.merge(...fields));
         }
-
-        if (this.props.recommendedPrice !== prevProps.recommendedPrice) {
-            setFieldsValue({
-                [`details[${
-                    this.props.recommendedPrice.key
-                }].recommendedPrice`]: this.props.recommendedPrice,
-            });
-        }
+        // ----
+        // if (this.props.recommendedPrice !== prevProps.recommendedPrice) {
+        //     setFieldsValue({
+        //         [`details[${
+        //             this.props.recommendedPrice.key
+        //         }].recommendedPrice`]: this.props.recommendedPrice,
+        //     });
+        // }
+        //-----
         // if (this.props.availableProducts !== prevProps.availableProducts) {
         //     setFieldsValue({
         //         [`details[${this.props.availableProducts.key}].using`]: this
@@ -896,7 +905,7 @@ export default class DetailsTable extends Component {
         if (!orderDetail) {
             return;
         }
-        // console.log("→ orderDetail", orderDetail);
+
         const actions = {
             detailName:
                 (orderDetail.detailId || orderDetail.detailName) &&
@@ -919,7 +928,6 @@ export default class DetailsTable extends Component {
     };
 
     _isFieldDisabled = (key, storage) => {
-        // console.log("→ storage", storage);
         return storage
             ? !_.get(this.props.details, [key, "productId"])
             : !_.get(this.props.details, [key, "detailName"]);
@@ -954,15 +962,14 @@ export default class DetailsTable extends Component {
         const { storeProducts, details } = this.props;
         const { keys } = this.state;
         const product = _.find(storeProducts, { id: Number(value) });
-        // console.log("LOG PRODUCT", product);
-        // console.log(
-        //     '→ _.get(product, "productName")',
-        //     _.get(product, "productName"),
-        // );
-        if (details[key].storage) {
 
-            // Promise.resolve()
-            this.props.fetchRecommendedPrice(key, value);
+        if (details[key].storage) {
+            const func = (recommendedPrice, purchasePrice) => {
+                this.props.form.setFieldsValue({
+                    [`details[${key}].purchasePrice`]: recommendedPrice,
+                    [`details[${key}].detailPrice`]: purchasePrice,
+                });
+            };
 
             this.props.form.setFieldsValue({
                 [`details[${key}].productBrandId`]: _.get(
@@ -974,6 +981,8 @@ export default class DetailsTable extends Component {
                     _.get(product, "brand.name") || _.get(product, "brandName"),
                 [`details[${key}].productName`]: _.get(product, "name"),
             });
+
+            this.props.fetchRecommendedPrice(key, value, func);
         }
 
         if (

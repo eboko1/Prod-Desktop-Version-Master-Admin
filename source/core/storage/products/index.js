@@ -206,9 +206,9 @@ export const fetchAvailableProductsSuccess = (key, availableProducts) => ({
 });
 
 //
-export const fetchRecommendedPrice = (key, id) => ({
+export const fetchRecommendedPrice = (key, id, func) => ({
     type:    FETCH_RECOMMENDED_PRICE,
-    payload: { key, id },
+    payload: { key, id, func },
 });
 
 export const fetchRecommendedPriceSuccess = recommendedPrice => ({
@@ -400,7 +400,7 @@ export function* fetchRecommendedPriceSaga() {
     while (true) {
         try {
             const {
-                payload: { key, id },
+                payload: { key, id, func },
             } = yield take(FETCH_RECOMMENDED_PRICE);
             yield put(setRecommendedPriceLoading(true));
 
@@ -414,6 +414,8 @@ export function* fetchRecommendedPriceSaga() {
                     handleErrorInternally: true,
                 },
             );
+
+            yield func(response.recommendedPrice, response.purchasePrice);
 
             yield put(fetchRecommendedPriceSuccess({ key, ...response }));
         } catch (error) {
