@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from "react";
 import { Table, InputNumber, Icon, Popconfirm, Select, Button } from "antd";
+import { defaultMemoize } from "reselect";
 import { FormattedMessage, injectIntl } from "react-intl";
 import _ from "lodash";
 
@@ -34,6 +35,13 @@ const extractId = (details, name) => {
 
     return _.isFinite(formId) ? formId : null;
 };
+
+const getStorageFlow = defaultMemoize((fields, key) => {
+    // console.count("meomize");
+    // console.log("→ fields", fields);
+    // console.log("→ key", key);
+    return _.get(fields, `details[${key}].storage`);
+});
 
 const requiredLimitedOptions = (
     details,
@@ -118,7 +126,13 @@ export default class DetailsTable extends Component {
                 title: <FormattedMessage id="storage" />,
                 key: "storage",
                 render: ({ key }) => {
-                    return (
+                    // const popconfirm = true;
+
+                    const popconfirm = getStorageFlow(fields, key);
+                    // console.log("→ popconfirm", popconfirm);
+                    // console.log("→ popconfirm", popconfirm);
+
+                    return !popconfirm ? (
                         <DecoratedCheckbox
                             errors={errors}
                             defaultGetValueProps
@@ -135,7 +149,39 @@ export default class DetailsTable extends Component {
                             }
                             // disabled={editServicesForbidden}
                         />
+                    ) : (
+                        <>
+                            <Popconfirm
+                                title={
+                                    <FormattedMessage id="add_order_form.delete_confirm" />
+                                }
+                                onConfirm={() => this._onDelete(key)}
+                            >
+                                <Icon
+                                    type="check"
+                                    className={Styles.deleteIcon}
+                                />
+                            </Popconfirm>
+                            <DecoratedCheckbox
+                                errors={errors}
+                                defaultGetValueProps
+                                fieldValue={_.get(
+                                    fields,
+                                    `details[${key}].storage`,
+                                )}
+                                initialValue={Boolean(
+                                    this._getDefaultValue(key, "storage"),
+                                )}
+                                field={`details[${key}].storage`}
+                                getFieldDecorator={
+                                    this.props.form.getFieldDecorator
+                                }
+                                hidden
+                                // disabled={editServicesForbidden}
+                            />
+                        </>
                     );
+                    // );
                 },
             };
 
@@ -599,7 +645,8 @@ export default class DetailsTable extends Component {
                         )}
                         field={`details[${key}].purchasePrice`}
                         disabled={
-                            this._isFieldDisabled(key) || editDetailsForbidden
+                            this._isFieldDisabled(key, false, true) ||
+                            editDetailsForbidden
                         }
                         getFieldDecorator={this.props.form.getFieldDecorator}
                         min={0}
@@ -617,7 +664,7 @@ export default class DetailsTable extends Component {
                     <DecoratedInputNumber
                         className={Styles.detailsRequiredFormItem}
                         rules={
-                            !this._isFieldDisabled(key)
+                            !this._isFieldDisabled(key, false, true)
                                 ? this.requiredRule
                                 : void 0
                         }
@@ -631,7 +678,8 @@ export default class DetailsTable extends Component {
                         field={`details[${key}].detailPrice`}
                         getFieldDecorator={this.props.form.getFieldDecorator}
                         disabled={
-                            this._isFieldDisabled(key) || editDetailsForbidden
+                            this._isFieldDisabled(key, false, true) ||
+                            editDetailsForbidden
                         }
                         initialValue={
                             this._getDefaultValue(key, "detailPrice") || 0
@@ -664,7 +712,7 @@ export default class DetailsTable extends Component {
                         <DecoratedInputNumber
                             className={Styles.detailsRequiredFormItem}
                             rules={
-                                !this._isFieldDisabled(key)
+                                !this._isFieldDisabled(key, false, true)
                                     ? this.requiredRule
                                     : void 0
                             }
@@ -679,7 +727,7 @@ export default class DetailsTable extends Component {
                                 this.props.form.getFieldDecorator
                             }
                             disabled={
-                                this._isFieldDisabled(key) ||
+                                this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden
                             }
                             initialValue={
@@ -927,10 +975,21 @@ export default class DetailsTable extends Component {
         return actions[fieldName];
     };
 
-    _isFieldDisabled = (key, storage) => {
-        return storage
-            ? !_.get(this.props.details, [key, "productId"])
-            : !_.get(this.props.details, [key, "detailName"]);
+    _isFieldDisabled = (key, storage, both) => {
+        if (both) {
+            const blockers = [
+                _.get(this.props.details, [key, "productId"]),
+                _.get(this.props.details, [key, "detailName"]),
+            ];
+            // console.log("→ blockers", blockers);
+            // console.log("→ DISABLED", blockers.includes(true));
+            return blockers.includes(true);
+        }
+
+        if (storage) {
+            return !_.get(this.props.details, [key, "productId"]);
+        }
+        return !_.get(this.props.details, [key, "detailName"]);
     };
 
     _handleDetailSelect = (key, modificationId, value) => {

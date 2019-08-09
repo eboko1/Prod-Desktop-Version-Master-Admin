@@ -1,10 +1,13 @@
 // vendor
 import React from 'react';
 import { Checkbox, Form } from 'antd';
-import _ from 'lodash';
+import styled from 'styled-components';
 
 // own
 const FormItem = Form.Item;
+const StyledCheckbox = styled(Checkbox)`
+    display: ${props => props.hidden && 'none'};
+`;
 
 export class DecoratedCheckbox extends React.PureComponent {
     render() {
@@ -23,6 +26,7 @@ export class DecoratedCheckbox extends React.PureComponent {
             initialValue,
             children,
             onChange,
+            hidden,
         } = this.props;
 
         const checkbox = getFieldDecorator(field, {
@@ -30,9 +34,13 @@ export class DecoratedCheckbox extends React.PureComponent {
             initialValue:  Boolean(initialValue),
             rules,
         })(
-            <Checkbox disabled={ disabled } onChange={ onChange }>
+            <StyledCheckbox
+                disabled={ disabled }
+                onChange={ onChange }
+                hidden={ hidden }
+            >
                 { children }
-            </Checkbox>,
+            </StyledCheckbox>,
         );
 
         return formItem ? (
