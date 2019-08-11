@@ -25,3 +25,12 @@
 .detailsRequiredFormItem:global(.ant-row.ant-form-item) {
     margin-bottom: 0px;
 }
+
+.popconfirm {
+    cursor: pointer;
+}
+
+.popconfirmDisabled {
+    pointer-events: none;
+    cursor: not-allowed;
+}

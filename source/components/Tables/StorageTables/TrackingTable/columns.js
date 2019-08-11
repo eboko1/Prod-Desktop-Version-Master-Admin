@@ -14,6 +14,17 @@ import { numeralFormatter } from 'utils';
 // own
 import { ProductTableData } from '../ProductTableData';
 
+const getMinus = (docType, value) => {
+    if (docType) {
+        return '';
+    }
+    if (!docType && value === 0) {
+        return '';
+    }
+
+    return '-';
+};
+
 export default props => {
     const code = {
         title: props.intl.formatMessage({
@@ -164,7 +175,7 @@ export default props => {
             ) : null;
         },
     };
-    // TODO: if expense make quantity, purchaseSum, sellingSum fields render with '-' (!0)
+
     const quantity = {
         title: props.intl.formatMessage({
             id: 'storage.quantity',
@@ -180,7 +191,7 @@ export default props => {
         }),
         dataIndex: 'purchasePrice',
         width:     '10%',
-        render:    (purchasePrice) => (
+        render:    purchasePrice => (
             <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
                 { purchasePrice }
             </Numeral>
@@ -193,12 +204,10 @@ export default props => {
         }),
         dataIndex: 'purchaseSum',
         width:     '10%',
-        render:    (purchaseSum, data) => {
-            const incomeDoc = _.get(data, 'doc.type');
-
+        render:    (purchaseSum, data) => { 
             return (
                 <>
-                    { `${incomeDoc && purchaseSum === 0 ? '' : '-'}` }
+                    { getMinus(_.get(data, 'doc.type'), purchaseSum) }
                     <Numeral
                         currency={ props.intl.formatMessage({ id: 'currency' }) }
                     >
@@ -229,11 +238,9 @@ export default props => {
         dataIndex: 'sellingSum',
         width:     '10%',
         render:    (sellingSum, data) => {
-            const incomeDoc = _.get(data, 'doc.type');
-
             return (
                 <>
-                    { `${incomeDoc && sellingSum === 0 ? '' : '-'}` }
+                    { getMinus(_.get(data, 'doc.type'), sellingSum) }
                     <Numeral
                         currency={ props.intl.formatMessage({ id: 'currency' }) }
                     >

@@ -38,9 +38,33 @@ const extractId = (details, name) => {
 
 const getStorageFlow = defaultMemoize((fields, key) => {
     // console.count("meomize");
-    // console.log("→ fields", fields);
-    // console.log("→ key", key);
-    return _.get(fields, `details[${key}].storage`);
+    const details = _.get(fields, "details");
+    const filteredDetails = Array.isArray(details)
+        ? details.filter(Boolean)
+        : [];
+    // console.group("getStorageFlow");
+    // console.log("_ fields", _.get(fields, "details"));
+    // console.log("_ filteredDetails", filteredDetails);
+    // console.log("_ fields length", _.get(fields, "details.length"));
+    // console.log("_ key", key);
+    // console.log("_ storage", _.get(fields, `details[${key}].storage`));
+    // console.log(
+    //     "_ length = key",
+    //     _.get(fields, "details.length") === Number(key) + 1,
+    // );
+    // console.log(
+    //     "_ if",
+    //     _.get(fields, "details.length") === Number(key) + 1 &&
+    //         _.get(fields, `details[${key}].storage`),
+    // );
+    // console.groupEnd();
+    const popconfirm = _.get(fields, `details[${key}].storage`);
+    const fieldsLength = _.get(fields, "details.length");
+    let disabled = false;
+    if (fieldsLength === Number(key) + 1 && popconfirm) {
+        disabled = true;
+    }
+    return { popconfirm, disabled };
 });
 
 const requiredLimitedOptions = (
@@ -128,7 +152,13 @@ export default class DetailsTable extends Component {
                 render: ({ key }) => {
                     // const popconfirm = true;
 
-                    const popconfirm = getStorageFlow(fields, key);
+                    const { popconfirm, disabled } = getStorageFlow(
+                        fields,
+                        key,
+                    );
+                    console.group("table storage");
+                    console.log("||| disabled", disabled);
+                    console.groupEnd();
                     // console.log("→ popconfirm", popconfirm);
                     // console.log("→ popconfirm", popconfirm);
 
@@ -155,7 +185,25 @@ export default class DetailsTable extends Component {
                                 title={
                                     <FormattedMessage id="add_order_form.delete_confirm" />
                                 }
-                                onConfirm={() => this._onDelete(key)}
+                                onConfirm={() =>
+                                    disabled
+                                        ? this._onStorageBackwards(key)
+                                        : this._onDelete(key)
+                                }
+                                //    if (disabled) {
+                                //        this._onDelete(key);
+                                //        this._handleAdd();
+                                //        return null;
+                                //    }
+                                //    this._onDelete(key);
+                                //    return null;
+                                //}}
+                                //disabled={disabled}
+                                // className={
+                                //     disabled
+                                //         ? Styles.popconfirmDisabled
+                                //         : Styles.popconfirm
+                                // }
                             >
                                 <Icon
                                     type="check"
@@ -177,7 +225,7 @@ export default class DetailsTable extends Component {
                                     this.props.form.getFieldDecorator
                                 }
                                 hidden
-                                // disabled={editServicesForbidden}
+                                disabled={disabled}
                             />
                         </>
                     );
@@ -1063,6 +1111,19 @@ export default class DetailsTable extends Component {
     _handleAdd = () => {
         const { keys } = this.state;
         this.setState({ keys: [...keys, this.uuid++] });
+    };
+
+    _onStorageBackwards = redundantKey => {
+        // console.log("%^&*%^%^&&^*&%^*&$%*$ _onStorageBackwards key", redundantKey);
+        // this._onDelete(key);
+        // this._handleAdd();
+        const { keys } = this.state;
+        this.setState({
+            keys: [...keys.filter(key => redundantKey !== key), this.uuid++],
+        });
+        this.props.form.setFieldsValue({
+            [`details[${redundantKey}]`]: void 0,
+        });
     };
 
     render() {
