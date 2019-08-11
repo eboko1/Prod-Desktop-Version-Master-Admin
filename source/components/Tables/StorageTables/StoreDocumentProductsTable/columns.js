@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { Select, InputNumber } from 'antd';
+import { Select } from 'antd';
 import _ from 'lodash';
 import { v4 } from 'uuid';
 
@@ -107,16 +107,6 @@ export default (props, state, table) => {
                         rules={ state.keys.length !== key + 1 && requiredRule }
                         // rules={ docProducts[key] === docProducts.length ? requiredRule : []}
                     >
-                        { console.log(
-                            'aa',
-                            [ ...props.searchStoreProducts || [] ].map(
-                                ({ id, code }) => (
-                                    <Option value={ id } key={ v4() }>
-                                        { code }
-                                    </Option>
-                                ),
-                            ),
-                        ) }
                         { !_.isEmpty(props.searchStoreProducts) ? 
                             [ ...props.searchStoreProducts || [] ].map(
                                 ({ id, code }) => (
@@ -173,11 +163,6 @@ export default (props, state, table) => {
             width:  '10%',
             key:    'brandId',
             render: ({ key }) => {
-                console.log(
-                    '→LOOOOOOG',
-                    _.get(props, `incomeDoc.docProducts[${key}]`),
-                );
-
                 return (
                     <>
                         <DecoratedInput

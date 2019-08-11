@@ -141,7 +141,7 @@ const IncomeForm = props => {
                 <FormHeader>
                     <div>
                         { incomeDocId ? (
-                            <SubmitButton icon='save'>
+                            <SubmitButton icon='save' onClick={ () => _submit() }>
                                 { formatMessage({ id: 'save' }) }
                             </SubmitButton>
                         ) : (

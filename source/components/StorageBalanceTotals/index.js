@@ -49,7 +49,7 @@ export const StorageBalanceTotals = connect(
                     onChange={ onPickDate }
                     defaultValue={ moment(filters.date) }
                 />
-                <SearchField />
+                <SearchField setFilters={ props.setStoreBalanceFilters } />
             </FiltersRow>
             <DataRow>
                 <DataWrapper>

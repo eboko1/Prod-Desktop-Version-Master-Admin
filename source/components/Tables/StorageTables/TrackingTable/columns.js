@@ -180,7 +180,7 @@ export default props => {
         }),
         dataIndex: 'purchasePrice',
         width:     '10%',
-        render:    purchasePrice => (
+        render:    (purchasePrice) => (
             <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
                 { purchasePrice }
             </Numeral>
@@ -193,11 +193,20 @@ export default props => {
         }),
         dataIndex: 'purchaseSum',
         width:     '10%',
-        render:    purchaseSum => (
-            <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
-                { purchaseSum }
-            </Numeral>
-        ),
+        render:    (purchaseSum, data) => {
+            const incomeDoc = _.get(data, 'doc.type');
+
+            return (
+                <>
+                    { `${incomeDoc && purchaseSum === 0 ? '' : '-'}` }
+                    <Numeral
+                        currency={ props.intl.formatMessage({ id: 'currency' }) }
+                    >
+                        { purchaseSum }
+                    </Numeral>
+                </>
+            );
+        },
     };
 
     const sellingPrice = {
@@ -219,11 +228,20 @@ export default props => {
         }),
         dataIndex: 'sellingSum',
         width:     '10%',
-        render:    sellingSum => (
-            <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
-                { sellingSum }
-            </Numeral>
-        ),
+        render:    (sellingSum, data) => {
+            const incomeDoc = _.get(data, 'doc.type');
+
+            return (
+                <>
+                    { `${incomeDoc && sellingSum === 0 ? '' : '-'}` }
+                    <Numeral
+                        currency={ props.intl.formatMessage({ id: 'currency' }) }
+                    >
+                        { sellingSum }
+                    </Numeral>
+                </>
+            );
+        },
     };
 
     return [

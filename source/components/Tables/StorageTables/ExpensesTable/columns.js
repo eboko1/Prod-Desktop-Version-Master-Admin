@@ -11,7 +11,7 @@ import { goTo } from 'utils';
 export default props => {
     const orderDatetime = {
         title: props.intl.formatMessage({
-            id: 'storage.done_date',
+            id: 'storage.created_datetime',
         }),
         dataIndex: 'orderDatetime',
         width:     '20%',

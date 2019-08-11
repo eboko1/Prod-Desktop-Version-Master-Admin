@@ -32,12 +32,12 @@ const StoreBalanceTableComponent = memo(props => {
     }, [ balance ]);
 
     const pagination = {
-        pageSize:         32,
+        pageSize:         25,
         size:             'large',
-        total:            Math.ceil(_.get(balance, 'stats.count', 0) / 32) * 32,
+        total:            Math.ceil(_.get(balance, 'stats.count', 0) / 25) * 25,
         hideOnSinglePage: true,
         current:          props.filters.page,
-        position:         'both',
+        position:         'bottom',
         onChange:         page => {
             props.setStoreBalancePage(page);
             props.fetchStoreBalance();

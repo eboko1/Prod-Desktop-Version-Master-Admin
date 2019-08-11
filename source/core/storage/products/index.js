@@ -40,6 +40,7 @@ export const DELETE_PRODUCT = `${prefix}/DELETE_PRODUCT`;
 export const DELETE_PRODUCT_SUCCESS = `${prefix}/DELETE_PRODUCT_SUCCESS`;
 
 export const SET_STORE_PRODUCTS_PAGE = `${prefix}/SET_STORE_PRODUCTS_PAGE`;
+export const SET_STORE_PRODUCTS_FILTERS = `${prefix}/SET_STORE_PRODUCTS_FILTERS`;
 
 export const SET_PRODUCT_LOADING = `${prefix}/SET_PRODUCT_LOADING`;
 export const SET_PRODUCTS_LOADING = `${prefix}/SET_PRODUCTS_LOADING`;
@@ -120,6 +121,9 @@ export default function reducer(state = ReducerState, action) {
 
         case SET_STORE_PRODUCTS_PAGE:
             return { ...state, filters: { ...state.filters, page: payload } };
+
+        case SET_STORE_PRODUCTS_FILTERS:
+            return { ...state, filters: { ...state.filters, ...payload } };
 
         case SET_PRODUCTS_EXCEL_IMPORT_LOADING:
             return { ...state, productsExcelLoading: payload };
@@ -254,6 +258,11 @@ export const deleteProductSuccess = () => ({
     type: DELETE_PRODUCT_SUCCESS,
 });
 
+export const setStoreProductsFilters = filters => ({
+    type:    SET_STORE_PRODUCTS_FILTERS,
+    payload: filters,
+});
+
 // productsExcel
 export const productsExcelImportValidate = file => ({
     type:    PRODUCTS_EXCEL_IMPORT_VALIDATE,
@@ -330,7 +339,7 @@ const normalizeFile = file =>
 export function* fetchProductsSaga() {
     while (true) {
         try {
-            yield take(FETCH_PRODUCTS);
+            yield take([ FETCH_PRODUCTS, SET_STORE_PRODUCTS_FILTERS ]);
             yield put(setProductsLoading(true));
             const filters = yield select(selectStoreProductsFilters);
             const response = yield call(
