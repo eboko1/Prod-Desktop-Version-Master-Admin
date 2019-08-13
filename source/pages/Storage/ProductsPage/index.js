@@ -3,7 +3,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-import _ from 'lodash';
 
 // proj
 import {
@@ -18,7 +17,7 @@ import { Layout, StyledButton } from 'commons';
 import { ExcelReader, StoreProductsTable } from 'components';
 import { ProductsExcelForm } from 'forms';
 import { StoreProductModal } from 'modals';
-import { withErrorMessage } from 'utils';
+import { withErrorMessage, permissions, isForbidden } from 'utils';
 import { SearchField } from 'forms/_formkit';
 
 const ButtonGroup = styled.div`
@@ -64,7 +63,9 @@ const StoreProducts = withErrorMessage()(props => {
                                 </AddButton>
                             </>
                         ) : (
-                            <div>Please finish import</div>
+                            <div>
+                                <FormattedMessage id='storage.please_finish.import' />
+                            </div>
                         ) }
                     </ButtonGroup>
                 </>

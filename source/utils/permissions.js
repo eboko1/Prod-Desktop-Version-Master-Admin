@@ -43,16 +43,16 @@ const GET_ALL_TASKS = 'GET_ALL_TASKS';
 
 //Warehouse
 const ACCESS_SUPPLIERS = 'ACCESS_SUPPLIERS';
-const ACCESS_STORE_GROUPS =  'ACCESS_STORE_GROUPS';
-const ACCESS_PRICE_GROUPS =  'ACCESS_PRICE_GROUPS';
-const ACCESS_STORE_PRODUCTS =  'ACCESS_STORE_PRODUCTS';
-const EDIT_STORE_PRODUCT_PRICE =  'EDIT_STORE_PRODUCT_PRICE';
-const ACCESS_INCOME_STORE_DOCS =  'ACCESS_INCOME_STORE_DOCS';
-const ACCESS_EXPENSE_STORE_DOCS =  'ACCESS_EXPENSE_STORE_DOCS';
-const SEARCH_STORE_PRODUCT =  'SEARCH_STORE_PRODUCT';
-const SEARCH_STORE_PRODUCT_WITH_PRICE =  'SEARCH_STORE_PRODUCT_WITH_PRICE';
-const VIEW_STORE =  'VIEW_STORE';
-const VIEW_STORE_WITH_PRICE =  'VIEW_STORE_WITH_PRICE';
+const ACCESS_STORE_GROUPS = 'ACCESS_STORE_GROUPS';
+const ACCESS_PRICE_GROUPS = 'ACCESS_PRICE_GROUPS';
+const ACCESS_STORE_PRODUCTS = 'ACCESS_STORE_PRODUCTS';
+const EDIT_STORE_PRODUCT_PRICE = 'EDIT_STORE_PRODUCT_PRICE';
+const ACCESS_INCOME_STORE_DOCS = 'ACCESS_INCOME_STORE_DOCS';
+const ACCESS_EXPENSE_STORE_DOCS = 'ACCESS_EXPENSE_STORE_DOCS';
+const SEARCH_STORE_PRODUCT = 'SEARCH_STORE_PRODUCT';
+const SEARCH_STORE_PRODUCT_WITH_PRICE = 'SEARCH_STORE_PRODUCT_WITH_PRICE';
+const VIEW_STORE = 'VIEW_STORE';
+const VIEW_STORE_WITH_PRICE = 'VIEW_STORE_WITH_PRICE';
 
 //Accounting
 const ACCESS_ACCOUNTING = 'ACCESS_ACCOUNTING';
@@ -178,25 +178,25 @@ export const groupedPermissions = {
         ACCESS_INCOME_STORE_DOCS,
         ACCESS_EXPENSE_STORE_DOCS,
         SEARCH_STORE_PRODUCT,
-        SEARCH_STORE_PRODUCT_WITH_PRICE,
-        VIEW_STORE,
-        VIEW_STORE_WITH_PRICE,
+        // SEARCH_STORE_PRODUCT_WITH_PRICE,
+        VIEW_STORE, // tracking, movement, balance
+        // VIEW_STORE_WITH_PRICE,
     ],
     [ ACCOUNTING_PERMISSIONS ]: [ ACCESS_ACCOUNTING, EDIT_CASH_ORDERS ],
     [ REPORTS_PERMISSIONS ]:    [ ACCESS_KPI, ACCESS_FEEDBACK, ACCESS_CALL_STATISTICS ],
     [ OTHER_PERMISSIONS ]:      [ DEMO ],
 };
 
-export const isForbidden = ({isAdmin, scope}, grant) =>
+export const isForbidden = ({ isAdmin, scope }, grant) =>
     !isAdmin && !(_.isArray(scope) && scope.includes(grant));
 
-export const isAdmin = ({isAdmin}) => isAdmin;
+export const isAdmin = ({ isAdmin }) => isAdmin;
 
 export const getGroupsLabels = intl => ({
     [ DASHBOARD_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.dashboard_permissions',
     }),
-    [ TASKS_PERMISSIONS ]:   intl.formatMessage({id: 'roles.tasks_permissions'}),
+    [ TASKS_PERMISSIONS ]:   intl.formatMessage({ id: 'roles.tasks_permissions' }),
     [ CLIENTS_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.clients_permissions',
     }),
@@ -221,7 +221,7 @@ export const getGroupsLabels = intl => ({
 });
 
 export const getPermissionsLabels = intl => ({
-    [ ACCESS_ORDER_BODY ]:  intl.formatMessage({id: 'roles.access_order_body'}),
+    [ ACCESS_ORDER_BODY ]:  intl.formatMessage({ id: 'roles.access_order_body' }),
     [ ACCESS_ORDER_CALLS ]: intl.formatMessage({
         id: 'roles.access_order_calls',
     }),
@@ -243,16 +243,16 @@ export const getPermissionsLabels = intl => ({
     [ CREATE_INVITE_ORDER ]: intl.formatMessage({
         id: 'roles.create_invite_order',
     }),
-    [ CREATE_ORDER ]:         intl.formatMessage({id: 'roles.create_order'}),
-    [ PRINT_ORDERS ]:         intl.formatMessage({id: 'roles.print_orders'}),
-    [ LIMITED_PRINT ]:        intl.formatMessage({id: 'roles.limited_print'}),
-    [ SHOW_FILTERS ]:         intl.formatMessage({id: 'roles.show_filters'}),
-    [ SHOW_ORDERS ]:          intl.formatMessage({id: 'roles.show_orders'}),
+    [ CREATE_ORDER ]:         intl.formatMessage({ id: 'roles.create_order' }),
+    [ PRINT_ORDERS ]:         intl.formatMessage({ id: 'roles.print_orders' }),
+    [ LIMITED_PRINT ]:        intl.formatMessage({ id: 'roles.limited_print' }),
+    [ SHOW_FILTERS ]:         intl.formatMessage({ id: 'roles.show_filters' }),
+    [ SHOW_ORDERS ]:          intl.formatMessage({ id: 'roles.show_orders' }),
     [ UPDATE_SUCCESS_ORDER ]: intl.formatMessage({
         id: 'roles.update_success_order',
     }),
 
-    [ ACCESS_DASHBOARD ]:     intl.formatMessage({id: 'roles.access_dashboard'}),
+    [ ACCESS_DASHBOARD ]:     intl.formatMessage({ id: 'roles.access_dashboard' }),
     [ EDIT_DASHBOARD_ORDER ]: intl.formatMessage({
         id: 'roles.edit_dashboard_order',
     }),

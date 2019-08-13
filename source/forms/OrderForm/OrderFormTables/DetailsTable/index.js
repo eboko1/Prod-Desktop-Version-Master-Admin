@@ -133,12 +133,17 @@ export default class DetailsTable extends Component {
                 tecdocId: modificationId,
                 details: formDetails,
             } = this.props;
-
+            console.log("→ user", this.props.user);
             const editDetailsForbidden =
                 isForbidden(
                     this.props.user,
                     permissions.ACCESS_ORDER_DETAILS,
                 ) || !clientVehicleId;
+
+            const isStorageAvailable = !isForbidden(
+                this.props.user,
+                permissions.ACCESS_EXPENSE_STORE_DOCS,
+            );
 
             const detailSelectPlaceholder = clientVehicleId
                 ? this._getLocalization("order_form_table.detail.placeholder")
@@ -570,7 +575,9 @@ export default class DetailsTable extends Component {
                                 showSearch
                                 dropdownMatchSelectWidth={false}
                                 rules={this.requiredRule}
-                                placeholder={"storage.product_code"}
+                                placeholder={this.props.intl.formatMessage({
+                                    id: "storage.product_code",
+                                })}
                             >
                                 {productId ? (
                                     <Option value={productId} key={productId}>
@@ -834,7 +841,7 @@ export default class DetailsTable extends Component {
                     ),
             };
 
-            const tableColumns = [
+            let tableColumns = [
                 storage,
                 detailName,
                 brand,
@@ -846,6 +853,24 @@ export default class DetailsTable extends Component {
                 sum,
                 actions,
             ];
+
+            console.log("→ tableColumns", tableColumns);
+
+            if (!isStorageAvailable) {
+                tableColumns = [
+                    detailName,
+                    brand,
+                    code,
+                    suggest,
+                    price,
+                    purchasePrice,
+                    count,
+                    sum,
+                    actions,
+                ];
+            }
+
+            console.log("→ isStorageAvailable", isStorageAvailable);
 
             return tableColumns;
         };

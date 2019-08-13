@@ -27,7 +27,7 @@ const SearchField = props => {
             <SearchWrapper width={ props.width }>
                 <Search
                     placeholder={ props.intl.formatMessage({
-                        id: 'orders-filter.search_placeholder',
+                        id: 'storage.search',
                     }) }
                     onChange={ ({ target: { value } }) => handleSearch(value) }
                 />

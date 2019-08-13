@@ -90,58 +90,58 @@ export default {
             name:     'navigation.storage',
             items:    [
                 {
-                    key:  '/products-groups',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    key:      '/products-groups',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_STORE_GROUPS),
                     link: book.productsGroups,
                     name: 'navigation.products_groups',
                 },
                 {
-                    key:  '/price-groups',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    key:      '/price-groups',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_PRICE_GROUPS),
                     link: book.priceGroups,
                     name: 'navigation.price_groups',
                 },
                 {
-                    key:  '/products',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    key:      '/products',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
                     link: book.products,
                     name: 'navigation.products',
                 },
                 {
-                    key:  '/storage-balance',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_STORAGE),
-                    link: book.storageBalance,
-                    name: 'navigation.storage_balance',
+                    key:      '/storage-balance',
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    link:     book.storageBalance,
+                    name:     'navigation.storage_balance',
                 },
                 {
-                    key:  '/storage-movement',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_STORAGE),
-                    link: book.storageMovement,
-                    name: 'navigation.storage_movement',
+                    key:      '/storage-movement',
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    link:     book.storageMovement,
+                    name:     'navigation.storage_movement',
                 },
                 {
-                    key:  '/tracking',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_STORAGE),
-                    link: book.productsTracking,
-                    name: 'navigation.products_tracking',
+                    key:      '/tracking',
+                    disabled: user => isForbidden(user, permissions.VIEW_STORE),
+                    link:     book.productsTracking,
+                    name:     'navigation.products_tracking',
                 },
                 {
-                    key:  '/incomes',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    key:      '/incomes',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_INCOME_STORE_DOCS),
                     link: book.storageIncomes,
                     name: 'navigation.incomes',
                 },
                 {
-                    key:  '/expenses',
-                    // disabled: user =>
-                    //     isForbidden(user, permissions.ACCESS_STORAGE),
+                    key:      '/expenses',
+                    disabled: user =>
+                        isForbidden(
+                            user,
+                            permissions.ACCESS_EXPENSE_STORE_DOCS,
+                        ),
                     link: book.storageExpenses,
                     name: 'navigation.expenses',
                 },

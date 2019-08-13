@@ -72,7 +72,9 @@
     "storage.validation_with_errors": "Validation has passed with errors!",
     "storage.validation_too_many_errors": "Too many errors!",
     "storage.validation_duplicate": "duplicate",
-    "storage.add_new_storage_product": "Add new storage product"
+    "storage.add_new_storage_product": "Add new storage product",
+    "storage.please_finish.import": "Please finish doc import",
+    "storage.search": "Search"
   },
   "ru": {
     "storage": "Склад",
@@ -148,7 +150,9 @@
     "storage.validation_with_errors": "Валидация прошла с ошибками!",
     "storage.validation_too_many_errors": "Слишком много ошибок!",
     "storage.validation_duplicate": "Дубликат",
-    "storage.add_new_storage_product": "Добавить новый товар на склад"
+    "storage.add_new_storage_product": "Добавить новый товар на склад",
+    "storage.please_finish.import": "Пожалуйста, закончите импорт",
+    "storage.search": "Поиск"
   },
   "uk": {
     "storage": "Склад",
@@ -223,6 +227,8 @@
     "storage.validation_with_errors": "Валідація пройшла з помилками!",
     "storage.validation_too_many_errors": "Забагато помилок!",
     "storage.validation_duplicate": "Дублікат",
-    "storage.add_new_storage_product": "Додати новий товар на склад"
+    "storage.add_new_storage_product": "Додати новий товар на склад",
+    "storage.please_finish.import": "Будь ласка, закінчіть імпорт",
+    "storage.search": "Пошук"
   }
 }
