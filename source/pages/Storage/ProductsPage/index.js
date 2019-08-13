@@ -10,6 +10,7 @@ import {
     productsExcelImportValidate,
     setStoreProductsFilters,
     selectProductsImporting,
+    downloadExcelTemplate,
 } from 'core/storage/products';
 import { MODALS, setModal } from 'core/modals/duck';
 
@@ -43,6 +44,7 @@ const StoreProducts = withErrorMessage()(props => {
                                     type='secondary'
                                     icon='download'
                                     resetRadius
+                                    onClick={ () => props.downloadExcelTemplate()  }
                                 >
                                     <FormattedMessage id='storage.download_excel_template' />
                                 </StyledButton>
@@ -86,6 +88,7 @@ const mapDispatchToProps = {
     productsExcelImportValidate,
     setModal,
     setStoreProductsFilters,
+    downloadExcelTemplate,
 };
 
 export const ProductsPage = connect(

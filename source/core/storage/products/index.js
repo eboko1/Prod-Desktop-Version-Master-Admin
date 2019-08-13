@@ -2,6 +2,7 @@
 import { call, put, all, take, select } from 'redux-saga/effects';
 import nprogress from 'nprogress';
 import { createSelector } from 'reselect';
+import { saveAs } from 'file-saver';
 import _ from 'lodash';
 
 //proj
@@ -13,6 +14,9 @@ import { fetchAPI } from 'utils';
  **/
 export const moduleName = 'store_products';
 const prefix = `cpb/${moduleName}`;
+
+export const DOWNLOAD_PRODUCTS_EXCEL_TEMPLATE = `${prefix}/DOWNLOAD_PRODUCTS_EXCEL_TEMPLATE`;
+export const DOWNLOAD_PRODUCTS_EXCEL_TEMPLATE_SUCCESS = `${prefix}/DOWNLOAD_PRODUCTS_EXCEL_TEMPLATE_SUCCESS`;
 
 export const PRODUCTS_EXCEL_IMPORT_VALIDATE = `${prefix}/PRODUCTS_EXCEL_IMPORT_VALIDATE`;
 export const PRODUCTS_EXCEL_IMPORT_VALIDATE_SUCCESS = `${prefix}/PRODUCTS_EXCEL_IMPORT_VALIDATE_SUCCESS`;
@@ -264,6 +268,15 @@ export const setStoreProductsFilters = filters => ({
 });
 
 // productsExcel
+export const downloadExcelTemplate = () => ({
+    type: DOWNLOAD_PRODUCTS_EXCEL_TEMPLATE,
+});
+
+export const downloadExcelTemplateSuccess = doc => ({
+    type:    DOWNLOAD_PRODUCTS_EXCEL_TEMPLATE_SUCCESS,
+    payload: doc,
+});
+
 export const productsExcelImportValidate = file => ({
     type:    PRODUCTS_EXCEL_IMPORT_VALIDATE,
     payload: file,
@@ -501,6 +514,37 @@ export function* deleteProductSaga() {
     }
 }
 
+export function* downloadExcelTemplateSaga() {
+    while (true) {
+        try {
+            yield take(DOWNLOAD_PRODUCTS_EXCEL_TEMPLATE);
+            yield nprogress.start();
+            const response = yield call(
+                fetchAPI,
+                'GET',
+                '/store_products/import_template',
+                {},
+                null,
+                { rawResponse: true },
+            );
+
+            const excelFile = yield response.blob();
+
+            const contentDispositionHeader = response.headers.get(
+                'content-disposition',
+            );
+            const fileName = contentDispositionHeader.match(
+                /^attachment; filename="(.*)"/,
+            )[ 1 ];
+            yield saveAs(excelFile, fileName);
+        } catch (error) {
+            yield put(setErrorMessage(error));
+        } finally {
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* productsExcelImportValidateSaga() {
     while (true) {
         try {
@@ -568,7 +612,6 @@ export function* productsExcelImportSaga() {
                 },
             );
 
-
             yield put(productsExcelImportSuccess(validationResult));
             yield put(setProductsExcelImportLoading(false));
 
@@ -592,6 +635,7 @@ export function* saga() {
         call(createProductSaga),
         call(updateProductSaga),
         call(deleteProductSaga),
+        call(downloadExcelTemplateSaga),
         call(productsExcelImportValidateSaga),
         call(productsExcelImportSaga),
     ]);
