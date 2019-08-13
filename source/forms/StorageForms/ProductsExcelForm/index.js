@@ -99,9 +99,9 @@ const ProductsExcelFormComponent = memo(props => {
 
     const _renderButtonGroup = () => {
         const availableToSubmit = !_.isEmpty(
-            props.invalidProductsExcel.filter(
+            props.invalidProductsExcel ? props.invalidProductsExcel.filter(
                 product => !product.alreadyExists,
-            ),
+            ) : [],
         );
 
         return (

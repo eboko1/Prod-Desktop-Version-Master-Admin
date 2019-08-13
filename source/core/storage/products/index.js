@@ -556,20 +556,18 @@ export function* productsExcelImportSaga() {
                     },
                 );
             }
-            console.log('**SAGA validationResult', validationResult);
 
             const response = yield call(
                 fetchAPI,
                 'POST',
                 '/store_products/import',
                 null,
-                valid.concat(validationResult.validProducts),
+                valid.concat(validationResult.validProducts || []),
                 {
                     handleErrorInternally: true,
                 },
             );
 
-            console.log('→ ** SAGA response', response);
 
             yield put(productsExcelImportSuccess(validationResult));
             yield put(setProductsExcelImportLoading(false));
