@@ -1098,8 +1098,8 @@ export default class DetailsTable extends Component {
         if (details[key].storage) {
             const func = (recommendedPrice, purchasePrice) => {
                 this.props.form.setFieldsValue({
-                    [`details[${key}].purchasePrice`]: recommendedPrice,
-                    [`details[${key}].detailPrice`]: purchasePrice,
+                    [`details[${key}].purchasePrice`]: purchasePrice,
+                    [`details[${key}].detailPrice`]: recommendedPrice,
                 });
             };
 

@@ -66,7 +66,6 @@ const DocumentProductsTable = memo(props => {
     //     ]})
     // }, [])
 
-    console.log('!!! keys', keys);
     const _handleDelete = redundantKey => {
         setKeys(keys.filter(key => redundantKey !== key));
         props.form.setFieldsValue({
@@ -107,9 +106,9 @@ const DocumentProductsTable = memo(props => {
     const _handleSumCalculation = (fieldKey, field, value) => {
         // fieldKey isEqual with update flow but +1 for creation because of [empty] at first docProduct array index
         const key = incomeDocId ? fieldKey : fieldKey;
-        console.log('→ incomeDocId', incomeDocId);
-        console.log('!!!!!fieldKey', fieldKey);
-        console.log('!!!!!key', key);
+        // console.log('→ incomeDocId', incomeDocId);
+        // console.log('!!!!!fieldKey', fieldKey);
+        // console.log('!!!!!key', key);
         const purchasePrice = props.form.getFieldValue(
             `docProducts[${fieldKey}].purchasePrice`,
         );
@@ -120,8 +119,6 @@ const DocumentProductsTable = memo(props => {
         // const sum = props.form.getFieldValue('sum') || 0;
 
         const getTotalSum = key => {
-            console.log('→ getTotalSum key', key);
-
             let docProducts = props.form
                 .getFieldValue('docProducts')
                 .filter(Boolean);
@@ -135,13 +132,12 @@ const DocumentProductsTable = memo(props => {
 
             return docProducts.reduce((accumulator, product) => {
                 return accumulator + (product.purchaseSum || 0);
-            }, incomeDocSum);
+            }, 0);
         };
 
         const totalSum = getTotalSum(key);
 
         if (field.includes('purchasePrice')) {
-            console.log('→ fieldKey', fieldKey);
             props.form.setFieldsValue({
                 [ `docProducts[${fieldKey}].purchaseSum` ]: value * quantity,
                 sum:                                        totalSum,
@@ -154,7 +150,6 @@ const DocumentProductsTable = memo(props => {
             });
         }
     };
-    console.log('bzdyuk searchResult', searchStoreProducts);
 
     return (
         <Catcher>

@@ -15,16 +15,12 @@ import {
     updateIncomeDoc,
     selectIncomeDocLoading,
 } from 'core/storage/incomes';
-import { setBrandsSearchQuery, selectBrandsByQuery } from 'core/search/duck';
+import { selectBrandsByQuery } from 'core/search/duck';
 import { fetchSuppliers, selectSuppliers } from 'core/suppliers/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
 import { Catcher, Numeral, StyledButton } from 'commons';
-import {
-    DecoratedInput,
-    DecoratedDatePicker,
-    DecoratedSelect,
-} from 'forms/DecoratedFields';
+import { DecoratedInput, DecoratedDatePicker } from 'forms/DecoratedFields';
 import { BusinessSuppliersSearch } from 'forms/_formkit';
 import { SupplierModal, StoreProductModal } from 'modals';
 import { StoreDocumentProductsTable } from 'components';
@@ -110,7 +106,10 @@ const IncomeForm = props => {
                                     'brandId',
                                     'brandName',
                                 ])),
-                        status: complete ? 'DONE' : 'NEW',
+                        status:
+                            complete || incomeDoc.status === 'DONE'
+                                ? 'DONE'
+                                : 'NEW',
                     };
                 } else {
                     normalizedValues = {
@@ -122,7 +121,10 @@ const IncomeForm = props => {
                                 'brandId',
                                 'brandName',
                             ])),
-                        status: complete ? 'DONE' : 'NEW',
+                        status:
+                            complete || incomeDoc.status === 'DONE'
+                                ? 'DONE'
+                                : 'NEW',
                     };
                 }
 
@@ -145,7 +147,10 @@ const IncomeForm = props => {
                                 { formatMessage({ id: 'save' }) }
                             </SubmitButton>
                         ) : (
-                            <SubmitButton type='primary' onClick={ () => _submit() }>
+                            <SubmitButton
+                                type='primary'
+                                onClick={ () => _submit() }
+                            >
                                 { formatMessage({ id: 'create' }) }
                             </SubmitButton>
                         ) }

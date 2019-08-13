@@ -180,9 +180,20 @@ export default props => {
         title: props.intl.formatMessage({
             id: 'storage.quantity',
         }),
-        dataIndex: 'remaining',
+        dataIndex: 'quantity',
         width:     '7.5%',
-        render:    remaining => numeralFormatter(parseInt(remaining, 10)),
+        render:    (quantity, data) => {
+
+            return (
+                <>
+                    { getMinus(
+                        _.get(data, 'doc.type'),
+                        Number.parseInt(quantity, 0),
+                    ) }
+                    <Numeral>{ Number.parseInt(quantity, 0) }</Numeral>
+                </>
+            );
+        },
     };
 
     const purchasePrice = {
@@ -204,7 +215,7 @@ export default props => {
         }),
         dataIndex: 'purchaseSum',
         width:     '10%',
-        render:    (purchaseSum, data) => { 
+        render:    (purchaseSum, data) => {
             return (
                 <>
                     { getMinus(_.get(data, 'doc.type'), purchaseSum) }
