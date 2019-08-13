@@ -5,6 +5,7 @@ import { FormattedMessage } from 'react-intl';
 import { DatePicker, Skeleton } from 'antd';
 import moment from 'moment';
 import styled from 'styled-components';
+import _ from 'lodash';
 
 // proj
 import {
@@ -49,21 +50,23 @@ export const StorageBalanceTotals = connect(
                     onChange={ onPickDate }
                     defaultValue={ moment(filters.date) }
                 />
-                <SearchField setFilters={ props.setStoreBalanceFilters } />
+                <FilterSpace>
+                    <SearchField setFilters={ props.setStoreBalanceFilters } />
+                </FilterSpace>
             </FiltersRow>
             <DataRow>
                 <DataWrapper>
-                    { total
+                    { !_.isEmpty(total)
                         ? renderTotalData('in_stock', total.remaining)
                         : SkeletonLoader }
                 </DataWrapper>
                 <DataWrapper>
-                    { total
+                    { !_.isEmpty(total)
                         ? renderTotalData('reserve', total.reserved)
                         : SkeletonLoader }
                 </DataWrapper>
                 <DataWrapper>
-                    { total
+                    { !_.isEmpty(total)
                         ? renderTotalData(
                             'available',
                             total.remaining - total.reserved,
@@ -71,7 +74,9 @@ export const StorageBalanceTotals = connect(
                         : SkeletonLoader }
                 </DataWrapper>
                 <DataWrapper>
-                    { total ? renderTotalData('sum', total.sum) : SkeletonLoader }
+                    { !_.isEmpty(total)
+                        ? renderTotalData('sum', total.sum)
+                        : SkeletonLoader }
                 </DataWrapper>
             </DataRow>
         </BalanceTotal>
@@ -115,4 +120,8 @@ const Highlighted = styled.span`
     color: var(--secondary);
     font-weight: 700;
     font-size: 24px;
+`;
+
+const FilterSpace = styled.div`
+    margin-left: 24px;
 `;

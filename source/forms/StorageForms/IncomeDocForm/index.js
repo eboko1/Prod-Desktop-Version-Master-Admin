@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { Form, Select, Icon, Button } from 'antd';
+import { Form, Icon, Button } from 'antd';
 import { injectIntl } from 'react-intl';
 import _ from 'lodash';
 import styled from 'styled-components';
@@ -19,14 +19,13 @@ import { selectBrandsByQuery } from 'core/search/duck';
 import { fetchSuppliers, selectSuppliers } from 'core/suppliers/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Catcher, Numeral, StyledButton } from 'commons';
+import { Catcher, Loader, Numeral, StyledButton } from 'commons';
 import { DecoratedInput, DecoratedDatePicker } from 'forms/DecoratedFields';
 import { BusinessSuppliersSearch } from 'forms/_formkit';
 import { SupplierModal, StoreProductModal } from 'modals';
 import { StoreDocumentProductsTable } from 'components';
 
 // own
-const Option = Select.Option;
 const FormItem = Form.Item;
 
 const formItemLayout = {
@@ -137,7 +136,9 @@ const IncomeForm = props => {
         });
     };
 
-    return (
+    return props.loading ? (
+        <Loader loading={ props.loading } />
+    ) : (
         <Catcher>
             <Form>
                 <FormHeader>
@@ -217,31 +218,6 @@ const IncomeForm = props => {
                         />
 
                         <SupplierFieldWrapper>
-                            { /* <DecoratedSelect
-                                field='businessSupplierId'
-                                formItem
-                                placeholder={ formatMessage({
-                                    id: 'cash-order-form.select_supplier',
-                                }) }
-                                label={ formatMessage({
-                                    id:
-                                        'cash-order-form.counterparty.BUSINESS_SUPPLIER',
-                                }) }
-                                formItemLayout={ formItemLayout }
-                                getFieldDecorator={ form.getFieldDecorator }
-                                getPopupContainer={ trigger =>
-                                    trigger.parentNode
-                                }
-                                initialValue={ incomeDoc.businessSupplierId }
-                            >
-                                { !_.isEmpty(props.suppliers)
-                                    ? props.suppliers.map(({ id, name }) => (
-                                        <Option value={ id } key={ id }>
-                                            { name }
-                                        </Option>
-                                    ))
-                                    : [] }
-                            </DecoratedSelect> */ }
                             <FormItem
                                 label={ formatMessage({
                                     id:

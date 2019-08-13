@@ -63,6 +63,6 @@ const Filters = styled.section`
 `;
 
 const Content = styled.section`
-    padding: 150px 0 0 0;
+    padding: 116px 0 0 0;
     margin: 0 16px;
 `;
