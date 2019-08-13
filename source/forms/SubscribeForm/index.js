@@ -117,7 +117,7 @@ export class SubscribeForm extends Component {
 
                 asyncSubscribe(normalizedValues).then(
                     () => this._subscribeSuccess(values.paymentType),
-                    error => console.log("→ error", error),
+                    error => console.error(error),
                 );
             }
         });

@@ -20,7 +20,6 @@ import columns from './columns';
 const DocumentProductsTable = memo(props => {
     const incomeDocProducts = _.get(props, 'incomeDoc.docProducts');
     const incomeDocId = _.get(props, 'incomeDoc.id');
-    const incomeDocSum = _.get(props, 'incomeDoc.sum', 0);
 
     const [ docProducts, setDocProducts ] = useState();
     const [ keys, setKeys ] = useState(() => {
@@ -53,19 +52,6 @@ const DocumentProductsTable = memo(props => {
         }
     }, [ incomeDocProducts ]);
 
-    // useEffect(() => {
-    //     setSearchResult({storeProducts: [
-    //         ...(docProducts || []).map(({ product }) => {
-    //             if (product) {
-    //                 return [ ...props.searchStoreProducts, { id: product.id, code: product.code }];
-    //             }
-
-    //             return [ ...props.searchStoreProducts ];
-    //         }),
-    //         props.searchStoreProducts,
-    //     ]})
-    // }, [])
-
     const _handleDelete = redundantKey => {
         setKeys(keys.filter(key => redundantKey !== key));
         props.form.setFieldsValue({
@@ -82,7 +68,7 @@ const DocumentProductsTable = memo(props => {
             [ ...props.searchStoreProducts, ...searchStoreProducts.storeProducts[ key ] || [] ],
             'id',
         ).find(({ id }) => id === value);
-        // console.log('selectedProduct', selectedProduct);
+
         props.form.setFieldsValue({
             [ `docProducts[${key}].name` ]:      selectedProduct.name,
             [ `docProducts[${key}].tradeCode` ]: selectedProduct.tradeCode,
@@ -100,23 +86,16 @@ const DocumentProductsTable = memo(props => {
             });
             _handleAdd();
         }
-        // TODO: check how it works with edit
     };
 
     const _handleSumCalculation = (fieldKey, field, value) => {
-        // fieldKey isEqual with update flow but +1 for creation because of [empty] at first docProduct array index
         const key = incomeDocId ? fieldKey : fieldKey;
-        // console.log('→ incomeDocId', incomeDocId);
-        // console.log('!!!!!fieldKey', fieldKey);
-        // console.log('!!!!!key', key);
         const purchasePrice = props.form.getFieldValue(
             `docProducts[${fieldKey}].purchasePrice`,
         );
         const quantity = props.form.getFieldValue(
             `docProducts[${fieldKey}].quantity`,
         );
-
-        // const sum = props.form.getFieldValue('sum') || 0;
 
         const getTotalSum = key => {
             let docProducts = props.form

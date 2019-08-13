@@ -99,36 +99,3 @@ export default class UniversalChart extends Component {
         );
     }
 }
-
-// // ctx: CanvasRenderingContext2D;
-
-// _measureText = text => {
-//     // console.log('→ text', text);
-//     // console.log('→ this.ctx', this.ctx);
-//     if (!this.ctx) {
-//         this.ctx = document.createElement('canvas').getContext('2d');
-//         this.ctx.font = '12px "Helvetica Neue"';
-//     }
-//     // console.log(
-//     //     '→ this.ctx.measureText(text).width',
-//     //     this.ctx.measureText(text).width,
-//     // );
-
-//     return this.ctx.measureText(text).width;
-// };
-
-// // const layout = 'vertical';
-// // const { x, y, stroke, payload } = this.props;
-// let leftMargin = 0;
-// // if (layout === 'vertical') {
-// for (const value of data) {
-//     const textWidth = this._measureText(value.name);
-//     console.log('→ textWidth', textWidth);
-//     if (textWidth > leftMargin) {
-//         leftMargin = textWidth;
-//     }
-// }
-
-// // We have pixel-perfect measurements for the width of our labels, but we also need to account for the default spacing.
-// leftMargin = Math.max(0, leftMargin - 50);
-// // }

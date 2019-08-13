@@ -45,7 +45,7 @@ const PriceGroup = props => {
     };
 
     const _handleErrors = (errors, fields) =>
-        console.log('_handleErrors(errors, fields)', errors, fields);
+        console.error('_handleErrors(errors, fields)', errors, fields);
 
     const validator = new schema(descriptor);
 
@@ -57,16 +57,7 @@ const PriceGroup = props => {
             return _handleErrors(errors, fields);
         }
         // validation passed
-    
     });
-
-    // const _validate = (value, errors, fields) => {
-    //     console.log('value', value);
-    //     if (errors) {
-    //         console.log('→ errors', errors);
-    //     }
-    //     console.log('→ fields', fields);
-    // };
 
     return (
         <StyledForm>
@@ -83,12 +74,6 @@ const PriceGroup = props => {
                         message:  props.intl.formatMessage({
                             id: 'required_field',
                         }),
-                        // validator: validator,
-                        // validator: (rule, value, _validate) => {
-                        //     // console.log('rule', rule);
-                        //     // console.log('value', value);
-                        //     // value && !value.match(/[a-zA-Z]+/);
-                        // },
                     },
                 ] }
                 onPressEnter={ () => _submit() }

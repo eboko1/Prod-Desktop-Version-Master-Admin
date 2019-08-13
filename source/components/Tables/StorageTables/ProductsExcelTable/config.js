@@ -25,18 +25,7 @@ export function columnsConfig(
     brands,
     setBrandsSearchQuery,
 ) {
-    const { getFieldDecorator, getFieldValue, setFieldsValue } = form;
-
-    const log = (brandId, index) => {
-        console.group([ `_${index}-row_` ]);
-        console.log('→ brandId', brandId);
-        console.log('getFieldValue brandId', getFieldValue(`${index}.brandId`));
-        console.log(
-            'getFieldValue brandName',
-            getFieldValue(`${index}.brandName`),
-        );
-        console.groupEnd();
-    };
+    const { getFieldDecorator, setFieldsValue } = form;
 
     const code = {
         title: formatMessage({

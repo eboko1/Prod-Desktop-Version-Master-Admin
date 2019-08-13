@@ -42,7 +42,6 @@ export {
     PriceGroupForm,
     StoreProductForm,
     IncomeDocForm,
-    ExpenseDocForm,
 } from './StorageForms';
 
 export {

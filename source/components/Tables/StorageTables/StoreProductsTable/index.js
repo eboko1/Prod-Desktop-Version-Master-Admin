@@ -1,5 +1,5 @@
 // vendor
-import React, { memo, useRef, useEffect } from 'react';
+import React, { memo, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
@@ -32,35 +32,6 @@ const ProductsTable = memo(props => {
     }, [ products ]);
 
 
-
-
-    // const paginationRef = useRef({
-    //     pageSize:         25,
-    //     size:             'large',
-    //     total:            Math.ceil(_.get(products, 'stats.count', 0) / 25) * 25,
-    //     hideOnSinglePage: true,
-    //     current:          props.filters.page,
-    //     onChange:         page => {
-    //         props.setStoreProductsPage(page);
-    //         props.fetchProducts();
-    //     },
-    // });
-
-    // // 1
-    // const _handleBandle = useCallback(() => 'some data', []);
-    // // 2
-    // const { current: _handleBandle } = useRef(() => 'some data');
-
-    // useEffect(() => {
-    //     if (!_.isEqual(products, prevValues)) {
-    //         paginationRef.current.total =
-    //             Math.ceil(_.get(products, 'stats.count', 0) / 25) * 25;
-    //         paginationRef.current.current = props.filters.page;
-    //     }
-    // }, [ products, props.filters ]);
-
-    // console.log('→ paginationRef.current', paginationRef.current);
-
     const pagination = {
         pageSize:         25,
         size:             'large',
@@ -78,7 +49,6 @@ const ProductsTable = memo(props => {
             size='small'
             columns={ columnsConfig(props) }
             dataSource={ props.products.list }
-            // pagination={ paginationRef.current }
             pagination={ pagination }
             locale={ {
                 emptyText: props.intl.formatMessage({ id: 'no_data' }),

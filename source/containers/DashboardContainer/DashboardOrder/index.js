@@ -93,10 +93,6 @@ export default class DashboardOrder extends Component {
                 // size={ { width: this.state.width, height: this.state.height } }
                 onResizeStart={ () => {
                     this._setResizeOrderState();
-                    // console.log(
-                    //     '→ onResizeStart',
-                    //     this.resizable.resizable.getBoundingClientRect(),
-                    // );
                 } }
                 onResizeStop={ (event, direction, ref, delta) => {
                     this._setResizeOrderState();

@@ -41,7 +41,6 @@ class Limited extends Component {
 
     _calculateRequiredOptions = () => {
         const defaultValues = this.props.defaultValues || [];
-        // console.log('→ _calculateRequiredOptions this', this.props.children);
 
         return this.props.children
             ? this.props.children.filter(({ props: { children } }) =>

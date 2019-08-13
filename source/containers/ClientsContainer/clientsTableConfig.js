@@ -155,7 +155,7 @@ export function columnsConfig(sort, user, formatMessage, setInvite) {
                         cancelText={ formatMessage({ id: 'no' }) }
                         okText={ formatMessage({ id: 'yes' }) }
                         title={ `${formatMessage({ id: 'delete' })}?` }
-                        onConfirm={() => console.log("→ deleted")} // eslint-disable-line
+                        onConfirm={() => console.info("deleted")} // eslint-disable-line
                     >
                         <Icon
                             className={ Styles.deleteClientIcon }

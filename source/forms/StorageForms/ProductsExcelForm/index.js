@@ -144,8 +144,6 @@ const ProductsExcelFormComponent = memo(props => {
         );
     };
 
-    console.log('→FORM props', props);
-
     return (
         <Catcher>
             <Form>

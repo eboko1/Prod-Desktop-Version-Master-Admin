@@ -63,9 +63,6 @@ export class ExcelReader extends Component {
             });
             /* Update state */
             this.setState({ data: data, cols: makeCols(ws[ '!ref' ]) });
-            // this.setState({ data: data, cols: makeCols(ws[ '!ref' ]) }, () => {
-            //     console.log(JSON.stringify(this.state.data, null, 2));
-            // });
 
             this.props.validateExcel(data);
         };

@@ -10,7 +10,6 @@ import {
     DecoratedInput,
     DecoratedInputNumber,
     DecoratedSelect,
-    DecoratedAutoComplete,
 } from 'forms/DecoratedFields';
 import {
     // permissions,
@@ -25,7 +24,7 @@ const Option = Select.Option;
 
 export default (props, state, table) => {
     const { formatMessage } = props.intl;
-    const { getFieldDecorator, getFieldValue } = props.form;
+    const { getFieldDecorator } = props.form;
     const { fields } = props.form;
     const requiredRule = [
         {
@@ -36,32 +35,6 @@ export default (props, state, table) => {
         },
     ];
 
-    console.log('→ getFieldsValue', props.form.getFieldsValue());
-
-    // const isRulesActive = index => {
-    //     console.log('→ if', getFieldValue('docProducts'));
-    //     // return false;
-    //     // console.log('→ index', index);
-    //     if (Array.isArray(getFieldValue('docProducts'))) {
-    //         console.log('→ if', getFieldValue('docProducts'));
-
-    //         // const filteredDocProducts = getFieldValue('docProducts').filter(
-    //         //     elem => elem,
-    //         // );
-    //         // console.log(
-    //         //     '→ 22filteredDocProducts.length',
-    //         //     filteredDocProducts.length,
-    //         // );
-    //         // console.log('→ 222index', index);
-    //         // if (filteredDocProducts.length !== index + 1) {
-    //         //     return requiredRule;
-    //         // }
-    //         return false;
-    //     }
-
-    //     return true;
-    // };
-
     const _isFieldDisabled = key =>
         !props.form.getFieldValue(`docProducts[${key}].productId`);
 
@@ -71,11 +44,6 @@ export default (props, state, table) => {
             width:  '20%',
             key:    'code',
             render: ({ key }) => {
-                const handleBlur = (key, value) => {
-                    if (value) {
-                        table.handleProductSelect(key, value);
-                    }
-                };
 
                 return (
                     <DecoratedSelect
@@ -93,8 +61,6 @@ export default (props, state, table) => {
                             `incomeDoc.docProducts[${key}].product.id`,
                         ) }
                         onBlur={ () => {} }
-                        // onBlur={ value => handleBlur(key, value) }
-                        // onBlur={ value => handleBlur(value, `${data.key}.productId`) }
                         onSearch={ value => {
                             props.setStoreProductsSearchQuery(value);
                         } }
@@ -103,9 +69,7 @@ export default (props, state, table) => {
                         }
                         showSearch
                         dropdownMatchSelectWidth={ false }
-                        // rules={ requiredRule }
                         rules={ state.keys.length !== key + 1 && requiredRule }
-                        // rules={ docProducts[key] === docProducts.length ? requiredRule : []}
                     >
                         { !_.isEmpty(props.searchStoreProducts) ? 
                             [ ...props.searchStoreProducts || [] ].map(
@@ -129,11 +93,6 @@ export default (props, state, table) => {
                                     ) }
                                 </Option>
                             ) }
-                        { /* { [ ...props.storeProducts[ key ] || [], ...props.searchStoreProducts || [] ].map(({ id, code }) => (
-                            <Option value={ id } key={ v4() }>
-                                { code }
-                            </Option>
-                        )) } */ }
                     </DecoratedSelect>
                 );
             },
