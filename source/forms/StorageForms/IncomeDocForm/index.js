@@ -137,7 +137,7 @@ const IncomeForm = props => {
         });
     };
 
-    const isSuppliersDisabled = !isForbidden(
+    const isSuppliersDisabled = isForbidden(
         props.user,
         permissions.ACCESS_SUPPLIERS,
     );
@@ -246,14 +246,14 @@ const IncomeForm = props => {
                                     />,
                                 ) }
                             </FormItem>
-                            { isSuppliersDisabled ? (
+                            { isSuppliersDisabled ? null : (
                                 <AddSupplierIcon
                                     type='plus'
                                     onClick={ () =>
                                         props.setModal(MODALS.SUPPLIER)
                                     }
                                 />
-                            ) : null }
+                            ) }
                         </SupplierFieldWrapper>
                     </FormColumn>
                     <FormColumn>

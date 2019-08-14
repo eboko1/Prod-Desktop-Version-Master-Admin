@@ -139,17 +139,10 @@ export default class DetailsTable extends Component {
                 title: <FormattedMessage id="storage" />,
                 key: "storage",
                 render: ({ key }) => {
-                    // const popconfirm = true;
-
                     const { popconfirm, disabled } = getStorageFlow(
                         fields,
                         key,
                     );
-                    console.group("table storage");
-                    console.log("||| disabled", disabled);
-                    console.groupEnd();
-                    // console.log("→ popconfirm", popconfirm);
-                    // console.log("→ popconfirm", popconfirm);
 
                     return !popconfirm ? (
                         <DecoratedCheckbox
@@ -486,26 +479,9 @@ export default class DetailsTable extends Component {
                     );
 
                     const renderAsStoreProductsField = () => {
-                        // const handleSelect = this._cachedInvoke.getCachedResult(
-                        //     Function.prototype.bind,
-                        //     [null, key, modificationId],
-                        //     this._handleDetailSelect,
-                        // );
-
-                        const handleBlur = (key, value) => {
-                            if (value) {
-                                this._handleDetailSelect(key, null, value);
-                            }
-                        };
-
                         return (
                             <DecoratedSelect
                                 formItem
-                                // formItemLayout={ formItemLayout }
-                                // fieldValue={_.get(
-                                //     fields,
-                                //     `details[${key}].productName`,
-                                // )}
                                 fields={{}}
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -514,30 +490,11 @@ export default class DetailsTable extends Component {
                                     trigger.parentNode
                                 }
                                 field={`details[${key}].productId`}
-                                // initialValue={_.get(
-                                //     fields,
-                                //     `details[${key}].productId`,
-                                // )}
                                 initialValue={this._getDefaultValue(
                                     key,
                                     "productId",
                                 )}
                                 onBlur={() => {}}
-                                // onBlur={value => {
-                                //     if (value) {
-                                //         this._handleProductSelect(
-                                //             key,
-                                //             // modificationId,
-                                //             value,
-                                //         );
-                                //         // return this._cachedInvoke.getCachedResult(
-                                //         //     Function.prototype.bind,
-                                //         //     [null, key, modificationId, value],
-                                //         //     this._handleDetailSelect,
-                                //         // );
-                                //     }
-                                // }}
-
                                 onSearch={value => {
                                     this.props.setStoreProductsSearchQuery(
                                         value,
@@ -548,14 +505,6 @@ export default class DetailsTable extends Component {
                                         this._handleProductSelect(key, value);
                                     }
                                 }}
-                                // onSelect={this._cachedInvoke.getCachedResult(
-                                //     Function.prototype.bind,
-                                //     [null, key, modificationId],
-                                //     this._handleDetailSelect,
-                                // )}
-                                // onSelect={value =>
-                                //     this._handleDetailSelect(key, null, value)
-                                // }
                                 showSearch
                                 dropdownMatchSelectWidth={false}
                                 rules={this.requiredRule}
@@ -1087,9 +1036,6 @@ export default class DetailsTable extends Component {
     };
 
     _onStorageBackwards = redundantKey => {
-        // console.log("%^&*%^%^&&^*&%^*&$%*$ _onStorageBackwards key", redundantKey);
-        // this._onDelete(key);
-        // this._handleAdd();
         const { keys } = this.state;
         this.setState({
             keys: [...keys.filter(key => redundantKey !== key), this.uuid++],
@@ -1118,12 +1064,10 @@ export default class DetailsTable extends Component {
                 <Button
                     icon="plus"
                     onClick={() => this.props.setModal(MODALS.STORE_PRODUCT)}
-                    disabled={
-                        !isForbidden(
-                            this.props.user,
-                            permissions.ACCESS_STORE_PRODUCTS,
-                        )
-                    }
+                    disabled={isForbidden(
+                        this.props.user,
+                        permissions.ACCESS_STORE_PRODUCTS,
+                    )}
                 >
                     <FormattedMessage id="storage.add_new_storage_product" />
                 </Button>
