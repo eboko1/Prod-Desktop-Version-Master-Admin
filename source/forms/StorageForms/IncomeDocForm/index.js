@@ -137,6 +137,11 @@ const IncomeForm = props => {
         });
     };
 
+    const isSuppliersDisabled = !isForbidden(
+        props.user,
+        permissions.ACCESS_SUPPLIERS,
+    );
+
     return props.loading ? (
         <Loader loading={ props.loading } />
     ) : (
@@ -237,13 +242,18 @@ const IncomeForm = props => {
                                             })
                                         }
                                         id={ incomeDoc.businessSupplierId }
+                                        disabled={ isSuppliersDisabled }
                                     />,
                                 ) }
                             </FormItem>
-                            <AddSupplierIcon
-                                type='plus'
-                                onClick={ () => props.setModal(MODALS.SUPPLIER) }
-                            />
+                            { isSuppliersDisabled ? (
+                                <AddSupplierIcon
+                                    type='plus'
+                                    onClick={ () =>
+                                        props.setModal(MODALS.SUPPLIER)
+                                    }
+                                />
+                            ) : null }
                         </SupplierFieldWrapper>
                     </FormColumn>
                     <FormColumn>
@@ -288,10 +298,12 @@ const IncomeForm = props => {
                 <Button
                     icon='plus'
                     onClick={ () => props.setModal(MODALS.STORE_PRODUCT) }
-                    disabled={ !isForbidden(
-                        props.user,
-                        permissions.ACCESS_STORE_PRODUCTS,
-                    ) }
+                    disabled={
+                        !isForbidden(
+                            props.user,
+                            permissions.ACCESS_STORE_PRODUCTS,
+                        )
+                    }
                 >
                     { formatMessage({ id: 'storage.add_new_storage_product' }) }
                 </Button>

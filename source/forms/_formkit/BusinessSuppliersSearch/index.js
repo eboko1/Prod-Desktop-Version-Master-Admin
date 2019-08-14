@@ -52,6 +52,7 @@ export default class BusinessSuppliersSearch extends Component {
                 }
                 onSearch={item => setBusinessSuppliersSearchQuery(item)}
                 onChange={id => onSelect(id)}
+                disabled={this.props.disabled}
                 //value={null}
             >
                 {isFetching
