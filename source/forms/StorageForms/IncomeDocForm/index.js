@@ -24,6 +24,7 @@ import { DecoratedInput, DecoratedDatePicker } from 'forms/DecoratedFields';
 import { BusinessSuppliersSearch } from 'forms/_formkit';
 import { SupplierModal, StoreProductModal } from 'modals';
 import { StoreDocumentProductsTable } from 'components';
+import { permissions, isForbidden } from 'utils';
 
 // own
 const FormItem = Form.Item;
@@ -287,6 +288,10 @@ const IncomeForm = props => {
                 <Button
                     icon='plus'
                     onClick={ () => props.setModal(MODALS.STORE_PRODUCT) }
+                    disabled={ !isForbidden(
+                        props.user,
+                        permissions.ACCESS_STORE_PRODUCTS,
+                    ) }
                 >
                     { formatMessage({ id: 'storage.add_new_storage_product' }) }
                 </Button>
@@ -298,6 +303,7 @@ const IncomeForm = props => {
 };
 
 const mapStateToProps = state => ({
+    user:      state.auth,
     loading:   selectIncomeDocLoading(state),
     brands:    selectBrandsByQuery(state),
     suppliers: selectSuppliers(state),

@@ -31,7 +31,6 @@ const ProductsTable = memo(props => {
         }
     }, [ products ]);
 
-
     const pagination = {
         pageSize:         25,
         size:             'large',
@@ -60,6 +59,7 @@ const ProductsTable = memo(props => {
 });
 
 const mapStateToProps = state => ({
+    user:     state.auth,
     products: selectStoreProducts(state),
     filters:  selectStoreProductsFilters(state),
     loading:  selectProductsLoading(state),

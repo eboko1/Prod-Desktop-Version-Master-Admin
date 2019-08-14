@@ -5,8 +5,14 @@ import _ from 'lodash';
 // proj
 import { MODALS } from 'core/modals/duck';
 import { ActionIcons } from 'commons/_uikit';
+import { permissions, isForbidden } from 'utils';
 
 export default props => {
+    const editable = !isForbidden(
+        props.user,
+        permissions.ACCESS_STORE_PRODUCTS,
+    );
+
     const code = {
         title: props.intl.formatMessage({
             id: 'storage.product_code',
@@ -83,11 +89,20 @@ export default props => {
         },
     };
 
+    if (editable) {
+        return [
+            code,
+            name,
+            brandName,
+            markup,
+            actions,
+        ];
+    }
+
     return [
         code,
         name,
         brandName,
         markup,
-        actions,
     ];
 };

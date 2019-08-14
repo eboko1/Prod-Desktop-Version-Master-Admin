@@ -37,27 +37,11 @@ const extractId = (details, name) => {
 };
 
 const getStorageFlow = defaultMemoize((fields, key) => {
-    // console.count("meomize");
     const details = _.get(fields, "details");
     const filteredDetails = Array.isArray(details)
         ? details.filter(Boolean)
         : [];
-    // console.group("getStorageFlow");
-    // console.log("_ fields", _.get(fields, "details"));
-    // console.log("_ filteredDetails", filteredDetails);
-    // console.log("_ fields length", _.get(fields, "details.length"));
-    // console.log("_ key", key);
-    // console.log("_ storage", _.get(fields, `details[${key}].storage`));
-    // console.log(
-    //     "_ length = key",
-    //     _.get(fields, "details.length") === Number(key) + 1,
-    // );
-    // console.log(
-    //     "_ if",
-    //     _.get(fields, "details.length") === Number(key) + 1 &&
-    //         _.get(fields, `details[${key}].storage`),
-    // );
-    // console.groupEnd();
+
     const popconfirm = _.get(fields, `details[${key}].storage`);
     const fieldsLength = _.get(fields, "details.length");
     let disabled = false;
@@ -657,58 +641,7 @@ export default class DetailsTable extends Component {
                             />
                         </>
                     ) : null;
-                    // }
-
-                    // const renderAsStorageField = () => {
-                    //     return (
-                    //         <DecoratedInput
-                    //             hiddeninput="hiddeninput"
-                    //             fields={{}}
-                    //             field={`details[${key}].using`}
-                    //             getFieldDecorator={
-                    //                 this.props.form.getFieldDecorator
-                    //             }
-                    //             // initialValue={{}}
-                    //         />
-                    //     );
-                    // };
-
-                    // if (storageFlow) {
-                    //     return renderAsStorageField();
-                    // }
-
-                    // return renderAsTecDocField();
                 },
-            };
-
-            const purchasePrice = {
-                title: <FormattedMessage id="order_form_table.purchasePrice" />,
-                width: "9%",
-                key: "purchasePrice",
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        errors={errors}
-                        defaultGetValueProps
-                        fields={{}}
-                        fieldValue={_.get(
-                            fields,
-                            `details[${key}].purchasePrice`,
-                        )}
-                        initialValue={this._getDefaultValue(
-                            key,
-                            "purchasePrice",
-                        )}
-                        field={`details[${key}].purchasePrice`}
-                        disabled={
-                            this._isFieldDisabled(key, false, true) ||
-                            editDetailsForbidden
-                        }
-                        getFieldDecorator={this.props.form.getFieldDecorator}
-                        min={0}
-                        formatter={numeralFormatter}
-                        parser={numeralParser}
-                    />
-                ),
             };
 
             const price = {
@@ -746,6 +679,45 @@ export default class DetailsTable extends Component {
                 ),
             };
 
+            const purchasePrice = {
+                title: <FormattedMessage id="order_form_table.purchasePrice" />,
+                width: "9%",
+                key: "purchasePrice",
+                render: ({ key }) => {
+                    const storageFlow = this.props.form.getFieldValue(
+                        `details[${key}].storage`,
+                    );
+                    return (
+                        <DecoratedInputNumber
+                            errors={errors}
+                            defaultGetValueProps
+                            fields={{}}
+                            fieldValue={_.get(
+                                fields,
+                                `details[${key}].purchasePrice`,
+                            )}
+                            initialValue={this._getDefaultValue(
+                                key,
+                                "purchasePrice",
+                            )}
+                            field={`details[${key}].purchasePrice`}
+                            disabled={
+                                storageFlow
+                                    ? true
+                                    : this._isFieldDisabled(key, false, true) ||
+                                      editDetailsForbidden
+                            }
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                            min={0}
+                            formatter={numeralFormatter}
+                            parser={numeralParser}
+                        />
+                    );
+                },
+            };
+
             const count = {
                 title: <FormattedMessage id="order_form_table.count" />,
                 width: "7.5%",
@@ -758,10 +730,6 @@ export default class DetailsTable extends Component {
                     const id = this.props.form.getFieldValue(
                         `details[${key}].detailName`,
                     );
-
-                    // const checkAvailableProducts = (value = 1) => {
-                    //     this.props.fetchAvailableProducts(key, id, value);
-                    // };
 
                     return (
                         <DecoratedInputNumber
@@ -854,8 +822,6 @@ export default class DetailsTable extends Component {
                 actions,
             ];
 
-            console.log("→ tableColumns", tableColumns);
-
             if (!isStorageAvailable) {
                 tableColumns = [
                     detailName,
@@ -869,8 +835,6 @@ export default class DetailsTable extends Component {
                     actions,
                 ];
             }
-
-            console.log("→ isStorageAvailable", isStorageAvailable);
 
             return tableColumns;
         };
@@ -920,21 +884,6 @@ export default class DetailsTable extends Component {
             this.props.clearTecdocDetailsSuggestions();
             setFieldsValue(_.merge(...fields));
         }
-        // ----
-        // if (this.props.recommendedPrice !== prevProps.recommendedPrice) {
-        //     setFieldsValue({
-        //         [`details[${
-        //             this.props.recommendedPrice.key
-        //         }].recommendedPrice`]: this.props.recommendedPrice,
-        //     });
-        // }
-        //-----
-        // if (this.props.availableProducts !== prevProps.availableProducts) {
-        //     setFieldsValue({
-        //         [`details[${this.props.availableProducts.key}].using`]: this
-        //             .props.availableProducts.using,
-        //     });
-        // }
 
         if (
             this.props.suggestions !== prevProps.suggestions &&
@@ -1054,8 +1003,7 @@ export default class DetailsTable extends Component {
                 _.get(this.props.details, [key, "productId"]),
                 _.get(this.props.details, [key, "detailName"]),
             ];
-            // console.log("→ blockers", blockers);
-            // console.log("→ DISABLED", blockers.includes(true));
+
             return blockers.includes(true);
         }
 
@@ -1170,6 +1118,12 @@ export default class DetailsTable extends Component {
                 <Button
                     icon="plus"
                     onClick={() => this.props.setModal(MODALS.STORE_PRODUCT)}
+                    disabled={
+                        !isForbidden(
+                            this.props.user,
+                            permissions.ACCESS_STORE_PRODUCTS,
+                        )
+                    }
                 >
                     <FormattedMessage id="storage.add_new_storage_product" />
                 </Button>

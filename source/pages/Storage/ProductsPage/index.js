@@ -44,7 +44,9 @@ const StoreProducts = withErrorMessage()(props => {
                                     type='secondary'
                                     icon='download'
                                     resetRadius
-                                    onClick={ () => props.downloadExcelTemplate()  }
+                                    onClick={ () =>
+                                        props.downloadExcelTemplate()
+                                    }
                                 >
                                     <FormattedMessage id='storage.download_excel_template' />
                                 </StyledButton>
@@ -59,6 +61,12 @@ const StoreProducts = withErrorMessage()(props => {
                                     type='link'
                                     onClick={ () =>
                                         props.setModal(MODALS.STORE_PRODUCT)
+                                    }
+                                    disabled={
+                                        !isForbidden(
+                                            props.user,
+                                            permissions.ACCESS_STORE_PRODUCTS,
+                                        )
                                     }
                                 >
                                     <FormattedMessage id='add' />
@@ -80,6 +88,7 @@ const StoreProducts = withErrorMessage()(props => {
 });
 
 const mapStateToProps = state => ({
+    user:      state.auth,
     importing: selectProductsImporting(state),
 });
 
