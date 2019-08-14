@@ -1061,16 +1061,19 @@ export default class DetailsTable extends Component {
                     columns={columns}
                     pagination={false}
                 />
-                <Button
-                    icon="plus"
-                    onClick={() => this.props.setModal(MODALS.STORE_PRODUCT)}
-                    disabled={isForbidden(
-                        this.props.user,
-                        permissions.ACCESS_STORE_PRODUCTS,
-                    )}
-                >
-                    <FormattedMessage id="storage.add_new_storage_product" />
-                </Button>
+                {!isForbidden(
+                    this.props.user,
+                    permissions.ACCESS_STORE_PRODUCTS,
+                ) ? (
+                    <Button
+                        icon="plus"
+                        onClick={() =>
+                            this.props.setModal(MODALS.STORE_PRODUCT)
+                        }
+                    >
+                        <FormattedMessage id="storage.add_new_storage_product" />
+                    </Button>
+                ) : null}
             </Catcher>
         );
     }
