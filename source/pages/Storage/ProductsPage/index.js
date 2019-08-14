@@ -62,12 +62,10 @@ const StoreProducts = withErrorMessage()(props => {
                                     onClick={ () =>
                                         props.setModal(MODALS.STORE_PRODUCT)
                                     }
-                                    disabled={
-                                        !isForbidden(
-                                            props.user,
-                                            permissions.ACCESS_STORE_PRODUCTS,
-                                        )
-                                    }
+                                    disabled={ isForbidden(
+                                        props.user,
+                                        permissions.ACCESS_STORE_PRODUCTS,
+                                    ) }
                                 >
                                     <FormattedMessage id='add' />
                                 </AddButton>

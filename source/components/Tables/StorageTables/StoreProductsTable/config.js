@@ -8,7 +8,10 @@ import { ActionIcons } from 'commons/_uikit';
 import { permissions, isForbidden } from 'utils';
 
 export default props => {
-    const editable = isForbidden(props.user, permissions.ACCESS_STORE_PRODUCTS);
+    const editable = !isForbidden(
+        props.user,
+        permissions.ACCESS_STORE_PRODUCTS,
+    );
 
     const code = {
         title: props.intl.formatMessage({
