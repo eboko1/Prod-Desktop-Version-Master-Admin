@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { message, notification } from 'antd';
+import { Icon, message, notification } from 'antd';
 import styled from 'styled-components';
 import _ from 'lodash';
 
@@ -67,6 +67,7 @@ export const withErrorMessage = () => Enhanceable => {
                     notAvailableProducts.map(({ productCode, id }) => (
                         <div key={ id }>{ productCode }</div>
                     )),
+                icon: <Icon type='close-circle' style={ { color: '#eb0c0c' } } />,
             });
         };
 
