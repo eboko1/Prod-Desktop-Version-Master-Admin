@@ -2,8 +2,9 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
-import { message } from 'antd';
+import { message, notification } from 'antd';
 import styled from 'styled-components';
+import _ from 'lodash';
 
 // proj
 import {
@@ -22,7 +23,8 @@ const _errorMessages = Object.freeze({
     INVALID_CREDENTIALS:                      'INVALID_CREDENTIALS',
     UNIQUE_CONSTRAINT_VIOLATION_PRODUCT_CODE:
         'UNIQUE_CONSTRAINT_VIOLATION_PRODUCT_CODE',
-    STORE_DOC_PRODUCTS_ARE_USED: 'STORE_DOC_PRODUCTS_ARE_USED',
+    STORE_DOC_PRODUCTS_ARE_USED:      'STORE_DOC_PRODUCTS_ARE_USED',
+    ORDER_HAS_NOT_AVAILABLE_PRODUCTS: 'ORDER_HAS_NOT_AVAILABLE_PRODUCTS',
 });
 
 const ErrorStatusCode = styled.span`
@@ -45,9 +47,28 @@ export const withErrorMessage = () => Enhanceable => {
     class Enhanced extends Component {
         componentDidUpdate(prevProps) {
             if (prevProps.errorType !== this.props.errorType) {
-                this._renderErrorMessage();
+                if (!_.isEmpty(this.props.error.data)) {
+                    this._renderErrorNotification(this.props.error.data);
+                } else {
+                    this._renderErrorMessage();
+                }
             }
         }
+
+        _renderErrorNotification = data => {
+            const { notAvailableProducts } = data;
+
+            return notification.open({
+                message: this.props.intl.formatMessage({
+                    id: this.props.error.message,
+                }),
+                description:
+                    !_.isEmpty(notAvailableProducts) &&
+                    notAvailableProducts.map(({ productCode, id }) => (
+                        <div key={ id }>{ productCode }</div>
+                    )),
+            });
+        };
 
         _renderErrorMessage = () => {
             const { errorType, error, resetErrorMessage } = this.props;

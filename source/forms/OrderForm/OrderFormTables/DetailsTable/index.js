@@ -117,7 +117,7 @@ export default class DetailsTable extends Component {
                 tecdocId: modificationId,
                 details: formDetails,
             } = this.props;
-            console.log("→ user", this.props.user);
+
             const editDetailsForbidden =
                 isForbidden(
                     this.props.user,
@@ -172,20 +172,6 @@ export default class DetailsTable extends Component {
                                         ? this._onStorageBackwards(key)
                                         : this._onDelete(key)
                                 }
-                                //    if (disabled) {
-                                //        this._onDelete(key);
-                                //        this._handleAdd();
-                                //        return null;
-                                //    }
-                                //    this._onDelete(key);
-                                //    return null;
-                                //}}
-                                //disabled={disabled}
-                                // className={
-                                //     disabled
-                                //         ? Styles.popconfirmDisabled
-                                //         : Styles.popconfirm
-                                // }
                             >
                                 <Icon
                                     type="check"
@@ -480,60 +466,72 @@ export default class DetailsTable extends Component {
 
                     const renderAsStoreProductsField = () => {
                         return (
-                            <DecoratedSelect
-                                formItem
-                                fields={{}}
-                                getFieldDecorator={
-                                    this.props.form.getFieldDecorator
-                                }
-                                getPopupContainer={trigger =>
-                                    trigger.parentNode
-                                }
-                                field={`details[${key}].productId`}
-                                initialValue={this._getDefaultValue(
-                                    key,
-                                    "productId",
-                                )}
-                                onBlur={() => {}}
-                                onSearch={value => {
-                                    this.props.setStoreProductsSearchQuery(
-                                        value,
-                                    );
-                                }}
-                                onSelect={value => {
-                                    if (value) {
-                                        this._handleProductSelect(key, value);
+                            <>
+                                <DecoratedSelect
+                                    formItem
+                                    fields={{}}
+                                    getFieldDecorator={
+                                        this.props.form.getFieldDecorator
                                     }
-                                }}
-                                showSearch
-                                dropdownMatchSelectWidth={false}
-                                rules={this.requiredRule}
-                                placeholder={this.props.intl.formatMessage({
-                                    id: "storage.product_code",
-                                })}
-                            >
-                                {productId ? (
-                                    <Option value={productId} key={productId}>
-                                        {/* {code} */}
-                                        {this._getDefaultValue(
-                                            key,
-                                            "productCode",
-                                        )}
-                                    </Option>
-                                ) : (
-                                    this.props.storeProducts.map(
-                                        ({ id, name, code }) => (
-                                            <Option
-                                                value={id}
-                                                key={`${name}-${id}-${code}`}
-                                            >
-                                                {/* {code} */}
-                                                {code}
-                                            </Option>
-                                        ),
-                                    )
-                                )}
-                            </DecoratedSelect>
+                                    getPopupContainer={trigger =>
+                                        trigger.parentNode
+                                    }
+                                    field={`details[${key}].productId`}
+                                    initialValue={this._getDefaultValue(
+                                        key,
+                                        "productId",
+                                    )}
+                                    onBlur={() => {}}
+                                    onSearch={value => {
+                                        this.props.setStoreProductsSearchQuery(
+                                            value,
+                                        );
+                                    }}
+                                    onSelect={value => {
+                                        if (value) {
+                                            this._handleProductSelect(key, value);
+                                        }
+                                    }}
+                                    showSearch
+                                    dropdownMatchSelectWidth={false}
+                                    rules={this.requiredRule}
+                                    placeholder={this.props.intl.formatMessage({
+                                        id: "storage.product_code",
+                                    })}
+                                >
+                                    {productId ? (
+                                        <Option value={productId} key={productId}>
+                                            {this._getDefaultValue(
+                                                key,
+                                                "productCode",
+                                            )}
+                                        </Option>
+                                    ) : (
+                                        this.props.storeProducts.map(
+                                            ({ id, name, code }) => (
+                                                <Option
+                                                    value={id}
+                                                    key={`${name}-${id}-${code}`}
+                                                >
+                                                    {code}
+                                                </Option>
+                                            ),
+                                        )
+                                    )}
+                                </DecoratedSelect>
+                                <DecoratedInput
+                                    hiddeninput="hiddeninput"
+                                    fields={{}}
+                                    field={`details[${key}].productCode`}
+                                    getFieldDecorator={
+                                        this.props.form.getFieldDecorator
+                                    }
+                                    initialValue={this._getDefaultValue(
+                                        key,
+                                        "productCode",
+                                    )}
+                                />
+                            </>
                         );
                     };
 

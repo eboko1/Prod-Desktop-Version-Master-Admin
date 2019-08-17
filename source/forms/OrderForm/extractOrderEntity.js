@@ -45,6 +45,7 @@ export function convertFieldsValuesToDbEntity(
             detail => _.get(detail, 'detailName') || _.get(detail, 'productId'),
         )
         .map(detail => {
+
             const {
                 detailName: detailId,
                 detailPrice: price,
@@ -54,6 +55,7 @@ export function convertFieldsValuesToDbEntity(
                 purchasePrice: purchasePrice,
                 storage: storage,
                 productId: productId,
+                productCode: productCode,
                 // using: using,
             } = detail;
             const detailConfig = allDetails.details.find(
@@ -71,8 +73,8 @@ export function convertFieldsValuesToDbEntity(
             const brandConfig = allDetails.brands.find(
                 ({ brandId: id }) => String(id) === brandId,
             );
-
-            const baseDetail = { price, count, code, purchasePrice };
+            
+            const baseDetail = { code, productCode, price, count, purchasePrice };
 
             let brandCustom = {};
             if (!brandConfig) {
@@ -98,7 +100,7 @@ export function convertFieldsValuesToDbEntity(
     const deliveryDate = _.get(orderFields, 'deliveryDate');
     const deliveryTime = _.get(orderFields, 'deliveryTime');
 
-    // TODO: refactor for utils concatDateTime @yz
+    // TODO: refactor for utils concatDateTime
     const dayPart =
         beginDate &&
         moment(beginDate)

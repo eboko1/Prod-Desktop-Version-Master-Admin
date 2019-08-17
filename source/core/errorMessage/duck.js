@@ -29,10 +29,12 @@ export default function popupsReducer(state = ReducerState, action) {
                     ? {
                         status:  payload.response.statusCode,
                         message: payload.response.message,
+                        data:    payload.response.data,
                     }
                     : {
                         status:  payload.status,
                         message: payload.message,
+                        data:    payload.data,
                     },
             };
 
