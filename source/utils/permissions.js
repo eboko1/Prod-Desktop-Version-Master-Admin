@@ -135,6 +135,7 @@ export const ACCOUNTING_PERMISSIONS = 'ACCOUNTING_PERMISSIONS';
 export const REPORTS_PERMISSIONS = 'REPORTS_PERMISSIONS';
 export const OTHER_PERMISSIONS = 'OTHER_PERMISSIONS';
 
+// using for roles page
 export const groupedPermissions = {
     [ DASHBOARD_PERMISSIONS ]: [
         ACCESS_DASHBOARD,

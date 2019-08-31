@@ -25,23 +25,41 @@ class ReportsDropdown extends React.Component {
     }
 
     static getReports(props) {
-        const { orderId, orderStatus } = props;
+        const { user, orderId, orderStatus } = props;
+
         if (!orderStatus) {
             return [];
         }
 
-        const all = [ ACT_OF_ACCEPTANCE_REPORT, BUSINESS_ORDER_REPORT, CALCULATION_REPORT, CLIENT_ORDER_REPORT, COMPLETED_WORK_REPORT, DIAGNOSTICS_ACT_REPORT, INVOICE_REPORT ];
+        const all = [
+            ACT_OF_ACCEPTANCE_REPORT,
+            BUSINESS_ORDER_REPORT,
+            CALCULATION_REPORT,
+            CLIENT_ORDER_REPORT,
+            COMPLETED_WORK_REPORT,
+            DIAGNOSTICS_ACT_REPORT,
+            INVOICE_REPORT,
+        ];
+
+        const selectedReports = [ ACT_OF_ACCEPTANCE_REPORT, BUSINESS_ORDER_REPORT, DIAGNOSTICS_ACT_REPORT ];
+
+        const limitedPrint = isForbidden(user, permissions.LIMITED_PRINT);
 
         const statusToReportsMap = {
-            not_complete: [ CALCULATION_REPORT ], // eslint-disable-line camelcase
-            required:     [ CALCULATION_REPORT ],
-            reserve:      [ CALCULATION_REPORT ],
-            call:         [ CALCULATION_REPORT ],
-            approve:      all,
-            progress:     all,
-            success:      [ CALCULATION_REPORT, CLIENT_ORDER_REPORT, COMPLETED_WORK_REPORT, INVOICE_REPORT ],
-            invite:       [ CALCULATION_REPORT ],
-            cancel:       [ CALCULATION_REPORT ],
+            not_complete: limitedPrint ? [] : [ CALCULATION_REPORT ], // eslint-disable-line camelcase
+            required:     limitedPrint ? [] : [ CALCULATION_REPORT ],
+            reserve:      limitedPrint ? [] : [ CALCULATION_REPORT ],
+            call:         limitedPrint ? [] : [ CALCULATION_REPORT ],
+            approve:      limitedPrint ? selectedReports : all,
+            progress:     limitedPrint ? selectedReports : all,
+            success:      [
+                CALCULATION_REPORT,
+                CLIENT_ORDER_REPORT,
+                COMPLETED_WORK_REPORT,
+                INVOICE_REPORT,
+            ],
+            invite: [ CALCULATION_REPORT ],
+            cancel: [ CALCULATION_REPORT ],
         };
         const reports = statusToReportsMap[ orderStatus ].map(name => {
             return {
@@ -55,6 +73,7 @@ class ReportsDropdown extends React.Component {
 
     render() {
         const { isMobile } = this.props;
+
         const menu = (
             <Menu>
                 { this.reports.map((item, index) => (
