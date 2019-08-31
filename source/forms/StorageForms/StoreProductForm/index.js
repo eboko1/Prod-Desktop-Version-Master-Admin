@@ -239,7 +239,7 @@ const ProductForm = props => {
                     initialValue={
                         _.isEmpty(props.product.brand)
                             ? _.get(props, 'product.brandName')
-                            : String(_.get(props, 'product.brand.id'))
+                            : void 0
                     }
                     fields={ {} }
                     getFieldDecorator={ form.getFieldDecorator }
