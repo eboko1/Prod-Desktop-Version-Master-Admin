@@ -59,6 +59,27 @@ export default {
                         isForbidden(user, permissions.ACCESS_SUPPLIERS),
                     name: 'navigation.suppliers',
                 },
+                {
+                    key:      '/products-groups',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_STORE_GROUPS),
+                    link: book.productsGroups,
+                    name: 'navigation.products_groups',
+                },
+                {
+                    key:      '/price-groups',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_PRICE_GROUPS),
+                    link: book.priceGroups,
+                    name: 'navigation.price_groups',
+                },
+                {
+                    key:      '/products',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
+                    link: book.products,
+                    name: 'navigation.products',
+                },
             ],
         },
         /* Accounting */
@@ -89,27 +110,6 @@ export default {
             iconType: 'inbox',
             name:     'navigation.storage',
             items:    [
-                {
-                    key:      '/products-groups',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STORE_GROUPS),
-                    link: book.productsGroups,
-                    name: 'navigation.products_groups',
-                },
-                {
-                    key:      '/price-groups',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_PRICE_GROUPS),
-                    link: book.priceGroups,
-                    name: 'navigation.price_groups',
-                },
-                {
-                    key:      '/products',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STORE_PRODUCTS),
-                    link: book.products,
-                    name: 'navigation.products',
-                },
                 {
                     key:      '/storage-balance',
                     disabled: user => isForbidden(user, permissions.VIEW_STORE),
