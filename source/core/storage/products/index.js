@@ -352,7 +352,7 @@ const normalizeFile = file =>
 export function* fetchProductsSaga() {
     while (true) {
         try {
-            yield take([ FETCH_PRODUCTS, SET_STORE_PRODUCTS_FILTERS, DELETE_PRODUCT ]);
+            yield take([ FETCH_PRODUCTS, SET_STORE_PRODUCTS_FILTERS, DELETE_PRODUCT_SUCCESS ]);
             yield put(setProductsLoading(true));
             const filters = yield select(selectStoreProductsFilters);
             const response = yield call(
