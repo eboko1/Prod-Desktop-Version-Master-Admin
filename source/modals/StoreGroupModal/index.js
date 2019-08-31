@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { Modal, Form } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
+import { isAdmin } from 'utils';
 
 // proj
 import {
@@ -24,6 +25,7 @@ const formItemLayout = {
 };
 
 const mapStateToProps = state => ({
+    user: state.auth,
     modalProps:  selectModalProps(state),
     priceGroups: selectPriceGroups(state),
 });
@@ -76,6 +78,25 @@ const StoreGroup = props => {
         });
     };
 
+    const renderSystemWideCheckbox = () => {
+        if(isAdmin(props.user)) {
+            if(!systemWide) {
+                return (<DecoratedCheckbox
+                    fields={ {} }
+                    formItem
+                    label={ formatMessage({ id: 'storage.system_wide' }) }
+                    formItemLayout={ formItemLayout }
+                    field='systemWide'
+                    getFieldDecorator={ getFieldDecorator }
+                    initialValue={ !systemWide }
+                    disabled={ modalProps.create ? false : true }
+                />
+            )
+            return null;
+        }
+        return null;
+    }
+
     return (
         <Modal
             cancelText={ <FormattedMessage id='cancel' /> }
@@ -123,18 +144,7 @@ const StoreGroup = props => {
                     ) }
                 />
                 { /* systemWide is null if active or businessId if not  */ }
-                { modalProps.create || !systemWide ? (
-                    <DecoratedCheckbox
-                        fields={ {} }
-                        formItem
-                        label={ formatMessage({ id: 'storage.system_wide' }) }
-                        formItemLayout={ formItemLayout }
-                        field='systemWide'
-                        getFieldDecorator={ getFieldDecorator }
-                        initialValue={ !systemWide }
-                        disabled={ !systemWide }
-                    />
-                ) : null }
+                {renderSystemWideCheckbox()}
             </Form>
         </Modal>
     );
