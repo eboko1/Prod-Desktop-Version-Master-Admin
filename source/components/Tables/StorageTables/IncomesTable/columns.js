@@ -13,7 +13,7 @@ export default props => {
     const id = {
         title:     '№',
         dataIndex: 'id',
-        width:     '20%',
+        width:     'auto',
         render:    (key, { id, status }) => (
             <Link
                 to={ {
@@ -25,13 +25,20 @@ export default props => {
             </Link>
         ),
     };
+    const supplierDocNumber = {
+        title: props.intl.formatMessage({
+            id: 'storage.document_number',
+        }),
+        dataIndex: 'supplierDocNumber',
+        width:     '20%',
+    };
 
     const createdDatetime = {
         title: props.intl.formatMessage({
             id: 'storage.created_datetime',
         }),
         dataIndex: 'createdDatetime',
-        width:     '20%',
+        width:     '12%',
         render:    datetime => <DatetimeFormatter datetime={ datetime } />,
     };
 
@@ -40,8 +47,19 @@ export default props => {
             id: 'storage.done_date',
         }),
         dataIndex: 'doneDatetime',
-        width:     '20%',
-        render:    datetime => datetime ? <DatetimeFormatter datetime={ datetime } /> : null,
+        width:     '12%',
+        render:    datetime =>
+            datetime ? <DatetimeFormatter datetime={ datetime } /> : null,
+    };
+
+    const paidDatetime = {
+        title: props.intl.formatMessage({
+            id: 'storage.payment_date',
+        }),
+        dataIndex: 'paidDatetime',
+        width:     '12%',
+        render:    datetime =>
+            datetime ? <DatetimeFormatter datetime={ datetime } /> : null,
     };
 
     const status = {
@@ -49,7 +67,7 @@ export default props => {
             id: 'storage.status',
         }),
         dataIndex: 'status',
-        width:     '20%',
+        width:     '4%',
         render:    status => (
             <Tag
                 color={
@@ -66,7 +84,7 @@ export default props => {
             id: 'storage.supplier',
         }),
         dataIndex: 'businessSupplierId',
-        width:     '20%',
+        width:     '15%',
         render:    (supplier, { businessSupplier }) => (
             <div>{ businessSupplier ? businessSupplier.name : null }</div>
         ),
@@ -77,7 +95,7 @@ export default props => {
             id: 'storage.responsible',
         }),
         dataIndex: 'manager',
-        width:     '20%',
+        width:     '15%',
         render:    manager =>
             manager ? (
                 <Link to={ `${book.employeesPage}/${manager.employeeId}` }>
@@ -91,7 +109,7 @@ export default props => {
             id: 'storage.sum',
         }),
         dataIndex: 'sum',
-        width:     '20%',
+        width:     '15%',
         render:    sum => (
             <Numeral currency={ props.intl.formatMessage({ id: 'currency' }) }>
                 { sum }
@@ -114,8 +132,10 @@ export default props => {
 
     return [
         id,
+        supplierDocNumber,
         createdDatetime,
         doneDatetime,
+        paidDatetime,
         status,
         supplier,
         manager,

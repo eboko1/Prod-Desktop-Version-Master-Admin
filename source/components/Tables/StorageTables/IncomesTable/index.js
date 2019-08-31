@@ -51,6 +51,7 @@ const IncomesTableComponent = props => {
                 } }
                 loading={ props.loading }
                 rowKey={ record => record.id }
+                scroll={ { x: 960 } }
             />
         </Catcher>
     );

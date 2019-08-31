@@ -1,6 +1,6 @@
 // vendor
 import React from 'react';
-import { FormattedMessage } from 'react-intl';
+import { injectIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { Catcher } from 'commons';
@@ -14,7 +14,7 @@ import {
 
 const statuses = [ 'NEW', 'DONE' ];
 
-export const StorageFilters = props => {
+export const StorageFilters = injectIntl(props => {
     const { filters } = props;
 
     return (
@@ -22,9 +22,11 @@ export const StorageFilters = props => {
             <Filters>
                 { props.type !== 'expenses' ? (
                     <FilterRow>
-                        <FormattedMessage id='storage.created_datetime' />
                         <DatePickerField
                             date={ filters.createdDatetime }
+                            placeholder={ props.intl.formatMessage({
+                                id: 'storage.created_datetime',
+                            }) }
                             onChange={ date =>
                                 props.setFilters({
                                     createdDatetime: date,
@@ -33,25 +35,45 @@ export const StorageFilters = props => {
                                 })
                             }
                         />
-                        <FormattedMessage id='storage.record_date' />
                         <DatePickerField
                             date={ filters.recordDatetime }
+                            placeholder={ props.intl.formatMessage({
+                                id: 'storage.record_date',
+                            }) }
                             onChange={ date =>
                                 props.setFilters({
                                     createdDatetime: void 0,
                                     recordDatetime:  date,
                                     doneDatetime:    void 0,
+                                    paidDatetime:    void 0,
                                 })
                             }
                         />
-                        <FormattedMessage id='storage.done_date' />
                         <DatePickerField
                             date={ filters.doneDatetime }
+                            placeholder={ props.intl.formatMessage({
+                                id: 'storage.done_date',
+                            }) }
                             onChange={ date =>
                                 props.setFilters({
                                     createdDatetime: void 0,
                                     recordDatetime:  void 0,
                                     doneDatetime:    date,
+                                    paidDatetime:    void 0,
+                                })
+                            }
+                        />
+                        <DatePickerField
+                            date={ filters.paidDatetime }
+                            placeholder={ props.intl.formatMessage({
+                                id: 'storage.payment_date',
+                            }) }
+                            onChange={ date =>
+                                props.setFilters({
+                                    createdDatetime: void 0,
+                                    recordDatetime:  void 0,
+                                    doneDatetime:    void 0,
+                                    paidDatetime:    date,
                                 })
                             }
                         />
@@ -69,7 +91,7 @@ export const StorageFilters = props => {
             </Filters>
         </Catcher>
     );
-};
+});
 
 const Filters = styled.div`
     display: flex;

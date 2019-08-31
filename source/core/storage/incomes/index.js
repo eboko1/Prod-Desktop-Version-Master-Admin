@@ -46,6 +46,7 @@ const ReducerState = {
         createdDatetime: void 0,
         recordDatetime:  void 0,
         doneDatetime:    void 0,
+        paidDatetime:    void 0,
         status:          null,
         page:            1,
     },
@@ -197,6 +198,13 @@ export function* fetchIncomesSaga() {
                 ...filters.doneDatetime
                     ? {
                         doneDatetime: filters.doneDatetime.format(
+                            'YYYY-MM-DD',
+                        ),
+                    }
+                    : {},
+                ...filters.paidDatetime
+                    ? {
+                        paidDatetime: filters.paidDatetime.format(
                             'YYYY-MM-DD',
                         ),
                     }
