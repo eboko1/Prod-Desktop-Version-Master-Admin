@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { Modal, Form } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
-import { isAdmin } from 'utils';
-
 // proj
 import {
     createStoreGroup,
@@ -13,11 +11,11 @@ import {
     deleteStoreGroup,
 } from 'core/storage/storeGroups';
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
-
 import { MODALS, selectModalProps } from 'core/modals/duck';
 
 import { DecoratedInput, DecoratedCheckbox } from 'forms/DecoratedFields';
 import { PriceGroupSelect } from 'forms/_formkit';
+import { isAdmin } from 'utils';
 
 const formItemLayout = {
     labelCol:   { span: 6 },
@@ -25,7 +23,7 @@ const formItemLayout = {
 };
 
 const mapStateToProps = state => ({
-    user: state.auth,
+    user:        state.auth,
     modalProps:  selectModalProps(state),
     priceGroups: selectPriceGroups(state),
 });
@@ -79,23 +77,27 @@ const StoreGroup = props => {
     };
 
     const renderSystemWideCheckbox = () => {
-        if(isAdmin(props.user)) {
-            if(!systemWide) {
-                return (<DecoratedCheckbox
-                    fields={ {} }
-                    formItem
-                    label={ formatMessage({ id: 'storage.system_wide' }) }
-                    formItemLayout={ formItemLayout }
-                    field='systemWide'
-                    getFieldDecorator={ getFieldDecorator }
-                    initialValue={ !systemWide }
-                    disabled={ modalProps.create ? false : true }
-                />
-            )
+        if (isAdmin(props.user)) {
+            if (!systemWide) {
+                return (
+                    <DecoratedCheckbox
+                        fields={ {} }
+                        formItem
+                        label={ formatMessage({ id: 'storage.system_wide' }) }
+                        formItemLayout={ formItemLayout }
+                        field='systemWide'
+                        getFieldDecorator={ getFieldDecorator }
+                        initialValue={ !systemWide }
+                        disabled={ modalProps.create ? false : true }
+                    />
+                );
+
+                return null;
+            }
+
             return null;
         }
-        return null;
-    }
+    };
 
     return (
         <Modal
@@ -144,13 +146,13 @@ const StoreGroup = props => {
                     ) }
                 />
                 { /* systemWide is null if active or businessId if not  */ }
-                {renderSystemWideCheckbox()}
+                { renderSystemWideCheckbox() }
             </Form>
         </Modal>
     );
 };
 
-const StoreGroupModal = injectIntl(
+const StoreProductModal = injectIntl(
     Form.create()(
         connect(
             mapStateToProps,
@@ -159,4 +161,4 @@ const StoreGroupModal = injectIntl(
     ),
 );
 
-export default StoreGroupModal;
+export default StoreProductModal;
