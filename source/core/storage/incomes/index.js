@@ -174,7 +174,7 @@ export const setIncomeDocLoading = isLoading => ({
 export function* fetchIncomesSaga() {
     while (true) {
         try {
-            yield take([ FETCH_INCOMES, SET_INCOMES_FILERS ]);
+            yield take([ FETCH_INCOMES, SET_INCOMES_FILERS, DELETE_INCOME_DOC_SUCCESS ]);
             yield put(setIncomesLoading(true));
             const filters = yield select(selectIncomesFilters);
 
@@ -223,7 +223,7 @@ export function* fetchIncomesSaga() {
 export function* fetchIncomeDocSaga() {
     while (true) {
         try {
-            const { payload } = yield take([ FETCH_INCOME_DOC, DELETE_INCOME_DOC_SUCCESS ]);
+            const { payload } = yield take(FETCH_INCOME_DOC);
             yield put(setIncomeDocLoading(true));
 
             const response = yield call(
