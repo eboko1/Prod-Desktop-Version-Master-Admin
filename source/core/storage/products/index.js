@@ -127,7 +127,7 @@ export default function reducer(state = ReducerState, action) {
             return { ...state, filters: { ...state.filters, page: payload } };
 
         case SET_STORE_PRODUCTS_FILTERS:
-            return { ...state, filters: { ...state.filters, ...payload } };
+            return { ...state, filters: { ...state.filters, ...payload, page: 1 } };
 
         case SET_PRODUCTS_EXCEL_IMPORT_LOADING:
             return { ...state, productsExcelLoading: payload };

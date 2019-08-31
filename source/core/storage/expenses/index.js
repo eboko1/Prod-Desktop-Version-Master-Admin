@@ -60,7 +60,10 @@ export default function reducer(state = ReducerState, action) {
             return { ...state, filters: { ...state.filters, page: payload } };
 
         case SET_EXPENSES_FILTERS:
-            return { ...state, filters: { ...state.filters, ...payload } };
+            return {
+                ...state,
+                filters: { ...state.filters, ...payload, page: 1 },
+            };
 
         case SET_EXPENSES_LOADING:
             return { ...state, expensesLoading: payload };

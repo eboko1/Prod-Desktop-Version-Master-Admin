@@ -14,7 +14,7 @@ import {
     setStoreBalanceFilters,
 } from 'core/storage/storeBalance';
 
-import { SearchField } from 'forms/_formkit';
+import { StoreProductsSelect } from 'forms/_formkit';
 import { numeralFormatter } from 'utils';
 
 const mapStateToProps = state => ({
@@ -51,7 +51,10 @@ export const StorageBalanceTotals = connect(
                     defaultValue={ moment(filters.date) }
                 />
                 <FilterSpace>
-                    <SearchField setFilters={ props.setStoreBalanceFilters } />
+                    <StoreProductsSelect
+                        setFilters={ props.setStoreBalanceFilters }
+                        filters={ props.filters }
+                    />
                 </FilterSpace>
             </FiltersRow>
             <DataRow>

@@ -52,7 +52,7 @@ export default function reducer(state = ReducerState, action) {
         case SET_STORE_BALANCE_FILTERS:
             return {
                 ...state,
-                filters: { ...payload, page: state.filters.page },
+                filters: { ...state.filters, ...payload, page: 1 },
             };
 
         case SET_STORE_BALANCE_LOADING:

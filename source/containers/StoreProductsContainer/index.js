@@ -81,7 +81,11 @@ export default class StoreProductsContainer extends Component {
 
         const expandedKeys = this.props.flattenStoreGroups
             .map(item => {
-                if (item.name.indexOf(value) > -1) {
+                if (
+                    String(item.name)
+                        .toLowerCase()
+                        .indexOf(String(value).toLowerCase()) > -1
+                ) {
                     return getParentKey(item.id, this.props.storeGroups);
                 }
                 return null;
@@ -100,7 +104,9 @@ export default class StoreProductsContainer extends Component {
 
         const loop = data =>
             data.map(item => {
-                const index = item.name.indexOf(searchValue);
+                const index = String(item.name)
+                    .toLowerCase()
+                    .indexOf(String(searchValue).toLowerCase());
                 const beforeStr = item.name.substr(0, index);
                 const afterStr = item.name.substr(index + searchValue.length);
                 const title =
