@@ -127,7 +127,10 @@ export default function reducer(state = ReducerState, action) {
             return { ...state, filters: { ...state.filters, page: payload } };
 
         case SET_STORE_PRODUCTS_FILTERS:
-            return { ...state, filters: { ...state.filters, ...payload, page: 1 } };
+            return {
+                ...state,
+                filters: { ...state.filters, ...payload, page: 1 },
+            };
 
         case SET_PRODUCTS_EXCEL_IMPORT_LOADING:
             return { ...state, productsExcelLoading: payload };
@@ -352,7 +355,13 @@ const normalizeFile = file =>
 export function* fetchProductsSaga() {
     while (true) {
         try {
-            yield take([ FETCH_PRODUCTS, SET_STORE_PRODUCTS_FILTERS, DELETE_PRODUCT_SUCCESS ]);
+            yield take([
+                FETCH_PRODUCTS,
+                SET_STORE_PRODUCTS_FILTERS,
+                CREATE_PRODUCT_SUCCESS,
+                UPDATE_PRODUCT_SUCCESS,
+                DELETE_PRODUCT_SUCCESS,
+            ]);
             yield put(setProductsLoading(true));
             const filters = yield select(selectStoreProductsFilters);
             const response = yield call(

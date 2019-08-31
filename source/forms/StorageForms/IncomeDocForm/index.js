@@ -93,10 +93,13 @@ const IncomeForm = props => {
         props.form.validateFields((err, values) => {
             if (!err) {
                 const docProducts = values.docProducts.filter(Boolean);
-                let normalizedValues = {};
+                let normalizedValues = {
+                    ...values,
+                    ..._.isNil(values.sum) ? { sum: 0 } : {},
+                };
                 if (!_.last(docProducts).productId) {
                     normalizedValues = {
-                        ...values,
+                        ...normalizedValues,
                         docProducts: docProducts
                             .slice(0, -1)
                             .map(product =>
@@ -113,7 +116,7 @@ const IncomeForm = props => {
                     };
                 } else {
                     normalizedValues = {
-                        ...values,
+                        ...normalizedValues,
                         docProducts: docProducts.map(product =>
                             _.omit(product, [
                                 'name',
@@ -183,19 +186,13 @@ const IncomeForm = props => {
                         <DecoratedInput
                             hiddeninput='hiddeninput'
                             fields={ {} }
-                            field={ 'sum' }
-                            getFieldDecorator={ props.form.getFieldDecorator }
-
-                            // initialValue={ _isFieldDisabled(key) ? void 0 : 1 }
+                            field='sum'
+                            getFieldDecorator={ form.getFieldDecorator }
+                            initialValue={
+                                !_.isEmpty(incomeDoc) ? incomeDoc.sum : 0
+                            }
                         />
                     </TotalSum>
-                    <DecoratedInput
-                        hiddeninput='hiddeninput'
-                        fields={ {} }
-                        field='sum'
-                        getFieldDecorator={ form.getFieldDecorator }
-                        initialValue={ incomeDoc.sum }
-                    />
                 </FormHeader>
                 <FormBody>
                     <FormColumn>
@@ -262,9 +259,9 @@ const IncomeForm = props => {
                             formItemLayout={ formItemLayout }
                             fields={ {} }
                             label={ formatMessage({
-                                id: 'storage.record_date',
+                                id: 'storage.done_date',
                             }) }
-                            field='recordDatetime'
+                            field='doneDatetime'
                             getFieldDecorator={ form.getFieldDecorator }
                             rules={ [
                                 {
@@ -298,12 +295,10 @@ const IncomeForm = props => {
                 <Button
                     icon='plus'
                     onClick={ () => props.setModal(MODALS.STORE_PRODUCT) }
-                    disabled={
-                        isForbidden(
-                            props.user,
-                            permissions.ACCESS_STORE_PRODUCTS,
-                        )
-                    }
+                    disabled={ isForbidden(
+                        props.user,
+                        permissions.ACCESS_STORE_PRODUCTS,
+                    ) }
                 >
                     { formatMessage({ id: 'storage.add_new_storage_product' }) }
                 </Button>

@@ -110,7 +110,6 @@ const ProductForm = props => {
                     : props.createProduct(values);
 
                 props.form.resetFields();
-                props.fetchProducts();
                 props.resetModal();
             }
         });
