@@ -28,33 +28,35 @@ export const StoreProductsSetting = connect(mapStateToProps)(
                     } }
                 />
                 { isAdmin(user) ? (
-                    <Icon
-                        type={ 'edit' }
-                        onClick={ () =>
-                            setModal(MODALS.STORE_GROUP, {
-                                edit: true,
-                                storeGroup,
-                            })
-                        }
-                        style={ {
-                            fontSize: '16px',
-                            color:    'var(--secondary)',
-                        } }
-                    />
+                    <>
+                        <Icon
+                            type={ 'edit' }
+                            onClick={ () =>
+                                setModal(MODALS.STORE_GROUP, {
+                                    edit: true,
+                                    storeGroup,
+                                })
+                            }
+                            style={ {
+                                fontSize: '16px',
+                                color:    'var(--secondary)',
+                            } }
+                        />
+                        <Icon
+                            type={ 'delete' }
+                            onClick={ () =>
+                                setModal(MODALS.STORE_GROUP, {
+                                    delete: true,
+                                    storeGroup,
+                                })
+                            }
+                            style={ {
+                                fontSize: '16px',
+                                color:    'var(--warning)',
+                            } }
+                        />
+                    </>
                 ) : null }
-                <Icon
-                    type={ 'delete' }
-                    onClick={ () =>
-                        setModal(MODALS.STORE_GROUP, {
-                            delete: true,
-                            storeGroup,
-                        })
-                    }
-                    style={ {
-                        fontSize: '16px',
-                        color:    'var(--warning)',
-                    } }
-                />
             </>
         );
     },
