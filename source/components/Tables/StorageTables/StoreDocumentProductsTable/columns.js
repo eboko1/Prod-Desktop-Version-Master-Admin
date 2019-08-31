@@ -27,8 +27,8 @@ export default (props, state, table) => {
     const { getFieldDecorator } = props.form;
     const { fields } = props.form;
 
-    const getRequiredRule = (rows, key) => {
-        if (key === 0 || rows > key && rows !== key + 1) {
+    const getRequiredRule = (rows, key, index) => {
+        if (index === 0 || rows > index && rows !== index + 1) {
             return [
                 {
                     required: true,
@@ -183,7 +183,7 @@ export default (props, state, table) => {
                     <DecoratedInputNumber
                         formItem
                         fields={ {} }
-                        rules={ getRequiredRule(state.keys.length, key) }
+                        rules={ getRequiredRule(state.keys.length, key, index) }
                         initialValue={ _.get(
                             props,
                             `incomeDoc.docProducts[${key}].purchasePrice`,
@@ -213,7 +213,7 @@ export default (props, state, table) => {
                 <DecoratedInputNumber
                     formItem
                     fields={ {} }
-                    rules={ getRequiredRule(state.keys.length, key) }
+                    rules={ getRequiredRule(state.keys.length, key, index) }
                     field={ `docProducts[${key}].quantity` }
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ _isFieldDisabled(key) }
@@ -258,7 +258,7 @@ export default (props, state, table) => {
                             props,
                             `incomeDoc.docProducts[${key}].purchaseSum`,
                         ) }
-                        rules={ getRequiredRule(state.keys.length, key) }
+                        rules={ getRequiredRule(state.keys.length, key, index) }
                     />
                 );
             },

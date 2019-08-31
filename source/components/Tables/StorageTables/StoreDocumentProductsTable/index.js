@@ -52,9 +52,19 @@ const DocumentProductsTable = memo(props => {
         }
     }, [ incomeDocProducts ]);
 
+    const getSums = key => {
+        const totalSum = props.form.getFieldValue('sum');
+        const sum = props.form.getFieldValue(`docProducts[${key}].purchaseSum`);
+
+        return { totalSum, sum };
+    };
+
     const _handleDelete = redundantKey => {
+        const { totalSum, sum } = getSums(redundantKey);
         setKeys(keys.filter(key => redundantKey !== key));
+
         props.form.setFieldsValue({
+            sum:              totalSum - sum,
             [ redundantKey ]: void 0,
         });
     };
