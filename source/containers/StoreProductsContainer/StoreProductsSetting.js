@@ -11,7 +11,40 @@ const mapStateToProps = state => ({
 });
 
 export const StoreProductsSetting = connect(mapStateToProps)(
-    ({ setModal, storeGroup, user }) => {
+    ({ setModal, storeGroup, user, systemWide }) => {
+        const renderEditing = () => {
+            return (
+                <>
+                    <Icon
+                        type={ 'edit' }
+                        onClick={ () =>
+                            setModal(MODALS.STORE_GROUP, {
+                                edit: true,
+                                storeGroup,
+                            })
+                        }
+                        style={ {
+                            fontSize: '16px',
+                            color:    'var(--secondary)',
+                        } }
+                    />
+                    <Icon
+                        type={ 'delete' }
+                        onClick={ () =>
+                            setModal(MODALS.STORE_GROUP, {
+                                delete: true,
+                                storeGroup,
+                            })
+                        }
+                        style={ {
+                            fontSize: '16px',
+                            color:    'var(--warning)',
+                        } }
+                    />
+                </>
+            );
+        };
+
         return (
             <>
                 <Icon
@@ -27,36 +60,11 @@ export const StoreProductsSetting = connect(mapStateToProps)(
                         color:    'var(--primary)',
                     } }
                 />
-                { isAdmin(user) ? (
-                    <>
-                        <Icon
-                            type={ 'edit' }
-                            onClick={ () =>
-                                setModal(MODALS.STORE_GROUP, {
-                                    edit: true,
-                                    storeGroup,
-                                })
-                            }
-                            style={ {
-                                fontSize: '16px',
-                                color:    'var(--secondary)',
-                            } }
-                        />
-                        <Icon
-                            type={ 'delete' }
-                            onClick={ () =>
-                                setModal(MODALS.STORE_GROUP, {
-                                    delete: true,
-                                    storeGroup,
-                                })
-                            }
-                            style={ {
-                                fontSize: '16px',
-                                color:    'var(--warning)',
-                            } }
-                        />
-                    </>
-                ) : null }
+                { isAdmin(user)
+                    ? renderEditing()
+                    : !systemWide
+                        ? renderEditing()
+                        : null }
             </>
         );
     },
