@@ -91,12 +91,12 @@ const StoreGroup = props => {
                         disabled={ modalProps.create ? false : true }
                     />
                 );
-
-                return null;
             }
 
             return null;
         }
+
+        return null;
     };
 
     return (
