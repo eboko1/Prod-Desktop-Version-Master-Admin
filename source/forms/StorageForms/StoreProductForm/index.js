@@ -237,6 +237,11 @@ const ProductForm = props => {
                 </DecoratedAutoComplete>
                 <DecoratedInput
                     hiddeninput='hiddeninput'
+                    initialValue={
+                        _.isEmpty(props.product.brand)
+                            ? _.get(props, 'product.brandName')
+                            : String(_.get(props, 'product.brand.id'))
+                    }
                     fields={ {} }
                     getFieldDecorator={ form.getFieldDecorator }
                     field='brandName'
