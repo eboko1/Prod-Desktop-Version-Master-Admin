@@ -145,8 +145,8 @@ const IncomeForm = props => {
         permissions.ACCESS_SUPPLIERS,
     );
 
-    return props.loading ? (
-        <Loader loading={ props.loading } />
+    return props.loading && _.isEmpty(incomeDoc) ? (
+        <Loader loading={ props.loading && _.isEmpty(incomeDoc) } />
     ) : (
         <Catcher>
             <Form>
@@ -317,7 +317,7 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-    fetchIncomeDoc,
+    // fetchIncomeDoc,
     fetchSuppliers,
     setModal,
     resetModal,

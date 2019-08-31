@@ -5,6 +5,7 @@ import { Tag } from 'antd';
 import { FormattedMessage } from 'react-intl';
 import { withRouter } from 'react-router';
 import styled from 'styled-components';
+import _ from 'lodash';
 
 // proj
 import { fetchIncomeDoc, selectIncomeDoc } from 'core/storage/incomes';
@@ -59,8 +60,8 @@ const IncomeDoc = withErrorMessage()(props => {
 
     return (
         <Layout title={ title } controls={ controls }>
-            { props.loading ? (
-                <Loader loading={ props.loading } />
+            { props.loading && _.isEmpty(props.incomeDoc) ? (
+                <Loader loading={ props.loading && _.isEmpty(props.incomeDoc) } />
             ) : (
                 <IncomeDocForm incomeDoc={ props.incomeDoc } />
             ) }
