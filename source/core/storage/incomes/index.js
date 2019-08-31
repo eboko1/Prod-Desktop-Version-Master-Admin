@@ -223,7 +223,7 @@ export function* fetchIncomesSaga() {
 export function* fetchIncomeDocSaga() {
     while (true) {
         try {
-            const { payload } = yield take(FETCH_INCOME_DOC);
+            const { payload } = yield take([ FETCH_INCOME_DOC, DELETE_INCOME_DOC_SUCCESS ]);
             yield put(setIncomeDocLoading(true));
 
             const response = yield call(
