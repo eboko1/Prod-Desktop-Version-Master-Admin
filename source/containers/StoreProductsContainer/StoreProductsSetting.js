@@ -11,7 +11,7 @@ const mapStateToProps = state => ({
 });
 
 export const StoreProductsSetting = connect(mapStateToProps)(
-    ({ setModal, storeGroup, user, systemWide }) => {
+    ({ setModal, storeGroup, user }) => {
         const renderEditing = () => {
             return (
                 <>
@@ -62,7 +62,7 @@ export const StoreProductsSetting = connect(mapStateToProps)(
                 />
                 { isAdmin(user)
                     ? renderEditing()
-                    : !systemWide
+                    : !storeGroup.systemWide
                         ? renderEditing()
                         : null }
             </>
