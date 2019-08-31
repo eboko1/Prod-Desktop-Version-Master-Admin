@@ -69,6 +69,32 @@ const ProductForm = props => {
         props.fetchPriceGroups();
     }, []);
 
+    const findGroupNameById = (data, groupId) => {
+        let groupName = null;
+
+        data.forEach(item => {
+            if (item.id === groupId) {
+                groupName = item.name;
+            }
+
+            if (!_.isEmpty(item.childGroups)) {
+                const result = findGroupNameById(item.childGroups, groupId);
+                if (!groupName) {
+                    groupName = result;
+                }
+            }
+        });
+
+        return groupName;
+    };
+
+    const onSelectProductGroup = value => {
+        const groupName = findGroupNameById(props.storeGroups, value);
+        props.form.setFieldsValue({ name: groupName });
+
+        return value;
+    };
+
     const _submit = event => {
         event.preventDefault();
         props.form.validateFields((err, values) => {
@@ -80,10 +106,6 @@ const ProductForm = props => {
                     ? props.updateProduct({
                         id:      _.get(props, 'modalProps.id'),
                         product: values,
-                        // product: {
-                        //     ...values,
-                        //     brandId: Number(values.brandId),
-                        // },
                     })
                     : props.createProduct(values);
 
@@ -145,6 +167,7 @@ const ProductForm = props => {
                         message:  formatMessage({ id: 'required_field' }),
                     },
                 ] }
+                onSelect={ e => onSelectProductGroup(e) }
                 treeDataNodes={ props.storeGroups }
                 initialValue={ _.get(props, 'product.groupId') }
             />

@@ -34,6 +34,7 @@ export const DecoratedTreeSelect = memo(
             initialValue,
             style,
             onChange,
+            onSelect,
         } = props;
 
         const treeSelectFilterTreeNode = (input, treeNode) => {
@@ -88,6 +89,7 @@ export const DecoratedTreeSelect = memo(
                 treeDefaultExpandAll={ treeDefaultExpandAll }
                 allowClear={ allowClear }
                 onChange={ onChange }
+                onSelect={ onSelect }
                 disabled={ disabled }
                 ref={ ref }
                 filterTreeNode={ treeSelectFilterTreeNode }
