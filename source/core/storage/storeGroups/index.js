@@ -191,7 +191,7 @@ export function* updateStoreGroupSaga() {
                 'PUT',
                 `store_groups/${payload.id}`,
                 null,
-                _.omit(payload, [ 'id', 'parentGroupId' ]),
+                _.omit(payload, [ 'id', 'parentGroupId', 'systemWide' ]),
             );
 
             yield put(updateStoreGroupSuccess());
