@@ -271,7 +271,7 @@ const IncomeForm = props => {
                                     }),
                                 },
                             ] }
-                            initialValue={ incomeDoc.recordDatetime || moment() }
+                            initialValue={ incomeDoc.doneDatetime || moment() }
                         />
                         <DecoratedDatePicker
                             formItem
