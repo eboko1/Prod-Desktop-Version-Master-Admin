@@ -36,8 +36,8 @@ const ReducerState = {
     trackingLoading: false,
     filters:         {
         page:      1,
-        date:      void 0,
-        // date:      moment(),
+        startDate: moment().subtract(30, 'days'),
+        endDate:   moment(),
         productId: void 0,
     },
 };
@@ -125,9 +125,8 @@ export function* fetchTrackingSaga() {
                 '/store_doc_products',
                 {
                     ...filters,
-                    date: filters.date
-                        ? moment(filters.date).format('YYYY-MM-DD')
-                        : void 0,
+                    startDate: moment(filters.startDate).format('YYYY-MM-DD'),
+                    endDate:   moment(filters.endDate).format('YYYY-MM-DD'),
                 },
             );
 

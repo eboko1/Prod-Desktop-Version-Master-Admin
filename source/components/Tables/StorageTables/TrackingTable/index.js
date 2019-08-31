@@ -4,13 +4,12 @@ import { connect } from 'react-redux';
 import { injectIntl } from 'react-intl';
 import { Table } from 'antd';
 import _ from 'lodash';
+import styled from 'styled-components';
 
 // proj
 import {
     fetchTracking,
     selectTracking,
-    selectTrackingLoading,
-    selectTrackingFilters,
     setTrackingPage,
 } from 'core/storage/tracking';
 import { setModal } from 'core/modals/duck';
@@ -43,7 +42,7 @@ const TrackingTableComponent = memo(props => {
     };
 
     return (
-        <Table
+        <StyledTable
             size='small'
             columns={ columns(props) }
             dataSource={ props.tracking.list }
@@ -58,9 +57,27 @@ const TrackingTableComponent = memo(props => {
     );
 });
 
+const StyledTable = styled(Table)`
+    background-color: rgb(255, 255, 255);
+    transition: all 450ms cubic-bezier(0.23, 1, 0.32, 1) 0ms;
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 10px,
+        rgba(0, 0, 0, 0.23) 0px 3px 10px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    box-sizing: border-box;
+    padding: 10px;
+
+    & th.income,
+    & td.income {
+        background: rgba(var(--secondaryRGB), 0.2) !important;
+    }
+    & th.expense,
+    & td.expense {
+        background: rgba(var(--warningRGB), 0.2) !important;
+    }
+`;
+
 const mapStateToProps = state => ({
     tracking: selectTracking(state),
-    loading:  selectTrackingLoading(state),
 });
 
 const mapDispatchToProps = {
