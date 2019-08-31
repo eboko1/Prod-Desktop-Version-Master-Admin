@@ -247,7 +247,7 @@
     "roles.create_invite_order": "Создать приглашение",
     "roles.create_order": "Создать заказ",
     "roles.print_orders": "Скачать PDF",
-    "roles.limited_print": "Лимитировання печать",
+    "roles.limited_print": "Лимитированная печать",
     "roles.show_filters": "Использовать фильтры",
     "roles.show_orders": "Доступ к заказам",
     "roles.update_success_order": "Обновление закрытых заказов",
