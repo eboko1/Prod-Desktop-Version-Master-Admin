@@ -489,7 +489,10 @@ export default class DetailsTable extends Component {
                                     }}
                                     onSelect={value => {
                                         if (value) {
-                                            this._handleProductSelect(key, value);
+                                            this._handleProductSelect(
+                                                key,
+                                                value,
+                                            );
                                         }
                                     }}
                                     showSearch
@@ -500,7 +503,10 @@ export default class DetailsTable extends Component {
                                     })}
                                 >
                                     {productId ? (
-                                        <Option value={productId} key={productId}>
+                                        <Option
+                                            value={productId}
+                                            key={productId}
+                                        >
                                             {this._getDefaultValue(
                                                 key,
                                                 "productCode",
@@ -591,41 +597,6 @@ export default class DetailsTable extends Component {
                 },
             };
 
-            const price = {
-                title: <FormattedMessage id="order_form_table.price" />,
-                width: "9%",
-                key: "price",
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        className={Styles.detailsRequiredFormItem}
-                        rules={
-                            !this._isFieldDisabled(key, false, true)
-                                ? this.requiredRule
-                                : void 0
-                        }
-                        errors={errors}
-                        formItem
-                        fieldValue={_.get(
-                            fields,
-                            `details[${key}].detailPrice`,
-                        )}
-                        fields={{}}
-                        field={`details[${key}].detailPrice`}
-                        getFieldDecorator={this.props.form.getFieldDecorator}
-                        disabled={
-                            this._isFieldDisabled(key, false, true) ||
-                            editDetailsForbidden
-                        }
-                        initialValue={
-                            this._getDefaultValue(key, "detailPrice") || 0
-                        }
-                        min={0}
-                        formatter={numeralFormatter}
-                        parser={numeralParser}
-                    />
-                ),
-            };
-
             const purchasePrice = {
                 title: <FormattedMessage id="order_form_table.purchasePrice" />,
                 width: "9%",
@@ -663,6 +634,41 @@ export default class DetailsTable extends Component {
                         />
                     );
                 },
+            };
+
+            const price = {
+                title: <FormattedMessage id="order_form_table.price" />,
+                width: "9%",
+                key: "price",
+                render: ({ key }) => (
+                    <DecoratedInputNumber
+                        className={Styles.detailsRequiredFormItem}
+                        rules={
+                            !this._isFieldDisabled(key, false, true)
+                                ? this.requiredRule
+                                : void 0
+                        }
+                        errors={errors}
+                        formItem
+                        fieldValue={_.get(
+                            fields,
+                            `details[${key}].detailPrice`,
+                        )}
+                        fields={{}}
+                        field={`details[${key}].detailPrice`}
+                        getFieldDecorator={this.props.form.getFieldDecorator}
+                        disabled={
+                            this._isFieldDisabled(key, false, true) ||
+                            editDetailsForbidden
+                        }
+                        initialValue={
+                            this._getDefaultValue(key, "detailPrice") || 0
+                        }
+                        min={0}
+                        formatter={numeralFormatter}
+                        parser={numeralParser}
+                    />
+                ),
             };
 
             const count = {
@@ -762,8 +768,8 @@ export default class DetailsTable extends Component {
                 brand,
                 code,
                 suggest,
-                price,
                 purchasePrice,
+                price,
                 count,
                 sum,
                 actions,
