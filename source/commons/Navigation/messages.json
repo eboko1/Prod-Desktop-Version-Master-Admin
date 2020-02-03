@@ -51,7 +51,8 @@
     "navigation.expenses": "Expenses",
     "navigation.payment": "Payment",
     "navigation.subscription_packages": "Subscribe",
-    "navigation.subscription_history": "Subscription History"
+    "navigation.subscription_history": "Subscription History",
+    "navigation.diagnostic_patterns": "Diagnostic patterns"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -105,7 +106,8 @@
     "navigation.expenses": "Расходы",
     "navigation.payment": "Оплата",
     "navigation.subscription_packages": "Оформить подписку",
-    "navigation.subscription_history": "История подписок"
+    "navigation.subscription_history": "История подписок",
+    "navigation.diagnostic_patterns": "Шаблоны диагностики"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -159,6 +161,7 @@
     "navigation.expenses": "Витрати",
     "navigation.payment": "Оплата",
     "navigation.subscription_packages": "Оформити підписок",
-    "navigation.subscription_history": "Історія підписок"
+    "navigation.subscription_history": "Історія підписок",
+    "navigation.diagnostic_patterns": "Шаблони діагностики"
   }
 }

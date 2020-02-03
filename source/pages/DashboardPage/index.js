@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Tabs, Button } from 'antd';
 import moment from 'moment';
+import withSizes from 'react-sizes';
 
 // proj
 import {
@@ -165,7 +166,7 @@ class DashboardPage extends Component {
                     <Tabs
                         activeKey={ mode }
                         tabBarExtraContent={
-                            mode === 'calendar' ? (
+                            (mode === 'calendar' && window.innerWidth >= 1200) ? (
                                 <ArrowsWeekPicker
                                     startDate={ startDate }
                                     endDate={ endDate }

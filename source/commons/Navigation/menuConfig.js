@@ -80,6 +80,13 @@ export default {
                     link: book.products,
                     name: 'navigation.products',
                 },
+                {
+                    key:      '/diagnostic-patterns',
+                    disabled: user =>
+                        isForbidden(user, permissions.ACCESS_DASHBOARD),
+                    link: book.diagnosticPatterns,
+                    name: 'navigation.diagnostic_patterns',
+                },
             ],
         },
         /* Accounting */

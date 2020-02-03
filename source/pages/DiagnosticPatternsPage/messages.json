@@ -1,0 +1,14 @@
+{
+    "en": {
+        "diagnostic-page.title": "Diagnostic patterns",
+        "diagnostic-page.add_new_template": "Add new pattern"
+    },
+    "ru": {
+        "diagnostic-page.title": "Шаблоны диагностики",
+        "diagnostic-page.add_new_template": "Добавить шаблон"
+    },
+    "uk": {
+        "diagnostic-page.title": "Шаблони діагностики",
+        "diagnostic-page.add_new_template": "Додати шаблон"
+    }
+}

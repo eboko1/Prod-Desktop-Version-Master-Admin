@@ -37,6 +37,7 @@ import ReviewPage from 'pages/ReviewPage/messages';
 import CallsPage from 'pages/CallsPage/messages';
 import BusinessPackagePage from 'pages/BusinessPackagePage/messages';
 import ManagerRolePage from 'pages/ManagerRolePage/messages';
+import DiagnosticPatternsPage from 'pages/DiagnosticPatternsPage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -150,6 +151,7 @@ const messages = merge.all([
     CallsPage,
     BusinessPackagePage,
     ManagerRolePage,
+    DiagnosticPatternsPage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
