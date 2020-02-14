@@ -1,0 +1,41 @@
+{
+    "en": {
+        "order_form_table.diagnostic": "Diagnostic",
+        "order_form_table.diagnostic.plan": "Diagnostic plan",
+        "order_form_table.diagnostic.stage": "Stage",
+        "order_form_table.diagnostic.status": "Status",
+        "order_form_table.diagnostic.commentary": "Commentary",
+        "order_form_table.diagnostic.photo": "Photo",
+        "order_form_table.diagnostic.status.ok": "OK",
+        "order_form_table.diagnostic.status.bad": "-",
+        "order_form_table.diagnostic.status.critical": "!!!",
+        "order_form_table.diagnostic.status.edit": "Edit",
+        "order_form_table.diagnostic.detail": "Unit/detail"
+    },
+    "ru": {
+        "order_form_table.diagnostic": "Диагностика",
+        "order_form_table.diagnostic.plan": "План диагностики",
+        "order_form_table.diagnostic.stage": "Этап",
+        "order_form_table.diagnostic.status": "Статус",
+        "order_form_table.diagnostic.commentary": "Комментарий",
+        "order_form_table.diagnostic.photo": "Фото",
+        "order_form_table.diagnostic.status.ok": "OK",
+        "order_form_table.diagnostic.status.bad": "-",
+        "order_form_table.diagnostic.status.critical": "!!!",
+        "order_form_table.diagnostic.status.edit": "Изменить",
+        "order_form_table.diagnostic.detail": "Узел/деталь"
+    },
+    "uk": {
+        "order_form_table.diagnostic": "Діагностика",
+        "order_form_table.diagnostic.plan": "План діагностики",
+        "order_form_table.diagnostic.stage": "Етап",
+        "order_form_table.diagnostic.status": "Статус",
+        "order_form_table.diagnostic.commentary": "Коментар",
+        "order_form_table.diagnostic.photo": "Фото",
+        "order_form_table.diagnostic.status.ok": "OK",
+        "order_form_table.diagnostic.status.bad": "-",
+        "order_form_table.diagnostic.status.critical": "!!!",
+        "order_form_table.diagnostic.status.edit": "Редагувати",
+        "order_form_table.diagnostic.detail": "Вузол/деталь"
+    }
+}

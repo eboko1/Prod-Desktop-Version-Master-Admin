@@ -38,7 +38,6 @@ import ordersPuzzle from './dashboardCore/ordersPuzzle';
 class DashboardContainer extends Component {
     constructor(props) {
         super(props);
-
         this._dashboardRef = React.createRef();
 
         this.state = {
@@ -101,7 +100,9 @@ class DashboardContainer extends Component {
 
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
-
+            if(window.innerWidth < 1200){
+                index = days.indexOf(moment(load[ index ].beginDate).format('YYYY-MM-DD')); 
+            }
             return (
                 <DashboardColumn
                     dashboard={ dashboard }
@@ -249,6 +250,10 @@ class DashboardContainer extends Component {
                                                 clientName:
                                                     result[ index ].options
                                                         .clientName,
+                                                stationName:
+                                                    result[ index ].options.
+                                                        stationName,
+
                                             } }
                                             id={
                                                 result[ index ].options

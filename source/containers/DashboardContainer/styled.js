@@ -82,6 +82,10 @@ export const DashboardColumn = styled.div`
             `${props.currentDay &&
                 props.currentDay === props.day &&
                 'absolute'}`};
+        z-index: ${props =>
+            `${props.currentDay &&
+                props.currentDay === props.day &&
+                '100'}`};
     }
     ${'' /* display: grid;
     grid-template-rows: ${props =>

@@ -85,6 +85,7 @@ import TasksTable from 'forms/OrderForm/OrderFormTables/TasksTable/messages';
 import CallsTable from 'forms/OrderForm/OrderFormTables/CallsTable/messages';
 import CancelReasonForm from 'forms/CancelReasonForm/messages';
 import ToSuccessForm from 'forms/ToSuccessForm/messages';
+import DiagnosticTable from 'forms/OrderForm/OrderFormTables/DiagnosticTable/messages';
 
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
@@ -191,6 +192,7 @@ const messages = merge.all([
     CashCreationForm,
     CashOrderForm,
     SubscribeForm,
+    DiagnosticTable,
     // modals
     UniversalFiltersModal,
     AddClientModal,

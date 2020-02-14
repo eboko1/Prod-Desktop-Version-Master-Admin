@@ -54,6 +54,7 @@ export class MobileRecordForm extends Component {
             selectedClient,
             stations,
             onStatusChange,
+            orderDiagnostic,
             order: { status },
         } = this.props;
         const { getFieldDecorator, getFieldsValue } = this.props.form;

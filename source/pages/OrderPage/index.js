@@ -368,7 +368,7 @@ class OrderPage extends Component {
             user,
             permissions.ACCESS_ORDER_STATUS,
         );
-
+        
         return {
             isClosedStatus,
             canEditClosedStatus,
@@ -399,7 +399,7 @@ class OrderPage extends Component {
             initialOrderTask,
         } = this.props;
 
-        const {num, status, datetime} = this.props.order;
+        const {num, status, datetime, diagnosis} = this.props.order;
         const {id} = this.props.match.params;
 
         const {
@@ -549,6 +549,8 @@ class OrderPage extends Component {
                     <MobileRecordForm
                         wrappedComponentRef={ this.saveOrderFormRef }
                         onStatusChange={ this._onStatusChange }
+                        orderDiagnostic={ diagnosis }
+                        orderId={ id }
                     />
                 </MobileView>
                 <ResponsiveView
@@ -557,13 +559,14 @@ class OrderPage extends Component {
                     <OrderForm
                         errors={ this.state.errors }
                         user={ this.props.user }
-                        orderId={ Number(this.props.match.params.id) }
+                        orderId={ id }
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
                         orderHistory={ this.props.orderHistory }
                         setAddClientModal={ this.setAddClientModal }
                         modal={ modal }
                         orderCalls={ this.props.orderCalls }
+                        orderDiagnostic = { diagnosis }
                         allService={ this.props.allServices }
                         allDetails={ this.props.allDetails }
                         employees={ this.props.employees }

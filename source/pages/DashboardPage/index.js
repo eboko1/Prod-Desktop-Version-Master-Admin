@@ -229,7 +229,6 @@ class DashboardPage extends Component {
             daysWithConflicts,
             stationsWithConflicts,
         } = this.props;
-
         return loading ? (
             <Loader loading={ loading } />
         ) : (

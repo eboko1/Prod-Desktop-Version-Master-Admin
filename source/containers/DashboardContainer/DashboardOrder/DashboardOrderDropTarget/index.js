@@ -31,6 +31,7 @@ export default class DashboardOrderDropTarget extends Component {
 
     render() {
         const { isOver, canDrop, label } = this.props;
+        console.log(this.props);
 
         return (
             <StyledDashboardOrderDropTarget
