@@ -386,6 +386,7 @@ export class OrderForm extends React.PureComponent {
             allServices,
             schedule,
             stationLoads,
+            orderId,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
@@ -438,6 +439,7 @@ export class OrderForm extends React.PureComponent {
             orderHistory,
             orderServices,
             orderDetails,
+            orderDiagnostic,
             // allServices,
             allDetails,
             employees,
@@ -489,6 +491,7 @@ export class OrderForm extends React.PureComponent {
 
         return (
             <OrderFormTabs
+                orderId={orderId}
                 errors={errors}
                 initialBeginDatetime={initialBeginDatetime}
                 initialStation={initialStation}
@@ -508,6 +511,7 @@ export class OrderForm extends React.PureComponent {
                 orderHistory={orderHistory}
                 orderServices={orderServices}
                 orderDetails={orderDetails}
+                orderDiagnostic={orderDiagnostic}
                 allServices={allServices}
                 allDetails={allDetails}
                 employees={employees}

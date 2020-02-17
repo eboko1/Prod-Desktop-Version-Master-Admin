@@ -18,6 +18,7 @@ import {
     HistoryTable,
     CallsTable,
     StationsTable,
+    DiagnosticTable,
 } from "../OrderFormTables";
 import Styles from "./styles.m.css";
 
@@ -82,6 +83,8 @@ export default class OrderFormTabs extends React.PureComponent {
             orderHistory,
             orderServices,
             orderDetails,
+            orderDiagnostic,
+            orderId,
             allServices,
             allDetails,
             employees,
@@ -167,6 +170,24 @@ export default class OrderFormTabs extends React.PureComponent {
 
         return (
             <Tabs type="card" className={Styles.orderFormsTabs}>
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={
+                            formatMessage({
+                                id: "order_form_table.diagnostic",
+                            })
+                        }
+                        key="1"
+                    >
+                        <DiagnosticTable
+                            change={() => {alert("da")}}
+                            orderDiagnostic={orderDiagnostic}
+                            orderId={orderId}
+                            //diagnosticTemplateId={orderDiagnostic.diagnosticTemplateId}
+                        />
+                    </TabPane>
+                )}
                 {!addOrderForm && viewTasks && (
                     <TabPane
                         forceRender
@@ -180,7 +201,7 @@ export default class OrderFormTabs extends React.PureComponent {
                                     : 0
                             })`
                         }
-                        key="1"
+                        key="2"
                     >
                         {canCreateTask ? (
                             <Button
@@ -209,7 +230,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         id: "add_order_form.services",
                         defaultMessage: "Services",
                     })} (${countServices})`}
-                    key="2"
+                    key="3"
                 >
                     <ServicesTable
                         errors={errors}
@@ -240,7 +261,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         id: "add_order_form.details",
                         defaultMessage: "Details",
                     })} (${countDetails})`}
-                    key="3"
+                    key="4"
                 >
                     <DetailsTable
                         errors={errors}
@@ -287,7 +308,7 @@ export default class OrderFormTabs extends React.PureComponent {
                 </TabPane>
                 <TabPane
                     forceRender
-                    key="4"
+                    key="5"
                     tab={
                         formatMessage({
                             id: "add_order_form.comments",
@@ -390,7 +411,7 @@ export default class OrderFormTabs extends React.PureComponent {
                                 ? ""
                                 : ` (${orderHistory.orders.length})`)
                         }
-                        key="5"
+                        key="6"
                     >
                         <HistoryTable
                             orderHistory={orderHistory}
@@ -410,7 +431,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             }) +
                             (areCallsForbidden ? "" : ` (${orderCalls.length})`)
                         }
-                        key="6"
+                        key="7"
                     >
                         <CallsTable orderCalls={orderCalls} />
                     </TabPane>
@@ -423,7 +444,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             id: "order_form_table.station",
                         }) + ` (${stationsCount ? stationsCount.length : 0})`
                     }
-                    key="7"
+                    key="8"
                 >
                     <StationsTable
                         errors={errors}

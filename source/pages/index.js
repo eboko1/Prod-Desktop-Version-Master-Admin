@@ -31,6 +31,7 @@ import PaymentPage from './PaymentPage';
 import SubscriptionHistoryPage from './SubscriptionHistoryPage';
 import SubscriptionPackagesPage from './SubscriptionPackagesPage';
 import UserAgreementPage from './UserAgreementPage';
+import DiagnosticPatternsPage from './DiagnosticPatternsPage';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -70,4 +71,5 @@ export {
     SubscriptionHistoryPage,
     SubscriptionPackagesPage,
     UserAgreementPage,
+    DiagnosticPatternsPage,
 };

@@ -43,6 +43,7 @@ import {
     StorageBalancePage,
     StorageMovementPage,
     IncomeDocPage,
+    DiagnosticPatternsPage,
 } from 'pages';
 import book from './book';
 
@@ -68,10 +69,22 @@ export default class Private extends Component {
                         <OrderPage key={ props.match.params.id } { ...props } />
                     ) }
                 />
-                <Route exact component={ AddOrderPage } path={ book.addOrder } />
-                <Route exact component={ MyTasksPage } path={ book.myTasksPage } />
+                <Route
+                    exact
+                    component={ AddOrderPage }
+                    path={ book.addOrder }
+                />
+                <Route
+                    exact
+                    component={ MyTasksPage }
+                    path={ book.myTasksPage }
+                />
                 { /* Reference book */ }
-                <Route exact component={ ClientsPage } path={ book.clients } />
+                <Route
+                    exact
+                    component={ ClientsPage }
+                    path={ book.clients }
+                />
                 <Route
                     exact
                     render={ props => <ClientPage { ...props } /> }
@@ -124,7 +137,16 @@ export default class Private extends Component {
                     component={ PriceGroupsPage }
                     path={ book.priceGroups }
                 />
-                <Route exact component={ ProductsPage } path={ book.products } />
+                <Route 
+                    exact
+                    component={ ProductsPage }
+                    path={ book.products }
+                />
+                <Route 
+                    exact
+                    component={ DiagnosticPatternsPage }
+                    path={ book.diagnosticPatterns }
+                />
                 <Route
                     exact
                     component={ StorageBalancePage }
@@ -163,16 +185,32 @@ export default class Private extends Component {
                     path={ book.storageExpenses }
                 />
                 { /* Statistics */ }
-                <Route exact component={ ChartPage } path={ book.chart } />
-                <Route exact component={ ReviewsPage } path={ book.feedback } />
+                <Route
+                    exact
+                    component={ ChartPage }
+                    path={ book.chart }
+                />
+                <Route
+                    exact
+                    component={ ReviewsPage }
+                    path={ book.feedback }
+                />
                 <Route
                     exact
                     render={ props => <ReviewPage { ...props } /> }
                     path={ book.feedbackId }
                 />
-                <Route exact component={ CallsPage } path={ book.calls } />
+                <Route
+                    exact
+                    component={ CallsPage }
+                    path={ book.calls }
+                />
                 { /* Payment */ }
-                <Route exact component={ PaymentPage } path={ book.paymentPage } />
+                <Route
+                    exact
+                    component={ PaymentPage }
+                    path={ book.paymentPage }
+                />
                 <Route
                     exact
                     component={ SubscriptionHistoryPage }
@@ -184,8 +222,16 @@ export default class Private extends Component {
                     path={ book.subscriptionPackagesPage }
                 />
                 { /* Roles */ }
-                <Route exact component={ PackagePage } path={ book.packagePage } />
-                <Route exact component={ RolePage } path={ book.rolePage } />
+                <Route
+                    exact
+                    component={ PackagePage }
+                    path={ book.packagePage }
+                />
+                <Route
+                    exact
+                    component={ RolePage }
+                    path={ book.rolePage }
+                />
                 <Route
                     exact
                     component={ BusinessPackagePage }
@@ -202,9 +248,17 @@ export default class Private extends Component {
                     component={ ServicesPage }
                     path={ book.servicesPage }
                 />
-                <Route exact component={ BrandsPage } path={ book.brandsPage } />
+                <Route
+                    exact
+                    component={ BrandsPage }
+                    path={ book.brandsPage }
+                />
                 { /* Global */ }
-                <Route exact component={ ProfilePage } path={ book.profile } />
+                <Route
+                    exact
+                    component={ ProfilePage }
+                    path={ book.profile }
+                />
                 <Route
                     exact
                     component={ UserAgreementPage }

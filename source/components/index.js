@@ -42,6 +42,7 @@ import { ExcelReader } from './ExcelReader';
 import { StorageBalanceTotals } from './StorageBalanceTotals';
 import { StorageMovementTotals } from './StorageMovementTotals';
 import { StorageFilters } from './StorageFilters';
+import { DiagnosticStatusButtons } from './DiagnosticStatusButtons';
 
 // re-exports (*) must be before ES6 other (default) exports
 // webpack issue: https://github.com/webpack/webpack/issues/3509
@@ -93,4 +94,5 @@ export {
     StorageBalanceTotals,
     StorageMovementTotals,
     StorageFilters,
+    DiagnosticStatusButtons,
 };

@@ -6,3 +6,12 @@
     display: grid;
     grid-template-columns: 40px 50px auto 50px 40px;
 }
+
+@media screen and (max-width: 1199px) {
+    :global(.ant-tabs-nav-container) {
+    display: none;
+    }
+    :global(.ant-tabs-bar) {
+        margin: 0px 0 55px 0;
+    }
+}

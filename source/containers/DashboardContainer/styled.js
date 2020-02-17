@@ -30,6 +30,7 @@ export const Dashboard = styled.div`
 
 export const DashboardGrid = styled.div`
     display: grid;
+    position: relative;
     grid-template-columns: ${props =>
         `repeat(${props.columns}, minmax(13%, 1fr))`};
     grid-gap: 1%;
@@ -70,10 +71,22 @@ export const DashboardGrid = styled.div`
 
 export const DashboardColumn = styled.div`
     padding: 2px;
+    background: #f1f1f2;
     border: ${props =>
         `${props.currentDay &&
             props.currentDay === props.day &&
             '2px solid var(--secondary)'}`};
+    width: 100%;
+    @media screen and (max-width: 1199px) {
+        position: ${props =>
+            `${props.currentDay &&
+                props.currentDay === props.day &&
+                'absolute'}`};
+        z-index: ${props =>
+            `${props.currentDay &&
+                props.currentDay === props.day &&
+                '100'}`};
+    }
     ${'' /* display: grid;
     grid-template-rows: ${props =>
         `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};

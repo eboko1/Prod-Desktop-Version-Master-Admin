@@ -37,6 +37,7 @@ import ReviewPage from 'pages/ReviewPage/messages';
 import CallsPage from 'pages/CallsPage/messages';
 import BusinessPackagePage from 'pages/BusinessPackagePage/messages';
 import ManagerRolePage from 'pages/ManagerRolePage/messages';
+import DiagnosticPatternsPage from 'pages/DiagnosticPatternsPage/messages';
 
 // containers
 import OrdersFilterContainer from 'containers/OrdersFilterContainer/messages';
@@ -84,6 +85,7 @@ import TasksTable from 'forms/OrderForm/OrderFormTables/TasksTable/messages';
 import CallsTable from 'forms/OrderForm/OrderFormTables/CallsTable/messages';
 import CancelReasonForm from 'forms/CancelReasonForm/messages';
 import ToSuccessForm from 'forms/ToSuccessForm/messages';
+import DiagnosticTable from 'forms/OrderForm/OrderFormTables/DiagnosticTable/messages';
 
 // modals
 import UniversalFiltersModal from 'modals/UniversalFiltersModal/messages';
@@ -150,6 +152,7 @@ const messages = merge.all([
     CallsPage,
     BusinessPackagePage,
     ManagerRolePage,
+    DiagnosticPatternsPage,
     // containers
     OrdersContainer,
     OrdersFilterContainer,
@@ -189,6 +192,7 @@ const messages = merge.all([
     CashCreationForm,
     CashOrderForm,
     SubscribeForm,
+    DiagnosticTable,
     // modals
     UniversalFiltersModal,
     AddClientModal,
