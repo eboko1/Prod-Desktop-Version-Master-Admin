@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Button, Modal, Upload, Icon, Checkbox } from 'antd';
+import { Table, Button, Modal, Upload, Icon, Checkbox, Select } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 // proj
@@ -20,8 +20,10 @@ class DiagnosticTable extends Component {
                 dataIndex: 'key',
                 key:       'key',
                 width:     '3%',
-                render: (key)=> (
-                <Checkbox></Checkbox>
+                render: (num)=> (
+                <div>
+                    <Checkbox></Checkbox>
+                </div>
                 ),
             },
             {
@@ -186,6 +188,15 @@ class DiagnosticTableHeader extends React.Component{
         return(
             <div>
                 <Checkbox></Checkbox>
+                <Select
+                    showSearch
+                    style={{ width: 200 }}
+                    placeholder="Template"
+                >
+                    <Option value="test">test</Option>
+                    <Option value="test2">test2</Option>
+                    <Option value="test3">test3</Option>
+                </Select>
                 <Button>+</Button>
                 <Button>-</Button>
                 <Button>Создать Н/З</Button>

@@ -1,5 +1,6 @@
 export async function sendDiagnosticAnswer(orderId, templateId, diagnosticId, processId, answer, comment, photo) {
     let token = localStorage.getItem('_my.carbook.pro_token');
+    console.log(token);
     let url = `http://localhost:14281`; //"http://" + window.location.hostname;
     let params = `/orders/diagnostics/answer?orderId=${orderId}&templateId=${templateId}&diagnosticId=${diagnosticId}&processId=${processId}&answer=${answer}`
 
