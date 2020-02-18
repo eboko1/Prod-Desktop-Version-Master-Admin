@@ -185,7 +185,20 @@ class DiagnosticTableHeader extends React.Component{
     render(){
         return(
             <div>
+                <Checkbox></Checkbox>
+                <Button>+</Button>
+                <Button>-</Button>
                 <Button>Создать Н/З</Button>
+                <Button style={{background:'rgb(154, 255, 0)'}}>
+                    <FormattedMessage id='order_form_table.diagnostic.status.ok' />
+                </Button>
+                <Button style={{background:'rgb(255, 255, 0)'}}>
+                    <FormattedMessage id='order_form_table.diagnostic.status.bad' />
+                </Button>
+                <Button type="danger">
+                    <FormattedMessage id='order_form_table.diagnostic.status.critical' />
+                </Button>
+                <Button className={Styles.delete_diagnostic_button}><Icon type="delete" /></Button>
             </div>
         );
     }
