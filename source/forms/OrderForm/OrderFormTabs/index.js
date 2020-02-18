@@ -181,10 +181,8 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="1"
                     >
                         <DiagnosticTable
-                            change={() => {alert("da")}}
                             orderDiagnostic={orderDiagnostic}
                             orderId={orderId}
-                            //diagnosticTemplateId={orderDiagnostic.diagnosticTemplateId}
                         />
                     </TabPane>
                 )}

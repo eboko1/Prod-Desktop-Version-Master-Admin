@@ -1,6 +1,21 @@
 .diagnosticTable td {
     vertical-align: middle;
 }
-.diagnosticTable{
-    text-align: center;
+
+.delete_diagnostic_button:hover{
+    color: rgb(255, 77, 79);
+    border-color: rgb(255, 77, 79);
+}
+
+.diagnostic_status_button_wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.diagnostic_status_button{
+    width: 30%;
+}
+
+.diagnostic_status_button_edit{
+    width: 100%;
 }
