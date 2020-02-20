@@ -12,6 +12,8 @@ export async function sendDiagnosticAnswer(orderId, templateId, diagnosticId, pr
         const response = await fetch(url, {
             method: 'PUT',
             headers: {
+                'Accept': 'application/text',
+                'Content-Type': 'application/text',
                 'Authorization': token,
             }
         });
