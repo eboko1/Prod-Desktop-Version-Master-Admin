@@ -234,7 +234,7 @@ class DiagnosticTable extends Component {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/diagnostics?orderId=${this.state.orderId}`;
+        let params = `/orders/diagnostics?orderId=${this.state.orderId}`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -252,17 +252,16 @@ class DiagnosticTable extends Component {
             return response.json()
         })
         .then(function (data) {
-            /*that.setState({
-                orderDiagnostic: data,
-            });*/
-            that.state.orderDiagnostic = data;
-            {that.updateDataSource()}
+            that.setState({
+                orderDiagnostic: data.diagnosis,
+            });
+            //that.state.orderDiagnostic = data;
+            that.updateDataSource();
             console.log("data", data);
         })
         .catch(function (error) {
             console.log('error', error)
         });
-        this.forceUpdate();
     }
 
     getTemplatesList() {
@@ -309,6 +308,7 @@ class DiagnosticTable extends Component {
         this.setState({
             dataSource: tmp_dataSource,
         });
+        this.getCurrentDiagnostic();
     }
 
     onCheckAll() {
@@ -380,7 +380,6 @@ class DiagnosticTable extends Component {
     }
 
     setRowsColor() {
-        console.log("COLOR");
         let color, status;
         var rows = document.querySelectorAll(`.${Styles.diagnosticTable} tbody tr`);
         for(let i = 0; i < rows.length && i < this.state.dataSource.length; i++){
@@ -495,6 +494,8 @@ class DiagnosticTable extends Component {
             dataSource: dataSource,
             rowsCount: key,
         });
+        console.log(this.state.dataSource);
+        this.forceUpdate();
     }
 
     componentWillMount() {
@@ -544,6 +545,8 @@ class DiagnosticTable extends Component {
     }
 
     render() {
+        console.log("RENDER");
+        this.setRowsColor();
         const columns = this.columns;
         return (
             <div>
@@ -653,7 +656,7 @@ class DiagnosticStatusButton extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            status: this.props.status
+            status: props.status
         }
     }
     setColor() {
@@ -685,7 +688,10 @@ class DiagnosticStatusButton extends React.Component{
         this.setState({status:status});
     }
     render(){
+        this.state.status = this.props.status;
+        console.log(this.props,this.state);
         const status = this.state.status;
+        console.log(status, status > 0);
         return status > 0 ? (
             <div className={Styles.diagnostic_status_button_wrap}>
                 <Button className={Styles.diagnostic_status_button_edit} type="primary" onClick={()=>this.handleClick(0)}>
