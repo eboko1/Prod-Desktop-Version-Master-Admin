@@ -689,9 +689,7 @@ class DiagnosticStatusButton extends React.Component{
     }
     render(){
         this.state.status = this.props.status;
-        console.log(this.props,this.state);
         const status = this.state.status;
-        console.log(status, status > 0);
         return status > 0 ? (
             <div className={Styles.diagnostic_status_button_wrap}>
                 <Button className={Styles.diagnostic_status_button_edit} type="primary" onClick={()=>this.handleClick(0)}>
