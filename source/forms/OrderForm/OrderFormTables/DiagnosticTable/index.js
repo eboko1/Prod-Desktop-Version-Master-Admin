@@ -34,6 +34,7 @@ class DiagnosticTable extends Component {
         this.templatesTitles = [];
         this.diagnosticsTitles = [];
         this.processesTitles = [];
+        this.getCurrentDiagnostic = this.getCurrentDiagnostic.bind(this);
         this.addNewDiagnostic = this.addNewDiagnostic.bind(this);
         this.onPlanChange = this.onPlanChange.bind(this);
         this.onStageChange = this.onStageChange.bind(this);
@@ -164,6 +165,7 @@ class DiagnosticTable extends Component {
                 render: (text, rowProp) => {
                     return (
                         <DiagnosticStatusButton
+                            getCurrentDiagnostic={this.getCurrentDiagnostic}
                             status={text}
                             rowProp={rowProp}
                         />
@@ -312,6 +314,7 @@ class DiagnosticTable extends Component {
     }
 
     onCheckAll() {
+        this.getCurrentDiagnostic();
         if(!this.state.checkedAll) {
             this.setState({
                 checkedAll: true,
@@ -602,12 +605,16 @@ class DiagnosticTableHeader extends React.Component{
     }
 
     render(){
+        this.state.checked = this.props.checkedAll;
+        const checked = this.state.checked;
+        this.state.indeterminate = this.props.headerCheckboxIndeterminate;
+        const indeterminate = this.state.indeterminate;
         return(
             <div className={Styles.diagnosticTableHeader}>
                 <div style={{ width: "5%", padding: '5px 10px' }}>
                     <Checkbox
-                        checked = {this.state.checked}
-                        indeterminate = {this.state.indeterminate}
+                        checked = {checked}
+                        indeterminate = {indeterminate}
                         onChange = {this.props.onCheckAll}
                         onClick = {()=>this.handleClickCheckbox()}
                     />
@@ -682,13 +689,21 @@ class DiagnosticStatusButton extends React.Component{
         {this.setColor()}
     }
 
+    updateState() {
+        this.state.status = this.props.status;
+    }
+
+    componentWillUpdate() {
+        this.updateState();
+    }
+
     handleClick = (status) => {
         const { rowProp } = this.props;
         sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.diagnosticId, rowProp.processId, status);
         this.setState({status:status});
+        //this.props.getCurrentDiagnostic();
     }
     render(){
-        this.state.status = this.props.status;
         const status = this.state.status;
         return status > 0 ? (
             <div className={Styles.diagnostic_status_button_wrap}>
