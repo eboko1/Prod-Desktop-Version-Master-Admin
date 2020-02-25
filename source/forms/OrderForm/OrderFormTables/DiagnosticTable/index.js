@@ -53,7 +53,6 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (num)=> {
                     let checked = this.state.selectedRows.indexOf(num) > -1;
-                    if(this.state.possibleRows.indexOf(num) == -1 )this.state.possibleRows.push(num);
                     return(
                         <div>
                             <span>{num} </span>
@@ -188,6 +187,8 @@ class DiagnosticTable extends Component {
 
     addNewDiagnostic(data) {
         addNewDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
+        setTimeout(this.getCurrentDiagnostic,500)
+        //this.getCurrentDiagnostic();
     }
 
     onPlanChange(event) {
@@ -259,7 +260,6 @@ class DiagnosticTable extends Component {
             });
             //that.state.orderDiagnostic = data;
             that.updateDataSource();
-            console.log("data", data);
         })
         .catch(function (error) {
             console.log('error', error)
@@ -300,21 +300,24 @@ class DiagnosticTable extends Component {
         });*/
     }
 
-    deleteRow(index) {
-        let tmp_dataSource = this.state.dataSource;
-        tmp_dataSource.splice(index, 1);
-
-        for(let i = 0; i < tmp_dataSource.length; i++) {
-            tmp_dataSource[i].key = i+1;
-        }
+    async deleteRow(index) {
+        await deleteDiagnosticProcess(
+            this.props.orderId,
+            this.state.dataSource[index].diagnosticTemplateId,
+            this.state.dataSource[index].diagnosticId,
+            this.state.dataSource[index].processId,
+        );
         this.setState({
-            dataSource: tmp_dataSource,
+            selectedRows: [],
+            possibleRows: [],
+            checkedAll: false,
+            headerCheckboxIndeterminate: false,
         });
-        this.getCurrentDiagnostic();
+        await this.getCurrentDiagnostic();
+        await this.getCurrentDiagnostic();
     }
 
     onCheckAll() {
-        this.getCurrentDiagnostic();
         if(!this.state.checkedAll) {
             this.setState({
                 checkedAll: true,
@@ -329,6 +332,7 @@ class DiagnosticTable extends Component {
                 headerCheckboxIndeterminate: false,
             });
         }
+        this.getCurrentDiagnostic();
     }
 
     async editSelectedRowsStatus(status) {
@@ -344,8 +348,11 @@ class DiagnosticTable extends Component {
         }
         this.setState({
             selectedRows: [],
+            possibleRows: [],
+            checkedAll: false,
+            headerCheckboxIndeterminate: false,
         });
-        {this.getCurrentDiagnostic()}
+        await this.getCurrentDiagnostic();
     }
 
     async deleteSelectedRows() {
@@ -360,26 +367,29 @@ class DiagnosticTable extends Component {
         }
         this.setState({
             selectedRows: [],
+            possibleRows: [],
+            checkedAll: false,
+            headerCheckboxIndeterminate: false,
         });
-        {this.getCurrentDiagnostic()}
+        await this.getCurrentDiagnostic();
     }
 
     onChangeCheckbox(key) {
+        const data = this.state.selectedRows;
         if(event.target.checked) {
             this.state.selectedRows.push(key);
         }
         else {
-            let index = this.state.selectedRows.indexOf(key);
-            this.state.selectedRows.splice(index, 1);
+            let index = data.indexOf(key);
+            this.state.selectedRows = data.filter((_, i) => i !== index);
         }
-
-        let allchecked = (this.state.selectedRows.length == this.state.possibleRows.length),
-            indeterminate = this.state.selectedRows.length < this.state.possibleRows.length && this.state.selectedRows.length > 0;
-
+        let allchecked = (this.state.selectedRows.length == this.state.rowsCount),
+            indeterminate = (this.state.selectedRows.length < this.state.rowsCount) && this.state.selectedRows.length > 0;
         this.setState({
             headerCheckboxIndeterminate: indeterminate,
             checkedAll: allchecked,
         });
+        this.getCurrentDiagnostic();
     }
 
     setRowsColor() {
@@ -402,6 +412,7 @@ class DiagnosticTable extends Component {
     }
 
     updateDataSource() {
+        this.state.possibleRows = [];
         const { orderDiagnostic, orderId } = this.state;
         console.log("UpdateDataSource");
         const dataSource = [];
@@ -472,6 +483,7 @@ class DiagnosticTable extends Component {
                         diagnosticId: diagnosticId,
                         photo: photo,
                     },);
+                    this.state.possibleRows.push(key);
                     key++;
                 }
             }
@@ -491,13 +503,13 @@ class DiagnosticTable extends Component {
             photo: "",
             allTemplatesData: orderDiagnostic,
         },);
+        this.state.possibleRows.push(key);
         //this.state.dataSource = dataSource;
         //this.state.rowsCount = key;
         this.setState({
             dataSource: dataSource,
             rowsCount: key,
         });
-        console.log(this.state.dataSource);
         this.forceUpdate();
     }
 
@@ -584,7 +596,7 @@ class DiagnosticTableHeader extends React.Component{
     constructor(props){
         super(props);
         this.state = {
-            indeterminate: props.headerCheckboxIndeterminate,
+            indeterminate: props.indeterminate,
             checked: props.checkedAll,
             selectValue : "",
         }
@@ -604,17 +616,22 @@ class DiagnosticTableHeader extends React.Component{
         {this.props.deleteSelectedRows()};
     }
 
-    render(){
+    updateState() {
         this.state.checked = this.props.checkedAll;
-        const checked = this.state.checked;
-        this.state.indeterminate = this.props.headerCheckboxIndeterminate;
-        const indeterminate = this.state.indeterminate;
+        this.state.indeterminate = this.props.indeterminate;
+    }
+
+    componentWillUpdate() {
+        this.updateState();
+    }
+
+    render(){
         return(
             <div className={Styles.diagnosticTableHeader}>
                 <div style={{ width: "5%", padding: '5px 10px' }}>
                     <Checkbox
-                        checked = {checked}
-                        indeterminate = {indeterminate}
+                        checked = {this.state.checked}
+                        indeterminate = {this.state.indeterminate}
                         onChange = {this.props.onCheckAll}
                         onClick = {()=>this.handleClickCheckbox()}
                     />
