@@ -6,7 +6,7 @@ import { FormattedMessage } from 'react-intl';
 
 // proj
 import { Catcher } from 'commons';
-import { API_URL, addNewDiagnosticTemplate, getDiagnosticsTemplates, addNewDiagnosticRow, sendDiagnosticAnswer, deleteDiagnosticProcess } from 'core/forms/orderDiagnosticForm/saga';
+import { API_URL, addNewDiagnosticTemplate, getDiagnosticsTemplates, addNewDiagnosticRow, sendDiagnosticAnswer, deleteDiagnosticProcess, deleteDiagnosticTemplate } from 'core/forms/orderDiagnosticForm/saga';
 import { DiagnosticStatusButtons } from 'components';
 
 // own
@@ -36,6 +36,7 @@ class DiagnosticTable extends Component {
         this.processesTitles = [];
         this.getCurrentDiagnostic = this.getCurrentDiagnostic.bind(this);
         this.addNewDiagnostic = this.addNewDiagnostic.bind(this);
+        this.deleteDiagnostic = this.deleteDiagnostic.bind(this);
         this.onPlanChange = this.onPlanChange.bind(this);
         this.onStageChange = this.onStageChange.bind(this);
         this.onDetailChange = this.onDetailChange.bind(this);
@@ -187,6 +188,12 @@ class DiagnosticTable extends Component {
 
     addNewDiagnostic(data) {
         addNewDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
+        setTimeout(this.getCurrentDiagnostic,500)
+        //this.getCurrentDiagnostic();
+    }
+
+    deleteDiagnostic(data) {
+        deleteDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
         setTimeout(this.getCurrentDiagnostic,500)
         //this.getCurrentDiagnostic();
     }
@@ -573,6 +580,7 @@ class DiagnosticTable extends Component {
                     checkedAll = {this.state.checkedAll}
                     onCheckAll = {this.onCheckAll}
                     addNewDiagnostic = {this.addNewDiagnostic}
+                    deleteDiagnostic = {this.deleteDiagnostic}
                     editSelectedRowsStatus = {this.editSelectedRowsStatus}
                     deleteSelectedRows = {this.deleteSelectedRows}
 
@@ -647,7 +655,7 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "15%" }}>
                     <Button onClick={() => this.props.addNewDiagnostic(this.state.selectValue)}>+</Button>
-                    <Button>-</Button>
+                    <Button onClick={() => this.props.deleteDiagnostic(this.state.selectValue)}>-</Button>
                 </div>
                 <div style={{ width: "35%" }}>
                     <Button type="primary" style={{ width: "80%" }}>Создать Н/З</Button>
