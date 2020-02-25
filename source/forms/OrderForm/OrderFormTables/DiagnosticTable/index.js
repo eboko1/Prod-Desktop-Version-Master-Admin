@@ -188,13 +188,13 @@ class DiagnosticTable extends Component {
 
     addNewDiagnostic(data) {
         addNewDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
-        setTimeout(this.getCurrentDiagnostic,500)
+        setTimeout(this.getCurrentDiagnostic,500);
         //this.getCurrentDiagnostic();
     }
 
     deleteDiagnostic(data) {
         deleteDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
-        setTimeout(this.getCurrentDiagnostic,500)
+        setTimeout(this.getCurrentDiagnostic,500);
         //this.getCurrentDiagnostic();
     }
 
@@ -238,6 +238,7 @@ class DiagnosticTable extends Component {
         }
         templateId = this.templatesTitles.indexOf(diagnosticParent) + 1;
         addNewDiagnosticRow(this.state.orderId, templateId, diagnosticId, processId);
+        setTimeout(this.getCurrentDiagnostic,500);
     }
 
     getCurrentDiagnostic() {
