@@ -132,3 +132,28 @@ export async function addNewDiagnosticTemplate(orderId, templateId) {
         console.error('ERROR:', error);
     }
 }
+
+export async function deleteDiagnosticTemplate(orderId, templateId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/orders/diagnostics/template?orderId=${orderId}&templateId=${templateId}`;
+
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        const result = await response.json();
+        if(result.success) {
+            console.log("OK", result);
+        }
+        else {
+            console.log("BAD", result);
+        }
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
+}
