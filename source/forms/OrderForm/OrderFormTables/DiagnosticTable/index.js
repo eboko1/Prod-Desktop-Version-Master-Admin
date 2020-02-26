@@ -6,7 +6,13 @@ import { FormattedMessage } from 'react-intl';
 
 // proj
 import { Catcher } from 'commons';
-import { API_URL, addNewDiagnosticTemplate, getDiagnosticsTemplates, addNewDiagnosticRow, sendDiagnosticAnswer, deleteDiagnosticProcess, deleteDiagnosticTemplate } from 'core/forms/orderDiagnosticForm/saga';
+import {API_URL,
+        addNewDiagnosticTemplate,
+        getDiagnosticsTemplates,
+        addNewDiagnosticRow,
+        sendDiagnosticAnswer,
+        deleteDiagnosticProcess,
+        deleteDiagnosticTemplate} from 'core/forms/orderDiagnosticForm/saga';
 import { DiagnosticStatusButtons } from 'components';
 
 // own

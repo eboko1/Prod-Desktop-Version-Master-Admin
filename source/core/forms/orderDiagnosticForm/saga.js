@@ -1,4 +1,4 @@
-export const API_URL = `http://localhost:14281`; //https://test-api.carbook.pro
+export const API_URL = `https://test-api.carbook.pro`; //https://test-api.carbook.pro
 
 export function getDiagnosticsTemplates(getData) {
     let token = localStorage.getItem('_my.carbook.pro_token');
