@@ -25,3 +25,7 @@
 .diagnostic_status_button_edit{
     width: 100%;
 }
+
+:global(.ant-table-header){
+    margin-bottom: 0px !important;
+}

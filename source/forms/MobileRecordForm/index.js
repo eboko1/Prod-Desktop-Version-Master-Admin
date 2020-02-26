@@ -306,7 +306,23 @@ export class MobileRecordForm extends Component {
                     }) }
                     autosize={ { minRows: 2, maxRows: 6 } }
                 />
+                <MobileDiagnostic/>
             </Form>
         );
     }
+}
+
+class MobileDiagnostic extends Component {
+    constructor(props) {
+        super(props);
+    }
+
+    render() {
+        return (
+            <Button type="primary" style={{ width: "100%"}}>
+                <FormattedMessage id="order-page.diagnostic"/>
+            </Button>
+        )
+    }
+
 }
