@@ -101,7 +101,7 @@ class DashboardContainer extends Component {
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
             if(window.innerWidth < 1200){
-                index = days.indexOf(moment(load[ index ].beginDate).format('YYYY-MM-DD')); 
+                //index = days.indexOf(moment(load[ index ].beginDate).format('YYYY-MM-DD')); 
             }
             return (
                 <DashboardColumn

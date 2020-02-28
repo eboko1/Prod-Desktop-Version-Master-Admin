@@ -1,4 +1,4 @@
-export const API_URL = `https://test-api.carbook.pro`; //https://test-api.carbook.pro
+export const API_URL = `http://localhost:14281`; //https://test-api.carbook.pro
 
 export function getDiagnosticsTemplates(getData) {
     let token = localStorage.getItem('_my.carbook.pro_token');
@@ -30,10 +30,10 @@ export function getDiagnosticsTemplates(getData) {
     })
 }
 
-export async function sendDiagnosticAnswer(orderId, templateId, diagnosticId, processId, answer, comment, photo) {
+export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId, answer, comment, photo) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/diagnostics/answer?orderId=${orderId}&templateId=${templateId}&diagnosticId=${diagnosticId}&processId=${processId}&answer=${answer}`
+    let params = `/orders/diagnostics/answer?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&answer=${answer}`
 
     if(comment) params += `&comment=${comment}`;
     if(photo) params += `&photo=${photo}`;
@@ -58,10 +58,10 @@ export async function sendDiagnosticAnswer(orderId, templateId, diagnosticId, pr
     }
 }
 
-export async function deleteDiagnosticProcess(orderId, templateId, diagnosticId, processId) {
+export async function deleteDiagnosticProcess(orderId, templateId, groupId, partId) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/diagnostics/process?orderId=${orderId}&templateId=${templateId}&diagnosticId=${diagnosticId}&processId=${processId}`;
+    let params = `/orders/diagnostics/part?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}`;
 
     url += params;
     try {
@@ -83,10 +83,10 @@ export async function deleteDiagnosticProcess(orderId, templateId, diagnosticId,
     }
 }
 
-export async function addNewDiagnosticRow(orderId, templateId, diagnosticId, processId) {
+export async function addNewDiagnosticRow(orderId, templateId, groupId, partId) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/diagnostics/process?orderId=${orderId}&templateId=${templateId}&diagnosticId=${diagnosticId}&processId=${processId}`;
+    let params = `/orders/diagnostics/part?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}`;
 
     url += params;
     try {
