@@ -13,7 +13,6 @@ import {API_URL,
         sendDiagnosticAnswer,
         deleteDiagnosticProcess,
         deleteDiagnosticTemplate} from 'core/forms/orderDiagnosticForm/saga';
-import { DiagnosticStatusButtons } from 'components';
 
 // own
 import Styles from './styles.m.css';
@@ -33,13 +32,13 @@ class DiagnosticTable extends Component {
             checkedAll: false,
             possibleRows : [],
             dataSource: [],
-            diagnosticsTitles: [],
-            processesTitles: [],
+            groupsTitles: [],
+            partsTitles: [],
         };
         this.templatesData = this.templatesData == undefined ? {} : this.templatesData;
         this.templatesTitles = [];
-        this.diagnosticsTitles = [];
-        this.processesTitles = [];
+        this.groupsTitles = [];
+        this.partsTitles = [];
         this.getCurrentDiagnostic = this.getCurrentDiagnostic.bind(this);
         this.addNewDiagnostic = this.addNewDiagnostic.bind(this);
         this.deleteDiagnostic = this.deleteDiagnostic.bind(this);
@@ -98,7 +97,7 @@ class DiagnosticTable extends Component {
                 key:       'stage',
                 width:     '15%',
                 render: (stage)=> {
-                    let options = undefined !== this.state.diagnosticsTitles ? this.state.diagnosticsTitles : [];
+                    let options = undefined !== this.state.groupsTitles ? this.state.groupsTitles : [];
                     return stage != "" ? (
                         <p>
                             {stage}
@@ -121,11 +120,11 @@ class DiagnosticTable extends Component {
                 key:       'detail',
                 width:     '35%',
                 render: (detail, rowProp)=> {
-                    let options = undefined !== this.state.processesTitles ? this.state.processesTitles : [];
+                    let options = undefined !== this.state.partsTitles ? this.state.partsTitles : [];
                     return detail != "" ? (
                         <span>
                             <p>{detail}</p>
-                            <p>{rowProp.actionTitle}</p>
+                            <p style={{fontStyle: "italic"}}>{rowProp.actionTitle}</p>
                         </span>
                     ) : (
                         <Select
@@ -206,44 +205,44 @@ class DiagnosticTable extends Component {
 
     onPlanChange(event) {
         let tmp = [];
-        for (let i = 0; i < this.diagnosticsTitles.length; i++) {
-            if(this.diagnosticsTitles[i].parent == event) {
-                tmp.push(this.diagnosticsTitles[i].title);
+        for (let i = 0; i < this.groupsTitles.length; i++) {
+            if(this.groupsTitles[i].parent == event) {
+                tmp.push(this.groupsTitles[i].title);
             }
         }
         this.setState({
-            diagnosticsTitles: tmp,
+            groupsTitles: tmp,
         });
     }
 
     onStageChange(event) {
         let tmp = [];
-        for (let i = 0; i < this.processesTitles.length; i++) {
-            if(this.processesTitles[i].parent == event) {
-                tmp.push(this.processesTitles[i].title);
+        for (let i = 0; i < this.partsTitles.length; i++) {
+            if(this.partsTitles[i].parent == event) {
+                tmp.push(this.partsTitles[i].title);
             }
         }
         this.setState({
-            processesTitles: tmp,
+            partsTitles: tmp,
         });
     }
 
     onDetailChange(event) {
-        let processId, diagnosticId, processParent, diagnosticParent,templateId;
-        for (let i = 0; i < this.processesTitles.length; i++) {
-            if(this.processesTitles[i].title == event) {
-                processId = this.processesTitles[i].id;
-                processParent = this.processesTitles[i].parent;
+        let partId, groupId, partParent, diagnosticParent,templateId;
+        for (let i = 0; i < this.partsTitles.length; i++) {
+            if(this.partsTitles[i].title == event) {
+                partId = this.partsTitles[i].id;
+                partParent = this.partsTitles[i].parent;
             }
         }
-        for (let i = 0; i < this.diagnosticsTitles.length; i++) {
-            if(this.diagnosticsTitles[i].title == processParent) {
-                diagnosticId = this.diagnosticsTitles[i].id;
-                diagnosticParent = this.diagnosticsTitles[i].parent;
+        for (let i = 0; i < this.groupsTitles.length; i++) {
+            if(this.groupsTitles[i].title == partParent) {
+                groupId = this.groupsTitles[i].id;
+                diagnosticParent = this.groupsTitles[i].parent;
             }
         }
         templateId = this.templatesTitles.indexOf(diagnosticParent) + 1;
-        addNewDiagnosticRow(this.state.orderId, templateId, diagnosticId, processId);
+        addNewDiagnosticRow(this.state.orderId, templateId, groupId, partId);
         setTimeout(this.getCurrentDiagnostic,500);
     }
 
@@ -269,10 +268,10 @@ class DiagnosticTable extends Component {
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             that.setState({
                 orderDiagnostic: data.diagnosis,
             });
-            //that.state.orderDiagnostic = data;
             that.updateDataSource();
         })
         .catch(function (error) {
@@ -283,34 +282,35 @@ class DiagnosticTable extends Component {
     getTemplatesList() {
         for(let i = 0 ; i < this.templatesData.diagnosticTemplatesCount; i++) {
             this.templatesTitles.push(this.templatesData.diagnosticTemplates[i].diagnosticTemplateTitle);
-            let diagnosticsCount = this.templatesData.diagnosticTemplates[i].diagnosticsCount;
-            for (let j = 0; j < diagnosticsCount; j++) {
-                let diagnostic =  this.templatesData.diagnosticTemplates[i].diagnostics[j];
-                let id = diagnostic.diagnosticId;
-                let title = diagnostic.diagnosticTitle;
-                this.diagnosticsTitles.push({
+            let groupsCount = this.templatesData.diagnosticTemplates[i].groupsCount;
+            for (let j = 0; j < groupsCount; j++) {
+                let diagnostic =  this.templatesData.diagnosticTemplates[i].groups[j];
+                let id = diagnostic.groupId;
+                let title = diagnostic.groupTitle;
+
+                this.groupsTitles.push({
                     id: id,
                     title: title,
                     parentId: this.templatesData.diagnosticTemplates[i].diagnosticTemplateId,
                     parent: this.templatesData.diagnosticTemplates[i].diagnosticTemplateTitle,
                 });
 
-                for (let k = 0; k < diagnostic.processesCount; k++) {
-                    let process =  diagnostic.processes[k];
-                    let id = process.processId;
-                    let title = process.processTitle;
-                    this.processesTitles.push({
+                for (let k = 0; k < diagnostic.partsCount; k++) {
+                    let part =  diagnostic.parts[k];
+                    let id = part.partId;
+                    let title = part.partTitle;
+                    this.partsTitles.push({
                         id: id,
                         title: title,
-                        parentId: diagnostic.diagnosticId,
-                        parent: diagnostic.diagnosticTitle,
+                        parentId: diagnostic.groupId,
+                        parent: diagnostic.groupTitle,
                     });
                 }
             }
         }
         /*this.setState({
-            diagnosticsTitles: this.diagnosticsTitles,
-            processesTitles: this.processesTitles,
+            groupsTitles: this.groupsTitles,
+            partsTitles: this.partsTitles,
         });*/
     }
 
@@ -318,8 +318,8 @@ class DiagnosticTable extends Component {
         await deleteDiagnosticProcess(
             this.props.orderId,
             this.state.dataSource[index].diagnosticTemplateId,
-            this.state.dataSource[index].diagnosticId,
-            this.state.dataSource[index].processId,
+            this.state.dataSource[index].groupId,
+            this.state.dataSource[index].partId,
         );
         this.setState({
             selectedRows: [],
@@ -327,7 +327,6 @@ class DiagnosticTable extends Component {
             checkedAll: false,
             headerCheckboxIndeterminate: false,
         });
-        await this.getCurrentDiagnostic();
         await this.getCurrentDiagnostic();
     }
 
@@ -355,8 +354,8 @@ class DiagnosticTable extends Component {
             await sendDiagnosticAnswer(
                 this.props.orderId,
                 this.state.dataSource[key].diagnosticTemplateId,
-                this.state.dataSource[key].diagnosticId,
-                this.state.dataSource[key].processId,
+                this.state.dataSource[key].groupId,
+                this.state.dataSource[key].partId,
                 status
             );
         }
@@ -375,8 +374,8 @@ class DiagnosticTable extends Component {
             await deleteDiagnosticProcess(
                 this.props.orderId,
                 this.state.dataSource[key].diagnosticTemplateId,
-                this.state.dataSource[key].diagnosticId,
-                this.state.dataSource[key].processId,
+                this.state.dataSource[key].groupId,
+                this.state.dataSource[key].partId,
             );
         }
         this.setState({
@@ -439,62 +438,62 @@ class DiagnosticTable extends Component {
         ]).diagnosticTemplates;
         let key = 1;
         for(let i = 0; i < diagnosticTemplatesCount; i++) {
-            let diagnosticsCount = _.pick(diagnosticTemplates[i], [
-                "diagnosticsCount",
-            ]).diagnosticsCount;
+            let groupsCount = _.pick(diagnosticTemplates[i], [
+                "groupsCount",
+            ]).groupsCount;
             let diagnosticTemplateTitle = _.pick(diagnosticTemplates[i], [
                 "diagnosticTemplateTitle",
             ]).diagnosticTemplateTitle;
             let diagnosticTemplateId = _.pick(diagnosticTemplates[i], [
                 "diagnosticTemplateId",
             ]).diagnosticTemplateId;
-            let diagnostics = _.pick(diagnosticTemplates[i], [
-                "diagnostics",
-            ]).diagnostics;
-            for(let j = 0; j < diagnosticsCount; j++) {
-                let diagnosticTitle = _.pick(diagnostics[j], [
-                    "diagnosticTitle",
-                ]).diagnosticTitle;
-                let diagnosticId = _.pick(diagnostics[j], [
-                    "diagnosticId",
-                ]).diagnosticId;
-                let processesCount = _.pick(diagnostics[j], [
-                    "processesCount",
-                ]).processesCount;
-                let processes = _.pick(diagnostics[j], [
-                    "processes",
-                ]).processes;
-                for(let k = 0; k < processesCount; k++) {
-                    let processTitle = _.pick(processes[k], [
-                        "processTitle",
-                    ]).processTitle;
-                    let actionTitle = _.pick(processes[k], [
+            let groups = _.pick(diagnosticTemplates[i], [
+                "groups",
+            ]).groups;
+            for(let j = 0; j < groupsCount; j++) {
+                let groupTitle = _.pick(groups[j], [
+                    "groupTitle",
+                ]).groupTitle;
+                let groupId = _.pick(groups[j], [
+                    "groupId",
+                ]).groupId;
+                let partsCount = _.pick(groups[j], [
+                    "partsCount",
+                ]).partsCount;
+                let parts = _.pick(groups[j], [
+                    "parts",
+                ]).parts;
+                for(let k = 0; k < partsCount; k++) {
+                    let partTitle = _.pick(parts[k], [
+                        "partTitle",
+                    ]).partTitle;
+                    let actionTitle = _.pick(parts[k], [
                         "actionTitle",
                     ]).actionTitle;
-                    let processId = _.pick(processes[k], [
-                        "processId",
-                    ]).processId;
-                    let answer = _.pick(processes[k], [
+                    let partId = _.pick(parts[k], [
+                        "partId",
+                    ]).partId;
+                    let answer = _.pick(parts[k], [
                         "answer",
                     ]).answer;
-                    let comment = _.pick(processes[k], [
+                    let comment = _.pick(parts[k], [
                         "comment",
                     ]).comment;
-                    let photo = _.pick(processes[k], [
+                    let photo = _.pick(parts[k], [
                         "photo",
                     ]).photo;
                     dataSource.push({
                         key: key,
-                        processId: processId,
+                        partId: partId,
                         plan: diagnosticTemplateTitle,
-                        stage: diagnosticTitle,
-                        detail: processTitle,
+                        stage: groupTitle,
+                        detail: partTitle,
                         actionTitle: actionTitle,
                         status: answer,
                         commentary: comment,
                         orderId: orderId,
                         diagnosticTemplateId: diagnosticTemplateId,
-                        diagnosticId: diagnosticId,
+                        groupId: groupId,
                         photo: photo,
                     },);
                     this.state.possibleRows.push(key);
@@ -504,7 +503,7 @@ class DiagnosticTable extends Component {
         }
         dataSource.push({
             key: key,
-            processId: "",
+            partId: "",
             plan: "",
             detail: "",
             actionTitle: "",
@@ -513,7 +512,7 @@ class DiagnosticTable extends Component {
             commentary: "",
             orderId: orderId,
             diagnosticTemplateId: "",
-            diagnosticId: "",
+            groupId: "",
             photo: "",
             allTemplatesData: orderDiagnostic,
         },);
@@ -731,7 +730,7 @@ class DiagnosticStatusButton extends React.Component{
 
     handleClick = (status) => {
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.diagnosticId, rowProp.processId, status);
+        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, status);
         this.setState({status:status});
         //this.props.getCurrentDiagnostic();
     }
@@ -778,7 +777,7 @@ class CommentaryButton extends React.Component{
     handleOk = () => {
         this.setState({ loading: true });
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.diagnosticId, rowProp.processId, rowProp.status, this.state.commentary);
+        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, this.state.commentary);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 100);
@@ -839,7 +838,7 @@ class PhotoButton extends React.Component{
     handleOk = () => {
         this.setState({ loading: true });
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.diagnosticId, rowProp.processId, rowProp.status, rowProp.commentary, this.state.photo);
+        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, rowProp.commentary, this.state.photo);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 100);
@@ -915,7 +914,7 @@ class DeleteProcessButton extends React.Component{
 
     handleClick = () => {
         const { rowProp } = this.props;
-        deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.diagnosticId, rowProp.processId);
+        deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId);
         //ReactDOM.findDOMNode(this).parentNode.parentNode.style.display = 'none';
         ReactDOM.findDOMNode(this).parentNode.parentNode.style.backgroundColor = "";
         this.props.deleteRow(this.props.rowProp.key-1);
