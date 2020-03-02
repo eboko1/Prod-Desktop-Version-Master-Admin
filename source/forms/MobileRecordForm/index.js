@@ -412,7 +412,7 @@ class MobileDiagnostic extends Component {
                 }
             }
         }
-        dataSource.push({
+        /*dataSource.push({
             key: key,
             partId: "",
             plan: "",
@@ -426,7 +426,7 @@ class MobileDiagnostic extends Component {
             groupId: "",
             photo: "",
             allTemplatesData: orderDiagnostic,
-        },);
+        },);*/
         //this.state.dataSource = dataSource;
         //this.state.rowsCount = key;
         this.setState({
@@ -472,10 +472,10 @@ class MobileDiagnostic extends Component {
         const vehicle = this.props.vehicle;
         if(typeof vehicle != 'undefined') {
             return (
-                <div>
-                    <div>{vehicle.number}</div>
+                <div className={Styles.diagnostic_header}>
+                    <div className={Styles.diagnostic_vehicle_number}>{vehicle.number}</div>
                     <div>{vehicle.make} {vehicle.model} {vehicle.modification}</div>
-                    <Button type="primary">Done</Button>
+                    <Button type="primary"><FormattedMessage id="Done"/></Button>
                 </div>
             )
         }
@@ -501,15 +501,15 @@ class MobileDiagnostic extends Component {
                             <div className={Styles.diagnistic_info}>
                                 <div className={Styles.diagnistic_info_up}>
                                     <div className={Styles.diagnostic_detail}>{data.detail}</div>
-                                    <div>                              
-                                        <MobileDiagnosticStatusButton getCurrentDiagnostic={this.getCurrentDiagnostic} status={data.status} rowProp={data}/>
-                                        <div className={Styles.diagnostic_buttons}>
-                                            <CommentaryButton commentary={data.commentary} rowProp={data}/>
-                                            <PhotoButton photo={data.photo} rowProp={data}/>
-                                        </div>
+                                    <div>{data.actionTitle}</div> 
+                                </div>                                
+                                <div>                              
+                                    <MobileDiagnosticStatusButton getCurrentDiagnostic={this.getCurrentDiagnostic} status={data.status} rowProp={data}/>
+                                    <div className={Styles.diagnostic_buttons}>
+                                        <CommentaryButton commentary={data.commentary} rowProp={data}/>
+                                        <PhotoButton photo={data.photo} rowProp={data}/>
                                     </div>
-                                </div>                                    
-                                <div>{data.actionTitle}</div>
+                                </div>
                             </div>                       
                         </div>
             }
@@ -608,13 +608,13 @@ class MobileDiagnosticStatusButton extends React.Component{
             </div>
             ) : (
             <div className={Styles.diagnostic_status_button_wrap}>
-                <Button className={Styles.diagnostic_status_button} onClick={()=>this.handleClick(1)} style={{background:'rgb(81, 205, 102)'}}>
+                <Button className={Styles.diagnostic_status_button_ok} onClick={()=>this.handleClick(1)} style={{background:'rgb(81, 205, 102)'}}>
                     <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                 </Button>
-                <Button className={Styles.diagnostic_status_button} onClick={()=>this.handleClick(2)} style={{background:'rgb(255, 255, 0)'}}>
+                <Button className={Styles.diagnostic_status_button_bad} onClick={()=>this.handleClick(2)} style={{background:'rgb(255, 255, 0)'}}>
                     <FormattedMessage id='order_form_table.diagnostic.status.bad' />
                 </Button>
-                <Button className={Styles.diagnostic_status_button} type="danger" onClick={()=>this.handleClick(3)} style={{background:'rgb(255, 126, 126)', color: 'black'}}>
+                <Button className={Styles.diagnostic_status_button_critical} type="danger" onClick={()=>this.handleClick(3)} style={{background:'rgb(255, 126, 126)', color: 'black'}}>
                     <FormattedMessage id='order_form_table.diagnostic.status.critical' />
                 </Button>
             </div>

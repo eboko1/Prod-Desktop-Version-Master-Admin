@@ -18,11 +18,24 @@
     width: 100%;
 }
 
+.diagnostic_header{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.diagnostic_vehicle_number{
+    text-transform: uppercase;
+    font-size: 16px;
+    font-weight: 700;
+}
+
 .diagnostic_title {
     border: 1px solid red;
     text-align: center;
     font-weight: bold;
     font-size: 16px;
+    margin-top: 10px;
 }
 
 .diagnostic{
@@ -33,9 +46,17 @@
     padding: 10px 5px;
 }
 
-.diagnistic_info_up {
+.diagnistic_info{
     display: flex;
     justify-content: space-between;
+    width: 100%;
+    align-items: center;
+}
+
+.diagnistic_info_up {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
 
 .diagnostic_status_button_wrap{
@@ -43,7 +64,21 @@
     text-align: right;
     margin-right: 5px;
     display: flex;
-    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.diagnostic_status_button_ok{
+    width: 100%;
+    margin-bottom: 2px;
+}
+
+.diagnostic_status_button_bad{
+    width: 49%;
+    margin-right: 2%;
+}
+
+.diagnostic_status_button_critical{
+    width: 49%;
 }
 
 .diagnostic_edit_button_wrap{
@@ -62,7 +97,7 @@
 }
 
 .diagnostic_detail {
-    width: 46%;
+    width: 100%;
     font-weight: bold;
     padding-right: 5px;
 }
