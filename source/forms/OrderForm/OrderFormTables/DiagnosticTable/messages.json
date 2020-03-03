@@ -10,7 +10,13 @@
         "order_form_table.diagnostic.status.bad": "-",
         "order_form_table.diagnostic.status.critical": "!!!",
         "order_form_table.diagnostic.status.edit": "Edit",
-        "order_form_table.diagnostic.detail": "Unit/detail"
+        "order_form_table.diagnostic.detail": "Unit/detail",
+        "order_form_table.diagnostic.create_order": "Generate order",
+        "order_form_table.diagnostic.confirm": "Confirm diagnostic",
+        "order_form_table.diagnostic.results": "Diagnostic results",
+        "order_form_table.diagnostic.automaticly": "Auto",
+        "order_form_table.diagnostic.manually": "Manu",
+        "order_form_table.diagnostic.disabled": "Disabled"
     },
     "ru": {
         "order_form_table.diagnostic": "Диагностика",
@@ -23,7 +29,13 @@
         "order_form_table.diagnostic.status.bad": "-",
         "order_form_table.diagnostic.status.critical": "!!!",
         "order_form_table.diagnostic.status.edit": "Изменить",
-        "order_form_table.diagnostic.detail": "Узел/деталь"
+        "order_form_table.diagnostic.detail": "Узел/деталь",
+        "order_form_table.diagnostic.create_order": "Создать Н/З",
+        "order_form_table.diagnostic.confirm": "Закончить диагностику",
+        "order_form_table.diagnostic.results": "Результаты диагностики",
+        "order_form_table.diagnostic.automaticly": "Авто",
+        "order_form_table.diagnostic.manually": "Ручн",
+        "order_form_table.diagnostic.disabled": "Отключен"
     },
     "uk": {
         "order_form_table.diagnostic": "Діагностика",
@@ -36,6 +48,12 @@
         "order_form_table.diagnostic.status.bad": "-",
         "order_form_table.diagnostic.status.critical": "!!!",
         "order_form_table.diagnostic.status.edit": "Редагувати",
-        "order_form_table.diagnostic.detail": "Вузол/деталь"
+        "order_form_table.diagnostic.detail": "Вузол/деталь",
+        "order_form_table.diagnostic.create_order": "Створити Н/З",
+        "order_form_table.diagnostic.confirm": "Завершити діагностику",
+        "order_form_table.diagnostic.results": "Результати діагностики",
+        "order_form_table.diagnostic.automaticly": "Авто",
+        "order_form_table.diagnostic.manually": "Ручн",
+        "order_form_table.diagnostic.disabled": "Вимкнено"
     }
 }
