@@ -66,7 +66,6 @@ export class MobileRecordForm extends Component {
         } = this.props;
         const { getFieldDecorator, getFieldsValue } = this.props.form;
         const { formatMessage } = this.props.intl;
-        console.log(this.props);
 
         const isDurationDisabled = _.every(
             getFieldsValue([ 'beginDate', 'beginTime', 'station' ]),
@@ -115,6 +114,7 @@ export class MobileRecordForm extends Component {
                 <DecoratedSelect
                     label={ <FormattedMessage id='add_order_form.phone' /> }
                     field='clientPhone'
+                    initialValue={this.props.order.clientPhone}
                     formItem
                     formItemLayout={ formItemLayout }
                     hasFeedback
@@ -141,6 +141,7 @@ export class MobileRecordForm extends Component {
                 </DecoratedSelect>
                 <DecoratedSelect
                     field='clientVehicle'
+                    initialValue={this.props.order.clientVehicleId}
                     formItem
                     hasFeedback
                     label={ <FormattedMessage id='add_order_form.car' /> }
@@ -172,6 +173,7 @@ export class MobileRecordForm extends Component {
                 <hr />
                 <DecoratedSelect
                     field='manager'
+                    initialValue={this.props.order.managerId}
                     formItem
                     getFieldDecorator={ getFieldDecorator }
                     rules={ [
@@ -206,6 +208,7 @@ export class MobileRecordForm extends Component {
                 </div>
                 <DecoratedSelect
                     field='station'
+                    initialValue={this.props.order.stationNum}
                     rules={ [
                         {
                             required: true,
@@ -229,6 +232,7 @@ export class MobileRecordForm extends Component {
                 />
                 <DecoratedDatePicker
                     formItem
+                    initialValue={moment(this.props.order.beginDatetime).toISOString()}
                     field='beginDate'
                     hasFeedback
                     label={ <FormattedMessage id='date' /> }
@@ -240,6 +244,7 @@ export class MobileRecordForm extends Component {
                 />
                 <DecoratedTimePicker
                     field='beginTime'
+                    initialValue={moment(this.props.order.deliveryDatetime).toISOString()}
                     formItem
                     hasFeedback
                     inputReadOnly
@@ -285,6 +290,7 @@ export class MobileRecordForm extends Component {
                     formItem
                     label={ <FormattedMessage id='add_order_form.duration' /> }
                     field='duration'
+                    initialValue={this.props.order.duration}
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ !isDurationDisabled }
                     min={ 0 }
@@ -294,6 +300,7 @@ export class MobileRecordForm extends Component {
                 />
                 <DecoratedTextArea
                     formItem
+                    initialValue={this.props.order.comment}
                     label={
                         <FormattedMessage id='add_order_form.client_comments' />
                     }
@@ -474,7 +481,7 @@ class MobileDiagnostic extends Component {
             return (
                 <div className={Styles.diagnostic_header}>
                     <div className={Styles.diagnostic_vehicle_number}>{vehicle.number}</div>
-                    <div>{vehicle.make} {vehicle.model} {vehicle.modification}</div>
+                    <div className={Styles.diagnostic_vehicle_info}>{vehicle.make} {vehicle.model} {vehicle.modification}</div>
                     <Button type="primary"><FormattedMessage id="Done"/></Button>
                 </div>
             )

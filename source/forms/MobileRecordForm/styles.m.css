@@ -30,6 +30,10 @@
     font-weight: 700;
 }
 
+.diagnostic_vehicle_info{
+    margin: 0px 10px;
+}
+
 .diagnostic_title {
     border: 1px solid red;
     text-align: center;

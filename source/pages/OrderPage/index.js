@@ -549,6 +549,9 @@ class OrderPage extends Component {
                     <MobileRecordForm
                         wrappedComponentRef={ this.saveOrderFormRef }
                         onStatusChange={ this._onStatusChange }
+                        user={ this.props.user }
+                        orderTasks={ this.props.orderTasks }
+                        orderHistory={ this.props.orderHistory }
                         orderDiagnostic={ diagnosis }
                         orderId={ id }
                     />
