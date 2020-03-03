@@ -249,10 +249,10 @@ export class MobileRecordForm extends Component {
                     hasFeedback
                     inputReadOnly
                     allowClear={ false }
-                    /*disabled={
+                    disabled={
                         !this.props.form.getFieldValue('beginDate') ||
                         !this.props.form.getFieldValue('station')
-                    }*/
+                    }
                     disabledHours={ () => {
                         const availableHours = _.get(this.props.availableHours, '0', []);
 
@@ -292,7 +292,7 @@ export class MobileRecordForm extends Component {
                     field='duration'
                     initialValue={this.props.order.duration}
                     getFieldDecorator={ getFieldDecorator }
-                    //disabled={ !isDurationDisabled }
+                    disabled={ !isDurationDisabled }
                     min={ 0 }
                     step={ 0.5 }
                     max={ 8 }
