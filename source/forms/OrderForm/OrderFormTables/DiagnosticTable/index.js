@@ -37,11 +37,16 @@ class DiagnosticTable extends Component {
             dataSource: [],
             groupsTitles: [],
             partsTitles: [],
+            filterType: null,
+            filterValue: null,
         };
         this.templatesData = this.templatesData == undefined ? {} : this.templatesData;
         this.templatesTitles = [];
         this.groupsTitles = [];
         this.partsTitles = [];
+        this.ok = 0;
+        this.bad = 0;
+        this.critical = 0;
         this.getCurrentDiagnostic = this.getCurrentDiagnostic.bind(this);
         this.addNewDiagnostic = this.addNewDiagnostic.bind(this);
         this.deleteDiagnostic = this.deleteDiagnostic.bind(this);
@@ -56,15 +61,33 @@ class DiagnosticTable extends Component {
         this.deleteSelectedRows = this.deleteSelectedRows.bind(this);
         this.columns = [
             {
-                title:     '#',
+                title:  ()=>{
+                    return(
+                        <div className={Styles.filter_column_header_wrap}>
+                            <p style={{paddingLeft: 10}}>#</p>
+                            <Button
+                                style={{width: 60}}
+                                onClick={()=>{
+                                    this.setState({
+                                        filterType: null,
+                                        filterValue: null,
+                                    });
+                                    {this.getCurrentDiagnostic()}
+                                }}
+                            >
+                                {this.state.dataSource.length-1 >= 0 ? this.state.dataSource.length-1 : 0}
+                            </Button>
+                        </div>
+                    )
+                },
                 dataIndex: 'key',
                 key:       'key',
                 width:     '5%',
                 render: (num)=> {
                     let checked = this.state.selectedRows.indexOf(num) > -1;
                     return(
-                        <div>
-                            <span>{num} </span>
+                        <div style={{paddingLeft: 5}}>
+                            <span>{num}  </span>
                             <Checkbox
                                 onChange={()=>{this.onChangeCheckbox(num)}}
                                 checked = { checked }
@@ -74,7 +97,30 @@ class DiagnosticTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.diagnostic.plan' />,
+                title:  ()=>{
+                    const { Option } = Select;  
+                    return(
+                        <div className={Styles.filter_column_header_wrap} style={{width: "100%"}}>
+                            <FormattedMessage id='order_form_table.diagnostic.plan' />
+                            <Select
+                                allowClear
+                                showSearch
+                                style={{width: "80%"}}
+                                placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
+                                onChange={(selectValue)=>{
+                                    if(selectValue != "")
+                                    this.setState({
+                                        filterType: "plan",
+                                        filterValue: selectValue,
+                                    });
+                                    {this.getCurrentDiagnostic()}
+                                }}
+                            >
+                                {this.templatesTitles.map((template) => <Option value={template}>{template}</Option>)}
+                            </Select>
+                        </div>
+                    )
+                },
                 dataIndex: 'plan',
                 key:       'plan',
                 width:     '15%',
@@ -96,7 +142,33 @@ class DiagnosticTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.diagnostic.stage' />,
+                title:  ()=>{
+                    const { Option } = Select;
+                    let options = undefined !== this.groupsTitles ? this.groupsTitles : [];
+                    return(
+                        <div className={Styles.filter_column_header_wrap} style={{width: "100%"}}>
+                            <p>
+                                <FormattedMessage id='order_form_table.diagnostic.stage' />
+                            </p>
+                            <Select
+                                allowClear
+                                style={{width: "80%"}}
+                                showSearch
+                                placeholder={<FormattedMessage id='order_form_table.diagnostic.stage' />}
+                                onChange={(selectValue)=>{
+                                    if(selectValue != "")
+                                    this.setState({
+                                        filterType: "stage",
+                                        filterValue: selectValue,
+                                    });
+                                    {this.getCurrentDiagnostic()}
+                                }}
+                            >
+                                {options.map((stage, index) => <Option key={index} value={stage.title}>{stage.title}</Option>)}
+                            </Select>
+                        </div>
+                    )
+                },
                 dataIndex: 'stage',
                 key:       'stage',
                 width:     '15%',
@@ -120,7 +192,135 @@ class DiagnosticTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.diagnostic.detail' />,
+                title:  ()=>{
+                    return(
+                        <div className={Styles.filter_column_header_wrap}>
+                            <FormattedMessage id='order_form_table.diagnostic.detail' />
+                            <div style={{display: 'flex'}}>
+                                <div className={Styles.filter_button_wrap}>
+                                    <Button 
+                                        style={{width: "100%", backgroundColor: "rgb(200,225,180)"}}
+                                        onClick={()=>{
+                                            if(this.state.filterValue == "OK") {
+                                                this.setState({
+                                                    filterType: null,
+                                                    filterValue: null,
+                                                });
+                                            }
+                                            else {
+                                                this.setState({
+                                                    filterType: "status",
+                                                    filterValue: "OK",
+                                                });
+                                            }
+                                            {this.getCurrentDiagnostic()}
+                                        }}
+                                    >
+                                        <FormattedMessage id='order_form_table.diagnostic.status.ok'/>
+                                    </Button>
+                                    <Input className={Styles.filter_input} value={this.ok}/>
+                                </div>
+                                <div className={Styles.filter_button_wrap}>
+                                    <Button
+                                        style={{width: "100%", backgroundColor: "rgb(255,240,180)"}}
+                                        onClick={()=>{
+                                            if(this.state.filterValue == "BAD") {
+                                                this.setState({
+                                                    filterType: null,
+                                                    filterValue: null,
+                                                });
+                                            }
+                                            else {
+                                                this.setState({
+                                                    filterType: "status",
+                                                    filterValue: "BAD",
+                                                });
+                                            }
+                                            {this.getCurrentDiagnostic()}
+                                        }}
+                                    >
+                                        <FormattedMessage id='order_form_table.diagnostic.status.bad'/>
+                                    </Button>
+                                    <Input className={Styles.filter_input} value={this.bad}/>
+                                </div>
+                                <div className={Styles.filter_button_wrap}>
+                                    <Button
+                                        style={{width: "100%", backgroundColor: "rgb(250,175,175)"}}
+                                        onClick={()=>{
+                                            if(this.state.filterValue == "CRITICAL") {
+                                                this.setState({
+                                                    filterType: null,
+                                                    filterValue: null,
+                                                });
+                                            }
+                                            else {
+                                                this.setState({
+                                                    filterType: "status",
+                                                    filterValue: "CRITICAL",
+                                                });
+                                            }
+                                            {this.getCurrentDiagnostic()}
+                                        }}
+                                    >
+                                        <FormattedMessage id='order_form_table.diagnostic.status.critical'/>
+                                    </Button>
+                                    <Input className={Styles.filter_input} value={this.critical}/>
+                                </div>
+                                <div className={Styles.filter_button_wrap}>
+                                    <Button
+                                        style={{width: "100%", padding: 0}}
+                                        onClick={()=>{
+                                            if(this.state.filterValue == "BAD&CRITICAL") {
+                                                this.setState({
+                                                    filterType: null,
+                                                    filterValue: null,
+                                                });
+                                            }
+                                            else {
+                                                this.setState({
+                                                    filterType: "status",
+                                                    filterValue: "BAD&CRITICAL",
+                                                });
+                                            }
+                                            {this.getCurrentDiagnostic()}
+                                        }}
+                                    >
+                                        <Button className={Styles.filter_half_button} style={{backgroundColor: "rgb(255,240,180)"}}>
+                                            <FormattedMessage id='order_form_table.diagnostic.status.bad'/>
+                                        </Button>
+                                        <Button className={Styles.filter_half_button} style={{backgroundColor: "rgb(250,175,175)"}}>
+                                            <FormattedMessage id='order_form_table.diagnostic.status.critical'/>
+                                        </Button>
+                                    </Button>
+                                    <Input className={Styles.filter_input} value={this.bad+this.critical}/>
+                                </div>
+                                <div className={Styles.filter_button_wrap}>
+                                    <Button
+                                        style={{width: "100%"}}
+                                        onClick={()=>{
+                                            if(this.state.filterValue == "OPEN") {
+                                                this.setState({
+                                                    filterType: null,
+                                                    filterValue: null,
+                                                });
+                                            }
+                                            else {
+                                                this.setState({
+                                                    filterType: "status",
+                                                    filterValue: "OPEN",
+                                                });
+                                            }
+                                            {this.getCurrentDiagnostic()}
+                                        }}
+                                    >
+                                        <FormattedMessage id='order_form_table.diagnostic.status.open'/>
+                                    </Button>
+                                    <Input className={Styles.filter_input} value={this.state.rowsCount - (1 + this.ok + this.bad + this.critical)}/>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                },
                 dataIndex: 'detail',
                 key:       'detail',
                 width:     '35%',
@@ -145,7 +345,16 @@ class DiagnosticTable extends Component {
                 },
             },
             {
-                title:     <FormattedMessage id='order_form_table.diagnostic.commentary' />,
+                title:  ()=>{
+                    return(
+                        <div className={Styles.filter_column_header_wrap}>
+                            <p style={{whiteSpace: 'nowrap', overflowX: "hidden"}}>
+                                <FormattedMessage id='order_form_table.diagnostic.commentary' />
+                            </p>
+                            <Input className={Styles.filter_input} value="5"/>
+                        </div>
+                    )
+                },
                 dataIndex: 'commentary',
                 key:       'commentary',
                 width:     '5%',
@@ -157,7 +366,14 @@ class DiagnosticTable extends Component {
                 ),
             },
             {
-                title:     <FormattedMessage id='order_form_table.diagnostic.photo' />,
+                title:  ()=>{
+                    return(
+                        <div className={Styles.filter_column_header_wrap}>
+                            <FormattedMessage id='order_form_table.diagnostic.photo' />
+                            <Input className={Styles.filter_input} value="5"/>
+                        </div>
+                    )
+                },
                 dataIndex: 'photo',
                 key:       'photo',
                 width:     '5%',
@@ -169,7 +385,13 @@ class DiagnosticTable extends Component {
                 ),
             },
             {
-                title:     <FormattedMessage id='order_form_table.diagnostic.status' />,
+                title:  ()=>{
+                    return(
+                        <div>
+                            <FormattedMessage id='order_form_table.diagnostic.status' />
+                        </div>
+                    )
+                },
                 dataIndex: 'status',
                 key:       'status',
                 width:     '15%',
@@ -355,15 +577,17 @@ class DiagnosticTable extends Component {
     }
 
     async editSelectedRowsStatus(status) {
-        for(let i = 0; i < this.state.selectedRows.length; i++){
-            let key = this.state.selectedRows[i] - 1;
-            await sendDiagnosticAnswer(
-                this.props.orderId,
-                this.state.dataSource[key].diagnosticTemplateId,
-                this.state.dataSource[key].groupId,
-                this.state.dataSource[key].partId,
-                status
-            );
+        for(let i = 0; i < this.state.selectedRows.length; i++) {
+            let key = this.state.dataSource.findIndex((element, index, array)=>{return element.key == this.state.selectedRows[i]});
+            if(key != -1){
+                await sendDiagnosticAnswer(
+                    this.props.orderId,
+                    this.state.dataSource[key].diagnosticTemplateId,
+                    this.state.dataSource[key].groupId,
+                    this.state.dataSource[key].partId,
+                    status
+                );
+            }
         }
         this.setState({
             selectedRows: [],
@@ -376,13 +600,15 @@ class DiagnosticTable extends Component {
 
     async deleteSelectedRows() {
         for(let i = 0; i < this.state.selectedRows.length; i++){
-            let key = this.state.selectedRows[i] - 1;
-            await deleteDiagnosticProcess(
-                this.props.orderId,
-                this.state.dataSource[key].diagnosticTemplateId,
-                this.state.dataSource[key].groupId,
-                this.state.dataSource[key].partId,
-            );
+            let key = this.state.dataSource.findIndex((element, index, array)=>{return element.key == this.state.selectedRows[i]});
+            if(key != -1){
+                await deleteDiagnosticProcess(
+                    this.props.orderId,
+                    this.state.dataSource[key].diagnosticTemplateId,
+                    this.state.dataSource[key].groupId,
+                    this.state.dataSource[key].partId,
+                );
+            }
         }
         this.setState({
             selectedRows: [],
@@ -430,7 +656,33 @@ class DiagnosticTable extends Component {
         };
     }
 
+    filterDataSource(dataSource) {
+        const { filterType, filterValue } = this.state;
+        if(filterType == null && filterValue == null) {
+            return dataSource;
+        }
+        else if(filterType === "plan" && filterValue != undefined) {
+            return dataSource.filter((data, i) => data.plan == filterValue);
+        }
+        else if(filterType === "stage" && filterValue != undefined) {
+            return dataSource.filter((data, i) => data.stage == filterValue);
+        }
+        else if(filterType === "status" && filterValue != undefined) {
+            if(filterValue == "OK") return dataSource.filter((data, i) => data.status == 1);
+            if(filterValue == "BAD") return dataSource.filter((data, i) => data.status == 2);
+            if(filterValue == "CRITICAL") return dataSource.filter((data, i) => data.status == 3);
+            if(filterValue == "BAD&CRITICAL") return dataSource.filter((data, i) => data.status == 2 || data.status == 3);
+            if(filterValue == "OPEN") return dataSource.filter((data, i) => data.status == 0);
+        }
+        else {
+            return dataSource;
+        }
+    }
+
     updateDataSource() {
+        this.ok = 0;
+        this.bad = 0;
+        this.critical = 0;
         this.state.possibleRows = [];
         const { orderDiagnostic, orderId } = this.state;
         console.log("UpdateDataSource");
@@ -488,6 +740,9 @@ class DiagnosticTable extends Component {
                     let photo = _.pick(parts[k], [
                         "photo",
                     ]).photo;
+                    if(answer==1) this.ok++;
+                    if(answer==2) this.bad++;
+                    if(answer==3) this.critical++; 
                     dataSource.push({
                         key: key,
                         partId: partId,
@@ -507,28 +762,54 @@ class DiagnosticTable extends Component {
                 }
             }
         }
-        dataSource.push({
-            key: key,
-            partId: "",
-            plan: "",
-            detail: "",
-            actionTitle: "",
-            stage: "",
-            status: "",
-            commentary: "",
-            orderId: orderId,
-            diagnosticTemplateId: "",
-            groupId: "",
-            photo: "",
-            allTemplatesData: orderDiagnostic,
-        },);
-        this.state.possibleRows.push(key);
-        //this.state.dataSource = dataSource;
-        //this.state.rowsCount = key;
-        this.setState({
-            dataSource: dataSource,
-            rowsCount: key,
-        });
+        let filtredData = this.filterDataSource(dataSource);
+
+        if(filtredData.length < dataSource.length) {
+            filtredData.push({
+                key: key,
+                partId: "",
+                plan: "",
+                detail: "",
+                actionTitle: "",
+                stage: "",
+                status: "",
+                commentary: "",
+                orderId: orderId,
+                diagnosticTemplateId: "",
+                groupId: "",
+                photo: "",
+                allTemplatesData: orderDiagnostic,
+            },);
+            this.state.possibleRows.push(key);
+            
+            this.setState({
+                dataSource: filtredData,
+                rowsCount: key,
+            });
+        }
+        else{
+            dataSource.push({
+                key: key,
+                partId: "",
+                plan: "",
+                detail: "",
+                actionTitle: "",
+                stage: "",
+                status: "",
+                commentary: "",
+                orderId: orderId,
+                diagnosticTemplateId: "",
+                groupId: "",
+                photo: "",
+                allTemplatesData: orderDiagnostic,
+            },);
+            this.state.possibleRows.push(key);
+            
+            this.setState({
+                dataSource: dataSource,
+                rowsCount: key,
+            });
+        }
         this.forceUpdate();
     }
 
@@ -650,7 +931,7 @@ class DiagnosticTableHeader extends React.Component{
         const { Option } = Select;
         return(
             <div className={Styles.diagnosticTableHeader}>
-                <div style={{ width: "5%", padding: '5px 10px' }}>
+                <div style={{ width: "5%", padding: '5px 15px' }}>
                     <Checkbox
                         checked = {this.state.checked}
                         indeterminate = {this.state.indeterminate}
@@ -678,7 +959,7 @@ class DiagnosticTableHeader extends React.Component{
                     />
                 </div>
                 <div style={{ width: "10%" }}>
-                    <Button type="primary" onClick={()=>{this.handleClickStatusButtons(0)}}>
+                    <Button type="primary" onClick={()=>{this.handleClickStatusButtons(0)}} style={{width: "80%"}}>
                         <FormattedMessage id='order_form_table.diagnostic.status.edit' />
                     </Button>
                 </div>

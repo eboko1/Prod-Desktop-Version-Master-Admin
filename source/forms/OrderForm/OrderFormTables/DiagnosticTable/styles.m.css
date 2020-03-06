@@ -5,8 +5,39 @@
     border-bottom: 1px solid #e8e8e8;
 }
 
+.diagnosticTable th > span{
+    width: 100%;
+}
+
 .diagnosticTable td {
     vertical-align: middle;
+}
+
+.filter_column_header_wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 95px;
+    width: 100%;
+}
+
+.filter_input{
+    margin-top: 10px;
+    width: 60px;
+    text-align: center;
+    pointer-events: none;
+}
+
+.filter_button_wrap{
+    width: 60px;
+    margin-right: 10px;
+}
+
+.filter_half_button{
+    width: 50%;
+    border-radius: 0px;
+    padding: 0;
+    pointer-events: none;
 }
 
 .disabled_button{
