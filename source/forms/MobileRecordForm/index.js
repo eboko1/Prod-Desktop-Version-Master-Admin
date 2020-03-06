@@ -27,6 +27,8 @@ import {
     DecoratedSlider,
 } from 'forms/DecoratedFields';
 
+import { ConfirmDiagnosticModal } from 'modals'
+
 import { withReduxForm } from 'utils';
 
 import Styles from './styles.m.css';
@@ -482,7 +484,10 @@ class MobileDiagnostic extends Component {
                 <div className={Styles.diagnostic_header}>
                     <div className={Styles.diagnostic_vehicle_number}>{vehicle.number}</div>
                     <div className={Styles.diagnostic_vehicle_info}>{vehicle.make} {vehicle.model} {vehicle.modification}</div>
-                    <Button type="primary"><FormattedMessage id="Done"/></Button>
+                    <ConfirmDiagnosticModal
+                        isMobile={true}
+                        dataSource = {this.state.dataSource}
+                    />
                 </div>
             )
         }

@@ -8,10 +8,10 @@
 }
 
 @media screen and (max-width: 1199px) {
-    :global(.ant-tabs-nav-container) {
+    .ant-tabs-nav-container {
     display: none;
     }
-    :global(.ant-tabs-bar) {
+    .ant-tabs-bar {
         margin: 0px 0 55px 0;
     }
 }
