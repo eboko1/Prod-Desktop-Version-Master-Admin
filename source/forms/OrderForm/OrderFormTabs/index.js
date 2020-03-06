@@ -181,6 +181,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="1"
                     >
                         <DiagnosticTable
+                            form={form}
                             orderDiagnostic={orderDiagnostic}
                             orderId={orderId}
                         />
