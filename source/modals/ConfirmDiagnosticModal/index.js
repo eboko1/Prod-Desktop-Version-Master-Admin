@@ -429,7 +429,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         </div>
                         <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element}>
                             <div className={Styles.confirm_diagnostic_modal_element_title}>
-                                <FormattedMessage id='add_o rder_form.services' />
+                                <FormattedMessage id='add_order_form.services' />
                             </div>
                             <div className={Styles.confirm_diagnostic_modal_element_content}>
                                 {this.getServicesContent()}
