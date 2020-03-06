@@ -54,6 +54,10 @@
     border-left: 1px solid #e8e8e8;
 }
 
+#diagnosticModalServices, #diagnosticModalDetails{
+    display: block;
+}
+
 .confirm_diagnostic_modal_element_title{
     font-size: 15px;
     width: 100%;
@@ -66,6 +70,7 @@
     max-height: 500px;
     height: 500px;
     overflow-y: scroll;
+    overflow-x: hidden;
     width: 100%;
     padding: 10px;
 }

@@ -1,18 +1,20 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Table, Button, Modal, Upload, Icon, Checkbox, Select, Input, InputNumber } from 'antd';
+import { Table, Button, Modal, Upload, Icon, Checkbox, Select, Input, InputNumber, AutoComplete } from 'antd';
 import { FormattedMessage } from 'react-intl';
 
 // proj
 import { Catcher } from 'commons';
-import {API_URL,
-        addNewDiagnosticTemplate,
-        getDiagnosticsTemplates,
-        addNewDiagnosticRow,
-        sendDiagnosticAnswer,
-        deleteDiagnosticProcess,
-        deleteDiagnosticTemplate} from 'core/forms/orderDiagnosticForm/saga';
+import {
+    API_URL,
+    addNewDiagnosticTemplate,
+    getDiagnosticsTemplates,
+    addNewDiagnosticRow,
+    sendDiagnosticAnswer,
+    deleteDiagnosticProcess,
+    deleteDiagnosticTemplate
+} from 'core/forms/orderDiagnosticForm/saga';
 
 // own
 import Styles from './styles.m.css';
@@ -76,6 +78,7 @@ class DiagnosticTable extends Component {
                 key:       'plan',
                 width:     '15%',
                 render: (plan)=> {
+                    const { Option } = Select;
                     return plan != "" ? (
                         <p>
                             {plan}
@@ -87,7 +90,7 @@ class DiagnosticTable extends Component {
                             onChange={this.onPlanChange}
                         >
                             {this.templatesTitles.map((template) => <Option value={template}>{template}</Option>)}
-                        </Select>  
+                        </Select>
                     );
                 },
             },
@@ -97,6 +100,7 @@ class DiagnosticTable extends Component {
                 key:       'stage',
                 width:     '15%',
                 render: (stage)=> {
+                    const { Option } = Select;
                     let options = undefined !== this.state.groupsTitles ? this.state.groupsTitles : [];
                     return stage != "" ? (
                         <p>
@@ -120,6 +124,7 @@ class DiagnosticTable extends Component {
                 key:       'detail',
                 width:     '35%',
                 render: (detail, rowProp)=> {
+                    const { Option } = Select;
                     let options = undefined !== this.state.partsTitles ? this.state.partsTitles : [];
                     return detail != "" ? (
                         <span>
@@ -641,6 +646,7 @@ class DiagnosticTableHeader extends React.Component{
     }
 
     render(){
+        const { Option } = Select;
         return(
             <div className={Styles.diagnosticTableHeader}>
                 <div style={{ width: "5%", padding: '5px 10px' }}>
@@ -769,6 +775,7 @@ class CommentaryButton extends React.Component{
             visible: false,
             commentary: props.commentary,
         }
+        this.commentaryInput = React.createRef();
     }
 
     showModal = () => {
@@ -792,7 +799,14 @@ class CommentaryButton extends React.Component{
         });
     };
 
+    componentDidUpdate() {
+        if(this.commentaryInput.current != undefined) {
+            this.commentaryInput.current.focus();
+        }
+    }
+
     render() {
+        const { TextArea } = Input;
         const { visible, loading } = this.state;
         const commentary = this.state.commentary;
         return (
@@ -816,7 +830,13 @@ class CommentaryButton extends React.Component{
                         </Button>,
                     ]}
                     >
-                    <textarea onChange={()=>{this.state.commentary = event.target.value}} style={{width: '100%', minHeight: '150px', resize:'none'}}>{commentary}</textarea>
+                    <TextArea
+                        autoFocus
+                        onChange={()=>{this.state.commentary = event.target.value}}
+                        style={{width: '100%', minHeight: '150px', resize:'none'}}
+                        defaultValue={commentary}
+                        ref={this.commentaryInput}
+                    />
                 </Modal>
             </div>
         );
@@ -835,6 +855,7 @@ class PhotoButton extends React.Component{
     }
 
     showModal = () => {
+        console.log(this.state.photo);
         this.setState({
             visible: true,
         });
@@ -856,6 +877,7 @@ class PhotoButton extends React.Component{
     };
 
     render() {
+        this.actionUrl += `&photo=${this.state.photo}`;
         const { visible, loading } = this.state;
         const fileList = [
             /*{
@@ -871,11 +893,6 @@ class PhotoButton extends React.Component{
               status: 'error',
             },*/
           ];
-        const props = {
-            action: 'https://www.mocky.io/v2/5cc8019d300000980a055e76',
-            listType: 'picture',
-            defaultFileList: [...fileList],
-          };
         const photo = this.state.photo;
         return (
             <div>
@@ -898,7 +915,19 @@ class PhotoButton extends React.Component{
                         </Button>,
                     ]}
                     >
-                    <Upload {...props}>
+                    <Upload 
+                        listType='picture'
+                        defaultFileList={[...fileList]}
+                        beforeUpload={file => {
+                            const reader = new FileReader();
+                            reader.onload = e => {
+                                console.log(e.target.result);
+                                this.state.photo = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                            return false;
+                        }}
+                    >
                         <Button>
                             <Icon type="upload" />
                             <FormattedMessage id='upload' />
@@ -940,9 +969,30 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state = {
             visible: false,
             dataSource: props.dataSource,
-            resolvedDiagnostic: [],
+            diagnosticList: [],
+            servicesList: [],
+            detailsList: [],
         }
-        this.key = 1;
+        this.state.servicesList=[
+            {key:1, id:"1", name:"Замена амортизатора пер. прав.", count:1, checked: true},
+            {key:2, id:"2", name:"Замена амортизатора пер. лев.", count:1, checked: true},
+            {key:3, id:"3", name:"Ремонт стойки", count:2, checked: true},
+            {key:4, id:"4", name:"Замена лобового стекла", count:1, checked: true},
+            {key:5, id:"5", name:"Ремонт ходовой части", count:1, checked: true},
+        ];
+        this.state.detailsList=[
+            {key:1, id:"1", name:"Замена амортизатора пер. прав.", count:1, checked: true},
+            {key:2, id:"2", name:"Замена амортизатора пер. лев.", count:1, checked: true},
+            {key:3, id:"3", name:"Ремонт стойки", count:2, checked: true},
+            {key:4, id:"4", name:"Замена лобового стекла", count:1, checked: true},
+            {key:5, id:"5", name:"Ремонт ходовой части", count:1, checked: true},
+        ];
+
+        this.servicesOptions = this.getServicesOptions();
+        this.detailsOptions = this.getDetailsOptions();
+        this.lastServiceInput = React.createRef();
+        this.lastDetailInput = React.createRef();
+        this.diagnosticKey = 1;
     }
 
     showModal = () => {
@@ -953,19 +1003,26 @@ class ConfirmDiagnosticModal extends React.Component{
 
     handleOk = () => {
         this.setState({ visible: false });
+        console.log(this.state.diagnosticList);
     };
     
     handleCancel = () => {
         this.setState({
             visible: false,
-            resolvedDiagnostic: [],
+            dataSource: this.props.dataSource,
+            diagnosticList: [],
         });
     };
 
     updateState() {
         this.state.dataSource = this.props.dataSource;
-        this.state.resolvedDiagnostic = [];
-        this.key = 1;
+        this.state.diagnosticList = [];
+        this.diagnosticKey = 1;
+    }
+
+    componentDidUpdate() {
+        this.servicesOptions = this.getServicesOptions();
+        this.detailsOptions = this.getDetailsOptions();
     }
 
     componentWillUpdate() {
@@ -973,43 +1030,49 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     changeResolved(index, type) {
-        this.state.resolvedDiagnostic[index].resolved = type=='disabled'?true:!this.state.resolvedDiagnostic[index].resolved;
-        this.state.resolvedDiagnostic[index].type = type;
+        this.state.diagnosticList[index].resolved = type=='disabled'?true:!this.state.diagnosticList[index].resolved;
+        this.state.diagnosticList[index].type = type;
         this.setState({
             update: true,
         })
+        if(type=='manually') {
+            this.lastDetailInput.focus();
+        }
     }
 
     disableDiagnosticRow(index){
-        console.log(index, this.state.resolvedDiagnostic)
+        this.state.diagnosticList[index].checked = !this.state.diagnosticList[index].checked;
+        this.state.diagnosticList[index].disabled = !this.state.diagnosticList[index].disabled;
         if(!event.target.checked) {
-            this.state.resolvedDiagnostic[index].disabled = !this.state.resolvedDiagnostic[index].disabled;
             {this.changeResolved(index, 'disabled')};
+        }
+        else {
+            {this.changeResolved(index, '')};
         }
     }
 
     getDiagnostics(stage) {
         const { dataSource } = this.props;
-        var resolvedDiagnostic = this.state.resolvedDiagnostic;
+        var diagnosticList = this.state.diagnosticList;
         let tmpSource = [];
         for(let i = 0; i < dataSource.length; i++) {
             if(dataSource[i].stage == stage && Number(dataSource[i].status) > 1) {
                 tmpSource.push(dataSource[i]);
-                if(this.state.resolvedDiagnostic.findIndex(x => x.id == dataSource[i].partId) == -1){
-                    resolvedDiagnostic.push({key: this.key, id: dataSource[i].partId, resolved: false, type:"", disabled: false});
-                    this.key++;
+                if(this.state.diagnosticList.findIndex(x => x.id == dataSource[i].partId) == -1){
+                    diagnosticList.push({key: this.diagnosticKey, id: dataSource[i].partId, resolved: false, type:'', disabled: false, checked: true});
+                    this.diagnosticKey++;
                 }
             }
         }
-        this.state.resolvedDiagnostic = resolvedDiagnostic;
+        this.state.diagnosticList = diagnosticList;
 
         return tmpSource.map((data)=>{
-        let index = this.state.resolvedDiagnostic.findIndex(x => x.id == data.partId),
-            key=this.state.resolvedDiagnostic[index].key,
-            bgColor = this.state.resolvedDiagnostic[index].disabled?"#d9d9d9":"",
-            txtColor = this.state.resolvedDiagnostic[index].disabled?"gray":"";
+        let index = this.state.diagnosticList.findIndex(x => x.id == data.partId),
+            key=this.state.diagnosticList[index].key,
+            bgColor = this.state.diagnosticList[index].disabled?"#d9d9d9":"",
+            txtColor = this.state.diagnosticList[index].disabled?"gray":"";
 
-        if(!this.state.resolvedDiagnostic[index].resolved) {
+        if(!this.state.diagnosticList[index].resolved) {
             if(data.status == 1) {
                 bgColor = "rgb(200,225,180)";
             }
@@ -1019,7 +1082,7 @@ class ConfirmDiagnosticModal extends React.Component{
             else if(data.status == 3) {
                 bgColor = "rgb(250,175,175)";
             }
-        } else if(!this.state.resolvedDiagnostic[index].disabled){
+        } else if(!this.state.diagnosticList[index].disabled){
             bgColor = "rgb(200,225,180)";
         }
 
@@ -1028,22 +1091,23 @@ class ConfirmDiagnosticModal extends React.Component{
             <div style={{ width: '10%' }}>
                 {key} <Checkbox
                         onChange={()=>this.disableDiagnosticRow(index)}
-                        defaultChecked
-                        disabled={this.state.resolvedDiagnostic[index].disabled}
+                        checked={this.state.diagnosticList[index].checked}
                     />
             </div>
             <div style={{ width: '50%', padding: '0 5px' }}>
                 {data.detail}
             </div>
-            {!this.state.resolvedDiagnostic[index].resolved ?
+            {!this.state.diagnosticList[index].resolved ?
             <div className={Styles.confirm_diagnostic_modal_row_button} style={{ width: '40%'}}>
-                <Button 
+                <Button
+                    type="primary"
                     onClick={()=>{this.changeResolved(index, 'automaticly')}}
                     style={{width: '49%', padding: '5px'}}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.automaticly' />
                 </Button>
                 <Button
+                    type="primary"
                     onClick={()=>{this.changeResolved(index, 'manually')}}
                     style={{width: '49%', padding: '5px'}}
                 >
@@ -1053,10 +1117,11 @@ class ConfirmDiagnosticModal extends React.Component{
             :
             <div className={Styles.confirm_diagnostic_modal_row_button} style={{ width: '40%'}}>
                 <Button
-                    disabled
+                    disabled={this.state.diagnosticList[index].disabled}
+                    onClick={()=>{this.changeResolved(index, '')}}
                     style={{width: '98%'}}
                 >
-                    <FormattedMessage id={`order_form_table.diagnostic.${this.state.resolvedDiagnostic[index].type}`} />
+                    <FormattedMessage id={`order_form_table.diagnostic.${this.state.diagnosticList[index].type}`} />
                 </Button>
             </div>}
         </div>
@@ -1067,7 +1132,7 @@ class ConfirmDiagnosticModal extends React.Component{
         const { dataSource } = this.props;
         let stageList = [];
         for(let i = 0; i < dataSource.length; i++) {
-            if(dataSource[i].stage != "" && stageList.indexOf(dataSource[i].stage) == -1 && dataSource[i].status > 0) {
+            if(dataSource[i].stage != "" && stageList.indexOf(dataSource[i].stage) == -1 && Number(dataSource[i].status) > 1) {
                 stageList.push(dataSource[i].stage);
             }
         }
@@ -1080,49 +1145,195 @@ class ConfirmDiagnosticModal extends React.Component{
         );
     }
 
-    getServicesContent() {
+    servicesCheckboxClick(index) {
+        this.state.servicesList[index].checked = !this.state.servicesList[index].checked;
+        this.setState({
+            update: true,
+        })
+    }
+
+    addNewServicesRow() {
+        if(this.state.servicesList[this.state.servicesList.length-1].name != null) {
+            this.state.servicesList.push(
+                {key:this.state.servicesList[this.state.servicesList.length-1].key+1, id:null, name: null, count: 1, checked: true},
+            );
+            this.setState({
+                update: true,
+            })
+        }
+    }
+
+    getServicesOptions() {
+        const { Option } = AutoComplete;
+        
         const services  = [
-            {key:1, name:"Замена амортизатора пер. прав.", count:1},
-            {key:2, name:"Замена амортизатора пер. лев.", count:1},
-            {key:3, name:"Ремонт стойки", count:2},
-            {key:4, name:"", count:""},
+            {id:"1", name:"Замена амортизатора пер. прав."},
+            {id:"2", name:"Замена амортизатора пер. лев."},
+            {id:"3", name:"Ремонт стойки"},
         ];
 
-        return services.map((data)=>
+        return services.map(
+            (data, index) => (
+                <Option value={ data.name } key={index}>
+                    { data.name }
+                </Option>
+            ),
+        );
+    }
+
+    deleteServiceRow(index) {
+        var array = [...this.state.servicesList];
+        if(array.length == 1) return 0;
+        array.splice(index, 1);
+        for(let i = 0; i < array.length; i++) {
+            array[i].key = i+1;
+        }
+        this.setState({servicesList: array});
+    }
+
+    getServicesContent() {
+        this.addNewServicesRow();
+        var servicesList = [...this.state.servicesList];
+
+        return this.state.servicesList.map((data)=>
             <div className={Styles.confirm_diagnostic_modal_row}>
                 <div style={{ width: '10%' }}>
-                    {data.key} <Checkbox defaultChecked/>
+                    {data.key} <Checkbox
+                        checked={data.checked}
+                        onClick={()=>this.servicesCheckboxClick(data.key-1)}
+                    />
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
-                    <Input defaultValue={data.name}/>
+                    <AutoComplete
+                        defaultActiveFirstOption={false}
+                        className="service_input"
+                        ref={(node)=>{this.lastServiceInput=node}}
+                        disabled={!data.checked}
+                        style={{ width: "100%"}}
+                        onChange={(inputValue)=>{
+                            this.state.servicesList[data.key-1].name = inputValue;
+                            console.log(inputValue, data);
+                            this.addNewServicesRow();
+                        }}
+                        placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
+                        defaultValue={data.name?data.name:undefined}
+                        getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalServices}`)}
+                        filterOption={(inputValue, option) =>
+                            option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
+                        }
+                    >
+                        {this.servicesOptions}
+                    </AutoComplete>
                 </div>
                 <div style={{ width: '30%' }}>
-                    <InputNumber style={{ width: '70%' }} min={1} max={50} defaultValue={data.count}/>
-                    <Icon type="delete" className={Styles.delete_diagnostic_button}/>
+                    <InputNumber
+                        disabled={!data.checked}
+                        style={{ width: '70%' }}
+                        min={1}
+                        max={50}
+                        defaultValue={data.count?data.count:1}
+                    />
+                    <Icon
+                        onClick={()=>this.deleteServiceRow(data.key-1)}
+                        style={{margin: '0 5%'}}
+                        type="delete"
+                        className={Styles.delete_diagnostic_button}
+                    />
                 </div>
             </div>
         )
     }
 
-    getDetailsContent() {
+    detailsCheckboxClick(index) {
+        this.state.detailsList[index].checked = !this.state.detailsList[index].checked;
+        this.setState({
+            update: true,
+        })
+    }
+
+    addNewDetailsRow() {
+        if(this.state.detailsList[this.state.detailsList.length-1].name != null) {
+            this.state.detailsList.push(
+                {key:this.state.detailsList[this.state.detailsList.length-1].key+1, id:null, name: null, count: 1, checked: true},
+            );
+            this.setState({
+                update: true,
+            })
+        }
+    }
+
+    getDetailsOptions() {
+        const { Option } = AutoComplete;
+
         const details  = [
-            {key:1, name:"Амортизатор пер. прав.", count:1},
-            {key:2, name:"Амортизатор пер. лев.", count:1},
-            {key:3, name:"Гайка монтажная", count:4},
-            {key:4, name:"", count:""},
+            {id:"1", name:"Амортизатор пер. прав."},
+            {id:"2", name:"Амортизатор пер. лев."},
+            {id:"3", name:"Гайка монтажная"},
         ];
 
-        return details.map((data)=>
+        return details.map(
+            (data, index) => (
+                <Option value={ data.name } key={index}>
+                    { data.name }
+                </Option>
+            ),
+        );
+    }
+
+    deleteDetailRow(index) {
+        var array = [...this.state.detailsList];
+        if(array.length == 1) return 0;
+        array.splice(index, 1);
+        for(let i = 0; i < array.length; i++) {
+            array[i].key = i+1;
+        }
+        this.setState({detailsList: array});
+    }
+
+    getDetailsContent() {
+        this.addNewDetailsRow();
+
+        return this.state.detailsList.map((data)=>
             <div className={Styles.confirm_diagnostic_modal_row}>
                 <div style={{ width: '10%' }}>
-                    {data.key} <Checkbox defaultChecked/>
+                    {data.key} <Checkbox
+                        checked={this.state.detailsList[data.key-1].checked}
+                        onClick={()=>this.detailsCheckboxClick(data.key-1)}
+                    />
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
-                    <Input defaultValue={data.name}/>
+                    <AutoComplete
+                        ref={(node)=>{this.lastDetailInput=node}}
+                        disabled={!this.state.detailsList[data.key-1].checked}
+                        style={{ width: "100%"}}
+                        onChange={(inputValue)=>{
+                            this.state.detailsList[data.key-1].name = inputValue;
+                            this.addNewDetailsRow();
+                        }}
+                        placeholder={<FormattedMessage id='order_form_table.detail.placeholder'/>}
+                        defaultValue={data.name?data.name:undefined}
+                        getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalServices}`)}
+                        filterOption={(inputValue, option) =>
+                            option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
+                        }
+                    >
+                        {this.detailsOptions}
+                    </AutoComplete>
                 </div>
                 <div style={{ width: '30%' }}>
-                    <InputNumber style={{ width: '70%' }} min={1} max={50} defaultValue={data.count}/>
-                    <Icon type="delete" className={Styles.delete_diagnostic_button}/>
+                    <InputNumber
+                        disabled={!this.state.detailsList[data.key-1].checked}
+                        style={{ width: '70%' }}
+                        min={1}
+                        max={50}
+                        defaultValue={data.count?data.count:1}
+                    />
+                    <Icon
+                        onClick={()=>this.deleteDetailRow(data.key-1)}
+                        style={{margin: '0 5%'}}
+                        type="delete"
+                        className={Styles.delete_diagnostic_button}
+                    />
                 </div>
             </div>
         )
@@ -1158,7 +1369,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 {this.getDiagnosticContent()}
                             </div>
                         </div>
-                        <div className={Styles.confirm_diagnostic_modal_element}>
+                        <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element}>
                             <div className={Styles.confirm_diagnostic_modal_element_title}>
                                 <FormattedMessage id='add_order_form.services' />
                             </div>
@@ -1166,7 +1377,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 {this.getServicesContent()}
                             </div>
                         </div>
-                        <div className={Styles.confirm_diagnostic_modal_element}>
+                        <div id={Styles.diagnosticModalDetails} className={Styles.confirm_diagnostic_modal_element}>
                             <div className={Styles.confirm_diagnostic_modal_element_title}>
                                 <FormattedMessage id='add_order_form.details' />
                             </div>
