@@ -673,6 +673,7 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "35%" }}>
                     <ConfirmDiagnosticModal
+                        isMobile={false}
                         dataSource = {this.state.dataSource}
                     />
                 </div>

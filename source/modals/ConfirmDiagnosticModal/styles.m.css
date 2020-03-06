@@ -82,3 +82,13 @@
     display: flex;
     justify-content: space-between;
 }
+
+/*Mobile*/
+
+.confirm_diagnostic_modal_element_mobile{
+    width: 100%;
+}
+
+.modal_tab_icon{
+    font-size: 24px;
+}

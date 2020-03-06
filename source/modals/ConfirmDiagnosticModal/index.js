@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Checkbox, InputNumber, AutoComplete } from 'antd';
+import { Button, Modal, Icon, Checkbox, InputNumber, AutoComplete, Tabs } from 'antd';
 import { FormattedMessage } from 'react-intl';
 // proj
 
@@ -353,7 +353,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 <AutoComplete
                         defaultActiveFirstOption={false}
                         className="service_input"
-                        ref={(node)=>{this.lastServiceInput=node}}
+                        ref={(node)=>{this.lastDetailInput=node}}
                         disabled={!data.checked}
                         style={{ width: "100%"}}
                         onChange={(inputValue)=>{
@@ -363,7 +363,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
                         value={data.name?data.name:undefined}
-                        getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalServices}`)}
+                        getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalDetails}`)}
                         filterOption={(inputValue, option) =>
                             option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
                         }
@@ -392,13 +392,19 @@ class ConfirmDiagnosticModal extends React.Component{
 
     render() {
         const { visible } = this.state;
+        const { isMobile } = this.props;
+        const { TabPane } = Tabs;
         return (
             <div>
-                <Button style={{ width: "80%" }} type="primary" onClick={this.showModal}>
+                <Button style={isMobile?{ width: "100%" }:{ width: "80%" }} type="primary" onClick={this.showModal}>
+                {!isMobile ? (
                     <FormattedMessage id='order_form_table.diagnostic.create_order'/>
+                ):(
+                    <FormattedMessage id='submit'/>
+                )}
                 </Button>
                 <Modal
-                    width="75%"
+                    width={!isMobile?"75%":"95%"}
                     visible={visible}
                     title={<FormattedMessage id='order_form_table.diagnostic.create_order' />}
                     onCancel={this.handleCancel}
@@ -411,6 +417,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         </Button>,
                     ]}
                 >
+                    {!isMobile ? (
                     <div className={Styles.confirm_diagnostic_modal_wrap}>
                         <div className={Styles.confirm_diagnostic_modal_element}>
                             <div className={Styles.confirm_diagnostic_modal_element_title}>
@@ -422,7 +429,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         </div>
                         <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element}>
                             <div className={Styles.confirm_diagnostic_modal_element_title}>
-                                <FormattedMessage id='add_order_form.services' />
+                                <FormattedMessage id='add_o rder_form.services' />
                             </div>
                             <div className={Styles.confirm_diagnostic_modal_element_content}>
                                 {this.getServicesContent()}
@@ -436,7 +443,43 @@ class ConfirmDiagnosticModal extends React.Component{
                                 {this.getDetailsContent()}
                             </div>
                         </div>
-                    </div>
+                    </div> 
+                    ):(
+                        <div className={Styles.confirm_diagnostic_modal_wrap}>
+                            <Tabs defaultActiveKey="1">
+                                <TabPane tab={<Icon type="reconciliation" className={Styles.modal_tab_icon} />} key="1">
+                                    <div className={Styles.confirm_diagnostic_modal_element_mobile}>
+                                        <div className={Styles.confirm_diagnostic_modal_element_title}>
+                                            <FormattedMessage id='order_form_table.diagnostic.results' />
+                                        </div>
+                                        <div className={Styles.confirm_diagnostic_modal_element_content}>
+                                            {this.getDiagnosticContent()}
+                                        </div>
+                                    </div>
+                                </TabPane>
+                                <TabPane tab={<Icon type="tool" className={Styles.modal_tab_icon} />} key="2">
+                                    <div id={Styles.diagnosticModalServices} className={Styles.confirm_diagnostic_modal_element_mobile}>
+                                        <div className={Styles.confirm_diagnostic_modal_element_title}>
+                                            <FormattedMessage id='add_order_form.services' />
+                                        </div>
+                                        <div className={Styles.confirm_diagnostic_modal_element_content}>
+                                            {this.getServicesContent()}
+                                        </div>
+                                    </div>
+                                </TabPane>
+                                <TabPane tab={<Icon type="setting" className={Styles.modal_tab_icon} />} key="3">
+                                    <div id={Styles.diagnosticModalDetails} className={Styles.confirm_diagnostic_modal_element_mobile}>
+                                        <div className={Styles.confirm_diagnostic_modal_element_title}>
+                                            <FormattedMessage id='add_order_form.details' />
+                                        </div>
+                                        <div className={Styles.confirm_diagnostic_modal_element_content}>
+                                            {this.getDetailsContent()}
+                                        </div>
+                                    </div>
+                                </TabPane>
+                            </Tabs>
+                        </div>
+                    )}
                 </Modal>
             </div>
         );
