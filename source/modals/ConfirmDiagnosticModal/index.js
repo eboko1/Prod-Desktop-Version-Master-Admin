@@ -4,7 +4,9 @@ import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Checkbox, InputNumber, AutoComplete, Tabs } from 'antd';
 import { FormattedMessage } from 'react-intl';
 // proj
-
+import {
+    API_URL
+} from 'core/forms/orderDiagnosticForm/saga';
 // own
 import Styles from './styles.m.css';
 
@@ -17,6 +19,8 @@ class ConfirmDiagnosticModal extends React.Component{
             diagnosticList: [],
             servicesList: [],
             detailsList: [],
+            labors: null,
+            storeGroups: null,
         }
         this.state.servicesList=[
             {key:1, id:"1", name:"Замена амортизатора пер. прав.", count:1, checked: true},
@@ -32,9 +36,10 @@ class ConfirmDiagnosticModal extends React.Component{
             {key:4, id:"4", name:"Лобовое стекло", count:1, checked: true},
             {key:5, id:"5", name:"Шина", count:1, checked: true},
         ];
-
-        this.servicesOptions = this.getServicesOptions();
-        this.detailsOptions = this.getDetailsOptions();
+        this.tmp = {};
+        this.servicesOptions = null;
+        this.detailsOptions = null;
+        this.allDetails = null;
         this.lastServiceInput = React.createRef();
         this.lastDetailInput = React.createRef();
         this.diagnosticKey = 1;
@@ -65,14 +70,184 @@ class ConfirmDiagnosticModal extends React.Component{
         this.diagnosticKey = 1;
     }
 
-    componentDidUpdate() {
-        this.servicesOptions = this.getServicesOptions();
-        this.detailsOptions = this.getDetailsOptions();
+    componentWillMount() {
+        
+    }
+
+    componentDidMount() {
+        this.fetchOptionsSourceData();
     }
 
     componentWillUpdate() {
         this.updateState();
     }
+
+    componentDidUpdate() {
+        if(this.state.labors != null && this.servicesOptions == null) {
+            this.servicesOptions = this.getServicesOptions();
+        }
+        if(this.state.storeGroups != null && this.detailsOptions == null) {
+            this.detailsOptions = this.getDetailsOptions();
+        }
+    }
+
+    fetchOptionsSourceData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/labors`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.setState({
+                labors: data,
+            });
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        url = API_URL;
+        params = `/store_groups`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.setState({
+                storeGroups: data,
+            });
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    getLaborByPartId(id) {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/diagnostics/labor_id/${id}`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.addServicesByLaborId(data.laborId);
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    addServicesByLaborId(id) {
+        if(id == undefined) return;
+        const service = this.state.labors.labors.find(x => x.laborId == id);
+        let index = this.state.servicesList.findIndex(x => x.id == service.productId);
+        if( index == -1 ) {
+            this.state.servicesList[this.state.servicesList.length-1] = {
+                key: this.state.servicesList.length,
+                id: service.productId,
+                name: service.name,
+                count: 1,
+                checked: true,
+            };
+        }
+        else {
+            this.state.servicesList[index].count = this.state.servicesList[index].count + 1;
+        }
+        this.setState({
+            update: true,
+        });
+    }
+
+    getGroupByPartId(id) {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/diagnostics/store_group_id/${id}`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.addDetailsByGroupId(data.storeGroupId);
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    addDetailsByGroupId(id) {
+        const detail = this.allDetails.find(x => x.id == id);
+        let index = this.state.detailsList.findIndex(x => x.id == id);
+        if(index == -1) {
+            this.state.detailsList[this.state.detailsList.length-1] = {
+                key: this.state.detailsList.length,
+                id: detail.id,
+                name: detail.name,
+                count: 1,
+                checked: true,
+            };
+        }
+        else {
+            this.state.detailsList[index].count = this.state.detailsList[index].count + 1;
+        }
+        this.setState({
+            update: true,
+        });
+    }
+
 
     changeResolved(index, type) {
         this.state.diagnosticList[index].resolved = type=='disabled'?true:!this.state.diagnosticList[index].resolved;
@@ -81,7 +256,7 @@ class ConfirmDiagnosticModal extends React.Component{
             update: true,
         })
         if(type=='manually') {
-            this.lastDetailInput.focus();
+            this.lastServiceInput.focus();
         }
     }
 
@@ -113,7 +288,7 @@ class ConfirmDiagnosticModal extends React.Component{
 
         return tmpSource.map((data)=>{
         let index = this.state.diagnosticList.findIndex(x => x.id == data.partId),
-            key=this.state.diagnosticList[index].key,
+            key = this.state.diagnosticList[index].key,
             bgColor = this.state.diagnosticList[index].disabled?"#d9d9d9":"",
             txtColor = this.state.diagnosticList[index].disabled?"gray":"";
 
@@ -146,7 +321,11 @@ class ConfirmDiagnosticModal extends React.Component{
             <div className={Styles.confirm_diagnostic_modal_row_button} style={{ width: '40%'}}>
                 <Button
                     type="primary"
-                    onClick={()=>{this.changeResolved(index, 'automaticly')}}
+                    onClick={()=>{
+                        this.changeResolved(index, 'automaticly');
+                        this.getLaborByPartId(data.partId);
+                        this.getGroupByPartId(data.partId);
+                    }}
                     style={{width: '49%', padding: '5px'}}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.automaticly' />
@@ -210,16 +389,16 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getServicesOptions() {
         const { Option } = AutoComplete;
-        
-        const services  = [
-            {id:"1", name:"Замена амортизатора пер. прав."},
-            {id:"2", name:"Замена амортизатора пер. лев."},
-            {id:"3", name:"Ремонт стойки"},
-        ];
 
-        return services.map(
+        return this.state.labors.labors.map(
             (data, index) => (
-                <Option value={ data.name } key={index}>
+                <Option
+                    value={ data.name }
+                    key={index}
+                    labor_id={data.laborId}
+                    master_labor_id={data.masterLaborId}
+                    product_id={data.productId}
+                >
                     { data.name }
                 </Option>
             ),
@@ -260,6 +439,9 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.setState({update: true});
                             this.addNewServicesRow();
                         }}
+                        onSelect={(value, option)=>{
+                            this.addDetailsByGroupId(option.props.product_id);
+                        }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
                         value={data.name?data.name:undefined}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalServices}`)}
@@ -276,7 +458,11 @@ class ConfirmDiagnosticModal extends React.Component{
                         style={{ width: '70%' }}
                         min={1}
                         max={50}
-                        defaultValue={data.count?data.count:1}
+                        value={data.count?data.count:1}
+                        onChange={(value)=>{
+                            this.state.servicesList[data.key-1].count = value;
+                            this.setState({update: true});
+                        }}
                     />
                     <Icon
                         onClick={()=>this.deleteServiceRow(data.key-1)}
@@ -309,19 +495,28 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getDetailsOptions() {
         const { Option } = AutoComplete;
+        const { storeGroups } = this.state;
+        let details = [];
+        
+        for (let i = 0; i < storeGroups.length; i++) {
+            const childGroups = storeGroups[i].childGroups;
+            for (let j = 0; j < childGroups.length; j++) {
+                const groupDetails = childGroups[j].childGroups;
+                for (let k = 0; k < groupDetails.length; k++) {
+                    details.push(groupDetails[k]);
+                }
+            }
+        }
 
-        const details  = [
-            {id:"1", name:"Амортизатор пер. прав."},
-            {id:"2", name:"Амортизатор пер. лев."},
-            {id:"3", name:"Гайка монтажная"},
-            {id:"9", name:"Стойка"},
-            {id:"4", name:"Лобовое стекло"},
-            {id:"5", name:"Шина"},
-        ];
-
+        this.allDetails = details;
+        
         return details.map(
             (data, index) => (
-                <Option value={ data.name } key={index}>
+                <Option
+                    value={ data.name }
+                    key={index}
+                    detail_id={data.id}
+                >
                     { data.name }
                 </Option>
             ),
@@ -377,7 +572,11 @@ class ConfirmDiagnosticModal extends React.Component{
                         style={{ width: '70%' }}
                         min={1}
                         max={50}
-                        defaultValue={data.count?data.count:1}
+                        value={data.count?data.count:1}
+                        onChange={(value)=>{
+                            this.state.detailsList[data.key-1].count = value;
+                            this.setState({update: true});
+                        }}
                     />
                     <Icon
                         onClick={()=>this.deleteDetailRow(data.key-1)}
