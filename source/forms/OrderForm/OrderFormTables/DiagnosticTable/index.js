@@ -37,8 +37,11 @@ class DiagnosticTable extends Component {
             dataSource: [],
             groupsTitles: [],
             partsTitles: [],
-            filterType: null,
-            filterValue: null,
+            filterPlan: null,
+            filterStage: null,
+            filterStatus: null,
+            filterCommentary: null,
+            filterPhoto: null,
         };
         this.templatesData = this.templatesData == undefined ? {} : this.templatesData;
         this.templatesTitles = [];
@@ -47,6 +50,8 @@ class DiagnosticTable extends Component {
         this.ok = 0;
         this.bad = 0;
         this.critical = 0;
+        this.withCommentary = 0; 
+        this.withPhoto = 0;
         this.getCurrentDiagnostic = this.getCurrentDiagnostic.bind(this);
         this.addNewDiagnostic = this.addNewDiagnostic.bind(this);
         this.deleteDiagnostic = this.deleteDiagnostic.bind(this);
@@ -66,11 +71,15 @@ class DiagnosticTable extends Component {
                         <div className={Styles.filter_column_header_wrap}>
                             <p style={{paddingLeft: 10}}>#</p>
                             <Button
-                                style={{width: 60}}
+                                type="primary"
+                                style={{maxWidth: 60}}
                                 onClick={()=>{
                                     this.setState({
-                                        filterType: null,
-                                        filterValue: null,
+                                        filterPlan: null,
+                                        filterStage: null,
+                                        filterStatus: null,
+                                        filterCommentary: null,
+                                        filterPhoto: null,
                                     });
                                     {this.getCurrentDiagnostic()}
                                 }}
@@ -105,13 +114,13 @@ class DiagnosticTable extends Component {
                             <Select
                                 allowClear
                                 showSearch
+                                value={this.state.filterPlan===null?undefined:this.state.filterPlan}
                                 style={{width: "80%"}}
                                 placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                                 onChange={(selectValue)=>{
                                     if(selectValue != "")
                                     this.setState({
-                                        filterType: "plan",
-                                        filterValue: selectValue,
+                                        filterPlan: selectValue,
                                     });
                                     {this.getCurrentDiagnostic()}
                                 }}
@@ -153,13 +162,13 @@ class DiagnosticTable extends Component {
                             <Select
                                 allowClear
                                 style={{width: "80%"}}
+                                value={this.state.filterStage===null?undefined:this.state.filterStage}
                                 showSearch
                                 placeholder={<FormattedMessage id='order_form_table.diagnostic.stage' />}
                                 onChange={(selectValue)=>{
                                     if(selectValue != "")
                                     this.setState({
-                                        filterType: "stage",
-                                        filterValue: selectValue,
+                                        filterStage: selectValue,
                                     });
                                     {this.getCurrentDiagnostic()}
                                 }}
@@ -198,19 +207,17 @@ class DiagnosticTable extends Component {
                             <FormattedMessage id='order_form_table.diagnostic.detail' />
                             <div style={{display: 'flex'}}>
                                 <div className={Styles.filter_button_wrap}>
-                                    <Button 
+                                    <Button
                                         style={{width: "100%", backgroundColor: "rgb(200,225,180)"}}
                                         onClick={()=>{
-                                            if(this.state.filterValue == "OK") {
+                                            if(this.state.filterStatus == "OK") {
                                                 this.setState({
-                                                    filterType: null,
-                                                    filterValue: null,
+                                                    filterStatus: null,
                                                 });
                                             }
                                             else {
                                                 this.setState({
-                                                    filterType: "status",
-                                                    filterValue: "OK",
+                                                    filterStatus: "OK",
                                                 });
                                             }
                                             {this.getCurrentDiagnostic()}
@@ -218,22 +225,23 @@ class DiagnosticTable extends Component {
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.ok'/>
                                     </Button>
-                                    <Input className={Styles.filter_input} value={this.ok}/>
+                                    <Input
+                                        className={Styles.filter_input}
+                                        value={this.ok}
+                                    />
                                 </div>
                                 <div className={Styles.filter_button_wrap}>
                                     <Button
                                         style={{width: "100%", backgroundColor: "rgb(255,240,180)"}}
                                         onClick={()=>{
-                                            if(this.state.filterValue == "BAD") {
+                                            if(this.state.filterStatus == "BAD") {
                                                 this.setState({
-                                                    filterType: null,
-                                                    filterValue: null,
+                                                    filterStatus: null,
                                                 });
                                             }
                                             else {
                                                 this.setState({
-                                                    filterType: "status",
-                                                    filterValue: "BAD",
+                                                    filterStatus: "BAD",
                                                 });
                                             }
                                             {this.getCurrentDiagnostic()}
@@ -247,16 +255,14 @@ class DiagnosticTable extends Component {
                                     <Button
                                         style={{width: "100%", backgroundColor: "rgb(250,175,175)"}}
                                         onClick={()=>{
-                                            if(this.state.filterValue == "CRITICAL") {
+                                            if(this.state.filterStatus == "CRITICAL") {
                                                 this.setState({
-                                                    filterType: null,
-                                                    filterValue: null,
+                                                    filterStatus: null,
                                                 });
                                             }
                                             else {
                                                 this.setState({
-                                                    filterType: "status",
-                                                    filterValue: "CRITICAL",
+                                                    filterStatus: "CRITICAL",
                                                 });
                                             }
                                             {this.getCurrentDiagnostic()}
@@ -270,16 +276,14 @@ class DiagnosticTable extends Component {
                                     <Button
                                         style={{width: "100%", padding: 0}}
                                         onClick={()=>{
-                                            if(this.state.filterValue == "BAD&CRITICAL") {
+                                            if(this.state.filterStatus == "BAD&CRITICAL") {
                                                 this.setState({
-                                                    filterType: null,
-                                                    filterValue: null,
+                                                    filterStatus: null,
                                                 });
                                             }
                                             else {
                                                 this.setState({
-                                                    filterType: "status",
-                                                    filterValue: "BAD&CRITICAL",
+                                                    filterStatus: "BAD&CRITICAL",
                                                 });
                                             }
                                             {this.getCurrentDiagnostic()}
@@ -298,16 +302,14 @@ class DiagnosticTable extends Component {
                                     <Button
                                         style={{width: "100%"}}
                                         onClick={()=>{
-                                            if(this.state.filterValue == "OPEN") {
+                                            if(this.state.filterStatus == "OPEN") {
                                                 this.setState({
-                                                    filterType: null,
-                                                    filterValue: null,
+                                                    filterStatus: null,
                                                 });
                                             }
                                             else {
                                                 this.setState({
-                                                    filterType: "status",
-                                                    filterValue: "OPEN",
+                                                    filterStatus: "OPEN",
                                                 });
                                             }
                                             {this.getCurrentDiagnostic()}
@@ -351,7 +353,24 @@ class DiagnosticTable extends Component {
                             <p style={{whiteSpace: 'nowrap', overflowX: "hidden"}}>
                                 <FormattedMessage id='order_form_table.diagnostic.commentary' />
                             </p>
-                            <Input className={Styles.filter_input} value="5"/>
+                            <Button
+                                type={this.state.filterCommentary == null?"primary":""}
+                                onClick={()=>{
+                                    if(this.state.filterCommentary != null) {
+                                        this.setState({
+                                            filterCommentary: null,
+                                        });
+                                    }
+                                    else {
+                                        this.setState({
+                                            filterCommentary: "COMMENTARY",
+                                        });
+                                    }
+                                    {this.getCurrentDiagnostic()}
+                                }}
+                            >
+                                {this.withCommentary}
+                            </Button>
                         </div>
                     )
                 },
@@ -360,6 +379,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (commentary, rowProp) => (
                     <CommentaryButton
+                        getCurrentDiagnostic={this.getCurrentDiagnostic}
                         commentary={commentary}
                         rowProp={rowProp}
                     />
@@ -370,7 +390,24 @@ class DiagnosticTable extends Component {
                     return(
                         <div className={Styles.filter_column_header_wrap}>
                             <FormattedMessage id='order_form_table.diagnostic.photo' />
-                            <Input className={Styles.filter_input} value="5"/>
+                            <Button
+                                type={this.state.filterPhoto == null?"primary":""}
+                                onClick={()=>{
+                                    if(this.state.filterPhoto != null) {
+                                        this.setState({
+                                            filterPhoto: null,
+                                        });
+                                    }
+                                    else {
+                                        this.setState({
+                                            filterPhoto: "PHOTO",
+                                        });
+                                    }
+                                    {this.getCurrentDiagnostic()}
+                                }}
+                            >
+                                {this.withPhoto}
+                            </Button>
                         </div>
                     )
                 },
@@ -379,6 +416,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (photo, rowProp) => (
                     <PhotoButton
+                        getCurrentDiagnostic={this.getCurrentDiagnostic}
                         photo={photo}
                         rowProp={rowProp}
                     />
@@ -657,35 +695,29 @@ class DiagnosticTable extends Component {
     }
 
     filterDataSource(dataSource) {
-        const { filterType, filterValue } = this.state;
-        if(filterType == null && filterValue == null) {
-            return dataSource;
-        }
-        else if(filterType === "plan" && filterValue != undefined) {
-            return dataSource.filter((data, i) => data.plan == filterValue);
-        }
-        else if(filterType === "stage" && filterValue != undefined) {
-            return dataSource.filter((data, i) => data.stage == filterValue);
-        }
-        else if(filterType === "status" && filterValue != undefined) {
-            if(filterValue == "OK") return dataSource.filter((data, i) => data.status == 1);
-            if(filterValue == "BAD") return dataSource.filter((data, i) => data.status == 2);
-            if(filterValue == "CRITICAL") return dataSource.filter((data, i) => data.status == 3);
-            if(filterValue == "BAD&CRITICAL") return dataSource.filter((data, i) => data.status == 2 || data.status == 3);
-            if(filterValue == "OPEN") return dataSource.filter((data, i) => data.status == 0);
-        }
-        else {
-            return dataSource;
-        }
+        let data = dataSource;
+        const { filterPlan, filterStage, filterStatus, filterCommentary, filterPhoto } = this.state;
+        console.log(filterPlan, filterStage, filterStatus, filterCommentary, filterPhoto);
+        if(filterPlan != null) data = data.filter((data, i) => data.plan == filterPlan);
+        if(filterStage != null) data = data.filter((data, i) => data.stage == filterStage);
+        if(filterStatus == "OK") data = data.filter((data, i) => data.status == 1);
+        if(filterStatus == "BAD") data = data.filter((data, i) => data.status == 2);
+        if(filterStatus == "CRITICAL") data = data.filter((data, i) => data.status == 3);
+        if(filterStatus == "BAD&CRITICAL") data = data.filter((data, i) => data.status == 2 || data.status == 3);
+        if(filterStatus == "OPEN") data = data.filter((data, i) => data.status == 0);
+        if(filterCommentary != null) data = data.filter((data, i) => data.commentary != null);
+        if(filterPhoto != null) data = data.filter((data, i) => data.photo != null);
+        return data;
     }
 
     updateDataSource() {
         this.ok = 0;
         this.bad = 0;
         this.critical = 0;
+        this.withCommentary = 0; 
+        this.withPhoto = 0;
         this.state.possibleRows = [];
         const { orderDiagnostic, orderId } = this.state;
-        console.log("UpdateDataSource");
         const dataSource = [];
 
         const diagnosticTemplatesCount = _.pick(orderDiagnostic, [
@@ -743,6 +775,8 @@ class DiagnosticTable extends Component {
                     if(answer==1) this.ok++;
                     if(answer==2) this.bad++;
                     if(answer==3) this.critical++; 
+                    if(comment!=undefined) this.withCommentary++;
+                    if(photo!=undefined) this.withPhoto++;
                     dataSource.push({
                         key: key,
                         partId: partId,
@@ -1071,9 +1105,10 @@ class CommentaryButton extends React.Component{
         this.setState({ loading: true });
         const { rowProp } = this.props;
         sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, this.state.commentary);
+        setTimeout(this.props.getCurrentDiagnostic, 500);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
-        }, 100);
+        }, 500);
     };
     
     handleCancel = () => {
@@ -1148,9 +1183,10 @@ class PhotoButton extends React.Component{
         this.setState({ loading: true });
         const { rowProp } = this.props;
         sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, rowProp.commentary, this.state.photo);
+        setTimeout(this.props.getCurrentDiagnostic, 500);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
-        }, 100);
+        }, 500);
     };
     
     handleCancel = () => {
