@@ -21,9 +21,9 @@ class ConfirmDiagnosticModal extends React.Component{
             detailsList: [],
             labors: null,
             storeGroups: null,
+            servicesList: [],
+            detailsList: [],
         }
-        this.state.servicesList=[];
-        this.state.detailsList=[];
         this.tmp = {};
         this.servicesOptions = null;
         this.detailsOptions = null;
@@ -49,6 +49,8 @@ class ConfirmDiagnosticModal extends React.Component{
             visible: false,
             dataSource: this.props.dataSource,
             diagnosticList: [],
+            servicesList: [],
+            detailsList: [],
         });
     };
 
