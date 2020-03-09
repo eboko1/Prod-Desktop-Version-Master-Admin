@@ -22,20 +22,8 @@ class ConfirmDiagnosticModal extends React.Component{
             labors: null,
             storeGroups: null,
         }
-        this.state.servicesList=[
-            {key:1, id:"1", name:"Замена амортизатора пер. прав.", count:1, checked: true},
-            {key:2, id:"2", name:"Замена амортизатора пер. лев.", count:1, checked: true},
-            {key:3, id:"3", name:"Ремонт стойки", count:2, checked: true},
-            {key:4, id:"4", name:"Замена лобового стекла", count:1, checked: true},
-            {key:5, id:"5", name:"Ремонт ходовой части", count:1, checked: true},
-        ];
-        this.state.detailsList=[
-            {key:1, id:"1", name:"Амортизатор пер. прав.", count:1, checked: true},
-            {key:2, id:"2", name:"Амортизатор пер. лев.", count:1, checked: true},
-            {key:3, id:"3", name:"Стойка", count:2, checked: true},
-            {key:4, id:"4", name:"Лобовое стекло", count:1, checked: true},
-            {key:5, id:"5", name:"Шина", count:1, checked: true},
-        ];
+        this.state.servicesList=[];
+        this.state.detailsList=[];
         this.tmp = {};
         this.servicesOptions = null;
         this.detailsOptions = null;
@@ -377,7 +365,15 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     addNewServicesRow() {
-        if(this.state.servicesList[this.state.servicesList.length-1].name != null) {
+        if(this.state.servicesList.length == 0) {
+            this.state.servicesList.push(
+                {key:1, id:null, name: null, count: 1, checked: true},
+            );
+            this.setState({
+                update: true,
+            })
+        }
+        else if(this.state.servicesList[this.state.servicesList.length-1].name != null) {
             this.state.servicesList.push(
                 {key:this.state.servicesList[this.state.servicesList.length-1].key+1, id:null, name: null, count: 1, checked: true},
             );
@@ -483,7 +479,15 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     addNewDetailsRow() {
-        if(this.state.detailsList[this.state.detailsList.length-1].name != null) {
+        if(this.state.detailsList.length == 0) {
+            this.state.detailsList.push(
+                {key:1, id:null, name: null, count: 1, checked: true},
+            );
+            this.setState({
+                update: true,
+            })
+        }
+        else if(this.state.detailsList[this.state.detailsList.length-1].name != null) {
             this.state.detailsList.push(
                 {key:this.state.detailsList[this.state.detailsList.length-1].key+1, id:null, name: null, count: 1, checked: true},
             );

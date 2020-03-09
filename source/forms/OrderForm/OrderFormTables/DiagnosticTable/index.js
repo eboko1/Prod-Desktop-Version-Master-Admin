@@ -697,7 +697,6 @@ class DiagnosticTable extends Component {
     filterDataSource(dataSource) {
         let data = dataSource;
         const { filterPlan, filterStage, filterStatus, filterCommentary, filterPhoto } = this.state;
-        console.log(filterPlan, filterStage, filterStatus, filterCommentary, filterPhoto);
         if(filterPlan != null) data = data.filter((data, i) => data.plan == filterPlan);
         if(filterStage != null) data = data.filter((data, i) => data.stage == filterStage);
         if(filterStatus == "OK") data = data.filter((data, i) => data.status == 1);
