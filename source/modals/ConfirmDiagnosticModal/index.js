@@ -17,8 +17,6 @@ class ConfirmDiagnosticModal extends React.Component{
             visible: false,
             dataSource: props.dataSource,
             diagnosticList: [],
-            servicesList: [],
-            detailsList: [],
             labors: null,
             storeGroups: null,
             servicesList: [],
@@ -37,6 +35,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.setState({
             visible: true,
         });
+        this.getCurrentOrderDetailsAndServices();
     };
 
     handleOk = () => {
@@ -54,17 +53,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     };
 
-    updateState() {
-        this.state.dataSource = this.props.dataSource;
-        this.state.diagnosticList = [];
-        this.diagnosticKey = 1;
-    }
-
-    componentWillMount() {
-        
-    }
-
-    componentDidMount() {
+    getCurrentOrderDetailsAndServices() {
         const { orderServices, orderDetails } = this.props;
         this.state.servicesList = orderServices.map((data, index)=>({
             key: index+1,
@@ -80,6 +69,19 @@ class ConfirmDiagnosticModal extends React.Component{
             count: data.count,
             checked: true,
         }));
+    }
+
+    updateState() {
+        this.state.dataSource = this.props.dataSource;
+        this.state.diagnosticList = [];
+        this.diagnosticKey = 1;
+    }
+
+    componentWillMount() {
+        
+    }
+
+    componentDidMount() {
         this.fetchOptionsSourceData();
     }
 

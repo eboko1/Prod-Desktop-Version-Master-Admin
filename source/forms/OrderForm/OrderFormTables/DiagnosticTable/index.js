@@ -127,7 +127,7 @@ class DiagnosticTable extends Component {
                                     {this.getCurrentDiagnostic()}
                                 }}
                             >
-                                {this.templatesTitles.map((template) => <Option value={template}>{template}</Option>)}
+                                {this.templatesTitles.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
                             </Select>
                         </div>
                     )
@@ -147,7 +147,7 @@ class DiagnosticTable extends Component {
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                             onChange={this.onPlanChange}
                         >
-                            {this.templatesTitles.map((template) => <Option value={template}>{template}</Option>)}
+                            {this.templatesTitles.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
                         </Select>
                     );
                 },
@@ -175,7 +175,7 @@ class DiagnosticTable extends Component {
                                     {this.getCurrentDiagnostic()}
                                 }}
                             >
-                                {options.map((stage, index) => <Option key={index} value={stage.title}>{stage.title}</Option>)}
+                                {options.map((stage, i) => <Option key={i+1} value={stage.title}>{stage.title}</Option>)}
                             </Select>
                         </div>
                     )
@@ -197,7 +197,7 @@ class DiagnosticTable extends Component {
                             disabled={options.length == 0}
                             onChange={this.onStageChange}
                         >
-                            {options.map((template) => <Option value={template}>{template}</Option>)}
+                            {options.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
                         </Select>  
                     );
                 },
@@ -375,7 +375,7 @@ class DiagnosticTable extends Component {
                             disabled={options.length == 0}
                             onChange={this.onDetailChange}
                         >
-                            {options.map((template) => <Option value={template}>{template}</Option>)}
+                            {options.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
                         </Select> 
                     );
                 },
@@ -822,7 +822,7 @@ class DiagnosticTable extends Component {
                         orderId: orderId,
                         diagnosticTemplateId: diagnosticTemplateId,
                         groupId: groupId,
-                        photo: photo,
+                        photo: null,
                     },);
                     this.state.possibleRows.push(key);
                     key++;
@@ -844,7 +844,7 @@ class DiagnosticTable extends Component {
                 orderId: orderId,
                 diagnosticTemplateId: "",
                 groupId: "",
-                photo: "",
+                photo: null,
                 allTemplatesData: orderDiagnostic,
             },);
             this.state.possibleRows.push(key);
@@ -867,7 +867,7 @@ class DiagnosticTable extends Component {
                 orderId: orderId,
                 diagnosticTemplateId: "",
                 groupId: "",
-                photo: "",
+                photo: null,
                 allTemplatesData: orderDiagnostic,
             },);
             this.state.possibleRows.push(key);
@@ -1014,7 +1014,7 @@ class DiagnosticTableHeader extends React.Component{
                         placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                         onChange={()=>{this.setState({selectValue: event.target.innerText})}}
                     >
-                        {this.props.templatesTitles.map((template) => <Option value={template}>{template}</Option>)}
+                        {this.props.templatesTitles.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
                     </Select>
                 </div>
                 <div style={{ width: "15%" }}>
@@ -1259,7 +1259,7 @@ class PhotoButton extends React.Component{
         });*/
         return (
             <div>
-                <Button onClick={this.showModal}><Icon type={photo?"file-image":"camera"} /></Button>
+                <Button type={photo==null?"primary":""} onClick={this.showModal}><Icon type={photo==null?"camera":"file-image"} /></Button>
                 <Modal
                     visible={visible}
                     title={<FormattedMessage id='order_form_table.diagnostic.photo' />}
