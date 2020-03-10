@@ -184,6 +184,8 @@ export default class OrderFormTabs extends React.PureComponent {
                             form={form}
                             orderDiagnostic={orderDiagnostic}
                             orderId={orderId}
+                            orderServices={orderServices}
+                            orderDetails={orderDetails}
                         />
                     </TabPane>
                 )}

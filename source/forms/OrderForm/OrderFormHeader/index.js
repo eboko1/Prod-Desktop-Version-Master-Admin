@@ -313,15 +313,19 @@ export default class OrderFormHeader extends Component {
     };
 
     _getEmployeesOptions = () => {
-        return _.get(this.props, "employees", []).map(employee => (
-            <Option
-                value={employee.id}
-                key={`employee-${employee.id}`}
-                disabled={employee.disabled}
-            >
-                {`${employee.name} ${employee.surname}`}
-            </Option>
-        ));
+        return _.get(this.props, "employees", []).map(employee => {
+            if(!employee.disabled) {
+                return (
+                    <Option
+                        value={employee.id}
+                        key={`employee-${employee.id}`}
+                        disabled={employee.disabled}
+                    >
+                        {`${employee.name} ${employee.surname}`}
+                    </Option>
+                )
+            }
+        });
     };
 
     _redirectToCashFlow = () => {

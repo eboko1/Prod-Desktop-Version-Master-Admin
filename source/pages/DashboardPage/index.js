@@ -121,6 +121,7 @@ class DashboardPage extends Component {
     _transferOutdateRepairs = () => this.props.transferOutdateRepairs();
 
     render() {
+        const isMobile = window.innerWidth < 1200;
         const {
             startDate,
             endDate,
@@ -165,8 +166,9 @@ class DashboardPage extends Component {
                 <section className={ Styles.dashboardPage }>
                     <Tabs
                         activeKey={ mode }
+                        className={(isMobile ? Styles.dashboard_mobile_tabs : null)}
                         tabBarExtraContent={
-                            (mode === 'calendar' && window.innerWidth >= 1200) ? (
+                            (mode === 'calendar' && !isMobile) ? (
                                 <ArrowsWeekPicker
                                     startDate={ startDate }
                                     endDate={ endDate }
@@ -177,6 +179,9 @@ class DashboardPage extends Component {
                                 />
                             ) : (
                                 <ArrowsDatePicker
+                                    startDate={ startDate }
+                                    endDate={ endDate }
+                                    onWeekChange={ this._onWeekChange }
                                     date={ date }
                                     onDayChange={ this._onDayChange }
                                     prevDay={ this._prevDay }

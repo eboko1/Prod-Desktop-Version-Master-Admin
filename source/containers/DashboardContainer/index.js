@@ -53,7 +53,7 @@ class DashboardContainer extends Component {
 
     render() {
         const { dashboard, schedule, mode } = this.props;
-
+        console.log("das",this.props);
         const timeColumn = this._renderTimeColumn();
         const dashboardColumns = this._renderDashboardColumns();
         const dashboardGhostColumns = this._renderDashboardGhostColumns();
@@ -100,15 +100,14 @@ class DashboardContainer extends Component {
 
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
-            if(window.innerWidth < 1200){
-                //index = days.indexOf(moment(load[ index ].beginDate).format('YYYY-MM-DD')); 
-            }
+            const selectedDay = this.props.date.format('YYYY-MM-DD');
+            console.log("column", this, day, currentDay, selectedDay);
             return (
                 <DashboardColumn
                     dashboard={ dashboard }
                     column={ 1 }
                     key={ index }
-                    currentDay={ currentDay }
+                    currentDay={ selectedDay }
                     day={ day }
                 >
                     <DashboardHead dashboard={ dashboard } column={ 1 }>

@@ -17,8 +17,6 @@ class ConfirmDiagnosticModal extends React.Component{
             visible: false,
             dataSource: props.dataSource,
             diagnosticList: [],
-            servicesList: [],
-            detailsList: [],
             labors: null,
             storeGroups: null,
             servicesList: [],
@@ -37,6 +35,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.setState({
             visible: true,
         });
+        this.getCurrentOrderDetailsAndServices();
     };
 
     handleOk = () => {
@@ -53,6 +52,24 @@ class ConfirmDiagnosticModal extends React.Component{
             detailsList: [],
         });
     };
+
+    getCurrentOrderDetailsAndServices() {
+        const { orderServices, orderDetails } = this.props;
+        this.state.servicesList = orderServices.map((data, index)=>({
+            key: index+1,
+            id: data.serviceId,
+            name: data.serviceName,
+            count: data.count,
+            checked: true,
+        }));
+        this.state.detailsList = orderDetails.map((data, index)=>({
+            key: index+1,
+            id: data.id,
+            name: data.detailName,
+            count: data.count,
+            checked: true,
+        }));
+    }
 
     updateState() {
         this.state.dataSource = this.props.dataSource;
@@ -417,12 +434,12 @@ class ConfirmDiagnosticModal extends React.Component{
         this.addNewServicesRow();
         var servicesList = [...this.state.servicesList];
 
-        return this.state.servicesList.map((data)=>
+        return this.state.servicesList.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
                         checked={data.checked}
-                        onClick={()=>this.servicesCheckboxClick(data.key-1)}
+                        onClick={()=>this.servicesCheckboxClick(index)}
                     />
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
@@ -433,7 +450,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         disabled={!data.checked}
                         style={{ width: "100%"}}
                         onChange={(inputValue)=>{
-                            this.state.servicesList[data.key-1].name = inputValue;
+                            this.state.servicesList[index].name = inputValue;
                             this.setState({update: true});
                             this.addNewServicesRow();
                         }}
@@ -458,12 +475,12 @@ class ConfirmDiagnosticModal extends React.Component{
                         max={50}
                         value={data.count?data.count:1}
                         onChange={(value)=>{
-                            this.state.servicesList[data.key-1].count = value;
+                            this.state.servicesList[index].count = value;
                             this.setState({update: true});
                         }}
                     />
                     <Icon
-                        onClick={()=>this.deleteServiceRow(data.key-1)}
+                        onClick={()=>this.deleteServiceRow(index)}
                         style={{margin: '0 5%'}}
                         type="delete"
                         className={Styles.delete_diagnostic_button}
@@ -542,12 +559,12 @@ class ConfirmDiagnosticModal extends React.Component{
     getDetailsContent() {
         this.addNewDetailsRow();
 
-        return this.state.detailsList.map((data)=>
+        return this.state.detailsList.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
-                        checked={this.state.detailsList[data.key-1].checked}
-                        onClick={()=>this.detailsCheckboxClick(data.key-1)}
+                        checked={data.checked}
+                        onClick={()=>this.detailsCheckboxClick(index)}
                     />
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
@@ -558,7 +575,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         disabled={!data.checked}
                         style={{ width: "100%"}}
                         onChange={(inputValue)=>{
-                            this.state.detailsList[data.key-1].name = inputValue;
+                            this.state.detailsList[index].name = inputValue;
                             this.setState({update: true});
                             this.addNewServicesRow();
                         }}
@@ -574,18 +591,18 @@ class ConfirmDiagnosticModal extends React.Component{
                 </div>
                 <div style={{ width: '30%' }}>
                     <InputNumber
-                        disabled={!this.state.detailsList[data.key-1].checked}
+                        disabled={!data.checked}
                         style={{ width: '70%' }}
                         min={1}
                         max={50}
                         value={data.count?data.count:1}
                         onChange={(value)=>{
-                            this.state.detailsList[data.key-1].count = value;
+                            this.state.detailsList[index].count = value;
                             this.setState({update: true});
                         }}
                     />
                     <Icon
-                        onClick={()=>this.deleteDetailRow(data.key-1)}
+                        onClick={()=>this.deleteDetailRow(index)}
                         style={{margin: '0 5%'}}
                         type="delete"
                         className={Styles.delete_diagnostic_button}
