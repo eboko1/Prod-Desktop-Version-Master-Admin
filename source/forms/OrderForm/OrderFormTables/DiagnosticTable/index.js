@@ -67,11 +67,13 @@ class DiagnosticTable extends Component {
         this.columns = [
             {
                 title:  ()=>{
+                    const {filterPlan, filterStage, filterStatus, filterCommentary, filterPhoto} = this.state;
+                    let type = filterPlan==null&&filterStage==null&&filterStatus==null&&filterCommentary==null&&filterPhoto==null?"":"danger";
                     return(
                         <div className={Styles.filter_column_header_wrap}>
                             <p style={{paddingLeft: 10}}>#</p>
                             <Button
-                                type="primary"
+                                type={type}
                                 style={{maxWidth: 60}}
                                 onClick={()=>{
                                     this.setState({
@@ -202,13 +204,22 @@ class DiagnosticTable extends Component {
             },
             {
                 title:  ()=>{
+                    let bgColorOK = this.state.filterStatus=="OK"?"rgb(81, 205, 102)":"rgb(200,225,180)",
+                        bgColorBAD = this.state.filterStatus=="BAD"?"rgb(255, 255, 0)":"rgb(255,240,180)",
+                        bgColorCRITICAL = this.state.filterStatus=="CRITICAL"?"rgb(255, 126, 126)":"rgb(250,175,175)",
+                        bgColorBAD_AND_CRITICAL = {
+                            bad: this.state.filterStatus=="BAD&CRITICAL"?"rgb(255, 255, 0)":"rgb(255,240,180)",
+                            critical: this.state.filterStatus=="BAD&CRITICAL"?"rgb(255, 126, 126)":"rgb(250,175,175)",
+                        },
+                        bgColorOPEN = this.state.filterStatus=="OPEN"?"rgb(155, 89, 182)":"rgb(210, 190, 230)",
+                        boxShadow = "1px 1px 4px -1px inset";
                     return(
                         <div className={Styles.filter_column_header_wrap}>
                             <FormattedMessage id='order_form_table.diagnostic.detail' />
                             <div style={{display: 'flex'}}>
                                 <div className={Styles.filter_button_wrap}>
                                     <Button
-                                        style={{width: "100%", backgroundColor: "rgb(200,225,180)"}}
+                                        style={{width: "100%", backgroundColor: bgColorOK}}
                                         onClick={()=>{
                                             if(this.state.filterStatus == "OK") {
                                                 this.setState({
@@ -226,13 +237,14 @@ class DiagnosticTable extends Component {
                                         <FormattedMessage id='order_form_table.diagnostic.status.ok'/>
                                     </Button>
                                     <Input
+                                        style={this.state.filterStatus=="OK"?{boxShadow: boxShadow}:{}}
                                         className={Styles.filter_input}
                                         value={this.ok}
                                     />
                                 </div>
                                 <div className={Styles.filter_button_wrap}>
                                     <Button
-                                        style={{width: "100%", backgroundColor: "rgb(255,240,180)"}}
+                                        style={{width: "100%", backgroundColor: bgColorBAD}}
                                         onClick={()=>{
                                             if(this.state.filterStatus == "BAD") {
                                                 this.setState({
@@ -249,11 +261,15 @@ class DiagnosticTable extends Component {
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.bad'/>
                                     </Button>
-                                    <Input className={Styles.filter_input} value={this.bad}/>
+                                    <Input
+                                        style={this.state.filterStatus=="BAD"?{boxShadow: boxShadow}:{}}
+                                        className={Styles.filter_input}
+                                        value={this.bad}
+                                    />
                                 </div>
                                 <div className={Styles.filter_button_wrap}>
                                     <Button
-                                        style={{width: "100%", backgroundColor: "rgb(250,175,175)"}}
+                                        style={{width: "100%", backgroundColor: bgColorCRITICAL}}
                                         onClick={()=>{
                                             if(this.state.filterStatus == "CRITICAL") {
                                                 this.setState({
@@ -270,7 +286,11 @@ class DiagnosticTable extends Component {
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.critical'/>
                                     </Button>
-                                    <Input className={Styles.filter_input} value={this.critical}/>
+                                    <Input
+                                        style={this.state.filterStatus=="CRITICAL"?{boxShadow: boxShadow}:{}}
+                                        className={Styles.filter_input}
+                                        value={this.critical}
+                                    />
                                 </div>
                                 <div className={Styles.filter_button_wrap}>
                                     <Button
@@ -289,18 +309,28 @@ class DiagnosticTable extends Component {
                                             {this.getCurrentDiagnostic()}
                                         }}
                                     >
-                                        <Button className={Styles.filter_half_button} style={{backgroundColor: "rgb(255,240,180)"}}>
+                                        <Button
+                                            className={Styles.filter_half_button}
+                                            style={{backgroundColor: bgColorBAD_AND_CRITICAL.bad, borderRadius: "4px 0px 0px 4px"}}
+                                        >
                                             <FormattedMessage id='order_form_table.diagnostic.status.bad'/>
                                         </Button>
-                                        <Button className={Styles.filter_half_button} style={{backgroundColor: "rgb(250,175,175)"}}>
+                                        <Button
+                                            className={Styles.filter_half_button}
+                                            style={{backgroundColor: bgColorBAD_AND_CRITICAL.critical,borderRadius: "0px 4px 4px 0px"}}
+                                        >
                                             <FormattedMessage id='order_form_table.diagnostic.status.critical'/>
                                         </Button>
                                     </Button>
-                                    <Input className={Styles.filter_input} value={this.bad+this.critical}/>
+                                    <Input
+                                        style={this.state.filterStatus=="BAD&CRITICAL"?{boxShadow: boxShadow}:{}}
+                                        className={Styles.filter_input}
+                                        value={this.bad+this.critical}
+                                    />
                                 </div>
                                 <div className={Styles.filter_button_wrap}>
                                     <Button
-                                        style={{width: "100%"}}
+                                        style={{width: "100%", color: "rgb(72, 72, 72)", backgroundColor: bgColorOPEN}}
                                         onClick={()=>{
                                             if(this.state.filterStatus == "OPEN") {
                                                 this.setState({
@@ -317,7 +347,11 @@ class DiagnosticTable extends Component {
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.open'/>
                                     </Button>
-                                    <Input className={Styles.filter_input} value={this.state.rowsCount - (1 + this.ok + this.bad + this.critical)}/>
+                                    <Input
+                                        style={this.state.filterStatus=="OPEN"?{boxShadow: boxShadow}:{}}
+                                        className={Styles.filter_input}
+                                        value={this.state.rowsCount - (1 + this.ok + this.bad + this.critical)}
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -909,6 +943,8 @@ class DiagnosticTable extends Component {
                     editSelectedRowsStatus = {this.editSelectedRowsStatus}
                     deleteSelectedRows = {this.deleteSelectedRows}
                     dataSource = {this.state.dataSource}
+                    orderServices={this.props.orderServices}
+                    orderDetails={this.props.orderDetails}
                 />
                 <Table
                     className={ Styles.diagnosticTable }
@@ -989,6 +1025,8 @@ class DiagnosticTableHeader extends React.Component{
                     <ConfirmDiagnosticModal
                         isMobile={false}
                         dataSource = {this.state.dataSource}
+                        orderServices={this.props.orderServices}
+                        orderDetails={this.props.orderDetails}
                     />
                 </div>
                 <div style={{ width: "10%" }}>
@@ -997,13 +1035,13 @@ class DiagnosticTableHeader extends React.Component{
                     </Button>
                 </div>
                 <div className={Styles.diagnostic_status_button_wrap} style={{ width: "15%" }}>
-                    <Button className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(1)}}  style={{background:'rgb(81, 205, 102)'}}>
+                    <Button className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(1)}}  style={{background:"rgb(81, 205, 102)"}}>
                         <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                     </Button>
-                    <Button className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(2)}} style={{background:'rgb(255, 255, 0)'}}>
+                    <Button className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(2)}} style={{background:"rgb(255, 255, 0)"}}>
                         <FormattedMessage id='order_form_table.diagnostic.status.bad' />
                     </Button>
-                    <Button className={Styles.diagnostic_status_button}  type="danger" onClick={()=>{this.handleClickStatusButtons(3)}} style={{background:'rgb(255, 126, 126)', color: 'black'}}>
+                    <Button className={Styles.diagnostic_status_button}  type="danger" onClick={()=>{this.handleClickStatusButtons(3)}} style={{background:"rgb(255, 126, 126)", color: "black"}}>
                         <FormattedMessage id='order_form_table.diagnostic.status.critical' />
                     </Button>
                 </div>
@@ -1181,6 +1219,7 @@ class PhotoButton extends React.Component{
     handleOk = () => {
         this.setState({ loading: true });
         const { rowProp } = this.props;
+        console.log(this.state.photo);
         sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, rowProp.commentary, this.state.photo);
         setTimeout(this.props.getCurrentDiagnostic, 500);
         setTimeout(() => {
@@ -1195,9 +1234,8 @@ class PhotoButton extends React.Component{
     };
 
     render() {
-        this.actionUrl += `&photo=${this.state.photo}`;
-        const { visible, loading } = this.state;
-        const fileList = [
+        const { visible, loading, photo } = this.state;
+        var fileList = [
             /*{
               uid: '-1',
               name: 'image.png',
@@ -1210,15 +1248,18 @@ class PhotoButton extends React.Component{
               name: 'yyy.png',
               status: 'error',
             },*/
-          ];
-        const photo = this.state.photo;
+        ];
+        /*photo.map((data, index)=>{
+            fileList.push({
+                name: 
+                status: 
+                url: 
+                thumbUrl: data.contenr
+            });
+        });*/
         return (
             <div>
-                {photo? (
-                    <Button onClick={this.showModal}><Icon type="file-image" /></Button>
-                ) : (
-                    <Button type="primary" onClick={this.showModal}><Icon type="camera" /></Button>
-                )}
+                <Button onClick={this.showModal}><Icon type={photo?"file-image":"camera"} /></Button>
                 <Modal
                     visible={visible}
                     title={<FormattedMessage id='order_form_table.diagnostic.photo' />}

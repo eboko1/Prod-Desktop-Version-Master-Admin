@@ -38,6 +38,8 @@
     border-radius: 0px;
     padding: 0;
     pointer-events: none;
+    border: none;
+    box-shadow: none;
 }
 
 .disabled_button{

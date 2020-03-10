@@ -34,9 +34,9 @@ export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId,
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/diagnostics/answer?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&answer=${answer}`
+    const data = { photo: photo };
 
     if(comment) params += `&comment=${comment}`;
-    if(photo) params += `&photo=${photo}`;
 
     url += params;
     try {
@@ -44,7 +44,9 @@ export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId,
             method: 'PUT',
             headers: {
                 'Authorization': token,
-            }
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
         });
         const result = await response.json();
         if(result.success) {
