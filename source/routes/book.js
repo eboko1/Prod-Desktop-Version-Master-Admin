@@ -22,6 +22,7 @@ const book = Object.freeze({
     orders:                   '/orders',
     ordersByStatuses:         '/orders/:ordersStatuses',
     ordersAppointments:       '/orders/appointments',
+    agreement:                '/agreement',
     // Order
     order:                    '/order',
     orderId:                  '/order/:id',

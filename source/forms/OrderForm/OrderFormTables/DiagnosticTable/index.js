@@ -64,6 +64,7 @@ class DiagnosticTable extends Component {
         this.onCheckAll = this.onCheckAll.bind(this);
         this.editSelectedRowsStatus = this.editSelectedRowsStatus.bind(this);
         this.deleteSelectedRows = this.deleteSelectedRows.bind(this);
+        this.setPhoto = this.setPhoto.bind(this);
         this.columns = [
             {
                 title:  ()=>{
@@ -74,6 +75,11 @@ class DiagnosticTable extends Component {
                             <p style={{paddingLeft: 10}}>#</p>
                             <Button
                                 type={type}
+                                style={{
+                                    color: white,
+                                    backgroundColor: '#ff2a2c',
+                                    borderColor: '#ff2a2c',
+                                }}
                                 style={{maxWidth: 60}}
                                 onClick={()=>{
                                     this.setState({
@@ -451,6 +457,7 @@ class DiagnosticTable extends Component {
                 render: (photo, rowProp) => (
                     <PhotoButton
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
+                        setPhoto={this.setPhoto}
                         photo={photo}
                         rowProp={rowProp}
                     />
@@ -489,6 +496,11 @@ class DiagnosticTable extends Component {
                 ),
             },
         ];
+    }
+
+    setPhoto(photo, index) {
+        this.state.dataSource[index].photo = photo;
+        this.updateDataSource();
     }
 
     addNewDiagnostic(data) {
@@ -802,14 +814,12 @@ class DiagnosticTable extends Component {
                     let comment = _.pick(parts[k], [
                         "comment",
                     ]).comment;
-                    let photo = _.pick(parts[k], [
-                        "photo",
-                    ]).photo;
+                    let photo = this.state.dataSource[key-1] != undefined ? this.state.dataSource[key-1].photo : null;
                     if(answer==1) this.ok++;
                     if(answer==2) this.bad++;
                     if(answer==3) this.critical++; 
                     if(comment!=undefined) this.withCommentary++;
-                    if(photo!=undefined) this.withPhoto++;
+                    if(photo!=undefined && photo.length > 0) this.withPhoto++;
                     dataSource.push({
                         key: key,
                         partId: partId,
@@ -822,7 +832,7 @@ class DiagnosticTable extends Component {
                         orderId: orderId,
                         diagnosticTemplateId: diagnosticTemplateId,
                         groupId: groupId,
-                        photo: null,
+                        photo: photo,
                     },);
                     this.state.possibleRows.push(key);
                     key++;
@@ -1181,7 +1191,7 @@ class CommentaryButton extends React.Component{
                             {<FormattedMessage id='cancel' />}
                         </Button>,
                         <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
-                            {<FormattedMessage id='add' />}
+                            {<FormattedMessage id='save' />}
                         </Button>,
                     ]}
                     >
@@ -1205,12 +1215,52 @@ class PhotoButton extends React.Component{
         this.state = {
             loading: false,
             visible: false,
-            photo: props.photo,
+            photo: props.photo !=null ? props.photo.length : [],
+            upload: null,
         }
     }
 
+    componentDidMount() {
+        this.getPhoto();
+    }
+
+    getPhoto() {
+        const { rowProp } = this.props;
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/diagnostics/part?orderId=${rowProp.orderId}&templateId=${rowProp.diagnosticTemplateId}&groupId=${rowProp.groupId}&partId=${rowProp.partId}`;
+        url += params;
+    
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            if(data.photos.length > 0) {
+                that.props.setPhoto(data.photos, rowProp.key-1);
+                that.setState({
+                    photo: data.photos,
+                })
+            }
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        })
+    }
+
     showModal = () => {
-        console.log(this.state.photo);
         this.setState({
             visible: true,
         });
@@ -1219,11 +1269,11 @@ class PhotoButton extends React.Component{
     handleOk = () => {
         this.setState({ loading: true });
         const { rowProp } = this.props;
-        console.log(this.state.photo);
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, rowProp.commentary, this.state.photo);
-        setTimeout(this.props.getCurrentDiagnostic, 500);
+        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, rowProp.commentary, this.state.upload);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
+            this.getPhoto();
+            this.props.getCurrentDiagnostic();
         }, 500);
     };
     
@@ -1249,17 +1299,20 @@ class PhotoButton extends React.Component{
               status: 'error',
             },*/
         ];
-        /*photo.map((data, index)=>{
-            fileList.push({
-                name: 
-                status: 
-                url: 
-                thumbUrl: data.contenr
+        if(photo.length > 0) {
+            photo.map((data, index)=>{
+                fileList.push({
+                    uid: index*-1,
+                    name: index+1+".img",
+                    status: 'done',
+                    url: data,
+                    thumbUrl: data,
+                });
             });
-        });*/
+        }
         return (
             <div>
-                <Button type={photo==null?"primary":""} onClick={this.showModal}><Icon type={photo==null?"camera":"file-image"} /></Button>
+                <Button type={photo.length==0?"primary":""} onClick={this.showModal}><Icon type={photo.length==0?"camera":"file-image"} /></Button>
                 <Modal
                     visible={visible}
                     title={<FormattedMessage id='order_form_table.diagnostic.photo' />}
@@ -1270,7 +1323,7 @@ class PhotoButton extends React.Component{
                             {<FormattedMessage id='cancel' />}
                         </Button>,
                         <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
-                            {<FormattedMessage id='add' />}
+                            {<FormattedMessage id='save' />}
                         </Button>,
                     ]}
                     >
@@ -1280,8 +1333,7 @@ class PhotoButton extends React.Component{
                         beforeUpload={file => {
                             const reader = new FileReader();
                             reader.onload = e => {
-                                console.log(e.target.result);
-                                this.state.photo = e.target.result;
+                                this.state.upload = e.target.result;
                             };
                             reader.readAsDataURL(file);
                             return false;
