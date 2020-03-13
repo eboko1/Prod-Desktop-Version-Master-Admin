@@ -44,6 +44,7 @@ import {
     StorageMovementPage,
     IncomeDocPage,
     DiagnosticPatternsPage,
+    AgreementPage,
 } from 'pages';
 import book from './book';
 
@@ -146,6 +147,11 @@ export default class Private extends Component {
                     exact
                     component={ DiagnosticPatternsPage }
                     path={ book.diagnosticPatterns }
+                />
+                <Route 
+                    exact
+                    component={ AgreementPage }
+                    path={ book.agreement }
                 />
                 <Route
                     exact
