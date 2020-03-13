@@ -76,7 +76,7 @@ class DiagnosticTable extends Component {
                             <Button
                                 type={type}
                                 style={{
-                                    color: white,
+                                    color: '#fff',
                                     backgroundColor: '#ff2a2c',
                                     borderColor: '#ff2a2c',
                                 }}
