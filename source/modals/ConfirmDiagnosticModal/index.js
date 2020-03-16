@@ -5,7 +5,8 @@ import { Button, Modal, Icon, Checkbox, InputNumber, AutoComplete, Tabs } from '
 import { FormattedMessage } from 'react-intl';
 // proj
 import {
-    API_URL
+    API_URL,
+    confirmDiagnostic,
 } from 'core/forms/orderDiagnosticForm/saga';
 // own
 import Styles from './styles.m.css';
@@ -40,7 +41,26 @@ class ConfirmDiagnosticModal extends React.Component{
 
     handleOk = () => {
         this.setState({ visible: false });
-        console.log(this.state.diagnosticList, this.state.servicesList, this.state.detailsList);
+        var data = {
+            services: [],
+            details: [],
+        }
+        this.state.servicesList.map((element)=>{
+            if(element.laborId != null) {
+                data.services.push({
+                    serviceId: element.laborId,
+                })
+            }
+        });
+        this.state.detailsList.map((element)=>{
+            if(element.id != null) {
+                data.details.push({
+                    storeGroupId: element.id,
+                })
+            }
+        });
+        console.log(data);
+        confirmDiagnostic(this.props.orderId, data);
     };
     
     handleCancel = () => {
@@ -57,14 +77,15 @@ class ConfirmDiagnosticModal extends React.Component{
         const { orderServices, orderDetails } = this.props;
         this.state.servicesList = orderServices.map((data, index)=>({
             key: index+1,
-            id: data.serviceId,
+            id: data.id,
+            laborId: data.serviceId,
             name: data.serviceName,
             count: data.count,
             checked: true,
         }));
         this.state.detailsList = orderDetails.map((data, index)=>({
             key: index+1,
-            id: data.id,
+            id: data.storeGroupId,
             name: data.detailName,
             count: data.count,
             checked: true,
@@ -95,6 +116,7 @@ class ConfirmDiagnosticModal extends React.Component{
         }
         if(this.state.storeGroups != null && this.detailsOptions == null) {
             this.detailsOptions = this.getDetailsOptions();
+            console.log(this.detailsOptions);
         }
     }
 
@@ -188,11 +210,12 @@ class ConfirmDiagnosticModal extends React.Component{
     addServicesByLaborId(id) {
         if(id == undefined) return;
         const service = this.state.labors.labors.find(x => x.laborId == id);
-        let index = this.state.servicesList.findIndex(x => x.id == service.productId);
+        let index = this.state.servicesList.findIndex(x => x.laborId == service.laborId);
         if( index == -1 ) {
             this.state.servicesList[this.state.servicesList.length-1] = {
                 key: this.state.servicesList.length,
                 id: service.productId,
+                laborId: id,
                 name: service.name,
                 count: 1,
                 checked: true,
@@ -432,7 +455,6 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getServicesContent() {
         this.addNewServicesRow();
-        var servicesList = [...this.state.servicesList];
 
         return this.state.servicesList.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row}>
@@ -455,7 +477,10 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.addNewServicesRow();
                         }}
                         onSelect={(value, option)=>{
-                            this.addDetailsByGroupId(option.props.product_id);
+                            const servicesList = [...this.state.servicesList];
+                            this.state.servicesList = servicesList.filter((_, i) => i !== index);
+                            this.addServicesByLaborId(option.props.labor_id);
+                            this.state.servicesList[this.state.servicesList.length-1].key = this.state.servicesList.length;
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
                         value={data.name?data.name:undefined}
@@ -558,6 +583,13 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getDetailsContent() {
         this.addNewDetailsRow();
+        if(this.detailsOptions != null)
+        this.detailsOptions.map((data)=>{
+            if(data.props.value == "Шинный сервис"){
+                console.log(data);
+            }
+        })
+        console.log("kkk");
 
         return this.state.detailsList.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row}>
@@ -577,7 +609,13 @@ class ConfirmDiagnosticModal extends React.Component{
                         onChange={(inputValue)=>{
                             this.state.detailsList[index].name = inputValue;
                             this.setState({update: true});
-                            this.addNewServicesRow();
+                            this.addNewDetailsRow();
+                        }}
+                        onSelect={(value, option)=>{
+                            const detailsList = [...this.state.detailsList];
+                            this.state.detailsList = detailsList.filter((_, i) => i !== index);
+                            this.addDetailsByGroupId(option.props.detail_id);
+                            this.state.detailsList[this.state.detailsList.length-1].key = this.state.detailsList.length;
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
                         value={data.name?data.name:undefined}

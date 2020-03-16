@@ -942,6 +942,7 @@ class DiagnosticTable extends Component {
         return (
             <div>
                 <DiagnosticTableHeader
+                    orderId={this.props.orderId}
                     templatesTitles = {this.templatesTitles}
                     rowsCount = {this.state.rowsCount}
                     selectedRows = {this.state.selectedRows}
@@ -1033,6 +1034,7 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "35%" }}>
                     <ConfirmDiagnosticModal
+                        orderId={this.props.orderId}
                         isMobile={false}
                         dataSource = {this.state.dataSource}
                         orderServices={this.props.orderServices}
