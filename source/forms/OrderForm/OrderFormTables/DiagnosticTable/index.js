@@ -1325,16 +1325,16 @@ class PhotoButton extends React.Component{
     render() {
         this.state.photo = this.props.photo;
         const { visible, loading, photo } = this.state;
-        /*if(photo === null) {
+        if(photo === null) {
             if(this.props.rowProp.partId) {
                 this.getPhoto();
-            }*/
+            }
             return (
                 <div>
                     <Button type="primary"><Icon type={"camera"} /></Button>
                 </div>
             )
-        /*}
+        }
         var fileList = [];
         if(photo.length > 0) {
             photo.map((data, index)=>{
@@ -1383,7 +1383,7 @@ class PhotoButton extends React.Component{
                     </Upload>
                 </Modal>
             </div>
-        );*/
+        );
     }
 }
 

@@ -28,13 +28,22 @@ class AgreementPage extends Component {
     }
 
     updateData(data) {
+        this.state.servicesList = data.labors.map((elem)=>{
+            elem.checked = true;
+            return elem;
+        });
+        this.state.detailsList = data.details.map((elem)=>{
+            elem.checked = true;
+            return elem;
+        });
+        console.log(this.state.detailsList);
         this.setState({
             dataSource: data,
         });
     }
 
     componentDidMount() {
-        // http://localhost:3000/agreement?sessionId=d2a2ceec-4919-45d1-b311-b263fde47fb7&lang=ru
+        // http://localhost:3000/agreement?sessionId=0d64ab71-f4f2-4aec-8ebf-aec6e706bf4b&lang=ru
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         this.sessionId = urlParams.get('sessionId');
@@ -43,16 +52,16 @@ class AgreementPage extends Component {
     }
 
     render() {
-        const { dataSource } = this.state;
+        const { dataSource, servicesList, detailsList } = this.state;
         if(dataSource == undefined) {
             return (
                 <Spinner spin={true}/>
             )
         }
         const vehicleNumber = dataSource.vehicleNumber;
-        this.state.servicesList = dataSource.labors.map((data)=>{
+        const servicesElements = servicesList.map((data, index)=>{
             return (
-                <div>
+                <div key={index}>
                     <p>{data.serviceName}</p>
                     <p>{data.price}</p>
                     <p>{data.count}</p>
@@ -63,9 +72,9 @@ class AgreementPage extends Component {
                 </div>
             )
         })
-        this.state.detailsList = dataSource.details.map((data)=>{
+        const detailsElements = detailsList.map((data, index)=>{
             return (
-                <div>
+                <div key={index}>
                     <p>{data.detailName}</p>
                     <p>{data.price}</p>
                     <p>{data.count}</p>
@@ -85,11 +94,11 @@ class AgreementPage extends Component {
                 <div>{vehicleNumber}</div>
                 <div>
                     <FormattedMessage id='add_order_form.services'/>
-                    {this.state.servicesList}
+                    {servicesElements}
                 </div>
                 <div>
                     <FormattedMessage id="add_order_form.details"/>
-                    {this.state.detailsList}
+                    {detailsElements}
                 </div>
                 <Button
                     type="primary"
