@@ -50,6 +50,7 @@ class DiagnosticTable extends Component {
         this.ok = 0;
         this.bad = 0;
         this.critical = 0;
+        this.open = 0;
         this.withCommentary = 0; 
         this.withPhoto = 0;
         this.getCurrentDiagnostic = this.getCurrentDiagnostic.bind(this);
@@ -65,6 +66,7 @@ class DiagnosticTable extends Component {
         this.editSelectedRowsStatus = this.editSelectedRowsStatus.bind(this);
         this.deleteSelectedRows = this.deleteSelectedRows.bind(this);
         this.setPhoto = this.setPhoto.bind(this);
+        this.photoKeys = [];
         this.columns = [
             {
                 title:  ()=>{
@@ -356,7 +358,7 @@ class DiagnosticTable extends Component {
                                     <Input
                                         style={this.state.filterStatus=="OPEN"?{boxShadow: boxShadow}:{}}
                                         className={Styles.filter_input}
-                                        value={this.state.rowsCount - (1 + this.ok + this.bad + this.critical)}
+                                        value={this.open}
                                     />
                                 </div>
                             </div>
@@ -458,8 +460,8 @@ class DiagnosticTable extends Component {
                     <PhotoButton
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                         setPhoto={this.setPhoto}
-                        photo={photo}
                         rowProp={rowProp}
+                        photo={photo}
                     />
                 ),
             },
@@ -498,21 +500,14 @@ class DiagnosticTable extends Component {
         ];
     }
 
-    setPhoto(photo, index) {
-        this.state.dataSource[index].photo = photo;
-        this.updateDataSource();
-    }
-
     addNewDiagnostic(data) {
         addNewDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
         setTimeout(this.getCurrentDiagnostic,500);
-        //this.getCurrentDiagnostic();
     }
 
     deleteDiagnostic(data) {
         deleteDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
         setTimeout(this.getCurrentDiagnostic,500);
-        //this.getCurrentDiagnostic();
     }
 
     onPlanChange(event) {
@@ -627,6 +622,8 @@ class DiagnosticTable extends Component {
     }
 
     async deleteRow(index) {
+        let photo_index = this.photoKeys.findIndex((elem)=>elem.partId == this.state.dataSource[index].partId && elem.groupId == this.state.dataSource[index].groupId)
+        this.photoKeys.splice(photo_index, 1);
         await deleteDiagnosticProcess(
             this.props.orderId,
             this.state.dataSource[index].diagnosticTemplateId,
@@ -684,8 +681,10 @@ class DiagnosticTable extends Component {
 
     async deleteSelectedRows() {
         for(let i = 0; i < this.state.selectedRows.length; i++){
-            let key = this.state.dataSource.findIndex((element, index, array)=>{return element.key == this.state.selectedRows[i]});
+            let key = this.state.dataSource.findIndex((elem)=>elem.key == this.state.selectedRows[i]);
             if(key != -1){
+                let photo_index = this.photoKeys.findIndex((elem)=>elem.partId == this.state.dataSource[key].partId && elem.groupId == this.state.dataSource[key].groupId)
+                this.photoKeys.splice(photo_index, 1);
                 await deleteDiagnosticProcess(
                     this.props.orderId,
                     this.state.dataSource[key].diagnosticTemplateId,
@@ -751,7 +750,7 @@ class DiagnosticTable extends Component {
         if(filterStatus == "BAD&CRITICAL") data = data.filter((data, i) => data.status == 2 || data.status == 3);
         if(filterStatus == "OPEN") data = data.filter((data, i) => data.status == 0);
         if(filterCommentary != null) data = data.filter((data, i) => data.commentary != null);
-        if(filterPhoto != null) data = data.filter((data, i) => data.photo != null);
+        if(filterPhoto != null) data = data.filter((data, i) => data.photo != null && data.photo.length > 0);
         return data;
     }
 
@@ -759,6 +758,7 @@ class DiagnosticTable extends Component {
         this.ok = 0;
         this.bad = 0;
         this.critical = 0;
+        this.open = 0;
         this.withCommentary = 0; 
         this.withPhoto = 0;
         this.state.possibleRows = [];
@@ -814,12 +814,8 @@ class DiagnosticTable extends Component {
                     let comment = _.pick(parts[k], [
                         "comment",
                     ]).comment;
-                    let photo = this.state.dataSource[key-1] != undefined ? this.state.dataSource[key-1].photo : null;
-                    if(answer==1) this.ok++;
-                    if(answer==2) this.bad++;
-                    if(answer==3) this.critical++; 
-                    if(comment!=undefined) this.withCommentary++;
-                    if(photo!=undefined && photo.length > 0) this.withPhoto++;
+                    let photo = this.photoKeys.find((data)=>data.partId == partId && data.groupId == groupId);
+                    photo = photo ? photo.photo : null;
                     dataSource.push({
                         key: key,
                         partId: partId,
@@ -839,10 +835,18 @@ class DiagnosticTable extends Component {
                 }
             }
         }
-        let filtredData = this.filterDataSource(dataSource);
+        const filtredData = this.filterDataSource(dataSource);
 
         if(filtredData.length < dataSource.length) {
-            filtredData.push({
+            filtredData.map((data)=>{
+                if(data.status == 0) this.open++;
+                if(data.status == 1) this.ok++;
+                if(data.status == 2) this.bad++;
+                if(data.status == 3) this.critical++; 
+                if(data.commentary != undefined) this.withCommentary++;
+                if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
+            })
+            /*filtredData.push({
                 key: key,
                 partId: "",
                 plan: "",
@@ -856,15 +860,22 @@ class DiagnosticTable extends Component {
                 groupId: "",
                 photo: null,
                 allTemplatesData: orderDiagnostic,
-            },);
-            this.state.possibleRows.push(key);
-            
+            },);*/
+            this.state.possibleRows.push(key-1);
             this.setState({
                 dataSource: filtredData,
-                rowsCount: key,
+                rowsCount: filtredData.length,
             });
         }
         else{
+            dataSource.map((data)=>{
+                if(data.status == 0) this.open++;
+                if(data.status == 1) this.ok++;
+                if(data.status == 2) this.bad++;
+                if(data.status == 3) this.critical++; 
+                if(data.commentary != undefined) this.withCommentary++;
+                if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
+            })
             dataSource.push({
                 key: key,
                 partId: "",
@@ -888,6 +899,21 @@ class DiagnosticTable extends Component {
             });
         }
         this.forceUpdate();
+    }
+
+    setPhoto(photo, groupId, partId) {
+        const index = this.photoKeys.findIndex((data)=>data.partId == partId && data.groupId == groupId);
+        if(index > -1) {
+            this.photoKeys[index].photo = photo;
+        }
+        else {
+            this.photoKeys.push({
+                partId: partId,
+                groupId: groupId,
+                photo: photo,
+            });
+        }
+        this.updateDataSource();
     }
 
     componentWillMount() {
@@ -925,6 +951,7 @@ class DiagnosticTable extends Component {
 
     componentDidMount() {
         this._isMounted = true;
+        {this.getCurrentDiagnostic()}
         {this.setRowsColor()}
     }
 
@@ -978,7 +1005,7 @@ class DiagnosticTableHeader extends React.Component{
         this.state = {
             indeterminate: props.indeterminate,
             checked: props.checkedAll,
-            selectValue : "",
+            selectValue : undefined,
             dataSource: props.dataSource,
         }
     }
@@ -1021,6 +1048,8 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "15%" }}>
                     <Select
+                        allowClear
+                        value={this.state.selectValue}
                         showSearch
                         placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                         onChange={()=>{this.setState({selectValue: event.target.innerText})}}
@@ -1029,8 +1058,20 @@ class DiagnosticTableHeader extends React.Component{
                     </Select>
                 </div>
                 <div style={{ width: "15%" }}>
-                    <Button onClick={() => this.props.addNewDiagnostic(this.state.selectValue)}>+</Button>
-                    <Button onClick={() => this.props.deleteDiagnostic(this.state.selectValue)}>-</Button>
+                    <Button onClick={() => {
+                            this.props.addNewDiagnostic(this.state.selectValue);
+                            this.setState({selectValue: undefined});
+                        }}
+                    >
+                        <FormattedMessage id='+' />
+                    </Button>
+                    <Button onClick={() => {
+                            this.props.deleteDiagnostic(this.state.selectValue);
+                            this.setState({selectValue: undefined});
+                        }}
+                    >
+                        <FormattedMessage id='-' />
+                    </Button>
                 </div>
                 <div style={{ width: "35%" }}>
                     <ConfirmDiagnosticModal
@@ -1167,6 +1208,7 @@ class CommentaryButton extends React.Component{
     };
 
     componentDidUpdate() {
+        this.state.commentary = this.props.commentary;
         if(this.commentaryInput.current != undefined) {
             this.commentaryInput.current.focus();
         }
@@ -1217,7 +1259,7 @@ class PhotoButton extends React.Component{
         this.state = {
             loading: false,
             visible: false,
-            photo: props.photo !=null ? props.photo.length : [],
+            photo: props.photo,
             upload: null,
         }
     }
@@ -1250,12 +1292,7 @@ class PhotoButton extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            if(data.photos.length > 0) {
-                that.props.setPhoto(data.photos, rowProp.key-1);
-                that.setState({
-                    photo: data.photos,
-                })
-            }
+            that.props.setPhoto(data.photos, rowProp.groupId, rowProp.partId);
         })
         .catch(function (error) {
             console.log('error', error)
@@ -1286,21 +1323,19 @@ class PhotoButton extends React.Component{
     };
 
     render() {
+        this.state.photo = this.props.photo;
         const { visible, loading, photo } = this.state;
-        var fileList = [
-            /*{
-              uid: '-1',
-              name: 'image.png',
-              status: 'done',
-              url: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-              thumbUrl: 'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
-            },
-            {
-              uid: '-2',
-              name: 'yyy.png',
-              status: 'error',
-            },*/
-        ];
+        /*if(photo === null) {
+            if(this.props.rowProp.partId) {
+                this.getPhoto();
+            }*/
+            return (
+                <div>
+                    <Button type="primary"><Icon type={"camera"} /></Button>
+                </div>
+            )
+        /*}
+        var fileList = [];
         if(photo.length > 0) {
             photo.map((data, index)=>{
                 fileList.push({
@@ -1348,7 +1383,7 @@ class PhotoButton extends React.Component{
                     </Upload>
                 </Modal>
             </div>
-        );
+        );*/
     }
 }
 
@@ -1364,7 +1399,6 @@ class DeleteProcessButton extends React.Component{
     handleClick = () => {
         const { rowProp } = this.props;
         deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId);
-        //ReactDOM.findDOMNode(this).parentNode.parentNode.style.display = 'none';
         ReactDOM.findDOMNode(this).parentNode.parentNode.style.backgroundColor = "";
         this.props.deleteRow(this.props.rowProp.key-1);
         this.setState({deleted:true});

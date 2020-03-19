@@ -33,7 +33,7 @@ export function getDiagnosticsTemplates(getData) {
 export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId, answer, comment, photo) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/diagnostics/answer?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&answer=${answer}`
+    let params = `/orders/diagnostics/answer?orderId=${orderId}&templateId=${templateId}&groupId=${groupId}&partId=${partId}&answer=${answer}`;
     const data = { photo: photo };
 
     if(comment) params += `&comment=${comment}`;
@@ -63,7 +63,7 @@ export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId,
 export async function confirmDiagnostic(orderId, data) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/${orderId}`
+    let params = `/orders/${orderId}`;
     
     url += params;
     try {
@@ -182,6 +182,26 @@ export async function deleteDiagnosticTemplate(orderId, templateId) {
         else {
             console.log("BAD", result);
         }
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
+}
+
+export async function createAgreement(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/orders/create_agreement?orderId=${orderId}`;
+
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        const result = await response.json();
+        console.log("OK", result);
     } catch (error) {
         console.error('ERROR:', error);
     }
