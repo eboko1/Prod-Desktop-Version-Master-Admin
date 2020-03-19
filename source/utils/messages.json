@@ -155,7 +155,9 @@
     "body": "Body",
     "nRegNew": "Number",
     "operName": "Operation",
-    "user_agreement": "User agreement"
+    "user_agreement": "User agreement",
+    "+": "+",
+    "-": "-"
   },
   "ru": {
     "currency": "грн.",
@@ -313,7 +315,9 @@
     "body": "Кузов",
     "nRegNew": "Номер",
     "operName": "Операция",
-    "user_agreement": "Пользовательское соглашение"
+    "user_agreement": "Пользовательское соглашение",
+    "+": "+",
+    "-": "-"
   },
   "uk": {
     "currency": "грн.",
@@ -471,6 +475,8 @@
     "body": "Кузов",
     "nRegNew": "Номер",
     "operName": "Операція",
-    "user_agreement": "Користувача угода"
+    "user_agreement": "Користувача угода",
+    "+": "+",
+    "-": "-"
   }
 }

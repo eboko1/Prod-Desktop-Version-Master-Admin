@@ -7,6 +7,7 @@ import { FormattedMessage } from 'react-intl';
 import {
     API_URL,
     confirmDiagnostic,
+    createAgreement,
 } from 'core/forms/orderDiagnosticForm/saga';
 // own
 import Styles from './styles.m.css';
@@ -61,6 +62,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
         console.log(data);
         confirmDiagnostic(this.props.orderId, data);
+        createAgreement(this.props.orderId);
     };
     
     handleCancel = () => {
@@ -116,7 +118,6 @@ class ConfirmDiagnosticModal extends React.Component{
         }
         if(this.state.storeGroups != null && this.detailsOptions == null) {
             this.detailsOptions = this.getDetailsOptions();
-            console.log(this.detailsOptions);
         }
     }
 
@@ -583,13 +584,6 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getDetailsContent() {
         this.addNewDetailsRow();
-        if(this.detailsOptions != null)
-        this.detailsOptions.map((data)=>{
-            if(data.props.value == "Шинный сервис"){
-                console.log(data);
-            }
-        })
-        console.log("kkk");
 
         return this.state.detailsList.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row}>
