@@ -1,5 +1,127 @@
-.agreementPage{
+.agreementPage {
     width: 80%;
     border: 1px solid #e8e8e8;
     margin: 0 auto;
+    padding: 25px;
+}
+
+.vehicleInfoWrap{
+    display: flex;
+    justify-content: start;
+    border-bottom: 1px solid black;
+}
+
+.vehicleInfo{
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.agreementHeader {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+}
+
+div.columnHeader{
+    font-weight: normal;
+    font-style: normal;
+    padding: 5px;
+}
+
+.sectionHeader {
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bold;
+    padding: 10px;
+    border-top: 1px solid red;
+    border-bottom: 1px solid red;
+    background: #dcdcdc;
+}
+
+.servicesWrap{
+    margin-bottom: 20px;
+}
+
+.detailsWrap{
+    margin-bottom: 20px;
+}
+
+.serviceElement, .detailElement{
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px dashed gray;
+}
+
+.disabledRow{
+    background: #dcdcdc;
+    color: #808080;
+    background: #efefef;
+}
+
+.rowKey {
+    width: 3%;
+    font-weight: bold;
+}
+
+.rowName {
+    width: 30%;
+}
+
+.rowComment {
+    width: 30%;
+    font-style: italic;
+}
+
+.rowPrice {
+    width: 10%;
+}
+
+.rowCount {
+    width: 10%;
+}
+
+.rowSum {
+    width: 10%;
+    font-weight: bold;
+}
+
+.rowSwitch {
+    width: 7%;
+}
+
+.totalWrap{
+    display: flex;
+    justify-content: flex-end;
+    padding: 15px 10px 0 0;
+    font-size: 18px;
+}
+
+.totalSum{
+    font-weight: bold;
+    padding: 0 0 0 10px;
+}
+
+.agreementTotalSum{
+    font-size: 20px;
+}
+
+.commentaryTextArea{
+    resize: none;
+}
+
+@media screen and (max-width: 1199px) {
+    .agreementPage {
+        width: 100%;
+    }
+
+    .vehicleInfoWrap{
+        margin-bottom: 10px;
+    }
+
+    .agreementHeader{
+        display: none;
+    }
 }
