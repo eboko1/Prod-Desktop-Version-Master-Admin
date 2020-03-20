@@ -94,7 +94,7 @@ class DiagnosticTable extends Component {
                                     {this.getCurrentDiagnostic()}
                                 }}
                             >
-                                {this.state.dataSource.length-1 >= 0 ? this.state.dataSource.length-1 : 0}
+                                {this.state.dataSource.length}
                             </Button>
                         </div>
                     )
@@ -433,6 +433,7 @@ class DiagnosticTable extends Component {
                         <div className={Styles.filter_column_header_wrap}>
                             <FormattedMessage id='order_form_table.diagnostic.photo' />
                             <Button
+                                disabled
                                 type={this.state.filterPhoto == null?"primary":""}
                                 onClick={()=>{
                                     if(this.state.filterPhoto != null) {
@@ -576,9 +577,10 @@ class DiagnosticTable extends Component {
         })
         .then(function (data) {
             console.log(data);
-            that.setState({
+            /*that.setState({
                 orderDiagnostic: data.diagnosis,
-            });
+            });*/
+            that.state.orderDiagnostic = data.diagnosis;
             that.updateDataSource();
         })
         .catch(function (error) {
@@ -832,17 +834,30 @@ class DiagnosticTable extends Component {
                     },);
                     this.state.possibleRows.push(key);
                     key++;
+                    if(answer == 0) this.open++;
+                    if(answer == 1) this.ok++;
+                    if(answer == 2) this.bad++;
+                    if(answer == 3) this.critical++; 
                 }
             }
         }
         const filtredData = this.filterDataSource(dataSource);
 
         if(filtredData.length < dataSource.length) {
+            const { filterPlan, filterStage, filterCommentary, filterPhoto } = this.state;
+            if(filterPlan || filterStage || filterCommentary || filterPhoto) {
+                this.ok = 0;
+                this.bad = 0;
+                this.critical = 0;
+                this.open = 0;
+            }
             filtredData.map((data)=>{
-                if(data.status == 0) this.open++;
-                if(data.status == 1) this.ok++;
-                if(data.status == 2) this.bad++;
-                if(data.status == 3) this.critical++; 
+                if(filterPlan || filterStage || filterCommentary || filterPhoto) {
+                    if(data.status == 0) this.open++;
+                    if(data.status == 1) this.ok++;
+                    if(data.status == 2) this.bad++;
+                    if(data.status == 3) this.critical++;
+                }
                 if(data.commentary != undefined) this.withCommentary++;
                 if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
             })
@@ -869,10 +884,6 @@ class DiagnosticTable extends Component {
         }
         else{
             dataSource.map((data)=>{
-                if(data.status == 0) this.open++;
-                if(data.status == 1) this.ok++;
-                if(data.status == 2) this.bad++;
-                if(data.status == 3) this.critical++; 
                 if(data.commentary != undefined) this.withCommentary++;
                 if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
             })
@@ -899,6 +910,7 @@ class DiagnosticTable extends Component {
             });
         }
         this.forceUpdate();
+        this.setRowsColor();
     }
 
     setPhoto(photo, groupId, partId) {
@@ -951,12 +963,12 @@ class DiagnosticTable extends Component {
 
     componentDidMount() {
         this._isMounted = true;
-        {this.getCurrentDiagnostic()}
-        {this.setRowsColor()}
+        this.getCurrentDiagnostic();
+        this.setRowsColor();
     }
 
     componentDidUpdate() {
-        {this.setRowsColor()}
+        //this.setRowsColor();
     }
 
     componentWillUnmount() {
@@ -964,7 +976,7 @@ class DiagnosticTable extends Component {
     }
 
     render() {
-        this.setRowsColor();
+        console.log("RND");
         const columns = this.columns;
         return (
             <div>
@@ -1240,6 +1252,7 @@ class CommentaryButton extends React.Component{
                     ]}
                     >
                     <TextArea
+                        placeholder="Commentary"
                         autoFocus
                         onChange={()=>{this.state.commentary = event.target.value}}
                         style={{width: '100%', minHeight: '150px', resize:'none'}}
@@ -1265,7 +1278,7 @@ class PhotoButton extends React.Component{
     }
 
     componentDidMount() {
-        this.getPhoto();
+        //this.getPhoto();
     }
 
     getPhoto() {
@@ -1323,18 +1336,18 @@ class PhotoButton extends React.Component{
     };
 
     render() {
-        this.state.photo = this.props.photo;
+        /*this.state.photo = this.props.photo;
         const { visible, loading, photo } = this.state;
         if(photo === null) {
             if(this.props.rowProp.partId) {
                 this.getPhoto();
-            }
+            }*/
             return (
                 <div>
-                    <Button type="primary"><Icon type={"camera"} /></Button>
+                    <Button type="primary" disabled><Icon type={"camera"} /></Button>
                 </div>
             )
-        }
+        /*}
         var fileList = [];
         if(photo.length > 0) {
             photo.map((data, index)=>{
@@ -1383,7 +1396,7 @@ class PhotoButton extends React.Component{
                     </Upload>
                 </Modal>
             </div>
-        );
+        );*/
     }
 }
 

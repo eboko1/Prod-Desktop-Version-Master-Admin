@@ -157,7 +157,9 @@
     "operName": "Operation",
     "user_agreement": "User agreement",
     "+": "+",
-    "-": "-"
+    "-": "-",
+    "price": "Price",
+    "count": "Count"
   },
   "ru": {
     "currency": "грн.",
@@ -317,7 +319,9 @@
     "operName": "Операция",
     "user_agreement": "Пользовательское соглашение",
     "+": "+",
-    "-": "-"
+    "-": "-",
+    "price": "Цена",
+    "count": "Кол-во"
   },
   "uk": {
     "currency": "грн.",
@@ -477,6 +481,8 @@
     "operName": "Операція",
     "user_agreement": "Користувача угода",
     "+": "+",
-    "-": "-"
+    "-": "-",
+    "price": "Ціна",
+    "count": "К-сть"
   }
 }
