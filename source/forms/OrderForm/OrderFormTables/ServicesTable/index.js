@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, InputNumber, Icon, Popconfirm, Select } from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select, Input } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -148,17 +148,20 @@ class ServicesTable extends Component {
             {
                 title:  <FormattedMessage id='order_form_table.own_detail' />,
                 key:    'ownDetail',
-                render: ({ key }) => (
-                    <DecoratedCheckbox
-                        errors={ errors }
-                        defaultGetValueProps
-                        fieldValue={ _.get(fields, `services[${key}].ownDetail`) }
-                        initialValue={ this._getDefaultValue(key, 'ownDetail') }
-                        field={ `services[${key}].ownDetail` }
-                        getFieldDecorator={ getFieldDecorator }
-                        disabled={ editServicesForbidden }
-                    />
-                ),
+                render: ({ key }) => {
+                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    return (
+                        <DecoratedCheckbox
+                            errors={ errors }
+                            defaultGetValueProps
+                            fieldValue={ _.get(fields, `services[${key}].ownDetail`) }
+                            initialValue={ this._getDefaultValue(key, 'ownDetail') }
+                            field={ `services[${key}].ownDetail` }
+                            getFieldDecorator={ getFieldDecorator }
+                            disabled={ editServicesForbidden || rejected }
+                        />
+                    )
+                }
             },
             {
                 title:  <FormattedMessage id='order_form_table.service' />,
@@ -169,7 +172,7 @@ class ServicesTable extends Component {
                         this._handleSelectMap[ key ] = value =>
                             this._handleServiceSelect(key, value);
                     }
-
+                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
                     return (
                         <DecoratedAutoComplete
                             errors={ errors }
@@ -178,7 +181,7 @@ class ServicesTable extends Component {
                                 fields,
                                 `services[${key}].serviceName`,
                             ) }
-                            disabled={ editServicesForbidden }
+                            disabled={ editServicesForbidden || rejected }
                             onSelect={ value =>
                                 this._onServiceSelect(
                                     value,
@@ -209,85 +212,94 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='order_form_table.prime_cost' />,
                 width:  '9%',
                 key:    'primeCost',
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        errors={ errors }
-                        defaultGetValueProps
-                        fieldValue={ _.get(fields, `services[${key}].primeCost`) }
-                        initialValue={ this._getDefaultValue(key, 'primeCost') }
-                        field={ `services[${key}].primeCost` }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                        getFieldDecorator={ this.props.form.getFieldDecorator }
-                        min={ 0 }
-                    />
-                ),
+                render: ({ key }) => {
+                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    return (
+                        <DecoratedInputNumber
+                            errors={ errors }
+                            defaultGetValueProps
+                            fieldValue={ _.get(fields, `services[${key}].primeCost`) }
+                            initialValue={ this._getDefaultValue(key, 'primeCost') }
+                            field={ `services[${key}].primeCost` }
+                            disabled={
+                                this._isFieldDisabled(key) || editServicesForbidden || rejected
+                            }
+                            getFieldDecorator={ this.props.form.getFieldDecorator }
+                            min={ 0 }
+                        />
+                    )
+                }
             },
             {
                 title:  <FormattedMessage id='order_form_table.price' />,
                 key:    'price',
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        className={ Styles.servicesRequiredFormItem }
-                        formItem
-                        errors={ errors }
-                        defaultGetValueProps
-                        fieldValue={ _.get(
-                            fields,
-                            `services[${key}].servicePrice`,
-                        ) }
-                        initialValue={ _.defaultTo(
-                            _.defaultTo(
-                                this._getDefaultValue(key, 'servicePrice'),
-                                this._getDefaultPrice(key),
-                            ),
-                            0,
-                        ) }
-                        field={ `services[${key}].servicePrice` }
-                        getFieldDecorator={ getFieldDecorator }
-                        rules={
-                            !this._isFieldDisabled(key)
-                                ? this.requiredRule
-                                : void 0
-                        }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                        min={ 0 }
-                    />
-                ),
+                render: ({ key }) => {
+                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    return (
+                        <DecoratedInputNumber
+                            className={ Styles.servicesRequiredFormItem }
+                            formItem
+                            errors={ errors }
+                            defaultGetValueProps
+                            fieldValue={ _.get(
+                                fields,
+                                `services[${key}].servicePrice`,
+                            ) }
+                            initialValue={ _.defaultTo(
+                                _.defaultTo(
+                                    this._getDefaultValue(key, 'servicePrice'),
+                                    this._getDefaultPrice(key),
+                                ),
+                                0,
+                            ) }
+                            field={ `services[${key}].servicePrice` }
+                            getFieldDecorator={ getFieldDecorator }
+                            rules={
+                                !this._isFieldDisabled(key)
+                                    ? this.requiredRule
+                                    : void 0
+                            }
+                            disabled={
+                                this._isFieldDisabled(key) || editServicesForbidden || rejected
+                            }
+                            min={ 0 }
+                        />
+                    )
+                }
             },
             {
-                title:  <FormattedMessage id='order_form_table.count' />,
+                title:  <FormattedMessage id='hours' />,
                 key:    'count',
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        formItem
-                        className={ Styles.servicesRequiredFormItem }
-                        errors={ errors }
-                        defaultGetValueProps
-                        fieldValue={ _.get(
-                            fields,
-                            `services[${key}].serviceCount`,
-                        ) }
-                        initialValue={
-                            this._getDefaultValue(key, 'serviceCount') || 1
-                        }
-                        field={ `services[${key}].serviceCount` }
-                        rules={
-                            !this._isFieldDisabled(key)
-                                ? this.requiredRule
-                                : void 0
-                        }
-                        getFieldDecorator={ getFieldDecorator }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                        min={ 0.1 }
-                        step={ 0.1 }
-                    />
-                ),
+                render: ({ key }) => {
+                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    return (
+                        <DecoratedInputNumber
+                            formItem
+                            className={ Styles.servicesRequiredFormItem }
+                            errors={ errors }
+                            defaultGetValueProps
+                            fieldValue={ _.get(
+                                fields,
+                                `services[${key}].serviceCount`,
+                            ) }
+                            initialValue={
+                                this._getDefaultValue(key, 'serviceCount') || 1
+                            }
+                            field={ `services[${key}].serviceCount` }
+                            rules={
+                                !this._isFieldDisabled(key)
+                                    ? this.requiredRule
+                                    : void 0
+                            }
+                            getFieldDecorator={ getFieldDecorator }
+                            disabled={
+                                this._isFieldDisabled(key) || editServicesForbidden || rejected
+                            }
+                            min={ 0.1 }
+                            step={ 0.1 }
+                        />
+                    )
+                }
             },
             {
                 title:  <FormattedMessage id='order_form_table.sum' />,
@@ -298,7 +310,6 @@ class ServicesTable extends Component {
                         _.get(services, [ key, 'servicePrice' ], 0) *
                         _.get(services, [ key, 'serviceCount' ], 1)
                     ).toFixed(2);
-
                     return (
                         <InputNumber
                             className={ Styles.sum }
@@ -315,7 +326,8 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='order_form_table.master' />,
                 key:    'employeeId',
                 render: ({ key }) => {
-                    return (
+                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    return !rejected ? (
                         <DecoratedSelect
                             errors={ errors }
                             defaultGetValueProps
@@ -336,6 +348,13 @@ class ServicesTable extends Component {
                         >
                             { this.state.employeesOptions }
                         </DecoratedSelect>
+                    ) : (
+                        <Input
+                            value={this.props.intl.formatMessage({
+                                id: 'rejected',
+                            })}
+                            disabled
+                        />
                     );
                 },
             },
@@ -437,7 +456,6 @@ class ServicesTable extends Component {
     render() {
         const { keys } = this.state;
         const columns = this._calculateColumns();
-
         return (
             <Catcher>
                 <Table

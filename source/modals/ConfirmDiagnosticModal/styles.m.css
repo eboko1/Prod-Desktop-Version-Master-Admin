@@ -6,8 +6,12 @@
     box-shadow: none;
 }
 
+.delete_diagnostic_button_wrap{
+    padding: 5px 0px 5px 5px;
+}
+
 .delete_diagnostic_button{
-    margin-left: 5px;
+    margin-left: 0px;
 }
 
 .delete_diagnostic_button:hover{

@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Table, Button, Modal, Upload, Icon, Checkbox, Select, Input, InputNumber, AutoComplete } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
 import { Catcher } from 'commons';
@@ -26,6 +26,7 @@ class DiagnosticTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            completed: false,
             update: false,
             orderDiagnostic: props.orderDiagnostic,
             orderId: props.orderId,
@@ -108,6 +109,7 @@ class DiagnosticTable extends Component {
                         <div style={{paddingLeft: 5}}>
                             <span>{num}  </span>
                             <Checkbox
+                                disabled={this.state.completed}
                                 onChange={()=>{this.onChangeCheckbox(num)}}
                                 checked = { checked }
                             />
@@ -151,6 +153,7 @@ class DiagnosticTable extends Component {
                         </p>
                     ) : (
                         <Select
+                            disabled={this.state.completed}
                             showSearch
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                             onChange={this.onPlanChange}
@@ -200,6 +203,7 @@ class DiagnosticTable extends Component {
                         </p>
                     ) : (
                         <Select
+                            disabled={this.state.completed}
                             showSearch
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.stage' />}
                             disabled={options.length == 0}
@@ -378,6 +382,7 @@ class DiagnosticTable extends Component {
                         </span>
                     ) : (
                         <Select
+                            disabled={this.state.completed}
                             showSearch
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.detail' />}
                             disabled={options.length == 0}
@@ -421,6 +426,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (commentary, rowProp) => (
                     <CommentaryButton
+                        disabled={this.state.completed}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                         commentary={commentary}
                         rowProp={rowProp}
@@ -459,6 +465,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (photo, rowProp) => (
                     <PhotoButton
+                        disabled={this.state.completed}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                         setPhoto={this.setPhoto}
                         rowProp={rowProp}
@@ -480,6 +487,7 @@ class DiagnosticTable extends Component {
                 render: (text, rowProp) => {
                     return (
                         <DiagnosticStatusButton
+                            disabled={this.state.completed}
                             getCurrentDiagnostic={this.getCurrentDiagnostic}
                             status={text}
                             rowProp={rowProp}
@@ -493,6 +501,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (text, rowProp) => (
                     <DeleteProcessButton
+                        disabled={this.state.completed}
                         deleteRow = {this.deleteRow}
                         rowProp={rowProp}
                     />
@@ -576,11 +585,8 @@ class DiagnosticTable extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
-            /*that.setState({
-                orderDiagnostic: data.diagnosis,
-            });*/
             that.state.orderDiagnostic = data.diagnosis;
+            that.state.completed = data.diagnosis.completed;
             that.updateDataSource();
         })
         .catch(function (error) {
@@ -757,6 +763,7 @@ class DiagnosticTable extends Component {
     }
 
     updateDataSource() {
+        const disabled = this.state.completed;
         this.ok = 0;
         this.bad = 0;
         this.critical = 0;
@@ -887,21 +894,23 @@ class DiagnosticTable extends Component {
                 if(data.commentary != undefined) this.withCommentary++;
                 if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
             })
-            dataSource.push({
-                key: key,
-                partId: "",
-                plan: "",
-                detail: "",
-                actionTitle: "",
-                stage: "",
-                status: "",
-                commentary: "",
-                orderId: orderId,
-                diagnosticTemplateId: "",
-                groupId: "",
-                photo: null,
-                allTemplatesData: orderDiagnostic,
-            },);
+            if(!disabled) {
+                dataSource.push({
+                    key: key,
+                    partId: "",
+                    plan: "",
+                    detail: "",
+                    actionTitle: "",
+                    stage: "",
+                    status: "",
+                    commentary: "",
+                    orderId: orderId,
+                    diagnosticTemplateId: "",
+                    groupId: "",
+                    photo: null,
+                    allTemplatesData: orderDiagnostic,
+                },);
+            }
             this.state.possibleRows.push(key);
             
             this.setState({
@@ -976,37 +985,38 @@ class DiagnosticTable extends Component {
     }
 
     render() {
-        console.log("RND");
+        const disabled = this.state.completed;
         const columns = this.columns;
         return (
-            <div>
+            <Catcher>
                 <DiagnosticTableHeader
+                    disabled={disabled}
                     orderId={this.props.orderId}
-                    templatesTitles = {this.templatesTitles}
-                    rowsCount = {this.state.rowsCount}
-                    selectedRows = {this.state.selectedRows}
-                    indeterminate = {this.state.headerCheckboxIndeterminate}
-                    checkedAll = {this.state.checkedAll}
-                    onCheckAll = {this.onCheckAll}
-                    addNewDiagnostic = {this.addNewDiagnostic}
-                    deleteDiagnostic = {this.deleteDiagnostic}
-                    editSelectedRowsStatus = {this.editSelectedRowsStatus}
-                    deleteSelectedRows = {this.deleteSelectedRows}
-                    dataSource = {this.state.dataSource}
+                    templatesTitles={this.templatesTitles}
+                    rowsCount={this.state.rowsCount}
+                    selectedRows={this.state.selectedRows}
+                    indeterminate={this.state.headerCheckboxIndeterminate}
+                    checkedAll={this.state.checkedAll}
+                    onCheckAll={this.onCheckAll}
+                    addNewDiagnostic={this.addNewDiagnostic}
+                    deleteDiagnostic={this.deleteDiagnostic}
+                    editSelectedRowsStatus={this.editSelectedRowsStatus}
+                    deleteSelectedRows={this.deleteSelectedRows}
+                    dataSource={this.state.dataSource}
                     orderServices={this.props.orderServices}
                     orderDetails={this.props.orderDetails}
                 />
                 <Table
-                    className={ Styles.diagnosticTable }
-                    dataSource={ this.state.dataSource }
-                    columns={ columns }
-                    locale={ {
+                    className={!disabled?Styles.diagnosticTable:Styles.diagnosticTableDisabled}
+                    dataSource={this.state.dataSource}
+                    columns={columns}
+                    locale={{
                         emptyText: <FormattedMessage id='no_data' />,
-                    } }
+                    }}
                     pagination={false}
                     scroll={{ y: 540 }}
                 />
-            </div>
+            </Catcher>
         );
     }
 }
@@ -1048,10 +1058,12 @@ class DiagnosticTableHeader extends React.Component{
 
     render(){
         const { Option } = Select;
+        const { disabled } = this.props;
         return(
             <div className={Styles.diagnosticTableHeader}>
                 <div style={{ width: "5%", padding: '5px 15px' }}>
                     <Checkbox
+                        disabled={disabled}
                         checked = {this.state.checked}
                         indeterminate = {this.state.indeterminate}
                         onChange = {this.props.onCheckAll}
@@ -1060,6 +1072,7 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "15%" }}>
                     <Select
+                        disabled={disabled}
                         allowClear
                         value={this.state.selectValue}
                         showSearch
@@ -1070,14 +1083,18 @@ class DiagnosticTableHeader extends React.Component{
                     </Select>
                 </div>
                 <div style={{ width: "15%" }}>
-                    <Button onClick={() => {
+                    <Button
+                        disabled={disabled} 
+                        onClick={() => {
                             this.props.addNewDiagnostic(this.state.selectValue);
                             this.setState({selectValue: undefined});
                         }}
                     >
                         <FormattedMessage id='+' />
                     </Button>
-                    <Button onClick={() => {
+                    <Button
+                        disabled={disabled}
+                        onClick={() => {
                             this.props.deleteDiagnostic(this.state.selectValue);
                             this.setState({selectValue: undefined});
                         }}
@@ -1087,6 +1104,7 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "35%" }}>
                     <ConfirmDiagnosticModal
+                        disabled={disabled}
                         orderId={this.props.orderId}
                         isMobile={false}
                         dataSource = {this.state.dataSource}
@@ -1095,23 +1113,27 @@ class DiagnosticTableHeader extends React.Component{
                     />
                 </div>
                 <div style={{ width: "10%" }}>
-                    <Button type="primary" onClick={()=>{this.handleClickStatusButtons(0)}} style={{width: "80%"}}>
+                    <Button disabled={disabled} type="primary" onClick={()=>{this.handleClickStatusButtons(0)}} style={{width: "80%"}}>
                         <FormattedMessage id='order_form_table.diagnostic.status.edit' />
                     </Button>
                 </div>
                 <div className={Styles.diagnostic_status_button_wrap} style={{ width: "15%" }}>
-                    <Button className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(1)}}  style={{background:"rgb(81, 205, 102)"}}>
+                    <Button disabled={disabled} className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(1)}}  style={{background:"rgb(81, 205, 102)"}}>
                         <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                     </Button>
-                    <Button className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(2)}} style={{background:"rgb(255, 255, 0)"}}>
+                    <Button disabled={disabled} className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(2)}} style={{background:"rgb(255, 255, 0)"}}>
                         <FormattedMessage id='order_form_table.diagnostic.status.bad' />
                     </Button>
-                    <Button className={Styles.diagnostic_status_button}  type="danger" onClick={()=>{this.handleClickStatusButtons(3)}} style={{background:"rgb(255, 126, 126)", color: "black"}}>
+                    <Button disabled={disabled} className={Styles.diagnostic_status_button}  type="danger" onClick={()=>{this.handleClickStatusButtons(3)}} style={{background:"rgb(255, 126, 126)", color: "rgba(0, 0, 0, 0.65)"}}>
                         <FormattedMessage id='order_form_table.diagnostic.status.critical' />
                     </Button>
                 </div>
-                <div style={{ width: "5%", padding: '5px 10px'}}>
-                    <Icon type="delete" className={Styles.delete_diagnostic_button} onClick={()=>{this.handleClickDeleteButton()}}/>
+                <div className={Styles.delete_diagnostic_button_wrap} style={{width: "5%"}}>
+                    <Icon
+                        type="delete"
+                        className={!disabled?Styles.delete_diagnostic_button:Styles.delete_diagnostic_button_disabled}
+                        onClick={()=>{this.handleClickDeleteButton()}}
+                    />
                 </div>
             </div>
         );
@@ -1163,22 +1185,43 @@ class DiagnosticStatusButton extends React.Component{
         setTimeout(this.props.getCurrentDiagnostic, 500);
     }
     render(){
-        const status = this.state.status;
+        const { status } = this.state;
+        const { disabled } = this.props;
         return status > 0 ? (
             <div className={Styles.diagnostic_status_button_wrap}>
-                <Button className={Styles.diagnostic_status_button_edit} type="primary" onClick={()=>this.handleClick(0)}>
+                <Button
+                    disabled={disabled}
+                    className={Styles.diagnostic_status_button_edit}
+                    type="primary"
+                    onClick={()=>this.handleClick(0)}
+                >
                     <FormattedMessage id='order_form_table.diagnostic.status.edit' />
                 </Button>
             </div>
             ) : (
             <div className={Styles.diagnostic_status_button_wrap}>
-                <Button className={Styles.diagnostic_status_button} onClick={()=>this.handleClick(1)} style={{background:'rgb(81, 205, 102)'}}>
+                <Button
+                    disabled={disabled}
+                    className={Styles.diagnostic_status_button}
+                    onClick={()=>this.handleClick(1)}
+                    style={{background:'rgb(81, 205, 102)'}}
+                >
                     <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                 </Button>
-                <Button className={Styles.diagnostic_status_button} onClick={()=>this.handleClick(2)} style={{background:'rgb(255, 255, 0)'}}>
+                <Button
+                    disabled={disabled}
+                    className={Styles.diagnostic_status_button}
+                    onClick={()=>this.handleClick(2)}
+                    style={{background:'rgb(255, 255, 0)'}}
+                >
                     <FormattedMessage id='order_form_table.diagnostic.status.bad' />
                 </Button>
-                <Button className={Styles.diagnostic_status_button} type="danger" onClick={()=>this.handleClick(3)} style={{background:'rgb(255, 126, 126)', color: 'black'}}>
+                <Button 
+                    disabled={disabled}
+                    className={Styles.diagnostic_status_button} type="danger"
+                    onClick={()=>this.handleClick(3)}
+                    style={{background:'rgb(255, 126, 126)', color: 'rgba(0, 0, 0, 0.65)'}}
+                >
                     <FormattedMessage id='order_form_table.diagnostic.status.critical' />
                 </Button>
             </div>
@@ -1186,6 +1229,7 @@ class DiagnosticStatusButton extends React.Component{
     }
 }
 
+@injectIntl
 class CommentaryButton extends React.Component{
     constructor(props) {
         super(props);
@@ -1228,31 +1272,49 @@ class CommentaryButton extends React.Component{
 
     render() {
         const { TextArea } = Input;
-        const { visible, loading } = this.state;
-        const commentary = this.state.commentary;
+        const { visible, loading, commentary } = this.state;
+        const { disabled } = this.props;
         return (
             <div>
                 {commentary? (
-                    <Button onClick={this.showModal}><Icon type="form" /></Button>
+                    <Button
+                        className={Styles.commentaryButton}
+                        onClick={this.showModal}
+                    >
+                        <Icon
+                            className={Styles.commentaryButtonIcon}
+                            style={{color: "rgba(0, 0, 0, 0.65)"}}
+                            type="form"/>
+                    </Button>
                 ) : (
-                    <Button type="primary" onClick={this.showModal}><Icon type="message" /></Button>
+                    <Button
+                        disabled={disabled}
+                        type="primary"
+                        onClick={this.showModal}
+                    >
+                        <Icon type="message" />
+                    </Button>
                 )}
                 <Modal
                     visible={visible}
                     title={<FormattedMessage id='order_form_table.diagnostic.commentary' />}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
-                    footer={[
-                        <Button key="back" onClick={this.handleCancel}>
-                            {<FormattedMessage id='cancel' />}
-                        </Button>,
-                        <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
-                            {<FormattedMessage id='save' />}
-                        </Button>,
-                    ]}
+                    footer={disabled?(
+                        null
+                        ):([
+                            <Button key="back" onClick={this.handleCancel}>
+                                {<FormattedMessage id='cancel' />}
+                            </Button>,
+                            <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+                                {<FormattedMessage id='save' />}
+                            </Button>,
+                        ])
+                    }
                     >
                     <TextArea
-                        placeholder="Commentary"
+                        disabled={disabled}
+                        placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
                         autoFocus
                         onChange={()=>{this.state.commentary = event.target.value}}
                         style={{width: '100%', minHeight: '150px', resize:'none'}}
@@ -1338,6 +1400,7 @@ class PhotoButton extends React.Component{
     render() {
         /*this.state.photo = this.props.photo;
         const { visible, loading, photo } = this.state;
+        const { disabled } = this.props;
         if(photo === null) {
             if(this.props.rowProp.partId) {
                 this.getPhoto();
@@ -1362,7 +1425,13 @@ class PhotoButton extends React.Component{
         }
         return (
             <div>
-                <Button type={photo.length==0?"primary":""} onClick={this.showModal}><Icon type={photo.length==0?"camera":"file-image"} /></Button>
+                <Button
+                    disabled={disabled}
+                    type={photo.length==0?"primary":""}
+                    onClick={this.showModal}
+                >
+                    <Icon type={photo.length==0?"camera":"file-image"} />
+                </Button>
                 <Modal
                     visible={visible}
                     title={<FormattedMessage id='order_form_table.diagnostic.photo' />}
@@ -1418,8 +1487,16 @@ class DeleteProcessButton extends React.Component{
     }
 
     render() {
-        return <Icon type="delete" onClick={this.handleClick} className={Styles.delete_diagnostic_button}/>
-
+        const { disabled } = this.props;
+        return (
+        <div className={Styles.delete_diagnostic_button_wrap} style={{width: "5%"}}>
+            <Icon
+                type="delete"
+                className={!disabled?Styles.delete_diagnostic_button:Styles.delete_diagnostic_button_disabled}
+                onClick={this.handleClick}
+            />
+        </div>
+        );
     }
 }
 
