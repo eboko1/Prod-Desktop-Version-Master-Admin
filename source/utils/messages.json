@@ -159,7 +159,9 @@
     "+": "+",
     "-": "-",
     "price": "Price",
-    "count": "Count"
+    "count": "Count",
+    "hours": "Hours",
+    "description": "Description"
   },
   "ru": {
     "currency": "грн.",
@@ -321,7 +323,9 @@
     "+": "+",
     "-": "-",
     "price": "Цена",
-    "count": "Кол-во"
+    "count": "Кол-во",
+    "hours": "Часы",
+    "description": "Описание"
   },
   "uk": {
     "currency": "грн.",
@@ -483,6 +487,8 @@
     "+": "+",
     "-": "-",
     "price": "Ціна",
-    "count": "К-сть"
+    "count": "К-сть",
+    "hours": "Години",
+    "description": "Опис"
   }
 }

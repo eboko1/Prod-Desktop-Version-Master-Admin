@@ -1,8 +1,8 @@
 // vendor
 import React, { Component } from "react";
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
-import { Switch, Button, Icon, Input} from 'antd';
+import { FormattedMessage, injectIntl } from 'react-intl';
+import { Switch, Button, Icon, Input, Modal} from 'antd';
 
 // proj
 import {Layout, Spinner, MobileView, ResponsiveView, StyledButton} from 'commons';
@@ -15,7 +15,9 @@ import {
 // own
 import Styles from './styles.m.css';
 import { update } from "ramda";
+import { element } from "prop-types";
 
+@injectIntl
 class AgreementPage extends Component {
     constructor(props) {
         super(props);
@@ -23,12 +25,47 @@ class AgreementPage extends Component {
             dataSource: undefined,
             servicesList: [],
             detailsList: [],
+            commentary: null,
         }
         this.servicesTotal = 0;
         this.detailsTotal = 0;
         this.updateData = this.updateData.bind(this);
         this.onSwitchService = this.onSwitchService.bind(this);
         this.onSwitchDetail = this.onSwitchDetail.bind(this);
+    }
+
+    showConfirm() {
+        const title = this.props.intl.formatMessage({id: 'agreement.confirm_title'});
+        const content = this.props.intl.formatMessage({id: 'agreement.confirm_content'});
+        const { confirm } = Modal;
+        confirm({
+          title: title,
+          content: content,
+          onOk: ()=>{this.handleOk()},
+          onCancel: ()=>{console.log('Canceled')},
+        });
+      }
+
+    handleOk() {
+        var resultData = {
+            disableLaborIds: [],
+            disableDetailIds: [],
+            comment: this.state.commentary,
+        };
+
+        this.state.servicesList.map((elem)=>{
+            if(!elem.checked) {
+                resultData.disableLaborIds.push(elem.serviceId);
+            }
+        });
+
+        this.state.detailsList.map((elem)=>{
+            if(!elem.checked) {
+                resultData.disableDetailIds.push(elem.storeGroupId);
+            }
+        });
+        confirmAgreement(this.sessionId, resultData);
+        console.log("Confirmed");
     }
 
     updateData(data) {
@@ -60,7 +97,6 @@ class AgreementPage extends Component {
     }
 
     componentDidMount() {
-        // http://localhost:3000/agreement?sessionId=0d64ab71-f4f2-4aec-8ebf-aec6e706bf4b&lang=ru
         const queryString = window.location.search;
         const urlParams = new URLSearchParams(queryString);
         this.sessionId = urlParams.get('sessionId');
@@ -70,6 +106,7 @@ class AgreementPage extends Component {
 
     render() {
         const { TextArea } = Input;
+        const isMobile = window.innerWidth < 1200;
         const { dataSource } = this.state;
         this.servicesTotal = 0;
         this.detailsTotal = 0;
@@ -79,8 +116,6 @@ class AgreementPage extends Component {
             )
         }
         const vehicleNumber = dataSource.vehicleNumber;
-        const vehicleModel = "BMW X7";
-        const vehicleYear = "2016 p.";
         const servicesElements = this.state.servicesList.map((data, index)=>{
             if(data.checked) {
                 this.servicesTotal += data.sum;
@@ -109,11 +144,22 @@ class AgreementPage extends Component {
                 />
             )
         });
-        return (
+        return isMobile ? (
             <div className={Styles.agreementPage}>
                 <div className={Styles.vehicleInfoWrap}>
-                    <div className={`${Styles.vehicleInfo} ${Styles.vehicleModel}`}>{vehicleModel}</div>
-                    <div className={`${Styles.vehicleInfo} ${Styles.vehicleYear}`}>{vehicleYear}</div>
+                    <span className={`${Styles.vehicleInfo} ${Styles.vehicleNumber}`}>{vehicleNumber}</span>
+                    <span className={Styles.totalSum}>{this.servicesTotal + this.detailsTotal} <FormattedMessage id='cur'/></span>
+                    <Button
+                        type="primary"
+                        onClick={()=>{this.showConfirm()}}
+                    >
+                        <FormattedMessage id='save'/>
+                    </Button>
+                </div>
+            </div>
+        ) : (
+            <div className={Styles.agreementPage}>
+                <div className={Styles.vehicleInfoWrap}>
                     <div className={`${Styles.vehicleInfo} ${Styles.vehicleNumber}`}>{vehicleNumber}</div>
                 </div>
                 <div className={`${Styles.agreementHeader}`}>
@@ -130,40 +176,45 @@ class AgreementPage extends Component {
                         <span><FormattedMessage id="price"/></span>
                     </div>
                     <div className={`${Styles.columnHeader} ${Styles.rowCount}`}>
-                        <span><FormattedMessage id="count"/></span>
+                        <span><FormattedMessage id="hours"/>/<FormattedMessage id="count"/></span>
                     </div>
                     <div className={`${Styles.columnHeader} ${Styles.rowSum}`}>
                         <span><FormattedMessage id="sum"/></span>
                     </div>
                     <div className={`${Styles.columnHeader} ${Styles.rowSwitch}`}>
-                        <span><FormattedMessage id="action"/></span>
+                        <span></span>
                     </div>
                 </div>
-                <div className={Styles.servicesWrap}>
-                    <div className={Styles.sectionHeader}>
-                        <FormattedMessage id='add_order_form.services'/>
+                {servicesElements.length ?
+                    <div className={Styles.servicesWrap}>
+                        <div className={Styles.sectionHeader}>
+                            <FormattedMessage id='add_order_form.services'/>
+                        </div>
+                        {servicesElements}
+                        <div className={Styles.totalWrap}>
+                            <FormattedMessage id='add_order_form.services'/>:
+                            <span className={Styles.totalSum}>{this.servicesTotal} <FormattedMessage id='cur'/></span>
+                        </div>
                     </div>
-                    {servicesElements}
-                    <div className={Styles.totalWrap}>
-                        <FormattedMessage id='add_order_form.services'/>:
-                        <span className={Styles.totalSum}>{this.servicesTotal} <FormattedMessage id='cur'/></span>
+                : null}
+                {detailsElements.length ?
+                    <div className={Styles.detailsWrap}>
+                        <div className={Styles.sectionHeader}>
+                            <FormattedMessage id="add_order_form.details"/>
+                        </div>
+                        {detailsElements}
+                        <div className={Styles.totalWrap}>
+                            <FormattedMessage id="add_order_form.details"/>:
+                            <span className={Styles.totalSum}>{this.detailsTotal} <FormattedMessage id='cur'/></span>
+                        </div>
                     </div>
-                </div>
-                <div className={Styles.detailsWrap}>
-                    <div className={Styles.sectionHeader}>
-                        <FormattedMessage id="add_order_form.details"/>
-                    </div>
-                    {detailsElements}
-                    <div className={Styles.totalWrap}>
-                        <FormattedMessage id="add_order_form.details"/>:
-                        <span className={Styles.totalSum}>{this.detailsTotal} <FormattedMessage id='cur'/></span>
-                    </div>
-                </div>
+                : null}
                 <div>
                     <TextArea
                         className={Styles.commentaryTextArea}
-                        placeholder={<FormattedMessage id='comment'/>}
+                        placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
                         rows={5}
+                        onChange={()=>{this.state.commentary = event.target.value}}
                     />
                 </div>
                 <div className={`${Styles.agreementTotalSum} ${Styles.totalWrap}`}>
@@ -172,13 +223,7 @@ class AgreementPage extends Component {
                 </div>
                 <Button
                     type="primary"
-                    onClick={()=>{
-                        confirmAgreement(this.sessionId, {
-                            disableLaborIds: [],
-                            disableDetailIds: [],
-                            comment: "lol",
-                        });
-                    }}
+                    onClick={()=>{this.showConfirm()}}
                 >
                     <FormattedMessage id='save'/>
                 </Button>
@@ -208,13 +253,13 @@ class ServiceElement extends React.Component{
                     <span>{data.serviceName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.serviceName}</span>
+                    <span>{data.comment.asd}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{data.price} <FormattedMessage id='cur'/></span>
                 </div>
                 <div className={Styles.rowCount}>
-                    <span>{data.hours}</span>
+                    <span>{data.hours} <FormattedMessage id='add_order_form.hours_shortcut'/></span>
                 </div>
                 <div className={Styles.rowSum}>
                     <span>{data.sum} <FormattedMessage id='cur'/></span>
@@ -253,13 +298,13 @@ class DetailElement extends React.Component{
                     <span>{data.detailName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.detailName  }</span>
+                    <span>{data.detailDescription}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{data.price} <FormattedMessage id='cur'/></span>
                 </div>
                 <div className={Styles.rowCount}>
-                    <span>{data.count}</span>
+                    <span>{data.count} <FormattedMessage id='pc'/></span>
                 </div>
                 <div className={Styles.rowSum}>
                     <span>{data.sum} <FormattedMessage id='cur'/></span>
@@ -278,3 +323,5 @@ class DetailElement extends React.Component{
 }
 
 export default AgreementPage;
+
+// http://localhost:3000/agreement?sessionId=cd662227-458b-4608-b6e1-d23d9427031e&lang=ru

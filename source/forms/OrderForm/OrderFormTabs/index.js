@@ -167,7 +167,6 @@ export default class OrderFormTabs extends React.PureComponent {
         const stationLoadsFieldsProps = _.pick(this.props.fields, [
             "stationLoads",
         ]);
-
         return (
             <Tabs type="card" className={Styles.orderFormsTabs}>
                 {!addOrderForm && (
