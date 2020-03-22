@@ -346,8 +346,8 @@ export default class DetailsTable extends Component {
                             func,
                             args,
                         );
-
-                        return !confirmed ? (
+                        console.log(confirmed);
+                        return !confirmed || confirmed == "UNDEFINED" ? (
                             <LimitedDecoratedSelect
                                 errors={errors}
                                 defaultGetValueProps

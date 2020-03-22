@@ -327,7 +327,8 @@ class ServicesTable extends Component {
                 key:    'employeeId',
                 render: ({ key }) => {
                     const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
-                    return !confirmed ? (
+
+                    return !confirmed || confirmed == "UNDEFINED" ? (
                         <DecoratedSelect
                             errors={ errors }
                             defaultGetValueProps

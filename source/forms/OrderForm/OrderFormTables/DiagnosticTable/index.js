@@ -5,7 +5,7 @@ import { Table, Button, Modal, Upload, Icon, Checkbox, Select, Input, InputNumbe
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher, Spinner } from 'commons';
 import { ConfirmDiagnosticModal } from 'modals'
 import {
     API_URL,
@@ -26,6 +26,7 @@ class DiagnosticTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: false,
             completed: false,
             update: false,
             orderDiagnostic: props.orderDiagnostic,
@@ -987,7 +988,9 @@ class DiagnosticTable extends Component {
     render() {
         const disabled = this.state.completed;
         const columns = this.columns;
-        return (
+        return this.state.loading ? (
+            <Spinner spin={this.state.loading}/>
+        ) : (
             <Catcher>
                 <DiagnosticTableHeader
                     disabled={disabled}
