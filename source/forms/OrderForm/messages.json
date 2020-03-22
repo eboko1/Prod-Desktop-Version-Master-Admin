@@ -55,7 +55,8 @@
         "order_form_table.station": "Station",
         "order-form.update_modification_info": "Please update a vehicle modification",
         "order-form.warning": "Warning",
-        "rejected": "REJECTED"
+        "rejected": "REJECTED",
+        "agreed": "AGREED"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -113,7 +114,8 @@
         "order_form_table.station": "Пост",
         "order-form.update_modification_info": "Обновите, пожалуйста, модификацию автомобиля",
         "order-form.warning": "Внимание!",
-        "rejected": "ОТКЛОНЕНО"
+        "rejected": "ОТКЛОНЕНО",
+        "agreed": "СОГЛАСОВАНО"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -171,6 +173,7 @@
         "order_form_table.station": "Пост",
         "order-form.update_modification_info": "Оновіть, будь ласка, модифікацію автомобіля",
         "order-form.warning": "Увага!",
-        "rejected": "ВІДХИЛЕНО"
+        "rejected": "ВІДХИЛЕНО",
+        "agreed": "СХВАЛЕНО"
     }
 }

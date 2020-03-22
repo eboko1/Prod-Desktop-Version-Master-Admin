@@ -324,4 +324,4 @@ class DetailElement extends React.Component{
 
 export default AgreementPage;
 
-// http://localhost:3000/agreement?sessionId=cd662227-458b-4608-b6e1-d23d9427031e&lang=ru
+// http://localhost:3000/agreement?sessionId=eb7d4c17-1d9f-48f0-a77e-0812918e9352&lang=ru
