@@ -1,7 +1,19 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Table, Button, Modal, Upload, Icon, Checkbox, Select, Input, InputNumber, AutoComplete } from 'antd';
+import {
+    Table,
+    Button,
+    Modal,
+    Upload,
+    Icon,
+    Checkbox,
+    Select,
+    Input,
+    InputNumber,
+    AutoComplete,
+    Radio
+} from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
@@ -1312,8 +1324,11 @@ class CommentaryButton extends React.Component{
 
     render() {
         const { TextArea } = Input;
-        const { visible, loading, commentary } = this.state;
+        const { visible, loading, commentary, problems } = this.state;
         const { disabled, rowProp } = this.props;
+        const problemOptions = problems ? problems.map((data)=>(
+            { label: data.description, value: data.code }
+        )) : undefined;
         if(!rowProp.partId) {
             return (
                 <Button
@@ -1364,7 +1379,15 @@ class CommentaryButton extends React.Component{
                     }
                 >
                     <div>
-                        <div style={{width: "360px", height: "130px", backgroundColor: "red", position: "relative", display: "flex", flexWrap: "wrap"}}>
+                        <div  style={{
+                            width: "360px",
+                            height: "160px",
+                            position: "relative",
+                            backgroundImage: `url('${images.vehicleSchemeSide}')`,
+                            backgroundSize: "cover",
+                            backgroundPosition: "center",
+                            backgroundRepeat: "no-repeat",
+                        }}>
                             <Button
                                 style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
                             >
@@ -1387,7 +1410,15 @@ class CommentaryButton extends React.Component{
                             </Button>
                         </div>
                         <div style={{display: "flex"}}>
-                            <div style={{width: "180px", height: "130px", backgroundColor: "green", position: "relative"}}>
+                            <div style={{
+                                width: "180px",
+                                height: "160px",
+                                position: "relative",
+                                backgroundImage: `url('${images.vehicleSchemeFront}')`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                            }}>
                                 <Button
                                     style={{position: "absolute", left: "0%", bottom: "0%"}}
                                 >
@@ -1404,7 +1435,15 @@ class CommentaryButton extends React.Component{
                                     пра
                                 </Button>
                             </div>
-                            <div style={{width: "180px", height: "130px", backgroundColor: "blue", position: "relative"}}>
+                            <div style={{
+                                width: "180px",
+                                height: "160px",
+                                position: "relative",
+                                backgroundImage: `url('${images.vehicleSchemeBack}')`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                            }}>
                                 <Button
                                     style={{position: "absolute", left: "50%", bottom: "0%", transform: "translatex(-50%)"}}
                                 >
@@ -1421,18 +1460,28 @@ class CommentaryButton extends React.Component{
                     <div>
                         <p>Деталь:</p>
                         <div>
-
+                            <Radio.Group onChange={this.onChange}>
+                                <Radio value={1}>
+                                    Option A
+                                </Radio>
+                                <Radio value={2}>
+                                    Option B
+                                </Radio>
+                            </Radio.Group>
                         </div>
                     </div>
                     <div>
                         <p>Тип проблемы:</p>
+                        <div>
+                            <Checkbox.Group options={problemOptions} />
+                        </div>
                     </div>
                     <div>
                         <p>Параметры:</p>
                         <div>
-                            <InputNumber min={0}/> <Button>м</Button>
-                            <InputNumber min={0}/> <Button>%</Button>
-                            <InputNumber min={0}/> <Button>.</Button>
+                            <InputNumber min={0}/> <Button type="primary">м</Button>
+                            <InputNumber min={0}/> <Button type="danger">%</Button>
+                            <InputNumber min={0}/> <Button type="primary">°</Button>
                         </div>
                     </div>
                     <div>

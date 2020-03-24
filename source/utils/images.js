@@ -26,6 +26,10 @@ import trwLogo from 'theme/images/logos/trwLogo.png';
 // Funel
 import funelArrowCurvedLeft from 'theme/images/funel/funel_arrow-curved-left.svg';
 import funelArrowCurvedRight from 'theme/images/funel/funel_arrow-curved-right.svg';
+// Vehicle Scheme
+import vehicleSchemeFront from 'theme/images/vehicleScheme/front.jpg';
+import vehicleSchemeBack from 'theme/images/vehicleScheme/back.jpg';
+import vehicleSchemeSide from 'theme/images/vehicleScheme/side.jpg';
 
 export default {
     // Exceptions
@@ -55,4 +59,8 @@ export default {
     // Funel
     funelArrowCurvedLeft,
     funelArrowCurvedRight,
+    // Vehicle Scheme
+    vehicleSchemeFront,
+    vehicleSchemeBack,
+    vehicleSchemeSide,
 };
