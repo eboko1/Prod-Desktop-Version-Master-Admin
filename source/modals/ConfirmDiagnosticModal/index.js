@@ -120,7 +120,9 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     componentDidMount() {
-        this.fetchOptionsSourceData();
+        if(this.props.orderId) {
+            this.fetchOptionsSourceData();
+        }
     }
 
     componentWillUpdate() {

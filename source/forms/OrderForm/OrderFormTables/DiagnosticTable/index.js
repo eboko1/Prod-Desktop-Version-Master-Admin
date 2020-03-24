@@ -15,7 +15,8 @@ import {
     addNewDiagnosticRow,
     sendDiagnosticAnswer,
     deleteDiagnosticProcess,
-    deleteDiagnosticTemplate
+    deleteDiagnosticTemplate,
+    getPartProblems
 } from 'core/forms/orderDiagnosticForm/saga';
 
 // own
@@ -940,7 +941,6 @@ class DiagnosticTable extends Component {
     }
 
     componentWillMount() {
-        {this.updateDataSource()}
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -1192,7 +1192,21 @@ class DiagnosticStatusButton extends React.Component{
     }
     render(){
         const { status } = this.state;
-        const { disabled } = this.props;
+        const { disabled, rowProp } = this.props;
+
+        if(!rowProp.partId) {
+            return (
+                <div className={Styles.diagnostic_status_button_wrap}>
+                    <Button
+                        disabled
+                        className={Styles.diagnostic_status_button_edit}
+                        type="primary"
+                    >
+                        <FormattedMessage id='order_form_table.diagnostic.status.edit' />
+                    </Button>
+                </div>
+            )
+        }
         return status > 0 ? (
             <div className={Styles.diagnostic_status_button_wrap}>
                 <Button
@@ -1243,6 +1257,7 @@ class CommentaryButton extends React.Component{
             loading: false,
             visible: false,
             commentary: props.commentary,
+            problems: undefined,
         }
         this.commentaryInput = React.createRef();
     }
@@ -1275,11 +1290,17 @@ class CommentaryButton extends React.Component{
               <p>
                   {this.props.rowProp.detail}
               </p>
-              <p>
+              <p style={{fontSize:"16px", fontStyle: "italic", fontWeight: "normal"}}>
                   {this.props.rowProp.actionTitle}
               </p>
             </div>
           );
+    }
+
+    componentDidMount() {
+        if(!this.state.problems && this.props.rowProp.partId) {
+            getPartProblems(this.props.rowProp.partId, (data)=>{this.setState({problems: data})});
+        }
     }
 
     componentDidUpdate() {
@@ -1292,10 +1313,21 @@ class CommentaryButton extends React.Component{
     render() {
         const { TextArea } = Input;
         const { visible, loading, commentary } = this.state;
-        const { disabled } = this.props;
+        const { disabled, rowProp } = this.props;
+        if(!rowProp.partId) {
+            return (
+                <Button
+                    disabled
+                    type="primary"
+                    onClick={this.showModal}
+                >
+                    <Icon type="message" />
+                </Button>
+            )
+        }
         return (
             <div>
-                {commentary? (
+                {commentary ? (
                     <Button
                         className={Styles.commentaryButton}
                         onClick={this.showModal}
@@ -1332,7 +1364,7 @@ class CommentaryButton extends React.Component{
                     }
                 >
                     <div>
-                        <div style={{width: "360px", height: "130px", backgroundColor: "red", position: "relative"}}>
+                        <div style={{width: "360px", height: "130px", backgroundColor: "red", position: "relative", display: "flex", flexWrap: "wrap"}}>
                             <Button
                                 style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
                             >
@@ -1344,12 +1376,12 @@ class CommentaryButton extends React.Component{
                                 пер
                             </Button>
                             <Button
-                                style={{position: "absolute", bottom: "0%", right: "50%", transform: "translateX(50%)"}}
+                                style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
                             >
                                 ниж
                             </Button>
                             <Button
-                                style={{position: "absolute", left: "0%", bottom: "50%", transform: "translateY(50%)"}}
+                                style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
                             >
                                 зад
                             </Button>
@@ -1494,7 +1526,18 @@ class PhotoButton extends React.Component{
     render() {
         /*this.state.photo = this.props.photo;
         const { visible, loading, photo } = this.state;
-        const { disabled } = this.props;
+        const { disabled, rowProp } = this.props;
+        if(!rowProp.partId) {
+            return (
+                <Button
+                    disabled
+                    type="primary"
+                    onClick={this.showModal}
+                >
+                    <Icon type="message" />
+                </Button>
+            )
+        }
         if(photo === null) {
             if(this.props.rowProp.partId) {
                 this.getPhoto();
@@ -1574,14 +1617,16 @@ class DeleteProcessButton extends React.Component{
 
     handleClick = () => {
         const { rowProp } = this.props;
-        deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId);
-        ReactDOM.findDOMNode(this).parentNode.parentNode.style.backgroundColor = "";
-        this.props.deleteRow(this.props.rowProp.key-1);
-        this.setState({deleted:true});
+            if(rowProp.partId) {
+            deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId);
+            ReactDOM.findDOMNode(this).parentNode.parentNode.style.backgroundColor = "";
+            this.props.deleteRow(this.props.rowProp.key-1);
+            this.setState({deleted:true});
+        }
     }
 
     render() {
-        const { disabled } = this.props;
+        const { disabled, rowProp } = this.props;
         return (
         <div className={Styles.delete_diagnostic_button_wrap} style={{width: "5%"}}>
             <Icon

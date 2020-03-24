@@ -214,7 +214,6 @@ export async function deleteDiagnosticTemplate(orderId, templateId) {
 }
 
 export async function createAgreement(orderId, lang) {
-
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/create_agreement?orderId=${orderId}`;
@@ -230,6 +229,26 @@ export async function createAgreement(orderId, lang) {
         const result = await response.json();
         console.log("OK", result);
         alert(`${URL == "localhost"?URL+":3000":URL}/agreement?sessionId=${result.sessionId}&lang=${lang}`);
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
+}
+
+export async function getPartProblems(partId, getData) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/diagnostics/problems_mask?partId=${partId}`;
+
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        const result = await response.json();
+        getData(result.problems);
     } catch (error) {
         console.error('ERROR:', error);
     }
