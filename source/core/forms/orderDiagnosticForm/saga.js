@@ -1,4 +1,5 @@
-export const API_URL = window.location.hostname == 'localhost'? 'http://localhost:14281' : 'https://test-api.carbook.pro';
+export const URL = window.location.hostname;
+export const API_URL = URL == 'localhost'? 'http://localhost:14281' : 'https://test-api.carbook.pro';
 
 export function getDiagnosticsTemplates(getData) {
     let token = localStorage.getItem('_my.carbook.pro_token');
@@ -78,6 +79,31 @@ export async function confirmDiagnostic(orderId, data) {
         const result = await response.json();
         if(result.success) {
             console.log("OK", result);
+        }
+        else {
+            console.log("BAD", result);
+        }
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
+}
+
+export async function lockDiagnostic(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/orders/${orderId}/diagnostics`;
+    
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'LOCK',
+            headers: {
+                'Authorization': token,
+            },
+        });
+        const result = await response.json();
+        if(result.success) {
+            console.log("LOCKED", result);
         }
         else {
             console.log("BAD", result);
@@ -187,7 +213,8 @@ export async function deleteDiagnosticTemplate(orderId, templateId) {
     }
 }
 
-export async function createAgreement(orderId) {
+export async function createAgreement(orderId, lang) {
+
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/create_agreement?orderId=${orderId}`;
@@ -202,6 +229,7 @@ export async function createAgreement(orderId) {
         });
         const result = await response.json();
         console.log("OK", result);
+        alert(`${URL == "localhost"?URL+":3000":URL}/agreement?sessionId=${result.sessionId}&lang=${lang}`);
     } catch (error) {
         console.error('ERROR:', error);
     }

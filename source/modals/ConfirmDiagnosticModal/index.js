@@ -2,16 +2,18 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Checkbox, InputNumber, AutoComplete, Tabs } from 'antd';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {
     API_URL,
     confirmDiagnostic,
     createAgreement,
+    lockDiagnostic,
 } from 'core/forms/orderDiagnosticForm/saga';
 // own
 import Styles from './styles.m.css';
 
+@injectIntl
 class ConfirmDiagnosticModal extends React.Component{
     constructor(props) {
         super(props);
@@ -33,6 +35,13 @@ class ConfirmDiagnosticModal extends React.Component{
         this.diagnosticKey = 1;
     }
 
+    async endСonfirmation(orderId, data) {
+        await confirmDiagnostic(orderId, data);
+        await lockDiagnostic(orderId);
+        await this.props.getCurrentDiagnostic();
+        await this.props.updateTabs();
+    }
+
     showModal = () => {
         this.setState({
             visible: true,
@@ -41,6 +50,7 @@ class ConfirmDiagnosticModal extends React.Component{
     };
 
     handleOk = () => {
+        console.log(this);
         this.setState({ visible: false });
         var data = {
             services: [],
@@ -66,8 +76,7 @@ class ConfirmDiagnosticModal extends React.Component{
             }
         });
         console.log(data);
-        confirmDiagnostic(this.props.orderId, data);
-        createAgreement(this.props.orderId);
+        this.endСonfirmation(this.props.orderId, data);
     };
     
     handleCancel = () => {
@@ -670,22 +679,35 @@ class ConfirmDiagnosticModal extends React.Component{
 
     render() {
         const { visible } = this.state;
-        const { isMobile, disabled } = this.props;
+        const { isMobile, confirmed } = this.props;
         const { TabPane } = Tabs;
         return (
             <div>
-                <Button
-                    disabled={disabled}
-                    style={isMobile?{ width: "100%" }:{ width: "80%" }}
-                    type="primary"
-                    onClick={this.showModal}
-                >
-                {!isMobile ? (
-                    <FormattedMessage id='order_form_table.diagnostic.create_order'/>
-                ):(
-                    <FormattedMessage id='submit'/>
+                {confirmed ? (
+                    <Button
+                        style={isMobile?{ width: "100%" }:{ width: "80%" }}
+                        type="primary"
+                        onClick={()=>{createAgreement(this.props.orderId, this.props.intl.locale)}}
+                    >
+                    {!isMobile ? (
+                        <FormattedMessage id='send_message'/>
+                    ):(
+                        <FormattedMessage id='send_message'/>
+                    )}
+                    </Button>
+                ) : (
+                    <Button
+                        style={isMobile?{ width: "100%" }:{ width: "80%" }}
+                        type="primary"
+                        onClick={this.showModal}
+                    >
+                    {!isMobile ? (
+                        <FormattedMessage id='order_form_table.diagnostic.create_order'/>
+                    ):(
+                        <FormattedMessage id='submit'/>
+                    )}
+                    </Button>
                 )}
-                </Button>
                 <Modal
                     width={!isMobile?"75%":"95%"}
                     visible={visible}

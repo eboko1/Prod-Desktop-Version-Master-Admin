@@ -51,6 +51,13 @@ export default class OrderFormTabs extends React.PureComponent {
             },
         ];
         this.commentsAutoSize = { minRows: 2, maxRows: 6 };
+        this.updateTabs = this.updateTabs.bind(this);
+    }
+
+    updateTabs() {
+        this.setState({
+            update: true,
+        });
     }
 
     // TODO: move into utils
@@ -180,6 +187,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="1"
                     >
                         <DiagnosticTable
+                            updateTabs={this.updateTabs}
                             form={form}
                             orderDiagnostic={orderDiagnostic}
                             orderId={orderId}

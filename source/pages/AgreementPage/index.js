@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Switch, Button, Icon, Input, Modal} from 'antd';
+import { Switch, Button, Icon, Input, Modal, Result} from 'antd';
 
 // proj
 import {Layout, Spinner, MobileView, ResponsiveView, StyledButton} from 'commons';
@@ -22,6 +22,7 @@ class AgreementPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            confirmed: false,
             dataSource: undefined,
             servicesList: [],
             detailsList: [],
@@ -65,7 +66,9 @@ class AgreementPage extends Component {
             }
         });
         confirmAgreement(this.sessionId, resultData);
-        console.log("Confirmed");
+        this.setState({
+            confirmed: true,
+        })
     }
 
     updateData(data) {
@@ -107,12 +110,26 @@ class AgreementPage extends Component {
     render() {
         const { TextArea } = Input;
         const isMobile = window.innerWidth < 1200;
-        const { dataSource } = this.state;
+        const { dataSource, confirmed } = this.state;
         this.servicesTotal = 0;
         this.detailsTotal = 0;
+        if(confirmed) {
+            return (
+                <Result
+                    status="success"
+                    title="Successfully Purchased Cloud Server ECS!"
+                    subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
+                    style={{margin: "auto"}}
+                />
+            )
+        }
         if(dataSource == undefined) {
             return (
-                <Spinner spin={true}/>
+                <Result
+                    status="warning"
+                    title="There are some problems with your operation."
+                    style={{margin: "auto"}}
+                />
             )
         }
         const vehicleNumber = dataSource.vehicleNumber;
@@ -280,7 +297,6 @@ class ServiceElement extends React.Component{
     render() {
         const { data } = this.state;
         const { isMobile, checked } = this.props;
-        console.log();
         return isMobile ? (
             <div className={`${Styles.serviceElement} ${ checked ? null: Styles.disabledRow}`}>
                 <div style={{width:"10%", fontSize: "18px", textAlign:"left"}}>
@@ -318,7 +334,7 @@ class ServiceElement extends React.Component{
                     <span>{data.serviceName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.comment.asd}</span>
+                    <span>{data.comment?data.comment.asd:null}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{data.price} <FormattedMessage id='cur'/></span>
@@ -416,5 +432,3 @@ class DetailElement extends React.Component{
 }
 
 export default AgreementPage;
-
-// http://localhost:3000/agreement?sessionId=83ef9cce-a1d0-41df-b9c1-a9b895f983e0&lang=ru

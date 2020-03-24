@@ -308,6 +308,7 @@ export default class MyTasksContainer extends Component {
                 this.props.fetchMyTasks();
             },
         };
+        console.log(this);
 
         const { GET_ALL_TASKS } = permissions;
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);

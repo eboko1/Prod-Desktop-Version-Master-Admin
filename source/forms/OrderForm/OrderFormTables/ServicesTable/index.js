@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, InputNumber, Icon, Popconfirm, Select, Input } from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select, Input, Button } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -158,7 +158,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'ownDetail') }
                             field={ `services[${key}].ownDetail` }
                             getFieldDecorator={ getFieldDecorator }
-                            disabled={ editServicesForbidden || confirmed }
+                            disabled={ editServicesForbidden }
                         />
                     )
                 }
@@ -222,7 +222,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'primeCost') }
                             field={ `services[${key}].primeCost` }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
                             }
                             getFieldDecorator={ this.props.form.getFieldDecorator }
                             min={ 0 }
@@ -260,7 +260,7 @@ class ServicesTable extends Component {
                                     : void 0
                             }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
                             }
                             min={ 0 }
                         />
@@ -293,7 +293,7 @@ class ServicesTable extends Component {
                             }
                             getFieldDecorator={ getFieldDecorator }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
                             }
                             min={ 0.1 }
                             step={ 0.1 }
@@ -327,8 +327,7 @@ class ServicesTable extends Component {
                 key:    'employeeId',
                 render: ({ key }) => {
                     const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
-
-                    return !confirmed || confirmed == "UNDEFINED" ? (
+                    return (
                         <DecoratedSelect
                             errors={ errors }
                             defaultGetValueProps
@@ -349,15 +348,42 @@ class ServicesTable extends Component {
                         >
                             { this.state.employeesOptions }
                         </DecoratedSelect>
-                    ) : (
-                        <Input
-                            style={confirmed=="AGREED" ? {color:'rgb(81, 205, 102)'} : {color:'rgb(255, 126, 126)'}}
-                            value={this.props.intl.formatMessage({
-                                id: confirmed.toLowerCase(),
-                            })}
-                            disabled
-                        />
-                    );
+                    )
+                },
+            },
+            {
+                title:  <FormattedMessage id='order_form_table.status' />,
+                key: 'status',
+                render: ({ key }) => {
+                    const confirmed = this.props.orderServices != undefined && 
+                                    this.props.orderServices.length > key ? 
+                                    this.props.orderServices[key].agreement.toLowerCase() : "undefined";
+                    let color;
+                    switch(confirmed) {
+                        case "rejected":
+                            color = 'rgb(255, 126, 126)';
+                            break;
+                        case "agreed":
+                            color = 'rgb(81, 205, 102)';
+                            break;
+                        default:
+                            color = null;
+                    }
+                    return (
+                        <div style={{display: 'flex'}}>
+                            <Input
+                                disabled
+                                style={{color: color}}
+                                value={this.props.intl.formatMessage({
+                                    id: `status.${confirmed}`,
+                                })}
+                            />
+                            <Button
+                            >
+                                <Icon type="undo" />
+                            </Button>
+                        </div>
+                    )
                 },
             },
             {
