@@ -83,7 +83,7 @@ export default {
                 {
                     key:      '/diagnostic-patterns',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_DASHBOARD),
+                        isForbidden(user, permissions.ACCESS_STORE_GROUPS),
                     link: book.diagnosticPatterns,
                     name: 'navigation.diagnostic_patterns',
                 },

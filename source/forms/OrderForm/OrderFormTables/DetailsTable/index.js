@@ -139,8 +139,7 @@ export default class DetailsTable extends Component {
                 title: <FormattedMessage id="storage" />,
                 key: "storage",
                 render: ({ key }) => {
-                    const rejected = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement=="REJECTED";
-                    console.log(this.props);
+                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const { popconfirm, disabled } = getStorageFlow(
                         fields,
                         key,
@@ -161,6 +160,7 @@ export default class DetailsTable extends Component {
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
+                            disabled={confirmed=="AGREED"}
                             // disabled={editServicesForbidden}
                         />
                     ) : (
@@ -195,7 +195,7 @@ export default class DetailsTable extends Component {
                                     this.props.form.getFieldDecorator
                                 }
                                 hidden
-                                disabled={disabled}
+                                disabled={disabled || confirmed=="AGREED"}
                             />
                         </>
                     );
@@ -205,10 +205,10 @@ export default class DetailsTable extends Component {
 
             const detailName = {
                 title: <FormattedMessage id="order_form_table.detail_name" />,
-                width: "20%",
+                width: "17%",
                 key: "detail",
                 render: ({ key }) => {
-                    const rejected = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const productId = this._getDefaultValue(key, "productId");
 
                     const storageFlow =
@@ -252,7 +252,7 @@ export default class DetailsTable extends Component {
                                         ? Styles.multipleSuggest
                                         : void 0
                                 }
-                                disabled={editDetailsForbidden || rejected}
+                                disabled={editDetailsForbidden || confirmed=="AGREED"}
                                 field={`details[${key}].detailName`}
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -316,10 +316,10 @@ export default class DetailsTable extends Component {
 
             const brand = {
                 title: <FormattedMessage id="order_form_table.brand" />,
-                width: "13%",
+                width: "10%",
                 key: "brand",
                 render: ({ key }) => {
-                    const rejected = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const storageFlow =
                         this.props.form.getFieldValue(
                             `details[${key}].storage`,
@@ -347,8 +347,7 @@ export default class DetailsTable extends Component {
                             func,
                             args,
                         );
-
-                        return !rejected ? (
+                        return (
                             <LimitedDecoratedSelect
                                 errors={errors}
                                 defaultGetValueProps
@@ -365,7 +364,7 @@ export default class DetailsTable extends Component {
                                 disabled={
                                     this._isFieldDisabled(key) ||
                                     editDetailsForbidden ||
-                                    rejected
+                                    confirmed=="AGREED"
                                 }
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -380,13 +379,6 @@ export default class DetailsTable extends Component {
                             >
                                 {this.brands}
                             </LimitedDecoratedSelect>
-                        ) : (
-                            <Input
-                            value={this.props.intl.formatMessage({
-                                id: 'rejected',
-                            })}
-                            disabled
-                        />
                         );
                     };
 
@@ -435,7 +427,7 @@ export default class DetailsTable extends Component {
                 width: "10%",
                 key: "code",
                 render: ({ key }) => {
-                    const rejected = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const productId = this._getDefaultValue(key, "productId");
 
                     const storageFlow =
@@ -470,7 +462,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key) ||
                                 editDetailsForbidden ||
-                                rejected
+                                confirmed=="AGREED"
                             }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
@@ -563,7 +555,7 @@ export default class DetailsTable extends Component {
             };
 
             const suggest = {
-                width: "15%",
+                width: "13%",
                 title: <FormattedMessage id="order_form_table.suggest" />,
                 key: "tecDocActions",
                 render: ({ key }) => {
@@ -616,7 +608,7 @@ export default class DetailsTable extends Component {
                 width: "9%",
                 key: "purchasePrice",
                 render: ({ key }) => {
-                    const rejected = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const storageFlow = this.props.form.getFieldValue(
                         `details[${key}].storage`,
                     );
@@ -638,8 +630,7 @@ export default class DetailsTable extends Component {
                                 storageFlow
                                     ? true
                                     : this._isFieldDisabled(key, false, true) ||
-                                      editDetailsForbidden ||
-                                      rejected
+                                      editDetailsForbidden
                             }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
@@ -657,7 +648,7 @@ export default class DetailsTable extends Component {
                 width: "9%",
                 key: "price",
                 render: ({ key }) => {
-                    const rejected = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     return (
                         <DecoratedInputNumber
                             className={Styles.detailsRequiredFormItem}
@@ -678,7 +669,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden ||
-                                rejected
+                                confirmed=="AGREED"
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailPrice") || 0
@@ -696,7 +687,7 @@ export default class DetailsTable extends Component {
                 width: "7.5%",
                 key: "count",
                 render: ({ key }) => {
-                    const rejected = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const storageFlow = this.props.form.getFieldValue(
                         `details[${key}].storage`,
                     );
@@ -726,7 +717,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden ||
-                                rejected
+                                confirmed=="AGREED"
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailCount") || 1
@@ -765,6 +756,37 @@ export default class DetailsTable extends Component {
                 },
             };
 
+            const status = {
+                title:  <FormattedMessage id='order_form_table.status' />,
+                width: "8%",
+                key: 'status',
+                render: ({ key }) => {
+                    const confirmed = this.props.orderDetails != undefined && 
+                                    this.props.orderDetails.length > key ? 
+                                    this.props.orderDetails[key].agreement.toLowerCase() : "undefined";
+                    let color;
+                    switch(confirmed) {
+                        case "rejected":
+                            color = 'rgb(255, 126, 126)';
+                            break;
+                        case "agreed":
+                            color = 'rgb(81, 205, 102)';
+                            break;
+                        default:
+                            color = null;
+                    }
+                    return (
+                        <Input
+                            disabled
+                            style={{color: color}}
+                            value={this.props.intl.formatMessage({
+                                id: `status.${confirmed}`,
+                            })}
+                        />
+                    )
+                },
+            };
+
             const actions = {
                 title: "",
                 width: "auto",
@@ -784,6 +806,7 @@ export default class DetailsTable extends Component {
                     ),
             };
 
+
             let tableColumns = [
                 storage,
                 detailName,
@@ -794,6 +817,7 @@ export default class DetailsTable extends Component {
                 price,
                 count,
                 sum,
+                status,
                 actions,
             ];
 
@@ -807,6 +831,7 @@ export default class DetailsTable extends Component {
                     purchasePrice,
                     count,
                     sum,
+                    status,
                     actions,
                 ];
             }
@@ -950,7 +975,6 @@ export default class DetailsTable extends Component {
         if (!orderDetail) {
             return;
         }
-
         const actions = {
             detailName:
                 (orderDetail.detailId || orderDetail.detailName) &&
@@ -968,6 +992,9 @@ export default class DetailsTable extends Component {
             productBrandName: orderDetail.productBrandName,
             productBrandId: orderDetail.productBrandId,
             productCode: orderDetail.productCode,
+            //Marian
+            storeGroupId: orderDetail.storeGroupId,
+            detailId: orderDetail.id,
         };
         return actions[fieldName];
     };

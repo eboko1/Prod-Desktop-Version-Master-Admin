@@ -5,7 +5,8 @@ import { Table, Button, Modal, Upload, Icon, Checkbox, Select, Input, InputNumbe
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
-import { Catcher } from 'commons';
+import { Catcher, Spinner } from 'commons';
+import { images } from 'utils';
 import { ConfirmDiagnosticModal } from 'modals'
 import {
     API_URL,
@@ -585,6 +586,7 @@ class DiagnosticTable extends Component {
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             that.state.orderDiagnostic = data.diagnosis;
             that.state.completed = data.diagnosis.completed;
             that.updateDataSource();
@@ -992,6 +994,7 @@ class DiagnosticTable extends Component {
                 <DiagnosticTableHeader
                     disabled={disabled}
                     orderId={this.props.orderId}
+                    getCurrentDiagnostic={this.getCurrentDiagnostic}
                     templatesTitles={this.templatesTitles}
                     rowsCount={this.state.rowsCount}
                     selectedRows={this.state.selectedRows}
@@ -1005,6 +1008,7 @@ class DiagnosticTable extends Component {
                     dataSource={this.state.dataSource}
                     orderServices={this.props.orderServices}
                     orderDetails={this.props.orderDetails}
+                    updateTabs={this.props.updateTabs}
                 />
                 <Table
                     className={!disabled?Styles.diagnosticTable:Styles.diagnosticTableDisabled}
@@ -1104,12 +1108,14 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "35%" }}>
                     <ConfirmDiagnosticModal
-                        disabled={disabled}
+                        confirmed={disabled}
                         orderId={this.props.orderId}
                         isMobile={false}
                         dataSource = {this.state.dataSource}
                         orderServices={this.props.orderServices}
                         orderDetails={this.props.orderDetails}
+                        getCurrentDiagnostic={this.props.getCurrentDiagnostic}
+                        updateTabs={this.props.updateTabs}
                     />
                 </div>
                 <div style={{ width: "10%" }}>
@@ -1263,6 +1269,19 @@ class CommentaryButton extends React.Component{
         });
     };
 
+    rendetHeader = () => {
+        return (
+            <div>
+              <p>
+                  {this.props.rowProp.detail}
+              </p>
+              <p>
+                  {this.props.rowProp.actionTitle}
+              </p>
+            </div>
+          );
+    }
+
     componentDidUpdate() {
         this.state.commentary = this.props.commentary;
         if(this.commentaryInput.current != undefined) {
@@ -1297,7 +1316,7 @@ class CommentaryButton extends React.Component{
                 )}
                 <Modal
                     visible={visible}
-                    title={<FormattedMessage id='order_form_table.diagnostic.commentary' />}
+                    title={this.rendetHeader()}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     footer={disabled?(
@@ -1311,16 +1330,91 @@ class CommentaryButton extends React.Component{
                             </Button>,
                         ])
                     }
-                    >
-                    <TextArea
-                        disabled={disabled}
-                        placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
-                        autoFocus
-                        onChange={()=>{this.state.commentary = event.target.value}}
-                        style={{width: '100%', minHeight: '150px', resize:'none'}}
-                        defaultValue={commentary}
-                        ref={this.commentaryInput}
-                    />
+                >
+                    <div>
+                        <div style={{width: "360px", height: "130px", backgroundColor: "red", position: "relative"}}>
+                            <Button
+                                style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
+                            >
+                                вер
+                            </Button>
+                            <Button
+                                style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
+                            >
+                                пер
+                            </Button>
+                            <Button
+                                style={{position: "absolute", bottom: "0%", right: "50%", transform: "translateX(50%)"}}
+                            >
+                                ниж
+                            </Button>
+                            <Button
+                                style={{position: "absolute", left: "0%", bottom: "50%", transform: "translateY(50%)"}}
+                            >
+                                зад
+                            </Button>
+                        </div>
+                        <div style={{display: "flex"}}>
+                            <div style={{width: "180px", height: "130px", backgroundColor: "green", position: "relative"}}>
+                                <Button
+                                    style={{position: "absolute", left: "0%", bottom: "0%"}}
+                                >
+                                    лав
+                                </Button>
+                                <Button
+                                    style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
+                                >
+                                    цен
+                                </Button>
+                                <Button
+                                    style={{position: "absolute", right: "0%", bottom: "0%"}}
+                                >
+                                    пра
+                                </Button>
+                            </div>
+                            <div style={{width: "180px", height: "130px", backgroundColor: "blue", position: "relative"}}>
+                                <Button
+                                    style={{position: "absolute", left: "50%", bottom: "0%", transform: "translatex(-50%)"}}
+                                >
+                                    внут
+                                </Button>
+                                <Button
+                                    style={{position: "absolute", right: "0%", bottom: "0%"}}
+                                >
+                                    нар
+                                </Button>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <p>Деталь:</p>
+                        <div>
+
+                        </div>
+                    </div>
+                    <div>
+                        <p>Тип проблемы:</p>
+                    </div>
+                    <div>
+                        <p>Параметры:</p>
+                        <div>
+                            <InputNumber min={0}/> <Button>м</Button>
+                            <InputNumber min={0}/> <Button>%</Button>
+                            <InputNumber min={0}/> <Button>.</Button>
+                        </div>
+                    </div>
+                    <div>
+                        <FormattedMessage id='order_form_table.diagnostic.commentary' />
+                        <TextArea
+                            disabled={disabled}
+                            placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
+                            autoFocus
+                            onChange={()=>{this.state.commentary = event.target.value}}
+                            style={{width: '100%', minHeight: '150px', resize:'none'}}
+                            defaultValue={commentary}
+                            ref={this.commentaryInput}
+                        />
+                    </div>
                 </Modal>
             </div>
         );

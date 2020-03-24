@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Switch, Button, Icon, Input, Modal} from 'antd';
+import { Switch, Button, Icon, Input, Modal, Result} from 'antd';
 
 // proj
 import {Layout, Spinner, MobileView, ResponsiveView, StyledButton} from 'commons';
@@ -22,6 +22,7 @@ class AgreementPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            confirmed: false,
             dataSource: undefined,
             servicesList: [],
             detailsList: [],
@@ -65,7 +66,9 @@ class AgreementPage extends Component {
             }
         });
         confirmAgreement(this.sessionId, resultData);
-        console.log("Confirmed");
+        this.setState({
+            confirmed: true,
+        })
     }
 
     updateData(data) {
@@ -107,12 +110,26 @@ class AgreementPage extends Component {
     render() {
         const { TextArea } = Input;
         const isMobile = window.innerWidth < 1200;
-        const { dataSource } = this.state;
+        const { dataSource, confirmed } = this.state;
         this.servicesTotal = 0;
         this.detailsTotal = 0;
+        if(confirmed) {
+            return (
+                <Result
+                    status="success"
+                    title="Successfully Purchased Cloud Server ECS!"
+                    subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
+                    style={{margin: "auto"}}
+                />
+            )
+        }
         if(dataSource == undefined) {
             return (
-                <Spinner spin={true}/>
+                <Result
+                    status="warning"
+                    title="There are some problems with your operation."
+                    style={{margin: "auto"}}
+                />
             )
         }
         const vehicleNumber = dataSource.vehicleNumber;
@@ -127,6 +144,7 @@ class AgreementPage extends Component {
                     data={data}
                     checked={data.checked}
                     onSwitchService={this.onSwitchService}
+                    isMobile={isMobile}
                 />
             )
         });
@@ -141,20 +159,55 @@ class AgreementPage extends Component {
                     data={data}
                     checked={data.checked}
                     onSwitchDetail={this.onSwitchDetail}
+                    isMobile={isMobile}
                 />
             )
         });
         return isMobile ? (
             <div className={Styles.agreementPage}>
-                <div className={Styles.vehicleInfoWrap}>
-                    <span className={`${Styles.vehicleInfo} ${Styles.vehicleNumber}`}>{vehicleNumber}</span>
-                    <span className={Styles.totalSum}>{this.servicesTotal + this.detailsTotal} <FormattedMessage id='cur'/></span>
-                    <Button
-                        type="primary"
-                        onClick={()=>{this.showConfirm()}}
-                    >
-                        <FormattedMessage id='save'/>
-                    </Button>
+                <div className={Styles.agreementHeader}>
+                    <div>{vehicleNumber}</div>
+                    <div>{this.servicesTotal + this.detailsTotal} <FormattedMessage id='cur'/></div>
+                    <div style={{height: "100%"}}>
+                        <Button
+                            style={{height: "100%"}}
+                            type="primary"
+                            onClick={()=>{this.showConfirm()}}
+                        >
+                            <FormattedMessage id='save'/>
+                        </Button>
+                    </div>
+                </div>
+                {servicesElements.length ?
+                    <div className={Styles.servicesWrap}>
+                        <div className={Styles.sectionHeader}>
+                            <FormattedMessage id='add_order_form.services'/>
+                            <span className={Styles.totalSum}>{this.servicesTotal} <FormattedMessage id='cur'/></span>
+                        </div>
+                        {servicesElements}
+                    </div>
+                : null}
+                {detailsElements.length ?
+                    <div className={Styles.detailsWrap}>
+                        <div className={Styles.sectionHeader}>
+                            <FormattedMessage id="add_order_form.details"/>
+                            <span className={Styles.totalSum}>{this.detailsTotal} <FormattedMessage id='cur'/></span>
+                        </div>
+                        {detailsElements}
+                    </div>
+                : null}
+                <div className={Styles.commentWrap}>
+                    <div className={Styles.sectionHeader}>
+                        <FormattedMessage id="comment"/>
+                    </div>
+                    <div className={Styles.commentElement}>
+                        <TextArea
+                            className={Styles.commentaryTextArea}
+                            placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
+                            rows={5}
+                            onChange={()=>{this.state.commentary = event.target.value}}
+                        />
+                    </div>
                 </div>
             </div>
         ) : (
@@ -243,8 +296,36 @@ class ServiceElement extends React.Component{
 
     render() {
         const { data } = this.state;
-        const { checked } = this.props
-        return (
+        const { isMobile, checked } = this.props;
+        return isMobile ? (
+            <div className={`${Styles.serviceElement} ${ checked ? null: Styles.disabledRow}`}>
+                <div style={{width:"10%", fontSize: "18px", textAlign:"left"}}>
+                    {this.props.num}
+                </div>
+                <div style={{width:"62%", textAlign:"left"}}>
+                    <p style={{padding: "5px 0"}}>{data.serviceName}</p>
+                    {data.comment.asd == null ? 
+                        null
+                        :
+                        <p style={{fontStyle:"italic", padding: "5px 0"}}>
+                            {data.comment.asd}
+                        </p> 
+                    }
+                </div>
+                <div style={{width:"13%", fontSize: "18px"}}>{data.hours}</div>
+                <div style={{width:"15%"}}>
+                    <div style={{width:"100%", padding: "5px 0"}}>{data.sum}</div>
+                    <div style={{width:"100%", padding: "5px 0"}}>
+                        <Switch
+                            checked={checked}
+                            onClick={(value)=>{
+                                this.props.onSwitchService(this.props.num-1, value);
+                            }}
+                        />
+                    </div>
+                </div>
+            </div>
+            ) : (
             <div className={`${Styles.serviceElement} ${ checked ? null: Styles.disabledRow}`}>
                 <div className={Styles.rowKey}>
                     <span>{this.props.num}</span>
@@ -253,7 +334,7 @@ class ServiceElement extends React.Component{
                     <span>{data.serviceName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.comment.asd}</span>
+                    <span>{data.comment?data.comment.asd:null}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{data.price} <FormattedMessage id='cur'/></span>
@@ -288,8 +369,36 @@ class DetailElement extends React.Component{
 
     render() {
         const { data } = this.state;
-        const { checked } = this.props
-        return (
+        const { isMobile, checked } = this.props
+        return isMobile ? (
+            <div className={`${Styles.detailElement} ${ checked ? null: Styles.disabledRow}`}>
+                <div style={{width:"10%", fontSize: "18px", textAlign:"left"}}>
+                    {this.props.num}
+                </div>
+                <div style={{width:"62%", textAlign:"left"}}>
+                    <p style={{padding: "5px 0"}}>{data.detailName}</p>
+                    {data.detailBrand == null ? 
+                        null
+                        :
+                        <p style={{fontStyle:"italic", padding: "5px 0"}}>
+                            {data.detailBrand}
+                        </p> 
+                    }
+                </div>
+                <div style={{width:"13%", fontSize: "18px"}}>{data.count}</div>
+                <div style={{width:"15%"}}>
+                    <div style={{width:"100%", padding: "5px 0"}}>{data.sum}</div>
+                    <div style={{width:"100%", padding: "5px 0"}}>
+                        <Switch
+                            checked={checked}
+                            onClick={(value)=>{
+                                this.props.onSwitchDetail(this.props.num-1, value);
+                            }}
+                        />
+                    </div>
+                </div>
+            </div>
+            ) : (
             <div className={`${Styles.detailElement} ${ checked ? null: Styles.disabledRow}`}>
                 <div className={Styles.rowKey}>
                     <span>{this.props.num}</span>
@@ -298,7 +407,7 @@ class DetailElement extends React.Component{
                     <span>{data.detailName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.detailDescription}</span>
+                    <span>{data.detailBrand}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{data.price} <FormattedMessage id='cur'/></span>
@@ -323,5 +432,3 @@ class DetailElement extends React.Component{
 }
 
 export default AgreementPage;
-
-// http://localhost:3000/agreement?sessionId=cd662227-458b-4608-b6e1-d23d9427031e&lang=ru

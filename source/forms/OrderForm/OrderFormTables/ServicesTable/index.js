@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, InputNumber, Icon, Popconfirm, Select, Input } from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select, Input, Button } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -149,7 +149,7 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='order_form_table.own_detail' />,
                 key:    'ownDetail',
                 render: ({ key }) => {
-                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
                     return (
                         <DecoratedCheckbox
                             errors={ errors }
@@ -158,7 +158,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'ownDetail') }
                             field={ `services[${key}].ownDetail` }
                             getFieldDecorator={ getFieldDecorator }
-                            disabled={ editServicesForbidden || rejected }
+                            disabled={ editServicesForbidden }
                         />
                     )
                 }
@@ -172,7 +172,7 @@ class ServicesTable extends Component {
                         this._handleSelectMap[ key ] = value =>
                             this._handleServiceSelect(key, value);
                     }
-                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
                     return (
                         <DecoratedAutoComplete
                             errors={ errors }
@@ -181,7 +181,7 @@ class ServicesTable extends Component {
                                 fields,
                                 `services[${key}].serviceName`,
                             ) }
-                            disabled={ editServicesForbidden || rejected }
+                            disabled={ editServicesForbidden || confirmed }
                             onSelect={ value =>
                                 this._onServiceSelect(
                                     value,
@@ -213,7 +213,7 @@ class ServicesTable extends Component {
                 width:  '9%',
                 key:    'primeCost',
                 render: ({ key }) => {
-                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
                     return (
                         <DecoratedInputNumber
                             errors={ errors }
@@ -222,7 +222,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'primeCost') }
                             field={ `services[${key}].primeCost` }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || rejected
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
                             }
                             getFieldDecorator={ this.props.form.getFieldDecorator }
                             min={ 0 }
@@ -234,7 +234,7 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='order_form_table.price' />,
                 key:    'price',
                 render: ({ key }) => {
-                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
                     return (
                         <DecoratedInputNumber
                             className={ Styles.servicesRequiredFormItem }
@@ -260,7 +260,7 @@ class ServicesTable extends Component {
                                     : void 0
                             }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || rejected
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
                             }
                             min={ 0 }
                         />
@@ -271,7 +271,7 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='hours' />,
                 key:    'count',
                 render: ({ key }) => {
-                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
+                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
                     return (
                         <DecoratedInputNumber
                             formItem
@@ -293,7 +293,7 @@ class ServicesTable extends Component {
                             }
                             getFieldDecorator={ getFieldDecorator }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || rejected
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
                             }
                             min={ 0.1 }
                             step={ 0.1 }
@@ -326,8 +326,8 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='order_form_table.master' />,
                 key:    'employeeId',
                 render: ({ key }) => {
-                    const rejected = this.props.orderServices.length > key && this.props.orderServices[key].agreement=="REJECTED";
-                    return !rejected ? (
+                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
+                    return (
                         <DecoratedSelect
                             errors={ errors }
                             defaultGetValueProps
@@ -348,14 +348,42 @@ class ServicesTable extends Component {
                         >
                             { this.state.employeesOptions }
                         </DecoratedSelect>
-                    ) : (
-                        <Input
-                            value={this.props.intl.formatMessage({
-                                id: 'rejected',
-                            })}
-                            disabled
-                        />
-                    );
+                    )
+                },
+            },
+            {
+                title:  <FormattedMessage id='order_form_table.status' />,
+                key: 'status',
+                render: ({ key }) => {
+                    const confirmed = this.props.orderServices != undefined && 
+                                    this.props.orderServices.length > key ? 
+                                    this.props.orderServices[key].agreement.toLowerCase() : "undefined";
+                    let color;
+                    switch(confirmed) {
+                        case "rejected":
+                            color = 'rgb(255, 126, 126)';
+                            break;
+                        case "agreed":
+                            color = 'rgb(81, 205, 102)';
+                            break;
+                        default:
+                            color = null;
+                    }
+                    return (
+                        <div style={{display: 'flex'}}>
+                            <Input
+                                disabled
+                                style={{color: color}}
+                                value={this.props.intl.formatMessage({
+                                    id: `status.${confirmed}`,
+                                })}
+                            />
+                            <Button
+                            >
+                                <Icon type="undo" />
+                            </Button>
+                        </div>
+                    )
                 },
             },
             {

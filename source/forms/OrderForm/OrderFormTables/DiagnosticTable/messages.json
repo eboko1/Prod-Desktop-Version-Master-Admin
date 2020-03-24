@@ -18,7 +18,8 @@
         "order_form_table.diagnostic.results": "Diagnostic results",
         "order_form_table.diagnostic.automaticly": "Auto",
         "order_form_table.diagnostic.manually": "Manu",
-        "order_form_table.diagnostic.disabled": "Disabled"
+        "order_form_table.diagnostic.disabled": "Disabled",
+        "send_message": "Send message"
     },
     "ru": {
         "order_form_table.diagnostic": "Диагностика",
@@ -39,7 +40,8 @@
         "order_form_table.diagnostic.results": "Результаты диагностики",
         "order_form_table.diagnostic.automaticly": "Авто",
         "order_form_table.diagnostic.manually": "Ручн",
-        "order_form_table.diagnostic.disabled": "Отключен"
+        "order_form_table.diagnostic.disabled": "Отключен",
+        "send_message": "Отправить сообщение"
     },
     "uk": {
         "order_form_table.diagnostic": "Діагностика",
@@ -60,6 +62,7 @@
         "order_form_table.diagnostic.results": "Результати діагностики",
         "order_form_table.diagnostic.automaticly": "Авто",
         "order_form_table.diagnostic.manually": "Ручн",
-        "order_form_table.diagnostic.disabled": "Вимкнено"
+        "order_form_table.diagnostic.disabled": "Вимкнено",
+        "send_message": "Надіслати повідомлення"
     }
 }
