@@ -1389,24 +1389,28 @@ class CommentaryButton extends React.Component{
                             backgroundRepeat: "no-repeat",
                         }}>
                             <Button
+                                type="primary"
                                 style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
                             >
                                 вер
                             </Button>
                             <Button
+                                type="primary"
                                 style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
                             >
-                                пер
+                                зад
                             </Button>
                             <Button
+                                type="primary"
                                 style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
                             >
                                 ниж
                             </Button>
                             <Button
+                                type="primary"
                                 style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
                             >
-                                зад
+                                пер
                             </Button>
                         </div>
                         <div style={{display: "flex"}}>
@@ -1420,16 +1424,19 @@ class CommentaryButton extends React.Component{
                                 backgroundRepeat: "no-repeat",
                             }}>
                                 <Button
+                                    type="primary"
                                     style={{position: "absolute", left: "0%", bottom: "0%"}}
                                 >
                                     лав
                                 </Button>
                                 <Button
+                                    type="primary"
                                     style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
                                 >
                                     цен
                                 </Button>
                                 <Button
+                                    type="primary"
                                     style={{position: "absolute", right: "0%", bottom: "0%"}}
                                 >
                                     пра
@@ -1445,12 +1452,14 @@ class CommentaryButton extends React.Component{
                                 backgroundRepeat: "no-repeat",
                             }}>
                                 <Button
-                                    style={{position: "absolute", left: "50%", bottom: "0%", transform: "translatex(-50%)"}}
+                                    type="primary"
+                                    style={{position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}
                                 >
                                     внут
                                 </Button>
                                 <Button
-                                    style={{position: "absolute", right: "0%", bottom: "0%"}}
+                                    type="primary"
+                                    style={{position: "absolute", right: "0%", top: "50%", transform: "translateY(-50%)"}}
                                 >
                                     нар
                                 </Button>
@@ -1461,11 +1470,23 @@ class CommentaryButton extends React.Component{
                         <p>Деталь:</p>
                         <div>
                             <Radio.Group onChange={this.onChange}>
-                                <Radio value={1}>
-                                    Option A
+                                <Radio style={{width: "45%"}} value={1}>
+                                    Опора
                                 </Radio>
-                                <Radio value={2}>
-                                    Option B
+                                <Radio style={{width: "45%"}} value={2}>
+                                    Пружина
+                                </Radio>
+                                <Radio style={{width: "45%"}} value={3}>
+                                    Опора
+                                </Radio>
+                                <Radio style={{width: "45%"}} value={4}>
+                                    Отбойник
+                                </Radio>
+                                <Radio style={{width: "45%"}} value={5}>
+                                    Пыльник
+                                </Radio>
+                                <Radio style={{width: "45%"}} value={6}>
+                                    Амортизатор
                                 </Radio>
                             </Radio.Group>
                         </div>
@@ -1480,7 +1501,13 @@ class CommentaryButton extends React.Component{
                         <p>Параметры:</p>
                         <div>
                             <InputNumber min={0}/> <Button type="primary">м</Button>
-                            <InputNumber min={0}/> <Button type="danger">%</Button>
+                            <InputNumber
+                                defaultValue={0}
+                                min={0}
+                                formatter={value => `${value}%`}
+                                parser={value => value.replace('%', '')}
+                            /> 
+                            <Button type="danger">%</Button>
                             <InputNumber min={0}/> <Button type="primary">°</Button>
                         </div>
                     </div>
