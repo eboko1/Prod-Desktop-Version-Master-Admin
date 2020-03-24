@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import { connect } from 'react-redux';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Switch, Button, Icon, Input, Modal, Result} from 'antd';
+import { Switch, Button, Icon, Input, Modal } from 'antd';
 
 // proj
 import {Layout, Spinner, MobileView, ResponsiveView, StyledButton} from 'commons';
@@ -22,6 +22,7 @@ class AgreementPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            loading: true,
             confirmed: false,
             dataSource: undefined,
             servicesList: [],
@@ -82,6 +83,7 @@ class AgreementPage extends Component {
         });
         this.setState({
             dataSource: data,
+            loading: false,
         });
     }
 
@@ -110,28 +112,30 @@ class AgreementPage extends Component {
     render() {
         const { TextArea } = Input;
         const isMobile = window.innerWidth < 1200;
-        const { dataSource, confirmed } = this.state;
-        this.servicesTotal = 0;
-        this.detailsTotal = 0;
+        const { dataSource, confirmed, loading } = this.state;
+        if(loading) {
+            return (
+                <Spinner spin/>
+            )
+        }
         if(confirmed) {
             return (
-                <Result
+                <AgreementResult
                     status="success"
-                    title="Successfully Purchased Cloud Server ECS!"
-                    subTitle="Order number: 2017182818828182881 Cloud server configuration takes 1-5 minutes, please wait."
-                    style={{margin: "auto"}}
+                    title="Successfully, Thanks!"
+                    subtitle="You can close this tab"
                 />
             )
         }
         if(dataSource == undefined) {
             return (
-                <Result
-                    status="warning"
+                <AgreementResult
                     title="There are some problems with your operation."
-                    style={{margin: "auto"}}
                 />
             )
         }
+        this.servicesTotal = 0;
+        this.detailsTotal = 0;
         const vehicleNumber = dataSource.vehicleNumber;
         const servicesElements = this.state.servicesList.map((data, index)=>{
             if(data.checked) {
@@ -425,6 +429,66 @@ class DetailElement extends React.Component{
                             this.props.onSwitchDetail(this.props.num-1, value);
                         }}
                     />
+                </div>
+            </div>
+        )
+    }
+}
+
+class AgreementResult extends Component {
+    componentDidMount() {
+        /*setTimeout(()=>{
+            window.close();
+        }, 5000);*/
+    }
+
+    render() {
+        return (
+            <div
+                style={{
+                    display: "inline-block",
+                    margin: "auto",
+                    textAlign: "center",
+                }}
+            >
+                {this.props.status == "success" ? (
+                    <Icon
+                        type="check-circle" 
+                        theme="filled"
+                        style={{
+                            fontSize: "72px",
+                            color: "#52c41a",
+                            marginBottom: "24px",
+                        }}
+                    />
+                ) : (
+                    <Icon
+                        type="warning" 
+                        theme="filled"
+                        style={{
+                            fontSize: "72px",
+                            color: "#faad14",
+                            marginBottom: "24px",
+                        }}
+                    />
+                )}
+                <div
+                    style={{
+                        color: "rgba(0, 0, 0, 0.85)",
+                        fontSize: "24px",
+                        lineHeight: 1.8,
+                    }}
+                >
+                    {this.props.title}
+                </div>
+                <div 
+                    style={{
+                        color: "rgba(0, 0, 0, 0.45)",
+                        fontSize: "14px",
+                        lineHeight: 1.6,
+                    }}
+                >
+                    {this.props.subtitle}
                 </div>
             </div>
         )
