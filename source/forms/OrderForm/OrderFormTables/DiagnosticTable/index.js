@@ -1312,8 +1312,12 @@ class CommentaryButton extends React.Component{
 
     render() {
         const { TextArea } = Input;
-        const { visible, loading, commentary } = this.state;
+        const { visible, loading, commentary, problems } = this.state;
         const { disabled, rowProp } = this.props;
+        console.log(problems);
+        const problemOptions = problems ? problems.map((data)=>(
+            { label: data.description, value: data.code }
+        )) : null;
         if(!rowProp.partId) {
             return (
                 <Button
@@ -1426,13 +1430,16 @@ class CommentaryButton extends React.Component{
                     </div>
                     <div>
                         <p>Тип проблемы:</p>
+                        <div>
+                            <Checkbox.Group options={problemOptions} />
+                        </div>
                     </div>
                     <div>
                         <p>Параметры:</p>
                         <div>
-                            <InputNumber min={0}/> <Button>м</Button>
-                            <InputNumber min={0}/> <Button>%</Button>
-                            <InputNumber min={0}/> <Button>.</Button>
+                            <InputNumber min={0}/> <Button type="primary">м</Button>
+                            <InputNumber min={0}/> <Button type="danger">%</Button>
+                            <InputNumber min={0}/> <Button type="primary">°</Button>
                         </div>
                     </div>
                     <div>
