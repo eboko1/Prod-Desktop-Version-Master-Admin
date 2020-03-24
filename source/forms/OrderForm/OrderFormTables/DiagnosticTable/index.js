@@ -1270,6 +1270,15 @@ class CommentaryButton extends React.Component{
             visible: false,
             commentary: props.commentary,
             problems: undefined,
+            currentCommentary: {
+                side: undefined,
+                front: undefined,
+                back: undefined,
+                details: [],
+                problems: [],
+                mm:[],
+                percents: [],
+            }
         }
         this.commentaryInput = React.createRef();
     }
@@ -1307,6 +1316,11 @@ class CommentaryButton extends React.Component{
               </p>
             </div>
           );
+    }
+
+    setCurrentCommentary(key, value) {
+        var commentary = {...this.state.currentCommentary};
+
     }
 
     componentDidMount() {
@@ -1391,6 +1405,7 @@ class CommentaryButton extends React.Component{
                             <Button
                                 type="primary"
                                 style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
+                                onClick={()=>{this.setCurrentCommentary('side', 'up')}}
                             >
                                 вер
                             </Button>
@@ -1500,7 +1515,7 @@ class CommentaryButton extends React.Component{
                     <div>
                         <p>Параметры:</p>
                         <div>
-                            <InputNumber min={0}/> <Button type="primary">м</Button>
+                            <InputNumber min={0}/> <Button type="primary">мм</Button>
                             <InputNumber
                                 defaultValue={0}
                                 min={0}
