@@ -7,6 +7,7 @@ import _ from 'lodash';
 // proj
 import { Catcher } from 'commons';
 import {
+    DecoratedInput,
     DecoratedSelect,
     DecoratedAutoComplete,
     DecoratedInputNumber,
@@ -145,6 +146,24 @@ class ServicesTable extends Component {
             );
 
         return [
+            {
+                key:    'laborId',
+                width: '0%',
+                render: ({ key }) => {
+                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
+                    return (
+                        <DecoratedInput
+                            hiddeninput="hiddeninput"
+                            errors={ errors }
+                            defaultGetValueProps
+                            fieldValue={ _.get(fields, `services[${key}].laborId`) }
+                            initialValue={ this._getDefaultValue(key, 'laborId') }
+                            field={ `services[${key}].laborId` }
+                            getFieldDecorator={ getFieldDecorator }
+                        />
+                    )
+                }
+            },
             {
                 title:  <FormattedMessage id='order_form_table.own_detail' />,
                 key:    'ownDetail',
@@ -378,10 +397,6 @@ class ServicesTable extends Component {
                                     id: `status.${confirmed}`,
                                 })}
                             />
-                            <Button
-                            >
-                                <Icon type="undo" />
-                            </Button>
                         </div>
                     )
                 },
@@ -454,6 +469,7 @@ class ServicesTable extends Component {
             servicePrice: orderService.price,
             ownDetail:    orderService.ownDetail,
             employeeId:   orderService.employeeId,
+            laborId:      orderService.laborId,
         };
 
         return actions[ fieldName ];

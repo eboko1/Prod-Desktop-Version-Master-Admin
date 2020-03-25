@@ -23,6 +23,7 @@ export function convertFieldsValuesToDbEntity(
                 serviceCount: count,
                 employeeId: employeeId,
                 ownDetail: ownDetail,
+                laborId: laborId,
             } = service;
             const hours = null;
 
@@ -35,10 +36,16 @@ export function convertFieldsValuesToDbEntity(
                 ? { type: 'custom', serviceName: name }
                 : { type: name.split('|')[ 0 ], serviceId: name.split('|')[ 1 ] };
 
-            return { ...baseService, ...serviceType };
+            return {
+                serviceId: laborId,
+                serviceName: name,
+                serviceHours: count,
+                /* Marian services table fix / save button fix
+                ...baseService,
+                ...serviceType */
+            };
         })
         .value();
-
     const details = _(orderFields.details)
         .filter(Boolean)
         .filter(
@@ -56,12 +63,12 @@ export function convertFieldsValuesToDbEntity(
                 storage: storage,
                 productId: productId,
                 productCode: productCode,
+                storeGroupId: storeGroupId,
                 // using: using,
             } = detail;
             const detailConfig = allDetails.details.find(
                 ({ detailId: id }) => String(id) === detailId,
             );
-
             let detailCustom = { detailId };
 
             if (storage) {
@@ -74,7 +81,7 @@ export function convertFieldsValuesToDbEntity(
                 ({ brandId: id }) => String(id) === brandId,
             );
             
-            const baseDetail = { code, productCode, price, count, purchasePrice };
+            const baseDetail = { storeGroupId, code, productCode, price, count, purchasePrice };
 
             let brandCustom = {};
             if (!brandConfig) {
@@ -86,14 +93,18 @@ export function convertFieldsValuesToDbEntity(
             }
 
             return {
+                storeGroupId: storeGroupId ? storeGroupId : null,
+                price: price,
+                count: count,
+                /* Marian details table fix / save button fix
                 ...baseDetail,
                 ...detailCustom,
                 ...brandCustom,
-                // ...storage && using ? { using } : {},
+                // ...storage && using ? { using } : {}, */
             };
         })
         .value();
-
+    console.log(services, details);
     const beginDate = _.get(orderFields, 'stationLoads[0].beginDate');
     const beginTime = _.get(orderFields, 'stationLoads[0].beginTime');
 

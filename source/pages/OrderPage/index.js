@@ -379,6 +379,10 @@ class OrderPage extends Component {
         };
     }
 
+    reloadOrderPageComponents = () => {
+        this.componentDidMount();
+    }
+
     /* eslint-disable complexity*/
     render() {
         const {
@@ -581,6 +585,7 @@ class OrderPage extends Component {
                         fetchOrderForm={ fetchOrderForm }
                         fetchOrderTask={ fetchOrderTask }
                         onStatusChange={ this._onStatusChange }
+                        reloadOrderPageComponents = { this.reloadOrderPageComponents }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

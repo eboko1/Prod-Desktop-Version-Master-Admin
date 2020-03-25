@@ -1021,6 +1021,7 @@ class DiagnosticTable extends Component {
                     orderServices={this.props.orderServices}
                     orderDetails={this.props.orderDetails}
                     updateTabs={this.props.updateTabs}
+                    reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                 />
                 <Table
                     className={!disabled?Styles.diagnosticTable:Styles.diagnosticTableDisabled}
@@ -1128,6 +1129,7 @@ class DiagnosticTableHeader extends React.Component{
                         orderDetails={this.props.orderDetails}
                         getCurrentDiagnostic={this.props.getCurrentDiagnostic}
                         updateTabs={this.props.updateTabs}
+                        reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                     />
                 </div>
                 <div style={{ width: "10%" }}>
@@ -1270,15 +1272,16 @@ class CommentaryButton extends React.Component{
             visible: false,
             commentary: props.commentary,
             problems: undefined,
-            currentCommentary: {
-                side: undefined,
-                front: undefined,
-                back: undefined,
-                details: [],
+            currentCommentaryProps: {
+                side: null,
+                front: null,
+                back: null,
+                details: null,
                 problems: [],
-                mm:[],
-                percents: [],
-            }
+                mm:null,
+                percent: null,
+            },
+            currentCommentary: null,
         }
         this.commentaryInput = React.createRef();
     }
@@ -1318,9 +1321,20 @@ class CommentaryButton extends React.Component{
           );
     }
 
-    setCurrentCommentary(key, value) {
-        var commentary = {...this.state.currentCommentary};
+    setcurrentCommentaryProps(key, value) {
+        const { rowProp } = this.props;
+        if(this.state.currentCommentaryProps[key] == value) {
+            this.state.currentCommentaryProps[key] = null;
+        }
+        else {
+            this.state.currentCommentaryProps[key] = value;
+        }
 
+        const { side, back, front, details, problems, mm, percent } = this.state.currentCommentaryProps;
+        var commentary = `${rowProp.detail} - ${side}. ${back}. ${front}. ${problems.map((data)=>data.code)}, ${percent}`;
+        this.setState({
+            currentCommentary: commentary.replace(null, ''),
+        });
     }
 
     componentDidMount() {
@@ -1338,11 +1352,12 @@ class CommentaryButton extends React.Component{
 
     render() {
         const { TextArea } = Input;
-        const { visible, loading, commentary, problems } = this.state;
+        const { visible, loading, commentary, problems, currentCommentaryProps, currentCommentary } = this.state;
         const { disabled, rowProp } = this.props;
         const problemOptions = problems ? problems.map((data)=>(
             { label: data.description, value: data.code }
         )) : undefined;
+
         if(!rowProp.partId) {
             return (
                 <Button
@@ -1354,6 +1369,7 @@ class CommentaryButton extends React.Component{
                 </Button>
             )
         }
+
         return (
             <div>
                 {commentary ? (
@@ -1403,27 +1419,30 @@ class CommentaryButton extends React.Component{
                             backgroundRepeat: "no-repeat",
                         }}>
                             <Button
-                                type="primary"
+                                type={this.state.currentCommentaryProps.side == "up" ? null : "primary"}
                                 style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                onClick={()=>{this.setCurrentCommentary('side', 'up')}}
+                                onClick={()=>{this.setcurrentCommentaryProps('side', 'up')}}
                             >
                                 вер
                             </Button>
                             <Button
-                                type="primary"
+                                type={this.state.currentCommentaryProps.side == "back" ? null : "primary"}
                                 style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
+                                onClick={()=>{this.setcurrentCommentaryProps('side', 'back')}}
                             >
                                 зад
                             </Button>
                             <Button
-                                type="primary"
+                                type={this.state.currentCommentaryProps.side == "down" ? null : "primary"}
                                 style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
+                                onClick={()=>{this.setcurrentCommentaryProps('side', 'down')}}
                             >
                                 ниж
                             </Button>
                             <Button
-                                type="primary"
+                                type={this.state.currentCommentaryProps.side == "front" ? null : "primary"}
                                 style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
+                                onClick={()=>{this.setcurrentCommentaryProps('side', 'front')}}
                             >
                                 пер
                             </Button>

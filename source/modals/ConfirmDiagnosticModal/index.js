@@ -38,8 +38,7 @@ class ConfirmDiagnosticModal extends React.Component{
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
         await lockDiagnostic(orderId);
-        await this.props.getCurrentDiagnostic();
-        await this.props.updateTabs();
+        await this.props.reloadOrderPageComponents();
     }
 
     showModal = () => {
@@ -50,7 +49,6 @@ class ConfirmDiagnosticModal extends React.Component{
     };
 
     handleOk = () => {
-        console.log(this);
         this.setState({ visible: false });
         var data = {
             services: [],

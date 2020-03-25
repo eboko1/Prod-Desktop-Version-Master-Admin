@@ -193,6 +193,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             orderId={orderId}
                             orderServices={orderServices}
                             orderDetails={orderDetails}
+                            reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                         />
                     </TabPane>
                 )}
