@@ -103,11 +103,29 @@ class ServicesTable extends Component {
         }
     };
 
+    _laborIdToServiceName = (laborId) => {
+        if(!laborId) {
+            return;
+        }
+        const { allServices } = this.props;
+        const service = allServices.find((elem)=>elem.laborId == laborId);
+        return service ? service.name : laborId;
+    }
+
+    _serviceNameToLaborId = (serviceName) => {
+        if(!serviceName) {
+            return;
+        }
+        const { allServices } = this.props;
+        const service = allServices.find((elem)=>elem.name == serviceName);
+        return service ? service.laborId : serviceName;
+    }
+
     _getServicesOptions() {
         return _.get(this.props, 'allServices', []).map(
-            ({ id, type, serviceName }, index) => (
-                <Option value={ `${type}|${id}` } key={ `allServices-${index}` }>
-                    { serviceName }
+            ({ laborId, masterLaborId, productId, name }, index) => (
+                <Option value={ name } key={ `allServices-${index}` }>
+                    { name }
                 </Option>
             ),
         );
@@ -156,8 +174,11 @@ class ServicesTable extends Component {
                             hiddeninput="hiddeninput"
                             errors={ errors }
                             defaultGetValueProps
-                            fieldValue={ _.get(fields, `services[${key}].laborId`) }
-                            initialValue={ this._getDefaultValue(key, 'laborId') }
+                            fieldValue={ this._serviceNameToLaborId(
+                                _.get(fields, `services[${key}].laborId`)
+                                )
+                            }
+                            initialValue={ this._serviceNameToLaborId(this._getDefaultValue(key, 'laborId')) }
                             field={ `services[${key}].laborId` }
                             getFieldDecorator={ getFieldDecorator }
                         />
@@ -196,16 +217,22 @@ class ServicesTable extends Component {
                         <DecoratedAutoComplete
                             errors={ errors }
                             defaultGetValueProps
-                            fieldValue={ _.get(
-                                fields,
-                                `services[${key}].serviceName`,
-                            ) }
+                            fieldValue={
+                                _.get(fields, `services[${key}].serviceName`)
+                            }
                             disabled={ editServicesForbidden || confirmed.length }
-                            onSelect={ value =>
-                                this._onServiceSelect(
-                                    value,
-                                    _.get(fields, `services[${key}].ownDetail`),
-                                )
+                            onSelect={ value => {
+                                    this.props.form.setFieldsValue({
+                                        [`services[${key}].serviceName`]: value,
+                                        [`services[${key}].laborId`]: this._serviceNameToLaborId(value),
+                                    });
+                                    console.log(fields);
+
+                                    this._onServiceSelect(
+                                        value,
+                                        false, //_.get(fields, `services[${key}].ownDetail`),
+                                    );
+                                }
                             }
                             field={ `services[${key}].serviceName` }
                             getFieldDecorator={ getFieldDecorator }
@@ -217,7 +244,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(
                                 key,
                                 'serviceName',
-                            ) }
+                            )}
                             placeholder={ serviceSelectPlaceholder }
                             dropdownMatchSelectWidth={ false }
                             // dropdownStyle={ { width: '70%' } }
@@ -238,14 +265,15 @@ class ServicesTable extends Component {
                         <DecoratedInputNumber
                             errors={ errors }
                             defaultGetValueProps
-                            fieldValue={ _.get(fields, `services[${key}].primeCost`, servicePrice) }
-                            initialValue={ this._getDefaultValue(key, 'primeCost') || servicePrice }
+                            fieldValue={ _.get(fields, `services[${key}].primeCost`) }
+                            initialValue={ this._getDefaultValue(key, 'primeCost') }
                             field={ `services[${key}].primeCost` }
                             disabled={
                                 this._isFieldDisabled(key) || editServicesForbidden || confirmed=="REJECTED"
                             }
                             getFieldDecorator={ this.props.form.getFieldDecorator }
                             min={ 0 }
+                            step={0.1}
                         />
                     )
                 }
@@ -446,9 +474,8 @@ class ServicesTable extends Component {
             return;
         }
         const baseService = this.props.allServices.find(
-            ({ serviceId, type }) => `${type}|${serviceId}` === serviceName,
+            (service) => service.name === serviceName,
         );
-
         return _.get(baseService, 'servicePrice');
     };
 
@@ -458,23 +485,28 @@ class ServicesTable extends Component {
         const orderService = (this.props.orderServices || [])[ key ];
         const allServices = this.props.allServices;
         if (!orderService) {
+            /*const laborId = _.get(this.props, `services[${key}].serviceName`);
+            if(laborId) {
+                const service = this._laborIdToServiceName(laborId);
+
+                const actions = {
+                    serviceName:  service.name,
+                    serviceHours: undefined,
+                    servicePrice: undefined,
+                    ownDetail:    undefined,
+                    employeeId:   undefined,
+                    laborId:      service.laborId,
+                    agreement:    "UNDEFINED",
+                };
+        
+                return actions[ fieldName ];
+            }*/
             return;
         }
 
-        const resolveServiceId = (type, serviceId, name) =>
-            _.find(allServices, { type, serviceId })
-                ? `${type}|${serviceId}`
-                : name;
 
         const actions = {
-            serviceName:
-                orderService.type !== 'custom'
-                    ? resolveServiceId(
-                        orderService.type,
-                        orderService.serviceId,
-                        orderService.serviceName,
-                    )
-                    : orderService.serviceName,
+            serviceName:  orderService.serviceName,
             serviceHours: orderService.hours,
             servicePrice: orderService.price,
             ownDetail:    orderService.ownDetail,
@@ -482,7 +514,6 @@ class ServicesTable extends Component {
             laborId:      orderService.laborId,
             agreement:    orderService.agreement,
         };
-
         return actions[ fieldName ];
     };
 

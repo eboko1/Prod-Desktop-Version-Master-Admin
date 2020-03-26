@@ -13,6 +13,7 @@ export function convertFieldsValuesToDbEntity(
     status = 'not_complete',
     user,
 ) {
+    console.log(orderFields);
     const services = _(orderFields.services)
         .filter(Boolean)
         .filter(service => _.get(service, 'serviceName'))
@@ -36,17 +37,18 @@ export function convertFieldsValuesToDbEntity(
             const serviceType = !serviceConfig
                 ? { type: 'custom', serviceName: name }
                 : { type: name.split('|')[ 0 ], serviceId: name.split('|')[ 1 ] };
+            
+            var result = {};
 
-            return {
-                serviceId: laborId,
-                agreement: agreement,
-                serviceName: name,
-                serviceHours: hours,
-                employeeId: employeeId,
-                /* Marian services table fix / save button fix
-                ...baseService,
-                ...serviceType */
-            };
+            if(name) result.serviceName = name;
+            if(laborId) result.serviceId = laborId;
+            if(price) result.servicePrice = price;
+            if(employeeId) result.employeeId = employeeId;
+            if(hours) result.serviceHours = hours;
+            if(agreement) result.agreement = agreement;
+            console.log(result);
+
+            return result
         })
         .value();
         console.log(services);

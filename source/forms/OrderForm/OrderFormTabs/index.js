@@ -243,6 +243,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         allServices={allServices}
                         orderServices={orderServices}
                         user={user}
+                        fetchedOrder={fetchedOrder}
                         selectedClient={selectedClient}
                         fetchTecdocSuggestions={fetchTecdocSuggestions}
                         completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}

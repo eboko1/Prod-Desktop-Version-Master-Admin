@@ -37,10 +37,10 @@ class ConfirmDiagnosticModal extends React.Component{
 
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
-        //await lockDiagnostic(orderId);
+        await lockDiagnostic(orderId);
         await this.props.reloadOrderPageComponents();
-        //createAgreement(this.props.orderId, this.props.intl.locale);
-        //await window.location.reload();
+        createAgreement(this.props.orderId, this.props.intl.locale);
+        await window.location.reload();
     }
 
     showModal = () => {
@@ -58,10 +58,13 @@ class ConfirmDiagnosticModal extends React.Component{
         }
         this.state.servicesList.map((element)=>{
             if(element.checked && element.laborId != null) {
+                let comment = {
+                    comment: element.comment,
+                }
                 data.services.push({
                     serviceId: element.laborId,
                     serviceHours: element.hours,
-                    comment: element.comment,
+                    comment: comment,
                 })
             }
         });
@@ -69,7 +72,7 @@ class ConfirmDiagnosticModal extends React.Component{
             if(element.checked && element.id != null) {
                 data.details.push({
                     storeGroupId: element.id,
-                    count: element.count
+                    count: element.count,
                 })
             }
         });

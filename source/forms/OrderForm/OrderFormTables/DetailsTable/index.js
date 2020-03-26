@@ -92,6 +92,7 @@ export default class DetailsTable extends Component {
             },
         ];
 
+        console.log(this.props.allDetails);
         this.details = this.props.allDetails.details.map(
             ({ detailId, detailName }) => (
                 <Option value={String(detailId)} key={`allDetails-${detailId}`}>
@@ -101,7 +102,7 @@ export default class DetailsTable extends Component {
         );
 
         this.brands = this.props.allDetails.brands.map(
-            ({ brandId, brandName }) => (
+            ({ supplierId, brandId, brandName }) => (
                 <Option value={String(brandId)} key={`allBrands-${brandId}`}>
                     {brandName}
                 </Option>

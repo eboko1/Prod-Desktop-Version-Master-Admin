@@ -1428,7 +1428,7 @@ class CommentaryButton extends React.Component{
                                 height: "160px",
                                 position: "relative",
                                 backgroundImage: `url('${images.vehicleSchemeSide}')`,
-                                backgroundSize: "cover",
+                                backgroundSize: "contain",
                                 backgroundPosition: "center",
                                 backgroundRepeat: "no-repeat",
                             }}>
@@ -1467,7 +1467,7 @@ class CommentaryButton extends React.Component{
                                     height: "160px",
                                     position: "relative",
                                     backgroundImage: `url('${images.vehicleSchemeFront}')`,
-                                    backgroundSize: "cover",
+                                    backgroundSize: "contain",
                                     backgroundPosition: "center",
                                     backgroundRepeat: "no-repeat",
                                 }}>
@@ -1498,7 +1498,7 @@ class CommentaryButton extends React.Component{
                                     height: "160px",
                                     position: "relative",
                                     backgroundImage: `url('${images.vehicleSchemeBack}')`,
-                                    backgroundSize: "cover",
+                                    backgroundSize: "contain",
                                     backgroundPosition: "center",
                                     backgroundRepeat: "no-repeat",
                                 }}>

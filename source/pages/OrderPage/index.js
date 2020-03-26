@@ -89,10 +89,6 @@ const mapStateToProps = state => {
     return {
         // orderTaskEntity:       state.forms.orderTaskForm.fields, 
         // addClientFormData:     state.forms.addClientForm.data,
-        //Marian service detail table fix
-        //
-        //allDetails:            state.forms.orderForm.allStoreGroups,
-        //allServices:           state.forms.orderForm.allLabors,
         allDetails:            state.forms.orderForm.allDetails,
         allServices:           state.forms.orderForm.allServices,
         clients:               state.forms.orderForm.clients,
