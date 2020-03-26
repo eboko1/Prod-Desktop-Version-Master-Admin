@@ -561,6 +561,7 @@ export default class DetailsTable extends Component {
                     const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const renderAsDetailsField = () => (
                         <DecoratedInput
+                            hiddeninput="hiddeninput"
                             errors={errors}
                             defaultGetValueProps
                             fieldValue={_.get(
@@ -796,10 +797,10 @@ export default class DetailsTable extends Component {
                 },
             };
 
-            const status = {
+            const agreement = {
                 title:  <FormattedMessage id='order_form_table.status' />,
                 width: "8%",
-                key: 'status',
+                key: 'agreement',
                 render: ({ key }) => {
                     const confirmed = this.props.orderDetails != undefined && 
                                     this.props.orderDetails.length > key ? 
@@ -816,6 +817,7 @@ export default class DetailsTable extends Component {
                             color = null;
                     }
                     return (
+                        <>
                         <Input
                             disabled
                             style={{color: color}}
@@ -823,6 +825,33 @@ export default class DetailsTable extends Component {
                                 id: `status.${confirmed}`,
                             })}
                         />
+                        <DecoratedInput
+                            hiddeninput="hiddeninput"
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(
+                                fields,
+                                `details[${key}].agreement`,
+                            )}
+                            cnStyles={
+                                _.get(
+                                    formDetails,
+                                    `[${key}].multipleSuggestions`,
+                                )
+                                    ? Styles.multipleSuggest
+                                    : void 0
+                            }
+                            initialValue={this._getDefaultValue(
+                                key,
+                                "agreement",
+                            )}
+                            field={`details[${key}].agreement`}
+                            disabled
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                        />
+                        </>
                     )
                 },
             };
@@ -858,7 +887,7 @@ export default class DetailsTable extends Component {
                 price,
                 count,
                 sum,
-                status,
+                agreement,
                 actions,
             ];
 
@@ -873,7 +902,7 @@ export default class DetailsTable extends Component {
                     purchasePrice,
                     count,
                     sum,
-                    status,
+                    agreement,
                     actions,
                 ];
             }
@@ -1037,7 +1066,7 @@ export default class DetailsTable extends Component {
             //Marian
             storeGroupId: orderDetail.storeGroupId,
             detailId: orderDetail.id,
-            storeGroupId: orderDetail.id,
+            agreement: orderDetail.agreement,
         };
         return actions[fieldName];
     };

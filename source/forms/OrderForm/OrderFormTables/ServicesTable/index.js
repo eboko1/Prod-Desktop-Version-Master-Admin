@@ -200,7 +200,7 @@ class ServicesTable extends Component {
                                 fields,
                                 `services[${key}].serviceName`,
                             ) }
-                            disabled={ editServicesForbidden || confirmed }
+                            disabled={ editServicesForbidden || confirmed.length }
                             onSelect={ value =>
                                 this._onServiceSelect(
                                     value,
@@ -233,15 +233,16 @@ class ServicesTable extends Component {
                 key:    'primeCost',
                 render: ({ key }) => {
                     const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
+                    const servicePrice = _.get(fields,`services[${key}].servicePrice`);
                     return (
                         <DecoratedInputNumber
                             errors={ errors }
                             defaultGetValueProps
-                            fieldValue={ _.get(fields, `services[${key}].primeCost`) }
-                            initialValue={ this._getDefaultValue(key, 'primeCost') }
+                            fieldValue={ _.get(fields, `services[${key}].primeCost`, servicePrice) }
+                            initialValue={ this._getDefaultValue(key, 'primeCost') || servicePrice }
                             field={ `services[${key}].primeCost` }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="REJECTED"
                             }
                             getFieldDecorator={ this.props.form.getFieldDecorator }
                             min={ 0 }
@@ -279,7 +280,7 @@ class ServicesTable extends Component {
                                     : void 0
                             }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed.length
                             }
                             min={ 0 }
                         />
@@ -299,12 +300,12 @@ class ServicesTable extends Component {
                             defaultGetValueProps
                             fieldValue={ _.get(
                                 fields,
-                                `services[${key}].serviceCount`,
+                                `services[${key}].serviceHours`,
                             ) }
                             initialValue={
-                                this._getDefaultValue(key, 'serviceCount') || 1
+                                this._getDefaultValue(key, 'serviceHours') || 1
                             }
-                            field={ `services[${key}].serviceCount` }
+                            field={ `services[${key}].serviceHours` }
                             rules={
                                 !this._isFieldDisabled(key)
                                     ? this.requiredRule
@@ -312,7 +313,7 @@ class ServicesTable extends Component {
                             }
                             getFieldDecorator={ getFieldDecorator }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed.length
                             }
                             min={ 0.1 }
                             step={ 0.1 }
@@ -327,7 +328,7 @@ class ServicesTable extends Component {
                     const services = _.get(fields, 'services', []);
                     const value = (
                         _.get(services, [ key, 'servicePrice' ], 0) *
-                        _.get(services, [ key, 'serviceCount' ], 1)
+                        _.get(services, [ key, 'serviceHours' ], 1)
                     ).toFixed(2);
                     return (
                         <InputNumber
@@ -372,7 +373,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  <FormattedMessage id='order_form_table.status' />,
-                key: 'status',
+                key: 'agreement',
                 render: ({ key }) => {
                     const confirmed = this.props.orderServices != undefined && 
                                     this.props.orderServices.length > key ? 
@@ -396,6 +397,15 @@ class ServicesTable extends Component {
                                 value={this.props.intl.formatMessage({
                                     id: `status.${confirmed}`,
                                 })}
+                            />
+                            <DecoratedInput
+                                hiddeninput="hiddeninput"
+                                errors={ errors }
+                                defaultGetValueProps
+                                fieldValue={ _.get(fields, `services[${key}].agreement`) }
+                                initialValue={ this._getDefaultValue(key, 'agreement') }
+                                field={ `services[${key}].agreement` }
+                                getFieldDecorator={ getFieldDecorator }
                             />
                         </div>
                     )
@@ -465,11 +475,12 @@ class ServicesTable extends Component {
                         orderService.serviceName,
                     )
                     : orderService.serviceName,
-            serviceCount: orderService.count,
+            serviceHours: orderService.hours,
             servicePrice: orderService.price,
             ownDetail:    orderService.ownDetail,
             employeeId:   orderService.employeeId,
             laborId:      orderService.laborId,
+            agreement:    orderService.agreement,
         };
 
         return actions[ fieldName ];

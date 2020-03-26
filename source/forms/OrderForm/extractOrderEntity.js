@@ -23,9 +23,10 @@ export function convertFieldsValuesToDbEntity(
                 serviceCount: count,
                 employeeId: employeeId,
                 ownDetail: ownDetail,
+                serviceHours: hours,
                 laborId: laborId,
+                agreement: agreement,
             } = service;
-            const hours = null;
 
             const serviceConfig = allServices.find(
                 ({ id, type }) => `${type}|${id}` === name,
@@ -38,21 +39,23 @@ export function convertFieldsValuesToDbEntity(
 
             return {
                 serviceId: laborId,
+                agreement: agreement,
                 serviceName: name,
-                serviceHours: count,
+                serviceHours: hours,
+                employeeId: employeeId,
                 /* Marian services table fix / save button fix
                 ...baseService,
                 ...serviceType */
             };
         })
         .value();
+        console.log(services);
     const details = _(orderFields.details)
         .filter(Boolean)
         .filter(
             detail => _.get(detail, 'detailName') || _.get(detail, 'productId'),
         )
         .map(detail => {
-
             const {
                 detailName: detailId,
                 detailPrice: price,
@@ -64,6 +67,7 @@ export function convertFieldsValuesToDbEntity(
                 productId: productId,
                 productCode: productCode,
                 storeGroupId: storeGroupId,
+                agreement: agreement,
                 // using: using,
             } = detail;
             const detailConfig = allDetails.details.find(
@@ -94,6 +98,7 @@ export function convertFieldsValuesToDbEntity(
 
             return {
                 storeGroupId: storeGroupId ? storeGroupId : null,
+                agreement: agreement,
                 price: price,
                 count: count,
                 /* Marian details table fix / save button fix
@@ -104,7 +109,6 @@ export function convertFieldsValuesToDbEntity(
             };
         })
         .value();
-    console.log(services, details);
     const beginDate = _.get(orderFields, 'stationLoads[0].beginDate');
     const beginTime = _.get(orderFields, 'stationLoads[0].beginTime');
 

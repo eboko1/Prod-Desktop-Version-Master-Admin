@@ -57,13 +57,13 @@ class AgreementPage extends Component {
 
         this.state.servicesList.map((elem)=>{
             if(!elem.checked) {
-                resultData.disableLaborIds.push(elem.serviceId);
+                resultData.disableLaborIds.push(elem.id);
             }
         });
 
         this.state.detailsList.map((elem)=>{
             if(!elem.checked) {
-                resultData.disableDetailIds.push(elem.storeGroupId);
+                resultData.disableDetailIds.push(elem.id);
             }
         });
         confirmAgreement(this.sessionId, resultData);
@@ -224,16 +224,16 @@ class AgreementPage extends Component {
                         <span>#</span>
                     </div>
                     <div className={`${Styles.columnHeader} ${Styles.rowName}`}>
-                        <span><FormattedMessage id="name"/></span>
+                        <span><FormattedMessage id="description"/></span>
                     </div>
                     <div className={`${Styles.columnHeader} ${Styles.rowComment}`}>
-                        <span><FormattedMessage id="description"/></span>
+                        <span></span>
                     </div>
                     <div className={`${Styles.columnHeader} ${Styles.rowPrice}`}>
                         <span><FormattedMessage id="price"/></span>
                     </div>
                     <div className={`${Styles.columnHeader} ${Styles.rowCount}`}>
-                        <span><FormattedMessage id="hours"/>/<FormattedMessage id="count"/></span>
+                        <span><FormattedMessage id="count"/></span>
                     </div>
                     <div className={`${Styles.columnHeader} ${Styles.rowSum}`}>
                         <span><FormattedMessage id="sum"/></span>
@@ -308,11 +308,11 @@ class ServiceElement extends React.Component{
                 </div>
                 <div style={{width:"62%", textAlign:"left"}}>
                     <p style={{padding: "5px 0"}}>{data.serviceName}</p>
-                    {data.comment.asd == null ? 
+                    {data.comment == null ? 
                         null
                         :
                         <p style={{fontStyle:"italic", padding: "5px 0"}}>
-                            {data.comment.asd}
+                            {data.comment}
                         </p> 
                     }
                 </div>
@@ -338,7 +338,7 @@ class ServiceElement extends React.Component{
                     <span>{data.serviceName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.comment?data.comment.asd:null}</span>
+                    <span>{data.comment}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{data.price} <FormattedMessage id='cur'/></span>

@@ -37,8 +37,10 @@ class ConfirmDiagnosticModal extends React.Component{
 
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
-        await lockDiagnostic(orderId);
+        //await lockDiagnostic(orderId);
         await this.props.reloadOrderPageComponents();
+        //createAgreement(this.props.orderId, this.props.intl.locale);
+        //await window.location.reload();
     }
 
     showModal = () => {
@@ -56,12 +58,10 @@ class ConfirmDiagnosticModal extends React.Component{
         }
         this.state.servicesList.map((element)=>{
             if(element.checked && element.laborId != null) {
-                const comment = {
-                    asd: element.comment,
-                }
                 data.services.push({
                     serviceId: element.laborId,
-                    comment: comment,
+                    serviceHours: element.hours,
+                    comment: element.comment,
                 })
             }
         });
@@ -92,11 +92,11 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.servicesList = orderServices.map((data, index)=>({
             key: index+1,
             id: data.id,
-            laborId: data.serviceId,
+            laborId: data.laborId,
             name: data.serviceName,
-            count: data.count,
+            hours: data.hours,
             checked: true,
-            comment: null,
+            comment: data.comment,
         }));
         this.state.detailsList = orderDetails.map((data, index)=>({
             key: index+1,
@@ -224,8 +224,8 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     addServicesByLaborId(id, dgIndex=-1) {
-        if(id == undefined) return;
         const service = this.state.labors.labors.find(x => x.laborId == id);
+        if(service == undefined) return;
         let index = this.state.servicesList.findIndex(x => x.laborId == service.laborId);
         let comment = dgIndex > -1 ? this.state.diagnosticList[dgIndex].comment : null;
         if( index == -1 ) {
@@ -234,10 +234,13 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: service.productId,
                 laborId: id,
                 name: service.name,
-                count: 1,
+                hours: service.hours || 1,
                 checked: true,
                 comment: comment,
             };
+        }
+        else {
+            this.state.servicesList[index].hours = this.state.servicesList[index].hours + service.hours;
         }
         this.setState({
             update: true,
@@ -275,6 +278,7 @@ class ConfirmDiagnosticModal extends React.Component{
 
     addDetailsByGroupId(id) {
         const detail = this.allDetails.find(x => x.id == id);
+        if(detail == undefined) return;
         let index = this.state.detailsList.findIndex(x => x.id == id);
         if(index == -1) {
             this.state.detailsList[this.state.detailsList.length-1] = {
@@ -436,7 +440,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 key:1,
                 id:null,
                 name: null,
-                count: 1,
+                hours: 1,
                 comment: null,
                 checked: true,
             });
@@ -445,14 +449,9 @@ class ConfirmDiagnosticModal extends React.Component{
             })
         }
         else if(this.state.servicesList[this.state.servicesList.length-1].name != null) {
-            this.state.servicesList.push({
-                key:this.state.servicesList[this.state.servicesList.length-1].key+1,
-                id:null,
-                name: null,
-                count: 1,
-                comment: null,
-                checked: true,      
-            });
+            this.state.servicesList.push(
+                {key:this.state.servicesList[this.state.servicesList.length-1].key+1, id: null, name: null, hours: 1, comment: null, checked: true},
+            );
             this.setState({
                 update: true,
             })
@@ -498,7 +497,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         onClick={()=>this.servicesCheckboxClick(index)}
                     />
                 </div>
-                <div style={{ width: '85%', padding: '0 5px'}}>
+                <div style={{ width: '60%', padding: '0 5px'}}>
                     <AutoComplete
                         defaultActiveFirstOption={false}
                         className="service_input"
@@ -526,23 +525,26 @@ class ConfirmDiagnosticModal extends React.Component{
                         {this.servicesOptions}
                     </AutoComplete>
                 </div>
-                <div className={Styles.delete_diagnostic_button_wrap} style={{width: "5%"}}>
-                    {/* <InputNumber
+                <div style={{ width: '30%' }}>
+                    <InputNumber
                         disabled={!data.checked}
                         style={{ width: '70%' }}
-                        min={1}
+                        step={0.1}
+                        min={0.1}
                         max={50}
-                        value={data.count?data.count:1}
+                        value={data.hours?data.hours:1}
                         onChange={(value)=>{
-                            this.state.servicesList[index].count = value;
+                            this.state.servicesList[index].hours = value;
                             this.setState({update: true});
                         }}
-                    /> */}
-                    <Icon
-                        onClick={()=>this.deleteServiceRow(index)}
-                        type="delete"
-                        className={Styles.delete_diagnostic_button}
                     />
+                    <div className={Styles.delete_diagnostic_button_wrap} style={{width: "30%", display: 'inline-block'}}>
+                        <Icon
+                            onClick={()=>this.deleteServiceRow(index)}
+                            type="delete"
+                            className={Styles.delete_diagnostic_button}
+                        />
+                    </div>
                 </div>
             </div>
         )
@@ -626,7 +628,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     />
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
-                <AutoComplete
+                    <AutoComplete
                         defaultActiveFirstOption={false}
                         className="service_input"
                         ref={(node)=>{this.lastDetailInput=node}}
