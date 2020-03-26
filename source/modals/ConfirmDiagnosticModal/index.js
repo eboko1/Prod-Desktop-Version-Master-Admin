@@ -38,8 +38,8 @@ class ConfirmDiagnosticModal extends React.Component{
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
         await lockDiagnostic(orderId);
-        await this.props.reloadOrderPageComponents();
-        createAgreement(this.props.orderId, this.props.intl.locale);
+        //await this.props.reloadOrderPageComponents();
+        await createAgreement(this.props.orderId, this.props.intl.locale);
         await window.location.reload();
     }
 
@@ -58,13 +58,10 @@ class ConfirmDiagnosticModal extends React.Component{
         }
         this.state.servicesList.map((element)=>{
             if(element.checked && element.laborId != null) {
-                let comment = {
-                    comment: element.comment,
-                }
                 data.services.push({
                     serviceId: element.laborId,
                     serviceHours: element.hours,
-                    comment: comment,
+                    comment: {comment: element.comment},
                 })
             }
         });
@@ -237,13 +234,13 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: service.productId,
                 laborId: id,
                 name: service.name,
-                hours: service.hours || 1,
+                hours: Number(service.normHours) || 1,
                 checked: true,
                 comment: comment,
             };
         }
         else {
-            this.state.servicesList[index].hours = this.state.servicesList[index].hours + service.hours;
+            this.state.servicesList[index].hours += Number(service.normHours);
         }
         this.setState({
             update: true,
@@ -382,10 +379,10 @@ class ConfirmDiagnosticModal extends React.Component{
             <div className={Styles.confirm_diagnostic_modal_row_button} style={{ width: '40%'}}>
                 <Button
                     type="primary"
-                    onClick={()=>{
-                        this.changeResolved(index, 'automaticly');
-                        this.getLaborByPartId(data.partId, index);
-                        this.getGroupByPartId(data.partId);
+                    onClick={async ()=>{
+                        await this.changeResolved(index, 'automaticly');
+                        await this.getLaborByPartId(data.partId, index);
+                        await this.getGroupByPartId(data.partId);
                     }}
                     style={{width: '49%', padding: '5px'}}
                 >
@@ -452,9 +449,14 @@ class ConfirmDiagnosticModal extends React.Component{
             })
         }
         else if(this.state.servicesList[this.state.servicesList.length-1].name != null) {
-            this.state.servicesList.push(
-                {key:this.state.servicesList[this.state.servicesList.length-1].key+1, id: null, name: null, hours: 1, comment: null, checked: true},
-            );
+            this.state.servicesList.push({
+                key:this.state.servicesList[this.state.servicesList.length-1].key+1,
+                id: null,
+                name: null,
+                hours: 1,
+                comment: null,
+                checked: true
+            });
             this.setState({
                 update: true,
             })
@@ -472,6 +474,8 @@ class ConfirmDiagnosticModal extends React.Component{
                     labor_id={data.laborId}
                     master_labor_id={data.masterLaborId}
                     product_id={data.productId}
+                    default_hours={data.normHours}
+                    price={data.price}
                 >
                     { data.name }
                 </Option>
@@ -491,7 +495,6 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getServicesContent() {
         this.addNewServicesRow();
-
         return this.state.servicesList.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row}>
                 <div style={{ width: '10%' }}>
@@ -515,7 +518,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         onSelect={(value, option)=>{
                             const servicesList = [...this.state.servicesList];
                             this.state.servicesList = servicesList.filter((_, i) => i !== index);
-                            this.addServicesByLaborId(option.props.labor_id);
+                            this.addServicesByLaborId(option.props.labor_id)
                             this.state.servicesList[this.state.servicesList.length-1].key = this.state.servicesList.length;
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
@@ -534,8 +537,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         style={{ width: '70%' }}
                         step={0.1}
                         min={0.1}
-                        max={50}
-                        value={data.hours?data.hours:1}
+                        value={data.hours?data.hours:default_hours}
                         onChange={(value)=>{
                             this.state.servicesList[index].hours = value;
                             this.setState({update: true});
