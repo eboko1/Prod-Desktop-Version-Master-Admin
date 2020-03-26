@@ -103,6 +103,12 @@ class ServicesTable extends Component {
         }
     };
 
+    _getServiceByField = (data, field)=>{
+        const { allServices } = this.props;
+        const result = allServices.find((elem)=>elem[`${field}`] == data)
+        return result;
+    }
+
     _laborIdToServiceName = (laborId) => {
         if(!laborId) {
             return;
@@ -222,16 +228,19 @@ class ServicesTable extends Component {
                             }
                             disabled={ editServicesForbidden || confirmed.length }
                             onSelect={ value => {
+                                    const serviceElement = this._getServiceByField(value,'name');
                                     this.props.form.setFieldsValue({
-                                        [`services[${key}].serviceName`]: value,
-                                        [`services[${key}].laborId`]: this._serviceNameToLaborId(value),
+                                        [`services[${key}].serviceName`]: serviceElement.name,
+                                        [`services[${key}].laborId`]: serviceElement.laborId,
+                                        [`services[${key}].servicePrice`]: serviceElement.price,
+                                        [`services[${key}].serviceHours`]: serviceElement.normHours,
                                     });
-                                    console.log(fields);
 
                                     this._onServiceSelect(
                                         value,
                                         false, //_.get(fields, `services[${key}].ownDetail`),
                                     );
+                                    
                                 }
                             }
                             field={ `services[${key}].serviceName` }

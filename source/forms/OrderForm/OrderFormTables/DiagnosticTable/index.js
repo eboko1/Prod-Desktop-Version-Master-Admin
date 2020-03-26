@@ -525,14 +525,14 @@ class DiagnosticTable extends Component {
         ];
     }
 
-    addNewDiagnostic(data) {
-        addNewDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
-        setTimeout(this.getCurrentDiagnostic,500);
+    async addNewDiagnostic(data) {
+        await addNewDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
+        await this.getCurrentDiagnostic();
     }
 
-    deleteDiagnostic(data) {
-        deleteDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
-        setTimeout(this.getCurrentDiagnostic,500);
+    async deleteDiagnostic(data) {
+        await deleteDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
+        await this.getCurrentDiagnostic();
     }
 
     onPlanChange(event) {
@@ -559,7 +559,7 @@ class DiagnosticTable extends Component {
         });
     }
 
-    onDetailChange(event) {
+    async onDetailChange(event) {
         let partId, groupId, partParent, diagnosticParent,templateId;
         for (let i = 0; i < this.partsTitles.length; i++) {
             if(this.partsTitles[i].title == event) {
@@ -574,8 +574,8 @@ class DiagnosticTable extends Component {
             }
         }
         templateId = this.templatesTitles.indexOf(diagnosticParent) + 1;
-        addNewDiagnosticRow(this.state.orderId, templateId, groupId, partId);
-        setTimeout(this.getCurrentDiagnostic,500);
+        await addNewDiagnosticRow(this.state.orderId, templateId, groupId, partId);
+        await this.getCurrentDiagnostic();
     }
 
     getCurrentDiagnostic() {
@@ -1198,11 +1198,11 @@ class DiagnosticStatusButton extends React.Component{
         this.updateState();
     }
 
-    handleClick = (status) => {
+    handleClick = async (status) => {
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, status);
-        this.setState({status:status});
-        setTimeout(this.props.getCurrentDiagnostic, 500);
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, status);
+        await this.setState({status:status});
+        await this.props.getCurrentDiagnostic();
     }
     render(){
         const { status } = this.state;
@@ -1295,13 +1295,13 @@ class CommentaryButton extends React.Component{
         }
     };
 
-    handleOk = () => {
+    handleOk = async () => {
         this.setState({
             loading: true,
         });
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, this.state.currentCommentary);
-        setTimeout(()=>{this.props.getCurrentDiagnostic()}, 500);
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, this.state.currentCommentary);
+        await this.props.getCurrentDiagnostic();
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 500);
@@ -1633,15 +1633,13 @@ class PhotoButton extends React.Component{
         });
     };
 
-    handleOk = () => {
+    handleOk = async () => {
         this.setState({ loading: true });
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, rowProp.commentary, this.state.upload);
-        setTimeout(() => {
-            this.setState({ loading: false, visible: false });
-            this.getPhoto();
-            this.props.getCurrentDiagnostic();
-        }, 500);
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, rowProp.commentary, this.state.upload);
+        await this.setState({ loading: false, visible: false });
+        await this.getPhoto();
+        await this.props.getCurrentDiagnostic();
     };
     
     handleCancel = () => {

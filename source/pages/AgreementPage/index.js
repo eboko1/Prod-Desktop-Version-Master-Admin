@@ -67,6 +67,7 @@ class AgreementPage extends Component {
             }
         });
         confirmAgreement(this.sessionId, resultData);
+        console.log(resultData);
         this.setState({
             confirmed: true,
         })
@@ -75,7 +76,7 @@ class AgreementPage extends Component {
     updateData(data) {
         this.state.servicesList = data.labors.map((elem)=>{
             elem.checked = true;
-            elem.comment = elem.comment.comment;
+            elem.comment = "dsd";
             return elem;
         });
         this.state.detailsList = data.details.map((elem)=>{
@@ -111,6 +112,7 @@ class AgreementPage extends Component {
     }
 
     render() {
+        console.log(this);
         const { TextArea } = Input;
         const isMobile = window.innerWidth < 1200;
         const { dataSource, confirmed, loading } = this.state;

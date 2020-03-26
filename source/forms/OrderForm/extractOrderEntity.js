@@ -46,12 +46,10 @@ export function convertFieldsValuesToDbEntity(
             if(employeeId) result.employeeId = employeeId;
             if(hours) result.serviceHours = hours;
             if(agreement) result.agreement = agreement;
-            console.log(result);
 
             return result
         })
         .value();
-        console.log(services);
     const details = _(orderFields.details)
         .filter(Boolean)
         .filter(

@@ -161,7 +161,7 @@ export default class DetailsTable extends Component {
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
-                            disabled={confirmed=="AGREED"}
+                            disabled={Boolean(confirmed!=undefined)}
                             // disabled={editServicesForbidden}
                         />
                     ) : (
@@ -196,7 +196,7 @@ export default class DetailsTable extends Component {
                                     this.props.form.getFieldDecorator
                                 }
                                 hidden
-                                disabled={disabled || confirmed=="AGREED"}
+                                disabled={disabled || confirmed.length}
                             />
                         </>
                     );
@@ -253,7 +253,7 @@ export default class DetailsTable extends Component {
                                         ? Styles.multipleSuggest
                                         : void 0
                                 }
-                                disabled={editDetailsForbidden || confirmed=="AGREED"}
+                                disabled={editDetailsForbidden || confirmed.length}
                                 field={`details[${key}].detailName`}
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -365,7 +365,7 @@ export default class DetailsTable extends Component {
                                 disabled={
                                     this._isFieldDisabled(key) ||
                                     editDetailsForbidden ||
-                                    confirmed=="AGREED"
+                                    confirmed.length
                                 }
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -463,7 +463,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key) ||
                                 editDetailsForbidden ||
-                                confirmed=="AGREED"
+                                confirmed.length
                             }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
@@ -585,7 +585,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key) ||
                                 editDetailsForbidden ||
-                                confirmed=="AGREED"
+                                confirmed.length
                             }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
@@ -711,7 +711,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden ||
-                                confirmed=="AGREED"
+                                confirmed.length
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailPrice") || 0
@@ -759,7 +759,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden ||
-                                confirmed=="AGREED"
+                                confirmed.length
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailCount") || 1
