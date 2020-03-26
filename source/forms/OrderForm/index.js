@@ -546,6 +546,7 @@ export class OrderForm extends React.PureComponent {
                 recommendedPrice={this.props.recommendedPrice}
                 recommendedPriceLoading={this.props.recommendedPriceLoading}
                 fetchRecommendedPrice={this.props.fetchRecommendedPrice}
+                reloadOrderPageComponents={this.props.reloadOrderPageComponents}
             />
         );
     };

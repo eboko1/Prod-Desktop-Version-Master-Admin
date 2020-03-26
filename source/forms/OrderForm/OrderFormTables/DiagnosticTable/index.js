@@ -58,6 +58,7 @@ class DiagnosticTable extends Component {
             filterCommentary: null,
             filterPhoto: null,
         };
+
         this.templatesData = this.templatesData == undefined ? {} : this.templatesData;
         this.templatesTitles = [];
         this.groupsTitles = [];
@@ -599,7 +600,6 @@ class DiagnosticTable extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.state.orderDiagnostic = data.diagnosis;
             that.state.completed = data.diagnosis.completed;
             that.updateDataSource();
@@ -1021,6 +1021,7 @@ class DiagnosticTable extends Component {
                     orderServices={this.props.orderServices}
                     orderDetails={this.props.orderDetails}
                     updateTabs={this.props.updateTabs}
+                    reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                 />
                 <Table
                     className={!disabled?Styles.diagnosticTable:Styles.diagnosticTableDisabled}
@@ -1128,6 +1129,7 @@ class DiagnosticTableHeader extends React.Component{
                         orderDetails={this.props.orderDetails}
                         getCurrentDiagnostic={this.props.getCurrentDiagnostic}
                         updateTabs={this.props.updateTabs}
+                        reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                     />
                 </div>
                 <div style={{ width: "10%" }}>
@@ -1268,32 +1270,38 @@ class CommentaryButton extends React.Component{
         this.state = {
             loading: false,
             visible: false,
-            commentary: props.commentary,
             problems: undefined,
-            currentCommentary: {
-                side: undefined,
-                front: undefined,
-                back: undefined,
-                details: [],
+            currentCommentaryProps: {
+                side: null,
+                front: null,
+                back: null,
                 problems: [],
-                mm:[],
-                percents: [],
-            }
+                mm:null,
+                percent: null,
+                deg: null,
+            },
+            currentCommentary: null,
         }
         this.commentaryInput = React.createRef();
     }
 
     showModal = () => {
         this.setState({
+            currentCommentary: this.props.commentary,
             visible: true,
         });
+        if(this.commentaryInput.current != undefined) {
+            this.commentaryInput.current.focus();
+        }
     };
 
     handleOk = () => {
-        this.setState({ loading: true });
+        this.setState({
+            loading: true,
+        });
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, this.state.commentary);
-        setTimeout(this.props.getCurrentDiagnostic, 500);
+        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, this.state.currentCommentary);
+        setTimeout(()=>{this.props.getCurrentDiagnostic()}, 500);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 500);
@@ -1302,6 +1310,7 @@ class CommentaryButton extends React.Component{
     handleCancel = () => {
         this.setState({
             visible: false,
+            currentCommentary: null, 
         });
     };
 
@@ -1318,9 +1327,29 @@ class CommentaryButton extends React.Component{
           );
     }
 
-    setCurrentCommentary(key, value) {
-        var commentary = {...this.state.currentCommentary};
+    setCurrentCommentaryProps(key, value) {
+        const { rowProp } = this.props;
+        if(this.state.currentCommentaryProps[key] == value) {
+            this.state.currentCommentaryProps[key] = null;
+        }
+        else {
+            this.state.currentCommentaryProps[key] = value;
+        }
 
+        const { side, back, front, problems, mm, percent, deg } = this.state.currentCommentaryProps;
+        var commentary = `${rowProp.detail} -`;
+        if(side) commentary += ` ${side}.`;
+        if(front) commentary += ` ${front}.`;
+        if(back) commentary += ` ${back}.`;
+        if(problems.length) commentary += ` ${problems.map((data)=>data)}.`;
+        if(percent) commentary += ` ${percent}%.`;
+        if(mm) commentary += ` ${mm}mm.`;
+        if(deg) commentary += ` ${deg}°.`;
+
+
+        this.setState({
+            currentCommentary: commentary,
+        });
     }
 
     componentDidMount() {
@@ -1330,15 +1359,13 @@ class CommentaryButton extends React.Component{
     }
 
     componentDidUpdate() {
-        this.state.commentary = this.props.commentary;
-        if(this.commentaryInput.current != undefined) {
-            this.commentaryInput.current.focus();
-        }
+        
     }
 
     render() {
         const { TextArea } = Input;
-        const { visible, loading, commentary, problems } = this.state;
+        const { visible, loading, problems, currentCommentaryProps, currentCommentary } = this.state;
+        const { commentary } =this.props;
         const { disabled, rowProp } = this.props;
         const problemOptions = problems ? problems.map((data)=>(
             { label: data.description, value: data.code }
@@ -1354,6 +1381,7 @@ class CommentaryButton extends React.Component{
                 </Button>
             )
         }
+
         return (
             <div>
                 {commentary ? (
@@ -1392,149 +1420,157 @@ class CommentaryButton extends React.Component{
                         ])
                     }
                 >
-                    <div>
-                        <div  style={{
-                            width: "360px",
-                            height: "160px",
-                            position: "relative",
-                            backgroundImage: `url('${images.vehicleSchemeSide}')`,
-                            backgroundSize: "cover",
-                            backgroundPosition: "center",
-                            backgroundRepeat: "no-repeat",
-                        }}>
-                            <Button
-                                type="primary"
-                                style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                onClick={()=>{this.setCurrentCommentary('side', 'up')}}
-                            >
-                                вер
-                            </Button>
-                            <Button
-                                type="primary"
-                                style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
-                            >
-                                зад
-                            </Button>
-                            <Button
-                                type="primary"
-                                style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
-                            >
-                                ниж
-                            </Button>
-                            <Button
-                                type="primary"
-                                style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
-                            >
-                                пер
-                            </Button>
-                        </div>
-                        <div style={{display: "flex"}}>
-                            <div style={{
-                                width: "180px",
+                    {!disabled ? 
+                    <>
+                        <div>
+                            <div  style={{
+                                width: "360px",
                                 height: "160px",
                                 position: "relative",
-                                backgroundImage: `url('${images.vehicleSchemeFront}')`,
-                                backgroundSize: "cover",
+                                backgroundImage: `url('${images.vehicleSchemeSide}')`,
+                                backgroundSize: "contain",
                                 backgroundPosition: "center",
                                 backgroundRepeat: "no-repeat",
                             }}>
                                 <Button
-                                    type="primary"
-                                    style={{position: "absolute", left: "0%", bottom: "0%"}}
+                                    type={currentCommentaryProps.side == "up" ? null : "primary"}
+                                    style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'up')}}
                                 >
-                                    лав
+                                    вер
                                 </Button>
                                 <Button
-                                    type="primary"
-                                    style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
+                                    type={currentCommentaryProps.side == "back" ? null : "primary"}
+                                    style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'back')}}
                                 >
-                                    цен
+                                    зад
                                 </Button>
                                 <Button
-                                    type="primary"
-                                    style={{position: "absolute", right: "0%", bottom: "0%"}}
+                                    type={currentCommentaryProps.side == "down" ? null : "primary"}
+                                    style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'down')}}
                                 >
-                                    пра
+                                    ниж
+                                </Button>
+                                <Button
+                                    type={currentCommentaryProps.side == "front" ? null : "primary"}
+                                    style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'front')}}
+                                >
+                                    пер
                                 </Button>
                             </div>
-                            <div style={{
-                                width: "180px",
-                                height: "160px",
-                                position: "relative",
-                                backgroundImage: `url('${images.vehicleSchemeBack}')`,
-                                backgroundSize: "cover",
-                                backgroundPosition: "center",
-                                backgroundRepeat: "no-repeat",
-                            }}>
-                                <Button
-                                    type="primary"
-                                    style={{position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}
-                                >
-                                    внут
-                                </Button>
-                                <Button
-                                    type="primary"
-                                    style={{position: "absolute", right: "0%", top: "50%", transform: "translateY(-50%)"}}
-                                >
-                                    нар
-                                </Button>
+                            <div style={{display: "flex"}}>
+                                <div style={{
+                                    width: "180px",
+                                    height: "160px",
+                                    position: "relative",
+                                    backgroundImage: `url('${images.vehicleSchemeFront}')`,
+                                    backgroundSize: "contain",
+                                    backgroundPosition: "center",
+                                    backgroundRepeat: "no-repeat",
+                                }}>
+                                    <Button
+                                        type={currentCommentaryProps.front == "left" ? null : "primary"}
+                                        style={{position: "absolute", left: "0%", bottom: "0%"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'left')}}
+                                    >
+                                        лев
+                                    </Button>
+                                    <Button
+                                        type={currentCommentaryProps.front == "center" ? null : "primary"}
+                                        style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'center')}}
+                                    >
+                                        цен
+                                    </Button>
+                                    <Button
+                                        type={currentCommentaryProps.front == "right" ? null : "primary"}
+                                        style={{position: "absolute", right: "0%", bottom: "0%"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'right')}}
+                                    >
+                                        пра
+                                    </Button>
+                                </div>
+                                <div style={{
+                                    width: "180px",
+                                    height: "160px",
+                                    position: "relative",
+                                    backgroundImage: `url('${images.vehicleSchemeBack}')`,
+                                    backgroundSize: "contain",
+                                    backgroundPosition: "center",
+                                    backgroundRepeat: "no-repeat",
+                                }}>
+                                    <Button
+                                        type={currentCommentaryProps.back == "in" ? null : "primary"}
+                                        style={{position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'in')}}
+                                    >
+                                        внут
+                                    </Button>
+                                    <Button
+                                        type={currentCommentaryProps.back == "out" ? null : "primary"}
+                                        style={{position: "absolute", right: "0%", top: "50%", transform: "translateY(-50%)"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'out')}}
+                                    >
+                                        нар
+                                    </Button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <p>Деталь:</p>
                         <div>
-                            <Radio.Group onChange={this.onChange}>
-                                <Radio style={{width: "45%"}} value={1}>
-                                    Опора
-                                </Radio>
-                                <Radio style={{width: "45%"}} value={2}>
-                                    Пружина
-                                </Radio>
-                                <Radio style={{width: "45%"}} value={3}>
-                                    Опора
-                                </Radio>
-                                <Radio style={{width: "45%"}} value={4}>
-                                    Отбойник
-                                </Radio>
-                                <Radio style={{width: "45%"}} value={5}>
-                                    Пыльник
-                                </Radio>
-                                <Radio style={{width: "45%"}} value={6}>
-                                    Амортизатор
-                                </Radio>
-                            </Radio.Group>
+                            <p>Тип проблемы:</p>
+                            <div>
+                                <Checkbox.Group options={problemOptions} onChange={(problems)=>{this.setCurrentCommentaryProps('problems', problems)}}/>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <p>Тип проблемы:</p>
                         <div>
-                            <Checkbox.Group options={problemOptions} />
+                            <p>Параметры:</p>
+                            <div>
+                                <div>
+                                    <InputNumber
+                                        value={currentCommentaryProps.mm}
+                                        min={0}
+                                        formatter={value => `${value}mm.`}
+                                        parser={value => value.replace('%', '')}
+                                        onChange={(mm)=>{this.setCurrentCommentaryProps('mm', mm)}}
+                                    />
+                                </div>
+                                <div>
+                                    <InputNumber
+                                        value={currentCommentaryProps.percent}
+                                        min={0}
+                                        formatter={value => `${value}%`}
+                                        parser={value => value.replace('%', '')}
+                                        onChange={(percent)=>{this.setCurrentCommentaryProps('percent', percent)}}
+                                    /> 
+                                </div>
+                                <div>
+                                    <InputNumber
+                                        value={currentCommentaryProps.deg}
+                                        min={0}
+                                        formatter={value => `${value}°`}
+                                        parser={value => value.replace('°', '')}
+                                        onChange={(deg)=>{this.setCurrentCommentaryProps('deg', deg)}}
+                                    />
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div>
-                        <p>Параметры:</p>
-                        <div>
-                            <InputNumber min={0}/> <Button type="primary">мм</Button>
-                            <InputNumber
-                                defaultValue={0}
-                                min={0}
-                                formatter={value => `${value}%`}
-                                parser={value => value.replace('%', '')}
-                            /> 
-                            <Button type="danger">%</Button>
-                            <InputNumber min={0}/> <Button type="primary">°</Button>
-                        </div>
-                    </div>
+                    </> : null}
                     <div>
                         <FormattedMessage id='order_form_table.diagnostic.commentary' />
                         <TextArea
                             disabled={disabled}
+                            value={currentCommentary}
                             placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
                             autoFocus
-                            onChange={()=>{this.state.commentary = event.target.value}}
+                            onChange={()=>{
+                                this.setState({
+                                    currentCommentary: event.target.value,
+                                });
+                            }}
                             style={{width: '100%', minHeight: '150px', resize:'none'}}
-                            defaultValue={commentary}
                             ref={this.commentaryInput}
                         />
                     </div>

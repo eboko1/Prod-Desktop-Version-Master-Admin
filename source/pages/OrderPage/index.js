@@ -87,7 +87,7 @@ const compareOrderTasks = (initialOrderTask, orderTask) => {
 
 const mapStateToProps = state => {
     return {
-        // orderTaskEntity:       state.forms.orderTaskForm.fields,
+        // orderTaskEntity:       state.forms.orderTaskForm.fields, 
         // addClientFormData:     state.forms.addClientForm.data,
         allDetails:            state.forms.orderForm.allDetails,
         allServices:           state.forms.orderForm.allServices,
@@ -379,6 +379,10 @@ class OrderPage extends Component {
         };
     }
 
+    reloadOrderPageComponents = () => {
+        this.componentDidMount();
+    }
+
     /* eslint-disable complexity*/
     render() {
         const {
@@ -581,6 +585,7 @@ class OrderPage extends Component {
                         fetchOrderForm={ fetchOrderForm }
                         fetchOrderTask={ fetchOrderTask }
                         onStatusChange={ this._onStatusChange }
+                        reloadOrderPageComponents = { this.reloadOrderPageComponents }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

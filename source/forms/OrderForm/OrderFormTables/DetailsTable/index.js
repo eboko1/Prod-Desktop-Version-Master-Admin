@@ -92,6 +92,7 @@ export default class DetailsTable extends Component {
             },
         ];
 
+        console.log(this.props.allDetails);
         this.details = this.props.allDetails.details.map(
             ({ detailId, detailName }) => (
                 <Option value={String(detailId)} key={`allDetails-${detailId}`}>
@@ -101,7 +102,7 @@ export default class DetailsTable extends Component {
         );
 
         this.brands = this.props.allDetails.brands.map(
-            ({ brandId, brandName }) => (
+            ({ supplierId, brandId, brandName }) => (
                 <Option value={String(brandId)} key={`allBrands-${brandId}`}>
                     {brandName}
                 </Option>
@@ -554,6 +555,47 @@ export default class DetailsTable extends Component {
                 },
             };
 
+            const storeGroupId = {
+                width: "0%",
+                key: "storeGroupId",
+                render: ({ key }) => {
+                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
+                    const renderAsDetailsField = () => (
+                        <DecoratedInput
+                            hiddeninput="hiddeninput"
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(
+                                fields,
+                                `details[${key}].storeGroupId`,
+                            )}
+                            cnStyles={
+                                _.get(
+                                    formDetails,
+                                    `[${key}].multipleSuggestions`,
+                                )
+                                    ? Styles.multipleSuggest
+                                    : void 0
+                            }
+                            initialValue={this._getDefaultValue(
+                                key,
+                                "storeGroupId",
+                            )}
+                            field={`details[${key}].storeGroupId`}
+                            disabled={
+                                this._isFieldDisabled(key) ||
+                                editDetailsForbidden ||
+                                confirmed=="AGREED"
+                            }
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                        />
+                    );
+                    return renderAsDetailsField();
+                },
+            };
+
             const suggest = {
                 width: "13%",
                 title: <FormattedMessage id="order_form_table.suggest" />,
@@ -756,10 +798,10 @@ export default class DetailsTable extends Component {
                 },
             };
 
-            const status = {
+            const agreement = {
                 title:  <FormattedMessage id='order_form_table.status' />,
                 width: "8%",
-                key: 'status',
+                key: 'agreement',
                 render: ({ key }) => {
                     const confirmed = this.props.orderDetails != undefined && 
                                     this.props.orderDetails.length > key ? 
@@ -776,6 +818,7 @@ export default class DetailsTable extends Component {
                             color = null;
                     }
                     return (
+                        <>
                         <Input
                             disabled
                             style={{color: color}}
@@ -783,6 +826,33 @@ export default class DetailsTable extends Component {
                                 id: `status.${confirmed}`,
                             })}
                         />
+                        <DecoratedInput
+                            hiddeninput="hiddeninput"
+                            errors={errors}
+                            defaultGetValueProps
+                            fieldValue={_.get(
+                                fields,
+                                `details[${key}].agreement`,
+                            )}
+                            cnStyles={
+                                _.get(
+                                    formDetails,
+                                    `[${key}].multipleSuggestions`,
+                                )
+                                    ? Styles.multipleSuggest
+                                    : void 0
+                            }
+                            initialValue={this._getDefaultValue(
+                                key,
+                                "agreement",
+                            )}
+                            field={`details[${key}].agreement`}
+                            disabled
+                            getFieldDecorator={
+                                this.props.form.getFieldDecorator
+                            }
+                        />
+                        </>
                     )
                 },
             };
@@ -812,12 +882,13 @@ export default class DetailsTable extends Component {
                 detailName,
                 brand,
                 code,
+                storeGroupId,
                 suggest,
                 purchasePrice,
                 price,
                 count,
                 sum,
-                status,
+                agreement,
                 actions,
             ];
 
@@ -826,12 +897,13 @@ export default class DetailsTable extends Component {
                     detailName,
                     brand,
                     code,
+                    storeGroupId,
                     suggest,
                     price,
                     purchasePrice,
                     count,
                     sum,
-                    status,
+                    agreement,
                     actions,
                 ];
             }
@@ -995,6 +1067,7 @@ export default class DetailsTable extends Component {
             //Marian
             storeGroupId: orderDetail.storeGroupId,
             detailId: orderDetail.id,
+            agreement: orderDetail.agreement,
         };
         return actions[fieldName];
     };
@@ -1101,7 +1174,6 @@ export default class DetailsTable extends Component {
     render() {
         const { keys } = this.state;
         const columns = this.columns();
-
         return (
             <Catcher>
                 <Table

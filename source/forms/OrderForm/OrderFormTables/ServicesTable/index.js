@@ -7,6 +7,7 @@ import _ from 'lodash';
 // proj
 import { Catcher } from 'commons';
 import {
+    DecoratedInput,
     DecoratedSelect,
     DecoratedAutoComplete,
     DecoratedInputNumber,
@@ -102,11 +103,29 @@ class ServicesTable extends Component {
         }
     };
 
+    _laborIdToServiceName = (laborId) => {
+        if(!laborId) {
+            return;
+        }
+        const { allServices } = this.props;
+        const service = allServices.find((elem)=>elem.laborId == laborId);
+        return service ? service.name : laborId;
+    }
+
+    _serviceNameToLaborId = (serviceName) => {
+        if(!serviceName) {
+            return;
+        }
+        const { allServices } = this.props;
+        const service = allServices.find((elem)=>elem.name == serviceName);
+        return service ? service.laborId : serviceName;
+    }
+
     _getServicesOptions() {
         return _.get(this.props, 'allServices', []).map(
-            ({ id, type, serviceName }, index) => (
-                <Option value={ `${type}|${id}` } key={ `allServices-${index}` }>
-                    { serviceName }
+            ({ laborId, masterLaborId, productId, name }, index) => (
+                <Option value={ name } key={ `allServices-${index}` }>
+                    { name }
                 </Option>
             ),
         );
@@ -146,6 +165,27 @@ class ServicesTable extends Component {
 
         return [
             {
+                key:    'laborId',
+                width: '0%',
+                render: ({ key }) => {
+                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
+                    return (
+                        <DecoratedInput
+                            hiddeninput="hiddeninput"
+                            errors={ errors }
+                            defaultGetValueProps
+                            fieldValue={ this._serviceNameToLaborId(
+                                _.get(fields, `services[${key}].laborId`)
+                                )
+                            }
+                            initialValue={ this._serviceNameToLaborId(this._getDefaultValue(key, 'laborId')) }
+                            field={ `services[${key}].laborId` }
+                            getFieldDecorator={ getFieldDecorator }
+                        />
+                    )
+                }
+            },
+            {
                 title:  <FormattedMessage id='order_form_table.own_detail' />,
                 key:    'ownDetail',
                 render: ({ key }) => {
@@ -177,16 +217,22 @@ class ServicesTable extends Component {
                         <DecoratedAutoComplete
                             errors={ errors }
                             defaultGetValueProps
-                            fieldValue={ _.get(
-                                fields,
-                                `services[${key}].serviceName`,
-                            ) }
-                            disabled={ editServicesForbidden || confirmed }
-                            onSelect={ value =>
-                                this._onServiceSelect(
-                                    value,
-                                    _.get(fields, `services[${key}].ownDetail`),
-                                )
+                            fieldValue={
+                                _.get(fields, `services[${key}].serviceName`)
+                            }
+                            disabled={ editServicesForbidden || confirmed.length }
+                            onSelect={ value => {
+                                    this.props.form.setFieldsValue({
+                                        [`services[${key}].serviceName`]: value,
+                                        [`services[${key}].laborId`]: this._serviceNameToLaborId(value),
+                                    });
+                                    console.log(fields);
+
+                                    this._onServiceSelect(
+                                        value,
+                                        false, //_.get(fields, `services[${key}].ownDetail`),
+                                    );
+                                }
                             }
                             field={ `services[${key}].serviceName` }
                             getFieldDecorator={ getFieldDecorator }
@@ -198,7 +244,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(
                                 key,
                                 'serviceName',
-                            ) }
+                            )}
                             placeholder={ serviceSelectPlaceholder }
                             dropdownMatchSelectWidth={ false }
                             // dropdownStyle={ { width: '70%' } }
@@ -214,6 +260,7 @@ class ServicesTable extends Component {
                 key:    'primeCost',
                 render: ({ key }) => {
                     const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
+                    const servicePrice = _.get(fields,`services[${key}].servicePrice`);
                     return (
                         <DecoratedInputNumber
                             errors={ errors }
@@ -222,10 +269,11 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'primeCost') }
                             field={ `services[${key}].primeCost` }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="REJECTED"
                             }
                             getFieldDecorator={ this.props.form.getFieldDecorator }
                             min={ 0 }
+                            step={0.1}
                         />
                     )
                 }
@@ -260,7 +308,7 @@ class ServicesTable extends Component {
                                     : void 0
                             }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed.length
                             }
                             min={ 0 }
                         />
@@ -280,12 +328,12 @@ class ServicesTable extends Component {
                             defaultGetValueProps
                             fieldValue={ _.get(
                                 fields,
-                                `services[${key}].serviceCount`,
+                                `services[${key}].serviceHours`,
                             ) }
                             initialValue={
-                                this._getDefaultValue(key, 'serviceCount') || 1
+                                this._getDefaultValue(key, 'serviceHours') || 1
                             }
-                            field={ `services[${key}].serviceCount` }
+                            field={ `services[${key}].serviceHours` }
                             rules={
                                 !this._isFieldDisabled(key)
                                     ? this.requiredRule
@@ -293,7 +341,7 @@ class ServicesTable extends Component {
                             }
                             getFieldDecorator={ getFieldDecorator }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="AGREED"
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed.length
                             }
                             min={ 0.1 }
                             step={ 0.1 }
@@ -308,7 +356,7 @@ class ServicesTable extends Component {
                     const services = _.get(fields, 'services', []);
                     const value = (
                         _.get(services, [ key, 'servicePrice' ], 0) *
-                        _.get(services, [ key, 'serviceCount' ], 1)
+                        _.get(services, [ key, 'serviceHours' ], 1)
                     ).toFixed(2);
                     return (
                         <InputNumber
@@ -353,7 +401,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  <FormattedMessage id='order_form_table.status' />,
-                key: 'status',
+                key: 'agreement',
                 render: ({ key }) => {
                     const confirmed = this.props.orderServices != undefined && 
                                     this.props.orderServices.length > key ? 
@@ -378,10 +426,15 @@ class ServicesTable extends Component {
                                     id: `status.${confirmed}`,
                                 })}
                             />
-                            <Button
-                            >
-                                <Icon type="undo" />
-                            </Button>
+                            <DecoratedInput
+                                hiddeninput="hiddeninput"
+                                errors={ errors }
+                                defaultGetValueProps
+                                fieldValue={ _.get(fields, `services[${key}].agreement`) }
+                                initialValue={ this._getDefaultValue(key, 'agreement') }
+                                field={ `services[${key}].agreement` }
+                                getFieldDecorator={ getFieldDecorator }
+                            />
                         </div>
                     )
                 },
@@ -421,9 +474,8 @@ class ServicesTable extends Component {
             return;
         }
         const baseService = this.props.allServices.find(
-            ({ serviceId, type }) => `${type}|${serviceId}` === serviceName,
+            (service) => service.name === serviceName,
         );
-
         return _.get(baseService, 'servicePrice');
     };
 
@@ -433,29 +485,35 @@ class ServicesTable extends Component {
         const orderService = (this.props.orderServices || [])[ key ];
         const allServices = this.props.allServices;
         if (!orderService) {
+            /*const laborId = _.get(this.props, `services[${key}].serviceName`);
+            if(laborId) {
+                const service = this._laborIdToServiceName(laborId);
+
+                const actions = {
+                    serviceName:  service.name,
+                    serviceHours: undefined,
+                    servicePrice: undefined,
+                    ownDetail:    undefined,
+                    employeeId:   undefined,
+                    laborId:      service.laborId,
+                    agreement:    "UNDEFINED",
+                };
+        
+                return actions[ fieldName ];
+            }*/
             return;
         }
 
-        const resolveServiceId = (type, serviceId, name) =>
-            _.find(allServices, { type, serviceId })
-                ? `${type}|${serviceId}`
-                : name;
 
         const actions = {
-            serviceName:
-                orderService.type !== 'custom'
-                    ? resolveServiceId(
-                        orderService.type,
-                        orderService.serviceId,
-                        orderService.serviceName,
-                    )
-                    : orderService.serviceName,
-            serviceCount: orderService.count,
+            serviceName:  orderService.serviceName,
+            serviceHours: orderService.hours,
             servicePrice: orderService.price,
             ownDetail:    orderService.ownDetail,
             employeeId:   orderService.employeeId,
+            laborId:      orderService.laborId,
+            agreement:    orderService.agreement,
         };
-
         return actions[ fieldName ];
     };
 
