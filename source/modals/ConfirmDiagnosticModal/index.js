@@ -505,6 +505,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
                     <AutoComplete
+                        value={data?data.name:undefined}
                         defaultActiveFirstOption={false}
                         className="service_input"
                         ref={(node)=>{this.lastServiceInput=node}}
@@ -515,14 +516,13 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.setState({update: true});
                             this.addNewServicesRow();
                         }}
-                        onSelect={(value, option)=>{
+                        onSelect={async (value, option)=>{
                             const servicesList = [...this.state.servicesList];
                             this.state.servicesList = servicesList.filter((_, i) => i !== index);
-                            this.addServicesByLaborId(option.props.labor_id)
+                            await this.addServicesByLaborId(option.props.labor_id)
                             this.state.servicesList[this.state.servicesList.length-1].key = this.state.servicesList.length;
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
-                        value={data.name?data.name:undefined}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalServices}`)}
                         filterOption={(inputValue, option) =>
                             option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
@@ -634,6 +634,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
                     <AutoComplete
+                        value={data?data.name:undefined}
                         defaultActiveFirstOption={false}
                         className="service_input"
                         ref={(node)=>{this.lastDetailInput=node}}
@@ -644,14 +645,16 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.setState({update: true});
                             this.addNewDetailsRow();
                         }}
-                        onSelect={(value, option)=>{
-                            const detailsList = [...this.state.detailsList];
-                            this.state.detailsList = detailsList.filter((_, i) => i !== index);
-                            this.addDetailsByGroupId(option.props.detail_id);
+                        onSelect={async (value, option)=>{
+                            const deleteLastRow = ()=>{
+                                const detailsList = [...this.state.detailsList];
+                                this.state.detailsList = detailsList.filter((_, i) => i !== index);
+                            }
+                            await deleteLastRow;
+                            await this.addDetailsByGroupId(option.props.detail_id);
                             this.state.detailsList[this.state.detailsList.length-1].key = this.state.detailsList.length;
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
-                        value={data.name?data.name:undefined}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalDetails}`)}
                         filterOption={(inputValue, option) =>
                             option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0

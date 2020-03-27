@@ -94,9 +94,9 @@ export default class DetailsTable extends Component {
 
         console.log(this.props.allDetails);
         this.details = this.props.allDetails.details.map(
-            ({ detailId, detailName }) => (
-                <Option value={String(detailId)} key={`allDetails-${detailId}`}>
-                    {detailName}
+            ({ id, name }) => (
+                <Option value={String(id)} key={`allDetails-${id}`}>
+                    {name}
                 </Option>
             ),
         );
