@@ -517,9 +517,12 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.addNewServicesRow();
                         }}
                         onSelect={async (value, option)=>{
-                            const servicesList = [...this.state.servicesList];
-                            this.state.servicesList = servicesList.filter((_, i) => i !== index);
+                            const deleteLastRow = ()=>{
+                                const servicesList = [...this.state.servicesList];
+                                this.state.servicesList = servicesList.filter((_, i) => i !== index);
+                            }
                             await this.addServicesByLaborId(option.props.labor_id)
+                            await deleteLastRow;
                             this.state.servicesList[this.state.servicesList.length-1].key = this.state.servicesList.length;
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
@@ -650,8 +653,8 @@ class ConfirmDiagnosticModal extends React.Component{
                                 const detailsList = [...this.state.detailsList];
                                 this.state.detailsList = detailsList.filter((_, i) => i !== index);
                             }
-                            await deleteLastRow;
                             await this.addDetailsByGroupId(option.props.detail_id);
+                            await deleteLastRow;
                             this.state.detailsList[this.state.detailsList.length-1].key = this.state.detailsList.length;
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
