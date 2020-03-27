@@ -140,6 +140,7 @@ class AddOrderPage extends Component {
     _setCreateStatus = status => this.props.setCreateStatus(status);
 
     render() {
+        console.log(this);
         const { modal, user, createStatus, spinner } = this.props;
         const { errors } = this.state;
 
@@ -206,6 +207,8 @@ class AddOrderPage extends Component {
                 }
             >
                 <OrderForm
+                    allService={ this.props.allServices }
+                    allDetails={ this.props.allDetails }
                     errors={ this.state.errors }
                     wrappedComponentRef={ this.saveOrderFormRef }
                     setAddClientModal={ this._setAddClientModal }
