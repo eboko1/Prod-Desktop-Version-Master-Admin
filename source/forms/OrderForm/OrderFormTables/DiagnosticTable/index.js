@@ -1354,7 +1354,10 @@ class CommentaryButton extends React.Component{
 
     componentDidMount() {
         if(!this.state.problems && this.props.rowProp.partId) {
-            getPartProblems(this.props.rowProp.partId, (data)=>{this.setState({problems: data})});
+            getPartProblems(this.props.rowProp.partId, (data)=>{
+                console.log(data);
+                this.setState({problems: data})
+            });
         }
     }
 
@@ -1423,9 +1426,10 @@ class CommentaryButton extends React.Component{
                     {!disabled ? 
                     <>
                         <div>
-                            <div  style={{
+                            <div style={{
                                 width: "360px",
                                 height: "160px",
+                                margin: "0 auto",
                                 position: "relative",
                                 backgroundImage: `url('${images.vehicleSchemeSide}')`,
                                 backgroundSize: "contain",
@@ -1461,7 +1465,7 @@ class CommentaryButton extends React.Component{
                                     пер
                                 </Button>
                             </div>
-                            <div style={{display: "flex"}}>
+                            <div style={{display: "flex", justifyContent: "center"}}>
                                 <div style={{
                                     width: "180px",
                                     height: "160px",
@@ -1519,19 +1523,20 @@ class CommentaryButton extends React.Component{
                                 </div>
                             </div>
                         </div>
-                        <div>
-                            <p>Тип проблемы:</p>
+                        {problemOptions?
                             <div>
-                                <Checkbox.Group options={problemOptions} onChange={(problems)=>{this.setCurrentCommentaryProps('problems', problems)}}/>
+                                <p>Тип проблемы:</p>
+                                <div>
+                                    <Checkbox.Group options={problemOptions} onChange={(problems)=>{this.setCurrentCommentaryProps('problems', problems)}}/>
+                                </div>
                             </div>
-                        </div>
+                        :null}
                         <div>
                             <p>Параметры:</p>
-                            <div>
+                            <div style={{display: "flex", justifyContent: "space-between"}}>
                                 <div>
                                     <InputNumber
-                                        value={currentCommentaryProps.mm}
-                                        min={0}
+                                        value={currentCommentaryProps.mm || 0}
                                         formatter={value => `${value}mm.`}
                                         parser={value => value.replace('%', '')}
                                         onChange={(mm)=>{this.setCurrentCommentaryProps('mm', mm)}}
@@ -1539,8 +1544,8 @@ class CommentaryButton extends React.Component{
                                 </div>
                                 <div>
                                     <InputNumber
-                                        value={currentCommentaryProps.percent}
-                                        min={0}
+                                        defaultValue={0}
+                                        value={currentCommentaryProps.percent || 0}
                                         formatter={value => `${value}%`}
                                         parser={value => value.replace('%', '')}
                                         onChange={(percent)=>{this.setCurrentCommentaryProps('percent', percent)}}
@@ -1548,8 +1553,8 @@ class CommentaryButton extends React.Component{
                                 </div>
                                 <div>
                                     <InputNumber
-                                        value={currentCommentaryProps.deg}
-                                        min={0}
+                                        defaultValue={0}
+                                        value={currentCommentaryProps.deg || 0}
                                         formatter={value => `${value}°`}
                                         parser={value => value.replace('°', '')}
                                         onChange={(deg)=>{this.setCurrentCommentaryProps('deg', deg)}}

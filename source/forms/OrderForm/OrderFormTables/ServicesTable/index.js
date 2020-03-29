@@ -174,7 +174,7 @@ class ServicesTable extends Component {
                 key:    'laborId',
                 width: '0%',
                 render: ({ key }) => {
-                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
+                    
                     return (
                         <DecoratedInput
                             hiddeninput="hiddeninput"
@@ -195,7 +195,7 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='order_form_table.own_detail' />,
                 key:    'ownDetail',
                 render: ({ key }) => {
-                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
+                    
                     return (
                         <DecoratedCheckbox
                             errors={ errors }
@@ -204,7 +204,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'ownDetail') }
                             field={ `services[${key}].ownDetail` }
                             getFieldDecorator={ getFieldDecorator }
-                            disabled={ editServicesForbidden }
+                            disabled={ editServicesForbidden || this.props.completedDiagnostic}
                         />
                     )
                 }
@@ -217,8 +217,7 @@ class ServicesTable extends Component {
                     if (!this._handleSelectMap[ key ]) {
                         this._handleSelectMap[ key ] = value =>
                             this._handleServiceSelect(key, value);
-                    }
-                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
+                    }                   
                     return (
                         <DecoratedAutoComplete
                             errors={ errors }
@@ -226,7 +225,7 @@ class ServicesTable extends Component {
                             fieldValue={
                                 _.get(fields, `services[${key}].serviceName`)
                             }
-                            disabled={ editServicesForbidden || confirmed.length }
+                            disabled={ editServicesForbidden || this.props.completedDiagnostic}
                             onSelect={ value => {
                                     const serviceElement = this._getServiceByField(value,'name');
                                     this.props.form.setFieldsValue({
@@ -268,7 +267,6 @@ class ServicesTable extends Component {
                 width:  '9%',
                 key:    'primeCost',
                 render: ({ key }) => {
-                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
                     const servicePrice = _.get(fields,`services[${key}].servicePrice`);
                     return (
                         <DecoratedInputNumber
@@ -278,7 +276,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'primeCost') }
                             field={ `services[${key}].primeCost` }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed=="REJECTED"
+                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic
                             }
                             getFieldDecorator={ this.props.form.getFieldDecorator }
                             min={ 0 }
@@ -291,7 +289,6 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='order_form_table.price' />,
                 key:    'price',
                 render: ({ key }) => {
-                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
                     return (
                         <DecoratedInputNumber
                             className={ Styles.servicesRequiredFormItem }
@@ -317,7 +314,7 @@ class ServicesTable extends Component {
                                     : void 0
                             }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed.length
+                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic
                             }
                             min={ 0 }
                         />
@@ -328,7 +325,6 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='hours' />,
                 key:    'count',
                 render: ({ key }) => {
-                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
                     return (
                         <DecoratedInputNumber
                             formItem
@@ -350,7 +346,7 @@ class ServicesTable extends Component {
                             }
                             getFieldDecorator={ getFieldDecorator }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || confirmed.length
+                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic
                             }
                             min={ 0.1 }
                             step={ 0.1 }
@@ -383,7 +379,6 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='order_form_table.master' />,
                 key:    'employeeId',
                 render: ({ key }) => {
-                    const confirmed = this.props.orderServices.length > key && this.props.orderServices[key].agreement;
                     return (
                         <DecoratedSelect
                             errors={ errors }

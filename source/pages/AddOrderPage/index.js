@@ -140,7 +140,6 @@ class AddOrderPage extends Component {
     _setCreateStatus = status => this.props.setCreateStatus(status);
 
     render() {
-        console.log(this);
         const { modal, user, createStatus, spinner } = this.props;
         const { errors } = this.state;
 

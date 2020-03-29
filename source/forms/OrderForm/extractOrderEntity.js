@@ -13,7 +13,7 @@ export function convertFieldsValuesToDbEntity(
     status = 'not_complete',
     user,
 ) {
-    console.log(orderFields);
+    //console.log(orderFields);
     const services = _(orderFields.services)
         .filter(Boolean)
         .filter(service => _.get(service, 'serviceName'))
@@ -101,6 +101,7 @@ export function convertFieldsValuesToDbEntity(
                 agreement: agreement,
                 price: price,
                 count: count,
+                purchasePrice: purchasePrice,
                 /* Marian details table fix / save button fix
                 ...baseDetail,
                 ...detailCustom,
