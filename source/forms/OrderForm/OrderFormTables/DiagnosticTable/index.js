@@ -1443,11 +1443,11 @@ class CommentaryButton extends React.Component{
                                     ВЕРХ
                                 </Button>
                                 <Button
-                                    type={currentCommentaryProps.side == "ПРД" ? null : "primary"}
+                                    type={currentCommentaryProps.side == "ЗАД" ? null : "primary"}
                                     style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ПРД')}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ЗАД')}}
                                 >
-                                    ПЕРЕД
+                                    ЗАД
                                 </Button>
                                 <Button
                                     type={currentCommentaryProps.side == "НИЗ" ? null : "primary"}
@@ -1457,11 +1457,11 @@ class CommentaryButton extends React.Component{
                                     НИЗ
                                 </Button>
                                 <Button
-                                    type={currentCommentaryProps.side == "ЗАД" ? null : "primary"}
+                                    type={currentCommentaryProps.side == "ПРД" ? null : "primary"}
                                     style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ЗАД')}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ПРД')}}
                                 >
-                                    ЗАД
+                                    ПЕРЕД
                                 </Button>
                             </div>
                             <div style={{display: "flex", justifyContent: "center"}}>
@@ -1469,7 +1469,7 @@ class CommentaryButton extends React.Component{
                                     width: "180px",
                                     height: "160px",
                                     position: "relative",
-                                    backgroundImage: `url('${images.vehicleSchemeFront}')`,
+                                    backgroundImage: `url('${images.vehicleSchemeBack}')`,
                                     backgroundSize: "contain",
                                     backgroundPosition: "center",
                                     backgroundRepeat: "no-repeat",
@@ -1500,7 +1500,7 @@ class CommentaryButton extends React.Component{
                                     width: "180px",
                                     height: "160px",
                                     position: "relative",
-                                    backgroundImage: `url('${images.vehicleSchemeBack}')`,
+                                    backgroundImage: `url('${images.vehicleSchemeFront}')`,
                                     backgroundSize: "contain",
                                     backgroundPosition: "center",
                                     backgroundRepeat: "no-repeat",

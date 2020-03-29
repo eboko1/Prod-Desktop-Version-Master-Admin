@@ -250,7 +250,7 @@ export default class DetailsTable extends Component {
                                         ? Styles.multipleSuggest
                                         : void 0
                                 }
-                                disabled={editDetailsForbidden || this.props.completedDiagnostic}
+                                disabled={editDetailsForbidden || this.props.completedDiagnostic && this.props.agreementCompleted}
                                 field={`details[${key}].detailName`}
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -368,7 +368,7 @@ export default class DetailsTable extends Component {
                                 disabled={
                                     this._isFieldDisabled(key) ||
                                     editDetailsForbidden ||
-                                    this.props.completedDiagnostic
+                                    this.props.completedDiagnostic && this.props.agreementCompleted
                                 }
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -465,7 +465,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key) ||
                                 editDetailsForbidden || 
-                                this.props.completedDiagnostic
+                                this.props.completedDiagnostic && this.props.agreementCompleted
                             }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
@@ -665,7 +665,7 @@ export default class DetailsTable extends Component {
                             )}
                             field={`details[${key}].purchasePrice`}
                             disabled={
-                                this.props.completedDiagnostic ||
+                                this.props.completedDiagnostic && this.props.agreementCompleted ||
                                 storageFlow
                                     ? true
                                     : this._isFieldDisabled(key, false, true) ||
@@ -707,7 +707,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden || 
-                                this.props.completedDiagnostic
+                                this.props.completedDiagnostic && this.props.agreementCompleted
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailPrice") || 0
@@ -754,7 +754,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden ||
-                                this.props.completedDiagnostic
+                                this.props.completedDiagnostic && this.props.agreementCompleted
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailCount") || 1
