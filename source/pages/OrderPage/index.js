@@ -402,7 +402,6 @@ class OrderPage extends Component {
             user,
             initialOrderTask,
         } = this.props;
-
         const {num, status, datetime, diagnosis} = this.props.order;
         const {id} = this.props.match.params;
 

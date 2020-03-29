@@ -244,6 +244,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         orderServices={orderServices}
                         user={user}
                         fetchedOrder={fetchedOrder}
+                        agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
                         selectedClient={selectedClient}
                         fetchTecdocSuggestions={fetchTecdocSuggestions}
                         completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
@@ -299,6 +300,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         fetchRecommendedPrice={this.props.fetchRecommendedPrice}
                         setModal={setModal}
                         completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
+                        agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
                     />
                     <DiscountPanel
                         fields={discountTabFieldsProps}

@@ -204,7 +204,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'ownDetail') }
                             field={ `services[${key}].ownDetail` }
                             getFieldDecorator={ getFieldDecorator }
-                            disabled={ editServicesForbidden || this.props.completedDiagnostic}
+                            disabled={ editServicesForbidden || this.props.completedDiagnostic && this.props.agreementCompleted}
                         />
                     )
                 }
@@ -225,7 +225,7 @@ class ServicesTable extends Component {
                             fieldValue={
                                 _.get(fields, `services[${key}].serviceName`)
                             }
-                            disabled={ editServicesForbidden || this.props.completedDiagnostic}
+                            disabled={ editServicesForbidden || this.props.completedDiagnostic && this.props.agreementCompleted}
                             onSelect={ value => {
                                     const serviceElement = this._getServiceByField(value,'name');
                                     this.props.form.setFieldsValue({
@@ -276,7 +276,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'primeCost') }
                             field={ `services[${key}].primeCost` }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic
+                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic && this.props.agreementCompleted
                             }
                             getFieldDecorator={ this.props.form.getFieldDecorator }
                             min={ 0 }
@@ -314,7 +314,7 @@ class ServicesTable extends Component {
                                     : void 0
                             }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic
+                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic && this.props.agreementCompleted
                             }
                             min={ 0 }
                         />
@@ -346,7 +346,7 @@ class ServicesTable extends Component {
                             }
                             getFieldDecorator={ getFieldDecorator }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic
+                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic && this.props.agreementCompleted
                             }
                             min={ 0.1 }
                             step={ 0.1 }

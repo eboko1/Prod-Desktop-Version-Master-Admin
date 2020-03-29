@@ -76,7 +76,7 @@ class AgreementPage extends Component {
     updateData(data) {
         this.state.servicesList = data.labors.map((elem)=>{
             elem.checked = true;
-            elem.comment = elem.comment.comment; //"**description**";
+            elem.comment = elem.comment ? elem.comment.comment : null; //"**description**";
             return elem;
         });
         this.state.detailsList = data.details.map((elem)=>{
