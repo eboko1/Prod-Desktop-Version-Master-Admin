@@ -407,7 +407,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 <Button
                     type="primary"
                     onClick={async ()=>{
-                        console.log(data);
                         await this.changeResolved(index, 'automaticly');
                         await this.getLaborByPartId(data.partId, data.commentary);
                         await this.getGroupByPartId(data.partId);
