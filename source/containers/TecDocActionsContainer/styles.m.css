@@ -1,6 +1,5 @@
 .actionContainer {
     display: flex;
-    flex-wrap: wrap;
 }
 
 .actionItem {

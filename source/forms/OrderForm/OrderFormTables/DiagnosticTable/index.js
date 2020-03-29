@@ -1133,7 +1133,7 @@ class DiagnosticTableHeader extends React.Component{
                     />
                 </div>
                 <div style={{ width: "10%" }}>
-                    <Button disabled={disabled} type="primary" onClick={()=>{this.handleClickStatusButtons(0)}} style={{width: "80%"}}>
+                    <Button disabled={disabled} type="primary" onClick={()=>{this.handleClickStatusButtons(0)}} style={{width: "80%", padding: 0}}>
                         <FormattedMessage id='order_form_table.diagnostic.status.edit' />
                     </Button>
                 </div>
@@ -1342,9 +1342,9 @@ class CommentaryButton extends React.Component{
         if(front) commentary += ` ${front}.`;
         if(back) commentary += ` ${back}.`;
         if(problems.length) commentary += ` ${problems.map((data)=>data)}.`;
-        if(percent) commentary += ` ${percent}%.`;
-        if(mm) commentary += ` ${mm}mm.`;
-        if(deg) commentary += ` ${deg}°.`;
+        if(percent) commentary += ` ${percent} %.`;
+        if(mm) commentary += ` ${mm} mm.`;
+        if(deg) commentary += ` ${deg} °.`;
 
 
         this.setState({
@@ -1355,7 +1355,6 @@ class CommentaryButton extends React.Component{
     componentDidMount() {
         if(!this.state.problems && this.props.rowProp.partId) {
             getPartProblems(this.props.rowProp.partId, (data)=>{
-                console.log(data);
                 this.setState({problems: data})
             });
         }
@@ -1372,7 +1371,7 @@ class CommentaryButton extends React.Component{
         const { disabled, rowProp } = this.props;
         const problemOptions = problems ? problems.map((data)=>(
             { label: data.description, value: data.code }
-        )) : undefined;
+        )) : [];
         if(!rowProp.partId) {
             return (
                 <Button
@@ -1424,8 +1423,8 @@ class CommentaryButton extends React.Component{
                     }
                 >
                     {!disabled ? 
-                    <>
-                        <div>
+                    <div className={Styles.commentaryContentWrap}>
+                        <div className={Styles.commentaryVehicleSchemeWrap}>
                             <div style={{
                                 width: "360px",
                                 height: "160px",
@@ -1437,32 +1436,32 @@ class CommentaryButton extends React.Component{
                                 backgroundRepeat: "no-repeat",
                             }}>
                                 <Button
-                                    type={currentCommentaryProps.side == "up" ? null : "primary"}
+                                    type={currentCommentaryProps.side == "ВРХ" ? null : "primary"}
                                     style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'up')}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ВРХ')}}
                                 >
-                                    вер
+                                    ВЕРХ
                                 </Button>
                                 <Button
-                                    type={currentCommentaryProps.side == "back" ? null : "primary"}
-                                    style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'back')}}
-                                >
-                                    зад
-                                </Button>
-                                <Button
-                                    type={currentCommentaryProps.side == "down" ? null : "primary"}
-                                    style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'down')}}
-                                >
-                                    ниж
-                                </Button>
-                                <Button
-                                    type={currentCommentaryProps.side == "front" ? null : "primary"}
+                                    type={currentCommentaryProps.side == "ПРД" ? null : "primary"}
                                     style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'front')}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ПРД')}}
                                 >
-                                    пер
+                                    ПЕРЕД
+                                </Button>
+                                <Button
+                                    type={currentCommentaryProps.side == "НИЗ" ? null : "primary"}
+                                    style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'НИЗ')}}
+                                >
+                                    НИЗ
+                                </Button>
+                                <Button
+                                    type={currentCommentaryProps.side == "ЗАД" ? null : "primary"}
+                                    style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ЗАД')}}
+                                >
+                                    ЗАД
                                 </Button>
                             </div>
                             <div style={{display: "flex", justifyContent: "center"}}>
@@ -1476,25 +1475,25 @@ class CommentaryButton extends React.Component{
                                     backgroundRepeat: "no-repeat",
                                 }}>
                                     <Button
-                                        type={currentCommentaryProps.front == "left" ? null : "primary"}
+                                        type={currentCommentaryProps.front == "ЛВ" ? null : "primary"}
                                         style={{position: "absolute", left: "0%", bottom: "0%"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'left')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'ЛВ')}}
                                     >
-                                        лев
+                                        ЛЕВ
                                     </Button>
                                     <Button
-                                        type={currentCommentaryProps.front == "center" ? null : "primary"}
+                                        type={currentCommentaryProps.front == "ЦНТР" ? null : "primary"}
                                         style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'center')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'ЦНТР')}}
                                     >
-                                        цен
+                                        ЦЕНТР
                                     </Button>
                                     <Button
-                                        type={currentCommentaryProps.front == "right" ? null : "primary"}
+                                        type={currentCommentaryProps.front == "ПРВ" ? null : "primary"}
                                         style={{position: "absolute", right: "0%", bottom: "0%"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'right')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'ПРВ')}}
                                     >
-                                        пра
+                                        ПРАВ
                                     </Button>
                                 </div>
                                 <div style={{
@@ -1507,64 +1506,66 @@ class CommentaryButton extends React.Component{
                                     backgroundRepeat: "no-repeat",
                                 }}>
                                     <Button
-                                        type={currentCommentaryProps.back == "in" ? null : "primary"}
+                                        type={currentCommentaryProps.back == "ВНУТ" ? null : "primary"}
                                         style={{position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'in')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'ВНУТ')}}
                                     >
-                                        внут
+                                        ВНТ
                                     </Button>
                                     <Button
-                                        type={currentCommentaryProps.back == "out" ? null : "primary"}
+                                        type={currentCommentaryProps.back == "НАР" ? null : "primary"}
                                         style={{position: "absolute", right: "0%", top: "50%", transform: "translateY(-50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'out')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'НАР')}}
                                     >
-                                        нар
+                                        НАР
                                     </Button>
                                 </div>
                             </div>
                         </div>
-                        {problemOptions?
+                        {problemOptions.length ?
                             <div>
-                                <p>Тип проблемы:</p>
+                                <p className={Styles.commentarySectionHeader}>Тип проблемы:</p>
                                 <div>
                                     <Checkbox.Group options={problemOptions} onChange={(problems)=>{this.setCurrentCommentaryProps('problems', problems)}}/>
                                 </div>
                             </div>
-                        :null}
+                        : null}
                         <div>
-                            <p>Параметры:</p>
-                            <div style={{display: "flex", justifyContent: "space-between"}}>
-                                <div>
+                            <p className={Styles.commentarySectionHeader}>Параметры:</p>
+                            <div style={{display: "flex"}}>
+                                <div className={Styles.commentaryParameter}>
                                     <InputNumber
                                         value={currentCommentaryProps.mm || 0}
-                                        formatter={value => `${value}mm.`}
-                                        parser={value => value.replace('%', '')}
+                                        formatter={value => `${value} mm.`}
+                                        parser={value => value.replace(' %', '')}
                                         onChange={(mm)=>{this.setCurrentCommentaryProps('mm', mm)}}
                                     />
                                 </div>
-                                <div>
+                                <div className={Styles.commentaryParameter}>
                                     <InputNumber
                                         defaultValue={0}
                                         value={currentCommentaryProps.percent || 0}
-                                        formatter={value => `${value}%`}
-                                        parser={value => value.replace('%', '')}
+                                        formatter={value => `${value} %`}
+                                        parser={value => value.replace(' %', '')}
                                         onChange={(percent)=>{this.setCurrentCommentaryProps('percent', percent)}}
                                     /> 
                                 </div>
-                                <div>
+                                <div className={Styles.commentaryParameter}>
                                     <InputNumber
                                         defaultValue={0}
                                         value={currentCommentaryProps.deg || 0}
-                                        formatter={value => `${value}°`}
-                                        parser={value => value.replace('°', '')}
+                                        formatter={value => `${value} °`}
+                                        parser={value => value.replace(' °', '')}
                                         onChange={(deg)=>{this.setCurrentCommentaryProps('deg', deg)}}
                                     />
                                 </div>
                             </div>
                         </div>
-                    </> : null}
+                    </div> : null}
                     <div>
-                        <FormattedMessage id='order_form_table.diagnostic.commentary' />
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='order_form_table.diagnostic.commentary' />:
+                        </p>
                         <TextArea
                             disabled={disabled}
                             value={currentCommentary}

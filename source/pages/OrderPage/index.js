@@ -556,8 +556,10 @@ class OrderPage extends Component {
                         user={ this.props.user }
                         orderTasks={ this.props.orderTasks }
                         orderHistory={ this.props.orderHistory }
-                        orderDiagnostic={ diagnosis }
                         orderId={ id }
+                        orderDiagnostic={ diagnosis }
+                        allService={ this.props.allServices }
+                        allDetails={ this.props.allDetails }
                     />
                 </MobileView>
                 <ResponsiveView

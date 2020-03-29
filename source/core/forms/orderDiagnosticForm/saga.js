@@ -65,7 +65,6 @@ export async function confirmDiagnostic(orderId, data) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/${orderId}`;
-    console.log(data);
     
     url += params;
     try {
