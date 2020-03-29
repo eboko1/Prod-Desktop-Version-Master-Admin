@@ -76,7 +76,7 @@ class AgreementPage extends Component {
     updateData(data) {
         this.state.servicesList = data.labors.map((elem)=>{
             elem.checked = true;
-            elem.comment = "**description**";
+            elem.comment = elem.comment.comment; //"**description**";
             return elem;
         });
         this.state.detailsList = data.details.map((elem)=>{
@@ -112,7 +112,6 @@ class AgreementPage extends Component {
     }
 
     render() {
-        console.log(this);
         const { TextArea } = Input;
         const isMobile = window.innerWidth < 1200;
         const { dataSource, confirmed, loading } = this.state;
@@ -306,10 +305,10 @@ class ServiceElement extends React.Component{
         const { isMobile, checked } = this.props;
         return isMobile ? (
             <div className={`${Styles.serviceElement} ${ checked ? null: Styles.disabledRow}`}>
-                <div style={{width:"10%", fontSize: "18px", textAlign:"left"}}>
+                <div style={{width:"5%", fontSize: "18px"}}>
                     {this.props.num}
                 </div>
-                <div style={{width:"62%", textAlign:"left"}}>
+                <div style={{width:"65%", padding: "0 5px"}}>
                     <p style={{padding: "5px 0"}}>{data.serviceName}</p>
                     {data.comment == null ? 
                         null
@@ -319,9 +318,11 @@ class ServiceElement extends React.Component{
                         </p> 
                     }
                 </div>
-                <div style={{width:"13%", fontSize: "18px"}}>{data.hours}</div>
+                <div style={{width:"15%", fontSize: "16px"}}>{data.hours}</div>
                 <div style={{width:"15%"}}>
-                    <div style={{width:"100%", padding: "5px 0"}}>{data.sum}</div>
+                    <div style={{width:"100%", padding: "5px 0"}}>
+                        {data.sum} <FormattedMessage id='cur'/>
+                    </div>
                     <div style={{width:"100%", padding: "5px 0"}}>
                         <Switch
                             checked={checked}
@@ -379,10 +380,10 @@ class DetailElement extends React.Component{
         const { isMobile, checked } = this.props
         return isMobile ? (
             <div className={`${Styles.detailElement} ${ checked ? null: Styles.disabledRow}`}>
-                <div style={{width:"10%", fontSize: "18px", textAlign:"left"}}>
+                <div style={{width:"5%", fontSize: "18px"}}>
                     {this.props.num}
                 </div>
-                <div style={{width:"62%", textAlign:"left"}}>
+                <div style={{width:"65%", padding: "0 5px"}}>
                     <p style={{padding: "5px 0"}}>{data.detailName}</p>
                     {data.detailBrand == null ? 
                         null
@@ -392,9 +393,11 @@ class DetailElement extends React.Component{
                         </p> 
                     }
                 </div>
-                <div style={{width:"13%", fontSize: "18px"}}>{data.count}</div>
+                <div style={{width:"15%", fontSize: "16px"}}>{data.count}</div>
                 <div style={{width:"15%"}}>
-                    <div style={{width:"100%", padding: "5px 0"}}>{data.sum}</div>
+                    <div style={{width:"100%", padding: "5px 0"}}>
+                        {data.sum} <FormattedMessage id='cur'/>
+                    </div>
                     <div style={{width:"100%", padding: "5px 0"}}>
                         <Switch
                             checked={checked}

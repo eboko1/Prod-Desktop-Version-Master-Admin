@@ -298,6 +298,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         }
                         fetchRecommendedPrice={this.props.fetchRecommendedPrice}
                         setModal={setModal}
+                        completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
                     />
                     <DiscountPanel
                         fields={discountTabFieldsProps}

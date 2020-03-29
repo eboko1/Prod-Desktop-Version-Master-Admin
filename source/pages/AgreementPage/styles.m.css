@@ -64,11 +64,11 @@ div.columnHeader{
 }
 
 .rowName {
-    width: 30%;
+    width: 25%;
 }
 
 .rowComment {
-    width: 30%;
+    width: 35%;
     font-style: italic;
 }
 
@@ -159,7 +159,7 @@ div.columnHeader{
     }
 
     .serviceElement, .detailElement {
-        text-align: center;
+        text-align: left;
     }
 
     .commentElement{

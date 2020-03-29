@@ -92,7 +92,6 @@ export default class DetailsTable extends Component {
             },
         ];
 
-        console.log(this.props.allDetails);
         this.details = this.props.allDetails.details.map(
             ({ id, name }) => (
                 <Option value={String(id)} key={`allDetails-${id}`}>
@@ -140,7 +139,6 @@ export default class DetailsTable extends Component {
                 title: <FormattedMessage id="storage" />,
                 key: "storage",
                 render: ({ key }) => {
-                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const { popconfirm, disabled } = getStorageFlow(
                         fields,
                         key,
@@ -161,8 +159,8 @@ export default class DetailsTable extends Component {
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
-                            disabled={Boolean(confirmed!=undefined)}
-                            // disabled={editServicesForbidden}
+                            disabled
+                            //disabled={editServicesForbidden}
                         />
                     ) : (
                         <>
@@ -196,7 +194,7 @@ export default class DetailsTable extends Component {
                                     this.props.form.getFieldDecorator
                                 }
                                 hidden
-                                disabled={disabled || confirmed.length}
+                                disabled={disabled}
                             />
                         </>
                     );
@@ -209,7 +207,6 @@ export default class DetailsTable extends Component {
                 width: "17%",
                 key: "detail",
                 render: ({ key }) => {
-                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const productId = this._getDefaultValue(key, "productId");
 
                     const storageFlow =
@@ -253,7 +250,7 @@ export default class DetailsTable extends Component {
                                         ? Styles.multipleSuggest
                                         : void 0
                                 }
-                                disabled={editDetailsForbidden || confirmed.length}
+                                disabled={editDetailsForbidden || this.props.completedDiagnostic}
                                 field={`details[${key}].detailName`}
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -265,6 +262,13 @@ export default class DetailsTable extends Component {
                                     [null, key, modificationId],
                                     this._handleDetailSelect,
                                 )}
+                                onSelect={(value)=>{
+                                    const detail = this._getDetailByField(value, 'id');
+                                    this.props.form.setFieldsValue({
+                                        [`details[${key}].detailName`]: detail.name,
+                                        [`details[${key}].storeGroupId`]: detail.id,
+                                    });
+                                }}
                                 initialValue={this._getDefaultValue(
                                     key,
                                     "detailName",
@@ -320,7 +324,6 @@ export default class DetailsTable extends Component {
                 width: "10%",
                 key: "brand",
                 render: ({ key }) => {
-                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const storageFlow =
                         this.props.form.getFieldValue(
                             `details[${key}].storage`,
@@ -365,7 +368,7 @@ export default class DetailsTable extends Component {
                                 disabled={
                                     this._isFieldDisabled(key) ||
                                     editDetailsForbidden ||
-                                    confirmed.length
+                                    this.props.completedDiagnostic
                                 }
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -428,7 +431,6 @@ export default class DetailsTable extends Component {
                 width: "10%",
                 key: "code",
                 render: ({ key }) => {
-                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const productId = this._getDefaultValue(key, "productId");
 
                     const storageFlow =
@@ -462,8 +464,8 @@ export default class DetailsTable extends Component {
                             field={`details[${key}].detailCode`}
                             disabled={
                                 this._isFieldDisabled(key) ||
-                                editDetailsForbidden ||
-                                confirmed.length
+                                editDetailsForbidden || 
+                                this.props.completedDiagnostic
                             }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
@@ -559,7 +561,6 @@ export default class DetailsTable extends Component {
                 width: "0%",
                 key: "storeGroupId",
                 render: ({ key }) => {
-                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const renderAsDetailsField = () => (
                         <DecoratedInput
                             hiddeninput="hiddeninput"
@@ -582,11 +583,7 @@ export default class DetailsTable extends Component {
                                 "storeGroupId",
                             )}
                             field={`details[${key}].storeGroupId`}
-                            disabled={
-                                this._isFieldDisabled(key) ||
-                                editDetailsForbidden ||
-                                confirmed.length
-                            }
+                            disabled
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
                             }
@@ -650,7 +647,6 @@ export default class DetailsTable extends Component {
                 width: "9%",
                 key: "purchasePrice",
                 render: ({ key }) => {
-                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const storageFlow = this.props.form.getFieldValue(
                         `details[${key}].storage`,
                     );
@@ -669,6 +665,7 @@ export default class DetailsTable extends Component {
                             )}
                             field={`details[${key}].purchasePrice`}
                             disabled={
+                                this.props.completedDiagnostic ||
                                 storageFlow
                                     ? true
                                     : this._isFieldDisabled(key, false, true) ||
@@ -690,7 +687,6 @@ export default class DetailsTable extends Component {
                 width: "9%",
                 key: "price",
                 render: ({ key }) => {
-                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     return (
                         <DecoratedInputNumber
                             className={Styles.detailsRequiredFormItem}
@@ -710,8 +706,8 @@ export default class DetailsTable extends Component {
                             getFieldDecorator={this.props.form.getFieldDecorator}
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
-                                editDetailsForbidden ||
-                                confirmed.length
+                                editDetailsForbidden || 
+                                this.props.completedDiagnostic
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailPrice") || 0
@@ -729,7 +725,6 @@ export default class DetailsTable extends Component {
                 width: "7.5%",
                 key: "count",
                 render: ({ key }) => {
-                    const confirmed = this.props.orderDetails[key] != undefined && this.props.orderDetails[key].agreement;
                     const storageFlow = this.props.form.getFieldValue(
                         `details[${key}].storage`,
                     );
@@ -759,7 +754,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden ||
-                                confirmed.length
+                                this.props.completedDiagnostic
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailCount") || 1
@@ -910,6 +905,12 @@ export default class DetailsTable extends Component {
 
             return tableColumns;
         };
+    }
+
+    _getDetailByField = (data, field)=>{
+        const { allDetails } = this.props;
+        const result = allDetails.details.find((elem)=>elem[`${field}`] == data)
+        return result;
     }
 
     shouldComponentUpdate(nextProps, nextState) {

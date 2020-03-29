@@ -22,14 +22,13 @@ class ConfirmDiagnosticModal extends React.Component{
             dataSource: props.dataSource,
             diagnosticList: [],
             labors: null,
-            storeGroups: null,
+            allDetails: null,
             servicesList: [],
             detailsList: [],
         }
         this.tmp = {};
         this.servicesOptions = null;
         this.detailsOptions = null;
-        this.allDetails = null;
         this.lastServiceInput = React.createRef();
         this.lastDetailInput = React.createRef();
         this.diagnosticKey = 1;
@@ -57,9 +56,9 @@ class ConfirmDiagnosticModal extends React.Component{
             details: [],
         }
         this.state.servicesList.map((element)=>{
-            if(element.checked && element.laborId != null) {
+            if(element.checked && element.id != null) {
                 data.services.push({
-                    serviceId: element.laborId,
+                    serviceId: element.id,
                     serviceHours: element.hours,
                     comment: {comment: element.comment},
                 })
@@ -73,7 +72,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 })
             }
         });
-        console.log(data);
+        //console.log(data);
         this.endСonfirmation(this.props.orderId, data);
     };
     
@@ -91,8 +90,8 @@ class ConfirmDiagnosticModal extends React.Component{
         const { orderServices, orderDetails } = this.props;
         this.state.servicesList = orderServices.map((data, index)=>({
             key: index+1,
-            id: data.id,
-            laborId: data.laborId,
+            id: data.laborId,
+            productId: data.productId,
             name: data.serviceName,
             hours: data.hours,
             checked: true,
@@ -131,7 +130,7 @@ class ConfirmDiagnosticModal extends React.Component{
         if(this.state.labors != null && this.servicesOptions == null) {
             this.servicesOptions = this.getServicesOptions();
         }
-        if(this.state.storeGroups != null && this.detailsOptions == null) {
+        if(this.state.allDetails != null && this.detailsOptions == null) {
             this.detailsOptions = this.getDetailsOptions();
         }
     }
@@ -186,7 +185,7 @@ class ConfirmDiagnosticModal extends React.Component{
         })
         .then(function (data) {
             that.setState({
-                storeGroups: data,
+                allDetails: data,
             });
         })
         .catch(function (error) {
@@ -194,7 +193,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    getLaborByPartId(id, index=-1) {
+    getLaborByPartId(id, comment = "") {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -216,31 +215,45 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addServicesByLaborId(data.laborId, index);
+            that.addServicesByLaborId(data.laborId, -1, comment);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addServicesByLaborId(id, dgIndex=-1) {
+    addServicesByLaborId(id, index = -1, comment = "") {
         const service = this.state.labors.labors.find(x => x.laborId == id);
+        let cur_index = this.state.servicesList.findIndex(x => x.id == id);
         if(service == undefined) return;
-        let index = this.state.servicesList.findIndex(x => x.laborId == service.laborId);
-        let comment = dgIndex > -1 ? this.state.diagnosticList[dgIndex].comment : null;
-        if( index == -1 ) {
-            this.state.servicesList[this.state.servicesList.length-1] = {
-                key: this.state.servicesList.length,
-                id: service.productId,
-                laborId: id,
-                name: service.name,
-                hours: Number(service.normHours) || 1,
-                checked: true,
-                comment: comment,
-            };
+
+        if(index == -1) {
+            if(cur_index == -1) {
+                this.state.servicesList[this.state.servicesList.length-1] = {
+                    key: this.state.servicesList.length,
+                    id: id,
+                    productId: service.productId,
+                    name: service.name,
+                    hours: Number(service.normHours) || 1,
+                    checked: true,
+                    comment: comment,
+                };
+            }
+            else {
+                this.state.servicesList[cur_index].hours += Number(service.normHours) || 1;
+            }
         }
         else {
-            this.state.servicesList[index].hours += Number(service.normHours);
+            if(cur_index == -1) {
+                this.state.servicesList[index].id = id;
+                this.state.servicesList[index].name = service.name;
+                this.state.servicesList[index].productId= service.productId;
+                this.state.servicesList[index].hours = Number(service.normHours) || 1;
+            }
+            else {
+                this.state.servicesList[cur_index].hours += Number(service.normHours) || 1;
+                this.deleteServiceRow(index);
+            }
         }
         this.setState({
             update: true,
@@ -276,21 +289,35 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    addDetailsByGroupId(id) {
-        const detail = this.allDetails.find(x => x.id == id);
+    addDetailsByGroupId(id, index = -1) {
+        const detail = this.state.allDetails.find(x => x.id == id);
+        let cur_index = this.state.detailsList.findIndex(x => x.id == id);
         if(detail == undefined) return;
-        let index = this.state.detailsList.findIndex(x => x.id == id);
+
         if(index == -1) {
-            this.state.detailsList[this.state.detailsList.length-1] = {
-                key: this.state.detailsList.length,
-                id: detail.id,
-                name: detail.name,
-                count: 1,
-                checked: true,
-            };
+            if(cur_index == -1) {
+                this.state.detailsList[this.state.detailsList.length-1] = {
+                    key: this.state.detailsList.length,
+                    id: detail.id,
+                    name: detail.name,
+                    count: 1,
+                    checked: true,
+                };
+            }
+            else {
+                this.state.detailsList[cur_index].count += 1;
+            }
         }
         else {
-            this.state.detailsList[index].count = this.state.detailsList[index].count + 1;
+            if(cur_index == -1) {
+                this.state.detailsList[index].id = id;
+                this.state.detailsList[index].count = 1;
+                this.state.detailsList[index].name = detail.name;
+            }
+            else {
+                this.state.detailsList[cur_index].count += 1;
+                this.deleteDetailRow(index);
+            }
         }
         this.setState({
             update: true,
@@ -380,8 +407,9 @@ class ConfirmDiagnosticModal extends React.Component{
                 <Button
                     type="primary"
                     onClick={async ()=>{
+                        console.log(data);
                         await this.changeResolved(index, 'automaticly');
-                        await this.getLaborByPartId(data.partId, index);
+                        await this.getLaborByPartId(data.partId, data.commentary);
                         await this.getGroupByPartId(data.partId);
                     }}
                     style={{width: '49%', padding: '5px'}}
@@ -469,7 +497,7 @@ class ConfirmDiagnosticModal extends React.Component{
         return this.state.labors.labors.map(
             (data, index) => (
                 <Option
-                    value={ data.name }
+                    value={ String(data.laborId) }
                     key={index}
                     labor_id={data.laborId}
                     master_labor_id={data.masterLaborId}
@@ -511,19 +539,12 @@ class ConfirmDiagnosticModal extends React.Component{
                         ref={(node)=>{this.lastServiceInput=node}}
                         disabled={!data.checked}
                         style={{ width: "100%"}}
+                        onSelect={(value, option)=>{
+                            this.addServicesByLaborId(value, index);
+                        }}
                         onChange={(inputValue)=>{
                             this.state.servicesList[index].name = inputValue;
                             this.setState({update: true});
-                            this.addNewServicesRow();
-                        }}
-                        onSelect={async (value, option)=>{
-                            const deleteLastRow = ()=>{
-                                const servicesList = [...this.state.servicesList];
-                                this.state.servicesList = servicesList.filter((_, i) => i !== index);
-                            }
-                            await this.addServicesByLaborId(option.props.labor_id)
-                            await deleteLastRow;
-                            this.state.servicesList[this.state.servicesList.length-1].key = this.state.servicesList.length;
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalServices}`)}
@@ -586,27 +607,15 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getDetailsOptions() {
         const { Option } = AutoComplete;
-        const { storeGroups } = this.state;
-        let details = [];
+        const { allDetails } = this.state;
         
-        for (let i = 0; i < storeGroups.length; i++) {
-            const childGroups = storeGroups[i].childGroups;
-            for (let j = 0; j < childGroups.length; j++) {
-                const groupDetails = childGroups[j].childGroups;
-                for (let k = 0; k < groupDetails.length; k++) {
-                    details.push(groupDetails[k]);
-                }
-            }
-        }
-
-        this.allDetails = details;
-        
-        return details.map(
+        return allDetails.map(
             (data, index) => (
                 <Option
-                    value={ data.name }
+                    value={ String(data.id) }
                     key={index}
                     detail_id={data.id}
+                    detail_name={data.name}
                 >
                     { data.name }
                 </Option>
@@ -626,7 +635,6 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getDetailsContent() {
         this.addNewDetailsRow();
-
         return this.state.detailsList.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row}>
                 <div style={{ width: '10%' }}>
@@ -643,19 +651,12 @@ class ConfirmDiagnosticModal extends React.Component{
                         ref={(node)=>{this.lastDetailInput=node}}
                         disabled={!data.checked}
                         style={{ width: "100%"}}
+                        onSelect={(value, option)=>{
+                            this.addDetailsByGroupId(value, index);
+                        }}
                         onChange={(inputValue)=>{
                             this.state.detailsList[index].name = inputValue;
                             this.setState({update: true});
-                            this.addNewDetailsRow();
-                        }}
-                        onSelect={async (value, option)=>{
-                            const deleteLastRow = ()=>{
-                                const detailsList = [...this.state.detailsList];
-                                this.state.detailsList = detailsList.filter((_, i) => i !== index);
-                            }
-                            await this.addDetailsByGroupId(option.props.detail_id);
-                            await deleteLastRow;
-                            this.state.detailsList[this.state.detailsList.length-1].key = this.state.detailsList.length;
                         }}
                         placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalDetails}`)}
