@@ -60,6 +60,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 data.services.push({
                     serviceId: element.id,
                     serviceHours: element.hours,
+                    servicePrice: element.price,
                     comment: {comment: element.comment},
                 })
             }
@@ -72,7 +73,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 })
             }
         });
-        //console.log(data);
+        console.log(data);
         this.endСonfirmation(this.props.orderId, data);
     };
     
@@ -95,6 +96,7 @@ class ConfirmDiagnosticModal extends React.Component{
             name: data.serviceName,
             hours: data.hours,
             checked: true,
+            price: data.price,
             comment: data.comment,
         }));
         this.state.detailsList = orderDetails.map((data, index)=>({
