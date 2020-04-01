@@ -217,7 +217,10 @@ class ServicesTable extends Component {
                     if (!this._handleSelectMap[ key ]) {
                         this._handleSelectMap[ key ] = value =>
                             this._handleServiceSelect(key, value);
-                    }                   
+                    }
+                    const confirmed = this.props.orderServices != undefined && 
+                                    this.props.orderServices.length > key ? 
+                                    this.props.orderServices[key].agreement.toLowerCase() : "undefined";
                     return (
                         <DecoratedAutoComplete
                             errors={ errors }
@@ -225,7 +228,7 @@ class ServicesTable extends Component {
                             fieldValue={
                                 _.get(fields, `services[${key}].serviceName`)
                             }
-                            disabled={ editServicesForbidden || this.props.completedDiagnostic && this.props.agreementCompleted}
+                            disabled={ editServicesForbidden || confirmed!="undefined"}
                             onSelect={ value => {
                                     const serviceElement = this._getServiceByField(value,'name');
                                     this.props.form.setFieldsValue({
@@ -268,6 +271,9 @@ class ServicesTable extends Component {
                 key:    'primeCost',
                 render: ({ key }) => {
                     const servicePrice = _.get(fields,`services[${key}].servicePrice`);
+                    const confirmed = this.props.orderServices != undefined && 
+                                    this.props.orderServices.length > key ? 
+                                    this.props.orderServices[key].agreement.toLowerCase() : "undefined";
                     return (
                         <DecoratedInputNumber
                             errors={ errors }
@@ -276,7 +282,7 @@ class ServicesTable extends Component {
                             initialValue={ this._getDefaultValue(key, 'primeCost') }
                             field={ `services[${key}].primeCost` }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic && this.props.agreementCompleted
+                                this._isFieldDisabled(key) || editServicesForbidden
                             }
                             getFieldDecorator={ this.props.form.getFieldDecorator }
                             min={ 0 }
@@ -289,6 +295,9 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='order_form_table.price' />,
                 key:    'price',
                 render: ({ key }) => {
+                    const confirmed = this.props.orderServices != undefined && 
+                                    this.props.orderServices.length > key ? 
+                                    this.props.orderServices[key].agreement.toLowerCase() : "undefined";
                     return (
                         <DecoratedInputNumber
                             className={ Styles.servicesRequiredFormItem }
@@ -314,7 +323,7 @@ class ServicesTable extends Component {
                                     : void 0
                             }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic && this.props.agreementCompleted
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed!="undefined"
                             }
                             min={ 0 }
                         />
@@ -325,6 +334,9 @@ class ServicesTable extends Component {
                 title:  <FormattedMessage id='hours' />,
                 key:    'count',
                 render: ({ key }) => {
+                    const confirmed = this.props.orderServices != undefined && 
+                                    this.props.orderServices.length > key ? 
+                                    this.props.orderServices[key].agreement.toLowerCase() : "undefined";
                     return (
                         <DecoratedInputNumber
                             formItem
@@ -346,7 +358,7 @@ class ServicesTable extends Component {
                             }
                             getFieldDecorator={ getFieldDecorator }
                             disabled={
-                                this._isFieldDisabled(key) || editServicesForbidden || this.props.completedDiagnostic && this.props.agreementCompleted
+                                this._isFieldDisabled(key) || editServicesForbidden || confirmed!="undefined"
                             }
                             min={ 0.1 }
                             step={ 0.1 }

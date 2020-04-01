@@ -350,6 +350,15 @@ class ConfirmDiagnosticModal extends React.Component{
         }
     }
 
+    automaticlyConfirmDiagnostic() {
+        console.log(this.state.diagnosticList);
+        this.state.diagnosticList.map(async (data, index)=>{
+            await this.changeResolved(index, 'automaticly');
+            await this.getLaborByPartId(data.id, data.commentary);
+            await this.getGroupByPartId(data.id);
+        });
+    }
+
     getDiagnostics(stage) {
         const { dataSource } = this.props;
         var diagnosticList = this.state.diagnosticList;
@@ -739,8 +748,14 @@ class ConfirmDiagnosticModal extends React.Component{
                     {!isMobile ? (
                     <div className={Styles.confirm_diagnostic_modal_wrap}>
                         <div className={Styles.confirm_diagnostic_modal_element}>
-                            <div className={Styles.confirm_diagnostic_modal_element_title}>
+                            <div className={Styles.confirm_diagnostic_modal_element_title} style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
                                 <FormattedMessage id='order_form_table.diagnostic.results' />
+                                <Button
+                                    type="primary"
+                                    onClick={()=>{this.automaticlyConfirmDiagnostic()}}
+                                >
+                                    <FormattedMessage id='order_form_table.diagnostic.automaticly' />
+                                </Button>
                             </div>
                             <div className={Styles.confirm_diagnostic_modal_element_content}>
                                 {this.getDiagnosticContent()}

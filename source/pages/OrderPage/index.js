@@ -41,6 +41,12 @@ import {
 } from 'modals';
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
+import {
+    API_URL,
+    confirmDiagnostic,
+    createAgreement,
+    lockDiagnostic,
+} from 'core/forms/orderDiagnosticForm/saga';
 
 // own
 import Styles from './styles.m.css';
@@ -437,6 +443,39 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
+                        <Icon
+                            type='file-protect'
+                            style={ {
+                                fontSize: isMobile ? 12 : 24,
+                                cursor:   'pointer',
+                                margin:   '0 10px',
+                            } }
+                            onClick={async ()=>{
+                                var data = {
+                                    services: [],
+                                    details: [],
+                                }
+                                this.props.fetchedOrder.orderServices.map((element)=>{
+                                    data.services.push({
+                                        serviceId: element.laborId,
+                                        serviceHours: element.hours,
+                                        servicePrice: element.price,
+                                        comment: element.comment,
+                                    })
+                                });
+                                this.props.fetchedOrder.orderDetails.map((element)=>{
+                                    data.details.push({
+                                        storeGroupId: element.storeGroupId,
+                                        count: element.count,
+                                    })
+                                });
+                                //console.log(data);
+                                //await confirmDiagnostic(this.props.order.id, data);
+                                //await lockDiagnostic(this.props.order.id);
+                                //await window.location.reload();
+                                await createAgreement(this.props.order.id, this.props.user.language)
+                            }}
+                        />
                         { hasInviteStatus &&
                         inviteOrderId && (
                             <Link
