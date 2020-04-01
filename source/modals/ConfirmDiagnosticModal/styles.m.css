@@ -60,8 +60,8 @@
 }
 
 .confirm_diagnostic_modal_element_content{
-    max-height: 500px;
-    height: 500px;
+    max-height: 440px;
+    height: 440px;
     overflow-y: scroll;
     overflow-x: hidden;
     width: 100%;
