@@ -233,7 +233,10 @@ export default class DetailsTable extends Component {
                             func,
                             args,
                         );
-
+                        
+                        const confirmed = this.props.orderDetails != undefined && 
+                                    this.props.orderDetails.length > key ? 
+                                    this.props.orderDetails[key].agreement.toLowerCase() : "undefined";
                         return (
                             <LimitedDecoratedSelect
                                 errors={errors}
@@ -250,7 +253,7 @@ export default class DetailsTable extends Component {
                                         ? Styles.multipleSuggest
                                         : void 0
                                 }
-                                disabled={editDetailsForbidden || this.props.completedDiagnostic && this.props.agreementCompleted}
+                                disabled={editDetailsForbidden || confirmed != "undefined"}
                                 field={`details[${key}].detailName`}
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -351,6 +354,9 @@ export default class DetailsTable extends Component {
                             func,
                             args,
                         );
+                        const confirmed = this.props.orderDetails != undefined && 
+                                    this.props.orderDetails.length > key ? 
+                                    this.props.orderDetails[key].agreement.toLowerCase() : "undefined";
                         return (
                             <LimitedDecoratedSelect
                                 errors={errors}
@@ -368,7 +374,7 @@ export default class DetailsTable extends Component {
                                 disabled={
                                     this._isFieldDisabled(key) ||
                                     editDetailsForbidden ||
-                                    this.props.completedDiagnostic && this.props.agreementCompleted
+                                    confirmed != "undefined"
                                 }
                                 getFieldDecorator={
                                     this.props.form.getFieldDecorator
@@ -441,6 +447,10 @@ export default class DetailsTable extends Component {
                             `details[${key}].productId`,
                         );
 
+                    const confirmed = this.props.orderDetails != undefined && 
+                        this.props.orderDetails.length > key ? 
+                        this.props.orderDetails[key].agreement.toLowerCase() : "undefined";
+
                     const renderAsDetailsField = () => (
                         <DecoratedInput
                             errors={errors}
@@ -465,7 +475,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key) ||
                                 editDetailsForbidden || 
-                                this.props.completedDiagnostic && this.props.agreementCompleted
+                                confirmed != "undefined"
                             }
                             getFieldDecorator={
                                 this.props.form.getFieldDecorator
@@ -687,6 +697,9 @@ export default class DetailsTable extends Component {
                 width: "9%",
                 key: "price",
                 render: ({ key }) => {
+                    const confirmed = this.props.orderDetails != undefined && 
+                                    this.props.orderDetails.length > key ? 
+                                    this.props.orderDetails[key].agreement.toLowerCase() : "undefined";
                     return (
                         <DecoratedInputNumber
                             className={Styles.detailsRequiredFormItem}
@@ -707,7 +720,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden || 
-                                this.props.completedDiagnostic && this.props.agreementCompleted
+                                confirmed != "undefined"
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailPrice") || 0
@@ -733,6 +746,10 @@ export default class DetailsTable extends Component {
                         `details[${key}].detailName`,
                     );
 
+                    const confirmed = this.props.orderDetails != undefined && 
+                                    this.props.orderDetails.length > key ? 
+                                    this.props.orderDetails[key].agreement.toLowerCase() : "undefined";
+
                     return (
                         <DecoratedInputNumber
                             className={Styles.detailsRequiredFormItem}
@@ -754,7 +771,7 @@ export default class DetailsTable extends Component {
                             disabled={
                                 this._isFieldDisabled(key, false, true) ||
                                 editDetailsForbidden ||
-                                this.props.completedDiagnostic && this.props.agreementCompleted
+                                confirmed != "undefined"
                             }
                             initialValue={
                                 this._getDefaultValue(key, "detailCount") || 1
