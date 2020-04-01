@@ -168,7 +168,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
 
         url = API_URL;
-        params = `/store_groups`;
+        params = `/store_groups?keepFlat=true`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -609,7 +609,6 @@ class ConfirmDiagnosticModal extends React.Component{
     getDetailsOptions() {
         const { Option } = AutoComplete;
         const { allDetails } = this.state;
-        
         return allDetails.map(
             (data, index) => (
                 <Option
