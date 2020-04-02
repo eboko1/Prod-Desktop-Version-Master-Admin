@@ -538,7 +538,7 @@ class DiagnosticTable extends Component {
     onPlanChange(event) {
         let tmp = [];
         for (let i = 0; i < this.groupsTitles.length; i++) {
-            if(this.groupsTitles[i].parent == event) {
+            if(this.groupsTitles[i].parent == event && tmp.indexOf(this.groupsTitles[i].title) == -1) {
                 tmp.push(this.groupsTitles[i].title);
             }
         }
@@ -550,7 +550,7 @@ class DiagnosticTable extends Component {
     onStageChange(event) {
         let tmp = [];
         for (let i = 0; i < this.partsTitles.length; i++) {
-            if(this.partsTitles[i].parent == event) {
+            if(this.partsTitles[i].parent == event && tmp.indexOf(this.partsTitles[i].title) == -1) {
                 tmp.push(this.partsTitles[i].title);
             }
         }
@@ -1272,6 +1272,10 @@ class CommentaryButton extends React.Component{
             visible: false,
             problems: undefined,
             currentCommentaryProps: {
+                rcl: null,
+                fcl: null,
+                io: null,
+                tb: null,
                 side: null,
                 front: null,
                 back: null,
@@ -1285,9 +1289,84 @@ class CommentaryButton extends React.Component{
         this.commentaryInput = React.createRef();
     }
 
+    getPositions() {
+        const that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/diagnostics/positions?partId=${this.props.rowProp.partId}`;
+        url += params;
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.setState({
+                rcl: data.rcl,
+                fcr: data.fcr,
+                tb: data.tb,
+                io: data.io,
+            });
+            if(data.rcl != null && data.rcl.length==1) {
+                switch (data.rcl) {
+                    case "R":
+                        that.setCurrentCommentaryProps('back', 'RIGHT');
+                        break;
+                    case "L":
+                        that.setCurrentCommentaryProps('back', 'LEFT');
+                        break;
+                }
+            }
+            if(data.fcr != null && data.fcr.length==1) {
+                switch (data.fcr) {
+                    case "F":
+                        that.setCurrentCommentaryProps('side', 'FRONT');
+                        break;
+                    case "R":
+                        that.setCurrentCommentaryProps('side', 'REAR');
+                        break;
+                }
+            }
+            if(data.tb != null && data.tb.length==1) {
+                switch (data.tb) {
+                    case "T":
+                        that.setCurrentCommentaryProps('side', 'TOP');
+                        break;
+                    case "B":
+                        that.setCurrentCommentaryProps('side', 'BOTTOM');
+                        break;
+                }
+            }
+            if(data.io != null && data.io.length==1) {
+                switch (data.io) {
+                    case "I":
+                        that.setCurrentCommentaryProps('front', 'IN');
+                        break;
+                    case "O":
+                        that.setCurrentCommentaryProps('front', 'OUT');
+                        break;
+                }
+            }
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        })
+    }
+
     showModal = () => {
         this.setState({
-            currentCommentary: this.props.commentary,
+            currentCommentary: this.props.commentary?this.props.commentary:this.state.currentCommentary,
             visible: true,
         });
         if(this.commentaryInput.current != undefined) {
@@ -1337,14 +1416,14 @@ class CommentaryButton extends React.Component{
         }
 
         const { side, back, front, problems, mm, percent, deg } = this.state.currentCommentaryProps;
-        var commentary = `${rowProp.detail} -`;
-        if(side) commentary += ` ${side}.`;
-        if(front) commentary += ` ${front}.`;
-        if(back) commentary += ` ${back}.`;
-        if(problems.length) commentary += ` ${problems.map((data)=>data)}.`;
-        if(percent) commentary += ` ${percent} %.`;
-        if(mm) commentary += ` ${mm} mm.`;
-        if(deg) commentary += ` ${deg} °.`;
+        var commentary = `${rowProp.detail} - `;
+        if(side) commentary += this.props.intl.formatMessage({id: side})+". ";
+        if(front) commentary += this.props.intl.formatMessage({id: front})+". ";
+        if(back) commentary += this.props.intl.formatMessage({id: back})+". ";
+        if(problems.length) commentary += ` ${problems.map((data)=>data)}. `;
+        if(percent) commentary += ` ${percent} %. `;
+        if(mm) commentary += ` ${mm} mm. `;
+        if(deg) commentary += ` ${deg} °. `;
 
 
         this.setState({
@@ -1357,6 +1436,7 @@ class CommentaryButton extends React.Component{
             getPartProblems(this.props.rowProp.partId, (data)=>{
                 this.setState({problems: data})
             });
+            this.getPositions();
         }
     }
 
@@ -1367,7 +1447,7 @@ class CommentaryButton extends React.Component{
     render() {
         const { TextArea } = Input;
         const { visible, loading, problems, currentCommentaryProps, currentCommentary } = this.state;
-        const { commentary } =this.props;
+        const { commentary } = this.props;
         const { disabled, rowProp } = this.props;
         const problemOptions = problems ? problems.map((data)=>(
             { label: data.description, value: data.code }
@@ -1436,32 +1516,36 @@ class CommentaryButton extends React.Component{
                                 backgroundRepeat: "no-repeat",
                             }}>
                                 <Button
-                                    type={currentCommentaryProps.side == "ВРХ" ? null : "primary"}
+                                    disabled={this.state.tb == undefined || this.state.tb.indexOf("T") == -1}
+                                    type={currentCommentaryProps.side == "TOP" ? null : "primary"}
                                     style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ВРХ')}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'TOP')}}
                                 >
-                                    ВЕРХ
+                                    <FormattedMessage id='TOP'/>
                                 </Button>
                                 <Button
-                                    type={currentCommentaryProps.side == "ЗАД" ? null : "primary"}
+                                    disabled={this.state.fcr == undefined || this.state.fcr.indexOf("R") == -1}
+                                    type={currentCommentaryProps.side == "REAR" ? null : "primary"}
                                     style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ЗАД')}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'REAR')}}
                                 >
-                                    ЗАД
+                                    <FormattedMessage id='REAR'/>
                                 </Button>
                                 <Button
-                                    type={currentCommentaryProps.side == "НИЗ" ? null : "primary"}
+                                    disabled={this.state.tb == undefined || this.state.tb.indexOf("B") == -1}
+                                    type={currentCommentaryProps.side == "BOTTOM" ? null : "primary"}
                                     style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'НИЗ')}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'BOTTOM')}}
                                 >
-                                    НИЗ
+                                    <FormattedMessage id='BOTTOM'/>
                                 </Button>
                                 <Button
-                                    type={currentCommentaryProps.side == "ПРД" ? null : "primary"}
+                                    disabled={this.state.fcr == undefined || this.state.fcr.indexOf("F") == -1}
+                                    type={currentCommentaryProps.side == "FRONT" ? null : "primary"}
                                     style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'ПРД')}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'FRONT')}}
                                 >
-                                    ПЕРЕД
+                                    <FormattedMessage id='FRONT'/>
                                 </Button>
                             </div>
                             <div style={{display: "flex", justifyContent: "center"}}>
@@ -1475,25 +1559,28 @@ class CommentaryButton extends React.Component{
                                     backgroundRepeat: "no-repeat",
                                 }}>
                                     <Button
-                                        type={currentCommentaryProps.front == "ЛВ" ? null : "primary"}
+                                        disabled={this.state.rcl == undefined || this.state.rcl.indexOf("L") == -1}
+                                        type={currentCommentaryProps.back == "LEFT" ? null : "primary"}
                                         style={{position: "absolute", left: "0%", bottom: "0%"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'ЛВ')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'LEFT')}}
                                     >
-                                        ЛЕВ
+                                        <FormattedMessage id='LEFT'/>
                                     </Button>
                                     <Button
-                                        type={currentCommentaryProps.front == "ЦНТР" ? null : "primary"}
+                                        disabled={this.state.rcl == undefined || this.state.rcl.indexOf("C") == -1}
+                                        type={currentCommentaryProps.back == "CENTER" ? null : "primary"}
                                         style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'ЦНТР')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'CENTER')}}
                                     >
-                                        ЦЕНТР
+                                        <FormattedMessage id='CENTER'/>
                                     </Button>
                                     <Button
-                                        type={currentCommentaryProps.front == "ПРВ" ? null : "primary"}
+                                        disabled={this.state.rcl == undefined || this.state.rcl.indexOf("R") == -1}
+                                        type={currentCommentaryProps.back == "RIGHT" ? null : "primary"}
                                         style={{position: "absolute", right: "0%", bottom: "0%"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'ПРВ')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'RIGHT')}}
                                     >
-                                        ПРАВ
+                                        <FormattedMessage id='RIGHT'/>
                                     </Button>
                                 </div>
                                 <div style={{
@@ -1506,18 +1593,20 @@ class CommentaryButton extends React.Component{
                                     backgroundRepeat: "no-repeat",
                                 }}>
                                     <Button
-                                        type={currentCommentaryProps.back == "ВНУТ" ? null : "primary"}
+                                        disabled={this.state.io == undefined || this.state.io.indexOf("I") == -1}
+                                        type={currentCommentaryProps.front == "IN" ? null : "primary"}
                                         style={{position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'ВНУТ')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'IN')}}
                                     >
-                                        ВНТ
+                                        <FormattedMessage id='IN'/>
                                     </Button>
                                     <Button
-                                        type={currentCommentaryProps.back == "НАР" ? null : "primary"}
+                                        disabled={this.state.io == undefined || this.state.io.indexOf("O") == -1}
+                                        type={currentCommentaryProps.front == "OUT" ? null : "primary"}
                                         style={{position: "absolute", right: "0%", top: "50%", transform: "translateY(-50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'НАР')}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'OUT')}}
                                     >
-                                        НАР
+                                        <FormattedMessage id='OUT'/>
                                     </Button>
                                 </div>
                             </div>
