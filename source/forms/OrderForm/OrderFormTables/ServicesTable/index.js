@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, InputNumber, Icon, Popconfirm, Select, Input, Button } from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select, Input, Button, Modal } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -457,6 +457,21 @@ class ServicesTable extends Component {
             },
             {
                 title:  '',
+                key:    'commentary',
+                render: ({ key }) => {
+                    const servicePrice = _.get(fields,`services[${key}].servicePrice`);
+                    const confirmed = this.props.orderServices != undefined && 
+                                    this.props.orderServices.length > key ? 
+                                    this.props.orderServices[key].agreement.toLowerCase() : "undefined";
+                    return (
+                        <CommentaryModal
+                            comment={this.props.orderServices[key] ? this.props.orderServices[key].comment.comment.comment : ""}    
+                        />
+                    )
+                }
+            },
+            {
+                title:  '',
                 key:    'delete',
                 render: ({ key }) => {
                     return (
@@ -573,3 +588,46 @@ class ServicesTable extends Component {
 }
 
 export default ServicesTable;
+
+class CommentaryModal extends React.Component {
+    state = { visible: false };
+
+    showModal = () => {
+        this.setState({
+        visible: true,
+        });
+    };
+
+    handleOk = e => {
+        console.log(e);
+        this.setState({
+        visible: false,
+        });
+    };
+
+
+    handleCancel = e => {
+        console.log(e);
+        this.setState({
+        visible: false,
+        });
+    };
+
+
+    render() {
+        return (
+        <div>
+            <Icon type="message" onClick={this.showModal}/>
+            <Modal
+                title={<FormattedMessage id='order_form_table.diagnostic.commentary' />}
+                footer={null}
+                visible={this.state.visible}
+                onOk={this.handleOk}
+                onCancel={this.handleCancel}
+            >
+            <p>{this.props.comment ? this.props.comment : <FormattedMessage id='no_data' />}</p>
+            </Modal>
+        </div>
+        );
+    }
+}
