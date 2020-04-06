@@ -152,7 +152,7 @@ class DiagnosticTable extends Component {
                                     {this.getCurrentDiagnostic()}
                                 }}
                             >
-                                {this.templatesTitles.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
+                                {this.templatesTitles.map((template, i) => <Option key={i+1} value={template.title}>{template.title}</Option>)}
                             </Select>
                         </div>
                     )
@@ -173,7 +173,7 @@ class DiagnosticTable extends Component {
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                             onChange={this.onPlanChange}
                         >
-                            {this.templatesTitles.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
+                            {this.templatesTitles.map((template, i) => <Option key={i+1} value={template.title}>{template.title}</Option>)}
                         </Select>
                     );
                 },
@@ -526,12 +526,14 @@ class DiagnosticTable extends Component {
     }
 
     async addNewDiagnostic(data) {
-        await addNewDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
+        let id = this.templatesTitles.find((elem)=>elem.title==data).id;
+        await addNewDiagnosticTemplate(this.state.orderId, id);
         await this.getCurrentDiagnostic();
     }
 
     async deleteDiagnostic(data) {
-        await deleteDiagnosticTemplate(this.state.orderId, this.templatesTitles.indexOf(data)+1);
+        let id = this.templatesTitles.find((elem)=>elem.title==data).id;
+        await deleteDiagnosticTemplate(this.state.orderId, id);
         await this.getCurrentDiagnostic();
     }
 
@@ -573,7 +575,7 @@ class DiagnosticTable extends Component {
                 diagnosticParent = this.groupsTitles[i].parent;
             }
         }
-        templateId = this.templatesTitles.indexOf(diagnosticParent) + 1;
+        templateId = this.templatesTitles.find((elem)=>elem.title==diagnosticParent).id;
         await addNewDiagnosticRow(this.state.orderId, templateId, groupId, partId);
         await this.getCurrentDiagnostic();
     }
@@ -611,19 +613,24 @@ class DiagnosticTable extends Component {
 
     getTemplatesList() {
         for(let i = 0 ; i < this.templatesData.diagnosticTemplatesCount; i++) {
-            this.templatesTitles.push(this.templatesData.diagnosticTemplates[i].diagnosticTemplateTitle);
+            this.templatesTitles.push({
+                title: this.templatesData.diagnosticTemplates[i].diagnosticTemplateTitle,
+                id: this.templatesData.diagnosticTemplates[i].diagnosticTemplateId
+            });
             let groupsCount = this.templatesData.diagnosticTemplates[i].groupsCount;
             for (let j = 0; j < groupsCount; j++) {
                 let diagnostic =  this.templatesData.diagnosticTemplates[i].groups[j];
                 let id = diagnostic.groupId;
                 let title = diagnostic.groupTitle;
 
-                this.groupsTitles.push({
-                    id: id,
-                    title: title,
-                    parentId: this.templatesData.diagnosticTemplates[i].diagnosticTemplateId,
-                    parent: this.templatesData.diagnosticTemplates[i].diagnosticTemplateTitle,
-                });
+                if(this.groupsTitles.findIndex((elem)=>elem.title==title) == -1) {
+                    this.groupsTitles.push({
+                        id: id,
+                        title: title,
+                        parentId: this.templatesData.diagnosticTemplates[i].diagnosticTemplateId,
+                        parent: this.templatesData.diagnosticTemplates[i].diagnosticTemplateTitle,
+                    });
+                }
 
                 for (let k = 0; k < diagnostic.partsCount; k++) {
                     let part =  diagnostic.parts[k];
@@ -838,6 +845,7 @@ class DiagnosticTable extends Component {
                     let comment = _.pick(parts[k], [
                         "comment",
                     ]).comment;
+                    if(comment == null) comment = {comment: null}
                     let photo = this.photoKeys.find((data)=>data.partId == partId && data.groupId == groupId);
                     photo = photo ? photo.photo : null;
                     dataSource.push({
@@ -1096,7 +1104,7 @@ class DiagnosticTableHeader extends React.Component{
                         placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                         onChange={()=>{this.setState({selectValue: event.target.innerText})}}
                     >
-                        {this.props.templatesTitles.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
+                        {this.props.templatesTitles.map((template, i) => <Option key={i+1} value={template.id}>{template.title}</Option>)}
                     </Select>
                 </div>
                 <div style={{ width: "15%" }}>
@@ -1276,9 +1284,9 @@ class CommentaryButton extends React.Component{
                 fcl: null,
                 io: null,
                 tb: null,
-                side: null,
-                front: null,
-                back: null,
+                side: [],
+                front: [],
+                back: [],
                 problems: [],
                 mm:null,
                 percent: null,
@@ -1336,6 +1344,9 @@ class CommentaryButton extends React.Component{
                     case "R":
                         that.setCurrentCommentaryProps('side', 'REAR');
                         break;
+                    case "C":
+                        that.setCurrentCommentaryProps('side', 'MIDDLE');
+                        break;
                 }
             }
             if(data.tb != null && data.tb.length==1) {
@@ -1366,7 +1377,7 @@ class CommentaryButton extends React.Component{
 
     showModal = () => {
         this.setState({
-            currentCommentary: this.props.commentary?this.props.commentary:this.state.currentCommentary,
+            currentCommentary: this.props.commentary.comment?this.props.commentary.comment:this.state.currentCommentary,
             visible: true,
         });
         if(this.commentaryInput.current != undefined) {
@@ -1379,7 +1390,16 @@ class CommentaryButton extends React.Component{
             loading: true,
         });
         const { rowProp } = this.props;
-        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, this.state.currentCommentary);
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, 
+            JSON.stringify(
+                {
+                    comment: this.state.currentCommentary,
+                    problems: this.state.currentCommentaryProps.problems,
+                    mm: this.state.currentCommentaryProps.mm,
+                    percent: this.state.currentCommentaryProps.percent,
+                    deg: this.state.currentCommentaryProps.deg,
+                }
+            ));
         await this.props.getCurrentDiagnostic();
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
@@ -1408,22 +1428,32 @@ class CommentaryButton extends React.Component{
 
     setCurrentCommentaryProps(key, value) {
         const { rowProp } = this.props;
-        if(this.state.currentCommentaryProps[key] == value) {
-            this.state.currentCommentaryProps[key] = null;
+        if(key == "mm" || key == "percent" || key == "deg" || key == "problems") {
+            if(this.state.currentCommentaryProps[key] == value) {
+                this.state.currentCommentaryProps[key] = null;
+            }
+            else {
+                this.state.currentCommentaryProps[key] = value;
+            }
         }
         else {
-            this.state.currentCommentaryProps[key] = value;
+            if(this.state.currentCommentaryProps[key].indexOf(value) != -1) {
+                this.state.currentCommentaryProps[key] = [...this.state.currentCommentaryProps[key]].filter((data) => data != value);;
+            }
+            else {
+                this.state.currentCommentaryProps[key].push(value);
+            }
         }
 
         const { side, back, front, problems, mm, percent, deg } = this.state.currentCommentaryProps;
         var commentary = `${rowProp.detail} - `;
-        if(side) commentary += this.props.intl.formatMessage({id: side})+". ";
-        if(front) commentary += this.props.intl.formatMessage({id: front})+". ";
-        if(back) commentary += this.props.intl.formatMessage({id: back})+". ";
+        if(side.length) commentary += ` ${side.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
+        if(front.length) commentary += ` ${front.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
+        if(back.length) commentary += ` ${back.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
         if(problems.length) commentary += ` ${problems.map((data)=>data)}. `;
-        if(percent) commentary += ` ${percent} %. `;
-        if(mm) commentary += ` ${mm} mm. `;
-        if(deg) commentary += ` ${deg} °. `;
+        if(mm) commentary += ` ${mm}mm. `;
+        if(percent) commentary += ` ${percent}%. `;
+        if(deg) commentary += ` ${deg}°. `;
 
 
         this.setState({
@@ -1436,6 +1466,10 @@ class CommentaryButton extends React.Component{
             getPartProblems(this.props.rowProp.partId, (data)=>{
                 this.setState({problems: data})
             });
+            this.state.currentCommentaryProps.problems = this.props.commentary.problems ? this.props.commentary.problems : [];
+            this.state.currentCommentaryProps.mm = this.props.commentary.mm ? this.props.commentary.mm : 0;
+            this.state.currentCommentaryProps.percent = this.props.commentary.percent ? this.props.commentary.percent : 0;
+            this.state.currentCommentaryProps.deg = this.props.commentary.deg ? this.props.commentary.deg : 0;
             this.getPositions();
         }
     }
@@ -1452,6 +1486,7 @@ class CommentaryButton extends React.Component{
         const problemOptions = problems ? problems.map((data)=>(
             { label: data.description, value: data.code }
         )) : [];
+        const defaultProblems = commentary.problems ? commentary.problems : [];
         if(!rowProp.partId) {
             return (
                 <Button
@@ -1466,7 +1501,7 @@ class CommentaryButton extends React.Component{
 
         return (
             <div>
-                {commentary ? (
+                {commentary.comment ? (
                     <Button
                         className={Styles.commentaryButton}
                         onClick={this.showModal}
@@ -1517,7 +1552,7 @@ class CommentaryButton extends React.Component{
                             }}>
                                 <Button
                                     disabled={this.state.tb == undefined || this.state.tb.indexOf("T") == -1}
-                                    type={currentCommentaryProps.side == "TOP" ? null : "primary"}
+                                    type={currentCommentaryProps.side.indexOf("TOP") != -1 ? null : "primary"}
                                     style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
                                     onClick={()=>{this.setCurrentCommentaryProps('side', 'TOP')}}
                                 >
@@ -1525,7 +1560,7 @@ class CommentaryButton extends React.Component{
                                 </Button>
                                 <Button
                                     disabled={this.state.fcr == undefined || this.state.fcr.indexOf("R") == -1}
-                                    type={currentCommentaryProps.side == "REAR" ? null : "primary"}
+                                    type={currentCommentaryProps.side.indexOf("REAR") != -1 ? null : "primary"}
                                     style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
                                     onClick={()=>{this.setCurrentCommentaryProps('side', 'REAR')}}
                                 >
@@ -1533,7 +1568,7 @@ class CommentaryButton extends React.Component{
                                 </Button>
                                 <Button
                                     disabled={this.state.tb == undefined || this.state.tb.indexOf("B") == -1}
-                                    type={currentCommentaryProps.side == "BOTTOM" ? null : "primary"}
+                                    type={currentCommentaryProps.side.indexOf("BOTTOM") != -1 ? null : "primary"}
                                     style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
                                     onClick={()=>{this.setCurrentCommentaryProps('side', 'BOTTOM')}}
                                 >
@@ -1541,11 +1576,19 @@ class CommentaryButton extends React.Component{
                                 </Button>
                                 <Button
                                     disabled={this.state.fcr == undefined || this.state.fcr.indexOf("F") == -1}
-                                    type={currentCommentaryProps.side == "FRONT" ? null : "primary"}
+                                    type={currentCommentaryProps.side.indexOf("FRONT") != -1 ? null : "primary"}
                                     style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
                                     onClick={()=>{this.setCurrentCommentaryProps('side', 'FRONT')}}
                                 >
                                     <FormattedMessage id='FRONT'/>
+                                </Button>
+                                <Button
+                                    disabled={this.state.fcr == undefined || this.state.fcr.indexOf("С") == -1}
+                                    type={currentCommentaryProps.side.indexOf("MIDDLE") != -1 ? null : "primary"}
+                                    style={{position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'MIDDLE')}}
+                                >
+                                    <FormattedMessage id='MIDDLE'/>
                                 </Button>
                             </div>
                             <div style={{display: "flex", justifyContent: "center"}}>
@@ -1560,7 +1603,7 @@ class CommentaryButton extends React.Component{
                                 }}>
                                     <Button
                                         disabled={this.state.rcl == undefined || this.state.rcl.indexOf("L") == -1}
-                                        type={currentCommentaryProps.back == "LEFT" ? null : "primary"}
+                                        type={currentCommentaryProps.back.indexOf("LEFT") != -1 ? null : "primary"}
                                         style={{position: "absolute", left: "0%", bottom: "0%"}}
                                         onClick={()=>{this.setCurrentCommentaryProps('back', 'LEFT')}}
                                     >
@@ -1568,7 +1611,7 @@ class CommentaryButton extends React.Component{
                                     </Button>
                                     <Button
                                         disabled={this.state.rcl == undefined || this.state.rcl.indexOf("C") == -1}
-                                        type={currentCommentaryProps.back == "CENTER" ? null : "primary"}
+                                        type={currentCommentaryProps.back.indexOf("CENTER") != -1 ? null : "primary"}
                                         style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
                                         onClick={()=>{this.setCurrentCommentaryProps('back', 'CENTER')}}
                                     >
@@ -1576,7 +1619,7 @@ class CommentaryButton extends React.Component{
                                     </Button>
                                     <Button
                                         disabled={this.state.rcl == undefined || this.state.rcl.indexOf("R") == -1}
-                                        type={currentCommentaryProps.back == "RIGHT" ? null : "primary"}
+                                        type={currentCommentaryProps.back.indexOf("RIGHT") != -1 ? null : "primary"}
                                         style={{position: "absolute", right: "0%", bottom: "0%"}}
                                         onClick={()=>{this.setCurrentCommentaryProps('back', 'RIGHT')}}
                                     >
@@ -1594,7 +1637,7 @@ class CommentaryButton extends React.Component{
                                 }}>
                                     <Button
                                         disabled={this.state.io == undefined || this.state.io.indexOf("I") == -1}
-                                        type={currentCommentaryProps.front == "IN" ? null : "primary"}
+                                        type={currentCommentaryProps.front.indexOf("IN") != -1 ? null : "primary"}
                                         style={{position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}
                                         onClick={()=>{this.setCurrentCommentaryProps('front', 'IN')}}
                                     >
@@ -1602,7 +1645,7 @@ class CommentaryButton extends React.Component{
                                     </Button>
                                     <Button
                                         disabled={this.state.io == undefined || this.state.io.indexOf("O") == -1}
-                                        type={currentCommentaryProps.front == "OUT" ? null : "primary"}
+                                        type={currentCommentaryProps.front.indexOf("OUT") != -1 ? null : "primary"}
                                         style={{position: "absolute", right: "0%", top: "50%", transform: "translateY(-50%)"}}
                                         onClick={()=>{this.setCurrentCommentaryProps('front', 'OUT')}}
                                     >
@@ -1615,7 +1658,11 @@ class CommentaryButton extends React.Component{
                             <div>
                                 <p className={Styles.commentarySectionHeader}>Тип проблемы:</p>
                                 <div>
-                                    <Checkbox.Group options={problemOptions} onChange={(problems)=>{this.setCurrentCommentaryProps('problems', problems)}}/>
+                                    <Checkbox.Group
+                                        options={problemOptions}
+                                        defaultValue={defaultProblems}
+                                        onChange={(problems)=>{this.setCurrentCommentaryProps('problems', problems)}}
+                                    />
                                 </div>
                             </div>
                         : null}
@@ -1632,7 +1679,6 @@ class CommentaryButton extends React.Component{
                                 </div>
                                 <div className={Styles.commentaryParameter}>
                                     <InputNumber
-                                        defaultValue={0}
                                         value={currentCommentaryProps.percent || 0}
                                         formatter={value => `${value} %`}
                                         parser={value => value.replace(' %', '')}
@@ -1641,7 +1687,6 @@ class CommentaryButton extends React.Component{
                                 </div>
                                 <div className={Styles.commentaryParameter}>
                                     <InputNumber
-                                        defaultValue={0}
                                         value={currentCommentaryProps.deg || 0}
                                         formatter={value => `${value} °`}
                                         parser={value => value.replace(' °', '')}

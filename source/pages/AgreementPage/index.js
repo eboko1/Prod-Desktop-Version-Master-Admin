@@ -67,7 +67,6 @@ class AgreementPage extends Component {
             }
         });
         confirmAgreement(this.sessionId, resultData);
-        console.log(resultData);
         this.setState({
             confirmed: true,
         })
@@ -138,7 +137,10 @@ class AgreementPage extends Component {
         }
         this.servicesTotal = 0;
         this.detailsTotal = 0;
-        const vehicleNumber = dataSource.vehicleNumber;
+        const vehicleNumber = dataSource.vehicle.vehiclenumber;
+        const vehicleMake= dataSource.vehicle.make;
+        const vehicleModel= dataSource.vehicle.model;
+        const vehicleModification= dataSource.vehicle.modification;
         const servicesElements = this.state.servicesList.map((data, index)=>{
             if(data.checked) {
                 this.servicesTotal += data.sum;
@@ -172,7 +174,10 @@ class AgreementPage extends Component {
         return isMobile ? (
             <div className={Styles.agreementPage}>
                 <div className={Styles.agreementHeader}>
-                    <div>{vehicleNumber}</div>
+                    <div style={{textTransform: "uppercase"}}>
+                        <p>{vehicleNumber}</p>
+                        <p>{vehicleMake} {vehicleModel}</p>
+                    </div>
                     <div>{this.servicesTotal + this.detailsTotal} <FormattedMessage id='cur'/></div>
                     <div style={{height: "100%"}}>
                         <Button
@@ -219,7 +224,9 @@ class AgreementPage extends Component {
         ) : (
             <div className={Styles.agreementPage}>
                 <div className={Styles.vehicleInfoWrap}>
-                    <div className={`${Styles.vehicleInfo} ${Styles.vehicleNumber}`}>{vehicleNumber}</div>
+                    <div className={`${Styles.vehicleInfo} ${Styles.vehicleNumber}`}>
+                        {vehicleMake} {vehicleModel} {vehicleModification} {vehicleNumber}
+                    </div>
                 </div>
                 <div className={`${Styles.agreementHeader}`}>
                     <div className={`${Styles.columnHeader} ${Styles.rowKey}`}>
@@ -310,12 +317,12 @@ class ServiceElement extends React.Component{
                 </div>
                 <div style={{width:"65%", padding: "0 5px"}}>
                     <p style={{padding: "5px 0"}}>{data.serviceName}</p>
-                    {data.comment == null ? 
-                        null
-                        :
+                    {data.comment ? 
                         <p style={{fontStyle:"italic", padding: "5px 0"}}>
-                            {data.comment}
+                            {data.comment.comment}
                         </p> 
+                        :
+                        null
                     }
                 </div>
                 <div style={{width:"15%", fontSize: "16px"}}>{data.hours}</div>
@@ -342,7 +349,7 @@ class ServiceElement extends React.Component{
                     <span>{data.serviceName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.comment}</span>
+                    <span>{data.comment ? data.comment.comment : null}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{data.price} <FormattedMessage id='cur'/></span>
