@@ -465,7 +465,7 @@ class ServicesTable extends Component {
                                     this.props.orderServices[key].agreement.toLowerCase() : "undefined";
                     return (
                         <CommentaryModal
-                            comment={this.props.orderServices[key] ? this.props.orderServices[key].comment.comment.comment : ""}    
+                            comment={this.props.orderServices[key] ? this.props.orderServices[key].comment.comment : ""}    
                         />
                     )
                 }

@@ -173,7 +173,7 @@ class DiagnosticTable extends Component {
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                             onChange={this.onPlanChange}
                         >
-                            {this.templatesTitles.map((template, i) => <Option key={i+1} value={template.title}>{template.title}</Option>)}
+                            {this.templatesTitles.map((template, i) => <Option key={i+1} value={template.id}>{template.title}</Option>)}
                         </Select>
                     );
                 },
@@ -211,20 +211,19 @@ class DiagnosticTable extends Component {
                 width:     '15%',
                 render: (stage)=> {
                     const { Option } = Select;
-                    let options = undefined !== this.state.groupsTitles ? this.state.groupsTitles : [];
+                    let options = this.state.groupsTitles ? this.state.groupsTitles : [];
                     return stage != "" ? (
                         <p>
                             {stage}
                         </p>
                     ) : (
                         <Select
-                            disabled={this.state.completed}
                             showSearch
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.stage' />}
-                            disabled={options.length == 0}
+                            disabled={this.state.completed || options.length == 0}
                             onChange={this.onStageChange}
                         >
-                            {options.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
+                            {options.map((template, i) => <Option key={i+1} value={template.id}>{template.title}</Option>)}
                         </Select>  
                     );
                 },
@@ -403,7 +402,7 @@ class DiagnosticTable extends Component {
                             disabled={options.length == 0}
                             onChange={this.onDetailChange}
                         >
-                            {options.map((template, i) => <Option key={i+1} value={template}>{template}</Option>)}
+                            {options.map((template, i) => <Option key={i+1} value={template.id}>{template.title}</Option>)}
                         </Select> 
                     );
                 },
@@ -540,10 +539,14 @@ class DiagnosticTable extends Component {
     onPlanChange(event) {
         let tmp = [];
         for (let i = 0; i < this.groupsTitles.length; i++) {
-            if(this.groupsTitles[i].parent == event && tmp.indexOf(this.groupsTitles[i].title) == -1) {
-                tmp.push(this.groupsTitles[i].title);
+            if(this.groupsTitles[i].parentId == event) {
+                tmp.push({
+                    title: this.groupsTitles[i].title,
+                    id: this.groupsTitles[i].id
+                });
             }
         }
+        this.templateId = event;
         this.setState({
             groupsTitles: tmp,
         });
@@ -552,31 +555,26 @@ class DiagnosticTable extends Component {
     onStageChange(event) {
         let tmp = [];
         for (let i = 0; i < this.partsTitles.length; i++) {
-            if(this.partsTitles[i].parent == event && tmp.indexOf(this.partsTitles[i].title) == -1) {
-                tmp.push(this.partsTitles[i].title);
+            if(this.partsTitles[i].parentId == event) {
+                tmp.push({
+                    title: this.partsTitles[i].title,
+                    id: this.partsTitles[i].id
+                });
             }
         }
+        this.groupId = event;
         this.setState({
             partsTitles: tmp,
         });
     }
 
     async onDetailChange(event) {
-        let partId, groupId, partParent, diagnosticParent,templateId;
-        for (let i = 0; i < this.partsTitles.length; i++) {
-            if(this.partsTitles[i].title == event) {
-                partId = this.partsTitles[i].id;
-                partParent = this.partsTitles[i].parent;
-            }
-        }
-        for (let i = 0; i < this.groupsTitles.length; i++) {
-            if(this.groupsTitles[i].title == partParent) {
-                groupId = this.groupsTitles[i].id;
-                diagnosticParent = this.groupsTitles[i].parent;
-            }
-        }
-        templateId = this.templatesTitles.find((elem)=>elem.title==diagnosticParent).id;
-        await addNewDiagnosticRow(this.state.orderId, templateId, groupId, partId);
+        await addNewDiagnosticRow(
+            this.state.orderId,
+            this.templateId,
+            this.groupId, 
+            event   
+        );
         await this.getCurrentDiagnostic();
     }
 
@@ -623,14 +621,12 @@ class DiagnosticTable extends Component {
                 let id = diagnostic.groupId;
                 let title = diagnostic.groupTitle;
 
-                if(this.groupsTitles.findIndex((elem)=>elem.title==title) == -1) {
-                    this.groupsTitles.push({
-                        id: id,
-                        title: title,
-                        parentId: this.templatesData.diagnosticTemplates[i].diagnosticTemplateId,
-                        parent: this.templatesData.diagnosticTemplates[i].diagnosticTemplateTitle,
-                    });
-                }
+                this.groupsTitles.push({
+                    id: id,
+                    title: title,
+                    parentId: this.templatesData.diagnosticTemplates[i].diagnosticTemplateId,
+                    parent: this.templatesData.diagnosticTemplates[i].diagnosticTemplateTitle,
+                });
 
                 for (let k = 0; k < diagnostic.partsCount; k++) {
                     let part =  diagnostic.parts[k];
