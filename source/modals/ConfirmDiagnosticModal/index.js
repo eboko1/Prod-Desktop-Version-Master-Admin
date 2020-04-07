@@ -351,10 +351,9 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     automaticlyConfirmDiagnostic() {
-        console.log(this.state.diagnosticList);
         this.state.diagnosticList.map(async (data, index)=>{
             await this.changeResolved(index, 'automaticly');
-            await this.getLaborByPartId(data.id, data.commentary);
+            await this.getLaborByPartId(data.id, data.comment.comment);
             await this.getGroupByPartId(data.id);
         });
     }
@@ -419,7 +418,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     type="primary"
                     onClick={async ()=>{
                         await this.changeResolved(index, 'automaticly');
-                        await this.getLaborByPartId(data.partId, data.commentary);
+                        await this.getLaborByPartId(data.partId, data.commentary.comment);
                         await this.getGroupByPartId(data.partId);
                     }}
                     style={{width: '49%', padding: '5px'}}
@@ -568,7 +567,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 <div style={{ width: '30%' }}>
                     <InputNumber
                         disabled={!data.checked}
-                        style={{ width: '70%' }}
+                        style={{ width: '60%' }}
                         step={0.1}
                         min={0.1}
                         value={data.hours?data.hours:default_hours}
@@ -577,7 +576,12 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.setState({update: true});
                         }}
                     />
-                    <div className={Styles.delete_diagnostic_button_wrap} style={{width: "30%", display: 'inline-block'}}>
+                    <div style={{width: "20%", paddingLeft: '5px', display: 'inline-block'}}>
+                        <CommentaryModal
+                                comment={data.comment}
+                        />
+                    </div>
+                    <div className={Styles.delete_diagnostic_button_wrap} style={{width: "20%", display: 'inline-block'}}>
                         <Icon
                             onClick={()=>this.deleteServiceRow(index)}
                             type="delete"
@@ -820,3 +824,44 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 }
 export default ConfirmDiagnosticModal;
+
+class CommentaryModal extends React.Component {
+    state = { visible: false };
+
+    showModal = () => {
+        this.setState({
+        visible: true,
+        });
+    };
+
+    handleOk = e => {
+        this.setState({
+        visible: false,
+        });
+    };
+
+
+    handleCancel = e => {
+        this.setState({
+        visible: false,
+        });
+    };
+
+
+    render() {
+        return (
+        <div>
+            <Icon type="message" onClick={this.showModal}/>
+            <Modal
+                title={<FormattedMessage id='order_form_table.diagnostic.commentary' />}
+                footer={null}
+                visible={this.state.visible}
+                onOk={this.handleOk}
+                onCancel={this.handleCancel}
+            >
+            <p>{this.props.comment ? this.props.comment : <FormattedMessage id='no_data' />}</p>
+            </Modal>
+        </div>
+        );
+    }
+}
