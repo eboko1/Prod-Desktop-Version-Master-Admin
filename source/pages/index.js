@@ -21,6 +21,7 @@ import CallsPage from './CallsPage';
 import ChartPage from './ChartPage';
 import BrandsPage from './BrandsPage';
 import ServicesPage from './ServicesPage';
+import LaborsPage from './LaborsPage';
 import ForgotPasswordPage from './ForgotPasswordPage';
 import NewPasswordPage from './NewPasswordPage';
 import CashSettingsPage from './CashSettingsPage';
@@ -62,6 +63,7 @@ export {
     ChartPage,
     BrandsPage,
     ServicesPage,
+    LaborsPage,
     ForgotPasswordPage,
     NewPasswordPage,
     CashSettingsPage,

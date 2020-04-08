@@ -25,6 +25,7 @@ import {
     BusinessPackagePage,
     ManagerRolePage,
     ServicesPage,
+    LaborsPage,
     BrandsPage,
     CashSettingsPage,
     CashBankPage,
@@ -249,6 +250,11 @@ export default class Private extends Component {
                     path={ book.managerRolePage }
                 />
                 { /* Administration */ }
+                <Route
+                    exact
+                    component={ LaborsPage }
+                    path={ book.laborsPage }
+                />
                 <Route
                     exact
                     component={ ServicesPage }

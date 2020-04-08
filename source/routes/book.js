@@ -87,6 +87,7 @@ const book = Object.freeze({
     //
     // Administration
     //
+    laborsPage:               '/administration/labors' ,
     servicesPage:             '/administration/services',
     brandsPage:               '/administration/brands',
 
