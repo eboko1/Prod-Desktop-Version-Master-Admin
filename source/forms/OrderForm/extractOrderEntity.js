@@ -27,6 +27,7 @@ export function convertFieldsValuesToDbEntity(
                 serviceHours: hours,
                 laborId: laborId,
                 agreement: agreement,
+                comment: comment,
             } = service;
 
             const serviceConfig = allServices.find(
@@ -46,6 +47,7 @@ export function convertFieldsValuesToDbEntity(
             if(employeeId) result.employeeId = employeeId;
             if(hours) result.serviceHours = hours;
             if(agreement) result.agreement = agreement;
+            if(comment) result.comment = {comment:comment};
 
             return result
         })

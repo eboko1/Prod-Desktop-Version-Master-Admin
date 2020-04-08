@@ -463,10 +463,22 @@ class ServicesTable extends Component {
                     const confirmed = this.props.orderServices != undefined && 
                                     this.props.orderServices.length > key ? 
                                     this.props.orderServices[key].agreement.toLowerCase() : "undefined";
+                    const comment = this.props.orderServices[key] ? (this.props.orderServices[key].comment ? this.props.orderServices[key].comment.comment : "") : "";
                     return (
-                        <CommentaryModal
-                            comment={this.props.orderServices[key] ? this.props.orderServices[key].comment.comment : ""}    
-                        />
+                        <>
+                            <CommentaryModal
+                                comment={comment}    
+                            />
+                            <DecoratedInput
+                                    hiddeninput="hiddeninput"
+                                    errors={ errors }
+                                    defaultGetValueProps
+                                    fieldValue={ comment }
+                                    initialValue={ comment }
+                                    field={ `services[${key}].comment` }
+                                    getFieldDecorator={ getFieldDecorator }
+                                />
+                        </>
                     )
                 }
             },
