@@ -329,6 +329,12 @@ export default {
                     name:    'navigation.manager_roles',
                 },
                 {
+                    key:     '/administration/labors',
+                    link:    book.laborsPage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.labors_page',
+                },
+                {
                     key:     '/administration/services',
                     link:    book.servicesPage,
                     visible: user => isAdmin(user),
