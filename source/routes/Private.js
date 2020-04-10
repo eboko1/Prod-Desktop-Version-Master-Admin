@@ -144,6 +144,11 @@ export default class Private extends Component {
                     component={ ProductsPage }
                     path={ book.products }
                 />
+                <Route
+                    exact
+                    component={ LaborsPage }
+                    path={ book.laborsPage }
+                />
                 <Route 
                     exact
                     component={ DiagnosticPatternsPage }
@@ -250,11 +255,6 @@ export default class Private extends Component {
                     path={ book.managerRolePage }
                 />
                 { /* Administration */ }
-                <Route
-                    exact
-                    component={ LaborsPage }
-                    path={ book.laborsPage }
-                />
                 <Route
                     exact
                     component={ ServicesPage }

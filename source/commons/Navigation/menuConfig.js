@@ -81,6 +81,13 @@ export default {
                     name: 'navigation.products',
                 },
                 {
+                    key:     '/labors',
+                    link:    book.laborsPage,
+                    disabled: user =>
+                    isForbidden(user, permissions.ACCESS_STORE_GROUPS),
+                    name:    'navigation.labors_page',
+                },
+                {
                     key:      '/diagnostic-patterns',
                     disabled: user =>
                         isForbidden(user, permissions.ACCESS_STORE_GROUPS),
@@ -327,12 +334,6 @@ export default {
                     link:    book.managerRolePage,
                     visible: user => !isForbidden(user, permissions.GRANT),
                     name:    'navigation.manager_roles',
-                },
-                {
-                    key:     '/administration/labors',
-                    link:    book.laborsPage,
-                    visible: user => isAdmin(user),
-                    name:    'navigation.labors_page',
                 },
                 {
                     key:     '/administration/services',
