@@ -64,17 +64,32 @@ export default class LaborsPage extends Component {
                 dataIndex: 'fixed',
                 key:       'fixed',
                 width:     '5%',
-                render: ()=>(
-                    <Switch/>
-                )
+                render: (fixed, elem)=>{
+                    const key = elem.key;
+                    return (
+                        <Switch
+                            checked={fixed}
+                            onClick={(event)=>{
+                                console.log(this.state.labors[key])
+                                this.state.labors[key].fixed = event;
+                                this.setState({
+                                    update: true,
+                                });
+                            }}
+                        />
+                    )
+                }
             },
             {
                 title:  'HOURS',
                 dataIndex: 'normHours',
                 key:       'normHours',
                 width:     '10%',
-                render: (data)=>(
-                    <InputNumber/>
+                render: (data, elem)=>(
+                    <InputNumber
+                        defaultValue={data || 0}
+                        disabled={elem.fixed}
+                    />
                 )
             },
             {
@@ -82,8 +97,11 @@ export default class LaborsPage extends Component {
                 dataIndex: 'price',
                 key:       'price',
                 width:     '10%',
-                render: (data)=>(
-                    <InputNumber/>
+                render: (data, elem)=>(
+                    <InputNumber
+                        defaultValue={data || 0}
+                        disabled={!elem.fixed}
+                    />
                 )
             }
         ]
@@ -111,8 +129,9 @@ export default class LaborsPage extends Component {
             return response.json()
         })
         .then(function (data) {
+            data.labors.map((elem, index)=>elem.key=index)
             that.setState({
-                labors: data,
+                labors: data.labors,
             });
         })
         .catch(function (error) {
@@ -125,8 +144,7 @@ export default class LaborsPage extends Component {
     }
 
     render() {
-        console.log(this.state.labors);
-        const {labors} = this.state.labors;
+        const {labors} = this.state;
         const columns = this.columns;
         return (
             <Layout
