@@ -35,7 +35,7 @@ class DiagnosticPatternsPage extends Component {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/diagnostics`;
+        let params = `/diagnostics?keepFlat=true`;
         url += params;
     
         fetch(url, {
