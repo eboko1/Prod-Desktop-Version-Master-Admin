@@ -209,10 +209,39 @@ class DiagnosticPatternsPage extends Component {
             {
                 key:       'delete',
                 width:     '5%',
-                render:    ()=><Icon type='delete'/>,
+                render: (elem)=>{
+                    const key = elem.key
+                    return(
+                        <Icon
+                            type='delete'
+                            onClick={()=>{
+                                this.state.diagnosticParts[key].deleted = true;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                },
             },
         ]
     }
+
+    saveDiagnostic() {
+        console.log(this.state.diagnosticParts);
+        var resultData = [];
+        this.state.diagnosticParts.map((part)=>{
+            if(resultData.findIndex((elem)=>elem.diagnosticTemplateId==part.diagnosticTemplateId) == -1) {
+                resultData.push({
+                    diagnosticTemplateTitle: part.diagnosticTemplateTitle,
+                    diagnosticTemplateId: part.diagnosticTemplateId,
+                    groups: [],
+                })
+            }
+        })
+        console.log(resultData);
+    }
+
     componentWillMount() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -263,6 +292,7 @@ class DiagnosticPatternsPage extends Component {
             console.log('error', error)
         })
     }
+
     render() {
         const { diagnosticParts, filterPlan, filterGroup, filterName } = this.state;
         if(diagnosticParts.length && 
@@ -281,7 +311,7 @@ class DiagnosticPatternsPage extends Component {
         const columns = this.columns;
         console.log(this.state);
         var dataSource = [...diagnosticParts];
-
+        dataSource = dataSource.filter((data, i) => !data.deleted);
         if(filterPlan) dataSource = dataSource.filter((data, i) => data.diagnosticTemplateId==filterPlan);
         if(filterGroup) dataSource = dataSource.filter((data, i) => data.groupId==filterGroup);
         if(filterName) dataSource = dataSource.filter((data, i) => data.partTitle.includes(filterName));
@@ -292,7 +322,7 @@ class DiagnosticPatternsPage extends Component {
                     <Button
                         type='primary'
                         onClick={ () =>
-                            alert('test')
+                            this.saveDiagnostic()
                         }
                     >
                         <FormattedMessage id='save' />
