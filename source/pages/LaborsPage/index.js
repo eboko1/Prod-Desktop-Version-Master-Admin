@@ -78,7 +78,6 @@ export default class LaborsPage extends Component {
                     ) : (
                         <Input
                             onBlur={(event)=>{
-                                console.log(data, elem);
                                 this.state.labors[key].changed = true;
                                 this.state.labors[key].laborId = event.target.value;
                                 this.state.labors[key].laborCode = `${event.target.value}-${elem.productId}`;
@@ -386,8 +385,6 @@ export default class LaborsPage extends Component {
                     locale={{
                         emptyText: <FormattedMessage id='no_data' />,
                     }}
-                    pagination={true}
-                    scroll={{ y: 680 }}
                 />
             </Layout>
         );
