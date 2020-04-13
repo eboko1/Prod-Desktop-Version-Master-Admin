@@ -92,7 +92,6 @@ class DiagnosticPatternsPage extends Component {
                             style={{width: "100%"}}
                             value={data}
                             onChange={(value, option)=>{
-                                console.log(value, option)
                                 this.state.diagnosticParts[key].changed = true;
                                 this.state.diagnosticParts[key].diagnosticTemplateId = value;
                                 this.state.diagnosticParts[key].diagnosticTemplateTitle = option.props.children;
@@ -153,7 +152,6 @@ class DiagnosticPatternsPage extends Component {
                             style={{width: "100%"}}
                             value={data}
                             onChange={(value, option)=>{
-                                console.log(value, option)
                                 this.state.diagnosticParts[key].changed = true;
                                 this.state.diagnosticParts[key].groupId = value;
                                 this.state.diagnosticParts[key].groupTitle = option.props.children;
@@ -231,7 +229,8 @@ class DiagnosticPatternsPage extends Component {
         console.log(this.state.diagnosticParts);
         var resultData = [];
         this.state.diagnosticParts.map((part)=>{
-            if(resultData.findIndex((elem)=>elem.diagnosticTemplateId==part.diagnosticTemplateId) == -1) {
+            let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateId==part.diagnosticTemplateId);
+            if(templateIndex == -1) {
                 resultData.push({
                     diagnosticTemplateTitle: part.diagnosticTemplateTitle,
                     diagnosticTemplateId: part.diagnosticTemplateId,
@@ -239,7 +238,51 @@ class DiagnosticPatternsPage extends Component {
                 })
             }
         })
+        this.state.diagnosticParts.map((part)=>{
+            let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateId==part.diagnosticTemplateId);
+            let groupIndex = resultData[templateIndex].groups.findIndex((elem)=>elem.groupId==part.groupId);
+            if(groupIndex == -1) {
+                resultData[templateIndex].groups.push({
+                    groupTitle: part.groupTitle,
+                    groupId: part.groupId,
+                    partIds: [],
+                })
+            }
+        })
+        this.state.diagnosticParts.map((part)=>{
+            let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateId==part.diagnosticTemplateId);
+            let groupIndex = resultData[templateIndex].groups.findIndex((elem)=>elem.groupId==part.groupId);
+            if(!part.deleted) resultData[templateIndex].groups[groupIndex].partIds.push(part.partId);
+        })
         console.log(resultData);
+
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/diagnostics`;
+        url += params;
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': token,
+            },
+            body: JSON.stringify(resultData),
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            window.location.reload();
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
     }
 
     componentWillMount() {
@@ -309,7 +352,6 @@ class DiagnosticPatternsPage extends Component {
             })
         }
         const columns = this.columns;
-        console.log(this.state);
         var dataSource = [...diagnosticParts];
         dataSource = dataSource.filter((data, i) => !data.deleted);
         if(filterPlan) dataSource = dataSource.filter((data, i) => data.diagnosticTemplateId==filterPlan);
