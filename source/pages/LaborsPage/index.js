@@ -359,8 +359,8 @@ export default class LaborsPage extends Component {
         var dataSource = [...labors];
 
         if(filterCode) dataSource = dataSource.filter((data, i) => data.laborCode.includes(filterCode));
-        if(filterId) dataSource = dataSource.filter((data, i) => String(data.laborId).includes(filterId));
-        if(filterDetail) dataSource = dataSource.filter((data, i) => String(data.productId).includes(filterDetail));
+        if(filterId) dataSource = dataSource.filter((data, i) => String(data.laborId).includes(String(filterId)));
+        if(filterDetail) dataSource = dataSource.filter((data, i) => String(data.productId).includes(String(filterDetail)));
         if(filterDefaultName) dataSource = dataSource.filter((data, i) => data.defaultName.includes(filterDefaultName));
         if(filterName) dataSource = dataSource.filter((data, i) => data.name.includes(filterName));
 
