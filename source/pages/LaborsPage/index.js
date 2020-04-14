@@ -16,15 +16,19 @@ import {
     Input,
     InputNumber,
     AutoComplete,
+    Modal,
     Switch
 } from 'antd';
 import { Layout, Spinner } from 'commons';
+const { Option } = Select;
 
 export default class LaborsPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
             labors: [],
+            masterLabors: [],
+            storeGroups: [],
             filterCode: null,
             filterId: null,
             filterDetail: null,
@@ -68,24 +72,31 @@ export default class LaborsPage extends Component {
                         </div>
                     )
                 },
-                dataIndex: 'laborId',
-                key:       'laborId',
+                dataIndex: 'masterLaborId',
+                key:       'masterLaborId',
                 width:     '5%',
                 render: (data, elem)=>{
                     const key = elem.key;
-                    return data ? (
+                    return !elem.new ? (
                         <p>{data}</p>
                     ) : (
-                        <Input
-                            onBlur={(event)=>{
-                                this.state.labors[key].changed = true;
-                                this.state.labors[key].laborId = event.target.value;
-                                this.state.labors[key].laborCode = `${event.target.value}-${elem.productId}`;
+                        <Select
+                            style={{minWidth: "100px"}}
+                            onChange={(value, option)=>{
+                                this.state.labors[key].masterLaborId = value;
+                                this.state.labors[key].defaultName = option.props.children;
+                                this.state.labors[key].laborCode = `${value}-${elem.productId ? elem.productId : '0000000'}`;
                                 this.setState({
-                                    update: true,
-                                });
+                                    update: true
+                                })
                             }}
-                        />
+                        >
+                            {this.state.masterLabors.map((elem, index)=>(
+                                <Option key={index} value={elem.masterLaborId}>
+                                    {elem.defaultMasterLaborName}
+                                </Option>
+                            ))}
+                        </Select>
                     )
                 }
             },
@@ -110,19 +121,25 @@ export default class LaborsPage extends Component {
                 width:     '10%',
                 render: (data, elem)=>{
                     const key = elem.key;
-                    return data ? (
+                    return !elem.new ? (
                         <p>{data}</p>
                     ) : (
-                        <Input
-                            onBlur={(event)=>{
-                                this.state.labors[key].changed = true;
-                                this.state.labors[key].productId = event.target.value;
-                                this.state.labors[key].laborCode = `${elem.laborId}-${event.target.value}`;
+                        <Select
+                            style={{minWidth: "100px"}}
+                            onChange={(value, option)=>{
+                                this.state.labors[key].productId = value;
+                                this.state.labors[key].laborCode = `${elem.masterLaborId ? elem.masterLaborId : "0000"}-${value}`;
                                 this.setState({
-                                    update: true,
-                                });
+                                    update: true
+                                })
                             }}
-                        />
+                        >
+                            {this.state.storeGroups.map((elem, index)=>(
+                                <Option key={index} value={elem.id}>
+                                    {elem.name}
+                                </Option>
+                            ))}
+                        </Select>
                     )
                 }
             },
@@ -248,12 +265,11 @@ export default class LaborsPage extends Component {
         ]
     }
 
-    saveLabors() {
-        var labors = [];
+    async saveLabors() {
+        var labors = [], newLabors = [];
         this.state.labors.map((elem)=>{
-            if(elem.changed) {
+            if(elem.changed && !elem.new) {
                 labors.push({
-                    laborId: elem.laborId,
                     masterLaborId: elem.masterLaborId,
                     productId: elem.productId,
                 });
@@ -268,13 +284,52 @@ export default class LaborsPage extends Component {
                     labors[labors.length-1].normHours = elem.normHours;
                 }
             }
+            if(elem.new && elem.masterLaborId && elem.productId) {
+                newLabors.push({
+                    masterLaborId: elem.masterLaborId,
+                    productId: elem.productId,
+                });
+                if(elem.name) newLabors[newLabors.length-1].name = elem.name;
+                if(elem.fixed) {
+                    newLabors[newLabors.length-1].fixed = true;
+                    newLabors[newLabors.length-1].price = elem.price;
+                }
+                else {
+                    newLabors[newLabors.length-1].fixed = false;
+                    newLabors[newLabors.length-1].normHours = elem.normHours;
+                }
+            }
         });
-        console.log(labors);
+        console.log(labors, newLabors);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/labors`;
         url += params;
-        fetch(url, {
+
+        await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+            },
+            body: JSON.stringify(newLabors),
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        await fetch(url, {
             method: 'PUT',
             headers: {
                 'Authorization': token,
@@ -324,10 +379,64 @@ export default class LaborsPage extends Component {
             console.log(data);
             data.labors.map((elem, index)=>{
                 elem.key = index;
-                elem.laborCode = `${elem.laborId}-${elem.productId}`;
+                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
             })
             that.setState({
                 labors: data.labors,
+            });
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        params = `/labors/master?keepFlat=true`;
+        url = API_URL + params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data.masterLabors);
+            that.setState({
+                masterLabors: data.masterLabors,
+            });
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        params = `/store_groups?keepFlat=true`;
+        url = API_URL + params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            that.setState({
+                storeGroups: data,
             });
         })
         .catch(function (error) {
@@ -342,23 +451,25 @@ export default class LaborsPage extends Component {
     render() {
         const { labors, filterCode, filterId, filterDetail, filterDefaultName, filterName } = this.state;
         if(labors.length && 
-            (labors[labors.length-1].defaultName != null || labors[labors.length-1].laborId != null)) {
+            (labors[labors.length-1].defaultName != "" || labors[labors.length-1].masterLaborId != "")) {
             labors.push({
                 key: labors.length,
-                laborCode: null,
-                laborId: null,
-                defaultName: null,
-                name: null,
+                laborCode: "",
+                masterLaborId: "",
+                productId: "",
+                defaultName: "",
+                name: "",
                 fixed: false,
-                normHours: null,
+                normHours: 1,
                 price: null,
+                new: true,
             })
         }
         const columns = this.columns;
         var dataSource = [...labors];
 
         if(filterCode) dataSource = dataSource.filter((data, i) => data.laborCode.includes(filterCode));
-        if(filterId) dataSource = dataSource.filter((data, i) => String(data.laborId).includes(String(filterId)));
+        if(filterId) dataSource = dataSource.filter((data, i) => String(data.masterLaborId).includes(String(filterId)));
         if(filterDetail) dataSource = dataSource.filter((data, i) => String(data.productId).includes(String(filterDetail)));
         if(filterDefaultName) dataSource = dataSource.filter((data, i) => data.defaultName.includes(filterDefaultName));
         if(filterName) dataSource = dataSource.filter((data, i) => data.name.includes(filterName));
