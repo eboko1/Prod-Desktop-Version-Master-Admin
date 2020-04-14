@@ -12,7 +12,8 @@ import {
     Input,
     InputNumber,
     AutoComplete,
-    Switch
+    Switch,
+    Modal
 } from 'antd';
 
 // proj
@@ -31,7 +32,6 @@ import {
 
 // own
 import Styles from './styles.m.css';
-const { Option } = Select;
 
 @injectIntl
 @withRouter
@@ -40,7 +40,10 @@ class DiagnosticPatternsPage extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            visible: false,
+            currentKey: null,
             diagnosticParts: [],
+            masterDiagnosticParts: [],
             filterPlan: null,
             filterGroup: null,
             filterName: null,
@@ -57,58 +60,36 @@ class DiagnosticPatternsPage extends Component {
                     return (
                         <div>
                             <p>PLAN</p>
-                            <Select
+                            <Input
                                 allowClear
                                 style={{minWidth: "100px"}}
                                 placeholder={"PLAN"}
-                                value={this.state.filterPlan ? this.state.filterPlan : undefined}
-                                onChange={(value)=>{
+                                value={this.state.filterPlan}
+                                onChange={(event)=>{
                                     this.setState({
-                                        filterPlan: value,
+                                        filterPlan: event.target.value,
                                     });
                                 }}
-                            >
-                                {this.state.planOptions ?
-                                    this.state.planOptions.map((elem, index)=>(
-                                        <Option
-                                            key={index}
-                                            value={elem.id}
-                                        >
-                                            {elem.title}
-                                        </Option>
-                                    )) : null
-                                }
-                            </Select>
+                            />
                         </div>
                     )
                 },
-                dataIndex: 'diagnosticTemplateId',
+                dataIndex: 'diagnosticTemplateTitle',
                 key:       'diagnosticTemplateTitle',
                 width:     '25%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
-                        <Select
-                            style={{width: "100%"}}
+                        <Input
+                            style={{minWidth: "100px"}}
                             value={data}
-                            onChange={(value, option)=>{
-                                this.state.diagnosticParts[key].changed = true;
-                                this.state.diagnosticParts[key].diagnosticTemplateId = value;
-                                this.state.diagnosticParts[key].diagnosticTemplateTitle = option.props.children;
+                            onChange={(event)=>{
+                                this.state.diagnosticParts[key].diagnosticTemplateTitle = event.target.value;
                                 this.setState({
                                     update: true,
                                 });
                             }}
-                        >
-                            {this.state.planOptions.map((elem, index)=>(
-                                <Option
-                                    key={index}
-                                    value={elem.id}
-                                >
-                                    {elem.title}
-                                </Option>
-                            ))}
-                        </Select>
+                        />
                     )
                 }
             },
@@ -117,58 +98,36 @@ class DiagnosticPatternsPage extends Component {
                     return (
                         <div>
                             <p>GROUP</p>
-                            <Select
+                            <Input
                                 allowClear
                                 style={{minWidth: "100px"}}
                                 placeholder={"GROUP"}
-                                value={this.state.filterGroup ? this.state.filterGroup : undefined}
-                                onChange={(value)=>{
+                                value={this.state.filterGroup}
+                                onChange={(event)=>{
                                     this.setState({
-                                        filterGroup: value,
+                                        filterGroup: event.target.value,
                                     });
                                 }}
-                            >
-                                {this.state.groupOptions ?
-                                    this.state.groupOptions.map((elem, index)=>(
-                                        <Option
-                                            key={index}
-                                            value={elem.id}
-                                        >
-                                            {elem.title}
-                                        </Option>
-                                    )) : null
-                                }
-                            </Select>
+                            />
                         </div>
                     )
                 },
-                dataIndex: 'groupId',
+                dataIndex: 'groupTitle',
                 key:       'groupTitle',
                 width:     '25%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
-                        <Select
-                            style={{width: "100%"}}
+                        <Input
+                            style={{minWidth: "100px"}}
                             value={data}
-                            onChange={(value, option)=>{
-                                this.state.diagnosticParts[key].changed = true;
-                                this.state.diagnosticParts[key].groupId = value;
-                                this.state.diagnosticParts[key].groupTitle = option.props.children;
+                            onChange={(event)=>{
+                                this.state.diagnosticParts[key].groupTitle = event.target.value;
                                 this.setState({
                                     update: true,
                                 });
                             }}
-                        >
-                            {this.state.groupOptions.map((elem, index)=>(
-                                <Option
-                                    key={index}
-                                    value={elem.id}
-                                >
-                                    {elem.title}
-                                </Option>
-                            ))}
-                        </Select>
+                        />
                     )
                 }
             },
@@ -183,6 +142,21 @@ class DiagnosticPatternsPage extends Component {
                 dataIndex: 'partId',
                 key:       'partId',
                 width:     '15%',
+                render: (data, elem)=>{
+                    const key = elem.key
+                    return(
+                        <Button
+                            onClick={()=>{
+                                this.setState({
+                                    currentKey: key,
+                                    visible: true,
+                                })
+                            }}
+                        >
+                            {data ? data : "SET"}
+                        </Button>
+                    )
+                },
             },
             {
                 title:  ()=>{
@@ -190,6 +164,8 @@ class DiagnosticPatternsPage extends Component {
                         <div>
                             <p>NAME</p>
                             <Input
+                                allowClear
+                                placeholder="NAME"
                                 value={this.state.filterName}
                                 onChange={(event)=>{
                                     this.setState({
@@ -223,36 +199,95 @@ class DiagnosticPatternsPage extends Component {
                 },
             },
         ]
+
+        this.modalColumns = [
+            {
+                title:     'ID',
+                key:       'partId',
+                dataIndex: 'partId',
+                width:     '20%',
+            },
+            {
+                title:     'TITLE',
+                key:       'partTitle',
+                dataIndex: 'partTitle',
+                width:     '40%',
+            },
+            {
+                title:     'ACTION',
+                key:       'actionTitle',
+                dataIndex: 'actionTitle',
+                width:     '30%',
+            },
+            {
+                key:       'save',
+                render: (elem)=>{
+                    const key = this.state.currentKey;
+                    return(
+                        <Button
+                            type='primary'
+                            onClick={()=>{
+                                this.state.diagnosticParts[key].partId = elem.partId;
+                                this.state.diagnosticParts[key].partTitle = elem.partTitle;
+                                this.setState({
+                                    visible: false
+                                })
+                            }}
+                        >
+                            <Icon
+                                type='check'
+                            />
+                        </Button>
+                    )
+                },
+            },
+        ]
+    }
+
+    handleCancel() {
+        this.setState({
+            visible: false,
+        })
+    }
+
+    handleOk() {
+        this.setState({
+            visible: false,
+        })
     }
 
     saveDiagnostic() {
         console.log(this.state.diagnosticParts);
         var resultData = [];
         this.state.diagnosticParts.map((part)=>{
-            let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateId==part.diagnosticTemplateId);
-            if(templateIndex == -1) {
-                resultData.push({
-                    diagnosticTemplateTitle: part.diagnosticTemplateTitle,
-                    diagnosticTemplateId: part.diagnosticTemplateId,
-                    groups: [],
-                })
+            if(part.diagnosticTemplateTitle && part.groupTitle && part.partId) {
+                let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateTitle==part.diagnosticTemplateTitle);
+                if(templateIndex == -1) {
+                    resultData.push({
+                        diagnosticTemplateTitle: part.diagnosticTemplateTitle,
+                        groups: [],
+                    })
+                }
             }
         })
         this.state.diagnosticParts.map((part)=>{
-            let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateId==part.diagnosticTemplateId);
-            let groupIndex = resultData[templateIndex].groups.findIndex((elem)=>elem.groupId==part.groupId);
-            if(groupIndex == -1) {
-                resultData[templateIndex].groups.push({
-                    groupTitle: part.groupTitle,
-                    groupId: part.groupId,
-                    partIds: [],
-                })
+            if(part.diagnosticTemplateTitle && part.groupTitle && part.partId) {
+                let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateTitle==part.diagnosticTemplateTitle);
+                let groupIndex = resultData[templateIndex].groups.findIndex((elem)=>elem.groupTitle==part.groupTitle);
+                if(groupIndex == -1) {
+                    resultData[templateIndex].groups.push({
+                        groupTitle: part.groupTitle,
+                        partIds: [],
+                    })
+                }
             }
         })
         this.state.diagnosticParts.map((part)=>{
-            let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateId==part.diagnosticTemplateId);
-            let groupIndex = resultData[templateIndex].groups.findIndex((elem)=>elem.groupId==part.groupId);
-            if(!part.deleted) resultData[templateIndex].groups[groupIndex].partIds.push(part.partId);
+                if(part.diagnosticTemplateTitle && part.groupTitle && part.partId) {
+                let templateIndex = resultData.findIndex((elem)=>elem.diagnosticTemplateTitle==part.diagnosticTemplateTitle);
+                let groupIndex = resultData[templateIndex].groups.findIndex((elem)=>elem.groupTitle==part.groupTitle);
+                if(!part.deleted) resultData[templateIndex].groups[groupIndex].partIds.push(part.partId);
+            }
         })
         console.log(resultData);
 
@@ -308,27 +343,39 @@ class DiagnosticPatternsPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            var planOptions=[],
-                groupOptions=[];
-            data.diagnosticParts.map((elem, index)=>{
-                elem.key = index;
-                if(planOptions.findIndex((data)=>data.id==elem.diagnosticTemplateId) == -1) {
-                    planOptions.push({
-                        id: elem.diagnosticTemplateId,
-                        title: elem.diagnosticTemplateTitle,
-                    })
-                }
-                if(groupOptions.findIndex((data)=>data.id==elem.groupId) == -1) {
-                    groupOptions.push({
-                        id: elem.groupId,
-                        title: elem.groupTitle,
-                    })
-                }
-            });
+            data.diagnosticParts.map((elem, index)=>elem.key=index);
+            console.log(data);
             that.setState({
                 diagnosticParts: data.diagnosticParts,
-                planOptions: planOptions,
-                groupOptions: groupOptions,
+            });
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        })
+
+        params = `/diagnostics/master?keepFlat=true`;
+        url = API_URL + params;
+    
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.diagnosticParts.map((elem, index)=>elem.key=index);
+            console.log(data);
+            that.setState({
+                masterDiagnosticParts: data.diagnosticParts,
             });
         })
         .catch(function (error) {
@@ -337,25 +384,27 @@ class DiagnosticPatternsPage extends Component {
     }
 
     render() {
-        const { diagnosticParts, filterPlan, filterGroup, filterName } = this.state;
+        const { diagnosticParts, masterDiagnosticParts, filterPlan, filterGroup, filterName } = this.state;
         if(diagnosticParts.length && 
-            (diagnosticParts[diagnosticParts.length-1].defaultName != null || diagnosticParts[diagnosticParts.length-1].laborId != null)) {
+            (diagnosticParts[diagnosticParts.length-1].diagnosticTemplateTitle != "" || diagnosticParts[diagnosticParts.length-1].groupTitle != "")) {
                 diagnosticParts.push({
                 key: diagnosticParts.length,
-                laborCode: null,
-                laborId: null,
-                defaultName: null,
-                name: null,
-                fixed: false,
-                normHours: null,
-                price: null,
+                diagnosticTemplateTitle: "",
+                groupTitle: "",
+                partTitle: "",
+                partId: null,
             })
         }
+
         const columns = this.columns;
+        const modalColumns = this.modalColumns;
+
         var dataSource = [...diagnosticParts];
+        var modalDataSource = [...masterDiagnosticParts];
+
         dataSource = dataSource.filter((data, i) => !data.deleted);
-        if(filterPlan) dataSource = dataSource.filter((data, i) => data.diagnosticTemplateId==filterPlan);
-        if(filterGroup) dataSource = dataSource.filter((data, i) => data.groupId==filterGroup);
+        if(filterPlan) dataSource = dataSource.filter((data, i) => data.diagnosticTemplateTitle.includes(filterPlan));
+        if(filterGroup) dataSource = dataSource.filter((data, i) => data.groupTitle.includes(filterGroup));
         if(filterName) dataSource = dataSource.filter((data, i) => data.partTitle.includes(filterName));
         return (
             <Layout
@@ -380,6 +429,23 @@ class DiagnosticPatternsPage extends Component {
                     //pagination={false}
                     scroll={{ y: 680 }}
                 />
+                <Modal
+                    title="PART"
+                    width="80%"
+                    footer={null}
+                    visible={this.state.visible}
+                    onCancel={()=>{this.handleCancel()}}
+                >
+                    <Table
+                        dataSource={modalDataSource}
+                        columns={modalColumns}
+                        locale={{
+                            emptyText: <FormattedMessage id='no_data' />,
+                        }}
+                        pagination={false}
+                        scroll={{ y: 520 }}
+                    />
+                </Modal>
             </Layout>
         );
     }
