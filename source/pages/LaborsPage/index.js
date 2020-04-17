@@ -17,7 +17,8 @@ import {
     InputNumber,
     AutoComplete,
     Modal,
-    Switch
+    Switch,
+    TreeSelect
 } from 'antd';
 import { Layout, Spinner } from 'commons';
 const { Option } = Select;
@@ -35,6 +36,7 @@ export default class LaborsPage extends Component {
             filterDefaultName: null,
             filterName: null,
         }
+        this.treeData = [];
         this.columns = [
             {
                 title:  ()=>{
@@ -42,6 +44,7 @@ export default class LaborsPage extends Component {
                         <div>
                             <p>CODE</p>
                             <Input
+                                allowClear
                                 value={this.state.filterCode}
                                 onChange={(event)=>{
                                     this.setState({
@@ -62,6 +65,7 @@ export default class LaborsPage extends Component {
                         <div>
                             <p>ID</p>
                             <Input
+                                allowClear
                                 value={this.state.filterId}
                                 onChange={(event)=>{
                                     this.setState({
@@ -81,11 +85,18 @@ export default class LaborsPage extends Component {
                         <p>{data}</p>
                     ) : (
                         <Select
+                            showSearch
                             style={{minWidth: "100px"}}
+                            filterOption={(input, option) => (
+                                option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                            )}
+                            value={this.state.labors[key].masterLaborId}
                             onChange={(value, option)=>{
                                 this.state.labors[key].masterLaborId = value;
                                 this.state.labors[key].defaultName = option.props.children;
                                 this.state.labors[key].laborCode = `${value}-${elem.productId ? elem.productId : '0000000'}`;
+                                this.state.labors[key].name = option.props.children + " " + this.state.labors[key].detailTitle;
                                 this.setState({
                                     update: true
                                 })
@@ -106,6 +117,7 @@ export default class LaborsPage extends Component {
                         <div>
                             <p>DETAIL</p>
                             <Input
+                                allowClear
                                 value={this.state.filterDetail}
                                 onChange={(event)=>{
                                     this.setState({
@@ -124,22 +136,27 @@ export default class LaborsPage extends Component {
                     return !elem.new ? (
                         <p>{data}</p>
                     ) : (
-                        <Select
-                            style={{minWidth: "100px"}}
-                            onChange={(value, option)=>{
+                        <TreeSelect
+                            showSearch
+                            style={{ minWidth: '130px', maxWidth: '10%' }}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
+                            treeData={this.treeData}
+                            placeholder="Please select"
+                            value={this.state.labors[key].productId}
+                            filterTreeNode={(input, node) => (
+                                node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                String(node.props.value).indexOf(input.toLowerCase()) >= 0
+                            )}
+                            onSelect={(value, option)=>{
                                 this.state.labors[key].productId = value;
                                 this.state.labors[key].laborCode = `${elem.masterLaborId ? elem.masterLaborId : "0000"}-${value}`;
+                                this.state.labors[key].detailTitle = option.props.title;
+                                this.state.labors[key].name = this.state.labors[key].defaultName + " " + option.props.title;
                                 this.setState({
                                     update: true
                                 })
                             }}
-                        >
-                            {this.state.storeGroups.map((elem, index)=>(
-                                <Option key={index} value={elem.id}>
-                                    {elem.name}
-                                </Option>
-                            ))}
-                        </Select>
+                        />
                     )
                 }
             },
@@ -149,6 +166,7 @@ export default class LaborsPage extends Component {
                         <div>
                             <p>NAME</p>
                             <Input
+                                allowClear
                                 value={this.state.filterDefaultName}
                                 onChange={(event)=>{
                                     this.setState({
@@ -169,6 +187,7 @@ export default class LaborsPage extends Component {
                         <div>
                             <p>OWN NAME</p>
                             <Input
+                                allowClear
                                 value={this.state.filterName}
                                 onChange={(event)=>{
                                     this.setState({
@@ -227,7 +246,9 @@ export default class LaborsPage extends Component {
                     const key = elem.key;
                     return (
                         <InputNumber
-                            value={data || 0}
+                            min={0.1}
+                            step={0.2}
+                            value={data || 1}
                             disabled={elem.fixed}
                             onChange={(event)=>{
                                 this.state.labors[key].changed = true;
@@ -249,7 +270,8 @@ export default class LaborsPage extends Component {
                     const key = elem.key;
                     return (
                         <InputNumber
-                            value={data || 0}
+                            min={1}
+                            value={data || 1}
                             disabled={!elem.fixed}
                             onChange={(event)=>{
                                 this.state.labors[key].changed = true;
@@ -300,7 +322,6 @@ export default class LaborsPage extends Component {
                 }
             }
         });
-        console.log(labors, newLabors);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/labors`;
@@ -376,7 +397,7 @@ export default class LaborsPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
+            data.labors.sort((a, b) => a.masterLaborId < b.masterLaborId ? -1 : (a.masterLaborId > b.masterLaborId ? 1 : 0));
             data.labors.map((elem, index)=>{
                 elem.key = index;
                 elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
@@ -407,7 +428,6 @@ export default class LaborsPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data.masterLabors);
             that.setState({
                 masterLabors: data.masterLabors,
             });
@@ -416,7 +436,7 @@ export default class LaborsPage extends Component {
             console.log('error', error)
         });
 
-        params = `/store_groups?keepFlat=true`;
+        params = `/store_groups`;
         url = API_URL + params;
         fetch(url, {
             method: 'GET',
@@ -434,14 +454,45 @@ export default class LaborsPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
                 storeGroups: data,
             });
+            that.buildStoreGroupsTree();
         })
         .catch(function (error) {
             console.log('error', error)
         });
+    }
+
+    buildStoreGroupsTree() {
+        var treeData = [];
+        for(let i = 0; i < this.state.storeGroups.length; i++) {
+            const parentGroup = this.state.storeGroups[i];
+            treeData.push({
+                title: parentGroup.name,
+                value: parentGroup.id,
+                key: `${i}`,
+                children: [],
+            })
+            for(let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[j];
+                treeData[i].children.push({
+                    title: childGroup.name,
+                    value: childGroup.id,
+                    key: `${i}-${j}`,
+                    children: [],
+                })
+                for(let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[k];
+                    treeData[i].children[j].children.push({
+                        title: lastNode.name,
+                        value: lastNode.id,
+                        key: `${i}-${j}-${k}`,
+                    })
+                }
+            }
+        }
+        this.treeData = treeData;
     }
 
     componentDidMount() {
@@ -454,9 +505,10 @@ export default class LaborsPage extends Component {
             (labors[labors.length-1].defaultName != "" || labors[labors.length-1].masterLaborId != "")) {
             labors.push({
                 key: labors.length,
-                laborCode: "",
+                laborCode: "0000-0000000",
                 masterLaborId: "",
                 productId: "",
+                detailTitle: "",
                 defaultName: "",
                 name: "",
                 fixed: false,
