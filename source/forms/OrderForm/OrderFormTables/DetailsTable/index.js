@@ -25,7 +25,7 @@ import {
     numeralFormatter,
     numeralParser,
 } from "utils";
-import { DetailProductModal } from 'modals'
+import { DetailProductModal, DetailStorageModal } from 'modals'
 
 // own
 import Styles from "./styles.m.css";
@@ -83,6 +83,7 @@ export default class DetailsTable extends Component {
         this.state = {
             keys: [..._.keys(orderDetails), this.uuid++],
             productModalVisible: false,
+            storageModalVisible: false,
         };
 
         this.requiredRule = [
@@ -182,7 +183,7 @@ export default class DetailsTable extends Component {
                                     this.props.orderDetails.length > key ? 
                                     this.props.orderDetails[key].agreement.toLowerCase() : "undefined";
                     return (
-                        <div >
+                        <div style={{display: "flex", justifyContent: "space-evenly"}}>
                             <Button
                                 disabled={confirmed != "undefined"}
                                 onClick={()=>{
@@ -193,6 +194,9 @@ export default class DetailsTable extends Component {
                             </Button>
                             <Button
                                 disabled={confirmed != "undefined"}
+                                onClick={()=>{
+                                    this.showDetailStorageModal()
+                                }}
                             >
                                 <span>СКЛАД</span>
                             </Button>
@@ -893,6 +897,18 @@ export default class DetailsTable extends Component {
             productModalVisible: false,
         })
     }
+
+    showDetailStorageModal() {
+        this.setState({
+            storageModalVisible: true,
+        })
+    }
+    hideDetailStorageModal() {
+        this.setState({
+            storageModalVisible: false,
+        })
+    }
+
     render() {
         const { keys } = this.state;
         const columns = this.columns();
@@ -924,6 +940,11 @@ export default class DetailsTable extends Component {
                 <DetailProductModal
                     visible={this.state.productModalVisible}
                     hideModal={()=>{this.hideDetailProductModal()}}
+                    brands={this.props.allDetails.brands}
+                />
+                <DetailStorageModal
+                    visible={this.state.storageModalVisible}
+                    hideModal={()=>{this.hideDetailStorageModal()}}
                 />
             </Catcher>
         );

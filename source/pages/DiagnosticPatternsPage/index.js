@@ -47,6 +47,7 @@ class DiagnosticPatternsPage extends Component {
             filterPlan: null,
             filterGroup: null,
             filterName: null,
+            filterCode: null,
         };
         this.columns = [
             {
@@ -82,6 +83,7 @@ class DiagnosticPatternsPage extends Component {
                     return (
                         <Input
                             style={{minWidth: "100px"}}
+                            placeholder={"PLAN"}
                             value={data}
                             onChange={(event)=>{
                                 this.state.diagnosticParts[key].diagnosticTemplateTitle = event.target.value;
@@ -121,6 +123,7 @@ class DiagnosticPatternsPage extends Component {
                         <Input
                             style={{minWidth: "100px"}}
                             value={data}
+                            placeholder={"GROUP"}
                             onChange={(event)=>{
                                 this.state.diagnosticParts[key].groupTitle = event.target.value;
                                 this.setState({
@@ -136,12 +139,22 @@ class DiagnosticPatternsPage extends Component {
                     return (
                         <div>
                             <p>CODE</p>
+                            <Input
+                                allowClear
+                                placeholder="CODE"
+                                value={this.state.filterCode}
+                                onChange={(event)=>{
+                                    this.setState({
+                                        filterCode: event.target.value
+                                    })
+                                }}
+                            />
                         </div>
                     )
                 },
                 dataIndex: 'partId',
                 key:       'partId',
-                width:     '15%',
+                width:     '10%',
                 render: (data, elem)=>{
                     const key = elem.key
                     return(
@@ -178,7 +191,12 @@ class DiagnosticPatternsPage extends Component {
                 },
                 dataIndex: 'partTitle',
                 key:       'partTitle',
-                width:     '25%',
+                width:     '30%',
+                render: (data)=>{
+                    return(
+                        <span>{data ? data : "—"}</span>
+                    )
+                },
             },
             {
                 key:       'delete',
@@ -320,6 +338,18 @@ class DiagnosticPatternsPage extends Component {
         });
     }
 
+    importDefaultDiagnostics() {
+        const title = this.props.intl.formatMessage({id: 'agreement.confirm_title'});
+        const content = this.props.intl.formatMessage({id: 'agreement.confirm_content'});
+        const { confirm } = Modal;
+        confirm({
+            title: title,
+            content: content,
+            onOk: ()=>{alert('In progress...')},
+            onCancel: ()=>{console.log('Canceled')},
+        });
+    }
+
     componentWillMount() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -384,7 +414,7 @@ class DiagnosticPatternsPage extends Component {
     }
 
     render() {
-        const { diagnosticParts, masterDiagnosticParts, filterPlan, filterGroup, filterName } = this.state;
+        const { diagnosticParts, masterDiagnosticParts, filterPlan, filterGroup, filterCode, filterName } = this.state;
         if(diagnosticParts.length && 
             (diagnosticParts[diagnosticParts.length-1].diagnosticTemplateTitle != "" || diagnosticParts[diagnosticParts.length-1].groupTitle != "")) {
                 diagnosticParts.push({
@@ -403,21 +433,32 @@ class DiagnosticPatternsPage extends Component {
         var modalDataSource = [...masterDiagnosticParts];
 
         dataSource = dataSource.filter((data, i) => !data.deleted);
-        if(filterPlan) dataSource = dataSource.filter((data, i) => data.diagnosticTemplateTitle.includes(filterPlan));
-        if(filterGroup) dataSource = dataSource.filter((data, i) => data.groupTitle.includes(filterGroup));
-        if(filterName) dataSource = dataSource.filter((data, i) => data.partTitle.includes(filterName));
+        if(filterPlan) dataSource = dataSource.filter((data, i) => data.diagnosticTemplateTitle.toLowerCase().includes(filterPlan.toLowerCase()));
+        if(filterGroup) dataSource = dataSource.filter((data, i) => data.groupTitle.toLowerCase().includes(filterGroup.toLowerCase()));
+        if(filterName) dataSource = dataSource.filter((data, i) => data.partTitle.toLowerCase().includes(filterName.toLowerCase()));
+        if(filterCode) dataSource = dataSource.filter((data, i) => String(data.partId).includes(filterCode));
         return (
             <Layout
                 title={ <FormattedMessage id='diagnostic-page.title' /> }
                 controls={
-                    <Button
-                        type='primary'
-                        onClick={ () =>
-                            this.saveDiagnostic()
-                        }
-                    >
-                        <FormattedMessage id='save' />
-                    </Button>
+                    <>
+                        <Button
+                            style={{marginRight: 10}}
+                            onClick={ () =>
+                                this.importDefaultDiagnostics()
+                            }
+                        >
+                            Import default
+                        </Button>
+                        <Button
+                            type='primary'
+                            onClick={ () =>
+                                this.saveDiagnostic()
+                            }
+                        >
+                            <FormattedMessage id='save' />
+                        </Button>
+                    </>
                 }
             >
                 <Table

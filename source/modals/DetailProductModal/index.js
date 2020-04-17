@@ -10,10 +10,11 @@ import {
     createAgreement,
     lockDiagnostic,
 } from 'core/forms/orderDiagnosticForm/saga';
+import { images } from 'utils';
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
-
+const Option = Select.Option;
 
 @injectIntl
 class DetailProductModal extends React.Component{
@@ -22,12 +23,13 @@ class DetailProductModal extends React.Component{
         this.state = {
             mainTableSource: [
                 {
+                    key: 0,
                     storeGroup: undefined,
                     name: undefined,
                     comment: undefined,
                     brand: undefined,
                     code: undefined,
-                    sefl: undefined,
+                    self: undefined,
                     price: undefined,
                     count: undefined,
                     sum: undefined,
@@ -35,34 +37,37 @@ class DetailProductModal extends React.Component{
             ],
             relatedDetailsSource: [
                 {
+                    key: 0,
                     storeGroup: undefined,
                     name: undefined,
                     comment: undefined,
                     brand: undefined,
                     code: undefined,
-                    sefl: undefined,
+                    self: undefined,
                     price: undefined,
                     count: undefined,
                     sum: undefined,
                 },
                 {
+                    key: 1,
                     storeGroup: undefined,
                     name: undefined,
                     comment: undefined,
                     brand: undefined,
                     code: undefined,
-                    sefl: undefined,
+                    self: undefined,
                     price: undefined,
                     count: undefined,
                     sum: undefined,
                 },
                 {
+                    key: 2,
                     storeGroup: undefined,
                     name: undefined,
                     comment: undefined,
                     brand: undefined,
                     code: undefined,
-                    sefl: undefined,
+                    self: undefined,
                     price: undefined,
                     count: undefined,
                     sum: undefined,
@@ -70,12 +75,13 @@ class DetailProductModal extends React.Component{
             ],
             relatedServicesSource: [
                 {
+                    key: 0,
                     defaultName: undefined,
                     name: undefined,
                     comment: undefined,
                     employee: undefined,
                     hours: undefined,
-                    sefl: undefined,
+                    self: undefined,
                     price: undefined,
                     count: undefined,
                     sum: undefined,
@@ -85,6 +91,9 @@ class DetailProductModal extends React.Component{
         this.labors = [];
         this.storeGroups = [];
         this.treeData = [];
+        this.brandOptions = [];
+        this.servicesOptions = [];
+
         this.mainTableColumns = [
             {
                 title:  "GROUP",
@@ -96,10 +105,10 @@ class DetailProductModal extends React.Component{
                         <TreeSelect
                             allowClear
                             showSearch
+                            placeholder="GROUP"
                             style={{ width: '100%' }}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.treeData}
-                            placeholder="Please select"
                             filterTreeNode={(input, node) => (
                                 node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                 String(node.props.value).indexOf(input.toLowerCase()) >= 0
@@ -122,6 +131,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <Input
+                            placeholder="NAME"
                         />
                     )
                 }
@@ -130,12 +140,19 @@ class DetailProductModal extends React.Component{
                 title:  "COMMENT",
                 key:       'comment',
                 dataIndex: 'comment',
-                width:     '10%',
+                width:     '8%',
                 render: ()=>{
+                    const detail = {
+                        name: "test",
+                    }
+                    const comment = {
+                        comment: null,
+                    }
                     return (
-                        <Button>
-                            CMNT
-                        </Button>
+                        <CommentaryButton
+                            commentary={comment}
+                            detail={detail}
+                        />
                     )
                 }
             },
@@ -143,12 +160,17 @@ class DetailProductModal extends React.Component{
                 title:  "BRAND",
                 key:       'brand',
                 dataIndex: 'brand',
-                width:     '13%',
+                width:     '15%',
                 render: ()=>{
                     return (
                         <Select
-                            widh="100%"
-                        />
+                            allowClear
+                            placeholder="BRAND"
+                            style={{minWidth: 120}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                        >
+                            {this.brandOptions}
+                        </Select>
                     )
                 }
             },
@@ -160,6 +182,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <Input
+                            placeholder="CODE"
                         />
                     )
                 }
@@ -172,6 +195,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <InputNumber
+                            defaultValue={0}
                             min={0}
                         />
                     )
@@ -185,6 +209,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <InputNumber
+                            defaultValue={1}
                             min={1}
                         />
                     )
@@ -198,6 +223,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <InputNumber
+                            defaultValue={1}
                             min={1}
                         />
                     )
@@ -208,10 +234,11 @@ class DetailProductModal extends React.Component{
                 key:       'sum',
                 dataIndex: 'sum',
                 width:     '8%',
-                render: ()=>{
+                render: (sum)=>{
                     return (
                         <InputNumber
                             disabled
+                            value={sum ? sum : 1}
                         />
                     )
                 }
@@ -236,23 +263,20 @@ class DetailProductModal extends React.Component{
                 width:     '15%',
                 render: ()=>{
                     return (
-                        <TreeSelect
+                        <Select
                             allowClear
                             showSearch
+                            placeholder="SERVICE"
                             style={{ width: '100%' }}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.treeData}
-                            placeholder="Please select"
-                            filterTreeNode={(input, node) => (
-                                node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                String(node.props.value).indexOf(input.toLowerCase()) >= 0
-                            )}
                             onSelect={(value, option)=>{
                                 this.setState({
                                     update: true
                                 })
                             }}
-                        />
+                        >
+                            {this.servicesOptions}
+                        </Select>
                     )
                 }
                 
@@ -265,6 +289,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <Input
+                            placeholder="NAME"
                         />
                     )
                 }
@@ -273,12 +298,19 @@ class DetailProductModal extends React.Component{
                 title:  "COMMENT",
                 key:       'comment',
                 dataIndex: 'comment',
-                width:     '10%',
+                width:     '8%',
                 render: ()=>{
+                    const detail = {
+                        name: "test",
+                    }
+                    const comment = {
+                        comment: null,
+                    }
                     return (
-                        <Button>
-                            CMNT
-                        </Button>
+                        <CommentaryButton
+                            commentary={comment}
+                            detail={detail}
+                        />
                     )
                 }
             },
@@ -286,11 +318,14 @@ class DetailProductModal extends React.Component{
                 title:  "EMPLOYEE",
                 key:       'employee',
                 dataIndex: 'employee',
-                width:     '13%',
+                width:     '15%',
                 render: ()=>{
                     return (
                         <Select
-                            widh="100%"
+                            allowClear
+                            placeholder="EMPLOYEE"
+                            style={{minWidth: 120}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                         />
                     )
                 }
@@ -303,6 +338,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <Input
+                            placeholder="HOURS"
                         />
                     )
                 }
@@ -315,6 +351,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <InputNumber
+                            defaultValue={0}
                             min={0}
                         />
                     )
@@ -328,6 +365,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <InputNumber
+                            defaultValue={1}
                             min={1}
                         />
                     )
@@ -341,6 +379,7 @@ class DetailProductModal extends React.Component{
                 render: ()=>{
                     return (
                         <InputNumber
+                            defaultValue={1}
                             min={1}
                         />
                     )
@@ -351,10 +390,11 @@ class DetailProductModal extends React.Component{
                 key:       'sum',
                 dataIndex: 'sum',
                 width:     '8%',
-                render: ()=>{
+                render: (sum)=>{
                     return (
                         <InputNumber
                             disabled
+                            value={sum ? sum : 1}
                         />
                     )
                 }
@@ -433,6 +473,7 @@ class DetailProductModal extends React.Component{
         .then(function (data) {
             that.storeGroups = data;
             that.buildStoreGroupsTree();
+            that.getOptions();
         })
         .catch(function (error) {
             console.log('error', error)
@@ -467,16 +508,32 @@ class DetailProductModal extends React.Component{
                 }
             }
         }
-        console.log('buildStoreGroupsTree', treeData);
         this.treeData = treeData;
     }
+
+    getOptions() {
+        this.brandOptions = this.props.brands.map((elem, index)=>(
+            <Option key={index} value={elem.brandId}>
+                {elem.brandName}
+            </Option>
+        ));
+
+        this.servicesOptions = this.labors.map((elem, index)=>(
+            <Option key={index} value={elem.laborId}>
+                {elem.name ? elem.name : elem.defaultName}
+            </Option>
+        ));
+    };
 
     componentWillMount() {
         this.fetchData();
     }
 
+    componentDidMount() {
+
+    }
+
     render() {
-        console.log(this);
         const { visible } = this.props;
         return (
             <div>
@@ -526,3 +583,313 @@ class DetailProductModal extends React.Component{
     }
 }
 export default DetailProductModal;
+
+@injectIntl
+class CommentaryButton extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: false,
+            visible: false,
+            problems: undefined,
+            currentCommentaryProps: {
+                rcl: null,
+                fcl: null,
+                io: null,
+                tb: null,
+                side: [],
+                front: [],
+                back: [],
+                problems: [],
+                mm:null,
+                percent: null,
+                deg: null,
+            },
+            currentCommentary: null,
+        }
+        this.commentaryInput = React.createRef();
+    }
+
+    showModal = () => {
+        this.setState({
+            currentCommentary: this.props.commentary.comment?this.props.commentary.comment:this.state.currentCommentary,
+            visible: true,
+        });
+        if(this.commentaryInput.current != undefined) {
+            this.commentaryInput.current.focus();
+        }
+    };
+
+    handleOk = () => {
+        this.setState({
+            loading: true,
+        });
+        console.log(this);
+    };
+    
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+            loading: false,
+            currentCommentary: null, 
+        });
+    };
+
+    rendetHeader = () => {
+        return (
+            <div>
+              <p>
+                  {this.props.detail.name}
+              </p>
+            </div>
+          );
+    }
+
+    setCurrentCommentaryProps(key, value) {
+        const { detail } = this.props;
+        if(key == "mm" || key == "percent" || key == "deg" || key == "problems") {
+            if(this.state.currentCommentaryProps[key] == value) {
+                this.state.currentCommentaryProps[key] = null;
+            }
+            else {
+                this.state.currentCommentaryProps[key] = value;
+            }
+        }
+        else {
+            if(this.state.currentCommentaryProps[key].indexOf(value) != -1) {
+                this.state.currentCommentaryProps[key] = [...this.state.currentCommentaryProps[key]].filter((data) => data != value);;
+            }
+            else {
+                this.state.currentCommentaryProps[key].push(value);
+            }
+        }
+
+        const { side, back, front, problems, mm, percent, deg } = this.state.currentCommentaryProps;
+        var commentary = `${detail.name} - `;
+        if(side.length) commentary += ` ${side.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
+        if(front.length) commentary += ` ${front.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
+        if(back.length) commentary += ` ${back.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
+        if(problems.length) commentary += ` ${problems.map((data)=>data)}. `;
+        if(mm) commentary += ` ${mm}mm. `;
+        if(percent) commentary += ` ${percent}%. `;
+        if(deg) commentary += ` ${deg}°. `;
+
+
+        this.setState({
+            currentCommentary: commentary,
+        });
+    }
+
+    componentDidMount() {
+        this.state.currentCommentaryProps.mm = this.props.commentary.mm ? this.props.commentary.mm : 0;
+        this.state.currentCommentaryProps.percent = this.props.commentary.percent ? this.props.commentary.percent : 0;
+        this.state.currentCommentaryProps.deg = this.props.commentary.deg ? this.props.commentary.deg : 0;
+    }
+
+    componentDidUpdate() {
+        
+    }
+
+    render() {
+        const { TextArea } = Input;
+        const { visible, loading, currentCommentaryProps, currentCommentary } = this.state;
+        const { commentary } = this.props;
+        const { disabled } = this.props;
+        return (
+            <div>
+                {commentary.comment ? (
+                    <Button
+                        className={Styles.commentaryButton}
+                        onClick={this.showModal}
+                    >
+                        <Icon
+                            className={Styles.commentaryButtonIcon}
+                            style={{color: "rgba(0, 0, 0, 0.65)"}}
+                            type="form"/>
+                    </Button>
+                ) : (
+                    <Button
+                        disabled={disabled}
+                        type="primary"
+                        onClick={this.showModal}
+                    >
+                        <Icon type="message" />
+                    </Button>
+                )}
+                <Modal
+                    visible={visible}
+                    title={this.rendetHeader()}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                    footer={disabled?(
+                        null
+                        ):([
+                            <Button key="back" onClick={this.handleCancel}>
+                                {<FormattedMessage id='cancel' />}
+                            </Button>,
+                            <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+                                {<FormattedMessage id='save' />}
+                            </Button>,
+                        ])
+                    }
+                >
+                    {!disabled ? 
+                    <div className={Styles.commentaryContentWrap}>
+                        <div className={Styles.commentaryVehicleSchemeWrap}>
+                            <div style={{
+                                width: "360px",
+                                height: "160px",
+                                margin: "0 auto",
+                                position: "relative",
+                                backgroundImage: `url('${images.vehicleSchemeSide}')`,
+                                backgroundSize: "contain",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                            }}>
+                                <Button
+                                    type={currentCommentaryProps.side.indexOf("TOP") != -1 ? null : "primary"}
+                                    style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'TOP')}}
+                                >
+                                    <FormattedMessage id='TOP'/>
+                                </Button>
+                                <Button
+                                    type={currentCommentaryProps.side.indexOf("REAR") != -1 ? null : "primary"}
+                                    style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'REAR')}}
+                                >
+                                    <FormattedMessage id='REAR'/>
+                                </Button>
+                                <Button
+                                    type={currentCommentaryProps.side.indexOf("BOTTOM") != -1 ? null : "primary"}
+                                    style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'BOTTOM')}}
+                                >
+                                    <FormattedMessage id='BOTTOM'/>
+                                </Button>
+                                <Button
+                                    type={currentCommentaryProps.side.indexOf("FRONT") != -1 ? null : "primary"}
+                                    style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'FRONT')}}
+                                >
+                                    <FormattedMessage id='FRONT'/>
+                                </Button>
+                                <Button
+                                    type={currentCommentaryProps.side.indexOf("MIDDLE") != -1 ? null : "primary"}
+                                    style={{position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}
+                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'MIDDLE')}}
+                                >
+                                    <FormattedMessage id='MIDDLE'/>
+                                </Button>
+                            </div>
+                            <div style={{display: "flex", justifyContent: "center"}}>
+                                <div style={{
+                                    width: "180px",
+                                    height: "160px",
+                                    position: "relative",
+                                    backgroundImage: `url('${images.vehicleSchemeBack}')`,
+                                    backgroundSize: "contain",
+                                    backgroundPosition: "center",
+                                    backgroundRepeat: "no-repeat",
+                                }}>
+                                    <Button
+                                        type={currentCommentaryProps.back.indexOf("LEFT") != -1 ? null : "primary"}
+                                        style={{position: "absolute", left: "0%", bottom: "0%"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'LEFT')}}
+                                    >
+                                        <FormattedMessage id='LEFT'/>
+                                    </Button>
+                                    <Button
+                                        type={currentCommentaryProps.back.indexOf("CENTER") != -1 ? null : "primary"}
+                                        style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'CENTER')}}
+                                    >
+                                        <FormattedMessage id='CENTER'/>
+                                    </Button>
+                                    <Button
+                                        type={currentCommentaryProps.back.indexOf("RIGHT") != -1 ? null : "primary"}
+                                        style={{position: "absolute", right: "0%", bottom: "0%"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'RIGHT')}}
+                                    >
+                                        <FormattedMessage id='RIGHT'/>
+                                    </Button>
+                                </div>
+                                <div style={{
+                                    width: "180px",
+                                    height: "160px",
+                                    position: "relative",
+                                    backgroundImage: `url('${images.vehicleSchemeFront}')`,
+                                    backgroundSize: "contain",
+                                    backgroundPosition: "center",
+                                    backgroundRepeat: "no-repeat",
+                                }}>
+                                    <Button
+                                        type={currentCommentaryProps.front.indexOf("IN") != -1 ? null : "primary"}
+                                        style={{position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'IN')}}
+                                    >
+                                        <FormattedMessage id='IN'/>
+                                    </Button>
+                                    <Button
+                                        type={currentCommentaryProps.front.indexOf("OUT") != -1 ? null : "primary"}
+                                        style={{position: "absolute", right: "0%", top: "50%", transform: "translateY(-50%)"}}
+                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'OUT')}}
+                                    >
+                                        <FormattedMessage id='OUT'/>
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <p className={Styles.commentarySectionHeader}>Параметры:</p>
+                            <div style={{display: "flex"}}>
+                                <div className={Styles.commentaryParameter}>
+                                    <InputNumber
+                                        value={currentCommentaryProps.mm || 0}
+                                        formatter={value => `${value} mm.`}
+                                        parser={value => value.replace(' %', '')}
+                                        onChange={(mm)=>{this.setCurrentCommentaryProps('mm', mm)}}
+                                    />
+                                </div>
+                                <div className={Styles.commentaryParameter}>
+                                    <InputNumber
+                                        value={currentCommentaryProps.percent || 0}
+                                        formatter={value => `${value} %`}
+                                        parser={value => value.replace(' %', '')}
+                                        onChange={(percent)=>{this.setCurrentCommentaryProps('percent', percent)}}
+                                    /> 
+                                </div>
+                                <div className={Styles.commentaryParameter}>
+                                    <InputNumber
+                                        value={currentCommentaryProps.deg || 0}
+                                        formatter={value => `${value} °`}
+                                        parser={value => value.replace(' °', '')}
+                                        onChange={(deg)=>{this.setCurrentCommentaryProps('deg', deg)}}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+                    </div> : null}
+                    <div>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='order_form_table.diagnostic.commentary' />:
+                        </p>
+                        <TextArea
+                            disabled={disabled}
+                            value={currentCommentary}
+                            placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
+                            autoFocus
+                            onChange={()=>{
+                                this.setState({
+                                    currentCommentary: event.target.value,
+                                });
+                            }}
+                            style={{width: '100%', minHeight: '150px', resize:'none'}}
+                            ref={this.commentaryInput}
+                        />
+                    </div>
+                </Modal>
+            </div>
+        );
+    }
+}
