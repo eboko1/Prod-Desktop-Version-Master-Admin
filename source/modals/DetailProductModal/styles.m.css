@@ -1,6 +1,8 @@
 .tableWrap {
     display: flex;
     justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #8c8c8c;
 }
 
 .modalSectionTitle {
@@ -10,4 +12,22 @@
     align-items: center;
     font-size: 16px;
     font-weight: bold;
+}
+
+/* Commentary Button */
+.commentaryButtonIcon svg *{
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.commentaryContentWrap > div {
+    margin-bottom: 15px;
+}
+
+.commentarySectionHeader {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.commentaryParameter{
+    margin-right: 15px;
 }

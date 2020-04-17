@@ -45,6 +45,7 @@ export default class LaborsPage extends Component {
                             <p>CODE</p>
                             <Input
                                 allowClear
+                                placeholder="CODE"
                                 value={this.state.filterCode}
                                 onChange={(event)=>{
                                     this.setState({
@@ -66,6 +67,7 @@ export default class LaborsPage extends Component {
                             <p>ID</p>
                             <Input
                                 allowClear
+                                placeholder="ID"
                                 value={this.state.filterId}
                                 onChange={(event)=>{
                                     this.setState({
@@ -78,7 +80,7 @@ export default class LaborsPage extends Component {
                 },
                 dataIndex: 'masterLaborId',
                 key:       'masterLaborId',
-                width:     '5%',
+                width:     '10%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return !elem.new ? (
@@ -86,12 +88,13 @@ export default class LaborsPage extends Component {
                     ) : (
                         <Select
                             showSearch
+                            placeholder="ID"
                             style={{minWidth: "100px"}}
                             filterOption={(input, option) => (
                                 option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                 String(option.props.value).indexOf(input.toLowerCase()) >= 0
                             )}
-                            value={this.state.labors[key].masterLaborId}
+                            value={this.state.labors[key].masterLaborId ? this.state.labors[key].masterLaborId : undefined}
                             onChange={(value, option)=>{
                                 this.state.labors[key].masterLaborId = value;
                                 this.state.labors[key].defaultName = option.props.children;
@@ -118,6 +121,7 @@ export default class LaborsPage extends Component {
                             <p>DETAIL</p>
                             <Input
                                 allowClear
+                                placeholder="DETAIL"
                                 value={this.state.filterDetail}
                                 onChange={(event)=>{
                                     this.setState({
@@ -141,8 +145,8 @@ export default class LaborsPage extends Component {
                             style={{ minWidth: '130px', maxWidth: '10%' }}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                             treeData={this.treeData}
-                            placeholder="Please select"
-                            value={this.state.labors[key].productId}
+                            placeholder="DETAIL"
+                            value={this.state.labors[key].productId ? this.state.labors[key].productId : undefined}
                             filterTreeNode={(input, node) => (
                                 node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                 String(node.props.value).indexOf(input.toLowerCase()) >= 0
@@ -167,6 +171,7 @@ export default class LaborsPage extends Component {
                             <p>NAME</p>
                             <Input
                                 allowClear
+                                placeholder="NAME"
                                 value={this.state.filterDefaultName}
                                 onChange={(event)=>{
                                     this.setState({
@@ -179,7 +184,7 @@ export default class LaborsPage extends Component {
                 },
                 dataIndex: 'defaultName',
                 key:       'defaultName',
-                width:     '30%',
+                width:     '20%',
             },
             {
                 title:  ()=>{
@@ -188,6 +193,7 @@ export default class LaborsPage extends Component {
                             <p>OWN NAME</p>
                             <Input
                                 allowClear
+                                placeholder="OWN NAME"
                                 value={this.state.filterName}
                                 onChange={(event)=>{
                                     this.setState({
@@ -199,11 +205,12 @@ export default class LaborsPage extends Component {
                     )
                 },
                 key:       'name',
-                width:     '30%',
+                width:     '25%',
                 render: (elem)=>{
                     const key = elem.key;
                     return (
                         <Input
+                            placeholder="OWN NAME"
                             value={elem.name?elem.name:null}
                             onChange={(event)=>{
                                 this.state.labors[key].changed = true;
@@ -523,8 +530,8 @@ export default class LaborsPage extends Component {
         if(filterCode) dataSource = dataSource.filter((data, i) => data.laborCode.includes(filterCode));
         if(filterId) dataSource = dataSource.filter((data, i) => String(data.masterLaborId).includes(String(filterId)));
         if(filterDetail) dataSource = dataSource.filter((data, i) => String(data.productId).includes(String(filterDetail)));
-        if(filterDefaultName) dataSource = dataSource.filter((data, i) => data.defaultName.includes(filterDefaultName));
-        if(filterName) dataSource = dataSource.filter((data, i) => data.name.includes(filterName));
+        if(filterDefaultName) dataSource = dataSource.filter((data, i) => data.defaultName.toLowerCase().includes(filterDefaultName.toLowerCase()));
+        if(filterName) dataSource = dataSource.filter((data, i) => data.name.toLowerCase().includes(filterName.toLowerCase()));
 
         return (
             <Layout
