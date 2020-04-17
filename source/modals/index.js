@@ -15,6 +15,7 @@ import PDFViewerModal from './PDFViewerModal';
 import StoreGroupModal from './StoreGroupModal';
 import StoreProductModal from './StoreProductModal';
 import ConfirmDiagnosticModal from './ConfirmDiagnosticModal';
+import DetailProductModal from './DetailProductModal'
 
 export {
     UniversalFiltersModal,
@@ -34,4 +35,5 @@ export {
     StoreGroupModal,
     StoreProductModal,
     ConfirmDiagnosticModal,
+    DetailProductModal,
 };
