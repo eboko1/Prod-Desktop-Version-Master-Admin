@@ -476,7 +476,7 @@ export default class LaborsPage extends Component {
         for(let i = 0; i < this.state.storeGroups.length; i++) {
             const parentGroup = this.state.storeGroups[i];
             treeData.push({
-                title: parentGroup.name,
+                title: `${parentGroup.name} (#${parentGroup.id})`,
                 value: parentGroup.id,
                 key: `${i}`,
                 children: [],
@@ -484,7 +484,7 @@ export default class LaborsPage extends Component {
             for(let j = 0; j < parentGroup.childGroups.length; j++) {
                 const childGroup = parentGroup.childGroups[j];
                 treeData[i].children.push({
-                    title: childGroup.name,
+                    title: `${childGroup.name} (#${childGroup.id})`,
                     value: childGroup.id,
                     key: `${i}-${j}`,
                     children: [],
@@ -492,10 +492,19 @@ export default class LaborsPage extends Component {
                 for(let k = 0; k < childGroup.childGroups.length; k++) {
                     const lastNode = childGroup.childGroups[k];
                     treeData[i].children[j].children.push({
-                        title: lastNode.name,
+                        title: `${lastNode.name} (#${lastNode.id})`,
                         value: lastNode.id,
                         key: `${i}-${j}-${k}`,
+                        children: [],
                     })
+                    for(let l = 0; l < lastNode.childGroups.length; l++) {
+                        const elem = lastNode.childGroups[l];
+                        treeData[i].children[j].children[k].children.push({
+                            title: `${elem.name} (#${elem.id})`,
+                            value: elem.id,
+                            key: `${i}-${j}-${k}-${l}`,
+                        })
+                    }
                 }
             }
         }

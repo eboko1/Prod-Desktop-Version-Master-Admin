@@ -6,6 +6,7 @@ import exception500 from 'theme/images/exceptions/500.svg';
 import carbookLogo from 'theme/images/logoCarbookPrimary.png';
 import portmoneLogos from 'theme/images/logos/portmoneLogos.svg';
 // partners logos
+import castrolLogo from 'theme/images/logos/castrolLogo.png';
 import ecatLogo from 'theme/images/logos/ecatLogo.png';
 import kybLogo from 'theme/images/logos/kybLogo.png';
 import sidemLogo from 'theme/images/logos/sidemLogo.png';
@@ -37,6 +38,7 @@ export default {
     exception404,
     exception500,
     // Logos
+    castrolLogo,
     carbookLogo,
     portmoneLogos,
     ecatLogo,
