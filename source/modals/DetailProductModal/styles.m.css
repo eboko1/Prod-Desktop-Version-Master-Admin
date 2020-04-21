@@ -1,3 +1,7 @@
+:global(.ant-select) {
+    display: list-item;
+}
+
 .tableWrap {
     display: flex;
     justify-content: space-between;
@@ -12,6 +16,14 @@
     align-items: center;
     font-size: 16px;
     font-weight: bold;
+}
+
+.groupsTreeSelect {
+
+}
+
+.groupTreeOption {
+    
 }
 
 /* Commentary Button */

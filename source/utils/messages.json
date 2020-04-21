@@ -161,7 +161,8 @@
     "price": "Price",
     "count": "Count",
     "hours": "Hours",
-    "description": "Name"
+    "description": "Name",
+    "long_dash" : "—"
   },
   "ru": {
     "currency": "грн.",
@@ -325,7 +326,8 @@
     "price": "Цена",
     "count": "Кол-во",
     "hours": "Часы",
-    "description": "Наименование"
+    "description": "Наименование",
+    "long_dash" : "—"
   },
   "uk": {
     "currency": "грн.",
@@ -489,6 +491,7 @@
     "price": "Ціна",
     "count": "К-сть",
     "hours": "Години",
-    "description": "Найменування"
+    "description": "Найменування",
+    "long_dash" : "—"
   }
 }
