@@ -667,7 +667,8 @@ class DetailProductModal extends React.Component{
                 key:       'hours',
                 dataIndex: 'hours',
                 width:     '10%',
-                render: (data)=>{
+                render: (data, elem)=>{
+                    const key = elem.key;
                     return (
                         <InputNumber
                             placeholder="HOURS"
@@ -820,6 +821,15 @@ class DetailProductModal extends React.Component{
                     count: element.count,
                     price: element.price,
                 })
+            });
+            this.state.relatedServicesSource.map((element)=>{
+                if(element.laborId) {
+                    data.services.push({
+                        serviceId: element.laborId,
+                        serviceHours: element.hours ? element.hours : 1,
+                        servicePrice: element.price ? element.price : 0,
+                    })
+                }
             });
             console.log(data);
             this.addDetailsAndLabors(data);
