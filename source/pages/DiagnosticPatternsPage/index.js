@@ -194,7 +194,7 @@ class DiagnosticPatternsPage extends Component {
                 width:     '30%',
                 render: (data)=>{
                     return(
-                        <span>{data ? data : "—"}</span>
+                        <span>{data ? data : <FormattedMessage id="long_dash" />}</span>
                     )
                 },
             },
@@ -345,7 +345,20 @@ class DiagnosticPatternsPage extends Component {
         confirm({
             title: title,
             content: content,
-            onOk: ()=>{alert('In progress...')},
+            onOk: async ()=>{
+                let token = localStorage.getItem('_my.carbook.pro_token');
+                let url = API_URL;
+                let params = `/diagnostics/standard`;
+                url += params;
+            
+                await fetch(url, {
+                        method: 'COPY',
+                        headers: {
+                            'Authorization': token,
+                        }
+                    });
+                await window.location.reload();
+            },
             onCancel: ()=>{console.log('Canceled')},
         });
     }

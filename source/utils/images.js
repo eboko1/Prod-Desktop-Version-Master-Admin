@@ -38,8 +38,8 @@ export default {
     exception404,
     exception500,
     // Logos
-    castrolLogo,
     carbookLogo,
+    castrolLogo,
     portmoneLogos,
     ecatLogo,
     kybLogo,

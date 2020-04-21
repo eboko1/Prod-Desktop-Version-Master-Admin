@@ -236,6 +236,7 @@ export default class OrderFormTabs extends React.PureComponent {
                 >
                     <ServicesTable
                         errors={errors}
+                        orderId={orderId}
                         fields={servicesTableFieldsProps}
                         services={services}
                         employees={employees}
@@ -265,11 +266,12 @@ export default class OrderFormTabs extends React.PureComponent {
                     tab={`${formatMessage({
                         id: "add_order_form.details",
                         defaultMessage: "Details",
-                    })} (${countDetails})`}
+                    })} (${orderDetails.length})`}
                     key="4"
                 >
                     <DetailsTable
                         errors={errors}
+                        orderId={orderId}
                         fields={detailsTableFieldsProps}
                         details={details}
                         tecdocId={tecdocId}

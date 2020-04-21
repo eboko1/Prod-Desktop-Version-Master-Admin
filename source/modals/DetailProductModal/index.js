@@ -21,20 +21,8 @@ class DetailProductModal extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            mainTableSource: [
-                {
-                    key: 0,
-                    id: undefined,
-                    name: undefined,
-                    comment: undefined,
-                    brand: undefined,
-                    code: undefined,
-                    self: 0,
-                    price: 1,
-                    count: 1,
-                    sum: undefined,
-                }
-            ],
+            editing: false,
+            mainTableSource: [],
             relatedDetailsSource: [
                 {
                     key: 0,
@@ -87,38 +75,44 @@ class DetailProductModal extends React.Component{
                     count: 1,
                     sum: undefined,
                 }
-            ]
+            ],
+            groupSearchValue: "",
         }
         this.labors = [];
         this.storeGroups = [];
         this.treeData = [];
         this.brandOptions = [];
         this.servicesOptions = [];
+        this.relatedDetailsOptions = [];
+
+        this.setComment = this.setComment.bind(this);
 
         this.mainTableColumns = [
             {
                 title:  "GROUP",
-                key:       'id',
-                dataIndex: 'id',
+                key:       'storeGroupId',
+                dataIndex: 'storeGroupId',
                 width:     '15%',
                 render: (data, elem)=>{
-                    const key = elem.key;
                     return (
                         <TreeSelect
-                            allowClear
+                            className={Styles.groupsTreeSelect}
+                            disabled={this.state.editing}
                             showSearch
                             placeholder="GROUP"
-                            style={{ width: '100%' }}
+                            style={{maxWidth: 180}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.treeData}
-                            filterTreeNode={(input, node) => (
-                                node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                String(node.props.value).indexOf(input.toLowerCase()) >= 0
-                            )}
+                            filterTreeNode={(input, node) => {
+                                return (
+                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
                             onSelect={(value, option)=>{
-                                this.state.mainTableSource[key].id = value;
-                                this.state.mainTableSource[key].name = option.props.title;
+                                this.state.mainTableSource[0].storeGroupId = value;
+                                this.state.mainTableSource[0].detailName = option.props.name;
                                 this.filterOptions(value);
                                 this.setState({
                                     update: true
@@ -131,17 +125,18 @@ class DetailProductModal extends React.Component{
             },
             {
                 title:  "NAME",
-                key:       'name',
-                dataIndex: 'name',
-                width:     '20%',
+                key:       'detailName',
+                dataIndex: 'detailName',
+                width:     '25%',
                 render: (data, elem)=>{
-                    const key = elem.key;
                     return (
                         <Input
+                            disabled={elem.storeGroupId == null}
                             placeholder="NAME"
+                            style={{minWidth: 180}}
                             value={data}
-                            onChange={(value)=>{
-                                this.state.mainTableSource[key].name = value;
+                            onChange={(event)=>{
+                                this.state.mainTableSource[0].detailName = event.target.value;
                                 this.setState({
                                     update: true
                                 })
@@ -154,39 +149,37 @@ class DetailProductModal extends React.Component{
                 title:  "COMMENT",
                 key:       'comment',
                 dataIndex: 'comment',
-                width:     '8%',
+                width:     '5%',
                 render: (data, elem)=>{
-                    const key = elem.key;
                     const detail = {
-                        name: "test",
-                    }
-                    const comment = {
-                        comment: null,
+                        name: this.state.mainTableSource[0].detailName,
                     }
                     return (
                         <CommentaryButton
-                            commentary={comment}
+                            disabled={elem.storeGroupId == null}
+                            commentary={{comment: data}}
                             detail={detail}
+                            setComment={this.setComment}
                         />
                     )
                 }
             },
             {
                 title:  "BRAND",
-                key:       'brand',
-                dataIndex: 'brand',
+                key:       'brandId',
+                dataIndex: 'brandId',
                 width:     '15%',
                 render: (data, elem)=>{
-                    const key = elem.key;
                     return (
                         <Select
-                            allowClear
+                            disabled={elem.storeGroupId == null}
                             placeholder="BRAND"
-                            value={data}
-                            style={{minWidth: 120}}
+                            value={data ? data : undefined}
+                            style={{maxWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            onSelect={(value)=>{
-                                this.state.mainTableSource[key].brand = value;
+                            onSelect={(value, option)=>{
+                                this.state.mainTableSource[0].brandId = value;
+                                this.state.mainTableSource[0].brandName = option.props.children;
                                 this.setState({
                                     update: true
                                 })
@@ -199,31 +192,39 @@ class DetailProductModal extends React.Component{
             },
             {
                 title:  "CODE",
-                key:       'code',
-                dataIndex: 'code',
-                width:     '13%',
+                key:       'detailCode',
+                dataIndex: 'detailCode',
+                width:     '15%',
                 render: (data, elem)=>{
-                    const key = elem.key;
                     return (
                         <Input
+                            style={{maxWidth: 180}}
+                            disabled={elem.storeGroupId == null}
                             placeholder="CODE"
+                            value={data}
+                            onChange={(event)=>{
+                                this.state.mainTableSource[0].detailCode = event.target.value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
                         />
                     )
                 }
             },
             {
                 title:  "SELF",
-                key:       'self',
-                dataIndex: 'self',
-                width:     '6%',
+                key:       'purchasePrice',
+                dataIndex: 'purchasePrice',
+                width:     '5%',
                 render: (data, elem)=>{
-                    const key = elem.key;
                     return (
                         <InputNumber
+                            disabled={elem.storeGroupId == null}
                             value={data || 0}
                             min={0}
                             onChange={(value)=>{
-                                this.state.mainTableSource[key].self = value;
+                                this.state.mainTableSource[0].purchasePrice = value;
                                 this.setState({
                                     update: true
                                 })
@@ -236,15 +237,16 @@ class DetailProductModal extends React.Component{
                 title:  "PRICE",
                 key:       'price',
                 dataIndex: 'price',
-                width:     '6%',
+                width:     '5%',
                 render: (data, elem)=>{
-                    const key = elem.key;
                     return (
                         <InputNumber
+                            disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
                             onChange={(value)=>{
-                                this.state.mainTableSource[key].price = value;
+                                this.state.mainTableSource[0].price = value;
+                                this.state.mainTableSource[0].sum = value * this.state.mainTableSource[0].count;
                                 this.setState({
                                     update: true
                                 })
@@ -257,15 +259,16 @@ class DetailProductModal extends React.Component{
                 title:  "COUNT",
                 key:       'count',
                 dataIndex: 'count',
-                width:     '6%',
+                width:     '5%',
                 render: (data, elem)=>{
-                    const key = elem.key;
                     return (
                         <InputNumber
+                            disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
                             onChange={(value)=>{
-                                this.state.mainTableSource[key].count = value;
+                                this.state.mainTableSource[0].count = value;
+                                this.state.mainTableSource[0].sum = value * this.state.mainTableSource[0].price;
                                 this.setState({
                                     update: true
                                 })
@@ -277,10 +280,9 @@ class DetailProductModal extends React.Component{
             {
                 title:  "SUM",
                 key:       'sum',
-                width:     '8%',
+                width:     '7%',
                 render: (elem)=>{
-                    const key = elem.key;
-                    const sum = this.state.mainTableSource[key].price *  this.state.mainTableSource[key].count;
+                    const sum = this.state.mainTableSource[0].price *  this.state.mainTableSource[0].count;
                     return (
                         <InputNumber
                             disabled
@@ -294,23 +296,20 @@ class DetailProductModal extends React.Component{
                 key:       'delete',
                 width:     '3%',
                 render: (elem)=>{
-                    const key = elem.key;
                     return (
                         <Icon
-                            type="delete"
+                            type="close"
                             onClick={()=>{
-                                this.state.mainTableSource[key] = {
-                                    key: key,
-                                    id: undefined,
-                                    name: undefined,
-                                    comment: undefined,
-                                    brand: undefined,
-                                    code: undefined,
-                                    self: 0,
-                                    price: 1,
-                                    count: 1,
-                                    sum: undefined,
-                                }
+                                this.state.mainTableSource[0].storeGroupId = this.state.editing ? elem.storeGroupId : undefined;
+                                this.state.mainTableSource[0].detailName = undefined;
+                                this.state.mainTableSource[0].comment = undefined;
+                                this.state.mainTableSource[0].brandId = undefined;
+                                this.state.mainTableSource[0].brandName = undefined;
+                                this.state.mainTableSource[0].detailCode = undefined;
+                                this.state.mainTableSource[0].purchasePrice = 0;
+                                this.state.mainTableSource[0].price = 1;
+                                this.state.mainTableSource[0].count = 1;
+                                this.state.mainTableSource[0].sum = undefined;
                                 this.setState({
                                     update: true
                                 })
@@ -334,7 +333,7 @@ class DetailProductModal extends React.Component{
                             allowClear
                             showSearch
                             placeholder="GROUP"
-                            style={{ width: '100%' }}
+                            style={{maxWidth: 180}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.treeData}
@@ -344,7 +343,7 @@ class DetailProductModal extends React.Component{
                             )}
                             onSelect={(value, option)=>{
                                 this.state.relatedDetailsSource[key].id = value;
-                                this.state.relatedDetailsSource[key].name = option.props.title;
+                                this.state.relatedDetailsSource[key].name = option.props.name;
                                 this.setState({
                                     update: true
                                 })
@@ -358,7 +357,7 @@ class DetailProductModal extends React.Component{
                 title:  "NAME",
                 key:       'name',
                 dataIndex: 'name',
-                width:     '20%',
+                width:     '25%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
@@ -379,7 +378,7 @@ class DetailProductModal extends React.Component{
                 title:  "COMMENT",
                 key:       'comment',
                 dataIndex: 'comment',
-                width:     '8%',
+                width:     '5%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     const detail = {
@@ -408,7 +407,7 @@ class DetailProductModal extends React.Component{
                             allowClear
                             placeholder="BRAND"
                             value={data}
-                            style={{minWidth: 120}}
+                            style={{maxWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             onSelect={(value)=>{
                                 this.state.relatedDetailsSource[key].brand = value;
@@ -426,12 +425,21 @@ class DetailProductModal extends React.Component{
                 title:  "CODE",
                 key:       'code',
                 dataIndex: 'code',
-                width:     '13%',
+                width:     '15%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
                         <Input
+                            style={{maxWidth: 180}}
+                            disabled={elem.id == null}
                             placeholder="CODE"
+                            value={data}
+                            onChange={(event)=>{
+                                this.state.relatedDetailsSource[key].code = event.target.value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
                         />
                     )
                 }
@@ -440,7 +448,7 @@ class DetailProductModal extends React.Component{
                 title:  "SELF",
                 key:       'self',
                 dataIndex: 'self',
-                width:     '6%',
+                width:     '5%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
@@ -461,7 +469,7 @@ class DetailProductModal extends React.Component{
                 title:  "PRICE",
                 key:       'price',
                 dataIndex: 'price',
-                width:     '6%',
+                width:     '5%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
@@ -482,7 +490,7 @@ class DetailProductModal extends React.Component{
                 title:  "COUNT",
                 key:       'count',
                 dataIndex: 'count',
-                width:     '6%',
+                width:     '5%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
@@ -502,7 +510,7 @@ class DetailProductModal extends React.Component{
             {
                 title:  "SUM",
                 key:       'sum',
-                width:     '8%',
+                width:     '7%',
                 render: (elem)=>{
                     const key = elem.key;
                     const sum = this.state.relatedDetailsSource[key].price *  this.state.relatedDetailsSource[key].count;
@@ -560,7 +568,7 @@ class DetailProductModal extends React.Component{
                             showSearch
                             placeholder="SERVICE"
                             value={data}
-                            style={{ width: '100%' }}
+                            style={{maxWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option)=>(
                                 String(option.props.value).toLowerCase().includes(input.toLocaleLowerCase()) ||
@@ -600,13 +608,14 @@ class DetailProductModal extends React.Component{
                 title:  "NAME",
                 key:       'name',
                 dataIndex: 'name',
-                width:     '20%',
+                width:     '25%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
                         <Input
                             placeholder="NAME"
                             value={data}
+                            style={{minWidth: 180}}
                             onChange={(value)=>{
                                 this.state.relatedServicesSource[key].name = value;
                                 this.setState({
@@ -621,7 +630,7 @@ class DetailProductModal extends React.Component{
                 title:  "COMMENT",
                 key:       'comment',
                 dataIndex: 'comment',
-                width:     '8%',
+                width:     '5%',
                 render: ()=>{
                     const detail = {
                         name: "test",
@@ -647,7 +656,7 @@ class DetailProductModal extends React.Component{
                         <Select
                             allowClear
                             placeholder="EMPLOYEE"
-                            style={{minWidth: 120}}
+                            style={{maxWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                         />
                     )
@@ -657,12 +666,18 @@ class DetailProductModal extends React.Component{
                 title:  "HOURS",
                 key:       'hours',
                 dataIndex: 'hours',
-                width:     '13%',
+                width:     '10%',
                 render: (data)=>{
                     return (
-                        <Input
+                        <InputNumber
                             placeholder="HOURS"
-                            value={data}
+                            value={data || 1}
+                            onChange={(value)=>{
+                                this.state.relatedServicesSource[key].hours = value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
                         />
                     )
                 }
@@ -671,7 +686,7 @@ class DetailProductModal extends React.Component{
                 title:  "SELF",
                 key:       'self',
                 dataIndex: 'self',
-                width:     '6%',
+                width:     '5%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
@@ -692,7 +707,7 @@ class DetailProductModal extends React.Component{
                 title:  "PRICE",
                 key:       'price',
                 dataIndex: 'price',
-                width:     '6%',
+                width:     '5%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
@@ -713,7 +728,7 @@ class DetailProductModal extends React.Component{
                 title:  "COUNT",
                 key:       'count',
                 dataIndex: 'count',
-                width:     '6%',
+                width:     '5%',
                 render: (data, elem)=>{
                     const key = elem.key;
                     return (
@@ -733,7 +748,7 @@ class DetailProductModal extends React.Component{
             {
                 title:  "SUM",
                 key:       'sum',
-                width:     '8%',
+                width:     '7%',
                 render: (elem)=>{
                     const key = elem.key;
                     const sum = this.state.relatedServicesSource[key].price * this.state.relatedServicesSource[key].count;
@@ -786,12 +801,69 @@ class DetailProductModal extends React.Component{
     }
 
     handleOk = () => {
+        if(this.state.editing) {
+            this.props.updateDetail(this.props.tableKey, {...this.state.mainTableSource[0]});
+        }
+        else {
+            var data = {
+                insertMode: true,
+                details: [],
+                services: [],
+            }
+            this.state.mainTableSource.map((element)=>{
+                data.details.push({
+                    storeGroupId: element.storeGroupId,
+                    productId: element.productId,
+                    detailCode: element.detailCode,
+                    brandId: element.brandId,
+                    purchasePrice: element.purchasePrice,
+                    count: element.count,
+                    price: element.price,
+                })
+            });
+            console.log(data);
+            this.addDetailsAndLabors(data);
+            window.location.reload();
+        }
         this.props.hideModal();
     };
     
     handleCancel = () => {
         this.props.hideModal();
     };
+
+    setComment(comment){
+        this.state.mainTableSource[0].comment = comment;
+        this.setState({
+            update: true
+        })
+    }
+
+    async addDetailsAndLabors(data) {
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
+            if(result.success) {
+                console.log("OK", result);
+            }
+            else {
+                console.log("BAD", result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+    }
 
     fetchData() {
         var that = this;
@@ -858,7 +930,9 @@ class DetailProductModal extends React.Component{
             const parentGroup = this.storeGroups[i];
             treeData.push({
                 title: `${parentGroup.name} (#${parentGroup.id})`,
+                name: parentGroup.name,
                 value: parentGroup.id,
+                className: Styles.groupTreeOption,
                 key: `${i}`,
                 children: [],
             })
@@ -866,7 +940,9 @@ class DetailProductModal extends React.Component{
                 const childGroup = parentGroup.childGroups[j];
                 treeData[i].children.push({
                     title: `${childGroup.name} (#${childGroup.id})`,
+                    name: childGroup.name,
                     value: childGroup.id,
+                    className: Styles.groupTreeOption,
                     key: `${i}-${j}`,
                     children: [],
                 })
@@ -874,7 +950,9 @@ class DetailProductModal extends React.Component{
                     const lastNode = childGroup.childGroups[k];
                     treeData[i].children[j].children.push({
                         title: `${lastNode.name} (#${lastNode.id})`,
+                        name: lastNode.name,
                         value: lastNode.id,
+                        className: Styles.groupTreeOption,
                         key: `${i}-${j}-${k}`,
                         children: [],
                     })
@@ -882,7 +960,9 @@ class DetailProductModal extends React.Component{
                         const elem = lastNode.childGroups[l];
                         treeData[i].children[j].children[k].children.push({
                             title: `${elem.name} (#${elem.id})`,
+                            name: elem.name,
                             value: elem.id,
+                            className: Styles.groupTreeOption,
                             key: `${i}-${j}-${k}-${l}`,
                         })
                     }
@@ -894,7 +974,7 @@ class DetailProductModal extends React.Component{
 
     getOptions() {
         this.brandOptions = this.props.brands.map((elem, index)=>(
-            <Option key={index} value={elem.brandId}>
+            <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
                 {elem.brandName}
             </Option>
         ));
@@ -926,8 +1006,14 @@ class DetailProductModal extends React.Component{
         this.fetchData();
     }
 
-    componentDidMount() {
-
+    componentDidUpdate(prevState) {
+        if(prevState.visible == false && this.props.visible) {
+            const editing = Boolean(this.props.detail.storeGroupId);
+            this.setState({
+                editing: editing,
+                mainTableSource: [{...this.props.detail}],
+            })
+        }
     }
 
     render() {
@@ -952,8 +1038,9 @@ class DetailProductModal extends React.Component{
                             pagination={false}
                         />
                     </div>
-                    {this.state.mainTableSource[0].id ? 
+                    {this.state.mainTableSource.length && this.state.mainTableSource[0].storeGroupId && !this.state.editing ? 
                         <>
+                            {this.relatedDetailsOptions.length == 0 ?
                             <div className={Styles.tableWrap}>
                                 <div className={Styles.modalSectionTitle}>
                                     <span>Сопутствующие товары</span>
@@ -964,7 +1051,7 @@ class DetailProductModal extends React.Component{
                                     columns={this.relatedDetailsColumns}
                                     pagination={false}
                                 />
-                            </div>
+                            </div> : null}
                             {this.servicesOptions.length ?
                                 <div className={Styles.tableWrap}>
                                     <div className={Styles.modalSectionTitle}>
@@ -1024,16 +1111,15 @@ class CommentaryButton extends React.Component{
     };
 
     handleOk = () => {
+        this.props.setComment(this.state.currentCommentary);
         this.setState({
-            loading: true,
+            visible: false,
         });
-        console.log(this);
     };
     
     handleCancel = () => {
         this.setState({
             visible: false,
-            loading: false,
             currentCommentary: null, 
         });
     };

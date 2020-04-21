@@ -99,13 +99,13 @@ class DetailStorageModal extends React.Component{
                 title:  "SELF",
                 key:       'self',
                 dataIndex: 'self',
-                width:     '6%',
+                width:     '5%',
             },
             {
                 title:  "PRICE",
                 key:       'price',
                 dataIndex: 'price',
-                width:     '6%',
+                width:     '5%',
             },
             {
                 title:  ()=>{
@@ -118,20 +118,33 @@ class DetailStorageModal extends React.Component{
                 },
                 key:       'store',
                 dataIndex: 'store',
-                width:     '6%',
+                width:     '5%',
+            },
+            {
+                title:  "COUNT",
+                key:       'count',
+                dataIndex: 'count',
+                width:     '5%',
+                render: ()=>{
+                    return (
+                        <InputNumber/>
+                    )
+                }
             },
             {
                 title:  "SUM",
                 key:       'sum',
                 dataIndex: 'sum',
-                width:     '8%',
+                width:     '10%',
             },
             {
                 key:       'select',
-                width:     '5%',
+                width:     'auto',
                 render: ()=>{
                     return (
-                        <Button>
+                        <Button
+                            type="primary"
+                        >
                             Select
                         </Button>
                     )
@@ -143,8 +156,39 @@ class DetailStorageModal extends React.Component{
     handleCancel = () => {
         this.props.hideModal();
     };
+
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/store_products`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
     
     componentWillMount() {
+        this.fetchData();
     }
 
     render() {
