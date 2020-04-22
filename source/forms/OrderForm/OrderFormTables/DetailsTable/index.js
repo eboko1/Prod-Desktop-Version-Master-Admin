@@ -64,7 +64,7 @@ export default class DetailsTable extends Component {
 
         this.columns = [
             {
-                width: "20%",
+                width: "8%",
                 key: "buttonGroup",
                 dataIndex: "key",
                 render: (data, elem) => {
@@ -77,7 +77,7 @@ export default class DetailsTable extends Component {
                                     this.showDetailProductModal(data)
                                 }}
                             >
-                                <span>ТОВАР</span>
+                                <Icon type="check"/>
                             </Button>
                             <Button
                                 disabled={confirmed != "undefined"}
@@ -85,12 +85,7 @@ export default class DetailsTable extends Component {
                                     this.showDetailStorageModal(data)
                                 }}
                             >
-                                <span>СКЛАД</span>
-                            </Button>
-                            <Button
-                                disabled={confirmed != "undefined"}
-                            >
-                                <span>КАТАЛОГ</span>
+                                <Icon type="check"/>
                             </Button>
                         </div>
                     )
@@ -130,8 +125,30 @@ export default class DetailsTable extends Component {
                 },
             },
             {
+                title: <FormattedMessage id="SELLER" />,
+                width: "10%",
+                key: "seller",
+                dataIndex: 'detailCode',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
+                title: <FormattedMessage id="ИН" />,
+                width: "3%",
+                key: "in",
+                dataIndex: 'detailCode',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
                 title: <FormattedMessage id="order_form_table.purchasePrice" />,
-                width: "8%",
+                width: "5%",
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
@@ -144,7 +161,7 @@ export default class DetailsTable extends Component {
             },
             {
                 title: <FormattedMessage id="order_form_table.price" />,
-                width: "8%",
+                width: "5%",
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
@@ -157,7 +174,7 @@ export default class DetailsTable extends Component {
             },
             {
                 title: <FormattedMessage id="order_form_table.count" />,
-                width: "8%",
+                width: "5%",
                 key: "count",
                 dataIndex: 'count',
                 render: (data) => {

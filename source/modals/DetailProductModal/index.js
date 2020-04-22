@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {
@@ -24,7 +24,7 @@ class DetailProductModal extends React.Component{
             editing: false,
             mainTableSource: [],
             relatedDetailsSource: [
-                {
+                /*{
                     key: 0,
                     id: undefined,
                     name: undefined,
@@ -59,7 +59,7 @@ class DetailProductModal extends React.Component{
                     price: 1,
                     count: 1,
                     sum: undefined,
-                },
+                },*/
             ],
             relatedServicesSource: [
                 {
@@ -92,7 +92,7 @@ class DetailProductModal extends React.Component{
                 title:  "GROUP",
                 key:       'storeGroupId',
                 dataIndex: 'storeGroupId',
-                width:     '15%',
+                width:     '12%',
                 render: (data, elem)=>{
                     return (
                         <TreeSelect
@@ -127,13 +127,13 @@ class DetailProductModal extends React.Component{
                 title:  "NAME",
                 key:       'detailName',
                 dataIndex: 'detailName',
-                width:     '25%',
+                width:     '20%',
                 render: (data, elem)=>{
                     return (
                         <Input
                             disabled={elem.storeGroupId == null}
                             placeholder="NAME"
-                            style={{minWidth: 180}}
+                            style={{minWidth: 150}}
                             value={data}
                             onChange={(event)=>{
                                 this.state.mainTableSource[0].detailName = event.target.value;
@@ -168,7 +168,7 @@ class DetailProductModal extends React.Component{
                 title:  "BRAND",
                 key:       'brandId',
                 dataIndex: 'brandId',
-                width:     '15%',
+                width:     '10%',
                 render: (data, elem)=>{
                     return (
                         <Select
@@ -194,21 +194,65 @@ class DetailProductModal extends React.Component{
                 title:  "CODE",
                 key:       'detailCode',
                 dataIndex: 'detailCode',
-                width:     '15%',
+                width:     '10%',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            style={{maxWidth: 180}}
-                            disabled={elem.storeGroupId == null}
-                            placeholder="CODE"
-                            value={data}
-                            onChange={(event)=>{
-                                this.state.mainTableSource[0].detailCode = event.target.value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
+                        <div style={{display: "flex"}}>
+                            <Input
+                                style={{maxWidth: 180}}
+                                disabled={elem.storeGroupId == null}
+                                placeholder="CODE"
+                                value={data}
+                                onChange={(event)=>{
+                                    this.state.mainTableSource[0].detailCode = event.target.value;
+                                    this.setState({
+                                        update: true
+                                    })
+                                }}
+                            />
+                            <Button>
+                                <Icon type='check'/>
+                            </Button>
+                        </div>
+                    )
+                }
+            },
+            {
+                title:  "SELLER",
+                key:       'seller',
+                dataIndex: 'detailCode',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <div style={{display: "flex"}}>
+                            <Input
+                                style={{maxWidth: 180}}
+                                disabled={elem.storeGroupId == null}
+                                placeholder="CODE"
+                                value={data}
+                                onChange={(event)=>{
+                                    this.state.mainTableSource[0].detailCode = event.target.value;
+                                    this.setState({
+                                        update: true
+                                    })
+                                }}
+                            />
+                            <Button>
+                                <Icon type='check'/>
+                            </Button>
+                        </div>
+                    )
+                }
+            },
+            {
+                title:  "ИН",
+                key:       'in',
+                width:     '3%',
+                render: (data, elem)=>{
+                    return (
+                        <Button>
+                            <Icon type='check'/>
+                        </Button>
                     )
                 }
             },
@@ -647,6 +691,32 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
+                title:  "HOURS",
+                key:       'hours',
+                dataIndex: 'hours',
+                width:     '10%',
+                render: (data, elem)=>{
+                    const key = elem.key;
+                    return (
+                        <div style={{display: 'flex'}}>
+                            <InputNumber
+                                placeholder="HOURS"
+                                value={data || 1}
+                                onChange={(value)=>{
+                                    this.state.relatedServicesSource[key].hours = value;
+                                    this.setState({
+                                        update: true
+                                    })
+                                }}
+                            />
+                            <Button>
+                                <Icon type='check'/>
+                            </Button>
+                        </div>
+                    )
+                }
+            },
+            {
                 title:  "EMPLOYEE",
                 key:       'employee',
                 dataIndex: 'employee',
@@ -658,27 +728,6 @@ class DetailProductModal extends React.Component{
                             placeholder="EMPLOYEE"
                             style={{maxWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "HOURS",
-                key:       'hours',
-                dataIndex: 'hours',
-                width:     '10%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            placeholder="HOURS"
-                            value={data || 1}
-                            onChange={(value)=>{
-                                this.state.relatedServicesSource[key].hours = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
                         />
                     )
                 }
@@ -1031,15 +1080,18 @@ class DetailProductModal extends React.Component{
         return (
             <div>
                 <Modal
-                    width="85%"
+                    width="95%"
                     visible={visible}
                     title="PRODUCT"
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                 >
+                    <div>
+                        Сопутствующие: детали <Checkbox/> работы <Checkbox/>
+                    </div>
                     <div className={Styles.tableWrap}>
                         <div className={Styles.modalSectionTitle}>
-                            <span>Узел/деталь</span>
+                            <div style={{display: 'block'}}>Узел/деталь</div>
                         </div>
                         <Table
                             style={{width: "90%"}}
