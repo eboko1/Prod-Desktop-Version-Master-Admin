@@ -220,7 +220,7 @@ class DetailProductModal extends React.Component{
             {
                 title:  "SELLER",
                 key:       'seller',
-                dataIndex: 'detailCode',
+                dataIndex: 'seller',
                 width:     '10%',
                 render: (data, elem)=>{
                     return (
@@ -248,11 +248,9 @@ class DetailProductModal extends React.Component{
                 title:  "ИН",
                 key:       'in',
                 width:     '3%',
-                render: (data, elem)=>{
+                render: ()=>{
                     return (
-                        <Button>
-                            <Icon type='check'/>
-                        </Button>
+                        <div style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: 'rgb(81, 205, 102)'}}></div>
                     )
                 }
             },
