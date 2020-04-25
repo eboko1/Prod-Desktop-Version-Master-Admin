@@ -1092,7 +1092,6 @@ class DetailProductModal extends React.Component{
                             <div style={{display: 'block'}}>Узел/деталь</div>
                         </div>
                         <Table
-                            style={{width: "90%"}}
                             dataSource={this.state.mainTableSource}
                             columns={this.mainTableColumns}
                             pagination={false}
@@ -1106,7 +1105,6 @@ class DetailProductModal extends React.Component{
                                     <span>Сопутствующие товары</span>
                                 </div>
                                 <Table
-                                    style={{width: "90%"}}
                                     dataSource={this.state.relatedDetailsSource}
                                     columns={this.relatedDetailsColumns}
                                     pagination={false}
@@ -1118,7 +1116,6 @@ class DetailProductModal extends React.Component{
                                         <span>Сопутствующие работы</span>
                                     </div>
                                     <Table
-                                        style={{width: "90%"}}
                                         dataSource={this.state.relatedServicesSource}
                                         columns={this.relatedServicesColumns}
                                         pagination={false}
