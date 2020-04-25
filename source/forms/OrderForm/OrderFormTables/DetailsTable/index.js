@@ -25,7 +25,7 @@ import {
     numeralFormatter,
     numeralParser,
 } from "utils";
-import { DetailProductModal, DetailStorageModal } from 'modals'
+import { DetailProductModal } from 'modals'
 
 // own
 import Styles from "./styles.m.css";
@@ -257,18 +257,6 @@ export default class DetailsTable extends Component {
         })
     }
 
-    showDetailStorageModal(key) {
-        this.setState({
-            storageModalVisible: true,
-            storageModalKey: key,
-        })
-    }
-    hideDetailStorageModal() {
-        this.setState({
-            storageModalVisible: false,
-        })
-    }
-
     updateDetail(key, detail) {
         this.state.dataSource[key] = detail;
         this.setState({
@@ -325,10 +313,6 @@ export default class DetailsTable extends Component {
                     detail={this.state.dataSource[this.state.productModalKey]}
                     tableKey={this.state.productModalKey}
                     updateDetail={this.updateDetail}
-                />
-                <DetailStorageModal
-                    visible={this.state.storageModalVisible}
-                    hideModal={()=>{this.hideDetailStorageModal()}}
                 />
             </Catcher>
         );
