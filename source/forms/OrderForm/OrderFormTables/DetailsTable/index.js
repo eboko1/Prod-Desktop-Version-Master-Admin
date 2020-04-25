@@ -79,14 +79,10 @@ export default class DetailsTable extends Component {
                             >
                                 <Icon type="check"/>
                             </Button>
-                            <Button
+                            <PriceCountModal
                                 disabled={confirmed != "undefined"}
-                                onClick={()=>{
-                                    this.showDetailStorageModal(data)
-                                }}
-                            >
-                                <Icon type="check"/>
-                            </Button>
+                                detail={elem}
+                            />
                         </div>
                     )
                 }
@@ -139,10 +135,9 @@ export default class DetailsTable extends Component {
                 title: <FormattedMessage id="ИН" />,
                 width: "3%",
                 key: "in",
-                dataIndex: 'detailCode',
-                render: (data) => {
+                render: () => {
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                       <div style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: 'rgb(81, 205, 102)'}}></div>
                     );
                 },
             },
@@ -337,5 +332,140 @@ export default class DetailsTable extends Component {
                 />
             </Catcher>
         );
+    }
+}
+
+class PriceCountModal extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={
+            visible: false,
+        }
+        this.columns = [
+            {
+                title:  'NAME',
+                key:       'detailName',
+                dataIndex: 'detailName',
+                width:     '40%',
+            },
+            {
+                title:  'PURCHASE',
+                key:       'purchasePrice',
+                dataIndex: 'purchasePrice',
+                width:     '15%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            value={data ? data : 0}
+                            onChange={(value)=>{
+                                this.state.dataSource[0].purchasePrice = value;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  'PRICE',
+                key:       'price',
+                dataIndex: 'price',
+                width:     '15%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            value={data ? data : 0}
+                            onChange={(value)=>{
+                                this.state.dataSource[0].price = value;
+                                this.state.dataSource[0].sum = value * this.state.dataSource[0].count;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  'COUNT',
+                key:       'count',
+                dataIndex: 'count',
+                width:     '15%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            value={data ? data : 0}
+                            onChange={(value)=>{
+                                this.state.dataSource[0].count = value;
+                                this.state.dataSource[0].sum = value * this.state.dataSource[0].price;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  'SUM',
+                key:       'sum',
+                dataIndex: 'sum',
+                width:     '15%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            disabled
+                            style={{color: 'black'}}
+                            value={data}
+                        />
+                    )
+                }
+            },
+        ]
+    }
+
+    handleOk = () => {
+        this.setState({
+            visible: false,
+        })
+    }
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+        })
+    }
+
+    render() {
+        console.log(this.props.detail);
+        return(
+            <>
+                <Button
+                    disabled={this.props.disabled}
+                    onClick={()=>{
+                        this.setState({
+                            visible: true,
+                            dataSource: [this.props.detail]
+                        })
+                    }}
+                >
+                    <Icon type="check"/>
+                </Button>
+                <Modal
+                    width='80%'
+                    visible={this.state.visible}
+                    title='priceEdit'
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                >
+                        <Table
+                            columns={this.columns}
+                            dataSource={this.state.dataSource}
+                            pagination={false}
+                        />
+                </Modal>
+            </>
+        )
     }
 }
