@@ -11,6 +11,7 @@ import {
     lockDiagnostic,
 } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
+import { DetailStorageModal } from 'modals'
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -210,9 +211,7 @@ class DetailProductModal extends React.Component{
                                     })
                                 }}
                             />
-                            <Button>
-                                <Icon type='check'/>
-                            </Button>
+                            <DetailStorageModal/>
                         </div>
                     )
                 }

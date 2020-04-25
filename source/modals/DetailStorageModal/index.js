@@ -20,6 +20,7 @@ class DetailStorageModal extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            visible: false,
             dataSource: [
                 {
                     storeGroup: "undefined",
@@ -152,9 +153,11 @@ class DetailStorageModal extends React.Component{
             },
         ];
     }
-    
+
     handleCancel = () => {
-        this.props.hideModal();
+        this.setState({
+            visible: false,
+        })
     };
 
     fetchData() {
@@ -192,12 +195,20 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
-        const { visible } = this.props;
         return (
             <div>
+                <Button
+                    onClick={()=>{
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
+                >
+                    <Icon type='check'/>
+                </Button>
                 <Modal
                     width="85%"
-                    visible={visible}
+                    visible={this.state.visible}
                     title="STORAGE"
                     onCancel={this.handleCancel}
                     footer={null}
