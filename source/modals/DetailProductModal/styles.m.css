@@ -3,19 +3,17 @@
 }
 
 .tableWrap {
-    display: flex;
-    justify-content: space-between;
     padding: 15px 0;
     border-bottom: 1px solid #8c8c8c;
 }
 
 .modalSectionTitle {
-    width: 10%;
     display: flex;
     justify-content: start;
     align-items: center;
-    font-size: 16px;
+    font-size: 24px;
     font-weight: bold;
+    padding-bottom: 10px;
 }
 
 .groupsTreeSelect {
