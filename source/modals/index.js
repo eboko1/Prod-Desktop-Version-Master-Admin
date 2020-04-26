@@ -17,7 +17,7 @@ import StoreProductModal from './StoreProductModal';
 import ConfirmDiagnosticModal from './ConfirmDiagnosticModal';
 import DetailProductModal from './DetailProductModal';
 import DetailStorageModal from './DetailStorageModal';
-
+import DetailSupplierModal from './DetailSupplierModal';
 export {
     UniversalFiltersModal,
     AddClientModal,
@@ -38,4 +38,5 @@ export {
     ConfirmDiagnosticModal,
     DetailProductModal,
     DetailStorageModal,
+    DetailSupplierModal,
 };

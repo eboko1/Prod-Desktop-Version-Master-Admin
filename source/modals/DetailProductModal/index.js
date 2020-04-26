@@ -11,7 +11,7 @@ import {
     lockDiagnostic,
 } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
-import { DetailStorageModal } from 'modals'
+import { DetailStorageModal, DetailSupplierModal } from 'modals'
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -217,9 +217,9 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "SELLER",
-                key:       'seller',
-                dataIndex: 'seller',
+                title:  "SUPPLIER",
+                key:       'supplier',
+                dataIndex: 'supplier',
                 width:     '10%',
                 render: (data, elem)=>{
                     return (
@@ -227,18 +227,10 @@ class DetailProductModal extends React.Component{
                             <Input
                                 style={{maxWidth: 180}}
                                 disabled={elem.storeGroupId == null}
-                                placeholder="CODE"
+                                placeholder="SUPPLIER"
                                 value={data}
-                                onChange={(event)=>{
-                                    this.state.mainTableSource[0].detailCode = event.target.value;
-                                    this.setState({
-                                        update: true
-                                    })
-                                }}
                             />
-                            <Button>
-                                <Icon type='check'/>
-                            </Button>
+                            <DetailSupplierModal/>
                         </div>
                     )
                 }

@@ -422,7 +422,6 @@ class PriceCountModal extends React.Component{
     }
 
     render() {
-        console.log(this.props.detail);
         return(
             <>
                 <Button
