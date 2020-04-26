@@ -10,6 +10,7 @@ import {
     createAgreement,
     lockDiagnostic,
 } from 'core/forms/orderDiagnosticForm/saga';
+import { DetailSupplierModal } from 'modals'
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -21,20 +22,15 @@ class DetailStorageModal extends React.Component{
         super(props);
         this.state = {
             visible: false,
-            dataSource: [
-                {
-                    storeGroup: "undefined",
-                    name: "undefined",
-                    brand: "undefined",
-                    code: "undefined",
-                    self: "undefined",
-                    price: "undefined",
-                    store: "undefined",
-                    sum: "undefined",
-                }
-            ],
+            dataSource: [],
         }
         this.columns = [
+            {
+                title:  'PHOTO',
+                key:       'photo',
+                dataIndex: 'photo',
+                width:     '10%',
+            },
             {
                 title:  ()=>{
                     return (
@@ -43,12 +39,23 @@ class DetailStorageModal extends React.Component{
                             <Input
                                 allowClear
                             />
+                            <Input
+                                allowClear
+                            />
                         </div>
                     )
                 },
                 key:       'code',
                 dataIndex: 'code',
-                width:     '12%',
+                width:     '15%',
+                render: (data, elem)=>{
+                    return(
+                        <div>
+                            <div>{data}</div>
+                            <div>{elem.name}</div>
+                        </div>
+                    )
+                }
             },
             {
                 title:  ()=>{
@@ -62,80 +69,64 @@ class DetailStorageModal extends React.Component{
                     )
                 },
                 key:       'brand',
-                dataIndex: 'brand',
-                width:     '12%',
+                dataIndex: 'brandName',
+                width:     '10%',
             },
             {
                 title:  ()=>{
                     return (
                         <div>
-                            <span>GROUP</span>
-                            <Input
-                                allowClear
-                            />
+                            <div>INFO</div>
+                            <div style={{display: 'flex'}}><Input/><Input/></div>
+                            <div style={{display: 'flex'}}><Input/><Input/></div>
                         </div>
                     )
                 },
-                key:       'storeGroup',
-                dataIndex: 'storeGroup',
+                key:       'info',
+                dataIndex: 'info',
+                width:     '25%',
+            },
+            {
+                title:  "SUPPLIER",
+                key:       'supplier',
+                dataIndex: 'supplier',
                 width:     '15%',
-                
-            },
-            {
-                title:  ()=>{
+                render: (data, elem)=>{
                     return (
-                        <div>
-                            <span>NAME</span>
+                        <div style={{display: "flex"}}>
                             <Input
-                                allowClear
+                                style={{maxWidth: 180}}
+                                disabled
+                                placeholder="SUPPLIER"
                             />
+                            <DetailSupplierModal/>
                         </div>
                     )
-                },
-                key:       'name',
-                dataIndex: 'name',
-                width:     '20%',
+                }
             },
             {
                 title:  "SELF",
                 key:       'self',
                 dataIndex: 'self',
-                width:     '5%',
+                width:     '10%',
             },
             {
                 title:  "PRICE",
                 key:       'price',
                 dataIndex: 'price',
-                width:     '5%',
+                width:     '10%',
             },
             {
                 title:  ()=>{
                     return (
                         <div>
-                            <span>STORE </span>
-                            <Checkbox/>
+                            <div>STORE</div>
+                            <div><Checkbox/> В наличии</div>
                         </div>
                     )
                 },
                 key:       'store',
                 dataIndex: 'store',
-                width:     '5%',
-            },
-            {
-                title:  "COUNT",
-                key:       'count',
-                dataIndex: 'count',
-                width:     '5%',
-                render: ()=>{
-                    return (
-                        <InputNumber/>
-                    )
-                }
-            },
-            {
-                title:  "SUM",
-                key:       'sum',
-                dataIndex: 'sum',
                 width:     '10%',
             },
             {
@@ -182,7 +173,13 @@ class DetailStorageModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
+            data.list.map((elem, i)=>{
+                elem.key = i;
+                elem.brandName = elem.brand.name;
+            })
+            that.setState({
+                dataSource: data.list
+            })
         })
         .catch(function (error) {
             console.log('error', error)
