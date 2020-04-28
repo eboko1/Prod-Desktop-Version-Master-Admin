@@ -33,18 +33,14 @@ class DetailStorageModal extends React.Component{
                 key:       'photo',
                 width:     '10%',
                 render: (elem)=>{
-                    const pictureName = elem.images[0].pictureName;
+                    const src = elem.images[0] ? 
+                        `${__TECDOC_IMAGES_URL__}/${elem.supplierId}/${elem.images[0].pictureName}` : 
+                        `${__TECDOC_IMAGES_URL__}/not_found.png`;
                     return(
                         <img
                             style={ { cursor: 'pointer' } }
-                            onError={ e => {
-                                e.target.onerror = null;
-                                e.target.src = `${__TECDOC_IMAGES_URL__}/not_found.png`;
-                            } }
                             width={ 75 }
-                            src={ `${__TECDOC_IMAGES_URL__}/${
-                                elem.supplierId
-                            }/${pictureName}` }
+                            src={ src }
                         />
                     )
                 }
