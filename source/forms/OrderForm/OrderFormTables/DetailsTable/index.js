@@ -292,7 +292,6 @@ export default class DetailsTable extends Component {
                 agreement: "UNDEFINED",
             })
         }
-
         return (
             <Catcher>
                 <Table
@@ -306,6 +305,7 @@ export default class DetailsTable extends Component {
                     pagination={false}
                 />
                 <DetailProductModal
+                    tecdocId={this.props.tecdocId}
                     visible={this.state.productModalVisible}
                     orderId={this.props.orderId}
                     hideModal={()=>{this.hideDetailProductModal()}}

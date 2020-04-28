@@ -173,11 +173,18 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Select
+                            showSearch
                             disabled={elem.storeGroupId == null}
                             placeholder="BRAND"
                             value={data ? data : undefined}
                             style={{maxWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
                             onSelect={(value, option)=>{
                                 this.state.mainTableSource[0].brandId = value;
                                 this.state.mainTableSource[0].brandName = option.props.children;
@@ -201,7 +208,7 @@ class DetailProductModal extends React.Component{
                         <div style={{display: "flex"}}>
                             <Input
                                 style={{maxWidth: 180}}
-                                disabled={elem.storeGroupId == null}
+                                disabled
                                 placeholder="CODE"
                                 value={data}
                                 onChange={(event)=>{
@@ -211,7 +218,12 @@ class DetailProductModal extends React.Component{
                                     })
                                 }}
                             />
-                            <DetailStorageModal/>
+                            <DetailStorageModal
+                                disabled={elem.storeGroupId == null}
+                                brandOptions={this.brandOptions}
+                                tecdocId={this.props.tecdocId}
+                                storeGroupId={this.state.mainTableSource[0].storeGroupId}
+                            />
                         </div>
                     )
                 }
@@ -226,11 +238,13 @@ class DetailProductModal extends React.Component{
                         <div style={{display: "flex"}}>
                             <Input
                                 style={{maxWidth: 180}}
-                                disabled={elem.storeGroupId == null}
+                                disabled
                                 placeholder="SUPPLIER"
                                 value={data}
                             />
-                            <DetailSupplierModal/>
+                            <DetailSupplierModal
+                                disabled={elem.storeGroupId == null}    
+                            />
                         </div>
                     )
                 }

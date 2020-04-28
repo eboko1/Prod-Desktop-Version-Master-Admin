@@ -113,13 +113,14 @@ class DetailSupplierModal extends React.Component{
 
     
     componentWillMount() {
-        this.fetchData();
+        //this.fetchData();
     }
 
     render() {
         return (
             <div>
                 <Button
+                    disabled={this.props.disabled}
                     onClick={()=>{
                         this.setState({
                             visible: true,
