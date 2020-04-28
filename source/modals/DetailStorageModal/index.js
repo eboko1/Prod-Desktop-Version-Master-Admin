@@ -10,6 +10,7 @@ import {
     createAgreement,
     lockDiagnostic,
 } from 'core/forms/orderDiagnosticForm/saga';
+import { getSupplier } from 'components/PartSuggestions/supplierConfig.js';
 import { DetailSupplierModal } from 'modals'
 // own
 import Styles from './styles.m.css';
@@ -22,14 +23,21 @@ class DetailStorageModal extends React.Component{
         super(props);
         this.state = {
             visible: false,
+            fetched: false,
             dataSource: [],
+            brandFilter: [],
         }
         this.columns = [
             {
                 title:  'PHOTO',
                 key:       'photo',
-                dataIndex: 'photo',
                 width:     '10%',
+                render: (elem)=>{
+                    const img = elem.images[0] ? elem.images[0].pictureName : 'NO_IMG';
+                    return(
+                        <p>{img}</p>
+                    )
+                }
             },
             {
                 title:  ()=>{
@@ -37,7 +45,8 @@ class DetailStorageModal extends React.Component{
                         <div>
                             <span>CODE</span>
                             <Input
-                                allowClear
+                                disabled
+                                value={this.props.storeGroupId}
                             />
                             <Input
                                 allowClear
@@ -46,7 +55,7 @@ class DetailStorageModal extends React.Component{
                     )
                 },
                 key:       'code',
-                dataIndex: 'code',
+                dataIndex: 'partNumber',
                 width:     '15%',
                 render: (data, elem)=>{
                     return(
@@ -62,15 +71,52 @@ class DetailStorageModal extends React.Component{
                     return (
                         <div>
                             <span>BRAND</span>
-                            <Input
+                            <Select
                                 allowClear
-                            />
+                                showSearch
+                                mode="multiple"
+                                placeholder="BRAND"
+                                value={this.state.brandFilter}
+                                style={{minWidth: 130}}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                                filterOption={(input, option) => {
+                                    return (
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                        String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                    )
+                                }}
+                                onSelect={(value, option)=>{
+                                    this.state.brandFilter.push(value);
+                                    this.setState({
+                                        update: true,
+                                    });
+                                }}
+                                onDeselect={(value, option)=>{
+                                    const index = this.state.brandFilter.indexOf(value);
+                                    const tmp = this.state.brandFilter.filter((_, i)=>i!=index);
+                                    console.log(tmp);
+                                    this.setState({
+                                        brandFilter: tmp,
+                                        update: true,
+                                    });
+                                }}
+                            >
+                                {this.props.brandOptions}
+                            </Select>
                         </div>
                     )
                 },
                 key:       'brand',
-                dataIndex: 'brandName',
+                dataIndex: 'supplierName',
                 width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <>
+                            <div>{data}</div>
+                            <div>{getSupplier(elem.suplierId, elem.partNumber)}</div>
+                        </>
+                    )
+                }
             },
             {
                 title:  ()=>{
@@ -82,8 +128,8 @@ class DetailStorageModal extends React.Component{
                         </div>
                     )
                 },
-                key:       'info',
-                dataIndex: 'info',
+                key:       'description',
+                dataIndex: 'description',
                 width:     '25%',
             },
             {
@@ -152,10 +198,11 @@ class DetailStorageModal extends React.Component{
     };
 
     fetchData() {
+        console.log(this.props.tecdocId, this.props.storeGroupId)
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/store_products`;
+        let params = `/tecdoc/products/parts?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -173,12 +220,13 @@ class DetailStorageModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            data.list.map((elem, i)=>{
+            console.log(data);
+            data.map((elem, i)=>{
                 elem.key = i;
-                elem.brandName = elem.brand.name;
             })
             that.setState({
-                dataSource: data.list
+                fetched: true,
+                dataSource: data,
             })
         })
         .catch(function (error) {
@@ -186,15 +234,18 @@ class DetailStorageModal extends React.Component{
         });
     }
 
-    
-    componentWillMount() {
-        this.fetchData();
+
+    componentDidUpdate() {
+        if(this.state.dataSource.length == 0 && !this.state.fetched) {
+            this.fetchData();
+        }
     }
 
     render() {
         return (
             <div>
                 <Button
+                    disabled={this.props.disabled}
                     onClick={()=>{
                         this.setState({
                             visible: true,
@@ -213,7 +264,6 @@ class DetailStorageModal extends React.Component{
                         <Table
                             dataSource={this.state.dataSource}
                             columns={this.columns}
-                            pagination={false}
                         />
                 </Modal>
             </div>
