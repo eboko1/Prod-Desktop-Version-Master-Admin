@@ -33,9 +33,19 @@ class DetailStorageModal extends React.Component{
                 key:       'photo',
                 width:     '10%',
                 render: (elem)=>{
-                    const img = elem.images[0] ? elem.images[0].pictureName : 'NO_IMG';
+                    const pictureName = elem.images[0].pictureName;
                     return(
-                        <p>{img}</p>
+                        <img
+                            style={ { cursor: 'pointer' } }
+                            onError={ e => {
+                                e.target.onerror = null;
+                                e.target.src = `${__TECDOC_IMAGES_URL__}/not_found.png`;
+                            } }
+                            width={ 75 }
+                            src={ `${__TECDOC_IMAGES_URL__}/${
+                                elem.supplierId
+                            }/${pictureName}` }
+                        />
                     )
                 }
             },
@@ -178,10 +188,16 @@ class DetailStorageModal extends React.Component{
             {
                 key:       'select',
                 width:     'auto',
-                render: ()=>{
+                render: (elem)=>{
                     return (
                         <Button
                             type="primary"
+                            onClick={()=>{
+                                this.props.onSelect(elem.partNumber);
+                                this.setState({
+                                    visible: false,
+                                })
+                            }}
                         >
                             Select
                         </Button>
