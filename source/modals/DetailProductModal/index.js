@@ -86,6 +86,7 @@ class DetailProductModal extends React.Component{
         this.servicesOptions = [];
         this.relatedDetailsOptions = [];
 
+        this.setCode = this.setCode.bind(this);
         this.setComment = this.setComment.bind(this);
 
         this.mainTableColumns = [
@@ -202,23 +203,18 @@ class DetailProductModal extends React.Component{
                 title:  "CODE",
                 key:       'detailCode',
                 dataIndex: 'detailCode',
-                width:     '10%',
+                width:     '15%',
                 render: (data, elem)=>{
                     return (
                         <div style={{display: "flex"}}>
                             <Input
-                                style={{maxWidth: 180}}
+                                style={{maxWidth: 180, color: 'black'}}
                                 disabled
                                 placeholder="CODE"
                                 value={data}
-                                onChange={(event)=>{
-                                    this.state.mainTableSource[0].detailCode = event.target.value;
-                                    this.setState({
-                                        update: true
-                                    })
-                                }}
                             />
                             <DetailStorageModal
+                                onSelect={this.setCode}
                                 disabled={elem.storeGroupId == null}
                                 brandOptions={this.brandOptions}
                                 tecdocId={this.props.tecdocId}
@@ -232,12 +228,12 @@ class DetailProductModal extends React.Component{
                 title:  "SUPPLIER",
                 key:       'supplier',
                 dataIndex: 'supplier',
-                width:     '10%',
+                width:     '15%',
                 render: (data, elem)=>{
                     return (
                         <div style={{display: "flex"}}>
                             <Input
-                                style={{maxWidth: 180}}
+                                style={{maxWidth: 180, color: 'black'}}
                                 disabled
                                 placeholder="SUPPLIER"
                                 value={data}
@@ -263,7 +259,7 @@ class DetailProductModal extends React.Component{
                 title:  "SELF",
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
-                width:     '5%',
+                width:     '3%',
                 render: (data, elem)=>{
                     return (
                         <InputNumber
@@ -284,7 +280,7 @@ class DetailProductModal extends React.Component{
                 title:  "PRICE",
                 key:       'price',
                 dataIndex: 'price',
-                width:     '5%',
+                width:     '3%',
                 render: (data, elem)=>{
                     return (
                         <InputNumber
@@ -306,7 +302,7 @@ class DetailProductModal extends React.Component{
                 title:  "COUNT",
                 key:       'count',
                 dataIndex: 'count',
-                width:     '5%',
+                width:     '3%',
                 render: (data, elem)=>{
                     return (
                         <InputNumber
@@ -327,7 +323,7 @@ class DetailProductModal extends React.Component{
             {
                 title:  "SUM",
                 key:       'sum',
-                width:     '7%',
+                width:     '5%',
                 render: (elem)=>{
                     const sum = this.state.mainTableSource[0].price *  this.state.mainTableSource[0].count;
                     return (
@@ -894,7 +890,14 @@ class DetailProductModal extends React.Component{
         this.props.hideModal();
     };
 
-    setComment(comment){
+    setCode(code) {
+        this.state.mainTableSource[0].detailCode = code;
+        this.setState({
+            update: true
+        })
+    }
+
+    setComment(comment) {
         this.state.mainTableSource[0].comment = comment;
         this.setState({
             update: true
