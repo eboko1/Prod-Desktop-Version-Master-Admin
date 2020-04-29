@@ -15,6 +15,7 @@ import { DetailSupplierModal } from 'modals'
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
+const Option = Select.Option;
 
 
 @injectIntl
@@ -25,7 +26,9 @@ class DetailStorageModal extends React.Component{
             visible: false,
             fetched: false,
             dataSource: [],
+            brandOptions: [],
             brandFilter: [],
+            codeFilter: undefined,
         }
         this.columns = [
             {
@@ -37,11 +40,17 @@ class DetailStorageModal extends React.Component{
                         `${__TECDOC_IMAGES_URL__}/${elem.supplierId}/${elem.images[0].pictureName}` : 
                         `${__TECDOC_IMAGES_URL__}/not_found.png`;
                     return(
-                        <img
-                            style={ { cursor: 'pointer' } }
-                            width={ 75 }
-                            src={ src }
-                        />
+                        <div style={{verticalAlign: 'middle'}}>
+                            <img
+                                style={ { cursor: 'pointer' } }
+                                width={ 80 }
+                                src={ src }
+                                onError={ e => {
+                                    e.target.onerror = null;
+                                    e.target.src = `${__TECDOC_IMAGES_URL__}/not_found.png`;
+                                } }
+                            />
+                        </div>
                     )
                 }
             },
@@ -56,6 +65,13 @@ class DetailStorageModal extends React.Component{
                             />
                             <Input
                                 allowClear
+                                placeholder='CODE'
+                                value={this.state.codeFilter}
+                                onChange={(event)=>{
+                                    this.setState({
+                                        codeFilter: event.target.value,
+                                    })
+                                }}
                             />
                         </div>
                     )
@@ -66,8 +82,8 @@ class DetailStorageModal extends React.Component{
                 render: (data, elem)=>{
                     return(
                         <div>
-                            <div>{data}</div>
-                            <div>{elem.name}</div>
+                            <div style={{fontWeight: 'bold'}}>{data}</div>
+                            <div>{elem.description}</div>
                         </div>
                     )
                 }
@@ -100,14 +116,17 @@ class DetailStorageModal extends React.Component{
                                 onDeselect={(value, option)=>{
                                     const index = this.state.brandFilter.indexOf(value);
                                     const tmp = this.state.brandFilter.filter((_, i)=>i!=index);
-                                    console.log(tmp);
                                     this.setState({
                                         brandFilter: tmp,
                                         update: true,
                                     });
                                 }}
                             >
-                                {this.props.brandOptions}
+                                {this.state.brandOptions.map((elem, i)=>(
+                                    <Option key={i} value={elem.id}>
+                                        {elem.name}
+                                    </Option>
+                                ))}
                             </Select>
                         </div>
                     )
@@ -116,10 +135,10 @@ class DetailStorageModal extends React.Component{
                 dataIndex: 'supplierName',
                 width:     '10%',
                 render: (data, elem)=>{
+                    //<div>{getSupplier(elem.suplierId, elem.partNumber)}</div>
                     return (
                         <>
                             <div>{data}</div>
-                            <div>{getSupplier(elem.suplierId, elem.partNumber)}</div>
                         </>
                     )
                 }
@@ -134,9 +153,17 @@ class DetailStorageModal extends React.Component{
                         </div>
                     )
                 },
-                key:       'description',
-                dataIndex: 'description',
+                key:       'attributes',
+                dataIndex: 'attributes',
                 width:     '25%',
+                render: (attributes)=>(
+                    attributes.map((attribute, i)=>(
+                        <div key={i}>
+                            <span style={{fontWeight: 'bold'}}>{attribute.description}: </span>
+                            <span>{attribute.value}</span>
+                        </div>
+                    ))
+                )
             },
             {
                 title:  "SUPPLIER",
@@ -160,13 +187,13 @@ class DetailStorageModal extends React.Component{
                 title:  "SELF",
                 key:       'self',
                 dataIndex: 'self',
-                width:     '10%',
+                width:     '7%',
             },
             {
                 title:  "PRICE",
                 key:       'price',
                 dataIndex: 'price',
-                width:     '10%',
+                width:     '7%',
             },
             {
                 title:  ()=>{
@@ -179,11 +206,11 @@ class DetailStorageModal extends React.Component{
                 },
                 key:       'store',
                 dataIndex: 'store',
-                width:     '10%',
+                width:     '6%',
             },
             {
                 key:       'select',
-                width:     'auto',
+                width:     '5%',
                 render: (elem)=>{
                     return (
                         <Button
@@ -191,7 +218,9 @@ class DetailStorageModal extends React.Component{
                             onClick={()=>{
                                 this.props.onSelect(elem.partNumber);
                                 this.setState({
+                                    dataSource: [],
                                     visible: false,
+                                    fetched: false,
                                 })
                             }}
                         >
@@ -205,12 +234,13 @@ class DetailStorageModal extends React.Component{
 
     handleCancel = () => {
         this.setState({
+            dataSource: [],
             visible: false,
+            fetched: false,
         })
     };
 
     fetchData() {
-        console.log(this.props.tecdocId, this.props.storeGroupId)
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -232,13 +262,21 @@ class DetailStorageModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
+            var brandOptions = [];
             console.log(data);
             data.map((elem, i)=>{
                 elem.key = i;
+                if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
+                    brandOptions.push({
+                        id: elem.supplierId,
+                        name: elem.supplierName,
+                    })
+                }
             })
             that.setState({
                 fetched: true,
                 dataSource: data,
+                brandOptions: brandOptions,
             })
         })
         .catch(function (error) {
@@ -254,6 +292,10 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
+        const { dataSource, brandFilter, codeFilter } = this.state;
+        let tblData = [...dataSource];
+        if(brandFilter.length) tblData = tblData.filter((elem)=>brandFilter.indexOf(elem.supplierId)!=-1);
+        if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.toLowerCase().indexOf(codeFilter.toLowerCase()) >= 0 );
         return (
             <div>
                 <Button
@@ -267,14 +309,16 @@ class DetailStorageModal extends React.Component{
                     <Icon type='check'/>
                 </Button>
                 <Modal
-                    width="85%"
+                    width="90%"
                     visible={this.state.visible}
                     title="STORAGE"
                     onCancel={this.handleCancel}
                     footer={null}
                 >
                         <Table
-                            dataSource={this.state.dataSource}
+                            rowClassName={Styles.tableRow}
+                            pagination={{ pageSize: 6 }}
+                            dataSource={tblData}
                             columns={this.columns}
                         />
                 </Modal>

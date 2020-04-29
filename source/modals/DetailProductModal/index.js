@@ -216,7 +216,6 @@ class DetailProductModal extends React.Component{
                             <DetailStorageModal
                                 onSelect={this.setCode}
                                 disabled={elem.storeGroupId == null}
-                                brandOptions={this.brandOptions}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
                             />
@@ -859,15 +858,20 @@ class DetailProductModal extends React.Component{
                 details: [],
                 services: [],
             }
+            console.log(this.state.mainTableSource)
             this.state.mainTableSource.map((element)=>{
                 data.details.push({
                     storeGroupId: element.storeGroupId,
-                    productId: element.productId,
+                    name: element.detailName,
+                    productId: element.productId ? element.productId : null,
                     detailCode: element.detailCode,
                     brandId: element.brandId,
+                    brandName: element.brandName,
+                    detailCode: element.detailCode,
                     purchasePrice: element.purchasePrice,
                     count: element.count,
                     price: element.price,
+                    comment: element.comment,
                 })
             });
             this.state.relatedServicesSource.map((element)=>{
@@ -881,7 +885,7 @@ class DetailProductModal extends React.Component{
             });
             console.log(data);
             this.addDetailsAndLabors(data);
-            window.location.reload();
+            //window.location.reload();
         }
         this.props.hideModal();
     };
