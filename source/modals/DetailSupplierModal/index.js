@@ -1,5 +1,6 @@
 // vendor
 import React, { Component } from 'react';
+import moment from 'moment';
 import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
@@ -20,53 +21,71 @@ class DetailSupplierModal extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
+            fetched: false,
             visible: false,
-            dataSource: [
-                {
-                    key: 0,
-                    storeGroup: "undefined",
-                    name: "undefined",
-                    brand: "undefined",
-                    code: "undefined",
-                    self: "undefined",
-                    price: "undefined",
-                    store: "undefined",
-                    sum: "undefined",
-                }
-            ],
+            dataSource: [],
         }
         this.columns = [
             {
                 title:  'CODE',
                 key:       'code',
-                dataIndex: 'code',
-                width:     '30%',
+                dataIndex: 'partNumber',
+                width:     '10%',
+            },
+            {
+                title:  'SUPPLIER CODE',
+                key:       'supplierCode',
+                dataIndex: 'supplierPartNumber',
+                width:     '10%',
+            },
+            {
+                title:  'NAME',
+                key:       'name',
+                dataIndex: 'itemName',
+                width:     '15%',
             },
             {
                 title:  'BRAND',
                 key:       'brand',
-                dataIndex: 'brand',
-                width:     '30%',
+                dataIndex: 'brandName',
+                width:     '15%',
             },
             {
-                title:  "SELF",
-                key:       'self',
-                dataIndex: 'self',
+                title:  'SUPPLIER',
+                key:       'supplier',
+                dataIndex: 'businessSupplierName',
                 width:     '15%',
+            },
+            {
+                title:  'DATE',
+                key:       'date',
+                dataIndex: 'pricelistDate',
+                width:     '10%',
+                render: (date)=>`${moment(date).format('YYYY-MM-DD')}`
+            },
+            {
+                title:  "PURCHASE",
+                key:       'purchasePrice',
+                dataIndex: 'purchasePrice',
+                width:     '10%',
             },
             {
                 title:  'STORE',
                 key:       'store',
-                dataIndex: 'store',
-                width:     '15%',
+                width:     '10%',
+                render: (elem)=>`${elem.availableIn0}/${elem.availableIn1}/${elem.availableIn2}/${elem.availableInx}`
             },
             {
                 key:       'select',
                 width:     'auto',
-                render: ()=>{
+                render: (elem)=>{
                     return (
                         <Button
                             type="primary"
+                            onClick={()=>{
+                                this.props.onSelect(elem.businessSupplierName);
+                                this.handleCancel();
+                            }}
                         >
                             Select
                         </Button>
@@ -78,6 +97,8 @@ class DetailSupplierModal extends React.Component{
 
     handleCancel = () => {
         this.setState({
+            fetched: false,
+            dataSource: [],
             visible: false,
         })
     };
@@ -86,7 +107,7 @@ class DetailSupplierModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/tecdoc/products/suppliers`;
+        let params = `/business_suppliers/pricelists?partNumber=341822&brandName=KYB`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -105,6 +126,10 @@ class DetailSupplierModal extends React.Component{
         })
         .then(function (data) {
             console.log(data);
+            that.setState({
+                fetched: true,
+                dataSource: data,
+            })
         })
         .catch(function (error) {
             console.log('error', error)
@@ -112,8 +137,10 @@ class DetailSupplierModal extends React.Component{
     }
 
     
-    componentWillMount() {
-        //this.fetchData();
+    componentDidUpdate() {
+        if(this.state.dataSource.length == 0 && !this.state.fetched) {
+            this.fetchData();
+        }
     }
 
     render() {
@@ -130,7 +157,7 @@ class DetailSupplierModal extends React.Component{
                     <Icon type='check'/>
                 </Button>
                 <Modal
-                    width="75%"
+                    width="85%"
                     visible={this.state.visible}
                     title="STORAGE"
                     onCancel={this.handleCancel}

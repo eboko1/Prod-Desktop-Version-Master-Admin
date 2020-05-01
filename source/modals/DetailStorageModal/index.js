@@ -187,26 +187,41 @@ class DetailStorageModal extends React.Component{
                 title:  "SELF",
                 key:       'self',
                 dataIndex: 'self',
-                width:     '7%',
+                width:     '6%',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
             },
             {
                 title:  "PRICE",
                 key:       'price',
                 dataIndex: 'price',
-                width:     '7%',
+                width:     '6%',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
             },
             {
                 title:  ()=>{
                     return (
                         <div>
                             <div>STORE</div>
-                            <div><Checkbox/> В наличии</div>
+                            <div style={{fontWeight: '400', fontSize: 12}}><Checkbox/> В наличии</div>
                         </div>
                     )
                 },
                 key:       'store',
                 dataIndex: 'store',
-                width:     '6%',
+                width:     '8%',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
             },
             {
                 key:       'select',
@@ -216,12 +231,8 @@ class DetailStorageModal extends React.Component{
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber);
-                                this.setState({
-                                    dataSource: [],
-                                    visible: false,
-                                    fetched: false,
-                                })
+                                this.props.onSelect(elem.partNumber, elem.supplierName);
+                                this.handleCancel();
                             }}
                         >
                             Select
@@ -237,6 +248,9 @@ class DetailStorageModal extends React.Component{
             dataSource: [],
             visible: false,
             fetched: false,
+            brandOptions: [],
+            brandFilter: [],
+            codeFilter: undefined,
         })
     };
 
@@ -278,6 +292,30 @@ class DetailStorageModal extends React.Component{
                 dataSource: data,
                 brandOptions: brandOptions,
             })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        params = `/tecdoc/filtering_attributes?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
+        url = API_URL + params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
         })
         .catch(function (error) {
             console.log('error', error)

@@ -80,8 +80,9 @@ export default class DetailsTable extends Component {
                                 <Icon type="check"/>
                             </Button>
                             <PriceCountModal
-                                disabled={confirmed != "undefined"}
+                                disabled={confirmed != "undefined" || !(elem.storeGroupId)}
                                 detail={elem}
+                                onConfirm={this.updateDetail}
                             />
                         </div>
                     )
@@ -121,10 +122,10 @@ export default class DetailsTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="SELLER" />,
+                title: <FormattedMessage id="SUPPLIER" />,
                 width: "10%",
-                key: "seller",
-                dataIndex: 'detailCode',
+                key: "supplierName",
+                dataIndex: 'supplierName',
                 render: (data) => {
                     return (
                         data ? data : <FormattedMessage id="long_dash"/>
@@ -330,13 +331,35 @@ class PriceCountModal extends React.Component{
                 title:  'NAME',
                 key:       'detailName',
                 dataIndex: 'detailName',
-                width:     '40%',
+                width:     '20%',
+            },
+            {
+                title: <FormattedMessage id="order_form_table.brand" />,
+                width: "20%",
+                key: "brand",
+                dataIndex: 'brandName',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.detail_code" />,
+                width: "20%",
+                key: "code",
+                dataIndex: 'detailCode',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
             },
             {
                 title:  'PURCHASE',
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
-                width:     '15%',
+                width:     '10%',
                 render: (data)=>{
                     return(
                         <InputNumber
@@ -355,7 +378,7 @@ class PriceCountModal extends React.Component{
                 title:  'PRICE',
                 key:       'price',
                 dataIndex: 'price',
-                width:     '15%',
+                width:     '10%',
                 render: (data)=>{
                     return(
                         <InputNumber
@@ -375,7 +398,7 @@ class PriceCountModal extends React.Component{
                 title:  'COUNT',
                 key:       'count',
                 dataIndex: 'count',
-                width:     '15%',
+                width:     '10%',
                 render: (data)=>{
                     return(
                         <InputNumber
@@ -395,7 +418,7 @@ class PriceCountModal extends React.Component{
                 title:  'SUM',
                 key:       'sum',
                 dataIndex: 'sum',
-                width:     '15%',
+                width:     '10%',
                 render: (data)=>{
                     return(
                         <InputNumber
@@ -412,7 +435,8 @@ class PriceCountModal extends React.Component{
     handleOk = () => {
         this.setState({
             visible: false,
-        })
+        });
+        this.props.onConfirm(this.state.dataSource);
     }
 
     handleCancel = () => {
