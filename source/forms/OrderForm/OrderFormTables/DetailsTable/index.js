@@ -69,6 +69,7 @@ export default class DetailsTable extends Component {
                 dataIndex: "key",
                 render: (data, elem) => {
                     const confirmed = elem.agreement.toLowerCase();
+                    console.log(elem)
                     return (
                         <div style={{display: "flex", justifyContent: "space-evenly"}}>
                             <Button
@@ -235,7 +236,7 @@ export default class DetailsTable extends Component {
                                 <FormattedMessage id="add_order_form.delete_confirm" />
                             }
                             onConfirm={()=>{
-                                alert('d')
+                                alert('delete')
                             }}
                         >
                             <Icon type="delete" className={Styles.deleteIcon} />

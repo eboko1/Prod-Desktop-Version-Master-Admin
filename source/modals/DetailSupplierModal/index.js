@@ -79,11 +79,17 @@ class DetailSupplierModal extends React.Component{
                 key:       'select',
                 width:     'auto',
                 render: (elem)=>{
+                    const store = `${elem.availableIn0}/${elem.availableIn1}/${elem.availableIn2}/${elem.availableInx}`;
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.businessSupplierName);
+                                if(this.props.onSelect) {
+                                    this.props.onSelect(elem.businessSupplierName, elem.purchasePrice);
+                                }
+                                else {
+                                    this.props.setStoreSupplier(elem.businessSupplierName, elem.purchasePrice, store, this.props.keyValue);
+                                }
                                 this.handleCancel();
                             }}
                         >
@@ -107,7 +113,7 @@ class DetailSupplierModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/business_suppliers/pricelists?partNumber=341822&brandName=KYB`;
+        let params = `/business_suppliers/pricelists?partNumber=${this.props.detailCode}&brandName=${this.props.brandName}`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -125,6 +131,7 @@ class DetailSupplierModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
+            data.map((elem, i)=>elem.key = i)
             console.log(data);
             that.setState({
                 fetched: true,
@@ -136,19 +143,13 @@ class DetailSupplierModal extends React.Component{
         });
     }
 
-    
-    componentDidUpdate() {
-        if(this.state.dataSource.length == 0 && !this.state.fetched) {
-            this.fetchData();
-        }
-    }
-
     render() {
         return (
             <div>
                 <Button
                     disabled={this.props.disabled}
                     onClick={()=>{
+                        this.fetchData();
                         this.setState({
                             visible: true,
                         })
