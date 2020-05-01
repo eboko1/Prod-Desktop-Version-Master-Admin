@@ -87,6 +87,7 @@ class DetailProductModal extends React.Component{
         this.relatedDetailsOptions = [];
 
         this.setCode = this.setCode.bind(this);
+        this.setSupplier = this.setSupplier.bind(this);
         this.setComment = this.setComment.bind(this);
 
         this.mainTableColumns = [
@@ -226,7 +227,7 @@ class DetailProductModal extends React.Component{
             {
                 title:  "SUPPLIER",
                 key:       'supplier',
-                dataIndex: 'supplier',
+                dataIndex: 'supplierName',
                 width:     '15%',
                 render: (data, elem)=>{
                     return (
@@ -238,7 +239,8 @@ class DetailProductModal extends React.Component{
                                 value={data}
                             />
                             <DetailSupplierModal
-                                disabled={elem.storeGroupId == null}    
+                                disabled={elem.storeGroupId == null}
+                                onSelect={this.setSupplier}
                             />
                         </div>
                     )
@@ -894,8 +896,13 @@ class DetailProductModal extends React.Component{
         this.props.hideModal();
     };
 
-    setCode(code) {
+    setCode(code, brand) {
+        let tmp = this.props.brands.find((elem)=>elem.brandName==brand);
+        const brandValue = tmp ? tmp.brandId : undefined;
+        alert(brandValue);
         this.state.mainTableSource[0].detailCode = code;
+        this.state.mainTableSource[0].brandId = brandValue;
+        this.state.mainTableSource[0].brandName = brand;
         this.setState({
             update: true
         })
@@ -903,6 +910,13 @@ class DetailProductModal extends React.Component{
 
     setComment(comment) {
         this.state.mainTableSource[0].comment = comment;
+        this.setState({
+            update: true
+        })
+    }
+
+    setSupplier(supplier) {
+        this.state.mainTableSource[0].supplierName = supplier;
         this.setState({
             update: true
         })
