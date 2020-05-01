@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Spin, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {
@@ -16,10 +16,13 @@ import { DetailSupplierModal } from 'modals'
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 
 @injectIntl
 class DetailStorageModal extends React.Component{
+    _isMounted = false;
+
     constructor(props) {
         super(props);
         this.state = {
@@ -29,7 +32,11 @@ class DetailStorageModal extends React.Component{
             brandOptions: [],
             brandFilter: [],
             codeFilter: undefined,
+            attributesFilters: [],
         }
+
+        this.setSupplier = this.setSupplier.bind(this);
+
         this.columns = [
             {
                 title:  'PHOTO',
@@ -94,7 +101,6 @@ class DetailStorageModal extends React.Component{
                         <div>
                             <span>BRAND</span>
                             <Select
-                                allowClear
                                 showSearch
                                 mode="multiple"
                                 placeholder="BRAND"
@@ -167,26 +173,32 @@ class DetailStorageModal extends React.Component{
             },
             {
                 title:  "SUPPLIER",
-                key:       'supplier',
-                dataIndex: 'supplier',
+                key:       'businessSupplierName',
+                dataIndex: 'businessSupplierName',
                 width:     '15%',
                 render: (data, elem)=>{
                     return (
                         <div style={{display: "flex"}}>
                             <Input
-                                style={{maxWidth: 180}}
+                                style={{maxWidth: 180, color: 'black'}}
+                                value={data}
                                 disabled
                                 placeholder="SUPPLIER"
                             />
-                            <DetailSupplierModal/>
+                            <DetailSupplierModal
+                                setStoreSupplier={this.setSupplier}
+                                keyValue={elem.key}
+                                brandName={elem.supplierName}
+                                detailCode={elem.partNumber}
+                            />
                         </div>
                     )
                 }
             },
             {
-                title:  "SELF",
-                key:       'self',
-                dataIndex: 'self',
+                title:  "PURCHASE",
+                key:       'purchasePrice',
+                dataIndex: 'purchasePrice',
                 width:     '6%',
                 render: (data) => {
                     return (
@@ -232,6 +244,7 @@ class DetailStorageModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 this.props.onSelect(elem.partNumber, elem.supplierName);
+                                this.props.setSupplier(elem.businessSupplierName, elem.purchasePrice);
                                 this.handleCancel();
                             }}
                         >
@@ -241,6 +254,15 @@ class DetailStorageModal extends React.Component{
                 }
             },
         ];
+    }
+
+    setSupplier(businessSupplierName, purchasePrice, store, key) {
+        this.state.dataSource[key].businessSupplierName = businessSupplierName;
+        this.state.dataSource[key].purchasePrice = purchasePrice;
+        this.state.dataSource[key].store = store;
+        this.setState({
+            update: true
+        })
     }
 
     handleCancel = () => {
@@ -277,10 +299,12 @@ class DetailStorageModal extends React.Component{
         })
         .then(function (data) {
             var brandOptions = [];
-            console.log(data);
             data.map((elem, i)=>{
                 elem.key = i;
                 if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
+                    if(that.props.brandFilter == elem.supplierName) {
+                        that.state.brandFilter.push(elem.supplierId);
+                    }
                     brandOptions.push({
                         id: elem.supplierId,
                         name: elem.supplierName,
@@ -316,17 +340,21 @@ class DetailStorageModal extends React.Component{
         })
         .then(function (data) {
             console.log(data);
+            this.setState({
+                attributesFilters: data,
+            })
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
+    componentDidMount() {
+        this._isMounted = true;
+    }
 
-    componentDidUpdate() {
-        if(this.state.dataSource.length == 0 && !this.state.fetched) {
-            this.fetchData();
-        }
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
@@ -339,6 +367,7 @@ class DetailStorageModal extends React.Component{
                 <Button
                     disabled={this.props.disabled}
                     onClick={()=>{
+                        this.fetchData();
                         this.setState({
                             visible: true,
                         })
@@ -353,12 +382,16 @@ class DetailStorageModal extends React.Component{
                     onCancel={this.handleCancel}
                     footer={null}
                 >
+                    {this.state.fetched ? 
                         <Table
                             rowClassName={Styles.tableRow}
                             pagination={{ pageSize: 6 }}
                             dataSource={tblData}
                             columns={this.columns}
                         />
+                        :
+                        <Spin indicator={spinIcon} />
+                    }
                 </Modal>
             </div>
         )

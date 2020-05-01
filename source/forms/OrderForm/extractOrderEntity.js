@@ -220,6 +220,7 @@ export function convertFieldsValuesToDbEntity(
         vehicleCondition: _.get(orderFields, 'vehicleCondition'),
         businessComment:  _.get(orderFields, 'businessComment'),
         comment:          _.get(orderFields, 'comment'),
+        insertMode: true,
     };
 
     const orderClearedFields = _.mapValues(order, value =>
