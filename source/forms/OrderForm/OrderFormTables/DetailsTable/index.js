@@ -129,11 +129,39 @@ export default class DetailsTable extends Component {
                 title: <FormattedMessage id="order_form_table.AI" />,
                 width: "3%",
                 key: "AI",
-                render: () => {
+                render: (elem)=>{
+                    let color = 'brown',
+                        title = 'Поставщик не выбран!';
+                    if(elem.store){
+                        title=  `Сегодня: ${elem.store[0]} шт.\n` +
+                                `Завтра: ${elem.store[1]} шт.\n` +
+                                `Послезавтра: ${elem.store[2]} шт.\n` +
+                                `Позже: ${elem.store[3]} шт.`;
+                        if(elem.store[0] != '0') {
+                            color = 'rgb(81, 205, 102)';
+                        }
+                        else if(elem.store[1] != 0) {
+                            color = 'yellow';
+                        }
+                        else if(elem.store[2] != 0) {
+                            color = 'orange';
+                        }
+                        else if(elem.store[3] != 0) {
+                            color = 'red';
+                        }
+                    }
+                    else {
+                        color = 'grey';
+                        
+                    }
+                    
                     return (
-                       <div style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: 'rgb(81, 205, 102)'}}></div>
-                    );
-                },
+                        <div
+                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
+                            title={title}
+                        ></div>
+                    )
+                }
             },
             {
                 title: <FormattedMessage id="order_form_table.purchasePrice" />,
@@ -141,7 +169,7 @@ export default class DetailsTable extends Component {
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
-                    let strVal = String(data);
+                    let strVal = String(Math.ceil(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
@@ -158,7 +186,7 @@ export default class DetailsTable extends Component {
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
-                    let strVal = String(data);
+                    let strVal = String(Math.ceil(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
@@ -192,7 +220,7 @@ export default class DetailsTable extends Component {
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
-                    let strVal = String(data);
+                    let strVal = String(Math.ceil(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
@@ -437,7 +465,7 @@ class PriceCountModal extends React.Component{
                             value={data ? data : 0}
                             min={0}
                             formatter={(value)=>{
-                                let strVal = String(value);
+                                let strVal = String(Math.ceil(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                                 }
@@ -465,7 +493,7 @@ class PriceCountModal extends React.Component{
                             value={data ? data : 0}
                             min={0}
                             formatter={(value)=>{
-                                let strVal = String(value);
+                                let strVal = String(Math.ceil(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                                 }
@@ -524,10 +552,9 @@ class PriceCountModal extends React.Component{
                             style={{color: 'black'}}
                             value={data}
                             formatter={(value)=>{
-                                let strVal = String(value);
+                                let strVal = String(Math.ceil(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                    console.log(strVal);
                                 }
                                 return strVal;
                             }}

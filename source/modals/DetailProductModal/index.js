@@ -79,6 +79,7 @@ class DetailProductModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
+                                this.getDefaultValues(value);
                                 this.state.mainTableSource[0].storeGroupId = value;
                                 this.state.mainTableSource[0].detailName = option.props.name;
                                 this.filterOptions(value);
@@ -217,6 +218,7 @@ class DetailProductModal extends React.Component{
                             <DetailSupplierModal
                                 disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
                                 onSelect={this.setSupplier}
+                                storeGroupId={elem.storeGroupId}
                                 brandName={elem.brandName}
                                 detailCode={elem.detailCode}
                             />
@@ -228,9 +230,37 @@ class DetailProductModal extends React.Component{
                 title:  <FormattedMessage id="order_form_table.AI" />,
                 key:       'AI',
                 width:     '3%',
-                render: ()=>{
+                render: (elem)=>{
+                    let color = 'brown',
+                        title = 'Поставщик не выбран!';
+                    if(elem.store){
+                        title=  `Сегодня: ${elem.store[0]} шт.\n` +
+                                `Завтра: ${elem.store[1]} шт.\n` +
+                                `Послезавтра: ${elem.store[2]} шт.\n` +
+                                `Позже: ${elem.store[3]} шт.`;
+                        if(elem.store[0] != '0') {
+                            color = 'rgb(81, 205, 102)';
+                        }
+                        else if(elem.store[1] != 0) {
+                            color = 'yellow';
+                        }
+                        else if(elem.store[2] != 0) {
+                            color = 'orange';
+                        }
+                        else if(elem.store[3] != 0) {
+                            color = 'red';
+                        }
+                    }
+                    else {
+                        color = 'grey';
+                        
+                    }
+                    
                     return (
-                        <div style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: 'rgb(81, 205, 102)'}}></div>
+                        <div
+                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
+                            title={title}
+                        ></div>
                     )
                 }
             },
@@ -246,10 +276,9 @@ class DetailProductModal extends React.Component{
                             value={data || 0}
                             min={0}
                             formatter={(value)=>{
-                                let strVal = String(value);
+                                let strVal = String(Math.ceil(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                    console.log(strVal);
                                 }
                                 return strVal;
                             }}
@@ -276,10 +305,9 @@ class DetailProductModal extends React.Component{
                             value={data || 1}
                             min={1}
                             formatter={(value)=>{
-                                let strVal = String(value);
+                                let strVal = String(Math.ceil(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                    console.log(strVal);
                                 }
                                 return strVal;
                             }}
@@ -310,7 +338,6 @@ class DetailProductModal extends React.Component{
                                 let strVal = String(value);
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                    console.log(strVal);
                                 }
                                 return strVal;
                             }}
@@ -338,10 +365,9 @@ class DetailProductModal extends React.Component{
                             value={sum ? sum : 1}
                             style={{color: "black"}}
                             formatter={(value)=>{
-                                let strVal = String(value);
+                                let strVal = String(Math.ceil(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                    console.log(strVal);
                                 }
                                 return strVal;
                             }}
@@ -365,10 +391,13 @@ class DetailProductModal extends React.Component{
                                 this.state.mainTableSource[0].brandName = undefined;
                                 this.state.mainTableSource[0].detailCode = undefined;
                                 this.state.mainTableSource[0].supplierName = undefined;
+                                this.state.mainTableSource[0].supplierId = undefined;
+                                this.state.mainTableSource[0].store = null;
                                 this.state.mainTableSource[0].purchasePrice = 0;
                                 this.state.mainTableSource[0].price = 1;
                                 this.state.mainTableSource[0].count = 1;
                                 this.state.mainTableSource[0].sum = undefined;
+
                                 this.setState({
                                     update: true
                                 })
@@ -880,6 +909,7 @@ class DetailProductModal extends React.Component{
                     storeGroupId: element.storeGroupId,
                     name: element.detailName,
                     productCode: element.detailCode,
+                    supplierId: element.supplierId,
                     supplierBrandId: element.brandId,
                     brandName: element.brandName,
                     purchasePrice: element.purchasePrice,
@@ -907,6 +937,39 @@ class DetailProductModal extends React.Component{
         this.props.hideModal();
     };
 
+    async getDefaultValues(storeGroupId) {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+            });
+            const result = await response.json();
+            if(result.length) {
+                console.log(result);
+                that.state.mainTableSource[0].brandId = result[0].brandId;
+                that.state.mainTableSource[0].brandName = result[0].brandName;
+                that.state.mainTableSource[0].detailCode = result[0].partNumber;
+                that.state.mainTableSource[0].supplierId = result[0].supplierId;
+                that.state.mainTableSource[0].supplierName = result[0].supplierName;
+                that.state.mainTableSource[0].store = result[0].store;
+                that.state.mainTableSource[0].purchasePrice = result[0].purchasePrice;
+                that.setState({
+                    update: true,
+                })
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+    }
+
     setCode(code, brand) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
         if(!tmp) {
@@ -932,9 +995,11 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierName, purchasePrice) {
+    setSupplier(supplierId, supplierName, purchasePrice, store) {
+        this.state.mainTableSource[0].supplierId = supplierId;
         this.state.mainTableSource[0].supplierName = supplierName;
         this.state.mainTableSource[0].purchasePrice = purchasePrice;
+        this.state.mainTableSource[0].store = store;
         this.setState({
             update: true
         })
