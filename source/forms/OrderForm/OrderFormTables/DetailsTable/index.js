@@ -55,16 +55,21 @@ export default class DetailsTable extends Component {
                     return (
                         <div style={{display: "flex", justifyContent: "space-evenly"}}>
                             <Button
+                                type='primary'
                                 disabled={confirmed != "undefined"}
                                 onClick={()=>{
                                     this.showDetailProductModal(data)
                                 }}
                             >
-                                <img
-                                    width={24}
-                                    src={ images.partsIcon }
-                                    alt='Задать товар'
-                                />
+                                <div
+                                    style={{
+                                        width: 24,
+                                        height: 24,
+                                        backgroundColor: 'white',
+                                        mask: `url(${images.partsIcon}) no-repeat center / contain`,
+                                        '-webkit-mask': `url(${images.partsIcon}) no-repeat center / contain`,
+                                    }}
+                                ></div>
                             </Button>
                             <PriceCountModal
                                 disabled={confirmed != "undefined" || !(elem.storeGroupId)}
@@ -136,9 +141,13 @@ export default class DetailsTable extends Component {
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
+                    let strVal = String(data);
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
                     return (
                         <span>
-                            {data ? data : 0} <FormattedMessage id="cur" />
+                            {data ? strVal : 0} <FormattedMessage id="cur" />
                         </span> 
                     )
                 },
@@ -149,9 +158,13 @@ export default class DetailsTable extends Component {
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
+                    let strVal = String(data);
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
                     return (
                         <span>
-                            {data ? data : 0} <FormattedMessage id="cur" />
+                            {data ? strVal : 0} <FormattedMessage id="cur" />
                         </span> 
                     )
                 },
@@ -162,9 +175,13 @@ export default class DetailsTable extends Component {
                 key: "count",
                 dataIndex: 'count',
                 render: (data) => {
+                    let strVal = String(data);
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
                     return (
                         <span>
-                            {data ? data : 0} <FormattedMessage id="pc" />
+                            {data ? strVal : 0} <FormattedMessage id="pc" />
                         </span> 
                     )
                 },
@@ -175,9 +192,13 @@ export default class DetailsTable extends Component {
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
+                    let strVal = String(data);
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
                     return (
                         <span>
-                            {data ? data : 0} <FormattedMessage id="cur" />
+                            {data ? strVal : 0} <FormattedMessage id="cur" />
                         </span> 
                     )
                 },
@@ -213,7 +234,6 @@ export default class DetailsTable extends Component {
                 },
             },
             {
-                title: "",
                 width: "3%",
                 key: "delete",
                 render: (elem) => {
@@ -415,6 +435,15 @@ class PriceCountModal extends React.Component{
                     return(
                         <InputNumber
                             value={data ? data : 0}
+                            min={0}
+                            formatter={(value)=>{
+                                let strVal = String(value);
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
                                 this.state.dataSource[0].purchasePrice = value;
                                 this.setState({
@@ -434,6 +463,15 @@ class PriceCountModal extends React.Component{
                     return(
                         <InputNumber
                             value={data ? data : 0}
+                            min={0}
+                            formatter={(value)=>{
+                                let strVal = String(value);
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
                                 this.state.dataSource[0].price = value;
                                 this.state.dataSource[0].sum = value * this.state.dataSource[0].count;
@@ -454,6 +492,15 @@ class PriceCountModal extends React.Component{
                     return(
                         <InputNumber
                             value={data ? data : 0}
+                            min={0}
+                            formatter={(value)=>{
+                                let strVal = String(value);
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
                                 this.state.dataSource[0].count = value;
                                 this.state.dataSource[0].sum = value * this.state.dataSource[0].price;
@@ -476,6 +523,15 @@ class PriceCountModal extends React.Component{
                             disabled
                             style={{color: 'black'}}
                             value={data}
+                            formatter={(value)=>{
+                                let strVal = String(value);
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                    console.log(strVal);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
                         />
                     )
                 }
@@ -500,6 +556,7 @@ class PriceCountModal extends React.Component{
         return(
             <>
                 <Button
+                    type='primary'
                     disabled={this.props.disabled}
                     onClick={()=>{
                         this.setState({
@@ -508,11 +565,15 @@ class PriceCountModal extends React.Component{
                         })
                     }}
                 >
-                     <img
-                        width={24}
-                        src={ images.pencilIcon }
-                        alt='Быстрое редактирование'
-                    />
+                    <div
+                        style={{
+                            width: 24,
+                            height: 24,
+                            backgroundColor: this.props.disabled ? 'black' : 'white',
+                            mask: `url(${images.pencilIcon}) no-repeat center / contain`,
+                            '-webkit-mask': `url(${images.pencilIcon}) no-repeat center / contain`,
+                        }}
+                    ></div>
                 </Button>
                 <Modal
                     width='80%'
