@@ -57,7 +57,7 @@ class DetailProductModal extends React.Component{
 
         this.mainTableColumns = [
             {
-                title:  "GROUP",
+                title:  <FormattedMessage id="order_form_table.store_group" />,
                 key:       'storeGroupId',
                 dataIndex: 'storeGroupId',
                 width:     '12%',
@@ -67,7 +67,7 @@ class DetailProductModal extends React.Component{
                             className={Styles.groupsTreeSelect}
                             disabled={this.state.editing}
                             showSearch
-                            placeholder="GROUP"
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
                             style={{maxWidth: 180}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
@@ -92,7 +92,7 @@ class DetailProductModal extends React.Component{
                 
             },
             {
-                title:  "NAME",
+                title:  <FormattedMessage id="order_form_table.detail_name" />,
                 key:       'detailName',
                 dataIndex: 'detailName',
                 width:     '20%',
@@ -100,7 +100,7 @@ class DetailProductModal extends React.Component{
                     return (
                         <Input
                             disabled={elem.storeGroupId == null}
-                            placeholder="NAME"
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             style={{minWidth: 150}}
                             value={data}
                             onChange={(event)=>{
@@ -114,7 +114,7 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "COMMENT",
+                title:  <FormattedMessage id="comment" />,
                 key:       'comment',
                 dataIndex: 'comment',
                 width:     '5%',
@@ -133,7 +133,7 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "BRAND",
+                title:  <FormattedMessage id="order_form_table.brand" />,
                 key:       'brandId',
                 dataIndex: 'brandId',
                 width:     '10%',
@@ -151,7 +151,7 @@ class DetailProductModal extends React.Component{
                         <Select
                             showSearch
                             disabled={elem.storeGroupId == null}
-                            placeholder="BRAND"
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
                             style={{maxWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
@@ -175,7 +175,7 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "CODE",
+                title:  <FormattedMessage id="order_form_table.detail_code" />,
                 key:       'detailCode',
                 dataIndex: 'detailCode',
                 width:     '15%',
@@ -185,7 +185,7 @@ class DetailProductModal extends React.Component{
                             <Input
                                 style={{maxWidth: 180, color: 'black'}}
                                 disabled
-                                placeholder="CODE"
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
                             />
                             <DetailStorageModal
@@ -201,7 +201,7 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "SUPPLIER",
+                title:  <FormattedMessage id="order_form_table.supplier" />,
                 key:       'supplier',
                 dataIndex: 'supplierName',
                 width:     '15%',
@@ -211,7 +211,7 @@ class DetailProductModal extends React.Component{
                             <Input
                                 style={{maxWidth: 180, color: 'black'}}
                                 disabled
-                                placeholder="SUPPLIER"
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                                 value={data}
                             />
                             <DetailSupplierModal
@@ -225,8 +225,8 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "ИН",
-                key:       'in',
+                title:  <FormattedMessage id="order_form_table.AI" />,
+                key:       'AI',
                 width:     '3%',
                 render: ()=>{
                     return (
@@ -235,7 +235,7 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "SELF",
+                title: <FormattedMessage id="order_form_table.purchasePrice" />,
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 width:     '3%',
@@ -256,7 +256,7 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "PRICE",
+                title:  <FormattedMessage id="order_form_table.price" />,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '3%',
@@ -278,7 +278,7 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "COUNT",
+                title:  <FormattedMessage id="order_form_table.count" />,
                 key:       'count',
                 dataIndex: 'count',
                 width:     '3%',
@@ -300,7 +300,7 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  "SUM",
+                title:  <FormattedMessage id="order_form_table.sum" />,
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{

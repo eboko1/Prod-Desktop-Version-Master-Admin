@@ -5,12 +5,8 @@ import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
-import {
-    API_URL,
-    confirmDiagnostic,
-    createAgreement,
-    lockDiagnostic,
-} from 'core/forms/orderDiagnosticForm/saga';
+import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
+import { images } from 'utils';
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -93,7 +89,7 @@ class DetailSupplierModal extends React.Component{
                                 this.handleCancel();
                             }}
                         >
-                            Select
+                            <FormattedMessage id="select" />
                         </Button>
                     )
                 }
@@ -154,12 +150,16 @@ class DetailSupplierModal extends React.Component{
                         })
                     }}
                 >
-                    <Icon type='check'/>
+                    <img
+                        width={24}
+                        src={ images.craneIcon }
+                        alt='Выбрать поставщика'
+                    />
                 </Button>
                 <Modal
                     width="85%"
                     visible={this.state.visible}
-                    title="STORAGE"
+                    title={<FormattedMessage id="order_form_table.supplier" />}
                     onCancel={this.handleCancel}
                     footer={null}
                 >

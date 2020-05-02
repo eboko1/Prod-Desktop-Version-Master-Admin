@@ -25,6 +25,8 @@
     "order_form_table.detail_name": "Spare Part",
     "order_form_table.brand": "Brand",
     "order_form_table.detail_code": "Code",
+    "order_form_table.supplier": "Supplier",
+    "order_form_table.store_group": "Store group",
     "order_form_table.vehicle": "Car",
     "order_form_table.tasks": "Tasks",
     "order_form_table.history": "History",
@@ -49,7 +51,8 @@
     "order_form_table.purchasePrice": "Purchase Price",
     "order_form_table.suggest": "Suggest",
     "order_form_table.TO_DO": "Open",
-    "order_form_table.COMPLETED": "Closed"
+    "order_form_table.COMPLETED": "Closed",
+    "order_form_table.AI": "AI"
   },
   "ru": {
     "order_form_table.confirm_exit": "Хотите сохранить изменения?",
@@ -77,6 +80,8 @@
     "order_form_table.detail_name": "Наименование",
     "order_form_table.brand": "Бренд",
     "order_form_table.detail_code": "Код З/Ч",
+    "order_form_table.supplier": "Поставщик",
+    "order_form_table.store_group": "Группа З/Ч",
     "order_form_table.vehicle": "Автомобиль",
     "order_form_table.tasks": "Задачи",
     "order_form_table.history": "История",
@@ -101,7 +106,8 @@
     "order_form_table.purchasePrice": "Закупочная цена",
     "order_form_table.suggest": "Подобрать",
     "order_form_table.TO_DO": "Открыто",
-    "order_form_table.COMPLETED": "Закрыто"
+    "order_form_table.COMPLETED": "Закрыто",
+    "order_form_table.AI": "ИН"
   },
   "uk": {
     "order_form_table.confirm_exit": "Бажаєте зберегти зміни?",
@@ -129,6 +135,8 @@
     "order_form_table.detail_name": "Найменування",
     "order_form_table.brand": "Бренд",
     "order_form_table.detail_code": "Код З/Ч",
+    "order_form_table.supplier": "Постачальник",
+    "order_form_table.store_group": "Група З/Ч",
     "order_form_table.vehicle": "Автомобіль",
     "order_form_table.tasks": "Задачі",
     "order_form_table.history": "Історія",
@@ -153,6 +161,7 @@
     "order_form_table.purchasePrice": "Закупочна ціна",
     "order_form_table.suggest": "Підібрати",
     "order_form_table.TO_DO": "Відкрито",
-    "order_form_table.COMPLETED": "Закрито"
+    "order_form_table.COMPLETED": "Закрито",
+    "order_form_table.AI": "ІН"
   }
 }
