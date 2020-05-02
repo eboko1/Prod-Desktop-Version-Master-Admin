@@ -30,7 +30,7 @@ class DetailProductModal extends React.Component{
                     id: undefined,
                     name: undefined,
                     comment: undefined,
-                    brand: undefined,
+                    brandName: undefined,
                     code: undefined,
                     self: 0,
                     price: 1,
@@ -42,7 +42,7 @@ class DetailProductModal extends React.Component{
                     id: undefined,
                     name: undefined,
                     comment: undefined,
-                    brand: undefined,
+                    brandName: undefined,
                     code: undefined,
                     self: 0,
                     price: 1,
@@ -54,7 +54,7 @@ class DetailProductModal extends React.Component{
                     id: undefined,
                     name: undefined,
                     comment: undefined,
-                    brand: undefined,
+                    brandName: undefined,
                     code: undefined,
                     self: 0,
                     price: 1,
@@ -173,6 +173,15 @@ class DetailProductModal extends React.Component{
                 dataIndex: 'brandId',
                 width:     '10%',
                 render: (data, elem)=>{
+                    if(elem.brandName && !(elem.brandId)) {
+                        const defaultBrand = this.props.brands.find((brand)=>brand.brandName==elem.brandName);
+                        if(defaultBrand) {
+                            this.state.mainTableSource[0].brandId = defaultBrand.brandId;
+                            this.setState({
+                                update: true
+                            })
+                        }
+                    }
                     return (
                         <Select
                             showSearch
@@ -446,8 +455,8 @@ class DetailProductModal extends React.Component{
             },
             {
                 title:  "BRAND",
-                key:       'brand',
-                dataIndex: 'brand',
+                key:       'brandName',
+                dataIndex: 'brandName',
                 width:     '15%',
                 render: (data, elem)=>{
                     const key = elem.key;
@@ -459,7 +468,7 @@ class DetailProductModal extends React.Component{
                             style={{maxWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             onSelect={(value)=>{
-                                this.state.relatedDetailsSource[key].brand = value;
+                                this.state.relatedDetailsSource[key].brandName = value;
                                 this.setState({
                                     update: true
                                 })
@@ -586,7 +595,7 @@ class DetailProductModal extends React.Component{
                                     id: undefined,
                                     name: undefined,
                                     comment: undefined,
-                                    brand: undefined,
+                                    brandName: undefined,
                                     code: undefined,
                                     self: 0,
                                     price: 1,
@@ -870,9 +879,8 @@ class DetailProductModal extends React.Component{
                 data.details.push({
                     storeGroupId: element.storeGroupId,
                     name: element.detailName,
-                    productId: element.productId ? element.productId : null,
-                    detailCode: element.detailCode,
-                    brandId: element.brandId,
+                    productCode: element.detailCode,
+                    supplierBrandId: element.brandId,
                     brandName: element.brandName,
                     purchasePrice: element.purchasePrice,
                     count: element.count,
@@ -901,8 +909,16 @@ class DetailProductModal extends React.Component{
     };
 
     setCode(code, brand) {
-        let tmp = this.props.brands.find((elem)=>elem.brandName==brand);
-        const brandValue = tmp ? tmp.brandId : undefined;
+        let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
+        if(!tmp) {
+            console.log(this.brandOptions);
+            this.brandOptions.push(
+                <Option key={this.brandOptions.length} value={this.brandOptions.length+1} >
+                    {brand}
+                </Option>
+            )
+        }
+        const brandValue = tmp ? tmp.props.value : this.brandOptions.length;
         this.state.mainTableSource[0].detailCode = code;
         this.state.mainTableSource[0].brandId = brandValue;
         this.state.mainTableSource[0].brandName = brand;
@@ -1104,6 +1120,7 @@ class DetailProductModal extends React.Component{
     }
 
     render() {
+        console.log(this.state.mainTableSource)
         const { visible } = this.props;
         return (
             <div>

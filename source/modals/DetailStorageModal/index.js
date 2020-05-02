@@ -340,7 +340,7 @@ class DetailStorageModal extends React.Component{
         })
         .then(function (data) {
             console.log(data);
-            this.setState({
+            that.setState({
                 attributesFilters: data,
             })
         })
