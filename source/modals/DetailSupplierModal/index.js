@@ -44,13 +44,13 @@ class DetailSupplierModal extends React.Component{
                 title:  <FormattedMessage id="order_form_table.brand" />,
                 key:       'brand',
                 dataIndex: 'brandName',
-                width:     '15%',
+                width:     '10%',
             },
             {
                 title:  <FormattedMessage id="order_form_table.supplier" />,
                 key:       'supplier',
                 dataIndex: 'businessSupplierName',
-                width:     '15%',
+                width:     '10%',
             },
             {
                 title:  <FormattedMessage id="date" />,
@@ -65,12 +65,27 @@ class DetailSupplierModal extends React.Component{
                 dataIndex: 'purchasePrice',
                 width:     '10%',
                 render: (data) => {
-                    let strVal = String(data);
+                    let strVal = String(Math.ceil(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
                     return (
-                        data ? strVal : <FormattedMessage id="long_dash"/>
+                        data ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.price" />,
+                key:       'price',
+                width:     '10%',
+                render: (elem) => {
+                    const price = elem.purchasePrice * elem.markups;
+                    let strVal = String(Math.ceil(price));
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
+                    return (
+                        elem.markups ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
@@ -84,16 +99,16 @@ class DetailSupplierModal extends React.Component{
                 key:       'select',
                 width:     'auto',
                 render: (elem)=>{
-                    const store = `${elem.availableIn0}/${elem.availableIn1}/${elem.availableIn2}/${elem.availableInx}`;
+                    const store = [elem.availableIn0, elem.availableIn1, elem.availableIn2, elem.availableInx];
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
                                 if(this.props.onSelect) {
-                                    this.props.onSelect(elem.businessSupplierName, elem.purchasePrice);
+                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.purchasePrice, store);
                                 }
                                 else {
-                                    this.props.setStoreSupplier(elem.businessSupplierName, elem.purchasePrice, store, this.props.keyValue);
+                                    this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.purchasePrice, store, this.props.keyValue);
                                 }
                                 this.handleCancel();
                             }}
@@ -137,6 +152,7 @@ class DetailSupplierModal extends React.Component{
         })
         .then(function (data) {
             data.map((elem, i)=>elem.key = i)
+            console.log(data);
             that.setState({
                 fetched: true,
                 dataSource: data,

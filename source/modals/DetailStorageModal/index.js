@@ -185,13 +185,14 @@ class DetailStorageModal extends React.Component{
                                 style={{maxWidth: 180, color: 'black'}}
                                 value={data}
                                 disabled
-                                placeholder="SUPPLIER"
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                             />
                             <DetailSupplierModal
                                 setStoreSupplier={this.setSupplier}
                                 keyValue={elem.key}
                                 brandName={elem.supplierName}
                                 detailCode={elem.partNumber}
+                                storeGroupId={this.props.storeGroupId}
                             />
                         </div>
                     )
@@ -203,12 +204,12 @@ class DetailStorageModal extends React.Component{
                 dataIndex: 'purchasePrice',
                 width:     '6%',
                 render: (data) => {
-                    let strVal = String(data);
+                    let strVal = String(Math.ceil(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
                     return (
-                        data ? strVal : <FormattedMessage id="long_dash"/>
+                        data ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
@@ -218,12 +219,12 @@ class DetailStorageModal extends React.Component{
                 dataIndex: 'price',
                 width:     '6%',
                 render: (data) => {
-                    let strVal = String(data);
+                    let strVal = String(Math.ceil(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
                     return (
-                        data ? strVal : <FormattedMessage id="long_dash"/>
+                        data ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
@@ -249,9 +250,9 @@ class DetailStorageModal extends React.Component{
                 key:       'store',
                 dataIndex: 'store',
                 width:     '8%',
-                render: (data) => {
+                render: (store) => {
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                        store ? `${store[0]}/${store[1]}/${store[2]}/${store[3]}` : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
@@ -264,7 +265,7 @@ class DetailStorageModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 this.props.onSelect(elem.partNumber, elem.supplierName);
-                                this.props.setSupplier(elem.businessSupplierName, elem.purchasePrice);
+                                this.props.setSupplier(elem.bussinesSupplierId, elem.businessSupplierName, elem.purchasePrice, elem.store);
                                 this.handleCancel();
                             }}
                         >
@@ -315,7 +316,8 @@ class DetailStorageModal extends React.Component{
         return data;
     }
 
-    setSupplier(businessSupplierName, purchasePrice, store, key) {
+    setSupplier(supplierId, businessSupplierName, purchasePrice, store, key) {
+        this.state.dataSource[key].bussinesSupplierId = supplierId;
         this.state.dataSource[key].businessSupplierName = businessSupplierName;
         this.state.dataSource[key].purchasePrice = purchasePrice;
         this.state.dataSource[key].store = store;
