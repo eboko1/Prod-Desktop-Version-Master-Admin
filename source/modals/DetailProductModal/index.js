@@ -899,7 +899,7 @@ class DetailProductModal extends React.Component{
             });
             console.log(data);
             this.addDetailsAndLabors(data);
-            //window.location.reload();
+            window.location.reload();
         }
         this.props.hideModal();
     };
@@ -911,7 +911,6 @@ class DetailProductModal extends React.Component{
     setCode(code, brand) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
         if(!tmp) {
-            console.log(this.brandOptions);
             this.brandOptions.push(
                 <Option key={this.brandOptions.length} value={this.brandOptions.length+1} >
                     {brand}
