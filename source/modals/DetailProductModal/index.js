@@ -24,44 +24,7 @@ class DetailProductModal extends React.Component{
         this.state = {
             editing: false,
             mainTableSource: [],
-            relatedDetailsSource: [
-                /*{
-                    key: 0,
-                    id: undefined,
-                    name: undefined,
-                    comment: undefined,
-                    brandName: undefined,
-                    code: undefined,
-                    self: 0,
-                    price: 1,
-                    count: 1,
-                    sum: undefined,
-                },
-                {
-                    key: 1,
-                    id: undefined,
-                    name: undefined,
-                    comment: undefined,
-                    brandName: undefined,
-                    code: undefined,
-                    self: 0,
-                    price: 1,
-                    count: 1,
-                    sum: undefined,
-                },
-                {
-                    key: 2,
-                    id: undefined,
-                    name: undefined,
-                    comment: undefined,
-                    brandName: undefined,
-                    code: undefined,
-                    self: 0,
-                    price: 1,
-                    count: 1,
-                    sum: undefined,
-                },*/
-            ],
+            relatedDetailsSource: [],
             relatedServicesSource: [
                 {
                     key: 0,
@@ -77,6 +40,8 @@ class DetailProductModal extends React.Component{
                     sum: undefined,
                 }
             ],
+            relatedDetailsCheckbox: false,
+            relatedServicesCheckbox: false,
             groupSearchValue: "",
         }
         this.labors = [];
@@ -252,7 +217,7 @@ class DetailProductModal extends React.Component{
                             <DetailSupplierModal
                                 disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
                                 onSelect={this.setSupplier}
-                                brandName={elem.detailName}
+                                brandName={elem.brandName}
                                 detailCode={elem.detailCode}
                             />
                         </div>
@@ -874,7 +839,6 @@ class DetailProductModal extends React.Component{
                 details: [],
                 services: [],
             }
-            console.log(this.state.mainTableSource)
             this.state.mainTableSource.map((element)=>{
                 data.details.push({
                     storeGroupId: element.storeGroupId,
@@ -897,7 +861,6 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
-            console.log(data);
             this.addDetailsAndLabors(data);
             window.location.reload();
         }
@@ -1119,7 +1082,6 @@ class DetailProductModal extends React.Component{
     }
 
     render() {
-        console.log(this.state.mainTableSource)
         const { visible } = this.props;
         return (
             <div>
@@ -1131,7 +1093,24 @@ class DetailProductModal extends React.Component{
                     onOk={this.handleOk}
                 >
                     <div>
-                        Сопутствующие: детали <Checkbox/> работы <Checkbox/>
+                        Сопутствующие: детали 
+                        <Checkbox
+                            checked={this.state.relatedDetailsCheckbox}
+                            onChange={()=>{
+                                this.setState({
+                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
+                                })
+                            }}
+                        /> 
+                         работы
+                        <Checkbox
+                            checked={this.state.relatedServicesCheckbox}
+                            onChange={()=>{
+                                this.setState({
+                                    relatedServicesCheckbox: !this.state.relatedServicesCheckbox
+                                })
+                            }}
+                        />
                     </div>
                     <div className={Styles.tableWrap}>
                         <div className={Styles.modalSectionTitle}>
@@ -1143,32 +1122,28 @@ class DetailProductModal extends React.Component{
                             pagination={false}
                         />
                     </div>
-                    {this.state.mainTableSource.length && this.state.mainTableSource[0].storeGroupId && !this.state.editing ? 
-                        <>
-                            {this.relatedDetailsOptions.length == 0 ?
-                            <div className={Styles.tableWrap}>
-                                <div className={Styles.modalSectionTitle}>
-                                    <span>Сопутствующие товары</span>
-                                </div>
-                                <Table
-                                    dataSource={this.state.relatedDetailsSource}
-                                    columns={this.relatedDetailsColumns}
-                                    pagination={false}
-                                />
-                            </div> : null}
-                            {this.servicesOptions.length ?
-                                <div className={Styles.tableWrap}>
-                                    <div className={Styles.modalSectionTitle}>
-                                        <span>Сопутствующие работы</span>
-                                    </div>
-                                    <Table
-                                        dataSource={this.state.relatedServicesSource}
-                                        columns={this.relatedServicesColumns}
-                                        pagination={false}
-                                    />
-                                </div> : null
-                            }
-                        </> : null
+                    {this.state.relatedDetailsCheckbox ?
+                    <div className={Styles.tableWrap}>
+                        <div className={Styles.modalSectionTitle}>
+                            <span>Сопутствующие товары</span>
+                        </div>
+                        <Table
+                            dataSource={this.state.relatedDetailsSource}
+                            columns={this.relatedDetailsColumns}
+                            pagination={false}
+                        />
+                    </div> : null}
+                    {this.state.relatedServicesCheckbox ?
+                        <div className={Styles.tableWrap}>
+                            <div className={Styles.modalSectionTitle}>
+                                <span>Сопутствующие работы</span>
+                            </div>
+                            <Table
+                                dataSource={this.state.relatedServicesSource}
+                                columns={this.relatedServicesColumns}
+                                pagination={false}
+                            />
+                        </div> : null
                     }
                 </Modal>
             </div>

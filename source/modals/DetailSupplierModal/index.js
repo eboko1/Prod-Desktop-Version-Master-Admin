@@ -115,7 +115,6 @@ class DetailSupplierModal extends React.Component{
         let url = API_URL;
         let params = `/business_suppliers/pricelists?partNumber=${this.props.detailCode}&brandName=${this.props.brandName}`;
         url += params;
-        console.log(url);
         fetch(url, {
             method: 'GET',
             headers: {
@@ -133,7 +132,6 @@ class DetailSupplierModal extends React.Component{
         })
         .then(function (data) {
             data.map((elem, i)=>elem.key = i)
-            console.log(data);
             that.setState({
                 fetched: true,
                 dataSource: data,
