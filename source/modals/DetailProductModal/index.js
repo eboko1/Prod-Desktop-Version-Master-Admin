@@ -995,10 +995,11 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, purchasePrice, store) {
+    setSupplier(supplierId, supplierName, purchasePrice, price, store) {
         this.state.mainTableSource[0].supplierId = supplierId;
         this.state.mainTableSource[0].supplierName = supplierName;
         this.state.mainTableSource[0].purchasePrice = purchasePrice;
+        this.state.mainTableSource[0].price = price;
         this.state.mainTableSource[0].store = store;
         this.setState({
             update: true

@@ -265,7 +265,7 @@ class DetailStorageModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 this.props.onSelect(elem.partNumber, elem.supplierName);
-                                this.props.setSupplier(elem.bussinesSupplierId, elem.businessSupplierName, elem.purchasePrice, elem.store);
+                                this.props.setSupplier(elem.bussinesSupplierId, elem.businessSupplierName, elem.purchasePrice, elem.price, elem.store);
                                 this.handleCancel();
                             }}
                         >
@@ -316,10 +316,11 @@ class DetailStorageModal extends React.Component{
         return data;
     }
 
-    setSupplier(supplierId, businessSupplierName, purchasePrice, store, key) {
+    setSupplier(supplierId, businessSupplierName, purchasePrice, price, store, key) {
         this.state.dataSource[key].bussinesSupplierId = supplierId;
         this.state.dataSource[key].businessSupplierName = businessSupplierName;
         this.state.dataSource[key].purchasePrice = purchasePrice;
+        this.state.dataSource[key].price = price;
         this.state.dataSource[key].store = store;
         this.setState({
             update: true
