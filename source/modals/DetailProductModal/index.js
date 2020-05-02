@@ -153,7 +153,7 @@ class DetailProductModal extends React.Component{
                             disabled={elem.storeGroupId == null}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
-                            style={{maxWidth: 180}}
+                            style={{maxWidth: 180, minWidth: 100}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
                                 return (
@@ -245,6 +245,15 @@ class DetailProductModal extends React.Component{
                             disabled={elem.storeGroupId == null}
                             value={data || 0}
                             min={0}
+                            formatter={(value)=>{
+                                let strVal = String(value);
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                    console.log(strVal);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
                                 this.state.mainTableSource[0].purchasePrice = value;
                                 this.setState({
@@ -266,6 +275,15 @@ class DetailProductModal extends React.Component{
                             disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
+                            formatter={(value)=>{
+                                let strVal = String(value);
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                    console.log(strVal);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
                                 this.state.mainTableSource[0].price = value;
                                 this.state.mainTableSource[0].sum = value * this.state.mainTableSource[0].count;
@@ -288,6 +306,15 @@ class DetailProductModal extends React.Component{
                             disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
+                            formatter={(value)=>{
+                                let strVal = String(value);
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                    console.log(strVal);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
                                 this.state.mainTableSource[0].count = value;
                                 this.state.mainTableSource[0].sum = value * this.state.mainTableSource[0].price;
@@ -310,6 +337,15 @@ class DetailProductModal extends React.Component{
                             disabled
                             value={sum ? sum : 1}
                             style={{color: "black"}}
+                            formatter={(value)=>{
+                                let strVal = String(value);
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                    console.log(strVal);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
                         />
                     )
                 }
@@ -1088,12 +1124,12 @@ class DetailProductModal extends React.Component{
                 <Modal
                     width="95%"
                     visible={visible}
-                    title="PRODUCT"
+                    title={null}
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                 >
                     <div>
-                        Сопутствующие: детали 
+                        Сопутствующие: детали
                         <Checkbox
                             checked={this.state.relatedDetailsCheckbox}
                             onChange={()=>{
@@ -1101,8 +1137,8 @@ class DetailProductModal extends React.Component{
                                     relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
                                 })
                             }}
-                        /> 
-                         работы
+                        /> 
+                        работы
                         <Checkbox
                             checked={this.state.relatedServicesCheckbox}
                             onChange={()=>{

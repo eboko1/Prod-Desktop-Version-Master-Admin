@@ -51,6 +51,7 @@ class DiagnosticPatternsPage extends Component {
         };
         this.columns = [
             {
+                title:     '#',
                 dataIndex: 'key',
                 key:       'key',
                 width:     '5%',
@@ -60,11 +61,11 @@ class DiagnosticPatternsPage extends Component {
                 title:  ()=>{
                     return (
                         <div>
-                            <p>PLAN</p>
+                            <FormattedMessage id="diagnostic-page.plan" />
                             <Input
                                 allowClear
                                 style={{minWidth: "100px"}}
-                                placeholder={"PLAN"}
+                                placeholder={this.props.intl.formatMessage({id: 'diagnostic-page.plan'})}
                                 value={this.state.filterPlan}
                                 onChange={(event)=>{
                                     this.setState({
@@ -83,7 +84,7 @@ class DiagnosticPatternsPage extends Component {
                     return (
                         <Input
                             style={{minWidth: "100px"}}
-                            placeholder={"PLAN"}
+                            placeholder={this.props.intl.formatMessage({id: 'diagnostic-page.plan'})}
                             value={data}
                             onChange={(event)=>{
                                 this.state.diagnosticParts[key].diagnosticTemplateTitle = event.target.value;
@@ -99,11 +100,11 @@ class DiagnosticPatternsPage extends Component {
                 title:  ()=>{
                     return (
                         <div>
-                            <p>GROUP</p>
+                            <FormattedMessage id="diagnostic-page.group" />
                             <Input
                                 allowClear
                                 style={{minWidth: "100px"}}
-                                placeholder={"GROUP"}
+                                placeholder={this.props.intl.formatMessage({id: 'diagnostic-page.group'})}
                                 value={this.state.filterGroup}
                                 onChange={(event)=>{
                                     this.setState({
@@ -123,7 +124,7 @@ class DiagnosticPatternsPage extends Component {
                         <Input
                             style={{minWidth: "100px"}}
                             value={data}
-                            placeholder={"GROUP"}
+                            placeholder={this.props.intl.formatMessage({id: 'diagnostic-page.group'})}
                             onChange={(event)=>{
                                 this.state.diagnosticParts[key].groupTitle = event.target.value;
                                 this.setState({
@@ -138,10 +139,10 @@ class DiagnosticPatternsPage extends Component {
                 title:  ()=>{
                     return (
                         <div>
-                            <p>CODE</p>
+                            <FormattedMessage id="diagnostic-page.code" />
                             <Input
                                 allowClear
-                                placeholder="CODE"
+                                placeholder={this.props.intl.formatMessage({id: 'diagnostic-page.code'})}
                                 value={this.state.filterCode}
                                 onChange={(event)=>{
                                     this.setState({
@@ -159,6 +160,7 @@ class DiagnosticPatternsPage extends Component {
                     const key = elem.key
                     return(
                         <Button
+                            type='primary'
                             onClick={()=>{
                                 this.setState({
                                     currentKey: key,
@@ -175,10 +177,10 @@ class DiagnosticPatternsPage extends Component {
                 title:  ()=>{
                     return (
                         <div>
-                            <p>NAME</p>
+                            <FormattedMessage id="diagnostic-page.name" />
                             <Input
                                 allowClear
-                                placeholder="NAME"
+                                placeholder={this.props.intl.formatMessage({id: 'diagnostic-page.name'})}
                                 value={this.state.filterName}
                                 onChange={(event)=>{
                                     this.setState({
@@ -226,13 +228,13 @@ class DiagnosticPatternsPage extends Component {
                 width:     '20%',
             },
             {
-                title:     'TITLE',
+                title:     <FormattedMessage id="diagnostic-page.name" />,
                 key:       'partTitle',
                 dataIndex: 'partTitle',
                 width:     '40%',
             },
             {
-                title:     'ACTION',
+                title:     <FormattedMessage id="diagnostic-page.action" />,
                 key:       'actionTitle',
                 dataIndex: 'actionTitle',
                 width:     '30%',
@@ -461,7 +463,7 @@ class DiagnosticPatternsPage extends Component {
                                 this.importDefaultDiagnostics()
                             }
                         >
-                            Import default
+                            <FormattedMessage id='diagnostic-page.import_default' />
                         </Button>
                         <Button
                             type='primary'
@@ -484,7 +486,7 @@ class DiagnosticPatternsPage extends Component {
                     scroll={{ y: 680 }}
                 />
                 <Modal
-                    title="PART"
+                    title={<FormattedMessage id='diagnostic-page.change_code' />}
                     width="80%"
                     footer={null}
                     visible={this.state.visible}

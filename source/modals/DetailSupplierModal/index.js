@@ -23,50 +23,59 @@ class DetailSupplierModal extends React.Component{
         }
         this.columns = [
             {
-                title:  'CODE',
+                title:  <FormattedMessage id="order_form_table.detail_code" />,
                 key:       'code',
                 dataIndex: 'partNumber',
                 width:     '10%',
             },
             {
-                title:  'SUPPLIER CODE',
+                title:  <FormattedMessage id="order_form_table.supplier_code" />,
                 key:       'supplierCode',
                 dataIndex: 'supplierPartNumber',
                 width:     '10%',
             },
             {
-                title:  'NAME',
+                title:  <FormattedMessage id="order_form_table.detail_name" />,
                 key:       'name',
                 dataIndex: 'itemName',
                 width:     '15%',
             },
             {
-                title:  'BRAND',
+                title:  <FormattedMessage id="order_form_table.brand" />,
                 key:       'brand',
                 dataIndex: 'brandName',
                 width:     '15%',
             },
             {
-                title:  'SUPPLIER',
+                title:  <FormattedMessage id="order_form_table.supplier" />,
                 key:       'supplier',
                 dataIndex: 'businessSupplierName',
                 width:     '15%',
             },
             {
-                title:  'DATE',
+                title:  <FormattedMessage id="date" />,
                 key:       'date',
                 dataIndex: 'pricelistDate',
                 width:     '10%',
                 render: (date)=>`${moment(date).format('YYYY-MM-DD')}`
             },
             {
-                title:  "PURCHASE",
+                title:  <FormattedMessage id="order_form_table.purchasePrice" />,
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 width:     '10%',
+                render: (data) => {
+                    let strVal = String(data);
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
+                    return (
+                        data ? strVal : <FormattedMessage id="long_dash"/>
+                    );
+                },
             },
             {
-                title:  'STORE',
+                title:  <FormattedMessage id="order_form_table.store" />,
                 key:       'store',
                 width:     '10%',
                 render: (elem)=>`${elem.availableIn0}/${elem.availableIn1}/${elem.availableIn2}/${elem.availableInx}`
@@ -142,6 +151,7 @@ class DetailSupplierModal extends React.Component{
         return (
             <div>
                 <Button
+                    type='primary'
                     disabled={this.props.disabled}
                     onClick={()=>{
                         this.fetchData();
@@ -150,11 +160,15 @@ class DetailSupplierModal extends React.Component{
                         })
                     }}
                 >
-                    <img
-                        width={24}
-                        src={ images.craneIcon }
-                        alt='Выбрать поставщика'
-                    />
+                    <div
+                        style={{
+                            width: 24,
+                            height: 24,
+                            backgroundColor: this.props.disabled ? 'black' : 'white',
+                            mask: `url(${images.craneIcon}) no-repeat center / contain`,
+                            '-webkit-mask': `url(${images.craneIcon}) no-repeat center / contain`,
+                        }}
+                    ></div>
                 </Button>
                 <Modal
                     width="85%"

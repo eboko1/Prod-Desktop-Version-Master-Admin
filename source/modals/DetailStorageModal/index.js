@@ -35,7 +35,7 @@ class DetailStorageModal extends React.Component{
 
         this.columns = [
             {
-                title:  'PHOTO',
+                title:  <FormattedMessage id="photo" />,
                 key:       'photo',
                 width:     '10%',
                 render: (elem)=>{
@@ -61,14 +61,14 @@ class DetailStorageModal extends React.Component{
                 title:  ()=>{
                     return (
                         <div>
-                            <span>CODE</span>
+                            <FormattedMessage id="order_form_table.detail_code" />
                             <Input
                                 disabled
                                 value={this.props.storeGroupId}
                             />
                             <Input
                                 allowClear
-                                placeholder='CODE'
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={this.state.codeFilter}
                                 onChange={(event)=>{
                                     this.setState({
@@ -95,11 +95,11 @@ class DetailStorageModal extends React.Component{
                 title:  ()=>{
                     return (
                         <div>
-                            <span>BRAND</span>
+                            <FormattedMessage id="order_form_table.brand" />
                             <Select
                                 showSearch
                                 mode="multiple"
-                                placeholder="BRAND"
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                                 value={this.state.brandFilter}
                                 style={{minWidth: 130}}
                                 dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
@@ -149,17 +149,15 @@ class DetailStorageModal extends React.Component{
                 title:  ()=>{
                     return (
                         <div>
-                            <div>INFO</div>
-                            <>
-                                <div style={{display: 'flex'}}>
-                                    {this.getAttributeFilter(1)}
-                                    {this.getAttributeFilter(2)}
-                                </div>
-                                <div style={{display: 'flex'}}>
-                                    {this.getAttributeFilter(3)}
-                                    {this.getAttributeFilter(4)}
-                                </div>
-                            </>
+                            <FormattedMessage id="order_form_table.info" />
+                            <div style={{display: 'flex'}}>
+                                {this.getAttributeFilter(1)}
+                                {this.getAttributeFilter(2)}
+                            </div>
+                            <div style={{display: 'flex'}}>
+                                {this.getAttributeFilter(3)}
+                                {this.getAttributeFilter(4)}
+                            </div>
                         </div>
                     )
                 },
@@ -176,7 +174,7 @@ class DetailStorageModal extends React.Component{
                 )
             },
             {
-                title:  "SUPPLIER",
+                title:  <FormattedMessage id="order_form_table.supplier" />,
                 key:       'businessSupplierName',
                 dataIndex: 'businessSupplierName',
                 width:     '15%',
@@ -200,24 +198,32 @@ class DetailStorageModal extends React.Component{
                 }
             },
             {
-                title:  "PURCHASE",
+                title:  <FormattedMessage id="order_form_table.purchasePrice" />,
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 width:     '6%',
                 render: (data) => {
+                    let strVal = String(data);
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                        data ? strVal : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
             {
-                title:  "PRICE",
+                title:  <FormattedMessage id="order_form_table.price" />,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '6%',
                 render: (data) => {
+                    let strVal = String(data);
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                        data ? strVal : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
@@ -225,7 +231,7 @@ class DetailStorageModal extends React.Component{
                 title:  ()=>{
                     return (
                         <div>
-                            <div><FormattedMessage id="order_form_table.store" /></div>
+                            <FormattedMessage id="order_form_table.store" />
                             <div style={{fontWeight: '400', fontSize: 12}}>
                                 <Checkbox
                                     checked={this.state.inStock}
@@ -320,12 +326,14 @@ class DetailStorageModal extends React.Component{
 
     handleCancel = () => {
         this.setState({
-            dataSource: [],
             visible: false,
             fetched: false,
+            dataSource: [],
             brandOptions: [],
             brandFilter: [],
             codeFilter: undefined,
+            attributesFilters: [],
+            inStock: false,
         })
     };
 
@@ -429,6 +437,7 @@ class DetailStorageModal extends React.Component{
         return (
             <div>
                 <Button
+                    type='primary'
                     disabled={this.props.disabled}
                     onClick={()=>{
                         this.fetchData();
@@ -437,16 +446,20 @@ class DetailStorageModal extends React.Component{
                         })
                     }}
                 >
-                    <img
-                        width={24}
-                        src={ images.bookIcon }
-                        alt='Подобрать в каталоге'
-                    />
+                    <div
+                        style={{
+                            width: 24,
+                            height: 24,
+                            backgroundColor: this.props.disabled ? 'black' : 'white',
+                            mask: `url(${images.bookIcon}) no-repeat center / contain`,
+                            '-webkit-mask': `url(${images.bookIcon}) no-repeat center / contain`,
+                        }}
+                    ></div>
                 </Button>
                 <Modal
                     width="90%"
                     visible={this.state.visible}
-                    title="STORAGE"
+                    title={<FormattedMessage id="order_form_table.catalog" />}
                     onCancel={this.handleCancel}
                     footer={null}
                 >

@@ -190,134 +190,103 @@ export default class OrderFormTabs extends React.PureComponent {
                         />
                     </TabPane>
                 )}
-                {!addOrderForm && viewTasks && (
+                {!addOrderForm && (
                     <TabPane
                         forceRender
-                        tab={
-                            formatMessage({
-                                id: "order_form_table.tasks",
-                            }) +
-                            ` (${
-                                orderTasks.orderTasks
-                                    ? orderTasks.orderTasks.length
-                                    : 0
-                            })`
-                        }
+                        tab={`${formatMessage({
+                            id: "add_order_form.services",
+                            defaultMessage: "Services",
+                        })} (${countServices})`}
                         key="2"
                     >
-                        {canCreateTask ? (
-                            <Button
-                                className={Styles.orderTaskModalButton}
-                                type="primary"
-                                onClick={() => setModal(MODALS.ORDER_TASK)}
-                            >
-                                <FormattedMessage id="add" />
-                                <Icon type="plus" />
-                            </Button>
-                        ) : null}
-
-                        <TasksTable
+                        <ServicesTable
                             errors={errors}
+                            orderId={orderId}
+                            fields={servicesTableFieldsProps}
+                            services={services}
+                            employees={employees}
+                            form={form}
+                            allServices={allServices}
+                            orderServices={orderServices}
                             user={user}
-                            initOrderTasksForm={initOrderTasksForm}
+                            fetchedOrder={fetchedOrder}
+                            agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
+                            selectedClient={selectedClient}
+                            fetchTecdocSuggestions={fetchTecdocSuggestions}
+                            completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
+                        />
+                        <DiscountPanel
+                            fields={discountTabFieldsProps}
+                            form={form}
+                            forbidden={areServicesForbidden}
+                            price={priceServices}
+                            discountFieldName={"servicesDiscount"}
+                            fetchedOrder={fetchedOrder}
+                            totalServicesProfit={totalServicesProfit}
+                            servicesMode
+                        />
+                    </TabPane>
+                )}
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={`${formatMessage({
+                            id: "add_order_form.details",
+                            defaultMessage: "Details",
+                        })} (${orderDetails.length})`}
+                        key="3"
+                    >
+                        <DetailsTable
+                            errors={errors}
+                            orderId={orderId}
+                            fields={detailsTableFieldsProps}
+                            details={details}
+                            tecdocId={tecdocId}
+                            clientVehicleId={clientVehicleId}
+                            orderDetails={orderDetails}
+                            form={form}
+                            allDetails={allDetails}
+                            fetchTecdocDetailsSuggestions={
+                                fetchTecdocDetailsSuggestions
+                            }
+                            detailsSuggestions={detailsSuggestions}
+                            clearTecdocDetailsSuggestions={
+                                clearTecdocDetailsSuggestions
+                            }
+                            clearTecdocSuggestions={clearTecdocSuggestions}
+                            suggestions={suggestions}
+                            detailsSuggestionsFetching={detailsSuggestionsFetching}
+                            suggestionsFetching={suggestionsFetching}
+                            user={user}
+                            setStoreProductsSearchQuery={
+                                this.props.setStoreProductsSearchQuery
+                            }
+                            storeProducts={this.props.storeProducts}
+                            recommendedPrice={this.props.recommendedPrice}
+                            recommendedPriceLoading={
+                                this.props.recommendedPriceLoading
+                            }
+                            fetchRecommendedPrice={this.props.fetchRecommendedPrice}
                             setModal={setModal}
-                            changeModalStatus={changeModalStatus}
-                            orderTasks={tasks}
+                            completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
+                            agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
+                        />
+                        <DiscountPanel
+                            orderDetails={orderDetails}
+                            fields={discountTabFieldsProps}
+                            form={form}
+                            forbidden={areDetailsForbidden}
+                            price={priceDetails}
+                            totalDetailsProfit={totalDetailsProfit}
+                            discountFieldName={"detailsDiscount"}
+                            fetchedOrder={fetchedOrder}
+                            detailsMode
                         />
                     </TabPane>
                 )}
                 <TabPane
                     forceRender
-                    tab={`${formatMessage({
-                        id: "add_order_form.services",
-                        defaultMessage: "Services",
-                    })} (${countServices})`}
-                    key="3"
-                >
-                    <ServicesTable
-                        errors={errors}
-                        orderId={orderId}
-                        fields={servicesTableFieldsProps}
-                        services={services}
-                        employees={employees}
-                        form={form}
-                        allServices={allServices}
-                        orderServices={orderServices}
-                        user={user}
-                        fetchedOrder={fetchedOrder}
-                        agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
-                        selectedClient={selectedClient}
-                        fetchTecdocSuggestions={fetchTecdocSuggestions}
-                        completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
-                    />
-                    <DiscountPanel
-                        fields={discountTabFieldsProps}
-                        form={form}
-                        forbidden={areServicesForbidden}
-                        price={priceServices}
-                        discountFieldName={"servicesDiscount"}
-                        fetchedOrder={fetchedOrder}
-                        totalServicesProfit={totalServicesProfit}
-                        servicesMode
-                    />
-                </TabPane>
-                <TabPane
-                    forceRender
-                    tab={`${formatMessage({
-                        id: "add_order_form.details",
-                        defaultMessage: "Details",
-                    })} (${orderDetails.length})`}
                     key="4"
-                >
-                    <DetailsTable
-                        errors={errors}
-                        orderId={orderId}
-                        fields={detailsTableFieldsProps}
-                        details={details}
-                        tecdocId={tecdocId}
-                        clientVehicleId={clientVehicleId}
-                        orderDetails={orderDetails}
-                        form={form}
-                        allDetails={allDetails}
-                        fetchTecdocDetailsSuggestions={
-                            fetchTecdocDetailsSuggestions
-                        }
-                        detailsSuggestions={detailsSuggestions}
-                        clearTecdocDetailsSuggestions={
-                            clearTecdocDetailsSuggestions
-                        }
-                        clearTecdocSuggestions={clearTecdocSuggestions}
-                        suggestions={suggestions}
-                        detailsSuggestionsFetching={detailsSuggestionsFetching}
-                        suggestionsFetching={suggestionsFetching}
-                        user={user}
-                        setStoreProductsSearchQuery={
-                            this.props.setStoreProductsSearchQuery
-                        }
-                        storeProducts={this.props.storeProducts}
-                        recommendedPrice={this.props.recommendedPrice}
-                        recommendedPriceLoading={
-                            this.props.recommendedPriceLoading
-                        }
-                        fetchRecommendedPrice={this.props.fetchRecommendedPrice}
-                        setModal={setModal}
-                        completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
-                        agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
-                    />
-                    <DiscountPanel
-                        fields={discountTabFieldsProps}
-                        form={form}
-                        forbidden={areDetailsForbidden}
-                        price={priceDetails}
-                        totalDetailsProfit={totalDetailsProfit}
-                        discountFieldName={"detailsDiscount"}
-                        fetchedOrder={fetchedOrder}
-                        detailsMode
-                    />
-                </TabPane>
-                <TabPane
-                    forceRender
-                    key="5"
                     tab={
                         formatMessage({
                             id: "add_order_form.comments",
@@ -420,7 +389,7 @@ export default class OrderFormTabs extends React.PureComponent {
                                 ? ""
                                 : ` (${orderHistory.orders.length})`)
                         }
-                        key="6"
+                        key="5"
                     >
                         <HistoryTable
                             orderHistory={orderHistory}
@@ -440,7 +409,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             }) +
                             (areCallsForbidden ? "" : ` (${orderCalls.length})`)
                         }
-                        key="7"
+                        key="6"
                     >
                         <CallsTable orderCalls={orderCalls} />
                     </TabPane>
@@ -453,7 +422,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             id: "order_form_table.station",
                         }) + ` (${stationsCount ? stationsCount.length : 0})`
                     }
-                    key="8"
+                    key="7"
                 >
                     <StationsTable
                         errors={errors}

@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { FormattedMessage } from 'react-intl';
+import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
 import {
@@ -23,6 +23,7 @@ import {
 import { Layout, Spinner } from 'commons';
 const { Option } = Select;
 
+@injectIntl
 export default class LaborsPage extends Component {
     constructor(props) {
         super(props);
@@ -42,10 +43,10 @@ export default class LaborsPage extends Component {
                 title:  ()=>{
                     return (
                         <div>
-                            <p>CODE</p>
+                            <FormattedMessage id="order_form_table.labors_code" />
                             <Input
                                 allowClear
-                                placeholder="CODE"
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.labors_code'})}
                                 value={this.state.filterCode}
                                 onChange={(event)=>{
                                     this.setState({
@@ -118,10 +119,10 @@ export default class LaborsPage extends Component {
                 title:  ()=>{
                     return (
                         <div>
-                            <p>DETAIL</p>
+                            <FormattedMessage id="order_form_table.detail_code" />
                             <Input
                                 allowClear
-                                placeholder="DETAIL"
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={this.state.filterDetail}
                                 onChange={(event)=>{
                                     this.setState({
@@ -145,7 +146,7 @@ export default class LaborsPage extends Component {
                             style={{ minWidth: '130px', maxWidth: '10%' }}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
                             treeData={this.treeData}
-                            placeholder="DETAIL"
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                             value={this.state.labors[key].productId ? this.state.labors[key].productId : undefined}
                             filterTreeNode={(input, node) => (
                                 node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -168,10 +169,10 @@ export default class LaborsPage extends Component {
                 title:  ()=>{
                     return (
                         <div>
-                            <p>NAME</p>
+                            <FormattedMessage id="order_form_table.service_type" />
                             <Input
                                 allowClear
-                                placeholder="NAME"
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
                                 value={this.state.filterDefaultName}
                                 onChange={(event)=>{
                                     this.setState({
@@ -190,10 +191,10 @@ export default class LaborsPage extends Component {
                 title:  ()=>{
                     return (
                         <div>
-                            <p>OWN NAME</p>
+                            <FormattedMessage id="order_form_table.detail_name" />
                             <Input
                                 allowClear
-                                placeholder="OWN NAME"
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                                 value={this.state.filterName}
                                 onChange={(event)=>{
                                     this.setState({
@@ -210,7 +211,7 @@ export default class LaborsPage extends Component {
                     const key = elem.key;
                     return (
                         <Input
-                            placeholder="OWN NAME"
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             value={elem.name?elem.name:null}
                             onChange={(event)=>{
                                 this.state.labors[key].changed = true;
@@ -224,7 +225,7 @@ export default class LaborsPage extends Component {
                 }
             },
             {
-                title:  'FIXED',
+                title:  <FormattedMessage id="order_form_table.fixed" />,
                 dataIndex: 'fixed',
                 key:       'fixed',
                 width:     '5%',
@@ -245,7 +246,7 @@ export default class LaborsPage extends Component {
                 }
             },
             {
-                title:  'HOURS',
+                title:  <FormattedMessage id="hours" />,
                 dataIndex: 'normHours',
                 key:       'normHours',
                 width:     '10%',
@@ -269,7 +270,7 @@ export default class LaborsPage extends Component {
                 }
             },
             {
-                title:  'PRICE',
+                title:  <FormattedMessage id="order_form_table.price" />,
                 dataIndex: 'price',
                 key:       'price',
                 width:     '10%',

@@ -25,7 +25,10 @@
     "order_form_table.detail_name": "Spare Part",
     "order_form_table.brand": "Brand",
     "order_form_table.detail_code": "Code",
+    "order_form_table.labors_code": "Service code",
     "order_form_table.supplier": "Supplier",
+    "order_form_table.supplier_code": "Supplier code",
+    "order_form_table.catalog": "Catalog",
     "order_form_table.store_group": "Store group",
     "order_form_table.vehicle": "Car",
     "order_form_table.tasks": "Tasks",
@@ -36,6 +39,10 @@
     "order_form_table.repair_status": "Status",
     "order_form_table.prime_cost": "Prime cost",
     "order_form_table.services_profit": "Services profit",
+    "order_form_table.store": "Store",
+    "order_form_table.info": "Technical information",
+    "order_form_table.service_type": "Service type",
+    "order_form_table.fixed": "Fixed",
     "urgency": "Urgency",
     "priority": "Priority",
     "responsible": "Responsible",
@@ -52,7 +59,8 @@
     "order_form_table.suggest": "Suggest",
     "order_form_table.TO_DO": "Open",
     "order_form_table.COMPLETED": "Closed",
-    "order_form_table.AI": "AI"
+    "order_form_table.AI": "AI",
+    "photo": "photo"
   },
   "ru": {
     "order_form_table.confirm_exit": "Хотите сохранить изменения?",
@@ -80,7 +88,10 @@
     "order_form_table.detail_name": "Наименование",
     "order_form_table.brand": "Бренд",
     "order_form_table.detail_code": "Код З/Ч",
+    "order_form_table.labors_code": "Код работы",
     "order_form_table.supplier": "Поставщик",
+    "order_form_table.supplier_code": "Код поставщика",
+    "order_form_table.catalog": "Каталог",
     "order_form_table.store_group": "Группа З/Ч",
     "order_form_table.vehicle": "Автомобиль",
     "order_form_table.tasks": "Задачи",
@@ -91,6 +102,10 @@
     "order_form_table.repair_status": "Статус ремонта",
     "order_form_table.prime_cost": "Цена субподряда",
     "order_form_table.services_profit": "Прибыль по работам",
+    "order_form_table.store": "Склад",
+    "order_form_table.info": "Техническая информация",
+    "order_form_table.service_type": "Тип работы",
+    "order_form_table.fixed": "Фикс.",
     "urgency": "Срочность",
     "priority": "Приоритет",
     "responsible": "Ответственный",
@@ -107,7 +122,8 @@
     "order_form_table.suggest": "Подобрать",
     "order_form_table.TO_DO": "Открыто",
     "order_form_table.COMPLETED": "Закрыто",
-    "order_form_table.AI": "ИН"
+    "order_form_table.AI": "ИН",
+    "photo": "Фото"
   },
   "uk": {
     "order_form_table.confirm_exit": "Бажаєте зберегти зміни?",
@@ -135,7 +151,10 @@
     "order_form_table.detail_name": "Найменування",
     "order_form_table.brand": "Бренд",
     "order_form_table.detail_code": "Код З/Ч",
+    "order_form_table.labors_code": "Код роботи",
     "order_form_table.supplier": "Постачальник",
+    "order_form_table.supplier_code": "Код постачальника",
+    "order_form_table.catalog": "Каталог",
     "order_form_table.store_group": "Група З/Ч",
     "order_form_table.vehicle": "Автомобіль",
     "order_form_table.tasks": "Задачі",
@@ -146,6 +165,10 @@
     "order_form_table.repair_status": "Статус ремонту",
     "order_form_table.prime_cost": "Ціна субпідряду",
     "order_form_table.services_profit": "Прибуток по послугам",
+    "order_form_table.store": "Склад",
+    "order_form_table.info": "Технічна інформація",
+    "order_form_table.service_type": "Тип роботи",
+    "order_form_table.fixed": "Фікс.",
     "urgency": "Терміновість",
     "priority": "Пріорітет",
     "responsible": "Відповідальний",
@@ -162,6 +185,7 @@
     "order_form_table.suggest": "Підібрати",
     "order_form_table.TO_DO": "Відкрито",
     "order_form_table.COMPLETED": "Закрито",
-    "order_form_table.AI": "ІН"
+    "order_form_table.AI": "ІН",
+    "photo": "Фото"
   }
 }
