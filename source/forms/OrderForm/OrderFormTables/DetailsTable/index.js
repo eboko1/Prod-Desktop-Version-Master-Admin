@@ -69,7 +69,6 @@ export default class DetailsTable extends Component {
                 dataIndex: "key",
                 render: (data, elem) => {
                     const confirmed = elem.agreement.toLowerCase();
-                    console.log(elem)
                     return (
                         <div style={{display: "flex", justifyContent: "space-evenly"}}>
                             <Button
@@ -275,6 +274,7 @@ export default class DetailsTable extends Component {
     }
 
     render() {
+        console.log(this.state.dataSource)
         const columns = this.columns;
         if(this.state.dataSource.length == 0  || this.state.dataSource[this.state.dataSource.length-1].detailName != undefined) {
             this.state.dataSource.push({
