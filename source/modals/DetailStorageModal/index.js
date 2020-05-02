@@ -4,17 +4,12 @@ import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Select, Input, InputNumber, Spin, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
-import {
-    API_URL,
-    confirmDiagnostic,
-    createAgreement,
-    lockDiagnostic,
-} from 'core/forms/orderDiagnosticForm/saga';
+import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
+import { images } from 'utils';
 import { getSupplier } from 'components/PartSuggestions/supplierConfig.js';
 import { DetailSupplierModal } from 'modals'
 // own
 import Styles from './styles.m.css';
-const { TreeNode } = TreeSelect;
 const Option = Select.Option;
 const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
@@ -230,7 +225,7 @@ class DetailStorageModal extends React.Component{
                 title:  ()=>{
                     return (
                         <div>
-                            <div>STORE</div>
+                            <div><FormattedMessage id="order_form_table.store" /></div>
                             <div style={{fontWeight: '400', fontSize: 12}}>
                                 <Checkbox
                                     checked={this.state.inStock}
@@ -267,7 +262,7 @@ class DetailStorageModal extends React.Component{
                                 this.handleCancel();
                             }}
                         >
-                            Select
+                            <FormattedMessage id="select" />
                         </Button>
                     )
                 }
@@ -442,7 +437,11 @@ class DetailStorageModal extends React.Component{
                         })
                     }}
                 >
-                    <Icon type='check'/>
+                    <img
+                        width={24}
+                        src={ images.bookIcon }
+                        alt='Подобрать в каталоге'
+                    />
                 </Button>
                 <Modal
                     width="90%"

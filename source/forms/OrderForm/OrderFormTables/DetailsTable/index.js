@@ -1,30 +1,12 @@
 // vendor
 import React, { Component } from "react";
 import { Table, InputNumber, Icon, Popconfirm, Select, Button, Input, Modal } from "antd";
-import { defaultMemoize } from "reselect";
 import { FormattedMessage, injectIntl } from "react-intl";
 import _ from "lodash";
 
 // proj
-import { MODALS } from "core/modals/duck";
-
 import { Catcher } from "commons";
-import { TecDocActionsContainer } from "containers";
-import {
-    DecoratedInput,
-    DecoratedInputNumber,
-    LimitedDecoratedSelect,
-    DecoratedSelect,
-    DecoratedCheckbox,
-    DecoratedAutoComplete,
-} from "forms/DecoratedFields";
-import {
-    permissions,
-    isForbidden,
-    CachedInvoke,
-    numeralFormatter,
-    numeralParser,
-} from "utils";
+import { images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { DetailProductModal } from 'modals'
 
@@ -78,7 +60,11 @@ export default class DetailsTable extends Component {
                                     this.showDetailProductModal(data)
                                 }}
                             >
-                                <Icon type="check"/>
+                                <img
+                                    width={24}
+                                    src={ images.partsIcon }
+                                    alt='Задать товар'
+                                />
                             </Button>
                             <PriceCountModal
                                 disabled={confirmed != "undefined" || !(elem.storeGroupId)}
@@ -124,7 +110,7 @@ export default class DetailsTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="SUPPLIER" />,
+                title: <FormattedMessage id="order_form_table.supplier" />,
                 width: "10%",
                 key: "supplierName",
                 dataIndex: 'supplierName',
@@ -135,9 +121,9 @@ export default class DetailsTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="ИН" />,
+                title: <FormattedMessage id="order_form_table.AI" />,
                 width: "3%",
-                key: "in",
+                key: "AI",
                 render: () => {
                     return (
                        <div style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: 'rgb(81, 205, 102)'}}></div>
@@ -230,14 +216,35 @@ export default class DetailsTable extends Component {
                 title: "",
                 width: "3%",
                 key: "delete",
-                render: () => {
+                render: (elem) => {
                     return (
                         <Popconfirm
                             title={
                                 <FormattedMessage id="add_order_form.delete_confirm" />
                             }
-                            onConfirm={()=>{
-                                alert('delete')
+                            onConfirm={async ()=>{
+                                let token = localStorage.getItem('_my.carbook.pro_token');
+                                let url = API_URL;
+                                let params = `/orders/${this.props.orderId}/details?ids=[${elem.id}] `;
+                                url += params;
+                                try {
+                                    const response = await fetch(url, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Authorization': token,
+                                            'Content-Type': 'application/json',
+                                        },
+                                    });
+                                    const result = await response.json();
+                                    if(result.success) {
+                                        window.location.reload();
+                                    }
+                                    else {
+                                        console.log("BAD", result);
+                                    }
+                                } catch (error) {
+                                    console.error('ERROR:', error);
+                                }
                             }}
                         >
                             <Icon type="delete" className={Styles.deleteIcon} />
@@ -372,7 +379,7 @@ class PriceCountModal extends React.Component{
         }
         this.columns = [
             {
-                title:  'NAME',
+                title:  <FormattedMessage id="order_form_table.detail_name" />,
                 key:       'detailName',
                 dataIndex: 'detailName',
                 width:     '20%',
@@ -400,7 +407,7 @@ class PriceCountModal extends React.Component{
                 },
             },
             {
-                title:  'PURCHASE',
+                title:  <FormattedMessage id="order_form_table.purchasePrice" />,
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
                 width:     '10%',
@@ -419,7 +426,7 @@ class PriceCountModal extends React.Component{
                 }
             },
             {
-                title:  'PRICE',
+                title:  <FormattedMessage id="order_form_table.price" />,
                 key:       'price',
                 dataIndex: 'price',
                 width:     '10%',
@@ -439,7 +446,7 @@ class PriceCountModal extends React.Component{
                 }
             },
             {
-                title:  'COUNT',
+                title:  <FormattedMessage id="order_form_table.count" />,
                 key:       'count',
                 dataIndex: 'count',
                 width:     '10%',
@@ -459,7 +466,7 @@ class PriceCountModal extends React.Component{
                 }
             },
             {
-                title:  'SUM',
+                title:  <FormattedMessage id="order_form_table.sum" />,
                 key:       'sum',
                 dataIndex: 'sum',
                 width:     '10%',
@@ -501,7 +508,11 @@ class PriceCountModal extends React.Component{
                         })
                     }}
                 >
-                    <Icon type="check"/>
+                     <img
+                        width={24}
+                        src={ images.pencilIcon }
+                        alt='Быстрое редактирование'
+                    />
                 </Button>
                 <Modal
                     width='80%'
