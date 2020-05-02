@@ -79,13 +79,13 @@ class DetailSupplierModal extends React.Component{
                 key:       'price',
                 width:     '10%',
                 render: (elem) => {
-                    const price = elem.purchasePrice * elem.markups;
+                    const price = Number(elem.purchasePrice) * Number(elem.markup);
                     let strVal = String(Math.ceil(price));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
                     return (
-                        elem.markups ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                        elem.markup ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
@@ -99,16 +99,17 @@ class DetailSupplierModal extends React.Component{
                 key:       'select',
                 width:     'auto',
                 render: (elem)=>{
+                    const price = Number(elem.purchasePrice) * Number(elem.markup);
                     const store = [elem.availableIn0, elem.availableIn1, elem.availableIn2, elem.availableInx];
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
                                 if(this.props.onSelect) {
-                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.purchasePrice, store);
+                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.purchasePrice, price, store);
                                 }
                                 else {
-                                    this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.purchasePrice, store, this.props.keyValue);
+                                    this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.purchasePrice, price, store, this.props.keyValue);
                                 }
                                 this.handleCancel();
                             }}
@@ -133,7 +134,7 @@ class DetailSupplierModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/business_suppliers/pricelists?partNumber=${this.props.detailCode}&brandName=${this.props.brandName}`;
+        let params = `/business_suppliers/pricelists?partNumber=${this.props.detailCode}&brandName=${this.props.brandName}&storeGroupId=${this.props.storeGroupId}`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -152,7 +153,6 @@ class DetailSupplierModal extends React.Component{
         })
         .then(function (data) {
             data.map((elem, i)=>elem.key = i)
-            console.log(data);
             that.setState({
                 fetched: true,
                 dataSource: data,
