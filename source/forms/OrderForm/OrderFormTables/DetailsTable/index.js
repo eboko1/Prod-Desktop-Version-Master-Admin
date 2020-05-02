@@ -25,6 +25,7 @@ import {
     numeralFormatter,
     numeralParser,
 } from "utils";
+import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { DetailProductModal } from 'modals'
 
 // own
@@ -83,6 +84,7 @@ export default class DetailsTable extends Component {
                                 disabled={confirmed != "undefined" || !(elem.storeGroupId)}
                                 detail={elem}
                                 onConfirm={this.updateDetail}
+                                detailKey={elem.key}
                             />
                         </div>
                     )
@@ -258,8 +260,50 @@ export default class DetailsTable extends Component {
         })
     }
 
-    updateDetail(key, detail) {
+    async updateDetail(key, detail) {
         this.state.dataSource[key] = detail;
+        const data = {
+            updateMode: true,
+            details: [
+                {
+                    id: detail.id,
+                    storeGroupId: detail.storeGroupId,
+                    name: detail.detailName,
+                    productCode: detail.detailCode,
+                    supplierBrandId: detail.brandId,
+                    brandName: detail.brandName,
+                    purchasePrice: detail.purchasePrice,
+                    count: detail.count,
+                    price: detail.price,
+                    comment: detail.comment,
+                }
+            ]
+        }
+
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
+            if(result.success) {
+                //console.log("OK", result);
+            }
+            else {
+                console.log("BAD", result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+
         this.setState({
             update: true,
         })
@@ -274,7 +318,6 @@ export default class DetailsTable extends Component {
     }
 
     render() {
-        console.log(this.state.dataSource)
         const columns = this.columns;
         if(this.state.dataSource.length == 0  || this.state.dataSource[this.state.dataSource.length-1].detailName != undefined) {
             this.state.dataSource.push({
@@ -437,7 +480,7 @@ class PriceCountModal extends React.Component{
         this.setState({
             visible: false,
         });
-        this.props.onConfirm(this.state.dataSource);
+        this.props.onConfirm(this.props.detailKey, this.state.dataSource[0]);
     }
 
     handleCancel = () => {

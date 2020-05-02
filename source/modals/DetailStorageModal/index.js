@@ -33,6 +33,7 @@ class DetailStorageModal extends React.Component{
             brandFilter: [],
             codeFilter: undefined,
             attributesFilters: [],
+            inStock: false,
         }
 
         this.setSupplier = this.setSupplier.bind(this);
@@ -154,8 +155,16 @@ class DetailStorageModal extends React.Component{
                     return (
                         <div>
                             <div>INFO</div>
-                            <div style={{display: 'flex'}}><Input/><Input/></div>
-                            <div style={{display: 'flex'}}><Input/><Input/></div>
+                            <>
+                                <div style={{display: 'flex'}}>
+                                    {this.getAttributeFilter(1)}
+                                    {this.getAttributeFilter(2)}
+                                </div>
+                                <div style={{display: 'flex'}}>
+                                    {this.getAttributeFilter(3)}
+                                    {this.getAttributeFilter(4)}
+                                </div>
+                            </>
                         </div>
                     )
                 },
@@ -222,7 +231,17 @@ class DetailStorageModal extends React.Component{
                     return (
                         <div>
                             <div>STORE</div>
-                            <div style={{fontWeight: '400', fontSize: 12}}><Checkbox/> В наличии</div>
+                            <div style={{fontWeight: '400', fontSize: 12}}>
+                                <Checkbox
+                                    checked={this.state.inStock}
+                                    onChange={()=>{
+                                        this.setState({
+                                            inStock: !this.state.inStock,
+                                        })
+                                    }}
+                                /> 
+                                В наличии
+                            </div>
                         </div>
                     )
                 },
@@ -254,6 +273,45 @@ class DetailStorageModal extends React.Component{
                 }
             },
         ];
+    }
+
+    getAttributeFilter(key) {
+        if(this.state.attributesFilters[`index${key}`] == undefined) return null;
+        return( 
+            <Select
+                allowClear
+                value={this.state.attributesFilters[`index${key}`].current}
+                placeholder={this.state.attributesFilters[`index${key}`].description}
+                style={{display: 'block', width: '50%', textTransform: 'capitalize'}}
+                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", textTransform: 'capitalize' }}
+                onChange={(value)=>{
+                    this.state.attributesFilters[`index${key}`].current = value;
+                    this.setState({
+                        update: true,
+                    })
+                }}
+            >
+                {this.state.attributesFilters[`index${key}`].values.map((option, i)=>
+                    <Option value={option} key={i}>
+                        {option}
+                    </Option>
+                )}
+            </Select>
+        )
+    }
+
+    filterDataSourceByAttribute(data, key) {
+        const { attributesFilters } = this.state;
+        if(attributesFilters[`index${key}`] && attributesFilters[`index${key}`].current) {
+            data = data.filter((elem)=>{
+                const dataAttributes = elem.attributes.find((attr)=>attr.description==attributesFilters[`index${key}`].description);
+                if(dataAttributes && dataAttributes.value == attributesFilters[`index${key}`].current) {
+                    return true;
+                }
+                return false;
+            });
+        }
+        return data;
     }
 
     setSupplier(businessSupplierName, purchasePrice, store, key) {
@@ -339,9 +397,13 @@ class DetailStorageModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
-                attributesFilters: data,
+                attributesFilters: {
+                    index1: data[0],
+                    index2: data[1],
+                    index3: data[2],
+                    index4: data[3],
+                },
             })
         })
         .catch(function (error) {
@@ -358,10 +420,17 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
-        const { dataSource, brandFilter, codeFilter } = this.state;
+        const { dataSource, brandFilter, codeFilter, inStock } = this.state;
         let tblData = [...dataSource];
+
         if(brandFilter.length) tblData = tblData.filter((elem)=>brandFilter.indexOf(elem.supplierId)!=-1);
         if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.toLowerCase().indexOf(codeFilter.toLowerCase()) >= 0 );
+        if(inStock) tblData = tblData.filter((elem)=>elem.store);
+        tblData = this.filterDataSourceByAttribute(tblData, 1);
+        tblData = this.filterDataSourceByAttribute(tblData, 2);
+        tblData = this.filterDataSourceByAttribute(tblData, 3);
+        tblData = this.filterDataSourceByAttribute(tblData, 4);
+
         return (
             <div>
                 <Button
