@@ -325,6 +325,7 @@ export default class DetailsTable extends Component {
                     storeGroupId: detail.storeGroupId,
                     name: detail.detailName,
                     productCode: detail.detailCode,
+                    supplierId: detail.supplierId,
                     supplierBrandId: detail.brandId,
                     brandName: detail.brandName,
                     purchasePrice: detail.purchasePrice,
