@@ -168,7 +168,7 @@ class DiagnosticPatternsPage extends Component {
                                 })
                             }}
                         >
-                            {data ? data : "SET"}
+                            {data ? data : <FormattedMessage id="select" />}
                         </Button>
                     )
                 },
