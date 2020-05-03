@@ -953,7 +953,6 @@ class DetailProductModal extends React.Component{
             });
             const result = await response.json();
             if(result.length) {
-                console.log(result);
                 that.state.mainTableSource[0].brandId = result[0].brandId;
                 that.state.mainTableSource[0].brandName = result[0].brandName;
                 that.state.mainTableSource[0].detailCode = result[0].partNumber;
