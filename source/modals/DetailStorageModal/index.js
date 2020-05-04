@@ -190,7 +190,7 @@ class DetailStorageModal extends React.Component{
                             <DetailSupplierModal
                                 setStoreSupplier={this.setSupplier}
                                 keyValue={elem.key}
-                                brandName={elem.supplierName}
+                                brandId={elem.brandId}
                                 detailCode={elem.partNumber}
                                 storeGroupId={this.props.storeGroupId}
                             />
