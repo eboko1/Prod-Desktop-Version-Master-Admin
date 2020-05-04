@@ -941,7 +941,7 @@ class DetailProductModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}`;
+        let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}&modificationId=${this.props.tecdocId}`;
         url += params;
         try {
             const response = await fetch(url, {
@@ -953,6 +953,7 @@ class DetailProductModal extends React.Component{
             });
             const result = await response.json();
             if(result.length) {
+                let markup = result[0].markup ? result[0].markup : 1.4;
                 that.state.mainTableSource[0].brandId = result[0].brandId;
                 that.state.mainTableSource[0].brandName = result[0].brandName;
                 that.state.mainTableSource[0].detailCode = result[0].partNumber;
@@ -960,7 +961,7 @@ class DetailProductModal extends React.Component{
                 that.state.mainTableSource[0].supplierName = result[0].supplierName;
                 that.state.mainTableSource[0].store = result[0].store;
                 that.state.mainTableSource[0].purchasePrice = result[0].purchasePrice;
-                that.state.mainTableSource[0].price = result[0].purchasePrice * result[0].markup;
+                that.state.mainTableSource[0].price = result[0].purchasePrice * markup;
                 that.setState({
                     update: true,
                 })
