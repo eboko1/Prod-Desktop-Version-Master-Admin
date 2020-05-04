@@ -57,6 +57,9 @@ class DiscountPanel extends Component {
                         step={ 1 }
                         formatter={ value => `${Math.round(value)}%` }
                         parser={ value => value.replace('%', '') }
+                        onChange={(value)=>{
+                            this.props.reloadOrderForm();
+                        }}
                     />
                     <FormItem
                         label={

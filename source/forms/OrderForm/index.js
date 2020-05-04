@@ -75,9 +75,19 @@ import Styles from "./styles.m.css";
     }),
 })
 export class OrderForm extends React.PureComponent {
-    state = {
-        formValues: {},
-    };
+    constructor(props) {
+        super(props);
+        this.state = {
+            formValues: {},
+        };
+
+        this.reloadOrderForm = this.reloadOrderForm.bind(this);
+    }
+
+    reloadOrderForm() {
+        const formValues = this.props.form.getFieldsValue();
+        this.setState({ formValues });
+    }
 
     _openNotification = ({ make, model }) => {
         const params = {
@@ -287,9 +297,10 @@ export class OrderForm extends React.PureComponent {
             "requisite",
         ]);
 
-        const { price: priceDetails } = detailsStats(
-            _.get(formFieldsValues, "details", []),
-        );
+        let priceDetails = 0;
+        for(let i = 0; i < this.props.orderDetails.length; i++) {
+            priceDetails += this.props.orderDetails[i].sum;
+        }
 
         const { price: priceServices } = servicesStats(
             _.get(formFieldsValues, "services", []),
@@ -393,11 +404,14 @@ export class OrderForm extends React.PureComponent {
 
         const tecdocId = this._getTecdocId();
 
-        const {
-            count: countDetails,
-            price: priceDetails,
-            totalDetailsProfit,
-        } = detailsStats(_.get(formFieldsValues, "details", []));
+        var countDetails = this.props.orderDetails.length,
+            priceDetails = 0,
+            totalDetailsProfit = 0,
+            detailsDiscount = this.props.fields.detailsDiscount ? this.props.fields.detailsDiscount.value : this.props.order.detailsDiscount;
+        for (let i = 0; i < this.props.orderDetails.length; i++) {
+            priceDetails += Math.ceil(this.props.orderDetails[i].sum);
+            totalDetailsProfit += Math.ceil(this.props.orderDetails[i].sum - (this.props.orderDetails[i].sum*detailsDiscount/100) - this.props.orderDetails[i].purchasePrice*this.props.orderDetails[i].count);
+        }
 
         const {
             count: countServices,
@@ -547,6 +561,7 @@ export class OrderForm extends React.PureComponent {
                 recommendedPriceLoading={this.props.recommendedPriceLoading}
                 fetchRecommendedPrice={this.props.fetchRecommendedPrice}
                 reloadOrderPageComponents={this.props.reloadOrderPageComponents}
+                reloadOrderForm={this.reloadOrderForm}
             />
         );
     };

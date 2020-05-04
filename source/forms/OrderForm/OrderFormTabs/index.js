@@ -270,6 +270,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             setModal={setModal}
                             completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
                             agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
+                            reloadOrderForm={this.props.reloadOrderForm}
                         />
                         <DiscountPanel
                             orderDetails={orderDetails}
@@ -281,6 +282,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             discountFieldName={"detailsDiscount"}
                             fetchedOrder={fetchedOrder}
                             detailsMode
+                            reloadOrderForm={this.props.reloadOrderForm}
                         />
                     </TabPane>
                 )}
