@@ -351,7 +351,7 @@ export default class DetailsTable extends Component {
             });
             const result = await response.json();
             if(result.success) {
-                //console.log("OK", result);
+                this.props.reloadOrderForm();
             }
             else {
                 console.log("BAD", result);
