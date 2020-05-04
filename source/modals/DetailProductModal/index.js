@@ -219,7 +219,7 @@ class DetailProductModal extends React.Component{
                                 disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
-                                brandName={elem.brandName}
+                                brandId={elem.brandId}
                                 detailCode={elem.detailCode}
                             />
                         </div>
@@ -913,7 +913,7 @@ class DetailProductModal extends React.Component{
                     supplierBrandId: element.brandId,
                     brandName: element.brandName,
                     purchasePrice: element.purchasePrice,
-                    count: element.count,
+                    count: element.count ? element.count : 1,
                     price: element.price,
                     comment: element.comment,
                 })
@@ -960,6 +960,7 @@ class DetailProductModal extends React.Component{
                 that.state.mainTableSource[0].supplierName = result[0].supplierName;
                 that.state.mainTableSource[0].store = result[0].store;
                 that.state.mainTableSource[0].purchasePrice = result[0].purchasePrice;
+                that.state.mainTableSource[0].price = result[0].purchasePrice * result[0].markup;
                 that.setState({
                     update: true,
                 })
