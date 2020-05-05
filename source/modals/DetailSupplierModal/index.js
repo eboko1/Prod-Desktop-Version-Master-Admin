@@ -99,7 +99,8 @@ class DetailSupplierModal extends React.Component{
                 key:       'select',
                 width:     'auto',
                 render: (elem)=>{
-                    const price = Number(elem.purchasePrice) * Number(elem.markup);
+                    const markup = elem.markup ? elem.markup : 1.4;
+                    const price = Number(elem.purchasePrice) * Number(markup);
                     const store = [elem.availableIn0, elem.availableIn1, elem.availableIn2, elem.availableInx];
                     return (
                         <Button

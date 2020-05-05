@@ -196,6 +196,7 @@ class DetailProductModal extends React.Component{
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
+                                supplierId={elem.supplierId}
                             />
                         </div>
                     )
@@ -941,7 +942,7 @@ class DetailProductModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}`;
+        let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}&modificationId=${this.props.tecdocId}`;
         url += params;
         try {
             const response = await fetch(url, {
@@ -952,17 +953,18 @@ class DetailProductModal extends React.Component{
                 },
             });
             const result = await response.json();
-            if(result.length) {
-                let markup = result[0].markup ? result[0].markup : 1.4;
-                let purchasePrice = result[0].purchasePrice ? result[0].purchasePrice : 0;
-                that.state.mainTableSource[0].brandId = result[0].brandId;
-                that.state.mainTableSource[0].brandName = result[0].brandName;
-                that.state.mainTableSource[0].detailCode = result[0].partNumber;
-                that.state.mainTableSource[0].supplierId = result[0].supplierId;
-                that.state.mainTableSource[0].supplierName = result[0].supplierName;
-                that.state.mainTableSource[0].store = result[0].store;
+            if(result) {
+                let markup = result.markup ? result.markup : 1.4;
+                let purchasePrice = result.price ? result.price.purchasePrice : 0;
+                that.state.mainTableSource[0].brandId = result.brandId;
+                that.state.mainTableSource[0].brandName = result.brandName;
+                that.state.mainTableSource[0].detailCode = result.partNumber;
+                that.state.mainTableSource[0].supplierId = result.price.businessSupplierId;
+                that.state.mainTableSource[0].supplierName = result.price.businessSupplierName;
+                that.state.mainTableSource[0].store = result.price ? result.price.store : undefined;
                 that.state.mainTableSource[0].purchasePrice = purchasePrice;
                 that.state.mainTableSource[0].price = purchasePrice * markup;
+                that.state.mainTableSource[0].count = 1;
                 that.setState({
                     update: true,
                 })
