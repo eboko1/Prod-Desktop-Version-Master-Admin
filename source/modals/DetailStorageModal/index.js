@@ -215,8 +215,8 @@ class DetailStorageModal extends React.Component{
             },
             {
                 title:  <FormattedMessage id="order_form_table.price" />,
-                key:       'price',
-                dataIndex: 'price',
+                key:       'salePrice',
+                dataIndex: 'salePrice',
                 width:     '6%',
                 render: (data) => {
                     let strVal = String(Math.ceil(data));
@@ -265,7 +265,7 @@ class DetailStorageModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 this.props.onSelect(elem.partNumber, elem.supplierName);
-                                this.props.setSupplier(elem.bussinesSupplierId, elem.businessSupplierName, elem.purchasePrice, elem.price, elem.store);
+                                this.props.setSupplier(elem.businesSupplierId, elem.businessSupplierName, elem.purchasePrice, elem.salePrice, elem.store);
                                 this.handleCancel();
                             }}
                         >
@@ -317,10 +317,10 @@ class DetailStorageModal extends React.Component{
     }
 
     setSupplier(supplierId, businessSupplierName, purchasePrice, price, store, key) {
-        this.state.dataSource[key].bussinesSupplierId = supplierId;
+        this.state.dataSource[key].businesSupplierId = supplierId;
         this.state.dataSource[key].businessSupplierName = businessSupplierName;
         this.state.dataSource[key].purchasePrice = purchasePrice;
-        this.state.dataSource[key].price = price;
+        this.state.dataSource[key].salePrice = price;
         this.state.dataSource[key].store = store;
         this.setState({
             update: true
@@ -345,6 +345,7 @@ class DetailStorageModal extends React.Component{
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/tecdoc/products/parts?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
+        if(this.props.supplierId) params += `&businessSupplierId=${this.props.supplierId}`
         url += params;
         fetch(url, {
             method: 'GET',
@@ -363,8 +364,16 @@ class DetailStorageModal extends React.Component{
         })
         .then(function (data) {
             var brandOptions = [];
+            console.log(data)
             data.map((elem, i)=>{
                 elem.key = i;
+                if(elem.price) {
+                    elem.store = elem.price.store;
+                    elem.purchasePrice = elem.price.purchasePrice;
+                    elem.businessSupplierId = elem.price.businessSupplierId;
+                    elem.businessSupplierName = elem.price.businessSupplierName;
+                    elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
+                }
                 if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
                     if(that.props.brandFilter == elem.supplierName) {
                         that.state.brandFilter.push(elem.supplierId);
