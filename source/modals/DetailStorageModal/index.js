@@ -347,6 +347,7 @@ class DetailStorageModal extends React.Component{
         let params = `/tecdoc/products/parts?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
         if(this.props.supplierId) params += `&businessSupplierId=${this.props.supplierId}`
         url += params;
+        console.log(url)
         fetch(url, {
             method: 'GET',
             headers: {

@@ -959,8 +959,8 @@ class DetailProductModal extends React.Component{
                 that.state.mainTableSource[0].brandId = result.brandId;
                 that.state.mainTableSource[0].brandName = result.brandName;
                 that.state.mainTableSource[0].detailCode = result.partNumber;
-                that.state.mainTableSource[0].supplierId = result.price.businessSupplierId;
-                that.state.mainTableSource[0].supplierName = result.price.businessSupplierName;
+                that.state.mainTableSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
+                that.state.mainTableSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
                 that.state.mainTableSource[0].store = result.price ? result.price.store : undefined;
                 that.state.mainTableSource[0].purchasePrice = purchasePrice;
                 that.state.mainTableSource[0].price = purchasePrice * markup;
