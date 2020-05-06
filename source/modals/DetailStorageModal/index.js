@@ -43,17 +43,10 @@ class DetailStorageModal extends React.Component{
                         `${__TECDOC_IMAGES_URL__}/${elem.supplierId}/${elem.images[0].pictureName}` : 
                         `${__TECDOC_IMAGES_URL__}/not_found.png`;
                     return(
-                        <div style={{verticalAlign: 'middle'}}>
-                            <img
-                                style={ { cursor: 'pointer' } }
-                                width={ 80 }
-                                src={ src }
-                                onError={ e => {
-                                    e.target.onerror = null;
-                                    e.target.src = `${__TECDOC_IMAGES_URL__}/not_found.png`;
-                                } }
-                            />
-                        </div>
+                        <PhotoModal
+                            src={src}
+                            attributes={elem.attributes}
+                        />
                     )
                 }
             },
@@ -164,14 +157,29 @@ class DetailStorageModal extends React.Component{
                 key:       'attributes',
                 dataIndex: 'attributes',
                 width:     '25%',
-                render: (attributes)=>(
-                    attributes.map((attribute, i)=>(
-                        <div key={i}>
-                            <span style={{fontWeight: 'bold'}}>{attribute.description}: </span>
-                            <span>{attribute.value}</span>
+                render: (attributes)=>{
+                    let title = '';
+                    let data = '';
+                    for (let i = 0; i < attributes.length; i++) {
+                        const attribute = attributes[i];
+                        title += `${attribute.description}: ${attribute.value}\n`;
+                        data += `${attribute.value}`;
+                        if( i == attributes.length-1) {
+                            data += '.';
+                        }
+                        else {
+                            data += ', ';
+                        }
+                    }
+                    return (
+                        <div
+                            title={title}
+                            style={{textTransform: 'capitalize'}}
+                        >
+                            {data}
                         </div>
-                    ))
-                )
+                    )
+                }
             },
             {
                 title:  <FormattedMessage id="order_form_table.supplier" />,
@@ -347,7 +355,6 @@ class DetailStorageModal extends React.Component{
         let params = `/tecdoc/products/parts?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
         if(this.props.supplierId) params += `&businessSupplierId=${this.props.supplierId}`
         url += params;
-        console.log(url)
         fetch(url, {
             method: 'GET',
             headers: {
@@ -365,7 +372,6 @@ class DetailStorageModal extends React.Component{
         })
         .then(function (data) {
             var brandOptions = [];
-            console.log(data)
             data.map((elem, i)=>{
                 elem.key = i;
                 if(elem.price) {
@@ -492,3 +498,69 @@ class DetailStorageModal extends React.Component{
     }
 }
 export default DetailStorageModal;
+
+
+class PhotoModal extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={
+            visible: false,
+        }
+    }
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+        })
+    }
+
+    render() {
+        return(
+            <>
+                <div style={{verticalAlign: 'middle'}}
+                    onClick={()=>{
+                        this.setState({
+                            visible: true,
+                        })
+                    }}
+                >
+                    <img
+                        style={ { cursor: 'pointer' } }
+                        width={ 80 }
+                        src={ this.props.src }
+                        onError={ e => {
+                            e.target.onerror = null;
+                            e.target.src = `${__TECDOC_IMAGES_URL__}/not_found.png`;
+                        } }
+                    />
+                </div>
+                <Modal
+                    width='45%'
+                    visible={this.state.visible}
+                    footer={null}
+                    title='priceEdit'
+                    onCancel={this.handleCancel}
+                >
+                    <div style={{textAlign: 'center'}}>
+                        <img
+                            style={ { cursor: 'pointer' } }
+                            width={ '70%' }
+                            src={ this.props.src }
+                            onError={ e => {
+                                e.target.onerror = null;
+                                e.target.src = `${__TECDOC_IMAGES_URL__}/not_found.png`;
+                            } }
+                        />
+                    </div>
+                    <div>
+                        {this.props.attributes.map((attribute)=>(
+                            <div style={{border: '1px solid', padding: '5px'}}>
+                                {attribute.description}: {attribute.value}
+                            </div>
+                        ))}
+                    </div>
+                </Modal>
+            </>
+        )
+    }
+}
