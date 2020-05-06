@@ -299,7 +299,7 @@ export class OrderForm extends React.PureComponent {
 
         let priceDetails = 0;
         for(let i = 0; i < this.props.orderDetails.length; i++) {
-            priceDetails += this.props.orderDetails[i].sum;
+            priceDetails += Math.ceil(this.props.orderDetails[i].sum);
         }
 
         const { price: priceServices } = servicesStats(
