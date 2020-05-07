@@ -212,7 +212,7 @@ class DetailStorageModal extends React.Component{
                 dataIndex: 'purchasePrice',
                 width:     '6%',
                 render: (data) => {
-                    let strVal = String(Math.ceil(data));
+                    let strVal = String(Math.round(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
@@ -227,7 +227,7 @@ class DetailStorageModal extends React.Component{
                 dataIndex: 'salePrice',
                 width:     '6%',
                 render: (data) => {
-                    let strVal = String(Math.ceil(data));
+                    let strVal = String(Math.round(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }

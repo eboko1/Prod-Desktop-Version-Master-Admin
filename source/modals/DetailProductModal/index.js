@@ -277,7 +277,7 @@ class DetailProductModal extends React.Component{
                             value={data || 0}
                             min={0}
                             formatter={(value)=>{
-                                let strVal = String(Math.ceil(value));
+                                let strVal = String(Math.round(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                                 }
@@ -306,7 +306,7 @@ class DetailProductModal extends React.Component{
                             value={data || 1}
                             min={1}
                             formatter={(value)=>{
-                                let strVal = String(Math.ceil(value));
+                                let strVal = String(Math.round(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                                 }
@@ -366,7 +366,7 @@ class DetailProductModal extends React.Component{
                             value={sum ? sum : 1}
                             style={{color: "black"}}
                             formatter={(value)=>{
-                                let strVal = String(Math.ceil(value));
+                                let strVal = String(Math.round(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                                 }
@@ -903,7 +903,7 @@ class DetailProductModal extends React.Component{
             var data = {
                 insertMode: true,
                 details: [],
-                services: [],
+                labors: [],
             }
             this.state.mainTableSource.map((element)=>{
                 data.details.push({
@@ -921,7 +921,7 @@ class DetailProductModal extends React.Component{
             });
             this.state.relatedServicesSource.map((element)=>{
                 if(element.laborId) {
-                    data.services.push({
+                    data.labors.push({
                         serviceId: element.laborId,
                         serviceHours: element.hours ? element.hours : 1,
                         servicePrice: element.price ? element.price : 0,

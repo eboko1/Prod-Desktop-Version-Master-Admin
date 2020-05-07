@@ -299,7 +299,7 @@ export class OrderForm extends React.PureComponent {
 
         let priceDetails = 0;
         for(let i = 0; i < this.props.orderDetails.length; i++) {
-            priceDetails += Math.ceil(this.props.orderDetails[i].sum);
+            priceDetails += Math.round(this.props.orderDetails[i].sum);
         }
 
         const { price: priceServices } = servicesStats(
@@ -409,8 +409,8 @@ export class OrderForm extends React.PureComponent {
             totalDetailsProfit = 0,
             detailsDiscount = this.props.fields.detailsDiscount ? this.props.fields.detailsDiscount.value : this.props.order.detailsDiscount;
         for (let i = 0; i < this.props.orderDetails.length; i++) {
-            priceDetails += Math.ceil(this.props.orderDetails[i].sum);
-            totalDetailsProfit += Math.ceil(this.props.orderDetails[i].sum - (this.props.orderDetails[i].sum*detailsDiscount/100) - this.props.orderDetails[i].purchasePrice*this.props.orderDetails[i].count);
+            priceDetails += Math.round(this.props.orderDetails[i].sum);
+            totalDetailsProfit += Math.round(this.props.orderDetails[i].sum - (this.props.orderDetails[i].sum*detailsDiscount/100) - this.props.orderDetails[i].purchasePrice*this.props.orderDetails[i].count);
         }
 
         const {

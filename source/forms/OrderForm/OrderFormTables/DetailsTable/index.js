@@ -170,7 +170,7 @@ export default class DetailsTable extends Component {
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
-                    let strVal = String(Math.ceil(data));
+                    let strVal = String(Math.round(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
@@ -187,7 +187,7 @@ export default class DetailsTable extends Component {
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
-                    let strVal = String(Math.ceil(data));
+                    let strVal = String(Math.round(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
@@ -221,7 +221,7 @@ export default class DetailsTable extends Component {
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
-                    let strVal = String(Math.ceil(data));
+                    let strVal = String(Math.round(data));
                     for(let i = strVal.length-3; i >= 0; i-=3) {
                         strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                     }
@@ -346,6 +346,7 @@ export default class DetailsTable extends Component {
             that.setState({
                 dataSource: data.details,
             })
+            that.props.reloadOrderForm();
         })
         .catch(function (error) {
             console.log('error', error)
@@ -506,7 +507,7 @@ class PriceCountModal extends React.Component{
                             value={data ? data : 0}
                             min={0}
                             formatter={(value)=>{
-                                let strVal = String(Math.ceil(value));
+                                let strVal = String(Math.round(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                                 }
@@ -534,7 +535,7 @@ class PriceCountModal extends React.Component{
                             value={data ? data : 0}
                             min={0}
                             formatter={(value)=>{
-                                let strVal = String(Math.ceil(value));
+                                let strVal = String(Math.round(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                                 }
@@ -593,7 +594,7 @@ class PriceCountModal extends React.Component{
                             style={{color: 'black'}}
                             value={data}
                             formatter={(value)=>{
-                                let strVal = String(Math.ceil(value));
+                                let strVal = String(Math.round(value));
                                 for(let i = strVal.length-3; i >= 0; i-=3) {
                                     strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
                                 }
