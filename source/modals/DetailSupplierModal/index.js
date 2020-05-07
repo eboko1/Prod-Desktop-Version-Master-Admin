@@ -153,7 +153,6 @@ class DetailSupplierModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.map((elem, i)=>elem.key = i)
             that.setState({
                 fetched: true,

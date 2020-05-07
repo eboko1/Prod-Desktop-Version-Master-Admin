@@ -268,12 +268,13 @@ class DetailStorageModal extends React.Component{
                 key:       'select',
                 width:     '5%',
                 render: (elem)=>{
+                    var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
                                 this.props.onSelect(elem.partNumber, elem.supplierName);
-                                this.props.setSupplier(elem.businesSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store);
+                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store);
                                 this.handleCancel();
                             }}
                         >
@@ -325,7 +326,7 @@ class DetailStorageModal extends React.Component{
     }
 
     setSupplier(supplierId, businessSupplierName, supplierBrandId, purchasePrice, price, store, key) {
-        this.state.dataSource[key].businesSupplierId = supplierId;
+        this.state.dataSource[key].businessSupplierId = supplierId;
         this.state.dataSource[key].businessSupplierName = businessSupplierName;
         this.state.dataSource[key].purchasePrice = purchasePrice;
         this.state.dataSource[key].supplierBrandId = supplierBrandId;
@@ -392,6 +393,7 @@ class DetailStorageModal extends React.Component{
                     })
                 }
             })
+            brandOptions.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
             that.setState({
                 fetched: true,
                 dataSource: data,
