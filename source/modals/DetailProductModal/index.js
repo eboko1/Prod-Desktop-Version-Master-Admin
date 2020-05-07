@@ -903,7 +903,7 @@ class DetailProductModal extends React.Component{
             var data = {
                 insertMode: true,
                 details: [],
-                labors: [],
+                services: [],
             }
             this.state.mainTableSource.map((element)=>{
                 data.details.push({
@@ -921,7 +921,7 @@ class DetailProductModal extends React.Component{
             });
             this.state.relatedServicesSource.map((element)=>{
                 if(element.laborId) {
-                    data.labors.push({
+                    data.services.push({
                         serviceId: element.laborId,
                         serviceHours: element.hours ? element.hours : 1,
                         servicePrice: element.price ? element.price : 0,

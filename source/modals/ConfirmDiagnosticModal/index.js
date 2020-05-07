@@ -52,12 +52,12 @@ class ConfirmDiagnosticModal extends React.Component{
     handleOk = () => {
         this.setState({ visible: false });
         var data = {
-            labors: [],
+            services: [],
             details: [],
         }
         this.state.servicesList.map((element)=>{
             if(element.checked && element.id != null) {
-                data.labors.push({
+                data.services.push({
                     serviceId: element.id,
                     serviceHours: element.hours,
                     servicePrice: element.price,
