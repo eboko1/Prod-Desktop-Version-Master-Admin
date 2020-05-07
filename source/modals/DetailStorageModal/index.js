@@ -273,7 +273,7 @@ class DetailStorageModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 this.props.onSelect(elem.partNumber, elem.supplierName);
-                                this.props.setSupplier(elem.businesSupplierId, elem.businessSupplierName, elem.purchasePrice, elem.salePrice, elem.store);
+                                this.props.setSupplier(elem.businesSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store);
                                 this.handleCancel();
                             }}
                         >
@@ -324,10 +324,11 @@ class DetailStorageModal extends React.Component{
         return data;
     }
 
-    setSupplier(supplierId, businessSupplierName, purchasePrice, price, store, key) {
+    setSupplier(supplierId, businessSupplierName, supplierBrandId, purchasePrice, price, store, key) {
         this.state.dataSource[key].businesSupplierId = supplierId;
         this.state.dataSource[key].businessSupplierName = businessSupplierName;
         this.state.dataSource[key].purchasePrice = purchasePrice;
+        this.state.dataSource[key].supplierBrandId = supplierBrandId;
         this.state.dataSource[key].salePrice = price;
         this.state.dataSource[key].store = store;
         this.setState({
@@ -538,7 +539,7 @@ class PhotoModal extends React.Component{
                     width='45%'
                     visible={this.state.visible}
                     footer={null}
-                    title='priceEdit'
+                    title={<FormattedMessage id="photo" />}
                     onCancel={this.handleCancel}
                 >
                     <div style={{textAlign: 'center'}}>
@@ -553,8 +554,8 @@ class PhotoModal extends React.Component{
                         />
                     </div>
                     <div>
-                        {this.props.attributes.map((attribute)=>(
-                            <div style={{border: '1px solid', padding: '5px'}}>
+                        {this.props.attributes.map((attribute, i)=>(
+                            <div key={i} style={{border: '1px solid', padding: '5pxs'}}>
                                 {attribute.description}: {attribute.value}
                             </div>
                         ))}
