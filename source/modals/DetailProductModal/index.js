@@ -911,7 +911,7 @@ class DetailProductModal extends React.Component{
                     name: element.detailName,
                     productCode: element.detailCode,
                     supplierId: element.supplierId,
-                    supplierBrandId: element.brandId,
+                    supplierBrandId: element.supplierBrandId,
                     brandName: element.brandName,
                     purchasePrice: element.purchasePrice,
                     count: element.count ? element.count : 1,
@@ -929,7 +929,6 @@ class DetailProductModal extends React.Component{
                 }
             });
             this.addDetailsAndLabors(data);
-            window.location.reload();
         }
         this.props.hideModal();
     };
@@ -958,6 +957,7 @@ class DetailProductModal extends React.Component{
                 let purchasePrice = result.price ? result.price.purchasePrice : 0;
                 that.state.mainTableSource[0].brandId = result.brandId;
                 that.state.mainTableSource[0].brandName = result.brandName;
+                that.state.mainTableSource[0].supplierBrandId = result.price ? result.price.supplierBrandId : undefined;
                 that.state.mainTableSource[0].detailCode = result.partNumber;
                 that.state.mainTableSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
                 that.state.mainTableSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
@@ -999,9 +999,10 @@ class DetailProductModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, purchasePrice, price, store) {
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store) {
         this.state.mainTableSource[0].supplierId = supplierId;
         this.state.mainTableSource[0].supplierName = supplierName;
+        this.state.mainTableSource[0].supplierBrandId = supplierBrandId;
         this.state.mainTableSource[0].purchasePrice = purchasePrice;
         this.state.mainTableSource[0].price = price;
         this.state.mainTableSource[0].store = store;
@@ -1026,7 +1027,7 @@ class DetailProductModal extends React.Component{
             });
             const result = await response.json();
             if(result.success) {
-                console.log("OK", result);
+                this.props.updateDataSource();
             }
             else {
                 console.log("BAD", result);

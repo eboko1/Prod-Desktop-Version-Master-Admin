@@ -28,6 +28,7 @@ export default class DetailsTable extends Component {
         }
 
         this.updateDetail = this.updateDetail.bind(this);
+        this.updateDataSource = this.updateDataSource.bind(this);
 
         this.details = this.props.allDetails.details.map(
             ({ id, name }) => (
@@ -271,6 +272,7 @@ export default class DetailsTable extends Component {
                                 <FormattedMessage id="add_order_form.delete_confirm" />
                             }
                             onConfirm={async ()=>{
+                                var that = this;
                                 let token = localStorage.getItem('_my.carbook.pro_token');
                                 let url = API_URL;
                                 let params = `/orders/${this.props.orderId}/details?ids=[${elem.id}] `;
@@ -285,7 +287,7 @@ export default class DetailsTable extends Component {
                                     });
                                     const result = await response.json();
                                     if(result.success) {
-                                        window.location.reload();
+                                        that.updateDataSource();
                                     }
                                     else {
                                         console.log("BAD", result);
@@ -313,6 +315,41 @@ export default class DetailsTable extends Component {
         this.setState({
             productModalVisible: false,
         })
+    }
+
+    updateDataSource() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}/details`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            data.details.map((elem, index)=>{
+                elem.key = index;
+            })
+            that.setState({
+                dataSource: data.details,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
     }
 
     async updateDetail(key, detail) {
@@ -359,6 +396,8 @@ export default class DetailsTable extends Component {
         } catch (error) {
             console.error('ERROR:', error);
         }
+
+        await this.updateDataSource();
 
         this.setState({
             update: true,
@@ -414,6 +453,7 @@ export default class DetailsTable extends Component {
                     detail={this.state.dataSource[this.state.productModalKey]}
                     tableKey={this.state.productModalKey}
                     updateDetail={this.updateDetail}
+                    updateDataSource={this.updateDataSource}
                 />
             </Catcher>
         );

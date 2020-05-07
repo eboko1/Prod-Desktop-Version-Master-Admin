@@ -107,10 +107,10 @@ class DetailSupplierModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 if(this.props.onSelect) {
-                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.purchasePrice, price, store);
+                                    this.props.onSelect(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store);
                                 }
                                 else {
-                                    this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.purchasePrice, price, store, this.props.keyValue);
+                                    this.props.setStoreSupplier(elem.businessSupplierId, elem.businessSupplierName, elem.supplierBrandId, elem.purchasePrice, price, store, this.props.keyValue);
                                 }
                                 this.handleCancel();
                             }}
@@ -153,6 +153,7 @@ class DetailSupplierModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             data.map((elem, i)=>elem.key = i)
             that.setState({
                 fetched: true,
