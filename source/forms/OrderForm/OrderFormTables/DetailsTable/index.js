@@ -22,8 +22,6 @@ export default class DetailsTable extends Component {
         this.state = {
             productModalVisible: false,
             productModalKey: 0,
-            storageModalVisible: false,
-            storageModalKey: 0,
             dataSource: [],
         }
 
@@ -261,6 +259,25 @@ export default class DetailsTable extends Component {
                         />
                     )
                 },
+            },
+            {
+                width: "2%",
+                key: "favourite",
+                render: (elem)=>{
+                    return(
+                        <Icon
+                            type="star"
+                            theme={elem.fav ? 'filled' : ''}
+                            style={{color: 'gold', fontSize: 18}}
+                            onClick={()=>{
+                                this.state.dataSource[elem.key].fav = !Boolean(this.state.dataSource[elem.key].fav);
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
             },
             {
                 width: "3%",
