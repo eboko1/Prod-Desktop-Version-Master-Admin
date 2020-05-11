@@ -90,10 +90,42 @@ class DetailSupplierModal extends React.Component{
                 },
             },
             {
-                title:  <FormattedMessage id="order_form_table.store" />,
+                title:  <FormattedMessage id="order_form_table.AI" />,
                 key:       'store',
                 width:     '10%',
-                render: (elem)=>`${elem.availableIn0}/${elem.availableIn1}/${elem.availableIn2}/${elem.availableInx}`
+                render: (elem)=>{
+                    let color = 'brown',
+                    title = 'Поставщик не выбран!';
+                    if(elem){
+                        title=  `Сегодня: ${elem.availableIn0} шт.\n` +
+                                `Завтра: ${elem.availableIn1} шт.\n` +
+                                `Послезавтра: ${elem.availableIn2} шт.\n` +
+                                `Позже: ${elem.availableIn3} шт.`;
+                        if(elem.availableIn0 != '0') {
+                            color = 'rgb(81, 205, 102)';
+                        }
+                        else if(elem.availableIn1 != 0) {
+                            color = 'yellow';
+                        }
+                        else if(elem.availableIn2 != 0) {
+                            color = 'orange';
+                        }
+                        else if(elem.availableIn3 != 0) {
+                            color = 'red';
+                        }
+                    }
+                    else {
+                        color = 'grey';
+                        
+                    }
+                    
+                    return (
+                        <div
+                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
+                            title={title}
+                        ></div>
+                    )
+                }
             },
             {
                 key:       'select',
