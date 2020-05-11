@@ -542,8 +542,9 @@ class FavouriteDetailsModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             data.details.map((elem, i)=>elem.key=i);
-            that.state.dataSource = [data.details];
+            that.state.dataSource = data.details;
         })
         .catch(function (error) {
             console.log('error', error)
@@ -662,6 +663,7 @@ class FavouriteDetailsModal extends React.Component{
                     title={null}
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
+                    footer={null}
                 >
                     <div className={Styles.tableWrap}>
                         <div className={Styles.modalSectionTitle}>
