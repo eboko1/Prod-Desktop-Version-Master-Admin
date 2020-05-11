@@ -277,18 +277,42 @@ export default class DetailsTable extends Component {
                     return(
                         <Popconfirm
                             title={
-                                <FormattedMessage id="add_order_form.favourite_confirm" />
+                                elem.frequentDetailId ?
+                                    <FormattedMessage id="add_order_form.favourite_confirm" />
+                                :
+                                    <FormattedMessage id="add_order_form.favourite_remove" />
                             }
                             onConfirm={async ()=>{
-                                this.state.dataSource[elem.key].fav = !Boolean(this.state.dataSource[elem.key].fav);
-                                    this.setState({
-                                        update: true,
-                                    })
+                                var that = this;
+                                let token = localStorage.getItem('_my.carbook.pro_token');
+                                let url = API_URL;
+                                let params = `/orders/frequent/details`;
+                                if(elem.frequentDetailId) params += `?ids=[${elem.frequentDetailId}]`;
+                                else params += `?storeGroupIds=[${elem.storeGroupId}]`;
+                                url += params;
+                                try {
+                                    const response = await fetch(url, {
+                                        method: elem.frequentDetailId ? 'DELETE' : 'POST',
+                                        headers: {
+                                            'Authorization': token,
+                                            'Content-Type': 'application/json',
+                                        },
+                                    });
+                                    const result = await response.json();
+                                    if(result.success) {
+                                        that.updateDataSource();
+                                    }
+                                    else {
+                                        console.log("BAD", result);
+                                    }
+                                } catch (error) {
+                                    console.error('ERROR:', error);
+                                }
                             }}
                         >
                             <Icon
                                 type="star"
-                                theme={elem.fav ? 'filled' : ''}
+                                theme={elem.frequentDetailId ? 'filled' : ''}
                                 style={{color: 'gold', fontSize: 18}}
                             />
                         </Popconfirm>

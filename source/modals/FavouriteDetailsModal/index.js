@@ -61,7 +61,6 @@ class FavouriteDetailsModal extends React.Component{
                                 this.getDefaultValues(value);
                                 this.state.dataSource[0].storeGroupId = value;
                                 this.state.dataSource[0].detailName = option.props.name;
-                                this.filterOptions(value);
                                 this.setState({
                                     update: true
                                 })
@@ -521,10 +520,37 @@ class FavouriteDetailsModal extends React.Component{
     }
 
     fetchData() {
+        if(!(this.props.tecdocId)) return;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/store_groups`;
+        let params = `/orders/frequent/details?modificationId=${this.props.tecdocId}`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.details.map((elem, i)=>elem.key=i);
+            that.state.dataSource = [data.details];
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        that = this;
+        params = `/store_groups`;
         url = API_URL + params;
         fetch(url, {
             method: 'GET',
@@ -607,27 +633,12 @@ class FavouriteDetailsModal extends React.Component{
         ));
     };
 
-    filterOptions(id) {
-        const servicesOptions = [];
-        this.labors.map((elem, index)=>{
-            if(elem.productId == id) {
-                servicesOptions.push(
-                    <Option key={index} value={elem.laborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
-                        {elem.name ? elem.name : elem.defaultName}
-                    </Option>
-                )
-            }
-            else return;
-        });
-
-        this.servicesOptions = [...servicesOptions];
-    }
-
     componentWillMount() {
         this.fetchData();
     }
 
     render() {
+        console.log(this.state.dataSource);
         const { visible } = this.state;
         return (
             <>
