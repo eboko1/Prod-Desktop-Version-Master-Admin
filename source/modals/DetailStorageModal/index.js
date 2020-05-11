@@ -470,11 +470,11 @@ class DetailStorageModal extends React.Component{
                 >
                     <div
                         style={{
-                            width: 24,
-                            height: 24,
+                            width: 18,
+                            height: 18,
                             backgroundColor: this.props.disabled ? 'black' : 'white',
                             mask: `url(${images.bookIcon}) no-repeat center / contain`,
-                            '-webkit-mask': `url(${images.bookIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${images.bookIcon}) no-repeat center / contain`,
                         }}
                     ></div>
                 </Button>

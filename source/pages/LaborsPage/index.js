@@ -311,7 +311,7 @@ export default class LaborsPage extends Component {
                 }
                 else {
                     labors[labors.length-1].fixed = false;
-                    labors[labors.length-1].normHours = elem.normHours;
+                    labors[labors.length-1].normHours = elem.normHours ? elem.normHours : 1;
                 }
             }
             if(elem.new && elem.masterLaborId && elem.productId) {
@@ -326,7 +326,7 @@ export default class LaborsPage extends Component {
                 }
                 else {
                     newLabors[newLabors.length-1].fixed = false;
-                    newLabors[newLabors.length-1].normHours = elem.normHours;
+                    newLabors[newLabors.length-1].normHours = elem.normHours ? elem.normHours : 1;
                 }
             }
         });

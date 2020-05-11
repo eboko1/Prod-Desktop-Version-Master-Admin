@@ -8,12 +8,7 @@ import _ from 'lodash';
 import { Catcher } from 'commons';
 import { images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
-import {
-    permissions,
-    isForbidden,
-    numeralFormatter,
-    numeralParser,
-} from 'utils';
+import { FavouriteServicesModal } from 'modals'
 
 // own
 import Styles from './styles.m.css';
@@ -24,6 +19,8 @@ class ServicesTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            productModalVisible: false,
+            productModalKey: 0,
             dataSource: [],
         }
 
@@ -40,28 +37,53 @@ class ServicesTable extends Component {
                                 type='primary'
                                 disabled={confirmed != "undefined"}
                                 onClick={()=>{
-                                    this.showDetailProductModal(data)
+                                    this.showServiceProductModal(data)
                                 }}
                             >
                                 <div
                                     style={{
-                                        width: 24,
-                                        height: 24,
+                                        width: 18,
+                                        height: 18,
                                         backgroundColor: 'white',
                                         mask: `url(${images.partsIcon}) no-repeat center / contain`,
-                                        '-webkit-mask': `url(${images.partsIcon}) no-repeat center / contain`,
+                                        WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
                                     }}
                                 ></div>
                             </Button>
+                            {!(elem.laborId) ? 
+                                <FavouriteServicesModal
+                                    tecdocId={this.props.tecdocId}
+                                    orderId={this.props.orderId}
+                                    updateDataSource={this.updateDataSource}
+                                />
+                            :
+                                <PriceCountModal
+                                    disabled={confirmed != "undefined" || !(elem.laborId)}
+                                    detail={elem}
+                                    onConfirm={this.updateDetail}
+                                    detailKey={elem.key}
+                                />
+                            }
                         </div>
                     )
                 }
             },
             {
+                title: <FormattedMessage id="order_form_table.service_type" />,
+                width: "15%",
+                key: "storeGroupName",
+                dataIndex: 'storeGroupName',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
                 title: <FormattedMessage id="order_form_table.detail_name" />,
                 width: "15%",
-                key: "detail",
-                dataIndex: 'detailName',
+                key: "serviceName",
+                dataIndex: 'serviceName',
                 render: (data) => {
                         return (
                             data ? data : <FormattedMessage id="long_dash"/>
@@ -69,10 +91,10 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.brand" />,
+                title: <FormattedMessage id="order_form_table.master" />,
                 width: "10%",
-                key: "brand",
-                dataIndex: 'brandName',
+                key: "employeeId",
+                dataIndex: 'employeeId',
                 render: (data) => {
                     return (
                         data ? data : <FormattedMessage id="long_dash"/>
@@ -80,68 +102,8 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.detail_code" />,
-                width: "10%",
-                key: "code",
-                dataIndex: 'detailCode',
-                render: (data) => {
-                    return (
-                        data ? data : <FormattedMessage id="long_dash"/>
-                    );
-                },
-            },
-            {
-                title: <FormattedMessage id="order_form_table.supplier" />,
-                width: "10%",
-                key: "supplierName",
-                dataIndex: 'supplierName',
-                render: (data) => {
-                    return (
-                        data ? data : <FormattedMessage id="long_dash"/>
-                    );
-                },
-            },
-            {
-                title: <FormattedMessage id="order_form_table.AI" />,
-                width: "3%",
-                key: "AI",
-                render: (elem)=>{
-                    let color = 'brown',
-                        title = 'Поставщик не выбран!';
-                    if(elem.store){
-                        title=  `Сегодня: ${elem.store[0]} шт.\n` +
-                                `Завтра: ${elem.store[1]} шт.\n` +
-                                `Послезавтра: ${elem.store[2]} шт.\n` +
-                                `Позже: ${elem.store[3]} шт.`;
-                        if(elem.store[0] != '0') {
-                            color = 'rgb(81, 205, 102)';
-                        }
-                        else if(elem.store[1] != 0) {
-                            color = 'yellow';
-                        }
-                        else if(elem.store[2] != 0) {
-                            color = 'orange';
-                        }
-                        else if(elem.store[3] != 0) {
-                            color = 'red';
-                        }
-                    }
-                    else {
-                        color = 'grey';
-                        
-                    }
-                    
-                    return (
-                        <div
-                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
-                            title={title}
-                        ></div>
-                    )
-                }
-            },
-            {
-                title: <FormattedMessage id="order_form_table.purchasePrice" />,
-                width: "5%",
+                title: <FormattedMessage id="order_form_table.prime_cost" />,
+                width: "8%",
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
@@ -158,7 +120,7 @@ class ServicesTable extends Component {
             },
             {
                 title: <FormattedMessage id="order_form_table.price" />,
-                width: "5%",
+                width: "8%",
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
@@ -174,10 +136,10 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.count" />,
-                width: "5%",
-                key: "count",
-                dataIndex: 'count',
+                title: <FormattedMessage id="hours" />,
+                width: "8%",
+                key: "hours",
+                dataIndex: 'hours',
                 render: (data) => {
                     let strVal = String(data);
                     for(let i = strVal.length-3; i >= 0; i-=3) {
@@ -185,7 +147,7 @@ class ServicesTable extends Component {
                     }
                     return (
                         <span>
-                            {data ? strVal : 0} <FormattedMessage id="pc" />
+                            {data ? strVal : 0} <FormattedMessage id="order_form_table.hours_short" />
                         </span> 
                     )
                 },
@@ -242,17 +204,23 @@ class ServicesTable extends Component {
                 key: "favourite",
                 render: (elem)=>{
                     return(
-                        <Icon
-                            type="star"
-                            theme={elem.fav ? 'filled' : ''}
-                            style={{color: 'gold', fontSize: 18}}
-                            onClick={()=>{
-                                this.state.dataSource[elem.key].fav = !Boolean(this.state.dataSource[elem.key].fav);
-                                this.setState({
-                                    update: true,
-                                })
+                        <Popconfirm
+                            title={
+                                <FormattedMessage id="add_order_form.favourite_confirm" />
+                            }
+                            onConfirm={async ()=>{
+                                this.state.dataSource[elem.key].frequentLaborId = !Boolean(this.state.dataSource[elem.key].frequentLaborId);
+                                    this.setState({
+                                        update: true,
+                                    })
                             }}
-                        />
+                        >
+                            <Icon
+                                type="star"
+                                theme={elem.frequentLaborId ? 'filled' : ''}
+                                style={{color: 'gold', fontSize: 18}}
+                            />
+                        </Popconfirm>
                     )
                 }
             },
@@ -269,7 +237,7 @@ class ServicesTable extends Component {
                                 var that = this;
                                 let token = localStorage.getItem('_my.carbook.pro_token');
                                 let url = API_URL;
-                                let params = `/orders/${this.props.orderId}/details?ids=[${elem.id}] `;
+                                let params = `/orders/${this.props.orderId}/labors?ids=[${elem.id}] `;
                                 url += params;
                                 try {
                                     const response = await fetch(url, {
@@ -299,13 +267,137 @@ class ServicesTable extends Component {
         ]
     }
 
+    showServiceProductModal(key) {
+        this.setState({
+            productModalVisible: true,
+            productModalKey: key,
+        })
+    }
+    hideServicelProductModal() {
+        this.setState({
+            productModalVisible: false,
+        })
+    }
+
+    updateDataSource() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}/labors`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            data.labors.map((elem, index)=>{
+                elem.key = index;
+            })
+            that.setState({
+                dataSource: data.details,
+            })
+            that.props.reloadOrderForm();
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    async updateDetail(key, detail) {
+        /*this.state.dataSource[key] = detail;
+        const data = {
+            updateMode: true,
+            details: [
+                {
+                    id: detail.id,
+                    storeGroupId: detail.storeGroupId,
+                    name: detail.detailName,
+                    productCode: detail.detailCode ? detail.detailCode : null,
+                    supplierId: detail.supplierId ? detail.supplierId : null,
+                    supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
+                    brandName: detail.brandName ? detail.brandName : null,
+                    purchasePrice: detail.purchasePrice,
+                    count: detail.count,
+                    price: detail.price,
+                    comment: detail.comment,
+                }
+            ]
+        }
+        console.log(data);
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
+            if(result.success) {
+                this.props.reloadOrderForm();
+            }
+            else {
+                console.log("BAD", result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+
+        await this.updateDataSource();
+
+        this.setState({
+            update: true,
+        })*/
+    }
+
+    componentDidMount() {
+        let tmp = [...this.props.orderServices];
+        tmp.map((elem,i)=>elem.key=i);
+        this.setState({
+            dataSource: tmp,
+        })
+    }
+
     render() {
+        console.log(this.props.orderServices);
+        if(this.state.dataSource.length == 0  || this.state.dataSource[this.state.dataSource.length-1].serviceName != undefined) {
+            this.state.dataSource.push({
+                key: this.state.dataSource.length,
+                id: undefined,
+                laborId: undefined,
+                serviceName: undefined,
+                comment: undefined,
+                count: 0,
+                price: 0,
+                purchasePrice: 0,
+                sum: 0,
+                agreement: "UNDEFINED",
+            })
+        }
         return (
             <Catcher>
                 <Table
                     className={ Styles.serviceTable }
                     dataSource={ this.state.dataSource }
                     columns={ this.columns }
+                    pagination={false}
                 />
             </Catcher>
         );
@@ -314,45 +406,203 @@ class ServicesTable extends Component {
 
 export default ServicesTable;
 
-class CommentaryModal extends React.Component {
-    state = { visible: false };
+class PriceCountModal extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={
+            visible: false,
+        }
+        this.columns = [
+            {
+                title:  <FormattedMessage id="order_form_table.detail_name" />,
+                key:       'detailName',
+                dataIndex: 'detailName',
+                width:     '20%',
+            },
+            {
+                title: <FormattedMessage id="order_form_table.brand" />,
+                width: "20%",
+                key: "brand",
+                dataIndex: 'brandName',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.detail_code" />,
+                width: "20%",
+                key: "code",
+                dataIndex: 'detailCode',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.purchasePrice" />,
+                key:       'purchasePrice',
+                dataIndex: 'purchasePrice',
+                width:     '10%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            value={data ? data : 0}
+                            min={0}
+                            formatter={(value)=>{
+                                let strVal = String(Math.round(value));
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
+                            onChange={(value)=>{
+                                this.state.dataSource[0].purchasePrice = value;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.price" />,
+                key:       'price',
+                dataIndex: 'price',
+                width:     '10%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            value={data ? data : 0}
+                            min={0}
+                            formatter={(value)=>{
+                                let strVal = String(Math.round(value));
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
+                            onChange={(value)=>{
+                                this.state.dataSource[0].price = value;
+                                this.state.dataSource[0].sum = value * this.state.dataSource[0].count;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.count" />,
+                key:       'count',
+                dataIndex: 'count',
+                width:     '10%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            value={data ? data : 0}
+                            min={0}
+                            formatter={(value)=>{
+                                let strVal = String(value);
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
+                            onChange={(value)=>{
+                                this.state.dataSource[0].count = value;
+                                this.state.dataSource[0].sum = value * this.state.dataSource[0].price;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.sum" />,
+                key:       'sum',
+                dataIndex: 'sum',
+                width:     '10%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            disabled
+                            style={{color: 'black'}}
+                            value={data}
+                            formatter={(value)=>{
+                                let strVal = String(Math.round(value));
+                                for(let i = strVal.length-3; i >= 0; i-=3) {
+                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                                }
+                                return strVal;
+                            }}
+                            parser={value => value.replace(' ', '')}
+                        />
+                    )
+                }
+            },
+        ]
+    }
 
-    showModal = () => {
+    handleOk = () => {
         this.setState({
-        visible: true,
+            visible: false,
         });
-    };
+        this.props.onConfirm(this.props.detailKey, this.state.dataSource[0]);
+    }
 
-    handleOk = e => {
-        console.log(e);
+    handleCancel = () => {
         this.setState({
-        visible: false,
-        });
-    };
-
-
-    handleCancel = e => {
-        console.log(e);
-        this.setState({
-        visible: false,
-        });
-    };
-
+            visible: false,
+        })
+    }
 
     render() {
-        return (
-        <div>
-            <Icon type="message" onClick={this.showModal}/>
-            <Modal
-                title={<FormattedMessage id='order_form_table.diagnostic.commentary' />}
-                footer={null}
-                visible={this.state.visible}
-                onOk={this.handleOk}
-                onCancel={this.handleCancel}
-            >
-            <p>{this.props.comment ? this.props.comment : <FormattedMessage id='no_data' />}</p>
-            </Modal>
-        </div>
-        );
+        return(
+            <>
+                <Button
+                    type='primary'
+                    disabled={this.props.disabled}
+                    onClick={()=>{
+                        this.setState({
+                            visible: true,
+                            dataSource: [this.props.detail]
+                        })
+                    }}
+                >
+                    <div
+                        style={{
+                            width: 18,
+                            height: 18,
+                            backgroundColor: this.props.disabled ? 'black' : 'white',
+                            mask: `url(${images.pencilIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${images.pencilIcon}) no-repeat center / contain`,
+                        }}
+                    ></div>
+                </Button>
+                <Modal
+                    width='80%'
+                    visible={this.state.visible}
+                    title='priceEdit'
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                >
+                        <Table
+                            columns={this.columns}
+                            dataSource={this.state.dataSource}
+                            pagination={false}
+                        />
+                </Modal>
+            </>
+        )
     }
 }
