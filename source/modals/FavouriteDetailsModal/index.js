@@ -43,6 +43,7 @@ class FavouriteDetailsModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <TreeSelect
+                            disabled
                             className={Styles.groupsTreeSelect}
                             disabled={this.state.editing}
                             showSearch
@@ -58,9 +59,8 @@ class FavouriteDetailsModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.getDefaultValues(value);
-                                this.state.dataSource[0].storeGroupId = value;
-                                this.state.dataSource[0].detailName = option.props.name;
+                                this.state.dataSource[elem.key].storeGroupId = value;
+                                this.state.dataSource[elem.key].detailName = option.props.name;
                                 this.setState({
                                     update: true
                                 })
@@ -83,7 +83,7 @@ class FavouriteDetailsModal extends React.Component{
                             style={{minWidth: 150}}
                             value={data}
                             onChange={(event)=>{
-                                this.state.dataSource[0].detailName = event.target.value;
+                                this.state.dataSource[elem.key].detailName = event.target.value;
                                 this.setState({
                                     update: true
                                 })
@@ -99,7 +99,7 @@ class FavouriteDetailsModal extends React.Component{
                 width:     '5%',
                 render: (data, elem)=>{
                     const detail = {
-                        name: this.state.dataSource[0].detailName,
+                        name: this.state.dataSource[elem.key].detailName,
                     }
                     return (
                         <CommentaryButton
@@ -120,7 +120,7 @@ class FavouriteDetailsModal extends React.Component{
                     if(elem.brandName && !(elem.brandId)) {
                         const defaultBrand = this.props.brands.find((brand)=>brand.brandName==elem.brandName);
                         if(defaultBrand) {
-                            this.state.dataSource[0].brandId = defaultBrand.brandId;
+                            this.state.dataSource[elem.key].brandId = defaultBrand.brandId;
                             this.setState({
                                 update: true
                             })
@@ -141,17 +141,17 @@ class FavouriteDetailsModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.state.dataSource[0].detailCode = undefined;
-                                this.state.dataSource[0].supplierName = undefined;
-                                this.state.dataSource[0].supplierBrandId = undefined;
-                                this.state.dataSource[0].supplierId = undefined;
-                                this.state.dataSource[0].store = null;
-                                this.state.dataSource[0].purchasePrice = 0;
-                                this.state.dataSource[0].price = 1;
-                                this.state.dataSource[0].count = 1;
-                                this.state.dataSource[0].sum = undefined;
-                                this.state.dataSource[0].brandId = value;
-                                this.state.dataSource[0].brandName = option.props.children;
+                                this.state.dataSource[elem.key].detailCode = undefined;
+                                this.state.dataSource[elem.key].supplierName = undefined;
+                                this.state.dataSource[elem.key].supplierBrandId = undefined;
+                                this.state.dataSource[elem.key].supplierId = undefined;
+                                this.state.dataSource[elem.key].store = null;
+                                this.state.dataSource[elem.key].purchasePrice = 0;
+                                this.state.dataSource[elem.key].price = 1;
+                                this.state.dataSource[elem.key].count = 1;
+                                this.state.dataSource[elem.key].sum = undefined;
+                                this.state.dataSource[elem.key].brandId = value;
+                                this.state.dataSource[elem.key].brandName = option.props.children;
                                 this.setState({
                                     update: true
                                 })
@@ -180,7 +180,7 @@ class FavouriteDetailsModal extends React.Component{
                                 onSelect={this.setCode}
                                 disabled={elem.storeGroupId == null}
                                 tecdocId={this.props.tecdocId}
-                                storeGroupId={this.state.dataSource[0].storeGroupId}
+                                storeGroupId={this.state.dataSource[elem.key].storeGroupId}
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
@@ -272,7 +272,7 @@ class FavouriteDetailsModal extends React.Component{
                             }}
                             parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
-                                this.state.dataSource[0].purchasePrice = value;
+                                this.state.dataSource[elem.key].purchasePrice = value;
                                 this.setState({
                                     update: true
                                 })
@@ -301,8 +301,8 @@ class FavouriteDetailsModal extends React.Component{
                             }}
                             parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
-                                this.state.dataSource[0].price = value;
-                                this.state.dataSource[0].sum = value * this.state.dataSource[0].count;
+                                this.state.dataSource[elem.key].price = value;
+                                this.state.dataSource[elem.key].sum = value * this.state.dataSource[elem.key].count;
                                 this.setState({
                                     update: true
                                 })
@@ -331,8 +331,8 @@ class FavouriteDetailsModal extends React.Component{
                             }}
                             parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
-                                this.state.dataSource[0].count = value;
-                                this.state.dataSource[0].sum = value * this.state.dataSource[0].price;
+                                this.state.dataSource[elem.key].count = value;
+                                this.state.dataSource[elem.key].sum = value * this.state.dataSource[elem.key].price;
                                 this.setState({
                                     update: true
                                 })
@@ -346,7 +346,7 @@ class FavouriteDetailsModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = this.state.dataSource[0].price *  this.state.dataSource[0].count;
+                    const sum = this.state.dataSource[elem.key].price *  this.state.dataSource[elem.key].count;
                     return (
                         <InputNumber
                             disabled
@@ -369,7 +369,12 @@ class FavouriteDetailsModal extends React.Component{
                 width:     '3%',
                 render: (elem)=>{
                     return (
-                        <Button>
+                        <Button
+                            type='primary'
+                            onClick={()=>{
+                                this.handleOk(elem.key);
+                            }}
+                        >
                             <FormattedMessage id='select'/>
                         </Button>
                     )
@@ -378,35 +383,24 @@ class FavouriteDetailsModal extends React.Component{
         ];
     }
 
-    handleOk = () => {
+    handleOk = (index) => {
         var data = {
             insertMode: true,
             details: [],
             services: [],
         }
-        this.state.dataSource.map((element)=>{
-            data.details.push({
-                storeGroupId: element.storeGroupId,
-                name: element.detailName,
-                productCode: element.detailCode,
-                supplierId: element.supplierId,
-                supplierBrandId: element.supplierBrandId,
-                brandName: element.brandName,
-                purchasePrice: element.purchasePrice,
-                count: element.count ? element.count : 1,
-                price: element.price,
-                comment: element.comment,
-            })
-        });
-        this.state.relatedServicesSource.map((element)=>{
-            if(element.laborId) {
-                data.services.push({
-                    serviceId: element.laborId,
-                    serviceHours: element.hours ? element.hours : 1,
-                    servicePrice: element.price ? element.price : 0,
-                })
-            }
-        });
+        data.details.push({
+            storeGroupId: this.state.dataSource[index].storeGroupId,
+            name: this.state.dataSource[index].detailName,
+            productCode: this.state.dataSource[index].detailCode,
+            supplierId: this.state.dataSource[index].supplierId,
+            supplierBrandId: this.state.dataSource[index].supplierBrandId,
+            brandName: this.state.dataSource[index].brandName,
+            purchasePrice: this.state.dataSource[index].purchasePrice,
+            count: this.state.dataSource[index].count ? this.state.dataSource[index].count : 1,
+            price: this.state.dataSource[index].price,
+            comment: this.state.dataSource[index].comment,
+        })
         this.addDetailsAndLabors(data);
         this.setState({
             visible: false,
@@ -419,42 +413,6 @@ class FavouriteDetailsModal extends React.Component{
         })
     };
 
-    async getDefaultValues(storeGroupId) {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}&modificationId=${this.props.tecdocId}`;
-        url += params;
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': token,
-                    'Content-Type': 'application/json',
-                },
-            });
-            const result = await response.json();
-            if(result) {
-                let markup = result.markup ? result.markup : 1.4;
-                let purchasePrice = result.price ? result.price.purchasePrice : 0;
-                that.state.dataSource[0].brandId = result.brandId;
-                that.state.dataSource[0].brandName = result.brandName;
-                that.state.dataSource[0].supplierBrandId = result.price ? result.price.supplierBrandId : undefined;
-                that.state.dataSource[0].detailCode = result.partNumber;
-                that.state.dataSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
-                that.state.dataSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
-                that.state.dataSource[0].store = result.price ? result.price.store : undefined;
-                that.state.dataSource[0].purchasePrice = purchasePrice;
-                that.state.dataSource[0].price = purchasePrice * markup;
-                that.state.dataSource[0].count = 1;
-                that.setState({
-                    update: true,
-                })
-            }
-        } catch (error) {
-            console.error('ERROR:', error);
-        }
-    }
 
     setCode(code, brand) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
