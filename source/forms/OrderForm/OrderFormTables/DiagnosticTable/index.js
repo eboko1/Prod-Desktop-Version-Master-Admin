@@ -1479,10 +1479,18 @@ class CommentaryButton extends React.Component{
         const { visible, loading, problems, currentCommentaryProps, currentCommentary } = this.state;
         const { commentary } = this.props;
         const { disabled, rowProp } = this.props;
-        const problemOptions = problems ? problems.map((data)=>(
-            { label: data.description, value: data.code }
-        )) : [];
+        var problemOptions = [];
+        if(problems) {
+            problems.map((data)=>{
+                if(data.code) {
+                    problemOptions.push({
+                        label: data.description, value: data.code
+                    })
+                }
+            })
+        }
         const defaultProblems = commentary.problems ? commentary.problems : [];
+
         if(!rowProp.partId) {
             return (
                 <Button
@@ -1650,7 +1658,7 @@ class CommentaryButton extends React.Component{
                                 </div>
                             </div>
                         </div>
-                        {problemOptions.length ?
+                        {problemOptions.length > 0 ?
                             <div>
                                 <p className={Styles.commentarySectionHeader}>Тип проблемы:</p>
                                 <div>
@@ -1661,7 +1669,7 @@ class CommentaryButton extends React.Component{
                                     />
                                 </div>
                             </div>
-                        : null}
+                        : <></>}
                         <div>
                             <p className={Styles.commentarySectionHeader}>Параметры:</p>
                             <div style={{display: "flex"}}>
