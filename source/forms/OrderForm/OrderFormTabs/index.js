@@ -196,7 +196,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         tab={`${formatMessage({
                             id: "add_order_form.services",
                             defaultMessage: "Services",
-                        })} (${countServices})`}
+                        })} (${orderServices.length})`}
                         key="2"
                     >
                         <ServicesTable

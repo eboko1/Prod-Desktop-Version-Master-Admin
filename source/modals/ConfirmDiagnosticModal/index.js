@@ -502,7 +502,6 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getServicesOptions() {
         const { Option } = AutoComplete;
-
         return this.state.labors.labors.map(
             (data, index) => (
                 <Option
@@ -570,7 +569,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         style={{ width: '60%' }}
                         step={0.1}
                         min={0.1}
-                        value={data.hours?data.hours:default_hours}
+                        value={data.hours?data.hours:1}
                         onChange={(value)=>{
                             this.state.servicesList[index].hours = value;
                             this.setState({update: true});

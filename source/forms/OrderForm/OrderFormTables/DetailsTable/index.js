@@ -8,7 +8,7 @@ import _ from "lodash";
 import { Catcher } from "commons";
 import { images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
-import { DetailProductModal } from 'modals'
+import { DetailProductModal, FavouriteDetailsModal } from 'modals'
 
 // own
 import Styles from "./styles.m.css";
@@ -62,20 +62,30 @@ export default class DetailsTable extends Component {
                             >
                                 <div
                                     style={{
-                                        width: 24,
-                                        height: 24,
+                                        width: 18,
+                                        height: 18,
                                         backgroundColor: 'white',
                                         mask: `url(${images.partsIcon}) no-repeat center / contain`,
-                                        '-webkit-mask': `url(${images.partsIcon}) no-repeat center / contain`,
+                                        WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
                                     }}
                                 ></div>
                             </Button>
-                            <PriceCountModal
-                                disabled={confirmed != "undefined" || !(elem.storeGroupId)}
-                                detail={elem}
-                                onConfirm={this.updateDetail}
-                                detailKey={elem.key}
-                            />
+                            {!(elem.storeGroupId) ? 
+                                <FavouriteDetailsModal
+                                    tecdocId={this.props.tecdocId}
+                                    orderId={this.props.orderId}
+                                    brands={this.props.allDetails.brands}
+                                    detail={this.state.dataSource[this.state.productModalKey]}
+                                    updateDataSource={this.updateDataSource}
+                                />
+                            :
+                                <PriceCountModal
+                                    disabled={confirmed != "undefined" || !(elem.storeGroupId)}
+                                    detail={elem}
+                                    onConfirm={this.updateDetail}
+                                    detailKey={elem.key}
+                                />
+                            }
                         </div>
                     )
                 }
@@ -265,17 +275,23 @@ export default class DetailsTable extends Component {
                 key: "favourite",
                 render: (elem)=>{
                     return(
-                        <Icon
-                            type="star"
-                            theme={elem.fav ? 'filled' : ''}
-                            style={{color: 'gold', fontSize: 18}}
-                            onClick={()=>{
+                        <Popconfirm
+                            title={
+                                <FormattedMessage id="add_order_form.favourite_confirm" />
+                            }
+                            onConfirm={async ()=>{
                                 this.state.dataSource[elem.key].fav = !Boolean(this.state.dataSource[elem.key].fav);
-                                this.setState({
-                                    update: true,
-                                })
+                                    this.setState({
+                                        update: true,
+                                    })
                             }}
-                        />
+                        >
+                            <Icon
+                                type="star"
+                                theme={elem.fav ? 'filled' : ''}
+                                style={{color: 'gold', fontSize: 18}}
+                            />
+                        </Popconfirm>
                     )
                 }
             },
@@ -379,10 +395,10 @@ export default class DetailsTable extends Component {
                     id: detail.id,
                     storeGroupId: detail.storeGroupId,
                     name: detail.detailName,
-                    productCode: detail.detailCode,
-                    supplierId: detail.supplierId,
-                    supplierBrandId: detail.supplierBrandId,
-                    brandName: detail.brandName,
+                    productCode: detail.detailCode ? detail.detailCode : null,
+                    supplierId: detail.supplierId ? detail.supplierId : null,
+                    supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
+                    brandName: detail.brandName ? detail.brandName : null,
                     purchasePrice: detail.purchasePrice,
                     count: detail.count,
                     price: detail.price,
@@ -390,7 +406,7 @@ export default class DetailsTable extends Component {
                 }
             ]
         }
-
+        console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/orders/${this.props.orderId}`;
@@ -653,11 +669,11 @@ class PriceCountModal extends React.Component{
                 >
                     <div
                         style={{
-                            width: 24,
-                            height: 24,
+                            width: 18,
+                            height: 18,
                             backgroundColor: this.props.disabled ? 'black' : 'white',
                             mask: `url(${images.pencilIcon}) no-repeat center / contain`,
-                            '-webkit-mask': `url(${images.pencilIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${images.pencilIcon}) no-repeat center / contain`,
                         }}
                     ></div>
                 </Button>

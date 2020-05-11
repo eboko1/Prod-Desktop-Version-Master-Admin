@@ -18,6 +18,8 @@ import ConfirmDiagnosticModal from './ConfirmDiagnosticModal';
 import DetailProductModal from './DetailProductModal';
 import DetailStorageModal from './DetailStorageModal';
 import DetailSupplierModal from './DetailSupplierModal';
+import FavouriteDetailsModal from './FavouriteDetailsModal';
+import FavouriteServicesModal from './FavouriteServicesModal';
 export {
     UniversalFiltersModal,
     AddClientModal,
@@ -39,4 +41,6 @@ export {
     DetailProductModal,
     DetailStorageModal,
     DetailSupplierModal,
+    FavouriteDetailsModal,
+    FavouriteServicesModal
 };
