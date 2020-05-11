@@ -242,6 +242,7 @@ class DetailStorageModal extends React.Component{
                         <div>
                             <FormattedMessage id="order_form_table.store" />
                             <div style={{fontWeight: '400', fontSize: 12}}>
+                                В наличии
                                 <Checkbox
                                     checked={this.state.inStock}
                                     onChange={()=>{
@@ -250,18 +251,45 @@ class DetailStorageModal extends React.Component{
                                         })
                                     }}
                                 /> 
-                                В наличии
                             </div>
                         </div>
                     )
                 },
-                key:       'store',
+                key:       <FormattedMessage id="order_form_table.AI" />,
                 dataIndex: 'store',
                 width:     '8%',
                 render: (store) => {
+                    let color = 'brown',
+                    title = 'Поставщик не выбран!';
+                    if(store){
+                        title=  `Сегодня: ${store[0]} шт.\n` +
+                                `Завтра: ${store[1]} шт.\n` +
+                                `Послезавтра: ${store[2]} шт.\n` +
+                                `Позже: ${store[3]} шт.`;
+                        if(store[0] != '0') {
+                            color = 'rgb(81, 205, 102)';
+                        }
+                        else if(store[1] != 0) {
+                            color = 'yellow';
+                        }
+                        else if(store[2] != 0) {
+                            color = 'orange';
+                        }
+                        else if(store[3] != 0) {
+                            color = 'red';
+                        }
+                    }
+                    else {
+                        color = 'grey';
+                        
+                    }
+                    
                     return (
-                        store ? `${store[0]}/${store[1]}/${store[2]}/${store[3]}` : <FormattedMessage id="long_dash"/>
-                    );
+                        <div
+                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
+                            title={title}
+                        ></div>
+                    )
                 },
             },
             {
@@ -398,6 +426,7 @@ class DetailStorageModal extends React.Component{
                 fetched: true,
                 dataSource: data,
                 brandOptions: brandOptions,
+                codeFilter: that.props.codeFilter,
             })
         })
         .catch(function (error) {

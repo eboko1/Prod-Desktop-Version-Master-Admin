@@ -194,9 +194,14 @@ class DetailProductModal extends React.Component{
                         <div style={{display: "flex"}}>
                             <Input
                                 style={{maxWidth: 180, color: 'black'}}
-                                disabled
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
+                                onChange={(event)=>{
+                                    this.state.mainTableSource[0].detailCode = event.target.value;
+                                    this.setState({
+                                        update: true
+                                    })
+                                }}
                             />
                             <DetailStorageModal
                                 onSelect={this.setCode}
@@ -206,6 +211,7 @@ class DetailProductModal extends React.Component{
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
+                                codeFilter={elem.detailCode}
                             />
                         </div>
                     )
