@@ -71,8 +71,8 @@ class ServicesTable extends Component {
             {
                 title: <FormattedMessage id="order_form_table.service_type" />,
                 width: "15%",
-                key: "storeGroupName",
-                dataIndex: 'storeGroupName',
+                key: "defaultName",
+                dataIndex: 'defaultName',
                 render: (data) => {
                     return (
                         data ? data : <FormattedMessage id="long_dash"/>

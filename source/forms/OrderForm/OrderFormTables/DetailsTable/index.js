@@ -278,9 +278,9 @@ export default class DetailsTable extends Component {
                         <Popconfirm
                             title={
                                 elem.frequentDetailId ?
-                                    <FormattedMessage id="add_order_form.favourite_confirm" />
-                                :
                                     <FormattedMessage id="add_order_form.favourite_remove" />
+                                :
+                                    <FormattedMessage id="add_order_form.favourite_confirm" />
                             }
                             onConfirm={async ()=>{
                                 var that = this;
