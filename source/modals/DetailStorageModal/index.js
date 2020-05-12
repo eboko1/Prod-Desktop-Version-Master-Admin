@@ -474,6 +474,7 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
+        console.log(this.state.dataSource)
         const { dataSource, brandFilter, codeFilter, inStock } = this.state;
         let tblData = [...dataSource];
 
