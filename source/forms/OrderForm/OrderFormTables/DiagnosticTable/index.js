@@ -1008,6 +1008,7 @@ class DiagnosticTable extends Component {
         return (
             <Catcher>
                 <DiagnosticTableHeader
+                    tecdocId={this.props.tecdocId}
                     disabled={disabled}
                     orderId={this.props.orderId}
                     getCurrentDiagnostic={this.getCurrentDiagnostic}
@@ -1125,6 +1126,7 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "35%" }}>
                     <ConfirmDiagnosticModal
+                        tecdocId={this.props.tecdocId}
                         confirmed={disabled}
                         orderId={this.props.orderId}
                         isMobile={false}
