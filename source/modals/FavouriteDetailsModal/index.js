@@ -45,7 +45,6 @@ class FavouriteDetailsModal extends React.Component{
                         <TreeSelect
                             disabled
                             className={Styles.groupsTreeSelect}
-                            disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
                             style={{maxWidth: 180}}
@@ -172,9 +171,14 @@ class FavouriteDetailsModal extends React.Component{
                         <div style={{display: "flex"}}>
                             <Input
                                 style={{maxWidth: 180, color: 'black'}}
-                                disabled
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
+                                onChange={(event)=>{
+                                    this.state.dataSource[elem.key].detailCode = event.target.value;
+                                    this.setState({
+                                        update: true
+                                    })
+                                }}
                             />
                             <DetailStorageModal
                                 onSelect={this.setCode}
@@ -500,9 +504,25 @@ class FavouriteDetailsModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
-            data.details.map((elem, i)=>elem.key=i);
-            that.state.dataSource = data.details;
+            data.details.map((elem, i)=>{
+                elem.key = i;
+                elem.detailName = elem.storeGroup.name;
+                elem.detailCode = elem.partNumber;
+                if(elem.price) {
+                    elem.store = elem.price.store;
+                    elem.purchasePrice = elem.price.purchasePrice;
+                    elem.markup = elem.price.markup ? elem.price.markup : 1.4;
+                    elem.supplierName = elem.price.businessSupplierName;
+                    elem.supplierId = elem.price.businessSupplierId;
+                    elem.supplierBrandId = elem.price.supplierBrandId;
+                    elem.supplierPrice = elem.price;
+                    elem.price = elem.purchasePrice * elem.markup;
+                    elem.sum = elem.price;
+                }
+            });
+            that.setState({
+                dataSource: data.details,
+            })
         })
         .catch(function (error) {
             console.log('error', error)
@@ -592,12 +612,13 @@ class FavouriteDetailsModal extends React.Component{
         ));
     };
 
-    componentWillMount() {
-        this.fetchData();
+    componentWillUpdate(_, nextState) {
+        if(this.state.visible==false && nextState.visible==true) {
+            this.fetchData();
+        }
     }
 
     render() {
-        console.log(this.state.dataSource);
         const { visible } = this.state;
         return (
             <>
