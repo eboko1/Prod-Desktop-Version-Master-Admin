@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { Catcher } from 'commons';
 import { images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
-import { FavouriteServicesModal } from 'modals'
+import { FavouriteServicesModal, AddServiceModal } from 'modals'
 
 // own
 import Styles from './styles.m.css';
@@ -19,8 +19,8 @@ class ServicesTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            productModalVisible: false,
-            productModalKey: 0,
+            serviceModalVisible: false,
+            serviceModalKey: 0,
             dataSource: [],
         }
 
@@ -269,13 +269,13 @@ class ServicesTable extends Component {
 
     showServiceProductModal(key) {
         this.setState({
-            productModalVisible: true,
-            productModalKey: key,
+            serviceModalVisible: true,
+            serviceModalKey: key,
         })
     }
     hideServicelProductModal() {
         this.setState({
-            productModalVisible: false,
+            serviceModalVisible: false,
         })
     }
 
@@ -398,6 +398,12 @@ class ServicesTable extends Component {
                     dataSource={ this.state.dataSource }
                     columns={ this.columns }
                     pagination={false}
+                />
+                <AddServiceModal
+                    visible={this.state.serviceModalVisible}
+                    labor={this.state.dataSource[this.state.serviceModalKey]}
+                    hideModal={()=>this.hideServicelProductModal()}
+                    orderId={this.props.orderId}
                 />
             </Catcher>
         );

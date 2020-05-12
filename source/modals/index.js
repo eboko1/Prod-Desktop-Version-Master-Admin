@@ -20,6 +20,7 @@ import DetailStorageModal from './DetailStorageModal';
 import DetailSupplierModal from './DetailSupplierModal';
 import FavouriteDetailsModal from './FavouriteDetailsModal';
 import FavouriteServicesModal from './FavouriteServicesModal';
+import AddServiceModal from './AddServiceModal'
 export {
     UniversalFiltersModal,
     AddClientModal,
@@ -42,5 +43,6 @@ export {
     DetailStorageModal,
     DetailSupplierModal,
     FavouriteDetailsModal,
-    FavouriteServicesModal
+    FavouriteServicesModal,
+    AddServiceModal,
 };
