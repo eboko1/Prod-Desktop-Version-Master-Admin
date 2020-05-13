@@ -85,6 +85,7 @@ export class OrderForm extends React.PureComponent {
     }
 
     reloadOrderForm() {
+        console.log(this);
         const formValues = this.props.form.getFieldsValue();
         this.setState({ formValues });
     }

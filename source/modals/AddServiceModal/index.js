@@ -4,12 +4,7 @@ import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
-import {
-    API_URL,
-    confirmDiagnostic,
-    createAgreement,
-    lockDiagnostic,
-} from 'core/forms/orderDiagnosticForm/saga';
+import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
 import { DetailStorageModal, DetailSupplierModal } from 'modals'
 // own
@@ -28,20 +23,56 @@ class AddServiceModal extends React.Component{
             groupSearchValue: "",
         }
         this.labors = [];
+        this.masterLabors = [];
         this.storeGroups = [];
-        this.treeData = [];
+        this.storeGroupsTreeData = [];
+        this.laborsTreeData = [];
         this.brandOptions = [];
         this.servicesOptions = [];
+        this.employeeOptions = [];
         this.relatedDetailsOptions = [];
 
         this.setComment = this.setComment.bind(this);
 
         this.mainTableColumns = [
             {
+                title:  'ID',
+                key:       'masterLaborId',
+                dataIndex: 'masterLaborId',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <TreeSelect
+                            className={Styles.groupsTreeSelect}
+                            disabled={this.state.editing}
+                            showSearch
+                            placeholder='ID'
+                            style={{maxWidth: 180}}
+                            value={data}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            treeData={this.laborsTreeData}
+                            filterTreeNode={(input, node) => {
+                                return (
+                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.mainTableSource[0].masterLaborId = value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        />
+                    )
+                }
+                
+            },
+            {
                 title:  <FormattedMessage id="order_form_table.store_group" />,
                 key:       'storeGroupId',
                 dataIndex: 'storeGroupId',
-                width:     '12%',
+                width:     '10%',
                 render: (data, elem)=>{
                     return (
                         <TreeSelect
@@ -52,7 +83,7 @@ class AddServiceModal extends React.Component{
                             style={{maxWidth: 180}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.treeData}
+                            treeData={this.storeGroupsTreeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -62,6 +93,7 @@ class AddServiceModal extends React.Component{
                             onSelect={(value, option)=>{
                                 this.state.mainTableSource[0].storeGroupId = value;
                                 this.state.mainTableSource[0].laborId = undefined;
+                                this.state.mainTableSource[0].serviceName = undefined;
                                 this.filterOptions(value);
                                 this.setState({
                                     update: true
@@ -94,6 +126,8 @@ class AddServiceModal extends React.Component{
                             onSelect={(value, option)=>{
                                 this.state.mainTableSource[0].laborId = value;
                                 this.state.mainTableSource[0].serviceName = option.props.children;
+                                this.state.mainTableSource[0].masterLaborId = option.props.master_id;
+                                this.state.mainTableSource[0].storeGroupId = option.props.product_id;
                                 this.setState({
                                     update: true
                                 })
@@ -122,6 +156,38 @@ class AddServiceModal extends React.Component{
                                 })
                             }}
                         />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.master" />,
+                key:       'employeeId',
+                dataIndex: 'employeeId',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <Select
+                            allowClear
+                            showSearch
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
+                            value={data}
+                            style={{maxWidth: 180, minWidth: 100}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.mainTableSource[0].employeeId = value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        >
+                            {this.employeeOptions}
+                        </Select>
                     )
                 }
             },
@@ -231,6 +297,21 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
+                title:  <FormattedMessage id="hours" />,
+                key:       'hours',
+                dataIndex: 'hours',
+                width:     '3%',
+                render: (data, elem)=>{
+                    return (
+                        <Button
+                            type={'primary'}
+                        >
+                            <Icon type="history"/>
+                        </Button>
+                    )
+                }
+            },
+            {
                 title:  <FormattedMessage id="order_form_table.sum" />,
                 key:       'sum',
                 width:     '5%',
@@ -262,15 +343,9 @@ class AddServiceModal extends React.Component{
                             type="close"
                             onClick={()=>{
                                 this.state.mainTableSource[0].storeGroupId = this.state.editing ? elem.storeGroupId : undefined;
-                                this.state.mainTableSource[0].detailName = undefined;
+                                this.state.mainTableSource[0].masterLaborId = this.state.editing ? elem.masterLaborId : undefined;
+                                this.state.mainTableSource[0].serviceName = undefined;
                                 this.state.mainTableSource[0].comment = undefined;
-                                this.state.mainTableSource[0].brandId = undefined;
-                                this.state.mainTableSource[0].brandName = undefined;
-                                this.state.mainTableSource[0].detailCode = undefined;
-                                this.state.mainTableSource[0].supplierName = undefined;
-                                this.state.mainTableSource[0].supplierId = undefined;
-                                this.state.mainTableSource[0].supplierBrandId = undefined;
-                                this.state.mainTableSource[0].store = null;
                                 this.state.mainTableSource[0].purchasePrice = 0;
                                 this.state.mainTableSource[0].price = 1;
                                 this.state.mainTableSource[0].count = 1;
@@ -384,6 +459,31 @@ class AddServiceModal extends React.Component{
             console.log('error', error)
         });
 
+        params = `/labors/master?makeTree=true`;
+        url = API_URL + params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.masterLabors = data.masterLabors;
+            that.buildLaborsTree();
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
         params = `/store_groups`;
         url = API_URL + params;
         fetch(url, {
@@ -456,15 +556,57 @@ class AddServiceModal extends React.Component{
                 }
             }
         }
-        this.treeData = treeData;
+        this.storeGroupsTreeData = treeData;
+    }
+
+    buildLaborsTree() {
+        var treeData = [];
+        for(let i = 0; i < this.masterLabors.length; i++) {
+            const parentGroup = this.masterLabors[i];
+            treeData.push({
+                title: `${parentGroup.defaultMasterLaborName} (#${parentGroup.masterLaborId})`,
+                name: parentGroup.defaultMasterLaborName,
+                value: parentGroup.masterLaborId,
+                className: Styles.groupTreeOption,
+                key: `${i}`,
+                children: [],
+            })
+            for(let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[j];
+                treeData[i].children.push({
+                    title: `${childGroup.defaultMasterLaborName} (#${childGroup.masterLaborId})`,
+                    name: childGroup.defaultMasterLaborName,
+                    value: childGroup.masterLaborId,
+                    className: Styles.groupTreeOption,
+                    key: `${i}-${j}`,
+                    children: [],
+                })
+                for(let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[k];
+                    treeData[i].children[j].children.push({
+                        title: `${lastNode.defaultMasterLaborName} (#${lastNode.masterLaborId})`,
+                        name: lastNode.defaultMasterLaborName,
+                        value: lastNode.masterLaborId,
+                        className: Styles.groupTreeOption,
+                        key: `${i}-${j}-${k}`,
+                    })
+                }
+            }
+        }
+        this.laborsTreeData = treeData;
     }
 
     getOptions() {
         this.servicesOptions = this.labors.map((elem, index)=>(
-            <Option key={index} value={elem.laborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
+            <Option key={index} value={elem.laborId} master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
                 {elem.name ? elem.name : elem.defaultName}
             </Option>
         ));
+        this.employeeOptions = this.props.employees.map((elem, i)=>(
+            <Option key={i} value={elem.id}>
+                {elem.name}
+            </Option>
+        ))
     };
 
     filterOptions(id) {
@@ -472,7 +614,7 @@ class AddServiceModal extends React.Component{
         this.labors.map((elem, index)=>{
             if(elem.productId == id) {
                 servicesOptions.push(
-                    <Option key={index} value={elem.laborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
+                    <Option key={index} value={elem.laborId}  master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
                         {elem.name ? elem.name : elem.defaultName}
                     </Option>
                 )

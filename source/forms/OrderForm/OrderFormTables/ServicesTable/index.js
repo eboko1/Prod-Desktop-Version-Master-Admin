@@ -96,8 +96,10 @@ class ServicesTable extends Component {
                 key: "employeeId",
                 dataIndex: 'employeeId',
                 render: (data) => {
+                    var name = this.props.employees.find((elem)=>elem.id==data);
+                    if(name) name = name.name;
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                        data ? name : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
@@ -131,6 +133,23 @@ class ServicesTable extends Component {
                     return (
                         <span>
                             {data ? strVal : 0} <FormattedMessage id="cur" />
+                        </span> 
+                    )
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.count" />,
+                width: "5%",
+                key: "count",
+                dataIndex: 'count',
+                render: (data) => {
+                    let strVal = String(Math.round(data));
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
+                    return (
+                        <span>
+                            {data ? strVal : 0} <FormattedMessage id="pc" />
                         </span> 
                     )
                 },
@@ -301,7 +320,6 @@ class ServicesTable extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.labors.map((elem, index)=>{
                 elem.key = index;
             })
@@ -376,7 +394,6 @@ class ServicesTable extends Component {
     }
 
     render() {
-        console.log(this.props.orderServices);
         if(this.state.dataSource.length == 0  || this.state.dataSource[this.state.dataSource.length-1].serviceName != undefined) {
             this.state.dataSource.push({
                 key: this.state.dataSource.length,
@@ -400,6 +417,7 @@ class ServicesTable extends Component {
                     pagination={false}
                 />
                 <AddServiceModal
+                    employees={this.props.employees}
                     visible={this.state.serviceModalVisible}
                     labor={this.state.dataSource[this.state.serviceModalKey]}
                     hideModal={()=>this.hideServicelProductModal()}
