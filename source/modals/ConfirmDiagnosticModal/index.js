@@ -54,7 +54,7 @@ class ConfirmDiagnosticModal extends React.Component{
         var data = {
             services: [],
             details: [],
-            tecdocId: this.props.tecdocId,
+            modificationId: this.props.tecdocId,
         }
         this.state.servicesList.map((element)=>{
             if(element.checked && element.id != null) {

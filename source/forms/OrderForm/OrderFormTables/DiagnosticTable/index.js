@@ -63,6 +63,7 @@ class DiagnosticTable extends Component {
         this.templatesTitles = [];
         this.groupsTitles = [];
         this.partsTitles = [];
+        this.planFilterOptions = [];
         this.ok = 0;
         this.bad = 0;
         this.critical = 0;
@@ -181,7 +182,7 @@ class DiagnosticTable extends Component {
             {
                 title:  ()=>{
                     const { Option } = Select;
-                    let options = undefined !== this.groupsTitles ? this.groupsTitles : [];
+                    let options = undefined !== this.planFilterOptions ? this.planFilterOptions : [];
                     return(
                         <div className={Styles.filter_column_header_wrap} style={{width: "100%"}}>
                             <p>
@@ -620,6 +621,15 @@ class DiagnosticTable extends Component {
                 let diagnostic =  this.templatesData.diagnosticTemplates[i].groups[j];
                 let id = diagnostic.groupId;
                 let title = diagnostic.groupTitle;
+
+                if(this.planFilterOptions.findIndex((elem)=>elem.title==title) == -1) {
+                    this.planFilterOptions.push({
+                        id: id,
+                        title: title,
+                        parentId: this.templatesData.diagnosticTemplates[i].diagnosticTemplateId,
+                        parent: this.templatesData.diagnosticTemplates[i].diagnosticTemplateTitle,
+                    })
+                }
 
                 this.groupsTitles.push({
                     id: id,
