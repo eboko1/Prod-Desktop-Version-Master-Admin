@@ -93,7 +93,7 @@ class AddServiceModal extends React.Component{
                             }}
                             onSelect={(value, option)=>{
                                 this.state.mainTableSource[0].laborId = value;
-                                this.state.mainTableSource[0].detailName = option.props.children;
+                                this.state.mainTableSource[0].serviceName = option.props.children;
                                 this.setState({
                                     update: true
                                 })
@@ -112,7 +112,6 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Input
-                            disabled={elem.storeGroupId == null}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             style={{minWidth: 150}}
                             value={data}
@@ -153,7 +152,6 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
                             value={data || 0}
                             min={0}
                             formatter={(value)=>{
@@ -182,7 +180,6 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
                             formatter={(value)=>{
@@ -212,7 +209,6 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
                             formatter={(value)=>{
