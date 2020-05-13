@@ -43,6 +43,7 @@ class DetailProductModal extends React.Component{
             relatedDetailsCheckbox: false,
             relatedServicesCheckbox: false,
             groupSearchValue: "",
+            defaultBrandName: undefined,
         }
         this.labors = [];
         this.storeGroups = [];
@@ -212,6 +213,7 @@ class DetailProductModal extends React.Component{
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
                                 codeFilter={elem.detailCode}
+                                defaultBrandName={this.state.defaultBrandName}
                             />
                         </div>
                     )
@@ -958,6 +960,7 @@ class DetailProductModal extends React.Component{
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}&modificationId=${this.props.tecdocId}`;
+        if(this.state.editing) params += `&excludePricelist=true`;
         url += params;
         try {
             const response = await fetch(url, {
@@ -969,18 +972,30 @@ class DetailProductModal extends React.Component{
             });
             const result = await response.json();
             if(result) {
-                let markup = result.markup ? result.markup : 1.4;
-                let purchasePrice = result.price ? result.price.purchasePrice : 0;
-                that.state.mainTableSource[0].brandId = result.brandId;
-                that.state.mainTableSource[0].brandName = result.brandName;
-                that.state.mainTableSource[0].supplierBrandId = result.price ? result.price.supplierBrandId : undefined;
-                that.state.mainTableSource[0].detailCode = result.partNumber;
-                that.state.mainTableSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
-                that.state.mainTableSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
-                that.state.mainTableSource[0].store = result.price ? result.price.store : undefined;
-                that.state.mainTableSource[0].purchasePrice = purchasePrice;
-                that.state.mainTableSource[0].price = purchasePrice * markup;
-                that.state.mainTableSource[0].count = 1;
+                let brands = that.props.brands.slice(0);
+                brands.sort((x,y)=>{ 
+                    return x.brandId == result.brandId ? -1 : y.brandId == result.brandId ? 1 : 0; 
+                });
+                that.brandOptions = brands.map((elem, index)=>(
+                    <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                        {elem.brandName}
+                    </Option>
+                ));
+                that.state.defaultBrandName = result.brandName;
+                if(!that.state.editing) {
+                    let markup = result.markup ? result.markup : 1.4;
+                    let purchasePrice = result.price ? result.price.purchasePrice : 0;
+                    that.state.mainTableSource[0].brandId = result.brandId;
+                    that.state.mainTableSource[0].brandName = result.brandName;
+                    that.state.mainTableSource[0].supplierBrandId = result.price ? result.price.supplierBrandId : undefined;
+                    that.state.mainTableSource[0].detailCode = result.partNumber;
+                    that.state.mainTableSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
+                    that.state.mainTableSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
+                    that.state.mainTableSource[0].store = result.price ? result.price.store : undefined;
+                    that.state.mainTableSource[0].purchasePrice = purchasePrice;
+                    that.state.mainTableSource[0].price = purchasePrice * markup;
+                    that.state.mainTableSource[0].count = 1;
+                }
                 that.setState({
                     update: true,
                 })
@@ -1201,6 +1216,7 @@ class DetailProductModal extends React.Component{
                 editing: editing,
                 mainTableSource: [{...this.props.detail}],
             })
+            this.getDefaultValues(this.props.detail.storeGroupId);
         }
     }
 
