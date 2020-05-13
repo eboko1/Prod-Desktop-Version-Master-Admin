@@ -402,6 +402,7 @@ class DetailStorageModal extends React.Component{
         })
         .then(function (data) {
             var brandOptions = [];
+            let defaultBrand = [], brandsWithSupplier = [], otherBrands = [];
             data.map((elem, i)=>{
                 elem.key = i;
                 if(elem.price) {
@@ -419,9 +420,29 @@ class DetailStorageModal extends React.Component{
                         id: elem.supplierId,
                         name: elem.supplierName,
                     })
+                    if(elem.supplierName == that.props.defaultBrandName) {
+                        defaultBrand.push({
+                            id: elem.supplierId,
+                            name: elem.supplierName,
+                        })
+                    }
+                    else if(elem.price) {
+                        brandsWithSupplier.push({
+                            id: elem.supplierId,
+                            name: elem.supplierName,
+                        })
+                    }
+                    else {
+                        otherBrands.push({
+                            id: elem.supplierId,
+                            name: elem.supplierName,
+                        })
+                    }
                 }
             })
-            brandOptions.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
+            brandsWithSupplier.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
+            otherBrands.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
+            brandOptions=[...defaultBrand, ...brandsWithSupplier, ...otherBrands];
             that.setState({
                 fetched: true,
                 dataSource: data,
