@@ -79,11 +79,11 @@ export default class DetailsTable extends Component {
                                     updateDataSource={this.updateDataSource}
                                 />
                             :
-                                <PriceCountModal
+                                <QuickEditModal
                                     disabled={confirmed != "undefined" || !(elem.storeGroupId)}
                                     detail={elem}
                                     onConfirm={this.updateDetail}
-                                    detailKey={elem.key}
+                                    tableKey={elem.key}
                                 />
                             }
                         </div>
@@ -518,7 +518,7 @@ export default class DetailsTable extends Component {
     }
 }
 
-class PriceCountModal extends React.Component{
+class QuickEditModal extends React.Component{
     constructor(props) {
         super(props);
         this.state={
@@ -669,7 +669,7 @@ class PriceCountModal extends React.Component{
         this.setState({
             visible: false,
         });
-        this.props.onConfirm(this.props.detailKey, this.state.dataSource[0]);
+        this.props.onConfirm(this.props.tableKey, this.state.dataSource[0]);
     }
 
     handleCancel = () => {
@@ -704,7 +704,7 @@ class PriceCountModal extends React.Component{
                 <Modal
                     width='80%'
                     visible={this.state.visible}
-                    title='priceEdit'
+                    title={<FormattedMessage id='order_form_table.quick_edit'/>}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >

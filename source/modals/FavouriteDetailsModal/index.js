@@ -369,7 +369,7 @@ class FavouriteDetailsModal extends React.Component{
                 }
             },
             {
-                key:       'delete',
+                key:       'select',
                 width:     '3%',
                 render: (elem)=>{
                     return (

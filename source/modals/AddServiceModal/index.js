@@ -59,6 +59,7 @@ class AddServiceModal extends React.Component{
                             }}
                             onSelect={(value, option)=>{
                                 this.state.mainTableSource[0].masterLaborId = value;
+                                this.filterOptions(value, elem.storeGroupId);
                                 this.setState({
                                     update: true
                                 })
@@ -94,7 +95,7 @@ class AddServiceModal extends React.Component{
                                 this.state.mainTableSource[0].storeGroupId = value;
                                 this.state.mainTableSource[0].laborId = undefined;
                                 this.state.mainTableSource[0].serviceName = undefined;
-                                this.filterOptions(value);
+                                this.filterOptions(elem.masterLaborId, value);
                                 this.setState({
                                     update: true
                                 })
@@ -364,7 +365,7 @@ class AddServiceModal extends React.Component{
 
     handleOk = () => {
         if(this.state.editing) {
-            this.props.updateDetail(this.props.tableKey, {...this.state.mainTableSource[0]});
+            this.props.updateLabor(this.props.tableKey, {...this.state.mainTableSource[0]});
         }
         else {
             var data = {
@@ -609,18 +610,19 @@ class AddServiceModal extends React.Component{
         ))
     };
 
-    filterOptions(id) {
-        const servicesOptions = [];
-        this.labors.map((elem, index)=>{
-            if(elem.productId == id) {
-                servicesOptions.push(
-                    <Option key={index} value={elem.laborId}  master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
-                        {elem.name ? elem.name : elem.defaultName}
-                    </Option>
-                )
-            }
-            else return;
-        });
+    filterOptions(masterLaborId, storeGroupId) {
+        var servicesOptions = [...this.labors];
+        if(masterLaborId) {
+            servicesOptions = servicesOptions.filter((elem, index)=>elem.masterLaborId == masterLaborId);
+        }
+        if(storeGroupId) {
+            servicesOptions = servicesOptions.filter((elem, index)=>elem.productId == storeGroupId);
+        }
+        servicesOptions = servicesOptions.map((elem, index)=>(
+            <Option key={index} value={elem.laborId}  master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
+                {elem.name ? elem.name : elem.defaultName}
+            </Option>
+        ))
 
         this.servicesOptions = [...servicesOptions];
     }
@@ -632,6 +634,7 @@ class AddServiceModal extends React.Component{
     componentDidUpdate(prevState) {
         if(prevState.visible == false && this.props.visible) {
             const editing = Boolean(this.props.labor.laborId);
+            this.getOptions();
             this.setState({
                 editing: editing,
                 mainTableSource: [{...this.props.labor}],
@@ -640,10 +643,9 @@ class AddServiceModal extends React.Component{
     }
 
     render() {
-        console.log(this);
         const { visible } = this.props;
         return (
-            <div>
+            <>
                 <Modal
                     width="95%"
                     visible={visible}
@@ -673,7 +675,7 @@ class AddServiceModal extends React.Component{
                         />
                     </div>
                 </Modal>
-            </div>
+            </>
         )
     }
 }

@@ -22,35 +22,40 @@ class FavouriteServicesModal extends React.Component{
     constructor(props) {
         super(props);
         this.state = {
-            visible: false,
+            editing: false,
             dataSource: [],
+            relatedDetailsCheckbox: false,
+            groupSearchValue: "",
         }
-
+        this.labors = [];
+        this.masterLabors = [];
         this.storeGroups = [];
-        this.treeData = [];
+        this.storeGroupsTreeData = [];
+        this.laborsTreeData = [];
         this.brandOptions = [];
+        this.servicesOptions = [];
+        this.employeeOptions = [];
+        this.relatedDetailsOptions = [];
 
-        this.setCode = this.setCode.bind(this);
-        this.setSupplier = this.setSupplier.bind(this);
         this.setComment = this.setComment.bind(this);
 
         this.columns = [
             {
-                title:  <FormattedMessage id="order_form_table.store_group" />,
-                key:       'storeGroupId',
-                dataIndex: 'storeGroupId',
-                width:     '12%',
+                title:  'ID',
+                key:       'masterLaborId',
+                dataIndex: 'masterLaborId',
+                width:     '10%',
                 render: (data, elem)=>{
                     return (
                         <TreeSelect
                             className={Styles.groupsTreeSelect}
                             disabled={this.state.editing}
                             showSearch
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
+                            placeholder='ID'
                             style={{maxWidth: 180}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.treeData}
+                            treeData={this.laborsTreeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -58,10 +63,8 @@ class FavouriteServicesModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.getDefaultValues(value);
-                                this.state.dataSource[0].storeGroupId = value;
-                                this.state.dataSource[0].detailName = option.props.name;
-                                this.filterOptions(value);
+                                this.state.dataSource[elem.key].masterLaborId = value;
+                                this.filterOptions(value, elem.storeGroupId);
                                 this.setState({
                                     update: true
                                 })
@@ -72,24 +75,125 @@ class FavouriteServicesModal extends React.Component{
                 
             },
             {
-                title:  <FormattedMessage id="order_form_table.detail_name" />,
-                key:       'detailName',
-                dataIndex: 'detailName',
-                width:     '20%',
+                title:  <FormattedMessage id="order_form_table.store_group" />,
+                key:       'storeGroupId',
+                dataIndex: 'storeGroupId',
+                width:     '10%',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            disabled={elem.storeGroupId == null}
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            style={{minWidth: 150}}
+                        <TreeSelect
+                            className={Styles.groupsTreeSelect}
+                            disabled={this.state.editing}
+                            showSearch
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
+                            style={{maxWidth: 180}}
                             value={data}
-                            onChange={(event)=>{
-                                this.state.dataSource[0].detailName = event.target.value;
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            treeData={this.storeGroupsTreeData}
+                            filterTreeNode={(input, node) => {
+                                return (
+                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.dataSource[elem.key].storeGroupId = value;
+                                this.state.dataSource[elem.key].laborId = undefined;
+                                this.state.dataSource[elem.key].serviceName = undefined;
+                                this.filterOptions(elem.masterLaborId, value);
                                 this.setState({
                                     update: true
                                 })
                             }}
                         />
+                    )
+                }
+                
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.service_type" />,
+                key:       'laborId',
+                dataIndex: 'laborId',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <Select
+                            showSearch
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
+                            value={data ? data : undefined}
+                            style={{maxWidth: 180, minWidth: 100}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.dataSource[elem.key].laborId = value;
+                                this.state.dataSource[elem.key].serviceName = option.props.children;
+                                this.state.dataSource[elem.key].masterLaborId = option.props.master_id;
+                                this.state.dataSource[elem.key].storeGroupId = option.props.product_id;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        >
+                            {this.servicesOptions}
+                        </Select>
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.detail_name" />,
+                key:       'serviceName',
+                dataIndex: 'serviceName',
+                width:     '20%',
+                render: (data, elem)=>{
+                    return (
+                        <Input
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
+                            style={{minWidth: 150}}
+                            value={data}
+                            onChange={(event)=>{
+                                this.state.dataSource[elem.key].serviceName = event.target.value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.master" />,
+                key:       'employeeId',
+                dataIndex: 'employeeId',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <Select
+                            allowClear
+                            showSearch
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
+                            value={data}
+                            style={{maxWidth: 180, minWidth: 100}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.dataSource[elem.key].employeeId = value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        >
+                            {this.employeeOptions}
+                        </Select>
                     )
                 }
             },
@@ -100,7 +204,7 @@ class FavouriteServicesModal extends React.Component{
                 width:     '5%',
                 render: (data, elem)=>{
                     const detail = {
-                        name: this.state.dataSource[0].detailName,
+                        name: this.state.dataSource[elem.key].detailName,
                     }
                     return (
                         <CommentaryButton
@@ -113,147 +217,6 @@ class FavouriteServicesModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.brand" />,
-                key:       'brandId',
-                dataIndex: 'brandId',
-                width:     '10%',
-                render: (data, elem)=>{
-                    if(elem.brandName && !(elem.brandId)) {
-                        const defaultBrand = this.props.brands.find((brand)=>brand.brandName==elem.brandName);
-                        if(defaultBrand) {
-                            this.state.dataSource[0].brandId = defaultBrand.brandId;
-                            this.setState({
-                                update: true
-                            })
-                        }
-                    }
-                    return (
-                        <Select
-                            showSearch
-                            disabled={elem.storeGroupId == null}
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
-                            value={data ? data : undefined}
-                            style={{maxWidth: 180, minWidth: 100}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            filterOption={(input, option) => {
-                                return (
-                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                            onSelect={(value, option)=>{
-                                this.state.dataSource[0].detailCode = undefined;
-                                this.state.dataSource[0].supplierName = undefined;
-                                this.state.dataSource[0].supplierBrandId = undefined;
-                                this.state.dataSource[0].supplierId = undefined;
-                                this.state.dataSource[0].store = null;
-                                this.state.dataSource[0].purchasePrice = 0;
-                                this.state.dataSource[0].price = 1;
-                                this.state.dataSource[0].count = 1;
-                                this.state.dataSource[0].sum = undefined;
-                                this.state.dataSource[0].brandId = value;
-                                this.state.dataSource[0].brandName = option.props.children;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        >
-                            {this.brandOptions}
-                        </Select>
-                    )
-                }
-            },
-            {
-                title:  <FormattedMessage id="order_form_table.detail_code" />,
-                key:       'detailCode',
-                dataIndex: 'detailCode',
-                width:     '15%',
-                render: (data, elem)=>{
-                    return (
-                        <div style={{display: "flex"}}>
-                            <Input
-                                style={{maxWidth: 180, color: 'black'}}
-                                disabled
-                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
-                                value={data}
-                            />
-                            <DetailStorageModal
-                                onSelect={this.setCode}
-                                disabled={elem.storeGroupId == null}
-                                tecdocId={this.props.tecdocId}
-                                storeGroupId={this.state.dataSource[0].storeGroupId}
-                                setSupplier={this.setSupplier}
-                                brandFilter={elem.brandName}
-                                supplierId={elem.supplierId}
-                            />
-                        </div>
-                    )
-                }
-            },
-            {
-                title:  <FormattedMessage id="order_form_table.supplier" />,
-                key:       'supplier',
-                dataIndex: 'supplierName',
-                width:     '15%',
-                render: (data, elem)=>{
-                    return (
-                        <div style={{display: "flex"}}>
-                            <Input
-                                style={{maxWidth: 180, color: 'black'}}
-                                disabled
-                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
-                                value={data}
-                            />
-                            <DetailSupplierModal
-                                disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
-                                onSelect={this.setSupplier}
-                                storeGroupId={elem.storeGroupId}
-                                brandId={elem.brandId}
-                                detailCode={elem.detailCode}
-                            />
-                        </div>
-                    )
-                }
-            },
-            {
-                title:  <FormattedMessage id="order_form_table.AI" />,
-                key:       'AI',
-                width:     '3%',
-                render: (elem)=>{
-                    let color = 'brown',
-                        title = 'Поставщик не выбран!';
-                    if(elem.store){
-                        title=  `Сегодня: ${elem.store[0]} шт.\n` +
-                                `Завтра: ${elem.store[1]} шт.\n` +
-                                `Послезавтра: ${elem.store[2]} шт.\n` +
-                                `Позже: ${elem.store[3]} шт.`;
-                        if(elem.store[0] != '0') {
-                            color = 'rgb(81, 205, 102)';
-                        }
-                        else if(elem.store[1] != 0) {
-                            color = 'yellow';
-                        }
-                        else if(elem.store[2] != 0) {
-                            color = 'orange';
-                        }
-                        else if(elem.store[3] != 0) {
-                            color = 'red';
-                        }
-                    }
-                    else {
-                        color = 'grey';
-                        
-                    }
-                    
-                    return (
-                        <div
-                            style={{borderRadius: '50%', width: 18, height: 18, backgroundColor: color}}
-                            title={title}
-                        ></div>
-                    )
-                }
-            },
-            {
                 title: <FormattedMessage id="order_form_table.purchasePrice" />,
                 key:       'purchasePrice',
                 dataIndex: 'purchasePrice',
@@ -261,7 +224,6 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
                             value={data || 0}
                             min={0}
                             formatter={(value)=>{
@@ -273,7 +235,7 @@ class FavouriteServicesModal extends React.Component{
                             }}
                             parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
-                                this.state.dataSource[0].purchasePrice = value;
+                                this.state.dataSource[elem.key].purchasePrice = value;
                                 this.setState({
                                     update: true
                                 })
@@ -290,7 +252,6 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
                             formatter={(value)=>{
@@ -302,8 +263,8 @@ class FavouriteServicesModal extends React.Component{
                             }}
                             parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
-                                this.state.dataSource[0].price = value;
-                                this.state.dataSource[0].sum = value * this.state.dataSource[0].count;
+                                this.state.dataSource[elem.key].price = value;
+                                this.state.dataSource[elem.key].sum = value * this.state.dataSource[elem.key].count;
                                 this.setState({
                                     update: true
                                 })
@@ -320,7 +281,6 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
                             formatter={(value)=>{
@@ -332,8 +292,8 @@ class FavouriteServicesModal extends React.Component{
                             }}
                             parser={value => value.replace(' ', '')}
                             onChange={(value)=>{
-                                this.state.dataSource[0].count = value;
-                                this.state.dataSource[0].sum = value * this.state.dataSource[0].price;
+                                this.state.dataSource[elem.key].count = value;
+                                this.state.dataSource[elem.key].sum = value * this.state.dataSource[elem.key].price;
                                 this.setState({
                                     update: true
                                 })
@@ -343,11 +303,26 @@ class FavouriteServicesModal extends React.Component{
                 }
             },
             {
+                title:  <FormattedMessage id="hours" />,
+                key:       'hours',
+                dataIndex: 'hours',
+                width:     '3%',
+                render: (data, elem)=>{
+                    return (
+                        <Button
+                            type={'primary'}
+                        >
+                            <Icon type="history"/>
+                        </Button>
+                    )
+                }
+            },
+            {
                 title:  <FormattedMessage id="order_form_table.sum" />,
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = this.state.dataSource[0].price *  this.state.dataSource[0].count;
+                    const sum = this.state.dataSource[elem.key].price *  this.state.dataSource[elem.key].count;
                     return (
                         <InputNumber
                             disabled
@@ -366,11 +341,16 @@ class FavouriteServicesModal extends React.Component{
                 }
             },
             {
-                key:       'delete',
+                key:       'select',
                 width:     '3%',
                 render: (elem)=>{
                     return (
-                        <Button>
+                        <Button
+                            type='primary'
+                            onClick={()=>{
+                                this.handleOk(elem.key);
+                            }}
+                        >
                             <FormattedMessage id='select'/>
                         </Button>
                     )
@@ -379,35 +359,23 @@ class FavouriteServicesModal extends React.Component{
         ];
     }
 
-    handleOk = () => {
+    handleOk = (index) => {
         var data = {
             insertMode: true,
             details: [],
             services: [],
         }
-        this.state.dataSource.map((element)=>{
-            data.details.push({
-                storeGroupId: element.storeGroupId,
-                name: element.detailName,
-                productCode: element.detailCode,
-                supplierId: element.supplierId,
-                supplierBrandId: element.supplierBrandId,
-                brandName: element.brandName,
-                purchasePrice: element.purchasePrice,
-                count: element.count ? element.count : 1,
-                price: element.price,
-                comment: element.comment,
-            })
-        });
-        this.state.relatedServicesSource.map((element)=>{
-            if(element.laborId) {
-                data.services.push({
-                    serviceId: element.laborId,
-                    serviceHours: element.hours ? element.hours : 1,
-                    servicePrice: element.price ? element.price : 0,
-                })
-            }
-        });
+        data.services.push({
+            //storeGroupId: this.state.dataSource[index].storeGroupId,
+            serviceId: this.state.dataSource[index].laborId,
+            serviceName: this.state.dataSource[index].serviceName,
+            employeeId: this.state.dataSource[index].employeeId,
+            serviceHours: this.state.dataSource[index].hours ? this.state.dataSource[index].hours : 1,
+            purchasePrice: this.state.dataSource[index].purchasePrice,
+            count: this.state.dataSource[index].count ? this.state.dataSource[index].count : 1,
+            servicePrice: this.state.dataSource[index].price,
+            comment: this.state.dataSource[index].comment,
+        })
         this.addDetailsAndLabors(data);
         this.setState({
             visible: false,
@@ -420,75 +388,8 @@ class FavouriteServicesModal extends React.Component{
         })
     };
 
-    async getDefaultValues(storeGroupId) {
-        var that = this;
-        let token = localStorage.getItem('_my.carbook.pro_token');
-        let url = API_URL;
-        let params = `/store_groups/default_detail?storeGroupId=${storeGroupId}&modificationId=${this.props.tecdocId}`;
-        url += params;
-        try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': token,
-                    'Content-Type': 'application/json',
-                },
-            });
-            const result = await response.json();
-            if(result) {
-                let markup = result.markup ? result.markup : 1.4;
-                let purchasePrice = result.price ? result.price.purchasePrice : 0;
-                that.state.dataSource[0].brandId = result.brandId;
-                that.state.dataSource[0].brandName = result.brandName;
-                that.state.dataSource[0].supplierBrandId = result.price ? result.price.supplierBrandId : undefined;
-                that.state.dataSource[0].detailCode = result.partNumber;
-                that.state.dataSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
-                that.state.dataSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
-                that.state.dataSource[0].store = result.price ? result.price.store : undefined;
-                that.state.dataSource[0].purchasePrice = purchasePrice;
-                that.state.dataSource[0].price = purchasePrice * markup;
-                that.state.dataSource[0].count = 1;
-                that.setState({
-                    update: true,
-                })
-            }
-        } catch (error) {
-            console.error('ERROR:', error);
-        }
-    }
-
-    setCode(code, brand) {
-        let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
-        if(!tmp) {
-            this.brandOptions.push(
-                <Option key={this.brandOptions.length} value={this.brandOptions.length+1} >
-                    {brand}
-                </Option>
-            )
-        }
-        const brandValue = tmp ? tmp.props.value : this.brandOptions.length;
-        this.state.dataSource[0].detailCode = code;
-        this.state.dataSource[0].brandId = brandValue;
-        this.state.dataSource[0].brandName = brand;
-        this.setState({
-            update: true
-        })
-    }
-
     setComment(comment) {
         this.state.dataSource[0].comment = comment;
-        this.setState({
-            update: true
-        })
-    }
-
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store) {
-        this.state.dataSource[0].supplierId = supplierId;
-        this.state.dataSource[0].supplierName = supplierName;
-        this.state.dataSource[0].supplierBrandId = supplierBrandId;
-        this.state.dataSource[0].purchasePrice = purchasePrice;
-        this.state.dataSource[0].price = price;
-        this.state.dataSource[0].store = store;
         this.setState({
             update: true
         })
@@ -524,7 +425,90 @@ class FavouriteServicesModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/store_groups`;
+        let params = `/orders/frequent/labors`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            console.log(data);
+            data.labors.map((elem, i)=>{
+                elem.key = i;
+            });
+            that.setState({
+                dataSource: data.labors,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        params = `/labors`;
+        url = API_URL + params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.labors.map((elem, index)=>{
+                elem.key = index;
+                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
+            })
+            that.labors = data.labors;
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        params = `/labors/master?makeTree=true`;
+        url = API_URL + params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.masterLabors = data.masterLabors;
+            that.buildLaborsTree();
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        params = `/store_groups`;
         url = API_URL + params;
         fetch(url, {
             method: 'GET',
@@ -596,34 +580,84 @@ class FavouriteServicesModal extends React.Component{
                 }
             }
         }
-        this.treeData = treeData;
+        this.storeGroupsTreeData = treeData;
+    }
+
+    buildLaborsTree() {
+        var treeData = [];
+        for(let i = 0; i < this.masterLabors.length; i++) {
+            const parentGroup = this.masterLabors[i];
+            treeData.push({
+                title: `${parentGroup.defaultMasterLaborName} (#${parentGroup.masterLaborId})`,
+                name: parentGroup.defaultMasterLaborName,
+                value: parentGroup.masterLaborId,
+                className: Styles.groupTreeOption,
+                key: `${i}`,
+                children: [],
+            })
+            for(let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[j];
+                treeData[i].children.push({
+                    title: `${childGroup.defaultMasterLaborName} (#${childGroup.masterLaborId})`,
+                    name: childGroup.defaultMasterLaborName,
+                    value: childGroup.masterLaborId,
+                    className: Styles.groupTreeOption,
+                    key: `${i}-${j}`,
+                    children: [],
+                })
+                for(let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[k];
+                    treeData[i].children[j].children.push({
+                        title: `${lastNode.defaultMasterLaborName} (#${lastNode.masterLaborId})`,
+                        name: lastNode.defaultMasterLaborName,
+                        value: lastNode.masterLaborId,
+                        className: Styles.groupTreeOption,
+                        key: `${i}-${j}-${k}`,
+                    })
+                }
+            }
+        }
+        this.laborsTreeData = treeData;
     }
 
     getOptions() {
+        this.servicesOptions = this.labors.map((elem, index)=>(
+            <Option key={index} value={elem.laborId} master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
+                {elem.name ? elem.name : elem.defaultName}
+            </Option>
+        ));
+        this.employeeOptions = this.props.employees.map((elem, i)=>(
+            <Option key={i} value={elem.id}>
+                {elem.name}
+            </Option>
+        ))
     };
 
-    filterOptions(id) {
-        const servicesOptions = [];
-        this.labors.map((elem, index)=>{
-            if(elem.productId == id) {
-                servicesOptions.push(
-                    <Option key={index} value={elem.laborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
-                        {elem.name ? elem.name : elem.defaultName}
-                    </Option>
-                )
-            }
-            else return;
-        });
+    filterOptions(masterLaborId, storeGroupId) {
+        var servicesOptions = [...this.labors];
+        if(masterLaborId) {
+            servicesOptions = servicesOptions.filter((elem, index)=>elem.masterLaborId == masterLaborId);
+        }
+        if(storeGroupId) {
+            servicesOptions = servicesOptions.filter((elem, index)=>elem.productId == storeGroupId);
+        }
+        servicesOptions = servicesOptions.map((elem, index)=>(
+            <Option key={index} value={elem.laborId}  master_id={elem.masterLaborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
+                {elem.name ? elem.name : elem.defaultName}
+            </Option>
+        ))
 
         this.servicesOptions = [...servicesOptions];
     }
 
-    componentWillMount() {
-        this.fetchData();
+    componentWillUpdate(_, nextState) {
+        if(this.state.visible==false && nextState.visible==true) {
+            this.fetchData();
+            this.getOptions();
+        }
     }
 
     render() {
-        const { visible } = this.state;
         return (
             <>
                 <Button
@@ -642,14 +676,15 @@ class FavouriteServicesModal extends React.Component{
                 </Button>
                 <Modal
                     width="95%"
-                    visible={visible}
+                    visible={this.state.visible}
                     title={null}
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
+                    footer={null}
                 >
                     <div className={Styles.tableWrap}>
                         <div className={Styles.modalSectionTitle}>
-                            <div style={{display: 'block'}}>Узел/деталь</div>
+                            <div style={{display: 'block'}}>Работа</div>
                         </div>
                         <Table
                             dataSource={this.state.dataSource}

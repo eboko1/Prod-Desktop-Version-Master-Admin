@@ -24,6 +24,8 @@ class ServicesTable extends Component {
             dataSource: [],
         }
 
+        this.updateLabor = this.updateLabor.bind(this);
+
         this.columns = [
             {
                 width: "8%",
@@ -55,13 +57,15 @@ class ServicesTable extends Component {
                                     tecdocId={this.props.tecdocId}
                                     orderId={this.props.orderId}
                                     updateDataSource={this.updateDataSource}
+                                    employees={this.props.employees}
                                 />
                             :
-                                <PriceCountModal
+                                <QuickEditModal
                                     disabled={confirmed != "undefined" || !(elem.laborId)}
-                                    detail={elem}
-                                    onConfirm={this.updateDetail}
-                                    detailKey={elem.key}
+                                    labor={elem}
+                                    onConfirm={this.updateLabor}
+                                    tableKey={elem.key}
+                                    employees={this.props.employees}
                                 />
                             }
                         </div>
@@ -101,6 +105,23 @@ class ServicesTable extends Component {
                     return (
                         data ? name : <FormattedMessage id="long_dash"/>
                     );
+                },
+            },
+            {
+                title: <FormattedMessage id="hours" />,
+                width: "8%",
+                key: "hours",
+                dataIndex: 'hours',
+                render: (data) => {
+                    let strVal = String(data);
+                    for(let i = strVal.length-3; i >= 0; i-=3) {
+                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
+                    }
+                    return (
+                        <span>
+                            {data ? strVal : 0} <FormattedMessage id="order_form_table.hours_short" />
+                        </span> 
+                    )
                 },
             },
             {
@@ -150,23 +171,6 @@ class ServicesTable extends Component {
                     return (
                         <span>
                             {data ? strVal : 0} <FormattedMessage id="pc" />
-                        </span> 
-                    )
-                },
-            },
-            {
-                title: <FormattedMessage id="hours" />,
-                width: "8%",
-                key: "hours",
-                dataIndex: 'hours',
-                render: (data) => {
-                    let strVal = String(data);
-                    for(let i = strVal.length-3; i >= 0; i-=3) {
-                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                    }
-                    return (
-                        <span>
-                            {data ? strVal : 0} <FormattedMessage id="order_form_table.hours_short" />
                         </span> 
                     )
                 },
@@ -225,13 +229,44 @@ class ServicesTable extends Component {
                     return(
                         <Popconfirm
                             title={
-                                <FormattedMessage id="add_order_form.favourite_confirm" />
+                                elem.frequentLaborId ?
+                                    <FormattedMessage id="add_order_form.favourite_remove" />
+                                :
+                                    <FormattedMessage id="add_order_form.favourite_confirm" />
                             }
                             onConfirm={async ()=>{
-                                this.state.dataSource[elem.key].frequentLaborId = !Boolean(this.state.dataSource[elem.key].frequentLaborId);
-                                    this.setState({
-                                        update: true,
-                                    })
+                                var data = [{
+                                    laborId: elem.laborId,
+                                    name: elem.serviceName,
+                                    hours: elem.hours ? elem.hours : 1,
+                                    purchasePrice: elem.purchasePrice ? elem.purchasePrice : 1,
+                                    count: elem.count ? elem.count : 1,
+                                }];
+                                var that = this;
+                                let token = localStorage.getItem('_my.carbook.pro_token');
+                                let url = API_URL;
+                                let params = `/orders/frequent/labors`;
+                                if(elem.frequentLaborId) params += `?ids=[${elem.frequentLaborId}]`;
+                                url += params;
+                                try {
+                                    const response = await fetch(url, {
+                                        method: elem.frequentLaborId ? 'DELETE' : 'POST',
+                                        headers: {
+                                            'Authorization': token,
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify(data),
+                                    });
+                                    const result = await response.json();
+                                    if(result.success) {
+                                        that.updateDataSource();
+                                    }
+                                    else {
+                                        console.log("BAD", result);
+                                    }
+                                } catch (error) {
+                                    console.error('ERROR:', error);
+                                }
                             }}
                         >
                             <Icon
@@ -324,7 +359,7 @@ class ServicesTable extends Component {
                 elem.key = index;
             })
             that.setState({
-                dataSource: data.details,
+                dataSource: data.labors,
             })
             that.props.reloadOrderForm();
         })
@@ -333,27 +368,24 @@ class ServicesTable extends Component {
         });
     }
 
-    async updateDetail(key, detail) {
-        /*this.state.dataSource[key] = detail;
+    async updateLabor(key, labor) {
+        this.state.dataSource[key] = labor;
         const data = {
             updateMode: true,
-            details: [
+            services: [
                 {
-                    id: detail.id,
-                    storeGroupId: detail.storeGroupId,
-                    name: detail.detailName,
-                    productCode: detail.detailCode ? detail.detailCode : null,
-                    supplierId: detail.supplierId ? detail.supplierId : null,
-                    supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
-                    brandName: detail.brandName ? detail.brandName : null,
-                    purchasePrice: detail.purchasePrice,
-                    count: detail.count,
-                    price: detail.price,
-                    comment: detail.comment,
+                    id: labor.id,
+                    serviceId: labor.laborId,
+                    serviceName: labor.serviceName,
+                    employeeId: labor.employeeId,
+                    serviceHours: labor.hours ? labor.hours : 1,
+                    purchasePrice: labor.purchasePrice ? labor.purchasePrice : 0,
+                    count: labor.count ? labor.count : 1,
+                    servicePrice: labor.price ? labor.price : 1,
+                    comment: labor.comment,
                 }
             ]
         }
-        console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/orders/${this.props.orderId}`;
@@ -382,7 +414,7 @@ class ServicesTable extends Component {
 
         this.setState({
             update: true,
-        })*/
+        })
     }
 
     componentDidMount() {
@@ -419,6 +451,8 @@ class ServicesTable extends Component {
                 <AddServiceModal
                     employees={this.props.employees}
                     visible={this.state.serviceModalVisible}
+                    updateLabor={this.updateLabor}
+                    tableKey={this.state.serviceModalKey}
                     labor={this.state.dataSource[this.state.serviceModalKey]}
                     hideModal={()=>this.hideServicelProductModal()}
                     orderId={this.props.orderId}
@@ -430,7 +464,7 @@ class ServicesTable extends Component {
 
 export default ServicesTable;
 
-class PriceCountModal extends React.Component{
+class QuickEditModal extends React.Component{
     constructor(props) {
         super(props);
         this.state={
@@ -438,16 +472,10 @@ class PriceCountModal extends React.Component{
         }
         this.columns = [
             {
-                title:  <FormattedMessage id="order_form_table.detail_name" />,
-                key:       'detailName',
-                dataIndex: 'detailName',
-                width:     '20%',
-            },
-            {
-                title: <FormattedMessage id="order_form_table.brand" />,
-                width: "20%",
-                key: "brand",
-                dataIndex: 'brandName',
+                title: <FormattedMessage id="order_form_table.service_type" />,
+                width: "15%",
+                key: "defaultName",
+                dataIndex: 'defaultName',
                 render: (data) => {
                     return (
                         data ? data : <FormattedMessage id="long_dash"/>
@@ -455,13 +483,26 @@ class PriceCountModal extends React.Component{
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.detail_code" />,
-                width: "20%",
-                key: "code",
-                dataIndex: 'detailCode',
+                title: <FormattedMessage id="order_form_table.detail_name" />,
+                width: "15%",
+                key: "serviceName",
+                dataIndex: 'serviceName',
                 render: (data) => {
+                        return (
+                            data ? data : <FormattedMessage id="long_dash"/>
+                        )
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.master" />,
+                width: "10%",
+                key: "employeeId",
+                dataIndex: 'employeeId',
+                render: (data) => {
+                    var name = this.props.employees.find((elem)=>elem.id==data);
+                    if(name) name = name.name;
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                        data ? name : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
@@ -581,7 +622,7 @@ class PriceCountModal extends React.Component{
         this.setState({
             visible: false,
         });
-        this.props.onConfirm(this.props.detailKey, this.state.dataSource[0]);
+        this.props.onConfirm(this.props.tableKey, this.state.dataSource[0]);
     }
 
     handleCancel = () => {
@@ -591,6 +632,7 @@ class PriceCountModal extends React.Component{
     }
 
     render() {
+        console.log(this);
         return(
             <>
                 <Button
@@ -599,7 +641,7 @@ class PriceCountModal extends React.Component{
                     onClick={()=>{
                         this.setState({
                             visible: true,
-                            dataSource: [this.props.detail]
+                            dataSource: [this.props.labor]
                         })
                     }}
                 >
@@ -616,7 +658,7 @@ class PriceCountModal extends React.Component{
                 <Modal
                     width='80%'
                     visible={this.state.visible}
-                    title='priceEdit'
+                    title={<FormattedMessage id='order_form_table.quick_edit'/>}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                 >
