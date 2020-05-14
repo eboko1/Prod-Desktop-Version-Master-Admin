@@ -215,6 +215,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             selectedClient={selectedClient}
                             fetchTecdocSuggestions={fetchTecdocSuggestions}
                             completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
+                            reloadOrderForm={this.props.reloadOrderForm}
                         />
                         <DiscountPanel
                             fields={discountTabFieldsProps}
