@@ -612,6 +612,10 @@ class FavouriteDetailsModal extends React.Component{
         ));
     };
 
+    componentDidMount() {
+        this.fetchData();
+    }
+
     componentWillUpdate(_, nextState) {
         if(this.state.visible==false && nextState.visible==true) {
             this.fetchData();

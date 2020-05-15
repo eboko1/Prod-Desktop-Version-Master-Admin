@@ -443,9 +443,11 @@ class FavouriteServicesModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.labors.map((elem, i)=>{
                 elem.key = i;
+                elem.masterLaborId = elem.laborData[0].masterLaborId;
+                elem.storeGroupId = elem.laborData[0].productId;
+                elem.serviceName = elem.name;
             });
             that.setState({
                 dataSource: data.labors,
@@ -529,6 +531,9 @@ class FavouriteServicesModal extends React.Component{
             that.storeGroups = data;
             that.buildStoreGroupsTree();
             that.getOptions();
+            that.setState({
+                update: true
+            })
         })
         .catch(function (error) {
             console.log('error', error)
@@ -650,10 +655,13 @@ class FavouriteServicesModal extends React.Component{
         this.servicesOptions = [...servicesOptions];
     }
 
+    componentDidMount() {
+        this.fetchData();
+    }
+
     componentWillUpdate(_, nextState) {
         if(this.state.visible==false && nextState.visible==true) {
             this.fetchData();
-            this.getOptions();
         }
     }
 
