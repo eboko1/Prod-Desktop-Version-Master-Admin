@@ -25,6 +25,7 @@ class ServicesTable extends Component {
         }
 
         this.updateLabor = this.updateLabor.bind(this);
+        this.updateDataSource = this.updateDataSource.bind(this);
 
         this.columns = [
             {
@@ -632,7 +633,6 @@ class QuickEditModal extends React.Component{
     }
 
     render() {
-        console.log(this);
         return(
             <>
                 <Button
