@@ -36,7 +36,7 @@ class AddServiceModal extends React.Component{
 
         this.mainTableColumns = [
             {
-                title:  'ID',
+                title: <FormattedMessage id='services_table.labor'/>,
                 key:       'masterLaborId',
                 dataIndex: 'masterLaborId',
                 width:     '10%',
@@ -46,7 +46,7 @@ class AddServiceModal extends React.Component{
                             className={Styles.groupsTreeSelect}
                             disabled={this.state.editing}
                             showSearch
-                            placeholder='ID'
+                            placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
                             style={{maxWidth: 180, minWidth: 140}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
@@ -70,7 +70,7 @@ class AddServiceModal extends React.Component{
                 
             },
             {
-                title:  <FormattedMessage id="order_form_table.store_group" />,
+                title:  <FormattedMessage id="services_table.store_group" />,
                 key:       'storeGroupId',
                 dataIndex: 'storeGroupId',
                 width:     '10%',
@@ -80,7 +80,7 @@ class AddServiceModal extends React.Component{
                             className={Styles.groupsTreeSelect}
                             disabled={this.state.editing}
                             showSearch
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
+                            placeholder={this.props.intl.formatMessage({id: 'services_table.store_group'})}
                             style={{maxWidth: 180, minWidth: 140}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
@@ -163,7 +163,7 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.master" />,
+                title:  <FormattedMessage id="services_table.employee" />,
                 key:       'employeeId',
                 dataIndex: 'employeeId',
                 width:     '10%',
@@ -172,7 +172,7 @@ class AddServiceModal extends React.Component{
                         <Select
                             allowClear
                             showSearch
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
+                            placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
                             value={data ? data : undefined}
                             style={{maxWidth: 180, minWidth: 100}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
@@ -198,7 +198,7 @@ class AddServiceModal extends React.Component{
                 title:  <FormattedMessage id="comment" />,
                 key:       'comment',
                 dataIndex: 'comment',
-                width:     '5%',
+                width:     '3%',
                 render: (data, elem)=>{
                     const detail = {
                         name: this.state.mainTableSource[0].serviceName,
@@ -206,7 +206,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <CommentaryButton
                             disabled={elem.laborId == null}
-                            commentary={data}
+                            commentary={data ? data : {comment: null}}
                             detail={detail}
                             setComment={this.setComment}
                         />
@@ -300,7 +300,7 @@ class AddServiceModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="hours" />,
+                title:  <FormattedMessage id="services_table.norm_hours" />,
                 key:       'hours',
                 dataIndex: 'hours',
                 width:     '3%',
@@ -309,7 +309,7 @@ class AddServiceModal extends React.Component{
                         <Button
                             type={'primary'}
                         >
-                            <Icon type="history"/>
+                            <Icon type="clock-circle" />
                         </Button>
                     )
                 }
