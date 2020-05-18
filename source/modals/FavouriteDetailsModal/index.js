@@ -181,6 +181,7 @@ class FavouriteDetailsModal extends React.Component{
                                 }}
                             />
                             <DetailStorageModal
+                                tableKey={elem.key}
                                 onSelect={this.setCode}
                                 disabled={elem.storeGroupId == null}
                                 tecdocId={this.props.tecdocId}
@@ -208,6 +209,7 @@ class FavouriteDetailsModal extends React.Component{
                                 value={data}
                             />
                             <DetailSupplierModal
+                                tableKey={elem.key}
                                 disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
@@ -418,7 +420,7 @@ class FavouriteDetailsModal extends React.Component{
     };
 
 
-    setCode(code, brand) {
+    setCode(code, brand, key) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
         if(!tmp) {
             this.brandOptions.push(
@@ -428,9 +430,9 @@ class FavouriteDetailsModal extends React.Component{
             )
         }
         const brandValue = tmp ? tmp.props.value : this.brandOptions.length;
-        this.state.dataSource[0].detailCode = code;
-        this.state.dataSource[0].brandId = brandValue;
-        this.state.dataSource[0].brandName = brand;
+        this.state.dataSource[key].detailCode = code;
+        this.state.dataSource[key].brandId = brandValue;
+        this.state.dataSource[key].brandName = brand;
         this.setState({
             update: true
         })
@@ -443,13 +445,13 @@ class FavouriteDetailsModal extends React.Component{
         })
     }
 
-    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store) {
-        this.state.dataSource[0].supplierId = supplierId;
-        this.state.dataSource[0].supplierName = supplierName;
-        this.state.dataSource[0].supplierBrandId = supplierBrandId;
-        this.state.dataSource[0].purchasePrice = purchasePrice;
-        this.state.dataSource[0].price = price;
-        this.state.dataSource[0].store = store;
+    setSupplier(supplierId, supplierName, supplierBrandId, purchasePrice, price, store, key) {
+        this.state.dataSource[key].supplierId = supplierId;
+        this.state.dataSource[key].supplierName = supplierName;
+        this.state.dataSource[key].supplierBrandId = supplierBrandId;
+        this.state.dataSource[key].purchasePrice = purchasePrice;
+        this.state.dataSource[key].price = price;
+        this.state.dataSource[key].store = store;
         this.setState({
             update: true
         })

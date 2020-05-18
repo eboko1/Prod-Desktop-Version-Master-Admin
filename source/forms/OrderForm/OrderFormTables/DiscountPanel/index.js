@@ -54,7 +54,7 @@ class DiscountPanel extends Component {
                         }
                         colon={ false }
                         className={ Styles.formItem }
-                        min={ 0 }
+                        min={ -100 }
                         max={ 100 }
                         step={ 1 }
                         formatter={ value => `${Math.round(value)}%` }

@@ -226,6 +226,7 @@ export default class OrderFormTabs extends React.PureComponent {
                             fetchedOrder={fetchedOrder}
                             totalServicesProfit={totalServicesProfit}
                             servicesMode
+                            reloadOrderForm={this.props.reloadOrderForm}
                         />
                     </TabPane>
                 )}
