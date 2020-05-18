@@ -168,7 +168,7 @@ class DashboardPage extends Component {
                         activeKey={ mode }
                         className={(isMobile ? Styles.dashboard_mobile_tabs : null)}
                         tabBarExtraContent={
-                            (mode === 'calendar' && !isMobile) ? (
+                            (mode === 'calendar') ? (
                                 <ArrowsWeekPicker
                                     startDate={ startDate }
                                     endDate={ endDate }
@@ -206,6 +206,15 @@ class DashboardPage extends Component {
                                 <FormattedMessage id='dashboard-page.stations_load' />
                             }
                             key='stations'
+                            disabled={ loading }
+                        >
+                            { dashboardContainer }
+                        </TabPane>
+                        <TabPane
+                            tab={
+                                <FormattedMessage id='dashboard-page.employees' />
+                            }
+                            key='employees'
                             disabled={ loading }
                         >
                             { dashboardContainer }

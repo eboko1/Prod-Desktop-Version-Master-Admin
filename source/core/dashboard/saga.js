@@ -75,6 +75,11 @@ export function* setDashboardModeSaga() {
                 const date = yield select(selectDashboardDate);
                 yield put(setDashboardDate(date));
             }
+
+            if (mode === 'employees') {
+                const date = yield select(selectDashboardDate);
+                yield put(setDashboardDate(date));
+            }
         } catch (error) {
             yield put(emitError(error));
         }

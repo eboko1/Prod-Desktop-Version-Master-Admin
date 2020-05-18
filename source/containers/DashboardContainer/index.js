@@ -66,7 +66,7 @@ class DashboardContainer extends Component {
                         columns={ dashboard.columns < 7 ? 7 : dashboard.columns }
                     >
                         { dashboardColumns }
-                        { mode === 'stations' &&
+                        { (mode === 'stations' || mode === 'employees')  &&
                             dashboard.columns < 7 &&
                             dashboardGhostColumns }
                     </DashboardGrid>
@@ -129,7 +129,7 @@ class DashboardContainer extends Component {
                                         this._linkToStations(days[ index ])
                                     }
                                 >
-                                    { mode === 'calendar'
+                                    { mode === 'calendar' || mode === 'employees'
                                         ? `${moment(
                                             load[ index ].beginDate,
                                         ).format('DD MMM')} -`
