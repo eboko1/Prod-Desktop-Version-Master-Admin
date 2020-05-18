@@ -935,7 +935,7 @@ class DetailProductModal extends React.Component{
                     brandName: element.brandName,
                     purchasePrice: element.purchasePrice,
                     count: element.count ? element.count : 1,
-                    price: element.price,
+                    price: element.price ? element.price : 1,
                     comment: element.comment,
                 })
             });
