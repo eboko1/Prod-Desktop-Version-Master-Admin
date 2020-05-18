@@ -129,6 +129,8 @@ class AddServiceModal extends React.Component{
                                 this.state.mainTableSource[0].serviceName = option.props.children;
                                 this.state.mainTableSource[0].masterLaborId = option.props.master_id;
                                 this.state.mainTableSource[0].storeGroupId = option.props.product_id;
+                                this.state.mainTableSource[0].count = option.props.norm_hours ? option.props.norm_hours : undefined;
+                                this.state.mainTableSource[0].price = option.props.price ? option.props.price : undefined;
                                 this.setState({
                                     update: true
                                 })
@@ -450,6 +452,7 @@ class AddServiceModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             data.labors.map((elem, index)=>{
                 elem.key = index;
                 elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
