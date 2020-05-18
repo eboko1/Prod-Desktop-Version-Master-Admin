@@ -455,7 +455,6 @@ class AddServiceModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.labors.map((elem, index)=>{
                 elem.key = index;
                 elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;

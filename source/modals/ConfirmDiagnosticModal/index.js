@@ -71,6 +71,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 data.details.push({
                     storeGroupId: element.id,
                     count: element.count,
+                    comment: element.comment,
                 })
             }
         });
@@ -106,6 +107,7 @@ class ConfirmDiagnosticModal extends React.Component{
             name: data.detailName,
             count: data.count,
             checked: true,
+            comment: data.comment,
         }));
     }
 
@@ -263,7 +265,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    getGroupByPartId(id) {
+    getGroupByPartId(id, comment = "") {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -285,14 +287,14 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addDetailsByGroupId(data.storeGroupId);
+            that.addDetailsByGroupId(data.storeGroupId, -1, comment);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addDetailsByGroupId(id, index = -1) {
+    addDetailsByGroupId(id, index = -1, comment = "") {
         const detail = this.state.allDetails.find(x => x.id == id);
         let cur_index = this.state.detailsList.findIndex(x => x.id == id);
         if(detail == undefined) return;
@@ -305,6 +307,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     name: detail.name,
                     count: 1,
                     checked: true,
+                    comment: comment,
                 };
             }
             else {
@@ -355,7 +358,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.diagnosticList.map(async (data, index)=>{
             await this.changeResolved(index, 'automaticly');
             await this.getLaborByPartId(data.id, data.comment.comment);
-            await this.getGroupByPartId(data.id);
+            await this.getGroupByPartId(data.id, data.comment.comment);
         });
     }
 
@@ -420,7 +423,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     onClick={async ()=>{
                         await this.changeResolved(index, 'automaticly');
                         await this.getLaborByPartId(data.partId, data.commentary.comment);
-                        await this.getGroupByPartId(data.partId);
+                        await this.getGroupByPartId(data.partId, data.commentary.comment);
                     }}
                     style={{width: '49%', padding: '5px'}}
                 >
@@ -683,7 +686,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 <div style={{ width: '30%'}}>
                     <InputNumber
                         disabled={!data.checked}
-                        style={{ width: '70%' }}
+                        style={{ width: '60%' }}
                         min={1}
                         max={50}
                         value={data.count?data.count:1}
@@ -692,7 +695,12 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.setState({update: true});
                         }}
                     />
-                    <div className={Styles.delete_diagnostic_button_wrap} style={{width: '30%', display: 'inline-block'}}>
+                    <div style={{width: "20%", paddingLeft: '5px', display: 'inline-block'}}>
+                        <CommentaryModal
+                                comment={data.comment}
+                        />
+                    </div>
+                    <div className={Styles.delete_diagnostic_button_wrap} style={{width: '20%', display: 'inline-block'}}>
                         <Icon
                             onClick={()=>this.deleteDetailRow(index)}
                             type="delete"
