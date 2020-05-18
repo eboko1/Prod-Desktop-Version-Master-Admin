@@ -453,6 +453,7 @@ class ServicesTable extends Component {
                     employees={this.props.employees}
                     visible={this.state.serviceModalVisible}
                     updateLabor={this.updateLabor}
+                    updateDataSource={this.updateDataSource}
                     tableKey={this.state.serviceModalKey}
                     labor={this.state.dataSource[this.state.serviceModalKey]}
                     hideModal={()=>this.hideServicelProductModal()}
