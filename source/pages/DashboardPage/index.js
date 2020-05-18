@@ -20,6 +20,7 @@ import {
 } from 'core/dashboard/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { permissions, isForbidden } from 'utils';
+import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 
 import { Layout, Spinner, Loader } from 'commons';
 import { ArrowsWeekPicker, ArrowsDatePicker } from 'components';
@@ -69,6 +70,12 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 class DashboardPage extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            employeesResult: undefined,
+        };
+    }
     componentDidMount() {
         const { initDashboard } = this.props;
 
@@ -80,13 +87,13 @@ class DashboardPage extends Component {
     _prevDay = () => {
         const { setDashboardDate, date } = this.props;
         setDashboardDate(date.subtract(1, 'day'));
-        this.setState({});
+        this.setState({employeesResult: undefined});
     };
 
     _nextDay = () => {
         const { setDashboardDate, date } = this.props;
         setDashboardDate(date.add(1, 'day'));
-        this.setState({});
+        this.setState({employeesResult: undefined});
     };
 
     _onWeekChange = date =>
@@ -225,8 +232,33 @@ class DashboardPage extends Component {
         );
     }
 
+    _fetchEmployeesDashboard = async () => {
+        if(this.props.mode == 'employees' && !(this.state.employeesResult)) {
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = API_URL;
+            let params = `/dashboard/orders?beginDate=${this.props.date.format('YYYY-MM-DD')}&stations=true&employees=true`;
+            url += params;
+            try {
+                const response = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': token,
+                        'Content-Type': 'application/json',
+                    },
+                });
+                const result = await response.json();
+                this.setState({employeesResult: result});
+                console.log(result);
+                return result;
+            } catch (error) {
+                console.error('ERROR:', error);
+            }
+        }
+    }
+
     _renderDashboardContainer = () => {
-        const {
+        this._fetchEmployeesDashboard();
+        var {
             loading,
             orders,
             mode,
@@ -243,6 +275,16 @@ class DashboardPage extends Component {
             daysWithConflicts,
             stationsWithConflicts,
         } = this.props;
+        if(this.props.mode == 'employees') {
+            if(this.state.employeesResult) {
+                orders = this.state.employeesResult.orders.orders;
+                load = this.state.employeesResult.load;
+                schedule = this.state.employeesResult.schedule;
+                stations = this.state.employeesResult.stations;
+                stationsWithConflicts = this.state.employeesResult.stationsWithConflicts;
+            }
+        }
+
         return loading ? (
             <Loader loading={ loading } />
         ) : (
