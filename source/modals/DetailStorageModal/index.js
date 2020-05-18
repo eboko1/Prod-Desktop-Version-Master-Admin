@@ -302,7 +302,7 @@ class DetailStorageModal extends React.Component{
                             type="primary"
                             onClick={()=>{
                                 this.props.onSelect(elem.partNumber, elem.supplierName, this.props.tableKey);
-                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store);
+                                this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, this.props.tableKey);
                                 this.handleCancel();
                             }}
                         >

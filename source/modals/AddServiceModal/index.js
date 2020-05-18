@@ -109,14 +109,14 @@ class AddServiceModal extends React.Component{
                 title:  <FormattedMessage id="order_form_table.service_type" />,
                 key:       'laborId',
                 dataIndex: 'laborId',
-                width:     '10%',
+                width:     '15%',
                 render: (data, elem)=>{
                     return (
                         <Select
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
                             value={data ? data : undefined}
-                            style={{maxWidth: 240, minWidth: 180}}
+                            style={{minWidth: 240}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
                                 return (
@@ -125,12 +125,15 @@ class AddServiceModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
+                                let price = option.props.price ? option.props.price : 1;
+                                let count = option.props.norm_hours ? option.props.norm_hours : 1;
                                 this.state.mainTableSource[0].laborId = value;
                                 this.state.mainTableSource[0].serviceName = option.props.children;
                                 this.state.mainTableSource[0].masterLaborId = option.props.master_id;
                                 this.state.mainTableSource[0].storeGroupId = option.props.product_id;
-                                this.state.mainTableSource[0].count = option.props.norm_hours ? option.props.norm_hours : undefined;
-                                this.state.mainTableSource[0].price = option.props.price ? option.props.price : undefined;
+                                this.state.mainTableSource[0].count = count;
+                                this.state.mainTableSource[0].price = price;
+                                this.state.mainTableSource[0].sum = price * count;
                                 this.setState({
                                     update: true
                                 })
@@ -145,7 +148,7 @@ class AddServiceModal extends React.Component{
                 title:  <FormattedMessage id="order_form_table.detail_name" />,
                 key:       'serviceName',
                 dataIndex: 'serviceName',
-                width:     '20%',
+                width:     '15%',
                 render: (data, elem)=>{
                     return (
                         <Input
@@ -667,7 +670,7 @@ class AddServiceModal extends React.Component{
                             }}
                         /> 
                     </div>
-                    <div className={Styles.tableWrap}>
+                    <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Работа</div>
                         </div>

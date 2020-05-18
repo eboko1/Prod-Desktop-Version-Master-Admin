@@ -205,7 +205,7 @@ class DetailProductModal extends React.Component{
                                 }}
                             />
                             <DetailStorageModal
-                                tableKey={elem.key}
+                                tableKey={0}
                                 onSelect={this.setCode}
                                 disabled={elem.storeGroupId == null}
                                 tecdocId={this.props.tecdocId}
@@ -235,7 +235,7 @@ class DetailProductModal extends React.Component{
                                 value={data}
                             />
                             <DetailSupplierModal
-                                tableKey={elem.key}
+                                tableKey={0}
                                 disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
@@ -1253,7 +1253,7 @@ class DetailProductModal extends React.Component{
                             }}
                         />
                     </div>
-                    <div className={Styles.tableWrap}>
+                    <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Узел/деталь</div>
                         </div>
