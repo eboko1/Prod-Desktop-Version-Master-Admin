@@ -119,7 +119,7 @@ class DetailProductModal extends React.Component{
                 title:  <FormattedMessage id="comment" />,
                 key:       'comment',
                 dataIndex: 'comment',
-                width:     '5%',
+                width:     '3%',
                 render: (data, elem)=>{
                     const detail = {
                         name: this.state.mainTableSource[0].detailName,
