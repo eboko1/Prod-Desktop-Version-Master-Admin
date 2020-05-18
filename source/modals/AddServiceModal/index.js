@@ -47,7 +47,7 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder='ID'
-                            style={{maxWidth: 180}}
+                            style={{maxWidth: 180, minWidth: 140}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.laborsTreeData}
@@ -81,7 +81,7 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
-                            style={{maxWidth: 180}}
+                            style={{maxWidth: 180, minWidth: 140}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.storeGroupsTreeData}
@@ -116,7 +116,7 @@ class AddServiceModal extends React.Component{
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
                             value={data ? data : undefined}
-                            style={{maxWidth: 180, minWidth: 100}}
+                            style={{maxWidth: 240, minWidth: 180}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
                                 return (
@@ -150,7 +150,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <Input
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            style={{minWidth: 150}}
+                            style={{minWidth: 140}}
                             value={data}
                             onChange={(event)=>{
                                 this.state.mainTableSource[0].serviceName = event.target.value;
@@ -173,7 +173,7 @@ class AddServiceModal extends React.Component{
                             allowClear
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
-                            value={data}
+                            value={data ? data : undefined}
                             style={{maxWidth: 180, minWidth: 100}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
@@ -201,12 +201,12 @@ class AddServiceModal extends React.Component{
                 width:     '5%',
                 render: (data, elem)=>{
                     const detail = {
-                        name: this.state.mainTableSource[0].detailName,
+                        name: this.state.mainTableSource[0].serviceName,
                     }
                     return (
                         <CommentaryButton
-                            disabled={elem.storeGroupId == null}
-                            commentary={{comment: data}}
+                            disabled={elem.laborId == null}
+                            commentary={data}
                             detail={detail}
                             setComment={this.setComment}
                         />
@@ -398,7 +398,7 @@ class AddServiceModal extends React.Component{
     };
 
     setComment(comment) {
-        this.state.mainTableSource[0].comment = comment;
+        this.state.mainTableSource[0].comment = {comment: comment};
         this.setState({
             update: true
         })

@@ -433,7 +433,7 @@ class ServicesTable extends Component {
                 id: undefined,
                 laborId: undefined,
                 serviceName: undefined,
-                comment: undefined,
+                comment: {comment: undefined},
                 count: 0,
                 price: 0,
                 purchasePrice: 0,

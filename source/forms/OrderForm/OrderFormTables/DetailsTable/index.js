@@ -424,8 +424,8 @@ export default class DetailsTable extends Component {
                     supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
                     brandName: detail.brandName ? detail.brandName : null,
                     purchasePrice: detail.purchasePrice,
-                    count: detail.count,
-                    price: detail.price,
+                    count: detail.count ? detail.count : 1,
+                    price: detail.price ? detail.price : 1,
                     comment: detail.comment,
                 }
             ]
