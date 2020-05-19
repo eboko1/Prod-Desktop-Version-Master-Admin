@@ -236,7 +236,7 @@ class DashboardPage extends Component {
         if(this.props.mode == 'employees' && !(this.state.employeesResult)) {
             let token = localStorage.getItem('_my.carbook.pro_token');
             let url = API_URL;
-            let params = `/dashboard/orders?beginDate=${this.props.date.format('YYYY-MM-DD')}&stations=true&employees=true`;
+            let params = `/dashboard/orders?beginDate=${this.props.date.format('YYYY-MM-DD')}&employees=true`;
             url += params;
             try {
                 const response = await fetch(url, {
@@ -275,12 +275,16 @@ class DashboardPage extends Component {
             daysWithConflicts,
             stationsWithConflicts,
         } = this.props;
+
+        console.log(this.props);
+
         if(this.props.mode == 'employees') {
             if(this.state.employeesResult) {
+                dashboard.columns = this.state.employeesResult.load.length;
                 orders = this.state.employeesResult.orders.orders;
                 load = this.state.employeesResult.load;
                 schedule = this.state.employeesResult.schedule;
-                stations = this.state.employeesResult.stations;
+                stations = this.state.employeesResult.employees;
                 stationsWithConflicts = this.state.employeesResult.stationsWithConflicts;
             }
         }

@@ -52,6 +52,7 @@ class DashboardContainer extends Component {
         this.setState({ hideSourceOnDrag: !this.state.hideSourceOnDrag });
 
     render() {
+        console.log(this)
         const { dashboard, schedule, mode } = this.props;
         const timeColumn = this._renderTimeColumn();
         const dashboardColumns = this._renderDashboardColumns();
@@ -117,7 +118,9 @@ class DashboardContainer extends Component {
                                             id={ load[ index ].dayName }
                                         />
                                     ) : 
-                                        load[ index ].stationNum
+                                        mode === 'employees' ? 
+                                            `${stations[ index ].name} ${stations[ index ].surname}`  :  
+                                            load[ index ].stationNum
                                     }
                                 </DashboardTitle>
                                 <DashboardLoad
@@ -129,7 +132,7 @@ class DashboardContainer extends Component {
                                         this._linkToStations(days[ index ])
                                     }
                                 >
-                                    { mode === 'calendar' || mode === 'employees'
+                                    { mode === 'calendar'
                                         ? `${moment(
                                             load[ index ].beginDate,
                                         ).format('DD MMM')} -`
@@ -173,7 +176,12 @@ class DashboardContainer extends Component {
             ? columnsData
                 ? columnsData[ column ]
                 : null
-            : columnsData
+            : mode === 'employees' ? 
+                columnsData ?
+                columnsData[ column ].id
+                    : null
+                :
+                columnsData
                 ? columnsData[ column ].num
                 : null;
 
@@ -181,8 +189,10 @@ class DashboardContainer extends Component {
             ? orders.filter(
                 ({ beginDatetime }) =>
                     moment(beginDatetime).format('YYYY-MM-DD') === columnId,
-            )
-            : orders.filter(({ stationNum }) => stationNum === columnId);
+            ) :
+            mode === 'employees' ? 
+                orders.filter(({ employeeId }) => employeeId === columnId)
+                : orders.filter(({ stationNum }) => stationNum === columnId);
 
         const mappedOrders = mapOrders(
             schedule.beginHour,
