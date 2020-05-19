@@ -279,12 +279,13 @@ class DashboardPage extends Component {
         console.log(this.props);
 
         if(this.props.mode == 'employees') {
+            console.log(this.state.employeesResult)
             if(this.state.employeesResult) {
                 dashboard.columns = this.state.employeesResult.load.length;
-                orders = this.state.employeesResult.orders.orders;
-                load = this.state.employeesResult.load;
+                orders = this.state.employeesResult.orders.orders ? this.state.employeesResult.orders.orders : this.props.orders;
+                load = this.state.employeesResult.load ? this.state.employeesResult.load : this.props.load;
                 schedule = this.state.employeesResult.schedule;
-                stations = this.state.employeesResult.employees;
+                stations = this.state.employeesResult.employees ? this.state.employeesResult.employees : this.props.stations;
                 stationsWithConflicts = this.state.employeesResult.stationsWithConflicts;
             }
         }
