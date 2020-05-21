@@ -66,12 +66,9 @@ class DetailSupplierModal extends React.Component{
                 width:     '10%',
                 render: (data) => {
                     let strVal = String(Math.round(data));
-                    for(let i = strVal.length-3; i >= 0; i-=3) {
-                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                    }
                     return (
-                        data ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
-                    );
+                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                    )
                 },
             },
             {
@@ -81,12 +78,9 @@ class DetailSupplierModal extends React.Component{
                 render: (elem) => {
                     const price = Number(elem.purchasePrice) * Number(elem.markup);
                     let strVal = String(Math.round(price));
-                    for(let i = strVal.length-3; i >= 0; i-=3) {
-                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                    }
                     return (
-                        elem.markup ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
-                    );
+                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                    )
                 },
             },
             {

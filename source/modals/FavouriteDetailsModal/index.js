@@ -269,14 +269,12 @@ class FavouriteDetailsModal extends React.Component{
                             disabled={elem.storeGroupId == null}
                             value={data || 0}
                             min={0}
-                            formatter={(value)=>{
-                                let strVal = String(Math.round(value));
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                             onChange={(value)=>{
                                 this.state.dataSource[elem.key].purchasePrice = value;
                                 this.setState({
@@ -298,14 +296,12 @@ class FavouriteDetailsModal extends React.Component{
                             disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
-                            formatter={(value)=>{
-                                let strVal = String(Math.round(value));
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                             onChange={(value)=>{
                                 this.state.dataSource[elem.key].price = value;
                                 this.state.dataSource[elem.key].sum = value * this.state.dataSource[elem.key].count;
@@ -328,14 +324,12 @@ class FavouriteDetailsModal extends React.Component{
                             disabled={elem.storeGroupId == null}
                             value={data || 1}
                             min={1}
-                            formatter={(value)=>{
-                                let strVal = String(value);
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                             onChange={(value)=>{
                                 this.state.dataSource[elem.key].count = value;
                                 this.state.dataSource[elem.key].sum = value * this.state.dataSource[elem.key].price;
@@ -358,14 +352,12 @@ class FavouriteDetailsModal extends React.Component{
                             disabled
                             value={sum ? sum : 1}
                             style={{color: "black"}}
-                            formatter={(value)=>{
-                                let strVal = String(Math.round(value));
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                         />
                     )
                 }

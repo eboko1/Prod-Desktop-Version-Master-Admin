@@ -375,7 +375,6 @@ export default class LaborsPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             window.location.reload();
         })
         .catch(function (error) {

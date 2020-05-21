@@ -213,12 +213,9 @@ class DetailStorageModal extends React.Component{
                 width:     '6%',
                 render: (data) => {
                     let strVal = String(Math.round(data));
-                    for(let i = strVal.length-3; i >= 0; i-=3) {
-                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                    }
                     return (
-                        data ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
-                    );
+                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                    )
                 },
             },
             {
@@ -228,12 +225,9 @@ class DetailStorageModal extends React.Component{
                 width:     '6%',
                 render: (data) => {
                     let strVal = String(Math.round(data));
-                    for(let i = strVal.length-3; i >= 0; i-=3) {
-                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                    }
                     return (
-                        data ? <span>{strVal} <FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
-                    );
+                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                    )
                 },
             },
             {

@@ -226,14 +226,12 @@ class AddServiceModal extends React.Component{
                         <InputNumber
                             value={data || 0}
                             min={0}
-                            formatter={(value)=>{
-                                let strVal = String(Math.round(value));
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                             onChange={(value)=>{
                                 this.state.mainTableSource[0].purchasePrice = value;
                                 this.setState({
@@ -254,14 +252,12 @@ class AddServiceModal extends React.Component{
                         <InputNumber
                             value={data || 1}
                             min={1}
-                            formatter={(value)=>{
-                                let strVal = String(Math.round(value));
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                             onChange={(value)=>{
                                 this.state.mainTableSource[0].price = value;
                                 this.state.mainTableSource[0].sum = value * this.state.mainTableSource[0].count;
@@ -283,14 +279,12 @@ class AddServiceModal extends React.Component{
                         <InputNumber
                             value={data || 1}
                             min={1}
-                            formatter={(value)=>{
-                                let strVal = String(value);
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                             onChange={(value)=>{
                                 this.state.mainTableSource[0].count = value;
                                 this.state.mainTableSource[0].sum = value * this.state.mainTableSource[0].price;
@@ -309,11 +303,7 @@ class AddServiceModal extends React.Component{
                 width:     '3%',
                 render: (data, elem)=>{
                     return (
-                        <Button
-                            type={'primary'}
-                        >
-                            <Icon type="clock-circle" />
-                        </Button>
+                        <NormHourModal/>
                     )
                 }
             },
@@ -328,14 +318,12 @@ class AddServiceModal extends React.Component{
                             disabled
                             value={sum ? sum : 1}
                             style={{color: "black"}}
-                            formatter={(value)=>{
-                                let strVal = String(Math.round(value));
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                         />
                     )
                 }
@@ -685,6 +673,161 @@ class AddServiceModal extends React.Component{
     }
 }
 export default AddServiceModal;
+
+@injectIntl
+class NormHourModal extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            visible: false,
+            dataSource: [
+                {
+                    key: 0,
+                    laborId: 111,
+                    storeGroupId: 222,
+                    comment: 3333,
+                    price: 444,
+                    hours: 5.5,
+                }
+            ],
+        }
+
+        this.columns = [
+            {
+                title:  <FormattedMessage id="order_form_table.service_type" />,
+                key:       'laborId',
+                dataIndex: 'laborId',
+                width:     '15%',
+                render: (data, elem)=>{
+                    return (
+                        <Input
+                            disabled
+                            value={data}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="services_table.store_group" />,
+                key:       'storeGroupId',
+                dataIndex: 'storeGroupId',
+                width:     '15%',
+                render: (data, elem)=>{
+                    return (
+                        <Input
+                            disabled
+                            value={data}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="comment" />,
+                key:       'comment',
+                dataIndex: 'comment',
+                width:     '15%',
+                render: (data, elem)=>{
+                    return (
+                        <Input
+                            disabled
+                            value={data}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.price" />,
+                key:       'price',
+                dataIndex: 'price',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <InputNumber
+                            disabled
+                            value={data}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="services_table.norm_hours" />,
+                key:       'hours',
+                dataIndex: 'hours',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <InputNumber
+                            value={data}
+                            min={0.1}
+                            onChange={(value)=>{
+                                this.state.dataSource[elem.key].hours = value;
+                                this.setState({});
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="sum" />,
+                key:       'sum',
+                dataIndex: 'sum',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <InputNumber
+                            disabled
+                            value={elem.price*elem.hours}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
+                        />
+                    )
+                }
+            }
+        ]
+    }
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+            dataSource: [],
+        })
+    }
+
+    render() { 
+        return (
+            <>
+                <Button
+                    type={'primary'}
+                    onClick={()=>{
+                        this.setState({visible: true})
+                    }}
+                >
+                    <Icon type="clock-circle" />
+                </Button>
+                <Modal
+                    width="75%"
+                    visible={this.state.visible}
+                    onCancel={this.handleCancel}
+                >
+                    <Table
+                        dataSource={this.state.dataSource}
+                        columns={this.columns}
+                        pagination={false}
+                    />
+                </Modal>
+            </>
+    )}
+}
 
 @injectIntl
 class CommentaryButton extends React.Component{

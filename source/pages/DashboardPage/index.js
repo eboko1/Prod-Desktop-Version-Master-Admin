@@ -11,7 +11,9 @@ import {
     initDashboard,
     dropDashboardOrder,
     linkToDashboardStations,
-    setDashboardDate,
+    linkToDashboardEmployees,
+    setDashboardStationsDate,
+    setDashboardEmployeesDate,
     setDashboardWeekDates,
     setDashboardMode,
     selectDasboardData,
@@ -29,12 +31,14 @@ import { ConfirmRescheduleModal } from 'modals';
 
 // own
 import Styles from './styles.m.css';
+import { linkToDashboardEmployeesSaga } from 'core/dashboard/saga';
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
     orders:                state.dashboard.orders.orders,
     mode:                  state.dashboard.mode,
     stations:              state.dashboard.stations,
+    employees:             state.dashboard.employees,
     date:                  state.dashboard.date,
     startDate:             state.dashboard.startDate,
     endDate:               state.dashboard.endDate,
@@ -43,6 +47,7 @@ const mapStateToProps = state => ({
     load:                  state.dashboard.load,
     daysWithConflicts:     state.dashboard.daysWithConflicts,
     stationsWithConflicts: state.dashboard.stationsWithConflicts,
+    employeesWithConflicts:state.dashboard.employeesWithConflicts,
     modal:                 state.modals.modal,
 
     spinner: state.ui.dashboardInitializing,
@@ -55,10 +60,12 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     initDashboard,
     dropDashboardOrder,
-    setDashboardDate,
+    setDashboardStationsDate,
+    setDashboardEmployeesDate,
     setDashboardWeekDates,
     setDashboardMode,
     linkToDashboardStations,
+    linkToDashboardEmployees,
     updateDashboardOrder,
     transferOutdateRepairs,
     setModal,
@@ -70,30 +77,38 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 class DashboardPage extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            employeesResult: undefined,
-        };
-    }
     componentDidMount() {
         const { initDashboard } = this.props;
 
         initDashboard();
     }
 
-    _onDayChange = date => this.props.setDashboardDate(date);
+    _onDayChange = date => {
+        if(this.props.mode === 'employees') {
+            this.props.setDashboardEmployeesDate(date)
+        } else {
+            this.props.setDashboardStationsDate(date)
+        }
+    };
 
     _prevDay = () => {
-        const { setDashboardDate, date } = this.props;
-        setDashboardDate(date.subtract(1, 'day'));
-        this.setState({employeesResult: undefined});
+        const { setDashboardStationsDate, setDashboardEmployeesDate, date } = this.props;
+        if(this.props.mode === 'employees') {
+            setDashboardEmployeesDate(date.subtract(1, 'day'))
+        } else {
+            setDashboardStationsDate(date.subtract(1, 'day'))
+        }
+        this.setState({});
     };
 
     _nextDay = () => {
-        const { setDashboardDate, date } = this.props;
-        setDashboardDate(date.add(1, 'day'));
-        this.setState({employeesResult: undefined});
+        const { setDashboardStationsDate, setDashboardEmployeesDate, date } = this.props;
+        if(this.props.mode === 'employees') {
+            setDashboardEmployeesDate(date.add(1, 'day'))
+        } else {
+            setDashboardStationsDate(date.add(1, 'day'))
+        }
+        this.setState({});
     };
 
     _onWeekChange = date =>
@@ -197,7 +212,9 @@ class DashboardPage extends Component {
                                 />
                             )
                         }
-                        onChange={ mode => this._setDashboardMode(mode) }
+                        onChange={ (mode)=>{
+                            this._setDashboardMode(mode)
+                        }}
                     >
                         <TabPane
                             tab={
@@ -232,62 +249,26 @@ class DashboardPage extends Component {
         );
     }
 
-    _fetchEmployeesDashboard = async () => {
-        if(this.props.mode == 'employees' && !(this.state.employeesResult)) {
-            let token = localStorage.getItem('_my.carbook.pro_token');
-            let url = API_URL;
-            let params = `/dashboard/orders?beginDate=${this.props.date.format('YYYY-MM-DD')}&employees=true`;
-            url += params;
-            try {
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': token,
-                        'Content-Type': 'application/json',
-                    },
-                });
-                const result = await response.json();
-                this.setState({employeesResult: result});
-                console.log(result);
-                return result;
-            } catch (error) {
-                console.error('ERROR:', error);
-            }
-        }
-    }
-
     _renderDashboardContainer = () => {
-        this._fetchEmployeesDashboard();
-        var {
+        const {
             loading,
             orders,
             mode,
             load,
             days,
             stations,
+            employees,
             schedule,
             time,
             dashboard,
             linkToDashboardStations,
+            linkToDashboardEmployees,
             updateDashboardOrder,
             date,
             user,
             daysWithConflicts,
             stationsWithConflicts,
         } = this.props;
-
-        console.log(this.props);
-
-        if(this.props.mode == 'employees') {
-            if(this.state.employeesResult) {
-                dashboard.columns = this.state.employeesResult.load.length;
-                orders = this.state.employeesResult.orders.orders;
-                load = this.state.employeesResult.load;
-                schedule = this.state.employeesResult.schedule;
-                stations = this.state.employeesResult.employees;
-                stationsWithConflicts = this.state.employeesResult.stationsWithConflicts;
-            }
-        }
 
         return loading ? (
             <Loader loading={ loading } />
@@ -299,12 +280,14 @@ class DashboardPage extends Component {
                     date={ date }
                     days={ days }
                     stations={ stations }
+                    employees={ employees }
                     orders={ orders }
                     load={ load }
                     schedule={ schedule }
                     time={ time }
                     dashboard={ dashboard }
                     linkToDashboardStations={ linkToDashboardStations }
+                    linkToDashboardEmployees={ linkToDashboardEmployees }
                     updateDashboardOrder={ updateDashboardOrder }
                     daysWithConflicts={ daysWithConflicts }
                     stationsWithConflicts={ stationsWithConflicts }

@@ -277,7 +277,6 @@ class DiagnosticPatternsPage extends Component {
     }
 
     saveDiagnostic() {
-        console.log(this.state.diagnosticParts);
         var resultData = [];
         this.state.diagnosticParts.map((part)=>{
             if(part.diagnosticTemplateTitle && part.groupTitle && part.partId) {
@@ -309,7 +308,6 @@ class DiagnosticPatternsPage extends Component {
                 if(!part.deleted) resultData[templateIndex].groups[groupIndex].partIds.push(part.partId);
             }
         })
-        console.log(resultData);
 
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -332,7 +330,6 @@ class DiagnosticPatternsPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             window.location.reload();
         })
         .catch(function (error) {
@@ -389,7 +386,6 @@ class DiagnosticPatternsPage extends Component {
         })
         .then(function (data) {
             data.diagnosticParts.map((elem, index)=>elem.key=index);
-            console.log(data);
             that.setState({
                 diagnosticParts: data.diagnosticParts,
             });
@@ -418,7 +414,6 @@ class DiagnosticPatternsPage extends Component {
         })
         .then(function (data) {
             data.diagnosticParts.map((elem, index)=>elem.key=index);
-            console.log(data);
             that.setState({
                 masterDiagnosticParts: data.diagnosticParts,
             });
