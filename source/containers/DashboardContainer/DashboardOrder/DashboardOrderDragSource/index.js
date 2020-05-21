@@ -15,6 +15,7 @@ import DashboardTooltip from '../../DashboardTooltip';
 import { DragItemTypes, ordersStatus } from '../../dashboardConfig';
 import handleHover from '../../dashboardCore/handleHover';
 import getBeginDatetime from '../../dashboardCore/getBeginDatetime';
+import { prop } from 'ramda';
 
 const orderSource = {
     canDrag(props) {
@@ -30,6 +31,7 @@ const orderSource = {
             stationLoadId: props.options.stationLoadId,
             orderId:       props.options.orderId,
             station:       props.options.stationNum,
+            employeeId:    props.options.employeeId,
         };
     },
     // keep station and stationNum separate naming here
@@ -41,19 +43,10 @@ const orderSource = {
 
         if (didDrop) {
             const { dropOrder, schedule, mode } = props;
+            const employeeId = props.options.employeeId;
             const { day, time, stationNum } = monitor.getDropResult();
 
-            if (mode === 'calender') {
-                dropOrder({
-                    beginDatetime: getBeginDatetime(
-                        day,
-                        time,
-                        schedule.beginHour,
-                    ).toISOString(),
-                    station,
-                    stationLoadId,
-                });
-            } else {
+            if (mode === 'calendar') {
                 dropOrder({
                     beginDatetime: getBeginDatetime(
                         day,
@@ -62,6 +55,27 @@ const orderSource = {
                     ).toISOString(),
                     stationNum,
                     stationLoadId,
+                });
+            } else if(mode === 'stations'){
+                dropOrder({
+                    beginDatetime: getBeginDatetime(
+                        day,
+                        time,
+                        schedule.beginHour,
+                    ).toISOString(),
+                    stationNum,
+                    stationLoadId,
+                });
+            } else if(mode === 'employees') {
+                dropOrder({
+                    beginDatetime: getBeginDatetime(
+                        day,
+                        time,
+                        schedule.beginHour,
+                    ).toISOString(),
+                    stationNum,
+                    stationLoadId,
+                    employeeId,
                 });
             }
         }

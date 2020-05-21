@@ -179,12 +179,9 @@ export default class DetailsTable extends Component {
                 dataIndex: 'purchasePrice',
                 render: (data) => {
                     let strVal = String(Math.round(data));
-                    for(let i = strVal.length-3; i >= 0; i-=3) {
-                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                    }
                     return (
                         <span>
-                            {data ? strVal : 0} <FormattedMessage id="cur" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
                         </span> 
                     )
                 },
@@ -196,12 +193,9 @@ export default class DetailsTable extends Component {
                 dataIndex: 'price',
                 render: (data) => {
                     let strVal = String(Math.round(data));
-                    for(let i = strVal.length-3; i >= 0; i-=3) {
-                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                    }
                     return (
                         <span>
-                            {data ? strVal : 0} <FormattedMessage id="cur" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
                         </span> 
                     )
                 },
@@ -212,13 +206,10 @@ export default class DetailsTable extends Component {
                 key: "count",
                 dataIndex: 'count',
                 render: (data) => {
-                    let strVal = String(data);
-                    for(let i = strVal.length-3; i >= 0; i-=3) {
-                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                    }
+                    let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? strVal : 0} <FormattedMessage id="pc" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="pc" />
                         </span> 
                     )
                 },
@@ -230,12 +221,9 @@ export default class DetailsTable extends Component {
                 dataIndex: 'sum',
                 render: (data) => {
                     let strVal = String(Math.round(data));
-                    for(let i = strVal.length-3; i >= 0; i-=3) {
-                        strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                    }
                     return (
                         <span>
-                            {data ? strVal : 0} <FormattedMessage id="cur" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
                         </span> 
                     )
                 },
@@ -563,14 +551,12 @@ class QuickEditModal extends React.Component{
                         <InputNumber
                             value={data ? data : 0}
                             min={0}
-                            formatter={(value)=>{
-                                let strVal = String(Math.round(value));
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                             onChange={(value)=>{
                                 this.state.dataSource[0].purchasePrice = value;
                                 this.setState({
@@ -591,14 +577,12 @@ class QuickEditModal extends React.Component{
                         <InputNumber
                             value={data ? data : 0}
                             min={0}
-                            formatter={(value)=>{
-                                let strVal = String(Math.round(value));
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                             onChange={(value)=>{
                                 this.state.dataSource[0].price = value;
                                 this.state.dataSource[0].sum = value * this.state.dataSource[0].count;
@@ -620,14 +604,12 @@ class QuickEditModal extends React.Component{
                         <InputNumber
                             value={data ? data : 0}
                             min={0}
-                            formatter={(value)=>{
-                                let strVal = String(value);
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                             onChange={(value)=>{
                                 this.state.dataSource[0].count = value;
                                 this.state.dataSource[0].sum = value * this.state.dataSource[0].price;
@@ -650,14 +632,12 @@ class QuickEditModal extends React.Component{
                             disabled
                             style={{color: 'black'}}
                             value={data}
-                            formatter={(value)=>{
-                                let strVal = String(Math.round(value));
-                                for(let i = strVal.length-3; i >= 0; i-=3) {
-                                    strVal =  strVal.substr(0,i) + ' ' +  strVal.substr(i);
-                                }
-                                return strVal;
-                            }}
-                            parser={value => value.replace(' ', '')}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
                         />
                     )
                 }

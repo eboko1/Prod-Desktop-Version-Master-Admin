@@ -52,7 +52,6 @@ class DashboardContainer extends Component {
         this.setState({ hideSourceOnDrag: !this.state.hideSourceOnDrag });
 
     render() {
-        console.log(this)
         const { dashboard, schedule, mode } = this.props;
         const timeColumn = this._renderTimeColumn();
         const dashboardColumns = this._renderDashboardColumns();
@@ -77,6 +76,7 @@ class DashboardContainer extends Component {
     }
 
     _linkToStations = day => this.props.linkToDashboardStations(day);
+    _linkToEmployees = day => this.props.linkToDashboardEmployees(day);
 
     _renderTimeColumn = () => {
         const { dashboard, time } = this.props;
@@ -95,7 +95,7 @@ class DashboardContainer extends Component {
     };
 
     _renderDashboardColumns = () => {
-        const { dashboard, days, stations, load, mode } = this.props;
+        const { dashboard, days, stations, employees, load, mode } = this.props;
         const { currentDay } = this.state;
 
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
@@ -119,7 +119,7 @@ class DashboardContainer extends Component {
                                         />
                                     ) : 
                                         mode === 'employees' ? 
-                                            `${stations[ index ].name} ${stations[ index ].surname}`  :  
+                                            employees[ index ].name  :  
                                             load[ index ].stationNum
                                     }
                                 </DashboardTitle>
@@ -136,8 +136,9 @@ class DashboardContainer extends Component {
                                         ? `${moment(
                                             load[ index ].beginDate,
                                         ).format('DD MMM')} -`
-                                        : stations[ index ].name &&
-                                          `${stations[ index ].name} - ` }
+                                        : mode == 'employees' ?
+                                            `${employees[ index ].name} ${employees[ index ].surname} - `
+                                            : stations[ index ].name && `${stations[ index ].name} - ` }
                                     { Math.round(load[ index ].loadCoefficient) }%
                                 </DashboardLoad>
                             </>
@@ -157,6 +158,7 @@ class DashboardContainer extends Component {
             dashboard,
             days,
             stations,
+            employees,
             orders,
             schedule,
             updateDashboardOrder,
@@ -170,7 +172,7 @@ class DashboardContainer extends Component {
 
         const dashboardMode = mode === 'calendar';
 
-        const columnsData = dashboardMode ? days : stations;
+        const columnsData = mode === 'calendar' ? days : (mode === 'employees' ? employees : stations);
 
         const columnId = dashboardMode
             ? columnsData
@@ -263,8 +265,7 @@ class DashboardContainer extends Component {
 
                                             } }
                                             id={
-                                                result[ index ].options
-                                                    .stationLoadId
+                                                result[ index ].options.stationLoadId
                                             }
                                             status={
                                                 result[ index ].options.status
@@ -274,18 +275,16 @@ class DashboardContainer extends Component {
                                             // hideSourceOnDrag={ hideSourceOnDrag }
                                             schedule={ schedule }
                                             day={
-                                                dashboardMode
+                                                mode === 'calendar'
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
                                             stationNum={
-                                                !dashboardMode
-                                                    ? _.get(
-                                                        stations,
-                                                        `[${column}].num`,
-                                                    )
-                                                    : result[ index ].options
-                                                        .stationNum
+                                                mode == 'calendar' ? 
+                                                result[ index ].options.stationNum 
+                                                : mode === 'stations' ? 
+                                                    _.get(stations,`[${column}].num`,)
+                                                    : result[ index ].options.employeeId 
                                             }
                                             { ...order }
                                         />
@@ -304,6 +303,7 @@ class DashboardContainer extends Component {
             days,
             date,
             stations,
+            employees,
             schedule,
             mode,
             user,
@@ -346,7 +346,10 @@ class DashboardContainer extends Component {
                             <DashboardAddOrderLink
                                 time={ setBeginDateitme(index) }
                                 stationNum={
-                                    mode !== 'calendar' && stations[ column ].num
+                                    mode == 'stations' && stations[ column ].num
+                                }
+                                employeeId={
+                                    mode == 'employees' && employees[ column ].id
                                 }
                             />
                         ) : null }

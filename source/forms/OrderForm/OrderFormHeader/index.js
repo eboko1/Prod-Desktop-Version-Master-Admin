@@ -622,6 +622,7 @@ export default class OrderFormHeader extends Component {
             authentificatedManager,
             fields,
             errors,
+            location
         } = this.props;
 
         const isOwnBusiness =
@@ -630,7 +631,6 @@ export default class OrderFormHeader extends Component {
             }) || void 0;
 
         const { getFieldDecorator } = this.props.form;
-
         return (
             <div className={Styles.headerCol}>
                 <DecoratedSelect
@@ -669,7 +669,7 @@ export default class OrderFormHeader extends Component {
                     className={Styles.durationPanelItem}
                     disabled={this.bodyUpdateIsForbidden()}
                     getFieldDecorator={getFieldDecorator}
-                    initialValue={_.get(fetchedOrder, "order.employeeId")}
+                    initialValue={_.get(fetchedOrder, "order.employeeId") || (location.state ? location.state.employeeId : undefined)}
                     placeholder={this._getLocalization(
                         "order_form_table.select_master",
                     )}

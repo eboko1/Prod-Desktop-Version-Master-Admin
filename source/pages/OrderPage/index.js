@@ -469,7 +469,6 @@ class OrderPage extends Component {
                                         count: element.count,
                                     })
                                 });
-                                //console.log(data);
                                 //await confirmDiagnostic(this.props.order.id, data);
                                 //await lockDiagnostic(this.props.order.id);
                                 //await window.location.reload();
