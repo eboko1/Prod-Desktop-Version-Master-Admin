@@ -39,7 +39,7 @@ class ConfirmDiagnosticModal extends React.Component{
         await lockDiagnostic(orderId);
         //await this.props.reloadOrderPageComponents();
         //await createAgreement(this.props.orderId, this.props.intl.locale);
-        await window.location.reload();
+        //await window.location.reload();
     }
 
     showModal = () => {
