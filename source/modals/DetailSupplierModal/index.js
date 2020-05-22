@@ -79,7 +79,7 @@ class DetailSupplierModal extends React.Component{
                     const price = Number(elem.purchasePrice) * Number(elem.markup);
                     let strVal = String(Math.round(price));
                     return (
-                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                        price ? <span>{`${price}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     )
                 },
             },

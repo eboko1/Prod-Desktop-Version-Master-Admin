@@ -320,8 +320,6 @@ export class OrderForm extends React.PureComponent {
         const totalPrice = Math.round(detailsTotalPrice + servicesTotalPrice);
         const remainPrice = Math.round(totalPrice - cashSum);
 
-        console.log(this);
-
         return (
             <Form className={Styles.form} layout="horizontal">
                 <OrderFormHeader
