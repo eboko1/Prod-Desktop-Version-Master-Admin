@@ -268,6 +268,7 @@ class DashboardPage extends Component {
             user,
             daysWithConflicts,
             stationsWithConflicts,
+            employeesWithConflicts,
         } = this.props;
 
         return loading ? (
@@ -282,7 +283,7 @@ class DashboardPage extends Component {
                     stations={ stations }
                     employees={ employees }
                     orders={ orders }
-                    load={ load }
+                    load={ mode === "employees" ? load.reverse() : load }
                     schedule={ schedule }
                     time={ time }
                     dashboard={ dashboard }
@@ -291,6 +292,7 @@ class DashboardPage extends Component {
                     updateDashboardOrder={ updateDashboardOrder }
                     daysWithConflicts={ daysWithConflicts }
                     stationsWithConflicts={ stationsWithConflicts }
+                    employeesWithConflicts={ employeesWithConflicts }
                 />
                 <ConfirmRescheduleModal
                     // wrappedComponentRef={ this.saveFormRef }
