@@ -43,8 +43,8 @@ const orderSource = {
 
         if (didDrop) {
             const { dropOrder, schedule, mode } = props;
-            const employeeId = props.options.employeeId;
-            const { day, time, stationNum } = monitor.getDropResult();
+            const orderId = props.options.orderId;
+            const { day, time, stationNum, employeeId } = monitor.getDropResult();
 
             if (mode === 'calendar') {
                 dropOrder({
@@ -73,9 +73,9 @@ const orderSource = {
                         time,
                         schedule.beginHour,
                     ).toISOString(),
-                    stationNum,
-                    stationLoadId,
                     employeeId,
+                    orderId,
+                    mode,
                 });
             }
         }
@@ -177,7 +177,7 @@ export default class DashboardOrderDragSource extends Component {
     }
 
     _renderDashboardOrderDropTarget = index => {
-        const { day, stationNum, globalPosition, label } = this.props;
+        const { day, stationNum, globalPosition, label, employeeId } = this.props;
 
         return (
             <DashboardOrderDropTarget
@@ -185,6 +185,7 @@ export default class DashboardOrderDragSource extends Component {
                 day={ day }
                 stationNum={ stationNum }
                 globalPosition={ globalPosition + index }
+                employeeId={ employeeId }
                 label={ index === 0 ? label : null }
             />
         );

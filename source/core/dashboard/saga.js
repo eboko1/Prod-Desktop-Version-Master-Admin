@@ -75,9 +75,11 @@ export function* setDashboardModeSaga() {
                 yield put(setDashboardWeekDates({ startDate, endDate }));
             } else if (mode === 'stations') {
                 const date = yield select(selectDashboardDate);
+
                 yield put(setDashboardStationsDate(date));
             } else if (mode === 'employees') {
                 const date = yield select(selectDashboardDate);
+
                 yield put(setDashboardEmployeesDate(date));
             }
         } catch (error) {
@@ -231,13 +233,24 @@ export function* updateDashboardOrderSaga() {
         try {
             const { payload: order } = yield take(UPDATE_DASHBOARD_ORDER);
             yield nprogress.start();
-            yield call(
-                fetchAPI,
-                'PUT',
-                `/stations/loads/${order.stationLoadId}`,
-                {},
-                _.omit(order, [ 'stationLoadId', 'employeeId' ]),
-            );
+            if(order.mode == 'employees') {
+                yield call(
+                    fetchAPI,
+                    'PUT',
+                    `/orders/${order.orderId}`,
+                    {},
+                    _.omit(order, [ 'orderId', 'mode']),
+                );
+            } else {
+                yield call(
+                    fetchAPI,
+                    'PUT',
+                    `/stations/loads/${order.stationLoadId}`,
+                    {},
+                    _.omit(order, [ 'stationLoadId', 'employeeId' ]),
+                );
+            }
+            
 
             yield put(updateDashboardOrderSuccess());
             yield put(refreshDashboard());

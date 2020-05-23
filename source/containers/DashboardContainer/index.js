@@ -167,6 +167,7 @@ class DashboardContainer extends Component {
             user,
             daysWithConflicts,
             stationsWithConflicts,
+            employeesWithConflicts,
         } = this.props;
         // const { hideSourceOnDrag } = this.state;
 
@@ -225,6 +226,10 @@ class DashboardContainer extends Component {
                                             stationsWithConflicts={
                                                 stationsWithConflicts
                                             }
+                                            employeesWithConflicts={
+                                                employeesWithConflicts
+                                            }
+
                                             mode={ mode }
                                             day={
                                                 dashboardMode
@@ -233,11 +238,11 @@ class DashboardContainer extends Component {
                                             }
                                             stationNum={
                                                 !dashboardMode
-                                                    ? _.get(
-                                                        stations,
-                                                        `[${column}].num`,
-                                                    )
+                                                    ? _.get(stations,`[${column}].num`,)
                                                     : column + 1
+                                            }
+                                            employeeId={
+                                                _.get(employees,`[${column}].id`,)
                                             }
                                             { ...order }
                                         />
@@ -280,11 +285,12 @@ class DashboardContainer extends Component {
                                                     : date.format('YYYY-MM-DD')
                                             }
                                             stationNum={
-                                                mode == 'calendar' ? 
-                                                result[ index ].options.stationNum 
-                                                : mode === 'stations' ? 
-                                                    _.get(stations,`[${column}].num`,)
-                                                    : result[ index ].options.employeeId 
+                                                mode == 'calendar'
+                                                    ? result[ index ].options.stationNum 
+                                                    : _.get(stations,`[${column}].num`,)
+                                            }
+                                            employeeId={
+                                                result[ index ].options.employeeId 
                                             }
                                             { ...order }
                                         />
@@ -309,6 +315,7 @@ class DashboardContainer extends Component {
             user,
             daysWithConflicts,
             stationsWithConflicts,
+            employeesWithConflicts,
         } = this.props;
 
         const dashboardMode = mode === 'calendar';
@@ -335,9 +342,13 @@ class DashboardContainer extends Component {
                 day={ day }
                 daysWithConflicts={ daysWithConflicts }
                 stationsWithConflicts={ stationsWithConflicts }
+                employeesWithConflicts={ employeesWithConflicts }
                 mode={ mode }
                 stationNum={
                     !dashboardMode && _.get(stations, `[${column}].num`)
+                }
+                employeeId={
+                    mode == 'employees' && employees[ column ].id
                 }
             >
                 { [ ...Array(dashboard.rows).keys() ].map((_, index) => (
