@@ -15,34 +15,19 @@ function calculateStats(entries) {
 export const servicesStats = (selectedServices, allServices) => {
     const selectedSimpleServices = _(selectedServices)
         .filter(service => _.get(service, 'serviceName'))
-        .map(({ laborId, servicePrice, serviceHours, serviceName, primeCost }) => ({
+        .map(({ servicePrice, serviceCount, serviceName, primeCost }) => ({
             price:          !_.isNil(servicePrice) ? servicePrice : 0,
-            hours:          !_.isNil(serviceHours) ? serviceHours : 0,
-            count:          !_.isNil(serviceHours) ? serviceHours : 0,
-            id:             laborId ? laborId : serviceName,
-            name:           serviceName,
+            count:          !_.isNil(serviceCount) ? serviceCount : 0,
+            id:             serviceName,
             servicesProfit:
                 !_.isNil(primeCost) &&
                 !_.isNil(servicePrice) &&
-                !_.isNil(serviceHours)
-                    ? (servicePrice - primeCost) * serviceHours
+                !_.isNil(serviceCount)
+                    ? (servicePrice - primeCost) * serviceCount
                     : 0,
         }))
         .value();
 
-    const totalHours = selectedSimpleServices.reduce(
-        (prev, { hours }) =>
-            prev + hours,
-        0,
-    );
-
-    const totalServicesProfit = selectedSimpleServices
-        .reduce(
-            (accumulator, { servicesProfit }) => accumulator + servicesProfit,
-            0,
-        )
-        .toFixed(2);
-    /* Marian service table fix
     const allServicesHours = _(allServices)
         .map(({ id, type, serviceHours }) => [ `${type}|${id}`, ~~serviceHours ])
         .fromPairs()
@@ -59,7 +44,8 @@ export const servicesStats = (selectedServices, allServices) => {
             (accumulator, { servicesProfit }) => accumulator + servicesProfit,
             0,
         )
-        .toFixed(2); */
+        .toFixed(2);
+
     return {
         ...calculateStats(selectedSimpleServices),
         totalServicesProfit,

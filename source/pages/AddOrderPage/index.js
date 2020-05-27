@@ -206,8 +206,6 @@ class AddOrderPage extends Component {
                 }
             >
                 <OrderForm
-                    allService={ this.props.allServices }
-                    allDetails={ this.props.allDetails }
                     errors={ this.state.errors }
                     wrappedComponentRef={ this.saveOrderFormRef }
                     setAddClientModal={ this._setAddClientModal }

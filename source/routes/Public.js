@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Switch, Route, Redirect } from 'react-router';
 
 // proj
-import { LoginPage, ForgotPasswordPage, NewPasswordPage, AgreementPage } from 'pages';
+import { LoginPage, ForgotPasswordPage, NewPasswordPage } from 'pages';
 
 import book from './book';
 
@@ -21,11 +21,6 @@ export default class Public extends Component {
                     exact
                     component={ NewPasswordPage }
                     path={ book.newPassword }
-                />
-                <Route 
-                    exact
-                    component={ AgreementPage }
-                    path={ book.agreement }
                 />
                 <Redirect to={ book.login } />
             </Switch>

@@ -7,7 +7,6 @@ import HistoryTable from './HistoryTable';
 import TasksTable from './TasksTable';
 import CallsTable from './CallsTable';
 import StationsTable from './StationsTable';
-import DiagnosticTable from './DiagnosticTable';
 
 export {
     DetailsTable,
@@ -19,5 +18,4 @@ export {
     CallsTable,
     StationsTable,
     ClientsVehiclesTable,
-    DiagnosticTable,
 };

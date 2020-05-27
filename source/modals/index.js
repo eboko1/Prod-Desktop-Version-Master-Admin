@@ -14,13 +14,7 @@ import SubscribeModal from './SubscribeModal';
 import PDFViewerModal from './PDFViewerModal';
 import StoreGroupModal from './StoreGroupModal';
 import StoreProductModal from './StoreProductModal';
-import ConfirmDiagnosticModal from './ConfirmDiagnosticModal';
-import DetailProductModal from './DetailProductModal';
-import DetailStorageModal from './DetailStorageModal';
-import DetailSupplierModal from './DetailSupplierModal';
-import FavouriteDetailsModal from './FavouriteDetailsModal';
-import FavouriteServicesModal from './FavouriteServicesModal';
-import AddServiceModal from './AddServiceModal'
+
 export {
     UniversalFiltersModal,
     AddClientModal,
@@ -38,11 +32,4 @@ export {
     PDFViewerModal,
     StoreGroupModal,
     StoreProductModal,
-    ConfirmDiagnosticModal,
-    DetailProductModal,
-    DetailStorageModal,
-    DetailSupplierModal,
-    FavouriteDetailsModal,
-    FavouriteServicesModal,
-    AddServiceModal,
 };

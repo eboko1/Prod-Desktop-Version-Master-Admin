@@ -27,21 +27,6 @@ import trwLogo from 'theme/images/logos/trwLogo.png';
 // Funel
 import funelArrowCurvedLeft from 'theme/images/funel/funel_arrow-curved-left.svg';
 import funelArrowCurvedRight from 'theme/images/funel/funel_arrow-curved-right.svg';
-// Vehicle Scheme
-import vehicleSchemeFront from 'theme/images/vehicleScheme/front.png';
-import vehicleSchemeBack from 'theme/images/vehicleScheme/back.png';
-import vehicleSchemeSide from 'theme/images/vehicleScheme/side.png';
-// Icons
-import bookIcon from 'theme/images/icons/book.svg';
-import brakeIcon from 'theme/images/icons/brake.svg';
-import carPartsIcon from 'theme/images/icons/car-parts.svg';
-import checkIcon from 'theme/images/icons/check.svg';
-import craneIcon from 'theme/images/icons/crane.svg';
-import crossReferenceIcon from 'theme/images/icons/cross-reference.svg';
-import mechanicIcon from 'theme/images/icons/mechanic.svg';
-import partsIcon from 'theme/images/icons/parts.svg';
-import pencilIcon from 'theme/images/icons/pencil.svg';
-import stockIcon from 'theme/images/icons/stock.svg';
 
 export default {
     // Exceptions
@@ -72,19 +57,4 @@ export default {
     // Funel
     funelArrowCurvedLeft,
     funelArrowCurvedRight,
-    // Vehicle Scheme
-    vehicleSchemeFront,
-    vehicleSchemeBack,
-    vehicleSchemeSide,
-    // Icons
-    bookIcon,
-    brakeIcon,
-    carPartsIcon,
-    checkIcon,
-    craneIcon,
-    crossReferenceIcon,
-    mechanicIcon,
-    partsIcon,
-    pencilIcon,
-    stockIcon,
 };

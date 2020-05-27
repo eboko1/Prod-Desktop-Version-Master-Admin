@@ -15,7 +15,6 @@ import DashboardTooltip from '../../DashboardTooltip';
 import { DragItemTypes, ordersStatus } from '../../dashboardConfig';
 import handleHover from '../../dashboardCore/handleHover';
 import getBeginDatetime from '../../dashboardCore/getBeginDatetime';
-import { prop } from 'ramda';
 
 const orderSource = {
     canDrag(props) {
@@ -31,7 +30,6 @@ const orderSource = {
             stationLoadId: props.options.stationLoadId,
             orderId:       props.options.orderId,
             station:       props.options.stationNum,
-            employeeId:    props.options.employeeId,
         };
     },
     // keep station and stationNum separate naming here
@@ -43,10 +41,19 @@ const orderSource = {
 
         if (didDrop) {
             const { dropOrder, schedule, mode } = props;
-            const orderId = props.options.orderId;
-            const { day, time, stationNum, employeeId } = monitor.getDropResult();
+            const { day, time, stationNum } = monitor.getDropResult();
 
-            if (mode === 'calendar') {
+            if (mode === 'calender') {
+                dropOrder({
+                    beginDatetime: getBeginDatetime(
+                        day,
+                        time,
+                        schedule.beginHour,
+                    ).toISOString(),
+                    station,
+                    stationLoadId,
+                });
+            } else {
                 dropOrder({
                     beginDatetime: getBeginDatetime(
                         day,
@@ -55,27 +62,6 @@ const orderSource = {
                     ).toISOString(),
                     stationNum,
                     stationLoadId,
-                });
-            } else if(mode === 'stations'){
-                dropOrder({
-                    beginDatetime: getBeginDatetime(
-                        day,
-                        time,
-                        schedule.beginHour,
-                    ).toISOString(),
-                    stationNum,
-                    stationLoadId,
-                });
-            } else if(mode === 'employees') {
-                dropOrder({
-                    beginDatetime: getBeginDatetime(
-                        day,
-                        time,
-                        schedule.beginHour,
-                    ).toISOString(),
-                    employeeId,
-                    orderId,
-                    mode,
                 });
             }
         }
@@ -177,7 +163,7 @@ export default class DashboardOrderDragSource extends Component {
     }
 
     _renderDashboardOrderDropTarget = index => {
-        const { day, stationNum, globalPosition, label, employeeId } = this.props;
+        const { day, stationNum, globalPosition, label } = this.props;
 
         return (
             <DashboardOrderDropTarget
@@ -185,7 +171,6 @@ export default class DashboardOrderDragSource extends Component {
                 day={ day }
                 stationNum={ stationNum }
                 globalPosition={ globalPosition + index }
-                employeeId={ employeeId }
                 label={ index === 0 ? label : null }
             />
         );

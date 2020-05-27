@@ -80,20 +80,6 @@ export default {
                     link: book.products,
                     name: 'navigation.products',
                 },
-                {
-                    key:     '/labors',
-                    link:    book.laborsPage,
-                    disabled: user =>
-                    isForbidden(user, permissions.ACCESS_STORE_GROUPS),
-                    name:    'navigation.labors_page',
-                },
-                {
-                    key:      '/diagnostic-patterns',
-                    disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STORE_GROUPS),
-                    link: book.diagnosticPatterns,
-                    name: 'navigation.diagnostic_patterns',
-                },
             ],
         },
         /* Accounting */

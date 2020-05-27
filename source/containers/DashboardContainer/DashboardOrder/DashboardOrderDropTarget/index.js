@@ -12,7 +12,6 @@ const orderTarget = {
             time:       props.globalPosition,
             day:        props.day,
             stationNum: props.stationNum,
-            employeeId: props.employeeId,
         };
     },
 };

@@ -30,7 +30,6 @@ export const Dashboard = styled.div`
 
 export const DashboardGrid = styled.div`
     display: grid;
-    position: relative;
     grid-template-columns: ${props =>
         `repeat(${props.columns}, minmax(13%, 1fr))`};
     grid-gap: 1%;
@@ -71,22 +70,10 @@ export const DashboardGrid = styled.div`
 
 export const DashboardColumn = styled.div`
     padding: 2px;
-    background: #f1f1f2;
     border: ${props =>
         `${props.currentDay &&
             props.currentDay === props.day &&
             '2px solid var(--secondary)'}`};
-    width: 100%;
-    @media screen and (max-width: 1199px) {
-        position: ${props =>
-            `${props.currentDay &&
-                props.currentDay === props.day &&
-                'absolute'}`};
-        z-index: ${props =>
-            `${props.currentDay &&
-                props.currentDay === props.day &&
-                '100'}`};
-    }
     ${'' /* display: grid;
     grid-template-rows: ${props =>
         `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
@@ -124,10 +111,8 @@ export const DashboardAddOrderColumn = styled.div`
         mode,
         daysWithConflicts,
         stationsWithConflicts,
-        employeesWithConflicts,
         day,
         stationNum,
-        employeeId,
         globalPosition,
     }) {
         if (mode === 'calendar') {
@@ -139,23 +124,10 @@ export const DashboardAddOrderColumn = styled.div`
 
             return 'white';
         }
-        if(mode === 'stations') {
-            if (stationsWithConflicts.includes(stationNum)) {
-                return globalPosition % 2
-                    ? 'rgba(var(--warningRGB), 0.3)'
-                    : 'rgba(var(--warningRGB), 0.4)';
-            }
-
-            return 'white';
-        }
-        if(mode === 'employees') {
-            if (employeesWithConflicts.includes(employeeId)) {
-                return globalPosition % 2
-                    ? 'rgba(var(--warningRGB), 0.3)'
-                    : 'rgba(var(--warningRGB), 0.4)';
-            }
-
-            return 'white';
+        if (stationsWithConflicts.includes(stationNum)) {
+            return globalPosition % 2
+                ? 'rgba(var(--warningRGB), 0.3)'
+                : 'rgba(var(--warningRGB), 0.4)';
         }
 
         return 'white';
@@ -166,10 +138,8 @@ export const DashboardAddOrderColumn = styled.div`
         mode,
         daysWithConflicts,
         stationsWithConflicts,
-        employeesWithConflicts,
         day,
         stationNum,
-        employeeId,
         globalPosition,
     }) {
         if (mode === 'calendar') {
@@ -181,23 +151,10 @@ export const DashboardAddOrderColumn = styled.div`
 
             return 'var(--snow)';
         }
-        if(mode === 'stations') {
-            if (stationsWithConflicts.includes(stationNum)) {
-                return globalPosition % 2
-                    ? 'rgba(var(--warningRGB), 0.3)'
-                    : 'rgba(var(--warningRGB), 0.4)';
-            }
-
-            return 'var(--snow)';
-        }
-        if(mode === 'employees') {
-            if (employeesWithConflicts.includes(employeeId)) {
-                return globalPosition % 2
-                    ? 'rgba(var(--warningRGB), 0.3)'
-                    : 'rgba(var(--warningRGB), 0.4)';
-            }
-            
-            return 'var(--snow)';
+        if (stationsWithConflicts.includes(stationNum)) {
+            return globalPosition % 2
+                ? 'rgba(var(--warningRGB), 0.3)'
+                : 'rgba(var(--warningRGB), 0.4)';
         }
 
         return 'var(--snow)';

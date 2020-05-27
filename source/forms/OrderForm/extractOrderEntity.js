@@ -13,7 +13,6 @@ export function convertFieldsValuesToDbEntity(
     status = 'not_complete',
     user,
 ) {
-    //console.log(orderFields);
     const services = _(orderFields.services)
         .filter(Boolean)
         .filter(service => _.get(service, 'serviceName'))
@@ -24,11 +23,8 @@ export function convertFieldsValuesToDbEntity(
                 serviceCount: count,
                 employeeId: employeeId,
                 ownDetail: ownDetail,
-                serviceHours: hours,
-                laborId: laborId,
-                agreement: agreement,
-                comment: comment,
             } = service;
+            const hours = null;
 
             const serviceConfig = allServices.find(
                 ({ id, type }) => `${type}|${id}` === name,
@@ -38,26 +34,18 @@ export function convertFieldsValuesToDbEntity(
             const serviceType = !serviceConfig
                 ? { type: 'custom', serviceName: name }
                 : { type: name.split('|')[ 0 ], serviceId: name.split('|')[ 1 ] };
-            
-            var result = {};
 
-            if(name) result.serviceName = name;
-            if(laborId) result.serviceId = laborId;
-            if(price) result.servicePrice = price;
-            if(employeeId) result.employeeId = employeeId;
-            if(hours) result.serviceHours = hours;
-            if(agreement) result.agreement = agreement;
-            if(comment) result.comment = {comment:comment};
-
-            return result
+            return { ...baseService, ...serviceType };
         })
         .value();
+
     const details = _(orderFields.details)
         .filter(Boolean)
         .filter(
             detail => _.get(detail, 'detailName') || _.get(detail, 'productId'),
         )
         .map(detail => {
+
             const {
                 detailName: detailId,
                 detailPrice: price,
@@ -68,13 +56,12 @@ export function convertFieldsValuesToDbEntity(
                 storage: storage,
                 productId: productId,
                 productCode: productCode,
-                storeGroupId: storeGroupId,
-                agreement: agreement,
                 // using: using,
             } = detail;
             const detailConfig = allDetails.details.find(
                 ({ detailId: id }) => String(id) === detailId,
             );
+
             let detailCustom = { detailId };
 
             if (storage) {
@@ -87,7 +74,7 @@ export function convertFieldsValuesToDbEntity(
                 ({ brandId: id }) => String(id) === brandId,
             );
             
-            const baseDetail = { storeGroupId, code, productCode, price, count, purchasePrice };
+            const baseDetail = { code, productCode, price, count, purchasePrice };
 
             let brandCustom = {};
             if (!brandConfig) {
@@ -99,19 +86,14 @@ export function convertFieldsValuesToDbEntity(
             }
 
             return {
-                storeGroupId: storeGroupId ? storeGroupId : null,
-                agreement: agreement,
-                price: price,
-                count: count,
-                purchasePrice: purchasePrice,
-                /* Marian details table fix / save button fix
                 ...baseDetail,
                 ...detailCustom,
                 ...brandCustom,
-                // ...storage && using ? { using } : {}, */
+                // ...storage && using ? { using } : {},
             };
         })
         .value();
+
     const beginDate = _.get(orderFields, 'stationLoads[0].beginDate');
     const beginTime = _.get(orderFields, 'stationLoads[0].beginTime');
 
@@ -220,7 +202,6 @@ export function convertFieldsValuesToDbEntity(
         vehicleCondition: _.get(orderFields, 'vehicleCondition'),
         businessComment:  _.get(orderFields, 'businessComment'),
         comment:          _.get(orderFields, 'comment'),
-        insertMode: true,
     };
 
     const orderClearedFields = _.mapValues(order, value =>

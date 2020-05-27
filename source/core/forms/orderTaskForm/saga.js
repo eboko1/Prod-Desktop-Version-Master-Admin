@@ -69,8 +69,3 @@ export function* saveNewOrderTask() {
 export function* saga() {
     yield all([ call(saveNewOrderTask) ]);
 }
-
-export function test() {
-    fetch("https://api.example.com/items")
-      .then(res => res.json());
-}

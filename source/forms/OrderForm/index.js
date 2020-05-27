@@ -75,19 +75,9 @@ import Styles from "./styles.m.css";
     }),
 })
 export class OrderForm extends React.PureComponent {
-    constructor(props) {
-        super(props);
-        this.state = {
-            formValues: {},
-        };
-
-        this.reloadOrderForm = this.reloadOrderForm.bind(this);
-    }
-
-    reloadOrderForm() {
-        const formValues = this.props.form.getFieldsValue();
-        this.setState({ formValues });
-    }
+    state = {
+        formValues: {},
+    };
 
     _openNotification = ({ make, model }) => {
         const params = {
@@ -297,15 +287,14 @@ export class OrderForm extends React.PureComponent {
             "requisite",
         ]);
 
-        let priceDetails = 0;
-        for(let i = 0; i < this.props.orderDetails.length; i++) {
-            priceDetails += Math.round(this.props.orderDetails[i].sum);
-        }
+        const { price: priceDetails } = detailsStats(
+            _.get(formFieldsValues, "details", []),
+        );
 
-        let priceServices = 0;
-        for(let i = 0; i < this.props.orderServices.length; i++) {
-            priceServices += Math.round(this.props.orderServices[i].sum);
-        }
+        const { price: priceServices } = servicesStats(
+            _.get(formFieldsValues, "services", []),
+            allServices,
+        );
 
         const servicesDiscount = _.get(formFieldsValues, "servicesDiscount", 0);
         const detailsDiscount = _.get(formFieldsValues, "detailsDiscount", 0);
@@ -397,31 +386,25 @@ export class OrderForm extends React.PureComponent {
             allServices,
             schedule,
             stationLoads,
-            orderId,
         } = this.props;
         const { formatMessage } = this.props.intl;
         const { getFieldDecorator } = this.props.form;
 
         const tecdocId = this._getTecdocId();
 
-        var countDetails = this.props.orderDetails.length,
-            priceDetails = 0,
-            totalDetailsProfit = 0,
-            detailsDiscount = this.props.fields.detailsDiscount ? this.props.fields.detailsDiscount.value : this.props.order.detailsDiscount;
-        for (let i = 0; i < this.props.orderDetails.length; i++) {
-            priceDetails += Math.round(this.props.orderDetails[i].sum);
-            totalDetailsProfit += Math.round(this.props.orderDetails[i].sum - (this.props.orderDetails[i].sum*detailsDiscount/100) - this.props.orderDetails[i].purchasePrice*this.props.orderDetails[i].count);
-        }
+        const {
+            count: countDetails,
+            price: priceDetails,
+            totalDetailsProfit,
+        } = detailsStats(_.get(formFieldsValues, "details", []));
 
-        var countServices = this.props.orderServices.length,
-            priceServices = 0,
-            totalServicesProfit = 0,
-            servicesDiscount = this.props.fields.servicesDiscount ? this.props.fields.servicesDiscount.value : this.props.order.servicesDiscount;
-        for (let i = 0; i < this.props.orderServices.length; i++) {
-            priceServices += Math.round(this.props.orderServices[i].sum);
-            totalServicesProfit += Math.round(this.props.orderServices[i].sum - (this.props.orderServices[i].sum*servicesDiscount/100) - this.props.orderServices[i].purchasePrice*this.props.orderServices[i].count);
-        }
-        
+        const {
+            count: countServices,
+            price: priceServices,
+            // totalHours,
+            totalServicesProfit: totalServicesProfit,
+        } = servicesStats(_.get(formFieldsValues, "services", []), allServices);
+
         // _.values(value).some(_.isNil) gets only filled rows
         const stationsCount = _.get(formFieldsValues, "stationLoads", [])
             .filter(Boolean)
@@ -455,7 +438,6 @@ export class OrderForm extends React.PureComponent {
             orderHistory,
             orderServices,
             orderDetails,
-            orderDiagnostic,
             // allServices,
             allDetails,
             employees,
@@ -507,7 +489,6 @@ export class OrderForm extends React.PureComponent {
 
         return (
             <OrderFormTabs
-                orderId={orderId}
                 errors={errors}
                 initialBeginDatetime={initialBeginDatetime}
                 initialStation={initialStation}
@@ -527,7 +508,6 @@ export class OrderForm extends React.PureComponent {
                 orderHistory={orderHistory}
                 orderServices={orderServices}
                 orderDetails={orderDetails}
-                orderDiagnostic={orderDiagnostic}
                 allServices={allServices}
                 allDetails={allDetails}
                 employees={employees}
@@ -562,8 +542,6 @@ export class OrderForm extends React.PureComponent {
                 recommendedPrice={this.props.recommendedPrice}
                 recommendedPriceLoading={this.props.recommendedPriceLoading}
                 fetchRecommendedPrice={this.props.fetchRecommendedPrice}
-                reloadOrderPageComponents={this.props.reloadOrderPageComponents}
-                reloadOrderForm={this.reloadOrderForm}
             />
         );
     };

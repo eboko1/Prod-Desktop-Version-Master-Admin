@@ -49,6 +49,7 @@ outer: for (let input of sortedInputData) {
 
 // TODO normalize columns
 
+console.log(result);
 const tableData = Array(maxRows)
     .fill(1)
     .map(() => Array(maxBlocks).fill(" "));
@@ -60,4 +61,7 @@ _.each(result, ({ x, y, columns, rows }, index) => {
     }
 });
 
+console.log(tableData);
 const output = table(tableData);
+
+console.log(output);

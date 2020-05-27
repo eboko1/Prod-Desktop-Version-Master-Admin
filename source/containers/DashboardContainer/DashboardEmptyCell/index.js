@@ -9,14 +9,13 @@ import { DragItemTypes, ROW_HEIGHT } from '../dashboardConfig';
 
 const dropTarget = {
     drop(props, monitor) {
-        const { mode, globalPosition, day, stationNum, employeeId } = props;
+        const { mode, globalPosition, day, stationNum } = props;
 
         return {
             time:       globalPosition,
             day:        day,
             stationNum:
                 mode === 'calendar' ? monitor.getItem().station : stationNum,
-            employeeId: employeeId,
         };
     },
 };
@@ -50,9 +49,7 @@ export default class DashboardEmptyCell extends Component {
             daysWithConflicts,
             day,
             stationsWithConflicts,
-            employeesWithConflicts,
             stationNum,
-            employeeId,
         } = this.props;
 
         return (
@@ -61,10 +58,8 @@ export default class DashboardEmptyCell extends Component {
                 mode={ mode }
                 daysWithConflicts={ daysWithConflicts }
                 stationsWithConflicts={ stationsWithConflicts }
-                employeesWithConflicts={ employeesWithConflicts }
                 day={ day }
                 stationNum={ stationNum }
-                employeeId={ employeeId }
                 globalPosition={ globalPosition }
                 ref={ cell => connectDropTarget(cell) }
             >
@@ -84,10 +79,8 @@ export const StyledDashboardEmptyCell = styled.div`
         mode,
         daysWithConflicts,
         stationsWithConflicts,
-        employeesWithConflicts,
         day,
         stationNum,
-        employeeId,
         globalPosition,
     }) {
         if (mode === 'calendar') {
@@ -99,23 +92,10 @@ export const StyledDashboardEmptyCell = styled.div`
 
             return globalPosition % 2 ? 'white' : 'var(--snow)';
         }
-        if(mode === 'stations') {
-            if (stationsWithConflicts.includes(stationNum)) {
-                return globalPosition % 2
-                    ? 'rgba(var(--warningRGB), 0.3)'
-                    : 'rgba(var(--warningRGB), 0.5)';
-            }
-
-            return globalPosition % 2 ? 'white' : 'var(--snow)';
-        }
-        if(mode === 'employees') {
-            if (employeesWithConflicts.includes(employeeId)) {
-                return globalPosition % 2
-                    ? 'rgba(var(--warningRGB), 0.3)'
-                    : 'rgba(var(--warningRGB), 0.5)';
-            }
-
-            return globalPosition % 2 ? 'white' : 'var(--snow)';
+        if (stationsWithConflicts.includes(stationNum)) {
+            return globalPosition % 2
+                ? 'rgba(var(--warningRGB), 0.3)'
+                : 'rgba(var(--warningRGB), 0.5)';
         }
 
         return globalPosition % 2 ? 'white' : 'var(--snow)';
