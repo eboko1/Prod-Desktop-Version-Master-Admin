@@ -1,23 +1,14 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, InputNumber, Icon, Popconfirm, Select } from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select, Input, Button, Modal } from 'antd';
 import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import {
-    DecoratedSelect,
-    DecoratedAutoComplete,
-    DecoratedInputNumber,
-    DecoratedCheckbox,
-} from 'forms/DecoratedFields';
-import {
-    permissions,
-    isForbidden,
-    numeralFormatter,
-    numeralParser,
-} from 'utils';
+import { images } from 'utils';
+import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
+import { FavouriteServicesModal, AddServiceModal } from 'modals'
 
 // own
 import Styles from './styles.m.css';
@@ -27,425 +18,431 @@ const Option = Select.Option;
 class ServicesTable extends Component {
     constructor(props) {
         super(props);
-
-        const orderServices = props.orderServices || [];
-        this.uuid = orderServices.length;
-
-        this._handleSelectMap = {};
-        this._localizationMap = {};
-
-        const options = this._getServicesOptions();
-        const employeesOptions = this._getEmployeesOptions();
-
-        this.requiredRule = [
-            {
-                required: true,
-                message:  this.props.intl.formatMessage({
-                    id: 'required_field',
-                }),
-            },
-        ];
-
         this.state = {
-            keys: [ ..._.keys(orderServices), this.uuid++ ],
-            options,
-            employeesOptions,
-        };
-    }
-
-    shouldComponentUpdate(nextProps, nextState) {
-        return (
-            !_.isEqual(nextProps, this.props) ||
-            !_.isEqual(nextState, this.state)
-        );
-    }
-
-    componentDidUpdate(nextProps) {
-        if (nextProps.employees !== this.props.employees) {
-            const employeesOptions = this._getEmployeesOptions();
-            this.setState({ employeesOptions });
+            serviceModalVisible: false,
+            serviceModalKey: 0,
+            dataSource: [],
         }
 
-        if (nextProps.allServices !== this.props.allServices) {
-            const options = this._getServicesOptions();
-            this.setState({ options });
-        }
-    }
+        this.updateLabor = this.updateLabor.bind(this);
+        this.updateDataSource = this.updateDataSource.bind(this);
 
-    // TODO: move into utils
-    _getLocalization(key) {
-        if (!this._localizationMap[ key ]) {
-            this._localizationMap[ key ] = this.props.intl.formatMessage({
-                id: key,
-            });
-        }
-
-        return this._localizationMap[ key ];
-    }
-
-    // if ownDetail checkbox = false we look if selected client car has tecdoc id afterwards we fetch suggestions
-    _onServiceSelect = (value, ownDetail) => {
-        if (!ownDetail) {
-            const { fields, selectedClient } = this.props;
-            const id = Number(value.replace(/[^\d]/g, ''));
-
-            const clientVehicleId = _.get(fields, 'clientVehicle');
-            const vehicles = _.get(selectedClient, 'vehicles');
-            if (clientVehicleId && _.isArray(vehicles)) {
-                const vehicleQuery = { id: clientVehicleId };
-                const vehicle = _.find(vehicles, vehicleQuery);
-                const tecdocId = _.get(vehicle, 'tecdocId');
-                if (tecdocId && id) {
-                    this.props.fetchTecdocSuggestions(tecdocId, id);
-                }
-            }
-        }
-    };
-
-    _getServicesOptions() {
-        return _.get(this.props, 'allServices', []).map(
-            ({ id, type, serviceName }, index) => (
-                <Option value={ `${type}|${id}` } key={ `allServices-${index}` }>
-                    { serviceName }
-                </Option>
-            ),
-        );
-    }
-
-    _getEmployeesOptions() {
-        return _.get(this.props, 'employees', []).map(employee => (
-            <Option
-                value={ employee.id }
-                key={ `employees-${employee.id}` }
-                disabled={ employee.disabled }
-            >
-                { `${employee.name} ${employee.surname}` }
-            </Option>
-        ));
-    }
-    //TODO: move into config
-    _calculateColumns() {
-        const {
-            form: { getFieldDecorator },
-            fields,
-            user,
-            errors,
-        } = this.props;
-
-        const clientVehicleId = _.get(fields, 'clientVehicle');
-
-        const editServicesForbidden =
-            isForbidden(user, permissions.ACCESS_ORDER_SERVICES) ||
-            !clientVehicleId;
-
-        const serviceSelectPlaceholder = clientVehicleId
-            ? this._getLocalization('order_form_table.service.placeholder')
-            : this._getLocalization(
-                'order_form_table.service.no_vehicle_placeholder',
-            );
-
-        return [
+        this.columns = [
             {
-                title:  <FormattedMessage id='order_form_table.own_detail' />,
-                key:    'ownDetail',
-                render: ({ key }) => (
-                    <DecoratedCheckbox
-                        errors={ errors }
-                        defaultGetValueProps
-                        fieldValue={ _.get(fields, `services[${key}].ownDetail`) }
-                        initialValue={ this._getDefaultValue(key, 'ownDetail') }
-                        field={ `services[${key}].ownDetail` }
-                        getFieldDecorator={ getFieldDecorator }
-                        disabled={ editServicesForbidden }
-                    />
-                ),
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.service' />,
-                key:    'service',
-                width:  '30%',
-                render: ({ key }) => {
-                    if (!this._handleSelectMap[ key ]) {
-                        this._handleSelectMap[ key ] = value =>
-                            this._handleServiceSelect(key, value);
-                    }
-
+                width: "8%",
+                key: "buttonGroup",
+                dataIndex: "key",
+                render: (data, elem) => {
+                    const confirmed = elem.agreement.toLowerCase();
                     return (
-                        <DecoratedAutoComplete
-                            errors={ errors }
-                            defaultGetValueProps
-                            fieldValue={ _.get(
-                                fields,
-                                `services[${key}].serviceName`,
-                            ) }
-                            disabled={ editServicesForbidden }
-                            onSelect={ value =>
-                                this._onServiceSelect(
-                                    value,
-                                    _.get(fields, `services[${key}].ownDetail`),
-                                )
-                            }
-                            field={ `services[${key}].serviceName` }
-                            getFieldDecorator={ getFieldDecorator }
-                            optionLabelProp={ 'children' }
-                            optionFilterProp={ 'children' }
-                            showSearch
-                            cnStyles={ Styles.serviceSelect }
-                            onChange={ this._handleSelectMap[ key ] }
-                            initialValue={ this._getDefaultValue(
-                                key,
-                                'serviceName',
-                            ) }
-                            placeholder={ serviceSelectPlaceholder }
-                            dropdownMatchSelectWidth={ false }
-                            // dropdownStyle={ { width: '70%' } }
-                        >
-                            { this.state.options }
-                        </DecoratedAutoComplete>
-                    );
-                },
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.prime_cost' />,
-                width:  '9%',
-                key:    'primeCost',
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        errors={ errors }
-                        defaultGetValueProps
-                        fieldValue={ _.get(fields, `services[${key}].primeCost`) }
-                        initialValue={ this._getDefaultValue(key, 'primeCost') }
-                        field={ `services[${key}].primeCost` }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                        getFieldDecorator={ this.props.form.getFieldDecorator }
-                        min={ 0 }
-                    />
-                ),
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.price' />,
-                key:    'price',
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        className={ Styles.servicesRequiredFormItem }
-                        formItem
-                        errors={ errors }
-                        defaultGetValueProps
-                        fieldValue={ _.get(
-                            fields,
-                            `services[${key}].servicePrice`,
-                        ) }
-                        initialValue={ _.defaultTo(
-                            _.defaultTo(
-                                this._getDefaultValue(key, 'servicePrice'),
-                                this._getDefaultPrice(key),
-                            ),
-                            0,
-                        ) }
-                        field={ `services[${key}].servicePrice` }
-                        getFieldDecorator={ getFieldDecorator }
-                        rules={
-                            !this._isFieldDisabled(key)
-                                ? this.requiredRule
-                                : void 0
-                        }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                        min={ 0 }
-                    />
-                ),
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.count' />,
-                key:    'count',
-                render: ({ key }) => (
-                    <DecoratedInputNumber
-                        formItem
-                        className={ Styles.servicesRequiredFormItem }
-                        errors={ errors }
-                        defaultGetValueProps
-                        fieldValue={ _.get(
-                            fields,
-                            `services[${key}].serviceCount`,
-                        ) }
-                        initialValue={
-                            this._getDefaultValue(key, 'serviceCount') || 1
-                        }
-                        field={ `services[${key}].serviceCount` }
-                        rules={
-                            !this._isFieldDisabled(key)
-                                ? this.requiredRule
-                                : void 0
-                        }
-                        getFieldDecorator={ getFieldDecorator }
-                        disabled={
-                            this._isFieldDisabled(key) || editServicesForbidden
-                        }
-                        min={ 0.1 }
-                        step={ 0.1 }
-                    />
-                ),
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.sum' />,
-                key:    'sum',
-                render: ({ key }) => {
-                    const services = _.get(fields, 'services', []);
-                    const value = (
-                        _.get(services, [ key, 'servicePrice' ], 0) *
-                        _.get(services, [ key, 'serviceCount' ], 1)
-                    ).toFixed(2);
-
-                    return (
-                        <InputNumber
-                            className={ Styles.sum }
-                            disabled
-                            defaultValue={ 0 }
-                            value={ value }
-                            formatter={ numeralFormatter }
-                            parser={ numeralParser }
-                        />
-                    );
-                },
-            },
-            {
-                title:  <FormattedMessage id='order_form_table.master' />,
-                key:    'employeeId',
-                render: ({ key }) => {
-                    return (
-                        <DecoratedSelect
-                            errors={ errors }
-                            defaultGetValueProps
-                            fieldValue={ _.get(
-                                fields,
-                                `services[${key}].employeeId`,
-                            ) }
-                            field={ `services[${key}].employeeId` }
-                            initialValue={
-                                this._getDefaultValue(key, 'employeeId') ||
-                                _.get(fields, 'employee', void 0)
-                            }
-                            getFieldDecorator={ getFieldDecorator }
-                            disabled={
-                                this._isFieldDisabled(key) ||
-                                editServicesForbidden
-                            }
-                        >
-                            { this.state.employeesOptions }
-                        </DecoratedSelect>
-                    );
-                },
-            },
-            {
-                title:  '',
-                key:    'delete',
-                render: ({ key }) => {
-                    return (
-                        this.state.keys.length > 1 &&
-                        _.last(this.state.keys) !== key &&
-                        !editServicesForbidden && (
-                            <Popconfirm
-                                title={
-                                    <FormattedMessage id='add_order_form.delete_confirm' />
-                                }
-                                onConfirm={ () => this._onDelete(key) }
+                        <div style={{display: "flex", justifyContent: "space-evenly"}}>
+                            <Button
+                                type='primary'
+                                disabled={confirmed != "undefined"}
+                                onClick={()=>{
+                                    this.showServiceProductModal(data)
+                                }}
                             >
-                                <Icon
-                                    type='delete'
-                                    className={ Styles.deleteIcon }
+                                <div
+                                    style={{
+                                        width: 18,
+                                        height: 18,
+                                        backgroundColor: 'white',
+                                        mask: `url(${images.partsIcon}) no-repeat center / contain`,
+                                        WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
+                                    }}
+                                ></div>
+                            </Button>
+                            {!(elem.laborId) ? 
+                                <FavouriteServicesModal
+                                    tecdocId={this.props.tecdocId}
+                                    orderId={this.props.orderId}
+                                    updateDataSource={this.updateDataSource}
+                                    employees={this.props.employees}
                                 />
-                            </Popconfirm>
-                        )
+                            :
+                                <QuickEditModal
+                                    disabled={confirmed != "undefined" || !(elem.laborId)}
+                                    labor={elem}
+                                    onConfirm={this.updateLabor}
+                                    tableKey={elem.key}
+                                    employees={this.props.employees}
+                                />
+                            }
+                        </div>
+                    )
+                }
+            },
+            {
+                title: <FormattedMessage id="order_form_table.service_type" />,
+                width: "15%",
+                key: "defaultName",
+                dataIndex: 'defaultName',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
-        ];
+            {
+                title: <FormattedMessage id="order_form_table.detail_name" />,
+                width: "15%",
+                key: "serviceName",
+                dataIndex: 'serviceName',
+                render: (data) => {
+                        return (
+                            data ? data : <FormattedMessage id="long_dash"/>
+                        )
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.master" />,
+                width: "10%",
+                key: "employeeId",
+                dataIndex: 'employeeId',
+                render: (data) => {
+                    var name = this.props.employees.find((elem)=>elem.id==data);
+                    if(name) name = name.name;
+                    return (
+                        data ? name : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
+                title: <FormattedMessage id="hours" />,
+                width: "8%",
+                key: "hours",
+                dataIndex: 'hours',
+                render: (data) => {
+                    let strVal = String(Math.round(data));
+                    return (
+                        <span>
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="order_form_table.hours_short" />
+                        </span> 
+                    )
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.prime_cost" />,
+                width: "8%",
+                key: "purchasePrice",
+                dataIndex: 'purchasePrice',
+                render: (data) => {
+                    let strVal = String(Math.round(data));
+                    return (
+                        <span>
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                        </span> 
+                    )
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.price" />,
+                width: "8%",
+                key: "price",
+                dataIndex: 'price',
+                render: (data) => {
+                    let strVal = String(Math.round(data));
+                    return (
+                        <span>
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                        </span> 
+                    )
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.count" />,
+                width: "5%",
+                key: "count",
+                dataIndex: 'count',
+                render: (data) => {
+                    let strVal = String(Math.round(data));
+                    return (
+                        <span>
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                        </span> 
+                    )
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.sum" />,
+                width: "10%",
+                key: "sum",
+                dataIndex: 'sum',
+                render: (data) => {
+                    let strVal = String(Math.round(data));
+                    return (
+                        <span>
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                        </span> 
+                    )
+                },
+            },
+            {
+                title:  <FormattedMessage id='order_form_table.status' />,
+                width: "8%",
+                key: 'agreement',
+                dataIndex: 'agreement',
+                render: (data, elem) => {
+                    const key = elem.key;
+                    const confirmed = this.state.dataSource[key].agreement.toLowerCase();
+                    let color;
+                    switch(confirmed) {
+                        case "rejected":
+                            color = 'rgb(255, 126, 126)';
+                            break;
+                        case "agreed":
+                            color = 'rgb(81, 205, 102)';
+                            break;
+                        default:
+                            color = null;
+                    }
+                    return (
+                        <Input
+                            disabled
+                            style={{color: color}}
+                            value={this.props.intl.formatMessage({
+                                id: `status.${confirmed}`,
+                            })}
+                        />
+                    )
+                },
+            },
+            {
+                width: "2%",
+                key: "favourite",
+                render: (elem)=>{
+                    return(
+                        <Popconfirm
+                            title={
+                                elem.frequentLaborId ?
+                                    <FormattedMessage id="add_order_form.favourite_remove" />
+                                :
+                                    <FormattedMessage id="add_order_form.favourite_confirm" />
+                            }
+                            onConfirm={async ()=>{
+                                var data = [{
+                                    laborId: elem.laborId,
+                                    name: elem.serviceName,
+                                    hours: elem.hours ? elem.hours : 1,
+                                    purchasePrice: elem.purchasePrice ? elem.purchasePrice : 1,
+                                    count: elem.count ? elem.count : 1,
+                                }];
+                                var that = this;
+                                let token = localStorage.getItem('_my.carbook.pro_token');
+                                let url = API_URL;
+                                let params = `/orders/frequent/labors`;
+                                if(elem.frequentLaborId) params += `?ids=[${elem.frequentLaborId}]`;
+                                url += params;
+                                try {
+                                    const response = await fetch(url, {
+                                        method: elem.frequentLaborId ? 'DELETE' : 'POST',
+                                        headers: {
+                                            'Authorization': token,
+                                            'Content-Type': 'application/json',
+                                        },
+                                        body: JSON.stringify(data),
+                                    });
+                                    const result = await response.json();
+                                    if(result.success) {
+                                        that.updateDataSource();
+                                    }
+                                    else {
+                                        console.log("BAD", result);
+                                    }
+                                } catch (error) {
+                                    console.error('ERROR:', error);
+                                }
+                            }}
+                        >
+                            <Icon
+                                type="star"
+                                theme={elem.frequentLaborId ? 'filled' : ''}
+                                style={{color: 'gold', fontSize: 18}}
+                            />
+                        </Popconfirm>
+                    )
+                }
+            },
+            {
+                width: "3%",
+                key: "delete",
+                render: (elem) => {
+                    return (
+                        <Popconfirm
+                            title={
+                                <FormattedMessage id="add_order_form.delete_confirm" />
+                            }
+                            onConfirm={async ()=>{
+                                var that = this;
+                                let token = localStorage.getItem('_my.carbook.pro_token');
+                                let url = API_URL;
+                                let params = `/orders/${this.props.orderId}/labors?ids=[${elem.id}] `;
+                                url += params;
+                                try {
+                                    const response = await fetch(url, {
+                                        method: 'DELETE',
+                                        headers: {
+                                            'Authorization': token,
+                                            'Content-Type': 'application/json',
+                                        },
+                                    });
+                                    const result = await response.json();
+                                    if(result.success) {
+                                        that.updateDataSource();
+                                    }
+                                    else {
+                                        console.log("BAD", result);
+                                    }
+                                } catch (error) {
+                                    console.error('ERROR:', error);
+                                }
+                            }}
+                        >
+                            <Icon type="delete" className={Styles.deleteIcon} />
+                        </Popconfirm>
+                    );
+                },
+            },
+        ]
     }
 
-    _isFieldDisabled = key => !_.get(this.props.services, [ key, 'serviceName' ]);
+    showServiceProductModal(key) {
+        this.setState({
+            serviceModalVisible: true,
+            serviceModalKey: key,
+        })
+    }
+    hideServicelProductModal() {
+        this.setState({
+            serviceModalVisible: false,
+        })
+    }
 
-    _getDefaultPrice = key => {
-        const service = _.get(this.props.services, key);
-        const serviceName = _.get(service, 'serviceName');
-        if (!serviceName) {
-            return;
-        }
-        const baseService = this.props.allServices.find(
-            ({ serviceId, type }) => `${type}|${serviceId}` === serviceName,
-        );
-
-        return _.get(baseService, 'servicePrice');
-    };
-
-    // get default value of field
-    // this method returns based on order API response ? response value : initialValue
-    _getDefaultValue = (key, fieldName) => {
-        const orderService = (this.props.orderServices || [])[ key ];
-        const allServices = this.props.allServices;
-        if (!orderService) {
-            return;
-        }
-
-        const resolveServiceId = (type, serviceId, name) =>
-            _.find(allServices, { type, serviceId })
-                ? `${type}|${serviceId}`
-                : name;
-
-        const actions = {
-            serviceName:
-                orderService.type !== 'custom'
-                    ? resolveServiceId(
-                        orderService.type,
-                        orderService.serviceId,
-                        orderService.serviceName,
-                    )
-                    : orderService.serviceName,
-            serviceCount: orderService.count,
-            servicePrice: orderService.price,
-            ownDetail:    orderService.ownDetail,
-            employeeId:   orderService.employeeId,
-        };
-
-        return actions[ fieldName ];
-    };
-
-    _handleServiceSelect = key => {
-        const { keys } = this.state;
-        const services = this.props.services;
-
-        if (_.last(keys) === key && !_.get(services, [ key, 'serviceName' ])) {
-            this._handleAdd();
-        }
-    };
-
-    _onDelete = redundantKey => {
-        const { keys } = this.state;
-        this.setState({ keys: keys.filter(key => redundantKey !== key) });
-        this.props.form.setFieldsValue({
-            [ `services[${redundantKey}]` ]: void 0,
+    updateDataSource() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}/labors`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.labors.map((elem, index)=>{
+                elem.key = index;
+            })
+            that.setState({
+                dataSource: data.labors,
+            })
+            that.props.reloadOrderForm();
+        })
+        .catch(function (error) {
+            console.log('error', error)
         });
-    };
+    }
 
-    _handleAdd = () => {
-        const { keys } = this.state;
-        this.setState({ keys: [ ...keys, this.uuid++ ] });
-    };
+    async updateLabor(key, labor) {
+        this.state.dataSource[key] = labor;
+        const data = {
+            updateMode: true,
+            services: [
+                {
+                    id: labor.id,
+                    serviceId: labor.laborId,
+                    serviceName: labor.serviceName,
+                    employeeId: labor.employeeId,
+                    serviceHours: labor.hours ? labor.hours : 1,
+                    purchasePrice: labor.purchasePrice ? labor.purchasePrice : 0,
+                    count: labor.count ? labor.count : 1,
+                    servicePrice: labor.price ? labor.price : 1,
+                    comment: labor.comment,
+                }
+            ]
+        }
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            const result = await response.json();
+            if(result.success) {
+                this.props.reloadOrderForm();
+            }
+            else {
+                console.log("BAD", result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+
+        await this.updateDataSource();
+
+        this.setState({
+            update: true,
+        })
+    }
+
+    componentDidMount() {
+        let tmp = [...this.props.orderServices];
+        tmp.map((elem,i)=>elem.key=i);
+        this.setState({
+            dataSource: tmp,
+        })
+    }
 
     render() {
-        const { keys } = this.state;
-        const columns = this._calculateColumns();
-
+        if(this.state.dataSource.length == 0  || this.state.dataSource[this.state.dataSource.length-1].serviceName != undefined) {
+            this.state.dataSource.push({
+                key: this.state.dataSource.length,
+                id: undefined,
+                laborId: undefined,
+                serviceName: undefined,
+                comment: {comment: undefined},
+                count: 0,
+                price: 0,
+                purchasePrice: 0,
+                sum: 0,
+                agreement: "UNDEFINED",
+            })
+        }
         return (
             <Catcher>
                 <Table
                     className={ Styles.serviceTable }
-                    rowKey={ ({ key }) => key }
-                    dataSource={ keys.map(key => ({ key })) }
-                    columns={ columns }
-                    pagination={ false }
+                    dataSource={ this.state.dataSource }
+                    columns={ this.columns }
+                    pagination={false}
+                />
+                <AddServiceModal
+                    employees={this.props.employees}
+                    visible={this.state.serviceModalVisible}
+                    updateLabor={this.updateLabor}
+                    updateDataSource={this.updateDataSource}
+                    tableKey={this.state.serviceModalKey}
+                    labor={this.state.dataSource[this.state.serviceModalKey]}
+                    hideModal={()=>this.hideServicelProductModal()}
+                    orderId={this.props.orderId}
                 />
             </Catcher>
         );
@@ -453,3 +450,203 @@ class ServicesTable extends Component {
 }
 
 export default ServicesTable;
+
+class QuickEditModal extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state={
+            visible: false,
+        }
+        this.columns = [
+            {
+                title: <FormattedMessage id="order_form_table.service_type" />,
+                width: "15%",
+                key: "defaultName",
+                dataIndex: 'defaultName',
+                render: (data) => {
+                    return (
+                        data ? data : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.detail_name" />,
+                width: "15%",
+                key: "serviceName",
+                dataIndex: 'serviceName',
+                render: (data) => {
+                        return (
+                            data ? data : <FormattedMessage id="long_dash"/>
+                        )
+                },
+            },
+            {
+                title: <FormattedMessage id="order_form_table.master" />,
+                width: "10%",
+                key: "employeeId",
+                dataIndex: 'employeeId',
+                render: (data) => {
+                    var name = this.props.employees.find((elem)=>elem.id==data);
+                    if(name) name = name.name;
+                    return (
+                        data ? name : <FormattedMessage id="long_dash"/>
+                    );
+                },
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.purchasePrice" />,
+                key:       'purchasePrice',
+                dataIndex: 'purchasePrice',
+                width:     '10%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            value={data ? data : 0}
+                            min={0}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
+                            onChange={(value)=>{
+                                this.state.dataSource[0].purchasePrice = value;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.price" />,
+                key:       'price',
+                dataIndex: 'price',
+                width:     '10%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            value={data ? data : 0}
+                            min={0}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
+                            onChange={(value)=>{
+                                this.state.dataSource[0].price = value;
+                                this.state.dataSource[0].sum = value * this.state.dataSource[0].count;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.count" />,
+                key:       'count',
+                dataIndex: 'count',
+                width:     '10%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            value={data ? data : 0}
+                            min={0}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
+                            onChange={(value)=>{
+                                this.state.dataSource[0].count = value;
+                                this.state.dataSource[0].sum = value * this.state.dataSource[0].price;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="order_form_table.sum" />,
+                key:       'sum',
+                dataIndex: 'sum',
+                width:     '10%',
+                render: (data)=>{
+                    return(
+                        <InputNumber
+                            disabled
+                            style={{color: 'black'}}
+                            value={data}
+                            formatter={ value =>
+                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
+                            }
+                            parser={ value =>
+                                `${value}`.replace(/\$\s?|(\s)/g, '')
+                            }
+                        />
+                    )
+                }
+            },
+        ]
+    }
+
+    handleOk = () => {
+        this.setState({
+            visible: false,
+        });
+        this.props.onConfirm(this.props.tableKey, this.state.dataSource[0]);
+    }
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+        })
+    }
+
+    render() {
+        return(
+            <>
+                <Button
+                    type='primary'
+                    disabled={this.props.disabled}
+                    onClick={()=>{
+                        this.setState({
+                            visible: true,
+                            dataSource: [this.props.labor]
+                        })
+                    }}
+                >
+                    <div
+                        style={{
+                            width: 18,
+                            height: 18,
+                            backgroundColor: this.props.disabled ? 'black' : 'white',
+                            mask: `url(${images.pencilIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${images.pencilIcon}) no-repeat center / contain`,
+                        }}
+                    ></div>
+                </Button>
+                <Modal
+                    width='80%'
+                    visible={this.state.visible}
+                    title={<FormattedMessage id='order_form_table.quick_edit'/>}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                >
+                        <Table
+                            columns={this.columns}
+                            dataSource={this.state.dataSource}
+                            pagination={false}
+                        />
+                </Modal>
+            </>
+        )
+    }
+}

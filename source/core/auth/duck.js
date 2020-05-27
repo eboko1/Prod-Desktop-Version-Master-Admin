@@ -4,7 +4,7 @@ import { PURGE } from 'redux-persist'; //REHYDRATE
  * Constants
  **/
 export const moduleName = 'auth';
-const prefix = `GLOBAL/${moduleName}`;
+const prefix = `GLOuBAL/${moduleName}`;
 
 export const AUTHENTICATE = `${prefix}/AUTHENTICATE`;
 export const AUTHENTICATE_SUCCESS = `${prefix}/AUTHENTICATE_SUCCESS`;

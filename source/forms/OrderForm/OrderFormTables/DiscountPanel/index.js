@@ -35,6 +35,8 @@ class DiscountPanel extends Component {
 
         const total = (price - price * (discount / 100)).toFixed(2);
 
+        const profit = servicesMode ? totalServicesProfit : totalDetailsProfit;
+
         return (
             <Catcher>
                 <div className={ Styles.discountPanel }>
@@ -52,11 +54,14 @@ class DiscountPanel extends Component {
                         }
                         colon={ false }
                         className={ Styles.formItem }
-                        min={ 0 }
+                        min={ -100 }
                         max={ 100 }
                         step={ 1 }
                         formatter={ value => `${Math.round(value)}%` }
                         parser={ value => value.replace('%', '') }
+                        onChange={(value)=>{
+                            this.props.reloadOrderForm();
+                        }}
                     />
                     <FormItem
                         label={
@@ -67,6 +72,7 @@ class DiscountPanel extends Component {
                     >
                         <InputNumber
                             disabled
+                            style={{color: 'black'}}
                             value={ price }
                             min={ 0 }
                             formatter={ value =>
@@ -86,6 +92,7 @@ class DiscountPanel extends Component {
                     >
                         <InputNumber
                             disabled
+                            style={{color: 'black'}}
                             value={ total }
                             min={ 0 }
                             formatter={ value =>
@@ -117,7 +124,7 @@ class DiscountPanel extends Component {
                                         ? totalServicesProfit
                                         : totalDetailsProfit
                                 }
-                                min={ 0 }
+                                style={{color: profit < 0 ? 'red' : 'black'}}
                                 formatter={ value =>
                                     `${value}`.replace(
                                         /\B(?=(\d{3})+(?!\d))/g,
