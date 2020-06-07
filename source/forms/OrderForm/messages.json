@@ -27,6 +27,8 @@
         "add_order_form.duration": "Duration",
         "add_order_form.hours_shortcut": "h",
         "add_order_form.client_comments": "Client's request",
+        "add_order_form.favourite_confirm": "Add to favourite?",
+        "add_order_form.favourite_remove": "Remove from favourite?",
         "add_order_form.service_recommendations": "Garage recommendations",
         "add_order_form.vehicle_condition": "Vehicle condition",
         "add_order_form.business_comment": "Work Order comments",
@@ -54,7 +56,10 @@
         "add_order_form.applied_on": "Applied on",
         "order_form_table.station": "Station",
         "order-form.update_modification_info": "Please update a vehicle modification",
-        "order-form.warning": "Warning"
+        "order-form.warning": "Warning",
+        "status.rejected": "REJECTED",
+        "status.agreed": "AGREED",
+        "status.undefined": "UNDEFINED"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -84,6 +89,8 @@
         "add_order_form.duration": "Продолжительность",
         "add_order_form.hours_shortcut": "ч.",
         "add_order_form.client_comments": "Комментарии клиента",
+        "add_order_form.favourite_confirm": "Добавить в частые?",
+        "add_order_form.favourite_remove": "Убрать из частых?",
         "add_order_form.service_recommendations": "Рекомендации для клиента",
         "add_order_form.vehicle_condition": "Состояние автомобиля",
         "add_order_form.business_comment": "Комментарий в цех",
@@ -111,7 +118,10 @@
         "add_order_form.applied_on": "Записан на",
         "order_form_table.station": "Пост",
         "order-form.update_modification_info": "Обновите, пожалуйста, модификацию автомобиля",
-        "order-form.warning": "Внимание!"
+        "order-form.warning": "Внимание!",
+        "status.rejected": "ОТКЛОНЕНО",
+        "status.agreed": "СОГЛАСОВАНО",
+        "status.undefined": "НЕОПРЕДЕЛЕНО"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -141,6 +151,8 @@
         "add_order_form.duration": "Тривалість",
         "add_order_form.hours_shortcut": "г.",
         "add_order_form.client_comments": "Коментарі клієнта",
+        "add_order_form.favourite_confirm": "Додати в часті?",
+        "add_order_form.favourite_remove": "Прибрати з частих?",
         "add_order_form.service_recommendations": "Рекомендації для клієнта",
         "add_order_form.vehicle_condition": "Стан автомобіля",
         "add_order_form.business_comment": "Коментар в цех",
@@ -168,6 +180,9 @@
         "add_order_form.applied_on": "Записан на",
         "order_form_table.station": "Пост",
         "order-form.update_modification_info": "Оновіть, будь ласка, модифікацію автомобіля",
-        "order-form.warning": "Увага!"
+        "order-form.warning": "Увага!",
+        "status.rejected": "ВІДХИЛЕНО",
+        "status.agreed": "СХВАЛЕНО",
+        "status.undefined": "НЕВИЗНАЧЕНО"
     }
 }

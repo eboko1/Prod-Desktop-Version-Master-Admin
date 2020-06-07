@@ -21,6 +21,7 @@ import CashAccountingContainer from './CashAccountingContainer';
 import MyTasksContainer from './MyTasksContainer';
 import SubscriptionProductsContainer from './SubscriptionProductsContainer';
 import StoreProductsContainer from './StoreProductsContainer';
+import DiagnosticPatternsContainer from './DiagnosticPatternsContainer'
 
 export {
     OrdersContainer,
@@ -46,4 +47,5 @@ export {
     MyTasksContainer,
     SubscriptionProductsContainer,
     StoreProductsContainer,
+    DiagnosticPatternsContainer,
 };

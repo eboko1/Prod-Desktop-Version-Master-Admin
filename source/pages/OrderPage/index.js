@@ -41,6 +41,12 @@ import {
 } from 'modals';
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
+import {
+    API_URL,
+    confirmDiagnostic,
+    createAgreement,
+    lockDiagnostic,
+} from 'core/forms/orderDiagnosticForm/saga';
 
 // own
 import Styles from './styles.m.css';
@@ -87,7 +93,7 @@ const compareOrderTasks = (initialOrderTask, orderTask) => {
 
 const mapStateToProps = state => {
     return {
-        // orderTaskEntity:       state.forms.orderTaskForm.fields,
+        // orderTaskEntity:       state.forms.orderTaskForm.fields, 
         // addClientFormData:     state.forms.addClientForm.data,
         allDetails:            state.forms.orderForm.allDetails,
         allServices:           state.forms.orderForm.allServices,
@@ -368,7 +374,7 @@ class OrderPage extends Component {
             user,
             permissions.ACCESS_ORDER_STATUS,
         );
-
+        
         return {
             isClosedStatus,
             canEditClosedStatus,
@@ -377,6 +383,10 @@ class OrderPage extends Component {
             disabledEditButton,
             forbiddenUpdate,
         };
+    }
+
+    reloadOrderPageComponents = () => {
+        this.componentDidMount();
     }
 
     /* eslint-disable complexity*/
@@ -398,8 +408,7 @@ class OrderPage extends Component {
             user,
             initialOrderTask,
         } = this.props;
-
-        const {num, status, datetime} = this.props.order;
+        const {num, status, datetime, diagnosis} = this.props.order;
         const {id} = this.props.match.params;
 
         const {
@@ -434,6 +443,38 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
+                        <Icon
+                            type='file-protect'
+                            style={ {
+                                fontSize: isMobile ? 12 : 24,
+                                cursor:   'pointer',
+                                margin:   '0 10px',
+                            } }
+                            onClick={async ()=>{
+                                var data = {
+                                    services: [],
+                                    details: [],
+                                }
+                                this.props.fetchedOrder.orderServices.map((element)=>{
+                                    data.services.push({
+                                        serviceId: element.laborId,
+                                        serviceHours: element.hours,
+                                        servicePrice: element.price,
+                                        comment: element.comment,
+                                    })
+                                });
+                                this.props.fetchedOrder.orderDetails.map((element)=>{
+                                    data.details.push({
+                                        storeGroupId: element.storeGroupId,
+                                        count: element.count,
+                                    })
+                                });
+                                //await confirmDiagnostic(this.props.order.id, data);
+                                //await lockDiagnostic(this.props.order.id);
+                                //await window.location.reload();
+                                await createAgreement(this.props.order.id, this.props.user.language)
+                            }}
+                        />
                         { hasInviteStatus &&
                         inviteOrderId && (
                             <Link
@@ -549,6 +590,13 @@ class OrderPage extends Component {
                     <MobileRecordForm
                         wrappedComponentRef={ this.saveOrderFormRef }
                         onStatusChange={ this._onStatusChange }
+                        user={ this.props.user }
+                        orderTasks={ this.props.orderTasks }
+                        orderHistory={ this.props.orderHistory }
+                        orderId={ id }
+                        orderDiagnostic={ diagnosis }
+                        allService={ this.props.allServices }
+                        allDetails={ this.props.allDetails }
                     />
                 </MobileView>
                 <ResponsiveView
@@ -557,13 +605,14 @@ class OrderPage extends Component {
                     <OrderForm
                         errors={ this.state.errors }
                         user={ this.props.user }
-                        orderId={ Number(this.props.match.params.id) }
+                        orderId={ id }
                         wrappedComponentRef={ this.saveOrderFormRef }
                         orderTasks={ this.props.orderTasks }
                         orderHistory={ this.props.orderHistory }
                         setAddClientModal={ this.setAddClientModal }
                         modal={ modal }
                         orderCalls={ this.props.orderCalls }
+                        orderDiagnostic = { diagnosis }
                         allService={ this.props.allServices }
                         allDetails={ this.props.allDetails }
                         employees={ this.props.employees }
@@ -575,6 +624,7 @@ class OrderPage extends Component {
                         fetchOrderForm={ fetchOrderForm }
                         fetchOrderTask={ fetchOrderTask }
                         onStatusChange={ this._onStatusChange }
+                        reloadOrderPageComponents = { this.reloadOrderPageComponents }
                     />
                 </ResponsiveView>
                 <CancelReasonModal

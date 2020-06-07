@@ -1,0 +1,7 @@
+.tableRow * {
+    vertical-align: top;
+}
+
+:global(.ant-table-header-column) {
+    display: block !important;
+}

@@ -1,0 +1,114 @@
+:global(.ant-table-header){
+    margin-bottom: 0px !important;
+}
+
+.disabled_button{
+    color: rgba(0, 0, 0, 0.25);
+    background-color: #f5f5f5;
+    border-color: #d9d9d9;
+    text-shadow: none;
+    box-shadow: none;
+}
+
+
+/* Diagnostic Table Header */
+
+.diagnosticTableHeader{
+    display: flex;
+    height: 55px;
+    margin: 10px 0;
+    border-bottom: 1px solid #e8e8e8;
+}
+
+
+/* Diagnostic Table */
+
+.diagnosticTableDisabled td *{
+    color: rgba(0, 0, 0, 0.25);
+}
+
+.diagnosticTable th > span{
+    width: 100%;
+}
+
+.diagnosticTable td {
+    vertical-align: middle;
+}
+
+.filter_column_header_wrap{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 95px;
+    width: 100%;
+}
+
+.filter_input{
+    margin-top: 10px;
+    width: 60px;
+    text-align: center;
+    pointer-events: none;
+}
+
+.filter_button_wrap{
+    width: 60px;
+    margin-right: 10px;
+}
+
+.filter_half_button{
+    width: 50%;
+    border-radius: 0px;
+    padding: 0;
+    pointer-events: none;
+    border: none;
+    box-shadow: none;
+}
+
+.diagnostic_status_button_wrap {
+    display: flex;
+    justify-content: space-between;
+}
+
+.diagnostic_status_button{
+    width: 30%;
+    padding: 0;
+}
+
+.diagnostic_status_button_edit{
+    width: 100%;
+}
+
+.delete_diagnostic_button_wrap{
+    padding: 5px 0px 5px 10px;
+}
+
+.delete_diagnostic_button{
+    margin-left: 0px;
+}
+
+.delete_diagnostic_button_disabled{
+    pointer-events: none;
+    color: rgba(0, 0, 0, 0.25);
+}
+
+.delete_diagnostic_button:hover{
+    color: rgb(255, 77, 79);
+}
+
+/* Commentary Button */
+.commentaryButtonIcon svg *{
+    color: rgba(0, 0, 0, 0.65);
+}
+
+.commentaryContentWrap > div {
+    margin-bottom: 15px;
+}
+
+.commentarySectionHeader {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.commentaryParameter{
+    margin-right: 15px;
+}
