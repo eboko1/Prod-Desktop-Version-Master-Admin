@@ -114,10 +114,9 @@ class ServicesTable extends Component {
                 key: "hours",
                 dataIndex: 'hours',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="order_form_table.hours_short" />
+                            {data ? data : 0} <FormattedMessage id="order_form_table.hours_short" />
                         </span> 
                     )
                 },
@@ -156,10 +155,9 @@ class ServicesTable extends Component {
                 key: "count",
                 dataIndex: 'count',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                            {data ? data : 0} <FormattedMessage id="order_form_table.hours_short" />
                         </span> 
                     )
                 },
@@ -426,6 +424,7 @@ class ServicesTable extends Component {
                 agreement: "UNDEFINED",
             })
         }
+        
         return (
             <Catcher>
                 <Table
@@ -443,6 +442,7 @@ class ServicesTable extends Component {
                     labor={this.state.dataSource[this.state.serviceModalKey]}
                     hideModal={()=>this.hideServicelProductModal()}
                     orderId={this.props.orderId}
+                    tecdocId={this.props.tecdocId}
                 />
             </Catcher>
         );

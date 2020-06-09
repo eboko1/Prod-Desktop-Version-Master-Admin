@@ -283,7 +283,7 @@ class DashboardPage extends Component {
                     stations={ stations }
                     employees={ employees }
                     orders={ orders }
-                    load={ mode === "employees" ? load.reverse() : load }
+                    load={ load }
                     schedule={ schedule }
                     time={ time }
                     dashboard={ dashboard }

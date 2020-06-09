@@ -201,6 +201,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="2"
                     >
                         <ServicesTable
+                            tecdocId={tecdocId}
                             errors={errors}
                             orderId={orderId}
                             fields={servicesTableFieldsProps}
