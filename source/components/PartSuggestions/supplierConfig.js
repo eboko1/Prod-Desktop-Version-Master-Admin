@@ -20,8 +20,8 @@ const supplierLink = (supplierName, url) => (
 /* eslint-disable complexity */
 export const getSupplier = (supplierId, partNumber) => {
     switch (supplierId) {
-         // Castrol
-         case 207:
+        // Castrol
+        case 207:
             return supplierLink(
                 'castrol',
                 `https://www.castrol.com/uk_ua/ukraine/home.html`,

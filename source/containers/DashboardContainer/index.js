@@ -97,6 +97,7 @@ class DashboardContainer extends Component {
     _renderDashboardColumns = () => {
         const { dashboard, days, stations, employees, load, mode } = this.props;
         const { currentDay } = this.state;
+        console.log(employees, load)
 
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
@@ -119,13 +120,16 @@ class DashboardContainer extends Component {
                                         />
                                     ) : 
                                         mode === 'employees' ? 
-                                            employees[ index ].name  :  
+                                            employees[ index ].employeeNum  :  
                                             load[ index ].stationNum
                                     }
                                 </DashboardTitle>
                                 <DashboardLoad
                                     loadCoefficient={
-                                        load[ index ].loadCoefficient
+                                        mode === 'employees' ?
+                                            load.find((elem)=>elem.employeeId==employees[index].id).loadCoefficient : 
+                                            load[ index ].loadCoefficient
+                                        
                                     }
                                     link={ mode === 'calendar' }
                                     onClick={ () =>
@@ -139,7 +143,10 @@ class DashboardContainer extends Component {
                                         : mode == 'employees' ?
                                             `${employees[ index ].name} ${employees[ index ].surname} - `
                                             : stations[ index ].name && `${stations[ index ].name} - ` }
-                                    { Math.round(load[ index ].loadCoefficient) }%
+                                    { mode == 'employees' ?
+                                        Math.round(load.find((elem)=>elem.employeeId==employees[index].id).loadCoefficient) :
+                                        Math.round(load[ index ].loadCoefficient) 
+                                    }%
                                 </DashboardLoad>
                             </>
                         }

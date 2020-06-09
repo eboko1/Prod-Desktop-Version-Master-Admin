@@ -303,7 +303,10 @@ class AddServiceModal extends React.Component{
                 width:     '3%',
                 render: (data, elem)=>{
                     return (
-                        <NormHourModal/>
+                        <NormHourModal
+                            tecdocId={this.props.tecdocId}
+                            storeGroupId={elem.storeGroupId}
+                        />
                     )
                 }
             },
@@ -796,11 +799,47 @@ class NormHourModal extends React.Component{
         ]
     }
 
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/tecdoc/labor_times?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+           console.log(data);
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
     handleCancel = () => {
         this.setState({
             visible: false,
             dataSource: [],
+            fetched: false,
         })
+    }
+
+    componentDidUpdate() {
+        if(!this.state.fetched) {
+            this.fetchData();
+        } 
     }
 
     render() { 
