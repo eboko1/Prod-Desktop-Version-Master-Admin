@@ -1,8 +1,8 @@
-import { fetchAPI } from 'utils';
-
-export const API_URL = fetchAPI;
+export const URL = window.location.hostname;
+export const API_URL = URL == 'localhost'? 'http://localhost:14281' : 'https://test-api.carbook.pro';
 
 export function getAgreementData(sessionId, lang, getData) {
+    console.log(API_URL)
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/agreement?sessionId=${sessionId}&lang=${lang}`;
