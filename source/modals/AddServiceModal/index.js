@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox, Spin } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
@@ -11,6 +11,7 @@ import { DetailStorageModal, DetailSupplierModal } from 'modals'
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 @injectIntl
 class AddServiceModal extends React.Component{
@@ -33,6 +34,7 @@ class AddServiceModal extends React.Component{
         this.relatedDetailsOptions = [];
 
         this.setComment = this.setComment.bind(this);
+        this.setHours = this.setHours.bind(this);
 
         this.mainTableColumns = [
             {
@@ -306,6 +308,7 @@ class AddServiceModal extends React.Component{
                         <NormHourModal
                             tecdocId={this.props.tecdocId}
                             storeGroupId={elem.storeGroupId}
+                            onSelect={this.setHours}
                         />
                     )
                 }
@@ -346,6 +349,7 @@ class AddServiceModal extends React.Component{
                                 this.state.mainTableSource[0].purchasePrice = 0;
                                 this.state.mainTableSource[0].price = 1;
                                 this.state.mainTableSource[0].count = 1;
+                                this.state.mainTableSource[0].hours = 1;
                                 this.state.mainTableSource[0].sum = undefined;
 
                                 this.setState({
@@ -393,6 +397,13 @@ class AddServiceModal extends React.Component{
 
     setComment(comment) {
         this.state.mainTableSource[0].comment = {comment: comment};
+        this.setState({
+            update: true
+        })
+    }
+
+    setHours(hours) {
+        this.state.mainTableSource[0].hours = hours;
         this.setState({
             update: true
         })
@@ -683,58 +694,53 @@ class NormHourModal extends React.Component{
         super(props);
         this.state = {
             visible: false,
-            dataSource: [
-                {
-                    key: 0,
-                    laborId: 111,
-                    storeGroupId: 222,
-                    comment: 3333,
-                    price: 444,
-                    hours: 5.5,
-                }
-            ],
-        }
+            dataSource: [],
+            fetched: false,
+        };
 
         this.columns = [
             {
                 title:  <FormattedMessage id="order_form_table.service_type" />,
-                key:       'laborId',
-                dataIndex: 'laborId',
+                key:       'kortext',
+                dataIndex: 'kortext',
                 width:     '15%',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            disabled
-                            value={data}
-                        />
+                        <span
+                            style={{textTransform: 'capitalize'}}
+                        >
+                            {data}
+                        </span>
                     )
                 }
             },
             {
                 title:  <FormattedMessage id="services_table.store_group" />,
-                key:       'storeGroupId',
-                dataIndex: 'storeGroupId',
+                key:       'itemmptext',
+                dataIndex: 'itemmptext',
                 width:     '15%',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            disabled
-                            value={data}
-                        />
+                        <span
+                            style={{textTransform: 'capitalize'}}
+                        >
+                            {data}
+                        </span>
                     )
                 }
             },
             {
                 title:  <FormattedMessage id="comment" />,
-                key:       'comment',
-                dataIndex: 'comment',
+                key:       'qualcoltext',
+                dataIndex: 'qualcoltext',
                 width:     '15%',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            disabled
-                            value={data}
-                        />
+                        <span
+                            style={{textTransform: 'capitalize'}}
+                        >
+                            {data}
+                        </span>
                     )
                 }
             },
@@ -745,34 +751,22 @@ class NormHourModal extends React.Component{
                 width:     '10%',
                 render: (data, elem)=>{
                     return (
-                        <InputNumber
-                            disabled
-                            value={data}
-                            formatter={ value =>
-                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                            }
-                            parser={ value =>
-                                `${value}`.replace(/\$\s?|(\s)/g, '')
-                            }
-                        />
+                        <span>
+                            {data} <FormattedMessage id="cur" />
+                        </span>
                     )
                 }
             },
             {
                 title:  <FormattedMessage id="services_table.norm_hours" />,
-                key:       'hours',
-                dataIndex: 'hours',
+                key:       'worktime',
+                dataIndex: 'worktime',
                 width:     '10%',
                 render: (data, elem)=>{
                     return (
-                        <InputNumber
-                            value={data}
-                            min={0.1}
-                            onChange={(value)=>{
-                                this.state.dataSource[elem.key].hours = value;
-                                this.setState({});
-                            }}
-                        />
+                        <span>
+                            {data} <FormattedMessage id="order_form_table.hours_short" />
+                        </span>
                     )
                 }
             },
@@ -783,16 +777,26 @@ class NormHourModal extends React.Component{
                 width:     '10%',
                 render: (data, elem)=>{
                     return (
-                        <InputNumber
-                            disabled
-                            value={elem.price*elem.hours}
-                            formatter={ value =>
-                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                            }
-                            parser={ value =>
-                                `${value}`.replace(/\$\s?|(\s)/g, '')
-                            }
-                        />
+                        <span>
+                            {elem.price*elem.worktime} <FormattedMessage id="cur" />
+                        </span>
+                    )
+                }
+            },
+            {
+                key:       'select',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <Button
+                            type="primary"
+                            onClick={()=>{
+                                this.props.onSelect(elem.worktime);
+                                this.handleCancel();
+                            }}
+                        >
+                            <FormattedMessage id="select" />
+                        </Button>
                     )
                 }
             }
@@ -805,6 +809,7 @@ class NormHourModal extends React.Component{
         let url = API_URL;
         let params = `/tecdoc/labor_times?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
         url += params;
+        console.log(url);
         fetch(url, {
             method: 'GET',
             headers: {
@@ -821,7 +826,16 @@ class NormHourModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-           console.log(data);
+            console.log(data);
+            data.laborTimes.map((elem, i)=>{
+                elem.key = i;
+                elem.price = data.priceOfNormHour;
+            });
+            that.setState({
+                dataSource: data.laborTimes,
+                fetched: true,
+            });
+
         })
         .catch(function (error) {
             console.log('error', error)
@@ -837,7 +851,7 @@ class NormHourModal extends React.Component{
     }
 
     componentDidUpdate() {
-        if(!this.state.fetched) {
+        if(!this.state.fetched && this.state.visible) {
             this.fetchData();
         } 
     }
@@ -856,13 +870,19 @@ class NormHourModal extends React.Component{
                 <Modal
                     width="75%"
                     visible={this.state.visible}
+                    title={<FormattedMessage id="services_table.norm_hours" />}
                     onCancel={this.handleCancel}
+                    footer={null}
                 >
-                    <Table
-                        dataSource={this.state.dataSource}
-                        columns={this.columns}
-                        pagination={false}
-                    />
+                    {this.state.fetched ? 
+                        <Table
+                            dataSource={this.state.dataSource}
+                            columns={this.columns}
+                            pagination={false}
+                        />
+                        :
+                        <Spin indicator={spinIcon} />
+                    }
                 </Modal>
             </>
     )}
