@@ -794,7 +794,7 @@ class NormHourModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <span>
-                            {elem.price*elem.worktime} <FormattedMessage id="cur" />
+                            {Math.ceil((elem.price*elem.worktime)*10)/10} <FormattedMessage id="cur" />
                         </span>
                     )
                 }
@@ -844,7 +844,7 @@ class NormHourModal extends React.Component{
             data.laborTimes.map((elem, i)=>{
                 elem.key = i;
                 elem.price = data.priceOfNormHour;
-                elem.worktime = Math.ceil((elem.worktime)*100)/100;
+                elem.worktime = Math.ceil((elem.worktime)*10)/10;
             });
             that.setState({
                 dataSource: data.laborTimes,
