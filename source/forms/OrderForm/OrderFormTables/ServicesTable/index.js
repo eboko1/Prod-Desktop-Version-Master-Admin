@@ -116,7 +116,9 @@ class ServicesTable extends Component {
                 render: (data) => {
                     return (
                         <span>
-                            {data ? data : 0} <FormattedMessage id="order_form_table.hours_short" />
+                            {data ? 
+                            <>{data} <FormattedMessage id="order_form_table.hours_short" /></> : 
+                            <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
                 },
@@ -362,7 +364,7 @@ class ServicesTable extends Component {
                     serviceId: labor.laborId,
                     serviceName: labor.serviceName,
                     employeeId: labor.employeeId,
-                    serviceHours: labor.hours ? labor.hours : 1,
+                    serviceHours: labor.hours ? labor.hours : 0,
                     purchasePrice: labor.purchasePrice ? labor.purchasePrice : 0,
                     count: labor.count ? labor.count : 1,
                     servicePrice: labor.price ? labor.price : 1,

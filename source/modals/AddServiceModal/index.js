@@ -115,6 +115,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Select
+                            disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
                             value={data ? data : undefined}
@@ -309,6 +310,7 @@ class AddServiceModal extends React.Component{
                             tecdocId={this.props.tecdocId}
                             storeGroupId={elem.storeGroupId}
                             onSelect={this.setHours}
+                            hours={data}
                         />
                     )
                 }
@@ -349,7 +351,7 @@ class AddServiceModal extends React.Component{
                                 this.state.mainTableSource[0].purchasePrice = 0;
                                 this.state.mainTableSource[0].price = 1;
                                 this.state.mainTableSource[0].count = 1;
-                                this.state.mainTableSource[0].hours = 1;
+                                this.state.mainTableSource[0].hours = 0;
                                 this.state.mainTableSource[0].sum = undefined;
 
                                 this.setState({
@@ -379,7 +381,7 @@ class AddServiceModal extends React.Component{
                     serviceId: element.laborId,
                     serviceName: element.serviceName,
                     employeeId: element.employeeId,
-                    serviceHours: element.hours ? element.hours : 1,
+                    serviceHours: element.hours ? element.hours : 0,
                     purchasePrice: element.purchasePrice,
                     count: element.count ? element.count : 1,
                     servicePrice: element.price,
@@ -696,6 +698,7 @@ class NormHourModal extends React.Component{
             visible: false,
             dataSource: [],
             fetched: false,
+            filterValue: undefined,
         };
 
         this.columns = [
@@ -715,7 +718,20 @@ class NormHourModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="services_table.store_group" />,
+                title:  () => (
+                            <div>
+                                <FormattedMessage id="services_table.service_type" />
+                                <Input
+                                    value={this.state.filterValue}
+                                    placeholder={this.props.intl.formatMessage({id: 'services_table.service_type'})}
+                                    onChange={(event)=>{
+                                        this.setState({
+                                            filterValue: event.target.value
+                                        })
+                                    }}
+                                />
+                            </div>
+                        ),
                 key:       'itemmptext',
                 dataIndex: 'itemmptext',
                 width:     '15%',
@@ -809,7 +825,6 @@ class NormHourModal extends React.Component{
         let url = API_URL;
         let params = `/tecdoc/labor_times?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
         url += params;
-        console.log(url);
         fetch(url, {
             method: 'GET',
             headers: {
@@ -826,10 +841,10 @@ class NormHourModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.laborTimes.map((elem, i)=>{
                 elem.key = i;
                 elem.price = data.priceOfNormHour;
+                elem.worktime = Math.ceil((elem.worktime)*100)/100;
             });
             that.setState({
                 dataSource: data.laborTimes,
@@ -838,7 +853,10 @@ class NormHourModal extends React.Component{
 
         })
         .catch(function (error) {
-            console.log('error', error)
+            console.log('error', error);
+            that.setState({
+                fetched: true,
+            });
         });
     }
 
@@ -857,15 +875,23 @@ class NormHourModal extends React.Component{
     }
 
     render() { 
+        const { hours } = this.props;
+        const { dataSource, filterValue } = this.state;
+        let tblData = [...dataSource];
+
+        if(filterValue) tblData = tblData.filter((elem)=>elem.itemmptext.toLowerCase().indexOf(filterValue.toLowerCase()) >= 0 );
+
         return (
             <>
                 <Button
-                    type={'primary'}
+                    type={hours ? null : 'primary'}
                     onClick={()=>{
                         this.setState({visible: true})
                     }}
                 >
-                    <Icon type="clock-circle" />
+                    { hours ? 
+                    <>{hours} <FormattedMessage id="order_form_table.hours_short" /></> :
+                    <Icon type="clock-circle" />}
                 </Button>
                 <Modal
                     width="75%"
@@ -876,7 +902,7 @@ class NormHourModal extends React.Component{
                 >
                     {this.state.fetched ? 
                         <Table
-                            dataSource={this.state.dataSource}
+                            dataSource={tblData}
                             columns={this.columns}
                             pagination={false}
                         />
