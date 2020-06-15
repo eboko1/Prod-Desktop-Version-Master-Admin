@@ -21,6 +21,7 @@ import DetailSupplierModal from './DetailSupplierModal';
 import FavouriteDetailsModal from './FavouriteDetailsModal';
 import FavouriteServicesModal from './FavouriteServicesModal';
 import AddServiceModal from './AddServiceModal'
+import TecDocInfoModal from './TecDocInfoModal'
 export {
     UniversalFiltersModal,
     AddClientModal,
@@ -45,4 +46,5 @@ export {
     FavouriteDetailsModal,
     FavouriteServicesModal,
     AddServiceModal,
+    TecDocInfoModal,
 };
