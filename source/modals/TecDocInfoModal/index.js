@@ -19,48 +19,75 @@ class TecDocInfoModal extends React.Component{
         super(props);
         this.state = {
             visible: false,
-            dataSource: [],
+            dataSource0: [],
+            dataSource1: [],
+            dataSource2: [],
+            dataSource3: [],
+            dataSource4: [],
+            dataSource5: [],
+            dataSource6: [],
+            dataSource7: [],
+            dataSource8: [],
+            dataSource9: [],
+            fetched: false,
         };
-        
-        this.columnsTypeA = [
+
+        this.columnsTypeB = [
             {
                 title:     'Параметр',
-                key:       'parametr',
+                key:       'itemmptext',
+                dataIndex: 'itemmptext',
                 width:     '20%',
                 
             },
             {
                 title:     'Значение',
-                key:       'value',
+                key:       'valuetext',
+                dataIndex: 'valuetext',
                 width:     '15%',
                 
             },
             {
                 title:     'Е/И',
-                key:       'ei',
-                width:     '5%',
+                key:       'quantitytext',
+                dataIndex: 'quantitytext',
+                width:     '10%',
                 
             },
             {
                 title:     'Комментарий 1',
-                key:       'comment1',
+                key:       'qualcoltext',
+                dataIndex: 'qualcoltext',
                 width:     '15%',
                 
             },
             {
                 title:     'Комментарий 2',
-                key:       'comment2',
+                key:       'addtext',
+                dataIndex: 'addtext',
                 width:     '15%',
                 
             },
+        ];
+
+        this.columnsTypeA = [...this.columnsTypeB, 
             {
                 title:     'Кол-во',
                 key:       'count',
+                dataIndex: 'count',
                 width:     '5%',
-                render:    ()=>{
+                render:    (data, elem)=>{
                     return (
                        <InputNumber
                             min={0}
+                            step={1}
+                            value={data}
+                            onChange={(value)=>{
+                                elem.count = value;
+                                this.setState({
+                                    update: true,
+                                })
+                            }}
                        />
                     )
                 }
@@ -68,7 +95,7 @@ class TecDocInfoModal extends React.Component{
             },
             {
                 key:       'select',
-                width:     '10%',
+                width:     '5%',
                 render:    ()=>{
                     return (
                         <Button
@@ -78,39 +105,6 @@ class TecDocInfoModal extends React.Component{
                         </Button>
                     )
                 }
-                
-            },
-        ];
-
-        this.columnsTypeB = [
-            {
-                title:     'Параметр',
-                key:       'parametr',
-                width:     '20%',
-                
-            },
-            {
-                title:     'Значение',
-                key:       'value',
-                width:     '15%',
-                
-            },
-            {
-                title:     'Е/И',
-                key:       'ei',
-                width:     '5%',
-                
-            },
-            {
-                title:     'Комментарий 1',
-                key:       'comment1',
-                width:     '15%',
-                
-            },
-            {
-                title:     'Комментарий 2',
-                key:       'comment2',
-                width:     '15%',
                 
             },
         ];
@@ -131,6 +125,7 @@ class TecDocInfoModal extends React.Component{
     handleCancel = () => {
         this.setState({
             visible: false,
+            fetched: false,
         })
     };
 
@@ -138,7 +133,7 @@ class TecDocInfoModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/labors`;
+        let params = `/tecdoc/autodata?modificationId=${this.props.modificationId}`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -156,77 +151,39 @@ class TecDocInfoModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            data.labors.map((elem, index)=>{
+            console.log(data);
+            data.map((elem, index)=>{
                 elem.key = index;
-                elem.laborCode = `${elem.masterLaborId}-${elem.productId}`;
+                elem.count = 0;
             })
-            that.labors = data.labors;
+            that.setState({
+                fetched: true,
+                dataSource0: data.slice(0, 10),
+                dataSource1: data.slice(10, 20),
+                dataSource2: data.slice(20, 30),
+                dataSource3: data.slice(30, 40),
+                dataSource4: data.slice(40, 50),
+                dataSource5: data.slice(50, 60),
+                dataSource6: data.slice(60, 70),
+                dataSource7: data.slice(70, 80),
+                dataSource8: data.slice(80, 90),
+                dataSource9: data.slice(90, 100),
+            })
         })
         .catch(function (error) {
             console.log('error', error)
-        });
-
-        params = `/labors/master?makeTree=true`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
         })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.masterLabors = data.masterLabors;
-            that.buildLaborsTree();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
-
-        params = `/store_groups`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.storeGroups = data;
-            that.buildStoreGroupsTree();
-            that.getOptions();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
     }
 
 
     componentDidUpdate(prevProps, prevState) {
         if( !prevState.visible && this.state.visible) {
-
+            this.fetchData();
         }
     }
 
     render() {
-        const { visible, dataSource } = this.state;
+        const { visible } = this.state;
         return (
             <>
                 <Icon
@@ -249,77 +206,72 @@ class TecDocInfoModal extends React.Component{
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                 >
-                    <Tabs tabPosition='left'>
-                        <TabPane tab="Жидкости и литры" key="1">
-                            <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeA}
-                                pagination={false}
-                            />
-                             <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeB}
-                                pagination={false}
-                            />
-                        </TabPane>
-                        <TabPane tab="Интервалы" key="2">
-                            <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeA}
-                                pagination={false}
-                            />
-                        </TabPane>
-                        <TabPane tab="Лампочки" key="3">
-                            <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeA}
-                                pagination={false}
-                            />
-                        </TabPane>
-                        <TabPane tab="Тормоза" key="4">
-                            <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeA}
-                                pagination={false}
-                            />
-                        </TabPane>
-                        <TabPane tab="Электрика" key="5">
-                            <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeA}
-                                pagination={false}
-                            />
-                        </TabPane>
-                        <TabPane tab="Давление в шинах" key="6">
-                            <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeB}
-                                pagination={false}
-                            />
-                        </TabPane>
-                        <TabPane tab="Моменты затяжки" key="7">
-                            <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeB}
-                                pagination={false}
-                            />
-                        </TabPane>
-                        <TabPane tab="Углы развала" key="8">
-                            <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeB}
-                                pagination={false}
-                            />
-                        </TabPane>
-                        <TabPane tab="Прочее" key="9">
-                            <Table
-                                dataSource={dataSource}
-                                columns={this.columnsTypeB}
-                                pagination={false}
-                            />
-                        </TabPane>
-                    </Tabs>
-                    
+                    {this.state.fetched ? 
+                        <Tabs tabPosition='left'>
+                            <TabPane tab="Жидкости и литры" key="1">
+                                <Table
+                                    dataSource={this.state.dataSource0}
+                                    columns={this.columnsTypeA}
+                                    pagination={{ pageSize: 6 }}
+                                />
+                                <Table
+                                    dataSource={this.state.dataSource1}
+                                    columns={this.columnsTypeB}
+                                    pagination={{ pageSize: 6 }}
+                                />
+                            </TabPane>
+                            <TabPane tab="Интервалы" key="2">
+                                <Table
+                                    dataSource={this.state.dataSource2}
+                                    columns={this.columnsTypeA}
+                                />
+                            </TabPane>
+                            <TabPane tab="Лампочки" key="3">
+                                <Table
+                                    dataSource={this.state.dataSource3}
+                                    columns={this.columnsTypeA}
+                                />
+                            </TabPane>
+                            <TabPane tab="Тормоза" key="4">
+                                <Table
+                                    dataSource={this.state.dataSource4}
+                                    columns={this.columnsTypeA}
+                                />
+                            </TabPane>
+                            <TabPane tab="Электрика" key="5">
+                                <Table
+                                    dataSource={this.state.dataSource5}
+                                    columns={this.columnsTypeA}
+                                />
+                            </TabPane>
+                            <TabPane tab="Давление в шинах" key="6">
+                                <Table
+                                    dataSource={this.state.dataSource6}
+                                    columns={this.columnsTypeB}
+                                />
+                            </TabPane>
+                            <TabPane tab="Моменты затяжки" key="7">
+                                <Table
+                                    dataSource={this.state.dataSource7}
+                                    columns={this.columnsTypeB}
+                                />
+                            </TabPane>
+                            <TabPane tab="Углы развала" key="8">
+                                <Table
+                                    dataSource={this.state.dataSource8}
+                                    columns={this.columnsTypeB}
+                                />
+                            </TabPane>
+                            <TabPane tab="Прочее" key="9">
+                                <Table
+                                    dataSource={this.state.dataSource9}
+                                    columns={this.columnsTypeB}
+                                />
+                            </TabPane>
+                        </Tabs>
+                        :
+                        <Spin indicator={spinIcon} />
+                    }
                 </Modal>
             </>
         )
