@@ -1,43 +1,5 @@
-:global(.ant-select) {
-    display: list-item;
-}
-
-.tableWrap {
-    padding: 15px 0;
-    border-bottom: 1px solid #8c8c8c;
-}
-
-.modalSectionTitle {
-    display: flex;
-    justify-content: start;
-    align-items: center;
-    font-size: 24px;
-    font-weight: bold;
-    padding-bottom: 10px;
-}
-
-.groupsTreeSelect {
-
-}
-
-.groupTreeOption {
-    
-}
-
-/* Commentary Button */
-.commentaryButtonIcon svg *{
-    color: rgba(0, 0, 0, 0.65);
-}
-
-.commentaryContentWrap > div {
-    margin-bottom: 15px;
-}
-
-.commentarySectionHeader {
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-.commentaryParameter{
-    margin-right: 15px;
+.tableHeader{
+    font-size: 16px;
+    font-weight: 700;
+    margin: 15px 0;
 }

@@ -100,8 +100,11 @@ class TecDocInfoModal extends React.Component{
                     return (
                         <Button
                             type='primary'
+                            onClick={()=>{
+                                this.handleCancel();
+                            }}
                         >
-                            <FormattedMessage id='select'/>
+                            <FormattedMessage id='add'/>
                         </Button>
                     )
                 }
@@ -203,17 +206,19 @@ class TecDocInfoModal extends React.Component{
                     width="95%"
                     visible={visible}
                     title={null}
+                    footer={null}
                     onCancel={this.handleCancel}
-                    onOk={this.handleOk}
                 >
                     {this.state.fetched ? 
                         <Tabs tabPosition='left'>
                             <TabPane tab="Жидкости и литры" key="1">
+                                <div className={Styles.tableHeader}>Спецификации масел и технических жидкостей</div>
                                 <Table
                                     dataSource={this.state.dataSource0}
                                     columns={this.columnsTypeA}
                                     pagination={{ pageSize: 6 }}
                                 />
+                                <div className={Styles.tableHeader}>Объёмы масел и технических жидкостей</div>
                                 <Table
                                     dataSource={this.state.dataSource1}
                                     columns={this.columnsTypeB}
@@ -221,48 +226,56 @@ class TecDocInfoModal extends React.Component{
                                 />
                             </TabPane>
                             <TabPane tab="Интервалы" key="2">
+                                <div className={Styles.tableHeader}>Интервалы замены запчастей, масел и жидкостей</div>
                                 <Table
                                     dataSource={this.state.dataSource2}
                                     columns={this.columnsTypeA}
                                 />
                             </TabPane>
                             <TabPane tab="Лампочки" key="3">
+                                <div className={Styles.tableHeader}>Спецификации автолампочек</div>
                                 <Table
                                     dataSource={this.state.dataSource3}
                                     columns={this.columnsTypeA}
                                 />
                             </TabPane>
                             <TabPane tab="Тормоза" key="4">
+                                <div className={Styles.tableHeader}>Параметры тормозов</div>
                                 <Table
                                     dataSource={this.state.dataSource4}
                                     columns={this.columnsTypeA}
                                 />
                             </TabPane>
                             <TabPane tab="Электрика" key="5">
+                                <div className={Styles.tableHeader}>Данные по электрике автомобиля</div>
                                 <Table
                                     dataSource={this.state.dataSource5}
                                     columns={this.columnsTypeA}
                                 />
                             </TabPane>
                             <TabPane tab="Давление в шинах" key="6">
+                                <div className={Styles.tableHeader}>Давление в шинах</div>
                                 <Table
                                     dataSource={this.state.dataSource6}
                                     columns={this.columnsTypeB}
                                 />
                             </TabPane>
                             <TabPane tab="Моменты затяжки" key="7">
+                                <div className={Styles.tableHeader}>Моменты затяжки креплений узлов и деталей</div>
                                 <Table
                                     dataSource={this.state.dataSource7}
                                     columns={this.columnsTypeB}
                                 />
                             </TabPane>
                             <TabPane tab="Углы развала" key="8">
+                                <div className={Styles.tableHeader}>Углы развала-схождения автомобиля</div>
                                 <Table
                                     dataSource={this.state.dataSource8}
                                     columns={this.columnsTypeB}
                                 />
                             </TabPane>
                             <TabPane tab="Прочее" key="9">
+                                <div className={Styles.tableHeader}>Прочие параметры</div>
                                 <Table
                                     dataSource={this.state.dataSource9}
                                     columns={this.columnsTypeB}
