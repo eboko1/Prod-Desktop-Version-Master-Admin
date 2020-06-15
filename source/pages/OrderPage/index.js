@@ -38,6 +38,7 @@ import {
     ConfirmOrderExitModal,
     OrderTaskModal,
     StoreProductModal,
+    TecDocInfoModal,
 } from 'modals';
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
@@ -443,6 +444,9 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
+                        <TecDocInfoModal
+                            isMobile={isMobile}
+                        />
                         <Icon
                             type='file-protect'
                             style={ {
