@@ -419,6 +419,7 @@ class OrderPage extends Component {
             forbiddenUpdate,
         } = this.getSecurityConfig();
         const viewTasks = !isForbidden(user, permissions.GET_TASKS);
+        console.log(this)
 
         return spinner ? (
             <Spinner spin={ spinner }/>
@@ -446,6 +447,8 @@ class OrderPage extends Component {
                     <>
                         <TecDocInfoModal
                             isMobile={isMobile}
+                            orderId={ id }
+                            modificationId={'3885'}
                         />
                         <Icon
                             type='file-protect'
