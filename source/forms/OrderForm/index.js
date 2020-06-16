@@ -6,6 +6,7 @@ import _ from "lodash";
 import moment from "moment";
 
 //proj
+import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import {
     onChangeOrderForm,
     setClientSelection,
@@ -80,13 +81,68 @@ export class OrderForm extends React.PureComponent {
         this.state = {
             formValues: {},
         };
-
+        this.orderDetails = [...this.props.orderDetails];
+        this.orderServices = [...this.props.orderServices];
         this.reloadOrderForm = this.reloadOrderForm.bind(this);
     }
 
-    reloadOrderForm() {
-        const formValues = this.props.form.getFieldsValue();
-        this.setState({ formValues });
+    async reloadOrderForm() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}/labors`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.orderServices = data.labors,
+            that.setState({
+                update: true,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+
+        params = `/orders/${this.props.orderId}/details`;
+        url = API_URL + params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.orderDetails = data.details,
+            that.setState({
+                orderDetails: data.details,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
     }
 
     _openNotification = ({ make, model }) => {
@@ -298,13 +354,13 @@ export class OrderForm extends React.PureComponent {
         ]);
 
         let priceDetails = 0;
-        for(let i = 0; i < this.props.orderDetails.length; i++) {
-            priceDetails += Math.round(this.props.orderDetails[i].sum);
+        for(let i = 0; i < this.orderDetails.length; i++) {
+            priceDetails += Math.round(this.orderDetails[i].sum);
         }
 
         let priceServices = 0;
-        for(let i = 0; i < this.props.orderServices.length; i++) {
-            priceServices += Math.round(this.props.orderServices[i].sum);
+        for(let i = 0; i < this.orderServices.length; i++) {
+            priceServices += Math.round(this.orderServices[i].sum);
         }
 
         const servicesDiscount = _.get(formFieldsValues, "servicesDiscount", 0);
@@ -404,22 +460,22 @@ export class OrderForm extends React.PureComponent {
 
         const tecdocId = this._getTecdocId();
 
-        var countDetails = this.props.orderDetails.length,
+        var countDetails = this.orderDetails.length,
             priceDetails = 0,
             totalDetailsProfit = 0,
             detailsDiscount = this.props.fields.detailsDiscount ? this.props.fields.detailsDiscount.value : this.props.order.detailsDiscount;
-        for (let i = 0; i < this.props.orderDetails.length; i++) {
-            priceDetails += Math.round(this.props.orderDetails[i].sum);
-            totalDetailsProfit += Math.round(this.props.orderDetails[i].sum - (this.props.orderDetails[i].sum*detailsDiscount/100) - this.props.orderDetails[i].purchasePrice*this.props.orderDetails[i].count);
+        for (let i = 0; i < this.orderDetails.length; i++) {
+            priceDetails += Math.round(this.orderDetails[i].sum);
+            totalDetailsProfit += Math.round(this.orderDetails[i].sum - (this.orderDetails[i].sum*detailsDiscount/100) - this.orderDetails[i].purchasePrice*this.orderDetails[i].count);
         }
 
-        var countServices = this.props.orderServices.length,
+        var countServices = this.orderServices.length,
             priceServices = 0,
             totalServicesProfit = 0,
             servicesDiscount = this.props.fields.servicesDiscount ? this.props.fields.servicesDiscount.value : this.props.order.servicesDiscount;
-        for (let i = 0; i < this.props.orderServices.length; i++) {
-            priceServices += Math.round(this.props.orderServices[i].sum);
-            totalServicesProfit += Math.round(this.props.orderServices[i].sum - (this.props.orderServices[i].sum*servicesDiscount/100) - this.props.orderServices[i].purchasePrice*this.props.orderServices[i].count);
+        for (let i = 0; i < this.orderServices.length; i++) {
+            priceServices += Math.round(this.orderServices[i].sum);
+            totalServicesProfit += Math.round(this.orderServices[i].sum - (this.orderServices[i].sum*servicesDiscount/100) - this.orderServices[i].purchasePrice*this.orderServices[i].count);
         }
         
         // _.values(value).some(_.isNil) gets only filled rows
@@ -525,8 +581,8 @@ export class OrderForm extends React.PureComponent {
                 suggestionsFetching={suggestionsFetching}
                 orderCalls={orderCalls}
                 orderHistory={orderHistory}
-                orderServices={orderServices}
-                orderDetails={orderDetails}
+                orderServices={this.orderServices}
+                orderDetails={this.orderDetails}
                 orderDiagnostic={orderDiagnostic}
                 allServices={allServices}
                 allDetails={allDetails}
