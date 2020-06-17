@@ -60,7 +60,7 @@ class ConfirmDiagnosticModal extends React.Component{
             if(element.checked && element.id != null) {
                 data.services.push({
                     serviceId: element.id,
-                    serviceHours: element.hours,
+                    count: element.hours,
                     servicePrice: element.price,
                     comment: {comment: element.comment},
                 })
@@ -229,36 +229,24 @@ class ConfirmDiagnosticModal extends React.Component{
 
     addServicesByLaborId(id, index = -1, comment = "") {
         const service = this.state.labors.labors.find(x => x.laborId == id);
-        let cur_index = this.state.servicesList.findIndex(x => x.id == id);
         if(service == undefined) return;
 
         if(index == -1) {
-            if(cur_index == -1) {
-                this.state.servicesList[this.state.servicesList.length-1] = {
-                    key: this.state.servicesList.length,
-                    id: id,
-                    productId: service.productId,
-                    name: service.name,
-                    hours: Number(service.normHours) || 1,
-                    checked: true,
-                    comment: comment,
-                };
-            }
-            else {
-                this.state.servicesList[cur_index].hours += Number(service.normHours) || 1;
-            }
+            this.state.servicesList[this.state.servicesList.length-1] = {
+                key: this.state.servicesList.length,
+                id: id,
+                productId: service.productId,
+                name: service.name,
+                hours: Number(service.normHours) || 1,
+                checked: true,
+                comment: comment,
+            };
         }
         else {
-            if(cur_index == -1) {
-                this.state.servicesList[index].id = id;
-                this.state.servicesList[index].name = service.name;
-                this.state.servicesList[index].productId= service.productId;
-                this.state.servicesList[index].hours = Number(service.normHours) || 1;
-            }
-            else {
-                this.state.servicesList[cur_index].hours += Number(service.normHours) || 1;
-                this.deleteServiceRow(index);
-            }
+            this.state.servicesList[index].id = id;
+            this.state.servicesList[index].name = service.name;
+            this.state.servicesList[index].productId= service.productId;
+            this.state.servicesList[index].hours = Number(service.normHours) || 1;
         }
         this.setState({
             update: true,
@@ -296,34 +284,22 @@ class ConfirmDiagnosticModal extends React.Component{
 
     addDetailsByGroupId(id, index = -1, comment = "") {
         const detail = this.state.allDetails.find(x => x.id == id);
-        let cur_index = this.state.detailsList.findIndex(x => x.id == id);
         if(detail == undefined) return;
 
         if(index == -1) {
-            if(cur_index == -1) {
-                this.state.detailsList[this.state.detailsList.length-1] = {
-                    key: this.state.detailsList.length,
-                    id: detail.id,
-                    name: detail.name,
-                    count: 1,
-                    checked: true,
-                    comment: comment,
-                };
-            }
-            else {
-                this.state.detailsList[cur_index].count += 1;
+            this.state.detailsList[this.state.detailsList.length-1] = {
+                key: this.state.detailsList.length,
+                id: detail.id,
+                name: detail.name,
+                count: 1,
+                checked: true,
+                comment: comment,
             }
         }
         else {
-            if(cur_index == -1) {
-                this.state.detailsList[index].id = id;
-                this.state.detailsList[index].count = 1;
-                this.state.detailsList[index].name = detail.name;
-            }
-            else {
-                this.state.detailsList[cur_index].count += 1;
-                this.deleteDetailRow(index);
-            }
+            this.state.detailsList[index].id = id;
+            this.state.detailsList[index].count = 1;
+            this.state.detailsList[index].name = detail.name;
         }
         this.setState({
             update: true,
