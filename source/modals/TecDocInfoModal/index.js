@@ -155,22 +155,18 @@ class TecDocInfoModal extends React.Component{
         })
         .then(function (data) {
             console.log(data);
-            data.map((elem, index)=>{
-                elem.key = index;
-                elem.count = 0;
-            })
             that.setState({
                 fetched: true,
-                dataSource0: data.slice(0, 10),
-                dataSource1: data.slice(10, 20),
-                dataSource2: data.slice(20, 30),
-                dataSource3: data.slice(30, 40),
-                dataSource4: data.slice(40, 50),
-                dataSource5: data.slice(50, 60),
-                dataSource6: data.slice(60, 70),
-                dataSource7: data.slice(70, 80),
-                dataSource8: data.slice(80, 90),
-                dataSource9: data.slice(90, 100),
+                dataSource0: data.specifications.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
+                dataSource1: data.capacity.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
+                dataSource2: data.intervals.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
+                dataSource3: data.tirePressure.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
+                dataSource4: data.lightBulbs.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
+                dataSource5: data.brakes.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
+                dataSource6: data.tighteningTorques.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
+                dataSource7: data.electric.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
+                dataSource8: data.camberAngles.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
+                dataSource9: data.others.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
             })
         })
         .catch(function (error) {
