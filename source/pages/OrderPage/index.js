@@ -448,7 +448,7 @@ class OrderPage extends Component {
                         <TecDocInfoModal
                             isMobile={isMobile}
                             orderId={ id }
-                            modificationId={'3885'}
+                            modificationId={this.props.order.clientVehicleTecdocId}
                         />
                         <Icon
                             type='file-protect'
