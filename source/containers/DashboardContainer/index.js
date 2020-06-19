@@ -97,7 +97,6 @@ class DashboardContainer extends Component {
     _renderDashboardColumns = () => {
         const { dashboard, days, stations, employees, load, mode } = this.props;
         const { currentDay } = this.state;
-        console.log(employees, load)
 
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
