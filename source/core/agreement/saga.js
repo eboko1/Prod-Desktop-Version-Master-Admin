@@ -32,10 +32,10 @@ export function getAgreementData(sessionId, lang, getData) {
     })
 }
 
-export async function confirmAgreement(sessionId, data) {
+export async function confirmAgreement(sessionId, data, lang) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
-    let params = `/orders/agreement?sessionId=${sessionId}`;
+    let params = `/orders/agreement?sessionId=${sessionId}&lang=${lang}`;
     url += params;
     
     try {
