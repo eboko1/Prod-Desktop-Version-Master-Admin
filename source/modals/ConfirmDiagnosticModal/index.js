@@ -9,6 +9,7 @@ import {
     confirmDiagnostic,
     createAgreement,
     lockDiagnostic,
+    sendMessage,
 } from 'core/forms/orderDiagnosticForm/saga';
 // own
 import Styles from './styles.m.css';
@@ -700,24 +701,38 @@ class ConfirmDiagnosticModal extends React.Component{
                         type="primary"
                         onClick={()=>{createAgreement(this.props.orderId, this.props.intl.locale)}}
                     >
-                    {!isMobile ? (
                         <FormattedMessage id='send_message'/>
-                    ):(
-                        <FormattedMessage id='send_message'/>
-                    )}
                     </Button>
                 ) : (
-                    <Button
-                        style={isMobile?{ width: "100%" }:{ width: "80%" }}
-                        type="primary"
-                        onClick={this.showModal}
-                    >
-                    {!isMobile ? (
-                        <FormattedMessage id='order_form_table.diagnostic.create_order'/>
-                    ):(
-                        <FormattedMessage id='submit'/>
-                    )}
-                    </Button>
+                    <>
+                        {isMobile ? 
+                        <Button
+                            style={{ width: "80%" }}
+                            type="primary"
+                            onClick={()=>sendMessage(this.props.orderId)}
+                        >
+                            <FormattedMessage id='end'/>
+                        </Button>
+                        :
+                        <>
+                            <Button
+                                style={{ width: "35%", marginRight: 5 }}
+                                type="primary"
+                                onClick={this.showModal}
+                            >
+                                <FormattedMessage id='order_form_table.diagnostic.create_order'/>
+                            </Button>
+                            <Button
+                                style={{ width: "35%" }}
+                                type="primary"
+                                onClick={()=>sendMessage(this.props.orderId)}
+                            >
+                                <FormattedMessage id='end'/>
+                            </Button>
+                        </>
+                        }
+                    </>
+                    
                 )}
                 <Modal
                     width={!isMobile?"75%":"95%"}

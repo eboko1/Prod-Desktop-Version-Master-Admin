@@ -64,9 +64,9 @@ class AgreementPage extends Component {
         this.state.detailsList.map((elem)=>{
             if(!elem.checked) {
                 resultData.disableDetailIds.push(elem.id);
-            }
+            }1
         });
-        confirmAgreement(this.sessionId, resultData);
+        confirmAgreement(this.sessionId, resultData, this.props.intl.locale);
         this.setState({
             confirmed: true,
         })

@@ -253,3 +253,22 @@ export async function getPartProblems(partId, getData) {
         console.error('ERROR:', error);
     }
 }
+
+export async function sendMessage(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/orders/${orderId}/send_diagnostics_complete_message`;
+
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        const result = await response.json();
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
+}
