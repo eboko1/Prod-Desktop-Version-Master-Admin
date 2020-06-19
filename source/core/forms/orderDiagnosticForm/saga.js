@@ -1,3 +1,5 @@
+import { saveAs } from 'file-saver';
+
 export const URL = window.location.hostname;
 export const API_URL = URL == 'localhost'? 'http://localhost:14281' : 'https://test-api.carbook.pro';
 
@@ -268,6 +270,33 @@ export async function sendMessage(orderId) {
             }
         });
         const result = await response.json();
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
+}
+
+export async function getDiagnosticsReport(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/diagnostics/report?orderId=${orderId}`;
+
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        const result = await response.blob();
+
+        const contentDispositionHeader = response.headers.get(
+            'content-disposition',
+        );
+        const fileName = contentDispositionHeader.match(
+            /^attachment; filename="(.*)"/,
+        )[ 1 ];
+        await saveAs(result, fileName);
     } catch (error) {
         console.error('ERROR:', error);
     }

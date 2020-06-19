@@ -28,6 +28,7 @@ export default class RolePage extends Component {
     }
 
     render() {
+        console.log(this.props);
         const { isFetching, roles } = this.props;
 
         return isFetching ? (
