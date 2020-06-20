@@ -47,7 +47,7 @@ class ServicesTable extends Component {
                                     style={{
                                         width: 18,
                                         height: 18,
-                                        backgroundColor: 'white',
+                                        backgroundColor: confirmed != "undefined" ? 'black' : 'white',
                                         mask: `url(${images.partsIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
                                     }}
@@ -436,6 +436,7 @@ class ServicesTable extends Component {
                     pagination={false}
                 />
                 <AddServiceModal
+                    user={this.props.user}
                     employees={this.props.employees}
                     visible={this.state.serviceModalVisible}
                     updateLabor={this.updateLabor}

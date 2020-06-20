@@ -181,6 +181,7 @@ class FavouriteDetailsModal extends React.Component{
                                 }}
                             />
                             <DetailStorageModal
+                                user={this.props.user}
                                 tableKey={elem.key}
                                 onSelect={this.setCode}
                                 disabled={elem.storeGroupId == null}
@@ -209,6 +210,7 @@ class FavouriteDetailsModal extends React.Component{
                                 value={data}
                             />
                             <DetailSupplierModal
+                                user={this.props.user}
                                 tableKey={elem.key}
                                 disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
                                 onSelect={this.setSupplier}

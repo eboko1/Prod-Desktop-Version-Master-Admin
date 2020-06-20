@@ -183,6 +183,8 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="1"
                     >
                         <DiagnosticTable
+                            user={user}
+                            forbidden={areDiagnosticForbidden}
                             tecdocId={tecdocId}
                             form={form}
                             orderDiagnostic={orderDiagnostic}

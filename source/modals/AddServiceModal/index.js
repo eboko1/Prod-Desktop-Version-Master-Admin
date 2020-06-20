@@ -6,6 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
+import { permissions, isForbidden } from "utils";
 import { DetailStorageModal, DetailSupplierModal } from 'modals'
 // own
 import Styles from './styles.m.css';
@@ -307,6 +308,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <NormHourModal
+                            user={this.props.user}
                             tecdocId={this.props.tecdocId}
                             storeGroupId={elem.storeGroupId}
                             onSelect={this.setHours}
@@ -884,6 +886,7 @@ class NormHourModal extends React.Component{
         return (
             <>
                 <Button
+                    disabled={isForbidden(this.props.user, permissions.ACCESS_NORM_HOURS_MODAL_WINDOW)}
                     type={hours ? null : 'primary'}
                     onClick={()=>{
                         this.setState({visible: true})
