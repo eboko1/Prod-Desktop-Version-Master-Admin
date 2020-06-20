@@ -16,6 +16,7 @@ const LIMITED_PRINT = 'LIMITED_PRINT';
 const SHOW_FILTERS = 'SHOW_FILTERS';
 const SHOW_ORDERS = 'SHOW_ORDERS';
 const UPDATE_SUCCESS_ORDER = 'UPDATE_SUCCESS_ORDER';
+const ACCESS_ORDER_DIAGNOSTICS = 'ACCESS_ORDER_DIAGNOSTICS';
 
 // Dashboard
 const ACCESS_DASHBOARD = 'ACCESS_DASHBOARD';
@@ -82,6 +83,7 @@ export const permissions = Object.freeze({
     SHOW_FILTERS,
     SHOW_ORDERS,
     UPDATE_SUCCESS_ORDER,
+    ACCESS_ORDER_DIAGNOSTICS,
 
     ACCESS_DASHBOARD,
     EDIT_DASHBOARD_ORDER,
@@ -159,6 +161,7 @@ export const groupedPermissions = {
         SHOW_FILTERS,
         SHOW_ORDERS,
         UPDATE_SUCCESS_ORDER,
+        ACCESS_ORDER_DIAGNOSTICS,
     ],
     [ CLIENTS_PERMISSIONS ]: [
         GET_CLIENTS,
@@ -251,6 +254,9 @@ export const getPermissionsLabels = intl => ({
     [ SHOW_ORDERS ]:          intl.formatMessage({ id: 'roles.show_orders' }),
     [ UPDATE_SUCCESS_ORDER ]: intl.formatMessage({
         id: 'roles.update_success_order',
+    }),
+    [ ACCESS_ORDER_DIAGNOSTICS ]: intl.formatMessage({
+        id: 'roles.access_order_diagnostics',
     }),
 
     [ ACCESS_DASHBOARD ]:     intl.formatMessage({ id: 'roles.access_dashboard' }),
