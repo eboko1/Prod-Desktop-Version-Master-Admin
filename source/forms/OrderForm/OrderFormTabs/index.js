@@ -133,6 +133,7 @@ export default class OrderFormTabs extends React.PureComponent {
             ACCESS_ORDER_COMMENTS,
             ACCESS_ORDER_SERVICES,
             ACCESS_ORDER_DETAILS,
+            ACCESS_ORDER_DIAGNOSTICS,
             GET_TASKS,
             GET_ALL_TASKS,
         } = permissions;
@@ -142,6 +143,7 @@ export default class OrderFormTabs extends React.PureComponent {
         const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_COMMENTS);
         const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
         const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
+        const areDiagnosticForbidden = isForbidden(user, ACCESS_ORDER_DIAGNOSTICS);
 
         const viewTasks = !isForbidden(user, GET_TASKS);
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
@@ -172,6 +174,7 @@ export default class OrderFormTabs extends React.PureComponent {
                 {!addOrderForm && (
                     <TabPane
                         forceRender
+                        disabled={areDiagnosticForbidden}
                         tab={
                             formatMessage({
                                 id: "order_form_table.diagnostic",
