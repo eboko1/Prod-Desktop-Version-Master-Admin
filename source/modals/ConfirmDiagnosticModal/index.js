@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import { Button, Modal, Icon, Checkbox, InputNumber, AutoComplete, Tabs } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
+import {permissions, isForbidden} from 'utils';
 import {
     API_URL,
     confirmDiagnostic,
@@ -700,6 +701,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         style={isMobile?{ width: "100%" }:{ width: "80%" }}
                         type="primary"
                         onClick={()=>{createAgreement(this.props.orderId, this.props.intl.locale)}}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_AGREEMENT)}
                     >
                         <FormattedMessage id='send_message'/>
                     </Button>
@@ -710,6 +712,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             style={{ width: "80%" }}
                             type="primary"
                             onClick={()=>sendMessage(this.props.orderId)}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
                         >
                             <FormattedMessage id='end'/>
                         </Button>
@@ -719,6 +722,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 style={{ width: "35%", marginRight: 5 }}
                                 type="primary"
                                 onClick={this.showModal}
+                                disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW)}
                             >
                                 <FormattedMessage id='order_form_table.diagnostic.create_order'/>
                             </Button>
@@ -726,6 +730,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 style={{ width: "35%" }}
                                 type="primary"
                                 onClick={()=>sendMessage(this.props.orderId)}
+                                disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
                             >
                                 <FormattedMessage id='end'/>
                             </Button>

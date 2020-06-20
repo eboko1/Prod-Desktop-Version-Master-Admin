@@ -7,6 +7,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
+import { permissions, isForbidden } from "utils";
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
@@ -191,11 +192,12 @@ class DetailSupplierModal extends React.Component{
     }
 
     render() {
+        const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_SUPPLIER_MODAL_WINDOW);
         return (
             <div>
                 <Button
                     type='primary'
-                    disabled={this.props.disabled}
+                    disabled={disabled}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({
@@ -207,7 +209,7 @@ class DetailSupplierModal extends React.Component{
                         style={{
                             width: 18,
                             height: 18,
-                            backgroundColor: this.props.disabled ? 'black' : 'white',
+                            backgroundColor: disabled ? 'black' : 'white',
                             mask: `url(${images.craneIcon}) no-repeat center / contain`,
                             WebkitMask: `url(${images.craneIcon}) no-repeat center / contain`,
                         }}

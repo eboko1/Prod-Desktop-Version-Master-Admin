@@ -6,6 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
+import { permissions, isForbidden } from "utils";
 import { getSupplier } from 'components/PartSuggestions/supplierConfig.js';
 import { DetailSupplierModal } from 'modals'
 // own
@@ -490,6 +491,7 @@ class DetailStorageModal extends React.Component{
 
     render() {
         const { dataSource, brandFilter, codeFilter, inStock } = this.state;
+        const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
 
         if(brandFilter.length) tblData = tblData.filter((elem)=>brandFilter.indexOf(elem.supplierId)!=-1);
@@ -504,7 +506,7 @@ class DetailStorageModal extends React.Component{
             <div>
                 <Button
                     type='primary'
-                    disabled={this.props.disabled}
+                    disabled={disabled}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({
@@ -516,7 +518,7 @@ class DetailStorageModal extends React.Component{
                         style={{
                             width: 18,
                             height: 18,
-                            backgroundColor: this.props.disabled ? 'black' : 'white',
+                            backgroundColor: disabled ? 'black' : 'white',
                             mask: `url(${images.bookIcon}) no-repeat center / contain`,
                             WebkitMask: `url(${images.bookIcon}) no-repeat center / contain`,
                         }}

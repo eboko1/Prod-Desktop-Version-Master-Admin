@@ -64,7 +64,7 @@ export default class DetailsTable extends Component {
                                     style={{
                                         width: 18,
                                         height: 18,
-                                        backgroundColor: 'white',
+                                        backgroundColor: confirmed != "undefined" ? 'black' : 'white',
                                         mask: `url(${images.partsIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
                                     }}
@@ -72,6 +72,7 @@ export default class DetailsTable extends Component {
                             </Button>
                             {!(elem.storeGroupId) ? 
                                 <FavouriteDetailsModal
+                                    user={this.props.user}
                                     tecdocId={this.props.tecdocId}
                                     orderId={this.props.orderId}
                                     brands={this.props.allDetails.brands}
@@ -491,6 +492,7 @@ export default class DetailsTable extends Component {
                     pagination={false}
                 />
                 <DetailProductModal
+                    user={this.props.user}
                     tecdocId={this.props.tecdocId}
                     visible={this.state.productModalVisible}
                     orderId={this.props.orderId}

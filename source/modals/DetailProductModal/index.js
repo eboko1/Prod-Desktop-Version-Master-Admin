@@ -205,6 +205,7 @@ class DetailProductModal extends React.Component{
                                 }}
                             />
                             <DetailStorageModal
+                                user={this.props.user}
                                 tableKey={0}
                                 onSelect={this.setCode}
                                 disabled={elem.storeGroupId == null}
@@ -235,6 +236,7 @@ class DetailProductModal extends React.Component{
                                 value={data}
                             />
                             <DetailSupplierModal
+                                user={this.props.user}
                                 tableKey={0}
                                 disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
                                 onSelect={this.setSupplier}

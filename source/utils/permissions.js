@@ -16,7 +16,6 @@ const LIMITED_PRINT = 'LIMITED_PRINT';
 const SHOW_FILTERS = 'SHOW_FILTERS';
 const SHOW_ORDERS = 'SHOW_ORDERS';
 const UPDATE_SUCCESS_ORDER = 'UPDATE_SUCCESS_ORDER';
-const ACCESS_ORDER_DIAGNOSTICS = 'ACCESS_ORDER_DIAGNOSTICS';
 
 // Dashboard
 const ACCESS_DASHBOARD = 'ACCESS_DASHBOARD';
@@ -64,6 +63,18 @@ const ACCESS_KPI = 'ACCESS_KPI';
 const ACCESS_FEEDBACK = 'ACCESS_FEEDBACK';
 const ACCESS_CALL_STATISTICS = 'ACCESS_CALL_STATISTICS';
 
+//Mobi
+const ACCESS_ORDER_DIAGNOSTICS = 'ACCESS_ORDER_DIAGNOSTICS';
+const ACCESS_LABOR_CATALOGUE = 'ACCESS_LABOR_CATALOGUE';
+const ACCESS_DIAGNOSTIC_CATALOGUE = 'ACCESS_DIAGNOSTIC_CATALOGUE';
+const ACCESS_TECDOC_MODAL_WINDOW = 'ACCESS_TECDOC_MODAL_WINDOW';
+const ACCESS_SUPPLIER_MODAL_WINDOW = 'ACCESS_SUPPLIER_MODAL_WINDOW';
+const ACCESS_NORM_HOURS_MODAL_WINDOW = 'ACCESS_NORM_HOURS_MODAL_WINDOW';
+const ACCESS_TECH_AUTO_DATA_MODAL_WINDOW = 'ACCESS_TECH_AUTO_DATA_MODAL_WINDOW';
+const ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW = 'ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW';
+const ACCESS_AGREEMENT = 'ACCESS_AGREEMENT';
+const ACCESS_TELEGRAM = 'ACCESS_TELEGRAM';
+
 // Other
 const DEMO = 'DEMO';
 
@@ -83,7 +94,6 @@ export const permissions = Object.freeze({
     SHOW_FILTERS,
     SHOW_ORDERS,
     UPDATE_SUCCESS_ORDER,
-    ACCESS_ORDER_DIAGNOSTICS,
 
     ACCESS_DASHBOARD,
     EDIT_DASHBOARD_ORDER,
@@ -124,6 +134,17 @@ export const permissions = Object.freeze({
     ACCESS_FEEDBACK,
     ACCESS_CALL_STATISTICS,
 
+    ACCESS_ORDER_DIAGNOSTICS,
+    ACCESS_LABOR_CATALOGUE,
+    ACCESS_DIAGNOSTIC_CATALOGUE,
+    ACCESS_TECDOC_MODAL_WINDOW,
+    ACCESS_SUPPLIER_MODAL_WINDOW,
+    ACCESS_NORM_HOURS_MODAL_WINDOW,
+    ACCESS_TECH_AUTO_DATA_MODAL_WINDOW,
+    ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW,
+    ACCESS_AGREEMENT,
+    ACCESS_TELEGRAM,
+
     DEMO,
 });
 
@@ -136,6 +157,7 @@ export const WAREHOUSE_PERMISSIONS = 'WAREHOUSE_PERMISSIONS';
 export const ACCOUNTING_PERMISSIONS = 'ACCOUNTING_PERMISSIONS';
 export const REPORTS_PERMISSIONS = 'REPORTS_PERMISSIONS';
 export const OTHER_PERMISSIONS = 'OTHER_PERMISSIONS';
+export const MOBI_PERMISSIONS = 'MOBI_PERMISSIONS';
 
 // using for roles page
 export const groupedPermissions = {
@@ -161,7 +183,6 @@ export const groupedPermissions = {
         SHOW_FILTERS,
         SHOW_ORDERS,
         UPDATE_SUCCESS_ORDER,
-        ACCESS_ORDER_DIAGNOSTICS,
     ],
     [ CLIENTS_PERMISSIONS ]: [
         GET_CLIENTS,
@@ -188,6 +209,18 @@ export const groupedPermissions = {
     ],
     [ ACCOUNTING_PERMISSIONS ]: [ ACCESS_ACCOUNTING, EDIT_CASH_ORDERS ],
     [ REPORTS_PERMISSIONS ]:    [ ACCESS_KPI, ACCESS_FEEDBACK, ACCESS_CALL_STATISTICS ],
+    [ MOBI_PERMISSIONS ]: [
+        ACCESS_ORDER_DIAGNOSTICS,
+        ACCESS_LABOR_CATALOGUE,
+        ACCESS_DIAGNOSTIC_CATALOGUE,
+        ACCESS_TECDOC_MODAL_WINDOW,
+        ACCESS_SUPPLIER_MODAL_WINDOW,
+        ACCESS_NORM_HOURS_MODAL_WINDOW,
+        ACCESS_TECH_AUTO_DATA_MODAL_WINDOW,
+        ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW,
+        ACCESS_AGREEMENT,
+        ACCESS_TELEGRAM,
+    ],
     [ OTHER_PERMISSIONS ]:      [ DEMO ],
 };
 
@@ -218,6 +251,9 @@ export const getGroupsLabels = intl => ({
     }),
     [ REPORTS_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.reports_permissions',
+    }),
+    [ MOBI_PERMISSIONS ]: intl.formatMessage({
+        id: 'roles.mobi_permissions',
     }),
     [ OTHER_PERMISSIONS ]: intl.formatMessage({
         id: 'roles.other_permissions',
@@ -254,9 +290,6 @@ export const getPermissionsLabels = intl => ({
     [ SHOW_ORDERS ]:          intl.formatMessage({ id: 'roles.show_orders' }),
     [ UPDATE_SUCCESS_ORDER ]: intl.formatMessage({
         id: 'roles.update_success_order',
-    }),
-    [ ACCESS_ORDER_DIAGNOSTICS ]: intl.formatMessage({
-        id: 'roles.access_order_diagnostics',
     }),
 
     [ ACCESS_DASHBOARD ]:     intl.formatMessage({ id: 'roles.access_dashboard' }),
@@ -366,6 +399,37 @@ export const getPermissionsLabels = intl => ({
     }),
     [ ACCESS_CALL_STATISTICS ]: intl.formatMessage({
         id: 'roles.access_call_statistics',
+    }),
+
+    [ ACCESS_ORDER_DIAGNOSTICS ]: intl.formatMessage({
+        id: 'roles.access_order_diagnostics',
+    }),
+    [ ACCESS_LABOR_CATALOGUE ]: intl.formatMessage({
+        id: 'roles.access_labor_catalogue',
+    }),
+    [ ACCESS_DIAGNOSTIC_CATALOGUE ]: intl.formatMessage({
+        id: 'roles.access_diagnostic_catalogue',
+    }),
+    [ ACCESS_TECDOC_MODAL_WINDOW ]: intl.formatMessage({
+        id: 'roles.access_tecdoc_modal_window',
+    }),
+    [ ACCESS_SUPPLIER_MODAL_WINDOW ]: intl.formatMessage({
+        id: 'roles.access_supplier_modal_window',
+    }),
+    [ ACCESS_NORM_HOURS_MODAL_WINDOW ]: intl.formatMessage({
+        id: 'roles.access_norm_hours_modal_window',
+    }),
+    [ ACCESS_TECH_AUTO_DATA_MODAL_WINDOW ]: intl.formatMessage({
+        id: 'roles.access_tech_auto_data_modal_window',
+    }),
+    [ ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW ]: intl.formatMessage({
+        id: 'roles.access_order_creationg_of_diagnostics_modal_window',
+    }),
+    [ ACCESS_AGREEMENT ]: intl.formatMessage({
+        id: 'roles.access_agreement',
+    }),
+    [ ACCESS_TELEGRAM ]: intl.formatMessage({
+        id: 'roles.access_telegram',
     }),
 
     [ DEMO ]: intl.formatMessage({
