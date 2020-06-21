@@ -197,6 +197,7 @@ class DetailStorageModal extends React.Component{
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                             />
                             <DetailSupplierModal
+                                user={this.props.user}
                                 setStoreSupplier={this.setSupplier}
                                 keyValue={elem.key}
                                 brandId={elem.brandId}
