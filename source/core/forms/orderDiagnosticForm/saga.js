@@ -230,7 +230,6 @@ export async function createAgreement(orderId, lang) {
         });
         const result = await response.json();
         console.log("OK", result);
-        alert(`${URL == "localhost"?URL+":3000":URL}/agreement?sessionId=${result.sessionId}&lang=${lang}`);
     } catch (error) {
         console.error('ERROR:', error);
     }
