@@ -109,7 +109,7 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="hours" />,
+                title: <FormattedMessage id="services_table.norm_hours" />,
                 width: "8%",
                 key: "hours",
                 dataIndex: 'hours',

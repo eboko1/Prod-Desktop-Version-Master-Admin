@@ -200,7 +200,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    getLaborByPartId(id, comment = "") {
+    getLaborByPartId(id, comment = "", status) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -222,14 +222,14 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addServicesByLaborId(data.laborId, -1, comment);
+            that.addServicesByLaborId(data.laborId, -1, comment, status);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addServicesByLaborId(id, index = -1, comment = "") {
+    addServicesByLaborId(id, index = -1, comment = "", status) {
         const service = this.state.labors.labors.find(x => x.laborId == id);
         if(service == undefined) return;
 
@@ -242,10 +242,12 @@ class ConfirmDiagnosticModal extends React.Component{
                 hours: Number(service.normHours) || 1,
                 checked: true,
                 comment: comment,
+                status: status,
             };
         }
         else {
             this.state.servicesList[index].id = id;
+            this.state.servicesList[index].status = status;
             this.state.servicesList[index].name = service.name;
             this.state.servicesList[index].productId= service.productId;
             this.state.servicesList[index].hours = Number(service.normHours) || 1;
@@ -255,7 +257,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    getGroupByPartId(id, comment = "") {
+    getGroupByPartId(id, comment = "", status) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -277,14 +279,14 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addDetailsByGroupId(data.storeGroupId, -1, comment);
+            that.addDetailsByGroupId(data.storeGroupId, -1, comment, status);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addDetailsByGroupId(id, index = -1, comment = "") {
+    addDetailsByGroupId(id, index = -1, comment = "", status) {
         const detail = this.state.allDetails.find(x => x.id == id);
         if(detail == undefined) return;
 
@@ -296,10 +298,12 @@ class ConfirmDiagnosticModal extends React.Component{
                 count: 1,
                 checked: true,
                 comment: comment,
+                status: status,
             }
         }
         else {
             this.state.detailsList[index].id = id;
+            this.state.detailsList[index].status = status;
             this.state.detailsList[index].count = 1;
             this.state.detailsList[index].name = detail.name;
         }
@@ -335,13 +339,14 @@ class ConfirmDiagnosticModal extends React.Component{
     automaticlyConfirmDiagnostic() {
         this.state.diagnosticList.map(async (data, index)=>{
             await this.changeResolved(index, 'automaticly');
-            await this.getLaborByPartId(data.id, data.comment.comment);
-            await this.getGroupByPartId(data.id, data.comment.comment);
+            await this.getLaborByPartId(data.id, data.comment.comment, data.status);
+            await this.getGroupByPartId(data.id, data.comment.comment, data.status);
         });
     }
 
     getDiagnostics(stage) {
         const { dataSource } = this.props;
+        console.log(dataSource);
         var diagnosticList = this.state.diagnosticList;
         let tmpSource = [];
         for(let i = 0; i < dataSource.length; i++) {
@@ -355,7 +360,8 @@ class ConfirmDiagnosticModal extends React.Component{
                         resolved: false,
                         type:'',
                         disabled: false,
-                        checked: true
+                        checked: true,
+                        status: Number(dataSource[i].status),
                     });
                     this.diagnosticKey++;
                 }
@@ -400,8 +406,8 @@ class ConfirmDiagnosticModal extends React.Component{
                     type="primary"
                     onClick={async ()=>{
                         await this.changeResolved(index, 'automaticly');
-                        await this.getLaborByPartId(data.partId, data.commentary.comment);
-                        await this.getGroupByPartId(data.partId, data.commentary.comment);
+                        await this.getLaborByPartId(data.partId, data.commentary.comment, data.status);
+                        await this.getGroupByPartId(data.partId, data.commentary.comment, data.status);
                     }}
                     style={{width: '49%', padding: '5px'}}
                 >
@@ -514,7 +520,7 @@ class ConfirmDiagnosticModal extends React.Component{
     getServicesContent() {
         this.addNewServicesRow();
         return this.state.servicesList.map((data, index)=>
-            <div className={Styles.confirm_diagnostic_modal_row}>
+            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
                         checked={data.checked}
@@ -630,7 +636,7 @@ class ConfirmDiagnosticModal extends React.Component{
     getDetailsContent() {
         this.addNewDetailsRow();
         return this.state.detailsList.map((data, index)=>
-            <div className={Styles.confirm_diagnostic_modal_row}>
+            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
                         checked={data.checked}
