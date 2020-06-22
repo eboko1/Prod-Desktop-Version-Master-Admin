@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox, Spin } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, message, notification, Table, TreeSelect, Checkbox, Spin } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
@@ -39,40 +39,6 @@ class AddServiceModal extends React.Component{
 
         this.mainTableColumns = [
             {
-                title: <FormattedMessage id='services_table.labor'/>,
-                key:       'masterLaborId',
-                dataIndex: 'masterLaborId',
-                width:     '10%',
-                render: (data, elem)=>{
-                    return (
-                        <TreeSelect
-                            className={Styles.groupsTreeSelect}
-                            disabled={this.state.editing}
-                            showSearch
-                            placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
-                            style={{maxWidth: 180, minWidth: 140}}
-                            value={data}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.laborsTreeData}
-                            filterTreeNode={(input, node) => {
-                                return (
-                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                            onSelect={(value, option)=>{
-                                this.state.mainTableSource[0].masterLaborId = value;
-                                this.filterOptions(value, elem.storeGroupId);
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-                
-            },
-            {
                 title:  <FormattedMessage id="services_table.store_group" />,
                 key:       'storeGroupId',
                 dataIndex: 'storeGroupId',
@@ -109,7 +75,41 @@ class AddServiceModal extends React.Component{
                 
             },
             {
-                title:  <FormattedMessage id="order_form_table.service_type" />,
+                title: <FormattedMessage id='order_form_table.service_type'/>,
+                key:       'masterLaborId',
+                dataIndex: 'masterLaborId',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <TreeSelect
+                            className={Styles.groupsTreeSelect}
+                            disabled={this.state.editing}
+                            showSearch
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
+                            style={{maxWidth: 180, minWidth: 140}}
+                            value={data}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            treeData={this.laborsTreeData}
+                            filterTreeNode={(input, node) => {
+                                return (
+                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.mainTableSource[0].masterLaborId = value;
+                                this.filterOptions(value, elem.storeGroupId);
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        />
+                    )
+                }
+                
+            },
+            {
+                title:  <><FormattedMessage id="services_table.labor" /> <span style={{color: 'red'}}>*</span></>,
                 key:       'laborId',
                 dataIndex: 'laborId',
                 width:     '15%',
@@ -118,7 +118,7 @@ class AddServiceModal extends React.Component{
                         <Select
                             disabled={this.state.editing}
                             showSearch
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
+                            placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
                             value={data ? data : undefined}
                             style={{minWidth: 240}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
@@ -368,6 +368,13 @@ class AddServiceModal extends React.Component{
     }
 
     handleOk = () => {
+        if(this.state.mainTableSource[0].labor == undefined) {
+            notification.warning({
+                message: 'Заполните все необходимые поля',
+              });
+            return;
+        }
+        message.error('This is an error message');
         if(this.state.editing) {
             this.props.updateLabor(this.props.tableKey, {...this.state.mainTableSource[0]});
         }
