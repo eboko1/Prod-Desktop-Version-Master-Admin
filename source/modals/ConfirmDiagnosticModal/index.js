@@ -346,7 +346,6 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getDiagnostics(stage) {
         const { dataSource } = this.props;
-        console.log(dataSource);
         var diagnosticList = this.state.diagnosticList;
         let tmpSource = [];
         for(let i = 0; i < dataSource.length; i++) {

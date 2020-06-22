@@ -30,6 +30,7 @@ import {
 import { ConfirmDiagnosticModal } from 'modals'
 
 import { withReduxForm } from 'utils';
+import { permissions, isForbidden } from "utils";
 
 import Styles from './styles.m.css';
 
@@ -322,11 +323,13 @@ export class MobileRecordForm extends Component {
                     }) }
                     autosize={ { minRows: 2, maxRows: 6 } }
                 />
+                { !isForbidden(this.props.user, permissions.ACCESS_ORDER_DIAGNOSTICS) ? 
                 <MobileDiagnostic
                     orderId={this.props.orderId}
                     orderDiagnostic={this.props.orderDiagnostic}
                     vehicle={this.props.selectedClient.vehicles[0]}
                 />
+                : <></>}
             </Form>
         );
     }
