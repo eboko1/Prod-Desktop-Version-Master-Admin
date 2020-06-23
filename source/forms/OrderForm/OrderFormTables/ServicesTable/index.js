@@ -436,6 +436,7 @@ class ServicesTable extends Component {
                     pagination={false}
                 />
                 <AddServiceModal
+                    normHourPrice={this.props.normHourPrice}
                     user={this.props.user}
                     employees={this.props.employees}
                     visible={this.state.serviceModalVisible}

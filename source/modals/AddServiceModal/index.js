@@ -129,7 +129,7 @@ class AddServiceModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                let price = option.props.price ? option.props.price : 1;
+                                let price = option.props.price ? option.props.price : Number(this.props.normHourPrice);
                                 let count = option.props.norm_hours ? option.props.norm_hours : 1;
                                 this.state.mainTableSource[0].laborId = value;
                                 this.state.mainTableSource[0].serviceName = option.props.children;
@@ -368,15 +368,11 @@ class AddServiceModal extends React.Component{
     }
 
     handleOk = () => {
-        if(this.state.mainTableSource[0].labor == undefined) {
+        if(this.state.mainTableSource[0].laborId == undefined) {
             notification.warning({
                 message: 'Заполните все необходимые поля',
               });
             return;
-        }
-        message.error('This is an error message');
-        if(this.state.editing) {
-            this.props.updateLabor(this.props.tableKey, {...this.state.mainTableSource[0]});
         }
         else {
             var data = {
@@ -398,8 +394,8 @@ class AddServiceModal extends React.Component{
                 })
             });
             this.addDetailsAndLabors(data);
+            this.props.hideModal();
         }
-        this.props.hideModal();
     };
     
     handleCancel = () => {
