@@ -125,6 +125,8 @@ export default class OrderFormTabs extends React.PureComponent {
 
             fields,
             errors,
+
+            normHourPrice,
         } = this.props;
 
         const {
@@ -169,6 +171,7 @@ export default class OrderFormTabs extends React.PureComponent {
         const stationLoadsFieldsProps = _.pick(this.props.fields, [
             "stationLoads",
         ]);
+
         return (
             <Tabs type="card" className={Styles.orderFormsTabs}>
                 {!addOrderForm && (
@@ -206,6 +209,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="2"
                     >
                         <ServicesTable
+                            normHourPrice={normHourPrice}
                             tecdocId={tecdocId}
                             errors={errors}
                             orderId={orderId}
