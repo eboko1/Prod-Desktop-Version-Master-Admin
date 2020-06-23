@@ -280,23 +280,25 @@ export async function getDiagnosticsReport(orderId) {
     let params = `/diagnostics/report?orderId=${orderId}`;
 
     url += params;
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        });
-        const result = await response.blob();
-
-        const contentDispositionHeader = response.headers.get(
-            'content-disposition',
-        );
-        const fileName = contentDispositionHeader.match(
-            /^attachment; filename="(.*)"/,
-        )[ 1 ];
-        await saveAs(result, fileName);
-    } catch (error) {
-        console.error('ERROR:', error);
-    }
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+        }
+    })
+    .then(function (response) {
+        if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText))
+        }
+        return Promise.resolve(response)
+    })
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        console.log('data', data);
+    })
+    .catch(function (error) {
+        console.log('error', error)
+    })
 }
