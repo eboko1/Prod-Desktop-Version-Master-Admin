@@ -299,7 +299,7 @@ export class OrderForm extends React.PureComponent {
             location,
             errors,
         } = this.props;
-
+        
         const formFieldsValues = form.getFieldsValue();
 
         const { totalHours } = servicesStats(
@@ -529,6 +529,8 @@ export class OrderForm extends React.PureComponent {
 
             storeProducts,
             setStoreProductsSearchQuery,
+
+            normHourPrice,
         } = this.props;
 
         const orderFormTabsFields = _.pick(formFieldsValues, [
@@ -563,6 +565,7 @@ export class OrderForm extends React.PureComponent {
 
         return (
             <OrderFormTabs
+                normHourPrice={normHourPrice}
                 orderId={orderId}
                 errors={errors}
                 initialBeginDatetime={initialBeginDatetime}
