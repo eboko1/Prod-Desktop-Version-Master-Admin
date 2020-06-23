@@ -22,7 +22,6 @@ import {
 } from 'core/dashboard/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { permissions, isForbidden } from 'utils';
-import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 
 import { Layout, Spinner, Loader } from 'commons';
 import { ArrowsWeekPicker, ArrowsDatePicker } from 'components';
@@ -283,7 +282,7 @@ class DashboardPage extends Component {
                     stations={ stations }
                     employees={ employees }
                     orders={ orders }
-                    load={ mode === "employees" ? load.reverse() : load }
+                    load={ load }
                     schedule={ schedule }
                     time={ time }
                     dashboard={ dashboard }

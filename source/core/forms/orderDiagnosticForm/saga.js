@@ -1,5 +1,7 @@
+import { saveAs } from 'file-saver';
+
 export const URL = window.location.hostname;
-export const API_URL = URL == 'localhost'? 'http://localhost:14281' : 'https://test-api.carbook.pro';
+export const API_URL = __API_URL__;
 
 export function getDiagnosticsTemplates(getData) {
     let token = localStorage.getItem('_my.carbook.pro_token');
@@ -228,7 +230,6 @@ export async function createAgreement(orderId, lang) {
         });
         const result = await response.json();
         console.log("OK", result);
-        alert(`${URL == "localhost"?URL+":3000":URL}/agreement?sessionId=${result.sessionId}&lang=${lang}`);
     } catch (error) {
         console.error('ERROR:', error);
     }
@@ -252,4 +253,52 @@ export async function getPartProblems(partId, getData) {
     } catch (error) {
         console.error('ERROR:', error);
     }
+}
+
+export async function sendMessage(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/orders/${orderId}/send_diagnostics_complete_message`;
+
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        const result = await response.json();
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
+}
+
+export async function getDiagnosticsReport(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/diagnostics/report?orderId=${orderId}`;
+
+    url += params;
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+        }
+    })
+    .then(function (response) {
+        if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText))
+        }
+        return Promise.resolve(response)
+    })
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        console.log('data', data);
+    })
+    .catch(function (error) {
+        console.log('error', error)
+    })
 }

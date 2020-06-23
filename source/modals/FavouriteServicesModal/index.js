@@ -204,14 +204,15 @@ class FavouriteServicesModal extends React.Component{
                 width:     '5%',
                 render: (data, elem)=>{
                     const detail = {
-                        name: this.state.dataSource[elem.key].detailName,
+                        name: this.state.dataSource[elem.key].serviceName,
                     }
                     return (
                         <CommentaryButton
-                            disabled={elem.storeGroupId == null}
+                            disabled
                             commentary={{comment: data}}
                             detail={detail}
                             setComment={this.setComment}
+                            tableKey={elem.key}
                         />
                     )
                 }
@@ -305,6 +306,7 @@ class FavouriteServicesModal extends React.Component{
                     return (
                         <Button
                             type={'primary'}
+                            disabled
                         >
                             <Icon type="history"/>
                         </Button>
@@ -380,8 +382,15 @@ class FavouriteServicesModal extends React.Component{
         })
     };
 
-    setComment(comment) {
-        this.state.dataSource[0].comment = comment;
+    setComment(comment, index) {
+        this.state.dataSource[index].comment = comment;
+        this.setState({
+            update: true
+        })
+    }
+
+    setHours(hours, index) {
+        this.state.mainTableSource[index].hours = hours;
         this.setState({
             update: true
         })
@@ -736,7 +745,7 @@ class CommentaryButton extends React.Component{
     };
 
     handleOk = () => {
-        this.props.setComment(this.state.currentCommentary);
+        this.props.setComment(this.state.currentCommentary, this.props.tableKey);
         this.setState({
             visible: false,
         });

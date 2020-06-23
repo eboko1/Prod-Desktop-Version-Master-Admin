@@ -999,9 +999,11 @@ class DiagnosticTable extends Component {
     }
 
     componentDidMount() {
-        this._isMounted = true;
-        this.getCurrentDiagnostic();
-        this.setRowsColor();
+        if(!this.props.forbidden) {
+            this._isMounted = true;
+            this.getCurrentDiagnostic();
+            this.setRowsColor();
+        }
     }
 
     componentDidUpdate() {
@@ -1018,6 +1020,7 @@ class DiagnosticTable extends Component {
         return (
             <Catcher>
                 <DiagnosticTableHeader
+                    user={this.props.user}
                     tecdocId={this.props.tecdocId}
                     disabled={disabled}
                     orderId={this.props.orderId}
@@ -1136,6 +1139,7 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "35%" }}>
                     <ConfirmDiagnosticModal
+                        user={this.props.user}
                         tecdocId={this.props.tecdocId}
                         confirmed={disabled}
                         orderId={this.props.orderId}

@@ -47,7 +47,7 @@ class ServicesTable extends Component {
                                     style={{
                                         width: 18,
                                         height: 18,
-                                        backgroundColor: 'white',
+                                        backgroundColor: confirmed != "undefined" ? 'black' : 'white',
                                         mask: `url(${images.partsIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
                                     }}
@@ -109,15 +109,16 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="hours" />,
+                title: <FormattedMessage id="services_table.norm_hours" />,
                 width: "8%",
                 key: "hours",
                 dataIndex: 'hours',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="order_form_table.hours_short" />
+                            {data ? 
+                            <>{data} <FormattedMessage id="order_form_table.hours_short" /></> : 
+                            <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
                 },
@@ -156,10 +157,9 @@ class ServicesTable extends Component {
                 key: "count",
                 dataIndex: 'count',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                            {data ? data : 0} <FormattedMessage id="order_form_table.hours_short" />
                         </span> 
                     )
                 },
@@ -364,7 +364,7 @@ class ServicesTable extends Component {
                     serviceId: labor.laborId,
                     serviceName: labor.serviceName,
                     employeeId: labor.employeeId,
-                    serviceHours: labor.hours ? labor.hours : 1,
+                    serviceHours: labor.hours ? labor.hours : 0,
                     purchasePrice: labor.purchasePrice ? labor.purchasePrice : 0,
                     count: labor.count ? labor.count : 1,
                     servicePrice: labor.price ? labor.price : 1,
@@ -426,6 +426,7 @@ class ServicesTable extends Component {
                 agreement: "UNDEFINED",
             })
         }
+        
         return (
             <Catcher>
                 <Table
@@ -435,6 +436,7 @@ class ServicesTable extends Component {
                     pagination={false}
                 />
                 <AddServiceModal
+                    user={this.props.user}
                     employees={this.props.employees}
                     visible={this.state.serviceModalVisible}
                     updateLabor={this.updateLabor}
@@ -443,6 +445,7 @@ class ServicesTable extends Component {
                     labor={this.state.dataSource[this.state.serviceModalKey]}
                     hideModal={()=>this.hideServicelProductModal()}
                     orderId={this.props.orderId}
+                    tecdocId={this.props.tecdocId}
                 />
             </Catcher>
         );
