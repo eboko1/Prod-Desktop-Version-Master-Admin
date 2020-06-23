@@ -1,5 +1,5 @@
 export const URL = window.location.hostname;
-export const API_URL = URL == 'localhost'? 'http://localhost:14281' : 'https://test-api.carbook.pro';
+export const API_URL = __API_URL__;
 
 export function getAgreementData(sessionId, lang, getData) {
     console.log(API_URL)

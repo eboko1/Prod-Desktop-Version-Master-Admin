@@ -1,7 +1,7 @@
 import { saveAs } from 'file-saver';
 
 export const URL = window.location.hostname;
-export const API_URL = URL == 'localhost'? 'http://localhost:14281' : 'https://test-api.carbook.pro';
+export const API_URL = __API_URL__;
 
 export function getDiagnosticsTemplates(getData) {
     let token = localStorage.getItem('_my.carbook.pro_token');
