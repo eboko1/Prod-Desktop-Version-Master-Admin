@@ -325,6 +325,7 @@ export class MobileRecordForm extends Component {
                 />
                 { !isForbidden(this.props.user, permissions.ACCESS_ORDER_DIAGNOSTICS) ? 
                 <MobileDiagnostic
+                    user={this.props.user}
                     orderId={this.props.orderId}
                     orderDiagnostic={this.props.orderDiagnostic}
                     vehicle={this.props.selectedClient.vehicles[0]}
@@ -486,6 +487,7 @@ class MobileDiagnostic extends Component {
                     <div className={Styles.diagnostic_vehicle_number}>{vehicle.number}</div>
                     <div className={Styles.diagnostic_vehicle_info}>{vehicle.make} {vehicle.model} {vehicle.modification}</div>
                     <ConfirmDiagnosticModal
+                        user={this.props.user}
                         confirmed={this.state.completed}
                         orderId={this.props.orderId}
                         isMobile={true}
