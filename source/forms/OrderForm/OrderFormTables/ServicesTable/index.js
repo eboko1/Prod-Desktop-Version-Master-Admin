@@ -110,6 +110,7 @@ class ServicesTable extends Component {
             },
             {
                 title: <FormattedMessage id="services_table.norm_hours" />,
+                //className: Styles.numberColumn,
                 width: "8%",
                 key: "hours",
                 dataIndex: 'hours',
@@ -125,13 +126,14 @@ class ServicesTable extends Component {
             },
             {
                 title: <FormattedMessage id="order_form_table.prime_cost" />,
+                //className: Styles.numberColumn,
                 width: "8%",
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
                     let strVal = String(Math.round(data));
                     return (
-                        <span>
+                        <span е>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
                         </span> 
                     )
@@ -139,6 +141,7 @@ class ServicesTable extends Component {
             },
             {
                 title: <FormattedMessage id="order_form_table.price" />,
+                //className: Styles.numberColumn,
                 width: "8%",
                 key: "price",
                 dataIndex: 'price',
@@ -146,13 +149,14 @@ class ServicesTable extends Component {
                     let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
                         </span> 
                     )
                 },
             },
             {
                 title: <FormattedMessage id="order_form_table.count" />,
+                //className: Styles.numberColumn,
                 width: "5%",
                 key: "count",
                 dataIndex: 'count',
@@ -166,6 +170,7 @@ class ServicesTable extends Component {
             },
             {
                 title: <FormattedMessage id="order_form_table.sum" />,
+                //className: Styles.numberColumn,
                 width: "10%",
                 key: "sum",
                 dataIndex: 'sum',
@@ -173,7 +178,7 @@ class ServicesTable extends Component {
                     let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
                         </span> 
                     )
                 },

@@ -36,3 +36,7 @@
 .servicesRequiredFormItem:global(.ant-row.ant-form-item) {
     margin-bottom: 0px;
 }
+
+.numberColumn {
+    text-align: right;
+}
