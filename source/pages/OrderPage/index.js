@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FormattedMessage } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Icon} from 'antd';
+import {Button, Icon, notification} from 'antd';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -480,10 +480,10 @@ class OrderPage extends Component {
                                             count: element.count,
                                         })
                                     });
-                                    //await confirmDiagnostic(this.props.order.id, data);
-                                    //await lockDiagnostic(this.props.order.id);
-                                    //await window.location.reload();
-                                    await createAgreement(this.props.order.id, this.props.user.language)
+                                    await notification.success({
+                                        message: 'Сообщение отправлено!',
+                                    });
+                                    await createAgreement(this.props.order.id, this.props.user.language);
                                 }}
                             />
                             :

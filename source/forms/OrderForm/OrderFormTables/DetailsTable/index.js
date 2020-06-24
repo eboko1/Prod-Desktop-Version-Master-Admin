@@ -207,10 +207,9 @@ export default class DetailsTable extends Component {
                 key: "count",
                 dataIndex: 'count',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="pc" />
+                            {data ? `${data}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="pc" />
                         </span> 
                     )
                 },

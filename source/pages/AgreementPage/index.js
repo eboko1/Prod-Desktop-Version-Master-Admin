@@ -325,7 +325,7 @@ class ServiceElement extends React.Component{
                         null
                     }
                 </div>
-                <div style={{width:"15%", fontSize: "16px"}}>{data.hours}</div>
+                <div style={{width:"15%", fontSize: "16px"}}>{data.count}</div>
                 <div style={{width:"15%"}}>
                     <div style={{width:"100%", padding: "5px 0"}}>
                         {data.sum} <FormattedMessage id='cur'/>

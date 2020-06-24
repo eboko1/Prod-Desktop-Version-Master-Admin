@@ -282,7 +282,8 @@ class AddServiceModal extends React.Component{
                     return (
                         <InputNumber
                             value={data || 1}
-                            min={1}
+                            min={0.1}
+                            step={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -374,6 +375,9 @@ class AddServiceModal extends React.Component{
               });
             return;
         }
+        if(this.state.editing) {
+            this.props.updateLabor(this.props.tableKey, {...this.state.mainTableSource[0]});
+        }
         else {
             var data = {
                 insertMode: true,
@@ -394,8 +398,8 @@ class AddServiceModal extends React.Component{
                 })
             });
             this.addDetailsAndLabors(data);
-            this.props.hideModal();
         }
+        this.props.hideModal();
     };
     
     handleCancel = () => {
