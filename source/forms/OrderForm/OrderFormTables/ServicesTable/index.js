@@ -109,7 +109,10 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="services_table.norm_hours" />,
+                title:  <div className={Styles.numberColumn}>
+                            <FormattedMessage id="services_table.norm_hours" />
+                        </div>,
+                className: Styles.numberColumn,
                 width: "8%",
                 key: "hours",
                 dataIndex: 'hours',
@@ -124,21 +127,27 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.prime_cost" />,
+                title:  <div className={Styles.numberColumn}>
+                            <FormattedMessage id="order_form_table.prime_cost" />
+                        </div>,
+                className: Styles.numberColumn,
                 width: "8%",
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
                     let strVal = String(Math.round(data));
                     return (
-                        <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                        <span е>
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
                         </span> 
                     )
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.price" />,
+                title:  <div className={Styles.numberColumn}>
+                            <FormattedMessage id="order_form_table.price" />
+                        </div>,
+                className: Styles.numberColumn,
                 width: "8%",
                 key: "price",
                 dataIndex: 'price',
@@ -146,13 +155,16 @@ class ServicesTable extends Component {
                     let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
                         </span> 
                     )
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.count" />,
+                title:  <div className={Styles.numberColumn}>
+                            <FormattedMessage id="order_form_table.count" />
+                        </div>,
+                className: Styles.numberColumn,
                 width: "5%",
                 key: "count",
                 dataIndex: 'count',
@@ -165,22 +177,25 @@ class ServicesTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.sum" />,
-                width: "10%",
+                title:  <div className={Styles.numberColumn}>
+                            <FormattedMessage id="order_form_table.sum" />
+                        </div>,
+                className: Styles.numberColumn,
+                width: "8%",
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
                     let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
                         </span> 
                     )
                 },
             },
             {
                 title:  <FormattedMessage id='order_form_table.status' />,
-                width: "8%",
+                width: "10%",
                 key: 'agreement',
                 dataIndex: 'agreement',
                 render: (data, elem) => {

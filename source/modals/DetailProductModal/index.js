@@ -942,6 +942,7 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
+            console.log(data);
             this.addDetailsAndLabors(data);
         }
         this.props.hideModal();
@@ -1217,6 +1218,7 @@ class DetailProductModal extends React.Component{
     }
 
     render() {
+        console.log(this);
         const { visible } = this.props;
         return (
             <div>

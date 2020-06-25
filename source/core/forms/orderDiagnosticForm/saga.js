@@ -261,25 +261,6 @@ export async function sendMessage(orderId) {
     let params = `/orders/${orderId}/send_diagnostics_complete_message`;
 
     url += params;
-    try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        });
-        const result = await response.json();
-    } catch (error) {
-        console.error('ERROR:', error);
-    }
-}
-
-export async function getDiagnosticsReport(orderId) {
-    let token = localStorage.getItem('_my.carbook.pro_token');
-    let url = API_URL;
-    let params = `/diagnostics/report?orderId=${orderId}`;
-
-    url += params;
     fetch(url, {
         method: 'GET',
         headers: {
@@ -301,4 +282,31 @@ export async function getDiagnosticsReport(orderId) {
     .catch(function (error) {
         console.log('error', error)
     })
+}
+
+export async function getDiagnosticsReport(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/diagnostics/report?orderId=${orderId}`;
+
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        const reportFile = await response.blob();
+
+            const contentDispositionHeader = response.headers.get(
+                'content-disposition',
+            );
+            const fileName = contentDispositionHeader.match(
+                /^attachment; filename="(.*)"/,
+            )[ 1 ];
+            await saveAs(reportFile, fileName);
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
 }
