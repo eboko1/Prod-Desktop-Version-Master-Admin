@@ -311,7 +311,7 @@ class ServiceElement extends React.Component{
         const { data } = this.state;
         const { isMobile, checked } = this.props;
         return isMobile ? (
-            <div className={`${Styles.serviceElement} ${ checked ? null: Styles.disabledRow}`}>
+            <div className={`${Styles.serviceElement} ${ checked ? null: Styles.disabledRow}`} style={data.isCritical ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div style={{width:"5%", fontSize: "18px"}}>
                     {this.props.num}
                 </div>
@@ -341,7 +341,7 @@ class ServiceElement extends React.Component{
                 </div>
             </div>
             ) : (
-            <div className={`${Styles.serviceElement} ${ checked ? null: Styles.disabledRow}`}>
+            <div className={`${Styles.serviceElement} ${ checked ? null: Styles.disabledRow}`} style={data.isCritical ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div className={Styles.rowKey}>
                     <span>{this.props.num}</span>
                 </div>
@@ -386,7 +386,7 @@ class DetailElement extends React.Component{
         const { data } = this.state;
         const { isMobile, checked } = this.props
         return isMobile ? (
-            <div className={`${Styles.detailElement} ${ checked ? null: Styles.disabledRow}`}>
+            <div className={`${Styles.detailElement} ${ checked ? null: Styles.disabledRow}`} style={data.isCritical ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div style={{width:"5%", fontSize: "18px"}}>
                     {this.props.num}
                 </div>
@@ -416,7 +416,7 @@ class DetailElement extends React.Component{
                 </div>
             </div>
             ) : (
-            <div className={`${Styles.detailElement} ${ checked ? null: Styles.disabledRow}`}>
+            <div className={`${Styles.detailElement} ${ checked ? null: Styles.disabledRow}`} style={data.isCritical ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div className={Styles.rowKey}>
                     <span>{this.props.num}</span>
                 </div>
