@@ -308,6 +308,7 @@ class ServiceElement extends React.Component{
     }
 
     render() {
+        console.log(this);
         const { data } = this.state;
         const { isMobile, checked } = this.props;
         return isMobile ? (
@@ -349,13 +350,13 @@ class ServiceElement extends React.Component{
                     <span>{data.serviceName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.comment ? data.comment.comment : null}</span>
+                    <span>{data.comment ? data.comment : null}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{data.price} <FormattedMessage id='cur'/></span>
                 </div>
                 <div className={Styles.rowCount}>
-                    <span>{data.hours} <FormattedMessage id='add_order_form.hours_shortcut'/></span>
+                    <span>{data.count} <FormattedMessage id='add_order_form.hours_shortcut'/></span>
                 </div>
                 <div className={Styles.rowSum}>
                     <span>{data.sum} <FormattedMessage id='cur'/></span>
