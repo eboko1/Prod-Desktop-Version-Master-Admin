@@ -297,7 +297,7 @@ class DetailStorageModal extends React.Component{
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, elem.supplierName, this.props.tableKey);
+                                this.props.onSelect(elem.partNumber, elem.supplierName, elem.storeId, this.props.tableKey);
                                 this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, this.props.tableKey);
                                 this.handleCancel();
                             }}
@@ -402,6 +402,7 @@ class DetailStorageModal extends React.Component{
             data.map((elem, i)=>{
                 elem.key = i;
                 if(elem.price) {
+                    elem.storeId = elem.price.id;
                     elem.store = elem.price.store;
                     elem.purchasePrice = elem.price.purchasePrice;
                     elem.businessSupplierId = elem.price.businessSupplierId;
@@ -491,7 +492,6 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
-        console.log(this);
         const { dataSource, brandFilter, codeFilter, inStock } = this.state;
         const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
