@@ -491,6 +491,7 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
+        console.log(this);
         const { dataSource, brandFilter, codeFilter, inStock } = this.state;
         const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
