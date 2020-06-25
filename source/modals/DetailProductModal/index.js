@@ -920,18 +920,32 @@ class DetailProductModal extends React.Component{
                 services: [],
             }
             this.state.mainTableSource.map((element)=>{
-                data.details.push({
-                    storeGroupId: element.storeGroupId,
-                    name: element.detailName,
-                    productCode: element.detailCode,
-                    supplierId: element.supplierId,
-                    supplierBrandId: element.supplierBrandId,
-                    brandName: element.brandName,
-                    purchasePrice: element.purchasePrice,
-                    count: element.count ? element.count : 1,
-                    price: element.price ? element.price : 1,
-                    comment: element.comment,
-                })
+                if(element.supplierId !== 0) {
+                    data.details.push({
+                        storeGroupId: element.storeGroupId,
+                        name: element.detailName,
+                        productCode: element.detailCode,
+                        supplierId: element.supplierId,
+                        supplierBrandId: element.supplierBrandId,
+                        brandName: element.brandName,
+                        purchasePrice: element.purchasePrice,
+                        count: element.count ? element.count : 1,
+                        price: element.price ? element.price : 1,
+                        comment: element.comment,
+                    })
+                }
+                else {
+                    data.details.push({
+                        name: element.detailName,
+                        productId: element.storeId,
+                        productCode: element.detailCode,
+                        purchasePrice: element.purchasePrice,
+                        count: element.count ? element.count : 1,
+                        price: element.price ? element.price : 1,
+                        comment: element.comment,
+                    })
+                }
+                
             });
             this.state.relatedServicesSource.map((element)=>{
                 if(element.laborId) {
@@ -988,6 +1002,7 @@ class DetailProductModal extends React.Component{
                     that.state.mainTableSource[0].detailCode = result.partNumber;
                     that.state.mainTableSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
                     that.state.mainTableSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
+                    that.state.mainTableSource[0].storeGroupId = result.price ? result.price.id : undefined;
                     that.state.mainTableSource[0].store = result.price ? result.price.store : undefined;
                     that.state.mainTableSource[0].purchasePrice = purchasePrice;
                     that.state.mainTableSource[0].price = purchasePrice * markup;
@@ -1002,7 +1017,7 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(code, brand, key) {
+    setCode(code, brand, storeId, key) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
         if(!tmp) {
             this.brandOptions.push(
@@ -1015,6 +1030,7 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].detailCode = code;
         this.state.mainTableSource[key].brandId = brandValue;
         this.state.mainTableSource[key].brandName = brand;
+        this.state.mainTableSource[key].storeId = storeId;
         this.setState({
             update: true
         })
@@ -1218,7 +1234,6 @@ class DetailProductModal extends React.Component{
     }
 
     render() {
-        console.log(this);
         const { visible } = this.props;
         return (
             <div>
