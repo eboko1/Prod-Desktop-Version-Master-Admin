@@ -397,6 +397,7 @@ class AddServiceModal extends React.Component{
                     comment: element.comment,
                 })
             });
+            console.log(data);
             this.addDetailsAndLabors(data);
         }
         this.props.hideModal();

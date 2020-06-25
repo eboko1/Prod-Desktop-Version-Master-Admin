@@ -78,7 +78,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 })
             }
         });
-        console.log(data);
         this.endСonfirmation(this.props.orderId, data);
     };
     
