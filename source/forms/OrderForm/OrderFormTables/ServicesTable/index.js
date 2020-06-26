@@ -451,6 +451,7 @@ class ServicesTable extends Component {
                     pagination={false}
                 />
                 <AddServiceModal
+                    defaultEmployeeId={this.props.defaultEmployeeId}
                     normHourPrice={this.props.normHourPrice}
                     user={this.props.user}
                     employees={this.props.employees}
@@ -470,6 +471,7 @@ class ServicesTable extends Component {
 
 export default ServicesTable;
 
+@injectIntl
 class QuickEditModal extends React.Component{
     constructor(props) {
         super(props);
@@ -495,7 +497,15 @@ class QuickEditModal extends React.Component{
                 dataIndex: 'serviceName',
                 render: (data) => {
                         return (
-                            data ? data : <FormattedMessage id="long_dash"/>
+                            <Input
+                                value={data}
+                                onChange={(event)=>{
+                                    this.state.dataSource[0].serviceName = event.target.value;
+                                    this.setState({
+                                        update: true
+                                    })
+                                }}
+                            />
                         )
                 },
             },
@@ -505,11 +515,33 @@ class QuickEditModal extends React.Component{
                 key: "employeeId",
                 dataIndex: 'employeeId',
                 render: (data) => {
-                    var name = this.props.employees.find((elem)=>elem.id==data);
-                    if(name) name = name.name;
                     return (
-                        data ? name : <FormattedMessage id="long_dash"/>
-                    );
+                        <Select
+                            allowClear
+                            showSearch
+                            style={{minWidth: 240}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.dataSource[0].employeeId = value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        >
+                            {this.props.employees.map((elem, i)=>(
+                                <Option key={i} value={elem.id}>
+                                    {elem.name}
+                                </Option>
+                            ))}
+                        </Select>
+                    )
                 },
             },
             {

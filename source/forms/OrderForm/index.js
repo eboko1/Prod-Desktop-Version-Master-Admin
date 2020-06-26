@@ -565,6 +565,7 @@ export class OrderForm extends React.PureComponent {
 
         return (
             <OrderFormTabs
+                defaultEmployeeId={this.props.order.employeeId}
                 normHourPrice={normHourPrice}
                 orderId={orderId}
                 errors={errors}
