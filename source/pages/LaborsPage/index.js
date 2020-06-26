@@ -15,8 +15,8 @@ import {
     Select,
     Input,
     InputNumber,
-    AutoComplete,
-    Modal,
+    notification,
+    message,
     Switch,
     TreeSelect
 } from 'antd';
@@ -295,6 +295,35 @@ export default class LaborsPage extends Component {
         ]
     }
 
+    async updatePrice () {
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/labors/recalc_prices`;
+        url += params;
+
+        await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': token,
+            },
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            message.success('Цена обновлена');
+        })
+        .catch(function (error) {
+            message.error('Цена не задана!');
+        });
+    }
+
     async saveLabors() {
         var labors = [], newLabors = [];
         this.state.labors.map((elem)=>{
@@ -548,14 +577,24 @@ export default class LaborsPage extends Component {
                     <FormattedMessage id='navigation.labors_page' />
                 }
                 controls={
-                    <Button
-                        type='primary'
-                        onClick={ () =>
-                            this.saveLabors()
-                        }
-                    >
-                        <FormattedMessage id='save' /> 
-                    </Button>
+                    <>
+                        <Button
+                            style={{marginRight: 10}}
+                            onClick={ () =>
+                                this.updatePrice()
+                            }
+                        >
+                            <FormattedMessage id='Обновить цену' /> 
+                        </Button>
+                        <Button
+                            type='primary'
+                            onClick={ () =>
+                                this.saveLabors()
+                            }
+                        >
+                            <FormattedMessage id='save' /> 
+                        </Button>
+                    </>
                 }
             >
                 <Table

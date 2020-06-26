@@ -654,9 +654,10 @@ class AddServiceModal extends React.Component{
         if(prevState.visible == false && this.props.visible) {
             const editing = Boolean(this.props.labor.laborId);
             this.getOptions();
+            this.state.mainTableSource = [{...this.props.labor}];
+            this.state.mainTableSource[0].employeeId = this.props.defaultEmployeeId;
             this.setState({
                 editing: editing,
-                mainTableSource: [{...this.props.labor}],
             })
         }
     }
