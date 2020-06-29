@@ -64,6 +64,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     serviceId: element.id,
                     count: element.hours,
                     servicePrice: element.price,
+                    employeeId: this.props.defaultEmployeeId,
                     serviceHours: 0,
                     comment: {comment: element.comment},
                 })

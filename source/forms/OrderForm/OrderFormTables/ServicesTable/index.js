@@ -55,6 +55,7 @@ class ServicesTable extends Component {
                             </Button>
                             {!(elem.laborId) ? 
                                 <FavouriteServicesModal
+                                    defaultEmployeeId={this.props.defaultEmployeeId}
                                     tecdocId={this.props.tecdocId}
                                     orderId={this.props.orderId}
                                     updateDataSource={this.updateDataSource}
@@ -101,10 +102,9 @@ class ServicesTable extends Component {
                 key: "employeeId",
                 dataIndex: 'employeeId',
                 render: (data) => {
-                    var name = this.props.employees.find((elem)=>elem.id==data);
-                    if(name) name = name.name;
+                    var employee = this.props.employees.find((elem)=>elem.id==data);
                     return (
-                        data ? name : <FormattedMessage id="long_dash"/>
+                        data ? `${employee.name} ${employee.surname}` : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
@@ -517,11 +517,12 @@ class QuickEditModal extends React.Component{
                 render: (data) => {
                     return (
                         <Select
+                            value={data ? data : undefined}
                             allowClear
                             showSearch
                             style={{minWidth: 240}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -537,7 +538,7 @@ class QuickEditModal extends React.Component{
                         >
                             {this.props.employees.map((elem, i)=>(
                                 <Option key={i} value={elem.id}>
-                                    {elem.name}
+                                    {elem.name} {elem.surname}
                                 </Option>
                             ))}
                         </Select>

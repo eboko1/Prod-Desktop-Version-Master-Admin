@@ -624,7 +624,7 @@ class AddServiceModal extends React.Component{
         ));
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
-                {elem.name}
+                {elem.name} {elem.surname}
             </Option>
         ))
     };
@@ -655,7 +655,11 @@ class AddServiceModal extends React.Component{
             const editing = Boolean(this.props.labor.laborId);
             this.getOptions();
             this.state.mainTableSource = [{...this.props.labor}];
-            this.state.mainTableSource[0].employeeId = this.props.defaultEmployeeId;
+            
+            if(!editing) {
+                this.state.mainTableSource[0].employeeId = this.props.defaultEmployeeId;
+            }
+            
             this.setState({
                 editing: editing,
             })
