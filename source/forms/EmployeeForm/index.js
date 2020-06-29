@@ -97,6 +97,18 @@ export class EmployeeForm extends Component {
                         )}
                         onChange={() => this._setPasswordField()}
                     />
+                     <DecoratedCheckbox
+                        field="isMechanic"
+                        formItem
+                        label={
+                            <FormattedMessage id="employee.is_mechanic" />
+                        }
+                        formItemLayout={formItemLayout}
+                        getFieldDecorator={getFieldDecorator}
+                        initialValue={Boolean(
+                            _.get(initialEmployee, "isMechanic"),
+                        )}
+                    />
                     <DecoratedDatePicker
                         field="hireDate"
                         label={<FormattedMessage id="employee.hireDate" />}

@@ -322,6 +322,8 @@ export default class LaborsPage extends Component {
         .catch(function (error) {
             message.error('Цена не задана!');
         });
+
+        await this.fetchLabors();
     }
 
     async saveLabors() {

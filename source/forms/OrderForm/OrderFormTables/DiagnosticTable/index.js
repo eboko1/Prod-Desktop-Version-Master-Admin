@@ -1020,6 +1020,7 @@ class DiagnosticTable extends Component {
         return (
             <Catcher>
                 <DiagnosticTableHeader
+                    defaultEmployeeId={this.props.defaultEmployeeId}
                     user={this.props.user}
                     tecdocId={this.props.tecdocId}
                     disabled={disabled}
@@ -1139,6 +1140,7 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "35%" }}>
                     <ConfirmDiagnosticModal
+                        defaultEmployeeId={this.props.defaultEmployeeId}
                         user={this.props.user}
                         tecdocId={this.props.tecdocId}
                         confirmed={disabled}

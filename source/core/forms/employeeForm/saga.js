@@ -41,7 +41,10 @@ export function* saveEmployee() {
                 sendSmsManualOrder: false,
                 sendSmsNewOrder:    false,
                 surname:            employee.surname,
+                isMechanic:         employee.isMechanic,
             };
+
+            console.log(normalizedEmployee)
 
             const data = yield call(
                 fetchAPI,
@@ -101,7 +104,7 @@ export function* fetchEmployee() {
         try {
             const { payload: id } = yield take(FETCH_EMPLOYEE_BY_ID);
             const data = yield call(fetchAPI, 'GET', `employees/${id}`);
-
+            console.log(data);
             yield put(fetchEmployeeByIdSuccess(data));
         } catch (error) {
             yield put(emitError(error));

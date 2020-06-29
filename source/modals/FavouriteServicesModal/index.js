@@ -446,6 +446,7 @@ class FavouriteServicesModal extends React.Component{
         .then(function (data) {
             data.labors.map((elem, i)=>{
                 elem.key = i;
+                elem.employeeId = that.props.defaultEmployeeId;
                 elem.masterLaborId = elem.laborData[0].masterLaborId;
                 elem.storeGroupId = elem.laborData[0].productId;
                 elem.serviceName = elem.name;
@@ -632,9 +633,10 @@ class FavouriteServicesModal extends React.Component{
                 {elem.name ? elem.name : elem.defaultName}
             </Option>
         ));
+        
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
-                {elem.name}
+                {elem.name} {elem.surname}
             </Option>
         ))
     };
@@ -691,7 +693,7 @@ class FavouriteServicesModal extends React.Component{
                     onOk={this.handleOk}
                     footer={null}
                 >
-                    <div className={Styles.tableWrap}>
+                    <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Работа</div>
                         </div>
