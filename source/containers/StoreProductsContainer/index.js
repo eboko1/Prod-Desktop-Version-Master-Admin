@@ -97,7 +97,6 @@ export default class StoreProductsContainer extends Component {
             that.setState({
                 brands: data
             })
-            console.log('data', data);
         })
         .catch(function (error) {
             console.log('error', error)
@@ -173,6 +172,8 @@ export default class StoreProductsContainer extends Component {
                                             ),
                                             priceGroupNumber:
                                                 item.priceGroupNumber,
+                                            brandId: item.brandId,
+                                            fixedBrand: item.fixedBrand,
                                         }}
                                     />
                                 ) : null
@@ -196,6 +197,8 @@ export default class StoreProductsContainer extends Component {
                                         name: item.name,
                                         systemWide: Boolean(!item.businessId),
                                         priceGroupNumber: item.priceGroupNumber,
+                                        brandId: item.brandId,
+                                        fixedBrand: item.fixedBrand,
                                     }}
                                 />
                             ) : null

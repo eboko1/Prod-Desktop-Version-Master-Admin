@@ -74,6 +74,7 @@ const ACCESS_TECH_AUTO_DATA_MODAL_WINDOW = 'ACCESS_TECH_AUTO_DATA_MODAL_WINDOW';
 const ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW = 'ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW';
 const ACCESS_AGREEMENT = 'ACCESS_AGREEMENT';
 const ACCESS_TELEGRAM = 'ACCESS_TELEGRAM';
+const ACCESS_ORDER_CHANGE_AGREEMENT_STATUS = 'ACCESS_ORDER_CHANGE_AGREEMENT_STATUS';
 
 // Other
 const DEMO = 'DEMO';
@@ -144,6 +145,7 @@ export const permissions = Object.freeze({
     ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW,
     ACCESS_AGREEMENT,
     ACCESS_TELEGRAM,
+    ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
 
     DEMO,
 });
@@ -220,6 +222,7 @@ export const groupedPermissions = {
         ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW,
         ACCESS_AGREEMENT,
         ACCESS_TELEGRAM,
+        ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
     ],
     [ OTHER_PERMISSIONS ]:      [ DEMO ],
 };
@@ -430,6 +433,9 @@ export const getPermissionsLabels = intl => ({
     }),
     [ ACCESS_TELEGRAM ]: intl.formatMessage({
         id: 'roles.access_telegram',
+    }),
+    [ ACCESS_ORDER_CHANGE_AGREEMENT_STATUS ]: intl.formatMessage({
+        id: 'roles.access_order_change_agreement_status',
     }),
 
     [ DEMO ]: intl.formatMessage({
