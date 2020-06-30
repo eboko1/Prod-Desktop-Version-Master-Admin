@@ -63,10 +63,45 @@ export default class StoreProductsContainer extends Component {
         expandedKeys: [],
         searchValue: "",
         autoExpandParent: true,
+        brands: [],
     };
 
     componentDidMount() {
         this.props.fetchStoreGroups();
+        this.fetchDetails();
+    }
+
+    fetchDetails() {
+        let that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__;
+        let params = `/brands`;
+        url += params;
+    
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.setState({
+                brands: data
+            })
+            console.log('data', data);
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        })
     }
 
     onExpand = expandedKeys => {
@@ -202,6 +237,7 @@ export default class StoreProductsContainer extends Component {
                     {loop(this.props.storeGroups)}
                 </StyledTree>
                 <StoreGroupModal
+                    brands={this.state.brands}
                     resetModal={this.props.resetModal}
                     visible={this.props.modal}
                 />
