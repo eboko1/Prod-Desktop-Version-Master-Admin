@@ -149,6 +149,10 @@ const StoreGroup = props => {
                 {props.brands ? 
                     <DecoratedSelect
                         label={ formatMessage({ id: 'storage.default_brand' }) }
+                        disabled={_.get(
+                            modalProps,
+                            'storeGroup.fixedBrand',
+                        )}
                         showSearch
                         field={ `defaultBrandId` }
                         formItemLayout={ formItemLayout }
@@ -157,7 +161,7 @@ const StoreGroup = props => {
                         formItem
                         initialValue={ _.get(
                             modalProps,
-                            'storeGroup.defaultBrandId',
+                            'storeGroup.brandId',
                         ) }
                     >
                         { props.brands.map((brand, i) => {

@@ -6,7 +6,7 @@ import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { images } from 'utils';
+import { permissions, isForbidden, images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { FavouriteServicesModal, AddServiceModal } from 'modals'
 
@@ -200,7 +200,7 @@ class ServicesTable extends Component {
                 dataIndex: 'agreement',
                 render: (data, elem) => {
                     const key = elem.key;
-                    const confirmed = this.state.dataSource[key].agreement.toLowerCase();
+                    const confirmed = data.toLowerCase();
                     let color;
                     switch(confirmed) {
                         case "rejected":
@@ -213,13 +213,28 @@ class ServicesTable extends Component {
                             color = null;
                     }
                     return (
-                        <Input
-                            disabled
+                        <Select
+                            disabled={isForbidden(
+                                this.props.user,
+                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
+                            )}
                             style={{color: color}}
-                            value={this.props.intl.formatMessage({
-                                id: `status.${confirmed}`,
-                            })}
-                        />
+                            value={confirmed}
+                            onChange={(value)=>{
+                                elem.agreement = value.toUpperCase();
+                                this.updateLabor(key, elem);
+                            }}
+                        >
+                            <Option key={0} value={'undefined'}>
+                                <FormattedMessage id='status.undefined'/>
+                            </Option>
+                            <Option key={1} value={'agreed'} style={{color: 'rgb(81, 205, 102)'}}>
+                                <FormattedMessage id='status.agreed'/>
+                            </Option>
+                            <Option key={2} value={'rejected'} style={{color: 'rgb(255, 126, 126)'}}>
+                                <FormattedMessage id='status.rejected'/>
+                            </Option>
+                        </Select>
                     )
                 },
             },
@@ -384,6 +399,7 @@ class ServicesTable extends Component {
                     count: labor.count ? labor.count : 1,
                     servicePrice: labor.price ? labor.price : 1,
                     comment: labor.comment,
+                    agreement: labor.agreement,
                 }
             ]
         }
