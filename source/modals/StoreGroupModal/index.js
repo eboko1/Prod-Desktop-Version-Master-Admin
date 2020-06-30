@@ -1,7 +1,7 @@
 // vendor
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Form } from 'antd';
+import { Modal, Form, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 // proj
@@ -13,9 +13,10 @@ import {
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
 import { MODALS, selectModalProps } from 'core/modals/duck';
 
-import { DecoratedInput, DecoratedCheckbox } from 'forms/DecoratedFields';
+import { DecoratedInput, DecoratedCheckbox, DecoratedSelect } from 'forms/DecoratedFields';
 import { PriceGroupSelect } from 'forms/_formkit';
 import { isAdmin } from 'utils';
+const Option = Select.Option;
 
 const formItemLayout = {
     labelCol:   { span: 6 },
@@ -145,6 +146,29 @@ const StoreGroup = props => {
                         'storeGroup.priceGroupNumber',
                     ) }
                 />
+                {props.brands ? 
+                    <DecoratedSelect
+                        label={ formatMessage({ id: 'storage.default_brand' }) }
+                        showSearch
+                        field={ `defaultBrandId` }
+                        formItemLayout={ formItemLayout }
+                        getFieldDecorator={ getFieldDecorator }
+                        getPopupContainer={ trigger => trigger.parentNode }
+                        formItem
+                        initialValue={ _.get(
+                            modalProps,
+                            'storeGroup.defaultBrandId',
+                        ) }
+                    >
+                        { props.brands.map((brand, i) => {
+                            return (
+                                <Option value={ brand.brandId } key={ i }>
+                                    {brand.brandName}
+                                </Option>
+                            );
+                        }) }
+                    </DecoratedSelect> 
+                : null}
                 { /* systemWide is null if active or businessId if not  */ }
                 { renderSystemWideCheckbox() }
             </Form>
