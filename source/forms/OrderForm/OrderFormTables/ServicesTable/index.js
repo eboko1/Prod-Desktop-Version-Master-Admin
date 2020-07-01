@@ -24,11 +24,24 @@ class ServicesTable extends Component {
             dataSource: [],
         }
 
+        this.laborTimeMultiplier = this.props.laborTimeMultiplier || 1;
         this.updateLabor = this.updateLabor.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
 
         this.columns = [
             {
+                title:  ()=>{
+                            return(
+                                <InputNumber
+                                    defaultValue={ this.props.laborTimeMultiplier || 1}
+                                    step={0.1}
+                                    min={0}
+                                    formatter={value => `${Math.round(value*100)}%`}
+                                    parser={value => Math.round(value.replace('%', '')/100)}
+                                    onChange={(value)=>this.updateTimeMultiplier(value)}
+                                />
+                            )
+                        },
                 width: "8%",
                 key: "buttonGroup",
                 dataIndex: "key",
@@ -162,7 +175,12 @@ class ServicesTable extends Component {
             },
             {
                 title:  <div className={Styles.numberColumn}>
-                            <FormattedMessage id="order_form_table.count" />
+                                <Button
+                                    title='Пересчитать длительность'
+                                    onClick={()=>this.updateDuration()}
+                                >
+                                <FormattedMessage id="order_form_table.count" />
+                            </Button>
                         </div>,
                 className: Styles.numberColumn,
                 width: "5%",
@@ -337,6 +355,65 @@ class ServicesTable extends Component {
         ]
     }
 
+    async updateTimeMultiplier(multiplier) {
+        this.laborTimeMultiplier = multiplier;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({laborTimeMultiplier: multiplier}),
+            });
+            const result = await response.json();
+            if(result.success) {
+                console.log("OK", result);
+            }
+            else {
+                console.log("BAD", result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+    }
+
+    async updateDuration() {
+        let hours = 0;
+        this.state.dataSource.map((elem)=>{
+            hours += elem.count;
+        })
+        hours = Math.round(hours*10)/10;
+
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({duration: hours}),
+            });
+            const result = await response.json();
+            if(result.success) {
+                window.location.reload();
+            }
+            else {
+                console.log("BAD", result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+    }
+
     showServiceProductModal(key) {
         this.setState({
             serviceModalVisible: true,
@@ -428,10 +505,6 @@ class ServicesTable extends Component {
         }
 
         await this.updateDataSource();
-
-        this.setState({
-            update: true,
-        })
     }
 
     componentDidMount() {
@@ -467,6 +540,7 @@ class ServicesTable extends Component {
                     pagination={false}
                 />
                 <AddServiceModal
+                    laborTimeMultiplier={this.laborTimeMultiplier}
                     defaultEmployeeId={this.props.defaultEmployeeId}
                     normHourPrice={this.props.normHourPrice}
                     user={this.props.user}

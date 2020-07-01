@@ -416,6 +416,7 @@ class AddServiceModal extends React.Component{
 
     setHours(hours) {
         this.state.mainTableSource[0].hours = hours;
+        this.state.mainTableSource[0].count = hours * this.props.laborTimeMultiplier;
         this.setState({
             update: true
         })

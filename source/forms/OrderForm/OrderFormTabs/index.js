@@ -210,6 +210,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="2"
                     >
                         <ServicesTable
+                            laborTimeMultiplier={this.props.laborTimeMultiplier}
                             defaultEmployeeId={this.props.defaultEmployeeId}
                             normHourPrice={normHourPrice}
                             tecdocId={tecdocId}
