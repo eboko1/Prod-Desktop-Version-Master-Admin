@@ -50,7 +50,7 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.store_group'})}
-                            style={{maxWidth: 180, minWidth: 140}}
+                            style={{maxWidth: 180, minWidth: 100}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.storeGroupsTreeData}
@@ -86,7 +86,7 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
-                            style={{maxWidth: 180, minWidth: 140}}
+                            style={{maxWidth: 180, minWidth: 100}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.laborsTreeData}
@@ -120,7 +120,7 @@ class AddServiceModal extends React.Component{
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
                             value={data ? data : undefined}
-                            style={{minWidth: 240}}
+                            style={{minWidth: 100}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
                                 return (
@@ -157,7 +157,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <Input
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            style={{minWidth: 140}}
+                            style={{minWidth: 120}}
                             value={data}
                             onChange={(event)=>{
                                 this.state.mainTableSource[0].serviceName = event.target.value;
@@ -181,7 +181,7 @@ class AddServiceModal extends React.Component{
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
                             value={data ? data : undefined}
-                            style={{maxWidth: 180, minWidth: 100}}
+                            style={{maxWidth: 180, minWidth: 80}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
                                 return (

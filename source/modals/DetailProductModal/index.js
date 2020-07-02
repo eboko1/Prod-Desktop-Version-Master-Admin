@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {
@@ -1245,24 +1245,12 @@ class DetailProductModal extends React.Component{
                     onOk={this.handleOk}
                 >
                     <div>
-                        Сопутствующие: детали
-                        <Checkbox
-                            checked={this.state.relatedDetailsCheckbox}
-                            onChange={()=>{
-                                this.setState({
-                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
-                                })
-                            }}
-                        /> 
-                        работы
-                        <Checkbox
-                            checked={this.state.relatedServicesCheckbox}
-                            onChange={()=>{
-                                this.setState({
-                                    relatedServicesCheckbox: !this.state.relatedServicesCheckbox
-                                })
-                            }}
-                        />
+                    <Radio.Group defaultValue={1}>
+                        <Radio value={1}>A</Radio>
+                        <Radio value={2}>B</Radio>
+                        <Radio value={3}>C</Radio>
+                        <Radio value={4}>D</Radio>
+                    </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
@@ -1297,6 +1285,26 @@ class DetailProductModal extends React.Component{
                             />
                         </div> : null
                     }
+                    <div style={{marginTop: 15}}>
+                        Сопутствующие: детали
+                        <Checkbox
+                            checked={this.state.relatedDetailsCheckbox}
+                            onChange={()=>{
+                                this.setState({
+                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
+                                })
+                            }}
+                        /> 
+                        работы
+                        <Checkbox
+                            checked={this.state.relatedServicesCheckbox}
+                            onChange={()=>{
+                                this.setState({
+                                    relatedServicesCheckbox: !this.state.relatedServicesCheckbox
+                                })
+                            }}
+                        />
+                    </div>
                 </Modal>
             </div>
         )
