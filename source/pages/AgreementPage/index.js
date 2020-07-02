@@ -76,10 +76,12 @@ class AgreementPage extends Component {
         this.state.servicesList = data.labors.map((elem)=>{
             elem.checked = true;
             elem.comment = elem.comment; //"**description**";
+            elem.price = Math.round(elem.price*10)/10;
             return elem;
         });
         this.state.detailsList = data.details.map((elem)=>{
             elem.checked = true;
+            elem.price = Math.round(elem.price*10)/10;
             return elem;
         });
         this.setState({

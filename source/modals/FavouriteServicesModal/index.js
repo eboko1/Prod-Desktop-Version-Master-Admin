@@ -450,6 +450,7 @@ class FavouriteServicesModal extends React.Component{
                 elem.masterLaborId = elem.laborData[0].masterLaborId;
                 elem.storeGroupId = elem.laborData[0].productId;
                 elem.serviceName = elem.name;
+                elem.price = elem.price ? elem.price : that.props.normHourPrice;
             });
             that.setState({
                 dataSource: data.labors,
