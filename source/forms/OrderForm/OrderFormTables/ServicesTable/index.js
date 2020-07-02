@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, InputNumber, Icon, Popconfirm, Select, Input, Button, Modal } from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select, Input, Button, Modal, message } from 'antd';
 import _ from 'lodash';
 
 // proj
@@ -33,6 +33,8 @@ class ServicesTable extends Component {
                 title:  ()=>{
                             return(
                                 <InputNumber
+                                    title='Коэффициент норматива'
+                                    style={{fontWeight: 700}}
                                     defaultValue={ this.props.laborTimeMultiplier || 1}
                                     step={0.1}
                                     min={0}
@@ -176,6 +178,7 @@ class ServicesTable extends Component {
             {
                 title:  <div className={Styles.numberColumn}>
                                 <Button
+                                    type={'primary'}
                                     title='Пересчитать длительность'
                                     onClick={()=>this.updateDuration()}
                                 >
@@ -388,6 +391,11 @@ class ServicesTable extends Component {
             hours += elem.count;
         })
         hours = Math.round(hours*10)/10;
+        
+        if(hours > 8) {
+            message.warning('Количество часов превышает 8. ');
+            hours = 8;
+        }
 
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
