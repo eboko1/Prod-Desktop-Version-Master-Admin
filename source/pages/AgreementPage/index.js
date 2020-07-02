@@ -333,7 +333,7 @@ class ServiceElement extends React.Component{
                     </div>
                     <div style={{width:"100%", padding: "5px 0"}}>
                         <Switch
-                            checked={checked || data.agreement == 'AGREED'}
+                            checked={disabled ? data.agreement == 'AGREED' : checked}
                             disabled={disabled}
                             onClick={(value)=>{
                                 this.props.onSwitchService(this.props.num-1, value);
@@ -364,7 +364,7 @@ class ServiceElement extends React.Component{
                 </div>
                 <div className={Styles.rowSwitch}>
                     <Switch
-                        checked={checked || data.agreement == 'AGREED'}
+                        checked={disabled ? data.agreement == 'AGREED' : checked}
                         disabled={disabled}
                         onClick={(value)=>{
                             this.props.onSwitchService(this.props.num-1, value);
@@ -388,7 +388,7 @@ class DetailElement extends React.Component{
     render() {
         const { data } = this.state;
         const { isMobile, checked } = this.props
-        const disabled = data.agreement == 'REJECTED' || data.agreement == 'AGREED' || !checked;
+        const disabled = data.agreement == 'REJECTED' || data.agreement == 'AGREED';
         return isMobile ? (
             <div className={`${Styles.detailElement} ${ disabled || !checked ? Styles.disabledRow : null }`} style={data.isCritical ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div style={{width:"5%", fontSize: "18px"}}>
@@ -411,7 +411,7 @@ class DetailElement extends React.Component{
                     </div>
                     <div style={{width:"100%", padding: "5px 0"}}>
                         <Switch
-                            checked={checked || data.agreement == 'AGREED'}
+                            checked={disabled ? data.agreement == 'AGREED' : checked}
                             disabled={disabled}
                             onClick={(value)=>{
                                 this.props.onSwitchDetail(this.props.num-1, value);
@@ -442,7 +442,7 @@ class DetailElement extends React.Component{
                 </div>
                 <div className={Styles.rowSwitch}>
                     <Switch
-                        checked={checked || data.agreement == 'AGREED'}
+                        checked={disabled ? data.agreement == 'AGREED' : checked}
                         disabled={disabled}
                         onClick={(value)=>{
                             this.props.onSwitchDetail(this.props.num-1, value);
