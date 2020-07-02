@@ -441,7 +441,7 @@ export default class DetailsTable extends Component {
                     brandName: detail.brandName ? detail.brandName : null,
                     purchasePrice: detail.purchasePrice,
                     count: detail.count ? detail.count : 1,
-                    price: detail.price ? detail.price : 1,
+                    price: detail.price ? Math.round(detail.price*10)/10 : 1,
                     comment: detail.comment,
                     agreement: detail.agreement,
                 }

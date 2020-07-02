@@ -70,6 +70,7 @@ class ServicesTable extends Component {
                             </Button>
                             {!(elem.laborId) ? 
                                 <FavouriteServicesModal
+                                    normHourPrice={this.props.normHourPrice}
                                     defaultEmployeeId={this.props.defaultEmployeeId}
                                     tecdocId={this.props.tecdocId}
                                     orderId={this.props.orderId}

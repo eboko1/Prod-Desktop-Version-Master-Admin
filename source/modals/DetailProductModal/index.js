@@ -930,7 +930,7 @@ class DetailProductModal extends React.Component{
                         brandName: element.brandName,
                         purchasePrice: element.purchasePrice,
                         count: element.count ? element.count : 1,
-                        price: element.price ? element.price : 1,
+                        price: element.price ? Math.round(element.price*10)/10 : 1,
                         comment: element.comment,
                     })
                 }
@@ -941,7 +941,7 @@ class DetailProductModal extends React.Component{
                         productCode: element.detailCode,
                         purchasePrice: element.purchasePrice,
                         count: element.count ? element.count : 1,
-                        price: element.price ? element.price : 1,
+                        price: element.price ? Math.round(element.price*10)/10  : 1,
                         comment: element.comment,
                     })
                 }
@@ -995,7 +995,7 @@ class DetailProductModal extends React.Component{
                 that.state.defaultBrandName = result.brandName;
                 if(!that.state.editing) {
                     let markup = result.markup ? result.markup : 1.4;
-                    let purchasePrice = result.price ? result.price.purchasePrice : 0;
+                    let purchasePrice = result.price ? Math.round(result.price.purchasePrice*10)/10 : 0;
                     that.state.mainTableSource[0].brandId = result.brandId;
                     that.state.mainTableSource[0].brandName = result.brandName;
                     that.state.mainTableSource[0].supplierBrandId = result.price ? result.price.supplierBrandId : undefined;
