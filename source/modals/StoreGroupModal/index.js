@@ -19,8 +19,8 @@ import { isAdmin } from 'utils';
 const Option = Select.Option;
 
 const formItemLayout = {
-    labelCol:   { span: 6 },
-    wrapperCol: { span: 18 },
+    labelCol:   { span: 8 },
+    wrapperCol: { span: 16 },
 };
 
 const mapStateToProps = state => ({
@@ -146,7 +146,8 @@ const StoreGroup = props => {
                         'storeGroup.priceGroupNumber',
                     ) }
                 />
-                {props.brands ? 
+                {props.brands && props.suppliers ? 
+                    <>
                     <DecoratedSelect
                         label={ formatMessage({ id: 'storage.default_brand' }) }
                         disabled={_.get(
@@ -171,7 +172,37 @@ const StoreGroup = props => {
                                 </Option>
                             );
                         }) }
-                    </DecoratedSelect> 
+                    </DecoratedSelect>
+                    <DecoratedSelect
+                        label={ formatMessage({ id: 'storage.business_supplier' }) }
+                        showSearch
+                        field={ `businessSupplierId` }
+                        formItemLayout={ formItemLayout }
+                        getFieldDecorator={ getFieldDecorator }
+                        getPopupContainer={ trigger => trigger.parentNode }
+                        formItem
+                        initialValue={ _.get(
+                            modalProps,
+                            'storeGroup.businessSupplierId',
+                        ) }
+                    >
+                        { props.suppliers.map((supplier, i) => {
+                            return (
+                                <Option value={ supplier.id } key={ i }>
+                                    {supplier.name}
+                                </Option>
+                            );
+                        }) }
+                    </DecoratedSelect>
+                    <DecoratedCheckbox
+                            label={ formatMessage({ id: 'storage.assign_to_child' }) }
+                            field={ `assignToChildGroups` }
+                            formItemLayout={ formItemLayout }
+                            getFieldDecorator={ getFieldDecorator }
+                            getPopupContainer={ trigger => trigger.parentNode }
+                            formItem
+                        />
+                    </> 
                 : null}
                 { /* systemWide is null if active or businessId if not  */ }
                 { renderSystemWideCheckbox() }

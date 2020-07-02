@@ -101,6 +101,32 @@ export default class StoreProductsContainer extends Component {
         .catch(function (error) {
             console.log('error', error)
         })
+
+        url = __API_URL__ + '/business_suppliers?super=true';
+
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.setState({
+                suppliers: data
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        })
     }
 
     onExpand = expandedKeys => {
@@ -174,6 +200,7 @@ export default class StoreProductsContainer extends Component {
                                                 item.priceGroupNumber,
                                             brandId: item.brandId,
                                             fixedBrand: item.fixedBrand,
+                                            businessSupplierId: item.businessSupplierId,
                                         }}
                                     />
                                 ) : null
@@ -199,6 +226,7 @@ export default class StoreProductsContainer extends Component {
                                         priceGroupNumber: item.priceGroupNumber,
                                         brandId: item.brandId,
                                         fixedBrand: item.fixedBrand,
+                                        businessSupplierId: item.businessSupplierId,
                                     }}
                                 />
                             ) : null
@@ -241,6 +269,7 @@ export default class StoreProductsContainer extends Component {
                 </StyledTree>
                 <StoreGroupModal
                     brands={this.state.brands}
+                    suppliers={this.state.suppliers}
                     resetModal={this.props.resetModal}
                     visible={this.props.modal}
                 />
