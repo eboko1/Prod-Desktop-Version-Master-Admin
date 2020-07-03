@@ -74,13 +74,13 @@ class AgreementPage extends Component {
 
     updateData(data) {
         this.state.servicesList = data.labors.map((elem)=>{
-            elem.checked = true;
+            elem.checked = elem.agreement != 'REJECTED' ? true : false;
             elem.comment = elem.comment; //"**description**";
             elem.price = Math.round(elem.price*10)/10;
             return elem;
         });
         this.state.detailsList = data.details.map((elem)=>{
-            elem.checked = true;
+            elem.checked = elem.agreement != 'REJECTED' ? true : false;
             elem.price = Math.round(elem.price*10)/10;
             return elem;
         });
