@@ -23,6 +23,7 @@ class DetailProductModal extends React.Component{
         super(props);
         this.state = {
             editing: false,
+            radioValue: 1,
             mainTableSource: [],
             relatedDetailsSource: [],
             relatedServicesSource: [
@@ -80,7 +81,9 @@ class DetailProductModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.getDefaultValues(value);
+                                if(this.state.radioValue != 2) {
+                                    this.getDefaultValues(value);
+                                }
                                 this.state.mainTableSource[0].storeGroupId = value;
                                 this.state.mainTableSource[0].detailName = option.props.name;
                                 this.filterOptions(value);
@@ -101,7 +104,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Input
-                            disabled={elem.storeGroupId == null}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             style={{minWidth: 150}}
                             value={data}
@@ -126,7 +129,7 @@ class DetailProductModal extends React.Component{
                     }
                     return (
                         <CommentaryButton
-                            disabled={elem.storeGroupId == null}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
                             commentary={{comment: data}}
                             detail={detail}
                             setComment={this.setComment}
@@ -152,7 +155,7 @@ class DetailProductModal extends React.Component{
                     return (
                         <Select
                             showSearch
-                            disabled={elem.storeGroupId == null}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
                             style={{maxWidth: 180, minWidth: 100}}
@@ -197,6 +200,7 @@ class DetailProductModal extends React.Component{
                                 style={{maxWidth: 180, color: 'black'}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
+                                disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
                                 onChange={(event)=>{
                                     this.state.mainTableSource[0].detailCode = event.target.value;
                                     this.setState({
@@ -208,13 +212,15 @@ class DetailProductModal extends React.Component{
                                 user={this.props.user}
                                 tableKey={0}
                                 onSelect={this.setCode}
-                                disabled={elem.storeGroupId == null}
+                                disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
+                                codeSearch={this.state.radioValue == 3}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
                                 codeFilter={elem.detailCode}
+                                brandId={elem.brandId}
                                 defaultBrandName={this.state.defaultBrandName}
                             />
                         </div>
@@ -231,14 +237,19 @@ class DetailProductModal extends React.Component{
                         <div style={{display: "flex"}}>
                             <Input
                                 style={{maxWidth: 180, color: 'black'}}
-                                disabled
+                                disabled={this.state.radioValue != 2}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                                 value={data}
                             />
                             <DetailSupplierModal
                                 user={this.props.user}
                                 tableKey={0}
-                                disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
+                                disabled={
+                                    (elem.storeGroupId == null || 
+                                    !(elem.detailCode) || 
+                                    !(elem.brandName)) && 
+                                    this.state.radioValue != 2
+                                }
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
                                 brandId={elem.brandId}
@@ -294,7 +305,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
                             value={data || 0}
                             min={0}
                             formatter={ value =>
@@ -321,7 +332,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
                             value={data || 1}
                             min={1}
                             formatter={ value =>
@@ -349,7 +360,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
+                            disabled={elem.storeGroupId != null && this.state.radioValue != 2}
                             value={data || 1}
                             min={1}
                             formatter={ value =>
@@ -1245,11 +1256,18 @@ class DetailProductModal extends React.Component{
                     onOk={this.handleOk}
                 >
                     <div>
-                    <Radio.Group defaultValue={1}>
-                        <Radio value={1}>A</Radio>
-                        <Radio value={2}>B</Radio>
-                        <Radio value={3}>C</Radio>
-                        <Radio value={4}>D</Radio>
+                    <Radio.Group 
+                        value={this.state.radioValue}
+                        onChange={(event)=>{
+                            this.setState({
+                                radioValue: event.target.value,
+                            })
+                        }} 
+                    >
+                        <Radio value={1}>Подбор по автомобилю</Radio>
+                        <Radio value={2}>Прямое редактирование</Radio>
+                        <Radio value={3}>Подбор по коду товара</Radio>
+                        <Radio value={4} disabled>Масла и жидкости</Radio>
                     </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
