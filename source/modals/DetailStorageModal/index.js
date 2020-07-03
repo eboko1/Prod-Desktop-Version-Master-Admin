@@ -375,6 +375,92 @@ class DetailStorageModal extends React.Component{
     };
 
     fetchData() {
+        if(this.props.codeSearch) {
+            var that = this;
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = API_URL;
+            let params = `/tecdoc/replacements?query=${this.props.codeFilter}`;
+            if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`
+            if(this.props.brandId) params += `&brandIds=[${this.props.brandId}]`
+            url += params;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                }
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+                }
+                return Promise.resolve(response)
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (data) {
+                var brandOptions = [];
+                let defaultBrand = [], brandsWithSupplier = [], otherBrands = [];
+                data.map((elem, i)=>{
+                    elem.key = i;
+                    if(elem.price) {
+                        elem.storeId = elem.price.id;
+                        elem.store = elem.price.store;
+                        elem.purchasePrice = elem.price.purchasePrice;
+                        elem.businessSupplierId = elem.price.businessSupplierId;
+                        elem.businessSupplierName = elem.price.businessSupplierName;
+                        elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
+                    }
+                    if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
+                        if(that.props.brandFilter == elem.supplierName) {
+                            that.state.brandFilter.push(elem.supplierId);
+                        }
+                        brandOptions.push({
+                            id: elem.supplierId,
+                            name: elem.supplierName,
+                        })
+                        if(elem.supplierName == that.props.defaultBrandName) {
+                            defaultBrand.push({
+                                id: elem.supplierId,
+                                name: elem.supplierName,
+                            })
+                        }
+                        else if(elem.price) {
+                            brandsWithSupplier.push({
+                                id: elem.supplierId,
+                                name: elem.supplierName,
+                            })
+                        }
+                        else {
+                            otherBrands.push({
+                                id: elem.supplierId,
+                                name: elem.supplierName,
+                            })
+                        }
+                    }
+                })
+                brandsWithSupplier.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
+                otherBrands.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
+                brandOptions=[...defaultBrand, ...brandsWithSupplier, ...otherBrands];
+                that.setState({
+                    fetched: true,
+                    dataSource: data,
+                    brandOptions: brandOptions,
+                    codeFilter: that.props.codeFilter,
+                })
+            })
+            .catch(function (error) {
+                console.log('error', error)
+            });
+            return;
+        }
+        if(!this.props.storeGroupId) {
+            this.setState({
+                fetched: true,
+                codeFilter: this.props.codeFilter,
+            })
+            return;
+        }
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
