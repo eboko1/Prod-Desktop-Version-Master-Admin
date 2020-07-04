@@ -212,7 +212,7 @@ class DetailProductModal extends React.Component{
                                 user={this.props.user}
                                 tableKey={0}
                                 onSelect={this.setCode}
-                                disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
+                                disabled={elem.storeGroupId == null && this.state.radioValue != 3 || this.state.radioValue == 2}
                                 codeSearch={this.state.radioValue == 3}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
@@ -240,6 +240,12 @@ class DetailProductModal extends React.Component{
                                 disabled={this.state.radioValue != 2}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                                 value={data}
+                                onChange={(event)=>{
+                                    this.state.mainTableSource[0].supplierName = event.target.value;
+                                    this.setState({
+                                        update: true
+                                    })
+                                }}
                             />
                             <DetailSupplierModal
                                 user={this.props.user}
@@ -247,8 +253,8 @@ class DetailProductModal extends React.Component{
                                 disabled={
                                     (elem.storeGroupId == null || 
                                     !(elem.detailCode) || 
-                                    !(elem.brandName)) && 
-                                    this.state.radioValue != 2
+                                    !(elem.brandName)) || 
+                                    this.state.radioValue == 2
                                 }
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
@@ -360,7 +366,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId != null && this.state.radioValue != 2}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
                             value={data || 1}
                             min={1}
                             formatter={ value =>
@@ -931,6 +937,7 @@ class DetailProductModal extends React.Component{
                 services: [],
             }
             this.state.mainTableSource.map((element)=>{
+                console.log(element)
                 if(element.supplierId !== 0) {
                     data.details.push({
                         storeGroupId: element.storeGroupId,
@@ -946,6 +953,7 @@ class DetailProductModal extends React.Component{
                     })
                 }
                 else {
+                    alert('a')
                     data.details.push({
                         name: element.detailName,
                         productId: element.storeId,
@@ -978,6 +986,9 @@ class DetailProductModal extends React.Component{
     };
 
     async getDefaultValues(storeGroupId) {
+        if(storeGroupId == undefined) {
+            return;
+        }
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
