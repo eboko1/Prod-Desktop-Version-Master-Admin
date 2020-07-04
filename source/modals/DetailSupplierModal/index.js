@@ -159,12 +159,6 @@ class DetailSupplierModal extends React.Component{
     };
 
     fetchData() {
-        if(!this.props.storeGroupId || !this.props.detailCode || !this.props.brandId) {
-            this.setState({
-                fetched: true,
-            })
-            return;
-        }
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
