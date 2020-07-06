@@ -103,6 +103,7 @@ class DashboardContainer extends Component {
             const selectedDay = this.props.date.format('YYYY-MM-DD');
             return (
                 <DashboardColumn
+                    isMobile={window.innerWidth < 1200}
                     dashboard={ dashboard }
                     column={ 1 }
                     key={ index }
