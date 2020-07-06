@@ -80,6 +80,8 @@ class DashboardPage extends Component {
         const { initDashboard } = this.props;
 
         initDashboard();
+        const isMobile = window.innerWidth < 1200;
+        if(isMobile) this.props.setDashboardMode('employees');
     }
 
     _onDayChange = date => {
@@ -143,6 +145,7 @@ class DashboardPage extends Component {
 
     render() {
         const isMobile = window.innerWidth < 1200;
+
         const {
             startDate,
             endDate,

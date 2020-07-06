@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Spin, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
@@ -11,6 +11,7 @@ import { permissions, isForbidden } from "utils";
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 
 @injectIntl
@@ -222,11 +223,15 @@ class DetailSupplierModal extends React.Component{
                     onCancel={this.handleCancel}
                     footer={null}
                 >
+                    {this.state.fetched ? 
                         <Table
                             dataSource={this.state.dataSource}
                             columns={this.columns}
                             pagination={false}
                         />
+                        :
+                        <Spin indicator={spinIcon} />
+                    }
                 </Modal>
             </div>
         )
