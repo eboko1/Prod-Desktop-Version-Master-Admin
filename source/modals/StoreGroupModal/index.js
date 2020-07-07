@@ -102,6 +102,7 @@ const StoreGroup = props => {
 
     return (
         <Modal
+            width={'50%'}
             cancelText={ <FormattedMessage id='cancel' /> }
             okText={
                 deleteMode ? (
@@ -118,6 +119,7 @@ const StoreGroup = props => {
             <Form onSubmit={ submit } style={ { padding: 24 } }>
                 <DecoratedInput
                     fields={ {} }
+                    disabled
                     field='name'
                     formItem
                     formItemLayout={ formItemLayout }

@@ -98,11 +98,15 @@ class DashboardContainer extends Component {
         const { dashboard, days, stations, employees, load, mode } = this.props;
         const { currentDay } = this.state;
 
+        console.log(this);
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
             const selectedDay = this.props.date.format('YYYY-MM-DD');
-            const employeeLoad = load.find((elem)=>elem.employeeId==employees[index].id);
-            const employeeLoadCoefficient = employeeLoad ? employeeLoad.loadCoefficient : 0;
+            var employeeLoadCoefficient = 0;
+            if(mode === 'employees') {
+                const employeeLoad = load.find((elem)=>elem.employeeId==employees[index].id);
+                employeeLoadCoefficient = employeeLoad ? employeeLoad.loadCoefficient : 0;
+            }
             return (
                 <DashboardColumn
                     isMobile={window.innerWidth < 1200}
