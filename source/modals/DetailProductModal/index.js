@@ -953,6 +953,7 @@ class DetailProductModal extends React.Component{
                 }
                 else {
                     data.details.push({
+                        storeGroupId: element.storeGroupId,
                         name: element.detailName,
                         productId: element.storeId,
                         productCode: element.detailCode,
