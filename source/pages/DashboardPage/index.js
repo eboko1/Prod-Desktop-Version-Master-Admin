@@ -76,12 +76,12 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 class DashboardPage extends Component {
-    componentDidMount() {
+    async componentDidMount() {
         const { initDashboard } = this.props;
 
-        initDashboard();
+        await initDashboard();
         const isMobile = window.innerWidth < 1200;
-        if(isMobile) this.props.setDashboardMode('employees');
+        if(isMobile) await this.props.setDashboardMode('employees');
     }
 
     _onDayChange = date => {
