@@ -937,7 +937,6 @@ class DetailProductModal extends React.Component{
                 services: [],
             }
             this.state.mainTableSource.map((element)=>{
-                console.log(element)
                 if(element.supplierId !== 0) {
                     data.details.push({
                         storeGroupId: element.storeGroupId,
@@ -953,7 +952,6 @@ class DetailProductModal extends React.Component{
                     })
                 }
                 else {
-                    alert('a')
                     data.details.push({
                         name: element.detailName,
                         productId: element.storeId,
