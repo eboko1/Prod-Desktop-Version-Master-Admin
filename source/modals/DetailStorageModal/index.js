@@ -251,7 +251,7 @@ class DetailStorageModal extends React.Component{
                         </div>
                     )
                 },
-                key:       <FormattedMessage id="order_form_table.AI" />,
+                key:       'store',
                 dataIndex: 'store',
                 width:     '8%',
                 render: (store) => {

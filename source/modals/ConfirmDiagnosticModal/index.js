@@ -702,49 +702,37 @@ class ConfirmDiagnosticModal extends React.Component{
         const { TabPane } = Tabs;
         return (
             <div>
-                {confirmed ? (
+                <>
+                    {isMobile ? 
                     <Button
-                        style={isMobile?{ width: "100%" }:{ width: "80%" }}
+                        style={{ width: "80%" }}
                         type="primary"
-                        onClick={()=>{createAgreement(this.props.orderId, this.props.intl.locale)}}
-                        disabled={isForbidden(this.props.user, permissions.ACCESS_AGREEMENT)}
+                        onClick={()=>sendMessage(this.props.orderId)}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
                     >
-                        <FormattedMessage id='send_message'/>
+                        <FormattedMessage id='end'/>
                     </Button>
-                ) : (
+                    :
                     <>
-                        {isMobile ? 
                         <Button
-                            style={{ width: "80%" }}
+                            style={{ width: "35%", marginRight: 5 }}
+                            type="primary"
+                            onClick={this.showModal}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW)}
+                        >
+                            <FormattedMessage id='order_form_table.diagnostic.create_order'/>
+                        </Button>
+                        <Button
+                            style={{ width: "35%" }}
                             type="primary"
                             onClick={()=>sendMessage(this.props.orderId)}
                             disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
                         >
                             <FormattedMessage id='end'/>
                         </Button>
-                        :
-                        <>
-                            <Button
-                                style={{ width: "35%", marginRight: 5 }}
-                                type="primary"
-                                onClick={this.showModal}
-                                disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW)}
-                            >
-                                <FormattedMessage id='order_form_table.diagnostic.create_order'/>
-                            </Button>
-                            <Button
-                                style={{ width: "35%" }}
-                                type="primary"
-                                onClick={()=>sendMessage(this.props.orderId)}
-                                disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
-                            >
-                                <FormattedMessage id='end'/>
-                            </Button>
-                        </>
-                        }
                     </>
-                    
-                )}
+                    }
+                </>
                 <Modal
                     width={!isMobile?"75%":"95%"}
                     visible={visible}
