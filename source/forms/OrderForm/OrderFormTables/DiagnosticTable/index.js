@@ -848,6 +848,9 @@ class DiagnosticTable extends Component {
                     let answer = _.pick(parts[k], [
                         "answer",
                     ]).answer;
+                    let calcDone = _.pick(parts[k], [
+                        "calcDone",
+                    ]).calcDone;
                     let comment = _.pick(parts[k], [
                         "comment",
                     ]).comment;
@@ -867,6 +870,7 @@ class DiagnosticTable extends Component {
                         diagnosticTemplateId: diagnosticTemplateId,
                         groupId: groupId,
                         photo: photo,
+                        disabled: calcDone,
                     },);
                     this.state.possibleRows.push(key);
                     key++;
@@ -1044,6 +1048,9 @@ class DiagnosticTable extends Component {
                 />
                 <Table
                     className={!disabled?Styles.diagnosticTable:Styles.diagnosticTableDisabled}
+                    rowClassName={(elem, i)=>{
+                        return elem.disabled ? Styles.diagnosticTableDisabled : null;
+                    }}
                     dataSource={this.state.dataSource}
                     columns={columns}
                     locale={{

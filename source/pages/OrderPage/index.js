@@ -1,6 +1,6 @@
 // vendor
 import React, {Component} from 'react';
-import {FormattedMessage } from 'react-intl';
+import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {Button, Icon, notification} from 'antd';
@@ -150,6 +150,7 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 @withErrorMessage()
+@injectIntl
 class OrderPage extends Component {
 
     state = {
@@ -445,47 +446,51 @@ class OrderPage extends Component {
                 controls={
                     <>
                         {!isForbidden(user, permissions.ACCESS_TECH_AUTO_DATA_MODAL_WINDOW) ? 
-                            <TecDocInfoModal
-                                isMobile={isMobile}
-                                orderId={ id }
-                                modificationId={this.props.order.clientVehicleTecdocId}
-                            />
+                            <div title={this.props.intl.formatMessage({id: "order-page.tech_info"})}>
+                                <TecDocInfoModal
+                                    isMobile={isMobile}
+                                    orderId={ id }
+                                    modificationId={this.props.order.clientVehicleTecdocId}
+                                />
+                            </div>
                             :
                             <></>
                         }
                         {!isForbidden(user, permissions.ACCESS_AGREEMENT) ? 
-                            <Icon
-                                type='file-protect'
-                                style={ {
-                                    fontSize: isMobile ? 12 : 24,
-                                    cursor:   'pointer',
-                                    margin:   '0 10px',
-                                } }
-                                onClick={async ()=>{
-                                    var data = {
-                                        services: [],
-                                        details: [],
-                                    }
-                                    this.props.fetchedOrder.orderServices.map((element)=>{
-                                        data.services.push({
-                                            serviceId: element.laborId,
-                                            serviceHours: element.hours,
-                                            servicePrice: element.price,
-                                            comment: element.comment,
-                                        })
-                                    });
-                                    this.props.fetchedOrder.orderDetails.map((element)=>{
-                                        data.details.push({
-                                            storeGroupId: element.storeGroupId,
-                                            count: element.count,
-                                        })
-                                    });
-                                    await notification.success({
-                                        message: 'Сообщение отправлено!',
-                                    });
-                                    await createAgreement(this.props.order.id, this.props.user.language);
-                                }}
-                            />
+                            <div title={this.props.intl.formatMessage({id: "order-page.send_agreement"})}>
+                                <Icon
+                                    type='file-protect'
+                                    style={ {
+                                        fontSize: isMobile ? 12 : 24,
+                                        cursor:   'pointer',
+                                        margin:   '0 10px',
+                                    } }
+                                    onClick={async ()=>{
+                                        var data = {
+                                            services: [],
+                                            details: [],
+                                        }
+                                        this.props.fetchedOrder.orderServices.map((element)=>{
+                                            data.services.push({
+                                                serviceId: element.laborId,
+                                                serviceHours: element.hours,
+                                                servicePrice: element.price,
+                                                comment: element.comment,
+                                            })
+                                        });
+                                        this.props.fetchedOrder.orderDetails.map((element)=>{
+                                            data.details.push({
+                                                storeGroupId: element.storeGroupId,
+                                                count: element.count,
+                                            })
+                                        });
+                                        await notification.success({
+                                            message: 'Сообщение отправлено!',
+                                        });
+                                        await createAgreement(this.props.order.id, this.props.user.language);
+                                    }}
+                                />
+                            </div>
                             :
                             <></>
                         }

@@ -678,17 +678,6 @@ class AddServiceModal extends React.Component{
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                 >
-                    <div>
-                        Сопутствующие: детали
-                        <Checkbox
-                            checked={this.state.relatedDetailsCheckbox}
-                            onChange={()=>{
-                                this.setState({
-                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
-                                })
-                            }}
-                        /> 
-                    </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Работа</div>
@@ -698,6 +687,19 @@ class AddServiceModal extends React.Component{
                             columns={this.mainTableColumns}
                             pagination={false}
                         />
+                    </div>
+                    <div style={{marginTop: 15}}>
+                        Сопутствующие: детали
+                        <Checkbox
+                            style={{marginLeft: 5}}
+                            disabled
+                            checked={this.state.relatedDetailsCheckbox}
+                            onChange={()=>{
+                                this.setState({
+                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
+                                })
+                            }}
+                        /> 
                     </div>
                 </Modal>
             </>

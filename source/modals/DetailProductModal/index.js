@@ -48,9 +48,11 @@ class DetailProductModal extends React.Component{
         }
         this.labors = [];
         this.storeGroups = [];
+        this.suppliers = [];
         this.treeData = [];
         this.brandOptions = [];
         this.servicesOptions = [];
+        this.suppliersOptions = [];
         this.relatedDetailsOptions = [];
 
         this.setCode = this.setCode.bind(this);
@@ -235,18 +237,36 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <div style={{display: "flex"}}>
-                            <Input
-                                style={{maxWidth: 180, color: 'black'}}
-                                disabled={this.state.radioValue != 2}
-                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
-                                value={data}
-                                onChange={(event)=>{
-                                    this.state.mainTableSource[0].supplierName = event.target.value;
-                                    this.setState({
-                                        update: true
-                                    })
-                                }}
-                            />
+                            {this.state.radioValue == 2 ?
+                                <Select
+                                    showSearch
+                                    placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
+                                    value={elem.supplierId ? elem.supplierId : undefined}
+                                    style={{maxWidth: 180, minWidth: 100}}
+                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                                    filterOption={(input, option) => {
+                                        return (
+                                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                            String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                        )
+                                    }}
+                                    onSelect={(value, option)=>{
+                                        this.state.mainTableSource[0].supplierId = value;
+                                        this.setState({
+                                            update: true
+                                        })
+                                    }}
+                                >
+                                    {this.suppliersOptions}
+                                </Select>
+                                :
+                                <Input
+                                    style={{maxWidth: 180, color: 'black'}}
+                                    disabled
+                                    placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
+                                    value={data}
+                                />
+                            }
                             <DetailSupplierModal
                                 user={this.props.user}
                                 tableKey={0}
@@ -266,7 +286,9 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.AI" />,
+                title:  <div title={this.props.intl.formatMessage({id: 'order_form_table.AI_title'})}>
+                            <FormattedMessage id="order_form_table.AI" />
+                        </div>,
                 key:       'AI',
                 width:     '3%',
                 render: (elem)=>{
@@ -1134,6 +1156,32 @@ class DetailProductModal extends React.Component{
             console.log('error', error)
         });
 
+        url = __API_URL__ + '/business_suppliers?super=true';
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.map((elem, index)=>{
+                elem.key = index;
+            })
+            that.suppliers = data;
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        })
+
         params = `/store_groups`;
         url = API_URL + params;
         fetch(url, {
@@ -1219,6 +1267,12 @@ class DetailProductModal extends React.Component{
         this.servicesOptions = this.labors.map((elem, index)=>(
             <Option key={index} value={elem.laborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
                 {elem.name ? elem.name : elem.defaultName}
+            </Option>
+        ));
+        
+        this.suppliersOptions = this.suppliers.map((elem, index)=>(
+            <Option key={index} value={elem.id}>
+                {elem.name}
             </Option>
         ));
     };
@@ -1314,8 +1368,10 @@ class DetailProductModal extends React.Component{
                         </div> : null
                     }
                     <div style={{marginTop: 15}}>
-                        Сопутствующие: детали
+                        Сопутствующие: детали 
                         <Checkbox
+                            style={{marginLeft: 5}}
+                            disabled
                             checked={this.state.relatedDetailsCheckbox}
                             onChange={()=>{
                                 this.setState({
@@ -1325,6 +1381,8 @@ class DetailProductModal extends React.Component{
                         /> 
                         работы
                         <Checkbox
+                            style={{marginLeft: 5}}
+                            disabled
                             checked={this.state.relatedServicesCheckbox}
                             onChange={()=>{
                                 this.setState({

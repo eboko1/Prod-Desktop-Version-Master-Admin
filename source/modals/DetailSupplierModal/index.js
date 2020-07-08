@@ -86,7 +86,9 @@ class DetailSupplierModal extends React.Component{
                 },
             },
             {
-                title:  <FormattedMessage id="order_form_table.AI" />,
+                title:  <div title={this.props.intl.formatMessage({id: 'order_form_table.AI_title'})}>
+                            <FormattedMessage id="order_form_table.AI" />
+                        </div>,
                 key:       'store',
                 width:     '10%',
                 render: (elem)=>{

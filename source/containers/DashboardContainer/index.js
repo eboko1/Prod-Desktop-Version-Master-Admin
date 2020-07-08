@@ -98,7 +98,6 @@ class DashboardContainer extends Component {
         const { dashboard, days, stations, employees, load, mode } = this.props;
         const { currentDay } = this.state;
 
-        console.log(this);
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
             const selectedDay = this.props.date.format('YYYY-MM-DD');
