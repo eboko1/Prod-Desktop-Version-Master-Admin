@@ -39,8 +39,6 @@ class ConfirmDiagnosticModal extends React.Component{
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
         await lockDiagnostic(orderId);
-        //await this.props.reloadOrderPageComponents();
-        //await createAgreement(this.props.orderId, this.props.intl.locale);
         await window.location.reload();
     }
 
@@ -48,7 +46,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.setState({
             visible: true,
         });
-        this.getCurrentOrderDetailsAndServices();
+        //this.getCurrentOrderDetailsAndServices();
     };
 
     handleOk = () => {
@@ -57,6 +55,7 @@ class ConfirmDiagnosticModal extends React.Component{
             services: [],
             details: [],
             modificationId: this.props.tecdocId,
+            insertMode: true,
         }
         this.state.servicesList.map((element)=>{
             if(element.checked && element.id != null) {
@@ -350,7 +349,7 @@ class ConfirmDiagnosticModal extends React.Component{
         var diagnosticList = this.state.diagnosticList;
         let tmpSource = [];
         for(let i = 0; i < dataSource.length; i++) {
-            if(dataSource[i].stage == stage && Number(dataSource[i].status) > 1) {
+            if(dataSource[i].stage == stage && Number(dataSource[i].status) > 1 && !dataSource[i].disabled) {
                 tmpSource.push(dataSource[i]);
                 if(this.state.diagnosticList.findIndex(x => x.id == dataSource[i].partId) == -1){
                     diagnosticList.push({
@@ -698,7 +697,7 @@ class ConfirmDiagnosticModal extends React.Component{
 
     render() {
         const { visible } = this.state;
-        const { isMobile, confirmed } = this.props;
+        const { isMobile } = this.props;
         const { TabPane } = Tabs;
         return (
             <div>

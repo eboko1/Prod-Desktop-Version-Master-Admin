@@ -999,10 +999,12 @@ class DetailProductModal extends React.Component{
             console.log(data);
             this.addDetailsAndLabors(data);
         }
+        this.state.radioValue = 1;
         this.props.hideModal();
     };
     
     handleCancel = () => {
+        this.state.radioValue = 1;
         this.props.hideModal();
     };
 

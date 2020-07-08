@@ -186,6 +186,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="1"
                     >
                         <DiagnosticTable
+                            disabled={this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel'}
                             defaultEmployeeId={this.props.defaultEmployeeId}
                             user={user}
                             forbidden={areDiagnosticForbidden}

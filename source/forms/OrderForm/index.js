@@ -573,6 +573,7 @@ export class OrderForm extends React.PureComponent {
 
         return (
             <OrderFormTabs
+                orderStatus={this.props.order.status}
                 laborTimeMultiplier={this.props.order.laborTimeMultiplier}
                 defaultEmployeeId={this.props.order.employeeId}
                 normHourPrice={normHourPrice}
