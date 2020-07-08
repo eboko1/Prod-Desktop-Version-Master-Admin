@@ -228,7 +228,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 0}
+                            value={Math.round(data*10)/10 || 0}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -254,7 +254,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 1}
+                            value={Math.round(data*10)/10 || 1}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -323,11 +323,11 @@ class AddServiceModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = this.state.mainTableSource[0].price *  this.state.mainTableSource[0].count;
+                    const sum = elem.price *  elem.count;
                     return (
                         <InputNumber
                             disabled
-                            value={sum ? sum : 1}
+                            value={Math.round(sum*10)/10 || 1}
                             style={{color: "black"}}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -391,9 +391,9 @@ class AddServiceModal extends React.Component{
                     serviceName: element.serviceName,
                     employeeId: element.employeeId,
                     serviceHours: element.hours ? element.hours : 0,
-                    purchasePrice: element.purchasePrice,
+                    purchasePrice: Math.round(element.purchasePrice*10)/10,
                     count: element.count ? element.count : 1,
-                    servicePrice: element.price,
+                    servicePrice:  Math.round(element.price*10)/10,
                     comment: element.comment,
                 })
             });

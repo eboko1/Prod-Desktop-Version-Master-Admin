@@ -40,3 +40,8 @@
 .numberColumn {
     text-align: right;
 }
+
+.serviceNumberInput input{
+    text-align: right;
+    padding-right: 25px;
+}
