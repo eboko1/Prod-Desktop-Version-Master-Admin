@@ -151,7 +151,7 @@ class ServicesTable extends Component {
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span е>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
@@ -168,7 +168,7 @@ class ServicesTable extends Component {
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
@@ -207,7 +207,7 @@ class ServicesTable extends Component {
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
@@ -481,9 +481,9 @@ class ServicesTable extends Component {
                     serviceName: labor.serviceName,
                     employeeId: labor.employeeId,
                     serviceHours: labor.hours ? labor.hours : 0,
-                    purchasePrice: labor.purchasePrice ? labor.purchasePrice : 0,
+                    purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
                     count: labor.count ? labor.count : 1,
-                    servicePrice: labor.price ? labor.price : 1,
+                    servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
                     comment: labor.comment,
                     agreement: labor.agreement,
                 }
@@ -652,7 +652,8 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
+                            className={Styles.serviceNumberInput}
+                            value={Math.round(data*10)/10 || 0}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -678,7 +679,8 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
+                            className={Styles.serviceNumberInput}
+                            value={Math.round(data*10)/10 || 1}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -705,6 +707,7 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             value={data ? data : 0}
                             min={0}
                             formatter={ value =>
@@ -732,9 +735,10 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             disabled
                             style={{color: 'black'}}
-                            value={data}
+                            value={Math.round(data*10)/10 || 1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
