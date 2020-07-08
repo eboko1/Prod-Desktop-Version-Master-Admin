@@ -190,6 +190,9 @@ class FavouriteDetailsModal extends React.Component{
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
+                                codeSearch={false}
+                                codeFilter={elem.detailCode}
+                                brandId={elem.brandId}
                             />
                         </div>
                     )
@@ -416,7 +419,7 @@ class FavouriteDetailsModal extends React.Component{
     };
 
 
-    setCode(code, brand, key) {
+    setCode(code, brand, storeId, key) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
         if(!tmp) {
             this.brandOptions.push(
@@ -429,6 +432,7 @@ class FavouriteDetailsModal extends React.Component{
         this.state.dataSource[key].detailCode = code;
         this.state.dataSource[key].brandId = brandValue;
         this.state.dataSource[key].brandName = brand;
+        this.state.dataSource[key].storeId = storeId;
         this.setState({
             update: true
         })
