@@ -277,7 +277,7 @@ class ServicesTable extends Component {
                                     laborId: elem.laborId,
                                     name: elem.serviceName,
                                     hours: elem.hours ? elem.hours : 1,
-                                    purchasePrice: elem.purchasePrice ? elem.purchasePrice : 1,
+                                    purchasePrice: elem.purchasePrice ? elem.purchasePrice : 0,
                                     count: elem.count ? elem.count : 1,
                                 }];
                                 var that = this;

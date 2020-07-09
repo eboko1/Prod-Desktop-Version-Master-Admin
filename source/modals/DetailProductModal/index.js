@@ -393,7 +393,7 @@ class DetailProductModal extends React.Component{
                             disabled={elem.storeGroupId == null && this.state.radioValue != 2}
                             value={Math.round(data*10)/10 || 1}
                             className={Styles.detailNumberInput}
-                            min={1}
+                            min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }

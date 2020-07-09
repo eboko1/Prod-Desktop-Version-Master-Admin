@@ -638,7 +638,7 @@ class QuickEditModal extends React.Component{
                         <InputNumber
                             value={data ? Math.round(data*10)/10 : 0}
                             className={Styles.detailNumberInput}
-                            min={0}
+                            min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }

@@ -356,7 +356,7 @@ class FavouriteDetailsModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = elem.price * elem.count;
+                    const sum = (elem.price || 1) * (elem.count || 1);
                     return (
                         <InputNumber
                             disabled
