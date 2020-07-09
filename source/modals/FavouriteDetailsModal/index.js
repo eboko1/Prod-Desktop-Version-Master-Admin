@@ -333,7 +333,7 @@ class FavouriteDetailsModal extends React.Component{
                             disabled={elem.storeGroupId == null}
                             className={Styles.detailNumberInput}
                             value={Math.round(data*10)/10 || 1}
-                            min={1}
+                            min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
