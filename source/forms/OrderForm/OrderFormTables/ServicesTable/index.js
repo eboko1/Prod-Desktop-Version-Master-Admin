@@ -485,10 +485,13 @@ class ServicesTable extends Component {
                     count: labor.count ? labor.count : 1,
                     servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
                     comment: labor.comment,
-                    agreement: labor.agreement,
                 }
             ]
         }
+        if(!isForbidden(this.props.user, permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,)) {
+            data.services[0].agreement = labor.agreement;
+        }
+
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/orders/${this.props.orderId}`;
