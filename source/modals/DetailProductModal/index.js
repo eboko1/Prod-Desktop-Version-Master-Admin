@@ -334,7 +334,8 @@ class DetailProductModal extends React.Component{
                     return (
                         <InputNumber
                             disabled={elem.storeGroupId == null && this.state.radioValue != 2}
-                            value={data || 0}
+                            value={Math.round(data*10)/10 || 0}
+                            className={Styles.detailNumberInput}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -361,7 +362,8 @@ class DetailProductModal extends React.Component{
                     return (
                         <InputNumber
                             disabled={elem.storeGroupId == null && this.state.radioValue != 2}
-                            value={data || 1}
+                            value={Math.round(data*10)/10 || 1}
+                            className={Styles.detailNumberInput}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -389,7 +391,8 @@ class DetailProductModal extends React.Component{
                     return (
                         <InputNumber
                             disabled={elem.storeGroupId == null && this.state.radioValue != 2}
-                            value={data || 1}
+                            value={Math.round(data*10)/10 || 1}
+                            className={Styles.detailNumberInput}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -413,11 +416,12 @@ class DetailProductModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = this.state.mainTableSource[0].price *  this.state.mainTableSource[0].count;
+                    const sum = elem.price * elem.count;
                     return (
                         <InputNumber
                             disabled
-                            value={sum ? sum : 1}
+                            className={Styles.detailNumberInput}
+                            value={sum ? Math.round(sum*10)/10 : 1}
                             style={{color: "black"}}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -463,489 +467,12 @@ class DetailProductModal extends React.Component{
         ];
 
         this.relatedDetailsColumns = [
-            {
-                title:  "GROUP",
-                key:       'id',
-                dataIndex: 'id',
-                width:     '15%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <TreeSelect
-                            allowClear
-                            showSearch
-                            placeholder="GROUP"
-                            style={{maxWidth: 180}}
-                            value={data}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.treeData}
-                            filterTreeNode={(input, node) => (
-                                node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                String(node.props.value).indexOf(input.toLowerCase()) >= 0
-                            )}
-                            onSelect={(value, option)=>{
-                                this.state.relatedDetailsSource[key].id = value;
-                                this.state.relatedDetailsSource[key].name = option.props.name;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-                
-            },
-            {
-                title:  "NAME",
-                key:       'name',
-                dataIndex: 'name',
-                width:     '25%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Input
-                            placeholder="NAME"
-                            value={data}
-                            onChange={(value)=>{
-                                this.state.relatedDetailsSource[key].name = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "COMMENT",
-                key:       'comment',
-                dataIndex: 'comment',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    const detail = {
-                        name: "test",
-                    }
-                    const comment = {
-                        comment: null,
-                    }
-                    return (
-                        <CommentaryButton
-                            commentary={comment}
-                            detail={detail}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "BRAND",
-                key:       'brandName',
-                dataIndex: 'brandName',
-                width:     '15%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Select
-                            allowClear
-                            placeholder="BRAND"
-                            value={data}
-                            style={{maxWidth: 180}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            onSelect={(value)=>{
-                                this.state.relatedDetailsSource[key].brandName = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        >
-                            {this.brandOptions}
-                        </Select>
-                    )
-                }
-            },
-            {
-                title:  "CODE",
-                key:       'code',
-                dataIndex: 'code',
-                width:     '15%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Input
-                            style={{maxWidth: 180}}
-                            disabled={elem.id == null}
-                            placeholder="CODE"
-                            value={data}
-                            onChange={(event)=>{
-                                this.state.relatedDetailsSource[key].code = event.target.value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "SELF",
-                key:       'self',
-                dataIndex: 'self',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 0}
-                            min={0}
-                            onChange={(value)=>{
-                                this.state.relatedDetailsSource[key].self = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "PRICE",
-                key:       'price',
-                dataIndex: 'price',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 1}
-                            min={1}
-                            onChange={(value)=>{
-                                this.state.relatedDetailsSource[key].price = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "COUNT",
-                key:       'count',
-                dataIndex: 'count',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 1}
-                            min={1}
-                            onChange={(value)=>{
-                                this.state.relatedDetailsSource[key].count = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "SUM",
-                key:       'sum',
-                width:     '7%',
-                render: (elem)=>{
-                    const key = elem.key;
-                    const sum = this.state.relatedDetailsSource[key].price *  this.state.relatedDetailsSource[key].count;
-                    return (
-                        <InputNumber
-                            disabled
-                            value={sum ? sum : 1}
-                            style={{color: "black"}}
-                        />
-                    )
-                }
-            },
-            {
-                key:       'delete',
-                width:     '3%',
-                render: (elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Icon
-                            type="delete"
-                            onClick={()=>{
-                                this.state.relatedDetailsSource[key] = {
-                                    key: key,
-                                    id: undefined,
-                                    name: undefined,
-                                    comment: undefined,
-                                    brandName: undefined,
-                                    code: undefined,
-                                    self: 0,
-                                    price: 1,
-                                    count: 1,
-                                    sum: undefined,
-                                }
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
+
         ];
 
         this.relatedServicesColumns = [
-            {
-                title:  "SERVICE",
-                key:       'defaultName',
-                dataIndex: 'defaultName',
-                width:     '15%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Select
-                            allowClear
-                            showSearch
-                            placeholder="SERVICE"
-                            value={data}
-                            style={{maxWidth: 180}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            filterOption={(input, option)=>(
-                                String(option.props.value).toLowerCase().includes(input.toLocaleLowerCase()) ||
-                                option.props.children.toLowerCase().includes(input.toLocaleLowerCase())
-                            )}
-                            onSelect={(value, option)=>{
-                                this.state.relatedServicesSource[key].defaultName = option.props.children;
-                                this.state.relatedServicesSource[key].laborId = value;
-                                this.state.relatedServicesSource[key].name = option.props.children;
-                                this.state.relatedServicesSource[key].price = option.props.price;
-                                this.state.relatedServicesSource[key].hours = option.props.norm_hours;
-                                this.state.relatedServicesSource.push({
-                                    key: this.state.relatedServicesSource.length,
-                                    laborId: undefined,
-                                    defaultName: undefined,
-                                    name: undefined,
-                                    comment: undefined,
-                                    employee: undefined,
-                                    hours: undefined,
-                                    self: 0,
-                                    price: 1,
-                                    count: 1,
-                                    sum: undefined,
-                                })
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        >
-                            {this.servicesOptions}
-                        </Select>
-                    )
-                }
-                
-            },
-            {
-                title:  "NAME",
-                key:       'name',
-                dataIndex: 'name',
-                width:     '25%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Input
-                            placeholder="NAME"
-                            value={data}
-                            style={{minWidth: 180}}
-                            onChange={(value)=>{
-                                this.state.relatedServicesSource[key].name = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "COMMENT",
-                key:       'comment',
-                dataIndex: 'comment',
-                width:     '5%',
-                render: ()=>{
-                    const detail = {
-                        name: "test",
-                    }
-                    const comment = {
-                        comment: null,
-                    }
-                    return (
-                        <CommentaryButton
-                            commentary={comment}
-                            detail={detail}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "HOURS",
-                key:       'hours',
-                dataIndex: 'hours',
-                width:     '10%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <div style={{display: 'flex'}}>
-                            <InputNumber
-                                placeholder="HOURS"
-                                value={data || 1}
-                                onChange={(value)=>{
-                                    this.state.relatedServicesSource[key].hours = value;
-                                    this.setState({
-                                        update: true
-                                    })
-                                }}
-                            />
-                            <Button>
-                                <Icon type='check'/>
-                            </Button>
-                        </div>
-                    )
-                }
-            },
-            {
-                title:  "EMPLOYEE",
-                key:       'employee',
-                dataIndex: 'employee',
-                width:     '15%',
-                render: ()=>{
-                    return (
-                        <Select
-                            allowClear
-                            placeholder="EMPLOYEE"
-                            style={{maxWidth: 180}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "SELF",
-                key:       'self',
-                dataIndex: 'self',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 0}
-                            min={0}
-                            onChange={(value)=>{
-                                this.state.relatedServicesSource[key].self = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "PRICE",
-                key:       'price',
-                dataIndex: 'price',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 1}
-                            min={1}
-                            onChange={(value)=>{
-                                this.state.relatedServicesSource[key].price = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "COUNT",
-                key:       'count',
-                dataIndex: 'count',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 1}
-                            min={1}
-                            onChange={(value)=>{
-                                this.state.relatedServicesSource[key].count = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "SUM",
-                key:       'sum',
-                width:     '7%',
-                render: (elem)=>{
-                    const key = elem.key;
-                    const sum = this.state.relatedServicesSource[key].price * this.state.relatedServicesSource[key].count;
-                    return (
-                        <InputNumber
-                            disabled
-                            value={sum ? sum : 1}
-                            style={{color: "black"}}
-                        />
-                    )
-                }
-            },
-            {
-                key:       'delete',
-                width:     '3%',
-                render: (elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Icon
-                            type="delete"
-                            onClick={()=>{
-                                if(this.state.relatedServicesSource.length == 1) {
-                                    this.state.relatedServicesSource[key]={
-                                        key: key,
-                                        laborId: undefined,
-                                        defaultName: undefined,
-                                        name: undefined,
-                                        comment: undefined,
-                                        employee: undefined,
-                                        hours: undefined,
-                                        self: 0,
-                                        price: 1,
-                                        count: 1,
-                                        sum: undefined,
-                                    }
-                                }
-                                else {
-                                    this.state.relatedServicesSource = [...this.state.relatedServicesSource.filter((_, i)=>i!=key)];
-                                    this.state.relatedServicesSource.map((elem, index)=>elem.key=index);
-                                }
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-        ]
+
+        ];
     }
 
     handleOk = () => {
@@ -967,7 +494,7 @@ class DetailProductModal extends React.Component{
                         supplierId: element.supplierId,
                         supplierBrandId: element.supplierBrandId,
                         brandName: element.brandName,
-                        purchasePrice: element.purchasePrice,
+                        purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10 : 1,
                         comment: element.comment,
@@ -979,7 +506,7 @@ class DetailProductModal extends React.Component{
                         name: element.detailName,
                         productId: element.storeId,
                         productCode: element.detailCode,
-                        purchasePrice: element.purchasePrice,
+                        purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                         count: element.count ? element.count : 1,
                         price: element.price ? Math.round(element.price*10)/10  : 1,
                         comment: element.comment,

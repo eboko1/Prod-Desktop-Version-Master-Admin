@@ -41,3 +41,8 @@
 .commentaryParameter{
     margin-right: 15px;
 }
+
+.serviceNumberInput input{
+    text-align: right;
+    padding-right: 25px;
+}

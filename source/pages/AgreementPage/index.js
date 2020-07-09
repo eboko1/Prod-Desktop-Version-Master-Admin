@@ -180,7 +180,7 @@ class AgreementPage extends Component {
                         <p>{vehicleNumber}</p>
                         <p>{vehicleMake} {vehicleModel}</p>
                     </div>
-                    <div>{this.servicesTotal + this.detailsTotal} <FormattedMessage id='cur'/></div>
+                    <div>{Math.round((this.servicesTotal + this.detailsTotal)*10)/10} <FormattedMessage id='cur'/></div>
                     <div style={{height: "100%"}}>
                         <Button
                             style={{height: "100%"}}
@@ -195,7 +195,7 @@ class AgreementPage extends Component {
                     <div className={Styles.servicesWrap}>
                         <div className={Styles.sectionHeader}>
                             <FormattedMessage id='add_order_form.services'/>
-                            <span className={Styles.totalSum}>{this.servicesTotal} <FormattedMessage id='cur'/></span>
+                            <span className={Styles.totalSum}>{Math.round(this.servicesTotal*10)/10} <FormattedMessage id='cur'/></span>
                         </div>
                         {servicesElements}
                     </div>
@@ -204,7 +204,7 @@ class AgreementPage extends Component {
                     <div className={Styles.detailsWrap}>
                         <div className={Styles.sectionHeader}>
                             <FormattedMessage id="add_order_form.details"/>
-                            <span className={Styles.totalSum}>{this.detailsTotal} <FormattedMessage id='cur'/></span>
+                            <span className={Styles.totalSum}>{Math.round(this.detailsTotal*10)/10} <FormattedMessage id='cur'/></span>
                         </div>
                         {detailsElements}
                     </div>
@@ -261,7 +261,7 @@ class AgreementPage extends Component {
                         {servicesElements}
                         <div className={Styles.totalWrap}>
                             <FormattedMessage id='add_order_form.services'/>:
-                            <span className={Styles.totalSum}>{this.servicesTotal} <FormattedMessage id='cur'/></span>
+                            <span className={Styles.totalSum}>{Math.round(this.servicesTotal*10)/10} <FormattedMessage id='cur'/></span>
                         </div>
                     </div>
                 : null}
@@ -273,7 +273,7 @@ class AgreementPage extends Component {
                         {detailsElements}
                         <div className={Styles.totalWrap}>
                             <FormattedMessage id="add_order_form.details"/>:
-                            <span className={Styles.totalSum}>{this.detailsTotal} <FormattedMessage id='cur'/></span>
+                            <span className={Styles.totalSum}>{Math.round(this.detailsTotal*10)/10} <FormattedMessage id='cur'/></span>
                         </div>
                     </div>
                 : null}
@@ -287,7 +287,7 @@ class AgreementPage extends Component {
                 </div>
                 <div className={`${Styles.agreementTotalSum} ${Styles.totalWrap}`}>
                     <span>Итог:</span>
-                    <span className={Styles.totalSum}>{this.servicesTotal + this.detailsTotal} <FormattedMessage id='cur'/></span>
+                    <span className={Styles.totalSum}>{Math.round((this.servicesTotal + this.detailsTotal)*10)/10} <FormattedMessage id='cur'/></span>
                 </div>
                 <Button
                     type="primary"
@@ -328,10 +328,10 @@ class ServiceElement extends React.Component{
                         null
                     }
                 </div>
-                <div style={{width:"15%", fontSize: "16px"}}>{data.count}</div>
+                <div style={{width:"15%", fontSize: "16px"}}>{Math.round(data.count*10)/10}</div>
                 <div style={{width:"15%"}}>
                     <div style={{width:"100%", padding: "5px 0"}}>
-                        {data.sum} <FormattedMessage id='cur'/>
+                        {Math.round(data.sum*10)/10}
                     </div>
                     <div style={{width:"100%", padding: "5px 0"}}>
                         <Switch
@@ -356,13 +356,13 @@ class ServiceElement extends React.Component{
                     <span>{data.comment ? data.comment.comment : null}</span>
                 </div>
                 <div className={Styles.rowPrice}>
-                    <span>{data.price} <FormattedMessage id='cur'/></span>
+                    <span>{Math.round(data.price*10)/10}</span>
                 </div>
                 <div className={Styles.rowCount}>
-                    <span>{data.count} <FormattedMessage id='add_order_form.hours_shortcut'/></span>
+                    <span>{Math.round(data.count*10)/10} <FormattedMessage id='add_order_form.hours_shortcut'/></span>
                 </div>
                 <div className={Styles.rowSum}>
-                    <span>{data.sum} <FormattedMessage id='cur'/></span>
+                    <span>{Math.round(data.sum*10)/10}</span>
                 </div>
                 <div className={Styles.rowSwitch}>
                     <Switch
@@ -406,10 +406,10 @@ class DetailElement extends React.Component{
                         </p> 
                     }
                 </div>
-                <div style={{width:"15%", fontSize: "16px"}}>{data.count}</div>
+                <div style={{width:"15%", fontSize: "16px"}}>{Math.round(data.count*10)/10}</div>
                 <div style={{width:"15%"}}>
                     <div style={{width:"100%", padding: "5px 0"}}>
-                        {data.sum} <FormattedMessage id='cur'/>
+                        {Math.round(data.sum*10)/10}
                     </div>
                     <div style={{width:"100%", padding: "5px 0"}}>
                         <Switch
@@ -434,13 +434,13 @@ class DetailElement extends React.Component{
                     <span>{data.detailBrand}</span>
                 </div>
                 <div className={Styles.rowPrice}>
-                    <span>{data.price} <FormattedMessage id='cur'/></span>
+                    <span>{Math.round(data.price*10)/10}</span>
                 </div>
                 <div className={Styles.rowCount}>
-                    <span>{data.count} <FormattedMessage id='pc'/></span>
+                    <span>{Math.round(data.count*10)/10} <FormattedMessage id='pc'/></span>
                 </div>
                 <div className={Styles.rowSum}>
-                    <span>{data.sum} <FormattedMessage id='cur'/></span>
+                    <span>{Math.round(data.sum*10)/10}</span>
                 </div>
                 <div className={Styles.rowSwitch}>
                     <Switch
