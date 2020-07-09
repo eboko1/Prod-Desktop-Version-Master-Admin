@@ -24,6 +24,11 @@
     
 }
 
+.detailNumberInput input{
+    text-align: right;
+    padding-right: 25px;
+}
+
 /* Commentary Button */
 .commentaryButtonIcon svg *{
     color: rgba(0, 0, 0, 0.65);

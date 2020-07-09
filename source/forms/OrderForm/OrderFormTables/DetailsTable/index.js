@@ -185,7 +185,7 @@ export default class DetailsTable extends Component {
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
@@ -202,7 +202,7 @@ export default class DetailsTable extends Component {
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
@@ -235,7 +235,7 @@ export default class DetailsTable extends Component {
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
@@ -441,7 +441,7 @@ export default class DetailsTable extends Component {
                     supplierId: detail.supplierId ? detail.supplierId : null,
                     supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
                     brandName: detail.brandName ? detail.brandName : null,
-                    purchasePrice: detail.purchasePrice,
+                    purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                     count: detail.count ? detail.count : 1,
                     price: detail.price ? Math.round(detail.price*10)/10 : 1,
                     comment: detail.comment,
@@ -581,7 +581,8 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
+                            value={data ? Math.round(data*10)/10 : 0}
+                            className={Styles.detailNumberInput}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -607,7 +608,8 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
+                            value={data ? Math.round(data*10)/10 : 0}
+                            className={Styles.detailNumberInput}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -634,7 +636,8 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
+                            value={data ? Math.round(data*10)/10 : 0}
+                            className={Styles.detailNumberInput}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -662,8 +665,9 @@ class QuickEditModal extends React.Component{
                     return(
                         <InputNumber
                             disabled
+                            className={Styles.detailNumberInput}
                             style={{color: 'black'}}
-                            value={data}
+                            value={Math.round(data*10)/10}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }

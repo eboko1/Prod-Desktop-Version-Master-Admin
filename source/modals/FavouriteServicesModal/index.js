@@ -225,7 +225,8 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 0}
+                            value={Math.round(data*10)/10 || 0}
+                            className={Styles.serviceNumberInput}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -251,7 +252,8 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 1}
+                            value={Math.round(data*10)/10 || 1}
+                            className={Styles.serviceNumberInput}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -278,7 +280,8 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 1}
+                            value={Math.round(data*10)/10 || 0}
+                            className={Styles.serviceNumberInput}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -321,8 +324,9 @@ class FavouriteServicesModal extends React.Component{
                     const sum = this.state.dataSource[elem.key].price *  this.state.dataSource[elem.key].count;
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             disabled
-                            value={sum ? sum : 1}
+                            value={Math.round(sum*10)/10 || 0}
                             style={{color: "black"}}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')

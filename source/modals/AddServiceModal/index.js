@@ -228,6 +228,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             value={Math.round(data*10)/10 || 0}
                             min={0}
                             formatter={ value =>
@@ -254,6 +255,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             value={Math.round(data*10)/10 || 1}
                             min={1}
                             formatter={ value =>
@@ -281,6 +283,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             value={data || 1}
                             min={0.1}
                             step={0.1}
@@ -309,6 +312,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <NormHourModal
+                            className={Styles.serviceNumberInput}
                             user={this.props.user}
                             tecdocId={this.props.tecdocId}
                             storeGroupId={elem.storeGroupId}
@@ -326,6 +330,7 @@ class AddServiceModal extends React.Component{
                     const sum = elem.price *  elem.count;
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             disabled
                             value={Math.round(sum*10)/10 || 1}
                             style={{color: "black"}}
@@ -391,9 +396,9 @@ class AddServiceModal extends React.Component{
                     serviceName: element.serviceName,
                     employeeId: element.employeeId,
                     serviceHours: element.hours ? element.hours : 0,
-                    purchasePrice: Math.round(element.purchasePrice*10)/10,
+                    purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                     count: element.count ? element.count : 1,
-                    servicePrice:  Math.round(element.price*10)/10,
+                    servicePrice:  Math.round(element.price*10)/10 || 1,
                     comment: element.comment,
                 })
             });
@@ -812,7 +817,7 @@ class NormHourModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <span>
-                            {Math.ceil((elem.price*elem.worktime)*10)/10} <FormattedMessage id="cur" />
+                            {Math.round((elem.price*elem.worktime)*10)/10} <FormattedMessage id="cur" />
                         </span>
                     )
                 }

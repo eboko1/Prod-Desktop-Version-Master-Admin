@@ -214,7 +214,7 @@ class DetailStorageModal extends React.Component{
                 dataIndex: 'purchasePrice',
                 width:     '6%',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                             data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     )
@@ -226,7 +226,7 @@ class DetailStorageModal extends React.Component{
                 dataIndex: 'salePrice',
                 width:     '6%',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                             data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     )
