@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Spin, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
@@ -11,6 +11,7 @@ import { permissions, isForbidden } from "utils";
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 
 @injectIntl
@@ -66,7 +67,7 @@ class DetailSupplierModal extends React.Component{
                 dataIndex: 'purchasePrice',
                 width:     '10%',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                             data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     )
@@ -78,14 +79,16 @@ class DetailSupplierModal extends React.Component{
                 width:     '10%',
                 render: (elem) => {
                     const price = Number(elem.purchasePrice) * Number(elem.markup);
-                    let strVal = String(Math.round(price));
+                    let strVal = String(Math.round(price*10)/10);
                     return (
-                        price ? <span>{`${price}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                        price ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     )
                 },
             },
             {
-                title:  <FormattedMessage id="order_form_table.AI" />,
+                title:  <div title={this.props.intl.formatMessage({id: 'order_form_table.AI_title'})}>
+                            <FormattedMessage id="order_form_table.AI" />
+                        </div>,
                 key:       'store',
                 width:     '10%',
                 render: (elem)=>{
@@ -222,11 +225,15 @@ class DetailSupplierModal extends React.Component{
                     onCancel={this.handleCancel}
                     footer={null}
                 >
+                    {this.state.fetched ? 
                         <Table
                             dataSource={this.state.dataSource}
                             columns={this.columns}
                             pagination={false}
                         />
+                        :
+                        <Spin indicator={spinIcon} />
+                    }
                 </Modal>
             </div>
         )

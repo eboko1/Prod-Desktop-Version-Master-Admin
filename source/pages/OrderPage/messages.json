@@ -15,7 +15,9 @@
     "order-status.order": "Order",
     "order-page.create_invite_order": "Create invitation",
     "order-page.create_copy": "Create copy",
-    "order-page.diagnostic": "Diagnostic"
+    "order-page.diagnostic": "Diagnostic",
+    "order-page.tech_info": "Technical information",
+    "order-page.send_agreement": "Submit cost estimate for approval"
   },
   "ru": {
     "order-page.title": "Заказы",
@@ -33,7 +35,9 @@
     "order-status.order": "Заказ",
     "order-page.create_invite_order": "Создать приглашение",
     "order-page.create_copy": "Создать копию заказа",
-    "order-page.diagnostic": "Диагностика"
+    "order-page.diagnostic": "Диагностика",
+    "order-page.tech_info": "Инфо по автомобилю",
+    "order-page.send_agreement": "Послать калькуляцию на согласование"
   },
   "uk": {
     "order-page.title": "Транзакции",
@@ -51,6 +55,8 @@
     "order-status.order": "Замовлення",
     "order-page.create_invite_order": "Створити запрошення",
     "order-page.create_copy": "Створити копію",
-    "order-page.diagnostic": "Діагностика"
+    "order-page.diagnostic": "Діагностика",
+    "order-page.tech_info": "Інфо по автомобілю",
+    "order-page.send_agreement": "Відправити калькуляцію на узгодження"
   }
 }

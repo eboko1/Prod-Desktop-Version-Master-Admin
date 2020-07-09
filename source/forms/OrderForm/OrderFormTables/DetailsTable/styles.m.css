@@ -38,3 +38,8 @@
 .numberColumn {
     text-align: right;
 }
+
+.detailNumberInput input{
+    text-align: right;
+    padding-right: 25px;
+}

@@ -50,7 +50,7 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.store_group'})}
-                            style={{maxWidth: 180, minWidth: 140}}
+                            style={{maxWidth: 180, minWidth: 100}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.storeGroupsTreeData}
@@ -86,7 +86,7 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
-                            style={{maxWidth: 180, minWidth: 140}}
+                            style={{maxWidth: 180, minWidth: 100}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.laborsTreeData}
@@ -120,7 +120,7 @@ class AddServiceModal extends React.Component{
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
                             value={data ? data : undefined}
-                            style={{minWidth: 240}}
+                            style={{minWidth: 100}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
                                 return (
@@ -157,7 +157,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <Input
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            style={{minWidth: 140}}
+                            style={{minWidth: 120}}
                             value={data}
                             onChange={(event)=>{
                                 this.state.mainTableSource[0].serviceName = event.target.value;
@@ -181,7 +181,7 @@ class AddServiceModal extends React.Component{
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
                             value={data ? data : undefined}
-                            style={{maxWidth: 180, minWidth: 100}}
+                            style={{maxWidth: 180, minWidth: 80}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
                                 return (
@@ -228,7 +228,8 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 0}
+                            className={Styles.serviceNumberInput}
+                            value={Math.round(data*10)/10 || 0}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -254,7 +255,8 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 1}
+                            className={Styles.serviceNumberInput}
+                            value={Math.round(data*10)/10 || 1}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -281,6 +283,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             value={data || 1}
                             min={0.1}
                             step={0.1}
@@ -309,6 +312,7 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <NormHourModal
+                            className={Styles.serviceNumberInput}
                             user={this.props.user}
                             tecdocId={this.props.tecdocId}
                             storeGroupId={elem.storeGroupId}
@@ -323,11 +327,12 @@ class AddServiceModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = this.state.mainTableSource[0].price *  this.state.mainTableSource[0].count;
+                    const sum = elem.price *  elem.count;
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             disabled
-                            value={sum ? sum : 1}
+                            value={Math.round(sum*10)/10 || 1}
                             style={{color: "black"}}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -391,9 +396,9 @@ class AddServiceModal extends React.Component{
                     serviceName: element.serviceName,
                     employeeId: element.employeeId,
                     serviceHours: element.hours ? element.hours : 0,
-                    purchasePrice: element.purchasePrice,
+                    purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                     count: element.count ? element.count : 1,
-                    servicePrice: element.price,
+                    servicePrice:  Math.round(element.price*10)/10 || 1,
                     comment: element.comment,
                 })
             });
@@ -416,6 +421,7 @@ class AddServiceModal extends React.Component{
 
     setHours(hours) {
         this.state.mainTableSource[0].hours = hours;
+        this.state.mainTableSource[0].count = hours * this.props.laborTimeMultiplier;
         this.setState({
             update: true
         })
@@ -624,7 +630,7 @@ class AddServiceModal extends React.Component{
         ));
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
-                {elem.name}
+                {elem.name} {elem.surname}
             </Option>
         ))
     };
@@ -654,9 +660,14 @@ class AddServiceModal extends React.Component{
         if(prevState.visible == false && this.props.visible) {
             const editing = Boolean(this.props.labor.laborId);
             this.getOptions();
+            this.state.mainTableSource = [{...this.props.labor}];
+            
+            if(!editing) {
+                this.state.mainTableSource[0].employeeId = this.props.defaultEmployeeId;
+            }
+            
             this.setState({
                 editing: editing,
-                mainTableSource: [{...this.props.labor}],
             })
         }
     }
@@ -672,17 +683,6 @@ class AddServiceModal extends React.Component{
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                 >
-                    <div>
-                        Сопутствующие: детали
-                        <Checkbox
-                            checked={this.state.relatedDetailsCheckbox}
-                            onChange={()=>{
-                                this.setState({
-                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
-                                })
-                            }}
-                        /> 
-                    </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Работа</div>
@@ -692,6 +692,19 @@ class AddServiceModal extends React.Component{
                             columns={this.mainTableColumns}
                             pagination={false}
                         />
+                    </div>
+                    <div style={{marginTop: 15}}>
+                        Сопутствующие: детали
+                        <Checkbox
+                            style={{marginLeft: 5}}
+                            disabled
+                            checked={this.state.relatedDetailsCheckbox}
+                            onChange={()=>{
+                                this.setState({
+                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
+                                })
+                            }}
+                        /> 
                     </div>
                 </Modal>
             </>
@@ -804,7 +817,7 @@ class NormHourModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <span>
-                            {Math.ceil((elem.price*elem.worktime)*10)/10} <FormattedMessage id="cur" />
+                            {Math.round((elem.price*elem.worktime)*10)/10} <FormattedMessage id="cur" />
                         </span>
                     )
                 }

@@ -225,7 +225,8 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 0}
+                            value={Math.round(data*10)/10 || 0}
+                            className={Styles.serviceNumberInput}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -251,7 +252,8 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 1}
+                            value={Math.round(data*10)/10 || 1}
+                            className={Styles.serviceNumberInput}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -278,7 +280,8 @@ class FavouriteServicesModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 1}
+                            value={Math.round(data*10)/10 || 0}
+                            className={Styles.serviceNumberInput}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -321,8 +324,9 @@ class FavouriteServicesModal extends React.Component{
                     const sum = this.state.dataSource[elem.key].price *  this.state.dataSource[elem.key].count;
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             disabled
-                            value={sum ? sum : 1}
+                            value={Math.round(sum*10)/10 || 0}
                             style={{color: "black"}}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -446,9 +450,11 @@ class FavouriteServicesModal extends React.Component{
         .then(function (data) {
             data.labors.map((elem, i)=>{
                 elem.key = i;
+                elem.employeeId = that.props.defaultEmployeeId;
                 elem.masterLaborId = elem.laborData[0].masterLaborId;
                 elem.storeGroupId = elem.laborData[0].productId;
                 elem.serviceName = elem.name;
+                elem.price = elem.price ? elem.price : that.props.normHourPrice;
             });
             that.setState({
                 dataSource: data.labors,
@@ -632,9 +638,10 @@ class FavouriteServicesModal extends React.Component{
                 {elem.name ? elem.name : elem.defaultName}
             </Option>
         ));
+        
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
-                {elem.name}
+                {elem.name} {elem.surname}
             </Option>
         ))
     };
@@ -691,7 +698,7 @@ class FavouriteServicesModal extends React.Component{
                     onOk={this.handleOk}
                     footer={null}
                 >
-                    <div className={Styles.tableWrap}>
+                    <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Работа</div>
                         </div>

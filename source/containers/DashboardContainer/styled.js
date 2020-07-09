@@ -79,12 +79,12 @@ export const DashboardColumn = styled.div`
     width: 100%;
     @media screen and (max-width: 1199px) {
         position: ${props =>
-            `${props.currentDay &&
-                props.currentDay === props.day &&
+            `${(props.currentDay &&
+                props.currentDay === props.day || props.isMobile) &&
                 'absolute'}`};
         z-index: ${props =>
-            `${props.currentDay &&
-                props.currentDay === props.day &&
+            `${(props.currentDay &&
+                props.currentDay === props.day || props.isMobile) &&
                 '100'}`};
     }
     ${'' /* display: grid;

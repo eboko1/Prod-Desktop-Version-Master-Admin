@@ -6,12 +6,13 @@ import _ from "lodash";
 
 // proj
 import { Catcher } from "commons";
-import { images } from 'utils';
+import { permissions, isForbidden, images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { DetailProductModal, FavouriteDetailsModal } from 'modals'
 
 // own
 import Styles from "./styles.m.css";
+import { value } from "numeral";
 const Option = Select.Option;
 
 @injectIntl
@@ -136,7 +137,9 @@ export default class DetailsTable extends Component {
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.AI" />,
+                title: <div title={this.props.intl.formatMessage({id: 'order_form_table.AI_title'})}>
+                            <FormattedMessage id="order_form_table.AI" />
+                        </div>,
                 width: "3%",
                 key: "AI",
                 render: (elem)=>{
@@ -182,7 +185,7 @@ export default class DetailsTable extends Component {
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
@@ -199,7 +202,7 @@ export default class DetailsTable extends Component {
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
@@ -232,7 +235,7 @@ export default class DetailsTable extends Component {
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
                             {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
@@ -247,7 +250,7 @@ export default class DetailsTable extends Component {
                 dataIndex: 'agreement',
                 render: (data, elem) => {
                     const key = elem.key;
-                    const confirmed = this.state.dataSource[key].agreement.toLowerCase();
+                    const confirmed = data.toLowerCase();
                     let color;
                     switch(confirmed) {
                         case "rejected":
@@ -260,13 +263,28 @@ export default class DetailsTable extends Component {
                             color = null;
                     }
                     return (
-                        <Input
-                            disabled
+                        <Select
+                            disabled={isForbidden(
+                                this.props.user,
+                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
+                            )}
                             style={{color: color}}
-                            value={this.props.intl.formatMessage({
-                                id: `status.${confirmed}`,
-                            })}
-                        />
+                            value={confirmed}
+                            onChange={(value)=>{
+                                elem.agreement = value.toUpperCase();
+                                this.updateDetail(key, elem);
+                            }}
+                        >
+                            <Option key={0} value={'undefined'}>
+                                <FormattedMessage id='status.undefined'/>
+                            </Option>
+                            <Option key={1} value={'agreed'} style={{color: 'rgb(81, 205, 102)'}}>
+                                <FormattedMessage id='status.agreed'/>
+                            </Option>
+                            <Option key={2} value={'rejected'} style={{color: 'rgb(255, 126, 126)'}}>
+                                <FormattedMessage id='status.rejected'/>
+                            </Option>
+                        </Select>
                     )
                 },
             },
@@ -423,10 +441,11 @@ export default class DetailsTable extends Component {
                     supplierId: detail.supplierId ? detail.supplierId : null,
                     supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
                     brandName: detail.brandName ? detail.brandName : null,
-                    purchasePrice: detail.purchasePrice,
+                    purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                     count: detail.count ? detail.count : 1,
-                    price: detail.price ? detail.price : 1,
+                    price: detail.price ? Math.round(detail.price*10)/10 : 1,
                     comment: detail.comment,
+                    agreement: detail.agreement,
                 }
             ]
         }
@@ -562,7 +581,8 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
+                            value={data ? Math.round(data*10)/10 : 0}
+                            className={Styles.detailNumberInput}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -588,7 +608,8 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
+                            value={data ? Math.round(data*10)/10 : 0}
+                            className={Styles.detailNumberInput}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -615,8 +636,9 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
-                            min={0}
+                            value={data ? Math.round(data*10)/10 : 0}
+                            className={Styles.detailNumberInput}
+                            min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -643,8 +665,9 @@ class QuickEditModal extends React.Component{
                     return(
                         <InputNumber
                             disabled
+                            className={Styles.detailNumberInput}
                             style={{color: 'black'}}
-                            value={data}
+                            value={Math.round(data*10)/10}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }

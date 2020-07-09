@@ -68,6 +68,7 @@
     "order_form_table.TO_DO": "Open",
     "order_form_table.COMPLETED": "Closed",
     "order_form_table.AI": "AI",
+    "order_form_table.AI_title": "Availability indicator",
     "photo": "photo"
   },
   "ru": {
@@ -89,7 +90,7 @@
     "order_form_table.total_sum": "Итоговая сумма",
     "order_form_table.total": "Итого",
     "order_form_table.service": "Услуга",
-    "order_form_table.price": "Цена, грн.",
+    "order_form_table.price": "Цена",
     "order_form_table.count": "Кол-во",
     "order_form_table.sum": "Сумма",
     "order_form_table.detail": "Деталь",
@@ -139,6 +140,7 @@
     "order_form_table.TO_DO": "Открыто",
     "order_form_table.COMPLETED": "Закрыто",
     "order_form_table.AI": "ИН",
+    "order_form_table.AI_title": "Индикатор наличия",
     "photo": "Фото"
   },
   "uk": {
@@ -210,6 +212,7 @@
     "order_form_table.TO_DO": "Відкрито",
     "order_form_table.COMPLETED": "Закрито",
     "order_form_table.AI": "ІН",
+    "order_form_table.AI_title": "Індикатор наявності",
     "photo": "Фото"
   }
 }

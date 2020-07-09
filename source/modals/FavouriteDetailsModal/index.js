@@ -190,6 +190,9 @@ class FavouriteDetailsModal extends React.Component{
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
+                                codeSearch={false}
+                                codeFilter={elem.detailCode}
+                                brandId={elem.brandId}
                             />
                         </div>
                     )
@@ -223,7 +226,9 @@ class FavouriteDetailsModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.AI" />,
+                title:  <div title={this.props.intl.formatMessage({id: 'order_form_table.AI_title'})}>
+                            <FormattedMessage id="order_form_table.AI" />
+                        </div>,
                 key:       'AI',
                 width:     '3%',
                 render: (elem)=>{
@@ -269,7 +274,8 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <InputNumber
                             disabled={elem.storeGroupId == null}
-                            value={data || 0}
+                            className={Styles.detailNumberInput}
+                            value={Math.round(data*10)/10 || 0}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -296,7 +302,8 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <InputNumber
                             disabled={elem.storeGroupId == null}
-                            value={data || 1}
+                            className={Styles.detailNumberInput}
+                            value={Math.round(data*10)/10 || 1}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -324,8 +331,9 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <InputNumber
                             disabled={elem.storeGroupId == null}
-                            value={data || 1}
-                            min={1}
+                            className={Styles.detailNumberInput}
+                            value={Math.round(data*10)/10 || 1}
+                            min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -348,11 +356,12 @@ class FavouriteDetailsModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = this.state.dataSource[elem.key].price *  this.state.dataSource[elem.key].count;
+                    const sum = (elem.price || 1) * (elem.count || 1);
                     return (
                         <InputNumber
                             disabled
-                            value={sum ? sum : 1}
+                            className={Styles.detailNumberInput}
+                            value={sum ? Math.round(sum*10)/10 : 1}
                             style={{color: "black"}}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -396,9 +405,9 @@ class FavouriteDetailsModal extends React.Component{
             supplierId: this.state.dataSource[index].supplierId,
             supplierBrandId: this.state.dataSource[index].supplierBrandId,
             brandName: this.state.dataSource[index].brandName,
-            purchasePrice: this.state.dataSource[index].purchasePrice,
+            purchasePrice: this.state.dataSource[index].purchasePrice || 0,
             count: this.state.dataSource[index].count ? this.state.dataSource[index].count : 1,
-            price: this.state.dataSource[index].price,
+            price: this.state.dataSource[index].price || 1,
             comment: this.state.dataSource[index].comment,
         })
         this.addDetailsAndLabors(data);
@@ -414,7 +423,7 @@ class FavouriteDetailsModal extends React.Component{
     };
 
 
-    setCode(code, brand, key) {
+    setCode(code, brand, storeId, key) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
         if(!tmp) {
             this.brandOptions.push(
@@ -427,6 +436,7 @@ class FavouriteDetailsModal extends React.Component{
         this.state.dataSource[key].detailCode = code;
         this.state.dataSource[key].brandId = brandValue;
         this.state.dataSource[key].brandName = brand;
+        this.state.dataSource[key].storeId = storeId;
         this.setState({
             update: true
         })

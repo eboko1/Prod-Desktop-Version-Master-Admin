@@ -20,7 +20,8 @@
     "employee.password": "Password",
     "employee.password.placeholder": "Enter new password",
     "employee.password.lenght": "Minimum 6 symbols",
-    "employee.manager_access": "Manager access"
+    "employee.manager_access": "Manager access",
+    "employee.is_mechanic": "Mechanic"
   },
   "ru": {
     "employee.phone_placeholder": "Введите телефон",
@@ -43,7 +44,8 @@
     "employee.password": "Пароль",
     "employee.password.placeholder": "Введите новый пароль",
     "employee.password.lenght": "Минимум 6 символов",
-    "employee.manager_access": "Менеджерский доступ"
+    "employee.manager_access": "Менеджерский доступ",
+    "employee.is_mechanic": "Механик"
   },
   "uk": {
     "employee.phone_placeholder": "Введіть телефон",
@@ -66,6 +68,7 @@
     "employee.password": "Пароль",
     "employee.password.placeholder": "Вкажіть новий пароль",
     "employee.password.lenght": "Мінімум 6 символів",
-    "employee.manager_access": "Менеджерській доступ"
+    "employee.manager_access": "Менеджерській доступ",
+    "employee.is_mechanic": "Механік"
   }
 }

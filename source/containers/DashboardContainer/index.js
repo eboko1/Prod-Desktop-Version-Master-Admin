@@ -101,8 +101,14 @@ class DashboardContainer extends Component {
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
             const selectedDay = this.props.date.format('YYYY-MM-DD');
+            var employeeLoadCoefficient = 0;
+            if(mode === 'employees') {
+                const employeeLoad = load.find((elem)=>elem.employeeId==employees[index].id);
+                employeeLoadCoefficient = employeeLoad ? employeeLoad.loadCoefficient : 0;
+            }
             return (
                 <DashboardColumn
+                    isMobile={window.innerWidth < 1200}
                     dashboard={ dashboard }
                     column={ 1 }
                     key={ index }
@@ -126,7 +132,7 @@ class DashboardContainer extends Component {
                                 <DashboardLoad
                                     loadCoefficient={
                                         mode === 'employees' ?
-                                            load.find((elem)=>elem.employeeId==employees[index].id).loadCoefficient : 
+                                            employeeLoadCoefficient : 
                                             load[ index ].loadCoefficient
                                         
                                     }
@@ -143,7 +149,7 @@ class DashboardContainer extends Component {
                                             `${employees[ index ].name} ${employees[ index ].surname} - `
                                             : stations[ index ].name && `${stations[ index ].name} - ` }
                                     { mode == 'employees' ?
-                                        Math.round(load.find((elem)=>elem.employeeId==employees[index].id).loadCoefficient) :
+                                        Math.round(employeeLoadCoefficient) :
                                         Math.round(load[ index ].loadCoefficient) 
                                     }%
                                 </DashboardLoad>

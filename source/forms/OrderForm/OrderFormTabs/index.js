@@ -186,6 +186,8 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="1"
                     >
                         <DiagnosticTable
+                            disabled={this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel'}
+                            defaultEmployeeId={this.props.defaultEmployeeId}
                             user={user}
                             forbidden={areDiagnosticForbidden}
                             tecdocId={tecdocId}
@@ -209,6 +211,8 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="2"
                     >
                         <ServicesTable
+                            laborTimeMultiplier={this.props.laborTimeMultiplier}
+                            defaultEmployeeId={this.props.defaultEmployeeId}
                             normHourPrice={normHourPrice}
                             tecdocId={tecdocId}
                             errors={errors}
