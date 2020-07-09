@@ -445,10 +445,13 @@ export default class DetailsTable extends Component {
                     count: detail.count ? detail.count : 1,
                     price: detail.price ? Math.round(detail.price*10)/10 : 1,
                     comment: detail.comment,
-                    agreement: detail.agreement,
                 }
             ]
         }
+        if(!isForbidden(this.props.user, permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,)) {
+            data.details[0].agreement = detail.agreement;
+        }
+
         console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
