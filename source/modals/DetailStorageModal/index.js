@@ -158,7 +158,7 @@ class DetailStorageModal extends React.Component{
                 key:       'attributes',
                 dataIndex: 'attributes',
                 width:     '25%',
-                render: (attributes)=>{
+                render: (attributes, elem)=>{
                     let title = '';
                     let data = '';
                     for (let i = 0; i < attributes.length; i++) {
@@ -166,12 +166,13 @@ class DetailStorageModal extends React.Component{
                         title += `${attribute.description}: ${attribute.value}\n`;
                         data += `${attribute.value}`;
                         if( i == attributes.length-1) {
-                            data += '.';
+                            data += '. ';
                         }
                         else {
                             data += ', ';
                         }
                     }
+                    data += elem.productId + '.';
                     return (
                         <div
                             title={title}
