@@ -138,6 +138,7 @@ export default class OrderFormTabs extends React.PureComponent {
             ACCESS_ORDER_DIAGNOSTICS,
             GET_TASKS,
             GET_ALL_TASKS,
+            UPDATE_SUCCESS_ORDER,
         } = permissions;
 
         const isHistoryForbidden = isForbidden(user, ACCESS_ORDER_HISTORY);
@@ -146,7 +147,7 @@ export default class OrderFormTabs extends React.PureComponent {
         const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
         const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
         const areDiagnosticForbidden = isForbidden(user, ACCESS_ORDER_DIAGNOSTICS);
-        const clodedEditing = (this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel') && !isAdmin(user)
+        const clodedEditing = (this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel') && isForbidden(user, UPDATE_SUCCESS_ORDER)
 
         const viewTasks = !isForbidden(user, GET_TASKS);
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
