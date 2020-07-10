@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Spin, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {
@@ -16,6 +16,7 @@ import { DetailStorageModal, DetailSupplierModal } from 'modals'
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 @injectIntl
 class FavouriteDetailsModal extends React.Component{
@@ -24,6 +25,7 @@ class FavouriteDetailsModal extends React.Component{
         this.state = {
             visible: false,
             dataSource: [],
+            fetched: false,
         }
 
         this.storeGroups = [];
@@ -413,12 +415,14 @@ class FavouriteDetailsModal extends React.Component{
         this.addDetailsAndLabors(data);
         this.setState({
             visible: false,
+            fetched: false,
         })
     };
     
     handleCancel = () => {
         this.setState({
             visible: false,
+            fetched: false,
         })
     };
 
@@ -488,7 +492,7 @@ class FavouriteDetailsModal extends React.Component{
     }
 
     fetchData() {
-        if(!(this.props.tecdocId)) return;
+        if(!(this.props.tecdocId) || this.state.fetched) return;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -529,6 +533,7 @@ class FavouriteDetailsModal extends React.Component{
             });
             that.setState({
                 dataSource: data.details,
+                fetched: true,
             })
         })
         .catch(function (error) {
@@ -660,11 +665,15 @@ class FavouriteDetailsModal extends React.Component{
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Узел/деталь</div>
                         </div>
-                        <Table
-                            dataSource={this.state.dataSource}
-                            columns={this.columns}
-                            pagination={false}
-                        />
+                        {this.state.fetched ? 
+                            <Table
+                                dataSource={this.state.dataSource}
+                                columns={this.columns}
+                                pagination={false}
+                            />
+                            :
+                            <Spin indicator={spinIcon} />
+                        }
                     </div>
                 </Modal>
             </>
