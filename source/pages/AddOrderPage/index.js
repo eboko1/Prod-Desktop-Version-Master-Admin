@@ -102,10 +102,12 @@ class AddOrderPage extends Component {
                 const values = form.getFieldsValue();
                 const orderFormEntity = { ...values, selectedClient };
 
-                const redirectToDashboard = _.get(
+                /*const redirectToDashboard = _.get(
                     history,
                     'location.state.fromDashboard',
-                );
+                );*/
+
+                const redirectToDashboard = false;
 
                 this.props.createOrder({
                     order: convertFieldsValuesToDbEntity(
