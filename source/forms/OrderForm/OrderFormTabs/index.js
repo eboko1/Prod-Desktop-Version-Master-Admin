@@ -7,7 +7,7 @@ import _ from "lodash";
 // proj
 import { MODALS } from "core/modals/duck";
 import { DecoratedTextArea } from "forms/DecoratedFields";
-import { permissions, isForbidden } from "utils";
+import { permissions, isForbidden, isAdmin } from "utils";
 
 // own
 import {
@@ -146,6 +146,7 @@ export default class OrderFormTabs extends React.PureComponent {
         const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
         const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
         const areDiagnosticForbidden = isForbidden(user, ACCESS_ORDER_DIAGNOSTICS);
+        const clodedEditing = (this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel') && !isAdmin(user)
 
         const viewTasks = !isForbidden(user, GET_TASKS);
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
@@ -211,6 +212,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="2"
                     >
                         <ServicesTable
+                            disabled={clodedEditing}
                             laborTimeMultiplier={this.props.laborTimeMultiplier}
                             defaultEmployeeId={this.props.defaultEmployeeId}
                             normHourPrice={normHourPrice}
@@ -254,6 +256,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="3"
                     >
                         <DetailsTable
+                            disabled={clodedEditing}
                             errors={errors}
                             orderId={orderId}
                             fields={detailsTableFieldsProps}

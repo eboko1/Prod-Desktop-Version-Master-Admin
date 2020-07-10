@@ -53,7 +53,7 @@ class ServicesTable extends Component {
                         <div style={{display: "flex", justifyContent: "space-evenly"}}>
                             <Button
                                 type='primary'
-                                disabled={confirmed != "undefined"}
+                                disabled={confirmed != "undefined" || this.props.disabled}
                                 onClick={()=>{
                                     this.showServiceProductModal(data)
                                 }}
@@ -62,7 +62,7 @@ class ServicesTable extends Component {
                                     style={{
                                         width: 18,
                                         height: 18,
-                                        backgroundColor: confirmed != "undefined" ? 'black' : 'white',
+                                        backgroundColor: confirmed != "undefined" || this.props.disabled ? 'black' : 'white',
                                         mask: `url(${images.partsIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
                                     }}
@@ -70,6 +70,7 @@ class ServicesTable extends Component {
                             </Button>
                             {!(elem.laborId) ? 
                                 <FavouriteServicesModal
+                                    disabled={this.props.disabled}
                                     normHourPrice={this.props.normHourPrice}
                                     defaultEmployeeId={this.props.defaultEmployeeId}
                                     tecdocId={this.props.tecdocId}
@@ -79,7 +80,7 @@ class ServicesTable extends Component {
                                 />
                             :
                                 <QuickEditModal
-                                    disabled={confirmed != "undefined" || !(elem.laborId)}
+                                    disabled={confirmed != "undefined" || !(elem.laborId) || this.props.disabled}
                                     labor={elem}
                                     onConfirm={this.updateLabor}
                                     tableKey={elem.key}
@@ -322,6 +323,7 @@ class ServicesTable extends Component {
                 render: (elem) => {
                     return (
                         <Popconfirm
+                            disabled={this.props.disabled}
                             title={
                                 <FormattedMessage id="add_order_form.delete_confirm" />
                             }
@@ -351,7 +353,7 @@ class ServicesTable extends Component {
                                 }
                             }}
                         >
-                            <Icon type="delete" className={Styles.deleteIcon} />
+                            <Icon type="delete" className={this.props.disabled ? Styles.disabledIcon : Styles.deleteIcon} />
                         </Popconfirm>
                     );
                 },
