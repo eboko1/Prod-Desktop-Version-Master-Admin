@@ -634,6 +634,7 @@ class FavouriteDetailsModal extends React.Component{
             <>
                 <Button
                     type="primary"
+                    disabled={this.props.disabled}
                     onClick={()=>{
                         this.setState({
                             visible: true,

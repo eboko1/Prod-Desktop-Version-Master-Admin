@@ -244,7 +244,7 @@ export default class StoreProductsContainer extends Component {
                     })}
                     onChange={this.onChange}
                 />
-                <Button
+                {/*<Button
                     icon="plus"
                     type="dashed"
                     onClick={() =>
@@ -257,7 +257,7 @@ export default class StoreProductsContainer extends Component {
                     {this.props.intl.formatMessage({
                         id: "storage.add_root_product_group",
                     })}
-                </Button>
+                </Button>*/}
                 <StyledTree
                     onExpand={this.onExpand}
                     expandedKeys={expandedKeys}
