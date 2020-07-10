@@ -56,7 +56,7 @@ export default class DetailsTable extends Component {
                         <div style={{display: "flex", justifyContent: "space-evenly"}}>
                             <Button
                                 type='primary'
-                                disabled={confirmed != "undefined"}
+                                disabled={confirmed != "undefined" || this.props.disabled}
                                 onClick={()=>{
                                     this.showDetailProductModal(data)
                                 }}
@@ -65,7 +65,7 @@ export default class DetailsTable extends Component {
                                     style={{
                                         width: 18,
                                         height: 18,
-                                        backgroundColor: confirmed != "undefined" ? 'black' : 'white',
+                                        backgroundColor: confirmed != "undefined" || this.props.disabled ? 'black' : 'white',
                                         mask: `url(${images.partsIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
                                     }}
@@ -73,6 +73,7 @@ export default class DetailsTable extends Component {
                             </Button>
                             {!(elem.storeGroupId) ? 
                                 <FavouriteDetailsModal
+                                    disabled={this.props.disabled}
                                     user={this.props.user}
                                     tecdocId={this.props.tecdocId}
                                     orderId={this.props.orderId}
@@ -82,7 +83,7 @@ export default class DetailsTable extends Component {
                                 />
                             :
                                 <QuickEditModal
-                                    disabled={confirmed != "undefined" || !(elem.storeGroupId)}
+                                    disabled={confirmed != "undefined" || !(elem.storeGroupId) || this.props.disabled}
                                     detail={elem}
                                     onConfirm={this.updateDetail}
                                     tableKey={elem.key}
@@ -343,6 +344,7 @@ export default class DetailsTable extends Component {
                 render: (elem) => {
                     return (
                         <Popconfirm
+                            disabled={this.props.disabled}
                             title={
                                 <FormattedMessage id="add_order_form.delete_confirm" />
                             }
@@ -372,7 +374,7 @@ export default class DetailsTable extends Component {
                                 }
                             }}
                         >
-                            <Icon type="delete" className={Styles.deleteIcon} />
+                            <Icon type="delete" className={this.props.disabled ? Styles.disabledIcon : Styles.deleteIcon} />
                         </Popconfirm>
                     );
                 },
