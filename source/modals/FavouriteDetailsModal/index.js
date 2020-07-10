@@ -510,6 +510,7 @@ class FavouriteDetailsModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
+            console.log(data);
             data.details.map((elem, i)=>{
                 elem.key = i;
                 elem.detailName = elem.storeGroup.name;
