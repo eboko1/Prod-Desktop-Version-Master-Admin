@@ -519,14 +519,13 @@ class FavouriteDetailsModal extends React.Component{
                 elem.key = i;
                 elem.detailName = elem.storeGroup.name;
                 elem.detailCode = elem.partNumber;
-                if(elem.price) {
-                    elem.store = elem.price.store;
-                    elem.purchasePrice = elem.price.purchasePrice;
-                    elem.markup = elem.price.markup ? elem.price.markup : 1.4;
-                    elem.supplierName = elem.price.businessSupplierName;
-                    elem.supplierId = elem.price.businessSupplierId;
-                    elem.supplierBrandId = elem.price.supplierBrandId;
-                    elem.supplierPrice = elem.price;
+                if(elem.pricelist.length) {
+                    elem.store = elem.pricelist[0].store;
+                    elem.purchasePrice = elem.pricelist[0].purchasePrice;
+                    elem.markup = elem.pricelist[0].markup ? elem.pricelist[0].markup : 1.4;
+                    elem.supplierName = elem.pricelist[0].businessSupplierName;
+                    elem.supplierId = elem.pricelist[0].businessSupplierId;
+                    elem.supplierBrandId = elem.pricelist[0].supplierBrandId;
                     elem.price = elem.purchasePrice * elem.markup;
                     elem.sum = elem.price;
                 }
@@ -538,6 +537,9 @@ class FavouriteDetailsModal extends React.Component{
         })
         .catch(function (error) {
             console.log('error', error)
+            that.setState({
+                fetched: true,
+            })
         });
 
         that = this;
