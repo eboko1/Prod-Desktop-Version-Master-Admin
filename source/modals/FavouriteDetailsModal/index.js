@@ -529,6 +529,10 @@ class FavouriteDetailsModal extends React.Component{
                     elem.price = elem.purchasePrice * elem.markup;
                     elem.sum = elem.price;
                 }
+                else {
+                    elem.supplierName = undefined;
+                    elem.supplierId = undefined;
+                }
             });
             that.setState({
                 dataSource: data.details,
