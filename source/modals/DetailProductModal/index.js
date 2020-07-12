@@ -214,7 +214,10 @@ class DetailProductModal extends React.Component{
                                 user={this.props.user}
                                 tableKey={0}
                                 onSelect={this.setCode}
-                                disabled={elem.storeGroupId == null && this.state.radioValue != 3 || this.state.radioValue == 2}
+                                disabled={
+                                    elem.storeGroupId == null && this.state.radioValue != 3 
+                                    || this.state.radioValue == 2 
+                                    || this.state.radioValue == 3 && (data || '').length < 3}
                                 codeSearch={this.state.radioValue == 3}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}

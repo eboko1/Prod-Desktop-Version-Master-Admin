@@ -447,11 +447,13 @@ class DetailStorageModal extends React.Component{
                     fetched: true,
                     dataSource: data,
                     brandOptions: brandOptions,
-                    codeFilter: that.props.codeFilter,
                 })
             })
             .catch(function (error) {
                 console.log('error', error)
+                that.setState({
+                    fetched: true,
+                })
             });
             return;
         }
@@ -529,6 +531,9 @@ class DetailStorageModal extends React.Component{
         })
         .catch(function (error) {
             console.log('error', error)
+            that.setState({
+                fetched: true,
+            })
         });
 
         params = `/tecdoc/filtering_attributes?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
