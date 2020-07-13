@@ -203,7 +203,7 @@ class DetailStorageModal extends React.Component{
                                 keyValue={elem.key}
                                 brandId={elem.brandId}
                                 detailCode={elem.partNumber}
-                                storeGroupId={this.props.storeGroupId}
+                                storeGroupId={this.props.storeGroupId || elem.storeGroupId}
                             />
                         </div>
                     )
