@@ -514,12 +514,11 @@ class FavouriteDetailsModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.details.map((elem, i)=>{
                 elem.key = i;
                 elem.detailName = elem.storeGroup.name;
                 elem.detailCode = elem.partNumber;
-                if(elem.pricelist.length) {
+                if(elem.pricelist && elem.pricelist.length) {
                     elem.store = elem.pricelist[0].store;
                     elem.purchasePrice = elem.pricelist[0].purchasePrice;
                     elem.markup = elem.pricelist[0].markup ? elem.pricelist[0].markup : 1.4;
