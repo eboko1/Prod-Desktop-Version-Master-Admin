@@ -72,7 +72,7 @@ class DetailProductModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
-                            style={{maxWidth: 180}}
+                            style={{maxWidth: 160}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.treeData}
@@ -199,7 +199,7 @@ class DetailProductModal extends React.Component{
                     return (
                         <div style={{display: "flex"}}>
                             <Input
-                                style={{maxWidth: 180, color: 'black'}}
+                                style={{minWidth: 80, color: 'black'}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
                                 disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
@@ -214,7 +214,10 @@ class DetailProductModal extends React.Component{
                                 user={this.props.user}
                                 tableKey={0}
                                 onSelect={this.setCode}
-                                disabled={elem.storeGroupId == null && this.state.radioValue != 3 || this.state.radioValue == 2}
+                                disabled={
+                                    elem.storeGroupId == null && this.state.radioValue != 3 
+                                    || this.state.radioValue == 2 
+                                    || this.state.radioValue == 3 && (data || '').length < 3}
                                 codeSearch={this.state.radioValue == 3}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
@@ -242,7 +245,7 @@ class DetailProductModal extends React.Component{
                                     showSearch
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                                     value={elem.supplierId ? elem.supplierId : undefined}
-                                    style={{maxWidth: 180, minWidth: 100}}
+                                    style={{maxWidth: 180, minWidth: 80}}
                                     dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                                     filterOption={(input, option) => {
                                         return (
