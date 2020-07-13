@@ -592,7 +592,7 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(code, brand, storeId, key) {
+    setCode(code, brand, storeId, key, storeGroupId, storeGroupName) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
         if(!tmp) {
             this.brandOptions.push(
@@ -606,6 +606,8 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].brandId = brandValue;
         this.state.mainTableSource[key].brandName = brand;
         this.state.mainTableSource[key].storeId = storeId;
+        this.state.mainTableSource[key].storeGroupId = storeGroupId;
+        this.state.mainTableSource[key].detailName = storeGroupName;
         this.setState({
             update: true
         })
