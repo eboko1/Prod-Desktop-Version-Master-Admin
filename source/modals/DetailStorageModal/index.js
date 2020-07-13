@@ -203,7 +203,7 @@ class DetailStorageModal extends React.Component{
                                 keyValue={elem.key}
                                 brandId={elem.brandId}
                                 detailCode={elem.partNumber}
-                                storeGroupId={this.props.storeGroupId}
+                                storeGroupId={this.props.storeGroupId || elem.storeGroupId}
                             />
                         </div>
                     )
@@ -298,7 +298,7 @@ class DetailStorageModal extends React.Component{
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, elem.supplierName, elem.storeId, this.props.tableKey);
+                                this.props.onSelect(elem.partNumber, elem.supplierName, elem.storeId, this.props.tableKey, elem.storeGroupId, elem.storeGroupName);
                                 this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, this.props.tableKey);
                                 this.handleCancel();
                             }}

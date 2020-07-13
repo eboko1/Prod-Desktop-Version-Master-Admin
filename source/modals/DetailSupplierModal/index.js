@@ -165,7 +165,8 @@ class DetailSupplierModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/business_suppliers/pricelists?partNumber=${this.props.detailCode}&brandId=${this.props.brandId}&storeGroupId=${this.props.storeGroupId}`;
+        let params = `/business_suppliers/pricelists?partNumber=${this.props.detailCode}&brandId=${this.props.brandId}`;
+        if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -191,6 +192,9 @@ class DetailSupplierModal extends React.Component{
         })
         .catch(function (error) {
             console.log('error', error)
+            that.setState({
+                fetched: true,
+            })
         });
     }
 
