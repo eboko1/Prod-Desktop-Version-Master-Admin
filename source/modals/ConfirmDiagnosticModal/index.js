@@ -337,12 +337,76 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     automaticlyConfirmDiagnostic() {
-        this.state.diagnosticList.map(async (data, index)=>{
+        let partIds = [];
+        this.state.diagnosticList.map((data, index)=>{
             if(!data.resolved) {
-                await this.changeResolved(index, 'automaticly');
-                await this.getLaborByPartId(data.id, data.comment.comment, data.status);
-                await this.getGroupByPartId(data.id, data.comment.comment, data.status);
+                this.changeResolved(index, 'automaticly');
+                partIds.push(data.id);
             }
+        });
+
+        this.getDataByPartIds(partIds);
+    }
+
+    async getDataByPartIds(partIds) {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/diagnostics/calculation_data?partIds=[${partIds}]`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.state.servicesList.pop();
+            that.state.detailsList.pop();
+            
+            data.map((elem)=>{
+                const diagnosticPart = that.state.diagnosticList.find((part)=>part.id==elem.partId);
+                const comment = diagnosticPart ? diagnosticPart.comment.comment : undefined;
+                const status = diagnosticPart ? diagnosticPart.status : undefined;
+
+                elem.labor.map((labor)=>{
+                    that.state.servicesList.push({
+                        key: that.state.servicesList.length+1,
+                        id: labor.laborId,
+                        productId: labor.productId,
+                        name: labor.name,
+                        hours: Number(labor.normHours) || 1,
+                        checked: true,
+                        comment: comment,
+                        status: status,
+                    })
+                })
+                
+                that.state.detailsList.push({
+                    key: that.state.detailsList.length+1,
+                    id: elem.storeGroup.id,
+                    name: elem.storeGroup.name,
+                    count: 1,
+                    checked: true,
+                    comment: comment,
+                    status: status,
+                })
+            })
+            that.setState({
+                update: true,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
         });
     }
 
@@ -735,7 +799,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     }
                 </>
                 <Modal
-                    width={!isMobile?"75%":"95%"}
+                    width={!isMobile?"85%":"95%"}
                     visible={visible}
                     title={<FormattedMessage id='order_form_table.diagnostic.create_order' />}
                     onCancel={this.handleCancel}
