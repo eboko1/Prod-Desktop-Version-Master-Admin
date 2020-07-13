@@ -53,7 +53,7 @@ export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId,
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -80,7 +80,7 @@ export async function confirmDiagnostic(orderId, data) {
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -130,7 +130,7 @@ export async function deleteDiagnosticProcess(orderId, templateId, groupId, part
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -155,7 +155,7 @@ export async function addNewDiagnosticRow(orderId, templateId, groupId, partId) 
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -180,7 +180,7 @@ export async function addNewDiagnosticTemplate(orderId, templateId) {
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -205,7 +205,7 @@ export async function deleteDiagnosticTemplate(orderId, templateId) {
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -229,7 +229,7 @@ export async function createAgreement(orderId, lang) {
             }
         });
         const result = await response.json();
-        console.log("OK", result);
+        //console.log("OK", result);
     } catch (error) {
         console.error('ERROR:', error);
     }
