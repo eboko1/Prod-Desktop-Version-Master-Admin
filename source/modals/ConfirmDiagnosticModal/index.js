@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Checkbox, InputNumber, AutoComplete, Tabs } from 'antd';
+import { Button, Modal, Icon, Checkbox, InputNumber, Select, Tabs } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {permissions, isForbidden} from 'utils';
@@ -338,9 +338,11 @@ class ConfirmDiagnosticModal extends React.Component{
 
     automaticlyConfirmDiagnostic() {
         this.state.diagnosticList.map(async (data, index)=>{
-            await this.changeResolved(index, 'automaticly');
-            await this.getLaborByPartId(data.id, data.comment.comment, data.status);
-            await this.getGroupByPartId(data.id, data.comment.comment, data.status);
+            if(!data.resolved) {
+                await this.changeResolved(index, 'automaticly');
+                await this.getLaborByPartId(data.id, data.comment.comment, data.status);
+                await this.getGroupByPartId(data.id, data.comment.comment, data.status);
+            }
         });
     }
 
@@ -488,7 +490,7 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     getServicesOptions() {
-        const { Option } = AutoComplete;
+        const { Option } = Select;
         return this.state.labors.labors.map(
             (data, index) => (
                 <Option
@@ -527,9 +529,9 @@ class ConfirmDiagnosticModal extends React.Component{
                     />
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
-                    <AutoComplete
+                    <Select
+                        showSearch
                         value={data?data.name:undefined}
-                        defaultActiveFirstOption={false}
                         className="service_input"
                         ref={(node)=>{this.lastServiceInput=node}}
                         disabled={!data.checked}
@@ -541,14 +543,14 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.state.servicesList[index].name = inputValue;
                             this.setState({update: true});
                         }}
-                        placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
+                        placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalServices}`)}
                         filterOption={(inputValue, option) =>
                             option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
                         }
                     >
                         {this.servicesOptions}
-                    </AutoComplete>
+                    </Select>
                 </div>
                 <div style={{ width: '30%' }}>
                     <InputNumber
@@ -606,7 +608,7 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     getDetailsOptions() {
-        const { Option } = AutoComplete;
+        const { Option } = Select;
         const { allDetails } = this.state;
         return allDetails.map(
             (data, index) => (
@@ -643,9 +645,9 @@ class ConfirmDiagnosticModal extends React.Component{
                     />
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
-                    <AutoComplete
+                    <Select
+                        showSearch
                         value={data?data.name:undefined}
-                        defaultActiveFirstOption={false}
                         className="service_input"
                         ref={(node)=>{this.lastDetailInput=node}}
                         disabled={!data.checked}
@@ -657,14 +659,14 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.state.detailsList[index].name = inputValue;
                             this.setState({update: true});
                         }}
-                        placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
+                        placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalDetails}`)}
                         filterOption={(inputValue, option) =>
                             option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
                         }
                     >
                         {this.detailsOptions}
-                    </AutoComplete>
+                    </Select>
                 </div>
                 <div style={{ width: '30%'}}>
                     <InputNumber
