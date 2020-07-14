@@ -170,7 +170,9 @@ class TecDocInfoModal extends React.Component{
             })
         })
         .catch(function (error) {
-            console.log('error', error)
+            that.setState({
+                fetched: true,
+            })
         })
     }
 
