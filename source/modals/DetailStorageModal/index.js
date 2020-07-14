@@ -25,6 +25,8 @@ class DetailStorageModal extends React.Component{
             visible: false,
             fetched: false,
             dataSource: [],
+            storeOptions: [],
+            storeFilter: undefined,
             brandOptions: [],
             brandFilter: [],
             codeFilter: undefined,
@@ -56,10 +58,29 @@ class DetailStorageModal extends React.Component{
                     return (
                         <div>
                             <FormattedMessage id="order_form_table.detail_code" />
-                            <Input
-                                disabled
-                                value={this.props.storeGroupId}
-                            />
+                            <Select
+                                showSearch
+                                value={this.state.storeFilter}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
+                                filterOption={(input, option) => {
+                                    return (
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                        String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                    )
+                                }}
+                                onSelect={(value, option)=>{
+                                    this.setState({
+                                        storeFilter: value,
+                                    });
+                                }}
+                            >
+                                {this.state.storeOptions.map((elem, i)=>(
+                                    <Option key={i} value={elem.id}>
+                                        {elem.name}
+                                    </Option>
+                                ))}
+                            </Select>
                             <Input
                                 allowClear
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
@@ -369,6 +390,8 @@ class DetailStorageModal extends React.Component{
             dataSource: [],
             brandOptions: [],
             brandFilter: [],
+            storeFilter: undefined,
+            storeOptions: [],
             codeFilter: undefined,
             attributesFilters: [],
             inStock: false,
@@ -401,6 +424,7 @@ class DetailStorageModal extends React.Component{
             })
             .then(function (data) {
                 var brandOptions = [];
+                var storeOptions = [];
                 let defaultBrand = [], brandsWithSupplier = [], otherBrands = [];
                 data.map((elem, i)=>{
                     elem.key = i;
@@ -439,6 +463,12 @@ class DetailStorageModal extends React.Component{
                             })
                         }
                     }
+                    if(storeOptions.findIndex((store)=>store.id == elem.storeGroupId)==-1) {
+                        storeOptions.push({
+                            id: elem.storeGroupId,
+                            name: elem.storeGroupName,
+                        })
+                    }
                 })
                 brandsWithSupplier.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
                 otherBrands.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
@@ -447,6 +477,7 @@ class DetailStorageModal extends React.Component{
                     fetched: true,
                     dataSource: data,
                     brandOptions: brandOptions,
+                    storeOptions: storeOptions,
                 })
             })
             .catch(function (error) {
@@ -577,10 +608,11 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
-        const { dataSource, brandFilter, codeFilter, inStock } = this.state;
+        const { dataSource, storeFilter, brandFilter, codeFilter, inStock } = this.state;
         const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
 
+        if(storeFilter) tblData = tblData.filter((elem)=>String(elem.storeGroupId).toLowerCase().indexOf(String(storeFilter).toLowerCase()) >= 0 );
         if(brandFilter.length) tblData = tblData.filter((elem)=>brandFilter.indexOf(elem.supplierId)!=-1);
         if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.toLowerCase().indexOf(codeFilter.toLowerCase()) >= 0 );
         if(inStock) tblData = tblData.filter((elem)=>elem.store);
