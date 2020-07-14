@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Checkbox, InputNumber, Select, Tabs } from 'antd';
+import { Button, Modal, Icon, Checkbox, InputNumber, notification, Select, Tabs } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {permissions, isForbidden} from 'utils';
@@ -37,6 +37,9 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     async endСonfirmation(orderId, data) {
+        notification.success({
+            message: 'Сообщение отправлено!',
+        });
         await confirmDiagnostic(orderId, data);
         await lockDiagnostic(orderId);
         await window.location.reload();
