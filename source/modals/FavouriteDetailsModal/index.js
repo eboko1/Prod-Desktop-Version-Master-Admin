@@ -49,7 +49,7 @@ class FavouriteDetailsModal extends React.Component{
                             className={Styles.groupsTreeSelect}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
-                            style={{maxWidth: 180}}
+                            style={{maxWidth: 160}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.treeData}
@@ -172,7 +172,7 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <div style={{display: "flex"}}>
                             <Input
-                                style={{maxWidth: 180, color: 'black'}}
+                                style={{minWidth: 80, color: 'black'}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
                                 onChange={(event)=>{
@@ -662,7 +662,7 @@ class FavouriteDetailsModal extends React.Component{
                     onOk={this.handleOk}
                     footer={null}
                 >
-                    <div className={Styles.tableWrap}>
+                    <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Узел/деталь</div>
                         </div>
