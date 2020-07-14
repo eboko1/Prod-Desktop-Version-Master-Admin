@@ -37,9 +37,6 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     async endСonfirmation(orderId, data) {
-        notification.success({
-            message: 'Сообщение отправлено!',
-        });
         await confirmDiagnostic(orderId, data);
         await lockDiagnostic(orderId);
         await window.location.reload();
@@ -775,7 +772,12 @@ class ConfirmDiagnosticModal extends React.Component{
                     <Button
                         style={{ width: "80%" }}
                         type="primary"
-                        onClick={()=>sendMessage(this.props.orderId)}
+                        onClick={()=>{
+                            notification.success({
+                                message: 'Сообщение отправлено!',
+                            });
+                            sendMessage(this.props.orderId);
+                        }}
                         disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
                     >
                         <FormattedMessage id='end'/>
@@ -793,7 +795,12 @@ class ConfirmDiagnosticModal extends React.Component{
                         <Button
                             style={{ width: "35%" }}
                             type="primary"
-                            onClick={()=>sendMessage(this.props.orderId)}
+                            onClick={()=>{
+                                notification.success({
+                                    message: 'Сообщение отправлено!',
+                                });
+                                sendMessage(this.props.orderId);
+                            }}
                             disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
                         >
                             <FormattedMessage id='end'/>
