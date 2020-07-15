@@ -68,6 +68,7 @@ class DashboardContainer extends Component {
                         { dashboardColumns }
                         { (mode === 'stations' || mode === 'employees')  &&
                             dashboard.columns < 7 &&
+                            window.innerWidth >= 1200 &&
                             dashboardGhostColumns }
                     </DashboardGrid>
                 </Dashboard>

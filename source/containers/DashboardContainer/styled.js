@@ -38,6 +38,10 @@ export const DashboardGrid = styled.div`
     overflow-x: scroll;
     overflow-y: hidden;
 
+    @media screen and (max-width: 1199px) {
+        display: flex;
+    }
+
     &::-webkit-scrollbar {
         width: 0.8em;
         position: absolute;
@@ -78,14 +82,20 @@ export const DashboardColumn = styled.div`
             '2px solid var(--secondary)'}`};
     width: 100%;
     @media screen and (max-width: 1199px) {
-        position: ${props =>
-            `${(props.currentDay &&
-                props.currentDay === props.day || props.isMobile) &&
-                'absolute'}`};
-        z-index: ${props =>
-            `${(props.currentDay &&
-                props.currentDay === props.day || props.isMobile) &&
-                '100'}`};
+        min-width: 48%;
+        margin: 0 1%;
+    }
+    ${''
+        /*@media screen and (max-width: 1199px) {
+            position: ${props =>
+                `${(props.currentDay &&
+                    props.currentDay === props.day || props.isMobile) &&
+                    'absolute'}`};
+            z-index: ${props =>
+                `${(props.currentDay &&
+                    props.currentDay === props.day || props.isMobile) &&
+                    '100'}`};
+        }*/
     }
     ${'' /* display: grid;
     grid-template-rows: ${props =>
