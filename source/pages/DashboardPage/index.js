@@ -218,15 +218,18 @@ class DashboardPage extends Component {
                             this._setDashboardMode(mode)
                         }}
                     >
-                        <TabPane
-                            tab={
-                                <FormattedMessage id='dashboard-page.calendar' />
-                            }
-                            key='calendar'
-                            disabled={ loading }
-                        >
-                            { dashboardContainer }
-                        </TabPane>
+                        {!isMobile ? 
+                            <TabPane
+                                tab={
+                                    <FormattedMessage id='dashboard-page.calendar' />
+                                }
+                                key='calendar'
+                                disabled={ loading }
+                            >
+                                { dashboardContainer }
+                            </TabPane>
+                            : null
+                        }
                         <TabPane
                             tab={
                                 <FormattedMessage id='dashboard-page.stations_load' />
