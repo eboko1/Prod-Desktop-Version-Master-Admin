@@ -292,6 +292,7 @@ class OrderPage extends Component {
 
     _createCopy = () => {
         const {allServices, allDetails, selectedClient} = this.props;
+        console.log(this);
         const form = this.orderFormRef.props.form;
         const orderFormValues = form.getFieldsValue();
         const requiredFields = requiredFieldsOnStatuses(orderFormValues).success;
