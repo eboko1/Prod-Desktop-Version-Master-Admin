@@ -81,8 +81,12 @@ export const DashboardColumn = styled.div`
             props.currentDay === props.day &&
             '2px solid var(--secondary)'}`};
     width: 100%;
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 639px) {
         min-width: 48%;
+        margin: 0 1%;
+    }
+    @media screen and (min-width: 640px) and (max-width: 1199px) {
+        min-width: 24%;
         margin: 0 1%;
     }
     ${''
