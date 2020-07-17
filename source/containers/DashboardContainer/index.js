@@ -109,7 +109,6 @@ class DashboardContainer extends Component {
             }
             return (
                 <DashboardColumn
-                    isMobile={window.innerWidth < 1024}
                     dashboard={ dashboard }
                     column={ 1 }
                     key={ index }

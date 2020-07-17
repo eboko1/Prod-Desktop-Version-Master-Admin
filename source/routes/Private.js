@@ -46,6 +46,7 @@ import {
     IncomeDocPage,
     DiagnosticPatternsPage,
     AgreementPage,
+    AvailabilitiesPage,
 } from 'pages';
 import book from './book';
 
@@ -264,6 +265,11 @@ export default class Private extends Component {
                     exact
                     component={ BrandsPage }
                     path={ book.brandsPage }
+                />
+                <Route
+                    exact
+                    component={ AvailabilitiesPage }
+                    path={ book.availabilitiesPage }
                 />
                 { /* Global */ }
                 <Route
