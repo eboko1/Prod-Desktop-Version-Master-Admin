@@ -397,7 +397,7 @@ class AvailabilitiesPage extends Component {
         const {dataSource} = this.state;
         if(!dataSource.length || dataSource[dataSource.length-1].id != undefined) {
             dataSource.push({
-                key: dataSource .length,
+                key: dataSource.length,
                 id: undefined,
             })
         }
