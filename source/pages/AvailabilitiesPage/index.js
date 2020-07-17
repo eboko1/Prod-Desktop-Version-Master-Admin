@@ -272,7 +272,6 @@ class AvailabilitiesPage extends Component {
         let url = __API_URL__;
         let params = `/availabilities/settings`;
         url += params;
-        console.log(data);  
 
         fetch(url, {
             method: type,
@@ -291,7 +290,6 @@ class AvailabilitiesPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.updateDataSource();
         })
         .catch(function (error) {
@@ -322,7 +320,6 @@ class AvailabilitiesPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.map((elem, index)=>elem.key=index);
             that.setState({
                 dataSource: data,
@@ -356,7 +353,6 @@ class AvailabilitiesPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.availOptions = data.map((elem, i)=>
                     <Option key={i} value={elem.id}>
                         {`${elem.code} (${elem.name})`}
@@ -385,7 +381,6 @@ class AvailabilitiesPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.supplierOptions = data.map((elem, i)=>
                     <Option key={i} value={elem.id}>
                         {elem.name}
