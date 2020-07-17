@@ -68,7 +68,7 @@ class DashboardContainer extends Component {
                         { dashboardColumns }
                         { (mode === 'stations' || mode === 'employees')  &&
                             dashboard.columns < 7 &&
-                            window.innerWidth >= 1200 &&
+                            window.innerWidth >= 1024 &&
                             dashboardGhostColumns }
                     </DashboardGrid>
                 </Dashboard>
@@ -109,7 +109,7 @@ class DashboardContainer extends Component {
             }
             return (
                 <DashboardColumn
-                    isMobile={window.innerWidth < 1200}
+                    isMobile={window.innerWidth < 1024}
                     dashboard={ dashboard }
                     column={ 1 }
                     key={ index }
