@@ -80,7 +80,7 @@ class DashboardPage extends Component {
         const { initDashboard } = this.props;
 
         await initDashboard();
-        const isMobile = window.innerWidth < 1200;
+        const isMobile = window.innerWidth < 1024;
         if(isMobile) await this.props.setDashboardMode('employees');
     }
 
@@ -144,7 +144,7 @@ class DashboardPage extends Component {
     _transferOutdateRepairs = () => this.props.transferOutdateRepairs();
 
     render() {
-        const isMobile = window.innerWidth < 1200;
+        const isMobile = window.innerWidth < 1024;
 
         const {
             startDate,

@@ -38,7 +38,7 @@ export const DashboardGrid = styled.div`
     overflow-x: scroll;
     overflow-y: hidden;
 
-    @media screen and (max-width: 1199px) {
+    @media screen and (max-width: 1023px) {
         display: flex;
     }
 
@@ -85,7 +85,7 @@ export const DashboardColumn = styled.div`
         min-width: 48%;
         margin: 0 1%;
     }
-    @media screen and (min-width: 640px) and (max-width: 1199px) {
+    @media screen and (min-width: 640px) and (max-width: 1023px) {
         min-width: 24%;
         margin: 0 1%;
     }
