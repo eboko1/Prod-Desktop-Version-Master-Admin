@@ -1,11 +1,29 @@
 {
     "en": {
-        "availabilities-page.discount": "Diagnostic patterns"
+        "availabilities-page.supplier": "Supplier",
+        "availabilities-page.discount": "Discount",
+        "availabilities-page.avail_0": "Avail 0",
+        "availabilities-page.avail_1": "Avail 1",
+        "availabilities-page.avail_2": "Avail 2",
+        "availabilities-page.avail_x": "Avail X",
+        "availabilities-page.limit": "Limit"
     },
     "ru": {
-        "availabilities-page.discount": "Шаблоны диагностики"
+        "availabilities-page.supplier": "Поставщик",
+        "availabilities-page.discount": "Discount",
+        "availabilities-page.avail_0": "Avail 0",
+        "availabilities-page.avail_1": "Avail 1",
+        "availabilities-page.avail_2": "Avail 2",
+        "availabilities-page.avail_x": "Avail X",
+        "availabilities-page.limit": "Limit"
     },
     "uk": {
-        "availabilities-page.discount": "Шаблони діагностики"
+        "availabilities-page.supplier": "Постачальник",
+        "availabilities-page.discount": "Discount",
+        "availabilities-page.avail_0": "Avail 0",
+        "availabilities-page.avail_1": "Avail 1",
+        "availabilities-page.avail_2": "Avail 2",
+        "availabilities-page.avail_x": "Avail X",
+        "availabilities-page.limit": "Limit"
     }
 }

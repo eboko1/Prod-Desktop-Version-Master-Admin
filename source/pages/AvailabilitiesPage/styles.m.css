@@ -1,0 +1,13 @@
+.deleteIcon {
+    font-size: 18px;
+
+    &:hover {
+        color: var(--not_complete);
+    }
+}
+
+.disabledIcon {
+    font-size: 18px;
+    pointer-events: none;
+    color: rgba(0, 0, 0, 0.25);
+}
