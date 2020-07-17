@@ -347,6 +347,12 @@ export default {
                     visible: user => isAdmin(user),
                     name:    'navigation.priority_brands',
                 },
+                {
+                    key:     '/administration/availabilities',
+                    link:    book.availabilitiesPage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.availabilities',
+                },
             ],
         },
         {
