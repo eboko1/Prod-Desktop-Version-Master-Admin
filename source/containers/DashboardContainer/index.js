@@ -83,7 +83,7 @@ class DashboardContainer extends Component {
         const { dashboard, time } = this.props;
 
         return (
-            <DashboardColumn dashboard={ dashboard } column={ 1 } time>
+            <DashboardColumn dashboard={ dashboard } column={ 1 } time className="timeColumn">
                 <DashboardHead />
                 { time.map(time => (
                     <React.Fragment key={ time }>
