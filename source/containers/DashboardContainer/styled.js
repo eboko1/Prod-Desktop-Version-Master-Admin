@@ -22,19 +22,20 @@ const _loadStatus = load => {
 
 // styled-components
 export const Dashboard = styled.div`
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    grid-gap: 1%;
+    display: flex;
     overflow-y: hidden;
+
+    & .timeColumn {
+        width: 10%;
+        min-width: 10%;
+    }
 `;
 
 export const DashboardGrid = styled.div`
-    display: grid;
+    display: flex;
+    justify-content: space-between;
     position: relative;
-    grid-template-columns: ${props =>
-        `repeat(${props.columns}, minmax(13%, 1fr))`};
-    grid-gap: 1%;
-    width: auto;
+    width: 100%;
     overflow-x: scroll;
     overflow-y: hidden;
 
@@ -80,7 +81,11 @@ export const DashboardColumn = styled.div`
         `${props.currentDay &&
             props.currentDay === props.day &&
             '2px solid var(--secondary)'}`};
-    width: 100%;
+
+    width: 13%;
+    min-width: 140px;
+    margin-right: 5px;
+
     @media screen and (max-width: 639px) {
         min-width: 48%;
         margin: 0 1%;
