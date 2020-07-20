@@ -223,8 +223,6 @@ export function convertFieldsValuesToDbEntity(
         insertMode: true,
     };
 
-    console.log(order);
-
     const orderClearedFields = _.mapValues(order, value =>
         value === '' ? null : value);
     // omit forbidden fields
