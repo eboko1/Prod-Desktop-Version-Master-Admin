@@ -155,6 +155,8 @@ class AddOrderPage extends Component {
                 controls={
                     <>
                         <div>
+                            {window.innerWidth >= 1200 ?
+                            <>
                             <RadioGroup value={ createStatus }>
                                 <RadioButton
                                     value='reserve'
@@ -193,10 +195,25 @@ class AddOrderPage extends Component {
                                 type='primary'
                                 htmlType='submit'
                                 className={ Styles.submit }
-                                onClick={ () => this._createOrder(createStatus) }
+                                onClick={ () => {
+                                    this._createOrder(createStatus);
+                                }}
                             >
                                 <FormattedMessage id='add' />
                             </Button>
+                            </>
+                            : 
+                            <Button
+                                type='primary'
+                                htmlType='submit'
+                                className={ Styles.submit }
+                                onClick={ () => {
+                                    this._setCreateStatus('reserve');
+                                    this._createOrder(createStatus);
+                                }}
+                            >
+                                <FormattedMessage id='add' />
+                            </Button>}
                         </div>
                         <Icon
                             style={ {

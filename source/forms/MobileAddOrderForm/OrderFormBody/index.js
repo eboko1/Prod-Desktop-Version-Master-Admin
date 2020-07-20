@@ -8,6 +8,7 @@ import _ from "lodash";
 
 // proj
 import {
+    DecoratedInput,
     DecoratedDatePicker,
     DecoratedTimePicker,
     DecoratedSelect,
@@ -442,81 +443,104 @@ export default class OrderFormBody extends Component {
                     step={0.5}
                     max={8}
                 />
-                <DecoratedDatePicker
-                    errors={errors}
-                    defaultGetValueProps
-                    fieldValue={
-                        _.get(fields, "deliveryDate")
-                            ? _.get(fields, "deliveryDate").toISOString()
-                            : void 0
-                    }
-                    getFieldDecorator={getFieldDecorator}
-                    disabled={this.bodyUpdateIsForbidden()}
-                    field="deliveryDate"
-                    hasFeedback
-                    formItem
-                    formItemLayout={formHeaderItemLayout}
-                    label={this._getLocalization(
-                        "add_order_form.delivery_date",
-                    )}
-                    colon={false}
-                    className={Styles.deliveryDatetime}
-                    rules={this.requiredRule}
-                    placeholder={this._getLocalization(
-                        "add_order_form.select_date",
-                    )}
-                    disabledDate={disabledDate}
-                    format={"YYYY-MM-DD"} // HH:mm
-                    showTime={false}
-                    initialValue={
-                        initialDeliveryDatetime
-                            ? moment(initialDeliveryDatetime).toISOString()
-                            : calculatedDeliveryDatetime
-                            ? calculatedDeliveryDatetime.toISOString()
-                            : void 0
-                    }
-                />
-                <DecoratedTimePicker
-                    errors={errors}
-                    defaultGetValueProps
-                    fieldValue={
-                        _.get(fields, "deliveryTime")
-                            ? _.get(fields, "deliveryTime").toISOString()
-                            : void 0
-                    }
-                    formItem
-                    disabled={Boolean(
-                        this.bodyUpdateIsForbidden() || !deliveryDate,
-                    )}
-                    disabledHours={disabledHours}
-                    disabledMinutes={disabledMinutes}
-                    disabledSeconds={disabledSeconds}
-                    formItemLayout={formHeaderItemLayout}
-                    defaultOpenValue={moment(
-                        `${beginTime}:00`,
-                        "HH:mm:ss",
-                    ).toISOString()}
-                    field="deliveryTime"
-                    hasFeedback
-                    label={this._getLocalization(
-                        "add_order_form.delivery_time",
-                    )}
-                    formatMessage={formatMessage}
-                    className={Styles.deliveryDatetime}
-                    getFieldDecorator={getFieldDecorator}
-                    rules={this.requiredRule}
-                    placeholder={this._getLocalization(
-                        "add_order_form.provide_time",
-                    )}
-                    initialValue={
-                        initialDeliveryDatetime
-                            ? moment(initialDeliveryDatetime).toISOString()
-                            : calculatedDeliveryDatetime
-                            ? calculatedDeliveryDatetime.toISOString()
-                            : void 0
-                    }
-                    minuteStep={30}
-                />
+                <div style={{display: 'none'}}>
+                    <DecoratedInput
+                        errors={errors}
+                        fieldValue={_.get(fields, "stationLoads[0].status")}
+                        defaultGetValueProps
+                        field="stationLoads[0].status"
+                        hiddeninput='hiddeninput'
+                        formItem
+                        formItemLayout={formHeaderItemLayout}
+                        className={`${Styles.duration} ${Styles.deliveryDatetime}`}
+                        colon={false}
+                        disabled={this.bodyUpdateIsForbidden()}
+                        initialValue={
+                            'TO_DO'
+                        }
+                        label={`${this._getLocalization(
+                            "time",
+                        )} (${zeroStationLoadDuration}${this._getLocalization(
+                            "add_order_form.hours_shortcut",
+                        )})`}
+                        getFieldDecorator={getFieldDecorator}
+                    />
+                    <DecoratedDatePicker
+                        errors={errors}
+                        defaultGetValueProps
+                        fieldValue={
+                            _.get(fields, "deliveryDate")
+                                ? _.get(fields, "deliveryDate").toISOString()
+                                : void 0
+                        }
+                        getFieldDecorator={getFieldDecorator}
+                        disabled={this.bodyUpdateIsForbidden()}
+                        field="deliveryDate"
+                        hasFeedback
+                        formItem
+                        formItemLayout={formHeaderItemLayout}
+                        label={this._getLocalization(
+                            "add_order_form.delivery_date",
+                        )}
+                        colon={false}
+                        className={Styles.deliveryDatetime}
+                        rules={this.requiredRule}
+                        placeholder={this._getLocalization(
+                            "add_order_form.select_date",
+                        )}
+                        disabledDate={disabledDate}
+                        format={"YYYY-MM-DD"} // HH:mm
+                        showTime={false}
+                        initialValue={
+                            initialDeliveryDatetime
+                                ? moment(initialDeliveryDatetime).toISOString()
+                                : calculatedDeliveryDatetime
+                                ? calculatedDeliveryDatetime.toISOString()
+                                : void 0
+                        }
+                    />
+                    <DecoratedTimePicker
+                        errors={errors}
+                        defaultGetValueProps
+                        fieldValue={
+                            _.get(fields, "deliveryTime")
+                                ? _.get(fields, "deliveryTime").toISOString()
+                                : void 0
+                        }
+                        formItem
+                        disabled={Boolean(
+                            this.bodyUpdateIsForbidden() || !deliveryDate,
+                        )}
+                        disabledHours={disabledHours}
+                        disabledMinutes={disabledMinutes}
+                        disabledSeconds={disabledSeconds}
+                        formItemLayout={formHeaderItemLayout}
+                        defaultOpenValue={moment(
+                            `${beginTime}:00`,
+                            "HH:mm:ss",
+                        ).toISOString()}
+                        field="deliveryTime"
+                        hasFeedback
+                        label={this._getLocalization(
+                            "add_order_form.delivery_time",
+                        )}
+                        formatMessage={formatMessage}
+                        className={Styles.deliveryDatetime}
+                        getFieldDecorator={getFieldDecorator}
+                        rules={this.requiredRule}
+                        placeholder={this._getLocalization(
+                            "add_order_form.provide_time",
+                        )}
+                        initialValue={
+                            initialDeliveryDatetime
+                                ? moment(initialDeliveryDatetime).toISOString()
+                                : calculatedDeliveryDatetime
+                                ? calculatedDeliveryDatetime.toISOString()
+                                : void 0
+                        }
+                        minuteStep={30}
+                    />
+                </div>
             </div>
         );
     };
