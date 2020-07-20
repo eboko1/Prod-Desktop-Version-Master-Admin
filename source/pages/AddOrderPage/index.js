@@ -16,14 +16,15 @@ import {
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Layout, Spinner } from 'commons';
-import { OrderForm } from 'forms';
+import { Layout, Spinner, MobileView, ResponsiveView } from 'commons';
+import { OrderForm, MobileAddOrderForm } from 'forms';
+import { AddClientModal } from 'modals'
 import {
     convertFieldsValuesToDbEntity,
     requiredFieldsOnStatuses,
 } from 'forms/OrderForm/extractOrderEntity';
 import book from 'routes/book';
-import { withErrorMessage } from 'utils';
+import { withErrorMessage, BREAKPOINTS } from 'utils';
 
 //  own
 const RadioButton = Radio.Button;
@@ -145,6 +146,7 @@ class AddOrderPage extends Component {
         const { modal, user, createStatus, spinner } = this.props;
         const { errors } = this.state;
 
+
         return spinner ? (
             <Spinner spin={ spinner } />
         ) : (
@@ -207,19 +209,38 @@ class AddOrderPage extends Component {
                     </>
                 }
             >
-                <OrderForm
-                    allService={ this.props.allServices }
-                    allDetails={ this.props.allDetails }
-                    errors={ this.state.errors }
-                    wrappedComponentRef={ this.saveOrderFormRef }
-                    setAddClientModal={ this._setAddClientModal }
-                    user={ user }
-                    modal={ modal }
-                    addOrderForm
-                    orderHistory={ this.props.orderHistory }
-                    orderStationLoads={ this.props.orderStationLoads }
-                    location={ this.props.history.location }
-                />
+                <MobileView>
+                    <MobileAddOrderForm
+                        allService={ this.props.allServices }
+                        allDetails={ this.props.allDetails }
+                        errors={ this.state.errors }
+                        wrappedComponentRef={ this.saveOrderFormRef }
+                        setAddClientModal={ this._setAddClientModal }
+                        user={ user }
+                        modal={ modal }
+                        addOrderForm
+                        orderHistory={ this.props.orderHistory }
+                        orderStationLoads={ this.props.orderStationLoads }
+                        location={ this.props.history.location }
+                    />
+                </MobileView>
+                <ResponsiveView
+                    view={ {min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max} }
+                >
+                    <OrderForm
+                        allService={ this.props.allServices }
+                        allDetails={ this.props.allDetails }
+                        errors={ this.state.errors }
+                        wrappedComponentRef={ this.saveOrderFormRef }
+                        setAddClientModal={ this._setAddClientModal }
+                        user={ user }
+                        modal={ modal }
+                        addOrderForm
+                        orderHistory={ this.props.orderHistory }
+                        orderStationLoads={ this.props.orderStationLoads }
+                        location={ this.props.history.location }
+                    />
+                </ResponsiveView>
             </Layout>
         );
     }
