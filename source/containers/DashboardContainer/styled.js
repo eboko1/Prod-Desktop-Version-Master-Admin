@@ -117,14 +117,11 @@ export const DashboardColumn = styled.div`
 `;
 
 export const DashboardBody = styled.div`
-    display: grid;
-    grid-template-columns: 90% 10%;
+    display: flex;
 `;
 
 export const DashboardContentColumn = styled.div`
-    display: grid;
-    grid-template-rows: ${props =>
-        `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
+    width: 90%;
     border: 1px solid black;
 `;
 
@@ -137,9 +134,7 @@ export const DashboardContentBox = styled.div`
 
 /* eslint-disable func-names */
 export const DashboardAddOrderColumn = styled.div`
-    display: grid;
-    grid-template-rows: ${props =>
-        `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
+    width: 10%;
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     border-right: 1px solid black;
