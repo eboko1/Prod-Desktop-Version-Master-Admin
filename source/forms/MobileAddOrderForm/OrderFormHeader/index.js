@@ -246,12 +246,8 @@ export default class OrderFormHeader extends Component {
                 {clientSearch}
                 {clientsSearchTable}
                 <div className={Styles.clientData}>
-                    <div style={{width: "100%"}}>
-                        {clientColumn}
-                    </div>
-                    <div>
-                        {vehicleColumn}
-                    </div>
+                    {clientColumn}
+                    {vehicleColumn}
                 </div>
             </div>
         );
@@ -383,57 +379,6 @@ export default class OrderFormHeader extends Component {
                             </CopyToClipboard>
                         </div>
                     )}
-                </div>
-                <div className={Styles.clientsInfo}>
-                    <DecoratedSelect
-                        errors={errors}
-                        defaultGetValueProps
-                        fieldValue={_.get(fields, "clientEmail")}
-                        field="clientEmail"
-                        className={Styles.clientsInfoCol}
-                        formItem
-                        disabled={this.bodyUpdateIsForbidden()}
-                        formItemLayout={formVerticalLayout}
-                        getFieldDecorator={getFieldDecorator}
-                        label={this.state.clientEmailLabel}
-                        initialValue={
-                            _.get(fetchedOrder, "order.clientEmail") ||
-                            Object.values(
-                                _.get(this.props, "selectedClient.emails"),
-                            )[0] ||
-                            void 0
-                        }
-                        placeholder={this._getLocalization(
-                            "add_order_form.email.placeholder",
-                        )}
-                    >
-                        {this.state.clientEmailsOptions}
-                    </DecoratedSelect>
-                    <DecoratedSelect
-                        errors={errors}
-                        defaultGetValueProps
-                        fieldValue={_.get(fields, "clientRequisite")}
-                        field="clientRequisite"
-                        className={Styles.clientsInfoCol}
-                        disabled={this.bodyUpdateIsForbidden()}
-                        initialValue={_.get(
-                            fetchedOrder,
-                            "order.clientRequisiteId",
-                        )}
-                        formItem
-                        label={this._getLocalization(
-                            "add_order_form.client_requisites",
-                        )}
-                        formItemLayout={formVerticalLayout}
-                        getFieldDecorator={getFieldDecorator}
-                        placeholder={this._getLocalization(
-                            "add_order_form.select_requisites",
-                        )}
-                        options={selectedClient.requisites}
-                        optionValue="id"
-                        optionLabel="name"
-                        optionDisabled="disabled"
-                    />
                 </div>
             </div>
         );
