@@ -1,0 +1,10 @@
+.discountPanel {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 12px;
+}
+
+.formItem {
+    display: flex;
+    margin-left: 24px;
+}
