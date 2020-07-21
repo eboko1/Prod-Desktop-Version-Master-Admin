@@ -158,7 +158,6 @@ export function convertFieldsValuesToDbEntity(
                 : null;
 
     const orderDuration = _.get(orderFields, 'stationLoads[0].duration');
-    console.log(_.get(orderFields, 'stationLoads'));
     const stationLoadsEntity = _.get(orderFields, 'stationLoads')
         .filter(
             ({ beginDate, beginTime }) =>
@@ -222,8 +221,6 @@ export function convertFieldsValuesToDbEntity(
         comment:          _.get(orderFields, 'comment'),
         insertMode: true,
     };
-
-    console.log(order);
 
     const orderClearedFields = _.mapValues(order, value =>
         value === '' ? null : value);
