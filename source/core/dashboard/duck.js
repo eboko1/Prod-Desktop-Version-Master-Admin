@@ -17,14 +17,20 @@ export const FETCH_DASHBOARD_CALENDAR_SUCCESS = `${prefix}/FETCH_DASHBOARD_CALEN
 export const FETCH_DASHBOARD_STATIONS = `${prefix}/FETCH_DASHBOARD_STATIONS`;
 export const FETCH_DASHBOARD_STATIONS_SUCCESS = `${prefix}/FETCH_DASHBOARD_STATIONS_SUCCESS`;
 
+export const FETCH_DASHBOARD_EMPLOYEES = `${prefix}/FETCH_DASHBOARD_EMPLOYEES`;
+export const FETCH_DASHBOARD_EMPLOYEES_SUCCESS = `${prefix}/FETCH_DASHBOARD_EMPLOYEES_SUCCESS`;
+
 export const DROP_DASHBOARD_ORDER = `${prefix}/DROP_DASHBOARD_ORDER}`;
 export const DROP_DASHBOARD_ORDER_SUCCESS = `${prefix}/DROP_DASHBOARD_ORDER_SUCCESS}`;
 
 export const SET_DASHBOARD_MODE = `${prefix}/SET_DASHBOARD_MODE`;
-export const SET_DASHBOARD_DATE = `${prefix}/SET_DASHBOARD_DATE`;
+export const SET_DASHBOARD_STATIONS_DATE = `${prefix}/SET_DASHBOARD_STATIONS_DATE`;
+export const SET_DASHBOARD_EMPLOYEES_DATE = `${prefix}/SET_DASHBOARD_EMPLOYEES_DATE`;
 export const SET_DASHBOARD_WEEK_DATES = `${prefix}/SET_DASHBOARD_WEEK_DATES`;
 
 export const LINK_TO_DASHBOARD_STATIONS = `${prefix}/LINK_TO_DASHBOARD_STATIONS`;
+
+export const LINK_TO_DASHBOARD_EMPLOYEES = `${prefix}/LINK_TO_DASHBOARD_EMPLOYEES`;
 
 export const UPDATE_DASHBOARD_ORDER = `${prefix}/UPDATE_DASHBOARD_ORDER`;
 export const UPDATE_DASHBOARD_ORDER_SUCCESS = `${prefix}/UPDATE_DASHBOARD_ORDER_SUCCESS`;
@@ -44,6 +50,7 @@ const ReducerState = {
         orders: [],
     },
     stations:  [],
+    employees: [],
     mode:      'calendar',
     schedule:  {},
     date:      moment(),
@@ -56,6 +63,7 @@ const ReducerState = {
     load:                  [],
     daysWithConflicts:     [],
     stationsWithConflicts: [],
+    employeesWithConflicts:[],
 };
 
 export default function reducer(state = ReducerState, action) {
@@ -69,7 +77,13 @@ export default function reducer(state = ReducerState, action) {
                 load: [],
             };
 
-        case SET_DASHBOARD_DATE:
+        case SET_DASHBOARD_STATIONS_DATE:
+            return {
+                ...state,
+                date: payload,
+            };
+
+        case SET_DASHBOARD_EMPLOYEES_DATE:
             return {
                 ...state,
                 date: payload,
@@ -106,6 +120,12 @@ export default function reducer(state = ReducerState, action) {
                 ...state,
                 ...payload,
             };
+            
+        case FETCH_DASHBOARD_EMPLOYEES_SUCCESS:
+            return {
+                ...state,
+                ...payload,
+            };
 
         default:
             return state;
@@ -127,14 +147,14 @@ export const selectDashboardEndDate = state => state.dashboard.endDate;
 
 export const selectDasboardData = createSelector(
     [ stateSelector ],
-    ({ schedule, mode, stations, days }) => {
+    ({ schedule, mode, stations, employees, days }) => {
         const time = [ ...Array(schedule.endHour).keys() ]
             .map((_, index) => index + 1)
             .slice(schedule.beginHour - 1)
             .map(time => time >= 10 ? `${time}:00` : `0${time}:00`);
 
         const rows = time.length * 2;
-        const columns = mode === 'calendar' ? days.length : stations.length;
+        const columns = mode === 'calendar' ?  days.length :  (mode === 'employees' ? employees.length : stations.length );
 
         const dashboard = { rows, columns };
 
@@ -163,8 +183,12 @@ export const fetchDashboardCalendar = () => ({
     type: FETCH_DASHBOARD_CALENDAR,
 });
 
-export const fetchDashboardStaions = () => ({
+export const fetchDashboardStations = () => ({
     type: FETCH_DASHBOARD_STATIONS,
+});
+
+export const fetchDashboardEmployees = () => ({
+    type: FETCH_DASHBOARD_EMPLOYEES,
 });
 
 export const fetchDashboardSuccess = data => ({
@@ -182,13 +206,23 @@ export const fetchDashboardStationsSuccess = data => ({
     payload: data,
 });
 
+export const fetchDashboardEmployeesSuccess = data => ({
+    type:    FETCH_DASHBOARD_EMPLOYEES_SUCCESS,
+    payload: data,
+});
+
 export const setDashboardMode = mode => ({
     type:    SET_DASHBOARD_MODE,
     payload: mode,
 });
 
-export const setDashboardDate = date => ({
-    type:    SET_DASHBOARD_DATE,
+export const setDashboardStationsDate = date => ({
+    type:    SET_DASHBOARD_STATIONS_DATE,
+    payload: date,
+});
+
+export const setDashboardEmployeesDate = date => ({
+    type:    SET_DASHBOARD_EMPLOYEES_DATE,
     payload: date,
 });
 
@@ -207,6 +241,11 @@ export const dropDashboardOrderSuccess = () => ({
 
 export const linkToDashboardStations = day => ({
     type:    LINK_TO_DASHBOARD_STATIONS,
+    payload: day,
+});
+
+export const linkToDashboardEmployees = day => ({
+    type:    LINK_TO_DASHBOARD_EMPLOYEES,
     payload: day,
 });
 

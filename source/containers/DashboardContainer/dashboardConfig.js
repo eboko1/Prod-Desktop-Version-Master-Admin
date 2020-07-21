@@ -9,9 +9,9 @@ const DragItemTypes = Object.freeze({
 const ordersStatus = status => {
     switch (status) {
         case 'reserve':
-            return 'var(--db_reserve)';
+            return 'var(--db_not_complete) ';
         case 'not_complete':
-            return 'var(--db_not_complete)';
+            return 'var(--db_reserve)';
         case 'required':
             return 'var(--db_required)';
         case 'approve':

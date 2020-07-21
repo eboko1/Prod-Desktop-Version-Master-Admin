@@ -17,8 +17,10 @@ import {
     initDashboardSuccess,
     fetchDashboardCalendarSuccess,
     fetchDashboardStationsSuccess,
+    fetchDashboardEmployeesSuccess,
     setDashboardWeekDates,
-    setDashboardDate,
+    setDashboardStationsDate,
+    setDashboardEmployeesDate,
     setDashboardMode,
     updateDashboardOrderSuccess,
     transferOutdateRepairsSuccess,
@@ -26,8 +28,10 @@ import {
     INIT_DASHBOARD,
     SET_DASHBOARD_MODE,
     SET_DASHBOARD_WEEK_DATES,
-    SET_DASHBOARD_DATE,
+    SET_DASHBOARD_STATIONS_DATE,
+    SET_DASHBOARD_EMPLOYEES_DATE,
     LINK_TO_DASHBOARD_STATIONS,
+    LINK_TO_DASHBOARD_EMPLOYEES,
     UPDATE_DASHBOARD_ORDER,
     REFRESH_DASHBOARD,
     TRANSFER_OUTDATED_REPAIRS,
@@ -69,11 +73,14 @@ export function* setDashboardModeSaga() {
                 const endDate = yield select(selectDashboardEndDate);
 
                 yield put(setDashboardWeekDates({ startDate, endDate }));
-            }
-
-            if (mode === 'stations') {
+            } else if (mode === 'stations') {
                 const date = yield select(selectDashboardDate);
-                yield put(setDashboardDate(date));
+
+                yield put(setDashboardStationsDate(date));
+            } else if (mode === 'employees') {
+                const date = yield select(selectDashboardDate);
+
+                yield put(setDashboardEmployeesDate(date));
             }
         } catch (error) {
             yield put(emitError(error));
@@ -86,7 +93,7 @@ export function* refreshDashboardSaga() {
         try {
             yield take(REFRESH_DASHBOARD);
             yield nprogress.start();
-            // yield put(setDashboardFetchingState(true));
+            //yield put(setDashboardFetchingState(true));
 
             const mode = yield select(selectDashboardMode);
 
@@ -99,19 +106,29 @@ export function* refreshDashboardSaga() {
                 });
 
                 yield put(fetchDashboardCalendarSuccess(data));
-            } else {
+            } else if (mode === 'stations') {
                 const beginDate = yield select(selectDashboardDate);
+                
                 const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
                     stations:  true,
                     beginDate: beginDate.format('YYYY-MM-DD'),
                 });
 
                 yield put(fetchDashboardStationsSuccess(data));
+            } else if (mode === 'employees') {
+                const beginDate = yield select(selectDashboardDate);
+
+                const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
+                    employees:  true,
+                    beginDate: beginDate.format('YYYY-MM-DD'),
+                });
+
+                yield put(fetchDashboardEmployeesSuccess(data));
             }
         } catch (error) {
             yield put(emitError(error));
         } finally {
-            // yield put(setDashboardFetchingState(false));
+            //yield put(setDashboardFetchingState(false));
             yield nprogress.done();
         }
     }
@@ -144,7 +161,7 @@ export function* fetchDashboardCalendarSaga() {
 export function* fetchDashboardStationsSaga() {
     while (true) {
         try {
-            yield take(SET_DASHBOARD_DATE);
+            yield take(SET_DASHBOARD_STATIONS_DATE);
             yield nprogress.start();
             yield put(setDashboardFetchingState(true));
 
@@ -164,12 +181,47 @@ export function* fetchDashboardStationsSaga() {
     }
 }
 
+export function* fetchDashboardEmployeesSaga() {
+    while (true) {
+        try {
+            yield take(SET_DASHBOARD_EMPLOYEES_DATE);
+            yield nprogress.start();
+            yield put(setDashboardFetchingState(true));
+
+            const beginDate = yield select(selectDashboardDate);
+            const data = yield call(fetchAPI, 'GET', 'dashboard/orders', {
+                employees:  true,
+                beginDate: beginDate.format('YYYY-MM-DD'),
+            });
+
+            yield put(fetchDashboardEmployeesSuccess(data));
+        } catch (error) {
+            yield put(emitError(error));
+        } finally {
+            yield put(setDashboardFetchingState(false));
+            yield nprogress.done();
+        }
+    }
+}
+
 export function* linkToDashboardStationsSaga() {
     while (true) {
         try {
             const { payload: day } = yield take(LINK_TO_DASHBOARD_STATIONS);
-            yield put(setDashboardDate(moment(day)));
+            yield put(setDashboardStationsDate(moment(day)));
             yield put(setDashboardMode('stations'));
+        } catch (error) {
+            yield put(emitError(error));
+        }
+    }
+}
+
+export function* linkToDashboardEmployeesSaga() {
+    while (true) {
+        try {
+            const { payload: day } = yield take(LINK_TO_DASHBOARD_EMPLOYEES);
+            yield put(setDashboardEmployeesDate(moment(day)));
+            yield put(setDashboardMode('employees'));
         } catch (error) {
             yield put(emitError(error));
         }
@@ -181,13 +233,24 @@ export function* updateDashboardOrderSaga() {
         try {
             const { payload: order } = yield take(UPDATE_DASHBOARD_ORDER);
             yield nprogress.start();
-            yield call(
-                fetchAPI,
-                'PUT',
-                `/stations/loads/${order.stationLoadId}`,
-                {},
-                _.omit(order, [ 'stationLoadId' ]),
-            );
+            if(order.mode == 'employees') {
+                yield call(
+                    fetchAPI,
+                    'PUT',
+                    `/orders/${order.orderId}`,
+                    {},
+                    _.omit(order, [ 'orderId', 'mode']),
+                );
+            } else {
+                yield call(
+                    fetchAPI,
+                    'PUT',
+                    `/stations/loads/${order.stationLoadId}`,
+                    {},
+                    _.omit(order, [ 'stationLoadId', 'employeeId' ]),
+                );
+            }
+            
 
             yield put(updateDashboardOrderSuccess());
             yield put(refreshDashboard());
@@ -224,8 +287,10 @@ export function* saga() {
         call(initDashboardSaga),
         call(fetchDashboardCalendarSaga),
         call(fetchDashboardStationsSaga),
+        call(fetchDashboardEmployeesSaga),
         call(setDashboardModeSaga),
         call(linkToDashboardStationsSaga),
+        call(linkToDashboardEmployeesSaga),
         call(updateDashboardOrderSaga),
         call(transferOutdateRepairsSaga),
     ]);

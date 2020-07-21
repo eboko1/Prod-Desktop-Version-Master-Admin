@@ -1,0 +1,14 @@
+{
+    "en": {
+        "agreement.confirm_title": "Are you sure?",
+        "agreement.confirm_content": "You cannot change the results after confirmation."
+    },
+    "ru": {
+        "agreement.confirm_title": "Вы уверены?",
+        "agreement.confirm_content": "Вы не сможете изменить результаты после подтверждения."
+    },
+    "uk": {
+        "agreement.confirm_title": "Ви впевнені?",
+        "agreement.confirm_content": "Ви не зможете змінити результати після підтвердження."
+    }
+}

@@ -5,6 +5,9 @@ import { Menu, Dropdown, Icon } from 'antd';
 
 // proj
 import book from 'routes/book';
+import {
+    getDiagnosticsReport
+} from 'core/forms/orderDiagnosticForm/saga';
 import { permissions, isForbidden } from 'utils';
 
 // own
@@ -72,7 +75,7 @@ class ReportsDropdown extends React.Component {
     }
 
     render() {
-        const { isMobile } = this.props;
+        const { isMobile, orderId } = this.props;
 
         const menu = (
             <Menu>
@@ -86,6 +89,13 @@ class ReportsDropdown extends React.Component {
                         <FormattedMessage id={ item.name } />
                     </Menu.Item>
                 )) }
+                <Menu.Item
+                    key={ `${this.reports.length}` }
+                    className={ `${Styles.itemDisabled}` }
+                    onClick={()=>{getDiagnosticsReport(orderId)}}
+                >
+                    <FormattedMessage id='order_form_table.diagnostic' />
+                </Menu.Item>
             </Menu>
         );
 

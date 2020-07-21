@@ -154,17 +154,22 @@ export function* createOrderSaga() {
             const {
                 payload: { order, redirectStatus, redirectToDashboard },
             } = yield take(CREATE_ORDER);
-            yield call(fetchAPI, 'POST', 'orders', {}, order, {
+            const response = yield call(fetchAPI, 'POST', 'orders', {}, order, {
                 handleErrorInternally: true,
             });
 
+            const id = response.created[ 0 ].id;
+            yield put(push(`${book.order}/${id}`));
+
+            /*
             if (redirectToDashboard && redirectStatus) {
-                yield put(replace(book.dashboard));
+               yield put(replace(book.dashboard));
             }
 
             if (!redirectToDashboard && redirectStatus) {
                 yield put(returnToOrdersPage(redirectStatus));
             }
+            */
         } catch (error) {
             yield put(setErrorMessage(error));
         } finally {

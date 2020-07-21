@@ -1,0 +1,35 @@
+{
+    "en": {
+        "diagnostic-page.title": "Diagnostic patterns",
+        "diagnostic-page.add_new_template": "Add new pattern",
+        "diagnostic-page.import_default": "Import default",
+        "diagnostic-page.plan": "Plan",
+        "diagnostic-page.group": "Group",
+        "diagnostic-page.code": "Code",
+        "diagnostic-page.change_code": "Change linked code",
+        "diagnostic-page.name": "Name",
+        "diagnostic-page.action": "Action"
+    },
+    "ru": {
+        "diagnostic-page.title": "Шаблоны диагностики",
+        "diagnostic-page.add_new_template": "Добавить шаблон",
+        "diagnostic-page.import_default": "Импорт стандарт.",
+        "diagnostic-page.plan": "План",
+        "diagnostic-page.group": "Группа",
+        "diagnostic-page.code": "Код",
+        "diagnostic-page.change_code": "Изменить код привязки",
+        "diagnostic-page.name": "Наименование",
+        "diagnostic-page.action": "Действие"
+    },
+    "uk": {
+        "diagnostic-page.title": "Шаблони діагностики",
+        "diagnostic-page.add_new_template": "Додати шаблон",
+        "diagnostic-page.import_default": "Імпорт стандарт.",
+        "diagnostic-page.plan": "План",
+        "diagnostic-page.group": "Група",
+        "diagnostic-page.code": "Код",
+        "diagnostic-page.change_code": "Змінити код прив'язки",
+        "diagnostic-page.name": "Назва",
+        "diagnostic-page.action": "Дія"
+    }
+}

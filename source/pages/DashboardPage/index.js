@@ -4,13 +4,16 @@ import { FormattedMessage } from 'react-intl';
 import { connect } from 'react-redux';
 import { Tabs, Button } from 'antd';
 import moment from 'moment';
+import withSizes from 'react-sizes';
 
 // proj
 import {
     initDashboard,
     dropDashboardOrder,
     linkToDashboardStations,
-    setDashboardDate,
+    linkToDashboardEmployees,
+    setDashboardStationsDate,
+    setDashboardEmployeesDate,
     setDashboardWeekDates,
     setDashboardMode,
     selectDasboardData,
@@ -27,12 +30,14 @@ import { ConfirmRescheduleModal } from 'modals';
 
 // own
 import Styles from './styles.m.css';
+import { linkToDashboardEmployeesSaga } from 'core/dashboard/saga';
 const TabPane = Tabs.TabPane;
 
 const mapStateToProps = state => ({
     orders:                state.dashboard.orders.orders,
     mode:                  state.dashboard.mode,
     stations:              state.dashboard.stations,
+    employees:             state.dashboard.employees,
     date:                  state.dashboard.date,
     startDate:             state.dashboard.startDate,
     endDate:               state.dashboard.endDate,
@@ -41,6 +46,7 @@ const mapStateToProps = state => ({
     load:                  state.dashboard.load,
     daysWithConflicts:     state.dashboard.daysWithConflicts,
     stationsWithConflicts: state.dashboard.stationsWithConflicts,
+    employeesWithConflicts:state.dashboard.employeesWithConflicts,
     modal:                 state.modals.modal,
 
     spinner: state.ui.dashboardInitializing,
@@ -53,10 +59,12 @@ const mapStateToProps = state => ({
 const mapDispatchToProps = {
     initDashboard,
     dropDashboardOrder,
-    setDashboardDate,
+    setDashboardStationsDate,
+    setDashboardEmployeesDate,
     setDashboardWeekDates,
     setDashboardMode,
     linkToDashboardStations,
+    linkToDashboardEmployees,
     updateDashboardOrder,
     transferOutdateRepairs,
     setModal,
@@ -68,23 +76,37 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 class DashboardPage extends Component {
-    componentDidMount() {
+    async componentDidMount() {
         const { initDashboard } = this.props;
 
-        initDashboard();
+        await initDashboard();
     }
 
-    _onDayChange = date => this.props.setDashboardDate(date);
+    _onDayChange = date => {
+        if(this.props.mode === 'employees') {
+            this.props.setDashboardEmployeesDate(date)
+        } else {
+            this.props.setDashboardStationsDate(date)
+        }
+    };
 
     _prevDay = () => {
-        const { setDashboardDate, date } = this.props;
-        setDashboardDate(date.subtract(1, 'day'));
+        const { setDashboardStationsDate, setDashboardEmployeesDate, date } = this.props;
+        if(this.props.mode === 'employees') {
+            setDashboardEmployeesDate(date.subtract(1, 'day'))
+        } else {
+            setDashboardStationsDate(date.subtract(1, 'day'))
+        }
         this.setState({});
     };
 
     _nextDay = () => {
-        const { setDashboardDate, date } = this.props;
-        setDashboardDate(date.add(1, 'day'));
+        const { setDashboardStationsDate, setDashboardEmployeesDate, date } = this.props;
+        if(this.props.mode === 'employees') {
+            setDashboardEmployeesDate(date.add(1, 'day'))
+        } else {
+            setDashboardStationsDate(date.add(1, 'day'))
+        }
         this.setState({});
     };
 
@@ -120,6 +142,8 @@ class DashboardPage extends Component {
     _transferOutdateRepairs = () => this.props.transferOutdateRepairs();
 
     render() {
+        const isMobile = window.innerWidth < 1024;
+
         const {
             startDate,
             endDate,
@@ -146,7 +170,7 @@ class DashboardPage extends Component {
                     <FormattedMessage id='dashboard-page.description' />
                 }
                 controls={
-                    rescheduleOrdersAllowed ? (
+                    rescheduleOrdersAllowed && !isMobile ? (
                         <Button
                             type='primary'
                             // onClick={ () => this._transferOutdateRepairs() }
@@ -164,8 +188,9 @@ class DashboardPage extends Component {
                 <section className={ Styles.dashboardPage }>
                     <Tabs
                         activeKey={ mode }
+                        className={(isMobile ? Styles.dashboard_mobile_tabs : null)}
                         tabBarExtraContent={
-                            mode === 'calendar' ? (
+                            (mode === 'calendar') ? (
                                 <ArrowsWeekPicker
                                     startDate={ startDate }
                                     endDate={ endDate }
@@ -176,6 +201,9 @@ class DashboardPage extends Component {
                                 />
                             ) : (
                                 <ArrowsDatePicker
+                                    startDate={ startDate }
+                                    endDate={ endDate }
+                                    onWeekChange={ this._onWeekChange }
                                     date={ date }
                                     onDayChange={ this._onDayChange }
                                     prevDay={ this._prevDay }
@@ -184,7 +212,9 @@ class DashboardPage extends Component {
                                 />
                             )
                         }
-                        onChange={ mode => this._setDashboardMode(mode) }
+                        onChange={ (mode)=>{
+                            this._setDashboardMode(mode)
+                        }}
                     >
                         <TabPane
                             tab={
@@ -204,6 +234,15 @@ class DashboardPage extends Component {
                         >
                             { dashboardContainer }
                         </TabPane>
+                        <TabPane
+                            tab={
+                                <FormattedMessage id='dashboard-page.employees' />
+                            }
+                            key='employees'
+                            disabled={ loading }
+                        >
+                            { dashboardContainer }
+                        </TabPane>
                     </Tabs>
                 </section>
             </Layout>
@@ -218,15 +257,18 @@ class DashboardPage extends Component {
             load,
             days,
             stations,
+            employees,
             schedule,
             time,
             dashboard,
             linkToDashboardStations,
+            linkToDashboardEmployees,
             updateDashboardOrder,
             date,
             user,
             daysWithConflicts,
             stationsWithConflicts,
+            employeesWithConflicts,
         } = this.props;
 
         return loading ? (
@@ -239,15 +281,18 @@ class DashboardPage extends Component {
                     date={ date }
                     days={ days }
                     stations={ stations }
+                    employees={ employees }
                     orders={ orders }
                     load={ load }
                     schedule={ schedule }
                     time={ time }
                     dashboard={ dashboard }
                     linkToDashboardStations={ linkToDashboardStations }
+                    linkToDashboardEmployees={ linkToDashboardEmployees }
                     updateDashboardOrder={ updateDashboardOrder }
                     daysWithConflicts={ daysWithConflicts }
                     stationsWithConflicts={ stationsWithConflicts }
+                    employeesWithConflicts={ employeesWithConflicts }
                 />
                 <ConfirmRescheduleModal
                     // wrappedComponentRef={ this.saveFormRef }

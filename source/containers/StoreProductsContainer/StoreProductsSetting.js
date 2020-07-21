@@ -4,7 +4,7 @@ import { Icon } from 'antd';
 
 // proj
 import { MODALS } from 'core/modals/duck';
-import { isAdmin } from 'utils';
+import { permissions, isForbidden, isAdmin } from 'utils';
 
 const mapStateToProps = state => ({
     user: state.auth,
@@ -47,7 +47,7 @@ export const StoreProductsSetting = connect(mapStateToProps)(
 
         return (
             <>
-                <Icon
+                {/*<Icon
                     type={ 'plus' }
                     onClick={ () =>
                         setModal(MODALS.STORE_GROUP, {
@@ -59,8 +59,8 @@ export const StoreProductsSetting = connect(mapStateToProps)(
                         fontSize: '16px',
                         color:    'var(--primary)',
                     } }
-                />
-                { isAdmin(user)
+                />*/}
+                { !isForbidden(user, permissions.ACCESS_STORE_GROUPS)
                     ? renderEditing()
                     : !storeGroup.systemWide
                         ? renderEditing()

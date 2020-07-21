@@ -22,6 +22,7 @@ const book = Object.freeze({
     orders:                   '/orders',
     ordersByStatuses:         '/orders/:ordersStatuses',
     ordersAppointments:       '/orders/appointments',
+    agreement:                '/agreement',
     // Order
     order:                    '/order',
     orderId:                  '/order/:id',
@@ -62,6 +63,8 @@ const book = Object.freeze({
     storageExpenses:          '/expenses',
     storageIncomeDoc:         '/income-document',
     storageIncomeDocId:       '/income-document/:id',
+    laborsPage:               '/labors',
+    diagnosticPatterns:       '/diagnostic-patterns',
     //trt
     // Statistics
     //
@@ -87,6 +90,7 @@ const book = Object.freeze({
     //
     servicesPage:             '/administration/services',
     brandsPage:               '/administration/brands',
+    availabilitiesPage:       '/administration/availabilities',
 
     oldApp: {
         // link to my.cb24.eu

@@ -38,7 +38,6 @@ import ordersPuzzle from './dashboardCore/ordersPuzzle';
 class DashboardContainer extends Component {
     constructor(props) {
         super(props);
-
         this._dashboardRef = React.createRef();
 
         this.state = {
@@ -54,7 +53,6 @@ class DashboardContainer extends Component {
 
     render() {
         const { dashboard, schedule, mode } = this.props;
-
         const timeColumn = this._renderTimeColumn();
         const dashboardColumns = this._renderDashboardColumns();
         const dashboardGhostColumns = this._renderDashboardGhostColumns();
@@ -68,8 +66,9 @@ class DashboardContainer extends Component {
                         columns={ dashboard.columns < 7 ? 7 : dashboard.columns }
                     >
                         { dashboardColumns }
-                        { mode === 'stations' &&
+                        { (mode === 'stations' || mode === 'employees')  &&
                             dashboard.columns < 7 &&
+                            window.innerWidth >= 1024 &&
                             dashboardGhostColumns }
                     </DashboardGrid>
                 </Dashboard>
@@ -78,12 +77,13 @@ class DashboardContainer extends Component {
     }
 
     _linkToStations = day => this.props.linkToDashboardStations(day);
+    _linkToEmployees = day => this.props.linkToDashboardEmployees(day);
 
     _renderTimeColumn = () => {
         const { dashboard, time } = this.props;
 
         return (
-            <DashboardColumn dashboard={ dashboard } column={ 1 } time>
+            <DashboardColumn dashboard={ dashboard } column={ 1 } time className="timeColumn">
                 <DashboardHead />
                 { time.map(time => (
                     <React.Fragment key={ time }>
@@ -96,18 +96,23 @@ class DashboardContainer extends Component {
     };
 
     _renderDashboardColumns = () => {
-        const { dashboard, days, stations, load, mode } = this.props;
+        const { dashboard, days, stations, employees, load, mode } = this.props;
         const { currentDay } = this.state;
 
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
-
+            const selectedDay = this.props.date.format('YYYY-MM-DD');
+            var employeeLoadCoefficient = 0;
+            if(mode === 'employees') {
+                const employeeLoad = load.find((elem)=>elem.employeeId==employees[index].id);
+                employeeLoadCoefficient = employeeLoad ? employeeLoad.loadCoefficient : 0;
+            }
             return (
                 <DashboardColumn
                     dashboard={ dashboard }
                     column={ 1 }
                     key={ index }
-                    currentDay={ currentDay }
+                    currentDay={ selectedDay }
                     day={ day }
                 >
                     <DashboardHead dashboard={ dashboard } column={ 1 }>
@@ -119,12 +124,17 @@ class DashboardContainer extends Component {
                                             id={ load[ index ].dayName }
                                         />
                                     ) : 
-                                        load[ index ].stationNum
+                                        mode === 'employees' ? 
+                                            employees[ index ].employeeNum  :  
+                                            load[ index ].stationNum
                                     }
                                 </DashboardTitle>
                                 <DashboardLoad
                                     loadCoefficient={
-                                        load[ index ].loadCoefficient
+                                        mode === 'employees' ?
+                                            employeeLoadCoefficient : 
+                                            load[ index ].loadCoefficient
+                                        
                                     }
                                     link={ mode === 'calendar' }
                                     onClick={ () =>
@@ -135,9 +145,13 @@ class DashboardContainer extends Component {
                                         ? `${moment(
                                             load[ index ].beginDate,
                                         ).format('DD MMM')} -`
-                                        : stations[ index ].name &&
-                                          `${stations[ index ].name} - ` }
-                                    { Math.round(load[ index ].loadCoefficient) }%
+                                        : mode == 'employees' ?
+                                            `${employees[ index ].name} ${employees[ index ].surname} - `
+                                            : stations[ index ].name && `${stations[ index ].name} - ` }
+                                    { mode == 'employees' ?
+                                        Math.round(employeeLoadCoefficient) :
+                                        Math.round(load[ index ].loadCoefficient) 
+                                    }%
                                 </DashboardLoad>
                             </>
                         }
@@ -156,6 +170,7 @@ class DashboardContainer extends Component {
             dashboard,
             days,
             stations,
+            employees,
             orders,
             schedule,
             updateDashboardOrder,
@@ -164,18 +179,24 @@ class DashboardContainer extends Component {
             user,
             daysWithConflicts,
             stationsWithConflicts,
+            employeesWithConflicts,
         } = this.props;
         // const { hideSourceOnDrag } = this.state;
 
         const dashboardMode = mode === 'calendar';
 
-        const columnsData = dashboardMode ? days : stations;
+        const columnsData = mode === 'calendar' ? days : (mode === 'employees' ? employees : stations);
 
         const columnId = dashboardMode
             ? columnsData
                 ? columnsData[ column ]
                 : null
-            : columnsData
+            : mode === 'employees' ? 
+                columnsData ?
+                columnsData[ column ].id
+                    : null
+                :
+                columnsData
                 ? columnsData[ column ].num
                 : null;
 
@@ -183,8 +204,10 @@ class DashboardContainer extends Component {
             ? orders.filter(
                 ({ beginDatetime }) =>
                     moment(beginDatetime).format('YYYY-MM-DD') === columnId,
-            )
-            : orders.filter(({ stationNum }) => stationNum === columnId);
+            ) :
+            mode === 'employees' ? 
+                orders.filter(({ employeeId }) => employeeId === columnId)
+                : orders.filter(({ stationNum }) => stationNum === columnId);
 
         const mappedOrders = mapOrders(
             schedule.beginHour,
@@ -215,6 +238,10 @@ class DashboardContainer extends Component {
                                             stationsWithConflicts={
                                                 stationsWithConflicts
                                             }
+                                            employeesWithConflicts={
+                                                employeesWithConflicts
+                                            }
+
                                             mode={ mode }
                                             day={
                                                 dashboardMode
@@ -223,11 +250,11 @@ class DashboardContainer extends Component {
                                             }
                                             stationNum={
                                                 !dashboardMode
-                                                    ? _.get(
-                                                        stations,
-                                                        `[${column}].num`,
-                                                    )
+                                                    ? _.get(stations,`[${column}].num`,)
                                                     : column + 1
+                                            }
+                                            employeeId={
+                                                _.get(employees,`[${column}].id`,)
                                             }
                                             { ...order }
                                         />
@@ -249,10 +276,13 @@ class DashboardContainer extends Component {
                                                 clientName:
                                                     result[ index ].options
                                                         .clientName,
+                                                stationName:
+                                                    result[ index ].options.
+                                                        stationName,
+
                                             } }
                                             id={
-                                                result[ index ].options
-                                                    .stationLoadId
+                                                result[ index ].options.stationLoadId
                                             }
                                             status={
                                                 result[ index ].options.status
@@ -262,18 +292,17 @@ class DashboardContainer extends Component {
                                             // hideSourceOnDrag={ hideSourceOnDrag }
                                             schedule={ schedule }
                                             day={
-                                                dashboardMode
+                                                mode === 'calendar'
                                                     ? days[ column ]
                                                     : date.format('YYYY-MM-DD')
                                             }
                                             stationNum={
-                                                !dashboardMode
-                                                    ? _.get(
-                                                        stations,
-                                                        `[${column}].num`,
-                                                    )
-                                                    : result[ index ].options
-                                                        .stationNum
+                                                mode == 'calendar'
+                                                    ? result[ index ].options.stationNum 
+                                                    : _.get(stations,`[${column}].num`,)
+                                            }
+                                            employeeId={
+                                                result[ index ].options.employeeId 
                                             }
                                             { ...order }
                                         />
@@ -292,11 +321,13 @@ class DashboardContainer extends Component {
             days,
             date,
             stations,
+            employees,
             schedule,
             mode,
             user,
             daysWithConflicts,
             stationsWithConflicts,
+            employeesWithConflicts,
         } = this.props;
 
         const dashboardMode = mode === 'calendar';
@@ -323,9 +354,13 @@ class DashboardContainer extends Component {
                 day={ day }
                 daysWithConflicts={ daysWithConflicts }
                 stationsWithConflicts={ stationsWithConflicts }
+                employeesWithConflicts={ employeesWithConflicts }
                 mode={ mode }
                 stationNum={
                     !dashboardMode && _.get(stations, `[${column}].num`)
+                }
+                employeeId={
+                    mode == 'employees' && employees[ column ].id
                 }
             >
                 { [ ...Array(dashboard.rows).keys() ].map((_, index) => (
@@ -334,7 +369,10 @@ class DashboardContainer extends Component {
                             <DashboardAddOrderLink
                                 time={ setBeginDateitme(index) }
                                 stationNum={
-                                    mode !== 'calendar' && stations[ column ].num
+                                    mode == 'stations' && stations[ column ].num
+                                }
+                                employeeId={
+                                    mode == 'employees' && employees[ column ].id
                                 }
                             />
                         ) : null }

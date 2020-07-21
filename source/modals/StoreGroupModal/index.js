@@ -1,7 +1,7 @@
 // vendor
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Modal, Form } from 'antd';
+import { Modal, Form, Select } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import _ from 'lodash';
 // proj
@@ -13,13 +13,14 @@ import {
 import { fetchPriceGroups, selectPriceGroups } from 'core/storage/priceGroups';
 import { MODALS, selectModalProps } from 'core/modals/duck';
 
-import { DecoratedInput, DecoratedCheckbox } from 'forms/DecoratedFields';
+import { DecoratedInput, DecoratedCheckbox, DecoratedSelect } from 'forms/DecoratedFields';
 import { PriceGroupSelect } from 'forms/_formkit';
 import { isAdmin } from 'utils';
+const Option = Select.Option;
 
 const formItemLayout = {
-    labelCol:   { span: 6 },
-    wrapperCol: { span: 18 },
+    labelCol:   { span: 8 },
+    wrapperCol: { span: 16 },
 };
 
 const mapStateToProps = state => ({
@@ -101,6 +102,7 @@ const StoreGroup = props => {
 
     return (
         <Modal
+            width={'50%'}
             cancelText={ <FormattedMessage id='cancel' /> }
             okText={
                 deleteMode ? (
@@ -117,6 +119,7 @@ const StoreGroup = props => {
             <Form onSubmit={ submit } style={ { padding: 24 } }>
                 <DecoratedInput
                     fields={ {} }
+                    disabled
                     field='name'
                     formItem
                     formItemLayout={ formItemLayout }
@@ -145,6 +148,64 @@ const StoreGroup = props => {
                         'storeGroup.priceGroupNumber',
                     ) }
                 />
+                {props.brands && props.suppliers ? 
+                    <>
+                    <DecoratedSelect
+                        label={ formatMessage({ id: 'storage.default_brand' }) }
+                        disabled={_.get(
+                            modalProps,
+                            'storeGroup.fixedBrand',
+                        )}
+                        showSearch
+                        field={ `defaultBrandId` }
+                        formItemLayout={ formItemLayout }
+                        getFieldDecorator={ getFieldDecorator }
+                        getPopupContainer={ trigger => trigger.parentNode }
+                        formItem
+                        initialValue={ _.get(
+                            modalProps,
+                            'storeGroup.brandId',
+                        ) }
+                    >
+                        { props.brands.map((brand, i) => {
+                            return (
+                                <Option value={ brand.brandId } key={ i }>
+                                    {brand.brandName}
+                                </Option>
+                            );
+                        }) }
+                    </DecoratedSelect>
+                    <DecoratedSelect
+                        label={ formatMessage({ id: 'storage.business_supplier' }) }
+                        showSearch
+                        field={ `businessSupplierId` }
+                        formItemLayout={ formItemLayout }
+                        getFieldDecorator={ getFieldDecorator }
+                        getPopupContainer={ trigger => trigger.parentNode }
+                        formItem
+                        initialValue={ _.get(
+                            modalProps,
+                            'storeGroup.businessSupplierId',
+                        ) }
+                    >
+                        { props.suppliers.map((supplier, i) => {
+                            return (
+                                <Option value={ supplier.id } key={ i }>
+                                    {supplier.name}
+                                </Option>
+                            );
+                        }) }
+                    </DecoratedSelect>
+                    <DecoratedCheckbox
+                            label={ formatMessage({ id: 'storage.assign_to_child' }) }
+                            field={ `assignToChildGroups` }
+                            formItemLayout={ formItemLayout }
+                            getFieldDecorator={ getFieldDecorator }
+                            getPopupContainer={ trigger => trigger.parentNode }
+                            formItem
+                        />
+                    </> 
+                : null}
                 { /* systemWide is null if active or businessId if not  */ }
                 { renderSystemWideCheckbox() }
             </Form>

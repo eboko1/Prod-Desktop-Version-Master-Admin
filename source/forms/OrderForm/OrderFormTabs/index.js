@@ -7,7 +7,7 @@ import _ from "lodash";
 // proj
 import { MODALS } from "core/modals/duck";
 import { DecoratedTextArea } from "forms/DecoratedFields";
-import { permissions, isForbidden } from "utils";
+import { permissions, isForbidden, isAdmin } from "utils";
 
 // own
 import {
@@ -18,6 +18,7 @@ import {
     HistoryTable,
     CallsTable,
     StationsTable,
+    DiagnosticTable,
 } from "../OrderFormTables";
 import Styles from "./styles.m.css";
 
@@ -82,6 +83,8 @@ export default class OrderFormTabs extends React.PureComponent {
             orderHistory,
             orderServices,
             orderDetails,
+            orderDiagnostic,
+            orderId,
             allServices,
             allDetails,
             employees,
@@ -122,6 +125,8 @@ export default class OrderFormTabs extends React.PureComponent {
 
             fields,
             errors,
+
+            normHourPrice,
         } = this.props;
 
         const {
@@ -130,8 +135,10 @@ export default class OrderFormTabs extends React.PureComponent {
             ACCESS_ORDER_COMMENTS,
             ACCESS_ORDER_SERVICES,
             ACCESS_ORDER_DETAILS,
+            ACCESS_ORDER_DIAGNOSTICS,
             GET_TASKS,
             GET_ALL_TASKS,
+            UPDATE_SUCCESS_ORDER,
         } = permissions;
 
         const isHistoryForbidden = isForbidden(user, ACCESS_ORDER_HISTORY);
@@ -139,6 +146,8 @@ export default class OrderFormTabs extends React.PureComponent {
         const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_COMMENTS);
         const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
         const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
+        const areDiagnosticForbidden = isForbidden(user, ACCESS_ORDER_DIAGNOSTICS);
+        const clodedEditing = (this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel') && isForbidden(user, UPDATE_SUCCESS_ORDER)
 
         const viewTasks = !isForbidden(user, GET_TASKS);
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
@@ -167,124 +176,137 @@ export default class OrderFormTabs extends React.PureComponent {
 
         return (
             <Tabs type="card" className={Styles.orderFormsTabs}>
-                {!addOrderForm && viewTasks && (
+                {!addOrderForm && (
                     <TabPane
                         forceRender
+                        disabled={areDiagnosticForbidden}
                         tab={
                             formatMessage({
-                                id: "order_form_table.tasks",
-                            }) +
-                            ` (${
-                                orderTasks.orderTasks
-                                    ? orderTasks.orderTasks.length
-                                    : 0
-                            })`
+                                id: "order_form_table.diagnostic",
+                            })
                         }
                         key="1"
                     >
-                        {canCreateTask ? (
-                            <Button
-                                className={Styles.orderTaskModalButton}
-                                type="primary"
-                                onClick={() => setModal(MODALS.ORDER_TASK)}
-                            >
-                                <FormattedMessage id="add" />
-                                <Icon type="plus" />
-                            </Button>
-                        ) : null}
-
-                        <TasksTable
-                            errors={errors}
+                        <DiagnosticTable
+                            disabled={this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel'}
+                            defaultEmployeeId={this.props.defaultEmployeeId}
                             user={user}
-                            initOrderTasksForm={initOrderTasksForm}
-                            setModal={setModal}
-                            changeModalStatus={changeModalStatus}
-                            orderTasks={tasks}
+                            forbidden={areDiagnosticForbidden}
+                            tecdocId={tecdocId}
+                            form={form}
+                            orderDiagnostic={orderDiagnostic}
+                            orderId={orderId}
+                            selectedClient={selectedClient}
+                            orderServices={orderServices}
+                            orderDetails={orderDetails}
+                            reloadOrderPageComponents={this.props.reloadOrderPageComponents}
                         />
                     </TabPane>
                 )}
-                <TabPane
-                    forceRender
-                    tab={`${formatMessage({
-                        id: "add_order_form.services",
-                        defaultMessage: "Services",
-                    })} (${countServices})`}
-                    key="2"
-                >
-                    <ServicesTable
-                        errors={errors}
-                        fields={servicesTableFieldsProps}
-                        services={services}
-                        employees={employees}
-                        form={form}
-                        allServices={allServices}
-                        orderServices={orderServices}
-                        user={user}
-                        selectedClient={selectedClient}
-                        fetchTecdocSuggestions={fetchTecdocSuggestions}
-                    />
-                    <DiscountPanel
-                        fields={discountTabFieldsProps}
-                        form={form}
-                        forbidden={areServicesForbidden}
-                        price={priceServices}
-                        discountFieldName={"servicesDiscount"}
-                        fetchedOrder={fetchedOrder}
-                        totalServicesProfit={totalServicesProfit}
-                        servicesMode
-                    />
-                </TabPane>
-                <TabPane
-                    forceRender
-                    tab={`${formatMessage({
-                        id: "add_order_form.details",
-                        defaultMessage: "Details",
-                    })} (${countDetails})`}
-                    key="3"
-                >
-                    <DetailsTable
-                        errors={errors}
-                        fields={detailsTableFieldsProps}
-                        details={details}
-                        tecdocId={tecdocId}
-                        clientVehicleId={clientVehicleId}
-                        orderDetails={orderDetails}
-                        form={form}
-                        allDetails={allDetails}
-                        fetchTecdocDetailsSuggestions={
-                            fetchTecdocDetailsSuggestions
-                        }
-                        detailsSuggestions={detailsSuggestions}
-                        clearTecdocDetailsSuggestions={
-                            clearTecdocDetailsSuggestions
-                        }
-                        clearTecdocSuggestions={clearTecdocSuggestions}
-                        suggestions={suggestions}
-                        detailsSuggestionsFetching={detailsSuggestionsFetching}
-                        suggestionsFetching={suggestionsFetching}
-                        user={user}
-                        setStoreProductsSearchQuery={
-                            this.props.setStoreProductsSearchQuery
-                        }
-                        storeProducts={this.props.storeProducts}
-                        recommendedPrice={this.props.recommendedPrice}
-                        recommendedPriceLoading={
-                            this.props.recommendedPriceLoading
-                        }
-                        fetchRecommendedPrice={this.props.fetchRecommendedPrice}
-                        setModal={setModal}
-                    />
-                    <DiscountPanel
-                        fields={discountTabFieldsProps}
-                        form={form}
-                        forbidden={areDetailsForbidden}
-                        price={priceDetails}
-                        totalDetailsProfit={totalDetailsProfit}
-                        discountFieldName={"detailsDiscount"}
-                        fetchedOrder={fetchedOrder}
-                        detailsMode
-                    />
-                </TabPane>
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={`${formatMessage({
+                            id: "add_order_form.services",
+                            defaultMessage: "Services",
+                        })} (${orderServices.length})`}
+                        key="2"
+                    >
+                        <ServicesTable
+                            disabled={clodedEditing}
+                            laborTimeMultiplier={this.props.laborTimeMultiplier}
+                            defaultEmployeeId={this.props.defaultEmployeeId}
+                            normHourPrice={normHourPrice}
+                            tecdocId={tecdocId}
+                            errors={errors}
+                            orderId={orderId}
+                            fields={servicesTableFieldsProps}
+                            services={services}
+                            employees={employees}
+                            form={form}
+                            allServices={allServices}
+                            orderServices={orderServices}
+                            user={user}
+                            fetchedOrder={fetchedOrder}
+                            agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
+                            selectedClient={selectedClient}
+                            fetchTecdocSuggestions={fetchTecdocSuggestions}
+                            completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
+                            reloadOrderForm={this.props.reloadOrderForm}
+                        />
+                        <DiscountPanel
+                            fields={discountTabFieldsProps}
+                            form={form}
+                            forbidden={areServicesForbidden}
+                            price={priceServices}
+                            discountFieldName={"servicesDiscount"}
+                            fetchedOrder={fetchedOrder}
+                            totalServicesProfit={totalServicesProfit}
+                            servicesMode
+                            reloadOrderForm={this.props.reloadOrderForm}
+                        />
+                    </TabPane>
+                )}
+                {!addOrderForm && (
+                    <TabPane
+                        forceRender
+                        tab={`${formatMessage({
+                            id: "add_order_form.details",
+                            defaultMessage: "Details",
+                        })} (${orderDetails.length})`}
+                        key="3"
+                    >
+                        <DetailsTable
+                            disabled={clodedEditing}
+                            errors={errors}
+                            orderId={orderId}
+                            fields={detailsTableFieldsProps}
+                            details={details}
+                            tecdocId={tecdocId}
+                            clientVehicleId={clientVehicleId}
+                            orderDetails={orderDetails}
+                            form={form}
+                            allDetails={allDetails}
+                            fetchTecdocDetailsSuggestions={
+                                fetchTecdocDetailsSuggestions
+                            }
+                            detailsSuggestions={detailsSuggestions}
+                            clearTecdocDetailsSuggestions={
+                                clearTecdocDetailsSuggestions
+                            }
+                            clearTecdocSuggestions={clearTecdocSuggestions}
+                            suggestions={suggestions}
+                            detailsSuggestionsFetching={detailsSuggestionsFetching}
+                            suggestionsFetching={suggestionsFetching}
+                            user={user}
+                            setStoreProductsSearchQuery={
+                                this.props.setStoreProductsSearchQuery
+                            }
+                            storeProducts={this.props.storeProducts}
+                            recommendedPrice={this.props.recommendedPrice}
+                            recommendedPriceLoading={
+                                this.props.recommendedPriceLoading
+                            }
+                            fetchRecommendedPrice={this.props.fetchRecommendedPrice}
+                            setModal={setModal}
+                            completedDiagnostic={orderDiagnostic? orderDiagnostic.completed : null}
+                            agreementCompleted={_.get(fetchedOrder, "order.agreementCompleted")}
+                            reloadOrderForm={this.props.reloadOrderForm}
+                        />
+                        <DiscountPanel
+                            orderDetails={orderDetails}
+                            fields={discountTabFieldsProps}
+                            form={form}
+                            forbidden={areDetailsForbidden}
+                            price={priceDetails}
+                            totalDetailsProfit={totalDetailsProfit}
+                            discountFieldName={"detailsDiscount"}
+                            fetchedOrder={fetchedOrder}
+                            detailsMode
+                            reloadOrderForm={this.props.reloadOrderForm}
+                        />
+                    </TabPane>
+                )}
                 <TabPane
                     forceRender
                     key="4"

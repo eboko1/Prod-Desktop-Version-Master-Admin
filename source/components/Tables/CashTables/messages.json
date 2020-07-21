@@ -14,6 +14,7 @@
     "cash-table.order": "Order #",
     "cash-table.activity": "Increase / Decrease",
     "cash-table.comment": "Comment",
+    "cash-table.tag": "Analytics",
     "cash-table_icon.unremovable": "Cashbox can't be deleted because it has already contain some cash orders"
   },
   "ru": {
@@ -32,6 +33,7 @@
     "cash-table.order": "№ Наряд-заказа",
     "cash-table.activity": "Приход / Расход",
     "cash-table.comment": "Комментарий",
+    "cash-table.tag": "Аналитика",
     "cash-table_icon.unremovable": "Касса не может быть удалена, поскольку уже содержит кассовые ордера"
   },
   "uk": {
@@ -50,6 +52,7 @@
     "cash-table.order": "№ Замовлення",
     "cash-table.activity": "Прибуток / Витрата",
     "cash-table.comment": "Коментар",
+    "cash-table.tag": "Аналітика",
     "cash-table_icon.unremovable": "Каса не може бути видалена, тому що вже містить касові ордери"
   }
 }

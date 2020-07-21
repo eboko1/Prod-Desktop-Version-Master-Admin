@@ -1,0 +1,822 @@
+// vendor
+import React, { Component } from "react";
+import { FormattedMessage, injectIntl } from "react-intl";
+import { Form, Select, Icon } from "antd";
+import classNames from "classnames/bind";
+import moment from "moment";
+import _ from "lodash";
+
+// proj
+import {
+    DecoratedInput,
+    DecoratedDatePicker,
+    DecoratedTimePicker,
+    DecoratedSelect,
+    DecoratedSlider,
+    DecoratedTextArea,
+} from "forms/DecoratedFields";
+import { Numeral } from "commons";
+import {
+    formVerticalLayout,
+    formCommentLayout,
+    fromExpandedCommentLayout,
+    formRecommendationLayout,
+} from "../layouts";
+import book from "routes/book";
+import {
+    getDateTimeConfig,
+    permissions,
+    isForbidden,
+    mergeDateTime,
+    addDuration,
+    goTo,
+} from "utils";
+
+// own
+import { formHeaderItemLayout } from "../layouts";
+import Styles from "./styles.m.css";
+const FormItem = Form.Item;
+const Option = Select.Option;
+
+const cx = classNames.bind(Styles);
+
+// TODO: move it into utils
+// blocks hours for time picker
+const getAvailableHoursDisabledHours = propsAvailableHours => () => {
+    const availableHours = _.get(propsAvailableHours, "0", []);
+
+    return _.difference(
+        Array(24)
+            .fill(1)
+            .map((value, index) => index),
+        availableHours.map(availableHour =>
+            Number(moment(availableHour).format("HH")),
+        ),
+    );
+};
+
+// TODO: move it into utils
+// blocks minutes for time picker
+const getAvailableHoursDisabledMinutes = propsAvailableHours => hour => {
+    const availableHours = _.get(propsAvailableHours, "0", []);
+
+    const availableMinutes = availableHours
+        .map(availableHour => moment(availableHour))
+        .filter(availableHour => Number(availableHour.format("HH")) === hour)
+        .map(availableHour => Number(availableHour.format("mm")));
+
+    return _.difference([0, 30], availableMinutes);
+};
+
+@injectIntl
+export default class OrderFormBody extends Component {
+    constructor(props) {
+        super(props);
+
+        const {
+            intl: { formatMessage },
+        } = props;
+
+        // reusable validation rule
+        this.requiredRule = [
+            {
+                required: true,
+                message: formatMessage({
+                    id: "required_field",
+                }),
+            },
+        ];
+
+        const availableHoursDisabledMinutes = getAvailableHoursDisabledMinutes(
+            props.availableHours,
+        );
+        const availableHoursDisabledHours = getAvailableHoursDisabledHours(
+            props.availableHours,
+        );
+
+        const stationsOptions = this._getStationsOptions();
+        const managersOptions = this._getManagersOptions();
+        const employeesOptions = this._getEmployeesOptions();
+
+        const recommendationStyles = this._getRecommendationStyles();
+
+        const paymentMethodOptions = [
+            <Option value="cash" key="cash">
+                <Icon type="wallet" />
+                <FormattedMessage id="add_order_form.cash" />
+            </Option>,
+            <Option value="noncash" key="noncash">
+                <Icon type="credit-card" />
+                <FormattedMessage id="add_order_form.non-cash" />
+            </Option>,
+            <Option value="visa" key="visa">
+                <Icon type="credit-card" />
+                <FormattedMessage id="add_order_form.visa" />
+            </Option>,
+        ];
+        // TODO: move into utils
+        // <FormatMessage id=''> triggers re-render cuz it is creating new obj
+        // use formatMassage({id: }) instead
+        this._localizationMap = {};
+
+        const deliveryDatetimeConfig = this._getDeliveryDatetimeConfig();
+        const beginDatetimeConfig = this._getBeginDatetimeConfig();
+        // we write all data to state to handle updates correctly
+        this.state = {
+            deliveryDatetimeConfig,
+            availableHoursDisabledMinutes,
+            availableHoursDisabledHours,
+            beginDatetimeConfig,
+            stationsOptions,
+            employeesOptions,
+            managersOptions,
+            paymentMethodOptions,
+            recommendationStyles,
+        };
+    }
+
+    shouldComponentUpdate(nextProps, nextState) {
+        return (
+            !_.isEqual(nextProps, this.props) ||
+            !_.isEqual(nextState, this.state)
+        );
+    }
+
+    componentDidUpdate(prevProps) {
+        const oldAvailableHours = _.get(prevProps, ["availableHours", "0"]);
+        const newAvailableHours = _.get(this.props, ["availableHours", "0"]);
+        // if availableHours has been changed we need to generate new configs
+        if (oldAvailableHours !== newAvailableHours) {
+            const availableHoursDisabledMinutes = getAvailableHoursDisabledMinutes(
+                this.props.availableHours,
+            );
+            const availableHoursDisabledHours = getAvailableHoursDisabledHours(
+                this.props.availableHours,
+            );
+
+            this.setState({
+                availableHoursDisabledHours,
+                availableHoursDisabledMinutes,
+            });
+        }
+
+        if (prevProps.stations !== this.props.stations) {
+            const stationsOptions = this._getStationsOptions();
+            this.setState({ stationsOptions });
+        }
+
+        if (prevProps.managers !== this.props.managers) {
+            const managersOptions = this._getManagersOptions();
+            this.setState({ managersOptions });
+        }
+
+        if (prevProps.employees !== this.props.employees) {
+            const employeesOptions = this._getEmployeesOptions();
+            this.setState({ employeesOptions });
+        }
+        // check all fields related for deliveryDatetime
+        const deliveryFields = [
+            "schedule",
+            "zeroStationLoadBeginDate",
+            "zeroStationLoadBeginTime",
+            "zeroStationLoadDuration",
+            "deliveryDate",
+        ];
+        // check deliveryDatetime depended properties changes
+        // if moment -> toISOString to check moment objects as strings to prevent re-renders
+        const deliveryConfigUpdate = deliveryFields.reduce((prev, cur) => {
+            const parsedThisProps = moment.isMoment(this.props[cur])
+                ? this.props[cur].toISOString()
+                : this.props[cur];
+            const parsedPrevProps = moment.isMoment(prevProps[cur])
+                ? prevProps[cur].toISOString()
+                : prevProps[cur];
+
+            return prev || parsedThisProps !== parsedPrevProps;
+        }, false);
+        // if deliveryDatetime fields have been updated
+        // get new config and set it to local state to trigger componentUpdate with new config
+        if (deliveryConfigUpdate) {
+            this.setState({
+                deliveryDatetimeConfig: this._getDeliveryDatetimeConfig(),
+            });
+        }
+        // update check for beginDatetime
+        const currentZeroStationLoadBeginDate = this.props
+            .zeroStationLoadBeginDate
+            ? this.props.zeroStationLoadBeginDate.toISOString()
+            : void 0;
+        const prevZeroStationLoadBeginDate = prevProps.zeroStationLoadBeginDate
+            ? prevProps.zeroStationLoadBeginDate.toISOString()
+            : void 0;
+
+        if (
+            this.props.schedule !== prevProps.schedule ||
+            currentZeroStationLoadBeginDate !== prevZeroStationLoadBeginDate
+        ) {
+            this.setState({
+                beginDatetimeConfig: this._getBeginDatetimeConfig(),
+            });
+        }
+    }
+
+    _getRecommendationStyles() {
+        const { orderId: id, orderHistory } = this.props;
+        const orders = _.get(orderHistory, "orders");
+        const orderIndexInHistory = _.findIndex(orders, { id });
+        const prevRecommendation =
+            orderIndexInHistory !== -1
+                ? _.get(orderHistory, [
+                      "orders",
+                      orderIndexInHistory + 1,
+                      "recommendation",
+                  ])
+                : null;
+
+        const value = cx({
+            comment: true,
+            commentExtended: !prevRecommendation,
+        });
+
+        return { value, prevRecommendation };
+    }
+
+    // TODO: move into utils
+    bodyUpdateIsForbidden() {
+        return isForbidden(this.props.user, permissions.ACCESS_ORDER_BODY);
+    }
+
+    _getBeginDatetimeConfig() {
+        const { schedule } = this.props;
+        const { disabledDate, beginTime } = getDateTimeConfig(void 0, schedule);
+
+        return { disabledDate, beginTime };
+    }
+
+    _getDeliveryDatetimeConfig() {
+        const {
+            schedule,
+            zeroStationLoadBeginDate,
+            zeroStationLoadBeginTime,
+            zeroStationLoadDuration,
+            deliveryDate,
+        } = this.props;
+
+        const excludeConfig = [
+            {
+                momentDate: zeroStationLoadBeginDate,
+                momentTime: zeroStationLoadBeginTime,
+                duration: zeroStationLoadDuration,
+            },
+        ];
+
+        const {
+            disabledHours,
+            disabledMinutes,
+            disabledSeconds,
+            disabledDate: dateTimeDisabledDate,
+            beginTime,
+        } = getDateTimeConfig(moment(deliveryDate), schedule, excludeConfig);
+
+        const initialBeginDatetime = moment(zeroStationLoadBeginDate).set({
+            hours: 0,
+            minutes: 0,
+            milliseconds: 0,
+            seconds: 0,
+        });
+
+        const sameOfBeforeDisabledDate = date =>
+            dateTimeDisabledDate(date) ||
+            (date && date.isSameOrBefore(initialBeginDatetime));
+
+        const initialDeliveryDatetime =
+            zeroStationLoadBeginDate &&
+            zeroStationLoadBeginTime &&
+            zeroStationLoadDuration
+                ? addDuration(
+                      mergeDateTime(
+                          zeroStationLoadBeginDate,
+                          zeroStationLoadBeginTime,
+                      ),
+                      zeroStationLoadDuration,
+                  )
+                : void 0;
+
+        return {
+            disabledHours,
+            disabledMinutes,
+            disabledSeconds,
+            disabledDate: sameOfBeforeDisabledDate,
+            beginTime,
+            initialDeliveryDatetime,
+        };
+    }
+
+    // prevent re-renders
+    _getLocalization(key) {
+        if (!this._localizationMap[key]) {
+            this._localizationMap[key] = this.props.intl.formatMessage({
+                id: key,
+            });
+        }
+
+        return this._localizationMap[key];
+    }
+
+    _getStationsOptions = () => {
+        return _.get(this.props, "stations", []).map(({ name, num }) => {
+            return (
+                <Option value={num} key={String(num)}>
+                    {name || String(num)}
+                </Option>
+            );
+        });
+    };
+
+    _getManagersOptions = () => {
+        return _.get(this.props, "managers", []).map(manager => (
+            <Option
+                disabled={manager.disabled}
+                value={manager.id}
+                key={`manager-${manager.id}`}
+            >
+                {`${manager.managerName} ${manager.managerSurname}`}
+            </Option>
+        ));
+    };
+
+    _getEmployeesOptions = () => {
+        return _.get(this.props, "employees", []).map(employee => {
+            if(!employee.disabled) {
+                return (
+                    <Option
+                        value={employee.id}
+                        key={`employee-${employee.id}`}
+                        disabled={employee.disabled}
+                    >
+                        {`${employee.name} ${employee.surname}`}
+                    </Option>
+                )
+            }
+        });
+    };
+
+    _redirectToCashFlow = () => {
+        if (!isForbidden(this.props.user, permissions.ACCESS_ACCOUNTING)) {
+            goTo(book.cashFlowPage, {
+                cashFlowFilters: { ...this.props.cashFlowFilters },
+            });
+        }
+    };
+
+    _totalStyles = disabled =>
+        cx({
+            totalDisabled: disabled,
+            total: true,
+        });
+
+    render() {
+        // TODO: decomposite for separate view components
+        const dateBlock = this._renderDateBlock();
+        const masterBlock = this._renderMasterBlock();
+        const duration = this._renderDuration();
+        const comments = this._renderCommentsBlock();
+
+        return (
+            <div className={Styles.formHeader}>
+                <div className={Styles.headerColumns}>
+                    {dateBlock} {masterBlock}
+                </div>
+                {duration}
+                {comments}
+            </div>
+        );
+    }
+
+    _renderDuration = () => {
+        const {
+            fetchedOrder,
+            totalHours,
+            fields,
+            zeroStationLoadDuration,
+            deliveryDate,
+            form: { getFieldDecorator },
+            intl: { formatMessage },
+            errors,
+        } = this.props;
+        const {
+            disabledDate,
+            disabledHours,
+            disabledMinutes,
+            disabledSeconds,
+            beginTime,
+            initialDeliveryDatetime: calculatedDeliveryDatetime,
+        } = this.state.deliveryDatetimeConfig;
+
+        const initialDeliveryDatetime = _.get(
+            fetchedOrder,
+            "order.deliveryDatetime",
+        );
+
+        return (
+            <div className={Styles.durationBlock}>
+                <DecoratedSlider
+                    errors={errors}
+                    fieldValue={_.get(fields, "stationLoads[0].duration")}
+                    defaultGetValueProps
+                    field="stationLoads[0].duration"
+                    formItem
+                    formItemLayout={formHeaderItemLayout}
+                    className={`${Styles.duration} ${Styles.deliveryDatetime}`}
+                    colon={false}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    initialValue={
+                        _.get(fetchedOrder, "order.duration") || totalHours
+                    }
+                    label={`${this._getLocalization(
+                        "time",
+                    )} (${zeroStationLoadDuration}${this._getLocalization(
+                        "add_order_form.hours_shortcut",
+                    )})`}
+                    getFieldDecorator={getFieldDecorator}
+                    min={0}
+                    step={0.5}
+                    max={8}
+                />
+                <div style={{display: 'none'}}>
+                    <DecoratedInput
+                        errors={errors}
+                        fieldValue={_.get(fields, "stationLoads[0].status")}
+                        defaultGetValueProps
+                        field="stationLoads[0].status"
+                        hiddeninput='hiddeninput'
+                        formItem
+                        formItemLayout={formHeaderItemLayout}
+                        className={`${Styles.duration} ${Styles.deliveryDatetime}`}
+                        colon={false}
+                        disabled={this.bodyUpdateIsForbidden()}
+                        initialValue={
+                            'TO_DO'
+                        }
+                        label={`${this._getLocalization(
+                            "time",
+                        )} (${zeroStationLoadDuration}${this._getLocalization(
+                            "add_order_form.hours_shortcut",
+                        )})`}
+                        getFieldDecorator={getFieldDecorator}
+                    />
+                    <DecoratedDatePicker
+                        errors={errors}
+                        defaultGetValueProps
+                        fieldValue={
+                            _.get(fields, "deliveryDate")
+                                ? _.get(fields, "deliveryDate").toISOString()
+                                : void 0
+                        }
+                        getFieldDecorator={getFieldDecorator}
+                        disabled={this.bodyUpdateIsForbidden()}
+                        field="deliveryDate"
+                        hasFeedback
+                        formItem
+                        formItemLayout={formHeaderItemLayout}
+                        label={this._getLocalization(
+                            "add_order_form.delivery_date",
+                        )}
+                        colon={false}
+                        className={Styles.deliveryDatetime}
+                        rules={this.requiredRule}
+                        placeholder={this._getLocalization(
+                            "add_order_form.select_date",
+                        )}
+                        disabledDate={disabledDate}
+                        format={"YYYY-MM-DD"} // HH:mm
+                        showTime={false}
+                        initialValue={
+                            initialDeliveryDatetime
+                                ? moment(initialDeliveryDatetime).toISOString()
+                                : calculatedDeliveryDatetime
+                                ? calculatedDeliveryDatetime.toISOString()
+                                : void 0
+                        }
+                    />
+                    <DecoratedTimePicker
+                        errors={errors}
+                        defaultGetValueProps
+                        fieldValue={
+                            _.get(fields, "deliveryTime")
+                                ? _.get(fields, "deliveryTime").toISOString()
+                                : void 0
+                        }
+                        formItem
+                        disabled={Boolean(
+                            this.bodyUpdateIsForbidden() || !deliveryDate,
+                        )}
+                        disabledHours={disabledHours}
+                        disabledMinutes={disabledMinutes}
+                        disabledSeconds={disabledSeconds}
+                        formItemLayout={formHeaderItemLayout}
+                        defaultOpenValue={moment(
+                            `${beginTime}:00`,
+                            "HH:mm:ss",
+                        ).toISOString()}
+                        field="deliveryTime"
+                        hasFeedback
+                        label={this._getLocalization(
+                            "add_order_form.delivery_time",
+                        )}
+                        formatMessage={formatMessage}
+                        className={Styles.deliveryDatetime}
+                        getFieldDecorator={getFieldDecorator}
+                        rules={this.requiredRule}
+                        placeholder={this._getLocalization(
+                            "add_order_form.provide_time",
+                        )}
+                        initialValue={
+                            initialDeliveryDatetime
+                                ? moment(initialDeliveryDatetime).toISOString()
+                                : calculatedDeliveryDatetime
+                                ? calculatedDeliveryDatetime.toISOString()
+                                : void 0
+                        }
+                        minuteStep={30}
+                    />
+                </div>
+            </div>
+        );
+    };
+
+    _renderDateBlock = () => {
+        const {
+            location,
+            fetchedOrder,
+
+            zeroStationLoadBeginDate,
+            zeroStationLoadStation,
+            fields,
+            errors,
+        } = this.props;
+        const { formatMessage } = this.props.intl;
+        const { getFieldDecorator } = this.props.form;
+
+        const { disabledDate, beginTime } = this.state.beginDatetimeConfig;
+
+        const beginDatetime =
+            _.get(fetchedOrder, "order.beginDatetime") ||
+            (this.bodyUpdateIsForbidden()
+                ? void 0
+                : _.get(location, "state.beginDatetime"));
+
+        const momentBeginDatetime = beginDatetime
+            ? moment(beginDatetime).toISOString()
+            : void 0;
+
+        return (
+            <div className={Styles.headerCol}>
+                <DecoratedDatePicker
+                    errors={errors}
+                    defaultGetValueProps
+                    fieldValue={
+                        _.get(fields, "stationLoads[0].beginDate")
+                            ? _.get(
+                                  fields,
+                                  "stationLoads[0].beginDate",
+                              ).toISOString()
+                            : void 0
+                    }
+                    getFieldDecorator={getFieldDecorator}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    field="stationLoads[0].beginDate"
+                    hasFeedback
+                    formItem
+                    formItemLayout={formHeaderItemLayout}
+                    // formatMessage={ formatMessage }
+                    label={this._getLocalization(
+                        "add_order_form.enrollment_date",
+                    )}
+                    allowClear={false}
+                    colon={false}
+                    className={Styles.datePanelItem}
+                    rules={this.requiredRule}
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_date",
+                    )}
+                    disabledDate={disabledDate}
+                    format={"YYYY-MM-DD"} // HH:mm
+                    showTime={false}
+                    initialValue={momentBeginDatetime}
+                />
+                <DecoratedSelect
+                    errors={errors}
+                    colon={false}
+                    className={Styles.datePanelItem}
+                    getFieldDecorator={getFieldDecorator}
+                    field="stationLoads[0].station"
+                    fieldValue={_.get(fields, "stationLoads[0].station")}
+                    defaultGetValueProps
+                    formItem
+                    formItemLayout={formHeaderItemLayout}
+                    rules={this.requiredRule}
+                    label={this._getLocalization("add_order_form.station")}
+                    hasFeedback
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_station",
+                    )}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    initialValue={
+                        _.get(fetchedOrder, "order.stationNum") ||
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : _.get(location, "state.stationNum"))
+                    }
+                >
+                    {this.state.stationsOptions}
+                </DecoratedSelect>
+                <DecoratedTimePicker
+                    errors={errors}
+                    defaultGetValueProps
+                    fieldValue={
+                        _.get(fields, "stationLoads[0].beginTime")
+                            ? _.get(
+                                  fields,
+                                  "stationLoads[0].beginTime",
+                              ).toISOString()
+                            : void 0
+                    }
+                    formItem
+                    disabled={
+                        this.bodyUpdateIsForbidden() ||
+                        !zeroStationLoadBeginDate ||
+                        !zeroStationLoadStation
+                    }
+                    formItemLayout={formHeaderItemLayout}
+                    defaultOpenValue={moment(
+                        `${beginTime}:00`,
+                        "HH:mm:ss",
+                    ).toISOString()}
+                    field="stationLoads[0].beginTime"
+                    hasFeedback
+                    disabledHours={this.state.availableHoursDisabledHours}
+                    disabledMinutes={this.state.availableHoursDisabledMinutes}
+                    label={this._getLocalization("add_order_form.applied_on")}
+                    formatMessage={formatMessage}
+                    className={Styles.datePanelItem}
+                    getFieldDecorator={getFieldDecorator}
+                    rules={this.requiredRule}
+                    placeholder={this._getLocalization(
+                        "add_order_form.provide_time",
+                    )}
+                    minuteStep={30}
+                    initialValue={momentBeginDatetime}
+                />
+            </div>
+        );
+    };
+
+    _renderMasterBlock = () => {
+        const {
+            fetchedOrder,
+            managers,
+            authentificatedManager,
+            fields,
+            errors,
+            location
+        } = this.props;
+
+        const isOwnBusiness =
+            _.find(managers, {
+                id: authentificatedManager,
+            }) || void 0;
+
+        const { getFieldDecorator } = this.props.form;
+        return (
+            <div className={Styles.headerCol}>
+                <DecoratedSelect
+                    errors={errors}
+                    fieldValue={_.get(fields, "manager")}
+                    defaultGetValueProps
+                    field="manager"
+                    formItem
+                    getFieldDecorator={getFieldDecorator}
+                    rules={this.requiredRule}
+                    label={this._getLocalization("add_order_form.manager")}
+                    hasFeedback
+                    colon={false}
+                    className={Styles.datePanelItem}
+                    initialValue={
+                        _.get(fetchedOrder, "order.managerId") ||
+                        (this.bodyUpdateIsForbidden()
+                            ? void 0
+                            : isOwnBusiness && authentificatedManager)
+                    }
+                    disabled={this.bodyUpdateIsForbidden()}
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_manager",
+                    )}
+                    formItemLayout={formHeaderItemLayout}
+                >
+                    {this.state.managersOptions}
+                </DecoratedSelect>
+                <DecoratedSelect
+                    errors={errors}
+                    formItem
+                    fieldValue={_.get(fields, "employee")}
+                    defaultGetValueProps
+                    field="employee"
+                    label={this._getLocalization("order_form_table.master")}
+                    className={Styles.durationPanelItem}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    getFieldDecorator={getFieldDecorator}
+                    initialValue={_.get(fetchedOrder, "order.employeeId") || (location.state ? location.state.employeeId : undefined)}
+                    placeholder={this._getLocalization(
+                        "order_form_table.select_master",
+                    )}
+                    formItemLayout={formHeaderItemLayout}
+                >
+                    {this.state.employeesOptions}
+                </DecoratedSelect>
+                <DecoratedSelect
+                    errors={errors}
+                    formItem
+                    fieldValue={_.get(fields, "appurtenanciesResponsible")}
+                    defaultGetValueProps
+                    field="appurtenanciesResponsible"
+                    label={this._getLocalization(
+                        "order_form_table.appurtenancies_responsible",
+                    )}
+                    className={Styles.durationPanelItem}
+                    disabled={this.bodyUpdateIsForbidden()}
+                    getFieldDecorator={getFieldDecorator}
+                    initialValue={_.get(
+                        fetchedOrder,
+                        "order.appurtenanciesResponsibleId",
+                    )}
+                    placeholder={this._getLocalization(
+                        "add_order_form.select_appurtenancies_responsible",
+                    )}
+                    formItemLayout={formHeaderItemLayout}
+                >
+                    {this.state.employeesOptions}
+                </DecoratedSelect>
+            </div>
+        );
+    };
+
+    _renderCommentsBlock = () => {
+        const { fetchedOrder, user, fields, errors } = this.props;
+        const { ACCESS_ORDER_COMMENTS } = permissions;
+        const { getFieldDecorator } = this.props.form;
+
+        return (
+            <div className={Styles.commentsBlock}>
+                <DecoratedTextArea
+                    errors={errors}
+                    defaultGetValueProps
+                    fieldValue={_.get(fields, "comment")}
+                    className={this.state.recommendationStyles.value}
+                    formItem
+                    formItemLayout={
+                        this.state.recommendationStyles.prevRecommendation
+                            ? formCommentLayout
+                            : fromExpandedCommentLayout
+                    }
+                    colon={false}
+                    label={this._getLocalization(
+                        "add_order_form.client_comments",
+                    )}
+                    disabled={isForbidden(user, ACCESS_ORDER_COMMENTS)}
+                    getFieldDecorator={getFieldDecorator}
+                    field="comment"
+                    initialValue={_.get(fetchedOrder, "order.comment")}
+                    rules={this.recommendationRules}
+                    placeholder={this._getLocalization(
+                        "add_order_form.client_comments",
+                    )}
+                    autosize={this._recommendationAutoSize}
+                />
+                {this.state.recommendationStyles.prevRecommendation && (
+                    <DecoratedTextArea
+                        errors={errors}
+                        className={Styles.comment}
+                        formItem
+                        formItemLayout={formRecommendationLayout}
+                        colon={false}
+                        label={this._getLocalization(
+                            "add_order_form.prev_order_recommendations",
+                        )}
+                        disabled
+                        getFieldDecorator={getFieldDecorator}
+                        field="prevRecommendation"
+                        initialValue={
+                            this.state.recommendationStyles.prevRecommendation
+                        }
+                        rules={this.recommendationRules}
+                        placeholder={this._getLocalization(
+                            "add_order_form.client_comments",
+                        )}
+                        autosize={this._prevRecommendationAutoSize}
+                    />
+                )}
+            </div>
+        );
+    };
+}

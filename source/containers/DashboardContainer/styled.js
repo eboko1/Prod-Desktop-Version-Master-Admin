@@ -22,20 +22,30 @@ const _loadStatus = load => {
 
 // styled-components
 export const Dashboard = styled.div`
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    grid-gap: 1%;
+    display: flex;
     overflow-y: hidden;
+
+    & .timeColumn {
+        width: 10%;
+        min-width: 10%;
+    }
 `;
 
 export const DashboardGrid = styled.div`
-    display: grid;
-    grid-template-columns: ${props =>
-        `repeat(${props.columns}, minmax(13%, 1fr))`};
-    grid-gap: 1%;
-    width: auto;
+    
+    position: relative;
+    width: 100%;
     overflow-x: scroll;
     overflow-y: hidden;
+
+    @media screen and (min-width: 1200px) {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    @media screen and (max-width: 1199px) {
+        display: flex;
+    }
 
     &::-webkit-scrollbar {
         width: 0.8em;
@@ -70,10 +80,36 @@ export const DashboardGrid = styled.div`
 
 export const DashboardColumn = styled.div`
     padding: 2px;
+    background: #f1f1f2;
     border: ${props =>
         `${props.currentDay &&
             props.currentDay === props.day &&
             '2px solid var(--secondary)'}`};
+
+    width: 13%;
+    min-width: 140px;
+    margin-right: 5px;
+
+    @media screen and (max-width: 639px) {
+        min-width: 48%;
+        margin: 0 1%;
+    }
+    @media screen and (min-width: 640px) and (max-width: 1199px) {
+        min-width: 24%;
+        margin: 0 1%;
+    }
+    ${''
+        /*@media screen and (max-width: 1199px) {
+            position: ${props =>
+                `${(props.currentDay &&
+                    props.currentDay === props.day || props.isMobile) &&
+                    'absolute'}`};
+            z-index: ${props =>
+                `${(props.currentDay &&
+                    props.currentDay === props.day || props.isMobile) &&
+                    '100'}`};
+        }*/
+    }
     ${'' /* display: grid;
     grid-template-rows: ${props =>
         `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
@@ -81,14 +117,11 @@ export const DashboardColumn = styled.div`
 `;
 
 export const DashboardBody = styled.div`
-    display: grid;
-    grid-template-columns: 90% 10%;
+    display: flex;
 `;
 
 export const DashboardContentColumn = styled.div`
-    display: grid;
-    grid-template-rows: ${props =>
-        `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
+    width: 90%;
     border: 1px solid black;
 `;
 
@@ -101,9 +134,7 @@ export const DashboardContentBox = styled.div`
 
 /* eslint-disable func-names */
 export const DashboardAddOrderColumn = styled.div`
-    display: grid;
-    grid-template-rows: ${props =>
-        `repeat(${props.dashboard.rows}, ${ROW_HEIGHT}px)`};
+    width: 10%;
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     border-right: 1px solid black;
@@ -111,8 +142,10 @@ export const DashboardAddOrderColumn = styled.div`
         mode,
         daysWithConflicts,
         stationsWithConflicts,
+        employeesWithConflicts,
         day,
         stationNum,
+        employeeId,
         globalPosition,
     }) {
         if (mode === 'calendar') {
@@ -124,10 +157,23 @@ export const DashboardAddOrderColumn = styled.div`
 
             return 'white';
         }
-        if (stationsWithConflicts.includes(stationNum)) {
-            return globalPosition % 2
-                ? 'rgba(var(--warningRGB), 0.3)'
-                : 'rgba(var(--warningRGB), 0.4)';
+        if(mode === 'stations') {
+            if (stationsWithConflicts.includes(stationNum)) {
+                return globalPosition % 2
+                    ? 'rgba(var(--warningRGB), 0.3)'
+                    : 'rgba(var(--warningRGB), 0.4)';
+            }
+
+            return 'white';
+        }
+        if(mode === 'employees') {
+            if (employeesWithConflicts.includes(employeeId)) {
+                return globalPosition % 2
+                    ? 'rgba(var(--warningRGB), 0.3)'
+                    : 'rgba(var(--warningRGB), 0.4)';
+            }
+
+            return 'white';
         }
 
         return 'white';
@@ -138,8 +184,10 @@ export const DashboardAddOrderColumn = styled.div`
         mode,
         daysWithConflicts,
         stationsWithConflicts,
+        employeesWithConflicts,
         day,
         stationNum,
+        employeeId,
         globalPosition,
     }) {
         if (mode === 'calendar') {
@@ -151,10 +199,23 @@ export const DashboardAddOrderColumn = styled.div`
 
             return 'var(--snow)';
         }
-        if (stationsWithConflicts.includes(stationNum)) {
-            return globalPosition % 2
-                ? 'rgba(var(--warningRGB), 0.3)'
-                : 'rgba(var(--warningRGB), 0.4)';
+        if(mode === 'stations') {
+            if (stationsWithConflicts.includes(stationNum)) {
+                return globalPosition % 2
+                    ? 'rgba(var(--warningRGB), 0.3)'
+                    : 'rgba(var(--warningRGB), 0.4)';
+            }
+
+            return 'var(--snow)';
+        }
+        if(mode === 'employees') {
+            if (employeesWithConflicts.includes(employeeId)) {
+                return globalPosition % 2
+                    ? 'rgba(var(--warningRGB), 0.3)'
+                    : 'rgba(var(--warningRGB), 0.4)';
+            }
+            
+            return 'var(--snow)';
         }
 
         return 'var(--snow)';
