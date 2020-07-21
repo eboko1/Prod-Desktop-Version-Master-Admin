@@ -95,7 +95,7 @@ export class MobileRecordForm extends Component {
                             type='primary'
                             onClick={ () => onStatusChange('approve') }
                         >
-                            <FormattedMessage id='save' />
+                            <FormattedMessage id='add_order_form.save_appointment' />
                         </Button>
                     ) }
                     { status !== 'cancel' && (
