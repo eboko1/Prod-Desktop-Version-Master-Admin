@@ -60,6 +60,8 @@ export class AbstractClientForm extends Component {
 
         return (
             <Form layout='vertical' className={ Styles.form }>
+                {window.innerWidth >= 1200 ? 
+                <>
                 <Row gutter={ 24 } type='flex'>
                     <Col span={ 8 }>
                         <DecoratedInput
@@ -252,6 +254,71 @@ export class AbstractClientForm extends Component {
                         />
                     </Col>
                 </Row>
+                </>
+                : 
+                <div>
+                    <DecoratedInput
+                        field='name'
+                        label={
+                            <FormattedMessage id='add_client_form.name' />
+                        }
+                        formItem
+                        hasFeedback
+                        initialValue={ _.get(client, 'name') }
+                        getPopupContainer={ trigger => trigger.parentNode }
+                        getFieldDecorator={ getFieldDecorator }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  this.props.intl.formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                        ] }
+                    />
+                    <DecoratedInput
+                        field='surname'
+                        label={
+                            <FormattedMessage id='add_client_form.surname' />
+                        }
+                        initialValue={ _.get(client, 'surname') }
+                        formItem
+                        getPopupContainer={ trigger => trigger.parentNode }
+                        getFieldDecorator={ getFieldDecorator }
+                    />
+                    <ArrayInput
+                        form={ this.props.form }
+                        phone
+                        initialValue={
+                            _.get(client, 'phones')
+                                ? _.get(client, 'phones').filter(Boolean)
+                                : void 0
+                        }
+                        rules={ [
+                            {
+                                required: true,
+                                message:  this.props.intl.formatMessage({
+                                    id: 'required_field',
+                                }),
+                            },
+                            {
+                                pattern:   /^[\d]{9}$/,
+                                transform: value => String(value),
+                                message:   this.props.intl.formatMessage({
+                                    id:
+                                        'add_client_form.invalid_phone_format',
+                                }),
+                            },
+                        ] }
+                        fieldName='phones'
+                        fieldTitle={
+                            <FormattedMessage id='add_client_form.phones' />
+                        }
+                        buttonText={
+                            <FormattedMessage id='add_client_form.add_phone' />
+                        }
+                    />
+                </div>}
             </Form>
         );
     }

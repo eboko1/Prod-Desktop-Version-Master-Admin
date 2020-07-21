@@ -20,6 +20,7 @@ import {
 } from 'core/forms/orderForm/duck';
 
 import {
+    DecoratedInput,
     DecoratedSelect,
     DecoratedTextArea,
     DecoratedDatePicker,
@@ -71,10 +72,21 @@ export class MobileRecordForm extends Component {
         const { formatMessage } = this.props.intl;
 
         const isDurationDisabled = _.every(
-            getFieldsValue([ 'beginDate', 'beginTime', 'station' ]),
+            getFieldsValue([ 'stationLoads[0].beginDate', 'stationLoads[0].beginTime', 'stationLoads[0].station' ]),
         );
         return (
             <Form layout='horizontal'>
+                <div style={{display: 'none'}}>
+                    <DecoratedInput
+                        field="stationLoads[0].status"
+                        hiddeninput='hiddeninput'
+                        formItem
+                        initialValue={
+                            'TO_DO'
+                        }
+                        getFieldDecorator={getFieldDecorator}
+                    />
+                </div>
                 <div className={ Styles.mobileRecordFormFooter }>
                     { status !== 'cancel' &&
                         status !== 'approve' && (
@@ -83,7 +95,7 @@ export class MobileRecordForm extends Component {
                             type='primary'
                             onClick={ () => onStatusChange('approve') }
                         >
-                            <FormattedMessage id='add_order_form.save_appointment' />
+                            <FormattedMessage id='save' />
                         </Button>
                     ) }
                     { status !== 'cancel' && (
@@ -91,7 +103,7 @@ export class MobileRecordForm extends Component {
                             className={ Styles.mobileRecordSubmitBtn }
                             onClick={ () => onStatusChange('cancel') }
                         >
-                            <FormattedMessage id='cancel' />
+                            <FormattedMessage id='close' />
                         </Button>
                     ) }
                 </div>
@@ -210,7 +222,7 @@ export class MobileRecordForm extends Component {
                     <FormattedMessage id='add_order_form.appointment_details' />
                 </div>
                 <DecoratedSelect
-                    field='station'
+                    field='stationLoads[0].station'
                     initialValue={this.props.order.stationNum}
                     rules={ [
                         {
@@ -236,7 +248,7 @@ export class MobileRecordForm extends Component {
                 <DecoratedDatePicker
                     formItem
                     initialValue={moment(this.props.order.beginDatetime).toISOString()}
-                    field='beginDate'
+                    field='stationLoads[0].beginDate'
                     hasFeedback
                     label={ <FormattedMessage id='date' /> }
                     className={ Styles.datePanelItem }
@@ -246,15 +258,15 @@ export class MobileRecordForm extends Component {
                     { ...formItemLayout }
                 />
                 <DecoratedTimePicker
-                    field='beginTime'
+                    field='stationLoads[0].beginTime'
                     initialValue={moment(this.props.order.deliveryDatetime).toISOString()}
                     formItem
                     hasFeedback
                     inputReadOnly
                     allowClear={ false }
                     disabled={
-                        !this.props.form.getFieldValue('beginDate') ||
-                        !this.props.form.getFieldValue('station')
+                        !this.props.form.getFieldValue('stationLoads[0].beginDate') ||
+                        !this.props.form.getFieldValue('stationLoads[0].station')
                     }
                     disabledHours={ () => {
                         const availableHours = _.get(this.props.availableHours, '0', []);
@@ -292,7 +304,7 @@ export class MobileRecordForm extends Component {
                 <DecoratedSlider
                     formItem
                     label={ <FormattedMessage id='add_order_form.duration' /> }
-                    field='duration'
+                    field='stationLoads[0].duration'
                     initialValue={this.props.order.duration}
                     getFieldDecorator={ getFieldDecorator }
                     disabled={ !isDurationDisabled }
