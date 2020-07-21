@@ -81,7 +81,6 @@ export default class DetailsTable extends Component {
                                     detail={this.state.dataSource[this.state.productModalKey]}
                                     updateDataSource={this.updateDataSource}
                                 />
-                                
                             :
                                 <QuickEditModal
                                     disabled={confirmed != "undefined" || !(elem.detailName) || this.props.disabled}

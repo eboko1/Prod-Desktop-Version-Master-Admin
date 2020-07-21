@@ -315,11 +315,12 @@ class DetailStorageModal extends React.Component{
                 width:     '5%',
                 render: (elem)=>{
                     var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
+                    var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, elem.supplierName, elem.storeId, this.props.tableKey, elem.storeGroupId, elem.storeGroupName);
+                                this.props.onSelect(elem.partNumber, elem.supplierName, elem.storeId, this.props.tableKey, elem.storeGroupId, name);
                                 this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, this.props.tableKey);
                                 this.handleCancel();
                             }}
