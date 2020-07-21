@@ -71,7 +71,7 @@ export default class DetailsTable extends Component {
                                     }}
                                 ></div>
                             </Button>
-                            {!(elem.storeGroupId) ? 
+                            {!(elem.detailName) ? 
                                 <FavouriteDetailsModal
                                     disabled={this.props.disabled}
                                     user={this.props.user}
