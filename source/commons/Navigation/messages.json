@@ -53,7 +53,8 @@
     "navigation.payment": "Payment",
     "navigation.subscription_packages": "Subscribe",
     "navigation.subscription_history": "Subscription History",
-    "navigation.diagnostic_patterns": "Diagnostic patterns"
+    "navigation.diagnostic_patterns": "Diagnostic patterns",
+    "navigation.availabilities": "Availability settings"
   },
   "ru": {
     "navigation.operations": "Операции",
@@ -109,7 +110,8 @@
     "navigation.payment": "Оплата",
     "navigation.subscription_packages": "Оформить подписку",
     "navigation.subscription_history": "История подписок",
-    "navigation.diagnostic_patterns": "Шаблоны диагностики"
+    "navigation.diagnostic_patterns": "Шаблоны диагностики",
+    "navigation.availabilities": "Настройки наличия"
   },
   "uk": {
     "navigation.operations": "Операції",
@@ -165,6 +167,7 @@
     "navigation.payment": "Оплата",
     "navigation.subscription_packages": "Оформити підписок",
     "navigation.subscription_history": "Історія підписок",
-    "navigation.diagnostic_patterns": "Шаблони діагностики"
+    "navigation.diagnostic_patterns": "Шаблони діагностики",
+    "navigation.availabilities": "Налаштування наявності"
   }
 }

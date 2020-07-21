@@ -80,8 +80,6 @@ class DashboardPage extends Component {
         const { initDashboard } = this.props;
 
         await initDashboard();
-        const isMobile = window.innerWidth < 1200;
-        if(isMobile) await this.props.setDashboardMode('employees');
     }
 
     _onDayChange = date => {
@@ -144,7 +142,7 @@ class DashboardPage extends Component {
     _transferOutdateRepairs = () => this.props.transferOutdateRepairs();
 
     render() {
-        const isMobile = window.innerWidth < 1200;
+        const isMobile = window.innerWidth < 1024;
 
         const {
             startDate,
@@ -172,7 +170,7 @@ class DashboardPage extends Component {
                     <FormattedMessage id='dashboard-page.description' />
                 }
                 controls={
-                    rescheduleOrdersAllowed ? (
+                    rescheduleOrdersAllowed && !isMobile ? (
                         <Button
                             type='primary'
                             // onClick={ () => this._transferOutdateRepairs() }

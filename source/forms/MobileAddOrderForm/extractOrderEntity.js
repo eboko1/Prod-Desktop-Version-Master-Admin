@@ -158,6 +158,7 @@ export function convertFieldsValuesToDbEntity(
                 : null;
 
     const orderDuration = _.get(orderFields, 'stationLoads[0].duration');
+
     const stationLoadsEntity = _.get(orderFields, 'stationLoads')
         .filter(
             ({ beginDate, beginTime }) =>

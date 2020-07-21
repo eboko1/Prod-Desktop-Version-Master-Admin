@@ -290,8 +290,41 @@ class OrderPage extends Component {
             : returnToOrdersPage(status);
     };
 
+    _getCurrentOrder() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__;
+        let params = `/orders/${this.props.match.params.id}`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.setState({
+                orderServices: data.orderServices,
+                orderDetails: data.orderDetails,
+            });
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
     _createCopy = () => {
         const {allServices, allDetails, selectedClient} = this.props;
+        console.log(this);
         const form = this.orderFormRef.props.form;
         const orderFormValues = form.getFieldsValue();
         const requiredFields = requiredFieldsOnStatuses(orderFormValues).success;
@@ -312,15 +345,19 @@ class OrderPage extends Component {
         
                 const normalizedValues = _.set(orderFormValues, 'stationLoads', [ entryStationLoad ]);
                 const orderFormEntity = {...normalizedValues, selectedClient};
-                this.props.createOrderCopy(
-                    {...convertFieldsValuesToDbEntity(
-                        orderFormEntity,
-                        allServices,
-                        allDetails,
-                        'not_complete',
-                        this.props.user,
-                    )},
-                );
+                var copyData = {...convertFieldsValuesToDbEntity(
+                    orderFormEntity,
+                    allServices,
+                    allDetails,
+                    'not_complete',
+                    this.props.user,
+                )};
+
+                copyData.services = this.state.orderServices;
+                copyData.details = this.state.orderDetails;
+
+                console.log(copyData);
+                this.props.createOrderCopy(copyData);
             } else {
                 this.setState({errors});
             }
@@ -540,7 +577,10 @@ class OrderPage extends Component {
                                         permissions.CREATE_ORDER,
                                     )
                                 }
-                                onClick={ this._createCopy }
+                                onClick={ async () => {
+                                    await this._getCurrentOrder();
+                                    await this._createCopy();
+                                } }
                                 className={ Styles.inviteButton }
                             >
                                 <FormattedMessage id='order-page.create_copy'/>

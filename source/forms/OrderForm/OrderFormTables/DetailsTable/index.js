@@ -71,7 +71,7 @@ export default class DetailsTable extends Component {
                                     }}
                                 ></div>
                             </Button>
-                            {!(elem.storeGroupId) ? 
+                            {!(elem.detailName) ? 
                                 <FavouriteDetailsModal
                                     disabled={this.props.disabled}
                                     user={this.props.user}
@@ -83,7 +83,7 @@ export default class DetailsTable extends Component {
                                 />
                             :
                                 <QuickEditModal
-                                    disabled={confirmed != "undefined" || !(elem.storeGroupId) || this.props.disabled}
+                                    disabled={confirmed != "undefined" || !(elem.detailName) || this.props.disabled}
                                     detail={elem}
                                     onConfirm={this.updateDetail}
                                     tableKey={elem.key}

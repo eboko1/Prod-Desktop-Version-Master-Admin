@@ -105,7 +105,7 @@ export function columnsConfig(props) {
     const activityCol = {
         title:     <FormattedMessage id='cash-table.activity' />,
         dataIndex: 'type',
-        width:     '15%',
+        width:     '10%',
         render:    type => (
             <div className={ Styles.noBreak }>
                 <FormattedMessage id={ `cash-order-form.type.${type}` } />
@@ -146,6 +146,12 @@ export function columnsConfig(props) {
             ),
     };
 
+    const tagCol = {
+        title:     <FormattedMessage id='cash-table.tag' />,
+        dataIndex: 'tag',
+        width:     '10%',
+    };
+
     const descriptionCol = {
         title:     <FormattedMessage id='cash-table.comment' />,
         dataIndex: 'description',
@@ -181,6 +187,7 @@ export function columnsConfig(props) {
         orderCol,
         activityCol,
         sumCol,
+        tagCol,
         descriptionCol,
         actionsCol,
     ];
