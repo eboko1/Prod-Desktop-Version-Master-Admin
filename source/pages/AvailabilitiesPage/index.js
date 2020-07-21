@@ -69,12 +69,14 @@ class AvailabilitiesPage extends Component {
                         <InputNumber
                             disabled={!(elem.businessSupplierId)}
                             defaultValue={0}
-                            step={0.1}
-                            value={data || 0}
-                            formatter={value => `${value*100}%`}
-                            parser={value => (value/100).replace('%', '')}
+                            step={5}
+                            max={100}
+                            min={0}
+                            value={Math.round(data*1000)/10 || 0}
+                            formatter={value => `${value}%`}
+                            parser={value => value.replace('%', '')}
                             onChange={(value)=>{
-                                elem.discount = value;
+                                elem.discount = value/100;
                                 this.addOrEditAvail(elem.key);
                             }}
                         />
