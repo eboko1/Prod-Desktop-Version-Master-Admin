@@ -7,7 +7,7 @@ import _ from "lodash";
 // proj
 import { MODALS } from "core/modals/duck";
 import { DecoratedTextArea } from "forms/DecoratedFields";
-import { permissions, isForbidden } from "utils";
+import { permissions, isForbidden, isAdmin } from "utils";
 
 // own
 import {
@@ -125,6 +125,8 @@ export default class OrderFormTabs extends React.PureComponent {
 
             fields,
             errors,
+
+            normHourPrice,
         } = this.props;
 
         const {
@@ -133,8 +135,10 @@ export default class OrderFormTabs extends React.PureComponent {
             ACCESS_ORDER_COMMENTS,
             ACCESS_ORDER_SERVICES,
             ACCESS_ORDER_DETAILS,
+            ACCESS_ORDER_DIAGNOSTICS,
             GET_TASKS,
             GET_ALL_TASKS,
+            UPDATE_SUCCESS_ORDER,
         } = permissions;
 
         const isHistoryForbidden = isForbidden(user, ACCESS_ORDER_HISTORY);
@@ -142,6 +146,8 @@ export default class OrderFormTabs extends React.PureComponent {
         const areCommentsForbidden = isForbidden(user, ACCESS_ORDER_COMMENTS);
         const areServicesForbidden = isForbidden(user, ACCESS_ORDER_SERVICES);
         const areDetailsForbidden = isForbidden(user, ACCESS_ORDER_DETAILS);
+        const areDiagnosticForbidden = isForbidden(user, ACCESS_ORDER_DIAGNOSTICS);
+        const clodedEditing = (this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel') && isForbidden(user, UPDATE_SUCCESS_ORDER)
 
         const viewTasks = !isForbidden(user, GET_TASKS);
         const viewAllTasks = !isForbidden(user, GET_ALL_TASKS);
@@ -167,11 +173,13 @@ export default class OrderFormTabs extends React.PureComponent {
         const stationLoadsFieldsProps = _.pick(this.props.fields, [
             "stationLoads",
         ]);
+
         return (
             <Tabs type="card" className={Styles.orderFormsTabs}>
                 {!addOrderForm && (
                     <TabPane
                         forceRender
+                        disabled={areDiagnosticForbidden}
                         tab={
                             formatMessage({
                                 id: "order_form_table.diagnostic",
@@ -180,6 +188,10 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="1"
                     >
                         <DiagnosticTable
+                            disabled={this.props.orderStatus == 'success' || this.props.orderStatus == 'cancel'}
+                            defaultEmployeeId={this.props.defaultEmployeeId}
+                            user={user}
+                            forbidden={areDiagnosticForbidden}
                             tecdocId={tecdocId}
                             form={form}
                             orderDiagnostic={orderDiagnostic}
@@ -201,6 +213,11 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="2"
                     >
                         <ServicesTable
+                            disabled={clodedEditing}
+                            laborTimeMultiplier={this.props.laborTimeMultiplier}
+                            defaultEmployeeId={this.props.defaultEmployeeId}
+                            normHourPrice={normHourPrice}
+                            tecdocId={tecdocId}
                             errors={errors}
                             orderId={orderId}
                             fields={servicesTableFieldsProps}
@@ -240,6 +257,7 @@ export default class OrderFormTabs extends React.PureComponent {
                         key="3"
                     >
                         <DetailsTable
+                            disabled={clodedEditing}
                             errors={errors}
                             orderId={orderId}
                             fields={detailsTableFieldsProps}

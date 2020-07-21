@@ -1,14 +1,16 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Checkbox, InputNumber, AutoComplete, Tabs } from 'antd';
+import { Button, Modal, Icon, Checkbox, InputNumber, notification, Select, Tabs } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
+import {permissions, isForbidden} from 'utils';
 import {
     API_URL,
     confirmDiagnostic,
     createAgreement,
     lockDiagnostic,
+    sendMessage,
 } from 'core/forms/orderDiagnosticForm/saga';
 // own
 import Styles from './styles.m.css';
@@ -37,8 +39,6 @@ class ConfirmDiagnosticModal extends React.Component{
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
         await lockDiagnostic(orderId);
-        //await this.props.reloadOrderPageComponents();
-        //await createAgreement(this.props.orderId, this.props.intl.locale);
         await window.location.reload();
     }
 
@@ -46,7 +46,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.setState({
             visible: true,
         });
-        this.getCurrentOrderDetailsAndServices();
+        //this.getCurrentOrderDetailsAndServices();
     };
 
     handleOk = () => {
@@ -55,13 +55,16 @@ class ConfirmDiagnosticModal extends React.Component{
             services: [],
             details: [],
             modificationId: this.props.tecdocId,
+            insertMode: true,
         }
         this.state.servicesList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.services.push({
                     serviceId: element.id,
-                    serviceHours: element.hours,
+                    count: element.hours,
                     servicePrice: element.price,
+                    employeeId: this.props.defaultEmployeeId,
+                    serviceHours: 0,
                     comment: {comment: element.comment},
                 })
             }
@@ -75,7 +78,6 @@ class ConfirmDiagnosticModal extends React.Component{
                 })
             }
         });
-        console.log(data);
         this.endСonfirmation(this.props.orderId, data);
     };
     
@@ -198,7 +200,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    getLaborByPartId(id, comment = "") {
+    getLaborByPartId(id, comment = "", status) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -220,52 +222,42 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addServicesByLaborId(data.laborId, -1, comment);
+            that.addServicesByLaborId(data.laborId, -1, comment, status);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addServicesByLaborId(id, index = -1, comment = "") {
+    addServicesByLaborId(id, index = -1, comment = "", status) {
         const service = this.state.labors.labors.find(x => x.laborId == id);
-        let cur_index = this.state.servicesList.findIndex(x => x.id == id);
         if(service == undefined) return;
 
         if(index == -1) {
-            if(cur_index == -1) {
-                this.state.servicesList[this.state.servicesList.length-1] = {
-                    key: this.state.servicesList.length,
-                    id: id,
-                    productId: service.productId,
-                    name: service.name,
-                    hours: Number(service.normHours) || 1,
-                    checked: true,
-                    comment: comment,
-                };
-            }
-            else {
-                this.state.servicesList[cur_index].hours += Number(service.normHours) || 1;
-            }
+            this.state.servicesList[this.state.servicesList.length-1] = {
+                key: this.state.servicesList.length,
+                id: id,
+                productId: service.productId,
+                name: service.name,
+                hours: Number(service.normHours) || 1,
+                checked: true,
+                comment: comment,
+                status: status,
+            };
         }
         else {
-            if(cur_index == -1) {
-                this.state.servicesList[index].id = id;
-                this.state.servicesList[index].name = service.name;
-                this.state.servicesList[index].productId= service.productId;
-                this.state.servicesList[index].hours = Number(service.normHours) || 1;
-            }
-            else {
-                this.state.servicesList[cur_index].hours += Number(service.normHours) || 1;
-                this.deleteServiceRow(index);
-            }
+            this.state.servicesList[index].id = id;
+            this.state.servicesList[index].status = status;
+            this.state.servicesList[index].name = service.name;
+            this.state.servicesList[index].productId= service.productId;
+            this.state.servicesList[index].hours = Number(service.normHours) || 1;
         }
         this.setState({
             update: true,
         });
     }
 
-    getGroupByPartId(id, comment = "") {
+    getGroupByPartId(id, comment = "", status) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -287,43 +279,33 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addDetailsByGroupId(data.storeGroupId, -1, comment);
+            that.addDetailsByGroupId(data.storeGroupId, -1, comment, status);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addDetailsByGroupId(id, index = -1, comment = "") {
+    addDetailsByGroupId(id, index = -1, comment = "", status) {
         const detail = this.state.allDetails.find(x => x.id == id);
-        let cur_index = this.state.detailsList.findIndex(x => x.id == id);
         if(detail == undefined) return;
 
         if(index == -1) {
-            if(cur_index == -1) {
-                this.state.detailsList[this.state.detailsList.length-1] = {
-                    key: this.state.detailsList.length,
-                    id: detail.id,
-                    name: detail.name,
-                    count: 1,
-                    checked: true,
-                    comment: comment,
-                };
-            }
-            else {
-                this.state.detailsList[cur_index].count += 1;
+            this.state.detailsList[this.state.detailsList.length-1] = {
+                key: this.state.detailsList.length,
+                id: detail.id,
+                name: detail.name,
+                count: 1,
+                checked: true,
+                comment: comment,
+                status: status,
             }
         }
         else {
-            if(cur_index == -1) {
-                this.state.detailsList[index].id = id;
-                this.state.detailsList[index].count = 1;
-                this.state.detailsList[index].name = detail.name;
-            }
-            else {
-                this.state.detailsList[cur_index].count += 1;
-                this.deleteDetailRow(index);
-            }
+            this.state.detailsList[index].id = id;
+            this.state.detailsList[index].status = status;
+            this.state.detailsList[index].count = 1;
+            this.state.detailsList[index].name = detail.name;
         }
         this.setState({
             update: true,
@@ -355,10 +337,76 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     automaticlyConfirmDiagnostic() {
-        this.state.diagnosticList.map(async (data, index)=>{
-            await this.changeResolved(index, 'automaticly');
-            await this.getLaborByPartId(data.id, data.comment.comment);
-            await this.getGroupByPartId(data.id, data.comment.comment);
+        let partIds = [];
+        this.state.diagnosticList.map((data, index)=>{
+            if(!data.resolved) {
+                this.changeResolved(index, 'automaticly');
+                partIds.push(data.id);
+            }
+        });
+
+        this.getDataByPartIds(partIds);
+    }
+
+    async getDataByPartIds(partIds) {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/diagnostics/calculation_data?partIds=[${partIds}]`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.state.servicesList.pop();
+            that.state.detailsList.pop();
+            
+            data.map((elem)=>{
+                const diagnosticPart = that.state.diagnosticList.find((part)=>part.id==elem.partId);
+                const comment = diagnosticPart ? diagnosticPart.comment.comment : undefined;
+                const status = diagnosticPart ? diagnosticPart.status : undefined;
+
+                elem.labor.map((labor)=>{
+                    that.state.servicesList.push({
+                        key: that.state.servicesList.length+1,
+                        id: labor.laborId,
+                        productId: labor.productId,
+                        name: labor.name,
+                        hours: Number(labor.normHours) || 1,
+                        checked: true,
+                        comment: comment,
+                        status: status,
+                    })
+                })
+                
+                that.state.detailsList.push({
+                    key: that.state.detailsList.length+1,
+                    id: elem.storeGroup.id,
+                    name: elem.storeGroup.name,
+                    count: 1,
+                    checked: true,
+                    comment: comment,
+                    status: status,
+                })
+            })
+            that.setState({
+                update: true,
+            })
+        })
+        .catch(function (error) {
+            console.log('error', error)
         });
     }
 
@@ -367,7 +415,7 @@ class ConfirmDiagnosticModal extends React.Component{
         var diagnosticList = this.state.diagnosticList;
         let tmpSource = [];
         for(let i = 0; i < dataSource.length; i++) {
-            if(dataSource[i].stage == stage && Number(dataSource[i].status) > 1) {
+            if(dataSource[i].stage == stage && Number(dataSource[i].status) > 1 && !dataSource[i].disabled) {
                 tmpSource.push(dataSource[i]);
                 if(this.state.diagnosticList.findIndex(x => x.id == dataSource[i].partId) == -1){
                     diagnosticList.push({
@@ -377,7 +425,8 @@ class ConfirmDiagnosticModal extends React.Component{
                         resolved: false,
                         type:'',
                         disabled: false,
-                        checked: true
+                        checked: true,
+                        status: Number(dataSource[i].status),
                     });
                     this.diagnosticKey++;
                 }
@@ -422,8 +471,8 @@ class ConfirmDiagnosticModal extends React.Component{
                     type="primary"
                     onClick={async ()=>{
                         await this.changeResolved(index, 'automaticly');
-                        await this.getLaborByPartId(data.partId, data.commentary.comment);
-                        await this.getGroupByPartId(data.partId, data.commentary.comment);
+                        await this.getLaborByPartId(data.partId, data.commentary.comment, data.status);
+                        await this.getGroupByPartId(data.partId, data.commentary.comment, data.status);
                     }}
                     style={{width: '49%', padding: '5px'}}
                 >
@@ -505,7 +554,7 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     getServicesOptions() {
-        const { Option } = AutoComplete;
+        const { Option } = Select;
         return this.state.labors.labors.map(
             (data, index) => (
                 <Option
@@ -536,7 +585,7 @@ class ConfirmDiagnosticModal extends React.Component{
     getServicesContent() {
         this.addNewServicesRow();
         return this.state.servicesList.map((data, index)=>
-            <div className={Styles.confirm_diagnostic_modal_row}>
+            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
                         checked={data.checked}
@@ -544,9 +593,9 @@ class ConfirmDiagnosticModal extends React.Component{
                     />
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
-                    <AutoComplete
+                    <Select
+                        showSearch
                         value={data?data.name:undefined}
-                        defaultActiveFirstOption={false}
                         className="service_input"
                         ref={(node)=>{this.lastServiceInput=node}}
                         disabled={!data.checked}
@@ -558,14 +607,14 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.state.servicesList[index].name = inputValue;
                             this.setState({update: true});
                         }}
-                        placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
+                        placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalServices}`)}
                         filterOption={(inputValue, option) =>
                             option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
                         }
                     >
                         {this.servicesOptions}
-                    </AutoComplete>
+                    </Select>
                 </div>
                 <div style={{ width: '30%' }}>
                     <InputNumber
@@ -623,7 +672,7 @@ class ConfirmDiagnosticModal extends React.Component{
     }
 
     getDetailsOptions() {
-        const { Option } = AutoComplete;
+        const { Option } = Select;
         const { allDetails } = this.state;
         return allDetails.map(
             (data, index) => (
@@ -652,7 +701,7 @@ class ConfirmDiagnosticModal extends React.Component{
     getDetailsContent() {
         this.addNewDetailsRow();
         return this.state.detailsList.map((data, index)=>
-            <div className={Styles.confirm_diagnostic_modal_row}>
+            <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
                         checked={data.checked}
@@ -660,9 +709,9 @@ class ConfirmDiagnosticModal extends React.Component{
                     />
                 </div>
                 <div style={{ width: '60%', padding: '0 5px'}}>
-                    <AutoComplete
+                    <Select
+                        showSearch
                         value={data?data.name:undefined}
-                        defaultActiveFirstOption={false}
                         className="service_input"
                         ref={(node)=>{this.lastDetailInput=node}}
                         disabled={!data.checked}
@@ -674,14 +723,14 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.state.detailsList[index].name = inputValue;
                             this.setState({update: true});
                         }}
-                        placeholder={<FormattedMessage id='order_form_table.service.placeholder'/>}
+                        placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}
                         getPopupContainer={()=>document.getElementById(`${Styles.diagnosticModalDetails}`)}
                         filterOption={(inputValue, option) =>
                             option.props.children.toLowerCase().indexOf(inputValue.toLowerCase()) >= 0
                         }
                     >
                         {this.detailsOptions}
-                    </AutoComplete>
+                    </Select>
                 </div>
                 <div style={{ width: '30%'}}>
                     <InputNumber
@@ -714,37 +763,53 @@ class ConfirmDiagnosticModal extends React.Component{
 
     render() {
         const { visible } = this.state;
-        const { isMobile, confirmed } = this.props;
+        const { isMobile } = this.props;
         const { TabPane } = Tabs;
         return (
             <div>
-                {confirmed ? (
+                <>
+                    {isMobile ? 
                     <Button
-                        style={isMobile?{ width: "100%" }:{ width: "80%" }}
+                        style={{ width: "80%" }}
                         type="primary"
-                        onClick={()=>{createAgreement(this.props.orderId, this.props.intl.locale)}}
+                        onClick={()=>{
+                            notification.success({
+                                message: 'Сообщение отправлено!',
+                            });
+                            sendMessage(this.props.orderId);
+                        }}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
                     >
-                    {!isMobile ? (
-                        <FormattedMessage id='send_message'/>
-                    ):(
-                        <FormattedMessage id='send_message'/>
-                    )}
+                        <FormattedMessage id='end'/>
                     </Button>
-                ) : (
-                    <Button
-                        style={isMobile?{ width: "100%" }:{ width: "80%" }}
-                        type="primary"
-                        onClick={this.showModal}
-                    >
-                    {!isMobile ? (
-                        <FormattedMessage id='order_form_table.diagnostic.create_order'/>
-                    ):(
-                        <FormattedMessage id='submit'/>
-                    )}
-                    </Button>
-                )}
+                    :
+                    <>
+                        <Button
+                            style={{ width: "35%", marginRight: 5 }}
+                            type="primary"
+                            onClick={this.showModal}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_ORDER_CREATIONG_OF_DIAGNOSTICS_MODAL_WINDOW)}
+                        >
+                            <FormattedMessage id='order_form_table.diagnostic.create_order'/>
+                        </Button>
+                        <Button
+                            style={{ width: "35%" }}
+                            type="primary"
+                            onClick={()=>{
+                                notification.success({
+                                    message: 'Сообщение отправлено!',
+                                });
+                                sendMessage(this.props.orderId);
+                            }}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
+                        >
+                            <FormattedMessage id='end'/>
+                        </Button>
+                    </>
+                    }
+                </>
                 <Modal
-                    width={!isMobile?"75%":"95%"}
+                    width={!isMobile?"85%":"95%"}
                     visible={visible}
                     title={<FormattedMessage id='order_form_table.diagnostic.create_order' />}
                     onCancel={this.handleCancel}

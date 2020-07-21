@@ -16,14 +16,15 @@ import {
 import { fetchAddClientForm } from 'core/forms/addClientForm/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 
-import { Layout, Spinner } from 'commons';
-import { OrderForm } from 'forms';
+import { Layout, Spinner, MobileView, ResponsiveView } from 'commons';
+import { OrderForm, MobileAddOrderForm } from 'forms';
+import { AddClientModal } from 'modals'
 import {
     convertFieldsValuesToDbEntity,
     requiredFieldsOnStatuses,
 } from 'forms/OrderForm/extractOrderEntity';
 import book from 'routes/book';
-import { withErrorMessage } from 'utils';
+import { withErrorMessage, BREAKPOINTS } from 'utils';
 
 //  own
 const RadioButton = Radio.Button;
@@ -102,10 +103,12 @@ class AddOrderPage extends Component {
                 const values = form.getFieldsValue();
                 const orderFormEntity = { ...values, selectedClient };
 
-                const redirectToDashboard = _.get(
+                /*const redirectToDashboard = _.get(
                     history,
                     'location.state.fromDashboard',
-                );
+                );*/
+
+                const redirectToDashboard = false;
 
                 this.props.createOrder({
                     order: convertFieldsValuesToDbEntity(
@@ -143,6 +146,7 @@ class AddOrderPage extends Component {
         const { modal, user, createStatus, spinner } = this.props;
         const { errors } = this.state;
 
+
         return spinner ? (
             <Spinner spin={ spinner } />
         ) : (
@@ -151,6 +155,8 @@ class AddOrderPage extends Component {
                 controls={
                     <>
                         <div>
+                            {window.innerWidth >= 1200 ?
+                            <>
                             <RadioGroup value={ createStatus }>
                                 <RadioButton
                                     value='reserve'
@@ -189,10 +195,25 @@ class AddOrderPage extends Component {
                                 type='primary'
                                 htmlType='submit'
                                 className={ Styles.submit }
-                                onClick={ () => this._createOrder(createStatus) }
+                                onClick={ () => {
+                                    this._createOrder(createStatus);
+                                }}
                             >
                                 <FormattedMessage id='add' />
                             </Button>
+                            </>
+                            : 
+                            <Button
+                                type='primary'
+                                htmlType='submit'
+                                className={ Styles.submit }
+                                onClick={ () => {
+                                    this._setCreateStatus('reserve');
+                                    this._createOrder(createStatus);
+                                }}
+                            >
+                                <FormattedMessage id='add' />
+                            </Button>}
                         </div>
                         <Icon
                             style={ {
@@ -205,19 +226,38 @@ class AddOrderPage extends Component {
                     </>
                 }
             >
-                <OrderForm
-                    allService={ this.props.allServices }
-                    allDetails={ this.props.allDetails }
-                    errors={ this.state.errors }
-                    wrappedComponentRef={ this.saveOrderFormRef }
-                    setAddClientModal={ this._setAddClientModal }
-                    user={ user }
-                    modal={ modal }
-                    addOrderForm
-                    orderHistory={ this.props.orderHistory }
-                    orderStationLoads={ this.props.orderStationLoads }
-                    location={ this.props.history.location }
-                />
+                <MobileView>
+                    <MobileAddOrderForm
+                        allService={ this.props.allServices }
+                        allDetails={ this.props.allDetails }
+                        errors={ this.state.errors }
+                        wrappedComponentRef={ this.saveOrderFormRef }
+                        setAddClientModal={ this._setAddClientModal }
+                        user={ user }
+                        modal={ modal }
+                        addOrderForm
+                        orderHistory={ this.props.orderHistory }
+                        orderStationLoads={ this.props.orderStationLoads }
+                        location={ this.props.history.location }
+                    />
+                </MobileView>
+                <ResponsiveView
+                    view={ {min: BREAKPOINTS.sm.max, max: BREAKPOINTS.xxl.max} }
+                >
+                    <OrderForm
+                        allService={ this.props.allServices }
+                        allDetails={ this.props.allDetails }
+                        errors={ this.state.errors }
+                        wrappedComponentRef={ this.saveOrderFormRef }
+                        setAddClientModal={ this._setAddClientModal }
+                        user={ user }
+                        modal={ modal }
+                        addOrderForm
+                        orderHistory={ this.props.orderHistory }
+                        orderStationLoads={ this.props.orderStationLoads }
+                        location={ this.props.history.location }
+                    />
+                </ResponsiveView>
             </Layout>
         );
     }

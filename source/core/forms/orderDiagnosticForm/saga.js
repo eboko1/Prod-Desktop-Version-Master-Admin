@@ -1,5 +1,7 @@
+import { saveAs } from 'file-saver';
+
 export const URL = window.location.hostname;
-export const API_URL = URL == 'localhost'? 'http://localhost:14281' : 'https://test-api.carbook.pro';
+export const API_URL = __API_URL__;
 
 export function getDiagnosticsTemplates(getData) {
     let token = localStorage.getItem('_my.carbook.pro_token');
@@ -51,7 +53,7 @@ export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId,
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -78,7 +80,7 @@ export async function confirmDiagnostic(orderId, data) {
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -128,7 +130,7 @@ export async function deleteDiagnosticProcess(orderId, templateId, groupId, part
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -153,7 +155,7 @@ export async function addNewDiagnosticRow(orderId, templateId, groupId, partId) 
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -178,7 +180,7 @@ export async function addNewDiagnosticTemplate(orderId, templateId) {
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -203,7 +205,7 @@ export async function deleteDiagnosticTemplate(orderId, templateId) {
         });
         const result = await response.json();
         if(result.success) {
-            console.log("OK", result);
+            //console.log("OK", result);
         }
         else {
             console.log("BAD", result);
@@ -227,8 +229,7 @@ export async function createAgreement(orderId, lang) {
             }
         });
         const result = await response.json();
-        console.log("OK", result);
-        alert(`${URL == "localhost"?URL+":3000":URL}/agreement?sessionId=${result.sessionId}&lang=${lang}`);
+        //console.log("OK", result);
     } catch (error) {
         console.error('ERROR:', error);
     }
@@ -249,6 +250,62 @@ export async function getPartProblems(partId, getData) {
         });
         const result = await response.json();
         getData(result.problems);
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
+}
+
+export async function sendMessage(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/orders/${orderId}/send_diagnostics_complete_message`;
+
+    url += params;
+    fetch(url, {
+        method: 'GET',
+        headers: {
+            'Authorization': token,
+        }
+    })
+    .then(function (response) {
+        if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText))
+        }
+        return Promise.resolve(response)
+    })
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        console.log('data', data);
+    })
+    .catch(function (error) {
+        console.log('error', error)
+    })
+}
+
+export async function getDiagnosticsReport(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/diagnostics/report?orderId=${orderId}`;
+
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        const reportFile = await response.blob();
+
+            const contentDispositionHeader = response.headers.get(
+                'content-disposition',
+            );
+            const fileName = contentDispositionHeader.match(
+                /^attachment; filename="(.*)"/,
+            )[ 1 ];
+            await saveAs(reportFile, fileName);
     } catch (error) {
         console.error('ERROR:', error);
     }

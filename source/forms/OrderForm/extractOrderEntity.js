@@ -158,11 +158,10 @@ export function convertFieldsValuesToDbEntity(
                 : null;
 
     const orderDuration = _.get(orderFields, 'stationLoads[0].duration');
-
     const stationLoadsEntity = _.get(orderFields, 'stationLoads')
         .filter(
-            ({ beginDate, beginTime, station }) =>
-                ![ beginDate, beginTime, station ].some(_.isNil),
+            ({ beginDate, beginTime }) =>
+                ![ beginDate, beginTime ].some(_.isNil),
         )
         .map(obj => {
             const dayPart =

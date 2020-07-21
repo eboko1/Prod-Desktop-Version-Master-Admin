@@ -68,6 +68,7 @@ class DashboardContainer extends Component {
                         { dashboardColumns }
                         { (mode === 'stations' || mode === 'employees')  &&
                             dashboard.columns < 7 &&
+                            window.innerWidth >= 1024 &&
                             dashboardGhostColumns }
                     </DashboardGrid>
                 </Dashboard>
@@ -82,7 +83,7 @@ class DashboardContainer extends Component {
         const { dashboard, time } = this.props;
 
         return (
-            <DashboardColumn dashboard={ dashboard } column={ 1 } time>
+            <DashboardColumn dashboard={ dashboard } column={ 1 } time className="timeColumn">
                 <DashboardHead />
                 { time.map(time => (
                     <React.Fragment key={ time }>
@@ -101,6 +102,11 @@ class DashboardContainer extends Component {
         return [ ...Array(dashboard.columns).keys() ].map((_, index) => {
             const day = mode === 'calendar' ? days[ index ] : null;
             const selectedDay = this.props.date.format('YYYY-MM-DD');
+            var employeeLoadCoefficient = 0;
+            if(mode === 'employees') {
+                const employeeLoad = load.find((elem)=>elem.employeeId==employees[index].id);
+                employeeLoadCoefficient = employeeLoad ? employeeLoad.loadCoefficient : 0;
+            }
             return (
                 <DashboardColumn
                     dashboard={ dashboard }
@@ -119,13 +125,16 @@ class DashboardContainer extends Component {
                                         />
                                     ) : 
                                         mode === 'employees' ? 
-                                            employees[ index ].name  :  
+                                            employees[ index ].employeeNum  :  
                                             load[ index ].stationNum
                                     }
                                 </DashboardTitle>
                                 <DashboardLoad
                                     loadCoefficient={
-                                        load[ index ].loadCoefficient
+                                        mode === 'employees' ?
+                                            employeeLoadCoefficient : 
+                                            load[ index ].loadCoefficient
+                                        
                                     }
                                     link={ mode === 'calendar' }
                                     onClick={ () =>
@@ -139,7 +148,10 @@ class DashboardContainer extends Component {
                                         : mode == 'employees' ?
                                             `${employees[ index ].name} ${employees[ index ].surname} - `
                                             : stations[ index ].name && `${stations[ index ].name} - ` }
-                                    { Math.round(load[ index ].loadCoefficient) }%
+                                    { mode == 'employees' ?
+                                        Math.round(employeeLoadCoefficient) :
+                                        Math.round(load[ index ].loadCoefficient) 
+                                    }%
                                 </DashboardLoad>
                             </>
                         }

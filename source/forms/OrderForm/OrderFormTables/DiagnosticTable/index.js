@@ -40,7 +40,6 @@ class DiagnosticTable extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            completed: false,
             update: false,
             orderDiagnostic: props.orderDiagnostic,
             orderId: props.orderId,
@@ -119,13 +118,13 @@ class DiagnosticTable extends Component {
                 dataIndex: 'key',
                 key:       'key',
                 width:     '5%',
-                render: (num)=> {
+                render: (num, element)=> {
                     let checked = this.state.selectedRows.indexOf(num) > -1;
                     return(
                         <div style={{paddingLeft: 5}}>
                             <span>{num}  </span>
                             <Checkbox
-                                disabled={this.state.completed}
+                                disabled={this.props.disabled || element.disabled}
                                 onChange={()=>{this.onChangeCheckbox(num)}}
                                 checked = { checked }
                             />
@@ -169,7 +168,7 @@ class DiagnosticTable extends Component {
                         </p>
                     ) : (
                         <Select
-                            disabled={this.state.completed}
+                            disabled={this.props.disabled}
                             showSearch
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                             onChange={this.onPlanChange}
@@ -221,7 +220,7 @@ class DiagnosticTable extends Component {
                         <Select
                             showSearch
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.stage' />}
-                            disabled={this.state.completed || options.length == 0}
+                            disabled={this.props.disabled || options.length == 0}
                             onChange={this.onStageChange}
                         >
                             {options.map((template, i) => <Option key={i+1} value={template.id}>{template.title}</Option>)}
@@ -397,10 +396,9 @@ class DiagnosticTable extends Component {
                         </span>
                     ) : (
                         <Select
-                            disabled={this.state.completed}
+                            disabled={this.props.disabled || options.length == 0}
                             showSearch
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.detail' />}
-                            disabled={options.length == 0}
                             onChange={this.onDetailChange}
                         >
                             {options.map((template, i) => <Option key={i+1} value={template.id}>{template.title}</Option>)}
@@ -441,7 +439,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (commentary, rowProp) => (
                     <CommentaryButton
-                        disabled={this.state.completed}
+                        disabled={this.props.disabled || rowProp.disabled}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                         commentary={commentary}
                         rowProp={rowProp}
@@ -480,7 +478,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (photo, rowProp) => (
                     <PhotoButton
-                        disabled={this.state.completed}
+                        disabled={this.props.disabled || rowProp.disabled}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                         setPhoto={this.setPhoto}
                         rowProp={rowProp}
@@ -502,7 +500,7 @@ class DiagnosticTable extends Component {
                 render: (text, rowProp) => {
                     return (
                         <DiagnosticStatusButton
-                            disabled={this.state.completed}
+                            disabled={this.props.disabled || rowProp.disabled}
                             getCurrentDiagnostic={this.getCurrentDiagnostic}
                             status={text}
                             rowProp={rowProp}
@@ -516,7 +514,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (text, rowProp) => (
                     <DeleteProcessButton
-                        disabled={this.state.completed}
+                        disabled={this.props.disabled || rowProp.disabled}
                         deleteRow = {this.deleteRow}
                         rowProp={rowProp}
                     />
@@ -602,7 +600,6 @@ class DiagnosticTable extends Component {
         })
         .then(function (data) {
             that.state.orderDiagnostic = data.diagnosis;
-            that.state.completed = data.diagnosis.completed;
             that.updateDataSource();
         })
         .catch(function (error) {
@@ -791,7 +788,7 @@ class DiagnosticTable extends Component {
     }
 
     updateDataSource() {
-        const disabled = this.state.completed;
+        const disabled = this.props.disabled;
         this.ok = 0;
         this.bad = 0;
         this.critical = 0;
@@ -848,6 +845,9 @@ class DiagnosticTable extends Component {
                     let answer = _.pick(parts[k], [
                         "answer",
                     ]).answer;
+                    let calcDone = _.pick(parts[k], [
+                        "calcDone",
+                    ]).calcDone;
                     let comment = _.pick(parts[k], [
                         "comment",
                     ]).comment;
@@ -867,8 +867,9 @@ class DiagnosticTable extends Component {
                         diagnosticTemplateId: diagnosticTemplateId,
                         groupId: groupId,
                         photo: photo,
+                        disabled: calcDone,
                     },);
-                    this.state.possibleRows.push(key);
+                    if(!calcDone) this.state.possibleRows.push(key);
                     key++;
                     if(answer == 0) this.open++;
                     if(answer == 1) this.ok++;
@@ -999,9 +1000,11 @@ class DiagnosticTable extends Component {
     }
 
     componentDidMount() {
-        this._isMounted = true;
-        this.getCurrentDiagnostic();
-        this.setRowsColor();
+        if(!this.props.forbidden) {
+            this._isMounted = true;
+            this.getCurrentDiagnostic();
+            this.setRowsColor();
+        }
     }
 
     componentDidUpdate() {
@@ -1013,11 +1016,13 @@ class DiagnosticTable extends Component {
     }
 
     render() {
-        const disabled = this.state.completed;
+        const disabled = this.props.disabled;
         const columns = this.columns;
         return (
             <Catcher>
                 <DiagnosticTableHeader
+                    defaultEmployeeId={this.props.defaultEmployeeId}
+                    user={this.props.user}
                     tecdocId={this.props.tecdocId}
                     disabled={disabled}
                     orderId={this.props.orderId}
@@ -1040,6 +1045,9 @@ class DiagnosticTable extends Component {
                 />
                 <Table
                     className={!disabled?Styles.diagnosticTable:Styles.diagnosticTableDisabled}
+                    rowClassName={(elem, i)=>{
+                        return elem.disabled ? Styles.diagnosticTableDisabled : null;
+                    }}
                     dataSource={this.state.dataSource}
                     columns={columns}
                     locale={{
@@ -1136,6 +1144,8 @@ class DiagnosticTableHeader extends React.Component{
                 </div>
                 <div style={{ width: "35%" }}>
                     <ConfirmDiagnosticModal
+                        defaultEmployeeId={this.props.defaultEmployeeId}
+                        user={this.props.user}
                         tecdocId={this.props.tecdocId}
                         confirmed={disabled}
                         orderId={this.props.orderId}

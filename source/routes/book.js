@@ -90,6 +90,7 @@ const book = Object.freeze({
     //
     servicesPage:             '/administration/services',
     brandsPage:               '/administration/brands',
+    availabilitiesPage:       '/administration/availabilities',
 
     oldApp: {
         // link to my.cb24.eu

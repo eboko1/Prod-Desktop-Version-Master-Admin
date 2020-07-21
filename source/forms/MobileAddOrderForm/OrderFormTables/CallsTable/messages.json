@@ -1,0 +1,29 @@
+{
+    "en": {
+        "order_form_table.calls": "Calls",
+        "order_form_table.calls.caller": "Caller number",
+        "order_form_table.calls.reciever": "Reciever",
+        "order_form_table.calls.response_time": "Response time",
+        "order_form_table.calls.talk_time": "Talk time",
+        "order_form_table.calls.record": "Record",
+        "order_form_table.calls.no_record": "No record file"
+    },
+    "ru": {
+        "order_form_table.calls": "Звонки",
+        "order_form_table.calls.caller": "Номер звонящего",
+        "order_form_table.calls.reciever": "Номер получателя",
+        "order_form_table.calls.response_time": "Время ожидания",
+        "order_form_table.calls.talk_time": "Время разговора",
+        "order_form_table.calls.record": "Запись",
+        "order_form_table.calls.no_record": "Нет файла записи"
+    },
+    "uk": {
+        "order_form_table.calls": "Дзвінки",
+        "order_form_table.calls.caller": "Номер дзвонящого",
+        "order_form_table.calls.reciever": "Номер приймаючого",
+        "order_form_table.calls.response_time": "Час очікування",
+        "order_form_table.calls.talk_time": "Час розмови",
+        "order_form_table.calls.record": "Запис",
+        "order_form_table.calls.no_record": "Немає файлу запису"
+    }
+}

@@ -22,7 +22,6 @@ import {
 } from 'core/dashboard/duck';
 import { setModal, resetModal, MODALS } from 'core/modals/duck';
 import { permissions, isForbidden } from 'utils';
-import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 
 import { Layout, Spinner, Loader } from 'commons';
 import { ArrowsWeekPicker, ArrowsDatePicker } from 'components';
@@ -77,10 +76,10 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 class DashboardPage extends Component {
-    componentDidMount() {
+    async componentDidMount() {
         const { initDashboard } = this.props;
 
-        initDashboard();
+        await initDashboard();
     }
 
     _onDayChange = date => {
@@ -143,7 +142,8 @@ class DashboardPage extends Component {
     _transferOutdateRepairs = () => this.props.transferOutdateRepairs();
 
     render() {
-        const isMobile = window.innerWidth < 1200;
+        const isMobile = window.innerWidth < 1024;
+
         const {
             startDate,
             endDate,
@@ -170,7 +170,7 @@ class DashboardPage extends Component {
                     <FormattedMessage id='dashboard-page.description' />
                 }
                 controls={
-                    rescheduleOrdersAllowed ? (
+                    rescheduleOrdersAllowed && !isMobile ? (
                         <Button
                             type='primary'
                             // onClick={ () => this._transferOutdateRepairs() }
@@ -283,7 +283,7 @@ class DashboardPage extends Component {
                     stations={ stations }
                     employees={ employees }
                     orders={ orders }
-                    load={ mode === "employees" ? load.reverse() : load }
+                    load={ load }
                     schedule={ schedule }
                     time={ time }
                     dashboard={ dashboard }

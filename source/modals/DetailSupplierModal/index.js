@@ -2,14 +2,16 @@
 import React, { Component } from 'react';
 import moment from 'moment';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Spin, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
+import { permissions, isForbidden } from "utils";
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 
 @injectIntl
@@ -65,7 +67,7 @@ class DetailSupplierModal extends React.Component{
                 dataIndex: 'purchasePrice',
                 width:     '10%',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                             data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     )
@@ -77,14 +79,16 @@ class DetailSupplierModal extends React.Component{
                 width:     '10%',
                 render: (elem) => {
                     const price = Number(elem.purchasePrice) * Number(elem.markup);
-                    let strVal = String(Math.round(price));
+                    let strVal = String(Math.round(price*10)/10);
                     return (
-                        price ? <span>{`${price}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                        price ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     )
                 },
             },
             {
-                title:  <FormattedMessage id="order_form_table.AI" />,
+                title:  <div title={this.props.intl.formatMessage({id: 'order_form_table.AI_title'})}>
+                            <FormattedMessage id="order_form_table.AI" />
+                        </div>,
                 key:       'store',
                 width:     '10%',
                 render: (elem)=>{
@@ -161,7 +165,8 @@ class DetailSupplierModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/business_suppliers/pricelists?partNumber=${this.props.detailCode}&brandId=${this.props.brandId}&storeGroupId=${this.props.storeGroupId}`;
+        let params = `/business_suppliers/pricelists?partNumber=${this.props.detailCode}&brandId=${this.props.brandId}`;
+        if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`;
         url += params;
         fetch(url, {
             method: 'GET',
@@ -187,15 +192,19 @@ class DetailSupplierModal extends React.Component{
         })
         .catch(function (error) {
             console.log('error', error)
+            that.setState({
+                fetched: true,
+            })
         });
     }
 
     render() {
+        const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_SUPPLIER_MODAL_WINDOW);
         return (
             <div>
                 <Button
                     type='primary'
-                    disabled={this.props.disabled}
+                    disabled={disabled}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({
@@ -207,7 +216,7 @@ class DetailSupplierModal extends React.Component{
                         style={{
                             width: 18,
                             height: 18,
-                            backgroundColor: this.props.disabled ? 'black' : 'white',
+                            backgroundColor: disabled ? 'black' : 'white',
                             mask: `url(${images.craneIcon}) no-repeat center / contain`,
                             WebkitMask: `url(${images.craneIcon}) no-repeat center / contain`,
                         }}
@@ -220,11 +229,15 @@ class DetailSupplierModal extends React.Component{
                     onCancel={this.handleCancel}
                     footer={null}
                 >
+                    {this.state.fetched ? 
                         <Table
                             dataSource={this.state.dataSource}
                             columns={this.columns}
                             pagination={false}
                         />
+                        :
+                        <Spin indicator={spinIcon} />
+                    }
                 </Modal>
             </div>
         )

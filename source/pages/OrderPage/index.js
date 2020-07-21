@@ -1,9 +1,9 @@
 // vendor
 import React, {Component} from 'react';
-import {FormattedMessage } from 'react-intl';
+import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Icon} from 'antd';
+import {Button, Icon, notification} from 'antd';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -38,6 +38,7 @@ import {
     ConfirmOrderExitModal,
     OrderTaskModal,
     StoreProductModal,
+    TecDocInfoModal,
 } from 'modals';
 import {BREAKPOINTS, extractFieldsConfigs, permissions, isForbidden, withErrorMessage, roundCurrentTime} from 'utils';
 import book from 'routes/book';
@@ -149,6 +150,7 @@ const mapDispatchToProps = {
     mapDispatchToProps,
 )
 @withErrorMessage()
+@injectIntl
 class OrderPage extends Component {
 
     state = {
@@ -288,8 +290,41 @@ class OrderPage extends Component {
             : returnToOrdersPage(status);
     };
 
+    _getCurrentOrder() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = __API_URL__;
+        let params = `/orders/${this.props.match.params.id}`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.setState({
+                orderServices: data.orderServices,
+                orderDetails: data.orderDetails,
+            });
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
     _createCopy = () => {
         const {allServices, allDetails, selectedClient} = this.props;
+        console.log(this);
         const form = this.orderFormRef.props.form;
         const orderFormValues = form.getFieldsValue();
         const requiredFields = requiredFieldsOnStatuses(orderFormValues).success;
@@ -310,15 +345,19 @@ class OrderPage extends Component {
         
                 const normalizedValues = _.set(orderFormValues, 'stationLoads', [ entryStationLoad ]);
                 const orderFormEntity = {...normalizedValues, selectedClient};
-                this.props.createOrderCopy(
-                    {...convertFieldsValuesToDbEntity(
-                        orderFormEntity,
-                        allServices,
-                        allDetails,
-                        'not_complete',
-                        this.props.user,
-                    )},
-                );
+                var copyData = {...convertFieldsValuesToDbEntity(
+                    orderFormEntity,
+                    allServices,
+                    allDetails,
+                    'not_complete',
+                    this.props.user,
+                )};
+
+                copyData.services = this.state.orderServices;
+                copyData.details = this.state.orderDetails;
+
+                console.log(copyData);
+                this.props.createOrderCopy(copyData);
             } else {
                 this.setState({errors});
             }
@@ -443,38 +482,55 @@ class OrderPage extends Component {
                 }
                 controls={
                     <>
-                        <Icon
-                            type='file-protect'
-                            style={ {
-                                fontSize: isMobile ? 12 : 24,
-                                cursor:   'pointer',
-                                margin:   '0 10px',
-                            } }
-                            onClick={async ()=>{
-                                var data = {
-                                    services: [],
-                                    details: [],
-                                }
-                                this.props.fetchedOrder.orderServices.map((element)=>{
-                                    data.services.push({
-                                        serviceId: element.laborId,
-                                        serviceHours: element.hours,
-                                        servicePrice: element.price,
-                                        comment: element.comment,
-                                    })
-                                });
-                                this.props.fetchedOrder.orderDetails.map((element)=>{
-                                    data.details.push({
-                                        storeGroupId: element.storeGroupId,
-                                        count: element.count,
-                                    })
-                                });
-                                //await confirmDiagnostic(this.props.order.id, data);
-                                //await lockDiagnostic(this.props.order.id);
-                                //await window.location.reload();
-                                await createAgreement(this.props.order.id, this.props.user.language)
-                            }}
-                        />
+                        {!isForbidden(user, permissions.ACCESS_TECH_AUTO_DATA_MODAL_WINDOW) ? 
+                            <div title={this.props.intl.formatMessage({id: "order-page.tech_info"})}>
+                                <TecDocInfoModal
+                                    isMobile={isMobile}
+                                    orderId={ id }
+                                    modificationId={this.props.order.clientVehicleTecdocId}
+                                />
+                            </div>
+                            :
+                            <></>
+                        }
+                        {!isForbidden(user, permissions.ACCESS_AGREEMENT) ? 
+                            <div title={this.props.intl.formatMessage({id: "order-page.send_agreement"})}>
+                                <Icon
+                                    type='file-protect'
+                                    style={ {
+                                        fontSize: isMobile ? 12 : 24,
+                                        cursor:   'pointer',
+                                        margin:   '0 10px',
+                                    } }
+                                    onClick={async ()=>{
+                                        var data = {
+                                            services: [],
+                                            details: [],
+                                        }
+                                        this.props.fetchedOrder.orderServices.map((element)=>{
+                                            data.services.push({
+                                                serviceId: element.laborId,
+                                                serviceHours: element.hours,
+                                                servicePrice: element.price,
+                                                comment: element.comment,
+                                            })
+                                        });
+                                        this.props.fetchedOrder.orderDetails.map((element)=>{
+                                            data.details.push({
+                                                storeGroupId: element.storeGroupId,
+                                                count: element.count,
+                                            })
+                                        });
+                                        await notification.success({
+                                            message: 'Сообщение отправлено!',
+                                        });
+                                        await createAgreement(this.props.order.id, this.props.user.language);
+                                    }}
+                                />
+                            </div>
+                            :
+                            <></>
+                        }
                         { hasInviteStatus &&
                         inviteOrderId && (
                             <Link
@@ -521,7 +577,10 @@ class OrderPage extends Component {
                                         permissions.CREATE_ORDER,
                                     )
                                 }
-                                onClick={ this._createCopy }
+                                onClick={ async () => {
+                                    await this._getCurrentOrder();
+                                    await this._createCopy();
+                                } }
                                 className={ Styles.inviteButton }
                             >
                                 <FormattedMessage id='order-page.create_copy'/>

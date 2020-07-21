@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Spin, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {
@@ -16,6 +16,7 @@ import { DetailStorageModal, DetailSupplierModal } from 'modals'
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 @injectIntl
 class FavouriteDetailsModal extends React.Component{
@@ -24,6 +25,7 @@ class FavouriteDetailsModal extends React.Component{
         this.state = {
             visible: false,
             dataSource: [],
+            fetched: false,
         }
 
         this.storeGroups = [];
@@ -47,7 +49,7 @@ class FavouriteDetailsModal extends React.Component{
                             className={Styles.groupsTreeSelect}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
-                            style={{maxWidth: 180}}
+                            style={{maxWidth: 160}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.treeData}
@@ -170,7 +172,7 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <div style={{display: "flex"}}>
                             <Input
-                                style={{maxWidth: 180, color: 'black'}}
+                                style={{minWidth: 80, color: 'black'}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
                                 onChange={(event)=>{
@@ -181,6 +183,7 @@ class FavouriteDetailsModal extends React.Component{
                                 }}
                             />
                             <DetailStorageModal
+                                user={this.props.user}
                                 tableKey={elem.key}
                                 onSelect={this.setCode}
                                 disabled={elem.storeGroupId == null}
@@ -189,6 +192,9 @@ class FavouriteDetailsModal extends React.Component{
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
+                                codeSearch={false}
+                                codeFilter={elem.detailCode}
+                                brandId={elem.brandId}
                             />
                         </div>
                     )
@@ -209,6 +215,7 @@ class FavouriteDetailsModal extends React.Component{
                                 value={data}
                             />
                             <DetailSupplierModal
+                                user={this.props.user}
                                 tableKey={elem.key}
                                 disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
                                 onSelect={this.setSupplier}
@@ -221,7 +228,9 @@ class FavouriteDetailsModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.AI" />,
+                title:  <div title={this.props.intl.formatMessage({id: 'order_form_table.AI_title'})}>
+                            <FormattedMessage id="order_form_table.AI" />
+                        </div>,
                 key:       'AI',
                 width:     '3%',
                 render: (elem)=>{
@@ -267,7 +276,8 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <InputNumber
                             disabled={elem.storeGroupId == null}
-                            value={data || 0}
+                            className={Styles.detailNumberInput}
+                            value={Math.round(data*10)/10 || 0}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -294,7 +304,8 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <InputNumber
                             disabled={elem.storeGroupId == null}
-                            value={data || 1}
+                            className={Styles.detailNumberInput}
+                            value={Math.round(data*10)/10 || 1}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -322,8 +333,9 @@ class FavouriteDetailsModal extends React.Component{
                     return (
                         <InputNumber
                             disabled={elem.storeGroupId == null}
-                            value={data || 1}
-                            min={1}
+                            className={Styles.detailNumberInput}
+                            value={Math.round(data*10)/10 || 1}
+                            min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -346,11 +358,12 @@ class FavouriteDetailsModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = this.state.dataSource[elem.key].price *  this.state.dataSource[elem.key].count;
+                    const sum = (elem.price || 1) * (elem.count || 1);
                     return (
                         <InputNumber
                             disabled
-                            value={sum ? sum : 1}
+                            className={Styles.detailNumberInput}
+                            value={sum ? Math.round(sum*10)/10 : 1}
                             style={{color: "black"}}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -394,25 +407,27 @@ class FavouriteDetailsModal extends React.Component{
             supplierId: this.state.dataSource[index].supplierId,
             supplierBrandId: this.state.dataSource[index].supplierBrandId,
             brandName: this.state.dataSource[index].brandName,
-            purchasePrice: this.state.dataSource[index].purchasePrice,
+            purchasePrice: this.state.dataSource[index].purchasePrice || 0,
             count: this.state.dataSource[index].count ? this.state.dataSource[index].count : 1,
-            price: this.state.dataSource[index].price,
+            price: this.state.dataSource[index].price || 1,
             comment: this.state.dataSource[index].comment,
         })
         this.addDetailsAndLabors(data);
         this.setState({
             visible: false,
+            fetched: false,
         })
     };
     
     handleCancel = () => {
         this.setState({
             visible: false,
+            fetched: false,
         })
     };
 
 
-    setCode(code, brand, key) {
+    setCode(code, brand, storeId, key) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
         if(!tmp) {
             this.brandOptions.push(
@@ -425,6 +440,7 @@ class FavouriteDetailsModal extends React.Component{
         this.state.dataSource[key].detailCode = code;
         this.state.dataSource[key].brandId = brandValue;
         this.state.dataSource[key].brandName = brand;
+        this.state.dataSource[key].storeId = storeId;
         this.setState({
             update: true
         })
@@ -476,7 +492,7 @@ class FavouriteDetailsModal extends React.Component{
     }
 
     fetchData() {
-        if(!(this.props.tecdocId)) return;
+        if(!(this.props.tecdocId) || this.state.fetched) return;
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -502,24 +518,31 @@ class FavouriteDetailsModal extends React.Component{
                 elem.key = i;
                 elem.detailName = elem.storeGroup.name;
                 elem.detailCode = elem.partNumber;
-                if(elem.price) {
-                    elem.store = elem.price.store;
-                    elem.purchasePrice = elem.price.purchasePrice;
-                    elem.markup = elem.price.markup ? elem.price.markup : 1.4;
-                    elem.supplierName = elem.price.businessSupplierName;
-                    elem.supplierId = elem.price.businessSupplierId;
-                    elem.supplierBrandId = elem.price.supplierBrandId;
-                    elem.supplierPrice = elem.price;
+                if(elem.pricelist && elem.pricelist.length) {
+                    elem.store = elem.pricelist[0].store;
+                    elem.purchasePrice = elem.pricelist[0].purchasePrice;
+                    elem.markup = elem.pricelist[0].markup ? elem.pricelist[0].markup : 1.4;
+                    elem.supplierName = elem.pricelist[0].businessSupplierName;
+                    elem.supplierId = elem.pricelist[0].businessSupplierId;
+                    elem.supplierBrandId = elem.pricelist[0].supplierBrandId;
                     elem.price = elem.purchasePrice * elem.markup;
                     elem.sum = elem.price;
+                }
+                else {
+                    elem.supplierName = undefined;
+                    elem.supplierId = undefined;
                 }
             });
             that.setState({
                 dataSource: data.details,
+                fetched: true,
             })
         })
         .catch(function (error) {
             console.log('error', error)
+            that.setState({
+                fetched: true,
+            })
         });
 
         that = this;
@@ -606,10 +629,6 @@ class FavouriteDetailsModal extends React.Component{
         ));
     };
 
-    componentDidMount() {
-        this.fetchData();
-    }
-
     componentWillUpdate(_, nextState) {
         if(this.state.visible==false && nextState.visible==true) {
             this.fetchData();
@@ -622,6 +641,7 @@ class FavouriteDetailsModal extends React.Component{
             <>
                 <Button
                     type="primary"
+                    disabled={this.props.disabled}
                     onClick={()=>{
                         this.setState({
                             visible: true,
@@ -642,15 +662,19 @@ class FavouriteDetailsModal extends React.Component{
                     onOk={this.handleOk}
                     footer={null}
                 >
-                    <div className={Styles.tableWrap}>
+                    <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Узел/деталь</div>
                         </div>
-                        <Table
-                            dataSource={this.state.dataSource}
-                            columns={this.columns}
-                            pagination={false}
-                        />
+                        {this.state.fetched ? 
+                            <Table
+                                dataSource={this.state.dataSource}
+                                columns={this.columns}
+                                pagination={false}
+                            />
+                            :
+                            <Spin indicator={spinIcon} />
+                        }
                     </div>
                 </Modal>
             </>

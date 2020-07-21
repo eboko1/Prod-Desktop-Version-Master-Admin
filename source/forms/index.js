@@ -5,6 +5,7 @@ import { AddClientVehicleForm } from './AddClientVehicleForm';
 import { UniversalFiltersForm } from './UniversalFiltersForm';
 import { CancelReasonForm } from './CancelReasonForm';
 import { ToSuccessForm } from './ToSuccessForm';
+import { MobileAddOrderForm } from './MobileAddOrderForm';
 import { MobileRecordForm } from './MobileRecordForm';
 import { OrderTaskForm } from './OrderTaskForm';
 import { PackageForm } from './PackageForm';
@@ -52,6 +53,7 @@ export {
     UniversalFiltersForm,
     CancelReasonForm,
     ToSuccessForm,
+    MobileAddOrderForm,
     MobileRecordForm,
     OrderTaskForm,
     PackageForm,

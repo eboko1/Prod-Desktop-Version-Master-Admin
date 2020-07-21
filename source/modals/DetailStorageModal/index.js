@@ -6,6 +6,7 @@ import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
+import { permissions, isForbidden } from "utils";
 import { getSupplier } from 'components/PartSuggestions/supplierConfig.js';
 import { DetailSupplierModal } from 'modals'
 // own
@@ -24,6 +25,8 @@ class DetailStorageModal extends React.Component{
             visible: false,
             fetched: false,
             dataSource: [],
+            storeOptions: [],
+            storeFilter: undefined,
             brandOptions: [],
             brandFilter: [],
             codeFilter: undefined,
@@ -55,10 +58,29 @@ class DetailStorageModal extends React.Component{
                     return (
                         <div>
                             <FormattedMessage id="order_form_table.detail_code" />
-                            <Input
-                                disabled
-                                value={this.props.storeGroupId}
-                            />
+                            <Select
+                                showSearch
+                                value={this.state.storeFilter}
+                                dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
+                                filterOption={(input, option) => {
+                                    return (
+                                        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                        String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                    )
+                                }}
+                                onSelect={(value, option)=>{
+                                    this.setState({
+                                        storeFilter: value,
+                                    });
+                                }}
+                            >
+                                {this.state.storeOptions.map((elem, i)=>(
+                                    <Option key={i} value={elem.id}>
+                                        {elem.name}
+                                    </Option>
+                                ))}
+                            </Select>
                             <Input
                                 allowClear
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
@@ -157,7 +179,7 @@ class DetailStorageModal extends React.Component{
                 key:       'attributes',
                 dataIndex: 'attributes',
                 width:     '25%',
-                render: (attributes)=>{
+                render: (attributes, elem)=>{
                     let title = '';
                     let data = '';
                     for (let i = 0; i < attributes.length; i++) {
@@ -165,12 +187,13 @@ class DetailStorageModal extends React.Component{
                         title += `${attribute.description}: ${attribute.value}\n`;
                         data += `${attribute.value}`;
                         if( i == attributes.length-1) {
-                            data += '.';
+                            data += '. ';
                         }
                         else {
                             data += ', ';
                         }
                     }
+                    data += elem.productId + '.';
                     return (
                         <div
                             title={title}
@@ -196,11 +219,12 @@ class DetailStorageModal extends React.Component{
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                             />
                             <DetailSupplierModal
+                                user={this.props.user}
                                 setStoreSupplier={this.setSupplier}
                                 keyValue={elem.key}
                                 brandId={elem.brandId}
                                 detailCode={elem.partNumber}
-                                storeGroupId={this.props.storeGroupId}
+                                storeGroupId={this.props.storeGroupId || elem.storeGroupId}
                             />
                         </div>
                     )
@@ -212,7 +236,7 @@ class DetailStorageModal extends React.Component{
                 dataIndex: 'purchasePrice',
                 width:     '6%',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                             data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     )
@@ -224,7 +248,7 @@ class DetailStorageModal extends React.Component{
                 dataIndex: 'salePrice',
                 width:     '6%',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                             data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
                     )
@@ -249,7 +273,7 @@ class DetailStorageModal extends React.Component{
                         </div>
                     )
                 },
-                key:       <FormattedMessage id="order_form_table.AI" />,
+                key:       'store',
                 dataIndex: 'store',
                 width:     '8%',
                 render: (store) => {
@@ -291,11 +315,12 @@ class DetailStorageModal extends React.Component{
                 width:     '5%',
                 render: (elem)=>{
                     var supplierBrandId = elem.supplierBrandId ? elem.supplierBrandId : (elem.price ? elem.price.supplierBrandId : undefined);
+                    var name = elem.storeGroupId == 1000000 ? elem.description : elem.storeGroupName;
                     return (
                         <Button
                             type="primary"
                             onClick={()=>{
-                                this.props.onSelect(elem.partNumber, elem.supplierName, this.props.tableKey);
+                                this.props.onSelect(elem.partNumber, elem.supplierName, elem.storeId, this.props.tableKey, elem.storeGroupId, name);
                                 this.props.setSupplier(elem.businessSupplierId, elem.businessSupplierName, supplierBrandId, elem.purchasePrice, elem.salePrice, elem.store, this.props.tableKey);
                                 this.handleCancel();
                             }}
@@ -366,6 +391,8 @@ class DetailStorageModal extends React.Component{
             dataSource: [],
             brandOptions: [],
             brandFilter: [],
+            storeFilter: undefined,
+            storeOptions: [],
             codeFilter: undefined,
             attributesFilters: [],
             inStock: false,
@@ -373,6 +400,95 @@ class DetailStorageModal extends React.Component{
     };
 
     fetchData() {
+        if(this.props.codeSearch) {
+            var that = this;
+            let token = localStorage.getItem('_my.carbook.pro_token');
+            let url = API_URL;
+            let params = `/tecdoc/replacements?query=${this.props.codeFilter}`;
+            if(this.props.storeGroupId) params += `&storeGroupId=${this.props.storeGroupId}`
+            if(this.props.brandId) params += `&brandIds=[${this.props.brandId}]`
+            url += params;
+            fetch(url, {
+                method: 'GET',
+                headers: {
+                    'Authorization': token,
+                }
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                return Promise.reject(new Error(response.statusText))
+                }
+                return Promise.resolve(response)
+            })
+            .then(function (response) {
+                return response.json()
+            })
+            .then(function (data) {
+                var brandOptions = [];
+                var storeOptions = [];
+                let defaultBrand = [], brandsWithSupplier = [], otherBrands = [];
+                data.map((elem, i)=>{
+                    elem.key = i;
+                    if(elem.price) {
+                        elem.storeId = elem.price.id;
+                        elem.store = elem.price.store;
+                        elem.purchasePrice = elem.price.purchasePrice;
+                        elem.businessSupplierId = elem.price.businessSupplierId;
+                        elem.businessSupplierName = elem.price.businessSupplierName;
+                        elem.salePrice = elem.price.purchasePrice * (elem.price.markup ? elem.price.markup : 1.4);
+                    }
+                    if(brandOptions.findIndex((brand)=>brand.id == elem.supplierId)==-1) {
+                        if(that.props.brandFilter == elem.supplierName) {
+                            that.state.brandFilter.push(elem.supplierId);
+                        }
+                        brandOptions.push({
+                            id: elem.supplierId,
+                            name: elem.supplierName,
+                        })
+                        if(elem.supplierName == that.props.defaultBrandName) {
+                            defaultBrand.push({
+                                id: elem.supplierId,
+                                name: elem.supplierName,
+                            })
+                        }
+                        else if(elem.price) {
+                            brandsWithSupplier.push({
+                                id: elem.supplierId,
+                                name: elem.supplierName,
+                            })
+                        }
+                        else {
+                            otherBrands.push({
+                                id: elem.supplierId,
+                                name: elem.supplierName,
+                            })
+                        }
+                    }
+                    if(storeOptions.findIndex((store)=>store.id == elem.storeGroupId)==-1) {
+                        storeOptions.push({
+                            id: elem.storeGroupId,
+                            name: elem.storeGroupName,
+                        })
+                    }
+                })
+                brandsWithSupplier.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
+                otherBrands.sort((a, b) => a.name < b.name ? -1 : (a.name > b.name ? 1 : 0));
+                brandOptions=[...defaultBrand, ...brandsWithSupplier, ...otherBrands];
+                that.setState({
+                    fetched: true,
+                    dataSource: data,
+                    brandOptions: brandOptions,
+                    storeOptions: storeOptions,
+                })
+            })
+            .catch(function (error) {
+                console.log('error', error)
+                that.setState({
+                    fetched: true,
+                })
+            });
+            return;
+        }
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -400,6 +516,7 @@ class DetailStorageModal extends React.Component{
             data.map((elem, i)=>{
                 elem.key = i;
                 if(elem.price) {
+                    elem.storeId = elem.price.id;
                     elem.store = elem.price.store;
                     elem.purchasePrice = elem.price.purchasePrice;
                     elem.businessSupplierId = elem.price.businessSupplierId;
@@ -446,6 +563,9 @@ class DetailStorageModal extends React.Component{
         })
         .catch(function (error) {
             console.log('error', error)
+            that.setState({
+                fetched: true,
+            })
         });
 
         params = `/tecdoc/filtering_attributes?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
@@ -489,9 +609,11 @@ class DetailStorageModal extends React.Component{
     }
 
     render() {
-        const { dataSource, brandFilter, codeFilter, inStock } = this.state;
+        const { dataSource, storeFilter, brandFilter, codeFilter, inStock } = this.state;
+        const disabled = this.props.disabled || isForbidden(this.props.user, permissions.ACCESS_TECDOC_MODAL_WINDOW);
         let tblData = [...dataSource];
 
+        if(storeFilter) tblData = tblData.filter((elem)=>String(elem.storeGroupId).toLowerCase().indexOf(String(storeFilter).toLowerCase()) >= 0 );
         if(brandFilter.length) tblData = tblData.filter((elem)=>brandFilter.indexOf(elem.supplierId)!=-1);
         if(codeFilter) tblData = tblData.filter((elem)=>elem.partNumber.toLowerCase().indexOf(codeFilter.toLowerCase()) >= 0 );
         if(inStock) tblData = tblData.filter((elem)=>elem.store);
@@ -504,7 +626,7 @@ class DetailStorageModal extends React.Component{
             <div>
                 <Button
                     type='primary'
-                    disabled={this.props.disabled}
+                    disabled={disabled}
                     onClick={()=>{
                         this.fetchData();
                         this.setState({
@@ -516,7 +638,7 @@ class DetailStorageModal extends React.Component{
                         style={{
                             width: 18,
                             height: 18,
-                            backgroundColor: this.props.disabled ? 'black' : 'white',
+                            backgroundColor: disabled ? 'black' : 'white',
                             mask: `url(${images.bookIcon}) no-repeat center / contain`,
                             WebkitMask: `url(${images.bookIcon}) no-repeat center / contain`,
                         }}

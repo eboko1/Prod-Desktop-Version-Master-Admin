@@ -1,16 +1,18 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, message, notification, Table, TreeSelect, Checkbox, Spin } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { images } from 'utils';
+import { permissions, isForbidden } from "utils";
 import { DetailStorageModal, DetailSupplierModal } from 'modals'
 // own
 import Styles from './styles.m.css';
 const { TreeNode } = TreeSelect;
 const Option = Select.Option;
+const spinIcon = <Icon type="loading" style={{ fontSize: 24 }} spin />;
 
 @injectIntl
 class AddServiceModal extends React.Component{
@@ -33,42 +35,9 @@ class AddServiceModal extends React.Component{
         this.relatedDetailsOptions = [];
 
         this.setComment = this.setComment.bind(this);
+        this.setHours = this.setHours.bind(this);
 
         this.mainTableColumns = [
-            {
-                title: <FormattedMessage id='services_table.labor'/>,
-                key:       'masterLaborId',
-                dataIndex: 'masterLaborId',
-                width:     '10%',
-                render: (data, elem)=>{
-                    return (
-                        <TreeSelect
-                            className={Styles.groupsTreeSelect}
-                            disabled={this.state.editing}
-                            showSearch
-                            placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
-                            style={{maxWidth: 180, minWidth: 140}}
-                            value={data}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.laborsTreeData}
-                            filterTreeNode={(input, node) => {
-                                return (
-                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
-                                )
-                            }}
-                            onSelect={(value, option)=>{
-                                this.state.mainTableSource[0].masterLaborId = value;
-                                this.filterOptions(value, elem.storeGroupId);
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-                
-            },
             {
                 title:  <FormattedMessage id="services_table.store_group" />,
                 key:       'storeGroupId',
@@ -81,7 +50,7 @@ class AddServiceModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.store_group'})}
-                            style={{maxWidth: 180, minWidth: 140}}
+                            style={{maxWidth: 180, minWidth: 100}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.storeGroupsTreeData}
@@ -106,17 +75,52 @@ class AddServiceModal extends React.Component{
                 
             },
             {
-                title:  <FormattedMessage id="order_form_table.service_type" />,
+                title: <FormattedMessage id='order_form_table.service_type'/>,
+                key:       'masterLaborId',
+                dataIndex: 'masterLaborId',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <TreeSelect
+                            className={Styles.groupsTreeSelect}
+                            disabled={this.state.editing}
+                            showSearch
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
+                            style={{maxWidth: 180, minWidth: 100}}
+                            value={data}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            treeData={this.laborsTreeData}
+                            filterTreeNode={(input, node) => {
+                                return (
+                                    node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(node.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.mainTableSource[0].masterLaborId = value;
+                                this.filterOptions(value, elem.storeGroupId);
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        />
+                    )
+                }
+                
+            },
+            {
+                title:  <><FormattedMessage id="services_table.labor" /> <span style={{color: 'red'}}>*</span></>,
                 key:       'laborId',
                 dataIndex: 'laborId',
                 width:     '15%',
                 render: (data, elem)=>{
                     return (
                         <Select
+                            disabled={this.state.editing}
                             showSearch
-                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
+                            placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
                             value={data ? data : undefined}
-                            style={{minWidth: 240}}
+                            style={{minWidth: 100}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
                                 return (
@@ -125,7 +129,7 @@ class AddServiceModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                let price = option.props.price ? option.props.price : 1;
+                                let price = option.props.price ? option.props.price : Number(this.props.normHourPrice);
                                 let count = option.props.norm_hours ? option.props.norm_hours : 1;
                                 this.state.mainTableSource[0].laborId = value;
                                 this.state.mainTableSource[0].serviceName = option.props.children;
@@ -153,7 +157,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <Input
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
-                            style={{minWidth: 140}}
+                            style={{minWidth: 120}}
                             value={data}
                             onChange={(event)=>{
                                 this.state.mainTableSource[0].serviceName = event.target.value;
@@ -177,7 +181,7 @@ class AddServiceModal extends React.Component{
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.employee'})}
                             value={data ? data : undefined}
-                            style={{maxWidth: 180, minWidth: 100}}
+                            style={{maxWidth: 180, minWidth: 80}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             filterOption={(input, option) => {
                                 return (
@@ -224,7 +228,8 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 0}
+                            className={Styles.serviceNumberInput}
+                            value={Math.round(data*10)/10 || 0}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -250,7 +255,8 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            value={data || 1}
+                            className={Styles.serviceNumberInput}
+                            value={Math.round(data*10)/10 || 1}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -277,8 +283,10 @@ class AddServiceModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             value={data || 1}
-                            min={1}
+                            min={0.1}
+                            step={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -303,7 +311,14 @@ class AddServiceModal extends React.Component{
                 width:     '3%',
                 render: (data, elem)=>{
                     return (
-                        <NormHourModal/>
+                        <NormHourModal
+                            className={Styles.serviceNumberInput}
+                            user={this.props.user}
+                            tecdocId={this.props.tecdocId}
+                            storeGroupId={elem.storeGroupId}
+                            onSelect={this.setHours}
+                            hours={data}
+                        />
                     )
                 }
             },
@@ -312,11 +327,12 @@ class AddServiceModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = this.state.mainTableSource[0].price *  this.state.mainTableSource[0].count;
+                    const sum = elem.price *  elem.count;
                     return (
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             disabled
-                            value={sum ? sum : 1}
+                            value={Math.round(sum*10)/10 || 1}
                             style={{color: "black"}}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -343,6 +359,7 @@ class AddServiceModal extends React.Component{
                                 this.state.mainTableSource[0].purchasePrice = 0;
                                 this.state.mainTableSource[0].price = 1;
                                 this.state.mainTableSource[0].count = 1;
+                                this.state.mainTableSource[0].hours = 0;
                                 this.state.mainTableSource[0].sum = undefined;
 
                                 this.setState({
@@ -357,6 +374,12 @@ class AddServiceModal extends React.Component{
     }
 
     handleOk = () => {
+        if(this.state.mainTableSource[0].laborId == undefined) {
+            notification.warning({
+                message: 'Заполните все необходимые поля',
+              });
+            return;
+        }
         if(this.state.editing) {
             this.props.updateLabor(this.props.tableKey, {...this.state.mainTableSource[0]});
         }
@@ -372,13 +395,14 @@ class AddServiceModal extends React.Component{
                     serviceId: element.laborId,
                     serviceName: element.serviceName,
                     employeeId: element.employeeId,
-                    serviceHours: element.hours ? element.hours : 1,
-                    purchasePrice: element.purchasePrice,
+                    serviceHours: element.hours ? element.hours : 0,
+                    purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
                     count: element.count ? element.count : 1,
-                    servicePrice: element.price,
+                    servicePrice:  Math.round(element.price*10)/10 || 1,
                     comment: element.comment,
                 })
             });
+            console.log(data);
             this.addDetailsAndLabors(data);
         }
         this.props.hideModal();
@@ -390,6 +414,14 @@ class AddServiceModal extends React.Component{
 
     setComment(comment) {
         this.state.mainTableSource[0].comment = {comment: comment};
+        this.setState({
+            update: true
+        })
+    }
+
+    setHours(hours) {
+        this.state.mainTableSource[0].hours = hours;
+        this.state.mainTableSource[0].count = hours * this.props.laborTimeMultiplier;
         this.setState({
             update: true
         })
@@ -598,7 +630,7 @@ class AddServiceModal extends React.Component{
         ));
         this.employeeOptions = this.props.employees.map((elem, i)=>(
             <Option key={i} value={elem.id}>
-                {elem.name}
+                {elem.name} {elem.surname}
             </Option>
         ))
     };
@@ -628,9 +660,14 @@ class AddServiceModal extends React.Component{
         if(prevState.visible == false && this.props.visible) {
             const editing = Boolean(this.props.labor.laborId);
             this.getOptions();
+            this.state.mainTableSource = [{...this.props.labor}];
+            
+            if(!editing) {
+                this.state.mainTableSource[0].employeeId = this.props.defaultEmployeeId;
+            }
+            
             this.setState({
                 editing: editing,
-                mainTableSource: [{...this.props.labor}],
             })
         }
     }
@@ -646,17 +683,6 @@ class AddServiceModal extends React.Component{
                     onCancel={this.handleCancel}
                     onOk={this.handleOk}
                 >
-                    <div>
-                        Сопутствующие: детали
-                        <Checkbox
-                            checked={this.state.relatedDetailsCheckbox}
-                            onChange={()=>{
-                                this.setState({
-                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
-                                })
-                            }}
-                        /> 
-                    </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
                             <div style={{display: 'block'}}>Работа</div>
@@ -666,6 +692,19 @@ class AddServiceModal extends React.Component{
                             columns={this.mainTableColumns}
                             pagination={false}
                         />
+                    </div>
+                    <div style={{marginTop: 15}}>
+                        Сопутствующие: детали
+                        <Checkbox
+                            style={{marginLeft: 5}}
+                            disabled
+                            checked={this.state.relatedDetailsCheckbox}
+                            onChange={()=>{
+                                this.setState({
+                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
+                                })
+                            }}
+                        /> 
                     </div>
                 </Modal>
             </>
@@ -680,58 +719,67 @@ class NormHourModal extends React.Component{
         super(props);
         this.state = {
             visible: false,
-            dataSource: [
-                {
-                    key: 0,
-                    laborId: 111,
-                    storeGroupId: 222,
-                    comment: 3333,
-                    price: 444,
-                    hours: 5.5,
-                }
-            ],
-        }
+            dataSource: [],
+            fetched: false,
+            filterValue: undefined,
+        };
 
         this.columns = [
             {
                 title:  <FormattedMessage id="order_form_table.service_type" />,
-                key:       'laborId',
-                dataIndex: 'laborId',
+                key:       'kortext',
+                dataIndex: 'kortext',
                 width:     '15%',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            disabled
-                            value={data}
-                        />
+                        <span
+                            style={{textTransform: 'capitalize'}}
+                        >
+                            {data}
+                        </span>
                     )
                 }
             },
             {
-                title:  <FormattedMessage id="services_table.store_group" />,
-                key:       'storeGroupId',
-                dataIndex: 'storeGroupId',
+                title:  () => (
+                            <div>
+                                <FormattedMessage id="services_table.service_type" />
+                                <Input
+                                    value={this.state.filterValue}
+                                    placeholder={this.props.intl.formatMessage({id: 'services_table.service_type'})}
+                                    onChange={(event)=>{
+                                        this.setState({
+                                            filterValue: event.target.value
+                                        })
+                                    }}
+                                />
+                            </div>
+                        ),
+                key:       'itemmptext',
+                dataIndex: 'itemmptext',
                 width:     '15%',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            disabled
-                            value={data}
-                        />
+                        <span
+                            style={{textTransform: 'capitalize'}}
+                        >
+                            {data}
+                        </span>
                     )
                 }
             },
             {
                 title:  <FormattedMessage id="comment" />,
-                key:       'comment',
-                dataIndex: 'comment',
+                key:       'qualcoltext',
+                dataIndex: 'qualcoltext',
                 width:     '15%',
                 render: (data, elem)=>{
                     return (
-                        <Input
-                            disabled
-                            value={data}
-                        />
+                        <span
+                            style={{textTransform: 'capitalize'}}
+                        >
+                            {data}
+                        </span>
                     )
                 }
             },
@@ -742,34 +790,22 @@ class NormHourModal extends React.Component{
                 width:     '10%',
                 render: (data, elem)=>{
                     return (
-                        <InputNumber
-                            disabled
-                            value={data}
-                            formatter={ value =>
-                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                            }
-                            parser={ value =>
-                                `${value}`.replace(/\$\s?|(\s)/g, '')
-                            }
-                        />
+                        <span>
+                            {data} <FormattedMessage id="cur" />
+                        </span>
                     )
                 }
             },
             {
                 title:  <FormattedMessage id="services_table.norm_hours" />,
-                key:       'hours',
-                dataIndex: 'hours',
+                key:       'worktime',
+                dataIndex: 'worktime',
                 width:     '10%',
                 render: (data, elem)=>{
                     return (
-                        <InputNumber
-                            value={data}
-                            min={0.1}
-                            onChange={(value)=>{
-                                this.state.dataSource[elem.key].hours = value;
-                                this.setState({});
-                            }}
-                        />
+                        <span>
+                            {data} <FormattedMessage id="order_form_table.hours_short" />
+                        </span>
                     )
                 }
             },
@@ -780,50 +816,123 @@ class NormHourModal extends React.Component{
                 width:     '10%',
                 render: (data, elem)=>{
                     return (
-                        <InputNumber
-                            disabled
-                            value={elem.price*elem.hours}
-                            formatter={ value =>
-                                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
-                            }
-                            parser={ value =>
-                                `${value}`.replace(/\$\s?|(\s)/g, '')
-                            }
-                        />
+                        <span>
+                            {Math.round((elem.price*elem.worktime)*10)/10} <FormattedMessage id="cur" />
+                        </span>
+                    )
+                }
+            },
+            {
+                key:       'select',
+                width:     '10%',
+                render: (data, elem)=>{
+                    return (
+                        <Button
+                            type="primary"
+                            onClick={()=>{
+                                this.props.onSelect(elem.worktime);
+                                this.handleCancel();
+                            }}
+                        >
+                            <FormattedMessage id="select" />
+                        </Button>
                     )
                 }
             }
         ]
     }
 
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/tecdoc/labor_times?modificationId=${this.props.tecdocId}&storeGroupId=${this.props.storeGroupId}`;
+        url += params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.laborTimes.map((elem, i)=>{
+                elem.key = i;
+                elem.price = data.priceOfNormHour;
+                elem.worktime = Math.ceil((elem.worktime)*10)/10;
+            });
+            that.setState({
+                dataSource: data.laborTimes,
+                fetched: true,
+            });
+
+        })
+        .catch(function (error) {
+            console.log('error', error);
+            that.setState({
+                fetched: true,
+            });
+        });
+    }
+
     handleCancel = () => {
         this.setState({
             visible: false,
             dataSource: [],
+            fetched: false,
         })
     }
 
+    componentDidUpdate() {
+        if(!this.state.fetched && this.state.visible) {
+            this.fetchData();
+        } 
+    }
+
     render() { 
+        const { hours } = this.props;
+        const { dataSource, filterValue } = this.state;
+        let tblData = [...dataSource];
+
+        if(filterValue) tblData = tblData.filter((elem)=>elem.itemmptext.toLowerCase().indexOf(filterValue.toLowerCase()) >= 0 );
+
         return (
             <>
                 <Button
-                    type={'primary'}
+                    disabled={isForbidden(this.props.user, permissions.ACCESS_NORM_HOURS_MODAL_WINDOW)}
+                    type={hours ? null : 'primary'}
                     onClick={()=>{
                         this.setState({visible: true})
                     }}
                 >
-                    <Icon type="clock-circle" />
+                    { hours ? 
+                    <>{hours} <FormattedMessage id="order_form_table.hours_short" /></> :
+                    <Icon type="clock-circle" />}
                 </Button>
                 <Modal
                     width="75%"
                     visible={this.state.visible}
+                    title={<FormattedMessage id="services_table.norm_hours" />}
                     onCancel={this.handleCancel}
+                    footer={null}
                 >
-                    <Table
-                        dataSource={this.state.dataSource}
-                        columns={this.columns}
-                        pagination={false}
-                    />
+                    {this.state.fetched ? 
+                        <Table
+                            dataSource={tblData}
+                            columns={this.columns}
+                            pagination={false}
+                        />
+                        :
+                        <Spin indicator={spinIcon} />
+                    }
                 </Modal>
             </>
     )}

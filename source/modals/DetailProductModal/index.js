@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Select, Input, InputNumber, AutoComplete, Table, TreeSelect, Checkbox } from 'antd';
+import { Button, Modal, Icon, Select, Input, InputNumber, Radio, Table, TreeSelect, Checkbox } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {
@@ -23,6 +23,7 @@ class DetailProductModal extends React.Component{
         super(props);
         this.state = {
             editing: false,
+            radioValue: 1,
             mainTableSource: [],
             relatedDetailsSource: [],
             relatedServicesSource: [
@@ -47,9 +48,11 @@ class DetailProductModal extends React.Component{
         }
         this.labors = [];
         this.storeGroups = [];
+        this.suppliers = [];
         this.treeData = [];
         this.brandOptions = [];
         this.servicesOptions = [];
+        this.suppliersOptions = [];
         this.relatedDetailsOptions = [];
 
         this.setCode = this.setCode.bind(this);
@@ -69,7 +72,7 @@ class DetailProductModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
-                            style={{maxWidth: 180}}
+                            style={{maxWidth: 160}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.treeData}
@@ -80,7 +83,9 @@ class DetailProductModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.getDefaultValues(value);
+                                if(this.state.radioValue != 2) {
+                                    this.getDefaultValues(value);
+                                }
                                 this.state.mainTableSource[0].storeGroupId = value;
                                 this.state.mainTableSource[0].detailName = option.props.name;
                                 this.filterOptions(value);
@@ -101,7 +106,7 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <Input
-                            disabled={elem.storeGroupId == null}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_name'})}
                             style={{minWidth: 150}}
                             value={data}
@@ -126,7 +131,7 @@ class DetailProductModal extends React.Component{
                     }
                     return (
                         <CommentaryButton
-                            disabled={elem.storeGroupId == null}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
                             commentary={{comment: data}}
                             detail={detail}
                             setComment={this.setComment}
@@ -152,7 +157,7 @@ class DetailProductModal extends React.Component{
                     return (
                         <Select
                             showSearch
-                            disabled={elem.storeGroupId == null}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
                             style={{maxWidth: 180, minWidth: 100}}
@@ -194,9 +199,10 @@ class DetailProductModal extends React.Component{
                     return (
                         <div style={{display: "flex"}}>
                             <Input
-                                style={{maxWidth: 180, color: 'black'}}
+                                style={{minWidth: 80, color: 'black'}}
                                 placeholder={this.props.intl.formatMessage({id: 'order_form_table.detail_code'})}
                                 value={data}
+                                disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
                                 onChange={(event)=>{
                                     this.state.mainTableSource[0].detailCode = event.target.value;
                                     this.setState({
@@ -205,15 +211,21 @@ class DetailProductModal extends React.Component{
                                 }}
                             />
                             <DetailStorageModal
+                                user={this.props.user}
                                 tableKey={0}
                                 onSelect={this.setCode}
-                                disabled={elem.storeGroupId == null}
+                                disabled={
+                                    elem.storeGroupId == null && this.state.radioValue != 3 
+                                    || this.state.radioValue == 2 
+                                    || this.state.radioValue == 3 && (data || '').length < 3}
+                                codeSearch={this.state.radioValue == 3}
                                 tecdocId={this.props.tecdocId}
                                 storeGroupId={this.state.mainTableSource[0].storeGroupId}
                                 setSupplier={this.setSupplier}
                                 brandFilter={elem.brandName}
                                 supplierId={elem.supplierId}
                                 codeFilter={elem.detailCode}
+                                brandId={elem.brandId}
                                 defaultBrandName={this.state.defaultBrandName}
                             />
                         </div>
@@ -228,15 +240,45 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <div style={{display: "flex"}}>
-                            <Input
-                                style={{maxWidth: 180, color: 'black'}}
-                                disabled
-                                placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
-                                value={data}
-                            />
+                            {this.state.radioValue == 2 ?
+                                <Select
+                                    showSearch
+                                    placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
+                                    value={elem.supplierId ? elem.supplierId : undefined}
+                                    style={{maxWidth: 180, minWidth: 80}}
+                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                                    filterOption={(input, option) => {
+                                        return (
+                                            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                            String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                        )
+                                    }}
+                                    onSelect={(value, option)=>{
+                                        this.state.mainTableSource[0].supplierId = value;
+                                        this.setState({
+                                            update: true
+                                        })
+                                    }}
+                                >
+                                    {this.suppliersOptions}
+                                </Select>
+                                :
+                                <Input
+                                    style={{maxWidth: 180, color: 'black'}}
+                                    disabled
+                                    placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
+                                    value={data}
+                                />
+                            }
                             <DetailSupplierModal
+                                user={this.props.user}
                                 tableKey={0}
-                                disabled={elem.storeGroupId == null || !(elem.detailCode) || !(elem.brandName)}
+                                disabled={
+                                    (elem.storeGroupId == null || 
+                                    !(elem.detailCode) || 
+                                    !(elem.brandName)) || 
+                                    this.state.radioValue == 2
+                                }
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
                                 brandId={elem.brandId}
@@ -247,7 +289,9 @@ class DetailProductModal extends React.Component{
                 }
             },
             {
-                title:  <FormattedMessage id="order_form_table.AI" />,
+                title:  <div title={this.props.intl.formatMessage({id: 'order_form_table.AI_title'})}>
+                            <FormattedMessage id="order_form_table.AI" />
+                        </div>,
                 key:       'AI',
                 width:     '3%',
                 render: (elem)=>{
@@ -292,8 +336,9 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
-                            value={data || 0}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
+                            value={Math.round(data*10)/10 || 0}
+                            className={Styles.detailNumberInput}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -319,8 +364,9 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
-                            value={data || 1}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
+                            value={Math.round(data*10)/10 || 1}
+                            className={Styles.detailNumberInput}
                             min={1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -347,9 +393,10 @@ class DetailProductModal extends React.Component{
                 render: (data, elem)=>{
                     return (
                         <InputNumber
-                            disabled={elem.storeGroupId == null}
-                            value={data || 1}
-                            min={1}
+                            disabled={elem.storeGroupId == null && this.state.radioValue != 2}
+                            value={Math.round(data*10)/10 || 1}
+                            className={Styles.detailNumberInput}
+                            min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -372,11 +419,12 @@ class DetailProductModal extends React.Component{
                 key:       'sum',
                 width:     '5%',
                 render: (elem)=>{
-                    const sum = this.state.mainTableSource[0].price *  this.state.mainTableSource[0].count;
+                    const sum = elem.price * elem.count;
                     return (
                         <InputNumber
                             disabled
-                            value={sum ? sum : 1}
+                            className={Styles.detailNumberInput}
+                            value={sum ? Math.round(sum*10)/10 : 1}
                             style={{color: "black"}}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -422,489 +470,12 @@ class DetailProductModal extends React.Component{
         ];
 
         this.relatedDetailsColumns = [
-            {
-                title:  "GROUP",
-                key:       'id',
-                dataIndex: 'id',
-                width:     '15%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <TreeSelect
-                            allowClear
-                            showSearch
-                            placeholder="GROUP"
-                            style={{maxWidth: 180}}
-                            value={data}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.treeData}
-                            filterTreeNode={(input, node) => (
-                                node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
-                                String(node.props.value).indexOf(input.toLowerCase()) >= 0
-                            )}
-                            onSelect={(value, option)=>{
-                                this.state.relatedDetailsSource[key].id = value;
-                                this.state.relatedDetailsSource[key].name = option.props.name;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-                
-            },
-            {
-                title:  "NAME",
-                key:       'name',
-                dataIndex: 'name',
-                width:     '25%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Input
-                            placeholder="NAME"
-                            value={data}
-                            onChange={(value)=>{
-                                this.state.relatedDetailsSource[key].name = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "COMMENT",
-                key:       'comment',
-                dataIndex: 'comment',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    const detail = {
-                        name: "test",
-                    }
-                    const comment = {
-                        comment: null,
-                    }
-                    return (
-                        <CommentaryButton
-                            commentary={comment}
-                            detail={detail}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "BRAND",
-                key:       'brandName',
-                dataIndex: 'brandName',
-                width:     '15%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Select
-                            allowClear
-                            placeholder="BRAND"
-                            value={data}
-                            style={{maxWidth: 180}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            onSelect={(value)=>{
-                                this.state.relatedDetailsSource[key].brandName = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        >
-                            {this.brandOptions}
-                        </Select>
-                    )
-                }
-            },
-            {
-                title:  "CODE",
-                key:       'code',
-                dataIndex: 'code',
-                width:     '15%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Input
-                            style={{maxWidth: 180}}
-                            disabled={elem.id == null}
-                            placeholder="CODE"
-                            value={data}
-                            onChange={(event)=>{
-                                this.state.relatedDetailsSource[key].code = event.target.value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "SELF",
-                key:       'self',
-                dataIndex: 'self',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 0}
-                            min={0}
-                            onChange={(value)=>{
-                                this.state.relatedDetailsSource[key].self = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "PRICE",
-                key:       'price',
-                dataIndex: 'price',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 1}
-                            min={1}
-                            onChange={(value)=>{
-                                this.state.relatedDetailsSource[key].price = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "COUNT",
-                key:       'count',
-                dataIndex: 'count',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 1}
-                            min={1}
-                            onChange={(value)=>{
-                                this.state.relatedDetailsSource[key].count = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "SUM",
-                key:       'sum',
-                width:     '7%',
-                render: (elem)=>{
-                    const key = elem.key;
-                    const sum = this.state.relatedDetailsSource[key].price *  this.state.relatedDetailsSource[key].count;
-                    return (
-                        <InputNumber
-                            disabled
-                            value={sum ? sum : 1}
-                            style={{color: "black"}}
-                        />
-                    )
-                }
-            },
-            {
-                key:       'delete',
-                width:     '3%',
-                render: (elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Icon
-                            type="delete"
-                            onClick={()=>{
-                                this.state.relatedDetailsSource[key] = {
-                                    key: key,
-                                    id: undefined,
-                                    name: undefined,
-                                    comment: undefined,
-                                    brandName: undefined,
-                                    code: undefined,
-                                    self: 0,
-                                    price: 1,
-                                    count: 1,
-                                    sum: undefined,
-                                }
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
+
         ];
 
         this.relatedServicesColumns = [
-            {
-                title:  "SERVICE",
-                key:       'defaultName',
-                dataIndex: 'defaultName',
-                width:     '15%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Select
-                            allowClear
-                            showSearch
-                            placeholder="SERVICE"
-                            value={data}
-                            style={{maxWidth: 180}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            filterOption={(input, option)=>(
-                                String(option.props.value).toLowerCase().includes(input.toLocaleLowerCase()) ||
-                                option.props.children.toLowerCase().includes(input.toLocaleLowerCase())
-                            )}
-                            onSelect={(value, option)=>{
-                                this.state.relatedServicesSource[key].defaultName = option.props.children;
-                                this.state.relatedServicesSource[key].laborId = value;
-                                this.state.relatedServicesSource[key].name = option.props.children;
-                                this.state.relatedServicesSource[key].price = option.props.price;
-                                this.state.relatedServicesSource[key].hours = option.props.norm_hours;
-                                this.state.relatedServicesSource.push({
-                                    key: this.state.relatedServicesSource.length,
-                                    laborId: undefined,
-                                    defaultName: undefined,
-                                    name: undefined,
-                                    comment: undefined,
-                                    employee: undefined,
-                                    hours: undefined,
-                                    self: 0,
-                                    price: 1,
-                                    count: 1,
-                                    sum: undefined,
-                                })
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        >
-                            {this.servicesOptions}
-                        </Select>
-                    )
-                }
-                
-            },
-            {
-                title:  "NAME",
-                key:       'name',
-                dataIndex: 'name',
-                width:     '25%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Input
-                            placeholder="NAME"
-                            value={data}
-                            style={{minWidth: 180}}
-                            onChange={(value)=>{
-                                this.state.relatedServicesSource[key].name = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "COMMENT",
-                key:       'comment',
-                dataIndex: 'comment',
-                width:     '5%',
-                render: ()=>{
-                    const detail = {
-                        name: "test",
-                    }
-                    const comment = {
-                        comment: null,
-                    }
-                    return (
-                        <CommentaryButton
-                            commentary={comment}
-                            detail={detail}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "HOURS",
-                key:       'hours',
-                dataIndex: 'hours',
-                width:     '10%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <div style={{display: 'flex'}}>
-                            <InputNumber
-                                placeholder="HOURS"
-                                value={data || 1}
-                                onChange={(value)=>{
-                                    this.state.relatedServicesSource[key].hours = value;
-                                    this.setState({
-                                        update: true
-                                    })
-                                }}
-                            />
-                            <Button>
-                                <Icon type='check'/>
-                            </Button>
-                        </div>
-                    )
-                }
-            },
-            {
-                title:  "EMPLOYEE",
-                key:       'employee',
-                dataIndex: 'employee',
-                width:     '15%',
-                render: ()=>{
-                    return (
-                        <Select
-                            allowClear
-                            placeholder="EMPLOYEE"
-                            style={{maxWidth: 180}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "SELF",
-                key:       'self',
-                dataIndex: 'self',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 0}
-                            min={0}
-                            onChange={(value)=>{
-                                this.state.relatedServicesSource[key].self = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "PRICE",
-                key:       'price',
-                dataIndex: 'price',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 1}
-                            min={1}
-                            onChange={(value)=>{
-                                this.state.relatedServicesSource[key].price = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "COUNT",
-                key:       'count',
-                dataIndex: 'count',
-                width:     '5%',
-                render: (data, elem)=>{
-                    const key = elem.key;
-                    return (
-                        <InputNumber
-                            value={data || 1}
-                            min={1}
-                            onChange={(value)=>{
-                                this.state.relatedServicesSource[key].count = value;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-            {
-                title:  "SUM",
-                key:       'sum',
-                width:     '7%',
-                render: (elem)=>{
-                    const key = elem.key;
-                    const sum = this.state.relatedServicesSource[key].price * this.state.relatedServicesSource[key].count;
-                    return (
-                        <InputNumber
-                            disabled
-                            value={sum ? sum : 1}
-                            style={{color: "black"}}
-                        />
-                    )
-                }
-            },
-            {
-                key:       'delete',
-                width:     '3%',
-                render: (elem)=>{
-                    const key = elem.key;
-                    return (
-                        <Icon
-                            type="delete"
-                            onClick={()=>{
-                                if(this.state.relatedServicesSource.length == 1) {
-                                    this.state.relatedServicesSource[key]={
-                                        key: key,
-                                        laborId: undefined,
-                                        defaultName: undefined,
-                                        name: undefined,
-                                        comment: undefined,
-                                        employee: undefined,
-                                        hours: undefined,
-                                        self: 0,
-                                        price: 1,
-                                        count: 1,
-                                        sum: undefined,
-                                    }
-                                }
-                                else {
-                                    this.state.relatedServicesSource = [...this.state.relatedServicesSource.filter((_, i)=>i!=key)];
-                                    this.state.relatedServicesSource.map((elem, index)=>elem.key=index);
-                                }
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                        />
-                    )
-                }
-            },
-        ]
+
+        ];
     }
 
     handleOk = () => {
@@ -918,18 +489,33 @@ class DetailProductModal extends React.Component{
                 services: [],
             }
             this.state.mainTableSource.map((element)=>{
-                data.details.push({
-                    storeGroupId: element.storeGroupId,
-                    name: element.detailName,
-                    productCode: element.detailCode,
-                    supplierId: element.supplierId,
-                    supplierBrandId: element.supplierBrandId,
-                    brandName: element.brandName,
-                    purchasePrice: element.purchasePrice,
-                    count: element.count ? element.count : 1,
-                    price: element.price ? element.price : 1,
-                    comment: element.comment,
-                })
+                if(element.supplierId !== 0) {
+                    data.details.push({
+                        storeGroupId: element.storeGroupId,
+                        name: element.detailName,
+                        productCode: element.detailCode,
+                        supplierId: element.supplierId,
+                        supplierBrandId: element.supplierBrandId,
+                        brandName: element.brandName,
+                        purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
+                        count: element.count ? element.count : 1,
+                        price: element.price ? Math.round(element.price*10)/10 : 1,
+                        comment: element.comment,
+                    })
+                }
+                else {
+                    data.details.push({
+                        storeGroupId: element.storeGroupId,
+                        name: element.detailName,
+                        productId: element.storeId,
+                        productCode: element.detailCode,
+                        purchasePrice: Math.round(element.purchasePrice*10)/10 || 0,
+                        count: element.count ? element.count : 1,
+                        price: element.price ? Math.round(element.price*10)/10  : 1,
+                        comment: element.comment,
+                    })
+                }
+                
             });
             this.state.relatedServicesSource.map((element)=>{
                 if(element.laborId) {
@@ -940,16 +526,22 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
+            console.log(data);
             this.addDetailsAndLabors(data);
         }
+        this.state.radioValue = 1;
         this.props.hideModal();
     };
     
     handleCancel = () => {
+        this.state.radioValue = 1;
         this.props.hideModal();
     };
 
     async getDefaultValues(storeGroupId) {
+        if(storeGroupId == undefined) {
+            return;
+        }
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -978,13 +570,14 @@ class DetailProductModal extends React.Component{
                 that.state.defaultBrandName = result.brandName;
                 if(!that.state.editing) {
                     let markup = result.markup ? result.markup : 1.4;
-                    let purchasePrice = result.price ? result.price.purchasePrice : 0;
+                    let purchasePrice = result.price ? Math.round(result.price.purchasePrice*10)/10 : 0;
                     that.state.mainTableSource[0].brandId = result.brandId;
                     that.state.mainTableSource[0].brandName = result.brandName;
                     that.state.mainTableSource[0].supplierBrandId = result.price ? result.price.supplierBrandId : undefined;
                     that.state.mainTableSource[0].detailCode = result.partNumber;
                     that.state.mainTableSource[0].supplierId = result.price ? result.price.businessSupplierId : undefined;
                     that.state.mainTableSource[0].supplierName = result.price ? result.price.businessSupplierName : undefined;
+                    that.state.mainTableSource[0].storeId = result.price ? result.price.id : undefined;
                     that.state.mainTableSource[0].store = result.price ? result.price.store : undefined;
                     that.state.mainTableSource[0].purchasePrice = purchasePrice;
                     that.state.mainTableSource[0].price = purchasePrice * markup;
@@ -999,7 +592,7 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(code, brand, key) {
+    setCode(code, brand, storeId, key, storeGroupId, storeGroupName) {
         let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
         if(!tmp) {
             this.brandOptions.push(
@@ -1012,6 +605,11 @@ class DetailProductModal extends React.Component{
         this.state.mainTableSource[key].detailCode = code;
         this.state.mainTableSource[key].brandId = brandValue;
         this.state.mainTableSource[key].brandName = brand;
+        this.state.mainTableSource[key].storeId = storeId;
+        if(this.state.radioValue == 3) {
+            this.state.mainTableSource[key].storeGroupId = storeGroupId;
+            this.state.mainTableSource[key].detailName = storeGroupName;
+        }
         this.setState({
             update: true
         })
@@ -1093,6 +691,32 @@ class DetailProductModal extends React.Component{
         .catch(function (error) {
             console.log('error', error)
         });
+
+        url = __API_URL__ + '/business_suppliers?super=true';
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            data.map((elem, index)=>{
+                elem.key = index;
+            })
+            that.suppliers = data;
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        })
 
         params = `/store_groups`;
         url = API_URL + params;
@@ -1181,6 +805,12 @@ class DetailProductModal extends React.Component{
                 {elem.name ? elem.name : elem.defaultName}
             </Option>
         ));
+        
+        this.suppliersOptions = this.suppliers.map((elem, index)=>(
+            <Option key={index} value={elem.id}>
+                {elem.name}
+            </Option>
+        ));
     };
 
     filterOptions(id) {
@@ -1226,24 +856,19 @@ class DetailProductModal extends React.Component{
                     onOk={this.handleOk}
                 >
                     <div>
-                        Сопутствующие: детали
-                        <Checkbox
-                            checked={this.state.relatedDetailsCheckbox}
-                            onChange={()=>{
-                                this.setState({
-                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
-                                })
-                            }}
-                        /> 
-                        работы
-                        <Checkbox
-                            checked={this.state.relatedServicesCheckbox}
-                            onChange={()=>{
-                                this.setState({
-                                    relatedServicesCheckbox: !this.state.relatedServicesCheckbox
-                                })
-                            }}
-                        />
+                    <Radio.Group 
+                        value={this.state.radioValue}
+                        onChange={(event)=>{
+                            this.setState({
+                                radioValue: event.target.value,
+                            })
+                        }} 
+                    >
+                        <Radio value={1}>Подбор по автомобилю</Radio>
+                        <Radio value={2}>Прямое редактирование</Radio>
+                        <Radio value={3}>Подбор по коду товара</Radio>
+                        <Radio value={4} disabled>Масла и жидкости</Radio>
+                    </Radio.Group>
                     </div>
                     <div className={Styles.tableWrap} style={{overflowX: 'scroll'}}>
                         <div className={Styles.modalSectionTitle}>
@@ -1278,6 +903,30 @@ class DetailProductModal extends React.Component{
                             />
                         </div> : null
                     }
+                    <div style={{marginTop: 15}}>
+                        Сопутствующие: детали 
+                        <Checkbox
+                            style={{marginLeft: 5}}
+                            disabled
+                            checked={this.state.relatedDetailsCheckbox}
+                            onChange={()=>{
+                                this.setState({
+                                    relatedDetailsCheckbox: !this.state.relatedDetailsCheckbox
+                                })
+                            }}
+                        /> 
+                        работы
+                        <Checkbox
+                            style={{marginLeft: 5}}
+                            disabled
+                            checked={this.state.relatedServicesCheckbox}
+                            onChange={()=>{
+                                this.setState({
+                                    relatedServicesCheckbox: !this.state.relatedServicesCheckbox
+                                })
+                            }}
+                        />
+                    </div>
                 </Modal>
             </div>
         )

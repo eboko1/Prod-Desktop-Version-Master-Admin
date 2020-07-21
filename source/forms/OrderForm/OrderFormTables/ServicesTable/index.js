@@ -1,12 +1,12 @@
 // vendor
 import React, { Component } from 'react';
 import { FormattedMessage, injectIntl } from 'react-intl';
-import { Table, InputNumber, Icon, Popconfirm, Select, Input, Button, Modal } from 'antd';
+import { Table, InputNumber, Icon, Popconfirm, Select, Input, Button, Modal, message } from 'antd';
 import _ from 'lodash';
 
 // proj
 import { Catcher } from 'commons';
-import { images } from 'utils';
+import { permissions, isForbidden, images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
 import { FavouriteServicesModal, AddServiceModal } from 'modals'
 
@@ -24,11 +24,26 @@ class ServicesTable extends Component {
             dataSource: [],
         }
 
+        this.laborTimeMultiplier = this.props.laborTimeMultiplier || 1;
         this.updateLabor = this.updateLabor.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
 
         this.columns = [
             {
+                title:  ()=>{
+                            return(
+                                <InputNumber
+                                    title='Коэффициент норматива'
+                                    style={{fontWeight: 700}}
+                                    defaultValue={ this.props.laborTimeMultiplier || 1}
+                                    step={0.1}
+                                    min={0}
+                                    formatter={value => `${Math.round(value*100)}%`}
+                                    parser={value => Math.round(value.replace('%', '')/100)}
+                                    onChange={(value)=>this.updateTimeMultiplier(value)}
+                                />
+                            )
+                        },
                 width: "8%",
                 key: "buttonGroup",
                 dataIndex: "key",
@@ -38,7 +53,7 @@ class ServicesTable extends Component {
                         <div style={{display: "flex", justifyContent: "space-evenly"}}>
                             <Button
                                 type='primary'
-                                disabled={confirmed != "undefined"}
+                                disabled={confirmed != "undefined" || this.props.disabled}
                                 onClick={()=>{
                                     this.showServiceProductModal(data)
                                 }}
@@ -47,7 +62,7 @@ class ServicesTable extends Component {
                                     style={{
                                         width: 18,
                                         height: 18,
-                                        backgroundColor: 'white',
+                                        backgroundColor: confirmed != "undefined" || this.props.disabled ? 'black' : 'white',
                                         mask: `url(${images.partsIcon}) no-repeat center / contain`,
                                         WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
                                     }}
@@ -55,6 +70,9 @@ class ServicesTable extends Component {
                             </Button>
                             {!(elem.laborId) ? 
                                 <FavouriteServicesModal
+                                    disabled={this.props.disabled}
+                                    normHourPrice={this.props.normHourPrice}
+                                    defaultEmployeeId={this.props.defaultEmployeeId}
                                     tecdocId={this.props.tecdocId}
                                     orderId={this.props.orderId}
                                     updateDataSource={this.updateDataSource}
@@ -62,7 +80,7 @@ class ServicesTable extends Component {
                                 />
                             :
                                 <QuickEditModal
-                                    disabled={confirmed != "undefined" || !(elem.laborId)}
+                                    disabled={confirmed != "undefined" || !(elem.laborId) || this.props.disabled}
                                     labor={elem}
                                     onConfirm={this.updateLabor}
                                     tableKey={elem.key}
@@ -101,91 +119,111 @@ class ServicesTable extends Component {
                 key: "employeeId",
                 dataIndex: 'employeeId',
                 render: (data) => {
-                    var name = this.props.employees.find((elem)=>elem.id==data);
-                    if(name) name = name.name;
+                    var employee = this.props.employees.find((elem)=>elem.id==data);
                     return (
-                        data ? name : <FormattedMessage id="long_dash"/>
+                        data ? `${employee.name} ${employee.surname}` : <FormattedMessage id="long_dash"/>
                     );
                 },
             },
             {
-                title: <FormattedMessage id="hours" />,
+                title:  <div className={Styles.numberColumn}>
+                            <FormattedMessage id="services_table.norm_hours" />
+                        </div>,
+                className: Styles.numberColumn,
                 width: "8%",
                 key: "hours",
                 dataIndex: 'hours',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="order_form_table.hours_short" />
+                            {data ? 
+                            <>{data} <FormattedMessage id="order_form_table.hours_short" /></> : 
+                            <FormattedMessage id="long_dash"/>}
                         </span> 
                     )
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.prime_cost" />,
+                title:  <div className={Styles.numberColumn}>
+                            <FormattedMessage id="order_form_table.prime_cost" />
+                        </div>,
+                className: Styles.numberColumn,
                 width: "8%",
                 key: "purchasePrice",
                 dataIndex: 'purchasePrice',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
-                        <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                        <span е>
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
                         </span> 
                     )
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.price" />,
+                title:  <div className={Styles.numberColumn}>
+                            <FormattedMessage id="order_form_table.price" />
+                        </div>,
+                className: Styles.numberColumn,
                 width: "8%",
                 key: "price",
                 dataIndex: 'price',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
                         </span> 
                     )
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.count" />,
+                title:  <div className={Styles.numberColumn}>
+                                <Button
+                                    type={'primary'}
+                                    title='Пересчитать длительность'
+                                    onClick={()=>this.updateDuration()}
+                                >
+                                <FormattedMessage id="order_form_table.count" />
+                            </Button>
+                        </div>,
+                className: Styles.numberColumn,
                 width: "5%",
                 key: "count",
                 dataIndex: 'count',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                            {data ? data : 0} <FormattedMessage id="order_form_table.hours_short" />
                         </span> 
                     )
                 },
             },
             {
-                title: <FormattedMessage id="order_form_table.sum" />,
-                width: "10%",
+                title:  <div className={Styles.numberColumn}>
+                            <FormattedMessage id="order_form_table.sum" />
+                        </div>,
+                className: Styles.numberColumn,
+                width: "8%",
                 key: "sum",
                 dataIndex: 'sum',
                 render: (data) => {
-                    let strVal = String(Math.round(data));
+                    let strVal = String(Math.round(data*10)/10);
                     return (
                         <span>
-                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0} <FormattedMessage id="cur" />
+                            {data ? `${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ') : 0}
                         </span> 
                     )
                 },
             },
             {
                 title:  <FormattedMessage id='order_form_table.status' />,
-                width: "8%",
+                width: "10%",
                 key: 'agreement',
                 dataIndex: 'agreement',
                 render: (data, elem) => {
                     const key = elem.key;
-                    const confirmed = this.state.dataSource[key].agreement.toLowerCase();
+                    const confirmed = data.toLowerCase();
                     let color;
                     switch(confirmed) {
                         case "rejected":
@@ -198,13 +236,28 @@ class ServicesTable extends Component {
                             color = null;
                     }
                     return (
-                        <Input
-                            disabled
+                        <Select
+                            disabled={isForbidden(
+                                this.props.user,
+                                permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,
+                            )}
                             style={{color: color}}
-                            value={this.props.intl.formatMessage({
-                                id: `status.${confirmed}`,
-                            })}
-                        />
+                            value={confirmed}
+                            onChange={(value)=>{
+                                elem.agreement = value.toUpperCase();
+                                this.updateLabor(key, elem);
+                            }}
+                        >
+                            <Option key={0} value={'undefined'}>
+                                <FormattedMessage id='status.undefined'/>
+                            </Option>
+                            <Option key={1} value={'agreed'} style={{color: 'rgb(81, 205, 102)'}}>
+                                <FormattedMessage id='status.agreed'/>
+                            </Option>
+                            <Option key={2} value={'rejected'} style={{color: 'rgb(255, 126, 126)'}}>
+                                <FormattedMessage id='status.rejected'/>
+                            </Option>
+                        </Select>
                     )
                 },
             },
@@ -225,7 +278,7 @@ class ServicesTable extends Component {
                                     laborId: elem.laborId,
                                     name: elem.serviceName,
                                     hours: elem.hours ? elem.hours : 1,
-                                    purchasePrice: elem.purchasePrice ? elem.purchasePrice : 1,
+                                    purchasePrice: elem.purchasePrice ? elem.purchasePrice : 0,
                                     count: elem.count ? elem.count : 1,
                                 }];
                                 var that = this;
@@ -270,6 +323,7 @@ class ServicesTable extends Component {
                 render: (elem) => {
                     return (
                         <Popconfirm
+                            disabled={this.props.disabled}
                             title={
                                 <FormattedMessage id="add_order_form.delete_confirm" />
                             }
@@ -299,12 +353,76 @@ class ServicesTable extends Component {
                                 }
                             }}
                         >
-                            <Icon type="delete" className={Styles.deleteIcon} />
+                            <Icon type="delete" className={this.props.disabled ? Styles.disabledIcon : Styles.deleteIcon} />
                         </Popconfirm>
                     );
                 },
             },
         ]
+    }
+
+    async updateTimeMultiplier(multiplier) {
+        this.laborTimeMultiplier = multiplier;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({laborTimeMultiplier: multiplier}),
+            });
+            const result = await response.json();
+            if(result.success) {
+                console.log("OK", result);
+            }
+            else {
+                console.log("BAD", result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
+    }
+
+    async updateDuration() {
+        let hours = 0;
+        this.state.dataSource.map((elem)=>{
+            hours += elem.count;
+        })
+        hours = Math.round(hours*10)/10;
+        
+        if(hours > 8) {
+            message.warning('Количество часов превышает 8. ');
+            hours = 8;
+        }
+
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        try {
+            const response = await fetch(url, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': token,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({duration: hours}),
+            });
+            const result = await response.json();
+            if(result.success) {
+                window.location.reload();
+            }
+            else {
+                console.log("BAD", result);
+            }
+        } catch (error) {
+            console.error('ERROR:', error);
+        }
     }
 
     showServiceProductModal(key) {
@@ -364,14 +482,18 @@ class ServicesTable extends Component {
                     serviceId: labor.laborId,
                     serviceName: labor.serviceName,
                     employeeId: labor.employeeId,
-                    serviceHours: labor.hours ? labor.hours : 1,
-                    purchasePrice: labor.purchasePrice ? labor.purchasePrice : 0,
+                    serviceHours: labor.hours ? labor.hours : 0,
+                    purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
                     count: labor.count ? labor.count : 1,
-                    servicePrice: labor.price ? labor.price : 1,
+                    servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
                     comment: labor.comment,
                 }
             ]
         }
+        if(!isForbidden(this.props.user, permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,)) {
+            data.services[0].agreement = labor.agreement;
+        }
+
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/orders/${this.props.orderId}`;
@@ -397,10 +519,6 @@ class ServicesTable extends Component {
         }
 
         await this.updateDataSource();
-
-        this.setState({
-            update: true,
-        })
     }
 
     componentDidMount() {
@@ -426,6 +544,7 @@ class ServicesTable extends Component {
                 agreement: "UNDEFINED",
             })
         }
+        
         return (
             <Catcher>
                 <Table
@@ -435,6 +554,10 @@ class ServicesTable extends Component {
                     pagination={false}
                 />
                 <AddServiceModal
+                    laborTimeMultiplier={this.laborTimeMultiplier}
+                    defaultEmployeeId={this.props.defaultEmployeeId}
+                    normHourPrice={this.props.normHourPrice}
+                    user={this.props.user}
                     employees={this.props.employees}
                     visible={this.state.serviceModalVisible}
                     updateLabor={this.updateLabor}
@@ -443,6 +566,7 @@ class ServicesTable extends Component {
                     labor={this.state.dataSource[this.state.serviceModalKey]}
                     hideModal={()=>this.hideServicelProductModal()}
                     orderId={this.props.orderId}
+                    tecdocId={this.props.tecdocId}
                 />
             </Catcher>
         );
@@ -451,6 +575,7 @@ class ServicesTable extends Component {
 
 export default ServicesTable;
 
+@injectIntl
 class QuickEditModal extends React.Component{
     constructor(props) {
         super(props);
@@ -476,7 +601,15 @@ class QuickEditModal extends React.Component{
                 dataIndex: 'serviceName',
                 render: (data) => {
                         return (
-                            data ? data : <FormattedMessage id="long_dash"/>
+                            <Input
+                                value={data}
+                                onChange={(event)=>{
+                                    this.state.dataSource[0].serviceName = event.target.value;
+                                    this.setState({
+                                        update: true
+                                    })
+                                }}
+                            />
                         )
                 },
             },
@@ -486,11 +619,34 @@ class QuickEditModal extends React.Component{
                 key: "employeeId",
                 dataIndex: 'employeeId',
                 render: (data) => {
-                    var name = this.props.employees.find((elem)=>elem.id==data);
-                    if(name) name = name.name;
                     return (
-                        data ? name : <FormattedMessage id="long_dash"/>
-                    );
+                        <Select
+                            value={data ? data : undefined}
+                            allowClear
+                            showSearch
+                            style={{minWidth: 240}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.dataSource[0].employeeId = value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        >
+                            {this.props.employees.map((elem, i)=>(
+                                <Option key={i} value={elem.id}>
+                                    {elem.name} {elem.surname}
+                                </Option>
+                            ))}
+                        </Select>
+                    )
                 },
             },
             {
@@ -501,7 +657,8 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
+                            className={Styles.serviceNumberInput}
+                            value={Math.round(data*10)/10 || 0}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -527,7 +684,8 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
-                            value={data ? data : 0}
+                            className={Styles.serviceNumberInput}
+                            value={Math.round(data*10)/10 || 1}
                             min={0}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -554,6 +712,7 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             value={data ? data : 0}
                             min={0}
                             formatter={ value =>
@@ -581,9 +740,10 @@ class QuickEditModal extends React.Component{
                 render: (data)=>{
                     return(
                         <InputNumber
+                            className={Styles.serviceNumberInput}
                             disabled
                             style={{color: 'black'}}
-                            value={data}
+                            value={Math.round(data*10)/10 || 1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }

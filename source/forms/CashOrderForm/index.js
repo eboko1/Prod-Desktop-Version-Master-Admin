@@ -76,6 +76,7 @@ const getActiveFieldsMap = activeCashOrder => {
             "decrease",
             "otherCounterparty",
             "datetime",
+            "tag",
         ]),
         value => !_.isNil(value),
     );
@@ -145,7 +146,14 @@ export class CashOrderForm extends Component {
             activeCashOrder,
             fetchCashOrderNextId,
             fetchCashboxes,
+            intl: { formatMessage },
+            form: { setFieldsValue },
         } = this.props;
+
+        const defaultTagValue = `${formatMessage({
+            id: `cash-order-form.dafault_tag`,
+        })}`;
+
         if (editMode || printMode) {
             this._setFormFields(activeCashOrder);
             this._selectOrderType(_.get(activeCashOrder, "type"));
@@ -154,6 +162,7 @@ export class CashOrderForm extends Component {
         if (!editMode && !printMode) {
             fetchCashOrderNextId();
             fetchCashboxes();
+            setFieldsValue({ "tag": defaultTagValue });
         }
     }
 
@@ -313,12 +322,20 @@ export class CashOrderForm extends Component {
     _selectOrderType = value => {
         const {
             form: { setFieldsValue },
+            intl: { formatMessage },
+            editMode,
+            printMode,
         } = this.props;
+
+        const defaultTagValue = `${formatMessage({
+            id: `cash-order-form.dafault_tag`,
+        })}`;
 
         switch (value) {
             case cashOrderTypes.INCOME:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
+                    if(!editMode && !printMode) setFieldsValue({ "tag": defaultTagValue });
 
                     return {
                         sumType: "increase",
@@ -329,6 +346,7 @@ export class CashOrderForm extends Component {
             case cashOrderTypes.EXPENSE:
                 return this.setState(prevState => {
                     setFieldsValue({ [prevState.sumType]: null });
+                    if(!editMode && !printMode) setFieldsValue({ "tag": null });
 
                     return {
                         sumType: "decrease",
@@ -340,6 +358,7 @@ export class CashOrderForm extends Component {
                 if (!this.props.editMode) {
                     return this.setState(prevState => {
                         setFieldsValue({ [prevState.sumType]: null });
+                        if(!editMode && !printMode) setFieldsValue({ "tag": null });
 
                         return {
                             sumType: "increase",
@@ -717,6 +736,17 @@ export class CashOrderForm extends Component {
                         disabled={printMode}
                         formatter={numeralFormatter}
                         parser={numeralParser}
+                    />
+                    <DecoratedInput
+                        fields={{}}
+                        field="tag"
+                        getFieldDecorator={getFieldDecorator}
+                        formItem
+                        label={formatMessage({
+                            id: "cash-table.tag",
+                        })}
+                        formItemLayout={formItemLayout}
+                        className={Styles.styledFormItem}
                     />
                     <DecoratedTextArea
                         fields={{}}

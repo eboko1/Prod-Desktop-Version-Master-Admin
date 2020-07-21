@@ -84,13 +84,13 @@ export default {
                     key:     '/labors',
                     link:    book.laborsPage,
                     disabled: user =>
-                    isForbidden(user, permissions.ACCESS_STORE_GROUPS),
+                    isForbidden(user, permissions.ACCESS_LABOR_CATALOGUE),
                     name:    'navigation.labors_page',
                 },
                 {
                     key:      '/diagnostic-patterns',
                     disabled: user =>
-                        isForbidden(user, permissions.ACCESS_STORE_GROUPS),
+                        isForbidden(user, permissions.ACCESS_DIAGNOSTIC_CATALOGUE),
                     link: book.diagnosticPatterns,
                     name: 'navigation.diagnostic_patterns',
                 },
@@ -346,6 +346,12 @@ export default {
                     link:    book.brandsPage,
                     visible: user => isAdmin(user),
                     name:    'navigation.priority_brands',
+                },
+                {
+                    key:     '/administration/availabilities',
+                    link:    book.availabilitiesPage,
+                    visible: user => isAdmin(user),
+                    name:    'navigation.availabilities',
                 },
             ],
         },
