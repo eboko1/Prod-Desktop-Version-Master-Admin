@@ -342,9 +342,11 @@ export default class DetailsTable extends Component {
                 width: "3%",
                 key: "delete",
                 render: (elem) => {
+                    const confirmed = elem.agreement.toLowerCase();
+                    const disabled = confirmed != "undefined" || this.props.disabled;
                     return (
                         <Popconfirm
-                            disabled={this.props.disabled}
+                            disabled={disabled}
                             title={
                                 <FormattedMessage id="add_order_form.delete_confirm" />
                             }
@@ -374,7 +376,7 @@ export default class DetailsTable extends Component {
                                 }
                             }}
                         >
-                            <Icon type="delete" className={this.props.disabled ? Styles.disabledIcon : Styles.deleteIcon} />
+                            <Icon type="delete" className={disabled ? Styles.disabledIcon : Styles.deleteIcon} />
                         </Popconfirm>
                     );
                 },
@@ -454,7 +456,6 @@ export default class DetailsTable extends Component {
             data.details[0].agreement = detail.agreement;
         }
 
-        console.log(data);
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
         let params = `/orders/${this.props.orderId}`;

@@ -156,7 +156,6 @@ class OrderPage extends Component {
     state = {
         errors: void 0,
     };
-    
 
     componentDidMount() {
         const {fetchOrderForm, fetchOrderTask, match: {params: {id}}, user} = this.props;
@@ -312,19 +311,15 @@ class OrderPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            that.setState({
-                orderServices: data.orderServices,
-                orderDetails: data.orderDetails,
-            });
+            that._createCopy(data.orderServices, data.orderDetails);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    _createCopy = () => {
+    _createCopy = (services, details) => {
         const {allServices, allDetails, selectedClient} = this.props;
-        console.log(this);
         const form = this.orderFormRef.props.form;
         const orderFormValues = form.getFieldsValue();
         const requiredFields = requiredFieldsOnStatuses(orderFormValues).success;
@@ -353,10 +348,32 @@ class OrderPage extends Component {
                     this.props.user,
                 )};
 
-                copyData.services = this.state.orderServices;
-                copyData.details = this.state.orderDetails;
-
-                console.log(copyData);
+                copyData.details = details.map((detail)=>(
+                    {
+                        storeGroupId: detail.storeGroupId,
+                        name: detail.detailName,
+                        productCode: detail.detailCode ? detail.detailCode : null,
+                        supplierId: detail.supplierId ? detail.supplierId : null,
+                        supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
+                        brandName: detail.brandName ? detail.brandName : null,
+                        purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
+                        count: detail.count ? detail.count : 1,
+                        price: detail.price ? Math.round(detail.price*10)/10 : 1,
+                        comment: detail.comment,
+                    }
+                ));
+                copyData.services = services.map((labor)=>(
+                    {
+                        serviceId: labor.laborId,
+                        serviceName: labor.serviceName,
+                        employeeId: labor.employeeId,
+                        serviceHours: labor.hours ? labor.hours : 0,
+                        purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
+                        count: labor.count ? labor.count : 1,
+                        servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
+                        comment: labor.comment,
+                    }
+                ));
                 this.props.createOrderCopy(copyData);
             } else {
                 this.setState({errors});
@@ -577,9 +594,8 @@ class OrderPage extends Component {
                                         permissions.CREATE_ORDER,
                                     )
                                 }
-                                onClick={ async () => {
-                                    await this._getCurrentOrder();
-                                    await this._createCopy();
+                                onClick={ () => {
+                                    this._getCurrentOrder();
                                 } }
                                 className={ Styles.inviteButton }
                             >
