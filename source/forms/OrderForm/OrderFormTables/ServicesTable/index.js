@@ -321,9 +321,11 @@ class ServicesTable extends Component {
                 width: "3%",
                 key: "delete",
                 render: (elem) => {
+                    const confirmed = elem.agreement.toLowerCase();
+                    const disabled = confirmed != "undefined" || this.props.disabled;
                     return (
                         <Popconfirm
-                            disabled={this.props.disabled}
+                            disabled={disabled}
                             title={
                                 <FormattedMessage id="add_order_form.delete_confirm" />
                             }
@@ -353,7 +355,7 @@ class ServicesTable extends Component {
                                 }
                             }}
                         >
-                            <Icon type="delete" className={this.props.disabled ? Styles.disabledIcon : Styles.deleteIcon} />
+                            <Icon type="delete" className={disabled ? Styles.disabledIcon : Styles.deleteIcon} />
                         </Popconfirm>
                     );
                 },
