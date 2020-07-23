@@ -3,7 +3,7 @@ import React, {Component} from 'react';
 import {FormattedMessage, injectIntl } from 'react-intl';
 import { Link, withRouter} from 'react-router-dom';
 import {connect} from 'react-redux';
-import {Button, Icon, notification} from 'antd';
+import {Button, Icon, notification, Popconfirm} from 'antd';
 import moment from 'moment';
 import _ from 'lodash';
 
@@ -512,14 +512,11 @@ class OrderPage extends Component {
                         }
                         {!isForbidden(user, permissions.ACCESS_AGREEMENT) ? 
                             <div title={this.props.intl.formatMessage({id: "order-page.send_agreement"})}>
-                                <Icon
-                                    type='file-protect'
-                                    style={ {
-                                        fontSize: isMobile ? 12 : 24,
-                                        cursor:   'pointer',
-                                        margin:   '0 10px',
-                                    } }
-                                    onClick={async ()=>{
+                                <Popconfirm
+                                    title={
+                                        'Отправить сообщение клиенту?'
+                                    }
+                                    onConfirm={async ()=>{
                                         var data = {
                                             services: [],
                                             details: [],
@@ -538,12 +535,28 @@ class OrderPage extends Component {
                                                 count: element.count,
                                             })
                                         });
-                                        await notification.success({
-                                            message: 'Сообщение отправлено!',
-                                        });
-                                        await createAgreement(this.props.order.id, this.props.user.language);
+                                        const confirmFunc = ()=>{
+                                            notification.success({
+                                                message: 'Сообщение отправлено!',
+                                            });
+                                        };
+                                        const errorFunc = ()=>{
+                                            notification.error({
+                                                message: 'В заказе нет позиций к согласованию!',
+                                            });
+                                        };
+                                        await createAgreement(this.props.order.id, this.props.user.language, confirmFunc, errorFunc);
                                     }}
-                                />
+                                >
+                                    <Icon
+                                        type='file-protect'
+                                        style={ {
+                                            fontSize: isMobile ? 12 : 24,
+                                            cursor:   'pointer',
+                                            margin:   '0 10px',
+                                        } }
+                                    />
+                                </Popconfirm>
                             </div>
                             :
                             <></>

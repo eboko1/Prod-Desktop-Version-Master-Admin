@@ -12,12 +12,14 @@ import {
     Input,
     InputNumber,
     AutoComplete,
-    Radio
+    Radio,
+    notification,
 } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
 import { Catcher, Spinner } from 'commons';
+import {permissions, isForbidden} from 'utils';
 import { images } from 'utils';
 import { ConfirmDiagnosticModal } from 'modals'
 import {
@@ -28,7 +30,8 @@ import {
     sendDiagnosticAnswer,
     deleteDiagnosticProcess,
     deleteDiagnosticTemplate,
-    getPartProblems
+    getPartProblems,
+    sendMessage,
 } from 'core/forms/orderDiagnosticForm/saga';
 
 // own
@@ -110,7 +113,9 @@ class DiagnosticTable extends Component {
                                     {this.getCurrentDiagnostic()}
                                 }}
                             >
-                                {this.state.dataSource.length}
+                                {this.props.disabled ? 
+                                this.state.dataSource.length :
+                                this.state.dataSource.length - 1}
                             </Button>
                         </div>
                     )
@@ -502,13 +507,27 @@ class DiagnosticTable extends Component {
                 key:       'status',
                 width:     '15%',
                 render: (text, rowProp) => {
-                    return (
+                    return rowProp.plan ? (
                         <DiagnosticStatusButton
                             disabled={this.props.disabled || rowProp.disabled}
                             getCurrentDiagnostic={this.getCurrentDiagnostic}
                             status={text}
                             rowProp={rowProp}
                         />
+                    ) : (
+                        <Button
+                            type="primary"
+                            style={{width: '100%'}}
+                            onClick={()=>{
+                                notification.success({
+                                    message: 'Сообщение отправлено!',
+                                });
+                                sendMessage(this.props.orderId);
+                            }}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
+                        >
+                            <FormattedMessage id='end'/>
+                        </Button>
                     )
                 },
             },

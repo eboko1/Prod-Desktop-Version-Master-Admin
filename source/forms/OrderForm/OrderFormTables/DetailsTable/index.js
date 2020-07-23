@@ -418,7 +418,6 @@ export default class DetailsTable extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             data.details.map((elem, index)=>{
                 elem.key = index;
             })
