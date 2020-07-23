@@ -626,8 +626,8 @@ class QuickEditModal extends React.Component{
                             value={data ? data : undefined}
                             allowClear
                             showSearch
-                            style={{minWidth: 240}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            style={{minWidth: 220}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220}}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
                             filterOption={(input, option) => {
                                 return (

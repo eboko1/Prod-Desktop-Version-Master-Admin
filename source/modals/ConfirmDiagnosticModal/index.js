@@ -597,6 +597,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         showSearch
                         value={data?data.name:undefined}
                         className="service_input"
+                        dropdownStyle={{minWidth: 380}}
                         ref={(node)=>{this.lastServiceInput=node}}
                         disabled={!data.checked}
                         style={{ width: "100%"}}
@@ -713,6 +714,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         showSearch
                         value={data?data.name:undefined}
                         className="service_input"
+                        dropdownStyle={{minWidth: 380}}
                         ref={(node)=>{this.lastDetailInput=node}}
                         disabled={!data.checked}
                         style={{ width: "100%"}}
