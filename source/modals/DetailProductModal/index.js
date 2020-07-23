@@ -526,7 +526,6 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
-            console.log(data);
             this.addDetailsAndLabors(data);
         }
         this.state.radioValue = 1;
