@@ -122,7 +122,7 @@ class FavouriteServicesModal extends React.Component{
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
                             value={data ? data : undefined}
                             style={{maxWidth: 180, minWidth: 100}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 380 }}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -178,7 +178,7 @@ class FavouriteServicesModal extends React.Component{
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
                             value={data}
                             style={{maxWidth: 180, minWidth: 100}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
