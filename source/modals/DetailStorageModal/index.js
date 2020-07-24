@@ -97,6 +97,8 @@ class DetailStorageModal extends React.Component{
                 key:       'code',
                 dataIndex: 'partNumber',
                 width:     '15%',
+                sorter: (a, b) => a.partNumber.localeCompare(b.partNumber),
+                sortDirections: ['descend', 'ascend'],
                 render: (data, elem)=>{
                     return(
                         <div>
@@ -151,6 +153,8 @@ class DetailStorageModal extends React.Component{
                 key:       'brand',
                 dataIndex: 'supplierName',
                 width:     '10%',
+                sorter: (a, b) => a.supplierName.localeCompare(b.supplierName),
+                sortDirections: ['descend', 'ascend'],
                 render: (data, elem)=>{
                     //<div>{getSupplier(elem.suplierId, elem.partNumber)}</div>
                     return (
@@ -238,7 +242,7 @@ class DetailStorageModal extends React.Component{
                 render: (data) => {
                     let strVal = String(Math.round(data*10)/10);
                     return (
-                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</span> : <FormattedMessage id="long_dash"/>
                     )
                 },
             },
@@ -247,10 +251,12 @@ class DetailStorageModal extends React.Component{
                 key:       'salePrice',
                 dataIndex: 'salePrice',
                 width:     '6%',
+                sorter: (a, b) => Number(a.salePrice) - Number(b.salePrice),
+                sortDirections: ['descend', 'ascend'],
                 render: (data) => {
                     let strVal = String(Math.round(data*10)/10);
                     return (
-                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</span> : <FormattedMessage id="long_dash"/>
                     )
                 },
             },
@@ -276,6 +282,12 @@ class DetailStorageModal extends React.Component{
                 key:       'store',
                 dataIndex: 'store',
                 width:     '8%',
+                sorter: (a, b) => {
+                    let aStore = a.store ? a.store[0] : 0;
+                    let bStore = b.store ? b.store[0] : 0;
+                    return Number(aStore) - Number(bStore);
+                },
+                sortDirections: ['descend', 'ascend'],
                 render: (store) => {
                     let color = 'brown',
                     title = 'Поставщик не выбран!';
