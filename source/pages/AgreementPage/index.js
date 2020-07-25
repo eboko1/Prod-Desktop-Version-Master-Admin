@@ -14,8 +14,6 @@ import {
 
 // own
 import Styles from './styles.m.css';
-import { update } from "ramda";
-import { element } from "prop-types";
 
 @injectIntl
 class AgreementPage extends Component {
@@ -31,6 +29,8 @@ class AgreementPage extends Component {
         }
         this.servicesTotal = 0;
         this.detailsTotal = 0;
+        this.servicesDiscount = 0;
+        this.detailsDiscount = 0;
         this.updateData = this.updateData.bind(this);
         this.onSwitchService = this.onSwitchService.bind(this);
         this.onSwitchDetail = this.onSwitchDetail.bind(this);
@@ -76,14 +76,20 @@ class AgreementPage extends Component {
         this.state.servicesList = data.labors.map((elem)=>{
             elem.checked = elem.agreement != 'REJECTED' ? true : false;
             elem.comment = elem.comment; //"**description**";
-            elem.price = Math.round(elem.price*10)/10;
+            elem.discount = data.servicesDiscount ? data.servicesDiscount/100 : 1;
+            elem.price = Math.round(elem.price*(1-elem.discount)*10)/10;
+            elem.sum = elem.price * elem.count;
             return elem;
         });
         this.state.detailsList = data.details.map((elem)=>{
             elem.checked = elem.agreement != 'REJECTED' ? true : false;
-            elem.price = Math.round(elem.price*10)/10;
+            elem.discount = data.detailsDiscount ? data.detailsDiscount/100 : 1;
+            elem.price = Math.round(elem.price*(1-elem.discount)*10)/10;
+            elem.sum = elem.price * elem.count;
             return elem;
         });
+        this.detailsDiscount = data.detailsDiscount;
+        this.servicesDiscount = data.servicesDiscount;
         this.setState({
             dataSource: data,
             loading: false,
@@ -155,6 +161,7 @@ class AgreementPage extends Component {
                     checked={data.checked}
                     onSwitchService={this.onSwitchService}
                     isMobile={isMobile}
+                    discount={this.servicesDiscount ? this.servicesDiscount/100 : 0}
                 />
             )
         });
@@ -170,6 +177,7 @@ class AgreementPage extends Component {
                     checked={data.checked}
                     onSwitchDetail={this.onSwitchDetail}
                     isMobile={isMobile}
+                    discount={this.detailsDiscount ? this.detailsDiscount/100 : 0}
                 />
             )
         });

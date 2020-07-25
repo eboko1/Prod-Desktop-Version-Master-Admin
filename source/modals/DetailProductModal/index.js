@@ -72,7 +72,7 @@ class DetailProductModal extends React.Component{
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.store_group'})}
-                            style={{maxWidth: 160}}
+                            style={{maxWidth: 180}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
                             treeData={this.treeData}
@@ -144,6 +144,7 @@ class DetailProductModal extends React.Component{
                 key:       'brandId',
                 dataIndex: 'brandId',
                 width:     '10%',
+                className: Styles.brandColumn,
                 render: (data, elem)=>{
                     if(elem.brandName && !(elem.brandId)) {
                         const defaultBrand = this.props.brands.find((brand)=>brand.brandName==elem.brandName);
@@ -156,12 +157,13 @@ class DetailProductModal extends React.Component{
                     }
                     return (
                         <Select
+                            mode="multiple"
                             showSearch
                             disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
                             value={data ? data : undefined}
                             style={{maxWidth: 180, minWidth: 100}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                             filterOption={(input, option) => {
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -180,6 +182,13 @@ class DetailProductModal extends React.Component{
                                 this.state.mainTableSource[0].sum = undefined;
                                 this.state.mainTableSource[0].brandId = value;
                                 this.state.mainTableSource[0].brandName = option.props.children;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                            onDeselect={(value, option)=>{
+                                this.state.mainTableSource[0].brandId = undefined;
+                                this.state.mainTableSource[0].brandName = undefined;
                                 this.setState({
                                     update: true
                                 })
@@ -245,8 +254,8 @@ class DetailProductModal extends React.Component{
                                     showSearch
                                     placeholder={this.props.intl.formatMessage({id: 'order_form_table.supplier'})}
                                     value={elem.supplierId ? elem.supplierId : undefined}
-                                    style={{maxWidth: 180, minWidth: 80}}
-                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                                    style={{maxWidth: 200, minWidth: 160}}
+                                    dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
                                     filterOption={(input, option) => {
                                         return (
                                             option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -274,10 +283,9 @@ class DetailProductModal extends React.Component{
                                 user={this.props.user}
                                 tableKey={0}
                                 disabled={
-                                    (elem.storeGroupId == null || 
+                                    (this.state.radioValue != 2 && elem.storeGroupId == null) || 
                                     !(elem.detailCode) || 
-                                    !(elem.brandName)) || 
-                                    this.state.radioValue == 2
+                                    !(elem.brandName)
                                 }
                                 onSelect={this.setSupplier}
                                 storeGroupId={elem.storeGroupId}
@@ -526,7 +534,6 @@ class DetailProductModal extends React.Component{
                     })
                 }
             });
-            console.log(data);
             this.addDetailsAndLabors(data);
         }
         this.state.radioValue = 1;

@@ -12,12 +12,14 @@ import {
     Input,
     InputNumber,
     AutoComplete,
-    Radio
+    Radio,
+    notification,
 } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 
 // proj
 import { Catcher, Spinner } from 'commons';
+import {permissions, isForbidden} from 'utils';
 import { images } from 'utils';
 import { ConfirmDiagnosticModal } from 'modals'
 import {
@@ -28,7 +30,8 @@ import {
     sendDiagnosticAnswer,
     deleteDiagnosticProcess,
     deleteDiagnosticTemplate,
-    getPartProblems
+    getPartProblems,
+    sendMessage,
 } from 'core/forms/orderDiagnosticForm/saga';
 
 // own
@@ -110,7 +113,9 @@ class DiagnosticTable extends Component {
                                     {this.getCurrentDiagnostic()}
                                 }}
                             >
-                                {this.state.dataSource.length}
+                                {this.props.disabled ? 
+                                this.state.dataSource.length :
+                                this.state.dataSource.length - 1}
                             </Button>
                         </div>
                     )
@@ -143,6 +148,7 @@ class DiagnosticTable extends Component {
                                 showSearch
                                 value={this.state.filterPlan===null?undefined:this.state.filterPlan}
                                 style={{width: "80%"}}
+                                dropdownStyle={{minWidth: 280}}
                                 placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                                 onChange={(selectValue)=>{
                                     if(selectValue != "")
@@ -172,6 +178,7 @@ class DiagnosticTable extends Component {
                             showSearch
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.plan' />}
                             onChange={this.onPlanChange}
+                            dropdownStyle={{minWidth: 280}}
                         >
                             {this.templatesTitles.map((template, i) => <Option key={i+1} value={template.id}>{template.title}</Option>)}
                         </Select>
@@ -193,6 +200,7 @@ class DiagnosticTable extends Component {
                                 value={this.state.filterStage===null?undefined:this.state.filterStage}
                                 showSearch
                                 placeholder={<FormattedMessage id='order_form_table.diagnostic.stage' />}
+                                dropdownStyle={{minWidth: 280}}
                                 onChange={(selectValue)=>{
                                     if(selectValue != "")
                                     this.setState({
@@ -222,6 +230,7 @@ class DiagnosticTable extends Component {
                             placeholder={<FormattedMessage id='order_form_table.diagnostic.stage' />}
                             disabled={this.props.disabled || options.length == 0}
                             onChange={this.onStageChange}
+                            dropdownStyle={{minWidth: 280}}
                         >
                             {options.map((template, i) => <Option key={i+1} value={template.id}>{template.title}</Option>)}
                         </Select>  
@@ -498,13 +507,27 @@ class DiagnosticTable extends Component {
                 key:       'status',
                 width:     '15%',
                 render: (text, rowProp) => {
-                    return (
+                    return rowProp.plan ? (
                         <DiagnosticStatusButton
                             disabled={this.props.disabled || rowProp.disabled}
                             getCurrentDiagnostic={this.getCurrentDiagnostic}
                             status={text}
                             rowProp={rowProp}
                         />
+                    ) : (
+                        <Button
+                            type="primary"
+                            style={{width: '100%'}}
+                            onClick={()=>{
+                                notification.success({
+                                    message: 'Сообщение отправлено!',
+                                });
+                                sendMessage(this.props.orderId);
+                            }}
+                            disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
+                        >
+                            <FormattedMessage id='end'/>
+                        </Button>
                     )
                 },
             },

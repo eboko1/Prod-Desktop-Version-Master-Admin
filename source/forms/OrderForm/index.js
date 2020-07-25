@@ -356,16 +356,18 @@ export class OrderForm extends React.PureComponent {
         let priceDetails = 0;
         for(let i = 0; i < this.orderDetails.length; i++) {
             if(this.orderDetails[i].agreement != 'REJECTED') {
-                priceDetails += Math.round(this.orderDetails[i].sum);
+                priceDetails += this.orderDetails[i].sum;
             }
         }
+        priceDetails = Math.round(priceDetails);
 
         let priceServices = 0;
         for(let i = 0; i < this.orderServices.length; i++) {
             if(this.orderServices[i].agreement != 'REJECTED') {
-                priceServices += Math.round(this.orderServices[i].sum);
+                priceServices += this.orderServices[i].sum;
             }
         }
+        priceServices = Math.round(priceServices);
 
         const servicesDiscount = _.get(formFieldsValues, "servicesDiscount", 0);
         const detailsDiscount = _.get(formFieldsValues, "detailsDiscount", 0);
@@ -470,10 +472,12 @@ export class OrderForm extends React.PureComponent {
             detailsDiscount = this.props.fields.detailsDiscount ? this.props.fields.detailsDiscount.value : this.props.order.detailsDiscount;
         for (let i = 0; i < this.orderDetails.length; i++) {
             if(this.orderDetails[i].agreement != 'REJECTED') {
-                priceDetails += Math.round(this.orderDetails[i].sum);
-                totalDetailsProfit += Math.round(this.orderDetails[i].sum - (this.orderDetails[i].sum*detailsDiscount/100) - this.orderDetails[i].purchasePrice*this.orderDetails[i].count);
+                priceDetails += this.orderDetails[i].sum;
+                totalDetailsProfit += this.orderDetails[i].sum - (this.orderDetails[i].sum*detailsDiscount/100) - this.orderDetails[i].purchasePrice*this.orderDetails[i].count;
             }
         }
+        priceDetails = Math.round(priceDetails);
+        totalDetailsProfit = Math.round(totalDetailsProfit);
 
         var countServices = this.orderServices.length,
             priceServices = 0,
@@ -481,10 +485,12 @@ export class OrderForm extends React.PureComponent {
             servicesDiscount = this.props.fields.servicesDiscount ? this.props.fields.servicesDiscount.value : this.props.order.servicesDiscount;
         for (let i = 0; i < this.orderServices.length; i++) {
             if(this.orderServices[i].agreement != 'REJECTED') {
-                priceServices += Math.round(this.orderServices[i].sum);
-                totalServicesProfit += Math.round(this.orderServices[i].sum - (this.orderServices[i].sum*servicesDiscount/100) - this.orderServices[i].purchasePrice*this.orderServices[i].count);
+                priceServices += this.orderServices[i].sum;
+                totalServicesProfit += this.orderServices[i].sum - (this.orderServices[i].sum*servicesDiscount/100) - this.orderServices[i].purchasePrice*this.orderServices[i].count;
             }
         }
+        priceServices = Math.round(priceServices);
+        totalServicesProfit = Math.round(totalServicesProfit);
         
         // _.values(value).some(_.isNil) gets only filled rows
         const stationsCount = _.get(formFieldsValues, "stationLoads", [])

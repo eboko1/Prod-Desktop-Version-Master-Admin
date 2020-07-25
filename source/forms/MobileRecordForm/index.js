@@ -1,17 +1,19 @@
 // vendor
 import React, { Component } from 'react';
 import { injectIntl, FormattedMessage } from 'react-intl';
-import { Form, Button, Input, Select, Modal, Icon, Upload } from 'antd';
+import { Form, Button, Input, Select, Modal, Icon, Upload, notification } from 'antd';
 import { v4 } from 'uuid';
 import _ from 'lodash';
 import moment from 'moment';
-import {API_URL,
+import {
+    API_URL,
     addNewDiagnosticTemplate,
     getDiagnosticsTemplates,
-    addNewDiagnosticRow,
+    sendMessage,
     sendDiagnosticAnswer,
     deleteDiagnosticProcess,
-    deleteDiagnosticTemplate} from 'core/forms/orderDiagnosticForm/saga';
+    deleteDiagnosticTemplate
+} from 'core/forms/orderDiagnosticForm/saga';
 
 // proj
 // import { onChangeMobileRecordForm } from 'core/forms/mobileRecordForm/duck';
@@ -602,6 +604,19 @@ class MobileDiagnostic extends Component {
                 >
                     {this.getDiagnosticHeader()}
                     {this.getDiagnosticElements()}
+                    <Button
+                        type="primary"
+                        style={{marginTop: 15, width: '100%'}}
+                        onClick={()=>{
+                            notification.success({
+                                message: 'Сообщение отправлено!',
+                            });
+                            sendMessage(this.props.orderId);
+                        }}
+                        disabled={isForbidden(this.props.user, permissions.ACCESS_TELEGRAM)}
+                    >
+                        <FormattedMessage id='end'/>
+                    </Button>
                 </Modal>
             </div>
         )

@@ -154,7 +154,6 @@ class TecDocInfoModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
             that.setState({
                 fetched: true,
                 dataSource0: data.specifications.map((elem,i)=>{elem.key = i; elem.count = 1; return elem}),
