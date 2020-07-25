@@ -77,6 +77,7 @@ class ServicesTable extends Component {
                                     orderId={this.props.orderId}
                                     updateDataSource={this.updateDataSource}
                                     employees={this.props.employees}
+                                    user={this.props.user}
                                 />
                             :
                                 <QuickEditModal
