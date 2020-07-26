@@ -5,6 +5,22 @@
     padding: 25px;
 }
 
+.businessInfo {
+    padding: 5px 10px;
+}
+
+@media screen and (max-width: 1199px) {
+    .businessInfo {
+        background: #ffdd55;
+        display: flex;
+        justify-content: space-between;
+    }
+}
+
+.phoneNumber {
+    color: #b37eb0
+}
+
 .vehicleInfoWrap{
     display: flex;
     justify-content: start;
