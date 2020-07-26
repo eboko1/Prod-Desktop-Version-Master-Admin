@@ -34,6 +34,8 @@ class AgreementPage extends Component {
         this.updateData = this.updateData.bind(this);
         this.onSwitchService = this.onSwitchService.bind(this);
         this.onSwitchDetail = this.onSwitchDetail.bind(this);
+        this.business = {};
+        this.manager = {};
     }
 
     showConfirm() {
@@ -90,6 +92,8 @@ class AgreementPage extends Component {
         });
         this.detailsDiscount = data.detailsDiscount;
         this.servicesDiscount = data.servicesDiscount;
+        this.business = data.business;
+        this.manager = data.manager;
         this.setState({
             dataSource: data,
             loading: false,
@@ -122,6 +126,8 @@ class AgreementPage extends Component {
         const { TextArea } = Input;
         const isMobile = window.innerWidth < 1200;
         const { dataSource, confirmed, loading } = this.state;
+        const { business, manager } = this;
+
         if(loading) {
             return (
                 <Spinner spin/>
@@ -143,6 +149,7 @@ class AgreementPage extends Component {
                 />
             )
         }
+
         this.servicesTotal = 0;
         this.detailsTotal = 0;
         const vehicleNumber = dataSource.vehicle.vehiclenumber;
@@ -199,6 +206,12 @@ class AgreementPage extends Component {
                         </Button>
                     </div>
                 </div>
+                <div className={Styles.businessInfo}>
+                    <span>{business.name}:</span> <a className={Styles.phoneNumber} href={`tel:${business.phones[0]}`}>{business.phones[0]}</a>
+                </div>
+                <div className={Styles.businessInfo}>
+                    <span>{manager.name}:</span> <a className={Styles.phoneNumber} href={`tel:${manager.phone}`}>{manager.phone}</a>
+                </div>
                 {servicesElements.length ?
                     <div className={Styles.servicesWrap}>
                         <div className={Styles.sectionHeader}>
@@ -233,6 +246,12 @@ class AgreementPage extends Component {
             </div>
         ) : (
             <div className={Styles.agreementPage}>
+                <div className={Styles.businessInfo}>
+                    <span>{business.name}:</span> <a href={`tel:${business.phones[0]}`}>{business.phones[0]}</a>
+                </div>
+                <div className={Styles.businessInfo}>
+                    <span>{manager.name}:</span> <a href={`tel:${manager.phone}`}>{manager.phone}</a>
+                </div>
                 <div className={Styles.vehicleInfoWrap}>
                     <div className={`${Styles.vehicleInfo} ${Styles.vehicleNumber}`}>
                         {vehicleMake} {vehicleModel} {vehicleModification} {vehicleNumber}
