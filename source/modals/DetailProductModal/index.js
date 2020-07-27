@@ -762,6 +762,7 @@ class DetailProductModal extends React.Component{
                 value: parentGroup.id,
                 className: Styles.groupTreeOption,
                 key: `${i}`,
+                selectable: false,
                 children: [],
             })
             for(let j = 0; j < parentGroup.childGroups.length; j++) {
@@ -772,6 +773,7 @@ class DetailProductModal extends React.Component{
                     value: childGroup.id,
                     className: Styles.groupTreeOption,
                     key: `${i}-${j}`,
+                    selectable: false,
                     children: [],
                 })
                 for(let k = 0; k < childGroup.childGroups.length; k++) {

@@ -47,7 +47,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <TreeSelect
                             className={Styles.groupsTreeSelect}
-                            disabled={this.state.editing}
+                            disabled={this.state.editing || elem.masterLaborId}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.store_group'})}
                             style={{maxWidth: 180, minWidth: 100}}
@@ -83,7 +83,7 @@ class AddServiceModal extends React.Component{
                     return (
                         <TreeSelect
                             className={Styles.groupsTreeSelect}
-                            disabled={this.state.editing}
+                            disabled={this.state.editing || elem.storeGroupId}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.service_type'})}
                             style={{maxWidth: 180, minWidth: 100}}
@@ -133,8 +133,8 @@ class AddServiceModal extends React.Component{
                                 let count = option.props.norm_hours ? option.props.norm_hours : 1;
                                 this.state.mainTableSource[0].laborId = value;
                                 this.state.mainTableSource[0].serviceName = option.props.children;
-                                this.state.mainTableSource[0].masterLaborId = option.props.master_id;
-                                this.state.mainTableSource[0].storeGroupId = option.props.product_id;
+                                //this.state.mainTableSource[0].masterLaborId = option.props.master_id;
+                                //this.state.mainTableSource[0].storeGroupId = option.props.product_id;
                                 this.state.mainTableSource[0].count = count;
                                 this.state.mainTableSource[0].price = price;
                                 this.state.mainTableSource[0].sum = price * count;
@@ -546,6 +546,7 @@ class AddServiceModal extends React.Component{
                 value: parentGroup.id,
                 className: Styles.groupTreeOption,
                 key: `${i}`,
+                selectable: false,
                 children: [],
             })
             for(let j = 0; j < parentGroup.childGroups.length; j++) {
@@ -556,6 +557,7 @@ class AddServiceModal extends React.Component{
                     value: childGroup.id,
                     className: Styles.groupTreeOption,
                     key: `${i}-${j}`,
+                    selectable: false,
                     children: [],
                 })
                 for(let k = 0; k < childGroup.childGroups.length; k++) {
@@ -594,6 +596,7 @@ class AddServiceModal extends React.Component{
                 value: parentGroup.masterLaborId,
                 className: Styles.groupTreeOption,
                 key: `${i}`,
+                selectable: false,
                 children: [],
             })
             for(let j = 0; j < parentGroup.childGroups.length; j++) {
@@ -604,6 +607,7 @@ class AddServiceModal extends React.Component{
                     value: childGroup.masterLaborId,
                     className: Styles.groupTreeOption,
                     key: `${i}-${j}`,
+                    selectable: false,
                     children: [],
                 })
                 for(let k = 0; k < childGroup.childGroups.length; k++) {
