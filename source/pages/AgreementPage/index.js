@@ -78,14 +78,14 @@ class AgreementPage extends Component {
         this.state.servicesList = data.labors.map((elem)=>{
             elem.checked = elem.agreement != 'REJECTED' ? true : false;
             elem.comment = elem.comment; //"**description**";
-            elem.discount = data.servicesDiscount ? data.servicesDiscount/100 : 1;
+            elem.discount = data.servicesDiscount ? data.servicesDiscount/100 : 0;
             elem.price = Math.round(elem.price*(1-elem.discount)*10)/10;
             elem.sum = elem.price * elem.count;
             return elem;
         });
         this.state.detailsList = data.details.map((elem)=>{
             elem.checked = elem.agreement != 'REJECTED' ? true : false;
-            elem.discount = data.detailsDiscount ? data.detailsDiscount/100 : 1;
+            elem.discount = data.detailsDiscount ? data.detailsDiscount/100 : 0;
             elem.price = Math.round(elem.price*(1-elem.discount)*10)/10;
             elem.sum = elem.price * elem.count;
             return elem;
