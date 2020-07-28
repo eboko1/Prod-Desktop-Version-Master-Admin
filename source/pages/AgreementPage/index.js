@@ -209,9 +209,6 @@ class AgreementPage extends Component {
                 <div className={Styles.businessInfo}>
                     <span>{business.name}:</span> <a className={Styles.phoneNumber} href={`tel:${business.phones[0]}`}>{business.phones[0]}</a>
                 </div>
-                <div className={Styles.businessInfo}>
-                    <span>{manager.name}:</span> <a className={Styles.phoneNumber} href={`tel:${manager.phone}`}>{manager.phone}</a>
-                </div>
                 {servicesElements.length ?
                     <div className={Styles.servicesWrap}>
                         <div className={Styles.sectionHeader}>
@@ -248,9 +245,6 @@ class AgreementPage extends Component {
             <div className={Styles.agreementPage}>
                 <div className={Styles.businessInfo}>
                     <span>{business.name}:</span> <a href={`tel:${business.phones[0]}`}>{business.phones[0]}</a>
-                </div>
-                <div className={Styles.businessInfo}>
-                    <span>{manager.name}:</span> <a href={`tel:${manager.phone}`}>{manager.phone}</a>
                 </div>
                 <div className={Styles.vehicleInfoWrap}>
                     <div className={`${Styles.vehicleInfo} ${Styles.vehicleNumber}`}>
