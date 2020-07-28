@@ -6,7 +6,9 @@
         "diagnosticsActReport": "Diagnostics report",
         "actOfAcceptanceReport": "Transfer report",
         "completedWorkReport": "Purchase order",
-        "invoiceReport": "Invoice"
+        "invoiceReport": "Invoice",
+        "diagnosticResult": "Diagnostic result",
+        "diagnosticAct": "Diagnostic act"
     },
     "ru": {
         "calculationReport": "Калькуляция",
@@ -15,7 +17,9 @@
         "diagnosticsActReport": "Акт диагностики",
         "actOfAcceptanceReport": "Акт приема-передачи",
         "completedWorkReport": "Акт выполненых работ",
-        "invoiceReport": "Счет-фактура"
+        "invoiceReport": "Счет-фактура",
+        "diagnosticResult": "Результат диагностики",
+        "diagnosticAct": "Акт диагностики"
     },
     "uk": {
         "calculationReport": "Калькуляція",
@@ -24,6 +28,8 @@
         "diagnosticsActReport": "Акт діагностики",
         "actOfAcceptanceReport": "Акт прийому-передачі",
         "completedWorkReport": "Акт виконаних робіт",
-        "invoiceReport": "Рахунок-фактура"
+        "invoiceReport": "Рахунок-фактура",
+        "diagnosticResult": "Результат діагностики",
+        "diagnosticAct": "Акт діагностики"
     }
 }
