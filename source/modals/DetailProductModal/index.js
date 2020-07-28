@@ -157,7 +157,6 @@ class DetailProductModal extends React.Component{
                     }
                     return (
                         <Select
-                            mode="multiple"
                             showSearch
                             disabled={elem.storeGroupId == null && this.state.radioValue != 2 && this.state.radioValue != 3}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.brand'})}
@@ -182,13 +181,6 @@ class DetailProductModal extends React.Component{
                                 this.state.mainTableSource[0].sum = undefined;
                                 this.state.mainTableSource[0].brandId = value;
                                 this.state.mainTableSource[0].brandName = option.props.children;
-                                this.setState({
-                                    update: true
-                                })
-                            }}
-                            onDeselect={(value, option)=>{
-                                this.state.mainTableSource[0].brandId = undefined;
-                                this.state.mainTableSource[0].brandName = undefined;
                                 this.setState({
                                     update: true
                                 })
