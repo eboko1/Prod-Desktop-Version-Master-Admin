@@ -122,6 +122,23 @@ class AgreementPage extends Component {
         getAgreementData(this.sessionId, this.lang, this.updateData);
     }
 
+    formatPhoneNumber = (str) => {
+        //Filter only numbers from the input
+        let cleaned = ('' + str).replace(/\D/g, '');
+        
+        //Check if the input is of correct
+        let match = cleaned.match(/^(1|)?(\d{2})(\d{3})(\d{3})(\d{4})$/);
+        
+        if (match) {
+          //Remove the matched extension code
+          //Change this to format for any country code.
+          let intlCode = (match[2] ? '+38 ' : '')
+          return [intlCode, '(', match[3], ') ', match[4], '-', match[5]].join('')
+        }
+        
+        return null;
+    }
+
     render() {
         const { TextArea } = Input;
         const isMobile = window.innerWidth < 1200;
@@ -207,7 +224,10 @@ class AgreementPage extends Component {
                     </div>
                 </div>
                 <div className={Styles.businessInfo}>
-                    <span>{business.name}:</span> <a className={Styles.phoneNumber} href={`tel:${business.phones[0]}`}>{business.phones[0]}</a>
+                    <span>{business.name}:</span> <a className={Styles.phoneNumber} href={`tel:${this.formatPhoneNumber(business.phones[0])}`}>{this.formatPhoneNumber(business.phones[0])}</a>
+                </div>
+                <div className={Styles.businessInfo}>
+                    <span>{manager.name}:</span> <a className={Styles.phoneNumber} href={`tel:${this.formatPhoneNumber(manager.phone)}`}>{this.formatPhoneNumber(manager.phone)}</a>
                 </div>
                 {servicesElements.length ?
                     <div className={Styles.servicesWrap}>
@@ -244,7 +264,10 @@ class AgreementPage extends Component {
         ) : (
             <div className={Styles.agreementPage}>
                 <div className={Styles.businessInfo}>
-                    <span>{business.name}:</span> <a href={`tel:${business.phones[0]}`}>{business.phones[0]}</a>
+                    <span>{business.name}:</span> <a href={`tel:${this.formatPhoneNumber(business.phones[0])}`}>{this.formatPhoneNumber(business.phones[0])}</a>
+                </div>
+                <div className={Styles.businessInfo}>
+                    <span>{manager.name}:</span> <a href={`tel:${this.formatPhoneNumber(manager.phone)}`}>{this.formatPhoneNumber(manager.phone)}</a>
                 </div>
                 <div className={Styles.vehicleInfoWrap}>
                     <div className={`${Styles.vehicleInfo} ${Styles.vehicleNumber}`}>
