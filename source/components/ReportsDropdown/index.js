@@ -89,7 +89,7 @@ class ReportsDropdown extends React.Component {
                         { item.icon && <Icon type={ item.icon } /> }
                         <FormattedMessage id={ item.name } />
                     </Menu.Item>
-                )) }ґ
+                )) }
                 <Menu.Item
                     key={ `${this.reports.length}` }
                     className={ `${Styles.itemDisabled}` }
