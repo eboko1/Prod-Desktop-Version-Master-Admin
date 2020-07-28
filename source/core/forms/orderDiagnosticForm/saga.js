@@ -215,24 +215,33 @@ export async function deleteDiagnosticTemplate(orderId, templateId) {
     }
 }
 
-export async function createAgreement(orderId, lang) {
+export async function createAgreement(orderId, lang, confirmFunc, errorFunc) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/orders/create_agreement?orderId=${orderId}`;
 
     url += params;
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': token,
-            }
-        });
-        const result = await response.json();
-        //console.log("OK", result);
-    } catch (error) {
-        console.error('ERROR:', error);
-    }
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Authorization': token,
+        }
+    })
+    .then(function (response) {
+        if (response.status !== 200) {
+        return Promise.reject(new Error(response.statusText))
+        }
+        return Promise.resolve(response)
+    })
+    .then(function (response) {
+        return response.json()
+    })
+    .then(function (data) {
+        confirmFunc();
+    })
+    .catch(function (error) {
+        errorFunc();
+    })
 }
 
 export async function getPartProblems(partId, getData) {
@@ -288,6 +297,33 @@ export async function getDiagnosticsReport(orderId) {
     let token = localStorage.getItem('_my.carbook.pro_token');
     let url = API_URL;
     let params = `/diagnostics/report?orderId=${orderId}`;
+
+    url += params;
+    try {
+        const response = await fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        });
+        const reportFile = await response.blob();
+
+            const contentDispositionHeader = response.headers.get(
+                'content-disposition',
+            );
+            const fileName = contentDispositionHeader.match(
+                /^attachment; filename="(.*)"/,
+            )[ 1 ];
+            await saveAs(reportFile, fileName);
+    } catch (error) {
+        console.error('ERROR:', error);
+    }
+}
+
+export async function getDiagnosticsAct(orderId) {
+    let token = localStorage.getItem('_my.carbook.pro_token');
+    let url = API_URL;
+    let params = `/orders/reports/diagnosticsReport/${orderId}`;
 
     url += params;
     try {

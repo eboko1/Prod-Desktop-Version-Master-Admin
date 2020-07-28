@@ -16,6 +16,10 @@
     padding-bottom: 10px;
 }
 
+.brandColumn {
+    vertical-align: top;
+}
+
 .groupsTreeSelect {
 
 }
