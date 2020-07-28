@@ -14,8 +14,6 @@ import {
 
 // own
 import Styles from './styles.m.css';
-import { update } from "ramda";
-import { element } from "prop-types";
 
 @injectIntl
 class AgreementPage extends Component {
@@ -31,9 +29,13 @@ class AgreementPage extends Component {
         }
         this.servicesTotal = 0;
         this.detailsTotal = 0;
+        this.servicesDiscount = 0;
+        this.detailsDiscount = 0;
         this.updateData = this.updateData.bind(this);
         this.onSwitchService = this.onSwitchService.bind(this);
         this.onSwitchDetail = this.onSwitchDetail.bind(this);
+        this.business = {};
+        this.manager = {};
     }
 
     showConfirm() {
@@ -76,14 +78,22 @@ class AgreementPage extends Component {
         this.state.servicesList = data.labors.map((elem)=>{
             elem.checked = elem.agreement != 'REJECTED' ? true : false;
             elem.comment = elem.comment; //"**description**";
-            elem.price = Math.round(elem.price*10)/10;
+            elem.discount = data.servicesDiscount ? data.servicesDiscount/100 : 0;
+            elem.price = Math.round(elem.price*(1-elem.discount)*10)/10;
+            elem.sum = elem.price * elem.count;
             return elem;
         });
         this.state.detailsList = data.details.map((elem)=>{
             elem.checked = elem.agreement != 'REJECTED' ? true : false;
-            elem.price = Math.round(elem.price*10)/10;
+            elem.discount = data.detailsDiscount ? data.detailsDiscount/100 : 0;
+            elem.price = Math.round(elem.price*(1-elem.discount)*10)/10;
+            elem.sum = elem.price * elem.count;
             return elem;
         });
+        this.detailsDiscount = data.detailsDiscount;
+        this.servicesDiscount = data.servicesDiscount;
+        this.business = data.business;
+        this.manager = data.manager;
         this.setState({
             dataSource: data,
             loading: false,
@@ -112,10 +122,29 @@ class AgreementPage extends Component {
         getAgreementData(this.sessionId, this.lang, this.updateData);
     }
 
+    formatPhoneNumber = (str) => {
+        //Filter only numbers from the input
+        let cleaned = ('' + str).replace(/\D/g, '');
+        
+        //Check if the input is of correct
+        let match = cleaned.match(/^(1|)?(\d{2})(\d{3})(\d{3})(\d{4})$/);
+        
+        if (match) {
+          //Remove the matched extension code
+          //Change this to format for any country code.
+          let intlCode = (match[2] ? '+38 ' : '')
+          return [intlCode, '(', match[3], ') ', match[4], '-', match[5]].join('')
+        }
+        
+        return null;
+    }
+
     render() {
         const { TextArea } = Input;
         const isMobile = window.innerWidth < 1200;
         const { dataSource, confirmed, loading } = this.state;
+        const { business, manager } = this;
+
         if(loading) {
             return (
                 <Spinner spin/>
@@ -137,6 +166,7 @@ class AgreementPage extends Component {
                 />
             )
         }
+
         this.servicesTotal = 0;
         this.detailsTotal = 0;
         const vehicleNumber = dataSource.vehicle.vehiclenumber;
@@ -155,6 +185,7 @@ class AgreementPage extends Component {
                     checked={data.checked}
                     onSwitchService={this.onSwitchService}
                     isMobile={isMobile}
+                    discount={this.servicesDiscount ? this.servicesDiscount/100 : 0}
                 />
             )
         });
@@ -170,6 +201,7 @@ class AgreementPage extends Component {
                     checked={data.checked}
                     onSwitchDetail={this.onSwitchDetail}
                     isMobile={isMobile}
+                    discount={this.detailsDiscount ? this.detailsDiscount/100 : 0}
                 />
             )
         });
@@ -190,6 +222,12 @@ class AgreementPage extends Component {
                             <FormattedMessage id='save'/>
                         </Button>
                     </div>
+                </div>
+                <div className={Styles.businessInfo}>
+                    <span>{business.name}:</span> <a className={Styles.phoneNumber} href={`tel:${this.formatPhoneNumber(business.phones[0])}`}>{this.formatPhoneNumber(business.phones[0])}</a>
+                </div>
+                <div className={Styles.businessInfo}>
+                    <span>{manager.name}:</span> <a className={Styles.phoneNumber} href={`tel:${this.formatPhoneNumber(manager.phone)}`}>{this.formatPhoneNumber(manager.phone)}</a>
                 </div>
                 {servicesElements.length ?
                     <div className={Styles.servicesWrap}>
@@ -225,6 +263,12 @@ class AgreementPage extends Component {
             </div>
         ) : (
             <div className={Styles.agreementPage}>
+                <div className={Styles.businessInfo}>
+                    <span>{business.name}:</span> <a href={`tel:${this.formatPhoneNumber(business.phones[0])}`}>{this.formatPhoneNumber(business.phones[0])}</a>
+                </div>
+                <div className={Styles.businessInfo}>
+                    <span>{manager.name}:</span> <a href={`tel:${this.formatPhoneNumber(manager.phone)}`}>{this.formatPhoneNumber(manager.phone)}</a>
+                </div>
                 <div className={Styles.vehicleInfoWrap}>
                     <div className={`${Styles.vehicleInfo} ${Styles.vehicleNumber}`}>
                         {vehicleMake} {vehicleModel} {vehicleModification} {vehicleNumber}

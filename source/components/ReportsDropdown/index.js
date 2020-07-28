@@ -6,7 +6,8 @@ import { Menu, Dropdown, Icon } from 'antd';
 // proj
 import book from 'routes/book';
 import {
-    getDiagnosticsReport
+    getDiagnosticsReport,
+    getDiagnosticsAct,
 } from 'core/forms/orderDiagnosticForm/saga';
 import { permissions, isForbidden } from 'utils';
 
@@ -92,9 +93,16 @@ class ReportsDropdown extends React.Component {
                 <Menu.Item
                     key={ `${this.reports.length}` }
                     className={ `${Styles.itemDisabled}` }
+                    onClick={()=>{getDiagnosticsAct(orderId)}}
+                >
+                    <FormattedMessage id='diagnosticAct' />
+                </Menu.Item>
+                <Menu.Item
+                    key={ `${this.reports.length}` }
+                    className={ `${Styles.itemDisabled}` }
                     onClick={()=>{getDiagnosticsReport(orderId)}}
                 >
-                    <FormattedMessage id='order_form_table.diagnostic' />
+                    <FormattedMessage id='diagnosticResult' />
                 </Menu.Item>
             </Menu>
         );

@@ -383,7 +383,7 @@ export default class LaborsPage extends Component {
             return response.json()
         })
         .then(function (data) {
-            console.log(data);
+            //console.log(data);
         })
         .catch(function (error) {
             console.log('error', error)

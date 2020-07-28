@@ -29,6 +29,8 @@ class DetailSupplierModal extends React.Component{
                 key:       'code',
                 dataIndex: 'partNumber',
                 width:     '10%',
+                sorter: (a, b) => a.partNumber.localeCompare(b.partNumber),
+                sortDirections: ['descend', 'ascend'],
             },
             {
                 title:  <FormattedMessage id="order_form_table.supplier_code" />,
@@ -47,6 +49,8 @@ class DetailSupplierModal extends React.Component{
                 key:       'brand',
                 dataIndex: 'brandName',
                 width:     '10%',
+                sorter: (a, b) => a.brandName.localeCompare(b.brandName),
+                sortDirections: ['descend', 'ascend'],
             },
             {
                 title:  <FormattedMessage id="order_form_table.supplier" />,
@@ -69,7 +73,7 @@ class DetailSupplierModal extends React.Component{
                 render: (data) => {
                     let strVal = String(Math.round(data*10)/10);
                     return (
-                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                            data ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</span> : <FormattedMessage id="long_dash"/>
                     )
                 },
             },
@@ -77,11 +81,13 @@ class DetailSupplierModal extends React.Component{
                 title:  <FormattedMessage id="order_form_table.price" />,
                 key:       'price',
                 width:     '10%',
+                sorter: (a, b) => Number(a.purchasePrice) * Number(a.markup) - Number(b.purchasePrice) * Number(b.markup),
+                sortDirections: ['descend', 'ascend'],
                 render: (elem) => {
                     const price = Number(elem.purchasePrice) * Number(elem.markup);
                     let strVal = String(Math.round(price*10)/10);
                     return (
-                        price ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}<FormattedMessage id="cur" /></span> : <FormattedMessage id="long_dash"/>
+                        price ? <span>{`${strVal}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')}</span> : <FormattedMessage id="long_dash"/>
                     )
                 },
             },
@@ -91,6 +97,8 @@ class DetailSupplierModal extends React.Component{
                         </div>,
                 key:       'store',
                 width:     '10%',
+                sorter: (a, b) => Number(a.availableIn0) - Number(b.availableIn0),
+                sortDirections: ['descend', 'ascend'],
                 render: (elem)=>{
                     let color = 'brown',
                     title = 'Поставщик не выбран!';

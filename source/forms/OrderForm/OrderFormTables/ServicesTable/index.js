@@ -77,6 +77,7 @@ class ServicesTable extends Component {
                                     orderId={this.props.orderId}
                                     updateDataSource={this.updateDataSource}
                                     employees={this.props.employees}
+                                    user={this.props.user}
                                 />
                             :
                                 <QuickEditModal
@@ -321,9 +322,11 @@ class ServicesTable extends Component {
                 width: "3%",
                 key: "delete",
                 render: (elem) => {
+                    const confirmed = elem.agreement.toLowerCase();
+                    const disabled = confirmed != "undefined" || this.props.disabled;
                     return (
                         <Popconfirm
-                            disabled={this.props.disabled}
+                            disabled={disabled}
                             title={
                                 <FormattedMessage id="add_order_form.delete_confirm" />
                             }
@@ -353,7 +356,7 @@ class ServicesTable extends Component {
                                 }
                             }}
                         >
-                            <Icon type="delete" className={this.props.disabled ? Styles.disabledIcon : Styles.deleteIcon} />
+                            <Icon type="delete" className={disabled ? Styles.disabledIcon : Styles.deleteIcon} />
                         </Popconfirm>
                     );
                 },
@@ -624,8 +627,8 @@ class QuickEditModal extends React.Component{
                             value={data ? data : undefined}
                             allowClear
                             showSearch
-                            style={{minWidth: 240}}
-                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
+                            style={{minWidth: 220}}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220}}
                             placeholder={this.props.intl.formatMessage({id: 'order_form_table.master'})}
                             filterOption={(input, option) => {
                                 return (
