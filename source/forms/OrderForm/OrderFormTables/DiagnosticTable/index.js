@@ -486,13 +486,29 @@ class DiagnosticTable extends Component {
                 key:       'photo',
                 width:     '5%',
                 render: (photo, rowProp) => (
-                    <PhotoButton
+                    /*<PhotoButton
                         disabled={this.props.disabled || rowProp.disabled}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                         setPhoto={this.setPhoto}
                         rowProp={rowProp}
                         photo={photo}
-                    />
+                    />*/
+                    <Button
+                        type="primary"
+                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
+                        onClick={async ()=>{
+                            console.log(rowProp);
+                            await addNewDiagnosticRow(
+                                rowProp.orderId,
+                                rowProp.diagnosticTemplateId,
+                                rowProp.groupId,
+                                rowProp.partId,
+                            );
+                            await this.getCurrentDiagnostic()
+                        }}
+                    >
+                        <Icon type="plus"/>
+                    </Button>
                 ),
             },
             {
