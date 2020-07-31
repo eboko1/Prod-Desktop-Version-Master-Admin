@@ -43,7 +43,7 @@ class ConfirmDiagnosticModal extends React.Component{
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
         await lockDiagnostic(orderId);
-        //await window.location.reload();
+        await window.location.reload();
     }
 
     showModal = () => {
@@ -90,6 +90,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 })
             }
         });
+        console.log(data);
         this.endСonfirmation(this.props.orderId, data);
     };
     

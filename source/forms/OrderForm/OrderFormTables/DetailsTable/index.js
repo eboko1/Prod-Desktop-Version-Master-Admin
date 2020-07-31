@@ -67,8 +67,8 @@ export default class DetailsTable extends Component {
                                         width: 18,
                                         height: 18,
                                         backgroundColor: confirmed != "undefined" || this.props.disabled ? 'black' : 'white',
-                                        mask: `url(${images.wrenchIcon}) no-repeat center / contain`,
-                                        WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
+                                        mask: `url(${images.pistonIcon}) no-repeat center / contain`,
+                                        WebkitMask: `url(${images.pistonIcon}) no-repeat center / contain`,
                                     }}
                                 ></div>
                             </Button>

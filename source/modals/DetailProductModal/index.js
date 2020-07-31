@@ -136,7 +136,7 @@ class DetailProductModal extends React.Component{
                                     positions: [],
                                 }
                             }
-                            detail={elem.detailName}
+                            detail={elem.detailName ? elem.detailName.slice(0, elem.detailName.indexOf(' - ')) : undefined}
                             setComment={this.setComment}
                         />
                     )
@@ -1072,7 +1072,6 @@ class CommentaryButton extends React.Component{
         const { visible, loading, currentCommentaryProps, currentCommentary } = this.state;
         const { disabled, commentary } = this.props;
         const { positions } = this;
-        console.log(commentary)
 
         return (
             <div>
