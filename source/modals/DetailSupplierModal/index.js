@@ -219,14 +219,15 @@ class DetailSupplierModal extends React.Component{
                             visible: true,
                         })
                     }}
+                    title={this.props.intl.formatMessage({id: "details_table.details_supplier"})}
                 >
                     <div
                         style={{
                             width: 18,
                             height: 18,
                             backgroundColor: disabled ? 'black' : 'white',
-                            mask: `url(${images.craneIcon}) no-repeat center / contain`,
-                            WebkitMask: `url(${images.craneIcon}) no-repeat center / contain`,
+                            mask: `url(${images.deliveryTruckIcon}) no-repeat center / contain`,
+                            WebkitMask: `url(${images.deliveryTruckIcon}) no-repeat center / contain`,
                         }}
                     ></div>
                 </Button>

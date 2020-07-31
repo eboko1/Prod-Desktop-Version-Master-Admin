@@ -1080,6 +1080,7 @@ class CommentaryButton extends React.Component{
                     <Button
                         className={Styles.commentaryButton}
                         onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.edit"})}
                     >
                         <Icon
                             className={Styles.commentaryButtonIcon}
@@ -1091,6 +1092,7 @@ class CommentaryButton extends React.Component{
                         disabled={disabled}
                         type="primary"
                         onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.add"})}
                     >
                         <Icon type="message" />
                     </Button>

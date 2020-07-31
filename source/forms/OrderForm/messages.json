@@ -59,7 +59,21 @@
         "order-form.warning": "Warning",
         "status.rejected": "REJECTED",
         "status.agreed": "AGREED",
-        "status.undefined": "UNDEFINED"
+        "status.undefined": "UNDEFINED",
+        "commentary.add": "Add comment",
+        "commentary.edit": "Edit comment",
+        "labors_table.mark_up": "Labot hours mark up",
+        "labors_table.add_edit_button": "Add / edit labor",
+        "labors_table.check_labor_hours": "Check OE labor-hours",
+        "labors_table.favorite_labors": "Favorite labors",
+        "details_table.add_edit_button": "Add / edit part",
+        "details_table.favorite_details": "Favorite parts",
+        "details_table.details_catalogue": "Parts catalogue",
+        "details_table.details_supplier": "Select Supplier",
+        "duration.recalculate": "Recalculate repair duration",
+        "quick_edit": "Quick edit",
+        "add_to_favorites": "Add to Favorites",
+        "delete_from_favorites": "Delete from Favorites"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -121,7 +135,21 @@
         "order-form.warning": "Внимание!",
         "status.rejected": "ОТКЛОНЕНО",
         "status.agreed": "СОГЛАСОВАНО",
-        "status.undefined": "НЕОПРЕДЕЛЕНО"
+        "status.undefined": "НЕОПРЕДЕЛЕНО",
+        "commentary.add": "Добавить комментарий",
+        "commentary.edit": "Редактировать комментарий",
+        "labors_table.mark_up": "Надбавка к нормо-часам",
+        "labors_table.add_edit_button": "Добавить / редактировать работу",
+        "labors_table.check_labor_hours": "Проверить ОЕ норматив",
+        "labors_table.favorite_labors": "Избранные работы",
+        "details_table.add_edit_button": "Добавить / редактировать запчасть",
+        "details_table.favorite_details": "Избранные зарчасти",
+        "details_table.details_catalogue": "Каталог запчастей",
+        "details_table.details_supplier": "Выбрать Поставщика",
+        "duration.recalculate": "Пересчитать длительность ремонта",
+        "quick_edit": "Быстрое редактирование",
+        "add_to_favorites": "Добавить в Избранные",
+        "delete_from_favorites": "Удалить из Избранных"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -183,6 +211,20 @@
         "order-form.warning": "Увага!",
         "status.rejected": "ВІДХИЛЕНО",
         "status.agreed": "СХВАЛЕНО",
-        "status.undefined": "НЕВИЗНАЧЕНО"
+        "status.undefined": "НЕВИЗНАЧЕНО",
+        "commentary.add": "Додати коментар",
+        "commentary.edit": "Редагувати коментар",
+        "labors_table.mark_up": "Надбавка до нормо-годинин",
+        "labors_table.add_edit_button": "Додати / редагувати роботу",
+        "labors_table.check_labor_hours": "Перевірити ОЕ норматив",
+        "labors_table.favorite_labors": "Вибрані роботи",
+        "details_table.add_edit_button": "Додати / редагувати запчастину",
+        "details_table.favorite_details": "Вибрані запчастини",
+        "details_table.details_catalogue": "Каталог запчастин",
+        "details_table.details_supplier": "Вибрати Постачальника",
+        "duration.recalculate": "Перерахувати тривалість ремонту",
+        "quick_edit": "Швидке редагування",
+        "add_to_favorites": "Додати до Обраних",
+        "delete_from_favorites": "Видалити з Обраних"
     }
 }
