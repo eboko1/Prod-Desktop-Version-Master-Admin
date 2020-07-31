@@ -217,7 +217,7 @@ class AddServiceModal extends React.Component{
                                     positions: [],
                                 }
                             }
-                            detail={elem.serviceName}
+                            detail={elem.serviceName ? elem.serviceName.slice(0, elem.serviceName.indexOf(' - ')) : undefined}
                             setComment={this.setComment}
                         />
                     )

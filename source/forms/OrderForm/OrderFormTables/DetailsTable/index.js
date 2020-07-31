@@ -67,8 +67,8 @@ export default class DetailsTable extends Component {
                                         width: 18,
                                         height: 18,
                                         backgroundColor: confirmed != "undefined" || this.props.disabled ? 'black' : 'white',
-                                        mask: `url(${images.wrenchIcon}) no-repeat center / contain`,
-                                        WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
+                                        mask: `url(${images.pistonIcon}) no-repeat center / contain`,
+                                        WebkitMask: `url(${images.pistonIcon}) no-repeat center / contain`,
                                     }}
                                 ></div>
                             </Button>
@@ -334,7 +334,7 @@ export default class DetailsTable extends Component {
                                 type="star"
                                 theme={elem.frequentDetailId ? 'filled' : ''}
                                 style={{color: 'gold', fontSize: 18}}
-                                title={this.props.intl.formatMessage({id: elem.frequentLaborId ? "delete_from_favorites" : "add_to_favorites"})}
+                                title={this.props.intl.formatMessage({id: elem.frequentDetailId ? "delete_from_favorites" : "add_to_favorites"})}
                             />
                         </Popconfirm>
                     )
