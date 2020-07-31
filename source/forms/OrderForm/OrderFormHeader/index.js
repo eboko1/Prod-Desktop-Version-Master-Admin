@@ -410,6 +410,7 @@ export default class OrderFormHeader extends Component {
                                     type='redo'
                                     title='Пересчитать длительность'
                                     onClick={() => this.props.updateDuration()}
+                                    title={this.props.intl.formatMessage({id: "duration.recalculate"})}
                                 />
                             </span>
                         </>

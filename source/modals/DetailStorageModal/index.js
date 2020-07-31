@@ -653,6 +653,7 @@ class DetailStorageModal extends React.Component{
                             visible: true,
                         })
                     }}
+                    title={this.props.intl.formatMessage({id: "details_table.details_catalogue"})}
                 >
                     <div
                         style={{

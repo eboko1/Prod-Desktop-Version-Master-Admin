@@ -38,6 +38,7 @@ import {
 // own
 import Styles from './styles.m.css';
 
+@injectIntl
 class DiagnosticTable extends Component {
     _isMounted = false;
 
@@ -269,6 +270,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.ok'/>
                                     </Button>
@@ -294,6 +296,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.bad'/>
                                     </Button>
@@ -319,6 +322,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.critical'/>
                                     </Button>
@@ -344,6 +348,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <Button
                                             className={Styles.filter_half_button}
@@ -380,6 +385,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.open'/>
                                     </Button>
@@ -487,6 +493,7 @@ class DiagnosticTable extends Component {
                             );
                             await this.getCurrentDiagnostic()
                         }}
+                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.duplicate_line"})}
                     >
                         <Icon type="plus"/>
                     </Button>
@@ -1084,6 +1091,7 @@ class DiagnosticTable extends Component {
     }
 }
 
+@injectIntl
 class DiagnosticTableHeader extends React.Component{
     constructor(props){
         super(props);
@@ -1173,7 +1181,7 @@ class DiagnosticTableHeader extends React.Component{
                         confirmed={disabled}
                         orderId={this.props.orderId}
                         isMobile={false}
-                        dataSource = {this.state.dataSource}
+                        dataSource = {this.state.dataSource.slice(0)}
                         orderServices={this.props.orderServices}
                         orderDetails={this.props.orderDetails}
                         getCurrentDiagnostic={this.props.getCurrentDiagnostic}
@@ -1182,18 +1190,41 @@ class DiagnosticTableHeader extends React.Component{
                     />
                 </div>
                 <div style={{ width: "10%" }}>
-                    <Button disabled={disabled} type="primary" onClick={()=>{this.handleClickStatusButtons(0)}} style={{width: "80%", padding: 0}}>
+                    <Button
+                        disabled={disabled}
+                        type="primary"
+                        onClick={()=>{this.handleClickStatusButtons(0)}}
+                        style={{width: "80%", padding: 0}}
+                    >
                         <FormattedMessage id='order_form_table.diagnostic.status.edit' />
                     </Button>
                 </div>
                 <div className={Styles.diagnostic_status_button_wrap} style={{ width: "15%" }}>
-                    <Button disabled={disabled} className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(1)}}  style={{background:"rgb(81, 205, 102)"}}>
+                    <Button
+                        disabled={disabled}
+                        className={Styles.diagnostic_status_button}
+                        onClick={()=>{this.handleClickStatusButtons(1)}}
+                        style={{background:"rgb(81, 205, 102)"}}
+                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.ok_title"})}
+                    >
                         <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                     </Button>
-                    <Button disabled={disabled} className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(2)}} style={{background:"rgb(255, 255, 0)"}}>
+                    <Button
+                        disabled={disabled}
+                        className={Styles.diagnostic_status_button}
+                        onClick={()=>{this.handleClickStatusButtons(2)}}
+                        style={{background:"rgb(255, 255, 0)"}}
+                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.replace_title"})}
+                    >
                         <FormattedMessage id='order_form_table.diagnostic.status.bad' />
                     </Button>
-                    <Button disabled={disabled} className={Styles.diagnostic_status_button}  type="danger" onClick={()=>{this.handleClickStatusButtons(3)}} style={{background:"rgb(255, 126, 126)", color: "rgba(0, 0, 0, 0.65)"}}>
+                    <Button
+                        disabled={disabled}
+                        className={Styles.diagnostic_status_button}
+                        type="danger" onClick={()=>{this.handleClickStatusButtons(3)}}
+                        style={{background:"rgb(255, 126, 126)", color: "rgba(0, 0, 0, 0.65)"}}
+                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.critical_title"})}
+                    >
                         <FormattedMessage id='order_form_table.diagnostic.status.critical' />
                     </Button>
                 </div>
@@ -1209,6 +1240,7 @@ class DiagnosticTableHeader extends React.Component{
     }
 }
 
+@injectIntl
 class DiagnosticStatusButton extends React.Component{
     constructor(props) {
         super(props);
@@ -1288,6 +1320,7 @@ class DiagnosticStatusButton extends React.Component{
                     className={Styles.diagnostic_status_button}
                     onClick={()=>this.handleClick(1)}
                     style={{background:'rgb(81, 205, 102)'}}
+                    title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.ok_title"})}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                 </Button>
@@ -1296,6 +1329,7 @@ class DiagnosticStatusButton extends React.Component{
                     className={Styles.diagnostic_status_button}
                     onClick={()=>this.handleClick(2)}
                     style={{background:'rgb(255, 255, 0)'}}
+                    title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.replace_title"})}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.status.bad' />
                 </Button>
@@ -1304,6 +1338,7 @@ class DiagnosticStatusButton extends React.Component{
                     className={Styles.diagnostic_status_button} type="danger"
                     onClick={()=>this.handleClick(3)}
                     style={{background:'rgb(255, 126, 126)', color: 'rgba(0, 0, 0, 0.65)'}}
+                    title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.critical_title"})}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.status.critical' />
                 </Button>
@@ -1557,6 +1592,7 @@ class CommentaryButton extends React.Component{
                     <Button
                         className={Styles.commentaryButton}
                         onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.edit"})}
                     >
                         <Icon
                             className={Styles.commentaryButtonIcon}
@@ -1568,6 +1604,7 @@ class CommentaryButton extends React.Component{
                         disabled={disabled}
                         type="primary"
                         onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.add"})}
                     >
                         <Icon type="message" />
                     </Button>
