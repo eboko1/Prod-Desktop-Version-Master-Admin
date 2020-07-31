@@ -60,14 +60,15 @@ export default class DetailsTable extends Component {
                                 onClick={()=>{
                                     this.showDetailProductModal(data)
                                 }}
+                                title={this.props.intl.formatMessage({id: "details_table.add_edit_button"})}
                             >
                                 <div
                                     style={{
                                         width: 18,
                                         height: 18,
                                         backgroundColor: confirmed != "undefined" || this.props.disabled ? 'black' : 'white',
-                                        mask: `url(${images.partsIcon}) no-repeat center / contain`,
-                                        WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
+                                        mask: `url(${images.wrenchIcon}) no-repeat center / contain`,
+                                        WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
                                     }}
                                 ></div>
                             </Button>
@@ -333,6 +334,7 @@ export default class DetailsTable extends Component {
                                 type="star"
                                 theme={elem.frequentDetailId ? 'filled' : ''}
                                 style={{color: 'gold', fontSize: 18}}
+                                title={this.props.intl.formatMessage({id: elem.frequentLaborId ? "delete_from_favorites" : "add_to_favorites"})}
                             />
                         </Popconfirm>
                     )
@@ -447,7 +449,10 @@ export default class DetailsTable extends Component {
                     purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                     count: detail.count ? detail.count : 1,
                     price: detail.price ? Math.round(detail.price*10)/10 : 1,
-                    comment: detail.comment,
+                    comment: detail.comment || {
+                        comment: undefined,
+                        positions: [],
+                    },
                 }
             ]
         }
@@ -506,7 +511,10 @@ export default class DetailsTable extends Component {
                 detailCode: undefined,
                 brandId: undefined,
                 brandName: undefined,
-                comment: undefined,
+                comment: {
+                    comment: undefined,
+                    positions: [],
+                },
                 count: 0,
                 price: 0,
                 purchasePrice: 0,
@@ -543,6 +551,7 @@ export default class DetailsTable extends Component {
     }
 }
 
+@injectIntl
 class QuickEditModal extends React.Component{
     constructor(props) {
         super(props);
@@ -711,6 +720,7 @@ class QuickEditModal extends React.Component{
                             dataSource: [this.props.detail]
                         })
                     }}
+                    title={this.props.intl.formatMessage({id: "quick_edit"})}
                 >
                     <div
                         style={{

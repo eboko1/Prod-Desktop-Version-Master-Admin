@@ -38,11 +38,13 @@
     font-weight: bold;
 }
 
-.commentaryParameter{
-    margin-right: 15px;
+.blockButtonsWrap {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 
-.serviceNumberInput input{
-    text-align: right;
-    padding-right: 25px;
+.commentaryBlockButton { 
+    width: 30%;
+    margin-bottom: 5px;
 }

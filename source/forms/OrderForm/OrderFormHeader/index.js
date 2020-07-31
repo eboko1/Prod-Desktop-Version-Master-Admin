@@ -399,11 +399,22 @@ export default class OrderFormHeader extends Component {
                     initialValue={
                         _.get(fetchedOrder, "order.duration") || totalHours
                     }
-                    label={`${this._getLocalization(
-                        "time",
-                    )} (${zeroStationLoadDuration}${this._getLocalization(
-                        "add_order_form.hours_shortcut",
-                    )})`}
+                    label={
+                        <>
+                            <span>
+                                {`${this._getLocalization("time")} (${zeroStationLoadDuration}${this._getLocalization("add_order_form.hours_shortcut")})`}
+                            </span>
+                            <span style={{marginLeft: 10}}>
+                                <Icon
+                                    className={Styles.updateDurationIcon}
+                                    type='redo'
+                                    title='Пересчитать длительность'
+                                    onClick={() => this.props.updateDuration()}
+                                    title={this.props.intl.formatMessage({id: "duration.recalculate"})}
+                                />
+                            </span>
+                        </>
+                    }
                     getFieldDecorator={getFieldDecorator}
                     min={0}
                     step={0.5}

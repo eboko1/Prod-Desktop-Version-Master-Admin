@@ -1,7 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal, Icon, Checkbox, InputNumber, notification, Select, Tabs } from 'antd';
+import { Button, Modal, Icon, Checkbox, InputNumber, notification, Select, Tabs, Input } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 // proj
 import {permissions, isForbidden} from 'utils';
@@ -34,12 +34,16 @@ class ConfirmDiagnosticModal extends React.Component{
         this.lastServiceInput = React.createRef();
         this.lastDetailInput = React.createRef();
         this.diagnosticKey = 1;
+        this._isMounted = false;
+
+        this.setServicesComment = this.setServicesComment.bind(this);
+        this.setDetailsComment = this.setDetailsComment.bind(this);
     }
 
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
         await lockDiagnostic(orderId);
-        await window.location.reload();
+        //await window.location.reload();
     }
 
     showModal = () => {
@@ -60,21 +64,29 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.servicesList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.services.push({
+                    serviceName: element.name + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
                     serviceId: element.id,
                     count: element.hours,
                     servicePrice: element.price,
                     employeeId: this.props.defaultEmployeeId,
                     serviceHours: 0,
-                    comment: {comment: element.comment},
+                    comment: {
+                        comment: element.commentary.comment,
+                        positions: element.commentary.positions,
+                    },
                 })
             }
         });
         this.state.detailsList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.details.push({
+                    name: element.name + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
                     storeGroupId: element.id,
                     count: element.count,
-                    comment: element.comment,
+                    comment: {
+                        comment: element.commentary.comment,
+                        positions: element.commentary.positions,
+                    },
                 })
             }
         });
@@ -101,7 +113,10 @@ class ConfirmDiagnosticModal extends React.Component{
             hours: data.hours,
             checked: true,
             price: data.price,
-            comment: data.comment,
+            commentary: {
+                comment: data.commentary.comment,
+                positions: data.commentary.positions
+            },
         }));
         this.state.detailsList = orderDetails.map((data, index)=>({
             key: index+1,
@@ -109,7 +124,10 @@ class ConfirmDiagnosticModal extends React.Component{
             name: data.detailName,
             count: data.count,
             checked: true,
-            comment: data.comment,
+            commentary: {
+                comment: data.commentary.comment,
+                positions: data.commentary.positions
+            }
         }));
     }
 
@@ -119,14 +137,15 @@ class ConfirmDiagnosticModal extends React.Component{
         this.diagnosticKey = 1;
     }
 
-    componentWillMount() {
-        
-    }
-
     componentDidMount() {
-        if(this.props.orderId) {
+        this._isMounted = true;
+        if(this.props.orderId && this._isMounted) {
             this.fetchOptionsSourceData();
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentWillUpdate() {
@@ -200,7 +219,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    getLaborByPartId(id, comment = "", status) {
+    getLaborByPartId(id, commentary, status) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -222,28 +241,28 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addServicesByLaborId(data.laborId, -1, comment, status);
+            that.addServicesByLaborId(data.laborId, -1, commentary, status);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addServicesByLaborId(id, index = -1, comment = "", status) {
+    addServicesByLaborId(id, index = -1, commentary, status) {
         const service = this.state.labors.labors.find(x => x.laborId == id);
         if(service == undefined) return;
 
         if(index == -1) {
-            this.state.servicesList[this.state.servicesList.length-1] = {
+            this.state.servicesList[this.state.servicesList.length-1] = Object.assign({},{
                 key: this.state.servicesList.length,
                 id: id,
                 productId: service.productId,
                 name: service.name,
                 hours: Number(service.normHours) || 1,
                 checked: true,
-                comment: comment,
+                commentary: commentary,
                 status: status,
-            };
+            });
         }
         else {
             this.state.servicesList[index].id = id;
@@ -257,7 +276,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    getGroupByPartId(id, comment = "", status) {
+    getGroupByPartId(id, commentary, status) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -279,14 +298,14 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addDetailsByGroupId(data.storeGroupId, -1, comment, status);
+            that.addDetailsByGroupId(data.storeGroupId, -1, commentary, status);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addDetailsByGroupId(id, index = -1, comment = "", status) {
+    addDetailsByGroupId(id, index = -1, commentary, status) {
         const detail = this.state.allDetails.find(x => x.id == id);
         if(detail == undefined) return;
 
@@ -297,7 +316,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 name: detail.name,
                 count: 1,
                 checked: true,
-                comment: comment,
+                commentary: commentary,
                 status: status,
             }
         }
@@ -320,7 +339,7 @@ class ConfirmDiagnosticModal extends React.Component{
             update: true,
         })
         if(type=='manually') {
-            this.state.servicesList[this.state.servicesList.length-1].comment = this.state.diagnosticList[index].comment;
+            this.state.servicesList[this.state.servicesList.length-1].commentary = Object.assign({}, this.state.diagnosticList[index].commentary);
             this.lastServiceInput.focus();
         }
     }
@@ -372,37 +391,47 @@ class ConfirmDiagnosticModal extends React.Component{
         .then(function (data) {
             that.state.servicesList.pop();
             that.state.detailsList.pop();
+
+            const serviceArray = [];
+            const detailArrat = [];
             
             data.map((elem)=>{
                 const diagnosticPart = that.state.diagnosticList.find((part)=>part.id==elem.partId);
-                const comment = diagnosticPart ? diagnosticPart.comment.comment : undefined;
+                const commentary = diagnosticPart ? Object.assign({}, diagnosticPart.commentary) : {comment: "", positions: []};
+                const servicesComment = JSON.parse(JSON.stringify(commentary));
+                const detailComment = JSON.parse(JSON.stringify(commentary));
                 const status = diagnosticPart ? diagnosticPart.status : undefined;
+                
 
                 elem.labor.map((labor)=>{
-                    that.state.servicesList.push({
+                    let laborObjCopy = Object.assign({}, {
                         key: that.state.servicesList.length+1,
                         id: labor.laborId,
                         productId: labor.productId,
                         name: labor.name,
                         hours: Number(labor.normHours) || 1,
                         checked: true,
-                        comment: comment,
+                        commentary: servicesComment,
                         status: status,
-                    })
+                    });
+                    serviceArray.push(laborObjCopy);
                 })
-                
-                that.state.detailsList.push({
+
+                let detailObjCopy = Object.assign({}, {
                     key: that.state.detailsList.length+1,
                     id: elem.storeGroup.id,
                     name: elem.storeGroup.name,
                     count: 1,
                     checked: true,
-                    comment: comment,
+                    commentary: detailComment,
                     status: status,
-                })
+                });
+                
+                detailArrat.push(detailObjCopy);
             })
             that.setState({
-                update: true,
+                servicesList: serviceArray,
+                detailsList: detailArrat,
             })
         })
         .catch(function (error) {
@@ -412,22 +441,26 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getDiagnostics(stage) {
         const { dataSource } = this.props;
-        var diagnosticList = this.state.diagnosticList;
+        var diagnosticList = this.state.diagnosticList.slice(0);
         let tmpSource = [];
         for(let i = 0; i < dataSource.length; i++) {
             if(dataSource[i].stage == stage && Number(dataSource[i].status) > 1 && !dataSource[i].disabled) {
                 tmpSource.push(dataSource[i]);
+                const commentary = Object.assign({}, dataSource[i].commentary);
                 if(this.state.diagnosticList.findIndex(x => x.id == dataSource[i].partId) == -1){
-                    diagnosticList.push({
+
+                    let diagnosticObjCopy =  Object.assign({}, {
                         key: this.diagnosticKey,
                         id: dataSource[i].partId,
-                        comment: dataSource[i].commentary,
+                        commentary: commentary || {comment: "", positions: []},
                         resolved: false,
                         type:'',
                         disabled: false,
                         checked: true,
                         status: Number(dataSource[i].status),
                     });
+
+                    diagnosticList.push(diagnosticObjCopy);
                     this.diagnosticKey++;
                 }
             }
@@ -470,11 +503,14 @@ class ConfirmDiagnosticModal extends React.Component{
                 <Button
                     type="primary"
                     onClick={async ()=>{
+                        const servicesComment = JSON.parse(JSON.stringify(data.commentary));
+                        const detailComment = JSON.parse(JSON.stringify(data.commentary));
                         await this.changeResolved(index, 'automaticly');
-                        await this.getLaborByPartId(data.partId, data.commentary.comment, data.status);
-                        await this.getGroupByPartId(data.partId, data.commentary.comment, data.status);
+                        await this.getLaborByPartId(data.partId, servicesComment, data.status);
+                        await this.getGroupByPartId(data.partId, detailComment, data.status);
                     }}
                     style={{width: '49%', padding: '5px'}}
+                    title={this.props.intl.formatMessage({id: "confirm_diagnostic_modal.auto"})}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.automaticly' />
                 </Button>
@@ -482,6 +518,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     type="primary"
                     onClick={()=>{this.changeResolved(index, 'manually')}}
                     style={{width: '49%', padding: '5px'}}
+                    title={this.props.intl.formatMessage({id: "confirm_diagnostic_modal.manual"})}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.manually' />
                 </Button>
@@ -531,7 +568,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 id:null,
                 name: null,
                 hours: 1,
-                comment: null,
+                commentary: {commentary: "", positions: []},
                 checked: true,
             });
             this.setState({
@@ -544,7 +581,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: null,
                 name: null,
                 hours: 1,
-                comment: null,
+                commentary: {commentary: "", positions: []},
                 checked: true
             });
             this.setState({
@@ -584,7 +621,8 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getServicesContent() {
         this.addNewServicesRow();
-        return this.state.servicesList.map((data, index)=>
+        let tmpServicesArray = [...this.state.servicesList];
+        tmpServicesArray = tmpServicesArray.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
@@ -605,7 +643,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.addServicesByLaborId(value, index);
                         }}
                         onChange={(inputValue)=>{
-                            this.state.servicesList[index].name = inputValue;
+                            data.name = inputValue;
                             this.setState({update: true});
                         }}
                         placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}
@@ -625,13 +663,23 @@ class ConfirmDiagnosticModal extends React.Component{
                         min={0.1}
                         value={data.hours?data.hours:1}
                         onChange={(value)=>{
-                            this.state.servicesList[index].hours = value;
+                            data.hours = value;
                             this.setState({update: true});
                         }}
                     />
                     <div style={{width: "20%", paddingLeft: '5px', display: 'inline-block'}}>
-                        <CommentaryModal
-                                comment={data.comment}
+                        <CommentaryButton
+                            disabled={!data.name}
+                            commentary={
+                                data.commentary || 
+                                {
+                                    comment: undefined,
+                                    positions: [],
+                                }
+                            }
+                            detail={data.name}
+                            setComment={this.setServicesComment}
+                            tableKey={index}
                         />
                     </div>
                     <div className={Styles.delete_diagnostic_button_wrap} style={{width: "20%", display: 'inline-block'}}>
@@ -643,8 +691,20 @@ class ConfirmDiagnosticModal extends React.Component{
                     </div>
                 </div>
             </div>
-        )
+        );
+        return tmpServicesArray;
     }
+
+    setServicesComment(comment, positions, index) {
+        this.state.servicesList[index].commentary = {
+            comment: comment,
+            positions: positions,
+        };
+        this.setState({
+            update: true
+        })
+    }
+
 
     detailsCheckboxClick(index) {
         this.state.detailsList[index].checked = !this.state.detailsList[index].checked;
@@ -701,7 +761,8 @@ class ConfirmDiagnosticModal extends React.Component{
 
     getDetailsContent() {
         this.addNewDetailsRow();
-        return this.state.detailsList.map((data, index)=>
+        let tmpDetailsArray = [...this.state.detailsList];
+        tmpDetailsArray = tmpDetailsArray.map((data, index)=>
             <div className={Styles.confirm_diagnostic_modal_row} style={data.status == 3 ? {backgroundColor: 'rgb(250,175,175)'} : null}>
                 <div style={{ width: '10%' }}>
                     {data.key} <Checkbox
@@ -722,7 +783,7 @@ class ConfirmDiagnosticModal extends React.Component{
                             this.addDetailsByGroupId(value, index);
                         }}
                         onChange={(inputValue)=>{
-                            this.state.detailsList[index].name = inputValue;
+                            data.name = inputValue;
                             this.setState({update: true});
                         }}
                         placeholder={this.props.intl.formatMessage({id: 'order_form_table.service.placeholder'})}
@@ -742,13 +803,23 @@ class ConfirmDiagnosticModal extends React.Component{
                         max={50}
                         value={data.count?data.count:1}
                         onChange={(value)=>{
-                            this.state.detailsList[index].count = value;
+                            data.count = value;
                             this.setState({update: true});
                         }}
                     />
                     <div style={{width: "20%", paddingLeft: '5px', display: 'inline-block'}}>
-                        <CommentaryModal
-                                comment={data.comment}
+                        <CommentaryButton
+                            disabled={!data.name}
+                            commentary={
+                                data.commentary || 
+                                {
+                                    comment: undefined,
+                                    positions: [],
+                                }
+                            }
+                            detail={data.name}
+                            setComment={this.setDetailsComment}
+                            tableKey={index}
                         />
                     </div>
                     <div className={Styles.delete_diagnostic_button_wrap} style={{width: '20%', display: 'inline-block'}}>
@@ -761,6 +832,17 @@ class ConfirmDiagnosticModal extends React.Component{
                 </div>
             </div>
         )
+        return tmpDetailsArray;
+    }
+
+    setDetailsComment(comment, positions, index) {
+        this.state.detailsList[index].commentary = {
+            comment: comment,
+            positions: positions,
+        };
+        this.setState({
+            update: true
+        })
     }
 
     render() {
@@ -832,6 +914,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 <Button
                                     type="primary"
                                     onClick={()=>{this.automaticlyConfirmDiagnostic()}}
+                                    title={this.props.intl.formatMessage({id: "confirm_diagnostic_modal.auto"})}
                                 >
                                     <FormattedMessage id='order_form_table.diagnostic.automaticly' />
                                 </Button>
@@ -900,43 +983,215 @@ class ConfirmDiagnosticModal extends React.Component{
 }
 export default ConfirmDiagnosticModal;
 
-class CommentaryModal extends React.Component {
-    state = { visible: false };
+@injectIntl
+class CommentaryButton extends React.Component{
+    constructor(props) {
+        super(props);
+        this.state = {
+            loading: false,
+            visible: false,
+            currentCommentaryProps: {
+                name: props.detail,
+                positions : [],
+            },
+            currentCommentary: undefined,
+        }
+        this.commentaryInput = React.createRef();
+        this.positions = [
+            "front_axle",
+            "ahead",
+            "overhead",
+            "rear_axle",
+            "behind",
+            "down_below",
+            "Right_wheel",
+            "on_right",
+            "outside",
+            "left_wheel",
+            "left",
+            "inside",
+            "lever_arm",
+            "at_both_sides",
+            "centered",
+        ];
+        this._isMounted = false;
+    }
 
     showModal = () => {
         this.setState({
-        visible: true,
+            currentCommentary: this.props.commentary.comment ? this.props.commentary.comment : this.props.detail,
+            visible: true,
+            currentCommentaryProps: {
+                positions: this.props.commentary.positions || [],
+            }
         });
+        if(this.commentaryInput.current != undefined) {
+            this.commentaryInput.current.focus();
+        }
     };
 
-    handleOk = e => {
+    handleOk = async () => {
+        const {currentCommentary, currentCommentaryProps} = this.state;
         this.setState({
-        visible: false,
+            loading: true,
         });
+        this.props.setComment(currentCommentary, currentCommentaryProps.positions, this.props.tableKey);
+        setTimeout(() => {
+            this.setState({ loading: false, visible: false });
+        }, 500);
     };
-
-
-    handleCancel = e => {
+    
+    handleCancel = () => {
         this.setState({
-        visible: false,
+            visible: false,
+            currentCommentary: this.props.detail, 
+            currentCommentaryProps: {
+                name: this.props.detail,
+                positions : [],
+            },
         });
     };
 
+    renderHeader = () => {
+        return (
+            <div>
+              <p>
+                  {this.props.detail}
+              </p>
+            </div>
+          );
+    }
+
+    getCommentary() {
+        const { currentCommentaryProps } = this.state;
+        var currentCommentary = this.props.detail;
+
+        if(currentCommentaryProps.positions.length) {
+            currentCommentary += ' -'
+            currentCommentary += currentCommentaryProps.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) + ';';
+        }
+        this.setState({
+            currentCommentary: currentCommentary
+        });
+    }
+
+    setCommentaryPosition(position) {
+        const { currentCommentaryProps } = this.state;
+        const positionIndex = currentCommentaryProps.positions.indexOf(position);
+        if(positionIndex == -1) {
+            currentCommentaryProps.positions.push(position);
+        }
+        else {
+            currentCommentaryProps.positions = currentCommentaryProps.positions.filter((value, index)=>index != positionIndex);
+        }
+        this.getCommentary();
+    }
+
+
+    componentDidMount() {
+        this._isMounted = true;
+        const { commentary, detail } = this.props;
+        if(this._isMounted) {
+            this.setState({
+                currentCommentaryProps: {
+                    name: detail,
+                    positions: commentary.positions || [],
+                }
+            })
+        }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
+    }
 
     render() {
+        const { TextArea } = Input;
+        const { visible, loading, currentCommentaryProps, currentCommentary } = this.state;
+        const { disabled, commentary } = this.props;
+        const { positions } = this;
+
         return (
-        <div>
-            <Icon type="message" onClick={this.showModal}/>
-            <Modal
-                title={<FormattedMessage id='order_form_table.diagnostic.commentary' />}
-                footer={null}
-                visible={this.state.visible}
-                onOk={this.handleOk}
-                onCancel={this.handleCancel}
-            >
-            <p>{this.props.comment ? this.props.comment : <FormattedMessage id='no_data' />}</p>
-            </Modal>
-        </div>
+            <div>
+                {commentary.comment ? (
+                    <Button
+                        className={Styles.commentaryButton}
+                        onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.edit"})}
+                    >
+                        <Icon
+                            className={Styles.commentaryButtonIcon}
+                            style={{color: "rgba(0, 0, 0, 0.65)"}}
+                            type="form"/>
+                    </Button>
+                ) : (
+                    <Button
+                        disabled={disabled}
+                        type="primary"
+                        onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.add"})}
+                    >
+                        <Icon type="message" />
+                    </Button>
+                )}
+                <Modal
+                    visible={visible}
+                    title={this.renderHeader()}
+                    onOk={this.handleOk}
+                    onCancel={this.handleCancel}
+                    footer={disabled?(
+                        null
+                        ):([
+                            <Button key="back" onClick={this.handleCancel}>
+                                {<FormattedMessage id='cancel' />}
+                            </Button>,
+                            <Button key="submit" type="primary" loading={loading} onClick={this.handleOk}>
+                                {<FormattedMessage id='save' />}
+                            </Button>,
+                        ])
+                    }
+                >
+                    <>
+                    <div className={Styles.commentaryVehicleSchemeWrap}>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='commentary_modal.where'/>?
+                        </p>
+                        <div className={Styles.blockButtonsWrap}>
+                            {positions.map((position, key)=> {
+                                return (
+                                    <Button
+                                        key={key}
+                                        type={currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ? 'normal' : 'primary'}
+                                        className={Styles.commentaryBlockButton}
+                                        onClick={()=>{this.setCommentaryPosition(position)}}
+                                    >
+                                        <FormattedMessage id={position}/>
+                                    </Button>
+                                )
+                            })}
+                        </div>
+                    </div>
+                    <div>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='order_form_table.diagnostic.commentary' />
+                        </p>
+                        <TextArea
+                            disabled={disabled}
+                            value={currentCommentary}
+                            placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
+                            autoFocus
+                            onChange={()=>{
+                                this.setState({
+                                    currentCommentary: event.target.value,
+                                });
+                            }}
+                            style={{width: '100%', minHeight: '150px', resize:'none'}}
+                            ref={this.commentaryInput}
+                        />
+                    </div>
+                    </>
+                </Modal>
+            </div>
         );
     }
 }

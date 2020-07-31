@@ -41,6 +41,7 @@ class ServicesTable extends Component {
                                     formatter={value => `${Math.round(value*100)}%`}
                                     parser={value => Math.round(value.replace('%', '')/100)}
                                     onChange={(value)=>this.updateTimeMultiplier(value)}
+                                    title={this.props.intl.formatMessage({id: "labors_table.mark_up"})}
                                 />
                             )
                         },
@@ -57,14 +58,15 @@ class ServicesTable extends Component {
                                 onClick={()=>{
                                     this.showServiceProductModal(data)
                                 }}
+                                title={this.props.intl.formatMessage({id: "labors_table.add_edit_button"})}
                             >
                                 <div
                                     style={{
                                         width: 18,
                                         height: 18,
                                         backgroundColor: confirmed != "undefined" || this.props.disabled ? 'black' : 'white',
-                                        mask: `url(${images.partsIcon}) no-repeat center / contain`,
-                                        WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
+                                        mask: `url(${images.pistonIcon}) no-repeat center / contain`,
+                                        WebkitMask: `url(${images.pistonIcon}) no-repeat center / contain`,
                                     }}
                                 ></div>
                             </Button>
@@ -180,13 +182,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  <div className={Styles.numberColumn}>
-                                <Button
-                                    type={'primary'}
-                                    title='Пересчитать длительность'
-                                    onClick={()=>this.updateDuration()}
-                                >
-                                <FormattedMessage id="order_form_table.count" />
-                            </Button>
+                            <FormattedMessage id="order_form_table.count" />
                         </div>,
                 className: Styles.numberColumn,
                 width: "5%",
@@ -313,6 +309,7 @@ class ServicesTable extends Component {
                                 type="star"
                                 theme={elem.frequentLaborId ? 'filled' : ''}
                                 style={{color: 'gold', fontSize: 18}}
+                                title={this.props.intl.formatMessage({id: elem.frequentLaborId ? "delete_from_favorites" : "add_to_favorites"})}
                             />
                         </Popconfirm>
                     )
@@ -489,7 +486,10 @@ class ServicesTable extends Component {
                     purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
                     count: labor.count ? labor.count : 1,
                     servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
-                    comment: labor.comment,
+                    comment: labor.comment || {
+                        comment: undefined,
+                        positions: [],
+                    },
                 }
             ]
         }
@@ -539,7 +539,10 @@ class ServicesTable extends Component {
                 id: undefined,
                 laborId: undefined,
                 serviceName: undefined,
-                comment: {comment: undefined},
+                comment: {
+                    comment: undefined,
+                    positions: [],
+                },
                 count: 0,
                 price: 0,
                 purchasePrice: 0,
@@ -785,6 +788,7 @@ class QuickEditModal extends React.Component{
                             dataSource: [this.props.labor]
                         })
                     }}
+                    title={this.props.intl.formatMessage({id: "quick_edit"})}
                 >
                     <div
                         style={{
