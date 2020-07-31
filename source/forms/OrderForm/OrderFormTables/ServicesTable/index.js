@@ -489,7 +489,10 @@ class ServicesTable extends Component {
                     purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
                     count: labor.count ? labor.count : 1,
                     servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
-                    comment: labor.comment,
+                    comment: labor.comment || {
+                        comment: undefined,
+                        positions: [],
+                    },
                 }
             ]
         }
@@ -539,7 +542,10 @@ class ServicesTable extends Component {
                 id: undefined,
                 laborId: undefined,
                 serviceName: undefined,
-                comment: {comment: undefined},
+                comment: {
+                    comment: undefined,
+                    positions: [],
+                },
                 count: 0,
                 price: 0,
                 purchasePrice: 0,

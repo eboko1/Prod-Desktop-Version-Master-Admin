@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import _ from 'lodash';
 import {
     Table,
     Button,
@@ -448,7 +449,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (commentary, rowProp) => (
                     <CommentaryButton
-                        disabled={this.props.disabled || rowProp.disabled}
+                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                         commentary={commentary}
                         rowProp={rowProp}
@@ -459,26 +460,7 @@ class DiagnosticTable extends Component {
                 title:  ()=>{
                     return(
                         <div className={Styles.filter_column_header_wrap}>
-                            <FormattedMessage id='order_form_table.diagnostic.photo' />
-                            <Button
-                                disabled
-                                type={this.state.filterPhoto == null?"primary":""}
-                                onClick={()=>{
-                                    if(this.state.filterPhoto != null) {
-                                        this.setState({
-                                            filterPhoto: null,
-                                        });
-                                    }
-                                    else {
-                                        this.setState({
-                                            filterPhoto: "PHOTO",
-                                        });
-                                    }
-                                    {this.getCurrentDiagnostic()}
-                                }}
-                            >
-                                {this.withPhoto}
-                            </Button>
+                            <FormattedMessage id='order_form_table.diagnostic.duplicate' />
                         </div>
                     )
                 },
@@ -497,7 +479,6 @@ class DiagnosticTable extends Component {
                         type="primary"
                         disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
                         onClick={async ()=>{
-                            console.log(rowProp);
                             await addNewDiagnosticRow(
                                 rowProp.orderId,
                                 rowProp.diagnosticTemplateId,
@@ -890,7 +871,10 @@ class DiagnosticTable extends Component {
                     let comment = _.pick(parts[k], [
                         "comment",
                     ]).comment;
-                    if(comment == null) comment = {comment: null}
+                    if(comment == null) comment = {
+                        comment: undefined,
+                        positions: [],
+                    }
                     let photo = this.photoKeys.find((data)=>data.partId == partId && data.groupId == groupId);
                     photo = photo ? photo.photo : null;
                     dataSource.push({
@@ -1335,23 +1319,43 @@ class CommentaryButton extends React.Component{
         this.state = {
             loading: false,
             visible: false,
-            problems: undefined,
             currentCommentaryProps: {
-                rcl: null,
-                fcl: null,
-                io: null,
-                tb: null,
-                side: [],
-                front: [],
-                back: [],
+                name: props.rowProp.detail,
+                positions : [],
                 problems: [],
-                mm:null,
-                percent: null,
-                deg: null,
+                params: {
+                    mm: 0,
+                    percent: 0,
+                    deg: 0,
+                }
             },
-            currentCommentary: null,
+            currentCommentary: undefined,
         }
         this.commentaryInput = React.createRef();
+        this.positions = [
+            "front_axle",
+            "ahead",
+            "overhead",
+            "rear_axle",
+            "behind",
+            "down_below",
+            "Right_wheel",
+            "on_right",
+            "outside",
+            "left_wheel",
+            "left",
+            "inside",
+            "lever_arm",
+            "at_both_sides",
+            "centered",
+        ];
+        this.problems = [];
+        this.params = [
+            {name: "mm", symbol: "mm"},
+            {name: "percent", symbol: "%"},
+            {name: "deg", symbol: "°"},
+        ];
+        this._isMounted = false;
     }
 
     getPositions() {
@@ -1377,55 +1381,7 @@ class CommentaryButton extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.setState({
-                rcl: data.rcl,
-                fcr: data.fcr,
-                tb: data.tb,
-                io: data.io,
-            });
-            if(data.rcl != null && data.rcl.length==1) {
-                switch (data.rcl) {
-                    case "R":
-                        that.setCurrentCommentaryProps('back', 'RIGHT');
-                        break;
-                    case "L":
-                        that.setCurrentCommentaryProps('back', 'LEFT');
-                        break;
-                }
-            }
-            if(data.fcr != null && data.fcr.length==1) {
-                switch (data.fcr) {
-                    case "F":
-                        that.setCurrentCommentaryProps('side', 'FRONT');
-                        break;
-                    case "R":
-                        that.setCurrentCommentaryProps('side', 'REAR');
-                        break;
-                    case "C":
-                        that.setCurrentCommentaryProps('side', 'MIDDLE');
-                        break;
-                }
-            }
-            if(data.tb != null && data.tb.length==1) {
-                switch (data.tb) {
-                    case "T":
-                        that.setCurrentCommentaryProps('side', 'TOP');
-                        break;
-                    case "B":
-                        that.setCurrentCommentaryProps('side', 'BOTTOM');
-                        break;
-                }
-            }
-            if(data.io != null && data.io.length==1) {
-                switch (data.io) {
-                    case "I":
-                        that.setCurrentCommentaryProps('front', 'IN');
-                        break;
-                    case "O":
-                        that.setCurrentCommentaryProps('front', 'OUT');
-                        break;
-                }
-            }
+            console.log(data);
         })
         .catch(function (error) {
             console.log('error', error)
@@ -1434,7 +1390,7 @@ class CommentaryButton extends React.Component{
 
     showModal = () => {
         this.setState({
-            currentCommentary: this.props.commentary.comment?this.props.commentary.comment:this.state.currentCommentary,
+            currentCommentary: this.props.commentary.comment ? this.props.commentary.comment : this.state.currentCommentary,
             visible: true,
         });
         if(this.commentaryInput.current != undefined) {
@@ -1443,6 +1399,7 @@ class CommentaryButton extends React.Component{
     };
 
     handleOk = async () => {
+        const {currentCommentary, currentCommentaryProps} = this.state;
         this.setState({
             loading: true,
         });
@@ -1450,11 +1407,12 @@ class CommentaryButton extends React.Component{
         await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, 
             JSON.stringify(
                 {
-                    comment: this.state.currentCommentary,
-                    problems: this.state.currentCommentaryProps.problems,
-                    mm: this.state.currentCommentaryProps.mm,
-                    percent: this.state.currentCommentaryProps.percent,
-                    deg: this.state.currentCommentaryProps.deg,
+                    comment: currentCommentary,
+                    positions: currentCommentaryProps.positions,
+                    problems: currentCommentaryProps.problems,
+                    mm: currentCommentaryProps.mm,
+                    percent: currentCommentaryProps.percent,
+                    deg: currentCommentaryProps.deg,
                 }
             ));
         await this.props.getCurrentDiagnostic();
@@ -1470,99 +1428,128 @@ class CommentaryButton extends React.Component{
         });
     };
 
-    rendetHeader = () => {
+    renderHeader = () => {
+        const { currentCommentaryProps } = this.state;
+        const { problems } = this;
         return (
             <div>
               <p>
                   {this.props.rowProp.detail}
               </p>
               <p style={{fontSize:"16px", fontStyle: "italic", fontWeight: "normal"}}>
-                  {this.props.rowProp.actionTitle}
+                  {
+                    //this.props.rowProp.actionTitle
+                    currentCommentaryProps.problems.map((data, index)=>{
+                        const punctuation = index == currentCommentaryProps.problems.length - 1 ? "" : ",";
+                        const problemLable = problems.find((problem)=>problem.value == data);
+                        return ` ${problemLable ? problemLable.label.toLowerCase() : null}${punctuation}`
+                    })
+                  }
               </p>
             </div>
           );
     }
 
-    setCurrentCommentaryProps(key, value) {
-        const { rowProp } = this.props;
-        if(key == "mm" || key == "percent" || key == "deg" || key == "problems") {
-            if(this.state.currentCommentaryProps[key] == value) {
-                this.state.currentCommentaryProps[key] = null;
+    getCommentary() {
+        const { currentCommentaryProps } = this.state;
+        const { problems, params } = this;
+        const paramsValue = Object.entries(currentCommentaryProps.params).map((pair, key)=>{
+            if(pair[1] !== 0) return ` ${pair[1]}${params[key].symbol}`; 
+        });
+        const isParamsSet = paramsValue.some((param) => !_.isNil(param));
+        var currentCommentary = this.props.rowProp.detail;
+
+        if(currentCommentaryProps.positions.length || currentCommentaryProps.problems.length || isParamsSet) {
+            currentCommentary += ' -'
+            if(currentCommentaryProps.positions.length) {
+                currentCommentary += currentCommentaryProps.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) + ';';
             }
-            else {
-                this.state.currentCommentaryProps[key] = value;
+            if(currentCommentaryProps.problems.length) {
+                currentCommentary += currentCommentaryProps.problems.map((data)=>{
+                    return ` ${problems.find((problem)=>problem.value == data).label.toLowerCase()}`;
+                }) + ';';
+            }
+            if(isParamsSet) {
+                currentCommentary += paramsValue.filter((param)=>!_.isNil(param)) + ';';
             }
         }
-        else {
-            if(this.state.currentCommentaryProps[key].indexOf(value) != -1) {
-                this.state.currentCommentaryProps[key] = [...this.state.currentCommentaryProps[key]].filter((data) => data != value);;
-            }
-            else {
-                this.state.currentCommentaryProps[key].push(value);
-            }
-        }
-
-        const { side, back, front, problems, mm, percent, deg } = this.state.currentCommentaryProps;
-        var commentary = `${rowProp.detail} - `;
-        if(side.length) commentary += ` ${side.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
-        if(front.length) commentary += ` ${front.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
-        if(back.length) commentary += ` ${back.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
-        if(problems.length) commentary += ` ${problems.map((data)=>data)}. `;
-        if(mm) commentary += ` ${mm}mm. `;
-        if(percent) commentary += ` ${percent}%. `;
-        if(deg) commentary += ` ${deg}°. `;
-
-
         this.setState({
-            currentCommentary: commentary,
+            currentCommentary: currentCommentary
         });
     }
 
-    componentDidMount() {
-        if(!this.state.problems && this.props.rowProp.partId) {
-            getPartProblems(this.props.rowProp.partId, (data)=>{
-                this.setState({problems: data})
+    setCommentaryPosition(position) {
+        const { currentCommentaryProps } = this.state;
+        const positionIndex = currentCommentaryProps.positions.indexOf(position);
+        if(positionIndex == -1) {
+            currentCommentaryProps.positions.push(position);
+        }
+        else {
+            currentCommentaryProps.positions = currentCommentaryProps.positions.filter((value, index)=>index != positionIndex);
+        }
+        this.getCommentary();
+    }
+
+    setCommentaryProblems(value) {
+        const { currentCommentaryProps } = this.state;
+        const problemIndex = currentCommentaryProps.problems.indexOf(value);
+        if(problemIndex == -1) {
+            currentCommentaryProps.problems.push(value);
+        }
+        else {
+            currentCommentaryProps.problems = currentCommentaryProps.problems.filter((value, index)=>index != problemIndex);
+        }
+        this.getCommentary();
+    }
+
+    setCommetaryParams(param, value) {
+        const { currentCommentaryProps } = this.state;
+        currentCommentaryProps.params[param] = value;
+        this.getCommentary();
+    }
+
+    async componentDidMount() {
+        this._isMounted = true;
+        const { currentCommentaryProps } = this.state;
+        const { commentary, rowProp } = this.props;
+        if(!this.problems.length && this.props.rowProp.partId) {
+            await getPartProblems(this.props.rowProp.partId, (data)=>{
+                this.problems = data.map((elem)=>{
+                    return ({
+                        label: elem.description,
+                        value: elem.code,
+                    })
+                });
             });
-            this.state.currentCommentaryProps.problems = this.props.commentary.problems ? this.props.commentary.problems : [];
-            this.state.currentCommentaryProps.mm = this.props.commentary.mm ? this.props.commentary.mm : 0;
-            this.state.currentCommentaryProps.percent = this.props.commentary.percent ? this.props.commentary.percent : 0;
-            this.state.currentCommentaryProps.deg = this.props.commentary.deg ? this.props.commentary.deg : 0;
-            this.getPositions();
+            if(this._isMounted) {
+                this.setState({
+                    currentCommentaryProps: {
+                        name: rowProp.detail,
+                        positions: commentary.positions || [],
+                        problems: commentary.problems || [],
+                        params: {
+                            mm: commentary.mm || 0,
+                            percent: commentary.percent || 0,
+                            deg: commentary.deg || 0,
+                        }
+                    },
+                })
+            }
+            //await this.getPositions();
         }
     }
 
-    componentDidUpdate() {
-        
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
         const { TextArea } = Input;
-        const { visible, loading, problems, currentCommentaryProps, currentCommentary } = this.state;
-        const { commentary } = this.props;
-        const { disabled, rowProp } = this.props;
-        var problemOptions = [];
-        if(problems) {
-            problems.map((data)=>{
-                if(data.code) {
-                    problemOptions.push({
-                        label: data.description, value: data.code
-                    })
-                }
-            })
-        }
-        const defaultProblems = commentary.problems ? commentary.problems : [];
+        const { visible, loading, currentCommentaryProps, currentCommentary } = this.state;
+        const { disabled, commentary } = this.props;
+        const { positions, problems, params } = this;
 
-        if(!rowProp.partId) {
-            return (
-                <Button
-                    disabled
-                    type="primary"
-                    onClick={this.showModal}
-                >
-                    <Icon type="message" />
-                </Button>
-            )
-        }
+        const defaultProblems = commentary.problems ? commentary.problems : [];
 
         return (
             <div>
@@ -1587,7 +1574,7 @@ class CommentaryButton extends React.Component{
                 )}
                 <Modal
                     visible={visible}
-                    title={this.rendetHeader()}
+                    title={this.renderHeader()}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     footer={disabled?(
@@ -1602,168 +1589,67 @@ class CommentaryButton extends React.Component{
                         ])
                     }
                 >
-                    {!disabled ? 
-                    <div className={Styles.commentaryContentWrap}>
-                        <div className={Styles.commentaryVehicleSchemeWrap}>
-                            <div style={{
-                                width: "360px",
-                                height: "160px",
-                                margin: "0 auto",
-                                position: "relative",
-                                backgroundImage: `url('${images.vehicleSchemeSide}')`,
-                                backgroundSize: "contain",
-                                backgroundPosition: "center",
-                                backgroundRepeat: "no-repeat",
-                            }}>
-                                <Button
-                                    disabled={this.state.tb == undefined || this.state.tb.indexOf("T") == -1}
-                                    type={currentCommentaryProps.side.indexOf("TOP") != -1 ? null : "primary"}
-                                    style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'TOP')}}
-                                >
-                                    <FormattedMessage id='TOP'/>
-                                </Button>
-                                <Button
-                                    disabled={this.state.fcr == undefined || this.state.fcr.indexOf("R") == -1}
-                                    type={currentCommentaryProps.side.indexOf("REAR") != -1 ? null : "primary"}
-                                    style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'REAR')}}
-                                >
-                                    <FormattedMessage id='REAR'/>
-                                </Button>
-                                <Button
-                                    disabled={this.state.tb == undefined || this.state.tb.indexOf("B") == -1}
-                                    type={currentCommentaryProps.side.indexOf("BOTTOM") != -1 ? null : "primary"}
-                                    style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'BOTTOM')}}
-                                >
-                                    <FormattedMessage id='BOTTOM'/>
-                                </Button>
-                                <Button
-                                    disabled={this.state.fcr == undefined || this.state.fcr.indexOf("F") == -1}
-                                    type={currentCommentaryProps.side.indexOf("FRONT") != -1 ? null : "primary"}
-                                    style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'FRONT')}}
-                                >
-                                    <FormattedMessage id='FRONT'/>
-                                </Button>
-                                <Button
-                                    disabled={this.state.fcr == undefined || this.state.fcr.indexOf("С") == -1}
-                                    type={currentCommentaryProps.side.indexOf("MIDDLE") != -1 ? null : "primary"}
-                                    style={{position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'MIDDLE')}}
-                                >
-                                    <FormattedMessage id='MIDDLE'/>
-                                </Button>
-                            </div>
-                            <div style={{display: "flex", justifyContent: "center"}}>
-                                <div style={{
-                                    width: "180px",
-                                    height: "160px",
-                                    position: "relative",
-                                    backgroundImage: `url('${images.vehicleSchemeBack}')`,
-                                    backgroundSize: "contain",
-                                    backgroundPosition: "center",
-                                    backgroundRepeat: "no-repeat",
-                                }}>
+                    <>
+                    <div className={Styles.commentaryVehicleSchemeWrap}>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='commentary_modal.where'/>?
+                        </p>
+                        <div className={Styles.blockButtonsWrap}>
+                            {positions.map((position, key)=> {
+                                return (
                                     <Button
-                                        disabled={this.state.rcl == undefined || this.state.rcl.indexOf("L") == -1}
-                                        type={currentCommentaryProps.back.indexOf("LEFT") != -1 ? null : "primary"}
-                                        style={{position: "absolute", left: "0%", bottom: "0%"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'LEFT')}}
+                                        key={key}
+                                        type={currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ? 'normal' : 'primary'}
+                                        className={Styles.commentaryBlockButton}
+                                        onClick={()=>{this.setCommentaryPosition(position)}}
                                     >
-                                        <FormattedMessage id='LEFT'/>
+                                        <FormattedMessage id={position}/>
                                     </Button>
-                                    <Button
-                                        disabled={this.state.rcl == undefined || this.state.rcl.indexOf("C") == -1}
-                                        type={currentCommentaryProps.back.indexOf("CENTER") != -1 ? null : "primary"}
-                                        style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'CENTER')}}
-                                    >
-                                        <FormattedMessage id='CENTER'/>
-                                    </Button>
-                                    <Button
-                                        disabled={this.state.rcl == undefined || this.state.rcl.indexOf("R") == -1}
-                                        type={currentCommentaryProps.back.indexOf("RIGHT") != -1 ? null : "primary"}
-                                        style={{position: "absolute", right: "0%", bottom: "0%"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'RIGHT')}}
-                                    >
-                                        <FormattedMessage id='RIGHT'/>
-                                    </Button>
-                                </div>
-                                <div style={{
-                                    width: "180px",
-                                    height: "160px",
-                                    position: "relative",
-                                    backgroundImage: `url('${images.vehicleSchemeFront}')`,
-                                    backgroundSize: "contain",
-                                    backgroundPosition: "center",
-                                    backgroundRepeat: "no-repeat",
-                                }}>
-                                    <Button
-                                        disabled={this.state.io == undefined || this.state.io.indexOf("I") == -1}
-                                        type={currentCommentaryProps.front.indexOf("IN") != -1 ? null : "primary"}
-                                        style={{position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'IN')}}
-                                    >
-                                        <FormattedMessage id='IN'/>
-                                    </Button>
-                                    <Button
-                                        disabled={this.state.io == undefined || this.state.io.indexOf("O") == -1}
-                                        type={currentCommentaryProps.front.indexOf("OUT") != -1 ? null : "primary"}
-                                        style={{position: "absolute", right: "0%", top: "50%", transform: "translateY(-50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'OUT')}}
-                                    >
-                                        <FormattedMessage id='OUT'/>
-                                    </Button>
-                                </div>
-                            </div>
+                                )
+                            })}
                         </div>
-                        {problemOptions.length > 0 ?
-                            <div>
-                                <p className={Styles.commentarySectionHeader}>Тип проблемы:</p>
-                                <div>
-                                    <Checkbox.Group
-                                        options={problemOptions}
-                                        defaultValue={defaultProblems}
-                                        onChange={(problems)=>{this.setCurrentCommentaryProps('problems', problems)}}
-                                    />
-                                </div>
-                            </div>
-                        : <></>}
-                        <div>
-                            <p className={Styles.commentarySectionHeader}>Параметры:</p>
-                            <div style={{display: "flex"}}>
-                                <div className={Styles.commentaryParameter}>
-                                    <InputNumber
-                                        value={currentCommentaryProps.mm || 0}
-                                        formatter={value => `${value} mm.`}
-                                        parser={value => value.replace(' %', '')}
-                                        onChange={(mm)=>{this.setCurrentCommentaryProps('mm', mm)}}
-                                    />
-                                </div>
-                                <div className={Styles.commentaryParameter}>
-                                    <InputNumber
-                                        value={currentCommentaryProps.percent || 0}
-                                        formatter={value => `${value} %`}
-                                        parser={value => value.replace(' %', '')}
-                                        onChange={(percent)=>{this.setCurrentCommentaryProps('percent', percent)}}
-                                    /> 
-                                </div>
-                                <div className={Styles.commentaryParameter}>
-                                    <InputNumber
-                                        value={currentCommentaryProps.deg || 0}
-                                        formatter={value => `${value} °`}
-                                        parser={value => value.replace(' °', '')}
-                                        onChange={(deg)=>{this.setCurrentCommentaryProps('deg', deg)}}
-                                    />
-                                </div>
-                            </div>
+                    </div>
+                    <div className={Styles.commentaryVehicleSchemeWrap}>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='commentary_modal.what'/>?
+                        </p>
+                        <div className={Styles.blockButtonsWrap}>
+                            {problems.map((problem, key) => {
+                                return (
+                                    <Button
+                                        key={key}
+                                        type={currentCommentaryProps.problems.findIndex((elem)=>problem.value==elem) > -1 ? 'normal' : 'primary'}
+                                        className={Styles.commentaryBlockButton}
+                                        onClick={()=>{this.setCommentaryProblems(problem.value)}}
+                                    >
+                                        <span>{problem.label}</span>
+                                    </Button>
+                                )
+                            })}
                         </div>
-                    </div> : null}
+                    </div>
+                    <div  className={Styles.commentaryVehicleSchemeWrap}>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='commentary_modal.parameters'/>
+                        </p>
+                        <div className={Styles.blockButtonsWrap}>
+                            {params.map((param, key) => {
+                                return (
+                                    <InputNumber
+                                        key={key}
+                                        className={Styles.commentaryBlockButton}
+                                        value={currentCommentaryProps.params[param.name]}
+                                        formatter={value => `${value} ${param.symbol}`}
+                                        parser={value => value.replace(` ${param.symbol}`, '')}
+                                        onChange={(value)=>{this.setCommetaryParams(param.name, value)}}
+                                    />
+                                )
+                            })}
+                        </div>
+                    </div>
                     <div>
                         <p className={Styles.commentarySectionHeader}>
-                            <FormattedMessage id='order_form_table.diagnostic.commentary' />:
+                            <FormattedMessage id='order_form_table.diagnostic.commentary' />
                         </p>
                         <TextArea
                             disabled={disabled}
@@ -1779,6 +1665,7 @@ class CommentaryButton extends React.Component{
                             ref={this.commentaryInput}
                         />
                     </div>
+                    </>
                 </Modal>
             </div>
         );

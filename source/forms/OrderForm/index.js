@@ -1,6 +1,6 @@
 // vendor
 import React, { Component } from "react";
-import { Form, notification } from "antd";
+import { Form, notification, message } from "antd";
 import { injectIntl } from "react-intl";
 import _ from "lodash";
 import moment from "moment";
@@ -83,10 +83,11 @@ export class OrderForm extends React.PureComponent {
         };
         this.orderDetails = [...this.props.orderDetails];
         this.orderServices = [...this.props.orderServices];
-        this.reloadOrderForm = this.reloadOrderForm.bind(this);
+        this._reloadOrderForm = this._reloadOrderForm.bind(this);
+        this._updateDuration = this._updateDuration.bind(this);
     }
 
-    async reloadOrderForm() {
+    _reloadOrderForm() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -139,6 +140,47 @@ export class OrderForm extends React.PureComponent {
             that.setState({
                 orderDetails: data.details,
             })
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    _updateDuration() {
+        let hours = 0;
+        this.orderServices.map((elem)=>{
+            hours += elem.count;
+        })
+        
+        if(hours > 8) {
+            message.warning('Количество часов превышает 8. ');
+            hours = 8;
+        }
+
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let url = API_URL;
+        let params = `/orders/${this.props.orderId}`;
+        url += params;
+        fetch(url, {
+            method: 'PUT',
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({duration: hours}),
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            window.location.reload();
         })
         .catch(function (error) {
             console.log('error', error)
@@ -385,6 +427,7 @@ export class OrderForm extends React.PureComponent {
         return (
             <Form className={Styles.form} layout="horizontal">
                 <OrderFormHeader
+                    updateDuration={this._updateDuration}
                     allServices={allServices}
                     authentificatedManager={authentificatedManager}
                     availableHours={availableHours}
@@ -639,7 +682,7 @@ export class OrderForm extends React.PureComponent {
                 recommendedPriceLoading={this.props.recommendedPriceLoading}
                 fetchRecommendedPrice={this.props.fetchRecommendedPrice}
                 reloadOrderPageComponents={this.props.reloadOrderPageComponents}
-                reloadOrderForm={this.reloadOrderForm}
+                reloadOrderForm={this._reloadOrderForm}
             />
         );
     };

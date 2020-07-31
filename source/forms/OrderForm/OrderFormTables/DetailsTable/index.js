@@ -447,7 +447,10 @@ export default class DetailsTable extends Component {
                     purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                     count: detail.count ? detail.count : 1,
                     price: detail.price ? Math.round(detail.price*10)/10 : 1,
-                    comment: detail.comment,
+                    comment: detail.comment || {
+                        comment: undefined,
+                        positions: [],
+                    },
                 }
             ]
         }
@@ -506,7 +509,10 @@ export default class DetailsTable extends Component {
                 detailCode: undefined,
                 brandId: undefined,
                 brandName: undefined,
-                comment: undefined,
+                comment: {
+                    comment: undefined,
+                    positions: [],
+                },
                 count: 0,
                 price: 0,
                 purchasePrice: 0,

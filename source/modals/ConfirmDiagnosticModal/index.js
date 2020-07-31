@@ -34,12 +34,13 @@ class ConfirmDiagnosticModal extends React.Component{
         this.lastServiceInput = React.createRef();
         this.lastDetailInput = React.createRef();
         this.diagnosticKey = 1;
+        this._isMounted = false;
     }
 
     async endСonfirmation(orderId, data) {
         await confirmDiagnostic(orderId, data);
         await lockDiagnostic(orderId);
-        await window.location.reload();
+        //await window.location.reload();
     }
 
     showModal = () => {
@@ -60,21 +61,29 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.servicesList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.services.push({
+                    serviceName: element.name + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
                     serviceId: element.id,
                     count: element.hours,
                     servicePrice: element.price,
                     employeeId: this.props.defaultEmployeeId,
                     serviceHours: 0,
-                    comment: {comment: element.comment},
+                    comment: {
+                        comment: element.commentary.comment,
+                        positions: element.commentary.positions,
+                    },
                 })
             }
         });
         this.state.detailsList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.details.push({
+                    name: element.name + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
                     storeGroupId: element.id,
                     count: element.count,
-                    comment: element.comment,
+                    comment: {
+                        comment: element.commentary.comment,
+                        positions: element.commentary.positions,
+                    },
                 })
             }
         });
@@ -101,7 +110,10 @@ class ConfirmDiagnosticModal extends React.Component{
             hours: data.hours,
             checked: true,
             price: data.price,
-            comment: data.comment,
+            commentary: {
+                comment: data.commentary.comment,
+                positions: data.commentary.positions
+            },
         }));
         this.state.detailsList = orderDetails.map((data, index)=>({
             key: index+1,
@@ -109,7 +121,10 @@ class ConfirmDiagnosticModal extends React.Component{
             name: data.detailName,
             count: data.count,
             checked: true,
-            comment: data.comment,
+            commentary: {
+                comment: data.commentary.comment,
+                positions: data.commentary.positions
+            }
         }));
     }
 
@@ -119,14 +134,15 @@ class ConfirmDiagnosticModal extends React.Component{
         this.diagnosticKey = 1;
     }
 
-    componentWillMount() {
-        
-    }
-
     componentDidMount() {
-        if(this.props.orderId) {
+        this._isMounted = true;
+        if(this.props.orderId && this._isMounted) {
             this.fetchOptionsSourceData();
         }
+    }
+
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     componentWillUpdate() {
@@ -200,7 +216,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    getLaborByPartId(id, comment = "", status) {
+    getLaborByPartId(id, commentary, status) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -222,14 +238,14 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addServicesByLaborId(data.laborId, -1, comment, status);
+            that.addServicesByLaborId(data.laborId, -1, commentary, status);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addServicesByLaborId(id, index = -1, comment = "", status) {
+    addServicesByLaborId(id, index = -1, commentary, status) {
         const service = this.state.labors.labors.find(x => x.laborId == id);
         if(service == undefined) return;
 
@@ -241,7 +257,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 name: service.name,
                 hours: Number(service.normHours) || 1,
                 checked: true,
-                comment: comment,
+                commentary: commentary,
                 status: status,
             };
         }
@@ -257,7 +273,7 @@ class ConfirmDiagnosticModal extends React.Component{
         });
     }
 
-    getGroupByPartId(id, comment = "", status) {
+    getGroupByPartId(id, commentary, status) {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
@@ -279,14 +295,14 @@ class ConfirmDiagnosticModal extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.addDetailsByGroupId(data.storeGroupId, -1, comment, status);
+            that.addDetailsByGroupId(data.storeGroupId, -1, commentary, status);
         })
         .catch(function (error) {
             console.log('error', error)
         });
     }
 
-    addDetailsByGroupId(id, index = -1, comment = "", status) {
+    addDetailsByGroupId(id, index = -1, commentary, status) {
         const detail = this.state.allDetails.find(x => x.id == id);
         if(detail == undefined) return;
 
@@ -297,7 +313,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 name: detail.name,
                 count: 1,
                 checked: true,
-                comment: comment,
+                commentary: commentary,
                 status: status,
             }
         }
@@ -320,7 +336,7 @@ class ConfirmDiagnosticModal extends React.Component{
             update: true,
         })
         if(type=='manually') {
-            this.state.servicesList[this.state.servicesList.length-1].comment = this.state.diagnosticList[index].comment;
+            this.state.servicesList[this.state.servicesList.length-1].commentary = this.state.diagnosticList[index].commentary;
             this.lastServiceInput.focus();
         }
     }
@@ -375,7 +391,7 @@ class ConfirmDiagnosticModal extends React.Component{
             
             data.map((elem)=>{
                 const diagnosticPart = that.state.diagnosticList.find((part)=>part.id==elem.partId);
-                const comment = diagnosticPart ? diagnosticPart.comment.comment : undefined;
+                const commentary = diagnosticPart ? diagnosticPart.commentary : {comment: "", positions: []};
                 const status = diagnosticPart ? diagnosticPart.status : undefined;
 
                 elem.labor.map((labor)=>{
@@ -386,7 +402,7 @@ class ConfirmDiagnosticModal extends React.Component{
                         name: labor.name,
                         hours: Number(labor.normHours) || 1,
                         checked: true,
-                        comment: comment,
+                        commentary: commentary,
                         status: status,
                     })
                 })
@@ -397,7 +413,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     name: elem.storeGroup.name,
                     count: 1,
                     checked: true,
-                    comment: comment,
+                    commentary: commentary,
                     status: status,
                 })
             })
@@ -421,7 +437,7 @@ class ConfirmDiagnosticModal extends React.Component{
                     diagnosticList.push({
                         key: this.diagnosticKey,
                         id: dataSource[i].partId,
-                        comment: dataSource[i].commentary,
+                        commentary: dataSource[i].commentary || {comment: "", positions: []},
                         resolved: false,
                         type:'',
                         disabled: false,
@@ -471,8 +487,8 @@ class ConfirmDiagnosticModal extends React.Component{
                     type="primary"
                     onClick={async ()=>{
                         await this.changeResolved(index, 'automaticly');
-                        await this.getLaborByPartId(data.partId, data.commentary.comment, data.status);
-                        await this.getGroupByPartId(data.partId, data.commentary.comment, data.status);
+                        await this.getLaborByPartId(data.partId, data.commentary, data.status);
+                        await this.getGroupByPartId(data.partId, data.commentary, data.status);
                     }}
                     style={{width: '49%', padding: '5px'}}
                 >
@@ -531,7 +547,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 id:null,
                 name: null,
                 hours: 1,
-                comment: null,
+                commentary: {commentary: "", positions: []},
                 checked: true,
             });
             this.setState({
@@ -544,7 +560,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: null,
                 name: null,
                 hours: 1,
-                comment: null,
+                commentary: {commentary: "", positions: []},
                 checked: true
             });
             this.setState({
@@ -631,7 +647,12 @@ class ConfirmDiagnosticModal extends React.Component{
                     />
                     <div style={{width: "20%", paddingLeft: '5px', display: 'inline-block'}}>
                         <CommentaryModal
-                                comment={data.comment}
+                                commentary={data.commentary || 
+                                    {
+                                        comment: undefined,
+                                        positions: [],
+                                    }
+                                }
                         />
                     </div>
                     <div className={Styles.delete_diagnostic_button_wrap} style={{width: "20%", display: 'inline-block'}}>
@@ -748,7 +769,12 @@ class ConfirmDiagnosticModal extends React.Component{
                     />
                     <div style={{width: "20%", paddingLeft: '5px', display: 'inline-block'}}>
                         <CommentaryModal
-                                comment={data.comment}
+                                commentary={data.commentary || 
+                                    {
+                                        comment: undefined,
+                                        positions: [],
+                                    }
+                                }
                         />
                     </div>
                     <div className={Styles.delete_diagnostic_button_wrap} style={{width: '20%', display: 'inline-block'}}>
@@ -905,20 +931,20 @@ class CommentaryModal extends React.Component {
 
     showModal = () => {
         this.setState({
-        visible: true,
+            visible: true,
         });
     };
 
     handleOk = e => {
         this.setState({
-        visible: false,
+            visible: false,
         });
     };
 
 
     handleCancel = e => {
         this.setState({
-        visible: false,
+            visible: false,
         });
     };
 
@@ -934,7 +960,7 @@ class CommentaryModal extends React.Component {
                 onOk={this.handleOk}
                 onCancel={this.handleCancel}
             >
-            <p>{this.props.comment ? this.props.comment : <FormattedMessage id='no_data' />}</p>
+            <p>{this.props.commentary.comment ? this.props.commentary.comment : <FormattedMessage id='no_data' />}</p>
             </Modal>
         </div>
         );

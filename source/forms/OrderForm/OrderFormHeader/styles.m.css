@@ -16,6 +16,12 @@
     flex: 0 1 30%;
 }
 
+.updateDurationIcon {
+    &:hover {
+        color: grey;
+    }
+}
+
 .duration {
     width: 45%;
 }
