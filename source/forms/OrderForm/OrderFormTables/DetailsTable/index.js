@@ -334,7 +334,7 @@ export default class DetailsTable extends Component {
                                 type="star"
                                 theme={elem.frequentDetailId ? 'filled' : ''}
                                 style={{color: 'gold', fontSize: 18}}
-                                title={this.props.intl.formatMessage({id: elem.frequentLaborId ? "delete_from_favorites" : "add_to_favorites"})}
+                                title={this.props.intl.formatMessage({id: elem.frequentDetailId ? "delete_from_favorites" : "add_to_favorites"})}
                             />
                         </Popconfirm>
                     )
