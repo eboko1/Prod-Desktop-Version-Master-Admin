@@ -191,6 +191,7 @@ export function* updateOrderSaga() {
                     redirectStatus,
                     redirectToDashboard,
                     options,
+                    redirectTo,
                 },
             } = yield take(UPDATE_ORDER);
             const mergedOrder = options ? { ...order, ...options } : order;
@@ -198,6 +199,10 @@ export function* updateOrderSaga() {
             yield call(fetchAPI, 'PUT', `orders/${id}`, {}, mergedOrder, {
                 handleErrorInternally: true,
             });
+
+            if(redirectTo) {
+                yield put(replace(redirectTo));
+            }
 
             if (!redirectStatus) {
                 yield put(fetchOrderForm(id));

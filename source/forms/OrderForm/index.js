@@ -473,6 +473,8 @@ export class OrderForm extends React.PureComponent {
                     user={user}
                     order={order}
                     setAddClientModal={setAddClientModal}
+                    orderStatus={this.props.order.status}
+                    onStatusChange={this.props.onStatusChange}
                 />
                 {tabs}
                 <AddClientModal

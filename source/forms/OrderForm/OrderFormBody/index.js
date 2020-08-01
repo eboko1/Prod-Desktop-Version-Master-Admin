@@ -3,7 +3,7 @@ import React, { Component } from "react";
 import { FormattedMessage, injectIntl } from "react-intl";
 import { CopyToClipboard } from "react-copy-to-clipboard";
 import { Link } from "react-router-dom";
-import { Select, Icon } from "antd";
+import { Select, Icon, Popconfirm } from "antd";
 import _ from "lodash";
 import { v4 } from "uuid";
 import classNames from "classnames/bind";
@@ -266,7 +266,7 @@ export default class OrderFormBody extends Component {
             <ClientsSearchTable
                 clientsSearching={clientsSearching}
                 setClientSelection={setClientSelection}
-                visible={searchClientQuery}
+                visible={searchClientQuery && searchClientQuery.length > 2}
                 clients={clients}
             />
         );
@@ -322,6 +322,8 @@ export default class OrderFormBody extends Component {
             fields,
             clientPhone,
             errors,
+            orderStatus,
+            onStatusChange,
         } = this.props;
         const { getFieldDecorator } = this.props.form;
         const hasClient = clientPhone;
@@ -367,11 +369,22 @@ export default class OrderFormBody extends Component {
                     </div>
                     {hasClient && (
                         <div className={Styles.iconsCol}>
-                            <Link
-                                to={`${book.client}/${selectedClient.clientId}`}
+                            <Popconfirm
+                                title={<FormattedMessage id='save_order_changes'/>}
+                                onConfirm={()=>{
+                                    onStatusChange(orderStatus, void 0, {}, `${book.client}/${selectedClient.clientId}`);
+                                }}
                             >
-                                <Icon type="edit" className={Styles.editIcon} />
-                            </Link>
+                                <Link
+                                    to={`${book.client}/${selectedClient.clientId}`}
+                                >
+                                    
+                                    <Icon
+                                        type="edit"
+                                        className={Styles.editIcon}
+                                    />
+                                </Link>
+                            </Popconfirm>
                             <CopyToClipboard text={hasClient}>
                                 <Icon
                                     type="copy"
