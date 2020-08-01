@@ -73,7 +73,8 @@
         "duration.recalculate": "Recalculate repair duration",
         "quick_edit": "Quick edit",
         "add_to_favorites": "Add to Favorites",
-        "delete_from_favorites": "Delete from Favorites"
+        "delete_from_favorites": "Delete from Favorites",
+        "save_order_changes": "Save order changes?"
     },
     "ru": {
         "add_order_form.enrollment_date": "Дата записи",
@@ -149,7 +150,8 @@
         "duration.recalculate": "Пересчитать длительность ремонта",
         "quick_edit": "Быстрое редактирование",
         "add_to_favorites": "Добавить в Избранные",
-        "delete_from_favorites": "Удалить из Избранных"
+        "delete_from_favorites": "Удалить из Избранных",
+        "save_order_changes": "Сохранить изменения?"
     },
     "uk": {
         "add_order_form.enrollment_date": "Дата запису",
@@ -225,6 +227,7 @@
         "duration.recalculate": "Перерахувати тривалість ремонту",
         "quick_edit": "Швидке редагування",
         "add_to_favorites": "Додати до Обраних",
-        "delete_from_favorites": "Видалити з Обраних"
+        "delete_from_favorites": "Видалити з Обраних",
+        "save_order_changes": "Зберегти зміни?"
     }
 }
