@@ -26,6 +26,9 @@ export default class DetailsTable extends Component {
             dataSource: [],
         }
 
+        this.storeGroups = [];
+        this.treeData = [];
+
         this.updateDetail = this.updateDetail.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
 
@@ -60,19 +63,21 @@ export default class DetailsTable extends Component {
                                 onClick={()=>{
                                     this.showDetailProductModal(data)
                                 }}
+                                title={this.props.intl.formatMessage({id: "details_table.add_edit_button"})}
                             >
                                 <div
                                     style={{
                                         width: 18,
                                         height: 18,
                                         backgroundColor: confirmed != "undefined" || this.props.disabled ? 'black' : 'white',
-                                        mask: `url(${images.partsIcon}) no-repeat center / contain`,
-                                        WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
+                                        mask: `url(${images.pistonIcon}) no-repeat center / contain`,
+                                        WebkitMask: `url(${images.pistonIcon}) no-repeat center / contain`,
                                     }}
                                 ></div>
                             </Button>
                             {!(elem.detailName) ? 
                                 <FavouriteDetailsModal
+                                    treeData={this.treeData}
                                     disabled={this.props.disabled}
                                     user={this.props.user}
                                     tecdocId={this.props.tecdocId}
@@ -83,7 +88,10 @@ export default class DetailsTable extends Component {
                                 />
                             :
                                 <QuickEditModal
-                                    disabled={confirmed != "undefined" || !(elem.detailName) || this.props.disabled}
+                                    treeData={this.treeData}
+                                    brands={this.props.allDetails.brands}
+                                    disabled={!(elem.detailName) || this.props.disabled}
+                                    confirmed={confirmed != 'undefined'}
                                     detail={elem}
                                     onConfirm={this.updateDetail}
                                     tableKey={elem.key}
@@ -333,6 +341,7 @@ export default class DetailsTable extends Component {
                                 type="star"
                                 theme={elem.frequentDetailId ? 'filled' : ''}
                                 style={{color: 'gold', fontSize: 18}}
+                                title={this.props.intl.formatMessage({id: elem.frequentDetailId ? "delete_from_favorites" : "add_to_favorites"})}
                             />
                         </Popconfirm>
                     )
@@ -396,6 +405,85 @@ export default class DetailsTable extends Component {
         })
     }
 
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let params = `/store_groups`;
+        let url = API_URL + params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.storeGroups = data;
+            that.buildStoreGroupsTree();
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    buildStoreGroupsTree() {
+        var treeData = [];
+        for(let i = 0; i < this.storeGroups.length; i++) {
+            const parentGroup = this.storeGroups[i];
+            treeData.push({
+                title: `${parentGroup.name} (#${parentGroup.id})`,
+                name: parentGroup.name,
+                value: parentGroup.id,
+                className: Styles.groupTreeOption,
+                key: `${i}`,
+                selectable: false,
+                children: [],
+            })
+            for(let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[j];
+                treeData[i].children.push({
+                    title: `${childGroup.name} (#${childGroup.id})`,
+                    name: childGroup.name,
+                    value: childGroup.id,
+                    className: Styles.groupTreeOption,
+                    key: `${i}-${j}`,
+                    selectable: false,
+                    children: [],
+                })
+                for(let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[k];
+                    treeData[i].children[j].children.push({
+                        title: `${lastNode.name} (#${lastNode.id})`,
+                        name: lastNode.name,
+                        value: lastNode.id,
+                        className: Styles.groupTreeOption,
+                        key: `${i}-${j}-${k}`,
+                        children: [],
+                    })
+                    for(let l = 0; l < lastNode.childGroups.length; l++) {
+                        const elem = lastNode.childGroups[l];
+                        treeData[i].children[j].children[k].children.push({
+                            title: `${elem.name} (#${elem.id})`,
+                            name: elem.name,
+                            value: elem.id,
+                            className: Styles.groupTreeOption,
+                            key: `${i}-${j}-${k}-${l}`,
+                        })
+                    }
+                }
+            }
+        }
+        this.treeData = treeData;
+    }
+
     updateDataSource() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -447,7 +535,10 @@ export default class DetailsTable extends Component {
                     purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
                     count: detail.count ? detail.count : 1,
                     price: detail.price ? Math.round(detail.price*10)/10 : 1,
-                    comment: detail.comment,
+                    comment: detail.comment || {
+                        comment: undefined,
+                        positions: [],
+                    },
                 }
             ]
         }
@@ -487,6 +578,7 @@ export default class DetailsTable extends Component {
     }
 
     componentDidMount() {
+        this.fetchData();
         let tmp = [...this.props.orderDetails];
         tmp.map((elem,i)=>elem.key=i);
         this.setState({
@@ -506,7 +598,10 @@ export default class DetailsTable extends Component {
                 detailCode: undefined,
                 brandId: undefined,
                 brandName: undefined,
-                comment: undefined,
+                comment: {
+                    comment: undefined,
+                    positions: [],
+                },
                 count: 0,
                 price: 0,
                 purchasePrice: 0,
@@ -527,6 +622,7 @@ export default class DetailsTable extends Component {
                     pagination={false}
                 />
                 <DetailProductModal
+                    treeData={this.treeData}
                     user={this.props.user}
                     tecdocId={this.props.tecdocId}
                     visible={this.state.productModalVisible}
@@ -543,12 +639,17 @@ export default class DetailsTable extends Component {
     }
 }
 
+@injectIntl
 class QuickEditModal extends React.Component{
     constructor(props) {
         super(props);
         this.state={
             visible: false,
+            brandId: undefined,
+            brandSearchValue: "",
         }
+        this.brandOptions = [];
+
         this.columns = [
             {
                 title:  <FormattedMessage id="order_form_table.detail_name" />,
@@ -561,9 +662,50 @@ class QuickEditModal extends React.Component{
                 width: "20%",
                 key: "brand",
                 dataIndex: 'brandName',
-                render: (data) => {
+                render: (data, elem) => {
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                        <Select
+                            showSearch
+                            value={data ? data : undefined}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                elem.brandName = value;
+                                elem.brandId = option.props.brand_id;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                            onSearch={(input)=>{
+                                this.setState({
+                                    brandSearchValue: input
+                                })
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    brandSearchValue: "",
+                                })
+                            }}
+                        >
+                            {
+                                this.state.brandSearchValue.length > 2 ? 
+                                    this.props.brands.map((elem, index)=>(
+                                        <Option key={index} value={elem.brandName} supplier_id={elem.supplierId} brand_id={elem.brandId}>
+                                            {elem.brandName}
+                                        </Option>
+                                    )) :
+                                    elem.brandName ? 
+                                    <Option key={0} value={elem.brandName} brand_id={this.state.brandId}>
+                                        {elem.brandName}
+                                    </Option> : 
+                                    []
+                            }
+                        </Select>
                     );
                 },
             },
@@ -574,7 +716,16 @@ class QuickEditModal extends React.Component{
                 dataIndex: 'detailCode',
                 render: (data) => {
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                        <Input
+                            style={{minWidth: 150}}
+                            value={data}
+                            onChange={(event)=>{
+                                this.state.dataSource[0].detailCode = event.target.value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        />
                     );
                 },
             },
@@ -616,6 +767,7 @@ class QuickEditModal extends React.Component{
                             value={data ? Math.round(data*10)/10 : 0}
                             className={Styles.detailNumberInput}
                             min={0}
+                            disabled={this.props.confirmed}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -643,6 +795,7 @@ class QuickEditModal extends React.Component{
                         <InputNumber
                             value={data ? Math.round(data*10)/10 : 0}
                             className={Styles.detailNumberInput}
+                            disabled={this.props.confirmed}
                             min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
@@ -687,19 +840,37 @@ class QuickEditModal extends React.Component{
     }
 
     handleOk = () => {
-        this.setState({
-            visible: false,
-        });
-        this.props.onConfirm(this.props.tableKey, this.state.dataSource[0]);
+        this.props.onConfirm(
+            this.props.tableKey,
+            {
+                ...this.state.dataSource[0],
+                brandId: this.state.brandId,
+            }
+        );
+        this.handleCancel();
     }
 
     handleCancel = () => {
         this.setState({
             visible: false,
+            brandId: undefined,
+            dataSource: [],
         })
     }
 
+    componentDidUpdate(_, prevState) {
+        if(prevState.visible == false && this.state.visible) {
+            const brand = this.props.brands.find((elem)=>elem.brandName==this.props.detail.brandName);
+            if(brand) {
+                this.setState({
+                    brandId: brand.brandId
+                });
+            }
+        }
+    }
+
     render() {
+        const { detail } = this.props;
         return(
             <>
                 <Button
@@ -708,9 +879,10 @@ class QuickEditModal extends React.Component{
                     onClick={()=>{
                         this.setState({
                             visible: true,
-                            dataSource: [this.props.detail]
+                            dataSource: [detail],
                         })
                     }}
+                    title={this.props.intl.formatMessage({id: "quick_edit"})}
                 >
                     <div
                         style={{

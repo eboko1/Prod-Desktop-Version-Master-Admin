@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { Catcher } from 'commons';
 import { permissions, isForbidden, images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
-import { FavouriteServicesModal, AddServiceModal } from 'modals'
+import { FavouriteServicesModal, AddServiceModal, LaborsNormHourModal } from 'modals'
 
 // own
 import Styles from './styles.m.css';
@@ -41,6 +41,7 @@ class ServicesTable extends Component {
                                     formatter={value => `${Math.round(value*100)}%`}
                                     parser={value => Math.round(value.replace('%', '')/100)}
                                     onChange={(value)=>this.updateTimeMultiplier(value)}
+                                    title={this.props.intl.formatMessage({id: "labors_table.mark_up"})}
                                 />
                             )
                         },
@@ -57,19 +58,22 @@ class ServicesTable extends Component {
                                 onClick={()=>{
                                     this.showServiceProductModal(data)
                                 }}
+                                title={this.props.intl.formatMessage({id: "labors_table.add_edit_button"})}
                             >
                                 <div
                                     style={{
                                         width: 18,
                                         height: 18,
                                         backgroundColor: confirmed != "undefined" || this.props.disabled ? 'black' : 'white',
-                                        mask: `url(${images.partsIcon}) no-repeat center / contain`,
-                                        WebkitMask: `url(${images.partsIcon}) no-repeat center / contain`,
+                                        mask: `url(${images.wrenchIcon}) no-repeat center / contain`,
+                                        WebkitMask: `url(${images.wrenchIcon}) no-repeat center / contain`,
+                                        transform: "scale(-1, 1)",
                                     }}
                                 ></div>
                             </Button>
                             {!(elem.laborId) ? 
                                 <FavouriteServicesModal
+                                    laborTimeMultiplier={this.laborTimeMultiplier}
                                     disabled={this.props.disabled}
                                     normHourPrice={this.props.normHourPrice}
                                     defaultEmployeeId={this.props.defaultEmployeeId}
@@ -81,11 +85,15 @@ class ServicesTable extends Component {
                                 />
                             :
                                 <QuickEditModal
-                                    disabled={confirmed != "undefined" || !(elem.laborId) || this.props.disabled}
+                                    laborTimeMultiplier={this.laborTimeMultiplier}
+                                    disabled={!(elem.laborId) || this.props.disabled}
+                                    confirmed={confirmed != 'undefined'}
                                     labor={elem}
                                     onConfirm={this.updateLabor}
                                     tableKey={elem.key}
                                     employees={this.props.employees}
+                                    user={this.props.user}
+                                    tecdocId={this.props.tecdocId}
                                 />
                             }
                         </div>
@@ -180,13 +188,7 @@ class ServicesTable extends Component {
             },
             {
                 title:  <div className={Styles.numberColumn}>
-                                <Button
-                                    type={'primary'}
-                                    title='Пересчитать длительность'
-                                    onClick={()=>this.updateDuration()}
-                                >
-                                <FormattedMessage id="order_form_table.count" />
-                            </Button>
+                            <FormattedMessage id="order_form_table.count" />
                         </div>,
                 className: Styles.numberColumn,
                 width: "5%",
@@ -313,6 +315,7 @@ class ServicesTable extends Component {
                                 type="star"
                                 theme={elem.frequentLaborId ? 'filled' : ''}
                                 style={{color: 'gold', fontSize: 18}}
+                                title={this.props.intl.formatMessage({id: elem.frequentLaborId ? "delete_from_favorites" : "add_to_favorites"})}
                             />
                         </Popconfirm>
                     )
@@ -489,7 +492,10 @@ class ServicesTable extends Component {
                     purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
                     count: labor.count ? labor.count : 1,
                     servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
-                    comment: labor.comment,
+                    comment: labor.comment || {
+                        comment: undefined,
+                        positions: [],
+                    },
                 }
             ]
         }
@@ -539,7 +545,10 @@ class ServicesTable extends Component {
                 id: undefined,
                 laborId: undefined,
                 serviceName: undefined,
-                comment: {comment: undefined},
+                comment: {
+                    comment: undefined,
+                    positions: [],
+                },
                 count: 0,
                 price: 0,
                 purchasePrice: 0,
@@ -606,6 +615,7 @@ class QuickEditModal extends React.Component{
                         return (
                             <Input
                                 value={data}
+                                disabled={this.props.confirmed}
                                 onChange={(event)=>{
                                     this.state.dataSource[0].serviceName = event.target.value;
                                     this.setState({
@@ -690,6 +700,7 @@ class QuickEditModal extends React.Component{
                             className={Styles.serviceNumberInput}
                             value={Math.round(data*10)/10 || 1}
                             min={0}
+                            disabled={this.props.confirmed}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -718,6 +729,7 @@ class QuickEditModal extends React.Component{
                             className={Styles.serviceNumberInput}
                             value={data ? data : 0}
                             min={0}
+                            disabled={this.props.confirmed}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -731,6 +743,29 @@ class QuickEditModal extends React.Component{
                                     update: true,
                                 })
                             }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="services_table.norm_hours" />,
+                key:       'hours',
+                dataIndex: 'hours',
+                width:     '3%',
+                render: (data, elem)=>{
+                    return (
+                        <LaborsNormHourModal
+                            user={this.props.user}
+                            tecdocId={this.props.tecdocId}
+                            storeGroupId={elem.storeGroupId}
+                            onSelect={(hours)=>{
+                                this.state.dataSource[0].hours = hours;
+                                this.state.dataSource[0].count = hours * this.props.laborTimeMultiplier;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                            hours={data}
                         />
                     )
                 }
@@ -785,6 +820,7 @@ class QuickEditModal extends React.Component{
                             dataSource: [this.props.labor]
                         })
                     }}
+                    title={this.props.intl.formatMessage({id: "quick_edit"})}
                 >
                     <div
                         style={{
