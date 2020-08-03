@@ -188,8 +188,26 @@ class DetailProductModal extends React.Component{
                                     update: true
                                 })
                             }}
+                            onSearch={(input)=>{
+                                if(input.length > 1) {
+                                    this.brandOptions = this.props.brands.filter((elem, index)=> elem.brandName.toLowerCase().indexOf(input.toLowerCase()) >= 0);
+                                    this.setState({
+                                        update: true
+                                    })
+                                }
+                            }}
+                            onBlur={()=>{
+                                this.brandOptions = [];
+                                this.setState({
+                                    update: true
+                                })
+                            }}
                         >
-                            {this.brandOptions}
+                            {this.brandOptions.map((elem, index)=>(
+                                    <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                        {elem.brandName}
+                                    </Option>
+                            ))}
                         </Select>
                     )
                 }
@@ -570,11 +588,6 @@ class DetailProductModal extends React.Component{
                 brands.sort((x,y)=>{ 
                     return x.brandId == result.brandId ? -1 : y.brandId == result.brandId ? 1 : 0; 
                 });
-                that.brandOptions = brands.map((elem, index)=>(
-                    <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
-                        {elem.brandName}
-                    </Option>
-                ));
                 that.state.defaultBrandName = result.brandName;
                 if(!that.state.editing) {
                     let markup = result.markup ? result.markup : 1.4;
@@ -601,15 +614,8 @@ class DetailProductModal extends React.Component{
     }
 
     setCode(code, brand, storeId, key, storeGroupId, storeGroupName) {
-        let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
-        if(!tmp) {
-            this.brandOptions.push(
-                <Option key={this.brandOptions.length} value={this.brandOptions.length+1} >
-                    {brand}
-                </Option>
-            )
-        }
-        const brandValue = tmp ? tmp.props.value : this.brandOptions.length;
+        let tmp = this.props.brands.find((elem)=>elem.brandName==brand);
+        const brandValue = tmp ? tmp.brandId : this.brandOptions.length;
         this.state.mainTableSource[key].detailCode = code;
         this.state.mainTableSource[key].brandId = brandValue;
         this.state.mainTableSource[key].brandName = brand;
@@ -808,12 +814,6 @@ class DetailProductModal extends React.Component{
     }
 
     getOptions() {
-        this.brandOptions = this.props.brands.map((elem, index)=>(
-            <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
-                {elem.brandName}
-            </Option>
-        ));
-
         this.servicesOptions = this.labors.map((elem, index)=>(
             <Option key={index} value={elem.laborId} product_id={elem.productId} norm_hours={elem.normHours} price={elem.price}>
                 {elem.name ? elem.name : elem.defaultName}

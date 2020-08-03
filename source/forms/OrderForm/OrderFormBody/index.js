@@ -324,6 +324,8 @@ export default class OrderFormBody extends Component {
             errors,
             orderStatus,
             onStatusChange,
+            createOrder,
+            createStatus,
         } = this.props;
         const { getFieldDecorator } = this.props.form;
         const hasClient = clientPhone;
@@ -372,7 +374,9 @@ export default class OrderFormBody extends Component {
                             <Popconfirm
                                 title={<FormattedMessage id='save_order_changes'/>}
                                 onConfirm={()=>{
-                                    onStatusChange(orderStatus, void 0, {}, `${book.client}/${selectedClient.clientId}`);
+                                    createStatus ? 
+                                    createOrder(createStatus, `${book.client}/${selectedClient.clientId}`) :
+                                    onStatusChange(orderStatus, void 0, {}, `${book.client}/${selectedClient.clientId}`)
                                 }}
                             >
                                 <Link

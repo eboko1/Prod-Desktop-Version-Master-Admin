@@ -152,7 +152,7 @@ export function* createOrderSaga() {
     while (true) {
         try {
             const {
-                payload: { order, redirectStatus, redirectToDashboard },
+                payload: { order, redirectStatus, redirectToDashboard, redirectTo },
             } = yield take(CREATE_ORDER);
             const response = yield call(fetchAPI, 'POST', 'orders', {}, order, {
                 handleErrorInternally: true,
@@ -160,6 +160,10 @@ export function* createOrderSaga() {
 
             const id = response.created[ 0 ].id;
             yield put(push(`${book.order}/${id}`));
+
+            if(redirectTo) {
+                yield put(replace(redirectTo));
+            }
 
             /*
             if (redirectToDashboard && redirectStatus) {

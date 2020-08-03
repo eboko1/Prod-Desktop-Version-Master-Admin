@@ -84,7 +84,7 @@ class AddOrderPage extends Component {
         this.orderFormRef = formRef;
     };
 
-    _createOrder = redirectStatus => {
+    _createOrder = (redirectStatus, redirectTo) => {
         const form = this.orderFormRef.props.form;
         const {
             allServices,
@@ -120,6 +120,7 @@ class AddOrderPage extends Component {
                     ),
                     redirectStatus,
                     redirectToDashboard,
+                    redirectTo,
                 });
             } else {
                 this.setState({ errors: err });
@@ -256,6 +257,8 @@ class AddOrderPage extends Component {
                         orderHistory={ this.props.orderHistory }
                         orderStationLoads={ this.props.orderStationLoads }
                         location={ this.props.history.location }
+                        createOrder={ this._createOrder }
+                        createStatus= { createStatus }
                     />
                 </ResponsiveView>
             </Layout>

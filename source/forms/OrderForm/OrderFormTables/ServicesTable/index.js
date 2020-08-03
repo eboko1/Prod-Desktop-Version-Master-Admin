@@ -84,7 +84,8 @@ class ServicesTable extends Component {
                                 />
                             :
                                 <QuickEditModal
-                                    disabled={confirmed != "undefined" || !(elem.laborId) || this.props.disabled}
+                                    disabled={!(elem.laborId) || this.props.disabled}
+                                    confirmed={confirmed != 'undefined'}
                                     labor={elem}
                                     onConfirm={this.updateLabor}
                                     tableKey={elem.key}
@@ -610,6 +611,7 @@ class QuickEditModal extends React.Component{
                         return (
                             <Input
                                 value={data}
+                                disabled={this.props.confirmed}
                                 onChange={(event)=>{
                                     this.state.dataSource[0].serviceName = event.target.value;
                                     this.setState({
@@ -694,6 +696,7 @@ class QuickEditModal extends React.Component{
                             className={Styles.serviceNumberInput}
                             value={Math.round(data*10)/10 || 1}
                             min={0}
+                            disabled={this.props.confirmed}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -722,6 +725,7 @@ class QuickEditModal extends React.Component{
                             className={Styles.serviceNumberInput}
                             value={data ? data : 0}
                             min={0}
+                            disabled={this.props.confirmed}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
