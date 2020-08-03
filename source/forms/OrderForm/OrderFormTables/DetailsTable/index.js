@@ -84,7 +84,9 @@ export default class DetailsTable extends Component {
                                 />
                             :
                                 <QuickEditModal
-                                    disabled={confirmed != "undefined" || !(elem.detailName) || this.props.disabled}
+                                    brands={this.props.allDetails.brands}
+                                    disabled={!(elem.detailName) || this.props.disabled}
+                                    confirmed={confirmed != 'undefined'}
                                     detail={elem}
                                     onConfirm={this.updateDetail}
                                     tableKey={elem.key}
@@ -558,6 +560,8 @@ class QuickEditModal extends React.Component{
         this.state={
             visible: false,
         }
+        this.brandOptions = [];
+
         this.columns = [
             {
                 title:  <FormattedMessage id="order_form_table.detail_name" />,
@@ -569,10 +573,47 @@ class QuickEditModal extends React.Component{
                 title: <FormattedMessage id="order_form_table.brand" />,
                 width: "20%",
                 key: "brand",
-                dataIndex: 'brandName',
+                dataIndex: 'brandId',
                 render: (data) => {
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                        <Select
+                            showSearch
+                            value={data ? data : undefined}
+                            dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 220 }}
+                            filterOption={(input, option) => {
+                                return (
+                                    option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
+                                    String(option.props.value).indexOf(input.toLowerCase()) >= 0
+                                )
+                            }}
+                            onSelect={(value, option)=>{
+                                this.state.dataSource[0].brandId = value;
+                                this.state.dataSource[0].brandName = option.props.children;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                            onSearch={(input)=>{
+                                if(input.length > 1) {
+                                    this.brandOptions = this.props.brands.filter((elem, index)=> elem.brandName.toLowerCase().indexOf(input.toLowerCase()) >= 0);
+                                    this.setState({
+                                        update: true
+                                    })
+                                }
+                            }}
+                            onBlur={()=>{
+                                this.brandOptions = [];
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        >                    
+                            {this.brandOptions.map((elem, index)=>(
+                                    <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                        {elem.brandName}
+                                    </Option>
+                            ))}
+                        </Select>
                     );
                 },
             },
@@ -625,6 +666,7 @@ class QuickEditModal extends React.Component{
                             value={data ? Math.round(data*10)/10 : 0}
                             className={Styles.detailNumberInput}
                             min={0}
+                            disabled={this.props.confirmed}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
                             }
@@ -652,6 +694,7 @@ class QuickEditModal extends React.Component{
                         <InputNumber
                             value={data ? Math.round(data*10)/10 : 0}
                             className={Styles.detailNumberInput}
+                            disabled={this.props.confirmed}
                             min={0.1}
                             formatter={ value =>
                                 `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ' ')
