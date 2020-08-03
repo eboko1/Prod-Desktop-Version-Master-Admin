@@ -613,12 +613,9 @@ class DetailProductModal extends React.Component{
         }
     }
 
-    setCode(code, brand, storeId, key, storeGroupId, storeGroupName) {
-        let tmp = this.props.brands.find((elem)=>elem.brandName==brand);
-        const brandValue = tmp ? tmp.brandId : this.brandOptions.length;
+    setCode(code, brandId, storeId, key, storeGroupId, storeGroupName) {
         this.state.mainTableSource[key].detailCode = code;
-        this.state.mainTableSource[key].brandId = brandValue;
-        this.state.mainTableSource[key].brandName = brand;
+        this.state.mainTableSource[key].brandId = brandId;
         this.state.mainTableSource[key].storeId = storeId;
         if(this.state.radioValue == 3) {
             this.state.mainTableSource[key].storeGroupId = storeGroupId;
