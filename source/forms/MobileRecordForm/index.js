@@ -405,6 +405,9 @@ class MobileDiagnostic extends Component {
                     "parts",
                 ]).parts;
                 for(let k = 0; k < partsCount; k++) {
+                    let index = _.pick(parts[k], [
+                        "index",
+                    ]).index;
                     let partTitle = _.pick(parts[k], [
                         "partTitle",
                     ]).partTitle;
@@ -431,6 +434,7 @@ class MobileDiagnostic extends Component {
                         positions: [],
                     }
                     dataSource.push({
+                        templateIndex: index,
                         key: key,
                         partId: partId,
                         plan: diagnosticTemplateTitle,
@@ -578,6 +582,7 @@ class MobileDiagnostic extends Component {
                                                 data.diagnosticTemplateId,
                                                 data.groupId,
                                                 data.partId,
+                                                data.templateIndex
                                             );
                                             await this.getCurrentDiagnostic()
                                         }}
@@ -684,7 +689,7 @@ class MobileDiagnosticStatusButton extends React.Component{
 
     handleClick = (status) => {
         const { rowProp } = this.props;
-        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, status);
+        sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, status);
         this.setState({status:status});
         setTimeout(this.props.getCurrentDiagnostic, 500);
     }
@@ -825,7 +830,7 @@ class CommentaryButton extends React.Component{
             loading: true,
         });
         const { rowProp } = this.props;
-        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, 
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, rowProp.status, 
             JSON.stringify(
                 {
                     comment: currentCommentary,

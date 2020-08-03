@@ -26,11 +26,11 @@ class FavouriteDetailsModal extends React.Component{
             visible: false,
             dataSource: [],
             fetched: false,
+            brandSearchValue: "",
         }
 
         this.storeGroups = [];
         this.treeData = [];
-        this.brandOptions = [];
 
         this.setCode = this.setCode.bind(this);
         this.setSupplier = this.setSupplier.bind(this);
@@ -52,7 +52,7 @@ class FavouriteDetailsModal extends React.Component{
                             style={{maxWidth: 160}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.treeData}
+                            treeData={this.props.treeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -161,8 +161,30 @@ class FavouriteDetailsModal extends React.Component{
                                     update: true
                                 })
                             }}
+                            onSearch={(input)=>{
+                                this.setState({
+                                    brandSearchValue: input,
+                                })
+                            }}
+                            onBlur={()=>{
+                                this.setState({
+                                    brandSearchValue: "",
+                                })
+                            }}
                         >
-                            {this.brandOptions}
+                            {
+                                this.state.brandSearchValue.length > 1 ? 
+                                    this.props.brands.map((elem, index)=>(
+                                        <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                            {elem.brandName}
+                                        </Option>
+                                    )) :
+                                    elem.brandId ? 
+                                    <Option key={0} value={elem.brandId}>
+                                        {elem.brandName}
+                                    </Option> : 
+                                    []
+                            }
                         </Select>
                     )
                 }
@@ -431,19 +453,9 @@ class FavouriteDetailsModal extends React.Component{
     };
 
 
-    setCode(code, brand, storeId, key) {
-        let tmp = this.brandOptions.find((elem)=>elem.props.children==brand);
-        if(!tmp) {
-            this.brandOptions.push(
-                <Option key={this.brandOptions.length} value={this.brandOptions.length+1} >
-                    {brand}
-                </Option>
-            )
-        }
-        const brandValue = tmp ? tmp.props.value : this.brandOptions.length;
+    setCode(code, brandId, storeId, key) {
         this.state.dataSource[key].detailCode = code;
-        this.state.dataSource[key].brandId = brandValue;
-        this.state.dataSource[key].brandName = brand;
+        this.state.dataSource[key].brandId = brandId;
         this.state.dataSource[key].storeId = storeId;
         this.setState({
             update: true
@@ -552,90 +564,7 @@ class FavouriteDetailsModal extends React.Component{
                 fetched: true,
             })
         });
-
-        that = this;
-        params = `/store_groups`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.storeGroups = data;
-            that.buildStoreGroupsTree();
-            that.getOptions();
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        });
     }
-
-    buildStoreGroupsTree() {
-        var treeData = [];
-        for(let i = 0; i < this.storeGroups.length; i++) {
-            const parentGroup = this.storeGroups[i];
-            treeData.push({
-                title: `${parentGroup.name} (#${parentGroup.id})`,
-                name: parentGroup.name,
-                value: parentGroup.id,
-                className: Styles.groupTreeOption,
-                key: `${i}`,
-                children: [],
-            })
-            for(let j = 0; j < parentGroup.childGroups.length; j++) {
-                const childGroup = parentGroup.childGroups[j];
-                treeData[i].children.push({
-                    title: `${childGroup.name} (#${childGroup.id})`,
-                    name: childGroup.name,
-                    value: childGroup.id,
-                    className: Styles.groupTreeOption,
-                    key: `${i}-${j}`,
-                    children: [],
-                })
-                for(let k = 0; k < childGroup.childGroups.length; k++) {
-                    const lastNode = childGroup.childGroups[k];
-                    treeData[i].children[j].children.push({
-                        title: `${lastNode.name} (#${lastNode.id})`,
-                        name: lastNode.name,
-                        value: lastNode.id,
-                        className: Styles.groupTreeOption,
-                        key: `${i}-${j}-${k}`,
-                        children: [],
-                    })
-                    for(let l = 0; l < lastNode.childGroups.length; l++) {
-                        const elem = lastNode.childGroups[l];
-                        treeData[i].children[j].children[k].children.push({
-                            title: `${elem.name} (#${elem.id})`,
-                            name: elem.name,
-                            value: elem.id,
-                            className: Styles.groupTreeOption,
-                            key: `${i}-${j}-${k}-${l}`,
-                        })
-                    }
-                }
-            }
-        }
-        this.treeData = treeData;
-    }
-
-    getOptions() {
-        this.brandOptions = this.props.brands.map((elem, index)=>(
-            <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
-                {elem.brandName}
-            </Option>
-        ));
-    };
 
     componentWillUpdate(_, nextState) {
         if(this.state.visible==false && nextState.visible==true) {

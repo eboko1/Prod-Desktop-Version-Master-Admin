@@ -26,31 +26,16 @@ class DetailProductModal extends React.Component{
             radioValue: 1,
             mainTableSource: [],
             relatedDetailsSource: [],
-            relatedServicesSource: [
-                {
-                    key: 0,
-                    laborId: undefined,
-                    defaultName: undefined,
-                    name: undefined,
-                    comment: undefined,
-                    employee: undefined,
-                    hours: undefined,
-                    self: 0,
-                    price: 1,
-                    count: 1,
-                    sum: undefined,
-                }
-            ],
+            relatedServicesSource: [],
             relatedDetailsCheckbox: false,
             relatedServicesCheckbox: false,
-            groupSearchValue: "",
+            brandSearchValue: "",
             defaultBrandName: undefined,
         }
         this.labors = [];
         this.storeGroups = [];
         this.suppliers = [];
         this.treeData = [];
-        this.brandOptions = [];
         this.servicesOptions = [];
         this.suppliersOptions = [];
         this.relatedDetailsOptions = [];
@@ -75,7 +60,7 @@ class DetailProductModal extends React.Component{
                             style={{maxWidth: 180}}
                             value={data}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999" }}
-                            treeData={this.treeData}
+                            treeData={this.props.treeData}
                             filterTreeNode={(input, node) => {
                                 return (
                                     node.props.title.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
@@ -189,25 +174,29 @@ class DetailProductModal extends React.Component{
                                 })
                             }}
                             onSearch={(input)=>{
-                                if(input.length > 1) {
-                                    this.brandOptions = this.props.brands.filter((elem, index)=> elem.brandName.toLowerCase().indexOf(input.toLowerCase()) >= 0);
-                                    this.setState({
-                                        update: true
-                                    })
-                                }
+                                this.setState({
+                                    brandSearchValue: input,
+                                })
                             }}
                             onBlur={()=>{
-                                this.brandOptions = [];
                                 this.setState({
-                                    update: true
+                                    brandSearchValue: "",
                                 })
                             }}
                         >
-                            {this.brandOptions.map((elem, index)=>(
-                                    <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                            {
+                                this.state.brandSearchValue.length > 1 ? 
+                                    this.props.brands.map((elem, index)=>(
+                                        <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                                            {elem.brandName}
+                                        </Option>
+                                    )) :
+                                    elem.brandId ? 
+                                    <Option key={0} value={elem.brandId}>
                                         {elem.brandName}
-                                    </Option>
-                            ))}
+                                    </Option> : 
+                                    []
+                            }
                         </Select>
                     )
                 }
@@ -614,6 +603,7 @@ class DetailProductModal extends React.Component{
     }
 
     setCode(code, brandId, storeId, key, storeGroupId, storeGroupName) {
+        const brand = this.props.brands.find((elem)=>elem.brandId==brandId);
         this.state.mainTableSource[key].detailCode = code;
         this.state.mainTableSource[key].brandId = brandId;
         this.state.mainTableSource[key].storeId = storeId;
@@ -728,87 +718,13 @@ class DetailProductModal extends React.Component{
                 elem.key = index;
             })
             that.suppliers = data;
-        })
-        .catch(function (error) {
-            console.log('error', error)
-        })
-
-        params = `/store_groups`;
-        url = API_URL + params;
-        fetch(url, {
-            method: 'GET',
-            headers: {
-                'Authorization': token,
-            }
-        })
-        .then(function (response) {
-            if (response.status !== 200) {
-            return Promise.reject(new Error(response.statusText))
-            }
-            return Promise.resolve(response)
-        })
-        .then(function (response) {
-            return response.json()
-        })
-        .then(function (data) {
-            that.storeGroups = data;
-            that.buildStoreGroupsTree();
             that.getOptions();
         })
         .catch(function (error) {
             console.log('error', error)
-        });
+        })
     }
 
-    buildStoreGroupsTree() {
-        var treeData = [];
-        for(let i = 0; i < this.storeGroups.length; i++) {
-            const parentGroup = this.storeGroups[i];
-            treeData.push({
-                title: `${parentGroup.name} (#${parentGroup.id})`,
-                name: parentGroup.name,
-                value: parentGroup.id,
-                className: Styles.groupTreeOption,
-                key: `${i}`,
-                selectable: false,
-                children: [],
-            })
-            for(let j = 0; j < parentGroup.childGroups.length; j++) {
-                const childGroup = parentGroup.childGroups[j];
-                treeData[i].children.push({
-                    title: `${childGroup.name} (#${childGroup.id})`,
-                    name: childGroup.name,
-                    value: childGroup.id,
-                    className: Styles.groupTreeOption,
-                    key: `${i}-${j}`,
-                    selectable: false,
-                    children: [],
-                })
-                for(let k = 0; k < childGroup.childGroups.length; k++) {
-                    const lastNode = childGroup.childGroups[k];
-                    treeData[i].children[j].children.push({
-                        title: `${lastNode.name} (#${lastNode.id})`,
-                        name: lastNode.name,
-                        value: lastNode.id,
-                        className: Styles.groupTreeOption,
-                        key: `${i}-${j}-${k}`,
-                        children: [],
-                    })
-                    for(let l = 0; l < lastNode.childGroups.length; l++) {
-                        const elem = lastNode.childGroups[l];
-                        treeData[i].children[j].children[k].children.push({
-                            title: `${elem.name} (#${elem.id})`,
-                            name: elem.name,
-                            value: elem.id,
-                            className: Styles.groupTreeOption,
-                            key: `${i}-${j}-${k}-${l}`,
-                        })
-                    }
-                }
-            }
-        }
-        this.treeData = treeData;
-    }
 
     getOptions() {
         this.servicesOptions = this.labors.map((elem, index)=>(

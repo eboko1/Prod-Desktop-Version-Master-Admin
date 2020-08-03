@@ -8,7 +8,7 @@ import _ from 'lodash';
 import { Catcher } from 'commons';
 import { permissions, isForbidden, images } from 'utils';
 import { API_URL } from 'core/forms/orderDiagnosticForm/saga';
-import { FavouriteServicesModal, AddServiceModal } from 'modals'
+import { FavouriteServicesModal, AddServiceModal, LaborsNormHourModal } from 'modals'
 
 // own
 import Styles from './styles.m.css';
@@ -73,6 +73,7 @@ class ServicesTable extends Component {
                             </Button>
                             {!(elem.laborId) ? 
                                 <FavouriteServicesModal
+                                    laborTimeMultiplier={this.laborTimeMultiplier}
                                     disabled={this.props.disabled}
                                     normHourPrice={this.props.normHourPrice}
                                     defaultEmployeeId={this.props.defaultEmployeeId}
@@ -84,12 +85,15 @@ class ServicesTable extends Component {
                                 />
                             :
                                 <QuickEditModal
+                                    laborTimeMultiplier={this.laborTimeMultiplier}
                                     disabled={!(elem.laborId) || this.props.disabled}
                                     confirmed={confirmed != 'undefined'}
                                     labor={elem}
                                     onConfirm={this.updateLabor}
                                     tableKey={elem.key}
                                     employees={this.props.employees}
+                                    user={this.props.user}
+                                    tecdocId={this.props.tecdocId}
                                 />
                             }
                         </div>
@@ -739,6 +743,29 @@ class QuickEditModal extends React.Component{
                                     update: true,
                                 })
                             }}
+                        />
+                    )
+                }
+            },
+            {
+                title:  <FormattedMessage id="services_table.norm_hours" />,
+                key:       'hours',
+                dataIndex: 'hours',
+                width:     '3%',
+                render: (data, elem)=>{
+                    return (
+                        <LaborsNormHourModal
+                            user={this.props.user}
+                            tecdocId={this.props.tecdocId}
+                            storeGroupId={elem.storeGroupId}
+                            onSelect={(hours)=>{
+                                this.state.dataSource[0].hours = hours;
+                                this.state.dataSource[0].count = hours * this.props.laborTimeMultiplier;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                            hours={data}
                         />
                     )
                 }
