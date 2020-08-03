@@ -490,6 +490,7 @@ class DiagnosticTable extends Component {
                                 rowProp.diagnosticTemplateId,
                                 rowProp.groupId,
                                 rowProp.partId,
+                                rowProp.templateIndex
                             );
                             await this.getCurrentDiagnostic()
                         }}
@@ -689,6 +690,7 @@ class DiagnosticTable extends Component {
             this.state.dataSource[index].diagnosticTemplateId,
             this.state.dataSource[index].groupId,
             this.state.dataSource[index].partId,
+            this.state.dataSource[index].templateIndex
         );
         this.setState({
             selectedRows: [],
@@ -726,7 +728,8 @@ class DiagnosticTable extends Component {
                     this.state.dataSource[key].diagnosticTemplateId,
                     this.state.dataSource[key].groupId,
                     this.state.dataSource[key].partId,
-                    status
+                    this.state.dataSource[key].templateIndex,
+                    status,
                 );
             }
         }
@@ -750,6 +753,7 @@ class DiagnosticTable extends Component {
                     this.state.dataSource[key].diagnosticTemplateId,
                     this.state.dataSource[key].groupId,
                     this.state.dataSource[key].partId,
+                    this.state.dataSource[index].templateIndex
                 );
             }
         }
@@ -860,6 +864,9 @@ class DiagnosticTable extends Component {
                     "parts",
                 ]).parts;
                 for(let k = 0; k < partsCount; k++) {
+                    let index = _.pick(parts[k], [
+                        "index",
+                    ]).index;
                     let partTitle = _.pick(parts[k], [
                         "partTitle",
                     ]).partTitle;
@@ -885,6 +892,7 @@ class DiagnosticTable extends Component {
                     let photo = this.photoKeys.find((data)=>data.partId == partId && data.groupId == groupId);
                     photo = photo ? photo.photo : null;
                     dataSource.push({
+                        templateIndex: index,
                         key: key,
                         partId: partId,
                         plan: diagnosticTemplateTitle,
@@ -1281,7 +1289,7 @@ class DiagnosticStatusButton extends React.Component{
 
     handleClick = async (status) => {
         const { rowProp } = this.props;
-        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, status);
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, status);
         await this.setState({status:status});
         await this.props.getCurrentDiagnostic();
     }
@@ -1439,7 +1447,7 @@ class CommentaryButton extends React.Component{
             loading: true,
         });
         const { rowProp } = this.props;
-        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, 
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, rowProp.status, 
             JSON.stringify(
                 {
                     comment: currentCommentary,
@@ -1872,7 +1880,7 @@ class DeleteProcessButton extends React.Component{
     handleClick = () => {
         const { rowProp } = this.props;
             if(rowProp.partId) {
-            deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId);
+            deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex);
             ReactDOM.findDOMNode(this).parentNode.parentNode.style.backgroundColor = "";
             this.props.deleteRow(this.props.rowProp.key-1);
             this.setState({deleted:true});

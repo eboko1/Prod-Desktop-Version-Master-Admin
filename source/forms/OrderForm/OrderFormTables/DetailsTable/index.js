@@ -26,6 +26,9 @@ export default class DetailsTable extends Component {
             dataSource: [],
         }
 
+        this.storeGroups = [];
+        this.treeData = [];
+
         this.updateDetail = this.updateDetail.bind(this);
         this.updateDataSource = this.updateDataSource.bind(this);
 
@@ -74,6 +77,7 @@ export default class DetailsTable extends Component {
                             </Button>
                             {!(elem.detailName) ? 
                                 <FavouriteDetailsModal
+                                    treeData={this.treeData}
                                     disabled={this.props.disabled}
                                     user={this.props.user}
                                     tecdocId={this.props.tecdocId}
@@ -84,6 +88,7 @@ export default class DetailsTable extends Component {
                                 />
                             :
                                 <QuickEditModal
+                                    treeData={this.treeData}
                                     brands={this.props.allDetails.brands}
                                     disabled={!(elem.detailName) || this.props.disabled}
                                     confirmed={confirmed != 'undefined'}
@@ -400,6 +405,85 @@ export default class DetailsTable extends Component {
         })
     }
 
+    fetchData() {
+        var that = this;
+        let token = localStorage.getItem('_my.carbook.pro_token');
+        let params = `/store_groups`;
+        let url = API_URL + params;
+        fetch(url, {
+            method: 'GET',
+            headers: {
+                'Authorization': token,
+            }
+        })
+        .then(function (response) {
+            if (response.status !== 200) {
+            return Promise.reject(new Error(response.statusText))
+            }
+            return Promise.resolve(response)
+        })
+        .then(function (response) {
+            return response.json()
+        })
+        .then(function (data) {
+            that.storeGroups = data;
+            that.buildStoreGroupsTree();
+        })
+        .catch(function (error) {
+            console.log('error', error)
+        });
+    }
+
+    buildStoreGroupsTree() {
+        var treeData = [];
+        for(let i = 0; i < this.storeGroups.length; i++) {
+            const parentGroup = this.storeGroups[i];
+            treeData.push({
+                title: `${parentGroup.name} (#${parentGroup.id})`,
+                name: parentGroup.name,
+                value: parentGroup.id,
+                className: Styles.groupTreeOption,
+                key: `${i}`,
+                selectable: false,
+                children: [],
+            })
+            for(let j = 0; j < parentGroup.childGroups.length; j++) {
+                const childGroup = parentGroup.childGroups[j];
+                treeData[i].children.push({
+                    title: `${childGroup.name} (#${childGroup.id})`,
+                    name: childGroup.name,
+                    value: childGroup.id,
+                    className: Styles.groupTreeOption,
+                    key: `${i}-${j}`,
+                    selectable: false,
+                    children: [],
+                })
+                for(let k = 0; k < childGroup.childGroups.length; k++) {
+                    const lastNode = childGroup.childGroups[k];
+                    treeData[i].children[j].children.push({
+                        title: `${lastNode.name} (#${lastNode.id})`,
+                        name: lastNode.name,
+                        value: lastNode.id,
+                        className: Styles.groupTreeOption,
+                        key: `${i}-${j}-${k}`,
+                        children: [],
+                    })
+                    for(let l = 0; l < lastNode.childGroups.length; l++) {
+                        const elem = lastNode.childGroups[l];
+                        treeData[i].children[j].children[k].children.push({
+                            title: `${elem.name} (#${elem.id})`,
+                            name: elem.name,
+                            value: elem.id,
+                            className: Styles.groupTreeOption,
+                            key: `${i}-${j}-${k}-${l}`,
+                        })
+                    }
+                }
+            }
+        }
+        this.treeData = treeData;
+    }
+
     updateDataSource() {
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
@@ -494,6 +578,7 @@ export default class DetailsTable extends Component {
     }
 
     componentDidMount() {
+        this.fetchData();
         let tmp = [...this.props.orderDetails];
         tmp.map((elem,i)=>elem.key=i);
         this.setState({
@@ -537,6 +622,7 @@ export default class DetailsTable extends Component {
                     pagination={false}
                 />
                 <DetailProductModal
+                    treeData={this.treeData}
                     user={this.props.user}
                     tecdocId={this.props.tecdocId}
                     visible={this.state.productModalVisible}
@@ -559,6 +645,8 @@ class QuickEditModal extends React.Component{
         super(props);
         this.state={
             visible: false,
+            brandId: undefined,
+            brandSearchValue: "",
         }
         this.brandOptions = [];
 
@@ -573,8 +661,8 @@ class QuickEditModal extends React.Component{
                 title: <FormattedMessage id="order_form_table.brand" />,
                 width: "20%",
                 key: "brand",
-                dataIndex: 'brandId',
-                render: (data) => {
+                dataIndex: 'brandName',
+                render: (data, elem) => {
                     return (
                         <Select
                             showSearch
@@ -587,32 +675,36 @@ class QuickEditModal extends React.Component{
                                 )
                             }}
                             onSelect={(value, option)=>{
-                                this.state.dataSource[0].brandId = value;
-                                this.state.dataSource[0].brandName = option.props.children;
+                                elem.brandName = value;
+                                elem.brandId = option.props.brand_id;
                                 this.setState({
                                     update: true
                                 })
                             }}
                             onSearch={(input)=>{
-                                if(input.length > 1) {
-                                    this.brandOptions = this.props.brands.filter((elem, index)=> elem.brandName.toLowerCase().indexOf(input.toLowerCase()) >= 0);
-                                    this.setState({
-                                        update: true
-                                    })
-                                }
-                            }}
-                            onBlur={()=>{
-                                this.brandOptions = [];
                                 this.setState({
-                                    update: true
+                                    brandSearchValue: input
                                 })
                             }}
-                        >                    
-                            {this.brandOptions.map((elem, index)=>(
-                                    <Option key={index} value={elem.brandId} supplier_id={elem.supplierId}>
+                            onBlur={()=>{
+                                this.setState({
+                                    brandSearchValue: "",
+                                })
+                            }}
+                        >
+                            {
+                                this.state.brandSearchValue.length > 2 ? 
+                                    this.props.brands.map((elem, index)=>(
+                                        <Option key={index} value={elem.brandName} supplier_id={elem.supplierId} brand_id={elem.brandId}>
+                                            {elem.brandName}
+                                        </Option>
+                                    )) :
+                                    elem.brandName ? 
+                                    <Option key={0} value={elem.brandName} brand_id={this.state.brandId}>
                                         {elem.brandName}
-                                    </Option>
-                            ))}
+                                    </Option> : 
+                                    []
+                            }
                         </Select>
                     );
                 },
@@ -624,7 +716,16 @@ class QuickEditModal extends React.Component{
                 dataIndex: 'detailCode',
                 render: (data) => {
                     return (
-                        data ? data : <FormattedMessage id="long_dash"/>
+                        <Input
+                            style={{minWidth: 150}}
+                            value={data}
+                            onChange={(event)=>{
+                                this.state.dataSource[0].detailCode = event.target.value;
+                                this.setState({
+                                    update: true
+                                })
+                            }}
+                        />
                     );
                 },
             },
@@ -739,19 +840,37 @@ class QuickEditModal extends React.Component{
     }
 
     handleOk = () => {
-        this.setState({
-            visible: false,
-        });
-        this.props.onConfirm(this.props.tableKey, this.state.dataSource[0]);
+        this.props.onConfirm(
+            this.props.tableKey,
+            {
+                ...this.state.dataSource[0],
+                brandId: this.state.brandId,
+            }
+        );
+        this.handleCancel();
     }
 
     handleCancel = () => {
         this.setState({
             visible: false,
+            brandId: undefined,
+            dataSource: [],
         })
     }
 
+    componentDidUpdate(_, prevState) {
+        if(prevState.visible == false && this.state.visible) {
+            const brand = this.props.brands.find((elem)=>elem.brandName==this.props.detail.brandName);
+            if(brand) {
+                this.setState({
+                    brandId: brand.brandId
+                });
+            }
+        }
+    }
+
     render() {
+        const { detail } = this.props;
         return(
             <>
                 <Button
@@ -760,7 +879,7 @@ class QuickEditModal extends React.Component{
                     onClick={()=>{
                         this.setState({
                             visible: true,
-                            dataSource: [this.props.detail]
+                            dataSource: [detail],
                         })
                     }}
                     title={this.props.intl.formatMessage({id: "quick_edit"})}

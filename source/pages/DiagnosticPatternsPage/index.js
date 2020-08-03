@@ -20,14 +20,7 @@ import {
 import { Layout, Spinner } from 'commons';
 import { DiagnosticPatternsContainer } from 'containers';
 import {
-    API_URL,
-    addNewDiagnosticTemplate,
-    getDiagnosticsTemplates,
-    addNewDiagnosticRow,
-    sendDiagnosticAnswer,
-    deleteDiagnosticProcess,
-    deleteDiagnosticTemplate,
-    getPartProblems
+    API_URL
 } from 'core/forms/orderDiagnosticForm/saga';
 
 // own
