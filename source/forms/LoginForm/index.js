@@ -25,7 +25,8 @@ import Styles from "./loginForm.m.css";
 })
 export class LoginForm extends Component {
     _submit = event => {
-        event.preventDefault();
+        console.log(this, event);
+        //event.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.props.login(values);
@@ -33,7 +34,14 @@ export class LoginForm extends Component {
         });
     };
 
+    componentDidMount() {
+        this.setState({
+            update: true,
+        })
+    }
+
     render() {
+        console.log(this);
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
