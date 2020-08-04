@@ -18,6 +18,7 @@ const mapStateToProps = state => ({
 @withErrorMessage()
 export default class LoginPage extends Component {
     render() {
+        console.log(this);
         return !this.props.spinner ? (
             <Catcher>
                 <section className={Styles.loginPage}>
