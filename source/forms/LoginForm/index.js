@@ -25,7 +25,6 @@ import Styles from "./loginForm.m.css";
 })
 export class LoginForm extends Component {
     _submit = event => {
-        console.log(this, event);
         //event.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
@@ -41,7 +40,6 @@ export class LoginForm extends Component {
     }
 
     render() {
-        console.log(this);
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 

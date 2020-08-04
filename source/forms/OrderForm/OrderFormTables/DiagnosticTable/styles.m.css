@@ -119,3 +119,7 @@
     width: 30%;
     margin-bottom: 5px;
 }
+
+.disabledCommentaryProp {
+    color: black !important;
+}
