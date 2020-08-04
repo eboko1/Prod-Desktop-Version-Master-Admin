@@ -470,10 +470,10 @@ class DiagnosticTable extends Component {
                         </div>
                     )
                 },
-                dataIndex: 'photo',
-                key:       'photo',
+                dataIndex: 'duplicate',
+                key:       'duplicate',
                 width:     '5%',
-                render: (photo, rowProp) => (
+                render: (data, rowProp) => (
                     /*<PhotoButton
                         disabled={this.props.disabled || rowProp.disabled}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
@@ -483,7 +483,7 @@ class DiagnosticTable extends Component {
                     />*/
                     <Button
                         type="primary"
-                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
+                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId || true}
                         onClick={async ()=>{
                             await addNewDiagnosticRow(
                                 rowProp.orderId,
