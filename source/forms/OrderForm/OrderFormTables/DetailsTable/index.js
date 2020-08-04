@@ -533,8 +533,8 @@ export default class DetailsTable extends Component {
                     supplierBrandId: detail.supplierBrandId ? detail.supplierBrandId : null,
                     brandName: detail.brandName ? detail.brandName : null,
                     purchasePrice: Math.round(detail.purchasePrice*10)/10 || 0,
-                    count: detail.count ? detail.count : 1,
-                    price: detail.price ? Math.round(detail.price*10)/10 : 1,
+                    count: detail.count,
+                    price: Math.round(detail.price*10)/10,
                     comment: detail.comment || {
                         comment: undefined,
                         positions: [],
