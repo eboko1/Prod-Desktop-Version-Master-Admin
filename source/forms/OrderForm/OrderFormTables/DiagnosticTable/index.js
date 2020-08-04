@@ -1641,12 +1641,15 @@ class CommentaryButton extends React.Component{
                         </p>
                         <div className={Styles.blockButtonsWrap}>
                             {positions.map((position, key)=> {
+                                const disabledClass = disabled && currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ?
+                                    Styles.disabledCommentaryProp : ""
                                 return (
                                     <Button
                                         key={key}
                                         type={currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ? 'normal' : 'primary'}
-                                        className={Styles.commentaryBlockButton}
+                                        className={`${Styles.commentaryBlockButton} ${disabledClass}`}
                                         onClick={()=>{this.setCommentaryPosition(position)}}
+                                        disabled={disabled}
                                     >
                                         <FormattedMessage id={position}/>
                                     </Button>
@@ -1660,11 +1663,14 @@ class CommentaryButton extends React.Component{
                         </p>
                         <div className={Styles.blockButtonsWrap}>
                             {problems.map((problem, key) => {
+                                const disabledClass = disabled && currentCommentaryProps.problems.findIndex((elem)=>problem.value==elem) > -1 ?
+                                    Styles.disabledCommentaryProp : ""
                                 return (
                                     <Button
+                                        disabled={disabled}
                                         key={key}
                                         type={currentCommentaryProps.problems.findIndex((elem)=>problem.value==elem) > -1 ? 'normal' : 'primary'}
-                                        className={Styles.commentaryBlockButton}
+                                        className={`${Styles.commentaryBlockButton} ${disabledClass}`}
                                         onClick={()=>{this.setCommentaryProblems(problem.value)}}
                                     >
                                         <span>{problem.label}</span>
@@ -1681,8 +1687,9 @@ class CommentaryButton extends React.Component{
                             {params.map((param, key) => {
                                 return (
                                     <InputNumber
+                                        disabled={disabled}
                                         key={key}
-                                        className={Styles.commentaryBlockButton}
+                                        className={`${Styles.commentaryBlockButton} ${disabled ? Styles.disabledCommentaryProp : ""}`}
                                         value={currentCommentaryProps.params[param.name]}
                                         formatter={value => `${value} ${param.symbol}`}
                                         parser={value => value.replace(` ${param.symbol}`, '')}
@@ -1698,6 +1705,7 @@ class CommentaryButton extends React.Component{
                         </p>
                         <TextArea
                             disabled={disabled}
+                            className={disabled ? Styles.disabledCommentaryProp : ""}
                             value={currentCommentary}
                             placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
                             autoFocus
