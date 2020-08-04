@@ -114,15 +114,17 @@ class AddServiceModal extends React.Component{
                 dataIndex: 'laborId',
                 width:     '15%',
                 render: (data, elem)=>{
+                    const currentServiceOption = this.servicesOptions.find((labor)=>labor.laborId==data);
                     return (
                         <Select
                             disabled={this.state.editing}
                             showSearch
                             placeholder={this.props.intl.formatMessage({id: 'services_table.labor'})}
-                            value={data ? data : undefined}
+                            value={data}
                             style={{minWidth: 100}}
                             dropdownStyle={{ maxHeight: 400, overflow: 'auto', zIndex: "9999", minWidth: 380 }}
                             filterOption={(input, option) => {
+                                //if(!option.props.children) return false;
                                 return (
                                     option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0 || 
                                     String(option.props.value).indexOf(input.toLowerCase()) >= 0
@@ -170,13 +172,13 @@ class AddServiceModal extends React.Component{
                                     elem.laborId ? 
                                     <Option
                                         key={0}
-                                        value={elem.laborId}
-                                        master_id={elem.masterLaborId}
-                                        product_id={elem.productId}
-                                        norm_hours={elem.normHours}
-                                        price={elem.price}
+                                        value={currentServiceOption.laborId}
+                                        master_id={currentServiceOption.masterLaborId}
+                                        product_id={currentServiceOption.productId}
+                                        norm_hours={currentServiceOption.normHours}
+                                        price={currentServiceOption.price}
                                     >
-                                        {elem.name ? elem.name : elem.defaultName}
+                                        {currentServiceOption.name ? currentServiceOption.name : currentServiceOption.defaultName}
                                     </Option> : 
                                     []
                             }
