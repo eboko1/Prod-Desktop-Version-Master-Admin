@@ -25,13 +25,19 @@ import Styles from "./loginForm.m.css";
 })
 export class LoginForm extends Component {
     _submit = event => {
-        event.preventDefault();
+        //event.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.props.login(values);
             }
         });
     };
+
+    componentDidMount() {
+        this.setState({
+            update: true,
+        })
+    }
 
     render() {
         const { getFieldDecorator } = this.props.form;

@@ -17,6 +17,12 @@ const mapStateToProps = state => ({
 @connect(mapStateToProps)
 @withErrorMessage()
 export default class LoginPage extends Component {
+    componentDidMount() {
+        this.setState({
+            update: true,
+        })
+    }
+
     render() {
         return !this.props.spinner ? (
             <Catcher>

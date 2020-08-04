@@ -111,6 +111,10 @@ class DetailProductModal extends React.Component{
                 dataIndex: 'comment',
                 width:     '3%',
                 render: (data, elem)=>{
+                    var detail = elem.detailName;
+                    if(detail && detail.indexOf(' - ') > -1) {
+                        detail = detail.slice(0, detail.indexOf(' - '));
+                    }
                     return (
                         <CommentaryButton
                             disabled={elem.storeGroupId == null && this.state.radioValue != 2}
@@ -121,7 +125,7 @@ class DetailProductModal extends React.Component{
                                     positions: [],
                                 }
                             }
-                            detail={elem.detailName ? elem.detailName.slice(0, elem.detailName.indexOf(' - ')) : undefined}
+                            detail={detail}
                             setComment={this.setComment}
                         />
                     )

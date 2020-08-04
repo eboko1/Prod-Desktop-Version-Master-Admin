@@ -92,6 +92,10 @@ class DiagnosticTable extends Component {
             {
                 title:  ()=>{
                     const {filterPlan, filterStage, filterStatus, filterCommentary, filterPhoto} = this.state;
+                    var count = this.props.disabled ? 
+                        this.state.dataSource.length :
+                        this.state.dataSource.length - 1;
+                    if(count < 0) count = 0;
                     let type = filterPlan==null&&filterStage==null&&filterStatus==null&&filterCommentary==null&&filterPhoto==null?"":"danger";
                     return(
                         <div className={Styles.filter_column_header_wrap}>
@@ -115,9 +119,7 @@ class DiagnosticTable extends Component {
                                     {this.getCurrentDiagnostic()}
                                 }}
                             >
-                                {this.props.disabled ? 
-                                this.state.dataSource.length :
-                                this.state.dataSource.length - 1}
+                                {count}
                             </Button>
                         </div>
                     )
@@ -424,29 +426,31 @@ class DiagnosticTable extends Component {
             },
             {
                 title:  ()=>{
+                    /*
+                    <Button
+                        type={this.state.filterCommentary == null?"primary":""}
+                        onClick={()=>{
+                            if(this.state.filterCommentary != null) {
+                                this.setState({
+                                    filterCommentary: null,
+                                });
+                            }
+                            else {
+                                this.setState({
+                                    filterCommentary: "COMMENTARY",
+                                });
+                            }
+                            {this.getCurrentDiagnostic()}
+                        }}
+                    >
+                        {this.withCommentary}
+                    </Button>
+                    */
                     return(
                         <div className={Styles.filter_column_header_wrap}>
                             <p style={{whiteSpace: 'nowrap', overflowX: "hidden"}}>
                                 <FormattedMessage id='order_form_table.diagnostic.commentary' />
                             </p>
-                            <Button
-                                type={this.state.filterCommentary == null?"primary":""}
-                                onClick={()=>{
-                                    if(this.state.filterCommentary != null) {
-                                        this.setState({
-                                            filterCommentary: null,
-                                        });
-                                    }
-                                    else {
-                                        this.setState({
-                                            filterCommentary: "COMMENTARY",
-                                        });
-                                    }
-                                    {this.getCurrentDiagnostic()}
-                                }}
-                            >
-                                {this.withCommentary}
-                            </Button>
                         </div>
                     )
                 },
@@ -470,10 +474,10 @@ class DiagnosticTable extends Component {
                         </div>
                     )
                 },
-                dataIndex: 'photo',
-                key:       'photo',
+                dataIndex: 'duplicate',
+                key:       'duplicate',
                 width:     '5%',
-                render: (photo, rowProp) => (
+                render: (data, rowProp) => (
                     /*<PhotoButton
                         disabled={this.props.disabled || rowProp.disabled}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
@@ -483,7 +487,7 @@ class DiagnosticTable extends Component {
                     />*/
                     <Button
                         type="primary"
-                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
+                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId || true}
                         onClick={async ()=>{
                             await addNewDiagnosticRow(
                                 rowProp.orderId,
@@ -933,7 +937,7 @@ class DiagnosticTable extends Component {
                     if(data.status == 2) this.bad++;
                     if(data.status == 3) this.critical++;
                 }
-                if(data.commentary != undefined) this.withCommentary++;
+                if(data.commentary.comment) this.withCommentary++;
                 if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
             })
             /*filtredData.push({
@@ -959,7 +963,7 @@ class DiagnosticTable extends Component {
         }
         else{
             dataSource.map((data)=>{
-                if(data.commentary != undefined) this.withCommentary++;
+                if(data.commentary.comment) this.withCommentary++;
                 if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
             })
             if(!disabled) {
@@ -1641,12 +1645,15 @@ class CommentaryButton extends React.Component{
                         </p>
                         <div className={Styles.blockButtonsWrap}>
                             {positions.map((position, key)=> {
+                                const disabledClass = disabled && currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ?
+                                    Styles.disabledCommentaryProp : ""
                                 return (
                                     <Button
                                         key={key}
                                         type={currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ? 'normal' : 'primary'}
-                                        className={Styles.commentaryBlockButton}
+                                        className={`${Styles.commentaryBlockButton} ${disabledClass}`}
                                         onClick={()=>{this.setCommentaryPosition(position)}}
+                                        disabled={disabled}
                                     >
                                         <FormattedMessage id={position}/>
                                     </Button>
@@ -1660,11 +1667,14 @@ class CommentaryButton extends React.Component{
                         </p>
                         <div className={Styles.blockButtonsWrap}>
                             {problems.map((problem, key) => {
+                                const disabledClass = disabled && currentCommentaryProps.problems.findIndex((elem)=>problem.value==elem) > -1 ?
+                                    Styles.disabledCommentaryProp : ""
                                 return (
                                     <Button
+                                        disabled={disabled}
                                         key={key}
                                         type={currentCommentaryProps.problems.findIndex((elem)=>problem.value==elem) > -1 ? 'normal' : 'primary'}
-                                        className={Styles.commentaryBlockButton}
+                                        className={`${Styles.commentaryBlockButton} ${disabledClass}`}
                                         onClick={()=>{this.setCommentaryProblems(problem.value)}}
                                     >
                                         <span>{problem.label}</span>
@@ -1681,8 +1691,9 @@ class CommentaryButton extends React.Component{
                             {params.map((param, key) => {
                                 return (
                                     <InputNumber
+                                        disabled={disabled}
                                         key={key}
-                                        className={Styles.commentaryBlockButton}
+                                        className={`${Styles.commentaryBlockButton} ${disabled ? Styles.disabledCommentaryProp : ""}`}
                                         value={currentCommentaryProps.params[param.name]}
                                         formatter={value => `${value} ${param.symbol}`}
                                         parser={value => value.replace(` ${param.symbol}`, '')}
@@ -1698,6 +1709,7 @@ class CommentaryButton extends React.Component{
                         </p>
                         <TextArea
                             disabled={disabled}
+                            className={disabled ? Styles.disabledCommentaryProp : ""}
                             value={currentCommentary}
                             placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
                             autoFocus

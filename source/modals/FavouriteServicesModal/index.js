@@ -206,6 +206,10 @@ class FavouriteServicesModal extends React.Component{
                 dataIndex: 'comment',
                 width:     '5%',
                 render: (data, elem)=>{
+                    var detail = elem.serviceName;
+                    if(detail && detail.indexOf(' - ') > -1) {
+                        detail = detail.slice(0, detail.indexOf(' - '));
+                    }
                     return (
                         <CommentaryButton
                             disabled={elem.laborId == null}
@@ -216,7 +220,7 @@ class FavouriteServicesModal extends React.Component{
                                     positions: [],
                                 }
                             }
-                            detail={elem.serviceName ? elem.serviceName.slice(0, elem.serviceName.indexOf(' - ')) : undefined}
+                            detail={detail}
                             setComment={this.setComment}
                             tableKey={elem.key}
                         />

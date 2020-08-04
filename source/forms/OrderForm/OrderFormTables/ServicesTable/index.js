@@ -760,7 +760,6 @@ class QuickEditModal extends React.Component{
                             storeGroupId={elem.storeGroupId}
                             onSelect={(hours)=>{
                                 this.state.dataSource[0].hours = hours;
-                                this.state.dataSource[0].count = hours * this.props.laborTimeMultiplier;
                                 this.setState({
                                     update: true
                                 })
