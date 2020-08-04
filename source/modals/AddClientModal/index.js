@@ -120,6 +120,7 @@ export default class AddClientModal extends Component {
                 { !_.isEmpty(vehicles) && (
                     <ClientsVehiclesTable
                         removeClientVehicle={ this.props.removeClientVehicle }
+                        addClientVehicle={ this.props.addClientVehicle }
                         vehicles={ vehicles }
                     />
                 ) }

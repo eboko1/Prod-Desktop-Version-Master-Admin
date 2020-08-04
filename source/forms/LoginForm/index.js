@@ -25,7 +25,8 @@ import Styles from "./loginForm.m.css";
 })
 export class LoginForm extends Component {
     _submit = event => {
-        event.preventDefault();
+        console.log(this, event);
+        //event.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 this.props.login(values);
@@ -33,12 +34,19 @@ export class LoginForm extends Component {
         });
     };
 
+    componentDidMount() {
+        this.setState({
+            update: true,
+        })
+    }
+
     render() {
+        console.log(this);
         const { getFieldDecorator } = this.props.form;
         const { formatMessage } = this.props.intl;
 
         return (
-            <Form className={Styles.loginForm} onSubmit={this._submit}>
+            <Form className={Styles.loginForm}>
                 <DecoratedInput
                     formItem
                     label={<FormattedMessage id="login_form.login" />}
@@ -74,12 +82,14 @@ export class LoginForm extends Component {
                     })}
                     type="password"
                 />
-                <Button type="primary" htmlType="submit">
+                <Button type="primary" onClick={this._submit}>
                     <FormattedMessage id="enter" />
                 </Button>
-                <Link to={book.forgotPassword}>
-                    <FormattedMessage id="login_form.forgot_password" />
-                </Link>
+                <div style={{marginTop: 10}}>
+                    <Link to={book.forgotPassword}>
+                        <FormattedMessage id="login_form.forgot_password" />
+                    </Link>
+                </div>
             </Form>
         );
     }

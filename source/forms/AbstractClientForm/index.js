@@ -37,8 +37,10 @@ export class AbstractClientForm extends Component {
     }
 
     render() {
-        const { client, errors } = this.props;
+        const { client, errors, searchQuery } = this.props;
         const { getFieldDecorator } = this.props.form;
+
+        const searchQueryNumber = searchQuery ? searchQuery.replace(/\D+/g,"").slice(0, 9) : undefined;
 
         if (errors.length) {
             const currentComponentErrors = errors.filter(({ response }) =>
@@ -199,7 +201,7 @@ export class AbstractClientForm extends Component {
                             initialValue={
                                 _.get(client, 'phones')
                                     ? _.get(client, 'phones').filter(Boolean)
-                                    : void 0
+                                    : searchQueryNumber ? [searchQueryNumber] : void 0
                             }
                             rules={ [
                                 {

@@ -41,7 +41,6 @@ class ReportsDropdown extends React.Component {
             CALCULATION_REPORT,
             CLIENT_ORDER_REPORT,
             COMPLETED_WORK_REPORT,
-            DIAGNOSTICS_ACT_REPORT,
             INVOICE_REPORT,
         ];
 
