@@ -530,9 +530,6 @@ class MobileDiagnostic extends Component {
 
     getDiagnosticElementsByTitle(title) {
         const dataSource = this.state.dataSource;
-
-        console.log(dataSource)
-
         return dataSource.map((data)=>{
             let color = "";
             if(data.status == 1) {
