@@ -500,7 +500,7 @@ class DiagnosticTable extends Component {
                         }}
                         title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.duplicate_line"})}
                     >
-                        <Icon type="plus"/> {rowProp.templateIndex}
+                        <Icon type="plus"/>
                     </Button>
                 ),
             },
