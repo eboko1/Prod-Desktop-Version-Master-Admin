@@ -323,7 +323,6 @@ export default class OrderFormBody extends Component {
             clientPhone,
             errors,
             orderStatus,
-            onStatusChange,
             createOrder,
             createStatus,
         } = this.props;
@@ -370,14 +369,25 @@ export default class OrderFormBody extends Component {
                     </div>
                     {hasClient && (
                         <div className={Styles.iconsCol}>
-                            <Popconfirm
-                                title={<FormattedMessage id='save_order_changes'/>}
-                                onConfirm={()=>{
-                                    createOrder ? 
-                                    createOrder(createStatus, `${book.client}/${selectedClient.clientId}`) :
-                                    onStatusChange(orderStatus, void 0, {}, `${book.client}/${selectedClient.clientId}`)
-                                }}
-                            >
+                            {
+                                createOrder ? 
+                                <Popconfirm
+                                    title={<FormattedMessage id='save_order_changes'/>}
+                                    onConfirm={()=>{
+                                        createOrder(createStatus, `${book.client}/${selectedClient.clientId}`)
+                                    }}
+                                >
+                                    <Link
+                                        to={`${book.client}/${selectedClient.clientId}`}
+                                    >
+                                        
+                                        <Icon
+                                            type="edit"
+                                            className={Styles.editIcon}
+                                        />
+                                    </Link>
+                                </Popconfirm>
+                                :
                                 <Link
                                     to={`${book.client}/${selectedClient.clientId}`}
                                 >
@@ -387,7 +397,7 @@ export default class OrderFormBody extends Component {
                                         className={Styles.editIcon}
                                     />
                                 </Link>
-                            </Popconfirm>
+                            }
                             <CopyToClipboard text={hasClient}>
                                 <Icon
                                     type="copy"
@@ -460,6 +470,8 @@ export default class OrderFormBody extends Component {
             fields,
             clientVehicle,
             errors,
+            createOrder,
+            createStatus,
         } = this.props;
         const { getFieldDecorator } = this.props.form;
         const selectedVehicleId = clientVehicle;
@@ -515,11 +527,35 @@ export default class OrderFormBody extends Component {
                     </div>
                     {selectedVehicle && (
                         <div className={Styles.iconsCol}>
-                            <Link
-                                to={`${book.client}/${selectedClient.clientId}`}
-                            >
-                                <Icon type="edit" className={Styles.editIcon} />
-                            </Link>
+                            {
+                                createOrder ? 
+                                <Popconfirm
+                                    title={<FormattedMessage id='save_order_changes'/>}
+                                    onConfirm={()=>{
+                                        createOrder(createStatus, `${book.client}/${selectedClient.clientId}`)
+                                    }}
+                                >
+                                    <Link
+                                        to={`${book.client}/${selectedClient.clientId}`}
+                                    >
+                                        
+                                        <Icon
+                                            type="edit"
+                                            className={Styles.editIcon}
+                                        />
+                                    </Link>
+                                </Popconfirm>
+                                :
+                                <Link
+                                    to={`${book.client}/${selectedClient.clientId}`}
+                                >
+                                    
+                                    <Icon
+                                        type="edit"
+                                        className={Styles.editIcon}
+                                    />
+                                </Link>
+                            }
                             <CopyToClipboard
                                 text={`${selectedVehicle.make} ${
                                     selectedVehicle.model

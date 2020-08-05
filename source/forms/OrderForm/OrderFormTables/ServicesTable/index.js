@@ -488,10 +488,10 @@ class ServicesTable extends Component {
                     serviceId: labor.laborId,
                     serviceName: labor.serviceName,
                     employeeId: labor.employeeId,
-                    serviceHours: labor.hours ? labor.hours : 0,
-                    purchasePrice: labor.purchasePrice ? Math.round(labor.purchasePrice*10)/10 : 0,
-                    count: labor.count ? labor.count : 1,
-                    servicePrice: labor.price ? Math.round(labor.price*10)/10 : 1,
+                    serviceHours: labor.hours,
+                    purchasePrice: Math.round(labor.purchasePrice*10)/10,
+                    count: labor.count,
+                    servicePrice: Math.round(labor.price*10)/10,
                     comment: labor.comment || {
                         comment: undefined,
                         positions: [],
@@ -499,6 +499,7 @@ class ServicesTable extends Component {
                 }
             ]
         }
+        console.log(data)
         if(!isForbidden(this.props.user, permissions.ACCESS_ORDER_CHANGE_AGREEMENT_STATUS,)) {
             data.services[0].agreement = labor.agreement;
         }

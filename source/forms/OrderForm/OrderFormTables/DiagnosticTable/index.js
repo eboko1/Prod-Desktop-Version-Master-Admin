@@ -1677,7 +1677,7 @@ class CommentaryButton extends React.Component{
                                         className={`${Styles.commentaryBlockButton} ${disabledClass}`}
                                         onClick={()=>{this.setCommentaryProblems(problem.value)}}
                                     >
-                                        <span>{problem.label}</span>
+                                        <span>{problem.label[0].toUpperCase() + problem.label.toLowerCase().slice(1)}</span>
                                     </Button>
                                 )
                             })}
