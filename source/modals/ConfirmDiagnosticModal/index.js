@@ -64,7 +64,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.servicesList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.services.push({
-                    serviceName: element.name + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
+                    serviceName: element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
                     serviceId: element.id,
                     count: element.hours,
                     servicePrice: element.price,
@@ -73,20 +73,23 @@ class ConfirmDiagnosticModal extends React.Component{
                     comment: {
                         comment: element.commentary.comment,
                         positions: element.commentary.positions,
+                        problems: element.commentary.problems,
                     },
+                    isCritical: element.status == 3,
                 })
             }
         });
         this.state.detailsList.map((element)=>{
             if(element.checked && element.id != null) {
                 data.details.push({
-                    name: element.name + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
+                    name: element.name + ' - ' + element.commentary.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`),
                     storeGroupId: element.id,
                     count: element.count,
                     comment: {
                         comment: element.commentary.comment,
                         positions: element.commentary.positions,
                     },
+                    isCritical: element.status == 3,
                 })
             }
         });
@@ -362,10 +365,13 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.diagnosticList.map((data, index)=>{
             if(!data.resolved) {
                 this.changeResolved(index, 'automaticly');
-                partIds.push(data.id);
+                partIds.push({
+                    id: data.id,
+                    isCritical: data.status == 3,
+                    comment: data.commentary,
+                });
             }
         });
-
         this.getDataByPartIds(partIds);
     }
 
@@ -373,13 +379,14 @@ class ConfirmDiagnosticModal extends React.Component{
         var that = this;
         let token = localStorage.getItem('_my.carbook.pro_token');
         let url = API_URL;
-        let params = `/diagnostics/calculation_data?partIds=[${partIds}]`;
+        let params = `/diagnostics/calculation_data`;
         url += params;
         fetch(url, {
-            method: 'GET',
+            method: 'PUT',
             headers: {
                 'Authorization': token,
-            }
+            },
+            body: JSON.stringify({partIds: partIds})
         })
         .then(function (response) {
             if (response.status !== 200) {
@@ -398,13 +405,6 @@ class ConfirmDiagnosticModal extends React.Component{
             const detailArrat = [];
             
             data.map((elem)=>{
-                const diagnosticPart = that.state.diagnosticList.find((part)=>part.id==elem.partId);
-                const commentary = diagnosticPart ? Object.assign({}, diagnosticPart.commentary) : {comment: "", positions: []};
-                const servicesComment = JSON.parse(JSON.stringify(commentary));
-                const detailComment = JSON.parse(JSON.stringify(commentary));
-                const status = diagnosticPart ? diagnosticPart.status : undefined;
-                
-
                 elem.labor.map((labor)=>{
                     let laborObjCopy = Object.assign({}, {
                         key: that.state.servicesList.length+1,
@@ -413,8 +413,8 @@ class ConfirmDiagnosticModal extends React.Component{
                         name: labor.name,
                         hours: Number(labor.normHours) || 1,
                         checked: true,
-                        commentary: servicesComment,
-                        status: status,
+                        commentary: elem.comment,
+                        status: elem.isCritical ? 3 : 2,
                         automaticly: true,
                     });
                     serviceArray.push(laborObjCopy);
@@ -426,8 +426,8 @@ class ConfirmDiagnosticModal extends React.Component{
                     name: elem.storeGroup.name,
                     count: 1,
                     checked: true,
-                    commentary: detailComment,
-                    status: status,
+                    commentary: elem.comment,
+                    status: elem.isCritical ? 3 : 2,
                 });
                 
                 detailArrat.push(detailObjCopy);
@@ -451,16 +451,16 @@ class ConfirmDiagnosticModal extends React.Component{
                 tmpSource.push(dataSource[i]);
                 const commentary = Object.assign({}, dataSource[i].commentary);
                 if(this.state.diagnosticList.findIndex(x => x.id == dataSource[i].partId) == -1){
-
                     let diagnosticObjCopy =  Object.assign({}, {
                         key: this.diagnosticKey,
                         id: dataSource[i].partId,
-                        commentary: commentary || {comment: "", positions: []},
+                        commentary: commentary || {comment: "", positions: [], problems: []},
                         resolved: false,
                         type:'',
                         disabled: false,
                         checked: true,
                         status: Number(dataSource[i].status),
+                        templateIndex: dataSource[i].templateIndex,
                     });
 
                     diagnosticList.push(diagnosticObjCopy);
@@ -471,7 +471,7 @@ class ConfirmDiagnosticModal extends React.Component{
         this.state.diagnosticList = diagnosticList;
 
         return tmpSource.map((data)=>{
-        let index = this.state.diagnosticList.findIndex(x => x.id == data.partId),
+        let index = this.state.diagnosticList.findIndex(x => x.id == data.partId && x.templateIndex == data.templateIndex),
             key = this.state.diagnosticList[index].key,
             bgColor = this.state.diagnosticList[index].disabled?"#d9d9d9":"",
             txtColor = this.state.diagnosticList[index].disabled?"gray":"";
@@ -584,7 +584,7 @@ class ConfirmDiagnosticModal extends React.Component{
                 id: null,
                 name: null,
                 hours: 1,
-                commentary: {commentary: "", positions: []},
+                commentary: {commentary: "", positions: [], problems: []},
                 checked: true
             });
             this.setState({
@@ -678,6 +678,7 @@ class ConfirmDiagnosticModal extends React.Component{
                                 {
                                     comment: undefined,
                                     positions: [],
+                                    problems: [],
                                 }
                             }
                             detail={data.name}
@@ -699,10 +700,11 @@ class ConfirmDiagnosticModal extends React.Component{
         return tmpServicesArray;
     }
 
-    setServicesComment(comment, positions, index) {
+    setServicesComment(comment, positions, index, problems) {
         this.state.servicesList[index].commentary = {
             comment: comment,
             positions: positions,
+            problems: problems,
         };
         this.setState({
             update: true
@@ -1028,6 +1030,7 @@ class CommentaryButton extends React.Component{
             visible: true,
             currentCommentaryProps: {
                 positions: this.props.commentary.positions || [],
+                problems: this.props.commentary.problems || [],
             }
         });
         if(this.commentaryInput.current != undefined) {
@@ -1040,7 +1043,7 @@ class CommentaryButton extends React.Component{
         this.setState({
             loading: true,
         });
-        this.props.setComment(currentCommentary, currentCommentaryProps.positions, this.props.tableKey);
+        this.props.setComment(currentCommentary, currentCommentaryProps.positions, this.props.tableKey, currentCommentaryProps.problems);
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
         }, 500);

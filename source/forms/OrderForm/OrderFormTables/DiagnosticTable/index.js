@@ -487,7 +487,7 @@ class DiagnosticTable extends Component {
                     />*/
                     <Button
                         type="primary"
-                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId || true}
+                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
                         onClick={async ()=>{
                             await addNewDiagnosticRow(
                                 rowProp.orderId,
@@ -734,6 +734,7 @@ class DiagnosticTable extends Component {
                     this.state.dataSource[key].partId,
                     this.state.dataSource[key].templateIndex,
                     status,
+                    this.state.dataSource[key].commentary,
                 );
             }
         }
@@ -750,14 +751,12 @@ class DiagnosticTable extends Component {
         for(let i = 0; i < this.state.selectedRows.length; i++){
             let key = this.state.dataSource.findIndex((elem)=>elem.key == this.state.selectedRows[i]);
             if(key != -1){
-                let photo_index = this.photoKeys.findIndex((elem)=>elem.partId == this.state.dataSource[key].partId && elem.groupId == this.state.dataSource[key].groupId)
-                this.photoKeys.splice(photo_index, 1);
                 await deleteDiagnosticProcess(
                     this.props.orderId,
                     this.state.dataSource[key].diagnosticTemplateId,
                     this.state.dataSource[key].groupId,
                     this.state.dataSource[key].partId,
-                    this.state.dataSource[index].templateIndex
+                    this.state.dataSource[key].templateIndex
                 );
             }
         }
@@ -892,6 +891,10 @@ class DiagnosticTable extends Component {
                     if(comment == null) comment = {
                         comment: undefined,
                         positions: [],
+                        problems: [],
+                        mm: 0,
+                        percent: 0,
+                        deg: 0,
                     }
                     let photo = this.photoKeys.find((data)=>data.partId == partId && data.groupId == groupId);
                     photo = photo ? photo.photo : null;
@@ -1293,7 +1296,7 @@ class DiagnosticStatusButton extends React.Component{
 
     handleClick = async (status) => {
         const { rowProp } = this.props;
-        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, status);
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, status, rowProp.commentary);
         await this.setState({status:status});
         await this.props.getCurrentDiagnostic();
     }
@@ -1368,7 +1371,7 @@ class CommentaryButton extends React.Component{
             visible: false,
             currentCommentaryProps: {
                 name: props.rowProp.detail,
-                positions : [],
+                positions: [],
                 problems: [],
                 params: {
                     mm: 0,
@@ -1435,9 +1438,28 @@ class CommentaryButton extends React.Component{
         })
     }
 
-    showModal = () => {
-        this.setState({
-            currentCommentary: this.props.commentary.comment ? this.props.commentary.comment : this.state.currentCommentary,
+    showModal = async () => {
+        const { commentary, rowProp } = this.props;
+        await getPartProblems(rowProp.partId, (data)=>{
+            this.problems = data.map((elem)=>{
+                return ({
+                    label: elem.description,
+                    value: elem.code,
+                })
+            });
+        });
+        await this.setState({
+            currentCommentary: commentary.comment,
+            currentCommentaryProps: {
+                name: rowProp.detail,
+                positions: commentary.positions || [],
+                problems: commentary.problems || [],
+                params: {
+                    mm: commentary.mm || 0,
+                    percent: commentary.percent || 0,
+                    deg: commentary.deg || 0,
+                }
+            },
             visible: true,
         });
         if(this.commentaryInput.current != undefined) {
@@ -1452,16 +1474,15 @@ class CommentaryButton extends React.Component{
         });
         const { rowProp } = this.props;
         await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, rowProp.status, 
-            JSON.stringify(
-                {
-                    comment: currentCommentary,
-                    positions: currentCommentaryProps.positions,
-                    problems: currentCommentaryProps.problems,
-                    mm: currentCommentaryProps.mm,
-                    percent: currentCommentaryProps.percent,
-                    deg: currentCommentaryProps.deg,
-                }
-            ));
+            {
+                comment: currentCommentary,
+                positions: currentCommentaryProps.positions,
+                problems: currentCommentaryProps.problems,
+                mm: currentCommentaryProps.params.mm,
+                percent: currentCommentaryProps.params.percent,
+                deg: currentCommentaryProps.params.deg,
+            }
+        );
         await this.props.getCurrentDiagnostic();
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
@@ -1560,14 +1581,6 @@ class CommentaryButton extends React.Component{
         const { currentCommentaryProps } = this.state;
         const { commentary, rowProp } = this.props;
         if(!this.problems.length && this.props.rowProp.partId) {
-            await getPartProblems(this.props.rowProp.partId, (data)=>{
-                this.problems = data.map((elem)=>{
-                    return ({
-                        label: elem.description,
-                        value: elem.code,
-                    })
-                });
-            });
             if(this._isMounted) {
                 this.setState({
                     currentCommentaryProps: {
