@@ -1,11 +1,12 @@
 // vendor
 import React, { Component } from 'react';
-import { Table, Button } from 'antd';
+import { Table, Button, Icon, Modal } from 'antd';
 import { FormattedMessage, injectIntl } from 'react-intl';
 import { v4 } from 'uuid';
 
 // proj
 import { Catcher } from 'commons';
+import { AddClientVehicleForm } from 'forms';
 
 // own
 import Styles from './styles.m.css';
@@ -59,12 +60,28 @@ class ClientsVehiclesTable extends Component {
             },
             {
                 title: this.props.intl.formatMessage({
+                    id: 'edit',
+                }),
+                key:    'edit-vehicle',
+                render: (text, record) => {
+                    return (
+                        <EditVheliceModal
+                            vehicle={this.props.vehicles[record.index]}
+                            addClientVehicle={ this.props.addClientVehicle }
+                            index={record.index}
+                            removeClientVehicle={this.props.removeClientVehicle}
+                        />
+                    )
+                }
+            },
+            {
+                title: this.props.intl.formatMessage({
                     id: 'add_client_form.delete_vehicle',
                 }),
                 key:    'delete-vehicle',
                 render: (text, record) => (
                     <Button
-                        type='primary'
+                        type='danger'
                         onClick={ () =>
                             this.props.removeClientVehicle(record.index)
                         }
@@ -97,6 +114,63 @@ class ClientsVehiclesTable extends Component {
                 />
             </Catcher>
         );
+    }
+}
+
+class EditVheliceModal extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            visible: false,
+        }
+    }
+
+    showModal = () => {
+        this.setState({
+            visible: true,
+        });
+    };
+
+    editClientVehicle = (vehicle) => {
+        const { addClientVehicle, removeClientVehicle, index  } = this.props;
+        removeClientVehicle(index);
+        addClientVehicle(vehicle);
+        this.handleCancel;
+    }
+
+    handleCancel = () => {
+        this.setState({
+            visible: false,
+        })
+    }
+
+    render() {
+        const { vehicle, addClientVehicle, removeClientVehicle, index  } = this.props;
+
+        const { visible } = this.state;
+        return (
+            <>
+                <Button
+                    type='primary'
+                    onClick={this.showModal}
+                >
+                    <FormattedMessage id='edit' />
+                </Button>
+                <Modal
+                    visible={visible}
+                    title={<FormattedMessage id='edit' />}
+                    onCancel={this.handleCancel}
+                    footer={null}
+                >
+                    <AddClientVehicleForm
+                        {...vehicle}
+                        editClientVehicle={this.editClientVehicle}
+                        editMode={true}
+                    />
+                </Modal>
+            </>
+        )
     }
 }
 

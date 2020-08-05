@@ -1,6 +1,7 @@
 // vendor
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import _ from 'lodash';
 import {
     Table,
     Button,
@@ -37,6 +38,7 @@ import {
 // own
 import Styles from './styles.m.css';
 
+@injectIntl
 class DiagnosticTable extends Component {
     _isMounted = false;
 
@@ -90,6 +92,10 @@ class DiagnosticTable extends Component {
             {
                 title:  ()=>{
                     const {filterPlan, filterStage, filterStatus, filterCommentary, filterPhoto} = this.state;
+                    var count = this.props.disabled ? 
+                        this.state.dataSource.length :
+                        this.state.dataSource.length - 1;
+                    if(count < 0) count = 0;
                     let type = filterPlan==null&&filterStage==null&&filterStatus==null&&filterCommentary==null&&filterPhoto==null?"":"danger";
                     return(
                         <div className={Styles.filter_column_header_wrap}>
@@ -113,9 +119,7 @@ class DiagnosticTable extends Component {
                                     {this.getCurrentDiagnostic()}
                                 }}
                             >
-                                {this.props.disabled ? 
-                                this.state.dataSource.length :
-                                this.state.dataSource.length - 1}
+                                {count}
                             </Button>
                         </div>
                     )
@@ -268,6 +272,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.ok'/>
                                     </Button>
@@ -293,6 +298,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.bad'/>
                                     </Button>
@@ -318,6 +324,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.critical'/>
                                     </Button>
@@ -343,6 +350,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <Button
                                             className={Styles.filter_half_button}
@@ -379,6 +387,7 @@ class DiagnosticTable extends Component {
                                             }
                                             {this.getCurrentDiagnostic()}
                                         }}
+                                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.filter"})}
                                     >
                                         <FormattedMessage id='order_form_table.diagnostic.status.open'/>
                                     </Button>
@@ -417,29 +426,31 @@ class DiagnosticTable extends Component {
             },
             {
                 title:  ()=>{
+                    /*
+                    <Button
+                        type={this.state.filterCommentary == null?"primary":""}
+                        onClick={()=>{
+                            if(this.state.filterCommentary != null) {
+                                this.setState({
+                                    filterCommentary: null,
+                                });
+                            }
+                            else {
+                                this.setState({
+                                    filterCommentary: "COMMENTARY",
+                                });
+                            }
+                            {this.getCurrentDiagnostic()}
+                        }}
+                    >
+                        {this.withCommentary}
+                    </Button>
+                    */
                     return(
                         <div className={Styles.filter_column_header_wrap}>
                             <p style={{whiteSpace: 'nowrap', overflowX: "hidden"}}>
                                 <FormattedMessage id='order_form_table.diagnostic.commentary' />
                             </p>
-                            <Button
-                                type={this.state.filterCommentary == null?"primary":""}
-                                onClick={()=>{
-                                    if(this.state.filterCommentary != null) {
-                                        this.setState({
-                                            filterCommentary: null,
-                                        });
-                                    }
-                                    else {
-                                        this.setState({
-                                            filterCommentary: "COMMENTARY",
-                                        });
-                                    }
-                                    {this.getCurrentDiagnostic()}
-                                }}
-                            >
-                                {this.withCommentary}
-                            </Button>
                         </div>
                     )
                 },
@@ -448,7 +459,7 @@ class DiagnosticTable extends Component {
                 width:     '5%',
                 render: (commentary, rowProp) => (
                     <CommentaryButton
-                        disabled={this.props.disabled || rowProp.disabled}
+                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                         commentary={commentary}
                         rowProp={rowProp}
@@ -459,40 +470,38 @@ class DiagnosticTable extends Component {
                 title:  ()=>{
                     return(
                         <div className={Styles.filter_column_header_wrap}>
-                            <FormattedMessage id='order_form_table.diagnostic.photo' />
-                            <Button
-                                disabled
-                                type={this.state.filterPhoto == null?"primary":""}
-                                onClick={()=>{
-                                    if(this.state.filterPhoto != null) {
-                                        this.setState({
-                                            filterPhoto: null,
-                                        });
-                                    }
-                                    else {
-                                        this.setState({
-                                            filterPhoto: "PHOTO",
-                                        });
-                                    }
-                                    {this.getCurrentDiagnostic()}
-                                }}
-                            >
-                                {this.withPhoto}
-                            </Button>
+                            <FormattedMessage id='order_form_table.diagnostic.duplicate' />
                         </div>
                     )
                 },
-                dataIndex: 'photo',
-                key:       'photo',
+                dataIndex: 'duplicate',
+                key:       'duplicate',
                 width:     '5%',
-                render: (photo, rowProp) => (
-                    <PhotoButton
+                render: (data, rowProp) => (
+                    /*<PhotoButton
                         disabled={this.props.disabled || rowProp.disabled}
                         getCurrentDiagnostic={this.getCurrentDiagnostic}
                         setPhoto={this.setPhoto}
                         rowProp={rowProp}
                         photo={photo}
-                    />
+                    />*/
+                    <Button
+                        type="primary"
+                        disabled={this.props.disabled || rowProp.disabled || !rowProp.partId}
+                        onClick={async ()=>{
+                            await addNewDiagnosticRow(
+                                rowProp.orderId,
+                                rowProp.diagnosticTemplateId,
+                                rowProp.groupId,
+                                rowProp.partId,
+                                rowProp.templateIndex
+                            );
+                            await this.getCurrentDiagnostic()
+                        }}
+                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.duplicate_line"})}
+                    >
+                        <Icon type="plus"/>
+                    </Button>
                 ),
             },
             {
@@ -685,6 +694,7 @@ class DiagnosticTable extends Component {
             this.state.dataSource[index].diagnosticTemplateId,
             this.state.dataSource[index].groupId,
             this.state.dataSource[index].partId,
+            this.state.dataSource[index].templateIndex
         );
         this.setState({
             selectedRows: [],
@@ -722,7 +732,9 @@ class DiagnosticTable extends Component {
                     this.state.dataSource[key].diagnosticTemplateId,
                     this.state.dataSource[key].groupId,
                     this.state.dataSource[key].partId,
-                    status
+                    this.state.dataSource[key].templateIndex,
+                    status,
+                    this.state.dataSource[key].commentary,
                 );
             }
         }
@@ -739,13 +751,12 @@ class DiagnosticTable extends Component {
         for(let i = 0; i < this.state.selectedRows.length; i++){
             let key = this.state.dataSource.findIndex((elem)=>elem.key == this.state.selectedRows[i]);
             if(key != -1){
-                let photo_index = this.photoKeys.findIndex((elem)=>elem.partId == this.state.dataSource[key].partId && elem.groupId == this.state.dataSource[key].groupId)
-                this.photoKeys.splice(photo_index, 1);
                 await deleteDiagnosticProcess(
                     this.props.orderId,
                     this.state.dataSource[key].diagnosticTemplateId,
                     this.state.dataSource[key].groupId,
                     this.state.dataSource[key].partId,
+                    this.state.dataSource[key].templateIndex
                 );
             }
         }
@@ -856,6 +867,9 @@ class DiagnosticTable extends Component {
                     "parts",
                 ]).parts;
                 for(let k = 0; k < partsCount; k++) {
+                    let index = _.pick(parts[k], [
+                        "index",
+                    ]).index;
                     let partTitle = _.pick(parts[k], [
                         "partTitle",
                     ]).partTitle;
@@ -874,10 +888,18 @@ class DiagnosticTable extends Component {
                     let comment = _.pick(parts[k], [
                         "comment",
                     ]).comment;
-                    if(comment == null) comment = {comment: null}
+                    if(comment == null) comment = {
+                        comment: undefined,
+                        positions: [],
+                        problems: [],
+                        mm: 0,
+                        percent: 0,
+                        deg: 0,
+                    }
                     let photo = this.photoKeys.find((data)=>data.partId == partId && data.groupId == groupId);
                     photo = photo ? photo.photo : null;
                     dataSource.push({
+                        templateIndex: index,
                         key: key,
                         partId: partId,
                         plan: diagnosticTemplateTitle,
@@ -918,7 +940,7 @@ class DiagnosticTable extends Component {
                     if(data.status == 2) this.bad++;
                     if(data.status == 3) this.critical++;
                 }
-                if(data.commentary != undefined) this.withCommentary++;
+                if(data.commentary.comment) this.withCommentary++;
                 if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
             })
             /*filtredData.push({
@@ -944,7 +966,7 @@ class DiagnosticTable extends Component {
         }
         else{
             dataSource.map((data)=>{
-                if(data.commentary != undefined) this.withCommentary++;
+                if(data.commentary.comment) this.withCommentary++;
                 if(data.photo != undefined && data.photo.length > 0) this.withPhoto++;
             })
             if(!disabled) {
@@ -1084,6 +1106,7 @@ class DiagnosticTable extends Component {
     }
 }
 
+@injectIntl
 class DiagnosticTableHeader extends React.Component{
     constructor(props){
         super(props);
@@ -1173,7 +1196,7 @@ class DiagnosticTableHeader extends React.Component{
                         confirmed={disabled}
                         orderId={this.props.orderId}
                         isMobile={false}
-                        dataSource = {this.state.dataSource}
+                        dataSource = {this.state.dataSource.slice(0)}
                         orderServices={this.props.orderServices}
                         orderDetails={this.props.orderDetails}
                         getCurrentDiagnostic={this.props.getCurrentDiagnostic}
@@ -1182,18 +1205,41 @@ class DiagnosticTableHeader extends React.Component{
                     />
                 </div>
                 <div style={{ width: "10%" }}>
-                    <Button disabled={disabled} type="primary" onClick={()=>{this.handleClickStatusButtons(0)}} style={{width: "80%", padding: 0}}>
+                    <Button
+                        disabled={disabled}
+                        type="primary"
+                        onClick={()=>{this.handleClickStatusButtons(0)}}
+                        style={{width: "80%", padding: 0}}
+                    >
                         <FormattedMessage id='order_form_table.diagnostic.status.edit' />
                     </Button>
                 </div>
                 <div className={Styles.diagnostic_status_button_wrap} style={{ width: "15%" }}>
-                    <Button disabled={disabled} className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(1)}}  style={{background:"rgb(81, 205, 102)"}}>
+                    <Button
+                        disabled={disabled}
+                        className={Styles.diagnostic_status_button}
+                        onClick={()=>{this.handleClickStatusButtons(1)}}
+                        style={{background:"rgb(81, 205, 102)"}}
+                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.ok_title"})}
+                    >
                         <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                     </Button>
-                    <Button disabled={disabled} className={Styles.diagnostic_status_button} onClick={()=>{this.handleClickStatusButtons(2)}} style={{background:"rgb(255, 255, 0)"}}>
+                    <Button
+                        disabled={disabled}
+                        className={Styles.diagnostic_status_button}
+                        onClick={()=>{this.handleClickStatusButtons(2)}}
+                        style={{background:"rgb(255, 255, 0)"}}
+                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.replace_title"})}
+                    >
                         <FormattedMessage id='order_form_table.diagnostic.status.bad' />
                     </Button>
-                    <Button disabled={disabled} className={Styles.diagnostic_status_button}  type="danger" onClick={()=>{this.handleClickStatusButtons(3)}} style={{background:"rgb(255, 126, 126)", color: "rgba(0, 0, 0, 0.65)"}}>
+                    <Button
+                        disabled={disabled}
+                        className={Styles.diagnostic_status_button}
+                        type="danger" onClick={()=>{this.handleClickStatusButtons(3)}}
+                        style={{background:"rgb(255, 126, 126)", color: "rgba(0, 0, 0, 0.65)"}}
+                        title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.critical_title"})}
+                    >
                         <FormattedMessage id='order_form_table.diagnostic.status.critical' />
                     </Button>
                 </div>
@@ -1209,6 +1255,7 @@ class DiagnosticTableHeader extends React.Component{
     }
 }
 
+@injectIntl
 class DiagnosticStatusButton extends React.Component{
     constructor(props) {
         super(props);
@@ -1249,8 +1296,7 @@ class DiagnosticStatusButton extends React.Component{
 
     handleClick = async (status) => {
         const { rowProp } = this.props;
-        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, status);
-        await this.setState({status:status});
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, status, rowProp.commentary);
         await this.props.getCurrentDiagnostic();
     }
     render(){
@@ -1288,6 +1334,7 @@ class DiagnosticStatusButton extends React.Component{
                     className={Styles.diagnostic_status_button}
                     onClick={()=>this.handleClick(1)}
                     style={{background:'rgb(81, 205, 102)'}}
+                    title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.ok_title"})}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.status.ok' />
                 </Button>
@@ -1296,6 +1343,7 @@ class DiagnosticStatusButton extends React.Component{
                     className={Styles.diagnostic_status_button}
                     onClick={()=>this.handleClick(2)}
                     style={{background:'rgb(255, 255, 0)'}}
+                    title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.replace_title"})}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.status.bad' />
                 </Button>
@@ -1304,6 +1352,7 @@ class DiagnosticStatusButton extends React.Component{
                     className={Styles.diagnostic_status_button} type="danger"
                     onClick={()=>this.handleClick(3)}
                     style={{background:'rgb(255, 126, 126)', color: 'rgba(0, 0, 0, 0.65)'}}
+                    title={this.props.intl.formatMessage({id: "order_form_table.diagnostic.critical_title"})}
                 >
                     <FormattedMessage id='order_form_table.diagnostic.status.critical' />
                 </Button>
@@ -1319,23 +1368,43 @@ class CommentaryButton extends React.Component{
         this.state = {
             loading: false,
             visible: false,
-            problems: undefined,
             currentCommentaryProps: {
-                rcl: null,
-                fcl: null,
-                io: null,
-                tb: null,
-                side: [],
-                front: [],
-                back: [],
+                name: props.rowProp.detail,
+                positions: [],
                 problems: [],
-                mm:null,
-                percent: null,
-                deg: null,
+                params: {
+                    mm: 0,
+                    percent: 0,
+                    deg: 0,
+                }
             },
-            currentCommentary: null,
+            currentCommentary: undefined,
         }
         this.commentaryInput = React.createRef();
+        this.positions = [
+            "front_axle",
+            "ahead",
+            "overhead",
+            "rear_axle",
+            "behind",
+            "down_below",
+            "Right_wheel",
+            "on_right",
+            "outside",
+            "left_wheel",
+            "left",
+            "inside",
+            "lever_arm",
+            "at_both_sides",
+            "centered",
+        ];
+        this.problems = [];
+        this.params = [
+            {name: "mm", symbol: "mm"},
+            {name: "percent", symbol: "%"},
+            {name: "deg", symbol: "°"},
+        ];
+        this._isMounted = false;
     }
 
     getPositions() {
@@ -1361,64 +1430,35 @@ class CommentaryButton extends React.Component{
             return response.json()
         })
         .then(function (data) {
-            that.setState({
-                rcl: data.rcl,
-                fcr: data.fcr,
-                tb: data.tb,
-                io: data.io,
-            });
-            if(data.rcl != null && data.rcl.length==1) {
-                switch (data.rcl) {
-                    case "R":
-                        that.setCurrentCommentaryProps('back', 'RIGHT');
-                        break;
-                    case "L":
-                        that.setCurrentCommentaryProps('back', 'LEFT');
-                        break;
-                }
-            }
-            if(data.fcr != null && data.fcr.length==1) {
-                switch (data.fcr) {
-                    case "F":
-                        that.setCurrentCommentaryProps('side', 'FRONT');
-                        break;
-                    case "R":
-                        that.setCurrentCommentaryProps('side', 'REAR');
-                        break;
-                    case "C":
-                        that.setCurrentCommentaryProps('side', 'MIDDLE');
-                        break;
-                }
-            }
-            if(data.tb != null && data.tb.length==1) {
-                switch (data.tb) {
-                    case "T":
-                        that.setCurrentCommentaryProps('side', 'TOP');
-                        break;
-                    case "B":
-                        that.setCurrentCommentaryProps('side', 'BOTTOM');
-                        break;
-                }
-            }
-            if(data.io != null && data.io.length==1) {
-                switch (data.io) {
-                    case "I":
-                        that.setCurrentCommentaryProps('front', 'IN');
-                        break;
-                    case "O":
-                        that.setCurrentCommentaryProps('front', 'OUT');
-                        break;
-                }
-            }
+            console.log(data);
         })
         .catch(function (error) {
             console.log('error', error)
         })
     }
 
-    showModal = () => {
-        this.setState({
-            currentCommentary: this.props.commentary.comment?this.props.commentary.comment:this.state.currentCommentary,
+    showModal = async () => {
+        const { commentary, rowProp } = this.props;
+        await getPartProblems(rowProp.partId, (data)=>{
+            this.problems = data.map((elem)=>{
+                return ({
+                    label: elem.description,
+                    value: elem.code,
+                })
+            });
+        });
+        await this.setState({
+            currentCommentary: commentary.comment,
+            currentCommentaryProps: {
+                name: rowProp.detail,
+                positions: commentary.positions || [],
+                problems: commentary.problems || [],
+                params: {
+                    mm: commentary.mm || 0,
+                    percent: commentary.percent || 0,
+                    deg: commentary.deg || 0,
+                }
+            },
             visible: true,
         });
         if(this.commentaryInput.current != undefined) {
@@ -1427,20 +1467,21 @@ class CommentaryButton extends React.Component{
     };
 
     handleOk = async () => {
+        const {currentCommentary, currentCommentaryProps} = this.state;
         this.setState({
             loading: true,
         });
         const { rowProp } = this.props;
-        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.status, 
-            JSON.stringify(
-                {
-                    comment: this.state.currentCommentary,
-                    problems: this.state.currentCommentaryProps.problems,
-                    mm: this.state.currentCommentaryProps.mm,
-                    percent: this.state.currentCommentaryProps.percent,
-                    deg: this.state.currentCommentaryProps.deg,
-                }
-            ));
+        await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, rowProp.status, 
+            {
+                comment: currentCommentary,
+                positions: currentCommentaryProps.positions,
+                problems: currentCommentaryProps.problems,
+                mm: currentCommentaryProps.params.mm,
+                percent: currentCommentaryProps.params.percent,
+                deg: currentCommentaryProps.params.deg,
+            }
+        );
         await this.props.getCurrentDiagnostic();
         setTimeout(() => {
             this.setState({ loading: false, visible: false });
@@ -1454,99 +1495,120 @@ class CommentaryButton extends React.Component{
         });
     };
 
-    rendetHeader = () => {
+    renderHeader = () => {
+        const { currentCommentaryProps } = this.state;
+        const { problems } = this;
         return (
             <div>
               <p>
                   {this.props.rowProp.detail}
               </p>
               <p style={{fontSize:"16px", fontStyle: "italic", fontWeight: "normal"}}>
-                  {this.props.rowProp.actionTitle}
+                  {
+                    //this.props.rowProp.actionTitle
+                    currentCommentaryProps.problems.map((data, index)=>{
+                        const punctuation = index == currentCommentaryProps.problems.length - 1 ? "" : ",";
+                        const problemLable = problems.find((problem)=>problem.value == data);
+                        return ` ${problemLable ? problemLable.label.toLowerCase() : null}${punctuation}`
+                    })
+                  }
               </p>
             </div>
           );
     }
 
-    setCurrentCommentaryProps(key, value) {
-        const { rowProp } = this.props;
-        if(key == "mm" || key == "percent" || key == "deg" || key == "problems") {
-            if(this.state.currentCommentaryProps[key] == value) {
-                this.state.currentCommentaryProps[key] = null;
+    getCommentary() {
+        const { currentCommentaryProps } = this.state;
+        const { problems, params } = this;
+        const paramsValue = Object.entries(currentCommentaryProps.params).map((pair, key)=>{
+            if(pair[1] !== 0) return ` ${pair[1]}${params[key].symbol}`; 
+        });
+        const isParamsSet = paramsValue.some((param) => !_.isNil(param));
+        var currentCommentary = this.props.rowProp.detail;
+
+        if(currentCommentaryProps.positions.length || currentCommentaryProps.problems.length || isParamsSet) {
+            currentCommentary += ' -'
+            if(currentCommentaryProps.positions.length) {
+                currentCommentary += currentCommentaryProps.positions.map((data)=>` ${this.props.intl.formatMessage({id: data}).toLowerCase()}`) + ';';
             }
-            else {
-                this.state.currentCommentaryProps[key] = value;
+            if(currentCommentaryProps.problems.length) {
+                currentCommentary += currentCommentaryProps.problems.map((data)=>{
+                    return ` ${problems.find((problem)=>problem.value == data).label.toLowerCase()}`;
+                }) + ';';
+            }
+            if(isParamsSet) {
+                currentCommentary += paramsValue.filter((param)=>!_.isNil(param)) + ';';
             }
         }
-        else {
-            if(this.state.currentCommentaryProps[key].indexOf(value) != -1) {
-                this.state.currentCommentaryProps[key] = [...this.state.currentCommentaryProps[key]].filter((data) => data != value);;
-            }
-            else {
-                this.state.currentCommentaryProps[key].push(value);
-            }
-        }
-
-        const { side, back, front, problems, mm, percent, deg } = this.state.currentCommentaryProps;
-        var commentary = `${rowProp.detail} - `;
-        if(side.length) commentary += ` ${side.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
-        if(front.length) commentary += ` ${front.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
-        if(back.length) commentary += ` ${back.map((data)=>this.props.intl.formatMessage({id: data}))}. `;
-        if(problems.length) commentary += ` ${problems.map((data)=>data)}. `;
-        if(mm) commentary += ` ${mm}mm. `;
-        if(percent) commentary += ` ${percent}%. `;
-        if(deg) commentary += ` ${deg}°. `;
-
-
         this.setState({
-            currentCommentary: commentary,
+            currentCommentary: currentCommentary
         });
     }
 
-    componentDidMount() {
-        if(!this.state.problems && this.props.rowProp.partId) {
-            getPartProblems(this.props.rowProp.partId, (data)=>{
-                this.setState({problems: data})
-            });
-            this.state.currentCommentaryProps.problems = this.props.commentary.problems ? this.props.commentary.problems : [];
-            this.state.currentCommentaryProps.mm = this.props.commentary.mm ? this.props.commentary.mm : 0;
-            this.state.currentCommentaryProps.percent = this.props.commentary.percent ? this.props.commentary.percent : 0;
-            this.state.currentCommentaryProps.deg = this.props.commentary.deg ? this.props.commentary.deg : 0;
-            this.getPositions();
+    setCommentaryPosition(position) {
+        const { currentCommentaryProps } = this.state;
+        const positionIndex = currentCommentaryProps.positions.indexOf(position);
+        if(positionIndex == -1) {
+            currentCommentaryProps.positions.push(position);
+        }
+        else {
+            currentCommentaryProps.positions = currentCommentaryProps.positions.filter((value, index)=>index != positionIndex);
+        }
+        this.getCommentary();
+    }
+
+    setCommentaryProblems(value) {
+        const { currentCommentaryProps } = this.state;
+        const problemIndex = currentCommentaryProps.problems.indexOf(value);
+        if(problemIndex == -1) {
+            currentCommentaryProps.problems.push(value);
+        }
+        else {
+            currentCommentaryProps.problems = currentCommentaryProps.problems.filter((value, index)=>index != problemIndex);
+        }
+        this.getCommentary();
+    }
+
+    setCommetaryParams(param, value) {
+        const { currentCommentaryProps } = this.state;
+        currentCommentaryProps.params[param] = value;
+        this.getCommentary();
+    }
+
+    async componentDidMount() {
+        this._isMounted = true;
+        const { currentCommentaryProps } = this.state;
+        const { commentary, rowProp } = this.props;
+        if(!this.problems.length && this.props.rowProp.partId) {
+            if(this._isMounted) {
+                this.setState({
+                    currentCommentaryProps: {
+                        name: rowProp.detail,
+                        positions: commentary.positions || [],
+                        problems: commentary.problems || [],
+                        params: {
+                            mm: commentary.mm || 0,
+                            percent: commentary.percent || 0,
+                            deg: commentary.deg || 0,
+                        }
+                    },
+                })
+            }
+            //await this.getPositions();
         }
     }
 
-    componentDidUpdate() {
-        
+    componentWillUnmount() {
+        this._isMounted = false;
     }
 
     render() {
         const { TextArea } = Input;
-        const { visible, loading, problems, currentCommentaryProps, currentCommentary } = this.state;
-        const { commentary } = this.props;
-        const { disabled, rowProp } = this.props;
-        var problemOptions = [];
-        if(problems) {
-            problems.map((data)=>{
-                if(data.code) {
-                    problemOptions.push({
-                        label: data.description, value: data.code
-                    })
-                }
-            })
-        }
-        const defaultProblems = commentary.problems ? commentary.problems : [];
+        const { visible, loading, currentCommentaryProps, currentCommentary } = this.state;
+        const { disabled, commentary } = this.props;
+        const { positions, problems, params } = this;
 
-        if(!rowProp.partId) {
-            return (
-                <Button
-                    disabled
-                    type="primary"
-                    onClick={this.showModal}
-                >
-                    <Icon type="message" />
-                </Button>
-            )
-        }
+        const defaultProblems = commentary.problems ? commentary.problems : [];
 
         return (
             <div>
@@ -1554,6 +1616,7 @@ class CommentaryButton extends React.Component{
                     <Button
                         className={Styles.commentaryButton}
                         onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.edit"})}
                     >
                         <Icon
                             className={Styles.commentaryButtonIcon}
@@ -1565,13 +1628,14 @@ class CommentaryButton extends React.Component{
                         disabled={disabled}
                         type="primary"
                         onClick={this.showModal}
+                        title={this.props.intl.formatMessage({id: "commentary.add"})}
                     >
                         <Icon type="message" />
                     </Button>
                 )}
                 <Modal
                     visible={visible}
-                    title={this.rendetHeader()}
+                    title={this.renderHeader()}
                     onOk={this.handleOk}
                     onCancel={this.handleCancel}
                     footer={disabled?(
@@ -1586,171 +1650,78 @@ class CommentaryButton extends React.Component{
                         ])
                     }
                 >
-                    {!disabled ? 
-                    <div className={Styles.commentaryContentWrap}>
-                        <div className={Styles.commentaryVehicleSchemeWrap}>
-                            <div style={{
-                                width: "360px",
-                                height: "160px",
-                                margin: "0 auto",
-                                position: "relative",
-                                backgroundImage: `url('${images.vehicleSchemeSide}')`,
-                                backgroundSize: "contain",
-                                backgroundPosition: "center",
-                                backgroundRepeat: "no-repeat",
-                            }}>
-                                <Button
-                                    disabled={this.state.tb == undefined || this.state.tb.indexOf("T") == -1}
-                                    type={currentCommentaryProps.side.indexOf("TOP") != -1 ? null : "primary"}
-                                    style={{position: "absolute", top: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'TOP')}}
-                                >
-                                    <FormattedMessage id='TOP'/>
-                                </Button>
-                                <Button
-                                    disabled={this.state.fcr == undefined || this.state.fcr.indexOf("R") == -1}
-                                    type={currentCommentaryProps.side.indexOf("REAR") != -1 ? null : "primary"}
-                                    style={{position: "absolute", top: "50%", left: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'REAR')}}
-                                >
-                                    <FormattedMessage id='REAR'/>
-                                </Button>
-                                <Button
-                                    disabled={this.state.tb == undefined || this.state.tb.indexOf("B") == -1}
-                                    type={currentCommentaryProps.side.indexOf("BOTTOM") != -1 ? null : "primary"}
-                                    style={{position: "absolute", bottom: "0%", left: "50%", transform: "translateX(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'BOTTOM')}}
-                                >
-                                    <FormattedMessage id='BOTTOM'/>
-                                </Button>
-                                <Button
-                                    disabled={this.state.fcr == undefined || this.state.fcr.indexOf("F") == -1}
-                                    type={currentCommentaryProps.side.indexOf("FRONT") != -1 ? null : "primary"}
-                                    style={{position: "absolute", top: "50%", right: "0%", transform: "translateY(-50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'FRONT')}}
-                                >
-                                    <FormattedMessage id='FRONT'/>
-                                </Button>
-                                <Button
-                                    disabled={this.state.fcr == undefined || this.state.fcr.indexOf("С") == -1}
-                                    type={currentCommentaryProps.side.indexOf("MIDDLE") != -1 ? null : "primary"}
-                                    style={{position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)"}}
-                                    onClick={()=>{this.setCurrentCommentaryProps('side', 'MIDDLE')}}
-                                >
-                                    <FormattedMessage id='MIDDLE'/>
-                                </Button>
-                            </div>
-                            <div style={{display: "flex", justifyContent: "center"}}>
-                                <div style={{
-                                    width: "180px",
-                                    height: "160px",
-                                    position: "relative",
-                                    backgroundImage: `url('${images.vehicleSchemeBack}')`,
-                                    backgroundSize: "contain",
-                                    backgroundPosition: "center",
-                                    backgroundRepeat: "no-repeat",
-                                }}>
+                    <>
+                    <div className={Styles.commentaryVehicleSchemeWrap}>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='commentary_modal.where'/>?
+                        </p>
+                        <div className={Styles.blockButtonsWrap}>
+                            {positions.map((position, key)=> {
+                                const disabledClass = disabled && currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ?
+                                    Styles.disabledCommentaryProp : ""
+                                return (
                                     <Button
-                                        disabled={this.state.rcl == undefined || this.state.rcl.indexOf("L") == -1}
-                                        type={currentCommentaryProps.back.indexOf("LEFT") != -1 ? null : "primary"}
-                                        style={{position: "absolute", left: "0%", bottom: "0%"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'LEFT')}}
+                                        key={key}
+                                        type={currentCommentaryProps.positions.findIndex((elem)=>position==elem) > -1 ? 'normal' : 'primary'}
+                                        className={`${Styles.commentaryBlockButton} ${disabledClass}`}
+                                        onClick={()=>{this.setCommentaryPosition(position)}}
+                                        disabled={disabled}
                                     >
-                                        <FormattedMessage id='LEFT'/>
+                                        <FormattedMessage id={position}/>
                                     </Button>
-                                    <Button
-                                        disabled={this.state.rcl == undefined || this.state.rcl.indexOf("C") == -1}
-                                        type={currentCommentaryProps.back.indexOf("CENTER") != -1 ? null : "primary"}
-                                        style={{position: "absolute", left: "50%", bottom: "50%", transform: "translate(-50%, 50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'CENTER')}}
-                                    >
-                                        <FormattedMessage id='CENTER'/>
-                                    </Button>
-                                    <Button
-                                        disabled={this.state.rcl == undefined || this.state.rcl.indexOf("R") == -1}
-                                        type={currentCommentaryProps.back.indexOf("RIGHT") != -1 ? null : "primary"}
-                                        style={{position: "absolute", right: "0%", bottom: "0%"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('back', 'RIGHT')}}
-                                    >
-                                        <FormattedMessage id='RIGHT'/>
-                                    </Button>
-                                </div>
-                                <div style={{
-                                    width: "180px",
-                                    height: "160px",
-                                    position: "relative",
-                                    backgroundImage: `url('${images.vehicleSchemeFront}')`,
-                                    backgroundSize: "contain",
-                                    backgroundPosition: "center",
-                                    backgroundRepeat: "no-repeat",
-                                }}>
-                                    <Button
-                                        disabled={this.state.io == undefined || this.state.io.indexOf("I") == -1}
-                                        type={currentCommentaryProps.front.indexOf("IN") != -1 ? null : "primary"}
-                                        style={{position: "absolute", left: "50%", top: "50%", transform: "translate(-50%, -50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'IN')}}
-                                    >
-                                        <FormattedMessage id='IN'/>
-                                    </Button>
-                                    <Button
-                                        disabled={this.state.io == undefined || this.state.io.indexOf("O") == -1}
-                                        type={currentCommentaryProps.front.indexOf("OUT") != -1 ? null : "primary"}
-                                        style={{position: "absolute", right: "0%", top: "50%", transform: "translateY(-50%)"}}
-                                        onClick={()=>{this.setCurrentCommentaryProps('front', 'OUT')}}
-                                    >
-                                        <FormattedMessage id='OUT'/>
-                                    </Button>
-                                </div>
-                            </div>
+                                )
+                            })}
                         </div>
-                        {problemOptions.length > 0 ?
-                            <div>
-                                <p className={Styles.commentarySectionHeader}>Тип проблемы:</p>
-                                <div>
-                                    <Checkbox.Group
-                                        options={problemOptions}
-                                        defaultValue={defaultProblems}
-                                        onChange={(problems)=>{this.setCurrentCommentaryProps('problems', problems)}}
-                                    />
-                                </div>
-                            </div>
-                        : <></>}
-                        <div>
-                            <p className={Styles.commentarySectionHeader}>Параметры:</p>
-                            <div style={{display: "flex"}}>
-                                <div className={Styles.commentaryParameter}>
-                                    <InputNumber
-                                        value={currentCommentaryProps.mm || 0}
-                                        formatter={value => `${value} mm.`}
-                                        parser={value => value.replace(' %', '')}
-                                        onChange={(mm)=>{this.setCurrentCommentaryProps('mm', mm)}}
-                                    />
-                                </div>
-                                <div className={Styles.commentaryParameter}>
-                                    <InputNumber
-                                        value={currentCommentaryProps.percent || 0}
-                                        formatter={value => `${value} %`}
-                                        parser={value => value.replace(' %', '')}
-                                        onChange={(percent)=>{this.setCurrentCommentaryProps('percent', percent)}}
-                                    /> 
-                                </div>
-                                <div className={Styles.commentaryParameter}>
-                                    <InputNumber
-                                        value={currentCommentaryProps.deg || 0}
-                                        formatter={value => `${value} °`}
-                                        parser={value => value.replace(' °', '')}
-                                        onChange={(deg)=>{this.setCurrentCommentaryProps('deg', deg)}}
-                                    />
-                                </div>
-                            </div>
+                    </div>
+                    <div className={Styles.commentaryVehicleSchemeWrap}>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='commentary_modal.what'/>?
+                        </p>
+                        <div className={Styles.blockButtonsWrap}>
+                            {problems.map((problem, key) => {
+                                const disabledClass = disabled && currentCommentaryProps.problems.findIndex((elem)=>problem.value==elem) > -1 ?
+                                    Styles.disabledCommentaryProp : ""
+                                return (
+                                    <Button
+                                        disabled={disabled}
+                                        key={key}
+                                        type={currentCommentaryProps.problems.findIndex((elem)=>problem.value==elem) > -1 ? 'normal' : 'primary'}
+                                        className={`${Styles.commentaryBlockButton} ${disabledClass}`}
+                                        onClick={()=>{this.setCommentaryProblems(problem.value)}}
+                                    >
+                                        <span>{problem.label[0].toUpperCase() + problem.label.toLowerCase().slice(1)}</span>
+                                    </Button>
+                                )
+                            })}
                         </div>
-                    </div> : null}
+                    </div>
+                    <div  className={Styles.commentaryVehicleSchemeWrap}>
+                        <p className={Styles.commentarySectionHeader}>
+                            <FormattedMessage id='commentary_modal.parameters'/>
+                        </p>
+                        <div className={Styles.blockButtonsWrap}>
+                            {params.map((param, key) => {
+                                return (
+                                    <InputNumber
+                                        disabled={disabled}
+                                        key={key}
+                                        className={`${Styles.commentaryBlockButton} ${disabled ? Styles.disabledCommentaryProp : ""}`}
+                                        value={currentCommentaryProps.params[param.name]}
+                                        formatter={value => `${value} ${param.symbol}`}
+                                        parser={value => value.replace(` ${param.symbol}`, '')}
+                                        onChange={(value)=>{this.setCommetaryParams(param.name, value)}}
+                                    />
+                                )
+                            })}
+                        </div>
+                    </div>
                     <div>
                         <p className={Styles.commentarySectionHeader}>
-                            <FormattedMessage id='order_form_table.diagnostic.commentary' />:
+                            <FormattedMessage id='order_form_table.diagnostic.commentary' />
                         </p>
                         <TextArea
                             disabled={disabled}
+                            className={disabled ? Styles.disabledCommentaryProp : ""}
                             value={currentCommentary}
                             placeholder={`${this.props.intl.formatMessage({id: 'comment'})}...`}
                             autoFocus
@@ -1763,6 +1734,7 @@ class CommentaryButton extends React.Component{
                             ref={this.commentaryInput}
                         />
                     </div>
+                    </>
                 </Modal>
             </div>
         );
@@ -1932,7 +1904,7 @@ class DeleteProcessButton extends React.Component{
     handleClick = () => {
         const { rowProp } = this.props;
             if(rowProp.partId) {
-            deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId);
+            deleteDiagnosticProcess(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex);
             ReactDOM.findDOMNode(this).parentNode.parentNode.style.backgroundColor = "";
             this.props.deleteRow(this.props.rowProp.key-1);
             this.setState({deleted:true});

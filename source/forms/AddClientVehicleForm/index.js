@@ -43,16 +43,50 @@ const formItemLayout = {
 export class AddClientVehicleForm extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            editModeFetching: props.editMode,
+        }
+    }
+
+    normalizeMainTableData() {
+        const {
+            year,
+            makeId,
+            modelId,
+            modificationId,
+            number,
+            vin,
+        } = this.props;
+
+        const {
+            setFieldsValue,
+        } = this.props.form;
+
+        setFieldsValue({
+            year: year,
+            makeId: makeId,
+            modelId: modelId,
+            modificationId: modificationId,
+            number: number,
+            vin: vin,
+        });
     }
 
     /* eslint-disable complexity */
     render() {
         const {
+            year,
+            makeId,
+            modelId,
+            modificationId,
+            number,
             makes,
             models,
             modifications,
             lastFilterAction,
             editableVehicle,
+            editMode,
         } = this.props;
 
         const years = Array(new Date().getFullYear() - 1900 + 1)
@@ -67,6 +101,42 @@ export class AddClientVehicleForm extends Component {
         } = this.props.form;
 
         const vehicle = getFieldsValue();
+
+        if(this.state.editModeFetching) {
+            if(![ YEAR_VEHICLES_INFO_FILTER_TYPE, MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)) {
+                const yearFilters = { year: year };
+                this.props.fetchVehiclesInfo(
+                    YEAR_VEHICLES_INFO_FILTER_TYPE,
+                    yearFilters,
+                );
+            }
+            else if(![ MAKE_VEHICLES_INFO_FILTER_TYPE, MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)) {
+                const makeFilters = _.pick(
+                    { ...vehicle, makeId: makeId },
+                    [ 'year', 'makeId' ],
+                );
+                this.props.fetchVehiclesInfo(
+                    MAKE_VEHICLES_INFO_FILTER_TYPE,
+                    makeFilters,
+                );
+            }
+            else if(![ MODEL_VEHICLES_INFO_FILTER_TYPE ].includes(lastFilterAction)) {
+                const modelFilters = _.pick(
+                    { ...vehicle, modelId: modelId },
+                    [ 'modelId', 'year', 'makeId' ],
+                );
+                this.props.fetchVehiclesInfo(
+                    MODEL_VEHICLES_INFO_FILTER_TYPE,
+                    modelFilters,
+                );
+            }
+            else {
+                this.normalizeMainTableData();
+                this.setState({
+                    editModeFetching: false,
+                });
+            }
+        }
 
         return (
             <Form className={ Styles.form }>
@@ -100,6 +170,7 @@ export class AddClientVehicleForm extends Component {
                 { years && (
                     <DecoratedSelect
                         field={ 'year' }
+                        initialValue={ year }
                         showSearch
                         formItem
                         formItemLayout={ formItemLayout }
@@ -167,6 +238,7 @@ export class AddClientVehicleForm extends Component {
                                 MAKE_VEHICLES_INFO_FILTER_TYPE,
                                 filters,
                             );
+                            
                         } }
                         getPopupContainer={ trigger => trigger.parentNode }
                         dropdownMatchSelectWidth={ false }
@@ -264,6 +336,7 @@ export class AddClientVehicleForm extends Component {
                     <div className={ Styles.numWrapper }>
                         <DecoratedInput
                             field='number'
+                            initialValue={ number }
                             hasFeedback
                             formItem
                             formItemLayout={ formItemLayout }
@@ -329,23 +402,39 @@ export class AddClientVehicleForm extends Component {
                                     const modif = _.find(modifications, filter);
 
                                     this.props.resetAddClientVehicleForm();
-                                    this.props.addClientVehicle({
-                                        ...vehicle,
-                                        ...names,
-                                        ...this.props.tecdoc
-                                            ? {
-                                                tecdocId: _.get(
-                                                    modif,
-                                                    'tecdocId',
-                                                ),
-                                            }
-                                            : {},
-                                    });
+                                    if(editMode) {
+                                        this.props.editClientVehicle({
+                                            ...vehicle,
+                                            ...names,
+                                            ...this.props.tecdoc
+                                                ? {
+                                                    tecdocId: _.get(
+                                                        modif,
+                                                        'tecdocId',
+                                                    ),
+                                                }
+                                                : {},
+                                        });
+                                    }
+                                    else {
+                                        this.props.addClientVehicle({
+                                            ...vehicle,
+                                            ...names,
+                                            ...this.props.tecdoc
+                                                ? {
+                                                    tecdocId: _.get(
+                                                        modif,
+                                                        'tecdocId',
+                                                    ),
+                                                }
+                                                : {},
+                                        });
+                                    }
                                 }
                             });
                         } }
                     >
-                        <FormattedMessage id='add_client_form.add_vehicle' />
+                        <FormattedMessage id={editMode ? 'edit' : 'add_client_form.add_vehicle'} />
                     </Button>
                 </div>
             </Form>

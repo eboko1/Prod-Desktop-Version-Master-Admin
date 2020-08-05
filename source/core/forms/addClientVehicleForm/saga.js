@@ -14,7 +14,6 @@ export function* fetchVehiclesInfoSaga() {
         const {
             payload: { type, filters },
         } = yield take(FETCH_VEHICLES_INFO);
-
         const data = yield call(fetchAPI, 'GET', 'vehicles_info', filters);
         yield put(fetchVehiclesInfoSuccess(type, data));
     }
