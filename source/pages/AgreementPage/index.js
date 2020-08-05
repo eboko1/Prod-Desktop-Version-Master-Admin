@@ -366,7 +366,7 @@ class ServiceElement extends React.Component{
                     <p style={{padding: "5px 0"}}>{data.serviceName}</p>
                     {data.comment ? 
                         <p style={{fontStyle:"italic", padding: "5px 0"}}>
-                            {`${data.comment.problems.map((problem)=>" " + problem)}`}
+                            {`${data.comment.problems.map((problem)=>" " + problem.toLowerCase())}`}
                         </p> 
                         :
                         null
@@ -397,7 +397,7 @@ class ServiceElement extends React.Component{
                     <span>{data.serviceName}</span>
                 </div>
                 <div className={Styles.rowComment}>
-                    <span>{data.comment ? `${data.comment.problems.map((problem)=>" " + problem)}` : null}</span>
+                    <span>{data.comment ? `${data.comment.problems.map((problem)=>" " + problem.toLowerCase())}` : null}</span>
                 </div>
                 <div className={Styles.rowPrice}>
                     <span>{Math.round(data.price*10)/10}</span>
