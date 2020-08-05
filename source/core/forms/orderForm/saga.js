@@ -162,7 +162,7 @@ export function* createOrderSaga() {
             yield put(push(`${book.order}/${id}`));
 
             if(redirectTo) {
-                yield put(replace(redirectTo));
+                yield put(push(redirectTo));
             }
 
             /*
@@ -205,7 +205,7 @@ export function* updateOrderSaga() {
             });
 
             if(redirectTo) {
-                yield put(replace(redirectTo));
+                yield put(push(redirectTo));
             }
 
             if (!redirectStatus) {
