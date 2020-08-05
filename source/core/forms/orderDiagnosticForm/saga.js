@@ -38,6 +38,15 @@ export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId,
     let url = API_URL;
     let params = `/orders/diagnostics/answer`
     url += params;
+    const data = {
+        orderId: orderId,
+        templateId: templateId,
+        groupId: groupId,
+        partId: partId,
+        index: index,
+        answer: String(answer),
+        comment: {...comment},
+    };
     try {
         const response = await fetch(url, {
             method: 'PUT',
@@ -45,15 +54,7 @@ export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId,
                 'Authorization': token,
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({
-                orderId: orderId,
-                templateId: templateId,
-                groupId: groupId,
-                partId: partId,
-                index: index,
-                answer: String(answer),
-                comment: {...comment},
-            })
+            body: JSON.stringify(data)
         });
         const result = await response.json();
         if(result.success) {

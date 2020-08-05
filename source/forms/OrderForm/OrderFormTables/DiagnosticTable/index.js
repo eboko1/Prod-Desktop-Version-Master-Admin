@@ -1297,7 +1297,6 @@ class DiagnosticStatusButton extends React.Component{
     handleClick = async (status) => {
         const { rowProp } = this.props;
         await sendDiagnosticAnswer(rowProp.orderId, rowProp.diagnosticTemplateId, rowProp.groupId, rowProp.partId, rowProp.templateIndex, status, rowProp.commentary);
-        await this.setState({status:status});
         await this.props.getCurrentDiagnostic();
     }
     render(){
