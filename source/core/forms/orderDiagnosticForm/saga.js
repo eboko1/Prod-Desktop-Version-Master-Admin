@@ -47,7 +47,6 @@ export async function sendDiagnosticAnswer(orderId, templateId, groupId, partId,
         answer: String(answer),
         comment: {...comment},
     };
-    console.log(data);
     try {
         const response = await fetch(url, {
             method: 'PUT',
